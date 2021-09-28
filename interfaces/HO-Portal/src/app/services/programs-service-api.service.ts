@@ -420,6 +420,14 @@ export class ProgramsServiceApiService {
     return this.updatePaStatus('reject', programId, referenceIds, message);
   }
 
+  sendMessage(referenceIds: string[], message: string): Promise<any> {
+    return this.apiService
+      .post(environment.url_121_service_api, `/registrations/sms`, {
+        referenceIds,
+        message,
+      })
+      .toPromise();
+  }
   saveAction(actionType: ActionType, programId: number | string): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/actions/save`, {
@@ -476,6 +484,20 @@ export class ProgramsServiceApiService {
   getFspById(fspId: number): Promise<Fsp> {
     return this.apiService
       .get(environment.url_121_service_api, '/fsp/' + fspId)
+      .toPromise();
+  }
+
+  updateChosenFsp(
+    referenceId: string,
+    newFspName: string,
+    newFspAttributes?: object,
+  ): Promise<Fsp> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/registrations/update-chosen-fsp',
+        { referenceId, newFspName, newFspAttributes },
+      )
       .toPromise();
   }
 }

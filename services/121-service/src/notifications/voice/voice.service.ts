@@ -13,6 +13,7 @@ export class VoiceService {
   public constructor() {}
 
   public notifyByVoice(
+    registrationId: number,
     recipientPhoneNr: string,
     language: string,
     key: string,
@@ -21,11 +22,15 @@ export class VoiceService {
     if (recipientPhoneNr) {
       const mp3Param =
         programId.toString() + 'REPLACE' + language + 'REPLACE' + key;
-      this.makeVoiceCall(mp3Param, recipientPhoneNr);
+      this.makeVoiceCall(mp3Param, recipientPhoneNr, registrationId);
     }
   }
 
-  public makeVoiceCall(mp3Param: string, recipientPhoneNr: string): void {
+  public makeVoiceCall(
+    mp3Param: string,
+    recipientPhoneNr: string,
+    registrationId: number,
+  ): void {
     // Overwrite recipient phone number for testing phase
     // recipientPhoneNr = process.env.TWILIO_TEST_TO_NUMBER;
     twilioClient.calls
@@ -36,14 +41,14 @@ export class VoiceService {
         statusCallback: EXTERNAL_API.voiceStatus,
         from: process.env.TWILIO_TEST_FROM_NUMBER_VOICE,
       })
-      .then(call => this.storeCall(call, mp3Param))
+      .then(call => this.storeCall(call, mp3Param, registrationId))
       .catch(err => {
         console.log(err);
         // Do we need error handling here?
       });
   }
 
-  public storeCall(call, mp3Param: string): void {
+  public storeCall(call, mp3Param: string, registrationId: number): void {
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = call.accountSid;
     twilioMessage.body = mp3Param;
@@ -53,6 +58,7 @@ export class VoiceService {
     twilioMessage.status = call.status;
     twilioMessage.type = NotificationType.Call;
     twilioMessage.dateCreated = new Date();
+    twilioMessage.registrationId = registrationId;
     this.twilioMessageRepository.save(twilioMessage);
   }
 

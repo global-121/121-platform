@@ -8,7 +8,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, In } from 'typeorm';
+import { Repository, getRepository, In, MoreThan } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { twilioClient } from '../twilio.client';
 import { ProgramEntity } from '../../programs/program.entity';
@@ -25,6 +25,7 @@ import {
   TwilioStatus,
 } from '../twilio.dto';
 import { IntersolvePayoutStatus } from '../../fsp/api/enum/intersolve-payout-status.enum';
+import { TransactionEntity } from '../../programs/transactions.entity';
 
 @Injectable()
 export class WhatsappService {
@@ -36,6 +37,8 @@ export class WhatsappService {
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
+  @InjectRepository(TransactionEntity)
+  public transactionRepository: Repository<TransactionEntity>;
 
   private readonly programId = 1;
   private readonly fallbackLanguage = 'en';
@@ -49,6 +52,7 @@ export class WhatsappService {
   ) {}
 
   public async notifyByWhatsapp(
+    registrationId: number,
     recipientPhoneNr: string,
     language: string,
     programId: number,
@@ -69,7 +73,13 @@ export class WhatsappService {
     }
     const whatsappText =
       message || (await this.getWhatsappText(language, key, programId));
-    await this.sendWhatsapp(whatsappText, recipientPhoneNr, null, null);
+    await this.sendWhatsapp(
+      whatsappText,
+      recipientPhoneNr,
+      null,
+      null,
+      registrationId,
+    );
   }
 
   public async sendWhatsapp(
@@ -77,6 +87,7 @@ export class WhatsappService {
     recipientPhoneNr: string,
     messageType: null | IntersolvePayoutStatus,
     mediaUrl: null | string,
+    registrationId?: number,
   ): Promise<any> {
     const payload = {
       body: message,
@@ -94,7 +105,7 @@ export class WhatsappService {
     return twilioClient.messages
       .create(payload)
       .then(message => {
-        this.storeSendWhatsapp(message);
+        this.storeSendWhatsapp(message, registrationId, mediaUrl);
         return message.sid;
       })
       .catch(err => {
@@ -121,16 +132,22 @@ export class WhatsappService {
     return fallbackNotifications[key] ? fallbackNotifications[key] : '';
   }
 
-  public storeSendWhatsapp(message): void {
+  public storeSendWhatsapp(
+    message,
+    registrationId: number,
+    mediaUrl: string,
+  ): void {
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = message.accountSid;
     twilioMessage.body = message.body;
+    twilioMessage.mediaUrl = mediaUrl;
     twilioMessage.to = message.to;
     twilioMessage.from = message.messagingServiceSid;
     twilioMessage.sid = message.sid;
     twilioMessage.status = message.status;
     twilioMessage.type = NotificationType.Whatsapp;
     twilioMessage.dateCreated = message.dateCreated;
+    twilioMessage.registrationId = registrationId;
     this.twilioMessageRepository.save(twilioMessage);
   }
 
@@ -194,10 +211,20 @@ export class WhatsappService {
       where: { id: In(registrationIds) },
       relations: ['images', 'images.barcode'],
     });
+
+    // Don't send more then 3 vouchers, so no vouchers of more than 2 installments ago
+    const lastInstallment = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('MAX(transaction.installment)', 'max')
+      .getRawOne();
+    const minimumInstallment = lastInstallment ? lastInstallment.max - 2 : 0;
+
     return registrationWithVouchers
       .map(registration => {
         registration.images = registration.images.filter(
-          image => !image.barcode.send,
+          image =>
+            !image.barcode.send &&
+            image.barcode.installment >= minimumInstallment,
         );
         return registration;
       })
@@ -232,7 +259,13 @@ export class WhatsappService {
     if (registrationsWithOpenVouchers.length === 0) {
       const whatsappDefaultReply =
         program.notifications[language]['whatsappReply'];
-      await this.sendWhatsapp(whatsappDefaultReply, fromNumber, null, null);
+      await this.sendWhatsapp(
+        whatsappDefaultReply,
+        fromNumber,
+        null,
+        null,
+        null,
+      );
       return;
     }
 
@@ -262,6 +295,7 @@ export class WhatsappService {
           fromNumber,
           IntersolvePayoutStatus.VoucherSent,
           mediaUrl,
+          registration.id,
         );
         firstVoucherSent = true;
 
@@ -288,6 +322,7 @@ export class WhatsappService {
         fromNumber,
         null,
         EXTERNAL_API.voucherInstructionsUrl,
+        registrationsWithOpenVouchers[0].id,
       );
     }
   }

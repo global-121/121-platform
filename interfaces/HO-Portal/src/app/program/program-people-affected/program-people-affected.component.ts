@@ -82,6 +82,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-explanation',
         ),
+
         minLength: 20,
       },
     },
@@ -188,6 +189,33 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-explanation',
         ),
+        minLength: 20,
+      },
+    },
+    {
+      id: BulkActionId.sendMessage,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.send-message',
+      ),
+      roles: [UserRole.PersonalData],
+      phases: [
+        ProgramPhase.registrationValidation,
+        ProgramPhase.inclusion,
+        ProgramPhase.payment,
+        ProgramPhase.reviewInclusion,
+      ],
+      showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-checkbox',
+        ),
+        checkboxChecked: true,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-explanation',
+        ),
+
         minLength: 20,
       },
     },

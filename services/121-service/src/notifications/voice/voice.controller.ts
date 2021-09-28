@@ -33,7 +33,13 @@ export class VoiceController {
   @ApiImplicitParam({ name: 'number' })
   @Get(':number')
   public notifyByVoice(@Param() params): void {
-    return this.voiceService.notifyByVoice(params.number, 'en', 'included', 1);
+    return this.voiceService.notifyByVoice(
+      1,
+      params.number,
+      'en',
+      'included',
+      1,
+    );
   }
 
   @ApiOperation({

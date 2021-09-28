@@ -1,3 +1,4 @@
+import { TwilioMessageEntity } from './../notifications/twilio.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { SmsService } from './../notifications/sms/sms.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
@@ -35,6 +36,7 @@ import { Attributes } from './dto/update-attribute.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto } from './dto/reference-id.dto';
+import { MessageHistoryDto } from './dto/message-history.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -394,6 +396,7 @@ export class RegistrationsService {
     );
     this.inclusionScoreService.calculateInclusionScore(referenceId);
     this.smsService.notifyBySms(
+      registration.id,
       registration.phoneNumber,
       registration.preferredLanguage,
       registration.program.id,
@@ -768,6 +771,7 @@ export class RegistrationsService {
     message?: string,
   ): Promise<void> {
     this.smsService.notifyBySms(
+      registration.id,
       registration.phoneNumber,
       registration.preferredLanguage,
       programId,
@@ -809,7 +813,7 @@ export class RegistrationsService {
   public async updateChosenFsp(
     referenceId: string,
     newFspName: fspName,
-    newFspAttributes: object,
+    newFspAttributesRaw: object,
   ): Promise<RegistrationEntity> {
     //Identify new FSP
     const newFsp = await this.fspRepository.findOne({
@@ -822,10 +826,11 @@ export class RegistrationsService {
     }
 
     // Check if required attributes are present
+
     newFsp.attributes.forEach(requiredAttribute => {
       if (
-        !newFspAttributes ||
-        !Object.keys(newFspAttributes).includes(requiredAttribute.name)
+        !newFspAttributesRaw ||
+        !Object.keys(newFspAttributesRaw).includes(requiredAttribute.name)
       ) {
         const requiredAttributes = newFsp.attributes
           .map(a => a.name)
@@ -834,6 +839,12 @@ export class RegistrationsService {
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
     });
+
+    // Check if potential phonenumbers are correct and clean them
+    const newFspAttributes = {};
+    for (const [key, value] of Object.entries(newFspAttributesRaw)) {
+      newFspAttributes[key] = await this.cleanCustomDataIfPhoneNr(key, value);
+    }
 
     // Get registration by referenceId
     const registration = await this.registrationRepository.findOne({
@@ -860,11 +871,21 @@ export class RegistrationsService {
     const updatedRegistration = await this.addFsp(referenceId, newFsp.id);
 
     // Add new attributes
-    updatedRegistration.fsp.attributes.forEach(async attribute => {
-      updatedRegistration.customData[attribute.name] =
-        newFspAttributes[attribute.name];
-    });
 
+    for (const attribute of updatedRegistration.fsp.attributes) {
+      await this.addCustomData(
+        referenceId,
+        attribute.name,
+        newFspAttributes[attribute.name],
+      );
+
+      updatedRegistration.customData[
+        attribute.name
+      ] = await this.cleanCustomDataIfPhoneNr(
+        attribute.name,
+        newFspAttributes[attribute.name],
+      );
+    }
     return await this.registrationRepository.save(updatedRegistration);
   }
 
@@ -1080,5 +1101,50 @@ export class RegistrationsService {
     }
 
     return inclusionStatus;
+  }
+
+  public async sendCustomSms(
+    referenceIds: string[],
+    message: string,
+  ): Promise<void> {
+    const validRegistrations = [];
+    for (const referenceId of referenceIds) {
+      const registration = await this.getRegistrationFromReferenceId(
+        referenceId,
+      );
+      if (!registration.phoneNumber) {
+        const errors = `Registration with referenceId: ${registration.referenceId} has no phonenumber.`;
+        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      }
+      validRegistrations.push(registration);
+    }
+    for (const validRegistration of validRegistrations) {
+      this.smsService.sendSms(
+        message,
+        validRegistration.phoneNumber,
+        validRegistration.id,
+      );
+    }
+  }
+
+  public async getMessageHistoryRegistration(
+    referenceId: string,
+  ): Promise<MessageHistoryDto[]> {
+    return await this.registrationRepository
+      .createQueryBuilder('registration')
+      .select([
+        'twilioMessage.dateCreated as created',
+        'twilioMessage.from as from',
+        'twilioMessage.to as to',
+        'twilioMessage.body as body',
+        'twilioMessage.status as status',
+        'twilioMessage.type as type',
+        'twilioMessage.mediaUrl as mediaUrl',
+      ])
+      .leftJoin('registration.twilioMessages', 'twilioMessage')
+      .where('registration.referenceId = :referenceId', {
+        referenceId: referenceId,
+      })
+      .getRawMany();
   }
 }

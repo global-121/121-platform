@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
+import { AlertController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
+import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 
 @Component({
   selector: 'app-update-fsp',
@@ -31,12 +34,19 @@ export class UpdateFspComponent implements OnInit {
   @Input()
   public fspList: any[];
 
+  @Input()
+  public referenceId: string;
+
   @Output()
   updated: EventEmitter<string> = new EventEmitter<string>();
 
   public propertyModel: any | NgModel;
 
-  constructor() {}
+  constructor(
+    private programsService: ProgramsServiceApiService,
+    private alertController: AlertController,
+    private translate: TranslateService,
+  ) {}
 
   public startingAttributes: any[] = [];
   public selectedFspAttributes: any[] = [];
@@ -54,13 +64,36 @@ export class UpdateFspComponent implements OnInit {
     this.enableUpdateBtn = false;
   }
 
-  public doUpdate() {
-    console.log('this.selectedFspName:', this.selectedFspName);
-    console.log('this.attributesToSave: ', this.attributesToSave);
+  public updateChosenFsp() {
+    this.programsService
+      .updateChosenFsp(
+        this.referenceId,
+        this.selectedFspName,
+        this.attributesToSave,
+      )
+      .then(
+        () => {
+          this.inProgress = false;
+          this.actionResult(
+            this.translate.instant('common.update-success'),
+            true,
+          );
+        },
+        (error) => {
+          this.inProgress = false;
+          console.log('error: ', error);
+          if (error && error.error) {
+            this.actionResult(error.error.message);
+          }
+        },
+      );
   }
 
   public onFspChange({ detail }) {
     this.getFspAttributes(detail.value);
+    if (!this.selectedFspAttributes.length) {
+      this.enableUpdateBtn = true;
+    }
   }
 
   public getFspAttributes(fspString: string) {
@@ -102,5 +135,26 @@ export class UpdateFspComponent implements OnInit {
     }
 
     this.enableUpdateBtn = true;
+  }
+
+  private async actionResult(resultMessage: string, refresh: boolean = false) {
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      message: resultMessage,
+      buttons: [
+        {
+          text: this.translate.instant('common.ok'),
+          handler: () => {
+            alert.dismiss(true);
+            if (refresh) {
+              window.location.reload();
+            }
+            return false;
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 }
