@@ -5,6 +5,7 @@ export class RelateRegistrationToTwilioMessage1632823293789
   name = 'RelateRegistrationToTwilioMessage1632823293789';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // Automatically generated datamodel-migration part
     await queryRunner.query(
       `ALTER TABLE "121-service"."twilio_message" ADD "registrationId" integer`,
     );
@@ -77,9 +78,44 @@ export class RelateRegistrationToTwilioMessage1632823293789
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_financial_service_providers_fsp" ADD CONSTRAINT "FK_94f4ed0a4cb054f80878db020d1" FOREIGN KEY ("fspId") REFERENCES "121-service"."fsp"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // Manually added part for filling the new 'registrationId' column in 'twilio_message' //
+    /////////////////////////////////////////////////////////////////////////////////////////
+
+    // Get current registrationId based on twilio_message."to" column
+    // Cases with historical phonenumber changes will not be properly captured this way, as the old phone number will not be found in the current registration table
+    // If multiple phone-numbers are found (e.g. a 'rejected' one and an 'included' one) then the oldest one is taken
+
+    // If whatsapp: join to customData['whatsappPhoneNumber']
+    await queryRunner.query(
+      `UPDATE "121-service".twilio_message tm 
+      SET "registrationId" = r.id
+      FROM "121-service".registration r 
+      WHERE replace(tm.to,'whatsapp:+','') = r."customData"->>'whatsappPhoneNumber'
+      AND tm.type = 'whatsapp'`,
+    );
+    // If sms: join to 'phoneNumber'
+    await queryRunner.query(
+      `UPDATE "121-service".twilio_message tm 
+      SET "registrationId" = r.id
+      FROM "121-service".registration r 
+      WHERE replace(tm.to,'+','') = r."phoneNumber"
+      AND tm.type = 'sms'`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    /////////////////////////////////////////////////////////////////////////
+    // Manually emptying 'registrationId' column in 'twilio_message' again //
+    /////////////////////////////////////////////////////////////////////////
+
+    await queryRunner.query(
+      `UPDATE "121-service".twilio_message tm 
+      SET "registrationId" = null`,
+    );
+
+    // Automatically generated datamodel-migration part
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_financial_service_providers_fsp" DROP CONSTRAINT "FK_94f4ed0a4cb054f80878db020d1"`,
     );
