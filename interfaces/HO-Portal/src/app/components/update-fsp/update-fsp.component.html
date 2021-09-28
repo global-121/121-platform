@@ -37,6 +37,9 @@
             </ul>
           </div>
         </ion-text>
+        <p *ngIf="selectedFspAttributes.length > 0">
+          {{ 'page.program.program-people-affected.edit-person-affected-popup.fspNewAttributesExplanation' | translate }}
+        </p>
         <ion-item *ngFor="let attribute of selectedFspAttributes" position="stacked">
           <ion-label position="stacked">
             {{ 'page.program.program-people-affected.edit-person-affected-popup.properties.' + attribute.name + '.label' | translate }}
