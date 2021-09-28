@@ -8,7 +8,28 @@ In this file we document "how to do X", manually. As not everything is possible 
 
 ---
 
+## What to do in case of 'waiting' or 'failed' payments
+
+- See [Activity Diagram for 'Send payment instructions'](https://github.com/global-121/121-platform/wiki/Send-payment-instructions) for more insight into possible scenarios.
+- If transaction is on "failed"
+  - If `whatsappPhoneNumber` is invalid (most observed scenario so far)
+    - **Pilot-team** updates `whatsappPhoneNumber` in HO-portal
+    - **Pilot-team** retries payment for each installment from payment-status-popup in HO-portal
+  - If failed for other reason
+    - **Pilot-team** informs **121-dev-team**
+    - **121-dev-team** does ad-hoc investigation
+- If transaction is on "waiting"
+  - Do not do anything for 24 hours. If the 'delivered' event was not properly communicated by Twilio to us for some reason, then the 'read' event is a 2nd chance to inform us of success.
+  - After that: **Pilot-team** gets in contact with PA to find out what's going on.
+  - If PA claims no voucher has been received and there is no reason to doubt this, then:
+    - **121-dev-team** manually cancels and deletes voucher: no endpoint available as of yet > do manually
+    - **121-dev-team** manually repeats payment for that PA: use [`/programs/payout`](https://test-vm.121.global/121-service/docs/#/programs/post_programs_payout)
+
+---
+
 ## Change SMS and/or WhatsApp phone-numbers for Person Affected
+
+> ⚠️ This is now possible directly from HO-portal.
 
 1. PA gets in contact with **Pilot-team** if phone is lost
 2. **Pilot-team** provides to **121-dev-team**:
@@ -19,7 +40,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 3. **121-dev-team**:
    1. Find the `registration` of the PA that we want to update, using `Find Reference ID of PA in database based on name and/or phone number` scenario below.
    2. Use the found registration `referenceId` to update the phone-numbers.
-      - Use: [`/registrations/attribute`](https://test-vm.121.global/121-service/docs/#/registrations/attribute)
+      - Use: [`/registrations/attribute`](https://test-vm.121.global/121-service/docs/#/registrations/post_registrations_attribute)
         - To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`)
         - To store the new SMS phone-number use the same endpoint with: `key` set to `phoneNumer` (For bot a phone number check is included, with automatic sanitization as far as possible.)
 
