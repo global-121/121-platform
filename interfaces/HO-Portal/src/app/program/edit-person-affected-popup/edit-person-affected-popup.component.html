@@ -111,10 +111,10 @@
 
     <ion-list>
       <ion-item
-        *ngFor="let message of messageHistory"
+        *ngFor="let message of messageHistory | slice:0:historySize; let i=index"
         >
         <span class="ion-margin-end">
-          {{ message.timestamp|date:"iso-format?" }}
+          {{ message.timestamp|date:"yyyy-MM-dd, HH:mm" }}
         </span>
         <span class="ion-margin-end">
           <strong>{{ message.type }}</strong>
@@ -125,6 +125,12 @@
         <ion-icon name="text" slot="end" size="small"></ion-icon>
       </ion-item>
     </ion-list>
+   <ion-button
+        *ngIf="historySize!==messageHistory.length"
+        (click)="loadMore(messageHistory.length)"
+   >
+    {{'common.show-more' | translate}}
+      </ion-button>
   </section>
 
 </ion-content>

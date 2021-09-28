@@ -447,7 +447,8 @@
     "update-error": "Something went wrong: {{error}}",
     "timestamp": {
       "done": "Done on:"
-    }
+    },
+    "show-more": "Show More"
   },
   "refresh-data": {
     "last-updated": "Last updated: {{date}}"
