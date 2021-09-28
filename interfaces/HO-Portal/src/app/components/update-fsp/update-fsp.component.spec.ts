@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { AlertController } from '@ionic/angular';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { UpdateFspComponent } from './update-fsp.component';
 
 describe('UpdateFspComponent', () => {
@@ -14,7 +15,7 @@ describe('UpdateFspComponent', () => {
       declarations: [UpdateFspComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [FormsModule, TranslateModule.forRoot()],
-      providers: [HttpClient],
+      providers: [ProgramsServiceApiService, AlertController, TranslateService],
     }).compileComponents();
   }));
 
