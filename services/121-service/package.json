@@ -16,7 +16,7 @@
     "lint:seed-data": "prettier --check \"seed-data/**/*.json\"",
     "lint:syntax": "prettier --check \"**/*.{md,js,yml}\"",
     "fix:syntax": "npm run lint:syntax -- --write",
-    "prestart": "ts-node src/scripts seed-prod && npm run migration:run",
+    "prestart": "npm run migration:run && ts-node src/scripts seed-prod",
     "start": "node index.js",
     "prestart:dev": "npm install --no-fund --no-audit --no-save && npm run prestart",
     "start:dev": "tsc-watch --noClear --onSuccess \"  node index.js  \" --onFailure \"echo There was a problem with the build!\" -p tsconfig.json",
