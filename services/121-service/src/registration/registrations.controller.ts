@@ -43,6 +43,8 @@ import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
+import { SendCustomSmsDto } from './dto/send-custom-sms.dto';
+import { MessageHistoryDto } from './dto/message-history.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -394,7 +396,10 @@ export class RegistrationsController {
   }
 
   @Roles(UserRole.FieldValidation)
-  @ApiOperation({ title: 'Update chosen fsp and attributes' })
+  @ApiOperation({
+    title:
+      'Update chosen fsp and attributes. This will delete any custom data field related to the old FSP!',
+  })
   @ApiResponse({
     status: 200,
     description: 'Updated fsp and attributes',
@@ -489,6 +494,27 @@ export class RegistrationsController {
     return await this.registrationsService.getInclusionStatus(
       Number(params.programId),
       data.referenceId,
+    );
+  }
+
+  @Roles(UserRole.PersonalData, UserRole.RunProgram)
+  @ApiOperation({ title: 'Send custom sms to array of registrations' })
+  @Post('sms')
+  public async sendCustomSms(@Body() data: SendCustomSmsDto): Promise<void> {
+    return await this.registrationsService.sendCustomSms(
+      data.referenceIds,
+      data.message,
+    );
+  }
+
+  @Roles(UserRole.PersonalData)
+  @ApiOperation({ title: 'Get message history for one registration' })
+  @Get('message-history/:referenceId')
+  public async getMessageHistoryRegistration(
+    @Param() params: ReferenceIdDto,
+  ): Promise<MessageHistoryDto[]> {
+    return await this.registrationsService.getMessageHistoryRegistration(
+      params.referenceId,
     );
   }
 }

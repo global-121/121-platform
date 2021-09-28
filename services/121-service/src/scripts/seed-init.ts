@@ -12,8 +12,7 @@ export class SeedInit implements InterfaceScript {
   public constructor(private connection: Connection) {}
 
   public async run(): Promise<void> {
-    await this.connection.dropDatabase();
-    await this.connection.synchronize(true);
+    await this.truncateAll();
 
     const userRoleRepository = this.connection.getRepository(UserRoleEntity);
     await userRoleRepository.save([
@@ -49,6 +48,21 @@ export class SeedInit implements InterfaceScript {
         .digest('hex'),
       userType: UserType.aidWorker,
     });
+  }
+
+  public async truncateAll(): Promise<void> {
+    const entities = this.connection.entityMetadatas;
+    try {
+      for (const entity of entities) {
+        const repository = await this.connection.getRepository(entity.name);
+        if (repository.metadata.schema === '121-service') {
+          const q = `TRUNCATE TABLE \"${repository.metadata.schema}\".\"${entity.tableName}\" CASCADE;`;
+          await repository.query(q);
+        }
+      }
+    } catch (error) {
+      throw new Error(`ERROR: Cleaning test db: ${error}`);
+    }
   }
 }
 

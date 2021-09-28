@@ -18,23 +18,6 @@ export class SmsController {
     this.smsService = smsService;
   }
 
-  @Roles(UserRole.Admin)
-  @ApiResponse({
-    status: 200,
-    description: 'Test controller to test sending sms',
-  })
-  @ApiImplicitParam({ name: 'number' })
-  @Get(':number')
-  public async sendSms(@Param() params): Promise<void> {
-    return await this.smsService.notifyBySms(
-      params.number,
-      'en',
-      1,
-      null,
-      RegistrationStatusEnum.registered,
-    );
-  }
-
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Post('status')
   public async statusCallback(@Body() callbackData: any): Promise<void> {

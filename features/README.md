@@ -62,9 +62,9 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 #### Using external tools/applications
 
-- Send a WhatsApp message to collect voucher
-  - Send 'yes' reply via WhatsApp when asked / uncollected voucher available
-  - Send 'yes' reply via WhatsApp when no uncollected voucher available
+- Send a WhatsApp message
+  - [Claim digital voucher](Other/Claim_digital_voucher.feature)
+
 
 #### Using PA-App
 

@@ -26,6 +26,7 @@ import { API_PATHS } from '../../config';
       TransactionEntity,
       ProgramEntity,
       RegistrationEntity,
+      TransactionEntity,
     ]),
     ImageCodeModule,
     forwardRef(() => FspModule),
