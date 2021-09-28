@@ -54,7 +54,10 @@ export class UpdateFspComponent implements OnInit {
     this.enableUpdateBtn = false;
   }
 
-  public doUpdate() {}
+  public doUpdate() {
+    console.log('this.selectedFspName:', this.selectedFspName);
+    console.log('this.attributesToSave: ', this.attributesToSave);
+  }
 
   public onFspChange({ detail }) {
     this.getFspAttributes(detail.value);

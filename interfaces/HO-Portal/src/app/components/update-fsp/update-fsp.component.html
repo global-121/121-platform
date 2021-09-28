@@ -28,14 +28,18 @@
       </ion-item>
       <ng-container *ngIf="propertyModel != startingFspName">
         <ion-text class="ion-padding-vertical" *ngIf="attributeDifference.length > 0">
-          {{ 'page.program.program-people-affected.edit-person-affected-popup.properties.fspChangeWarning' | translate }}:<br>
+          {{ 'page.program.program-people-affected.edit-person-affected-popup.fspChangeWarning' | translate }}<br>
           <div>
-            <span *ngFor="let attr of attributeDifference">{{ attr.name }} <span *ngIf="attr < attributeDifference.length -1">, </span></span>
+            <ul>
+              <li *ngFor="let attr of attributeDifference">
+                {{ 'page.program.program-people-affected.edit-person-affected-popup.properties.' + attr.name + '.label' | translate }}
+              </li>
+            </ul>
           </div>
         </ion-text>
         <ion-item *ngFor="let attribute of selectedFspAttributes" position="stacked">
           <ion-label position="stacked">
-            {{ attribute.name }}
+            {{ 'page.program.program-people-affected.edit-person-affected-popup.properties.' + attribute.name + '.label' | translate }}
           </ion-label>
           <ion-input
           ngDefaultControl
