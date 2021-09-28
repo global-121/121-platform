@@ -19,6 +19,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public noteModel: string;
   public noteLastUpdate: string;
   public messageHistory: any;
+  public historySize: number = 1;
 
   constructor(
     private modalController: ModalController,
@@ -93,6 +94,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       this.person.referenceId,
     );
     this.messageHistory = msghistory;
+  }
+  private async loadMore(historyLength) {
+    this.historySize = historyLength;
   }
 
   public async saveNote() {
