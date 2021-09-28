@@ -13,13 +13,12 @@ import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 export class EditPersonAffectedPopupComponent implements OnInit {
   @Input()
   public person: Person;
-
   public inProgress: any = {};
 
   public noteModel: string;
   public noteLastUpdate: string;
   public messageHistory: any;
-  public historySize: number = 1;
+  public historySize: Number = 5;
 
   constructor(
     private modalController: ModalController,
