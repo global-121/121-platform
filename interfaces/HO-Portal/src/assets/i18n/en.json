@@ -322,6 +322,7 @@
             }
           },
           "fspChangeWarning": "Selecting this FSP will delete the following attributes related to the old FSP:",
+          "fspNewAttributesExplanation": "For this FSP the following attributes are required:",
           "note": {
             "section-title": "Notes about Person Affected",
             "introduction": "You can add, edit or remove notes about this particular Person Affected in the field below. Please keep Personal Identifiable Information (PII) to a minimum and delete any PII when no longer needed.",
