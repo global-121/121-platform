@@ -40,11 +40,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   async ngOnInit() {
     this.getNote();
-<<<<<<< HEAD
     this.getFspList();
-=======
     this.getMessageHistory();
->>>>>>> AB#9526 Implement design
   }
 
   public async updatePaAttribute(
