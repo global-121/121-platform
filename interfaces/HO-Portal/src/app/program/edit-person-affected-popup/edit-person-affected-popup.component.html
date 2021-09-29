@@ -58,6 +58,13 @@
         [inProgress]="inProgress?.whatsappPhoneNumber || false"
         class="ion-margin-vertical"
       ></app-update-property-item>
+      <app-update-fsp
+        *ngIf="fspList.length === programFspLength"
+        [fspList]="fspList"
+        [label]="'page.program.program-people-affected.column.fsp'|translate"
+        [value]="person?.fsp"
+        [referenceId]="person?.referenceId"
+      ></app-update-fsp>
     </ion-list>
   </section>
   <hr />

@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { UserRole } from '../auth/user-role.enum';
 import { ActionType, LatestAction } from '../models/actions.model';
 import { ExportType } from '../models/export-type.model';
+import { Fsp } from '../models/fsp.model';
 import { csvTemplateImported, ImportType } from '../models/import-type.enum';
 import { InstallmentData, TotalIncluded } from '../models/installment.model';
 import { Note, PaStatus, Person } from '../models/person.model';
@@ -476,6 +477,26 @@ export class ProgramsServiceApiService {
       .get(
         environment.url_121_service_api,
         `/export-metrics/installment-state-sums/${programId}`,
+      )
+      .toPromise();
+  }
+
+  getFspById(fspId: number): Promise<Fsp> {
+    return this.apiService
+      .get(environment.url_121_service_api, '/fsp/' + fspId)
+      .toPromise();
+  }
+
+  updateChosenFsp(
+    referenceId: string,
+    newFspName: string,
+    newFspAttributes?: object,
+  ): Promise<Fsp> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/registrations/update-chosen-fsp',
+        { referenceId, newFspName, newFspAttributes },
       )
       .toPromise();
   }

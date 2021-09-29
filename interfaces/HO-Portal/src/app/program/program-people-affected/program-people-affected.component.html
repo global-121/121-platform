@@ -153,7 +153,7 @@
           id="edit-button"
           type="button"
           class="ion-no-padding popup-button"
-          (click)="editPersonAffectedPopup(row)"
+          (click)="editPersonAffectedPopup(row, programId)"
           [attr.title]="('page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'|translate) + (row.hasNote ? (' - ' + ('page.program.program-people-affected.edit-person-affected-popup.has-notes-title'|translate)) : '')"
           [attr.aria-label]="('page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'|translate) + (row.hasNote ? (' - ' + ('page.program.program-people-affected.edit-person-affected-popup.has-notes-title'|translate)) : '')"
         >

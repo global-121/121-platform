@@ -825,7 +825,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return !!row['payment' + installmentIndex + '-waiting'];
   }
 
-  public async editPersonAffectedPopup(row: PersonRow) {
+  public async editPersonAffectedPopup(row: PersonRow, programId: number) {
     const person = this.allPeopleData.find(
       (pa) => pa.referenceId === row.referenceId,
     );
@@ -833,6 +833,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       component: EditPersonAffectedPopupComponent,
       componentProps: {
         person,
+        programId,
       },
     });
 

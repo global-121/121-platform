@@ -8,6 +8,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxPopperjsModule } from 'ngx-popperjs';
 import { HeaderComponent } from '../components/header/header.component';
+import { UpdateFspComponent } from '../components/update-fsp/update-fsp.component';
 import { UpdatePropertyItemComponent } from '../components/update-property-item/update-property-item.component';
 import { UserStateComponent } from '../components/user-state/user-state.component';
 import { BulkImportComponent } from '../program/bulk-import/bulk-import.component';
@@ -41,6 +42,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     TestPaymentComponent,
     TooltipComponent,
     UpdatePropertyItemComponent,
+    UpdateFspComponent,
     UserStateComponent,
   ],
   imports: [
@@ -74,6 +76,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     TooltipComponent,
     TranslateModule,
     UpdatePropertyItemComponent,
+    UpdateFspComponent,
     UserStateComponent,
   ],
   entryComponents: [
