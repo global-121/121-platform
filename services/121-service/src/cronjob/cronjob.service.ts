@@ -77,7 +77,7 @@ export class CronjobService {
       .leftJoin('barcode.image', 'image')
       .leftJoin('image.registration', 'registration')
       .where('send = false')
-      .andWhere('timestamp < :sixteenHoursAgo', {
+      .andWhere('created < :sixteenHoursAgo', {
         sixteenHoursAgo: sixteenHoursAgo,
       })
       .getRawMany();
