@@ -4,21 +4,21 @@ Feature: Edit information on Person Affected
   Background:
     Given the "selected phase" is one of the phases with the "People Affected table"
 
-  Scenario: View icon to edit information
+  Scenario: View icon to view information
     Given a logged-in user with "personal data" role
     When the user views the "People Affected Table"
-    Then the user sees an "edit icon" in each row at the end of the "Person Affected" column
+    Then the user sees an "information icon" in each row at the beginning of the "Person Affected" column
     When the user hovers over it
     Then it is highlighted
 
   Scenario: No permission to edit information
     Given the user does not have the "personal data" role
     When the user views the "People Affected Table"
-    Then the user does not see the edit-icon, but only the 'PA#X' text
+    Then the user does not see the information-icon, but only the 'PA#X' text
 
-  Scenario: Open the popup to edit information
+  Scenario: Open the popup to view and edit information
     Given a logged-in user with "personal data" role
-    When the user click the "edit icon"
+    When the user click the "information icon"
     Then a popup opens
     And in the title the ID-number of the Person Affected is mentioned
     And an input-field for the "paymentAmountMultiplier", "partnerOrganization" and "phoneNumber" is shown
@@ -27,6 +27,8 @@ Feature: Edit information on Person Affected
     And the pop-up shows a dropdown-list for the current FSP is shown
     And it has an accompanying "update" button which is disabled
     And the popup has a "Notes" section
+    And an input-field for the "paymentAmountMultiplier" is shown
+    And the popup has a "Notes" section and a "Message History" section
     And there is an explanation, including PII-warning
     And there is a free text "note" field
     And it shows the current version of the note if available
@@ -74,8 +76,8 @@ Feature: Edit information on Person Affected
     And the progress indicator changes into the update-button again
 
   Scenario: Update other attributes
-    Similar to updating 'paymentAmountMultiplier', possibly with other specific validation rules. TBC.
-    
+  Similar to updating 'paymentAmountMultiplier', possibly with other specific validation rules. TBC.
+
   Scenario: Update chosen FSP
     Given a logged-in user with "personal data" role
     Given the user has opened the popup to edit information
@@ -83,7 +85,7 @@ Feature: Edit information on Person Affected
     When the user changes the chosen FSP
     Then a message appears that attributes relating to the current FSP will be deleted and it lists these attributes
     And for each attribute of the new FSP a new input field appears
-    
+
     When the user has filled in values for each new input field
     Then the 'update' button of the chosen 'FSP' gets enabled
 
@@ -95,3 +97,11 @@ Feature: Edit information on Person Affected
     Then the input-fields for attributes of the old FSP are gone
     And input-fields for attributes of the new FSP are shown
     And the new FSP shows as the current selected value of the dropdown
+
+  Scenario: Message History
+    Given a logged-in user with "personal data" role
+    Given the user has opened the popup to view and edit information
+    Then after the Notes section if any messages are sent to PA then "Message History" section will be available
+    And under this section initially 5 messages will be visible with "Show More" button
+    When the user click the "Show More " button complete message list will be displayed
+    And the "Show More" button will no longer be visible

@@ -22,6 +22,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public noteModel: string;
   public noteLastUpdate: string;
+  public messageHistory: any;
+  public historySize = 5;
+  public rowIndex: number;
 
   public fspList: Fsp[] = [];
   public programFspLength = 0;
@@ -38,6 +41,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   async ngOnInit() {
     this.getNote();
     this.getFspList();
+    this.getMessageHistory();
   }
 
   public async updatePaAttribute(
@@ -93,6 +97,19 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
     this.noteModel = note.note;
     this.noteLastUpdate = note.noteUpdated;
+  }
+
+  private async getMessageHistory() {
+    const msghistory = await this.programsService.retrieveMsgHistory(
+      this.person.referenceId,
+    );
+    this.messageHistory = msghistory;
+  }
+  public async loadMore(historyLength) {
+    this.historySize = historyLength;
+  }
+  public openMessageDetails(index) {
+    this.rowIndex = index;
   }
 
   public async saveNote() {

@@ -290,7 +290,7 @@
         "edit-person-affected-popup": {
           "edit-icon-title": "Edit information of Person Affected",
           "has-notes-title": "Notes available",
-          "popup-title": "Edit information of {{pa}}",
+          "popup-title": "{{pa}} detailed info",
           "properties": {
             "paymentAmountMultiplier": {
               "label": "× Transfer value"
@@ -330,6 +330,9 @@
             "placeholder": "Start a note about this Person Affected by typing here...",
             "save": "Save note",
             "latest-update": "Latest update on: {{timestamp}}"
+          },
+           "messageHistory": {
+            "section-title": "Message History"
           }
         },
         "payment-status-popup": {
@@ -444,7 +447,8 @@
     "update-error": "Something went wrong: {{error}}",
     "timestamp": {
       "done": "Done on:"
-    }
+    },
+    "show-more": "Show More"
   },
   "refresh-data": {
     "last-updated": "Last updated: {{date}}"

@@ -199,6 +199,14 @@ export class ProgramsServiceApiService {
       )
       .toPromise();
   }
+  retrieveMsgHistory(referenceId: string): Promise<any> {
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        `/registrations/message-history/${referenceId}`,
+      )
+      .toPromise();
+  }
 
   getTransaction(
     referenceId: string,
