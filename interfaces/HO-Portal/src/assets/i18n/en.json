@@ -269,7 +269,8 @@
           "include": "Include in program",
           "reject": "Reject from program",
           "end-inclusion": "End inclusion in program",
-          "send-message": "Send Message to PA's"
+          "send-message": "Send Message to PA's",
+          "delete-pa": "Delete PA"
         },
         "action-inputs": {
           "message-checkbox": "Send a message to these People Affected",

@@ -69,6 +69,9 @@ export class BulkActionsService {
       case BulkActionId.sendMessage:
         personData.checkboxVisible = true;
         break;
+      case BulkActionId.deletePa:
+        personData.checkboxVisible = true;
+        break;
     }
     return personData;
   }
@@ -125,6 +128,8 @@ export class BulkActionsService {
           this.onlyIds(selectedPeople),
           message,
         );
+      case BulkActionId.deletePa:
+        console.log("Deleting the selected PA's");
     }
   }
 }

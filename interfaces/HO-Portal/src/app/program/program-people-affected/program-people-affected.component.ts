@@ -219,6 +219,33 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         minLength: 20,
       },
     },
+    {
+      id: BulkActionId.deletePa,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.delete-pa',
+      ),
+      roles: [UserRole.PersonalData],
+      phases: [
+        ProgramPhase.registrationValidation,
+        ProgramPhase.inclusion,
+        ProgramPhase.payment,
+        ProgramPhase.reviewInclusion,
+      ],
+      showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-checkbox',
+        ),
+        checkboxChecked: true,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-explanation',
+        ),
+
+        minLength: 20,
+      },
+    },
   ];
   public applyBtnDisabled = true;
   public submitWarning: any;
