@@ -129,7 +129,7 @@ export class BulkActionsService {
           message,
         );
       case BulkActionId.deletePa:
-        console.log("Deleting the selected PA's");
+        console.log('Deleting the selected PAs');
     }
   }
 }
