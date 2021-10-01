@@ -106,7 +106,7 @@
       </ion-note>
     </ion-row>
   </section>
-  <section *ngIf="messageHistory">
+  <section *ngIf="messageHistory && messageHistory[0].created!==null">
     <h4> {{ 'page.program.program-people-affected.edit-person-affected-popup.messageHistory.section-title'|translate }}</h4>
 
     <ion-list>
@@ -131,7 +131,7 @@
         </ion-item>
     </ion-list>
    <ion-button
-        *ngIf="historySize!==messageHistory.length"
+        *ngIf="messageHistory.length>historySize"
         (click)="loadMore(messageHistory.length)"
    >
     {{'common.show-more' | translate}}
