@@ -1,13 +1,16 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      {{ 'page.program.program-people-affected.edit-person-affected-popup.popup-title'|translate:{ pa: 'PA #' + person?.id } }}
+      {{
+        'page.program.program-people-affected.edit-person-affected-popup.popup-title'
+          | translate: { pa: 'PA #' + person?.id }
+      }}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button
         (click)="closeModal()"
-        [attr.title]="'common.cancel'|translate"
-        [attr.aria-label]="'common.cancel'|translate"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
       >
         <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
       </ion-button>
@@ -15,15 +18,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content
-  color="light"
-  class="ion-padding"
->
+<ion-content color="light" class="ion-padding">
   <section>
     <ion-list lines="full">
-
       <app-update-property-item
-        [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.namePartnerOrganization.label'|translate"
+        [label]="
+          'page.program.program-people-affected.edit-person-affected-popup.properties.namePartnerOrganization.label'
+            | translate
+        "
         [value]="person?.namePartnerOrganization"
         (updated)="updatePaAttribute('namePartnerOrganization', $event)"
         [inProgress]="inProgress?.namePartnerOrganization || false"
@@ -32,7 +34,10 @@
 
       <app-update-property-item
         type="number"
-        [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.label'|translate"
+        [label]="
+          'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.label'
+            | translate
+        "
         [value]="person?.paymentAmountMultiplier"
         (updated)="updatePaAttribute('paymentAmountMultiplier', $event)"
         [inProgress]="inProgress?.paymentAmountMultiplier || false"
@@ -41,8 +46,14 @@
 
       <app-update-property-item
         type="tel"
-        [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.label'|translate"
-        [explanation]="'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.explanation'|translate"
+        [label]="
+          'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.label'
+            | translate
+        "
+        [explanation]="
+          'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.explanation'
+            | translate
+        "
         [value]="person?.phoneNumber"
         (updated)="updatePaAttribute('phoneNumber', $event)"
         [inProgress]="inProgress?.phoneNumber || false"
@@ -51,8 +62,14 @@
       <app-update-property-item
         *ngIf="person.whatsappPhoneNumber"
         type="tel"
-        [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.label'|translate"
-        [explanation]="'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.explanation'|translate"
+        [label]="
+          'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.label'
+            | translate
+        "
+        [explanation]="
+          'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.explanation'
+            | translate
+        "
         [value]="person?.whatsappPhoneNumber"
         (updated)="updatePaAttribute('whatsappPhoneNumber', $event)"
         [inProgress]="inProgress?.whatsappPhoneNumber || false"
@@ -63,10 +80,16 @@
   <hr />
   <section>
     <h4>
-      {{ 'page.program.program-people-affected.edit-person-affected-popup.note.section-title'|translate }}
+      {{
+        'page.program.program-people-affected.edit-person-affected-popup.note.section-title'
+          | translate
+      }}
     </h4>
     <p>
-      {{ 'page.program.program-people-affected.edit-person-affected-popup.note.introduction'|translate }}
+      {{
+        'page.program.program-people-affected.edit-person-affected-popup.note.introduction'
+          | translate
+      }}
     </p>
     <ion-textarea
       [(ngModel)]="noteModel"
@@ -76,8 +99,15 @@
       rows="10"
       spellcheck="true"
       wrap="soft"
-      [placeholder]="'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'|translate"
-      style="font-family: monospace; border: 1px solid currentColor; height:150px"
+      [placeholder]="
+        'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'
+          | translate
+      "
+      style="
+        font-family: monospace;
+        border: 1px solid currentColor;
+        height: 150px;
+      "
     ></ion-textarea>
     <ion-row class="ion-align-items-center">
       <ion-button
@@ -85,7 +115,10 @@
         [disabled]="inProgress?.note || false"
         class="ion-margin-end"
       >
-        {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}
+        {{
+          'page.program.program-people-affected.edit-person-affected-popup.note.save'
+            | translate
+        }}
       </ion-button>
       <ion-spinner
         *ngIf="inProgress?.note"
@@ -93,41 +126,54 @@
         size="small"
       ></ion-spinner>
       <ion-note *ngIf="noteLastUpdate">
-        {{ 'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'|translate:{
-            timestamp: noteLastUpdate|date:"yyyy-MM-dd, HH:mm"
-          } }}
+        {{
+          'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'
+            | translate
+              : {
+                  timestamp: noteLastUpdate | date: 'yyyy-MM-dd, HH:mm'
+                }
+        }}
       </ion-note>
     </ion-row>
   </section>
-  <section *ngIf="messageHistory">
-    <h4> {{ 'page.program.program-people-affected.edit-person-affected-popup.messageHistory.section-title'|translate }}</h4>
+  <section *ngIf="messageHistory && (messageHistory[0].created!=null) ">
+    <h4>
+      {{
+        'page.program.program-people-affected.edit-person-affected-popup.messageHistory.section-title'
+          | translate
+      }}
+    </h4>
 
     <ion-list>
       <ion-item
-        *ngFor="let message of messageHistory | slice:0:historySize; let i=index"
+        *ngFor="
+          let message of messageHistory | slice: 0:historySize;
+          let i = index
+        "
         [button]="true"
         (click)="openMessageDetails(i)"
-        >
-        <span class="ion-margin-end" >
-          {{ message.created|date:"yyyy-MM-dd, HH:mm" }}
+      >
+        <span class="ion-margin-end">
+          {{ message.created | date: 'yyyy-MM-dd, HH:mm' }}
         </span>
         <span class="ion-margin-end">
           <strong>{{ message.type }}</strong>
         </span>
-        <span *ngIf=" rowIndex !== i">
+        <span *ngIf="rowIndex !== i">
           {{ message.body.substring(0, 20).trim() }}&hellip;
         </span>
         <ion-icon name="text" slot="end" size="small"></ion-icon>
-        <ion-row  >
-          <span *ngIf=" rowIndex === i">{{ message.body }}&hellip;</span>
+        <ion-row>
+          <span *ngIf="rowIndex === i">{{ message.body }}&hellip;</span>
         </ion-row>
-        </ion-item>
+      </ion-item>
     </ion-list>
-   <ion-button
-        *ngIf="historySize!==messageHistory.length"
-        (click)="loadMore(messageHistory.length)"
-   >
-    {{'common.show-more' | translate}}
-      </ion-button>
+    <ion-button
+      *ngIf="historySize !== messageHistory.length && messageHistory.length > historySize"
+      (click)="loadMore(messageHistory.length)"
+    >
+      {{ 'common.show-more' | translate }}
+    </ion-button>
   </section>
+
 </ion-content>
