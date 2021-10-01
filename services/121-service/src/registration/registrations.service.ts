@@ -1130,7 +1130,7 @@ export class RegistrationsService {
   public async getMessageHistoryRegistration(
     referenceId: string,
   ): Promise<MessageHistoryDto[]> {
-    return await this.registrationRepository
+    const messageHistoryArray = await this.registrationRepository
       .createQueryBuilder('registration')
       .select([
         'twilioMessage.dateCreated as created',
@@ -1146,5 +1146,13 @@ export class RegistrationsService {
         referenceId: referenceId,
       })
       .getRawMany();
+
+    if (
+      messageHistoryArray.length === 1 &&
+      messageHistoryArray[0].created === null
+    ) {
+      return [];
+    }
+    return messageHistoryArray;
   }
 }
