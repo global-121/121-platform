@@ -10,6 +10,9 @@ export class RelateRegistrationToTwilioMessage1632823293789
       `ALTER TABLE "121-service"."twilio_message" ADD "registrationId" integer`,
     );
     await queryRunner.query(
+      `ALTER TABLE "121-service"."twilio_message" ADD "mediaUrl" varchar`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "121-service"."people_affected_app_data" ADD CONSTRAINT "FK_578c6c920a1b5e7c87a7148eb49" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -89,17 +92,17 @@ export class RelateRegistrationToTwilioMessage1632823293789
 
     // If whatsapp: join to customData['whatsappPhoneNumber']
     await queryRunner.query(
-      `UPDATE "121-service".twilio_message tm 
+      `UPDATE "121-service".twilio_message tm
       SET "registrationId" = r.id
-      FROM "121-service".registration r 
+      FROM "121-service".registration r
       WHERE replace(tm.to,'whatsapp:+','') = r."customData"->>'whatsappPhoneNumber'
       AND tm.type = 'whatsapp'`,
     );
     // If sms: join to 'phoneNumber'
     await queryRunner.query(
-      `UPDATE "121-service".twilio_message tm 
+      `UPDATE "121-service".twilio_message tm
       SET "registrationId" = r.id
-      FROM "121-service".registration r 
+      FROM "121-service".registration r
       WHERE replace(tm.to,'+','') = r."phoneNumber"
       AND tm.type = 'sms'`,
     );
@@ -111,7 +114,7 @@ export class RelateRegistrationToTwilioMessage1632823293789
     /////////////////////////////////////////////////////////////////////////
 
     await queryRunner.query(
-      `UPDATE "121-service".twilio_message tm 
+      `UPDATE "121-service".twilio_message tm
       SET "registrationId" = null`,
     );
 
@@ -187,6 +190,9 @@ export class RelateRegistrationToTwilioMessage1632823293789
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."twilio_message" DROP COLUMN "registrationId"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."twilio_message" DROP COLUMN  IF exists  "mediaUrl"`,
     );
   }
 }
