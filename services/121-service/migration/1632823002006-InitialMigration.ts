@@ -101,7 +101,7 @@ export class InitialMigration1632823002006 implements MigrationInterface {
       `CREATE INDEX "IDX_eb71350dce5f48c79b345c3dec" ON "121-service"."imagecode_export_vouchers" ("created") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "121-service"."twilio_message" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "accountSid" character varying NOT NULL, "body" character varying NOT NULL, "mediaUrl" character varying, "to" character varying NOT NULL, "from" character varying NOT NULL, "sid" character varying NOT NULL, "status" character varying NOT NULL, "type" character varying NOT NULL, "dateCreated" TIMESTAMP NOT NULL, CONSTRAINT "PK_90f8a98a4627d7bea1c87658e4a" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "121-service"."twilio_message" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "accountSid" character varying NOT NULL, "body" character varying NOT NULL, "to" character varying NOT NULL, "from" character varying NOT NULL, "sid" character varying NOT NULL, "status" character varying NOT NULL, "type" character varying NOT NULL, "dateCreated" TIMESTAMP NOT NULL, CONSTRAINT "PK_90f8a98a4627d7bea1c87658e4a" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_db6cc311d95c3aa694962e0321" ON "121-service"."twilio_message" ("created") `,
