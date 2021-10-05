@@ -24,6 +24,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public noteLastUpdate: string;
   public messageHistory: any;
   public historySize = 5;
+  public trimBodyLength = 20;
+  public imageString = '(image)';
   public rowIndex: number;
 
   public fspList: Fsp[] = [];
@@ -109,7 +111,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.historySize = historyLength;
   }
   public openMessageDetails(index) {
-    this.rowIndex = index;
+    if (index === this.rowIndex) {
+      this.rowIndex = null;
+    } else {
+      this.rowIndex = index;
+    }
   }
 
   public async saveNote() {

@@ -22,6 +22,7 @@ export class BulkActionsService {
       case BulkActionId.invite:
         personData.checkboxVisible = this.hasStatus(personData, [
           PaStatus.imported,
+          PaStatus.noLongerEligible,
         ]);
         break;
       case BulkActionId.markNoLongerEligible:

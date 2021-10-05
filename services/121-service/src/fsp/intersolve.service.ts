@@ -11,7 +11,7 @@ import {
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, Not, IsNull } from 'typeorm';
+import { Repository, getRepository, Not, IsNull, Between } from 'typeorm';
 import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
@@ -612,30 +612,46 @@ export class IntersolveService {
   }
 
   public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
-    const previouslyUnusedVouchers = await this.intersolveBarcodeRepository.find(
-      {
-        where: { balanceUsed: false },
-        relations: ['image', 'image.registration'],
-      },
-    );
+    const maxId = (
+      await this.intersolveBarcodeRepository.findOne({
+        order: { id: 'DESC' },
+      })
+    )?.id;
+
     const unusedVouchers = [];
+    let id = 1;
 
-    for await (const voucher of previouslyUnusedVouchers) {
-      const balance = await this.getBalance(voucher);
+    // Run this in batches of 1,000 as it is performance-heavy
+    while (id <= maxId) {
+      const previouslyUnusedVouchers = await this.intersolveBarcodeRepository.find(
+        {
+          where: {
+            balanceUsed: false,
+            id: Between(id, id + 1000 - 1),
+          },
+          relations: ['image', 'image.registration'],
+        },
+      );
 
-      if (balance === voucher.amount) {
-        let unusedVoucher = new UnusedVoucherDto();
-        unusedVoucher.installment = voucher.installment;
-        unusedVoucher.issueDate = voucher.created;
-        unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
-        unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
-        unusedVoucher.customData = voucher.image[0].registration.customData;
+      for await (const voucher of previouslyUnusedVouchers) {
+        const balance = await this.getBalance(voucher);
 
-        unusedVouchers.push(unusedVoucher);
-      } else {
-        voucher.balanceUsed = true;
-        this.intersolveBarcodeRepository.save(voucher);
+        if (balance === voucher.amount) {
+          let unusedVoucher = new UnusedVoucherDto();
+          unusedVoucher.installment = voucher.installment;
+          unusedVoucher.issueDate = voucher.created;
+          unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
+          unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
+          unusedVoucher.customData = voucher.image[0].registration.customData;
+
+          unusedVouchers.push(unusedVoucher);
+        } else {
+          voucher.balanceUsed = true;
+          this.intersolveBarcodeRepository.save(voucher);
+        }
       }
+
+      id += 1000;
     }
 
     return unusedVouchers;
