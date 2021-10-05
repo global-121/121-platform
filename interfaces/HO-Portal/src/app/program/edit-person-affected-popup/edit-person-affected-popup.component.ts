@@ -24,6 +24,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public noteLastUpdate: string;
   public messageHistory: any;
   public historySize = 5;
+  public trimBodyLength = 20;
+  public imageString = '(image)';
   public rowIndex: number;
 
   public fspList: Fsp[] = [];

@@ -122,11 +122,11 @@
           <strong>{{ message.type }}</strong>
         </span>
         <span *ngIf=" rowIndex !== i">
-          {{ message.body.substring(0, 20).trim() }}<span *ngIf="message.body.length > 20">&hellip;</span>
+          {{ message.body.substring(0, trimBodyLength).trim() || imageString}}<span *ngIf="message.body.length > trimBodyLength">&hellip;</span>
         </span>
         <ion-icon name="text" slot="end" size="small"></ion-icon>
         <ion-row  >
-          <span *ngIf=" rowIndex === i">{{ message.body }}</span>
+          <span *ngIf=" rowIndex === i">{{ message.body || imageString}}</span>
         </ion-row>
         </ion-item>
     </ion-list>
