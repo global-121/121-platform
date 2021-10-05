@@ -375,6 +375,9 @@
           "confirm-message": "The system will create 'registered' People Affected."
         }
       },
+      "disable-registration":{
+
+      },
       "export-list": {
         "timestamp": "Latest export has been done on: {{dateTime}}",
         "no-data": "There are currently no People Affected to download",

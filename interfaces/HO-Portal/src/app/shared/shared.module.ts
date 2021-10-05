@@ -12,6 +12,7 @@ import { UpdateFspComponent } from '../components/update-fsp/update-fsp.componen
 import { UpdatePropertyItemComponent } from '../components/update-property-item/update-property-item.component';
 import { UserStateComponent } from '../components/user-state/user-state.component';
 import { BulkImportComponent } from '../program/bulk-import/bulk-import.component';
+import { DisableRegistrationComponent } from '../program/disable-registration/disable-registration.component';
 import { EditPersonAffectedPopupComponent } from '../program/edit-person-affected-popup/edit-person-affected-popup.component';
 import { ExportListComponent } from '../program/export-list/export-list.component';
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
@@ -44,6 +45,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     UpdatePropertyItemComponent,
     UpdateFspComponent,
     UserStateComponent,
+    DisableRegistrationComponent,
   ],
   imports: [
     CommonModule,
@@ -57,6 +59,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
   ],
   exports: [
     BulkImportComponent,
+    DisableRegistrationComponent,
     ConfirmPromptComponent,
     EditPersonAffectedPopupComponent,
     ExportListComponent,

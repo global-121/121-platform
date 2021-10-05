@@ -1,6 +1,6 @@
 <ion-header>
   <app-header
-    [title]="(program?.validation ? 'page.program.phases.registrationValidation.label' : 'page.program.phases.registrationValidation.label-no-validation') | translate"
+    [title]="(program?.validation ? 'page.program.phases.2w.label' : 'page.program.phases.registrationValidation.label-no-validation') | translate"
   ></app-header>
 </ion-header>
 
@@ -15,8 +15,11 @@
   <app-bulk-import
     [programId]="programId"
   ></app-bulk-import>
+  <app-disable-registration>
+    [program] = "program"
+  </app-disable-registration>
 
-  <br>
+<br>
 
   <app-export-list
     [programId]="programId"
