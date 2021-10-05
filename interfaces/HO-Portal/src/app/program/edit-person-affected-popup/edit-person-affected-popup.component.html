@@ -106,7 +106,7 @@
       </ion-note>
     </ion-row>
   </section>
-  <section *ngIf="messageHistory && messageHistory[0].created!==null">
+  <section *ngIf="messageHistory">
     <h4> {{ 'page.program.program-people-affected.edit-person-affected-popup.messageHistory.section-title'|translate }}</h4>
 
     <ion-list>
@@ -122,7 +122,7 @@
           <strong>{{ message.type }}</strong>
         </span>
         <span *ngIf=" rowIndex !== i">
-          {{ message.body.substring(0, 20).trim() }}&hellip;
+          {{ message.body.substring(0, 20).trim() }}<span *ngIf="message.body.length > 20">&hellip;</span>
         </span>
         <ion-icon name="text" slot="end" size="small"></ion-icon>
         <ion-row  >
