@@ -71,6 +71,14 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  deleteRegistrations(referenceIds: string[]): Promise<any> {
+    return this.apiService
+      .post(environment.url_121_service_api, `/registrations/delete`, {
+        referenceIds: JSON.stringify(referenceIds),
+      })
+      .toPromise();
+  }
+
   getAllPrograms(): Promise<Program[]> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs')

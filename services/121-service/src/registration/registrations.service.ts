@@ -889,12 +889,20 @@ export class RegistrationsService {
     return await this.registrationRepository.save(updatedRegistration);
   }
 
-  public async delete(referenceId: string): Promise<void> {
-    const registration = await this.registrationRepository.findOne({
-      where: { referenceId: referenceId },
-      relations: ['statusChanges', 'programAnswers'],
-    });
-    await this.registrationRepository.remove(registration);
+  public async deleteBatch(referenceIds: object): Promise<void> {
+    for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
+      const registration = await this.registrationRepository.findOne({
+        where: { referenceId: referenceId },
+        relations: ['user'],
+      });
+      await this.registrationRepository.remove(registration);
+
+      // Also delete user if present (not in the case of imported PAs)
+      if (registration.user) {
+        const user = await this.userRepository.findOne(registration.user.id);
+        await this.userRepository.remove(user);
+      }
+    }
   }
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {
