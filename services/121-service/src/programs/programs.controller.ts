@@ -165,7 +165,7 @@ export class ProgramController {
   @Roles(UserRole.Admin)
   @ApiOperation({ title: 'Update program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('update/programs/:programId')
+  @Post('update/:programId')
   public async updateProgram(
     @Param() params,
     @Body() updateProgramDto: UpdateProgramDto,

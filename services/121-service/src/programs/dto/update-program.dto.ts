@@ -17,6 +17,11 @@ import { FinancialServiceProviderEntity } from '../../fsp/financial-service-prov
 export class UpdateProgramDto {
   @ApiModelProperty()
   @IsOptional()
+  @IsBoolean()
+  public readonly published: boolean;
+
+  @ApiModelProperty()
+  @IsOptional()
   @IsString()
   public readonly location: string;
 
