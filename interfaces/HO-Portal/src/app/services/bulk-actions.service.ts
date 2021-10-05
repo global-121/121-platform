@@ -67,7 +67,7 @@ export class BulkActionsService {
         ]);
         break;
       case BulkActionId.sendMessage:
-        personData.checkboxVisible = true;
+        personData.checkboxVisible = !!personData.phoneNumber;
         break;
       case BulkActionId.deletePa:
         personData.checkboxVisible = this.hasStatus(personData, [
@@ -133,7 +133,9 @@ export class BulkActionsService {
           message,
         );
       case BulkActionId.deletePa:
-        console.log('Deleting the selected PAs');
+        return await this.programsService.deleteRegistrations(
+          this.onlyIds(selectedPeople),
+        );
     }
   }
 }
