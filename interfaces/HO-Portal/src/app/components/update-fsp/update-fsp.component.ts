@@ -115,10 +115,10 @@ export class UpdateFspComponent implements OnInit {
     }
   }
 
-  public onAttributeChange({ target, detail }) {
+  public onAttributeChange(attrName, { detail }) {
     this.attributesToSave = {
       ...this.attributesToSave,
-      [target.attributes['ng-reflect-name'].value]: detail.value.trim(),
+      [attrName]: detail.value.trim(),
     };
 
     this.checkAttributesFilled();
