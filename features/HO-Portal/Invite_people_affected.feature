@@ -8,7 +8,7 @@ Feature: Invite people affected (extension of Manage_people_affected.feature)
   Scenario: Use bulk-action "Invite for registration"
     Given the generic "select bulk action" scenario (see Manage_people_affected.feature)
     When user selects the "Invite for registration" action
-    Then the eligible rows are only those with status "Imported"
+    Then the eligible rows are only those with status "Imported" or "No longer eligible"
 
   Scenario: Confirm "Invite for registration" action
     Given the generic "confirm apply action" scenario (see Manage_people_affected.feature)
