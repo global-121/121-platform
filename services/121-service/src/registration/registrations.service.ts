@@ -1145,6 +1145,7 @@ export class RegistrationsService {
       .where('registration.referenceId = :referenceId', {
         referenceId: referenceId,
       })
+      .orderBy('twilioMessage.dateCreated', 'DESC')
       .getRawMany();
 
     if (
