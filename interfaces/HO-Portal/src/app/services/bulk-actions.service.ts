@@ -70,7 +70,11 @@ export class BulkActionsService {
         personData.checkboxVisible = true;
         break;
       case BulkActionId.deletePa:
-        personData.checkboxVisible = true;
+        personData.checkboxVisible = this.hasStatus(personData, [
+          PaStatus.imported,
+          PaStatus.invited,
+          PaStatus.noLongerEligible,
+        ]);
         break;
     }
     return personData;
