@@ -109,7 +109,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.historySize = historyLength;
   }
   public openMessageDetails(index) {
-    this.rowIndex = index;
+    if (index === this.rowIndex) {
+      this.rowIndex = null;
+    } else {
+      this.rowIndex = index;
+    }
   }
 
   public async saveNote() {
