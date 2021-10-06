@@ -1,10 +1,7 @@
-<p>
-  disable-registration works!
-</p>
- <ion-content>
- <ion-item>
- <!-- Default Toggle -->
- <ion-label>Registration</ion-label>
- <ion-toggle checked="" (click)="updateRegistrationStatus()"></ion-toggle>
- </ion-item>
- </ion-content>
+<!-- <ion-content> -->
+<ion-item *ngIf="program">
+  <!-- Default Toggle -->
+  <ion-label>{{ program.title["en"] }}</ion-label>
+  <ion-toggle  [(ngModel)]=publishedStatus (click)="updateRegistrationStatus()"></ion-toggle>
+</ion-item>
+<!-- </ion-content> -->

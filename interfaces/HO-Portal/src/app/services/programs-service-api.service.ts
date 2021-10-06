@@ -511,7 +511,11 @@ export class ProgramsServiceApiService {
 
   updateProgram(programId: number, updateBody: object): Promise<Program> {
     return this.apiService
-      .post(environment.url_121_service_api, `/update/${programId}`, updateBody)
+      .post(
+        environment.url_121_service_api,
+        `/programs/update/programs/${programId}`,
+        updateBody,
+      )
       .toPromise();
   }
 }
