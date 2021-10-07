@@ -23,6 +23,7 @@ const programsArray: Program[] = [
     phase: ProgramPhase.design,
     validation: false,
     author: {},
+    published: true,
   },
 ];
 // Copy 2:

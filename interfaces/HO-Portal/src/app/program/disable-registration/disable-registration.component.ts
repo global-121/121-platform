@@ -28,7 +28,7 @@ export class DisableRegistrationComponent implements OnInit {
   }
 
   public async updateRegistrationStatus() {
-    let dataObj = { published: this.publishedStatus };
+    const dataObj = { published: this.publishedStatus };
     this.programsService.updateProgram(this.programId, dataObj).then(
       () => {
         this.actionResult(this.translate.instant('common.update-success'));
