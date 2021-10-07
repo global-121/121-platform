@@ -13,7 +13,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 export class DisableRegistrationComponent implements OnInit {
   @Input()
   public programId: number;
-  public publishedStatus: any | NgModel;
+  public publishedStatus: boolean | NgModel = false;
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
@@ -24,6 +24,9 @@ export class DisableRegistrationComponent implements OnInit {
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
+    if (!this.program) {
+      return;
+    }
     this.publishedStatus = this.program.published;
   }
 
