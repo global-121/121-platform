@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgModel } from '@angular/forms';
+import { AlertController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
@@ -12,8 +14,13 @@ export class DisableRegistrationComponent implements OnInit {
   @Input()
   public programId: number;
   public publishedStatus: any | NgModel;
-  constructor(private programsService: ProgramsServiceApiService) {}
+  constructor(
+    private programsService: ProgramsServiceApiService,
+    private translate: TranslateService,
+    private alertController: AlertController,
+  ) {}
   public program: Program;
+  public msg: string;
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
@@ -21,8 +28,33 @@ export class DisableRegistrationComponent implements OnInit {
   }
 
   public async updateRegistrationStatus() {
-    console.log('on change : ', this.publishedStatus);
     let dataObj = { published: this.publishedStatus };
-    this.programsService.updateProgram(this.programId, dataObj);
+    this.programsService.updateProgram(this.programId, dataObj).then(
+      () => {
+        this.actionResult(this.translate.instant('common.update-success'));
+      },
+      (error) => {
+        if (error && error.error) {
+          this.actionResult(error.error.message);
+        }
+      },
+    );
+  }
+  private async actionResult(resultMessage: string) {
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      message: resultMessage,
+      buttons: [
+        {
+          text: this.translate.instant('common.ok'),
+          handler: () => {
+            alert.dismiss(true);
+            return false;
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 }
