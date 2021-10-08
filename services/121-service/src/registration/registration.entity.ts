@@ -127,7 +127,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       },
       {
         entityClass: TwilioMessageEntity,
-        columnName: 'twilioMessages',
+        columnName: 'registration',
       },
     ]);
   }
