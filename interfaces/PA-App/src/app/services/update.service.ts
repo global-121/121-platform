@@ -60,13 +60,13 @@ export class UpdateService {
 
   createUpdateToast(messageKey: string, pageNav: string) {
     this.translate.get(messageKey).subscribe((message: string) => {
-      const closeButtonText = this.translate.instant('notification.close');
+      // const closeButtonText = this.translate.instant('notification.close');
       this.toastController
         .create({
           header: message,
           animated: true,
-          showCloseButton: true,
-          closeButtonText,
+          // showCloseButton: true,
+          // closeButtonText,
           cssClass: 'update-toast',
           position: 'bottom',
           buttons: [
