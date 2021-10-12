@@ -124,7 +124,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(PersonAffectedRole.PersonAffected)
   @ApiOperation({ title: 'Set QR identifier for registration' })
   @ApiResponse({
     status: 201,
