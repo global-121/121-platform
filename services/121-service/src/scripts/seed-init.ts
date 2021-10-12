@@ -12,7 +12,8 @@ export class SeedInit implements InterfaceScript {
   public constructor(private connection: Connection) {}
 
   public async run(): Promise<void> {
-    await this.truncateAll();
+    await this.dropAll();
+    await this.runAllMigrations();
 
     const userRoleRepository = this.connection.getRepository(UserRoleEntity);
     await userRoleRepository.save([
@@ -50,19 +51,28 @@ export class SeedInit implements InterfaceScript {
     });
   }
 
-  public async truncateAll(): Promise<void> {
+  public async dropAll(): Promise<void> {
     const entities = this.connection.entityMetadatas;
     try {
       for (const entity of entities) {
         const repository = await this.connection.getRepository(entity.name);
         if (repository.metadata.schema === '121-service') {
-          const q = `TRUNCATE TABLE \"${repository.metadata.schema}\".\"${entity.tableName}\" CASCADE;`;
+          const q = `DROP TABLE \"${repository.metadata.schema}\".\"${entity.tableName}\" CASCADE;`;
           await repository.query(q);
         }
       }
     } catch (error) {
       throw new Error(`ERROR: Cleaning test db: ${error}`);
     }
+  }
+
+  private async runAllMigrations(): Promise<void> {
+    await this.connection.query(
+      'TRUNCATE TABLE "121-service"."custom_migration_table"',
+    );
+    await this.connection.runMigrations({
+      transaction: 'all',
+    });
   }
 }
 
