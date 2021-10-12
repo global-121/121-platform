@@ -245,11 +245,14 @@ export class WhatsappService {
       );
     }
     const fromNumber = this.cleanWhatsAppNr(callbackData.From);
-    const regisrationsWithPhoneNumber = await this.getRegistrationsWithPhoneNumber(
+
+    // Get (potentially multiple) registrations on incoming phonenumber
+    // NOTE: this is still possible, even though 'grouping on phonenumber' is removed again on 2021-10-12
+    const registrationsWithPhoneNumber = await this.getRegistrationsWithPhoneNumber(
       fromNumber,
     );
     const registrationsWithOpenVouchers = await this.getRegistrationsWithOpenVouchers(
-      regisrationsWithPhoneNumber,
+      registrationsWithPhoneNumber,
     );
 
     // If no registrations with outstanding barcodes: send auto-reply
@@ -314,16 +317,17 @@ export class WhatsappService {
         // Add small delay/sleep to ensure the order in which messages are received
         await new Promise(resolve => setTimeout(resolve, 2000));
       }
-    }
-    // Send instruction message only once (outside of loops)
-    if (registrationsWithOpenVouchers.length > 0) {
-      await this.sendWhatsapp(
-        '',
-        fromNumber,
-        null,
-        EXTERNAL_API.voucherInstructionsUrl,
-        registrationsWithOpenVouchers[0].id,
-      );
+
+      // Send instruction message only once (outside of loops)
+      if (registrationsWithOpenVouchers.length > 0) {
+        await this.sendWhatsapp(
+          '',
+          fromNumber,
+          null,
+          EXTERNAL_API.voucherInstructionsUrl,
+          registration.id,
+        );
+      }
     }
   }
 }
