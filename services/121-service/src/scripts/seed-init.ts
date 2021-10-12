@@ -13,7 +13,7 @@ export class SeedInit implements InterfaceScript {
 
   public async run(): Promise<void> {
     await this.dropAll();
-    await this.connection.synchronize();
+    await this.runAllMigrations();
 
     const userRoleRepository = this.connection.getRepository(UserRoleEntity);
     await userRoleRepository.save([
@@ -64,6 +64,15 @@ export class SeedInit implements InterfaceScript {
     } catch (error) {
       throw new Error(`ERROR: Cleaning test db: ${error}`);
     }
+  }
+
+  private async runAllMigrations(): Promise<void> {
+    await this.connection.query(
+      'TRUNCATE TABLE "121-service"."custom_migration_table"',
+    );
+    await this.connection.runMigrations({
+      transaction: 'all',
+    });
   }
 }
 
