@@ -220,6 +220,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         minLength: 20,
       },
     },
+    {
+      id: BulkActionId.deletePa,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.delete-pa',
+      ),
+      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: true,
+    },
   ];
   public applyBtnDisabled = true;
   public submitWarning: any;

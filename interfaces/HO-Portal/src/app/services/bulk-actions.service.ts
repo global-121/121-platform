@@ -68,7 +68,14 @@ export class BulkActionsService {
         ]);
         break;
       case BulkActionId.sendMessage:
-        personData.checkboxVisible = true;
+        personData.checkboxVisible = !!personData.phoneNumber;
+        break;
+      case BulkActionId.deletePa:
+        personData.checkboxVisible = this.hasStatus(personData, [
+          PaStatus.imported,
+          PaStatus.invited,
+          PaStatus.noLongerEligible,
+        ]);
         break;
     }
     return personData;
@@ -125,6 +132,10 @@ export class BulkActionsService {
         return await this.programsService.sendMessage(
           this.onlyIds(selectedPeople),
           message,
+        );
+      case BulkActionId.deletePa:
+        return await this.programsService.deleteRegistrations(
+          this.onlyIds(selectedPeople),
         );
     }
   }
