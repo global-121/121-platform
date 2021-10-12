@@ -112,7 +112,7 @@ Feature: Make a new payment
       """
 ------------------------------------------------------------------------------------------------------------------------------------
 
-See the [Send payments instructions diagram](./wiki/Send-payment-instructions) for more info, oriented at Financial Service Provider: Intersolve.
+See the 'Send payments instructions diagram' at './wiki/Send-payment-instructions' for more info, oriented at Financial Service Provider: Intersolve.
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
