@@ -12,14 +12,21 @@
     [phaseReady]="isReady"
   ></app-phase-next>
 
-  <app-bulk-import
-    [programId]="programId"
-  ></app-bulk-import>
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col size="8" class="ion-no-padding">
+        <app-bulk-import
+          [programId]="programId"
+        ></app-bulk-import>
+      </ion-col>
+      <ion-col size="4">
+        <app-disable-registration [programId]="programId"
+        ></app-disable-registration>
+    </ion-col>
+  </ion-row>
+</ion-grid>
 
-  <app-disable-registration
-    [programId]="programId"
-  ></app-disable-registration>
-<br>
+
 
   <app-export-list
     [programId]="programId"

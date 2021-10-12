@@ -31,10 +31,16 @@ export class DisableRegistrationComponent implements OnInit {
   }
 
   public async updateRegistrationStatus() {
-    const dataObj = { published: this.publishedStatus };
+    const dataObj = { published: !this.publishedStatus };
     this.programsService.updateProgram(this.programId, dataObj).then(
-      () => {
-        this.actionResult(this.translate.instant('common.update-success'));
+      (updatedProgram) => {
+        if (updatedProgram.published) {
+          this.actionResult(this.translate.instant('page.program.phases.registrationValidation.actionText-enabled-registrations'))
+        }
+        if (!updatedProgram.published){
+          this.actionResult(this.translate.instant('page.program.phases.registrationValidation.actionText-disabled-registrations'))
+        }
+        this.publishedStatus = updatedProgram.published;
       },
       (error) => {
         if (error && error.error) {

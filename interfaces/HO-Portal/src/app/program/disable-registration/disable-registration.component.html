@@ -1,6 +1,10 @@
-<ion-item *ngIf="program">
-  <ion-label>{{ program.title["en"] }}</ion-label>
-  <ion-toggle  [(ngModel)]=publishedStatus (click)="updateRegistrationStatus()"></ion-toggle>
-  <p></p>
-  </ion-item>
+<div
+  style="display: flex;"
+  class="ion-align-items-center ion-justify-content-end"
+>
 
+<ion-item *ngIf="program">
+  <ion-label>{{ 'page.program.phases.registrationValidation.toggleText-enable-registrations'|translate }} </ion-label>
+  <ion-toggle  [ngModel]=publishedStatus (click)="updateRegistrationStatus()"></ion-toggle>
+</ion-item>
+</div>
