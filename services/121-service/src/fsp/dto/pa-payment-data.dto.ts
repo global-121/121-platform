@@ -6,8 +6,3 @@ export class PaPaymentDataDto {
   public fspName: fspName;
   public paymentAmountMultiplier: number;
 }
-
-export class PaPaymentDataAggregateDto {
-  public paymentAddress: string;
-  public paPaymentDataList: PaPaymentDataDto[];
-}
