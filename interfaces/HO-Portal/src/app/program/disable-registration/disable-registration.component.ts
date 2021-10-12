@@ -35,10 +35,18 @@ export class DisableRegistrationComponent implements OnInit {
     this.programsService.updateProgram(this.programId, dataObj).then(
       (updatedProgram) => {
         if (updatedProgram.published) {
-          this.actionResult(this.translate.instant('page.program.phases.registrationValidation.actionText-enabled-registrations'))
+          this.actionResult(
+            this.translate.instant(
+              'page.program.phases.registrationValidation.actionText-enabled-registrations',
+            ),
+          );
         }
-        if (!updatedProgram.published){
-          this.actionResult(this.translate.instant('page.program.phases.registrationValidation.actionText-disabled-registrations'))
+        if (!updatedProgram.published) {
+          this.actionResult(
+            this.translate.instant(
+              'page.program.phases.registrationValidation.actionText-disabled-registrations',
+            ),
+          );
         }
         this.publishedStatus = updatedProgram.published;
       },
