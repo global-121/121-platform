@@ -477,14 +477,16 @@ export class IntersolveService {
     transactionId: string,
   ): Promise<void> {
     await this.intersolveApiService.cancel(cardId, transactionId);
-    const barcodeEntity = await this.intersolveBarcodeRepository.findOne({
+    const barcode = await this.intersolveBarcodeRepository.findOne({
       where: { barcode: cardId },
       relations: ['image'],
     });
-    for (const image of barcodeEntity.image) {
-      await this.imageCodeService.removeImageExportVoucher(image);
+    if (barcode) {
+      for (const image of barcode.image) {
+        await this.imageCodeService.removeImageExportVoucher(image);
+      }
+      await this.intersolveBarcodeRepository.remove(barcode);
     }
-    await this.intersolveBarcodeRepository.remove(barcodeEntity);
   }
 
   public async getVoucherBalance(
