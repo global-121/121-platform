@@ -36,6 +36,7 @@ async function bootstrap(): Promise<void> {
     customfavIcon: APP_FAVICON,
     customCss: SWAGGER_CUSTOM_CSS,
     swaggerOptions: {
+      persistAuthorization: true,
       tagsSorter: 'alpha',
       operationsSorter: 'alpha',
     },

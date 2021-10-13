@@ -111,39 +111,8 @@ Feature: Make a new payment
 
       """
 ------------------------------------------------------------------------------------------------------------------------------------
-Intersolve payout scenarios details
-- Not in right format, but this list should help to understand all different scenario's in Intersolve payout.
-- Note that for a long time payments have only been oriented on Intersolve. It cannot be guaranteed that Africa's Talking, or any new FSP will work flawlessly.
-- Nor are the below list and other scenarios mentioned here valid for Africa's Talking / other FSPs.
 
-Scenarios (build up cumulatively: if one happens, then the whole process stops; if one doesn't happen, continue with the next one)
-- Intersolve voucher generation fails (if at least 1 of theoretically multiple on 1 phone-number)
-  - All vouchers are canceled for this phone-number (also if some were successful)
-  - Failed transactions are stored
-- PA has "Intersolve-no-whatsapp" as FSP (per definition not multiple PA's in one group)
-  - Voucher is stored
-  - Success transaction is stored (with no customData = only cash-icon in HO-portal)
-- Sending WhatsApp fails
-  - Voucher is canceled
-  - Failed transaction is stored with relevant error message (e.g. not a valid phonenumber) in payment-status-popup
-- Sending WhatsApp succeeds
-  - Voucher is stored
-  - Waiting transaction is stored
-- WhatsApp status callback is "undelivered" or "failed"
-  - Voucher is canceled
-  - Failed transaction is stored with relevant error message
-  - Example for "failed" is 'not a valid WhatsApp phonenumber' (but this is also where we would expect any rate limit errors to go in the future)
-  - Example for "undelivered" is "un-templated message"
-- WhatsApp status callback is "delivered" or "read"
-  - Waiting transaction is updated to Success, with 'InitialMessage' as customData, which translates to mail-icon in HO-portal
-  - If delivery status is unknown initially, then the "read" event offers a 2nd chance for initiating this same update
-- WhatsApp status callback fails to reach us
-  - Transaction stays on "waiting"
-- PA replies to voucher-message
-  - Voucher is sent to PA (including instructions, old vouchers and vouchers for registrations on same phone-number)
-  - Vouchers are marked as sent
-  - Newer Success transaction is stored, with 'VoucherSent' as customData, which translates to cash-icon in HO-portal
-  - NOTE: there is currently no status-callback processed on this (set of) message(s)
+See the 'Send payments instructions diagram' at './wiki/Send-payment-instructions' for more info, oriented at Financial Service Provider: Intersolve.
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
@@ -162,12 +131,12 @@ One or multiple registrations with the same payment-address(phone-number)
 
 3. There are 2 or more _included_ registrations on one payment-address.
   - Payment succeeds
-  - Person Affected receives initial WhatsApp message about receiving multiple vouchers for this week + also any older uncollected vouchers
-  - If replied 'yes', Person Affected receives:
+  - All Persons Affected receive (on the same phonenumber) the same initial WhatsApp message about receiving one voucher for this week + also any older uncollected vouchers
+  - If replied 'yes' just once, all Persons Affected receive together:
     * a WhatsApp message about receiving multiple vouchers (incl. the first voucher image)
     * ... + any additional vouchers for this week (without text)
     * ... + any older uncollected vouchers (without text)
-    * ... + one explanation image
+    * ... + one explanation image per Person Affected (without text)
 
 4. There are 2 (or more) included registrations on one payment address at moment of payout. But before "_yes_" reply, 1 (or more) are rejected.
   - Works exactly as (3)

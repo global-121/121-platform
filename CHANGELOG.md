@@ -7,7 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.14.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.16.0...master)
+
+---
+
+## [1.16.0](https://github.com/global-121/121-platform/compare/v1.15.0...v1.16.0) - 2021-10-13
+
+### Changed
+
+Nothing. Dummy release upgrade to test automatic deploy through webhook on minor versions. 
+
+## [1.15.0](https://github.com/global-121/121-platform/compare/v1.14.4...v1.15.0) - 2021-10-13
+
+## [1.14.4](https://github.com/global-121/121-platform/compare/v1.14.3...v1.14.4) - 2021-10-12
+
+## [1.14.3](https://github.com/global-121/121-platform/compare/v1.14.2...v1.14.3) - 2021-10-08
+
+## [1.14.2](https://github.com/global-121/121-platform/compare/v1.14.1...v1.14.2) - 2021-10-06
+
+## [1.14.1](https://github.com/global-121/121-platform/compare/v1.14.0...v1.14.1) - 2021-10-06
 
 ## [1.14.0](https://github.com/global-121/121-platform/compare/v1.13.0...v1.14.0) - 2021-10-04
 
@@ -16,8 +34,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 2021-09-15: Upgrade PA-App to Angular v8
 - 2021-09-15: Upgrade HO-Portal to Angular v8
 - 2021-09-15: Upgrade AW-App to Angular v8
-
----
 
 ## [1.13.0](https://github.com/global-121/121-platform/compare/v1.12.2...v1.13.0) - 2021-09-15
 

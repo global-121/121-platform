@@ -124,7 +124,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(PersonAffectedRole.PersonAffected)
   @ApiOperation({ title: 'Set QR identifier for registration' })
   @ApiResponse({
     status: 201,
@@ -395,7 +394,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.FieldValidation)
+  @Roles(UserRole.PersonalData)
   @ApiOperation({
     title:
       'Update chosen fsp and attributes. This will delete any custom data field related to the old FSP!',
@@ -415,12 +414,11 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.Admin)
-  @ApiOperation({ title: 'Delete registration' })
-  @ApiResponse({ status: 200, description: 'Deleted registration' })
-  @Post('/delete')
-  public async delete(@Body() referenceIdDto: ReferenceIdDto): Promise<void> {
-    return await this.registrationsService.delete(referenceIdDto.referenceId);
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @ApiOperation({ title: 'Delete set of registrations' })
+  @Post('delete')
+  public async delete(@Body() data: ReferenceIdsDto): Promise<void> {
+    await this.registrationsService.deleteBatch(data);
   }
 
   @Roles(UserRole.FieldValidation)

@@ -49,7 +49,7 @@
             [name]="attribute.name"
             [value]="attribute.value"
             [placeholder]="attribute.placeholder?.en"
-            (ionChange)="onAttributeChange($event)"
+            (ionChange)="onAttributeChange(attribute.name, $event)"
           ></ion-input>
         </ion-item>
       </ng-container>

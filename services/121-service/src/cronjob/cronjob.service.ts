@@ -9,6 +9,7 @@ import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolveRequestEntity } from '../fsp/intersolve-request.entity';
 import { IntersolveApiService } from '../fsp/api/instersolve.api.service';
 import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
+import { IntersolveService } from '../fsp/intersolve.service';
 
 @Injectable()
 export class CronjobService {
@@ -22,6 +23,7 @@ export class CronjobService {
   public constructor(
     private whatsappService: WhatsappService,
     private readonly intersolveApiService: IntersolveApiService,
+    private readonly intersolveService: IntersolveService,
   ) {}
 
   private async getLanguageForRegistration(
@@ -53,6 +55,11 @@ export class CronjobService {
       return program.notifications[language][type];
     }
     return program.notifications[fallbackLanguage][type];
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_3AM)
+  private async cacheUnusedVoucers(): Promise<void> {
+    this.intersolveService.getUnusedVouchers();
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_NOON)

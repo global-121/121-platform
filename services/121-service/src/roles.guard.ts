@@ -33,9 +33,6 @@ export class RolesGuard implements CanActivate {
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     let hasAccess: boolean;
 
-    if (DEBUG) {
-      return true;
-    }
     const endpointRoles = this.reflector.get<AuthenticationRole[]>(
       'roles',
       context.getHandler(),
