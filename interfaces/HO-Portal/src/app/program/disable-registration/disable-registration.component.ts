@@ -17,8 +17,14 @@ export class DisableRegistrationComponent implements OnInit {
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
-    private alertController: AlertController,
-  ) {}
+    private alertController: AlertController, // private router: Router,
+  ) {
+    // this.router.events.subscribe((event) => {
+    //   if (event instanceof NavigationEnd) {
+    //     this.ngOnInit();
+    //   }
+    // });
+  }
   public program: Program;
   public msg: string;
 
@@ -31,24 +37,10 @@ export class DisableRegistrationComponent implements OnInit {
   }
 
   public async updateRegistrationStatus() {
-    const dataObj = { published: !this.publishedStatus };
+    const dataObj = { published: this.publishedStatus };
     this.programsService.updateProgram(this.programId, dataObj).then(
-      (updatedProgram) => {
-        if (updatedProgram.published) {
-          this.actionResult(
-            this.translate.instant(
-              'page.program.phases.registrationValidation.actionText-enabled-registrations',
-            ),
-          );
-        }
-        if (!updatedProgram.published) {
-          this.actionResult(
-            this.translate.instant(
-              'page.program.phases.registrationValidation.actionText-disabled-registrations',
-            ),
-          );
-        }
-        this.publishedStatus = updatedProgram.published;
+      () => {
+        this.actionResult(this.translate.instant('common.update-success'));
       },
       (error) => {
         if (error && error.error) {
