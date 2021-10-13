@@ -36,9 +36,9 @@ function deploy(target) {
  * Check whether to deploy/ignore a release
  * @param {string} target
  */
-function isPatchUpgrade(target) {
+function isMinorUpgrade(target) {
   const currentVersion = fs.readFileSync(`${process.env.GLOBAL_121_WEB_ROOT}/VERSION.txt`, { encoding: 'utf-8' });
-  const currentMinorVersion = currentVersion.replace(/v(\d+)\.(\d+)\.([\S\s]*)/, 'v$1.$2.');
+  const currentMinorVersion = currentVersion.replace(/v(\d+)\.(\d+)\.([\S\s]*)/, 'v$1.');
 
   return target.includes(currentMinorVersion);
 }
@@ -92,7 +92,7 @@ http
         payload.action === "released" &&
         payload.release.draft === false &&
         payload.release.target_commitish &&
-        isPatchUpgrade(payload.release.target_commitish)
+        isMinorUpgrade(payload.release.target_commitish)
       ) {
         console.log(`Release (hotfix) deployment for: ${payload.release.target_commitish}`);
         deploy(payload.release.target_commitish);
