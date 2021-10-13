@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgModel } from '@angular/forms';
+import { NavigationEnd, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Program } from 'src/app/models/program.model';
@@ -17,13 +18,14 @@ export class DisableRegistrationComponent implements OnInit {
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
-    private alertController: AlertController, // private router: Router,
+    private alertController: AlertController,
+    private router: Router,
   ) {
-    // this.router.events.subscribe((event) => {
-    //   if (event instanceof NavigationEnd) {
-    //     this.ngOnInit();
-    //   }
-    // });
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.ngOnInit();
+      }
+    });
   }
   public program: Program;
   public msg: string;
