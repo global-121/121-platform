@@ -38,7 +38,7 @@ import { InclusionStatusComponent } from './../personal-components/inclusion-sta
   styleUrls: ['personal.page.scss'],
 })
 export class PersonalPage implements OnInit {
-  @ViewChild(IonContent, { static: false })
+  @ViewChild(IonContent)
   public ionContent: IonContent;
 
   @ViewChild('conversationContainer', { read: ViewContainerRef, static: true })
