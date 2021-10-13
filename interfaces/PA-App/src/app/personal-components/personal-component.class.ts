@@ -1,14 +1,8 @@
-import {
-  AfterContentInit,
-  AfterViewInit,
-  Input,
-  OnInit,
-  QueryList,
-  ViewChildren,
-} from '@angular/core';
+import { AfterContentInit, AfterViewInit, Input, OnInit, QueryList, ViewChildren, Directive } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { DialogueTurnComponent } from '../shared/dialogue-turn/dialogue-turn.component';
 
+@Directive()
 export abstract class PersonalComponent
   implements OnInit, AfterViewInit, AfterContentInit
 {
