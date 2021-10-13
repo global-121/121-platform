@@ -8,7 +8,7 @@ export class PayoutDto {
   public readonly programId: number;
   @ApiModelProperty({ example: 1 })
   @IsNumber()
-  public readonly installment: number;
+  public readonly payment: number;
   @ApiModelProperty({ example: 10 })
   @IsNumber()
   public readonly amount: number;

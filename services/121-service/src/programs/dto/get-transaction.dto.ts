@@ -13,7 +13,7 @@ export class GetTransactionDto {
   @ApiModelProperty({ example: 1 })
   @IsNotEmpty()
   @IsNumber()
-  public readonly installment: number;
+  public readonly payment: number;
   @ApiModelProperty({ example: 'IntersolvePayoutStatus' })
   @IsString()
   public readonly customDataKey: string;
@@ -23,8 +23,8 @@ export class GetTransactionDto {
 }
 
 export class GetTransactionOutputDto {
-  public readonly installmentDate: Date;
-  public readonly installment: number;
+  public readonly paymentDate: Date;
+  public readonly payment: number;
   public readonly referenceId: string;
   public readonly status: StatusEnum;
   public readonly amount: number;

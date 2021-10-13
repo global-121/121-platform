@@ -28,6 +28,6 @@ export class AfricasTalkingValidationDto {
   // @IsString()
   // public readonly sourceIpAddress: string;
 
-  @ApiModelProperty({ example: { programId: '1', installment: '1' } })
+  @ApiModelProperty({ example: { programId: '1', payment: '1' } })
   public readonly metadata: JSON;
 }

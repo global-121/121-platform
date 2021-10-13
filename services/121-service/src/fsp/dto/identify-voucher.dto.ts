@@ -8,5 +8,5 @@ export class IdentifyVoucherDto {
   public readonly referenceId: string;
   @ApiModelProperty({ example: 1 })
   @IsNumber()
-  public readonly installment: number;
+  public readonly payment: number;
 }

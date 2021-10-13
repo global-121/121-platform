@@ -26,7 +26,7 @@ export class AfricasTalkingService {
   public async sendPayment(
     paymentList: PaPaymentDataDto[],
     programId: number,
-    installment: number,
+    paymentNr: number,
     amount: number,
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
@@ -38,7 +38,7 @@ export class AfricasTalkingService {
       const payload = this.createPayloadPerPa(
         payment,
         programId,
-        installment,
+        paymentNr,
         calculatedAmount,
       );
 
@@ -54,7 +54,7 @@ export class AfricasTalkingService {
   public createPayloadPerPa(
     paymentData: PaPaymentDataDto,
     programId: number,
-    installment: number,
+    payment: number,
     amount: number,
   ): object {
     const payload = {
@@ -69,7 +69,7 @@ export class AfricasTalkingService {
       amount: amount,
       metadata: {
         programId: String(programId),
-        installment: String(installment),
+        payment: String(payment),
         referenceId: String(paymentData.referenceId),
         amount: String(amount),
       },
@@ -113,7 +113,7 @@ export class AfricasTalkingService {
     return {
       paTransactionResult,
       programId: notification.requestMetadata['programId'],
-      installment: notification.requestMetadata['installment'],
+      payment: notification.requestMetadata['payment'],
     };
   }
 }

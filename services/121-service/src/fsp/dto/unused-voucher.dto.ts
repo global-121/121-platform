@@ -1,5 +1,5 @@
 export class UnusedVoucherDto {
-  public installment: number;
+  public payment: number;
   public issueDate: Date;
   public whatsappPhoneNumber: string;
   public phoneNumber: string;

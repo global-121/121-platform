@@ -212,19 +212,18 @@ export class WhatsappService {
       relations: ['images', 'images.barcode'],
     });
 
-    // Don't send more then 3 vouchers, so no vouchers of more than 2 installments ago
-    const lastInstallment = await this.transactionRepository
+    // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
+    const lastPayment = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select('MAX(transaction.installment)', 'max')
+      .select('MAX(transaction.payment)', 'max')
       .getRawOne();
-    const minimumInstallment = lastInstallment ? lastInstallment.max - 2 : 0;
+    const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
 
     return registrationWithVouchers
       .map(registration => {
         registration.images = registration.images.filter(
           image =>
-            !image.barcode.send &&
-            image.barcode.installment >= minimumInstallment,
+            !image.barcode.send && image.barcode.payment >= minimumPayment,
         );
         return registration;
       })
@@ -285,7 +284,7 @@ export class WhatsappService {
           intersolveBarcode,
         );
 
-        // Only include text with first voucher (across PA's and installments)
+        // Only include text with first voucher (across PA's and payments)
         let message = firstVoucherSent
           ? ''
           : registrationsWithOpenVouchers.length > 1
@@ -306,7 +305,7 @@ export class WhatsappService {
         intersolveBarcode.send = true;
         await this.intersolveBarcodeRepository.save(intersolveBarcode);
         await this.intersolveService.insertTransactionIntersolve(
-          intersolveBarcode.installment,
+          intersolveBarcode.payment,
           intersolveBarcode.amount,
           registration.id,
           2,

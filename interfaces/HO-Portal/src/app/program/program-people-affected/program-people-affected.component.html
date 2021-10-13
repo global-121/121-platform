@@ -234,7 +234,7 @@
       let-row="row"
     >
       <ng-container
-        *ngIf="value && !hasVoucherSupport(row.fsp) && !hasError(row, column.installmentIndex)"
+        *ngIf="value && !hasVoucherSupport(row.fsp) && !hasError(row, column.paymentIndex)"
       >
         {{ value.text }}
         <br>
@@ -253,13 +253,13 @@
         </ion-icon>
       </ng-container>
       <ng-container
-        *ngIf="value && (hasVoucherSupport(row.fsp) || hasError(row, column.installmentIndex))"
+        *ngIf="value && (hasVoucherSupport(row.fsp) || hasError(row, column.paymentIndex))"
       >
         <button
           type="button"
           (click)="statusPopup(row, column, value)"
           [ngClass]="{
-            'is-error': hasError(row, column.installmentIndex),
+            'is-error': hasError(row, column.paymentIndex),
             'ion-no-padding popup-button status-pop-up': true
            }"
           [attr.title]="'page.program.program-people-affected.transaction.show-status'|translate"

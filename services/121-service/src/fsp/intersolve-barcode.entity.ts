@@ -5,7 +5,7 @@ import { ImageCodeExportVouchersEntity } from '../notifications/imagecode/image-
 @Entity('intersolve_barcode')
 export class IntersolveBarcodeEntity extends Base121Entity {
   @Column({ nullable: true })
-  public installment: number;
+  public payment: number;
 
   @Column({ nullable: true })
   public whatsappPhoneNumber: string;

@@ -22,7 +22,7 @@ export class TransactionEntity extends Base121Entity {
   public program: ProgramEntity;
 
   @Column({ default: 1 })
-  public installment: number;
+  public payment: number;
 
   @Column('json', {
     default: {},

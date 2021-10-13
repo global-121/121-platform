@@ -107,29 +107,29 @@ export class ProgramController {
     return await this.programService.payout(
       userId,
       data.programId,
-      data.installment,
+      data.payment,
       data.amount,
       data.referenceId,
     );
   }
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({ title: 'Get past installments for program' })
+  @ApiOperation({ title: 'Get past payments for program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
-    description: 'Get past installments for program',
+    description: 'Get past payments for program',
   })
-  @Get('installments/:programId')
-  public async getInstallments(@Param() params): Promise<any> {
-    return await this.programService.getInstallments(Number(params.programId));
+  @Get('payments/:programId')
+  public async getPayments(@Param() params): Promise<any> {
+    return await this.programService.getPayments(Number(params.programId));
   }
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get transactions' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiImplicitQuery({
-    name: 'minInstallment',
+    name: 'minPayment',
     required: false,
     type: 'integer',
   })
@@ -140,12 +140,12 @@ export class ProgramController {
   @Get('transactions/:programId')
   public async getTransactions(
     @Param('programId') programId: number,
-    @Query('minInstallment') minInstallment: number,
+    @Query('minPayment') minPayment: number,
   ): Promise<any> {
     return await this.programService.getTransactions(
       Number(programId),
       false,
-      minInstallment,
+      minPayment,
     );
   }
 

@@ -25,7 +25,7 @@ Feature: Export payment details
     Then a CSV-file is dowloaded
     And it shows a list of the registrations that are "included"
     And "transaction" information where the "amount" is the multiplication of the PA's "paymentAmountMultiplier" and the supplied "transfer value"
-    And the "installment-number"
+    And the "payment-number"
     And the known "phonenumber"
     And the "parter organization"
     And all "persistent data"

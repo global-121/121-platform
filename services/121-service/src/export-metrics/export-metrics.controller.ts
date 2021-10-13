@@ -51,8 +51,8 @@ export class ExportMetricsController {
       data.programId,
       data.type,
       userId,
-      data.minInstallment,
-      data.maxInstallment,
+      data.minPayment,
+      data.maxPayment,
     );
   }
 
@@ -64,7 +64,7 @@ export class ExportMetricsController {
     type: 'integer',
   })
   @ApiImplicitQuery({
-    name: 'installment',
+    name: 'payment',
     required: false,
     type: 'integer',
   })
@@ -95,7 +95,7 @@ export class ExportMetricsController {
     return {
       pa: await this.exportMetricsService.getPaMetrics(
         Number(params.programId),
-        query.installment ? Number(query.installment) : undefined,
+        query.payment ? Number(query.payment) : undefined,
         query.month ? Number(query.month) : undefined,
         query.year ? Number(query.year) : undefined,
         query.fromStart ? Number(query.fromStart) : undefined,
@@ -105,7 +105,7 @@ export class ExportMetricsController {
   }
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({ title: 'Get installments with state sums by program-id' })
+  @ApiOperation({ title: 'Get payments with state sums by program-id' })
   @ApiImplicitParam({
     name: 'programId',
     required: true,
@@ -114,11 +114,11 @@ export class ExportMetricsController {
   @ApiResponse({
     status: 200,
     description:
-      'Installment state sums to create bar charts to show the number of new vs existing PAs per installmet',
+      'Payment state sums to create bar charts to show the number of new vs existing PAs per installmet',
   })
-  @Get('installment-state-sums/:programId')
-  public async getInstallmentsWithStateSums(@Param() params): Promise<any> {
-    return await this.exportMetricsService.getInstallmentsWithStateSums(
+  @Get('payment-state-sums/:programId')
+  public async getPaymentsWithStateSums(@Param() params): Promise<any> {
+    return await this.exportMetricsService.getPaymentsWithStateSums(
       Number(params.programId),
     );
   }

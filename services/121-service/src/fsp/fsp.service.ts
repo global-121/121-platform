@@ -53,16 +53,16 @@ export class FspService {
   public async payout(
     paPaymentDataList: PaPaymentDataDto[],
     programId: number,
-    installment: number,
+    payment: number,
     amount: number,
     userId: number,
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    this.makePaymentRequest(paLists, programId, installment, amount).then(
+    this.makePaymentRequest(paLists, programId, payment, amount).then(
       transactionResults => {
-        this.storeAllTransactions(transactionResults, programId, installment);
-        if (installment > -1) {
+        this.storeAllTransactions(transactionResults, programId, payment);
+        if (payment > -1) {
           this.actionService.saveAction(
             userId,
             programId,
@@ -100,7 +100,7 @@ export class FspService {
   private async makePaymentRequest(
     paLists: any,
     programId: number,
-    installment: number,
+    payment: number,
     amount: number,
   ): Promise<any> {
     let intersolveTransactionResult = new FspTransactionResultDto();
@@ -109,7 +109,7 @@ export class FspService {
         paLists.intersolvePaPayment,
         true,
         amount,
-        installment,
+        payment,
       );
     } else {
       intersolveTransactionResult.paList = [];
@@ -120,7 +120,7 @@ export class FspService {
         paLists.intersolveNoWhatsappPaPayment,
         false,
         amount,
-        installment,
+        payment,
       );
     } else {
       intersolveNoWhatsappTransactionResult.paList = [];
@@ -130,7 +130,7 @@ export class FspService {
       africasTalkingTransactionResult = await this.africasTalkingService.sendPayment(
         paLists.africasTalkingPaPayment,
         programId,
-        installment,
+        payment,
         amount,
       );
     } else {
@@ -146,7 +146,7 @@ export class FspService {
   private async storeAllTransactions(
     transactionResults: any,
     programId: number,
-    installment: number,
+    payment: number,
   ): Promise<void> {
     // Intersolve transactions are now stored during PA-request-loop already
     // Align across FSPs in future again
@@ -155,7 +155,7 @@ export class FspService {
       await this.storeTransaction(
         transaction,
         programId,
-        installment,
+        payment,
         fspName.africasTalking,
       );
     }
@@ -164,7 +164,7 @@ export class FspService {
   private async storeTransaction(
     transactionResponse: PaTransactionResultDto,
     programId: number,
-    installment: number,
+    payment: number,
     fspName: fspName,
   ): Promise<void> {
     const program = await this.programRepository.findOne(programId);
@@ -181,7 +181,7 @@ export class FspService {
     transaction.registration = registration;
     transaction.financialServiceProvider = fsp;
     transaction.program = program;
-    transaction.installment = installment;
+    transaction.payment = payment;
     transaction.status = transactionResponse.status;
     transaction.errorMessage = transactionResponse.message;
     transaction.customData = transactionResponse.customData;
@@ -214,7 +214,7 @@ export class FspService {
       this.storeTransaction(
         enrichedNotification.paTransactionResult,
         enrichedNotification.programId,
-        enrichedNotification.installment,
+        enrichedNotification.payment,
         fspName.africasTalking,
       );
     }

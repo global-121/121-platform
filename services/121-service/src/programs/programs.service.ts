@@ -247,16 +247,16 @@ export class ProgramService {
 
   private async getRegistrationsForPayment(
     programId: number,
-    installment: number,
+    payment: number,
     referenceId?: string,
   ): Promise<RegistrationEntity[]> {
-    const knownInstallment = await this.transactionRepository.findOne({
-      where: { installment: installment },
+    const knownPayment = await this.transactionRepository.findOne({
+      where: { payment: payment },
     });
     let failedRegistrations;
-    if (knownInstallment) {
+    if (knownPayment) {
       const failedReferenceIds = (
-        await this.getFailedTransactions(programId, installment)
+        await this.getFailedTransactions(programId, payment)
       ).map(t => t.referenceId);
       failedRegistrations = await this.registrationRepository.find({
         where: { referenceId: In(failedReferenceIds) },
@@ -265,14 +265,14 @@ export class ProgramService {
     }
 
     // If 'referenceId' is passed (only in retry-payment-per PA) use this PA only,
-    // If known installment, then only failed registrations
+    // If known payment, then only failed registrations
     // otherwise (new payment) get all included PA's
     return referenceId
       ? await this.registrationRepository.find({
           where: { referenceId: referenceId },
           relations: ['fsp'],
         })
-      : knownInstallment
+      : knownPayment
       ? failedRegistrations
       : await this.getIncludedRegistrations(programId);
   }
@@ -280,7 +280,7 @@ export class ProgramService {
   public async payout(
     userId: number,
     programId: number,
-    installment: number,
+    payment: number,
     amount: number,
     referenceId?: string,
   ): Promise<number> {
@@ -294,7 +294,7 @@ export class ProgramService {
 
     const targetedRegistrations = await this.getRegistrationsForPayment(
       programId,
-      installment,
+      payment,
       referenceId,
     );
 
@@ -310,7 +310,7 @@ export class ProgramService {
     await this.actionService.saveAction(
       userId,
       programId,
-      installment === -1
+      payment === -1
         ? AdditionalActionType.testMpesaPayment
         : AdditionalActionType.paymentStarted,
     );
@@ -318,7 +318,7 @@ export class ProgramService {
     const paymentTransactionResult = await this.fspService.payout(
       paPaymentDataList,
       programId,
-      installment,
+      payment,
       amount,
       userId,
     );
@@ -371,46 +371,46 @@ export class ProgramService {
     return null;
   }
 
-  public async getInstallments(
+  public async getPayments(
     programId: number,
   ): Promise<
     {
-      installment: number;
-      installmentDate: Date | string;
+      payment: number;
+      paymentDate: Date | string;
       amount: number;
     }[]
   > {
-    const installments = await this.transactionRepository
+    const payments = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select('installment')
-      .addSelect('MIN(transaction.created)', 'installmentDate')
+      .select('payment')
+      .addSelect('MIN(transaction.created)', 'paymentDate')
       .addSelect(
         'MIN(transaction.amount / coalesce(r.paymentAmountMultiplier, 1) )',
         'amount',
       )
       .leftJoin('transaction.registration', 'r')
       .where('transaction.program.id = :programId', { programId: programId })
-      .groupBy('installment')
+      .groupBy('payment')
       .getRawMany();
-    return installments;
+    return payments;
   }
 
   public async getTransactions(
     programId: number,
     splitByTransactionStep: boolean,
-    minInstallment?: number,
+    minPayment?: number,
   ): Promise<any> {
-    const maxAttemptPerPaAndInstallment = await this.transactionRepository
+    const maxAttemptPerPaAndPayment = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select(['installment', '"registrationId"'])
+      .select(['payment', '"registrationId"'])
       .addSelect(
         `MAX(cast("transactionStep" as varchar) || '-' || cast(created as varchar)) AS max_attempt`,
       )
-      .groupBy('installment')
+      .groupBy('payment')
       .addGroupBy('"registrationId"');
 
     if (splitByTransactionStep) {
-      maxAttemptPerPaAndInstallment
+      maxAttemptPerPaAndPayment
         .addSelect('"transactionStep"')
         .addGroupBy('"transactionStep"');
     }
@@ -418,8 +418,8 @@ export class ProgramService {
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
-        'transaction.created AS "installmentDate"',
-        'transaction.installment AS installment',
+        'transaction.created AS "paymentDate"',
+        'transaction.payment AS payment',
         '"referenceId"',
         'status',
         'amount',
@@ -427,14 +427,14 @@ export class ProgramService {
         'transaction.customData as "customData"',
       ])
       .leftJoin(
-        '(' + maxAttemptPerPaAndInstallment.getQuery() + ')',
+        '(' + maxAttemptPerPaAndPayment.getQuery() + ')',
         'subquery',
-        `transaction.registrationId = subquery."registrationId" AND transaction.installment = subquery.installment AND cast(transaction."transactionStep" as varchar) || '-' || cast(created as varchar) = subquery.max_attempt`,
+        `transaction.registrationId = subquery."registrationId" AND transaction.payment = subquery.payment AND cast(transaction."transactionStep" as varchar) || '-' || cast(created as varchar) = subquery.max_attempt`,
       )
       .leftJoin('transaction.registration', 'r')
       .where('transaction.program.id = :programId', { programId: programId })
-      .andWhere('transaction.installment >= :minInstallment', {
-        minInstallment: minInstallment || 0,
+      .andWhere('transaction.payment >= :minPayment', {
+        minPayment: minPayment || 0,
       })
       .andWhere('subquery.max_attempt IS NOT NULL')
       .getRawMany();
@@ -443,15 +443,15 @@ export class ProgramService {
 
   public async getFailedTransactions(
     programId: number,
-    installment: number,
+    payment: number,
   ): Promise<any> {
     const allLatestTransactionAttemptsPerPa = await this.getTransactions(
       programId,
       false,
-      installment,
+      payment,
     );
     const failedTransactions = allLatestTransactionAttemptsPerPa.filter(
-      t => t.installment === installment && t.status === StatusEnum.error,
+      t => t.payment === payment && t.status === StatusEnum.error,
     );
     return failedTransactions;
   }
@@ -466,8 +466,8 @@ export class ProgramService {
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
-        'transaction.created AS "installmentDate"',
-        'installment',
+        'transaction.created AS "paymentDate"',
+        'payment',
         '"referenceId"',
         'status',
         'amount',
@@ -478,8 +478,8 @@ export class ProgramService {
       .where('transaction.program.id = :programId', {
         programId: input.programId,
       })
-      .andWhere('transaction.installment = :installmentId', {
-        installmentId: input.installment,
+      .andWhere('transaction.payment = :paymentId', {
+        paymentId: input.payment,
       })
       .andWhere('transaction.registration.id = :registrationId', {
         registrationId: registration.id,

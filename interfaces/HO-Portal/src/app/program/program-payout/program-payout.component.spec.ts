@@ -46,9 +46,7 @@ describe('ProgramPayoutComponent', () => {
     mockProgramsApi.getTotalIncluded.and.returnValue(
       new Promise((r) => r({ registrations: 0, transferAmounts: 0 })),
     );
-    mockProgramsApi.getPastInstallments.and.returnValue(
-      new Promise((r) => r([])),
-    );
+    mockProgramsApi.getPastPayments.and.returnValue(new Promise((r) => r([])));
 
     fixture = TestBed.createComponent(ProgramPayoutComponent);
     component = fixture.componentInstance;

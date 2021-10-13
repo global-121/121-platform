@@ -67,7 +67,7 @@ export class IntersolveService {
     paPaymentList: PaPaymentDataDto[],
     useWhatsapp: boolean,
     amount: number,
-    installment: number,
+    payment: number,
   ): Promise<FspTransactionResultDto> {
     const result = new FspTransactionResultDto();
     result.paList = [];
@@ -77,7 +77,7 @@ export class IntersolveService {
         paymentInfo,
         useWhatsapp,
         amount,
-        installment,
+        payment,
       );
 
       result.paList.push(paResult);
@@ -88,7 +88,7 @@ export class IntersolveService {
           where: { referenceId: paResult.referenceId },
         });
         await this.insertTransactionIntersolve(
-          installment,
+          payment,
           paResult.calculatedAmount,
           registration.id,
           1,
@@ -109,7 +109,7 @@ export class IntersolveService {
     paymentInfo: PaPaymentDataDto,
     useWhatsapp: boolean,
     amount: number,
-    installment: number,
+    payment: number,
   ): Promise<PaTransactionResultDto> {
     const paResult = new PaTransactionResultDto();
     paResult.referenceId = paymentInfo.referenceId;
@@ -130,7 +130,7 @@ export class IntersolveService {
       voucherInfo.voucher = await this.storeVoucher(
         voucherInfo,
         paymentInfo,
-        installment,
+        payment,
         calculatedAmount,
       );
       paResult.status = StatusEnum.success;
@@ -178,14 +178,14 @@ export class IntersolveService {
   private async storeVoucher(
     voucherInfo: IntersolveIssueCardResponse,
     paPaymentData: PaPaymentDataDto,
-    installment: number,
+    payment: number,
     amount: number,
   ): Promise<IntersolveBarcodeEntity> {
     const barcodeData = await this.storeBarcodeData(
       voucherInfo.cardId,
       voucherInfo.pin,
       paPaymentData.paymentAddress,
-      installment,
+      payment,
       amount,
     );
 
@@ -272,7 +272,7 @@ export class IntersolveService {
         async response => {
           const messageSid = response;
           await this.insertTransactionIntersolve(
-            voucherInfo.voucher.installment,
+            voucherInfo.voucher.payment,
             voucherInfo.voucher.amount,
             registration.id,
             1,
@@ -337,7 +337,7 @@ export class IntersolveService {
     cardNumber: string,
     pin: string,
     phoneNumber: string,
-    installment: number,
+    payment: number,
     amount: number,
   ): Promise<IntersolveBarcodeEntity> {
     const barcodeData = new IntersolveBarcodeEntity();
@@ -345,7 +345,7 @@ export class IntersolveService {
     barcodeData.pin = pin.toString();
     barcodeData.whatsappPhoneNumber = phoneNumber;
     barcodeData.send = false;
-    barcodeData.installment = installment;
+    barcodeData.payment = payment;
     barcodeData.amount = amount;
     return this.intersolveBarcodeRepository.save(barcodeData);
   }
@@ -355,7 +355,7 @@ export class IntersolveService {
   ): Promise<void> {
     const transaction = await getRepository(TransactionEntity)
       .createQueryBuilder('transaction')
-      .select(['transaction.id', 'transaction.installment'])
+      .select(['transaction.id', 'transaction.payment'])
       .leftJoinAndSelect('transaction.registration', 'registration')
       .where('transaction.customData ::jsonb @> :customData', {
         customData: {
@@ -378,9 +378,9 @@ export class IntersolveService {
         where: { id: transaction.registration.id },
         relations: ['images', 'images.barcode'],
       });
-      // NOTE: array.find yields 1st element, but this is line with 1 voucher per installment
+      // NOTE: array.find yields 1st element, but this is line with 1 voucher per payment
       const voucher = registration.images.find(
-        i => i.barcode.installment === transaction.installment,
+        i => i.barcode.payment === transaction.payment,
       ).barcode;
       const intersolveRequest = await this.intersolveRequestRepository.findOne({
         where: { cardId: voucher.barcode },
@@ -413,17 +413,14 @@ export class IntersolveService {
 
   public async exportVouchers(
     referenceId: string,
-    installment: number,
+    payment: number,
   ): Promise<any> {
-    const voucher = await this.getVoucher(referenceId, installment);
+    const voucher = await this.getVoucher(referenceId, payment);
 
     return voucher.image;
   }
 
-  private async getVoucher(
-    referenceId: string,
-    installment: number,
-  ): Promise<any> {
+  private async getVoucher(referenceId: string, payment: number): Promise<any> {
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['images', 'images.barcode'],
@@ -436,11 +433,11 @@ export class IntersolveService {
     }
 
     const voucher = registration.images.find(
-      image => image.barcode.installment === installment,
+      image => image.barcode.payment === payment,
     );
     if (!voucher) {
       throw new HttpException(
-        'Voucher not found. Maybe this installment was not (yet) made to this PA.',
+        'Voucher not found. Maybe this payment was not (yet) made to this PA.',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -491,9 +488,9 @@ export class IntersolveService {
 
   public async getVoucherBalance(
     referenceId: string,
-    installment: number,
+    payment: number,
   ): Promise<number> {
-    const voucher = await this.getVoucher(referenceId, installment);
+    const voucher = await this.getVoucher(referenceId, payment);
     return await this.getBalance(voucher.barcode);
   }
 
@@ -535,7 +532,7 @@ export class IntersolveService {
 
         if (balance === voucher.amount) {
           let unusedVoucher = new UnusedVoucherDto();
-          unusedVoucher.installment = voucher.installment;
+          unusedVoucher.payment = voucher.payment;
           unusedVoucher.issueDate = voucher.created;
           unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
           unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
@@ -555,7 +552,7 @@ export class IntersolveService {
   }
 
   public async insertTransactionIntersolve(
-    installment: number,
+    payment: number,
     amount: number,
     registrationId: number,
     transactionStep: number,
@@ -565,7 +562,7 @@ export class IntersolveService {
   ): Promise<void> {
     const transaction = new TransactionEntity();
     transaction.status = status;
-    transaction.installment = installment;
+    transaction.payment = payment;
     transaction.amount = amount;
     transaction.created = new Date();
     transaction.errorMessage = errorMessage;

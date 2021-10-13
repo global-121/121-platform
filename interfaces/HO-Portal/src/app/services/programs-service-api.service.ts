@@ -7,7 +7,7 @@ import { ActionType, LatestAction } from '../models/actions.model';
 import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { csvTemplateImported, ImportType } from '../models/import-type.enum';
-import { InstallmentData, TotalIncluded } from '../models/installment.model';
+import { PaymentData, TotalIncluded } from '../models/payment.model';
 import { Note, PaStatus, Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
@@ -139,22 +139,19 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getPastInstallments(programId: number | string): Promise<InstallmentData[]> {
+  getPastPayments(programId: number | string): Promise<PaymentData[]> {
     return this.apiService
-      .get(
-        environment.url_121_service_api,
-        `/programs/installments/${programId}`,
-      )
+      .get(environment.url_121_service_api, `/programs/payments/${programId}`)
       .pipe(
         map((response) => {
           return response
             .map((element) => {
-              // Remap `installment`-property to `id`:
-              element.id = element.installment;
+              // Remap `payment`-property to `id`:
+              element.id = element.payment;
               return element;
             })
-            .sort((a: InstallmentData, b: InstallmentData) => {
-              // Sort by installment-id (as the back-end doesn't do that)
+            .sort((a: PaymentData, b: PaymentData) => {
+              // Sort by payment-id (as the back-end doesn't do that)
               return a.id - b.id;
             });
         }),
@@ -164,13 +161,13 @@ export class ProgramsServiceApiService {
 
   getTransactions(
     programId: number | string,
-    minInstallment?: number | string,
+    minPayment?: number | string,
   ): Promise<Transaction[]> {
     return this.apiService
       .get(
         environment.url_121_service_api,
         `/programs/transactions/${programId}${
-          minInstallment ? '?minInstallment=' + minInstallment : ''
+          minPayment ? '?minPayment=' + minPayment : ''
         }`,
       )
       .toPromise();
@@ -219,14 +216,14 @@ export class ProgramsServiceApiService {
   getTransaction(
     referenceId: string,
     programId: number,
-    installment: number,
+    payment: number,
     customDataKey: string,
     customDataValue: string,
   ): Promise<any | Transaction> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/get-transaction`, {
         referenceId,
-        installment: Number(installment),
+        payment: Number(payment),
         programId: Number(programId),
         customDataKey,
         customDataValue,
@@ -236,14 +233,14 @@ export class ProgramsServiceApiService {
 
   submitPayout(
     programId: number,
-    installment: number,
+    payment: number,
     amount: number,
     referenceId?: string,
   ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/payout`, {
         programId: Number(programId),
-        installment: Number(installment),
+        payment: Number(payment),
         amount: Number(amount),
         referenceId,
       })
@@ -300,15 +297,15 @@ export class ProgramsServiceApiService {
   exportList(
     programId: number,
     type: ExportType,
-    minInstallment?: number,
-    maxInstallment?: number,
+    minPayment?: number,
+    maxPayment?: number,
   ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/export-metrics/export-list`, {
         programId,
         type,
-        ...(minInstallment && { minInstallment }),
-        ...(maxInstallment && { maxInstallment }),
+        ...(minPayment && { minPayment }),
+        ...(maxPayment && { maxPayment }),
       })
       .pipe(
         map((response) => {
@@ -324,14 +321,14 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  exportVoucher(referenceId: string, installment: number): Promise<Blob> {
+  exportVoucher(referenceId: string, payment: number): Promise<Blob> {
     return this.apiService
       .post(
         environment.url_121_service_api,
         `/fsp/intersolve/export-voucher`,
         {
           referenceId,
-          installment,
+          payment,
         },
         false,
         true,
@@ -339,11 +336,11 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getBalance(referenceId: string, installment: number): Promise<number> {
+  getBalance(referenceId: string, payment: number): Promise<number> {
     return this.apiService
       .post(environment.url_121_service_api, `/fsp/intersolve/balance`, {
         referenceId,
-        installment,
+        payment,
       })
       .toPromise();
   }
@@ -488,11 +485,11 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getInstallmentsWithStateSums(programId: number | string): Promise<any> {
+  getPaymentsWithStateSums(programId: number | string): Promise<any> {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/export-metrics/installment-state-sums/${programId}`,
+        `/export-metrics/payment-state-sums/${programId}`,
       )
       .toPromise();
   }
