@@ -76,8 +76,6 @@ export class AccountPage {
       .create({
         header: message,
         animated: true,
-        showCloseButton: true,
-        closeButtonText: 'Close',
         cssClass: 'update-toast',
         duration: 3000,
         position: 'bottom',
@@ -88,6 +86,11 @@ export class AccountPage {
             handler: () => {
               this.router.navigate([this.urlValidationPage]);
             },
+          },
+          {
+            side: 'end',
+            role: 'cancel',
+            text: 'Close',
           },
         ],
       })
