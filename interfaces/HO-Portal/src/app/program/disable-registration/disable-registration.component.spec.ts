@@ -33,30 +33,3 @@ describe('DisableRegistrationComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-
-describe('DisableRegistrationComponent', () => {
-  let component: DisableRegistrationComponent;
-  let fixture: ComponentFixture<DisableRegistrationComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [DisableRegistrationComponent],
-      imports: [TranslateModule.forRoot()],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMagicalMock(AuthService),
-        provideMagicalMock(ProgramsServiceApiService),
-      ],
-    }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DisableRegistrationComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
