@@ -516,4 +516,14 @@ export class ProgramsServiceApiService {
       )
       .toPromise();
   }
+
+  updateProgram(programId: number, updateBody: object): Promise<Program> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        `/programs/update/${programId}`,
+        updateBody,
+      )
+      .toPromise();
+  }
 }

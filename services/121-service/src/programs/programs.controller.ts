@@ -162,10 +162,10 @@ export class ProgramController {
     return await this.programService.getTransaction(data);
   }
 
-  @Roles(UserRole.Admin)
+  @Roles(UserRole.Admin, UserRole.RunProgram)
   @ApiOperation({ title: 'Update program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('update/programs/:programId')
+  @Post('update/:programId')
   public async updateProgram(
     @Param() params,
     @Body() updateProgramDto: UpdateProgramDto,

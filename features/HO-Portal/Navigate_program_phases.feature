@@ -38,3 +38,11 @@ Feature: Navigate program phases
     When user clicks the "Open for registration"-button
     Then the program will advance to the next phase (see scenario: "Advancing to next phase")
     And the program will now appear as a selectable program in the PA-app
+
+  Scenario: Publishing or Unpublishing a program for registration ("publishing")
+    Given user views a "program" page
+    Given the "current program phase" is "Registration"
+    Given "selected phase" is "Registration"
+    When user clicks the "Toggle"-button against the "Program Name"
+    Then the program will update to the other status
+    And the program will now appear as a selectable / will not be available for registration in PA-App based on its published or unpublished status in HO-Portal.
