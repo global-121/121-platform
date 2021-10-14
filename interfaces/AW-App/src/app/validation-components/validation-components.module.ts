@@ -23,15 +23,6 @@ import { ValidateProgramComponent } from './validate-program/validate-program.co
     UploadDataComponent,
   ],
   imports: [CommonModule, SharedModule, FormsModule, ZXingScannerModule],
-  entryComponents: [
-    MainMenuComponent,
-    ScanQrComponent,
-    QrScannerComponent,
-    ValidateProgramComponent,
-    ValidateFspComponent,
-    DownloadDataComponent,
-    UploadDataComponent,
-  ],
   exports: [
     MainMenuComponent,
     ScanQrComponent,
