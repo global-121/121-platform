@@ -45,7 +45,7 @@
     "@ionic/storage": "2.2.0",
     "@microsoft/applicationinsights-web": "^2.7.0",
     "@ngx-translate/core": "^12.1.2",
-    "@ngx-translate/http-loader": "^4.0.0",
+    "@ngx-translate/http-loader": "^5.0.0",
     "@zxing/ngx-scanner": "3.0.1",
     "core-js": "2.6.8",
     "rxjs": "^6.6.2",
