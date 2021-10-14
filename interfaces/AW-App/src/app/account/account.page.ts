@@ -82,7 +82,7 @@ export class AccountPage {
         buttons: [
           {
             side: 'start',
-            icon: 'share-alt',
+            icon: 'arrow-redo',
             handler: () => {
               this.router.navigate([this.urlValidationPage]);
             },

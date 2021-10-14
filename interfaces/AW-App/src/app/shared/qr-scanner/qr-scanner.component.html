@@ -5,7 +5,7 @@
     </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="closeModal()" [attr.title]="'qr-scanner.close'|translate">
-        <ion-icon name="close" slot="icon-only"></ion-icon>
+        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -18,7 +18,7 @@
   <div *ngIf="showCompatibilityError || showPermissionError"
        class="ion-text-center ion-padding"
   >
-    <ion-icon name="alert" size="large"></ion-icon>
+    <ion-icon name="alert" size="large" aria-hidden="true"></ion-icon>
     <p *ngIf="showCompatibilityError">
       {{ 'qr-scanner.error-not-compatible'|translate }}
     </p>
@@ -32,7 +32,7 @@
       <ion-button type="button"
                   (click)="tryAgain()"
       >
-        <ion-icon name="refresh" size="small" slot="start"></ion-icon>
+        <ion-icon name="refresh" size="small" slot="start" aria-hidden="true"></ion-icon>
         {{ 'qr-scanner.try-again'|translate }}
       </ion-button>
     </p>
@@ -63,7 +63,7 @@
                     [color]="torchEnabled ? 'success' : 'light'"
                     class="ion-margin-vertical"
     >
-      <ion-icon [name]="torchEnabled ? 'flash' : 'flash-off'"></ion-icon>
+      <ion-icon [name]="torchEnabled ? 'flash' : 'flash-off'" aria-hidden="true"></ion-icon>
     </ion-fab-button>
     <ion-fab-button *ngIf="switchCamerasAvailable"
                     [title]="'qr-scanner.switch-camera'|translate"
@@ -71,7 +71,7 @@
                     color="light"
                     class="ion-margin-vertical"
     >
-      <ion-icon name="reverse-camera"></ion-icon>
+      <ion-icon name="camera-reverse" aria-hidden="true"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
@@ -93,7 +93,7 @@
     class="ion-no-margin"
     (click)="onScanSuccess(scanData.value)"
   >
-    <ion-icon name="create" slot="start"></ion-icon>
+    <ion-icon name="create" slot="start" aria-hidden="true"></ion-icon>
     Use as scanned data
   </ion-button>
 </ion-footer>
