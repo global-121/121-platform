@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { MockLoggingService } from 'src/app/mocks/logging.service.mock';
 import { LoggingService } from 'src/app/services/logging.service';
@@ -18,6 +18,9 @@ describe('MoreInfoButtonComponent', () => {
       providers: [
         {
           provide: ModalController,
+        },
+        {
+          provide: AngularDelegate,
         },
         {
           provide: LoggingService,
