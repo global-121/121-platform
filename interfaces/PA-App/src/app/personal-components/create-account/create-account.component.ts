@@ -3,7 +3,7 @@ import {
   LoggingEvent,
   LoggingEventCategory,
 } from 'src/app/models/logging-event.enum';
-import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
+import { PersonalDirective } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { LoggingService } from 'src/app/services/logging.service';
@@ -15,7 +15,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   templateUrl: './create-account.component.html',
   styleUrls: ['./create-account.component.scss'],
 })
-export class CreateAccountComponent extends PersonalComponent {
+export class CreateAccountComponent extends PersonalDirective {
   @Input()
   public data: any;
 

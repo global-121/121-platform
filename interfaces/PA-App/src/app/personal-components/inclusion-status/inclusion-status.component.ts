@@ -5,14 +5,14 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { UpdateService } from 'src/app/services/update.service';
-import { PersonalComponent } from '../personal-component.class';
+import { PersonalDirective } from '../personal-component.class';
 
 @Component({
   selector: 'app-inclusion-status',
   templateUrl: './inclusion-status.component.html',
   styleUrls: ['./inclusion-status.component.scss'],
 })
-export class InclusionStatusComponent extends PersonalComponent {
+export class InclusionStatusComponent extends PersonalDirective {
   @Input()
   public data: any;
 

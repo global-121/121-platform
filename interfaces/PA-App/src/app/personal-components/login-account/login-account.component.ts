@@ -6,14 +6,14 @@ import {
 import { ConversationService } from 'src/app/services/conversation.service';
 import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { PersonalComponent } from '../personal-component.class';
+import { PersonalDirective } from '../personal-component.class';
 
 @Component({
   selector: 'app-login-account',
   templateUrl: './login-account.component.html',
   styleUrls: ['./login-account.component.scss'],
 })
-export class LoginAccountComponent extends PersonalComponent {
+export class LoginAccountComponent extends PersonalDirective {
   public usernameSubmitted = false;
   public username: string;
   public password: any;

@@ -14,7 +14,7 @@ import { CreateAccountComponent } from '../personal-components/create-account/cr
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { LoginAccountComponent } from '../personal-components/login-account/login-account.component';
 import { MonitoringQuestionComponent } from '../personal-components/monitoring-question/monitoring-question.component';
-import { PersonalComponent } from '../personal-components/personal-component.class';
+import { PersonalDirective } from '../personal-components/personal-component.class';
 import {
   PersonalComponents,
   PersonalComponentsRemoved,
@@ -159,7 +159,7 @@ export class PersonalPage implements OnInit {
     const componentRef = this.container.createComponent(
       this.getComponentFactory(name),
     );
-    const componentInstance: any | PersonalComponent = componentRef.instance;
+    const componentInstance: any | PersonalDirective = componentRef.instance;
 
     componentInstance.moment = moment;
     componentInstance.data = data;

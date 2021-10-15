@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
 import { DialogueTurnComponent } from '../shared/dialogue-turn/dialogue-turn.component';
 
 @Directive()
-export abstract class PersonalComponent
+export abstract class PersonalDirective
   implements OnInit, AfterViewInit, AfterContentInit
 {
   /**
