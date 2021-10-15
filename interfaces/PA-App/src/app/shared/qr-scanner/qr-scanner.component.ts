@@ -23,7 +23,7 @@ export class QrScannerComponent {
 
   public currentCamera: any = null;
   public switchCamerasAvailable = false;
-  public camerasAvailable: any[];
+  private camerasAvailable: any[];
 
   constructor(private modalController: ModalController) {}
 
@@ -40,6 +40,7 @@ export class QrScannerComponent {
       this.switchCamerasAvailable = true;
       this.camerasAvailable = cameras;
     }
+    this.currentCamera = cameras[0];
   }
 
   public onCamerasNotFound() {
