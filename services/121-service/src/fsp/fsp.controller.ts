@@ -1,35 +1,14 @@
-import {
-  Post,
-  Body,
-  Controller,
-  Get,
-  Param,
-  Res,
-  UseInterceptors,
-  UploadedFile,
-  UseGuards,
-  HttpStatus,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Post, Body, Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { FspService } from './fsp.service';
 import {
   ApiUseTags,
   ApiResponse,
   ApiOperation,
   ApiImplicitParam,
-  ApiImplicitFile,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
-import {
-  FinancialServiceProviderEntity,
-  fspName,
-} from './financial-service-provider.entity';
-import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
+import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { IntersolveService } from './intersolve.service';
-import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
-import { Response } from 'express-serve-static-core';
-import stream from 'stream';
 import { UserRole } from '../user-role.enum';
 import { Roles } from '../roles.decorator';
 import { UpdateFspAttributeDto, UpdateFspDto } from './api/dto/update-fsp.dto';
@@ -42,10 +21,7 @@ import { RolesGuard } from '../roles.guard';
 @Controller('fsp')
 export class FspController {
   private readonly fspService: FspService;
-  public constructor(
-    fspService: FspService,
-    private intersolveService: IntersolveService,
-  ) {
+  public constructor(fspService: FspService) {
     this.fspService = fspService;
   }
 
@@ -60,108 +36,6 @@ export class FspController {
     @Param() param,
   ): Promise<FinancialServiceProviderEntity> {
     return await this.fspService.getFspById(param.fspId);
-  }
-
-  @ApiOperation({
-    title:
-      'Validation callback used by Africas Talking to request validity of payment to us.',
-  })
-  @ApiResponse({ status: 200, description: 'Validated' })
-  @Post('africastalking/validation')
-  public async validationCallback(
-    @Body() africasTalkingValidationData: AfricasTalkingValidationDto,
-  ): Promise<void> {
-    return await this.fspService.checkPaymentValidation(
-      fspName.africasTalking,
-      africasTalkingValidationData,
-    );
-  }
-
-  @ApiOperation({
-    title:
-      'Notification callback used by Africas Talking to notify status of payment to us.',
-  })
-  @ApiResponse({ status: 200, description: 'Notified' })
-  @Post('africastalking/notification')
-  public async notificationCallback(
-    @Body() africasTalkingNotificationData: AfricasTalkingNotificationDto,
-  ): Promise<void> {
-    await this.fspService.processPaymentStatus(
-      fspName.africasTalking,
-      africasTalkingNotificationData,
-    );
-  }
-
-  @Roles(UserRole.RunProgram, UserRole.PersonalData, UserRole.View)
-  @ApiOperation({
-    title: 'Export Intersolve vouchers',
-  })
-  @ApiResponse({ status: 200, description: 'Vouchers exported' })
-  @Post('intersolve/export-voucher')
-  public async exportVouchers(
-    @Body() identifyVoucherDto: IdentifyVoucherDto,
-    @Res() response: Response,
-  ): Promise<void> {
-    const blob = await this.intersolveService.exportVouchers(
-      identifyVoucherDto.referenceId,
-      identifyVoucherDto.payment,
-    );
-    var bufferStream = new stream.PassThrough();
-    bufferStream.end(Buffer.from(blob, 'binary'));
-    response.writeHead(HttpStatus.OK, {
-      'Content-Type': 'image/png',
-    });
-    bufferStream.pipe(response);
-  }
-
-  @Roles(UserRole.RunProgram, UserRole.PersonalData, UserRole.View)
-  @ApiOperation({
-    title: 'Get Intersolve voucher balance',
-  })
-  @ApiResponse({ status: 200, description: 'Vouchers balance retrieved' })
-  @Post('intersolve/balance')
-  public async getBalance(
-    @Body() identifyVoucherDto: IdentifyVoucherDto,
-  ): Promise<number> {
-    return await this.intersolveService.getVoucherBalance(
-      identifyVoucherDto.referenceId,
-      identifyVoucherDto.payment,
-    );
-  }
-
-  @ApiOperation({
-    title: 'Get intersolve instructions',
-  })
-  @ApiResponse({ status: 200, description: 'Get intersolve instructions' })
-  @Get('intersolve/instruction')
-  public async intersolveInstructions(
-    @Res() response: Response,
-  ): Promise<void> {
-    const blob = await this.intersolveService.getInstruction();
-    var bufferStream = new stream.PassThrough();
-    bufferStream.end(Buffer.from(blob, 'binary'));
-    response.writeHead(HttpStatus.OK, {
-      'Content-Type': 'image/png',
-    });
-    bufferStream.pipe(response);
-  }
-
-  @Roles(UserRole.Admin)
-  @ApiOperation({
-    title: 'Post intersolve instructions',
-  })
-  @ApiImplicitFile({
-    name: 'image',
-    required: true,
-    description: 'Upload image with voucher instructions (PNG format only',
-  })
-  @ApiResponse({ status: 200, description: 'Post intersolve instructions' })
-  @Post('intersolve/instruction')
-  @UseInterceptors(FileInterceptor('image'))
-  public async postIntersolveInstructions(
-    @UploadedFile() instructionsFileBlob,
-  ): Promise<void> {
-    await this.intersolveService.postInstruction(instructionsFileBlob);
   }
 
   @Roles(UserRole.Admin)
