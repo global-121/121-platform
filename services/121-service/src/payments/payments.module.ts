@@ -7,12 +7,12 @@ import { PaymentsService } from './payments.service';
 import { UserModule } from '../user/user.module';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ActionModule } from '../actions/action.module';
 import { AfricasTalkingModule } from './africas-talking/africas-talking.module';
 import { FspModule } from '../fsp/fsp.module';
 import { IntersolveModule } from './intersolve/intersolve.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { BelcashModule } from './belcash/belcash.module';
 
 @Module({
   imports: [
@@ -28,6 +28,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     FspModule,
     IntersolveModule,
     AfricasTalkingModule,
+    BelcashModule,
     TransactionsModule,
   ],
   providers: [PaymentsService],

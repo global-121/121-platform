@@ -18,6 +18,7 @@ import { AfricasTalkingService } from './africas-talking/africas-talking.service
 import { IntersolveService } from './intersolve/intersolve.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
+import { BelcashService } from './belcash/belcash.service';
 
 @Injectable()
 export class PaymentsService {
@@ -33,6 +34,7 @@ export class PaymentsService {
     private readonly fspService: FspService,
     private readonly intersolveService: IntersolveService,
     private readonly africasTalkingService: AfricasTalkingService,
+    private readonly belcashService: BelcashService,
     private readonly transactionService: TransactionsService,
   ) {}
 
@@ -134,6 +136,7 @@ export class PaymentsService {
     const intersolvePaPayment = [];
     const intersolveNoWhatsappPaPayment = [];
     const africasTalkingPaPayment = [];
+    const belcashPaPayment = [];
     for (let paPaymentData of paPaymentDataList) {
       if (paPaymentData.fspName === FspName.intersolve) {
         intersolvePaPayment.push(paPaymentData);
@@ -141,6 +144,8 @@ export class PaymentsService {
         intersolveNoWhatsappPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.africasTalking) {
         africasTalkingPaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === FspName.belcash) {
+        belcashPaPayment.push(paPaymentData);
       } else {
         console.log('fsp does not exist: paPaymentData: ', paPaymentData);
         throw new HttpException('fsp does not exist.', HttpStatus.NOT_FOUND);
@@ -150,6 +155,7 @@ export class PaymentsService {
       intersolvePaPayment,
       intersolveNoWhatsappPaPayment,
       africasTalkingPaPayment,
+      belcashPaPayment,
     };
   }
 
@@ -192,10 +198,23 @@ export class PaymentsService {
     } else {
       africasTalkingTransactionResult.paList = [];
     }
+
+    let belcashTransactionResult = new FspTransactionResultDto();
+    if (paLists.belcashPaPayment.length) {
+      belcashTransactionResult = await this.belcashService.sendPayment(
+        paLists.belcashPaPayment,
+        programId,
+        payment,
+        amount,
+      );
+    } else {
+      belcashTransactionResult.paList = [];
+    }
     return {
       intersolveTransactionResult,
       intersolveNoWhatsappTransactionResult,
       africasTalkingTransactionResult,
+      belcashTransactionResult,
     };
   }
 
@@ -258,6 +277,8 @@ export class PaymentsService {
         paPaymentData.fspName = FspName.intersolveNoWhatsapp;
       } else if (fsp.fsp === FspName.africasTalking) {
         paPaymentData.fspName = FspName.africasTalking;
+      } else if (fsp.fsp === FspName.belcash) {
+        paPaymentData.fspName = FspName.belcash;
       }
       paPaymentData.paymentAddress = await this.getPaymentAddress(
         includedRegistration,
