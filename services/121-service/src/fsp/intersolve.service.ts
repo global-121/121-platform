@@ -89,7 +89,7 @@ export class IntersolveService {
           select: ['id'],
           where: { referenceId: paResult.referenceId },
         });
-        const transactionResultDto = await this.storeTransactionResult(
+        await this.storeTransactionResult(
           payment,
           paResult.calculatedAmount,
           registration.id,
@@ -273,7 +273,7 @@ export class IntersolveService {
       .then(
         async response => {
           const messageSid = response;
-          const transactionResultDto = await this.storeTransactionResult(
+          await this.storeTransactionResult(
             voucherInfo.voucher.payment,
             voucherInfo.voucher.amount,
             registration.id,
