@@ -2,7 +2,7 @@ import { ProgramQuestionEntity } from './program-question.entity';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
-} from '../payments/dto/get-transaction.dto';
+} from '../payments/transactions/dto/get-transaction.dto';
 import { ActionService } from '../actions/action.service';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
@@ -20,7 +20,7 @@ import { ActionEntity, AdditionalActionType } from '../actions/action.entity';
 import { FspService } from '../fsp/fsp.service';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
-import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
+import { PaPaymentDataDto } from '../payments/dto/pa-payment-data.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';

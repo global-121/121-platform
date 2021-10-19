@@ -37,7 +37,7 @@ export class IntersolveController {
     title: 'Export Intersolve vouchers',
   })
   @ApiResponse({ status: 200, description: 'Vouchers exported' })
-  @Post('intersolve/export-voucher')
+  @Post('export-voucher')
   public async exportVouchers(
     @Body() identifyVoucherDto: IdentifyVoucherDto,
     @Res() response: Response,
@@ -59,7 +59,7 @@ export class IntersolveController {
     title: 'Get Intersolve voucher balance',
   })
   @ApiResponse({ status: 200, description: 'Vouchers balance retrieved' })
-  @Post('intersolve/balance')
+  @Post('balance')
   public async getBalance(
     @Body() identifyVoucherDto: IdentifyVoucherDto,
   ): Promise<number> {
@@ -73,7 +73,7 @@ export class IntersolveController {
     title: 'Get intersolve instructions',
   })
   @ApiResponse({ status: 200, description: 'Get intersolve instructions' })
-  @Get('intersolve/instruction')
+  @Get('instruction')
   public async intersolveInstructions(
     @Res() response: Response,
   ): Promise<void> {
@@ -96,7 +96,7 @@ export class IntersolveController {
     description: 'Upload image with voucher instructions (PNG format only',
   })
   @ApiResponse({ status: 200, description: 'Post intersolve instructions' })
-  @Post('intersolve/instruction')
+  @Post('instruction')
   @UseInterceptors(FileInterceptor('image'))
   public async postIntersolveInstructions(
     @UploadedFile() instructionsFileBlob,

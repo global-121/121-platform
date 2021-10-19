@@ -1,12 +1,4 @@
-import {
-  Post,
-  Body,
-  Controller,
-  UseGuards,
-  Get,
-  Param,
-  Query,
-} from '@nestjs/common';
+import { Post, Body, Controller, UseGuards, Get, Param } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { User } from '../user/user.decorator';
 import {
@@ -15,26 +7,18 @@ import {
   ApiResponse,
   ApiOperation,
   ApiImplicitParam,
-  ApiImplicitQuery,
 } from '@nestjs/swagger';
 import { RolesGuard } from '../roles.guard';
 import { Roles } from '../roles.decorator';
 import { UserRole } from '../user-role.enum';
-import { CreateTransactionsDto } from './dto/create-transactions.dto';
-import {
-  GetTransactionDto,
-  GetTransactionOutputDto,
-} from './dto/get-transaction.dto';
+import { CreatePaymentDto } from './dto/create-payment.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('payments')
 @Controller('payments')
 export class PaymentsController {
-  private readonly paymentsService: PaymentsService;
-  public constructor(paymentsService: PaymentsService) {
-    this.paymentsService = paymentsService;
-  }
+  public constructor(private readonly paymentsService: PaymentsService) {}
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get past payments for program' })
@@ -52,54 +36,17 @@ export class PaymentsController {
   @ApiOperation({
     title: 'Send payout instruction to financial service provider',
   })
-  @Post('transactions')
-  public async createTransactions(
-    @Body() data: CreateTransactionsDto,
+  @Post()
+  public async createPayment(
+    @Body() data: CreatePaymentDto,
     @User('id') userId: number,
   ): Promise<number> {
-    return await this.paymentsService.createTransactions(
+    return await this.paymentsService.createPayment(
       userId,
       data.programId,
       data.payment,
       data.amount,
       data.referenceId,
     );
-  }
-
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({ title: 'Get transactions' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiImplicitQuery({
-    name: 'minPayment',
-    required: false,
-    type: 'integer',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Get all transactions',
-  })
-  @Get('transactions/:programId')
-  public async getTransactions(
-    @Param('programId') programId: number,
-    @Query('minPayment') minPayment: number,
-  ): Promise<any> {
-    return await this.paymentsService.getTransactions(
-      Number(programId),
-      false,
-      minPayment,
-    );
-  }
-
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({ title: 'Get a single transaction' })
-  @ApiResponse({
-    status: 200,
-    description: 'Get a single transaction',
-  })
-  @Post('get-transaction')
-  public async getTransaction(
-    @Body() data: GetTransactionDto,
-  ): Promise<GetTransactionOutputDto> {
-    return await this.paymentsService.getTransaction(data);
   }
 }

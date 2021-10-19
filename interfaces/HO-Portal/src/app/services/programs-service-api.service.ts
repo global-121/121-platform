@@ -141,7 +141,7 @@ export class ProgramsServiceApiService {
 
   getPastPayments(programId: number | string): Promise<PaymentData[]> {
     return this.apiService
-      .get(environment.url_121_service_api, `/programs/payments/${programId}`)
+      .get(environment.url_121_service_api, `/payments/${programId}`)
       .pipe(
         map((response) => {
           return response
@@ -166,7 +166,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/programs/transactions/${programId}${
+        `/payments/transactions/${programId}${
           minPayment ? '?minPayment=' + minPayment : ''
         }`,
       )
@@ -221,7 +221,7 @@ export class ProgramsServiceApiService {
     customDataValue: string,
   ): Promise<any | Transaction> {
     return this.apiService
-      .post(environment.url_121_service_api, `/programs/get-transaction`, {
+      .post(environment.url_121_service_api, `/payments/transactions/get-one`, {
         referenceId,
         payment: Number(payment),
         programId: Number(programId),
@@ -238,7 +238,7 @@ export class ProgramsServiceApiService {
     referenceId?: string,
   ): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, `/programs/payout`, {
+      .post(environment.url_121_service_api, `/payments`, {
         programId: Number(programId),
         payment: Number(payment),
         amount: Number(amount),
@@ -325,7 +325,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        `/fsp/intersolve/export-voucher`,
+        `/payments/intersolve/export-voucher`,
         {
           referenceId,
           payment,
@@ -338,7 +338,7 @@ export class ProgramsServiceApiService {
 
   getBalance(referenceId: string, payment: number): Promise<number> {
     return this.apiService
-      .post(environment.url_121_service_api, `/fsp/intersolve/balance`, {
+      .post(environment.url_121_service_api, `/payments/intersolve/balance`, {
         referenceId,
         payment,
       })

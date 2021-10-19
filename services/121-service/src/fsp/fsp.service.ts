@@ -3,7 +3,7 @@ import { FinancialServiceProviderEntity } from './financial-service-provider.ent
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
-import { UpdateFspAttributeDto, UpdateFspDto } from './api/dto/update-fsp.dto';
+import { UpdateFspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
 import { FspAttributeEntity } from './fsp-attribute.entity';
 
 @Injectable()

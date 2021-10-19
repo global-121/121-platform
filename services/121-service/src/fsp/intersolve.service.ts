@@ -24,12 +24,12 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { StatusEnum } from '../shared/enum/status.enum';
-import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
+import { PaPaymentDataDto } from '../payments/dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-} from './dto/payment-transaction-result.dto';
-import { UnusedVoucherDto } from './dto/unused-voucher.dto';
+} from '../payments/dto/payment-transaction-result.dto';
+import { UnusedVoucherDto } from '../payments/dto/unused-voucher.dto';
 import { FspName } from './financial-service-provider.entity';
 import crypto from 'crypto';
 

@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PaTransactionResultDto } from '../../fsp/dto/payment-transaction-result.dto';
+import { PaTransactionResultDto } from '../dto/payment-transaction-result.dto';
 import {
   FinancialServiceProviderEntity,
   FspName,
 } from '../../fsp/financial-service-provider.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
+import {
+  GetTransactionDto,
+  GetTransactionOutputDto,
+} from './dto/get-transaction.dto';
 import { TransactionEntity } from './transaction.entity';
 
 @Injectable()
@@ -23,6 +27,105 @@ export class TransactionsService {
     FinancialServiceProviderEntity
   >;
   public constructor() {}
+
+  public async getTransactions(
+    programId: number,
+    splitByTransactionStep: boolean,
+    minPayment?: number,
+  ): Promise<any> {
+    const maxAttemptPerPaAndPayment = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select(['payment', '"registrationId"'])
+      .addSelect(
+        `MAX(cast("transactionStep" as varchar) || '-' || cast(created as varchar)) AS max_attempt`,
+      )
+      .groupBy('payment')
+      .addGroupBy('"registrationId"');
+
+    if (splitByTransactionStep) {
+      maxAttemptPerPaAndPayment
+        .addSelect('"transactionStep"')
+        .addGroupBy('"transactionStep"');
+    }
+
+    const transactions = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select([
+        'transaction.created AS "paymentDate"',
+        'transaction.payment AS payment',
+        '"referenceId"',
+        'status',
+        'amount',
+        'transaction.errorMessage as error',
+        'transaction.customData as "customData"',
+      ])
+      .leftJoin(
+        '(' + maxAttemptPerPaAndPayment.getQuery() + ')',
+        'subquery',
+        `transaction.registrationId = subquery."registrationId" AND transaction.payment = subquery.payment AND cast(transaction."transactionStep" as varchar) || '-' || cast(created as varchar) = subquery.max_attempt`,
+      )
+      .leftJoin('transaction.registration', 'r')
+      .where('transaction.program.id = :programId', { programId: programId })
+      .andWhere('transaction.payment >= :minPayment', {
+        minPayment: minPayment || 0,
+      })
+      .andWhere('subquery.max_attempt IS NOT NULL')
+      .getRawMany();
+    return transactions;
+  }
+
+  public async getTransaction(
+    input: GetTransactionDto,
+  ): Promise<GetTransactionOutputDto> {
+    const registration = await this.registrationRepository.findOne({
+      where: { referenceId: input.referenceId },
+    });
+
+    const transactions = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select([
+        'transaction.created AS "paymentDate"',
+        'payment',
+        '"referenceId"',
+        'status',
+        'amount',
+        'transaction.errorMessage as error',
+        'transaction.customData as "customData"',
+      ])
+      .leftJoin('transaction.registration', 'c')
+      .where('transaction.program.id = :programId', {
+        programId: input.programId,
+      })
+      .andWhere('transaction.payment = :paymentId', {
+        paymentId: input.payment,
+      })
+      .andWhere('transaction.registration.id = :registrationId', {
+        registrationId: registration.id,
+      })
+      .orderBy('transaction.created', 'DESC')
+      .getRawMany();
+    if (transactions.length === 0) {
+      return null;
+    }
+    if (input.customDataKey) {
+      for (const transaction of transactions) {
+        if (
+          transaction.customData[input.customDataKey] === input.customDataValue
+        ) {
+          return transaction;
+        }
+      }
+      return null;
+    }
+    for (const transaction of transactions) {
+      if (
+        !transaction.customData ||
+        Object.keys(transaction.customData).length === 0
+      ) {
+        return transaction;
+      }
+    }
+  }
 
   public async storeTransaction(
     transactionResponse: PaTransactionResultDto,

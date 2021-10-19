@@ -1,4 +1,4 @@
-import { GetTransactionOutputDto } from '../payments/dto/get-transaction.dto';
+import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
 import { RegistrationsService } from './../registration/registrations.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
@@ -26,6 +26,7 @@ import { TotalIncluded } from './dto/total-included.dto';
 import { PaymentStateSumDto } from './dto/payment-state-sum.dto';
 import { PaymentsService } from '../payments/payments.service';
 import { ProgramEntity } from '../programs/program.entity';
+import { TransactionsService } from '../payments/transactions/transactions.service';
 
 @Injectable()
 export class ExportMetricsService {
@@ -43,6 +44,7 @@ export class ExportMetricsService {
   public constructor(
     private readonly actionService: ActionService,
     private readonly paymentsService: PaymentsService,
+    private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
   ) {}
 
@@ -269,7 +271,7 @@ export class ExportMetricsService {
       .sort((a, b) => (a > b ? 1 : -1));
     const registrationDetails = [];
 
-    const transactions = await this.paymentsService.getTransactions(
+    const transactions = await this.transactionsService.getTransactions(
       programId,
       true,
     );

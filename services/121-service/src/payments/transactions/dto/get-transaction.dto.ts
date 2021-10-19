@@ -1,6 +1,6 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { Length, IsNotEmpty, IsString, IsNumber } from 'class-validator';
-import { StatusEnum } from '../../shared/enum/status.enum';
+import { StatusEnum } from '../../../shared/enum/status.enum';
 
 export class GetTransactionDto {
   @ApiModelProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })

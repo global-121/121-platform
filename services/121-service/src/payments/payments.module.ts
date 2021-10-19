@@ -12,6 +12,7 @@ import { ActionModule } from '../actions/action.module';
 import { AfricasTalkingModule } from './africas-talking/africas-talking.module';
 import { FspModule } from '../fsp/fsp.module';
 import { IntersolveModule } from './intersolve/intersolve.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { IntersolveModule } from './intersolve/intersolve.module';
     FspModule,
     IntersolveModule,
     AfricasTalkingModule,
+    TransactionsModule,
   ],
   providers: [PaymentsService],
   controllers: [PaymentsController],

@@ -7,12 +7,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, Not, IsNull, Between } from 'typeorm';
-import { PaPaymentDataDto } from '../../fsp/dto/pa-payment-data.dto';
+import { PaPaymentDataDto } from '../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-} from '../../fsp/dto/payment-transaction-result.dto';
-import { UnusedVoucherDto } from '../../fsp/dto/unused-voucher.dto';
+} from '../dto/payment-transaction-result.dto';
+import { UnusedVoucherDto } from '../dto/unused-voucher.dto';
 import { FspName } from '../../fsp/financial-service-provider.entity';
 import { ImageCodeService } from '../imagecode/image-code.service';
 import {

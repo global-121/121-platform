@@ -41,7 +41,7 @@ export const API_PATHS = {
   voiceXml: 'notifications/voice/xml/',
   voiceMp3: 'notifications/voice/mp3/',
   imageCode: 'notifications/imageCode/',
-  voucherInstructions: 'fsp/intersolve/instruction/',
+  voucherInstructions: 'payments/intersolve/instruction/',
 };
 const baseApiUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
 export const EXTERNAL_API = {

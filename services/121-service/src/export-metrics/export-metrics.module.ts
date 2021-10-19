@@ -14,6 +14,7 @@ import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PaymentsModule } from '../payments/payments.module';
+import { TransactionsModule } from '../payments/transactions/transactions.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { PaymentsModule } from '../payments/payments.module';
     RegistrationsModule,
     ActionModule,
     PaymentsModule,
+    TransactionsModule,
     RegistrationsModule,
   ],
   providers: [ExportMetricsService],
