@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 
 import { IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
-export class PayoutDto {
+export class CreateTransactionsDto {
   @ApiModelProperty({ example: 1 })
   @IsNumber()
   public readonly programId: number;

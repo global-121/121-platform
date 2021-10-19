@@ -1,4 +1,4 @@
-import { GetTransactionOutputDto } from '../programs/dto/get-transaction.dto';
+import { GetTransactionOutputDto } from '../payments/dto/get-transaction.dto';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
 import { RegistrationsService } from './../registration/registrations.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
@@ -20,17 +20,20 @@ import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status
 import { without, compact, sortBy } from 'lodash';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { TransactionEntity } from '../programs/transactions.entity';
-import { ProgramService } from '../programs/programs.service';
 import { FspService } from '../fsp/fsp.service';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { Attributes } from '../registration/dto/update-attribute.dto';
 import { TotalIncluded } from './dto/total-included.dto';
 import { PaymentStateSumDto } from './dto/payment-state-sum.dto';
+import { PaymentsService } from '../payments/payments.service';
+import { ProgramEntity } from '../programs/program.entity';
 
 @Injectable()
 export class ExportMetricsService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(FspAttributeEntity)
@@ -40,7 +43,7 @@ export class ExportMetricsService {
 
   public constructor(
     private readonly actionService: ActionService,
-    private readonly programService: ProgramService,
+    private readonly paymentsService: PaymentsService,
     private readonly fspService: FspService,
     private readonly registrationsService: RegistrationsService,
   ) {}
@@ -263,12 +266,12 @@ export class ExportMetricsService {
       relations: ['fsp'],
     });
     const questions = await this.getAllQuestionsForExport();
-    const payments = (await this.programService.getPayments(programId))
+    const payments = (await this.paymentsService.getPayments(programId))
       .map(i => i.payment)
       .sort((a, b) => (a > b ? 1 : -1));
     const registrationDetails = [];
 
-    const transactions = await this.programService.getTransactions(
+    const transactions = await this.paymentsService.getTransactions(
       programId,
       true,
     );
@@ -674,7 +677,7 @@ export class ExportMetricsService {
     }
 
     if (payment) {
-      const payments = await this.programService.getPayments(programId);
+      const payments = await this.paymentsService.getPayments(programId);
       const beginDate =
         payment === 1 || (fromStart && fromStart === 1)
           ? new Date(2000, 0, 1)
@@ -737,7 +740,7 @@ export class ExportMetricsService {
       .createQueryBuilder('transaction')
       .select('MAX(transaction.payment)')
       .getRawOne();
-    const program = await this.programService.findOne(programId);
+    const program = await this.programRepository.findOne(programId);
     const paymentNrSearch = Math.max(
       ...[totalProcessedPayments.max, program.distributionDuration],
     );
@@ -872,9 +875,13 @@ export class ExportMetricsService {
   }
 
   public async getTotalIncluded(programId: number): Promise<TotalIncluded> {
-    const includedRegistrations = await this.programService.getIncludedRegistrations(
-      programId,
-    );
+    const includedRegistrations = await this.registrationRepository.find({
+      where: {
+        program: { id: programId },
+        registrationStatus: RegistrationStatusEnum.included,
+      },
+      relations: ['fsp'],
+    });
     const sum = includedRegistrations.reduce(function(a, b) {
       return a + (b[Attributes.paymentAmountMultiplier] || 1);
     }, 0);
