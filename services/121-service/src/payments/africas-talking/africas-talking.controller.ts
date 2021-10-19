@@ -13,20 +13,18 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
-import { fspName } from '../../fsp/financial-service-provider.entity';
+import { FspName } from '../../fsp/financial-service-provider.entity';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { RolesGuard } from '../../roles.guard';
 import { PaymentsService } from '../payments.service';
+import { AfricasTalkingService } from './africas-talking.service';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('payments/africas-talking')
 @Controller('payments/africas-talking')
 export class AfricasTalkingController {
-  public constructor(
-    @Inject(forwardRef(() => PaymentsService))
-    private paymentsService: PaymentsService,
-  ) {}
+  public constructor(private africasTalkingService: AfricasTalkingService) {}
 
   @ApiOperation({
     title:
@@ -37,8 +35,7 @@ export class AfricasTalkingController {
   public async validationCallback(
     @Body() africasTalkingValidationData: AfricasTalkingValidationDto,
   ): Promise<void> {
-    return await this.paymentsService.checkPaymentValidation(
-      fspName.africasTalking,
+    return await this.africasTalkingService.checkValidation(
       africasTalkingValidationData,
     );
   }
@@ -52,8 +49,7 @@ export class AfricasTalkingController {
   public async notificationCallback(
     @Body() africasTalkingNotificationData: AfricasTalkingNotificationDto,
   ): Promise<void> {
-    await this.paymentsService.processPaymentStatus(
-      fspName.africasTalking,
+    await this.africasTalkingService.processTransactionStatus(
       africasTalkingNotificationData,
     );
   }

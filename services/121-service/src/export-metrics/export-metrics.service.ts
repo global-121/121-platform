@@ -19,7 +19,7 @@ import { ProgramQuestionForExport } from '../programs/dto/program-question-for-e
 import { IntersolvePayoutStatus } from '../payments/intersolve/enum/intersolve-payout-status.enum';
 import { without, compact, sortBy } from 'lodash';
 import { StatusEnum } from '../shared/enum/status.enum';
-import { TransactionEntity } from '../programs/transactions.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { Attributes } from '../registration/dto/update-attribute.dto';
 import { TotalIncluded } from './dto/total-included.dto';

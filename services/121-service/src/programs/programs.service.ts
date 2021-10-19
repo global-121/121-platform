@@ -4,7 +4,7 @@ import {
   GetTransactionOutputDto,
 } from '../payments/dto/get-transaction.dto';
 import { ActionService } from '../actions/action.service';
-import { TransactionEntity } from './transactions.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, In } from 'typeorm';
@@ -14,7 +14,7 @@ import { CreateProgramDto } from './dto/create-program.dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
 import {
   FinancialServiceProviderEntity,
-  fspName,
+  FspName,
 } from '../fsp/financial-service-provider.entity';
 import { ActionEntity, AdditionalActionType } from '../actions/action.entity';
 import { FspService } from '../fsp/fsp.service';

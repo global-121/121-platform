@@ -7,31 +7,31 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, Not, IsNull, Between } from 'typeorm';
-import { PaPaymentDataDto } from '../../fsp/dto/pa-payment-data.dto';
-import {
-  FspTransactionResultDto,
-  PaTransactionResultDto,
-} from '../../fsp/dto/payment-transaction-result.dto';
-import { UnusedVoucherDto } from '../../fsp/dto/unused-voucher.dto';
-import { FspName } from '../../fsp/financial-service-provider.entity';
-import { ImageCodeService } from '../imagecode/image-code.service';
 import {
   TwilioStatusCallbackDto,
   TwilioStatus,
-} from '../../notifications/twilio.dto';
+} from '../notifications/twilio.dto';
+import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
+import { ImageCodeService } from '../payments/imagecode/image-code.service';
+import { IntersolveIssueCardResponse } from '../payments/intersolve/dto/intersolve-issue-card-response.dto';
+import { IntersolvePayoutStatus } from '../payments/intersolve/enum/intersolve-payout-status.enum';
+import { IntersolveResultCode } from '../payments/intersolve/enum/intersolve-result-code.enum';
+import { IntersolveApiService } from '../payments/intersolve/instersolve.api.service';
+import { IntersolveBarcodeEntity } from '../payments/intersolve/intersolve-barcode.entity';
+import { IntersolveInstructionsEntity } from '../payments/intersolve/intersolve-instructions.entity';
+import { IntersolveRequestEntity } from '../payments/intersolve/intersolve-request.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { ProgramEntity } from '../programs/program.entity';
+import { RegistrationEntity } from '../registration/registration.entity';
+import { StatusEnum } from '../shared/enum/status.enum';
+import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
+import {
+  FspTransactionResultDto,
+  PaTransactionResultDto,
+} from './dto/payment-transaction-result.dto';
+import { UnusedVoucherDto } from './dto/unused-voucher.dto';
+import { FspName } from './financial-service-provider.entity';
 import crypto from 'crypto';
-import { WhatsappService } from '../../notifications/whatsapp/whatsapp.service';
-import { ProgramEntity } from '../../programs/program.entity';
-import { TransactionEntity } from '../transactions/transaction.entity';
-import { RegistrationEntity } from '../../registration/registration.entity';
-import { StatusEnum } from '../../shared/enum/status.enum';
-import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
-import { IntersolvePayoutStatus } from './enum/intersolve-payout-status.enum';
-import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
-import { IntersolveApiService } from './instersolve.api.service';
-import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
-import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
-import { IntersolveRequestEntity } from './intersolve-request.entity';
 
 @Injectable()
 export class IntersolveService {
@@ -50,9 +50,9 @@ export class IntersolveService {
     IntersolveRequestEntity
   >;
   @InjectRepository(TransactionEntity)
-  private transactionRepository: Repository<TransactionEntity>;
+  public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
-  private programRepository: Repository<ProgramEntity>;
+  public programRepository: Repository<ProgramEntity>;
 
   private readonly programId = 1;
 

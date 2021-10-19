@@ -7,7 +7,7 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { TransactionEntity } from './transactions.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { ActionEntity } from '../actions/action.entity';

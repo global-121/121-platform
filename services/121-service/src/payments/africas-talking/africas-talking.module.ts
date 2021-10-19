@@ -1,3 +1,4 @@
+import { TransactionsModule } from './../transactions/transactions.module';
 import { AfricasTalkingService } from './africas-talking.service';
 import { Module, HttpModule, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,7 +14,7 @@ import { PaymentsModule } from '../payments.module';
     HttpModule,
     TypeOrmModule.forFeature([AfricasTalkingNotificationEntity, UserEntity]),
     UserModule,
-    forwardRef(() => PaymentsModule),
+    TransactionsModule,
   ],
   providers: [AfricasTalkingService, AfricasTalkingApiService],
   controllers: [AfricasTalkingController],

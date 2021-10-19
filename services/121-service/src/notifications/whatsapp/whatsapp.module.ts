@@ -1,6 +1,7 @@
+import { IntersolveModule } from './../../payments/intersolve/intersolve.module';
 import { RegistrationEntity } from './../../registration/registration.entity';
 import { ProgramEntity } from './../../programs/program.entity';
-import { TransactionEntity } from './../../programs/transactions.entity';
+import { TransactionEntity } from '../../payments/transactions/transaction.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import {
@@ -29,7 +30,7 @@ import { PaymentsModule } from '../../payments/payments.module';
       TransactionEntity,
     ]),
     ImageCodeModule,
-    forwardRef(() => PaymentsModule),
+    forwardRef(() => IntersolveModule),
   ],
   providers: [WhatsappService],
   controllers: [WhatsappController],

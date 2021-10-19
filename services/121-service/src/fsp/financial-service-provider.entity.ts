@@ -1,7 +1,7 @@
 import { CascadeDeleteEntity } from '../base.entity';
 import { Entity, Column, ManyToMany, OneToMany } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
-import { TransactionEntity } from '../programs/transactions.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { FspAttributeEntity } from './fsp-attribute.entity';
 
 @Entity('fsp')
@@ -31,7 +31,7 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   public transactions: TransactionEntity[];
 }
 
-export enum fspName {
+export enum FspName {
   intersolve = 'Intersolve-whatsapp',
   intersolveNoWhatsapp = 'Intersolve-no-whatsapp',
   africasTalking = 'Africas-talking',

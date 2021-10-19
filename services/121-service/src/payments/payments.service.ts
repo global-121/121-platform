@@ -12,7 +12,7 @@ import { ActionService } from '../actions/action.service';
 import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
 import {
   FinancialServiceProviderEntity,
-  fspName,
+  FspName,
 } from '../fsp/financial-service-provider.entity';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import {
@@ -20,7 +20,6 @@ import {
   GetTransactionOutputDto,
 } from './dto/get-transaction.dto';
 import { ProgramEntity } from '../programs/program.entity';
-import { TransactionEntity } from '../programs/transactions.entity';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../registration/registration.entity';
@@ -36,6 +35,7 @@ import { UnusedVoucherDto } from '../fsp/dto/unused-voucher.dto';
 import { AfricasTalkingService } from './africas-talking/africas-talking.service';
 import { AfricasTalkingValidationDto } from './africas-talking/dto/africas-talking-validation.dto';
 import { IntersolveService } from './intersolve/intersolve.service';
+import { TransactionEntity } from './transactions/transaction.entity';
 
 @Injectable()
 export class PaymentsService {
@@ -45,16 +45,11 @@ export class PaymentsService {
   private readonly transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(FinancialServiceProviderEntity)
-  private readonly financialServiceProviderRepository: Repository<
-    FinancialServiceProviderEntity
-  >;
 
   public constructor(
     private readonly actionService: ActionService,
     private readonly fspService: FspService,
     private readonly intersolveService: IntersolveService,
-    @Inject(forwardRef(() => AfricasTalkingService))
     private readonly africasTalkingService: AfricasTalkingService,
   ) {}
 
@@ -140,18 +135,15 @@ export class PaymentsService {
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    this.makePaymentRequest(paLists, programId, payment, amount).then(
-      transactionResults => {
-        this.storeAllTransactions(transactionResults, programId, payment);
-        if (payment > -1) {
-          this.actionService.saveAction(
-            userId,
-            programId,
-            AdditionalActionType.paymentFinished,
-          );
-        }
-      },
-    );
+    this.makePaymentRequest(paLists, programId, payment, amount).then(() => {
+      if (payment > -1) {
+        this.actionService.saveAction(
+          userId,
+          programId,
+          AdditionalActionType.paymentFinished,
+        );
+      }
+    });
     return paPaymentDataList.length;
   }
 
@@ -160,11 +152,11 @@ export class PaymentsService {
     const intersolveNoWhatsappPaPayment = [];
     const africasTalkingPaPayment = [];
     for (let paPaymentData of paPaymentDataList) {
-      if (paPaymentData.fspName === fspName.intersolve) {
+      if (paPaymentData.fspName === FspName.intersolve) {
         intersolvePaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === fspName.intersolveNoWhatsapp) {
+      } else if (paPaymentData.fspName === FspName.intersolveNoWhatsapp) {
         intersolveNoWhatsappPaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === fspName.africasTalking) {
+      } else if (paPaymentData.fspName === FspName.africasTalking) {
         africasTalkingPaPayment.push(paPaymentData);
       } else {
         console.log('fsp does not exist: paPaymentData: ', paPaymentData);
@@ -224,73 +216,6 @@ export class PaymentsService {
     };
   }
 
-  private async storeAllTransactions(
-    transactionResults: any,
-    programId: number,
-    payment: number,
-  ): Promise<void> {
-    // Intersolve transactions are now stored during PA-request-loop already
-    // Align across FSPs in future again
-    for (let transaction of transactionResults.africasTalkingTransactionResult
-      .paList) {
-      await this.storeTransaction(
-        transaction,
-        programId,
-        payment,
-        fspName.africasTalking,
-      );
-    }
-  }
-
-  private async storeTransaction(
-    transactionResponse: PaTransactionResultDto,
-    programId: number,
-    payment: number,
-    fspName: fspName,
-  ): Promise<void> {
-    const program = await this.programRepository.findOne(programId);
-    const fsp = await this.financialServiceProviderRepository.findOne({
-      where: { fsp: fspName },
-    });
-    const registration = await this.registrationRepository.findOne({
-      where: { referenceId: transactionResponse.referenceId },
-    });
-
-    const transaction = new TransactionEntity();
-    transaction.amount = transactionResponse.calculatedAmount;
-    transaction.created = transactionResponse.date || new Date();
-    transaction.registration = registration;
-    transaction.financialServiceProvider = fsp;
-    transaction.program = program;
-    transaction.payment = payment;
-    transaction.status = transactionResponse.status;
-    transaction.errorMessage = transactionResponse.message;
-    transaction.customData = transactionResponse.customData;
-    transaction.transactionStep = 1;
-
-    this.transactionRepository.save(transaction);
-  }
-
-  // NOTE: REFACTOR!
-  public async insertTransactionIntersolve(
-    payment: number,
-    amount: number,
-    registrationId: number,
-    transactionStep: number,
-    status: StatusEnum,
-    errorMessage: string,
-    messageSid?: string,
-  ): Promise<void> {
-    await this.intersolveService.insertTransactionIntersolve(
-      payment,
-      amount,
-      registrationId,
-      transactionStep,
-      status,
-      errorMessage,
-    );
-  }
-
   private async getRegistrationsForPayment(
     programId: number,
     payment: number,
@@ -344,12 +269,12 @@ export class PaymentsService {
       paPaymentData.referenceId = includedRegistration.referenceId;
       const fsp = await this.fspService.getFspById(includedRegistration.fsp.id);
       // NOTE: this is ugly, but spent too much time already on how to automate this..
-      if (fsp.fsp === fspName.intersolve) {
-        paPaymentData.fspName = fspName.intersolve;
-      } else if (fsp.fsp === fspName.intersolveNoWhatsapp) {
-        paPaymentData.fspName = fspName.intersolveNoWhatsapp;
-      } else if (fsp.fsp === fspName.africasTalking) {
-        paPaymentData.fspName = fspName.africasTalking;
+      if (fsp.fsp === FspName.intersolve) {
+        paPaymentData.fspName = FspName.intersolve;
+      } else if (fsp.fsp === FspName.intersolveNoWhatsapp) {
+        paPaymentData.fspName = FspName.intersolveNoWhatsapp;
+      } else if (fsp.fsp === FspName.africasTalking) {
+        paPaymentData.fspName = FspName.africasTalking;
       }
       paPaymentData.paymentAddress = await this.getPaymentAddress(
         includedRegistration,
@@ -495,36 +420,13 @@ export class PaymentsService {
   }
 
   public async checkPaymentValidation(
-    fsp: fspName,
+    fsp: FspName,
     africasTalkingValidationData?: AfricasTalkingValidationDto,
   ): Promise<any> {
-    if (fsp === fspName.africasTalking) {
+    if (fsp === FspName.africasTalking) {
       return this.africasTalkingService.checkValidation(
         africasTalkingValidationData,
       );
-    }
-  }
-
-  public async processPaymentStatus(
-    fsp: fspName,
-    statusCallbackData: object,
-  ): Promise<void> {
-    if (fsp === fspName.africasTalking) {
-      const africasTalkingNotificationData = statusCallbackData as AfricasTalkingNotificationDto;
-      const enrichedNotification = await this.africasTalkingService.processNotification(
-        africasTalkingNotificationData,
-      );
-
-      this.storeTransaction(
-        enrichedNotification.paTransactionResult,
-        enrichedNotification.programId,
-        enrichedNotification.payment,
-        fspName.africasTalking,
-      );
-    }
-    if (fsp === fspName.intersolve) {
-      const twilioStatusCallbackData = statusCallbackData as TwilioStatusCallbackDto;
-      await this.intersolveService.processStatus(twilioStatusCallbackData);
     }
   }
 

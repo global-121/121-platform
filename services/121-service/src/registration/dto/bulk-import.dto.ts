@@ -8,7 +8,7 @@ import {
   Min,
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { fspName } from '../../fsp/financial-service-provider.entity';
+import { FspName } from '../../fsp/financial-service-provider.entity';
 import { LanguageEnum } from '../enum/language.enum';
 
 export class BulkImportDto {
@@ -35,7 +35,7 @@ export class ImportResult {
   public countInvalidPhoneNr?: number;
 }
 
-const fspArray = Object.values(fspName).map(item => String(item));
+const fspArray = Object.values(FspName).map(item => String(item));
 const languageArray = Object.values(LanguageEnum).map(item => String(item));
 
 export class ImportRegistrationsDto {
@@ -60,7 +60,7 @@ export class ImportRegistrationsDto {
     example: fspArray.join(' | '),
   })
   @IsIn(fspArray)
-  public fspName: fspName;
+  public fspName: FspName;
 
   @ApiModelProperty()
   @IsArray()

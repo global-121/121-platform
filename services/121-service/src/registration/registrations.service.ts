@@ -21,7 +21,7 @@ import {
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
-import { fspName } from '../fsp/financial-service-provider.entity';
+import { FspName } from '../fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { InlusionScoreService } from './services/inclusion-score.service';
@@ -812,7 +812,7 @@ export class RegistrationsService {
 
   public async updateChosenFsp(
     referenceId: string,
-    newFspName: fspName,
+    newFspName: FspName,
     newFspAttributesRaw: object,
   ): Promise<RegistrationEntity> {
     //Identify new FSP

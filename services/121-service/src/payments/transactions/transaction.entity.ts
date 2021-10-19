@@ -1,8 +1,8 @@
-import { RegistrationEntity } from './../registration/registration.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
 import { Entity, Column, ManyToOne } from 'typeorm';
-import { ProgramEntity } from './program.entity';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { Base121Entity } from '../base.entity';
+import { ProgramEntity } from '../../programs/program.entity';
+import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { Base121Entity } from '../../base.entity';
 
 @Entity('transaction')
 export class TransactionEntity extends Base121Entity {

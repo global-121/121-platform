@@ -1,4 +1,4 @@
-import { fspName } from '../../fsp/financial-service-provider.entity';
+import { FspName } from '../../fsp/financial-service-provider.entity';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 
 export class RegistrationResponse {
@@ -18,7 +18,7 @@ export class RegistrationResponse {
 
   public status: RegistrationStatusEnum;
   public inclusionScore?: number;
-  public fsp: fspName | string;
+  public fsp: FspName | string;
   public namePartnerOrganization: string;
   public hasNote: boolean;
 

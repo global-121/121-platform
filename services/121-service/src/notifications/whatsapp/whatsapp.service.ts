@@ -1,3 +1,5 @@
+import { IntersolveService } from './../../fsp/intersolve.service';
+import { TransactionsService } from './../../payments/transactions/transactions.service';
 import {
   Injectable,
   Inject,
@@ -8,12 +10,12 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, In } from 'typeorm';
 import { EXTERNAL_API } from '../../config';
-import { fspName } from '../../fsp/financial-service-provider.entity';
+import { FspName } from '../../fsp/financial-service-provider.entity';
 import { IntersolvePayoutStatus } from '../../payments/intersolve/enum/intersolve-payout-status.enum';
 import { IntersolveBarcodeEntity } from '../../payments/intersolve/intersolve-barcode.entity';
 import { PaymentsService } from '../../payments/payments.service';
 import { ProgramEntity } from '../../programs/program.entity';
-import { TransactionEntity } from '../../programs/transactions.entity';
+import { TransactionEntity } from '../../payments/transactions/transaction.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { ImageCodeService } from '../../payments/imagecode/image-code.service';
@@ -43,8 +45,8 @@ export class WhatsappService {
 
   public constructor(
     private readonly imageCodeService: ImageCodeService,
-    @Inject(forwardRef(() => PaymentsService))
-    private readonly paymentsService: PaymentsService,
+    @Inject(forwardRef(() => IntersolveService))
+    private readonly intersolveService: IntersolveService,
   ) {}
 
   public async notifyByWhatsapp(
@@ -169,10 +171,7 @@ export class WhatsappService {
       TwilioStatus.undelivered,
     ];
     if (statuses.includes(callbackData.MessageStatus)) {
-      await this.paymentsService.processPaymentStatus(
-        fspName.intersolve,
-        callbackData,
-      );
+      await this.intersolveService.processStatus(callbackData);
     }
   }
 
@@ -300,7 +299,7 @@ export class WhatsappService {
         // Save results
         intersolveBarcode.send = true;
         await this.intersolveBarcodeRepository.save(intersolveBarcode);
-        await this.paymentsService.insertTransactionIntersolve(
+        await this.intersolveService.insertTransactionIntersolve(
           intersolveBarcode.payment,
           intersolveBarcode.amount,
           registration.id,

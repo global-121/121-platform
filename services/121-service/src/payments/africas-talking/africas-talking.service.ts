@@ -1,3 +1,4 @@
+import { TransactionsService } from './../transactions/transactions.service';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,7 +7,7 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../fsp/dto/payment-transaction-result.dto';
-import { fspName } from '../../fsp/financial-service-provider.entity';
+import { FspName } from '../../fsp/financial-service-provider.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { AfricasTalkingNotificationEntity } from './africas-talking-notification.entity';
 import { AfricasTalkingApiService } from './africas-talking.api.service';
@@ -21,6 +22,7 @@ export class AfricasTalkingService {
   >;
   public constructor(
     private readonly africasTalkingApiService: AfricasTalkingApiService,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async sendPayment(
@@ -31,7 +33,7 @@ export class AfricasTalkingService {
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = fspName.africasTalking;
+    fspTransactionResult.fspName = FspName.africasTalking;
 
     for (let payment of paymentList) {
       const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
@@ -47,6 +49,11 @@ export class AfricasTalkingService {
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
     }
+    this.transactionsService.storeAllTransactions(
+      fspTransactionResult,
+      programId,
+      paymentNr,
+    );
 
     return fspTransactionResult;
   }
@@ -115,5 +122,20 @@ export class AfricasTalkingService {
       programId: notification.requestMetadata['programId'],
       payment: notification.requestMetadata['payment'],
     };
+  }
+
+  public async processTransactionStatus(
+    africasTalkingNotificationData: AfricasTalkingNotificationDto,
+  ): Promise<void> {
+    const enrichedNotification = await this.processNotification(
+      africasTalkingNotificationData,
+    );
+
+    this.transactionsService.storeTransaction(
+      enrichedNotification.paTransactionResult,
+      enrichedNotification.programId,
+      enrichedNotification.payment,
+      FspName.africasTalking,
+    );
   }
 }

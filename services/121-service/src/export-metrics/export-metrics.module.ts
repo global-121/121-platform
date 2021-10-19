@@ -1,3 +1,4 @@
+import { ProgramEntity } from './../programs/program.entity';
 import { UserEntity } from './../user/user.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
 import { ActionModule } from './../actions/action.module';
@@ -11,7 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { TransactionEntity } from '../programs/transactions.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PaymentsModule } from '../payments/payments.module';
 
 @Module({
@@ -23,6 +24,7 @@ import { PaymentsModule } from '../payments/payments.module';
       RegistrationEntity,
       TransactionEntity,
       UserEntity,
+      ProgramEntity,
     ]),
     ProgramModule,
     UserModule,

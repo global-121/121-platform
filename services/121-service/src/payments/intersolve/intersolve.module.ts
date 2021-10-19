@@ -1,3 +1,4 @@
+import { UserEntity } from './../../user/user.entity';
 import { Module, HttpModule, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { IntersolveService } from './intersolve.service';
@@ -11,7 +12,7 @@ import { WhatsappModule } from '../../notifications/whatsapp/whatsapp.module';
 import { ImageCodeModule } from '../imagecode/image-code.module';
 import { IntersolveMockService } from './instersolve.mock';
 import { RegistrationEntity } from '../../registration/registration.entity';
-import { TransactionEntity } from '../../programs/transactions.entity';
+import { TransactionEntity } from '../transactions/transaction.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { UserModule } from '../../user/user.module';
 
@@ -25,6 +26,7 @@ import { UserModule } from '../../user/user.module';
       RegistrationEntity,
       TransactionEntity,
       ProgramEntity,
+      UserEntity,
     ]),
     ImageCodeModule,
     UserModule,
