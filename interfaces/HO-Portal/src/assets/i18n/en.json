@@ -191,7 +191,7 @@
       },
       "program-payout": {
         "section-title": "Manage Payments",
-        "installment-nr": "Payment #{{number}}",
+        "payment-nr": "Payment #{{number}}",
         "choose-payment": "Choose payment...",
         "all-closed-payments": "All closed payments",
         "closed": "Closed",
@@ -332,13 +332,13 @@
             "save": "Save note",
             "latest-update": "Latest update on: {{timestamp}}"
           },
-           "messageHistory": {
+          "messageHistory": {
             "section-title": "Message History"
           }
         },
         "payment-status-popup": {
-          "message-title": "Message sent payment #{{installment}}: {{timestamp}}",
-          "money-title": "Voucher sent payment #{{installment}}: {{timestamp}}",
+          "message-title": "Message sent payment #{{payment}}: {{timestamp}}",
+          "money-title": "Voucher sent payment #{{payment}}: {{timestamp}}",
           "error-message": "Error message",
           "fix-error": "Please contact the 121 development team to fix this error. Then use the button below to retry payment for this Person Affected.",
           "retry": "Retry payment for this PA",
