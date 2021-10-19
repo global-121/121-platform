@@ -1,3 +1,4 @@
+import { TransactionsModule } from './../transactions/transactions.module';
 import { UserEntity } from './../../user/user.entity';
 import { Module, HttpModule, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -30,6 +31,7 @@ import { UserModule } from '../../user/user.module';
     ]),
     ImageCodeModule,
     UserModule,
+    TransactionsModule,
     forwardRef(() => WhatsappModule),
   ],
   providers: [

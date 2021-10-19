@@ -1,3 +1,4 @@
+import { TransactionsService } from './../payments/transactions/transactions.service';
 import {
   Injectable,
   Inject,
@@ -61,6 +62,7 @@ export class IntersolveService {
     @Inject(forwardRef(() => WhatsappService))
     private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async sendPayment(
@@ -87,7 +89,7 @@ export class IntersolveService {
           select: ['id'],
           where: { referenceId: paResult.referenceId },
         });
-        await this.insertTransactionIntersolve(
+        const transactionResultDto = await this.storeTransactionResult(
           payment,
           paResult.calculatedAmount,
           registration.id,
@@ -271,7 +273,7 @@ export class IntersolveService {
       .then(
         async response => {
           const messageSid = response;
-          await this.insertTransactionIntersolve(
+          const transactionResultDto = await this.storeTransactionResult(
             voucherInfo.voucher.payment,
             voucherInfo.voucher.amount,
             registration.id,
@@ -551,8 +553,8 @@ export class IntersolveService {
     return unusedVouchers;
   }
 
-  public async insertTransactionIntersolve(
-    payment: number,
+  public async storeTransactionResult(
+    paymentNr: number,
     amount: number,
     registrationId: number,
     transactionStep: number,
@@ -560,32 +562,59 @@ export class IntersolveService {
     errorMessage: string,
     messageSid?: string,
   ): Promise<void> {
-    const transaction = new TransactionEntity();
-    transaction.status = status;
-    transaction.payment = payment;
-    transaction.amount = amount;
-    transaction.created = new Date();
-    transaction.errorMessage = errorMessage;
-    transaction.transactionStep = transactionStep;
+    const transactionResultDto = await this.createTransactionResult(
+      amount,
+      registrationId,
+      transactionStep,
+      status,
+      errorMessage,
+      messageSid,
+    );
+    this.transactionsService.storeTransaction(
+      transactionResultDto,
+      this.programId,
+      paymentNr,
+    );
+  }
+
+  public async createTransactionResult(
+    amount: number,
+    registrationId: number,
+    transactionStep: number,
+    status: StatusEnum,
+    errorMessage: string,
+    messageSid?: string,
+  ): Promise<PaTransactionResultDto> {
     const registration = await this.registrationRepository.findOne({
       where: { id: registrationId },
       relations: ['fsp', 'program'],
     });
-    transaction.registration = registration;
-    const programId = registration.program.id;
-    transaction.program = await this.programRepository.findOne(programId);
-    transaction.financialServiceProvider = registration.fsp;
 
-    transaction.customData = JSON.parse(JSON.stringify({}));
+    const transactionResult = new PaTransactionResultDto();
+    transactionResult.calculatedAmount = amount;
+    transactionResult.date = new Date();
+    transactionResult.referenceId = registration.referenceId;
+
+    transactionResult.message = errorMessage;
+    transactionResult.customData = JSON.parse(JSON.stringify({}));
     if (messageSid) {
-      transaction.customData['messageSid'] = messageSid;
+      transactionResult.customData['messageSid'] = messageSid;
     }
     if (registration.fsp.fsp === FspName.intersolve) {
-      transaction.customData['IntersolvePayoutStatus'] =
+      transactionResult.customData['IntersolvePayoutStatus'] =
         transactionStep === 1
           ? IntersolvePayoutStatus.InitialMessage
           : IntersolvePayoutStatus.VoucherSent;
     }
-    await this.transactionRepository.save(transaction);
+
+    transactionResult.status = status;
+
+    if (registration.fsp.fsp === FspName.intersolve) {
+      transactionResult.fspName = FspName.intersolve;
+    }
+    if (registration.fsp.fsp === FspName.intersolveNoWhatsapp) {
+      transactionResult.fspName = FspName.intersolveNoWhatsapp;
+    }
+    return transactionResult;
   }
 }

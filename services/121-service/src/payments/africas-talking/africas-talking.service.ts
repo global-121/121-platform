@@ -107,6 +107,7 @@ export class AfricasTalkingService {
     );
 
     const paTransactionResult = new PaTransactionResultDto();
+    paTransactionResult.fspName = FspName.africasTalking;
     paTransactionResult.referenceId =
       notification.requestMetadata['referenceId'];
     paTransactionResult.status =
@@ -135,7 +136,6 @@ export class AfricasTalkingService {
       enrichedNotification.paTransactionResult,
       enrichedNotification.programId,
       enrichedNotification.payment,
-      FspName.africasTalking,
     );
   }
 }

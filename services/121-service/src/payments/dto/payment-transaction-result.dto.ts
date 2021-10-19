@@ -14,4 +14,5 @@ export class PaTransactionResultDto {
   public date?: Date;
   public customData?: any;
   public calculatedAmount: number;
+  public fspName: FspName;
 }

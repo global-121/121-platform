@@ -1,6 +1,7 @@
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { Injectable } from '@nestjs/common';
 import { PaTransactionResultDto } from '../dto/payment-transaction-result.dto';
+import { FspName } from '../../fsp/financial-service-provider.entity';
 
 @Injectable()
 export class AfricasTalkingApiService {
@@ -17,6 +18,7 @@ export class AfricasTalkingApiService {
     const payments = AfricasTalking.PAYMENTS;
 
     const paTransactionResult = new PaTransactionResultDto();
+    paTransactionResult.fspName = FspName.africasTalking;
     paTransactionResult.referenceId =
       payload.recipients[0].metadata.referenceId;
     paTransactionResult.date = new Date();

@@ -299,7 +299,7 @@ export class WhatsappService {
         // Save results
         intersolveBarcode.send = true;
         await this.intersolveBarcodeRepository.save(intersolveBarcode);
-        await this.intersolveService.insertTransactionIntersolve(
+        await this.intersolveService.storeTransactionResult(
           intersolveBarcode.payment,
           intersolveBarcode.amount,
           registration.id,

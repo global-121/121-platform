@@ -131,11 +131,10 @@ export class TransactionsService {
     transactionResponse: PaTransactionResultDto,
     programId: number,
     payment: number,
-    fspName: FspName,
   ): Promise<void> {
     const program = await this.programRepository.findOne(programId);
     const fsp = await this.financialServiceProviderRepository.findOne({
-      where: { fsp: fspName },
+      where: { fsp: transactionResponse.fspName },
     });
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: transactionResponse.referenceId },
@@ -165,12 +164,7 @@ export class TransactionsService {
     // Align across FSPs in future again
     for (let transaction of transactionResults.africasTalkingTransactionResult
       .paList) {
-      await this.storeTransaction(
-        transaction,
-        programId,
-        payment,
-        FspName.africasTalking,
-      );
+      await this.storeTransaction(transaction, programId, payment);
     }
   }
 }
