@@ -1,5 +1,11 @@
-import { Post, Body, Controller, UseGuards } from '@nestjs/common';
-import { FspService } from './fsp.service';
+import {
+  Post,
+  Body,
+  Controller,
+  UseGuards,
+  forwardRef,
+  Inject,
+} from '@nestjs/common';
 import {
   ApiUseTags,
   ApiResponse,
@@ -7,19 +13,20 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
-import { fspName } from './financial-service-provider.entity';
+import { fspName } from '../../fsp/financial-service-provider.entity';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
-import { RolesGuard } from '../roles.guard';
+import { RolesGuard } from '../../roles.guard';
+import { PaymentsService } from '../payments.service';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
-@ApiUseTags('fsp')
-@Controller('fsp')
-export class FspController {
-  private readonly fspService: FspService;
-  public constructor(fspService: FspService) {
-    this.fspService = fspService;
-  }
+@ApiUseTags('payments/africas-talking')
+@Controller('payments/africas-talking')
+export class AfricasTalkingController {
+  public constructor(
+    @Inject(forwardRef(() => PaymentsService))
+    private paymentsService: PaymentsService,
+  ) {}
 
   @ApiOperation({
     title:
@@ -30,7 +37,7 @@ export class FspController {
   public async validationCallback(
     @Body() africasTalkingValidationData: AfricasTalkingValidationDto,
   ): Promise<void> {
-    return await this.fspService.checkPaymentValidation(
+    return await this.paymentsService.checkPaymentValidation(
       fspName.africasTalking,
       africasTalkingValidationData,
     );
@@ -45,7 +52,7 @@ export class FspController {
   public async notificationCallback(
     @Body() africasTalkingNotificationData: AfricasTalkingNotificationDto,
   ): Promise<void> {
-    await this.fspService.processPaymentStatus(
+    await this.paymentsService.processPaymentStatus(
       fspName.africasTalking,
       africasTalkingNotificationData,
     );

@@ -1,6 +1,6 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
-import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
+import { IntersolvePayoutStatus } from '../payments/intersolve/enum/intersolve-payout-status.enum';
 
 export enum TwilioStatus {
   delivered = 'delivered',

@@ -16,11 +16,10 @@ import { ActionService } from '../actions/action.service';
 import { ExportType } from './dto/export-details';
 import { FileDto } from './dto/file.dto';
 import { ProgramQuestionForExport } from '../programs/dto/program-question-for-export.dto';
-import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
+import { IntersolvePayoutStatus } from '../payments/intersolve/enum/intersolve-payout-status.enum';
 import { without, compact, sortBy } from 'lodash';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { TransactionEntity } from '../programs/transactions.entity';
-import { FspService } from '../fsp/fsp.service';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { Attributes } from '../registration/dto/update-attribute.dto';
 import { TotalIncluded } from './dto/total-included.dto';
@@ -44,7 +43,6 @@ export class ExportMetricsService {
   public constructor(
     private readonly actionService: ActionService,
     private readonly paymentsService: PaymentsService,
-    private readonly fspService: FspService,
     private readonly registrationsService: RegistrationsService,
   ) {}
 
@@ -130,7 +128,7 @@ export class ExportMetricsService {
   }
 
   private async getUnusedVouchers(): Promise<FileDto> {
-    const unusedVouchers = await this.fspService.getUnusedVouchers();
+    const unusedVouchers = await this.paymentsService.getUnusedVouchers();
     unusedVouchers.forEach(v => {
       v.name = this.registrationsService.getName(v.customData);
       delete v.customData;

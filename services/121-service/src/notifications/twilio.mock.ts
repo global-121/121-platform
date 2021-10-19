@@ -8,7 +8,7 @@ import {
   TwilioStatusCallbackDto,
   TwilioValidateRequestDto,
 } from './twilio.dto';
-import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
+import { IntersolvePayoutStatus } from '../payments/intersolve/enum/intersolve-payout-status.enum';
 
 class PhoneNumbers {
   public phoneNumber;

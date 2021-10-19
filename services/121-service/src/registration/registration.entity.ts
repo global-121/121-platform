@@ -17,7 +17,7 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { LanguageEnum } from './enum/language.enum';
 import { IsInt, IsPositive, IsOptional } from 'class-validator';
 import { TransactionEntity } from '../programs/transactions.entity';
-import { ImageCodeExportVouchersEntity } from '../notifications/imagecode/image-code-export-vouchers.entity';
+import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 
 @Entity('registration')

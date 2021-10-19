@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
-import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 import { Repository } from 'typeorm';
-import { AfricasTalkingApiService } from './api/africas-talking.api.service';
-import { fspName } from './financial-service-provider.entity';
-import { StatusEnum } from '../shared/enum/status.enum';
+import { PaPaymentDataDto } from '../../fsp/dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-} from './dto/payment-transaction-result.dto';
-import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
+} from '../../fsp/dto/payment-transaction-result.dto';
+import { fspName } from '../../fsp/financial-service-provider.entity';
+import { StatusEnum } from '../../shared/enum/status.enum';
+import { AfricasTalkingNotificationEntity } from './africas-talking-notification.entity';
+import { AfricasTalkingApiService } from './africas-talking.api.service';
+import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
+import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 
 @Injectable()
 export class AfricasTalkingService {

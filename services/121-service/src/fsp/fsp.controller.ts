@@ -8,7 +8,6 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
-import { IntersolveService } from './intersolve.service';
 import { UserRole } from '../user-role.enum';
 import { Roles } from '../roles.decorator';
 import { UpdateFspAttributeDto, UpdateFspDto } from './api/dto/update-fsp.dto';
@@ -20,10 +19,7 @@ import { RolesGuard } from '../roles.guard';
 @ApiUseTags('fsp')
 @Controller('fsp')
 export class FspController {
-  private readonly fspService: FspService;
-  public constructor(fspService: FspService) {
-    this.fspService = fspService;
-  }
+  public constructor(private readonly fspService: FspService) {}
 
   @ApiOperation({ title: 'Get fsp' })
   @ApiImplicitParam({ name: 'fspId', required: true, type: 'integer' })

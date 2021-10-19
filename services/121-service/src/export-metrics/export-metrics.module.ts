@@ -1,6 +1,5 @@
 import { UserEntity } from './../user/user.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
-import { FspModule } from '../fsp/fsp.module';
 import { ActionModule } from './../actions/action.module';
 import { ExportMetricsService } from './export-metrics.service';
 import { ExportMetricsController } from './export-metrics.controller';
@@ -13,6 +12,7 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { TransactionEntity } from '../programs/transactions.entity';
+import { PaymentsModule } from '../payments/payments.module';
 
 @Module({
   imports: [
@@ -28,7 +28,7 @@ import { TransactionEntity } from '../programs/transactions.entity';
     UserModule,
     RegistrationsModule,
     ActionModule,
-    FspModule,
+    PaymentsModule,
     RegistrationsModule,
   ],
   providers: [ExportMetricsService],

@@ -1,37 +1,37 @@
-import { IntersolvePayoutStatus } from './api/enum/intersolve-payout-status.enum';
-import { IntersolveIssueCardResponse } from './api/dto/intersolve-issue-card-response.dto';
-import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import {
   Injectable,
+  Inject,
+  forwardRef,
   HttpException,
   HttpStatus,
-  forwardRef,
-  Inject,
 } from '@nestjs/common';
-import { IntersolveApiService } from './api/instersolve.api.service';
-import { StatusEnum } from '../shared/enum/status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, Not, IsNull, Between } from 'typeorm';
-import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
-import { ProgramEntity } from '../programs/program.entity';
-import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
-import crypto from 'crypto';
-import { ImageCodeService } from '../notifications/imagecode/image-code.service';
-import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
+import { PaPaymentDataDto } from '../../fsp/dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-} from './dto/payment-transaction-result.dto';
-import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
-import { UnusedVoucherDto } from './dto/unused-voucher.dto';
-import { TransactionEntity } from '../programs/transactions.entity';
-import { IntersolveRequestEntity } from './intersolve-request.entity';
+} from '../../fsp/dto/payment-transaction-result.dto';
+import { UnusedVoucherDto } from '../../fsp/dto/unused-voucher.dto';
+import { fspName } from '../../fsp/financial-service-provider.entity';
+import { ImageCodeService } from '../imagecode/image-code.service';
 import {
-  TwilioStatus,
   TwilioStatusCallbackDto,
-} from '../notifications/twilio.dto';
-import { fspName } from './financial-service-provider.entity';
-import { RegistrationEntity } from '../registration/registration.entity';
+  TwilioStatus,
+} from '../../notifications/twilio.dto';
+import crypto from 'crypto';
+import { WhatsappService } from '../../notifications/whatsapp/whatsapp.service';
+import { ProgramEntity } from '../../programs/program.entity';
+import { TransactionEntity } from '../../programs/transactions.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
+import { StatusEnum } from '../../shared/enum/status.enum';
+import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
+import { IntersolvePayoutStatus } from './enum/intersolve-payout-status.enum';
+import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
+import { IntersolveApiService } from './instersolve.api.service';
+import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
+import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
+import { IntersolveRequestEntity } from './intersolve-request.entity';
 
 @Injectable()
 export class IntersolveService {
@@ -50,9 +50,9 @@ export class IntersolveService {
     IntersolveRequestEntity
   >;
   @InjectRepository(TransactionEntity)
-  public transactionRepository: Repository<TransactionEntity>;
+  private transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
-  public programRepository: Repository<ProgramEntity>;
+  private programRepository: Repository<ProgramEntity>;
 
   private readonly programId = 1;
 

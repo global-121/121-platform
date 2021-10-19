@@ -1,31 +1,29 @@
-import { RegistrationEntity } from './../../registration/registration.entity';
-import { EXTERNAL_API } from '../../config';
 import {
+  Injectable,
+  Inject,
   forwardRef,
   HttpException,
   HttpStatus,
-  Inject,
-  Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, In, MoreThan } from 'typeorm';
-import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
-import { twilioClient } from '../twilio.client';
-import { ProgramEntity } from '../../programs/program.entity';
-import { ImageCodeService } from '../imagecode/image-code.service';
-import { IntersolveBarcodeEntity } from '../../fsp/intersolve-barcode.entity';
-import { StatusEnum } from '../../shared/enum/status.enum';
-import { FspService } from '../../fsp/fsp.service';
+import { Repository, getRepository, In } from 'typeorm';
+import { EXTERNAL_API } from '../../config';
 import { fspName } from '../../fsp/financial-service-provider.entity';
-import { IntersolveService } from '../../fsp/intersolve.service';
-import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
+import { IntersolvePayoutStatus } from '../../payments/intersolve/enum/intersolve-payout-status.enum';
+import { IntersolveBarcodeEntity } from '../../payments/intersolve/intersolve-barcode.entity';
+import { PaymentsService } from '../../payments/payments.service';
+import { ProgramEntity } from '../../programs/program.entity';
+import { TransactionEntity } from '../../programs/transactions.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
+import { StatusEnum } from '../../shared/enum/status.enum';
+import { ImageCodeService } from '../../payments/imagecode/image-code.service';
+import { twilioClient } from '../twilio.client';
 import {
   TwilioStatusCallbackDto,
-  TwilioIncomingCallbackDto,
   TwilioStatus,
+  TwilioIncomingCallbackDto,
 } from '../twilio.dto';
-import { IntersolvePayoutStatus } from '../../fsp/api/enum/intersolve-payout-status.enum';
-import { TransactionEntity } from '../../programs/transactions.entity';
+import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 
 @Injectable()
 export class WhatsappService {
@@ -45,10 +43,8 @@ export class WhatsappService {
 
   public constructor(
     private readonly imageCodeService: ImageCodeService,
-    @Inject(forwardRef(() => IntersolveService))
-    private readonly intersolveService: IntersolveService,
-    @Inject(forwardRef(() => FspService))
-    private readonly fspService: FspService,
+    @Inject(forwardRef(() => PaymentsService))
+    private readonly paymentsService: PaymentsService,
   ) {}
 
   public async notifyByWhatsapp(
@@ -173,7 +169,7 @@ export class WhatsappService {
       TwilioStatus.undelivered,
     ];
     if (statuses.includes(callbackData.MessageStatus)) {
-      await this.fspService.processPaymentStatus(
+      await this.paymentsService.processPaymentStatus(
         fspName.intersolve,
         callbackData,
       );
@@ -304,7 +300,7 @@ export class WhatsappService {
         // Save results
         intersolveBarcode.send = true;
         await this.intersolveBarcodeRepository.save(intersolveBarcode);
-        await this.intersolveService.insertTransactionIntersolve(
+        await this.paymentsService.insertTransactionIntersolve(
           intersolveBarcode.payment,
           intersolveBarcode.amount,
           registration.id,

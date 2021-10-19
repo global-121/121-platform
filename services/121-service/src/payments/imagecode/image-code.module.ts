@@ -1,4 +1,4 @@
-import { RegistrationEntity } from './../../registration/registration.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
 import { ImageCodeService } from './image-code.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';

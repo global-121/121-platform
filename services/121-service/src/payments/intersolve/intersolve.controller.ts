@@ -10,7 +10,6 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { FspService } from './fsp.service';
 import {
   ApiUseTags,
   ApiResponse,
@@ -22,22 +21,16 @@ import { IntersolveService } from './intersolve.service';
 import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
 import { Response } from 'express-serve-static-core';
 import stream from 'stream';
-import { UserRole } from '../user-role.enum';
-import { Roles } from '../roles.decorator';
-import { RolesGuard } from '../roles.guard';
+import { UserRole } from '../../user-role.enum';
+import { Roles } from '../../roles.decorator';
+import { RolesGuard } from '../../roles.guard';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
-@ApiUseTags('fsp')
-@Controller('fsp')
-export class FspController {
-  private readonly fspService: FspService;
-  public constructor(
-    fspService: FspService,
-    private intersolveService: IntersolveService,
-  ) {
-    this.fspService = fspService;
-  }
+@ApiUseTags('payments/intersolve')
+@Controller('payments/intersolve')
+export class IntersolveController {
+  public constructor(private intersolveService: IntersolveService) {}
 
   @Roles(UserRole.RunProgram, UserRole.PersonalData, UserRole.View)
   @ApiOperation({

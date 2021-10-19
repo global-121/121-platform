@@ -13,10 +13,10 @@ import {
 import { WhatsappService } from './whatsapp.service';
 import { WhatsappController } from './whatsapp.controller';
 import { TwilioMessageEntity } from '../twilio.entity';
-import { ImageCodeModule } from '../imagecode/image-code.module';
-import { IntersolveBarcodeEntity } from '../../fsp/intersolve-barcode.entity';
-import { FspModule } from '../../fsp/fsp.module';
+import { ImageCodeModule } from '../../payments/imagecode/image-code.module';
+import { IntersolveBarcodeEntity } from '../../payments/intersolve/intersolve-barcode.entity';
 import { API_PATHS } from '../../config';
+import { PaymentsModule } from '../../payments/payments.module';
 
 @Module({
   imports: [
@@ -29,7 +29,7 @@ import { API_PATHS } from '../../config';
       TransactionEntity,
     ]),
     ImageCodeModule,
-    forwardRef(() => FspModule),
+    forwardRef(() => PaymentsModule),
   ],
   providers: [WhatsappService],
   controllers: [WhatsappController],
