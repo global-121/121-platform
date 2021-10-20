@@ -20,10 +20,10 @@ describe('UserPage', () => {
     }).compileComponents();
   }));
 
-  let mockAuthService: jasmine.SpyObj<AuthService>;
+  let mockAuthService: jasmine.SpyObj<any>;
 
   beforeEach(() => {
-    mockAuthService = TestBed.get(AuthService);
+    mockAuthService = TestBed.inject(AuthService);
     mockAuthService.authenticationState$ = of(null);
 
     fixture = TestBed.createComponent(UserPage);

@@ -32,10 +32,10 @@ describe('EditPersonAffectedPopupComponent', () => {
     }).compileComponents();
   }));
 
-  let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
+  let mockProgramsApi: jasmine.SpyObj<any>;
 
   beforeEach(() => {
-    mockProgramsApi = TestBed.get(ProgramsServiceApiService);
+    mockProgramsApi = TestBed.inject(ProgramsServiceApiService);
     mockProgramsApi.retrieveNote.and.returnValue(
       new Promise((r) =>
         r({

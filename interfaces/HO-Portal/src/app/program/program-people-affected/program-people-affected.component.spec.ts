@@ -38,10 +38,10 @@ describe('ProgramPeopleAffectedComponent', () => {
     }).compileComponents();
   }));
 
-  let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
+  let mockProgramsApi: jasmine.SpyObj<any>;
 
   beforeEach(() => {
-    mockProgramsApi = TestBed.get(ProgramsServiceApiService);
+    mockProgramsApi = TestBed.inject(ProgramsServiceApiService);
     mockProgramsApi.getProgramById.and.returnValue(
       new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
     );

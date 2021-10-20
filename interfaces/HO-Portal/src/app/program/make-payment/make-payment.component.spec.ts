@@ -44,8 +44,8 @@ describe('MakePaymentComponent', () => {
     created: new Date(),
   };
 
-  let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
-  let mockPastPaymentsService: jasmine.SpyObj<PastPaymentsService>;
+  let mockProgramsApi: jasmine.SpyObj<any>;
+  let mockPastPaymentsService: jasmine.SpyObj<any>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -60,7 +60,7 @@ describe('MakePaymentComponent', () => {
   }));
 
   beforeEach(() => {
-    mockProgramsApi = TestBed.get(ProgramsServiceApiService);
+    mockProgramsApi = TestBed.inject(ProgramsServiceApiService);
 
     mockProgramsApi.getTotalIncluded.and.returnValue(
       new Promise((r) => r({ registrations: 2, transferAmounts: 2 })),
@@ -73,7 +73,7 @@ describe('MakePaymentComponent', () => {
       new Promise((r) => r(mockLatestFinishAction)),
     );
 
-    mockPastPaymentsService = TestBed.get(PastPaymentsService);
+    mockPastPaymentsService = TestBed.inject(PastPaymentsService);
     mockPastPaymentsService.getLastInstallmentId.and.returnValue(
       new Promise((r) => r(mockLastInstallmentId)),
     );

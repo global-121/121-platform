@@ -94,7 +94,7 @@ export class AuthService {
   }
 
   public async login(username: string, password: string): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.programsService.login(username, password).then(
         (response) => {
           if (response && response.token) {
@@ -127,7 +127,7 @@ export class AuthService {
   }
 
   public async setPassword(newPassword: string): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.programsService.changePassword(newPassword).then(
         (response) => {
           console.log('AuthService: Password changed!');
