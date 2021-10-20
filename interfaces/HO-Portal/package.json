@@ -48,10 +48,11 @@
     "@ngx-translate/http-loader": "^5.0.0",
     "@popperjs/core": "~2.4.4",
     "@swimlane/ngx-charts": "^14.0.0",
+    "@swimlane/ngx-datatable": "^17.1.0",
     "core-js": "2.6.8",
     "file-saver": "^2.0.2",
     "ngx-popperjs": "^9.0.7",
-    "rxjs": "^6.6.2",
+    "rxjs": "~6.5.5",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.3"
   },
