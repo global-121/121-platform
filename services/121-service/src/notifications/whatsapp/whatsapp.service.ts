@@ -1,31 +1,28 @@
-import { RegistrationEntity } from './../../registration/registration.entity';
-import { EXTERNAL_API } from '../../config';
 import {
+  Injectable,
+  Inject,
   forwardRef,
   HttpException,
   HttpStatus,
-  Inject,
-  Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, In, MoreThan } from 'typeorm';
-import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
-import { twilioClient } from '../twilio.client';
+import { Repository, getRepository, In } from 'typeorm';
+import { EXTERNAL_API } from '../../config';
 import { ProgramEntity } from '../../programs/program.entity';
-import { ImageCodeService } from '../imagecode/image-code.service';
-import { IntersolveBarcodeEntity } from '../../fsp/intersolve-barcode.entity';
+import { TransactionEntity } from '../../payments/transactions/transaction.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
-import { FspService } from '../../fsp/fsp.service';
-import { fspName } from '../../fsp/financial-service-provider.entity';
-import { IntersolveService } from '../../fsp/intersolve.service';
-import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
+import { ImageCodeService } from '../../payments/imagecode/image-code.service';
+import { twilioClient } from '../twilio.client';
 import {
   TwilioStatusCallbackDto,
-  TwilioIncomingCallbackDto,
   TwilioStatus,
+  TwilioIncomingCallbackDto,
 } from '../twilio.dto';
-import { IntersolvePayoutStatus } from '../../fsp/api/enum/intersolve-payout-status.enum';
-import { TransactionEntity } from '../../programs/transactions.entity';
+import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
+import { IntersolvePayoutStatus } from '../../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
+import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
+import { IntersolveService } from '../../payments/fsp-integration/intersolve/intersolve.service';
 
 @Injectable()
 export class WhatsappService {
@@ -47,8 +44,6 @@ export class WhatsappService {
     private readonly imageCodeService: ImageCodeService,
     @Inject(forwardRef(() => IntersolveService))
     private readonly intersolveService: IntersolveService,
-    @Inject(forwardRef(() => FspService))
-    private readonly fspService: FspService,
   ) {}
 
   public async notifyByWhatsapp(
@@ -173,10 +168,7 @@ export class WhatsappService {
       TwilioStatus.undelivered,
     ];
     if (statuses.includes(callbackData.MessageStatus)) {
-      await this.fspService.processPaymentStatus(
-        fspName.intersolve,
-        callbackData,
-      );
+      await this.intersolveService.processStatus(callbackData);
     }
   }
 
@@ -212,19 +204,18 @@ export class WhatsappService {
       relations: ['images', 'images.barcode'],
     });
 
-    // Don't send more then 3 vouchers, so no vouchers of more than 2 installments ago
-    const lastInstallment = await this.transactionRepository
+    // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
+    const lastPayment = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select('MAX(transaction.installment)', 'max')
+      .select('MAX(transaction.payment)', 'max')
       .getRawOne();
-    const minimumInstallment = lastInstallment ? lastInstallment.max - 2 : 0;
+    const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
 
     return registrationWithVouchers
       .map(registration => {
         registration.images = registration.images.filter(
           image =>
-            !image.barcode.send &&
-            image.barcode.installment >= minimumInstallment,
+            !image.barcode.send && image.barcode.payment >= minimumPayment,
         );
         return registration;
       })
@@ -285,7 +276,7 @@ export class WhatsappService {
           intersolveBarcode,
         );
 
-        // Only include text with first voucher (across PA's and installments)
+        // Only include text with first voucher (across PA's and payments)
         let message = firstVoucherSent
           ? ''
           : registrationsWithOpenVouchers.length > 1
@@ -305,8 +296,8 @@ export class WhatsappService {
         // Save results
         intersolveBarcode.send = true;
         await this.intersolveBarcodeRepository.save(intersolveBarcode);
-        await this.intersolveService.insertTransactionIntersolve(
-          intersolveBarcode.installment,
+        await this.intersolveService.storeTransactionResult(
+          intersolveBarcode.payment,
           intersolveBarcode.amount,
           registration.id,
           2,

@@ -35,9 +35,7 @@ export class MetricsStatesOverTimeComponent implements OnChanges {
 
   private async createChartData() {
     const pastPayments =
-      await this.pastPaymentsService.getInstallmentsWithStateSums(
-        this.program.id,
-      );
+      await this.pastPaymentsService.getPaymentsWithStateSums(this.program.id);
 
     const chartData = pastPayments.map((payment) => {
       return {

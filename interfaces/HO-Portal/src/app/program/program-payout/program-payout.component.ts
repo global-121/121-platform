@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ExportType } from 'src/app/models/export-type.model';
-import { Installment, InstallmentData } from 'src/app/models/installment.model';
+import { Payment, PaymentData } from 'src/app/models/payment.model';
 import {
   DistributionFrequency,
   Program,
@@ -36,22 +36,22 @@ export class ProgramPayoutComponent implements OnInit {
   public enumExportType = ExportType;
 
   public program: Program;
-  public installments: Installment[];
+  public payments: Payment[];
 
   public canMakePayment: boolean;
   public canMakeExport: boolean;
 
-  public exportInstallmentId = 0;
-  public exportInstallmentAvailable: boolean;
+  public exportPaymentId = 0;
+  public exportPaymentAvailable: boolean;
 
-  private pastInstallments: InstallmentData[];
+  private pastPayments: PaymentData[];
   public lastPaymentResults: LastPaymentResults;
 
-  public lastInstallmentId: number;
-  public nextInstallmentId: number;
+  public lastPaymentId: number;
+  public nextPaymentId: number;
   private totalIncluded: number;
-  public minInstallment: number;
-  public maxInstallment: number;
+  public minPayment: number;
+  public maxPayment: number;
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -73,7 +73,7 @@ export class ProgramPayoutComponent implements OnInit {
       await this.programsService.getTotalIncluded(this.programId)
     ).registrations;
 
-    await this.createInstallments();
+    await this.createPayments();
     this.lastPaymentResults = await this.getLastPaymentResults();
     this.checkPhaseReady();
   }
@@ -90,9 +90,9 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private async getLastPaymentResults(): Promise<LastPaymentResults> {
-    const installment = this.getInstallmentById(this.lastInstallmentId);
+    const payment = this.getPaymentById(this.lastPaymentId);
     const results = {
-      amount: installment ? installment.amount : 0,
+      amount: payment ? payment.amount : 0,
       error: 0,
       success: 0,
       waiting: 0,
@@ -100,64 +100,64 @@ export class ProgramPayoutComponent implements OnInit {
 
     const transactions = await this.programsService.getTransactions(
       this.programId,
-      this.lastInstallmentId,
+      this.lastPaymentId,
     );
 
-    let installmentTransactions;
+    let paymentTransactions;
     if (transactions && transactions.length) {
-      installmentTransactions = transactions.filter(
-        (transaction) => transaction.installment === this.lastInstallmentId,
+      paymentTransactions = transactions.filter(
+        (transaction) => transaction.payment === this.lastPaymentId,
       );
     }
 
-    if (!installmentTransactions || !installmentTransactions.length) {
+    if (!paymentTransactions || !paymentTransactions.length) {
       return results;
     }
 
-    const taError = installmentTransactions.filter(
+    const taError = paymentTransactions.filter(
       (t) => t.status === StatusEnum.error,
     );
-    const taDone = installmentTransactions.filter(
+    const taDone = paymentTransactions.filter(
       (t) => t.status === StatusEnum.success,
     );
-    const taWait = installmentTransactions.filter(
+    const taWait = paymentTransactions.filter(
       (t) => t.status === StatusEnum.waiting,
     );
 
     return {
-      amount: installment.amount,
+      amount: payment.amount,
       error: taError.length,
       success: taDone.length,
       waiting: taWait.length,
     };
   }
 
-  private createTemplateInstallments(count: number): Installment[] {
+  private createTemplatePayments(count: number): Payment[] {
     return Array(count)
       .fill(1)
       .map((_, index) => ({
         id: index + 1,
-        installmentDate: new Date(),
+        paymentDate: new Date(),
         amount: this.program.fixedTransferValue,
         statusOpen: true,
         isExportAvailable: false,
       }));
   }
 
-  private getInstallmentById(id: number): Installment {
-    return this.installments.find((item) => item.id === id);
+  private getPaymentById(id: number): Payment {
+    return this.payments.find((item) => item.id === id);
   }
 
-  private fillInstallmentHistory(pastInstallments: Installment[]): void {
-    pastInstallments.forEach((pastInstallment) => {
-      const installment = this.getInstallmentById(pastInstallment.id);
-      installment.amount = pastInstallment.amount;
-      installment.installmentDate = pastInstallment.installmentDate;
-      installment.statusOpen = false;
-      installment.isExportAvailable = true;
+  private fillPaymentHistory(pastPayments: Payment[]): void {
+    pastPayments.forEach((pastPayment) => {
+      const payment = this.getPaymentById(pastPayment.id);
+      payment.amount = pastPayment.amount;
+      payment.paymentDate = pastPayment.paymentDate;
+      payment.statusOpen = false;
+      payment.isExportAvailable = true;
 
       // Save updated values:
-      this.installments[this.installments.indexOf(installment)] = installment;
+      this.payments[this.payments.indexOf(payment)] = payment;
     });
   }
 
@@ -165,54 +165,52 @@ export class ProgramPayoutComponent implements OnInit {
     startDate: Date,
     frequency: DistributionFrequency,
   ): void {
-    const maxInstallmentDate = new Date(startDate);
+    const maxPaymentDate = new Date(startDate);
 
-    this.installments = this.installments.map((installment) => {
-      // Skip past-installments
-      if (!installment.statusOpen) {
-        return installment;
+    this.payments = this.payments.map((payment) => {
+      // Skip past-payments
+      if (!payment.statusOpen) {
+        return payment;
       }
 
       switch (frequency) {
         case DistributionFrequency.week:
-          maxInstallmentDate.setDate(maxInstallmentDate.getDate() + 7);
+          maxPaymentDate.setDate(maxPaymentDate.getDate() + 7);
           break;
         case DistributionFrequency.month:
         default:
-          maxInstallmentDate.setMonth(maxInstallmentDate.getMonth() + 1);
+          maxPaymentDate.setMonth(maxPaymentDate.getMonth() + 1);
           break;
       }
 
-      installment.installmentDate = new Date(maxInstallmentDate);
+      payment.paymentDate = new Date(maxPaymentDate);
 
-      return installment;
+      return payment;
     });
   }
 
-  private async createInstallments() {
-    this.installments = this.createTemplateInstallments(
+  private async createPayments() {
+    this.payments = this.createTemplatePayments(
       this.program.distributionDuration,
     );
 
-    this.pastInstallments = await this.programsService.getPastInstallments(
+    this.pastPayments = await this.programsService.getPastPayments(
       this.programId,
     );
-    this.lastInstallmentId =
-      await this.pastPaymentsService.getLastInstallmentId(
-        this.programId,
-        this.pastInstallments,
-      );
-    this.nextInstallmentId =
-      this.lastInstallmentId < this.program.distributionDuration
-        ? this.lastInstallmentId + 1
+    this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
+      this.programId,
+      this.pastPayments,
+    );
+    this.nextPaymentId =
+      this.lastPaymentId < this.program.distributionDuration
+        ? this.lastPaymentId + 1
         : 0;
 
-    this.fillInstallmentHistory(this.pastInstallments);
+    this.fillPaymentHistory(this.pastPayments);
 
     let startDate = new Date();
-    if (this.pastInstallments && this.pastInstallments.length > 1) {
-      startDate =
-        this.pastInstallments[this.pastInstallments.length - 1].installmentDate;
+    if (this.pastPayments && this.pastPayments.length > 1) {
+      startDate = this.pastPayments[this.pastPayments.length - 1].paymentDate;
     }
     this.setFutureDates(startDate, this.program.distributionFrequency);
 
@@ -220,29 +218,29 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private setupNextPayment() {
-    const nextPaymentIndex = this.installments.findIndex(
-      (installment) => installment.statusOpen === true,
+    const nextPaymentIndex = this.payments.findIndex(
+      (payment) => payment.statusOpen === true,
     );
     if (nextPaymentIndex > -1) {
-      this.installments[nextPaymentIndex].isExportAvailable =
+      this.payments[nextPaymentIndex].isExportAvailable =
         this.totalIncluded > 0;
     }
   }
 
-  public changeExportInstallment() {
-    console.log(this.exportInstallmentId);
-    if (Number(this.exportInstallmentId) === 0) {
-      this.exportInstallmentAvailable = false;
+  public changeExportPayment() {
+    console.log(this.exportPaymentId);
+    if (Number(this.exportPaymentId) === 0) {
+      this.exportPaymentAvailable = false;
       return;
     } else {
-      this.exportInstallmentAvailable = true;
+      this.exportPaymentAvailable = true;
     }
-    if (Number(this.exportInstallmentId) < 0) {
-      this.minInstallment = 1;
-      this.maxInstallment = this.lastInstallmentId;
-    } else if (this.exportInstallmentId > 0) {
-      this.minInstallment = this.exportInstallmentId;
-      this.maxInstallment = this.exportInstallmentId;
+    if (Number(this.exportPaymentId) < 0) {
+      this.minPayment = 1;
+      this.maxPayment = this.lastPaymentId;
+    } else if (this.exportPaymentId > 0) {
+      this.minPayment = this.exportPaymentId;
+      this.maxPayment = this.exportPaymentId;
     }
   }
 
@@ -261,7 +259,7 @@ export class ProgramPayoutComponent implements OnInit {
     await this.programsService
       .submitPayout(
         this.programId,
-        this.lastInstallmentId,
+        this.lastPaymentId,
         this.lastPaymentResults.amount,
         null,
       )
@@ -313,7 +311,7 @@ export class ProgramPayoutComponent implements OnInit {
   private checkPhaseReady() {
     const isReady =
       this.program.phase !== ProgramPhase.payment ||
-      this.lastInstallmentId === this.program.distributionDuration;
+      this.lastPaymentId === this.program.distributionDuration;
 
     this.isCompleted.emit(isReady);
   }

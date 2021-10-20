@@ -26,7 +26,7 @@ export class MakePaymentComponent implements OnInit {
 
   public totalIncluded: number;
   public totalTransferAmounts: number;
-  public lastInstallmentId: number;
+  public lastPaymentId: number;
 
   public amountInput: number;
   public totalAmountMessage: string;
@@ -58,8 +58,9 @@ export class MakePaymentComponent implements OnInit {
     );
     this.totalIncluded = totalIncluded.registrations;
     this.totalTransferAmounts = totalIncluded.transferAmounts;
-    this.lastInstallmentId =
-      await this.pastPaymentsService.getLastInstallmentId(this.programId);
+    this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
+      this.programId,
+    );
 
     this.paymentInProgress = await this.checkPaymentInProgress();
     this.updateTotalAmountMessage();
@@ -69,16 +70,16 @@ export class MakePaymentComponent implements OnInit {
   private checkIsEnabled(): boolean {
     this.isEnabled =
       this.totalIncluded > 0 &&
-      this.lastInstallmentId < this.program.distributionDuration &&
+      this.lastPaymentId < this.program.distributionDuration &&
       !this.paymentInProgress;
     return this.isEnabled;
   }
 
-  private async getNextInstallmentId(): Promise<number> {
+  private async getNextPaymentId(): Promise<number> {
     let previousId = 0;
 
-    if (this.lastInstallmentId > 0) {
-      previousId = this.lastInstallmentId;
+    if (this.lastPaymentId > 0) {
+      previousId = this.lastPaymentId;
     }
 
     return previousId + 1;
@@ -87,10 +88,10 @@ export class MakePaymentComponent implements OnInit {
   public async performPayment(): Promise<void> {
     this.isInProgress = true;
 
-    const nextInstallmentId = await this.getNextInstallmentId();
+    const nextPaymentId = await this.getNextPaymentId();
 
     await this.programsService
-      .submitPayout(this.programId, nextInstallmentId, this.amountInput)
+      .submitPayout(this.programId, nextPaymentId, this.amountInput)
       .then(
         (response) => this.onPaymentSuccess(response),
         (error) => this.onPaymentError(error),

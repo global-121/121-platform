@@ -19,7 +19,7 @@ import { BulkImportService } from './services/bulk-import.service';
 import { ActionModule } from '../actions/action.module';
 import { ProgramModule } from '../programs/programs.module';
 import { FspModule } from '../fsp/fsp.module';
-import { TransactionEntity } from '../programs/transactions.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { RegistrationAnswersService } from './services/registration-answers.service';
 
 @Module({

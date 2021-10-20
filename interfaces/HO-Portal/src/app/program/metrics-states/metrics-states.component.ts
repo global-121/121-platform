@@ -189,14 +189,15 @@ export class MetricsStatesComponent implements OnChanges {
   }
 
   private async createPastPaymentsOptions() {
-    const pastInstallments =
-      await this.pastPaymentsService.getInstallmentsWithDates(this.program.id);
+    const pastPayments = await this.pastPaymentsService.getPaymentsWithDates(
+      this.program.id,
+    );
 
-    this.pastPayments = pastInstallments.map((payment) => {
+    this.pastPayments = pastPayments.map((payment) => {
       return {
         id: payment.id,
         date: payment.date,
-        value: 'installment=' + payment.id,
+        value: 'payment=' + payment.id,
       };
     });
 
@@ -206,8 +207,9 @@ export class MetricsStatesComponent implements OnChanges {
   }
 
   private async createPastMonthsOptions() {
-    const pastYearMonths =
-      await this.pastPaymentsService.getInstallmentYearMonths(this.program.id);
+    const pastYearMonths = await this.pastPaymentsService.getPaymentYearMonths(
+      this.program.id,
+    );
 
     this.pastMonths = pastYearMonths.map((item) => {
       const date = new Date(item.date);

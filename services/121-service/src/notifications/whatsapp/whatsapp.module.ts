@@ -1,6 +1,6 @@
 import { RegistrationEntity } from './../../registration/registration.entity';
 import { ProgramEntity } from './../../programs/program.entity';
-import { TransactionEntity } from './../../programs/transactions.entity';
+import { TransactionEntity } from '../../payments/transactions/transaction.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import {
@@ -13,10 +13,10 @@ import {
 import { WhatsappService } from './whatsapp.service';
 import { WhatsappController } from './whatsapp.controller';
 import { TwilioMessageEntity } from '../twilio.entity';
-import { ImageCodeModule } from '../imagecode/image-code.module';
-import { IntersolveBarcodeEntity } from '../../fsp/intersolve-barcode.entity';
-import { FspModule } from '../../fsp/fsp.module';
+import { ImageCodeModule } from '../../payments/imagecode/image-code.module';
 import { API_PATHS } from '../../config';
+import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
+import { IntersolveModule } from '../../payments/fsp-integration/intersolve/intersolve.module';
 
 @Module({
   imports: [
@@ -29,7 +29,7 @@ import { API_PATHS } from '../../config';
       TransactionEntity,
     ]),
     ImageCodeModule,
-    forwardRef(() => FspModule),
+    forwardRef(() => IntersolveModule),
   ],
   providers: [WhatsappService],
   controllers: [WhatsappController],

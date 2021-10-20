@@ -19,11 +19,9 @@ export class ExportListComponent implements OnChanges {
   @Input()
   public exportType: ExportType;
   @Input()
-  public paymentInstallment: number;
+  public minPayment: number;
   @Input()
-  public minInstallment: number;
-  @Input()
-  public maxInstallment: number;
+  public maxPayment: number;
   @Input()
   public disabled: boolean;
   public isInProgress = false;
@@ -86,8 +84,8 @@ export class ExportListComponent implements OnChanges {
       .exportList(
         Number(this.programId),
         this.exportType,
-        Number(this.minInstallment),
-        Number(this.maxInstallment),
+        Number(this.minPayment),
+        Number(this.maxPayment),
       )
       .then(
         (res) => {

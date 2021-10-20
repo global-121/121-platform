@@ -1,6 +1,6 @@
+import { ProgramEntity } from './../programs/program.entity';
 import { UserEntity } from './../user/user.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
-import { FspModule } from '../fsp/fsp.module';
 import { ActionModule } from './../actions/action.module';
 import { ExportMetricsService } from './export-metrics.service';
 import { ExportMetricsController } from './export-metrics.controller';
@@ -12,7 +12,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { TransactionEntity } from '../programs/transactions.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { PaymentsModule } from '../payments/payments.module';
+import { TransactionsModule } from '../payments/transactions/transactions.module';
 
 @Module({
   imports: [
@@ -23,12 +25,14 @@ import { TransactionEntity } from '../programs/transactions.entity';
       RegistrationEntity,
       TransactionEntity,
       UserEntity,
+      ProgramEntity,
     ]),
     ProgramModule,
     UserModule,
     RegistrationsModule,
     ActionModule,
-    FspModule,
+    PaymentsModule,
+    TransactionsModule,
     RegistrationsModule,
   ],
   providers: [ExportMetricsService],

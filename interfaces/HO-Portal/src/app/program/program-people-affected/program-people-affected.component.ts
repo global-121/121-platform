@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
-import { PopupPayoutDetails } from 'src/app/models/installment.model';
+import { PopupPayoutDetails } from 'src/app/models/payment.model';
 import { PaStatus, Person, PersonRow } from 'src/app/models/person.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
@@ -50,7 +50,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private paymentColumnTemplate: any = {};
   public paymentColumns: any[] = [];
   private pastTransactions: Transaction[] = [];
-  private lastInstallmentId: number;
+  private lastPaymentId: number;
 
   private allPeopleData: Person[];
   public allPeopleAffected: PersonRow[] = [];
@@ -468,7 +468,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       name: this.translate.instant(
         'page.program.program-people-affected.column.payment',
       ),
-      installmentIndex: 0,
+      paymentIndex: 0,
       ...this.columnDefaults,
       phases: [ProgramPhase.payment],
       width: columnDateTimeWidth,
@@ -488,16 +488,17 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.loadColumns();
 
-    this.lastInstallmentId =
-      await this.pastPaymentsService.getLastInstallmentId(this.programId);
-    const firstInstallmentToShow = 1;
+    this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
+      this.programId,
+    );
+    const firstPaymentToShow = 1;
 
     if (this.thisPhase === ProgramPhase.payment) {
       this.pastTransactions = await this.programsService.getTransactions(
         this.programId,
-        firstInstallmentToShow,
+        firstPaymentToShow,
       );
-      this.addPaymentColumns(firstInstallmentToShow);
+      this.addPaymentColumns(firstPaymentToShow);
     }
 
     await this.loadData();
@@ -578,23 +579,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     const column = JSON.parse(JSON.stringify(this.paymentColumnTemplate)); // Hack to clone without reference;
     column.name += index;
     column.prop += index;
-    column.installmentIndex = index;
+    column.paymentIndex = index;
     return column;
   }
 
-  private async addPaymentColumns(firstInstallmentToShow) {
-    const nrOfInstallments = this.program.distributionDuration;
+  private async addPaymentColumns(firstPaymentToShow) {
+    const nrOfPayments = this.program.distributionDuration;
 
-    const lastInstallmentToShow = Math.min(
-      this.lastInstallmentId + 1,
-      nrOfInstallments,
-    );
+    const lastPaymentToShow = Math.min(this.lastPaymentId + 1, nrOfPayments);
 
-    for (
-      let index = firstInstallmentToShow;
-      index <= lastInstallmentToShow;
-      index++
-    ) {
+    for (let index = firstPaymentToShow; index <= lastPaymentToShow; index++) {
       const column = this.createPaymentColumn(index);
 
       this.paymentColumns.push(column);
@@ -714,21 +708,21 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return personRow;
   }
 
-  private getTransactionOfInstallmentForRegistration(
-    installmentIndex: number,
+  private getTransactionOfPaymentForRegistration(
+    paymentIndex: number,
     referenceId: string,
   ) {
     return this.pastTransactions.find(
       (transaction) =>
-        transaction.installment === installmentIndex &&
+        transaction.payment === paymentIndex &&
         transaction.referenceId === referenceId,
     );
   }
 
   private fillPaymentColumns(personRow: PersonRow): PersonRow {
     this.paymentColumns.forEach((paymentColumn) => {
-      const transaction = this.getTransactionOfInstallmentForRegistration(
-        paymentColumn.installmentIndex,
+      const transaction = this.getTransactionOfPaymentForRegistration(
+        paymentColumn.paymentIndex,
         personRow.referenceId,
       );
 
@@ -740,24 +734,23 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
       if (transaction.status === StatusEnum.success) {
         paymentColumnText = formatDate(
-          transaction.installmentDate,
+          transaction.paymentDate,
           this.dateFormat,
           this.locale,
         );
       } else if (transaction.status === StatusEnum.waiting) {
-        personRow['payment' + paymentColumn.installmentIndex + '-error'] =
+        personRow['payment' + paymentColumn.paymentIndex + '-error'] =
           this.translate.instant(
             'page.program.program-people-affected.transaction.waiting-message',
           );
-        personRow['payment' + paymentColumn.installmentIndex + '-waiting'] =
-          true;
+        personRow['payment' + paymentColumn.paymentIndex + '-waiting'] = true;
         paymentColumnText = this.translate.instant(
           'page.program.program-people-affected.transaction.waiting',
         );
       } else {
-        personRow['payment' + paymentColumn.installmentIndex + '-error'] =
+        personRow['payment' + paymentColumn.paymentIndex + '-error'] =
           transaction.error;
-        personRow['payment' + paymentColumn.installmentIndex + '-amount'] =
+        personRow['payment' + paymentColumn.paymentIndex + '-amount'] =
           transaction.amount;
         paymentColumnText = this.translate.instant(
           'page.program.program-people-affected.transaction.failed',
@@ -769,8 +762,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         hasMessageIcon: this.enableMessageSentIcon(transaction),
         hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
       };
-      personRow['payment' + paymentColumn.installmentIndex] =
-        paymentColumnValue;
+      personRow['payment' + paymentColumn.paymentIndex] = paymentColumnValue;
     });
     return personRow;
   }
@@ -827,12 +819,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return show;
   }
 
-  public hasError(row: PersonRow, installmentIndex: number) {
-    return !!row['payment' + installmentIndex + '-error'];
+  public hasError(row: PersonRow, paymentIndex: number) {
+    return !!row['payment' + paymentIndex + '-error'];
   }
 
-  public hasWaiting(row: PersonRow, installmentIndex: number) {
-    return !!row['payment' + installmentIndex + '-waiting'];
+  public hasWaiting(row: PersonRow, paymentIndex: number) {
+    return !!row['payment' + paymentIndex + '-waiting'];
   }
 
   public async editPersonAffectedPopup(row: PersonRow, programId: number) {
@@ -851,8 +843,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public async statusPopup(row: PersonRow, column, value) {
-    const hasError = this.hasError(row, column.installmentIndex);
-    const hasWaiting = this.hasWaiting(row, column.installmentIndex);
+    const hasError = this.hasError(row, column.paymentIndex);
+    const hasWaiting = this.hasWaiting(row, column.paymentIndex);
     const content = hasWaiting
       ? row[column.prop + '-error']
       : hasError
@@ -878,7 +870,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       hasError || value.hasMessageIcon || value.hasMoneyIconTable
         ? {
             programId: this.programId,
-            installment: column.installmentIndex,
+            payment: column.paymentIndex,
             amount: row[column.prop + '-amount'],
             referenceId: row.referenceId,
             currency: this.program.currency,
@@ -890,7 +882,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     if (this.hasVoucherSupport(row.fsp) && !hasError && !!value) {
       const voucherBlob = await this.programsService.exportVoucher(
         row.referenceId,
-        column.installmentIndex,
+        column.paymentIndex,
       );
       voucherUrl = window.URL.createObjectURL(voucherBlob);
       voucherButtons = true;

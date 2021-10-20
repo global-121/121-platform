@@ -12,7 +12,7 @@ import { UserModule } from '../user/user.module';
 import { SmsModule } from '../notifications/sms/sms.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ActionEntity } from '../actions/action.entity';
-import { TransactionEntity } from './transactions.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ActionModule } from '../actions/action.module';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { LookupModule } from '../notifications/lookup/lookup.module';

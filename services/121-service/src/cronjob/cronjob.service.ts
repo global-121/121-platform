@@ -1,15 +1,15 @@
-import { RegistrationEntity } from './../registration/registration.entity';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Repository, Between } from 'typeorm';
-import { IntersolveBarcodeEntity } from '../fsp/intersolve-barcode.entity';
-import { ProgramEntity } from '../programs/program.entity';
+import { Repository, getRepository, Between } from 'typeorm';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
-import { IntersolveRequestEntity } from '../fsp/intersolve-request.entity';
-import { IntersolveApiService } from '../fsp/api/instersolve.api.service';
-import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
-import { IntersolveService } from '../fsp/intersolve.service';
+import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
+import { IntersolveApiService } from '../payments/fsp-integration/intersolve/instersolve.api.service';
+import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
+import { IntersolveRequestEntity } from '../payments/fsp-integration/intersolve/intersolve-request.entity';
+import { IntersolveService } from '../payments/fsp-integration/intersolve/intersolve.service';
+import { ProgramEntity } from '../programs/program.entity';
+import { RegistrationEntity } from '../registration/registration.entity';
 
 @Injectable()
 export class CronjobService {
