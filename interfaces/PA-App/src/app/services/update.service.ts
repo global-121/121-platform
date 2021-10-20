@@ -77,7 +77,7 @@ export class UpdateService {
             {
               side: 'end',
               role: 'cancel',
-              text: 'Close',
+              text: this.translate.instant('shared.close-button'),
             },
           ],
         })
