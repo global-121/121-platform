@@ -121,7 +121,7 @@
     "select-program": {
       "introduction": "You can use this app to apply for an aid program. Please select below.",
       "more-info-programs": "About aid program",
-      "no-published-programs": "There are currently no programs available. Please return here later."
+      "no-published-programs": "There are currently no programs open for registration. Please return here later."
     },
     "set-notification-number": {
       "conclusion-skipped": "You have not left a phone number for us to reach you on. Please log in back here regularly, to check on updates.",

@@ -56,7 +56,10 @@
           "label": "Registration & validation",
           "btnText": "Move to: Inclusion",
           "label-no-validation": "Registration",
-          "btnText-no-validation": "Move to: Inclusion"
+          "btnText-no-validation": "Move to: Inclusion",
+          "toggleText-enable-registrations": "Allow new registrations",
+          "actionText-enabled-registrations": "Registrations are now enabled for this program",
+          "actionText-disabled-registrations": "Registrations are now disabled for this program"
         },
         "inclusion": {
           "label": "Inclusion",
@@ -376,6 +379,7 @@
           "confirm-message": "The system will create 'registered' People Affected."
         }
       },
+      "disable-registration": {},
       "export-list": {
         "timestamp": "Latest export has been done on: {{dateTime}}",
         "no-data": "There are currently no People Affected to download",
