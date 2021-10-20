@@ -23,7 +23,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  entryComponents: [ProgramJsonComponent],
   declarations: [DesignPage, ProgramDetailsComponent, ProgramJsonComponent],
 })
 export class DesignPageModule {}
