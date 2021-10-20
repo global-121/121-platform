@@ -58,7 +58,7 @@ import './zone-flags';
  * Zone JS is required by default for Angular itself.
  */
 
-import 'zone.js';
+import 'zone.js/dist/zone.js';
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
