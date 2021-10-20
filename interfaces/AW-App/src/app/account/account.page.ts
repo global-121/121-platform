@@ -90,7 +90,7 @@ export class AccountPage {
           {
             side: 'end',
             role: 'cancel',
-            text: 'Close',
+            text: this.translate.instant('shared.close'),
           },
         ],
       })
