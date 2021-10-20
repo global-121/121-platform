@@ -21,9 +21,9 @@ import { IntersolveService } from './intersolve.service';
 import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
 import { Response } from 'express-serve-static-core';
 import stream from 'stream';
-import { UserRole } from '../../user-role.enum';
-import { Roles } from '../../roles.decorator';
-import { RolesGuard } from '../../roles.guard';
+import { Roles } from '../../../roles.decorator';
+import { RolesGuard } from '../../../roles.guard';
+import { UserRole } from '../../../user-role.enum';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)

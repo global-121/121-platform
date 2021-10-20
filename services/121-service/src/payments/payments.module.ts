@@ -1,18 +1,18 @@
 import { UserEntity } from './../user/user.entity';
-import { Module, HttpModule, forwardRef } from '@nestjs/common';
-import { PaymentsController } from './payments.controller';
+import { Module, HttpModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProgramEntity } from '../programs/program.entity';
-import { PaymentsService } from './payments.service';
-import { UserModule } from '../user/user.module';
-import { TransactionEntity } from './transactions/transaction.entity';
-import { RegistrationEntity } from '../registration/registration.entity';
 import { ActionModule } from '../actions/action.module';
-import { AfricasTalkingModule } from './africas-talking/africas-talking.module';
 import { FspModule } from '../fsp/fsp.module';
-import { IntersolveModule } from './intersolve/intersolve.module';
+import { ProgramEntity } from '../programs/program.entity';
+import { RegistrationEntity } from '../registration/registration.entity';
+import { UserModule } from '../user/user.module';
+import { AfricasTalkingModule } from './fsp-integration/africas-talking/africas-talking.module';
+import { BelcashModule } from './fsp-integration/belcash/belcash.module';
+import { IntersolveModule } from './fsp-integration/intersolve/intersolve.module';
+import { PaymentsController } from './payments.controller';
+import { PaymentsService } from './payments.service';
+import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsModule } from './transactions/transactions.module';
-import { BelcashModule } from './belcash/belcash.module';
 
 @Module({
   imports: [

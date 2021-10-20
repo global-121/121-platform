@@ -1,5 +1,3 @@
-import { IntersolveService } from './../../fsp/intersolve.service';
-import { TransactionsService } from './../../payments/transactions/transactions.service';
 import {
   Injectable,
   Inject,
@@ -10,10 +8,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, In } from 'typeorm';
 import { EXTERNAL_API } from '../../config';
-import { FspName } from '../../fsp/financial-service-provider.entity';
-import { IntersolvePayoutStatus } from '../../payments/intersolve/enum/intersolve-payout-status.enum';
-import { IntersolveBarcodeEntity } from '../../payments/intersolve/intersolve-barcode.entity';
-import { PaymentsService } from '../../payments/payments.service';
 import { ProgramEntity } from '../../programs/program.entity';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
@@ -26,6 +20,9 @@ import {
   TwilioIncomingCallbackDto,
 } from '../twilio.dto';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
+import { IntersolvePayoutStatus } from '../../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
+import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
+import { IntersolveService } from '../../payments/fsp-integration/intersolve/intersolve.service';
 
 @Injectable()
 export class WhatsappService {

@@ -1,8 +1,8 @@
-import { TransactionsService } from '../transactions/transactions.service';
 import { Injectable } from '@nestjs/common';
-import { PaPaymentDataDto } from '../dto/pa-payment-data.dto';
-import { FspTransactionResultDto } from '../dto/payment-transaction-result.dto';
-import { FspName } from '../../fsp/financial-service-provider.entity';
+import { FspName } from '../../../fsp/financial-service-provider.entity';
+import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
+import { FspTransactionResultDto } from '../../dto/payment-transaction-result.dto';
+import { TransactionsService } from '../../transactions/transactions.service';
 import { BelcashApiService } from './belcash.api.service';
 
 @Injectable()

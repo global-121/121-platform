@@ -1,14 +1,14 @@
-import { TransactionsService } from './../transactions/transactions.service';
+import { TransactionsService } from '../../transactions/transactions.service';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PaPaymentDataDto } from '../dto/pa-payment-data.dto';
+import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-} from '../dto/payment-transaction-result.dto';
-import { FspName } from '../../fsp/financial-service-provider.entity';
-import { StatusEnum } from '../../shared/enum/status.enum';
+} from '../../dto/payment-transaction-result.dto';
+import { FspName } from '../../../fsp/financial-service-provider.entity';
+import { StatusEnum } from '../../../shared/enum/status.enum';
 import { AfricasTalkingNotificationEntity } from './africas-talking-notification.entity';
 import { AfricasTalkingApiService } from './africas-talking.api.service';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';

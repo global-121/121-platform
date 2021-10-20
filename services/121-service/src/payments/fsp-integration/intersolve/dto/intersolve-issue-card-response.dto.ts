@@ -1,5 +1,5 @@
-import { IntersolveResultCode } from '../../../payments/intersolve/enum/intersolve-result-code.enum';
-import { IntersolveBarcodeEntity } from '../../../payments/intersolve/intersolve-barcode.entity';
+import { IntersolveResultCode } from '../enum/intersolve-result-code.enum';
+import { IntersolveBarcodeEntity } from '../intersolve-barcode.entity';
 
 export class IntersolveIssueCardResponse {
   public readonly resultCode: IntersolveResultCode;

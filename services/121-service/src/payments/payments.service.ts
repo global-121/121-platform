@@ -1,24 +1,24 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionService } from '../actions/action.service';
-import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 import { FspName } from '../fsp/financial-service-provider.entity';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { StatusEnum } from '../shared/enum/status.enum';
+import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 import { FspTransactionResultDto } from './dto/payment-transaction-result.dto';
-import { FspService } from '../fsp/fsp.service';
 import { UnusedVoucherDto } from './dto/unused-voucher.dto';
-import { AfricasTalkingService } from './africas-talking/africas-talking.service';
-import { IntersolveService } from './intersolve/intersolve.service';
+import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
+import { BelcashService } from './fsp-integration/belcash/belcash.service';
+import { IntersolveService } from './fsp-integration/intersolve/intersolve.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
-import { BelcashService } from './belcash/belcash.service';
 
 @Injectable()
 export class PaymentsService {
@@ -32,10 +32,10 @@ export class PaymentsService {
   public constructor(
     private readonly actionService: ActionService,
     private readonly fspService: FspService,
+    private readonly transactionService: TransactionsService,
     private readonly intersolveService: IntersolveService,
     private readonly africasTalkingService: AfricasTalkingService,
     private readonly belcashService: BelcashService,
-    private readonly transactionService: TransactionsService,
   ) {}
 
   public async getPayments(

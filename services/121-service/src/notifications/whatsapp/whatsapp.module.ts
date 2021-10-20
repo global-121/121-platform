@@ -1,4 +1,3 @@
-import { IntersolveModule } from './../../payments/intersolve/intersolve.module';
 import { RegistrationEntity } from './../../registration/registration.entity';
 import { ProgramEntity } from './../../programs/program.entity';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
@@ -15,9 +14,9 @@ import { WhatsappService } from './whatsapp.service';
 import { WhatsappController } from './whatsapp.controller';
 import { TwilioMessageEntity } from '../twilio.entity';
 import { ImageCodeModule } from '../../payments/imagecode/image-code.module';
-import { IntersolveBarcodeEntity } from '../../payments/intersolve/intersolve-barcode.entity';
 import { API_PATHS } from '../../config';
-import { PaymentsModule } from '../../payments/payments.module';
+import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
+import { IntersolveModule } from '../../payments/fsp-integration/intersolve/intersolve.module';
 
 @Module({
   imports: [

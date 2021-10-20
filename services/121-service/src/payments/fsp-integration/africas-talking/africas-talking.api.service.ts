@@ -1,7 +1,7 @@
-import { StatusEnum } from '../../shared/enum/status.enum';
+import { StatusEnum } from '../../../shared/enum/status.enum';
 import { Injectable } from '@nestjs/common';
-import { PaTransactionResultDto } from '../dto/payment-transaction-result.dto';
-import { FspName } from '../../fsp/financial-service-provider.entity';
+import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
+import { FspName } from '../../../fsp/financial-service-provider.entity';
 
 @Injectable()
 export class AfricasTalkingApiService {

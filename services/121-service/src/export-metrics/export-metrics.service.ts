@@ -16,7 +16,6 @@ import { ActionService } from '../actions/action.service';
 import { ExportType } from './dto/export-details';
 import { FileDto } from './dto/file.dto';
 import { ProgramQuestionForExport } from '../programs/dto/program-question-for-export.dto';
-import { IntersolvePayoutStatus } from '../payments/intersolve/enum/intersolve-payout-status.enum';
 import { without, compact, sortBy } from 'lodash';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
@@ -27,6 +26,7 @@ import { PaymentStateSumDto } from './dto/payment-state-sum.dto';
 import { PaymentsService } from '../payments/payments.service';
 import { ProgramEntity } from '../programs/program.entity';
 import { TransactionsService } from '../payments/transactions/transactions.service';
+import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 
 @Injectable()
 export class ExportMetricsService {

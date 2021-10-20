@@ -1,5 +1,5 @@
 import { Entity, Column } from 'typeorm';
-import { Base121Entity } from '../../base.entity';
+import { Base121Entity } from '../../../base.entity';
 
 @Entity('at_notification')
 export class AfricasTalkingNotificationEntity extends Base121Entity {

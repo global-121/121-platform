@@ -1,5 +1,5 @@
 import { Entity, Column } from 'typeorm';
-import { Base121Entity } from '../../base.entity';
+import { Base121Entity } from '../../../base.entity';
 import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
 
 @Entity('intersolve_request')
