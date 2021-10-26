@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
 import { ScanQrComponent } from './scan-qr.component';
@@ -34,6 +34,9 @@ describe('ScanQrComponent', () => {
         {
           provide: ModalController,
           useValue: modalControllerMock,
+        },
+        {
+          provide: AngularDelegate,
         },
       ],
     }).compileComponents();
