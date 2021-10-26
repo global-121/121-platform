@@ -106,7 +106,7 @@
       "result": "Thank you, you have selected {{language}}.",
       "language": {
         "en": "English",
-        "am_ET": "Amharic",
+        "am_ET": "አማርኛ",
         "ar": "عربى",
         "fr": "Français",
         "nl": "Nederlands",
