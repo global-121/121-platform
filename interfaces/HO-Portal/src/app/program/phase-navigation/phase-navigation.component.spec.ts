@@ -31,9 +31,9 @@ describe('PhaseNavigationComponent', () => {
     }).compileComponents();
   }));
 
-  let mockProgramPhaseService: jasmine.SpyObj<ProgramPhaseService>;
+  let mockProgramPhaseService: jasmine.SpyObj<any>;
   beforeEach(() => {
-    mockProgramPhaseService = TestBed.get(ProgramPhaseService);
+    mockProgramPhaseService = TestBed.inject(ProgramPhaseService);
     mockProgramPhaseService.getActivePhase.and.returnValue(mockProgramPhase);
 
     fixture = TestBed.createComponent(PhaseNavigationComponent);

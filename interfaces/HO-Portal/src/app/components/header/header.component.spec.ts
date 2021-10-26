@@ -39,14 +39,14 @@ describe('HeaderComponent', () => {
     }).compileComponents();
   }));
 
-  let mockAuthService: jasmine.SpyObj<AuthService>;
-  let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
+  let mockAuthService: jasmine.SpyObj<any>;
+  let mockProgramsApi: jasmine.SpyObj<any>;
 
   beforeEach(() => {
-    mockAuthService = TestBed.get(AuthService);
+    mockAuthService = TestBed.inject(AuthService);
     mockAuthService.hasUserRole.and.returnValue(true);
 
-    mockProgramsApi = TestBed.get(ProgramsServiceApiService);
+    mockProgramsApi = TestBed.inject(ProgramsServiceApiService);
     mockProgramsApi.getProgramById.and.returnValue(
       new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
     );

@@ -56,10 +56,10 @@ describe('MetricsStatesOverTimeComponent', () => {
     }).compileComponents();
   }));
 
-  let mockPastPaymentsService: jasmine.SpyObj<PastPaymentsService>;
+  let mockPastPaymentsService: jasmine.SpyObj<any>;
 
   beforeEach(() => {
-    mockPastPaymentsService = TestBed.get(PastPaymentsService);
+    mockPastPaymentsService = TestBed.inject(PastPaymentsService);
     mockPastPaymentsService.getPaymentsWithStateSums.and.returnValue(
       new Promise((r) => r(mockPastPaymentsWithStateSums)),
     );
