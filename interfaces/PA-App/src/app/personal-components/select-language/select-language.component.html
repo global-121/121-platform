@@ -20,14 +20,21 @@
                            slot="start"
                            class="ion-no-margin ion-margin-end"
           ></play-text-audio>
-          <ion-label class="ion-text-wrap ion-padding-end">
-            {{ language.language }}
-          </ion-label>
-          <ion-radio
-            [value]="language.id"
-            [checked]="language.id === languageChoice"
-            [disabled]="languageChoice && isDisabled"
-          ></ion-radio>
+          <ion-item
+            lines="none"
+            color="light"
+            class="ion-no-padding"
+            style="width: 100%;"
+          >
+            <ion-label class="ion-text-wrap ion-padding-end">
+              {{ language.language }}
+            </ion-label>
+            <ion-radio
+              [value]="language.id"
+              [checked]="language.id === languageChoice"
+              [disabled]="languageChoice && isDisabled"
+            ></ion-radio>
+          </ion-item>
         </ion-item>
       </ion-radio-group>
       <ion-row *ngIf="languageChoice && !isDisabled"
