@@ -9,35 +9,37 @@ import { of } from 'rxjs';
 export class BelcashApiService {
   public constructor(private readonly httpService: HttpService) {}
 
-  public async authenticate(): Promise<any> {
+  public async authenticate(): Promise<string> {
     const payload = {
       principal: process.env.BELCASH_LOGIN,
       system: process.env.BELCASH_SYSTEM,
       credentials: process.env.BELCASH_PASSWORD,
     };
     const authenticationResult = await this.post(`authenticate`, payload);
-    const headers = {
-      Authorization: `Bearer ${authenticationResult.data.token}`,
-    };
-    return headers;
+    console.log('authenticationResult: ', authenticationResult);
+    return authenticationResult.data.token;
   }
 
-  public async transfer(payload: any, header?: any): Promise<any> {
-    await this.post('transfers', payload, header);
+  public async transfer(
+    payload: any,
+    authorizationToken?: string,
+  ): Promise<any> {
+    await this.post('transfers', payload, authorizationToken);
   }
 
   private async post(
     endpoint: string,
     payload: any,
-    header?: string,
+    authorizationToken?: string,
   ): Promise<any> {
+    //const url = 'https://httpbin.org/post';
+    const url = '`${process.env.BELCASH_API_URL}/${endpoint}`';
     return await this.httpService
-      .post(`${process.env.BELCASH_API_URL}/${endpoint}`, payload, {
-        headers: header,
+      .post(url, payload, {
+        headers: this.createHeaders(authorizationToken),
       })
       .pipe(
         map(response => {
-          console.log('response: ', response);
           return response;
         }),
         catchError(err => {
@@ -45,5 +47,15 @@ export class BelcashApiService {
         }),
       )
       .toPromise();
+  }
+
+  private createHeaders(authorizationToken?: string): object {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    if (authorizationToken) {
+      headers['Authorization'] = `Bearer ${authorizationToken}`;
+    }
+    return headers;
   }
 }

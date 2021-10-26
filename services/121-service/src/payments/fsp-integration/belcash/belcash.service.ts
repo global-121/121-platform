@@ -10,7 +10,6 @@ import {
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { BelcashApiService } from './belcash.api.service';
-import crypto from 'crypto';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 @Injectable()
 export class BelcashService {
@@ -33,7 +32,7 @@ export class BelcashService {
 
     const program = await this.programRepository.findOne(programId);
 
-    const authenticationHeaders = await this.belcashApiService.authenticate();
+    const authorizationToken = await this.belcashApiService.authenticate();
 
     for (let payment of paymentList) {
       const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
@@ -47,7 +46,7 @@ export class BelcashService {
       const paymentRequestResultPerPa = await this.sendPaymentPerPa(
         payload,
         payment.referenceId,
-        authenticationHeaders,
+        authorizationToken,
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
     }
@@ -82,7 +81,7 @@ export class BelcashService {
   public async sendPaymentPerPa(
     payload: any,
     referenceId: string,
-    authenticationHeaders: object,
+    authorizationToken: string,
   ): Promise<PaTransactionResultDto> {
     // A timeout of 100ms to not overload belcash server
     await new Promise(r => setTimeout(r, 100));
@@ -95,7 +94,7 @@ export class BelcashService {
 
     const result = await this.belcashApiService.transfer(
       payload,
-      authenticationHeaders,
+      authorizationToken,
     );
 
     if (result.status !== 200 || result.status !== 201) {
