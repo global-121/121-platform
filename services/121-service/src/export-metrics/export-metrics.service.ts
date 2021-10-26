@@ -1,4 +1,4 @@
-import { GetTransactionOutputDto } from '../programs/dto/get-transaction.dto';
+import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
 import { RegistrationsService } from './../registration/registrations.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
@@ -16,21 +16,24 @@ import { ActionService } from '../actions/action.service';
 import { ExportType } from './dto/export-details';
 import { FileDto } from './dto/file.dto';
 import { ProgramQuestionForExport } from '../programs/dto/program-question-for-export.dto';
-import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
 import { without, compact, sortBy } from 'lodash';
 import { StatusEnum } from '../shared/enum/status.enum';
-import { TransactionEntity } from '../programs/transactions.entity';
-import { ProgramService } from '../programs/programs.service';
-import { FspService } from '../fsp/fsp.service';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { Attributes } from '../registration/dto/update-attribute.dto';
 import { TotalIncluded } from './dto/total-included.dto';
-import { InstallmentStateSumDto } from './dto/installment-state-sum.dto';
+import { PaymentStateSumDto } from './dto/payment-state-sum.dto';
+import { PaymentsService } from '../payments/payments.service';
+import { ProgramEntity } from '../programs/program.entity';
+import { TransactionsService } from '../payments/transactions/transactions.service';
+import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 
 @Injectable()
 export class ExportMetricsService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(FspAttributeEntity)
@@ -40,8 +43,8 @@ export class ExportMetricsService {
 
   public constructor(
     private readonly actionService: ActionService,
-    private readonly programService: ProgramService,
-    private readonly fspService: FspService,
+    private readonly paymentsService: PaymentsService,
+    private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
   ) {}
 
@@ -49,8 +52,8 @@ export class ExportMetricsService {
     programId: number,
     type: ExportType,
     userId: number,
-    minInstallment: number | null = null,
-    maxInstallment: number | null = null,
+    minPayment: number | null = null,
+    maxPayment: number | null = null,
   ): Promise<FileDto> {
     this.actionService.saveAction(userId, programId, type);
     switch (type) {
@@ -64,11 +67,7 @@ export class ExportMetricsService {
         return this.getSelectedForValidationList(programId);
       }
       case ExportType.payment: {
-        return this.getPaymentDetails(
-          programId,
-          minInstallment,
-          maxInstallment,
-        );
+        return this.getPaymentDetails(programId, minPayment, maxPayment);
       }
       case ExportType.unusedVouchers: {
         return this.getUnusedVouchers();
@@ -81,18 +80,18 @@ export class ExportMetricsService {
 
   private async getPaymentDetails(
     programId: number,
-    minInstallmentId: number,
-    maxInstallmentId: number,
+    minPaymentId: number,
+    maxPaymentId: number,
   ): Promise<FileDto> {
-    let pastPaymentDetails = await this.getPaymentDetailsInstallment(
+    let pastPaymentDetails = await this.getPaymentDetailsPayment(
       programId,
-      minInstallmentId,
-      maxInstallmentId,
+      minPaymentId,
+      maxPaymentId,
     );
 
     if (pastPaymentDetails.length === 0) {
       return {
-        fileName: `payment-details-future-installment-${minInstallmentId}.csv`,
+        fileName: `details-future-payment-${minPaymentId}.csv`,
         data: (await this.getInclusionList(programId)).data,
       };
     }
@@ -102,10 +101,10 @@ export class ExportMetricsService {
     );
 
     const csvFile = {
-      fileName: `payment-details-completed-installment-${
-        minInstallmentId === maxInstallmentId
-          ? minInstallmentId
-          : `${minInstallmentId}-to-${maxInstallmentId}`
+      fileName: `details-completed-payment-${
+        minPaymentId === maxPaymentId
+          ? minPaymentId
+          : `${minPaymentId}-to-${maxPaymentId}`
       }.csv`,
       data: this.jsonToCsv(pastPaymentDetails),
     };
@@ -131,7 +130,7 @@ export class ExportMetricsService {
   }
 
   private async getUnusedVouchers(): Promise<FileDto> {
-    const unusedVouchers = await this.fspService.getUnusedVouchers();
+    const unusedVouchers = await this.paymentsService.getUnusedVouchers();
     unusedVouchers.forEach(v => {
       v.name = this.registrationsService.getName(v.customData);
       delete v.customData;
@@ -219,19 +218,19 @@ export class ExportMetricsService {
   private async addPaymentFieldsToExport(
     row: object,
     registration: RegistrationEntity,
-    installments: number[],
+    payments: number[],
     transactions: any[],
   ): Promise<object> {
     const voucherStatuses = [
       IntersolvePayoutStatus.InitialMessage,
       IntersolvePayoutStatus.VoucherSent,
     ];
-    for await (let installment of installments) {
+    for await (let payment of payments) {
       const transaction = {};
       for await (let voucherStatus of voucherStatuses) {
         transaction[voucherStatus] = transactions.find(
           t =>
-            t.installment === installment &&
+            t.payment === payment &&
             t.referenceId === registration.referenceId &&
             t.customData['IntersolvePayoutStatus'] === voucherStatus,
         );
@@ -243,20 +242,20 @@ export class ExportMetricsService {
       } else {
         creationTransaction = transactions.find(
           t =>
-            t.installment === installment &&
+            t.payment === payment &&
             t.referenceId === registration.referenceId &&
             !t.customData['IntersolvePayoutStatus'],
         );
       }
-      row[`payment${installment}_status`] = creationTransaction?.status;
-      row[`payment${installment}_voucherCreated_date`] =
+      row[`payment${payment}_status`] = creationTransaction?.status;
+      row[`payment${payment}_voucherCreated_date`] =
         creationTransaction?.status === StatusEnum.success
-          ? creationTransaction?.installmentDate
+          ? creationTransaction?.paymentDate
           : null;
-      row[`payment${installment}_voucherSent_date`] =
+      row[`payment${payment}_voucherSent_date`] =
         transaction[IntersolvePayoutStatus.VoucherSent]?.status ===
         StatusEnum.success
-          ? transaction[IntersolvePayoutStatus.VoucherSent]?.installmentDate
+          ? transaction[IntersolvePayoutStatus.VoucherSent]?.paymentDate
           : null;
     }
     return row;
@@ -267,12 +266,12 @@ export class ExportMetricsService {
       relations: ['fsp'],
     });
     const questions = await this.getAllQuestionsForExport();
-    const installments = (await this.programService.getInstallments(programId))
-      .map(i => i.installment)
+    const payments = (await this.paymentsService.getPayments(programId))
+      .map(i => i.payment)
       .sort((a, b) => (a > b ? 1 : -1));
     const registrationDetails = [];
 
-    const transactions = await this.programService.getTransactions(
+    const transactions = await this.transactionsService.getTransactions(
       programId,
       true,
     );
@@ -289,7 +288,7 @@ export class ExportMetricsService {
       row = await this.addPaymentFieldsToExport(
         row,
         registration,
-        installments,
+        payments,
         transactions,
       );
       registrationDetails.push(row);
@@ -456,34 +455,31 @@ export class ExportMetricsService {
     });
   }
 
-  private async getPaymentDetailsInstallment(
+  private async getPaymentDetailsPayment(
     programId: number,
-    minInstallmentId: number,
-    maxInstallmentId: number,
+    minPaymentId: number,
+    maxPaymentId: number,
   ): Promise<any> {
     const latestSuccessTransactionPerPa = await this.transactionRepository
 
       .createQueryBuilder('transaction')
       .select('transaction.registrationId', 'registrationId')
-      .addSelect('transaction.installment', 'installment')
+      .addSelect('transaction.payment', 'payment')
       .addSelect('MAX(transaction.created)', 'maxCreated')
       .where('transaction.program.id = :programId', { programId: programId })
-      .andWhere(
-        'transaction.installment between :minInstallmentId and :maxInstallmentId',
-        {
-          minInstallmentId: minInstallmentId,
-          maxInstallmentId: maxInstallmentId,
-        },
-      )
+      .andWhere('transaction.payment between :minPaymentId and :maxPaymentId', {
+        minPaymentId: minPaymentId,
+        maxPaymentId: maxPaymentId,
+      })
       .andWhere('transaction.status = :status', { status: StatusEnum.success })
       .groupBy('transaction.registrationId')
-      .addGroupBy('transaction.installment');
+      .addGroupBy('transaction.payment');
 
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
         'transaction.amount as "amount"',
-        'transaction.installment as "installment"',
+        'transaction.payment as "payment"',
         'registration.phoneNumber as "phoneNumber"',
         'registration.customData as "customData"',
         'registration.namePartnerOrganization as "partnerOrganization"',
@@ -492,7 +488,7 @@ export class ExportMetricsService {
       .innerJoin(
         '(' + latestSuccessTransactionPerPa.getQuery() + ')',
         'subquery',
-        'transaction.registrationId = subquery."registrationId" AND transaction.installment = subquery.installment AND transaction.created = subquery."maxCreated"',
+        'transaction.registrationId = subquery."registrationId" AND transaction.payment = subquery.payment AND transaction.created = subquery."maxCreated"',
       )
       .setParameters(latestSuccessTransactionPerPa.getParameters())
       .leftJoin('transaction.registration', 'registration')
@@ -527,7 +523,7 @@ export class ExportMetricsService {
 
   public async getPaMetrics(
     programId: number,
-    installment?: number,
+    payment?: number,
     month?: number,
     year?: number,
     fromStart?: number,
@@ -542,7 +538,7 @@ export class ExportMetricsService {
         programId,
         registrations,
         RegistrationStatusEnum.imported,
-        installment,
+        payment,
         month,
         year,
         fromStart,
@@ -551,7 +547,7 @@ export class ExportMetricsService {
         programId,
         registrations,
         RegistrationStatusEnum.invited,
-        installment,
+        payment,
         month,
         year,
         fromStart,
@@ -560,7 +556,7 @@ export class ExportMetricsService {
         programId,
         registrations,
         RegistrationStatusEnum.startedRegistration,
-        installment,
+        payment,
         month,
         year,
         fromStart,
@@ -569,7 +565,7 @@ export class ExportMetricsService {
         programId,
         registrations,
         RegistrationStatusEnum.registered,
-        installment,
+        payment,
         month,
         year,
         fromStart,
@@ -578,7 +574,7 @@ export class ExportMetricsService {
         programId,
         registrations,
         RegistrationStatusEnum.selectedForValidation,
-        installment,
+        payment,
         month,
         year,
         fromStart,
@@ -587,7 +583,7 @@ export class ExportMetricsService {
         programId,
         registrations,
         RegistrationStatusEnum.validated,
-        installment,
+        payment,
         month,
         year,
       ),
@@ -595,7 +591,7 @@ export class ExportMetricsService {
         programId,
         registrations,
         RegistrationStatusEnum.included,
-        installment,
+        payment,
         month,
         year,
         fromStart,
@@ -604,7 +600,7 @@ export class ExportMetricsService {
         programId,
         registrations,
         RegistrationStatusEnum.inclusionEnded,
-        installment,
+        payment,
         month,
         year,
         fromStart,
@@ -613,7 +609,7 @@ export class ExportMetricsService {
         programId,
         registrations,
         RegistrationStatusEnum.noLongerEligible,
-        installment,
+        payment,
         month,
         year,
       ),
@@ -621,14 +617,14 @@ export class ExportMetricsService {
         programId,
         registrations,
         RegistrationStatusEnum.rejected,
-        installment,
+        payment,
         month,
         year,
         fromStart,
       ),
       [PaMetricsProperty.totalPaHelped]: await this.getTotalPaHelped(
         programId,
-        installment,
+        payment,
         month,
         year,
         fromStart,
@@ -642,7 +638,7 @@ export class ExportMetricsService {
     programId: number,
     registrations: RegistrationResponse[],
     filterStatus: RegistrationStatusEnum,
-    installment?: number,
+    payment?: number,
     month?: number,
     year?: number,
     fromStart?: number,
@@ -680,15 +676,13 @@ export class ExportMetricsService {
       });
     }
 
-    if (installment) {
-      const installments = await this.programService.getInstallments(programId);
+    if (payment) {
+      const payments = await this.paymentsService.getPayments(programId);
       const beginDate =
-        installment === 1 || (fromStart && fromStart === 1)
+        payment === 1 || (fromStart && fromStart === 1)
           ? new Date(2000, 0, 1)
-          : installments.find(i => i.installment === installment - 1)
-              .installmentDate;
-      const endDate = installments.find(i => i.installment === installment)
-        .installmentDate;
+          : payments.find(i => i.payment === payment - 1).paymentDate;
+      const endDate = payments.find(i => i.payment === payment).paymentDate;
       filteredRegistrations = filteredRegistrations.filter(
         registration =>
           registration[dateColumn] > beginDate &&
@@ -700,7 +694,7 @@ export class ExportMetricsService {
 
   public async getTotalPaHelped(
     programId: number,
-    installment?: number,
+    payment?: number,
     month?: number,
     year?: number,
     fromStart?: number,
@@ -725,81 +719,80 @@ export class ExportMetricsService {
           yearMonthEndCondition: yearMonthEndCondition,
         });
     }
-    if (installment) {
+    if (payment) {
       if (fromStart) {
-        query = query.where('transactions.installment >= :installment', {
-          installment: installment,
+        query = query.where('transactions.payment >= :payment', {
+          payment: payment,
         });
       } else {
-        query = query.where('transactions.installment = :installment', {
-          installment: installment,
+        query = query.where('transactions.payment = :payment', {
+          payment: payment,
         });
       }
     }
     return await query.getCount();
   }
 
-  public async getInstallmentsWithStateSums(
+  public async getPaymentsWithStateSums(
     programId: number,
-  ): Promise<InstallmentStateSumDto[]> {
-    const totalProcessedInstallments = await this.transactionRepository
+  ): Promise<PaymentStateSumDto[]> {
+    const totalProcessedPayments = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select('MAX(transaction.installment)')
+      .select('MAX(transaction.payment)')
       .getRawOne();
-    const program = await this.programService.findOne(programId);
-    const installmentNrSearch = Math.max(
-      ...[totalProcessedInstallments.max, program.distributionDuration],
+    const program = await this.programRepository.findOne(programId);
+    const paymentNrSearch = Math.max(
+      ...[totalProcessedPayments.max, program.distributionDuration],
     );
-    const installmentsWithStats = [];
+    const paymentsWithStats = [];
     let i = 1;
     const transactionStepMin = await await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('MIN(transaction.transactionStep)')
       .getRawOne();
-    while (i <= installmentNrSearch) {
-      const result = await this.getOneInstallmentWithStateSum(
+    while (i <= paymentNrSearch) {
+      const result = await this.getOnePaymentWithStateSum(
         programId,
         i,
         transactionStepMin.min,
       );
-      installmentsWithStats.push(result);
+      paymentsWithStats.push(result);
       i++;
     }
-    return installmentsWithStats;
+    return paymentsWithStats;
   }
 
-  public async getOneInstallmentWithStateSum(
+  public async getOnePaymentWithStateSum(
     programId: number,
-    installment: number,
+    payment: number,
     transactionStepOfInterest: number,
-  ): Promise<InstallmentStateSumDto> {
-    const currentInstallmentRegistrationsAndCount = await this.transactionRepository.findAndCount(
+  ): Promise<PaymentStateSumDto> {
+    const currentPaymentRegistrationsAndCount = await this.transactionRepository.findAndCount(
       {
         where: {
           program: { id: programId },
           status: StatusEnum.success,
-          installment: installment,
+          payment: payment,
           transactionStep: transactionStepOfInterest,
         },
         relations: ['registration'],
       },
     );
-    const currentInstallmentRegistrations =
-      currentInstallmentRegistrationsAndCount[0];
-    const currentInstallmentCount = currentInstallmentRegistrationsAndCount[1];
-    const currentInstallmentRegistrationsIds = currentInstallmentRegistrations.map(
+    const currentPaymentRegistrations = currentPaymentRegistrationsAndCount[0];
+    const currentPaymentCount = currentPaymentRegistrationsAndCount[1];
+    const currentPaymentRegistrationsIds = currentPaymentRegistrations.map(
       ({ registration }) => registration.id,
     );
     let preExistingPa: number;
-    if (currentInstallmentCount > 0) {
+    if (currentPaymentCount > 0) {
       preExistingPa = await this.transactionRepository
         .createQueryBuilder('transaction')
         .leftJoin('transaction.registration', 'registration')
         .where('transaction.registration.id IN (:...registrationIds)', {
-          registrationIds: currentInstallmentRegistrationsIds,
+          registrationIds: currentPaymentRegistrationsIds,
         })
-        .andWhere('transaction.installment = :installment', {
-          installment: installment - 1,
+        .andWhere('transaction.payment = :payment', {
+          payment: payment - 1,
         })
         .andWhere('transaction.status = :status', {
           status: StatusEnum.success,
@@ -815,10 +808,10 @@ export class ExportMetricsService {
       preExistingPa = 0;
     }
     return {
-      id: installment,
+      id: payment,
       values: {
         'pre-existing': preExistingPa,
-        new: currentInstallmentCount - preExistingPa,
+        new: currentPaymentCount - preExistingPa,
       },
     };
   }
@@ -882,9 +875,13 @@ export class ExportMetricsService {
   }
 
   public async getTotalIncluded(programId: number): Promise<TotalIncluded> {
-    const includedRegistrations = await this.programService.getIncludedRegistrations(
-      programId,
-    );
+    const includedRegistrations = await this.registrationRepository.find({
+      where: {
+        program: { id: programId },
+        registrationStatus: RegistrationStatusEnum.included,
+      },
+      relations: ['fsp'],
+    });
     const sum = includedRegistrations.reduce(function(a, b) {
       return a + (b[Attributes.paymentAmountMultiplier] || 1);
     }, 0);

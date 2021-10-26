@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { PopupPayoutDetails } from 'src/app/models/installment.model';
+import { PopupPayoutDetails } from 'src/app/models/payment.model';
 import {
   IntersolvePayoutStatus,
   TransactionCustomData,
@@ -72,7 +72,7 @@ export class PaymentStatusPopupComponent implements OnInit {
       return this.translate.instant(
         'page.program.program-people-affected.payment-status-popup.message-title',
         {
-          installment: this.payoutDetails.installment,
+          payment: this.payoutDetails.payment,
           timestamp: intersolveMessageTime,
         },
       );
@@ -88,7 +88,7 @@ export class PaymentStatusPopupComponent implements OnInit {
       return this.translate.instant(
         'page.program.program-people-affected.payment-status-popup.money-title',
         {
-          installment: this.payoutDetails.installment,
+          payment: this.payoutDetails.payment,
           timestamp: intersolveMoneyTime,
         },
       );
@@ -98,7 +98,7 @@ export class PaymentStatusPopupComponent implements OnInit {
       return this.translate.instant(
         'page.program.program-people-affected.payment-status-popup.money-title',
         {
-          installment: this.payoutDetails.installment,
+          payment: this.payoutDetails.payment,
           timestamp: otherMoneyTime,
         },
       );
@@ -106,7 +106,7 @@ export class PaymentStatusPopupComponent implements OnInit {
     if (this.titleMessageIcon) {
       return this.translate.instant(
         'page.program.program-people-affected.payment-status-popup.money-title',
-        { installment: this.payoutDetails.installment, timestamp: '' },
+        { payment: this.payoutDetails.payment, timestamp: '' },
       );
     }
     return '';
@@ -116,16 +116,12 @@ export class PaymentStatusPopupComponent implements OnInit {
     const transaction = await this.programsService.getTransaction(
       this.payoutDetails.referenceId,
       this.payoutDetails.programId,
-      this.payoutDetails.installment,
+      this.payoutDetails.payment,
       customKey,
       customValue,
     );
     if (transaction && transaction.status === StatusEnum.success) {
-      return formatDate(
-        transaction.installmentDate,
-        this.dateFormat,
-        this.locale,
-      );
+      return formatDate(transaction.paymentDate, this.dateFormat, this.locale);
     }
   }
 
@@ -134,7 +130,7 @@ export class PaymentStatusPopupComponent implements OnInit {
     await this.programsService
       .submitPayout(
         this.payoutDetails.programId,
-        this.payoutDetails.installment,
+        this.payoutDetails.payment,
         this.payoutDetails.amount,
         this.payoutDetails.referenceId,
       )
@@ -166,10 +162,7 @@ export class PaymentStatusPopupComponent implements OnInit {
   public async getBalance() {
     this.isInProgress = true;
     await this.programsService
-      .getBalance(
-        this.payoutDetails.referenceId,
-        this.payoutDetails.installment,
-      )
+      .getBalance(this.payoutDetails.referenceId, this.payoutDetails.payment)
       .then(
         (response) => {
           this.isInProgress = false;

@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
-import { InstallmentData } from 'src/app/models/installment.model';
+import { PaymentData } from 'src/app/models/payment.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ActionType } from '../../models/actions.model';
@@ -16,22 +16,22 @@ describe('MakePaymentComponent', () => {
   let fixture: ComponentFixture<MakePaymentComponent>;
 
   const mockProgramId = 1;
-  const mockInstallmentData: InstallmentData = {
+  const mockPaymentData: PaymentData = {
     id: 0,
-    installmentDate: new Date(),
+    paymentDate: new Date(),
     amount: 1,
   };
-  const mockPastInstallments = [
+  const mockPastPayments = [
     {
-      ...mockInstallmentData,
+      ...mockPaymentData,
       id: 1,
     },
     {
-      ...mockInstallmentData,
+      ...mockPaymentData,
       id: 2,
     },
   ];
-  const mockLastInstallmentId = 2;
+  const mockLastPaymentId = 2;
 
   const mockLatestStartAction = {
     id: 1,
@@ -65,8 +65,8 @@ describe('MakePaymentComponent', () => {
     mockProgramsApi.getTotalIncluded.and.returnValue(
       new Promise((r) => r({ registrations: 2, transferAmounts: 2 })),
     );
-    mockProgramsApi.getPastInstallments.and.returnValue(
-      new Promise((r) => r(mockPastInstallments)),
+    mockProgramsApi.getPastPayments.and.returnValue(
+      new Promise((r) => r(mockPastPayments)),
     );
     mockProgramsApi.retrieveLatestActions.and.returnValues(
       new Promise((r) => r(mockLatestStartAction)),
@@ -74,15 +74,15 @@ describe('MakePaymentComponent', () => {
     );
 
     mockPastPaymentsService = TestBed.inject(PastPaymentsService);
-    mockPastPaymentsService.getLastInstallmentId.and.returnValue(
-      new Promise((r) => r(mockLastInstallmentId)),
+    mockPastPaymentsService.getLastPaymentId.and.returnValue(
+      new Promise((r) => r(mockLastPaymentId)),
     );
 
     fixture = TestBed.createComponent(MakePaymentComponent);
     component = fixture.componentInstance;
 
     component.program = apiProgramsMock.programs[mockProgramId];
-    component.program.distributionDuration = mockPastInstallments.length + 1;
+    component.program.distributionDuration = mockPastPayments.length + 1;
   });
 
   it('should create', () => {
@@ -113,15 +113,13 @@ describe('MakePaymentComponent', () => {
     expect(component.isEnabled).toBeTrue();
   });
 
-  it('should be disabled when all installments are done', async () => {
-    component.program.distributionDuration = mockPastInstallments.length;
+  it('should be disabled when all payments are done', async () => {
+    component.program.distributionDuration = mockPastPayments.length;
 
     fixture.autoDetectChanges();
     await fixture.whenStable();
 
-    expect(mockPastPaymentsService.getLastInstallmentId).toHaveBeenCalledTimes(
-      1,
-    );
+    expect(mockPastPaymentsService.getLastPaymentId).toHaveBeenCalledTimes(1);
     expect(component.isEnabled).toBeFalse();
   });
 

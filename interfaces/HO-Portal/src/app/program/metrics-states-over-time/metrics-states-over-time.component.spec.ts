@@ -23,7 +23,7 @@ describe('MetricsStatesOverTimeComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let testHost: TestHostComponent;
 
-  const mockPastInstallmentsWithStateSums = [
+  const mockPastPaymentsWithStateSums = [
     {
       id: 1,
       values: {
@@ -60,8 +60,8 @@ describe('MetricsStatesOverTimeComponent', () => {
 
   beforeEach(() => {
     mockPastPaymentsService = TestBed.inject(PastPaymentsService);
-    mockPastPaymentsService.getInstallmentsWithStateSums.and.returnValue(
-      new Promise((r) => r(mockPastInstallmentsWithStateSums)),
+    mockPastPaymentsService.getPaymentsWithStateSums.and.returnValue(
+      new Promise((r) => r(mockPastPaymentsWithStateSums)),
     );
 
     fixture = TestBed.createComponent(TestHostComponent);
@@ -83,7 +83,7 @@ describe('MetricsStatesOverTimeComponent', () => {
     await fixture.whenStable();
 
     expect(
-      mockPastPaymentsService.getInstallmentsWithStateSums,
+      mockPastPaymentsService.getPaymentsWithStateSums,
     ).toHaveBeenCalledWith(fixtureProgram.id);
   });
 
@@ -94,12 +94,12 @@ describe('MetricsStatesOverTimeComponent', () => {
     await fixture.whenStable();
 
     expect(
-      mockPastPaymentsService.getInstallmentsWithStateSums,
+      mockPastPaymentsService.getPaymentsWithStateSums,
     ).toHaveBeenCalledTimes(1);
     document.getElementById('refresh').click();
 
     expect(
-      mockPastPaymentsService.getInstallmentsWithStateSums,
+      mockPastPaymentsService.getPaymentsWithStateSums,
     ).toHaveBeenCalledTimes(2);
   });
 });

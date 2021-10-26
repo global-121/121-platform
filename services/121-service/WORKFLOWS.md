@@ -14,7 +14,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 - If transaction is on "failed"
   - If `whatsappPhoneNumber` is invalid (most observed scenario so far)
     - **Pilot-team** updates `whatsappPhoneNumber` in HO-portal
-    - **Pilot-team** retries payment for each installment from payment-status-popup in HO-portal
+    - **Pilot-team** retries payment for each payment number from payment-status-popup in HO-portal
   - If failed for other reason
     - **Pilot-team** informs **121-dev-team**
     - **121-dev-team** does ad-hoc investigation
@@ -68,8 +68,8 @@ In this file we document "how to do X", manually. As not everything is possible 
 ## Find Reference ID of PA in database based on name and/or phone number
 
 1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) with a user with the "`personal-data`"-role
-2. Find the `registration` of the PA that we want to update.  
-   Use the endpoint: [`/registrations/search-name-phone`](https://test-vm.121.global/121-service/docs/#/registrations/post_registrations_search_name_phone)  
+2. Find the `registration` of the PA that we want to update.
+   Use the endpoint: [`/registrations/search-name-phone`](https://test-vm.121.global/121-service/docs/#/registrations/post_registrations_search_name_phone)
    Where you can optionally fill in `name` and/or old `phoneNumber` to search for.
 
    This will return all registrations that match _at least one_ of the parameters.
@@ -86,7 +86,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 ## Get monitoring data
 
 1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) with a user with the "`admin`"-role
-2. Use the endpoint: [`/programs/monitoring/{programId}`](https://test-vm.121.global/121-service/docs/#/programs/get_programs_monitoring__programId_)  
+2. Use the endpoint: [`/programs/monitoring/{programId}`](https://test-vm.121.global/121-service/docs/#/programs/get_programs_monitoring__programId_)
    Fill in the `programId` = 1.
 
    This will return all registrations, with attributes:

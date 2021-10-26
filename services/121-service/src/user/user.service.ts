@@ -1,4 +1,4 @@
-import { TransactionEntity } from './../programs/transactions.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
 import { PersonAffectedAppDataEntity } from './../people-affected/person-affected-app-data.entity';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';

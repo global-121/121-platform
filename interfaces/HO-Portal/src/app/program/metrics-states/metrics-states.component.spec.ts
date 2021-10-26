@@ -26,27 +26,25 @@ describe('MetricsStatesComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let testHost: TestHostComponent;
 
-  const mockPastInstallments = [
+  const mockPastPayments = [
     {
       id: 1,
-      installmentDate: new Date('2021-01-05'),
+      paymentDate: new Date('2021-01-05'),
       amount: 1,
     },
     {
       id: 2,
-      installmentDate: new Date('2021-02-05'),
+      paymentDate: new Date('2021-02-05'),
       amount: 1,
     },
   ];
 
-  const mockPastInstallmentsWithDates = mockPastInstallments.map(
-    (installment) => {
-      return {
-        id: installment.id,
-        date: installment.installmentDate,
-      };
-    },
-  );
+  const mockPastPaymentsWithDates = mockPastPayments.map((payment) => {
+    return {
+      id: payment.id,
+      date: payment.paymentDate,
+    };
+  });
 
   const fixtureProgram = apiProgramsMock.programs[0];
   const mockProgramMetrics: ProgramMetrics = {
@@ -89,16 +87,16 @@ describe('MetricsStatesComponent', () => {
     mockProgramsApi.getMetricsByIdWithCondition.and.returnValue(
       new Promise((r) => r(mockProgramMetrics)),
     );
-    mockProgramsApi.getPastInstallments.and.returnValue(
-      new Promise((r) => r(mockPastInstallments)),
+    mockProgramsApi.getPastPayments.and.returnValue(
+      new Promise((r) => r(mockPastPayments)),
     );
 
     mockPastPaymentsService = TestBed.inject(PastPaymentsService);
-    mockPastPaymentsService.getInstallmentsWithDates.and.returnValue(
-      new Promise((r) => r(mockPastInstallmentsWithDates)),
+    mockPastPaymentsService.getPaymentsWithDates.and.returnValue(
+      new Promise((r) => r(mockPastPaymentsWithDates)),
     );
-    mockPastPaymentsService.getInstallmentYearMonths.and.returnValue(
-      new Promise((r) => r(mockPastInstallmentsWithDates)),
+    mockPastPaymentsService.getPaymentYearMonths.and.returnValue(
+      new Promise((r) => r(mockPastPaymentsWithDates)),
     );
 
     fixture = TestBed.createComponent(TestHostComponent);
@@ -130,39 +128,37 @@ describe('MetricsStatesComponent', () => {
     fixture.autoDetectChanges();
     await fixture.whenStable();
 
-    expect(
-      mockPastPaymentsService.getInstallmentsWithDates,
-    ).toHaveBeenCalledWith(fixtureProgram.id);
-    expect(
-      mockPastPaymentsService.getInstallmentYearMonths,
-    ).toHaveBeenCalledWith(fixtureProgram.id);
+    expect(mockPastPaymentsService.getPaymentsWithDates).toHaveBeenCalledWith(
+      fixtureProgram.id,
+    );
+    expect(mockPastPaymentsService.getPaymentYearMonths).toHaveBeenCalledWith(
+      fixtureProgram.id,
+    );
   });
 
   it('should request the specific metrics for the most-recent payment', async () => {
     testHost.program = fixtureProgram;
-    const mockLastInstallmentId = mockPastInstallments[0].id;
+    const mockLastPaymentId = mockPastPayments[0].id;
 
     fixture.autoDetectChanges();
     await fixture.whenStable();
 
     expect(mockProgramsApi.getMetricsByIdWithCondition).toHaveBeenCalledWith(
       fixtureProgram.id,
-      `installment=${mockLastInstallmentId}`,
+      `payment=${mockLastPaymentId}`,
     );
   });
 
   it('should request the specific metrics for the most-recent month', async () => {
     testHost.program = fixtureProgram;
-    const mockLastInstallmentDate = new Date(
-      mockPastInstallments[0].installmentDate,
-    );
+    const mockLastPaymentDate = new Date(mockPastPayments[0].paymentDate);
 
     fixture.autoDetectChanges();
     await fixture.whenStable();
 
     expect(mockProgramsApi.getMetricsByIdWithCondition).toHaveBeenCalledWith(
       fixtureProgram.id,
-      `year=${mockLastInstallmentDate.getFullYear()}&month=${mockLastInstallmentDate.getMonth()}`,
+      `year=${mockLastPaymentDate.getFullYear()}&month=${mockLastPaymentDate.getMonth()}`,
     );
   });
 

@@ -1,4 +1,4 @@
-import { TransactionEntity } from './../programs/transactions.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
 import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';

@@ -144,12 +144,6 @@ export class BulkImportComponent implements OnInit {
                       'page.program.bulk-import.import-error.imported',
                     )
                   : '',
-              registered:
-                destination === PaStatus.registered
-                  ? this.translate.instant(
-                      'page.program.bulk-import.import-error.registered',
-                    )
-                  : '',
             },
           ),
         );

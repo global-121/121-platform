@@ -2,11 +2,11 @@ import { StatusEnum } from './status.enum';
 
 export class Transaction {
   id: number;
-  installment: number;
+  payment: number;
   transaction: number;
   referenceId: string;
   amount: number;
   status: StatusEnum;
-  installmentDate: Date;
+  paymentDate: Date;
   error: string;
 }

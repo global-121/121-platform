@@ -23,7 +23,7 @@ Feature: View PA-status metrics
     When the user clicks the "Choose payment"-list
     Then a list of all past payments with their dates is shown
     When the user makes a selection from the list
-    Then metrics are requested from the API for that "installment"
+    Then metrics are requested from the API for that "payment"
     And the most recent values for all metrics are shown
     And a new date for "Last updated" is shown
 
@@ -41,4 +41,4 @@ Feature: View PA-status metrics
     When the user clicks the "export as csv"-button
     Then a CSV file is downloaded
     And it contains the translated headers and the data shown in the page
-    
+

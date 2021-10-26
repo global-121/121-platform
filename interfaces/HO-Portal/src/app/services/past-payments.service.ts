@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InstallmentData } from '../models/installment.model';
+import { PaymentData } from '../models/payment.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
 @Injectable({
@@ -8,12 +8,12 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 export class PastPaymentsService {
   constructor(private programsService: ProgramsServiceApiService) {}
 
-  public async getLastInstallmentId(
+  public async getLastPaymentId(
     programId: number | string,
-    pastPayments?: InstallmentData[],
+    pastPayments?: PaymentData[],
   ): Promise<number> {
     if (!pastPayments) {
-      pastPayments = await this.programsService.getPastInstallments(programId);
+      pastPayments = await this.programsService.getPastPayments(programId);
     }
     if (pastPayments.length === 0) {
       return 0;
@@ -21,36 +21,34 @@ export class PastPaymentsService {
     return pastPayments[pastPayments.length - 1].id;
   }
 
-  public async getInstallmentsWithDates(programId: number): Promise<
+  public async getPaymentsWithDates(programId: number): Promise<
     {
       id: number;
       date: Date | string;
     }[]
   > {
-    const installments = await this.programsService.getPastInstallments(
-      programId,
-    );
-    return installments
+    const payments = await this.programsService.getPastPayments(programId);
+    return payments
       .sort((a, b) => (a.id < b.id ? 1 : -1))
-      .map((installment) => {
+      .map((payment) => {
         return {
-          id: installment.id,
-          date: installment.installmentDate,
+          id: payment.id,
+          date: payment.paymentDate,
         };
       });
   }
 
-  public async getInstallmentYearMonths(programId: number): Promise<
+  public async getPaymentYearMonths(programId: number): Promise<
     {
       date: Date | string;
     }[]
   > {
-    const installments = await this.getInstallmentsWithDates(programId);
+    const payments = await this.getPaymentsWithDates(programId);
     const yearMonths: {
       label: string;
       date: Date | string;
-    }[] = installments.map((installment) => {
-      const date = new Date(installment.date);
+    }[] = payments.map((payment) => {
+      const date = new Date(payment.date);
       const yearMonth = {
         label: `${date.getFullYear()}-${date.getMonth()}`,
         date,
@@ -65,7 +63,7 @@ export class PastPaymentsService {
     });
   }
 
-  public async getInstallmentsWithStateSums(programId: number): Promise<
+  public async getPaymentsWithStateSums(programId: number): Promise<
     {
       id: number;
       values: {
@@ -73,6 +71,6 @@ export class PastPaymentsService {
       };
     }[]
   > {
-    return this.programsService.getInstallmentsWithStateSums(programId);
+    return this.programsService.getPaymentsWithStateSums(programId);
   }
 }
