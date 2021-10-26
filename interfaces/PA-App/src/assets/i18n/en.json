@@ -90,6 +90,7 @@
     "select-language": {
       "introduction": {
         "en": "Please select your language.",
+        "am_ET": "እባኮትን ቋንቋ ይምረጡ።",
         "ar": "الرجاء اختيار لغتك",
         "fr": "Choisissez votre langue, s'il vous plaît.",
         "nl": "Kies jouw taal.",
@@ -105,6 +106,7 @@
       "result": "Thank you, you have selected {{language}}.",
       "language": {
         "en": "English",
+        "am_ET": "አማርኛ",
         "ar": "عربى",
         "fr": "Français",
         "nl": "Nederlands",
