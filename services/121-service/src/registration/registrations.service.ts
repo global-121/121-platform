@@ -26,7 +26,10 @@ import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { InlusionScoreService } from './services/inclusion-score.service';
 import { BulkImportService } from './services/bulk-import.service';
-import { ImportResult } from './dto/bulk-import.dto';
+import {
+  BulkImportResponse,
+  ImportRegistrationsResponse,
+} from './dto/bulk-import.dto';
 import { RegistrationResponse } from './dto/registration-response.model';
 import { NoteDto } from './dto/note.dto';
 import { validate } from 'class-validator';
@@ -409,7 +412,7 @@ export class RegistrationsService {
     csvFile,
     programId: number,
     userId: number,
-  ): Promise<ImportResult> {
+  ): Promise<BulkImportResponse[]> {
     const program = await this.findProgramOrThrow(programId);
     return await this.bulkImportService.importBulk(csvFile, program, userId);
   }
@@ -425,7 +428,7 @@ export class RegistrationsService {
   public async importRegistrations(
     csvFile,
     programId: number,
-  ): Promise<ImportResult> {
+  ): Promise<ImportRegistrationsResponse[]> {
     const program = await this.findProgramOrThrow(programId);
     return await this.bulkImportService.importRegistrations(csvFile, program);
   }

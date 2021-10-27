@@ -17,6 +17,12 @@ export class ImportResult {
   countInvalidPhoneNr: number;
 }
 
+export enum ImportStatus {
+  imported = 'imported',
+  invalidPhoneNumber = 'invalidPhoneNumber',
+  existingPhoneNumber = 'existingPhoneNumber',
+}
+
 @Component({
   selector: 'app-bulk-import',
   templateUrl: './bulk-import.component.html',
@@ -94,41 +100,91 @@ export class BulkImportComponent implements OnInit {
     ]);
   }
 
+  private aggregateImportResponse(importResponse: any[]): ImportResult {
+    const aggregateImportResult = new ImportResult();
+    aggregateImportResult.countImported = importResponse.filter(
+      (r) => r.importStatus === ImportStatus.imported,
+    ).length;
+    aggregateImportResult.countInvalidPhoneNr = importResponse.filter(
+      (r) => r.importStatus === ImportStatus.invalidPhoneNumber,
+    ).length;
+    aggregateImportResult.countExistingPhoneNr = importResponse.filter(
+      (r) => r.importStatus === ImportStatus.existingPhoneNumber,
+    ).length;
+    return aggregateImportResult;
+  }
+
+  public exportCSV(importResponse: any[]) {
+    if (importResponse.length === 0) {
+      return '';
+    }
+    const cleanValues = (_key, value): any => (value === null ? '' : value);
+
+    const columns = Object.keys(importResponse[0]);
+
+    let rows = importResponse.map((row) =>
+      columns
+        .map((fieldName) => JSON.stringify(row[fieldName], cleanValues))
+        .join(','),
+    );
+
+    rows.unshift(columns.join(',')); // Add header row
+
+    saveAs(
+      new Blob([rows.join('\r\n')], { type: 'text/csv' }),
+      `import-people-affected-response-${new Date()
+        .toISOString()
+        .substr(0, 10)}.csv`,
+    );
+  }
+
   public importPeopleAffected(event: { file: File }, destination: PaStatus) {
     this.isInProgress = true;
 
     this.programsService.import(this.programId, event.file, destination).then(
       (response) => {
+        const aggregateImportResult = this.aggregateImportResponse(response);
         this.isInProgress = false;
         let resultMessage =
           this.translate.instant(
             'page.program.bulk-import.import-result.ready',
-          ) + '<br><br>';
+          ) +
+          (destination === PaStatus.imported
+            ? ' ' +
+              this.translate.instant(
+                'page.program.bulk-import.import-result.csv',
+              )
+            : '') +
+          '<br><br>';
 
         resultMessage +=
           this.translate.instant('page.program.bulk-import.import-result.new', {
-            countImported: `<strong>${response.countImported}</strong>`,
+            countImported: `<strong>${aggregateImportResult.countImported}</strong>`,
           }) + '<br><br>';
 
-        if (response.countExistingPhoneNr) {
+        if (aggregateImportResult.countExistingPhoneNr) {
           resultMessage +=
             this.translate.instant(
               'page.program.bulk-import.import-result.existing',
               {
-                countExistingPhoneNr: `<strong>${response.countExistingPhoneNr}</strong>`,
+                countExistingPhoneNr: `<strong>${aggregateImportResult.countExistingPhoneNr}</strong>`,
               },
             ) + '<br><br>';
         }
-        if (response.countInvalidPhoneNr) {
+        if (aggregateImportResult.countInvalidPhoneNr) {
           resultMessage += this.translate.instant(
             'page.program.bulk-import.import-result.invalid',
             {
-              countInvalidPhoneNr: `<strong>${response.countInvalidPhoneNr}</strong>`,
+              countInvalidPhoneNr: `<strong>${aggregateImportResult.countInvalidPhoneNr}</strong>`,
             },
           );
         }
 
         this.actionResult(resultMessage, true);
+
+        if (destination === PaStatus.imported) {
+          this.exportCSV(response);
+        }
       },
       (err) => {
         this.isInProgress = false;

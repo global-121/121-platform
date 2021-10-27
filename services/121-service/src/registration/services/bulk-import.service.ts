@@ -17,9 +17,11 @@ import { FinancialServiceProviderEntity } from '../../fsp/financial-service-prov
 import { LanguageEnum } from '../enum/language.enum';
 import {
   BulkImportDto,
+  BulkImportResponse,
   DynamicImportAttribute,
   ImportRegistrationsDto,
-  ImportResult,
+  ImportRegistrationsResponse,
+  ImportStatus,
 } from '../dto/bulk-import.dto';
 import { v4 as uuid } from 'uuid';
 import csv from 'csv-parser';
@@ -52,32 +54,35 @@ export class BulkImportService {
     csvFile,
     program: ProgramEntity,
     userId: number,
-  ): Promise<ImportResult> {
+  ): Promise<BulkImportResponse[]> {
     const validatedImportRecords = await this.csvToValidatedBulkImport(csvFile);
 
-    let countImported = 0;
-    let countInvalidPhoneNr = 0;
-    let countExistingPhoneNr = 0;
+    const importResponseRecords = [];
     for await (const record of validatedImportRecords) {
+      const importResponseRecord = record as BulkImportResponse;
       const throwNoException = true;
       const phoneNumberResult = await this.lookupService.lookupAndCorrect(
         record.phoneNumber,
         throwNoException,
       );
       if (!phoneNumberResult) {
-        countInvalidPhoneNr += 1;
+        importResponseRecord.importStatus = ImportStatus.invalidPhoneNumber;
+        importResponseRecords.push(importResponseRecord);
         continue;
       }
 
-      let existingRegistrations = await this.registrationRepository.find({
+      let existingRegistrations = await this.registrationRepository.findOne({
         where: { phoneNumber: phoneNumberResult },
       });
-      if (existingRegistrations.length > 0) {
-        countExistingPhoneNr += 1;
+      if (existingRegistrations) {
+        importResponseRecord.importStatus = ImportStatus.existingPhoneNumber;
+        importResponseRecords.push(importResponseRecord);
         continue;
       }
 
-      countImported += 1;
+      importResponseRecord.importStatus = ImportStatus.imported;
+      importResponseRecords.push(importResponseRecord);
+
       const newRegistration = new RegistrationEntity();
       newRegistration.referenceId = uuid();
       newRegistration.phoneNumber = phoneNumberResult;
@@ -99,11 +104,7 @@ export class BulkImportService {
       AdditionalActionType.importPeopleAffected,
     );
 
-    return {
-      countImported,
-      countInvalidPhoneNr,
-      countExistingPhoneNr,
-    };
+    return importResponseRecords;
   }
 
   public async getImportRegistrationsTemplate(
@@ -122,13 +123,13 @@ export class BulkImportService {
   public async importRegistrations(
     csvFile,
     program: ProgramEntity,
-  ): Promise<ImportResult> {
+  ): Promise<ImportRegistrationsResponse[]> {
     const validatedImportRecords = await this.csvToValidatedRegistrations(
       csvFile,
       program.id,
     );
 
-    let countImported = 0;
+    const importRegistrationsResponses = [];
     let registrations: RegistrationEntity[] = [];
 
     const dynamicAttributes = await this.getDynamicAttributes(program.id, true);
@@ -152,6 +153,10 @@ export class BulkImportService {
       });
       registration.fsp = fsp;
       registrations.push(registration);
+
+      const importRegistrationsResponse = record as ImportRegistrationsResponse;
+      importRegistrationsResponse.importStatus = ImportStatus.imported;
+      importRegistrationsResponses.push(importRegistrationsResponse);
     }
     const savedRegistrations = await this.registrationRepository.save(
       registrations,
@@ -174,11 +179,9 @@ export class BulkImportService {
         program.id,
         registration.customData,
       );
-
-      countImported += 1;
     }
 
-    return { countImported };
+    return importRegistrationsResponses;
   }
 
   private async storeProgramAnswersImportRegistrations(

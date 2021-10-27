@@ -29,7 +29,10 @@ import { CustomDataDto } from './dto/custom-data.dto';
 import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
 import { UserRole } from '../user-role.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ImportResult } from './dto/bulk-import.dto';
+import {
+  BulkImportResponse,
+  ImportRegistrationsResponse,
+} from './dto/bulk-import.dto';
 import { Roles } from '../roles.decorator';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
 import { MessageDto } from './dto/message.dto';
@@ -164,7 +167,7 @@ export class RegistrationsController {
     @UploadedFile() csvFile,
     @Param() params,
     @User('id') userId: number,
-  ): Promise<ImportResult> {
+  ): Promise<BulkImportResponse[]> {
     return await this.registrationsService.importBulk(
       csvFile,
       Number(params.programId),
@@ -198,7 +201,7 @@ export class RegistrationsController {
   public async importRegistrations(
     @UploadedFile() csvFile,
     @Param() params,
-  ): Promise<ImportResult> {
+  ): Promise<ImportRegistrationsResponse[]> {
     return await this.registrationsService.importRegistrations(
       csvFile,
       Number(params.programId),
