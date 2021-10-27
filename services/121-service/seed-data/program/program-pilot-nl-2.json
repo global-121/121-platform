@@ -6,7 +6,8 @@
   "ngo": "NLRC",
   "title": {
     "en": "121 Digital Cash Aid Program (PV)",
-    "pt_BR": "121 Programa de Ajuda de Dinheiro Eletrônico (PV)"
+    "pt_BR": "121 Programa de Ajuda de Dinheiro Eletrônico (PV)",
+    "es": "121 Programa de Ayuda Monetaria Digital (PV)"
   },
   "description": {
     "en": ""
@@ -18,7 +19,8 @@
     "en": ""
   },
   "descCashType": {
-    "en": "Unconditional multi-purpose"
+    "en": "Unconditional multi-purpose",
+    "es": "Multipropósito incondicional"
   },
   "startDate": "2021-01-11T12:00:00Z",
   "endDate": "2021-12-31T12:00:00Z",
@@ -47,6 +49,13 @@
       "whatsappVoucher": "This is a message from the Red Cross.\n\nWith this message you will receive:\n1. An Albert Heijn supermarket voucher (cadeaukaart) - this is the picture with the barcode.\n2. An explanation on how to use the voucher in Albert Heijn.\n\nIf you received more than one voucher this is because you had not yet received vouchers from previous weeks.\n\nThe value of each voucher is €{{1}}.\nYou can spend the vouchers at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep the vouchers and re-use them until the €{{1}} on each voucher is finished.\n\nYou will receive your €{{1}} Albert Heijn voucher every week on Tuesday until:\n1. You are no longer on the list of our partner organisations.\n2. The end of the project on 31 December 2021.\n\nDo you have questions? Send us a message on WhatsApp: https://wa.me/31614458781",
       "whatsappVoucherMultiple": "This is a message from the Red Cross.\n\nWith this message you will receive:\n1. An Albert Heijn supermarket voucher (cadeaukaart) - this is the picture with the barcode.\n2. An explanation on how to use the voucher in Albert Heijn.\n\nIf you received more than one voucher this is because:\n1. You had not yet received vouchers from previous weeks.\n2. A family member or friend is registered with the same phone number.\nThis happens only when he/she is also put on the list of the partner organisation to receive the voucher.\n\nThe value of each voucher is €{{1}}.\nYou can spend the vouchers at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep the vouchers and re-use them until the €{{1}} on each voucher is finished.\n\nYou will receive your €{{1}} Albert Heijn voucher every week on Tuesday until:\n1. You are no longer on the list of our partner organisations.\n2. The end of the project on 31 December 2021.\n\nDo you have questions? Send us a message on WhatsApp: https://wa.me/31614458781",
       "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781"
+    },
+    "es": {
+      "registered": "Éste es un mensaje de la Cruz Roja \n\nHemos recibido su aplicacion para la ayuda\n\nRecibirá otro mensaje de Texto con más información dentro de 1 semana",
+      "whatsappPayment": "Éste es un mensaje de la Cruz Roja\n\nSu bono de Albert Heijn de €{{1}} está listo para ser enviado \n\nPor favor responda \"Si\" a éste mensaje para recibir:\n1. Éste bono semanal\n2. Cualquier bono anterior que aun no haya recibido. \n",
+      "whatsappVoucher": "Éste es un mensaje de la Cruz Roja\n\nCon este mensaje recibirá:\n1. Un bono del supermercado Albert Heijn (cadeaukaart): ésta es la imagen con el código de barras.\n2. Una explicación sobre cómo utilizar el bono en Albert Heijn.\n\nSi recibió más de un cupón, esto se debe a que aún no había recibido los cupones de las semanas anteriores.\n\nEl valor de cada bono es de {{1}} €.\nPuede gastar los cupones en cualquier supermercado Albert Heijn de los Países Bajos.\n\nNo tiene que gastarlo todo a la vez. Conserve los cupones y reutilícelos hasta que se acaben los {{1}} € de cada cupón.\n\nRecibirá su bono de Albert Heijn de {{1}} € cada semana los martes hasta que:\n1. Ya no esté en la lista de nuestras organizaciones asociadas.\n2. La finalización del proyecto el 30 de diciembre de 2021.\n\n¿Tienes preguntas? Envíanos un mensaje en WhatsApp: https://wa.me/31614458781",
+      "whatsappVoucherMultiple": "Éste es un mensaje de la Cruz Roja\n\nCon este mensaje recibirá:\n1. Un bono del supermercado Albert Heijn (cadeaukaart): ésta es la imagen con el código de barras.\n2. Una explicación sobre cómo utilizar el bono en Albert Heijn.\n\nSi recibió más de un cupón, esto se debe a que:\n1. No ha recibido bonos de semanas anteriores\n2. Un amigo o familiar esta registrado con el mismo número de teléfono.\nEsto sucede cuando él / ella también está incluido en la lista de la organización asociada para recibir el bono.\n\nEl valor de cada bono es de {{1}} €.\nPuede gastar los cupones en cualquier supermercado Albert Heijn de los Países Bajos.\n\nNo tiene que gastarlo todo a la vez. Conserve los cupones y reutilícelos hasta que se acaben los {{1}} € de cada cupón.\n\nRecibirá su bono de Albert Heijn de {{1}} € cada semana los martes hasta que:\n1. Ya no esté en la lista de nuestras organizaciones asociadas.\n2. La finalización del proyecto el 30 de diciembre de 2021.\n\n¿Tienes preguntas? Envíanos un mensaje en WhatsApp: https://wa.me/31614458781",
+      "whatsappReply": "Éste es un mensaje automático, cualquier duda o pregunta por favor contacte al Buro de Asistencia de la Cruz Roja en WhatsApp: +31614458781"
     },
     "nl": {
       "registered": "Dit is een bericht van het Rode Kruis.\n\nWe hebben je aanmelding voor hulp ontvangen.\n\nJe ontvangt binnen 1 week een volgende SMS met meer informatie.",
@@ -82,6 +91,7 @@
       "name": "nameFirst",
       "label": {
         "en": "Please enter your first name:",
+        "es": "Por favor introduzca su nombre:",
         "nl": "Vul je voornaam in:",
         "pt_BR": "Por favor, digite seu nome: ",
         "tl": "Ilagay ang pangalan:",
@@ -91,13 +101,18 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
       "name": "nameLast",
       "label": {
         "en": "Please enter your last name:",
+        "es": "Por favor introduzca su apellido:",
         "nl": "Vul je achternaam in:",
         "pt_BR": "Por favor, digite seu sobrenome:",
         "tl": "Ilagay ang apelyido:",
@@ -107,13 +122,18 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
       "name": "phoneNumber",
       "label": {
         "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>",
+        "es": "Por favor comparta el número de teléfono donde pueda recibir los mensajes te texto. Utilizaremos éste numero de teléfono para informarle del programa de ayuda. <br><br>Deberá lucir así: <code>+31 6 00 00 00 00</code>",
         "nl": "Geef het telefoonnummer waar je een SMS op kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+31 6 00 00 00 00</code>",
         "pt_BR": "Por favor digite o número de telefone em que você pode receber um mensagem de texto / SMS. Usaremos este número de telefone para informá-lo sobre o programa de ajuda. <br><br> Deve parecer: <code>+31 6 00 00 00 00</code>",
         "tl": "Pakibahagi ang iyong phone number upang makatanggap ng SMS. Gagamitin namin ang iyong phone number upang ipagbigay alam sayo ang aid program. <br><br> Dapat ito ay gaya ng: <code>+31 6 00 00 00 00</code>",
