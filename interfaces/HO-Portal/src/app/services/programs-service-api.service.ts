@@ -13,6 +13,7 @@ import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
 import { Transaction } from '../models/transaction.model';
 import { UserModel } from '../models/user.model';
+import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -278,7 +279,7 @@ export class ProgramsServiceApiService {
     programId: number,
     file: File,
     destination: PaStatus = PaStatus.imported,
-  ): Promise<any[]> {
+  ): Promise<ImportResult> {
     const formData = new FormData();
     formData.append('file', file);
 

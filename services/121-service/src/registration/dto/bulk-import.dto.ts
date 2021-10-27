@@ -35,8 +35,19 @@ export class BulkImportDto {
   public paymentAmountMultiplier: number;
 }
 
-export class BulkImportResponse extends BulkImportDto {
+export class BulkImportResult extends BulkImportDto {
   public importStatus: ImportStatus;
+}
+
+export class ImportResult {
+  public aggregateImportResult: AggregateImportResult;
+  public importResult?: BulkImportResult[];
+}
+
+export class AggregateImportResult {
+  public countImported: number;
+  public countExistingPhoneNr?: number;
+  public countInvalidPhoneNr?: number;
 }
 
 const fspArray = Object.values(FspName).map(item => String(item));
@@ -69,10 +80,6 @@ export class ImportRegistrationsDto {
   @ApiModelProperty()
   @IsArray()
   public programAttributes: DynamicImportAttribute[];
-}
-
-export class ImportRegistrationsResponse extends ImportRegistrationsDto {
-  public importStatus: ImportStatus;
 }
 
 export class DynamicImportAttribute {

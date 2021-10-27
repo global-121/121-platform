@@ -11,16 +11,28 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { FilePickerProps } from 'src/app/shared/file-picker-prompt/file-picker-prompt.component';
 import { environment } from 'src/environments/environment';
 
-export class ImportResult {
+export class AggregateImportResult {
   countImported: number;
   countExistingPhoneNr: number;
   countInvalidPhoneNr: number;
+}
+
+export class ImportResult {
+  public aggregateImportResult: AggregateImportResult;
+  public importResult?: BulkImportResult[];
 }
 
 export enum ImportStatus {
   imported = 'imported',
   invalidPhoneNumber = 'invalidPhoneNumber',
   existingPhoneNumber = 'existingPhoneNumber',
+}
+
+export class BulkImportResult {
+  public phoneNumber: string;
+  public namePartnerOrganization: string;
+  public paymentAmountMultiplier: number;
+  public importStatus: ImportStatus;
 }
 
 @Component({
@@ -100,20 +112,6 @@ export class BulkImportComponent implements OnInit {
     ]);
   }
 
-  private aggregateImportResponse(importResponse: any[]): ImportResult {
-    const aggregateImportResult = new ImportResult();
-    aggregateImportResult.countImported = importResponse.filter(
-      (r) => r.importStatus === ImportStatus.imported,
-    ).length;
-    aggregateImportResult.countInvalidPhoneNr = importResponse.filter(
-      (r) => r.importStatus === ImportStatus.invalidPhoneNumber,
-    ).length;
-    aggregateImportResult.countExistingPhoneNr = importResponse.filter(
-      (r) => r.importStatus === ImportStatus.existingPhoneNumber,
-    ).length;
-    return aggregateImportResult;
-  }
-
   public exportCSV(importResponse: any[]) {
     if (importResponse.length === 0) {
       return '';
@@ -142,7 +140,7 @@ export class BulkImportComponent implements OnInit {
 
     this.programsService.import(this.programId, event.file, destination).then(
       (response) => {
-        const aggregateImportResult = this.aggregateImportResponse(response);
+        const aggregateResult = response.aggregateImportResult;
         this.isInProgress = false;
         let resultMessage =
           this.translate.instant(
@@ -158,23 +156,23 @@ export class BulkImportComponent implements OnInit {
 
         resultMessage +=
           this.translate.instant('page.program.bulk-import.import-result.new', {
-            countImported: `<strong>${aggregateImportResult.countImported}</strong>`,
+            countImported: `<strong>${aggregateResult.countImported}</strong>`,
           }) + '<br><br>';
 
-        if (aggregateImportResult.countExistingPhoneNr) {
+        if (aggregateResult.countExistingPhoneNr) {
           resultMessage +=
             this.translate.instant(
               'page.program.bulk-import.import-result.existing',
               {
-                countExistingPhoneNr: `<strong>${aggregateImportResult.countExistingPhoneNr}</strong>`,
+                countExistingPhoneNr: `<strong>${aggregateResult.countExistingPhoneNr}</strong>`,
               },
             ) + '<br><br>';
         }
-        if (aggregateImportResult.countInvalidPhoneNr) {
+        if (aggregateResult.countInvalidPhoneNr) {
           resultMessage += this.translate.instant(
             'page.program.bulk-import.import-result.invalid',
             {
-              countInvalidPhoneNr: `<strong>${aggregateImportResult.countInvalidPhoneNr}</strong>`,
+              countInvalidPhoneNr: `<strong>${aggregateResult.countInvalidPhoneNr}</strong>`,
             },
           );
         }
@@ -182,7 +180,7 @@ export class BulkImportComponent implements OnInit {
         this.actionResult(resultMessage, true);
 
         if (destination === PaStatus.imported) {
-          this.exportCSV(response);
+          this.exportCSV(response.importResult);
         }
       },
       (err) => {
