@@ -118,13 +118,12 @@ export class BulkImportComponent implements OnInit {
     if (importResponse.length === 0) {
       return '';
     }
-    const cleanValues = (_key, value): any => (value === null ? '' : value);
 
     const columns = Object.keys(importResponse[0]);
 
-    let rows = importResponse.map((row) =>
+    const rows = importResponse.map((row) =>
       columns
-        .map((fieldName) => JSON.stringify(row[fieldName], cleanValues))
+        .map((fieldName) => JSON.stringify(row[fieldName] || ''))
         .join(','),
     );
 
