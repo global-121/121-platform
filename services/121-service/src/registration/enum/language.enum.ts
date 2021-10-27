@@ -9,4 +9,5 @@ export enum LanguageEnum {
   saqKE = 'saq_KE',
   in = 'in',
   nl = 'nl',
+  es = 'es',
 }

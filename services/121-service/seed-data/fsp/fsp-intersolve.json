@@ -3,6 +3,7 @@
   "fspDisplayName": {
     "ar": "ارسل قسيمة السوبرماركت إلى رقمي على واتس آب",
     "en": "Send supermarket voucher to my WhatsApp",
+    "es": "Enviar recibo del supermercado a mi WhatsApp",
     "nl": "Stuur supermarkt voucher via WhatsApp",
     "pt_BR": "Enviar vale de supermercado para meu WhatsApp",
     "tl": "Ipadala ang supermarket voucher sa aking WhatsApp",
@@ -13,6 +14,7 @@
       "name": "whatsappPhoneNumber",
       "label": {
         "ar": "إذا تم قبولك في البرنامج، سنقوم بإرسال قسيمة السوبر ماركت عبر واتس آب. <br><br> نرجو مشاركتنا رقمك على واتس آب. <br><br> يمكن أن يكون نفس رقم هاتفك الخاص بالرسائل النصية.",
+        "es": "Si esta usted incluido, le enviamos su recibo del supermercado via WhatsApp.<br><br>Por favor comparta el numero de teléfono que utiliza para WhatsApp. <br><br> Éste puede ser el mismo número que utiliza para SMS.",
         "en": "If you are included, we send your Supermarket voucher via WhatsApp.   <br><br>   Please share the phone number you use for WhatsApp.   <br><br>   This can be the same number you use for SMS.",
         "nl": "Als je bent toegelaten, sturen we jouw supermarkt voucher via WhatsApp.   <br><br>   Vul het nummer in dat je gebruikt voor WhatsApp.   <br><br>   Dit kan hetzelfde nummer zijn dat je gebruikt voor SMS.",
         "pt_BR": "Se você estiver incluído, enviamos seu vale de supermercado via WhatsApp. <br><br> Por favor, digite o número de telefone que você usa para o WhatsApp. <br><br> Este pode ser o mesmo número que você usa para mensagens SMS.",

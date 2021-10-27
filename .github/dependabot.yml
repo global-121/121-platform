@@ -10,21 +10,21 @@ updates:
     versioning-strategy: increase-if-necessary
     ignore:
       - dependency-name: '@angular/*'
-        versions: ['>= 9.0.0', '>= 0.900.0']
+        versions: ['>= 10.0.0', '>= 0.1000.0']
       - dependency-name: '@angular-devkit/*'
-        versions: ['>= 9.0.0', '>= 0.900.0']
+        versions: ['>= 10.0.0', '>= 0.1000.0']
       - dependency-name: '@auth0/angular-jwt'
         versions: ['>= 5.0.0']
       - dependency-name: '@ionic/angular'
-        versions: ['>= 5.0.0']
+        versions: ['>= 6.0.0']
       - dependency-name: '@ngx-translate/core'
         versions: ['>= 13.0.0']
       - dependency-name: '@ngx-translate/http-loader'
-        versions: ['>= 5.0.0']
+        versions: ['>= 6.0.0']
       - dependency-name: '@swimlane/ngx-charts'
-        versions: ['>= 14.0.0']
+        versions: ['>= 15.0.0']
       - dependency-name: '@swimlane/ngx-datatable'
-        versions: ['>= 17.0.0']
+        versions: ['>= 18.0.0']
       - dependency-name: '@types/node'
         versions: ['>= 13.0.0']
       - dependency-name: codelyzer
@@ -36,7 +36,7 @@ updates:
       - dependency-name: tslint
         versions: ['>= 6.0.0']
       - dependency-name: typescript
-        versions: ['>= 3.6.0']
+        versions: ['>= 3.9.0']
       - dependency-name: karma
         versions: ['>= 6.0.0']
       - dependency-name: rxjs
@@ -52,19 +52,19 @@ updates:
     versioning-strategy: increase-if-necessary
     ignore:
       - dependency-name: '@angular/*'
-        versions: ['>= 9.0.0', '>= 0.900.0']
+        versions: ['>= 10.0.0', '>= 0.1000.0']
       - dependency-name: '@angular-devkit/*'
-        versions: ['>= 9.0.0', '>= 0.900.0']
+        versions: ['>= 10.0.0', '>= 0.1000.0']
       - dependency-name: '@auth0/angular-jwt'
         versions: ['>= 5.0.0']
       - dependency-name: '@ionic/angular'
-        versions: ['>= 5.0.0']
+        versions: ['>= 6.0.0']
       - dependency-name: '@ionic/storage'
         versions: ['>= 2.3.0']
       - dependency-name: '@ngx-translate/core'
         versions: ['>= 13.0.0']
       - dependency-name: '@ngx-translate/http-loader'
-        versions: ['>= 5.0.0']
+        versions: ['>= 6.0.0']
       - dependency-name: '@types/node'
         versions: ['>= 13.0.0']
       - dependency-name: codelyzer
@@ -76,7 +76,7 @@ updates:
       - dependency-name: tslint
         versions: ['>= 6.0.0']
       - dependency-name: typescript
-        versions: ['>= 3.6.0']
+        versions: ['>= 3.9.0']
       - dependency-name: karma
         versions: ['>= 6.0.0']
       - dependency-name: rxjs
@@ -84,7 +84,7 @@ updates:
       - dependency-name: 'zone.js'
         versions: ['>= v0.11.1']
       - dependency-name: '@zxing/ngx-scanner'
-        versions: ['>= 3.0.0']
+        versions: ['>= 4.0.0']
 
   - package-ecosystem: npm
     directory: '/interfaces/PA-App'
@@ -94,17 +94,17 @@ updates:
     versioning-strategy: increase-if-necessary
     ignore:
       - dependency-name: '@angular/*'
-        versions: ['>= 9.0.0', '>= 0.900.0']
+        versions: ['>= 10.0.0', '>= 0.1000.0']
       - dependency-name: '@angular-devkit/*'
-        versions: ['>= 9.0.0', '>= 0.900.0']
+        versions: ['>= 10.0.0', '>= 0.1000.0']
       - dependency-name: '@auth0/angular-jwt'
         versions: ['>= 5.0.0']
       - dependency-name: '@ionic/angular'
-        versions: ['>= 5.0.0']
+        versions: ['>= 6.0.0']
       - dependency-name: '@ngx-translate/core'
         versions: ['>= 13.0.0']
       - dependency-name: '@ngx-translate/http-loader'
-        versions: ['>= 5.0.0']
+        versions: ['>= 6.0.0']
       - dependency-name: '@types/node'
         versions: ['>= 13.0.0']
       - dependency-name: codelyzer
@@ -116,7 +116,7 @@ updates:
       - dependency-name: tslint
         versions: ['>= 6.0.0']
       - dependency-name: typescript
-        versions: ['>= 3.6.0']
+        versions: ['>= 3.9.0']
       - dependency-name: karma
         versions: ['>= 6.0.0']
       - dependency-name: ngx-translate-lint
@@ -126,6 +126,6 @@ updates:
       - dependency-name: 'zone.js'
         versions: ['>= v0.11.1']
       - dependency-name: angularx-qrcode
-        versions: ['>= 2.1.0']
-      - dependency-name: '@zxing/ngx-scanner'
         versions: ['>= 3.0.0']
+      - dependency-name: '@zxing/ngx-scanner'
+        versions: ['>= 4.0.0']
