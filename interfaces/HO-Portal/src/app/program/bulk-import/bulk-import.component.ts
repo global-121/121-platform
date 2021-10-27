@@ -10,6 +10,7 @@ import { PaStatus } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { FilePickerProps } from 'src/app/shared/file-picker-prompt/file-picker-prompt.component';
 import { environment } from 'src/environments/environment';
+import { arrayToCsv } from '../../shared/array-to-csv';
 
 export class AggregateImportResult {
   countImported: number;
@@ -113,26 +114,8 @@ export class BulkImportComponent implements OnInit {
   }
 
   public exportCSV(importResponse: any[]) {
-    if (importResponse.length === 0) {
-      return '';
-    }
-
-    const columns = Object.keys(importResponse[0]);
-
-    const rows = importResponse.map((row) =>
-      columns
-        .map((fieldName) => JSON.stringify(row[fieldName] || ''))
-        .join(','),
-    );
-
-    rows.unshift(columns.join(',')); // Add header row
-
-    saveAs(
-      new Blob([rows.join('\r\n')], { type: 'text/csv' }),
-      `import-people-affected-response-${new Date()
-        .toISOString()
-        .substr(0, 10)}.csv`,
-    );
+    const filename = 'import-people-affected-response';
+    arrayToCsv(importResponse, filename);
   }
 
   public importPeopleAffected(event: { file: File }, destination: PaStatus) {
