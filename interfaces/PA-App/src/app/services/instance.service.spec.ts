@@ -11,7 +11,7 @@ describe('InstanceService', () => {
   );
 
   it('should be created', () => {
-    const service: InstanceService = TestBed.get(InstanceService);
+    const service: InstanceService = TestBed.inject(InstanceService);
     expect(service).toBeTruthy();
   });
 });

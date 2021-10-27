@@ -14,7 +14,6 @@
     "error-retry": "Something went wrong, do you want to try again?"
   },
   "notification": {
-    "close": "close",
     "inclusion": "Inclusion status received"
   },
   "password-toggle": {

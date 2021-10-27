@@ -4,7 +4,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { PersonalComponent } from '../personal-component.class';
+import { PersonalDirective } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 @Component({
@@ -12,7 +12,7 @@ import { PersonalComponents } from '../personal-components.enum';
   templateUrl: './monitoring-question.component.html',
   styleUrls: ['./monitoring-question.component.scss'],
 })
-export class MonitoringQuestionComponent extends PersonalComponent {
+export class MonitoringQuestionComponent extends PersonalDirective {
   public isCanceled = false;
   public monitoringQuestion: MonitoringInfo;
 

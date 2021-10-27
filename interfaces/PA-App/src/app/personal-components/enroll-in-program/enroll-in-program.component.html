@@ -53,14 +53,21 @@
             slot="start"
             class="ion-no-margin ion-margin-end"
           ></play-text-audio>
-          <ion-label class="ion-text-wrap ion-padding-end">
-            {{ 'personal.enroll-in-program.submit-confirm'|translate }}
-          </ion-label>
-          <ion-radio
-            [value]="submitActions.confirm"
-            [checked]="isDisabled"
-            [disabled]="isDisabled"
-          ></ion-radio>
+          <ion-item
+            lines="none"
+            color="light"
+            class="ion-no-padding"
+            style="width: 100%;"
+          >
+            <ion-label class="ion-text-wrap ion-padding-end">
+              {{ 'personal.enroll-in-program.submit-confirm'|translate }}
+            </ion-label>
+            <ion-radio
+              [value]="submitActions.confirm"
+              [checked]="isDisabled"
+              [disabled]="isDisabled"
+            ></ion-radio>
+          </ion-item>
         </ion-item>
         <ion-item
           color="light"
@@ -72,13 +79,20 @@
             slot="start"
             class="ion-no-margin ion-margin-end"
           ></play-text-audio>
-          <ion-label class="ion-text-wrap ion-padding-end">
-            {{ 'personal.enroll-in-program.change'|translate }}
-          </ion-label>
-          <ion-radio
-            [value]="submitActions.change"
-            [disabled]="isDisabled"
-          ></ion-radio>
+          <ion-item
+            lines="none"
+            color="light"
+            class="ion-no-padding"
+            style="width: 100%;"
+          >
+            <ion-label class="ion-text-wrap ion-padding-end">
+              {{ 'personal.enroll-in-program.change'|translate }}
+            </ion-label>
+            <ion-radio
+              [value]="submitActions.change"
+              [disabled]="isDisabled"
+            ></ion-radio>
+          </ion-item>
         </ion-item>
       </ion-radio-group>
       <ion-row

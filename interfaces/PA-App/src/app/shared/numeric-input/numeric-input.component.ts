@@ -13,7 +13,7 @@ import { NgModel } from '@angular/forms';
   styleUrls: ['./numeric-input.component.scss'],
 })
 export class NumericInputComponent {
-  @ViewChild('numericInput', { static: false })
+  @ViewChild('numericInput')
   public numericInput: any;
 
   @Input()

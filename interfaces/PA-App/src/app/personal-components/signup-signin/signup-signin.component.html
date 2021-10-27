@@ -17,14 +17,21 @@
             slot="start"
             class="ion-no-margin ion-margin-end"
           ></play-text-audio>
-          <ion-label class="ion-text-wrap ion-padding-end">
-            {{ 'personal.signup-signin.create-id'|translate }}
-          </ion-label>
-          <ion-radio
-            [value]="idChoices.create"
-            [checked]="signupSigninChoice === idChoices.create"
-            [disabled]="typeChosen"
-          ></ion-radio>
+          <ion-item
+            lines="none"
+            color="light"
+            class="ion-no-padding"
+            style="width: 100%;"
+          >
+            <ion-label class="ion-text-wrap ion-padding-end">
+              {{ 'personal.signup-signin.create-id'|translate }}
+            </ion-label>
+            <ion-radio
+              [value]="idChoices.create"
+              [checked]="signupSigninChoice === idChoices.create"
+              [disabled]="typeChosen"
+            ></ion-radio>
+          </ion-item>
         </ion-item>
         <ion-item
           color="light"
@@ -36,14 +43,21 @@
             slot="start"
             class="ion-no-margin ion-margin-end"
           ></play-text-audio>
-          <ion-label class="ion-text-wrap ion-padding-end">
-            {{ 'personal.signup-signin.login-id'|translate }}
-          </ion-label>
-          <ion-radio
-            [value]="idChoices.login"
-            [checked]="signupSigninChoice === idChoices.login"
-            [disabled]="typeChosen"
-          ></ion-radio>
+          <ion-item
+            lines="none"
+            color="light"
+            class="ion-no-padding"
+            style="width: 100%;"
+          >
+            <ion-label class="ion-text-wrap ion-padding-end">
+              {{ 'personal.signup-signin.login-id'|translate }}
+            </ion-label>
+            <ion-radio
+              [value]="idChoices.login"
+              [checked]="signupSigninChoice === idChoices.login"
+              [disabled]="typeChosen"
+            ></ion-radio>
+          </ion-item>
         </ion-item>
       </ion-radio-group>
       <ion-row
