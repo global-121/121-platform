@@ -46,7 +46,7 @@
     "@microsoft/applicationinsights-web": "^2.7.0",
     "@ngx-translate/core": "^12.1.2",
     "@ngx-translate/http-loader": "^5.0.0",
-    "@zxing/ngx-scanner": "3.0.1",
+    "@zxing/ngx-scanner": "3.2.0",
     "angularx-qrcode": "2.3.5",
     "core-js": "2.6.8",
     "howler": "^2.1.3",
