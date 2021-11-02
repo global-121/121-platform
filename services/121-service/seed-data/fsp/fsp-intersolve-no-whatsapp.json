@@ -1,5 +1,6 @@
 {
   "fsp": "Intersolve-no-whatsapp",
+  "integrationType": "api",
   "fspDisplayName": {
     "ar": "ليس لدي واتس آب، قم بإرسال قسيمة السوبر ماركت بطريقة أخرى.",
     "en": "I do not have WhatsApp. Send supermarket voucher in another way.",
