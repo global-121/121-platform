@@ -1,7 +1,4 @@
-import { HttpException, HttpService, Injectable } from '@nestjs/common';
-import { FspName } from '../../../fsp/financial-service-provider.entity';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
+import { HttpService, Injectable } from '@nestjs/common';
 import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -16,7 +13,6 @@ export class BelcashApiService {
       credentials: process.env.BELCASH_PASSWORD,
     };
     const authenticationResult = await this.post(`authenticate`, payload);
-    console.log('authenticationResult: ', authenticationResult);
     return authenticationResult.data.token;
   }
 
@@ -24,7 +20,7 @@ export class BelcashApiService {
     payload: any,
     authorizationToken?: string,
   ): Promise<any> {
-    await this.post('transfers', payload, authorizationToken);
+    return await this.post('transfers', payload, authorizationToken);
   }
 
   private async post(
@@ -32,8 +28,7 @@ export class BelcashApiService {
     payload: any,
     authorizationToken?: string,
   ): Promise<any> {
-    //const url = 'https://httpbin.org/post';
-    const url = '`${process.env.BELCASH_API_URL}/${endpoint}`';
+    const url = `${process.env.BELCASH_API_URL}/${endpoint}`;
     return await this.httpService
       .post(url, payload, {
         headers: this.createHeaders(authorizationToken),

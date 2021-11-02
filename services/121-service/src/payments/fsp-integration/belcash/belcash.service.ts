@@ -11,6 +11,7 @@ import {
 import { TransactionsService } from '../../transactions/transactions.service';
 import { BelcashApiService } from './belcash.api.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+
 @Injectable()
 export class BelcashService {
   @InjectRepository(ProgramEntity)
@@ -72,7 +73,7 @@ export class BelcashService {
       referenceid: `${
         paymentData.referenceId
       }-payment-${paymentNr}-${+new Date()}`,
-      notifyto: true,
+      notifyto: false,
     };
 
     return payload;
@@ -97,12 +98,12 @@ export class BelcashService {
       authorizationToken,
     );
 
-    if (result.status !== 200 || result.status !== 201) {
+    if ([200, 201].includes(result.status)) {
+      paTransactionResult.status = StatusEnum.success;
+      paTransactionResult.message = 'Payment instructions succesfully sent.';
+    } else {
       paTransactionResult.status = StatusEnum.error;
       paTransactionResult.message = result.data.error.message;
-    } else {
-      paTransactionResult.status = StatusEnum.success;
-      paTransactionResult.message = 'Payment instructions succesfully send.';
     }
     return paTransactionResult;
   }
