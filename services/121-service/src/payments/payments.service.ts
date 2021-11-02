@@ -317,4 +317,9 @@ export class PaymentsService {
   public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
     return this.intersolveService.getUnusedVouchers();
   }
+
+  public async getFspInstructions(programId, payment): Promise<any> {
+    console.log('programId, payment: ', programId, payment);
+    return 'works';
+  }
 }

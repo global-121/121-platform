@@ -49,4 +49,23 @@ export class PaymentsController {
       data.referenceId,
     );
   }
+
+  @Roles(UserRole.PersonalData)
+  @ApiOperation({
+    title:
+      'Get payments instructions for past payment to post in Financial Service Provider Portal',
+  })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Get payments instructions for past payment to post in Financial Service Provider Portal',
+  })
+  @Get(':programId/fsp-instructions/:payment')
+  public async getPaymentInstructions(@Param() params): Promise<any> {
+    return await this.paymentsService.getFspInstructions(
+      Number(params.programId),
+      params.payment,
+    );
+  }
 }
