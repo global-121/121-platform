@@ -37,6 +37,7 @@ export class ProgramPayoutComponent implements OnInit {
 
   public program: Program;
   public payments: Payment[];
+  public isIntersolve: boolean;
 
   public canMakePayment: boolean;
   public canMakeExport: boolean;
@@ -68,6 +69,8 @@ export class ProgramPayoutComponent implements OnInit {
 
     this.canMakePayment = this.checkCanMakePayment();
     this.canMakeExport = this.checkCanMakeExport();
+
+    this.isIntersolve = await this.checkIntersolve();
 
     this.totalIncluded = (
       await this.programsService.getTotalIncluded(this.programId)
@@ -244,7 +247,7 @@ export class ProgramPayoutComponent implements OnInit {
     }
   }
 
-  async isIntersolve() {
+  private async checkIntersolve(): Promise<boolean> {
     this.program = await this.programsService.getProgramById(this.programId);
     for (const fsp of this.program.financialServiceProviders) {
       if (fsp.fsp.toLowerCase().includes('intersolve')) {
@@ -255,7 +258,6 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   public async retryLastPayment() {
-    // this.isInProgress = true;
     await this.programsService
       .submitPayout(
         this.programId,
