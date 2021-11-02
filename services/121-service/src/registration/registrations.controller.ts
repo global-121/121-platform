@@ -342,7 +342,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.PersonalData)
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Reject set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('reject/:programId')

@@ -11,19 +11,19 @@ import {
   Question,
   QuestionOption,
 } from 'src/app/models/q-and-a.models';
-import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { PersonalDirective } from '../personal-component.class';
 
 @Component({
   selector: 'app-select-fsp',
   templateUrl: './select-fsp.component.html',
   styleUrls: ['./select-fsp.component.scss'],
 })
-export class SelectFspComponent extends PersonalComponent {
+export class SelectFspComponent extends PersonalDirective {
   @Input()
   public data: any;
 

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { PersonalComponent } from '../personal-component.class';
+import { PersonalDirective } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 export enum idChoices {
@@ -13,7 +13,7 @@ export enum idChoices {
   templateUrl: './signup-signin.component.html',
   styleUrls: ['./signup-signin.component.scss'],
 })
-export class SignupSigninComponent extends PersonalComponent {
+export class SignupSigninComponent extends PersonalDirective {
   @Input()
   public data: any;
 

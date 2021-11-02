@@ -1,5 +1,5 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
+import { PersonalDirective } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { InstanceService } from 'src/app/services/instance.service';
@@ -10,7 +10,7 @@ import { InstanceService } from 'src/app/services/instance.service';
   styleUrls: ['./contact-details.component.scss'],
   encapsulation: ViewEncapsulation.None, // Disabled because we need to style inserted HTML from the database
 })
-export class ContactDetailsComponent extends PersonalComponent {
+export class ContactDetailsComponent extends PersonalDirective {
   @Input()
   public data: any;
 

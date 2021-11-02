@@ -16,6 +16,5 @@ import { TabsPageRoutingModule } from './tabs.router.module';
     TranslateModule.forChild(),
   ],
   declarations: [TabsPage, UserMenuComponent],
-  entryComponents: [UserMenuComponent],
 })
 export class TabsPageModule {}

@@ -7,15 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.16.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.17.0...master)
 
 ---
+
+## [1.17.0](https://github.com/global-121/121-platform/compare/v1.16.0...v1.17.0) - 2021-10-27
+
+### Changed
+
+- 2021-10-20: Upgrade PA-App to Angular v9 + Ionic v5
+- 2021-10-20: Upgrade HO-Portal to Angular v9 + Ionic v5
+- 2021-10-20: Upgrade AW-App to Angular v9 + Ionic v5
 
 ## [1.16.0](https://github.com/global-121/121-platform/compare/v1.15.0...v1.16.0) - 2021-10-13
 
 ### Changed
 
-Nothing. Dummy release upgrade to test automatic deploy through webhook on minor versions. 
+Nothing. Dummy release upgrade to test automatic deploy through webhook on minor versions.
 
 ## [1.15.0](https://github.com/global-121/121-platform/compare/v1.14.4...v1.15.0) - 2021-10-13
 

@@ -1,6 +1,7 @@
 import {
   AfterContentInit,
   AfterViewInit,
+  Directive,
   Input,
   OnInit,
   QueryList,
@@ -9,7 +10,8 @@ import {
 import { environment } from 'src/environments/environment';
 import { DialogueTurnComponent } from '../shared/dialogue-turn/dialogue-turn.component';
 
-export abstract class PersonalComponent
+@Directive()
+export abstract class PersonalDirective
   implements OnInit, AfterViewInit, AfterContentInit
 {
   /**
