@@ -1,5 +1,6 @@
 {
   "fsp": "Intersolve-whatsapp",
+  "integrationType": "api",
   "fspDisplayName": {
     "ar": "ارسل قسيمة السوبرماركت إلى رقمي على واتس آب",
     "en": "Send supermarket voucher to my WhatsApp",

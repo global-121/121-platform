@@ -1,5 +1,6 @@
 {
   "fsp": "Africas-talking",
+  "integrationType": "api",
   "fspDisplayName": {
     "saq_KE": "Mpesa",
     "tuv_KE": "M-PESA",
@@ -18,7 +19,11 @@
         "tuv_KE": "+254 000 000 000",
         "en": "+254 000 000 000"
       },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "answerType": "tel",
       "options": null
     }

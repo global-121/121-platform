@@ -3,6 +3,7 @@
   "fspDisplayName": {
     "en": "BoB Finance"
   },
+  "integrationType": "csv",
   "attributes": [
     {
       "name": "phoneNumber",
