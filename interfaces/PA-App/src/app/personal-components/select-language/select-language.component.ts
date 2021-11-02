@@ -8,7 +8,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { environment } from 'src/environments/environment';
-import { PersonalComponent } from '../personal-component.class';
+import { PersonalDirective } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 @Component({
@@ -16,7 +16,7 @@ import { PersonalComponents } from '../personal-components.enum';
   templateUrl: './select-language.component.html',
   styleUrls: ['./select-language.component.scss'],
 })
-export class SelectLanguageComponent extends PersonalComponent {
+export class SelectLanguageComponent extends PersonalDirective {
   @Input()
   public data: any;
 

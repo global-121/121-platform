@@ -1,3 +1,4 @@
+import { APP_BASE_HREF } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -31,6 +32,7 @@ describe('InclusionStatusComponent', () => {
           provide: PaDataService,
           useValue: MockPaDataService,
         },
+        { provide: APP_BASE_HREF, useValue: '/' },
       ],
     }).compileComponents();
   }));

@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { QRCodeModule } from 'angularx-qrcode';
 import { ConversationService } from '../services/conversation.service';
 import { InfoPopupComponent } from '../shared/info-popup/info-popup.component';
-import { QrScannerComponent } from '../shared/qr-scanner/qr-scanner.component';
 import { SharedModule } from '../shared/shared.module';
 import { ConsentQuestionComponent } from './consent-question/consent-question.component';
 import { ContactDetailsComponent } from './contact-details/contact-details.component';
@@ -40,24 +39,6 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     InfoPopupComponent,
   ],
   imports: [CommonModule, SharedModule, FormsModule, QRCodeModule],
-  entryComponents: [
-    ConsentQuestionComponent,
-    ContactDetailsComponent,
-    CreateAccountComponent,
-    EnrollInProgramComponent,
-    InclusionStatusComponent,
-    LoginAccountComponent,
-    MonitoringQuestionComponent,
-    PreprintedQrcodeComponent,
-    RegistrationSummaryComponent,
-    SelectFspComponent,
-    SelectLanguageComponent,
-    SelectProgramComponent,
-    SetNotificationNumberComponent,
-    SignupSigninComponent,
-    InfoPopupComponent,
-    QrScannerComponent,
-  ],
   exports: [
     ConsentQuestionComponent,
     ContactDetailsComponent,

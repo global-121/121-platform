@@ -16,7 +16,6 @@
     <play-text-audio key="personal.consent-question.answer" class="ion-float-start ion-margin-end"></play-text-audio>
     <span [innerHTML]="'personal.consent-question.answer'|translate"></span>
   </p>
-
   <ion-radio-group (ionChange)="changeConsent($event.detail.value)">
     <ion-item
       color="light"
@@ -28,14 +27,21 @@
         slot="start"
         class="ion-no-margin ion-margin-end"
       ></play-text-audio>
-      <ion-label class="ion-text-wrap ion-padding-end">
-        {{ 'personal.consent-question.agree'|translate }}
-      </ion-label>
-      <ion-radio
-        [value]="consentChoices.agree"
-        [checked]="userConsent === true"
-        [disabled]="isDisabled"
-      ></ion-radio>
+      <ion-item
+        lines="none"
+        color="light"
+        class="ion-no-padding"
+        style="width: 100%;"
+      >
+        <ion-label class="ion-text-wrap ion-padding-end">
+          {{ 'personal.consent-question.agree'|translate }}
+        </ion-label>
+        <ion-radio
+          [value]="consentChoices.agree"
+          [checked]="userConsent === true"
+          [disabled]="isDisabled"
+        ></ion-radio>
+      </ion-item>
     </ion-item>
     <ion-item
       color="light"
@@ -47,14 +53,21 @@
         slot="start"
         class="ion-no-margin ion-margin-end"
       ></play-text-audio>
-      <ion-label class="ion-text-wrap ion-padding-end">
-        {{ 'personal.consent-question.disagree'|translate }}
-      </ion-label>
-      <ion-radio
-        [value]="consentChoices.disagree"
-        [checked]="userConsent === false"
-        [disabled]="isDisabled"
-      ></ion-radio>
+      <ion-item
+        lines="none"
+        color="light"
+        class="ion-no-padding"
+        style="width: 100%;"
+      >
+        <ion-label class="ion-text-wrap ion-padding-end">
+          {{ 'personal.consent-question.disagree'|translate }}
+        </ion-label>
+        <ion-radio
+          [value]="consentChoices.disagree"
+          [checked]="userConsent === false"
+          [disabled]="isDisabled"
+        ></ion-radio>
+      </ion-item>
     </ion-item>
   </ion-radio-group>
   <ion-row

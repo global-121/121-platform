@@ -49,18 +49,18 @@ See the [/services/](../services/)-directory in this repository.
 
 All interfaces use a common set of dependencies/frameworks/libraries.
 
-- [Ionic v4](https://ionicframework.com/docs/v4/)  
+- [Ionic v5](https://ionicframework.com/docs/)  
   This UI-kit or library gives us a foundation to quickly build interfaces cross-platform and cross-device-type(mobile/desktop).  
   We use the (default) framework of Angular with(in) Ionic.
 
-  - Available components: <https://ionicframework.com/docs/v4/components>
-  - CSS Utilities: <https://ionicframework.com/docs/v4/layout/css-utilities>
-  - Icons: <https://ionicons.com/v4/>
+  - Available components: <https://ionicframework.com/docs/components>
+  - CSS Utilities: <https://ionicframework.com/docs/layout/css-utilities>
+  - Icons: <https://ionicons.com/>
 
-- [Angular v8](https://v8.angular.io/docs)  
+- [Angular v9](https://v9.angular.io/docs)  
   This front-end framework gives us a structure to create components that can be connected, combined, share data and can be delivered as a web-app.
 
-  - API Documentation: <https://v8.angular.io/api>
+  - API Documentation: <https://v9.angular.io/api>
   - Used by Angular, RxJS: <https://v6.rxjs.dev/api>
 
 - [`ngx-translate` v12](https://www.npmjs.com/package/@ngx-translate/core/v/12.1.2)  
@@ -74,10 +74,10 @@ All interfaces use a common set of dependencies/frameworks/libraries.
 
   - GitHub: <https://github.com/svoboda-rabstvo/ngx-translate-lint/tree/v1.4.0>
 
-- [`ngx-scanner` v2](https://www.npmjs.com/package/@zxing/ngx-scanner/v/2.0.1)
+- [`ngx-scanner` v3](https://www.npmjs.com/package/@zxing/ngx-scanner/v/3.0.1)
   An Angular-component to scan QR-codes with a browser.
 
-  - GitHub: <https://github.com/zxing-js/ngx-scanner/tree/v2.0.1>
+  - GitHub: <https://github.com/zxing-js/ngx-scanner/tree/v3.0.1>
 
 - [`gzipper`](https://www.npmjs.com/package/gzipper)
   To compress all assets of the interfaces after the build.

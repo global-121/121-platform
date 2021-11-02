@@ -10,7 +10,7 @@
       headingKey="personal.preprinted-qrcode.more-info-qr"
     ></more-info-button>
   </dialogue-turn>
-  <dialogue-turn 
+  <dialogue-turn
     isConnected="true"
     [isSpoken]="isCanceled === false"
   >
@@ -21,9 +21,9 @@
     </p>
   </dialogue-turn>
 
-  <dialogue-turn 
+  <dialogue-turn
     actor="self"
-    [isSpoken]="isCanceled === false"  
+    [isSpoken]="isCanceled === false"
   >
     <ion-row *ngIf="!isDisabled || hasPreprinted"
              class="ion-nowrap ion-align-items-center"
@@ -70,7 +70,7 @@
                   expand="block"
                   style="flex-basis:100%"
       >
-        <ion-icon name="qr-scanner" slot="start" size="small" aria-hidden="true"></ion-icon>
+        <ion-icon name="qr-code" slot="start" size="small" aria-hidden="true"></ion-icon>
         {{ 'personal.preprinted-qrcode.start-scanner'|translate }}
       </ion-button>
     </ion-row>

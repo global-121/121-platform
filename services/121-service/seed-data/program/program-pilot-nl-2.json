@@ -51,10 +51,10 @@
       "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781"
     },
     "es": {
-      "registered": "Éste es un mensaje de la Cruz Roja \n\nHemos recibido su aplicacion para la ayuda\n\nRecibirá otro mensaje de Texto con más información dentro de 1 semana",
-      "whatsappPayment": "Éste es un mensaje de la Cruz Roja\n\nSu bono de Albert Heijn de €{{1}} está listo para ser enviado \n\nPor favor responda \"Si\" a éste mensaje para recibir:\n1. Éste bono semanal\n2. Cualquier bono anterior que aun no haya recibido. \n",
-      "whatsappVoucher": "Éste es un mensaje de la Cruz Roja\n\nCon este mensaje recibirá:\n1. Un bono del supermercado Albert Heijn (cadeaukaart): ésta es la imagen con el código de barras.\n2. Una explicación sobre cómo utilizar el bono en Albert Heijn.\n\nSi recibió más de un cupón, esto se debe a que aún no había recibido los cupones de las semanas anteriores.\n\nEl valor de cada bono es de {{1}} €.\nPuede gastar los cupones en cualquier supermercado Albert Heijn de los Países Bajos.\n\nNo tiene que gastarlo todo a la vez. Conserve los cupones y reutilícelos hasta que se acaben los {{1}} € de cada cupón.\n\nRecibirá su bono de Albert Heijn de {{1}} € cada semana los martes hasta que:\n1. Ya no esté en la lista de nuestras organizaciones asociadas.\n2. La finalización del proyecto el 30 de diciembre de 2021.\n\n¿Tienes preguntas? Envíanos un mensaje en WhatsApp: https://wa.me/31614458781",
-      "whatsappVoucherMultiple": "Éste es un mensaje de la Cruz Roja\n\nCon este mensaje recibirá:\n1. Un bono del supermercado Albert Heijn (cadeaukaart): ésta es la imagen con el código de barras.\n2. Una explicación sobre cómo utilizar el bono en Albert Heijn.\n\nSi recibió más de un cupón, esto se debe a que:\n1. No ha recibido bonos de semanas anteriores\n2. Un amigo o familiar esta registrado con el mismo número de teléfono.\nEsto sucede cuando él / ella también está incluido en la lista de la organización asociada para recibir el bono.\n\nEl valor de cada bono es de {{1}} €.\nPuede gastar los cupones en cualquier supermercado Albert Heijn de los Países Bajos.\n\nNo tiene que gastarlo todo a la vez. Conserve los cupones y reutilícelos hasta que se acaben los {{1}} € de cada cupón.\n\nRecibirá su bono de Albert Heijn de {{1}} € cada semana los martes hasta que:\n1. Ya no esté en la lista de nuestras organizaciones asociadas.\n2. La finalización del proyecto el 30 de diciembre de 2021.\n\n¿Tienes preguntas? Envíanos un mensaje en WhatsApp: https://wa.me/31614458781",
+      "registered": "Éste es un mensaje de la Cruz Roja.\n\nHemos recibido su aplicacion para la ayuda.\n\nRecibirá otro mensaje de Texto con más información dentro de 1 semana.",
+      "whatsappPayment": "Éste es un mensaje de la Cruz Roja.\n\nSu bono de Albert Heijn de €{{1}} está listo para ser enviado.\n\nPor favor responda \"Si\" a éste mensaje para recibir:\n1. Éste bono semanal\n2. Cualquier bono anterior que aun no haya recibido.\n",
+      "whatsappVoucher": "Éste es un mensaje de la Cruz Roja.\n\nCon este mensaje recibirá:\n1. Un bono del supermercado Albert Heijn (cadeaukaart): ésta es la imagen con el código de barras.\n2. Una explicación sobre cómo utilizar el bono en Albert Heijn.\n\nSi recibió más de un cupón, esto se debe a que aún no había recibido los cupones de las semanas anteriores.\n\nEl valor de cada bono es de {{1}} €.\nPuede gastar los cupones en cualquier supermercado Albert Heijn de los Países Bajos.\n\nNo tiene que gastarlo todo a la vez. Conserve los cupones y reutilícelos hasta que se acaben los {{1}} € de cada cupón.\n\nRecibirá su bono de Albert Heijn de {{1}} € cada semana los martes hasta que:\n1. Ya no esté en la lista de nuestras organizaciones asociadas.\n2. La finalización del proyecto el 30 de diciembre de 2021.\n\n¿Tienes preguntas? Envíanos un mensaje en WhatsApp: https://wa.me/31614458781",
+      "whatsappVoucherMultiple": "Éste es un mensaje de la Cruz Roja.\n\nCon este mensaje recibirá:\n1. Un bono del supermercado Albert Heijn (cadeaukaart): ésta es la imagen con el código de barras.\n2. Una explicación sobre cómo utilizar el bono en Albert Heijn.\n\nSi recibió más de un cupón, esto se debe a que:\n1. No ha recibido bonos de semanas anteriores\n2. Un amigo o familiar esta registrado con el mismo número de teléfono.\nEsto sucede cuando él / ella también está incluido en la lista de la organización asociada para recibir el bono.\n\nEl valor de cada bono es de {{1}} €.\nPuede gastar los cupones en cualquier supermercado Albert Heijn de los Países Bajos.\n\nNo tiene que gastarlo todo a la vez. Conserve los cupones y reutilícelos hasta que se acaben los {{1}} € de cada cupón.\n\nRecibirá su bono de Albert Heijn de {{1}} € cada semana los martes hasta que:\n1. Ya no esté en la lista de nuestras organizaciones asociadas.\n2. La finalización del proyecto el 30 de diciembre de 2021.\n\n¿Tienes preguntas? Envíanos un mensaje en WhatsApp: https://wa.me/31614458781",
       "whatsappReply": "Éste es un mensaje automático, cualquier duda o pregunta por favor contacte al Buro de Asistencia de la Cruz Roja en WhatsApp: +31614458781"
     },
     "nl": {
@@ -101,11 +101,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -122,11 +118,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {

@@ -362,6 +362,7 @@
         },
         "import-result": {
           "ready": "Import ready.",
+          "csv": "A CSV is automatically downloaded, which shows the import-status per row.",
           "new": "There are {{countImported}} new records imported.",
           "existing": "There were {{countExistingPhoneNr}} existing phone-numbers, which are skipped.",
           "invalid": "There were {{countInvalidPhoneNr}} unrecognizable phone numbers. Try to correct them and import again."

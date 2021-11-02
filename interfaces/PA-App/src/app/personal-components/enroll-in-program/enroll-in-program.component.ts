@@ -18,7 +18,7 @@ import {
   Question,
   QuestionOption,
 } from '../../models/q-and-a.models';
-import { PersonalComponent } from '../personal-component.class';
+import { PersonalDirective } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 export enum SubmitActions {
@@ -31,7 +31,7 @@ export enum SubmitActions {
   templateUrl: './enroll-in-program.component.html',
   styleUrls: ['./enroll-in-program.component.scss'],
 })
-export class EnrollInProgramComponent extends PersonalComponent {
+export class EnrollInProgramComponent extends PersonalDirective {
   @Input()
   public data: any;
 

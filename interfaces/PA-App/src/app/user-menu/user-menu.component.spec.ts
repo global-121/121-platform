@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
   AlertController,
+  AngularDelegate,
   LoadingController,
   ModalController,
 } from '@ionic/angular';
@@ -24,6 +25,9 @@ describe('UserMenuComponent', () => {
       providers: [
         {
           provide: ModalController,
+        },
+        {
+          provide: AngularDelegate,
         },
         {
           provide: PaDataService,
