@@ -70,6 +70,7 @@ export class BelcashService {
       amount: amount,
       to: `+${paymentData.paymentAddress}`,
       currency: currency,
+      description: `121 program: payment ${paymentNr}`,
       referenceid: `${
         paymentData.referenceId
       }-payment-${paymentNr}-${+new Date()}`,
