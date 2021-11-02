@@ -7,20 +7,25 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-
-<ion-content class="ion-padding">
-  <ion-grid>
-    <ion-row class="ion-align-items-center ion-justify-content-center">
-      <ion-col size="4" class="">
-
+<ion-content>
+  <ion-grid class="full-height">
+    <ion-row class="ion-justify-content-center ion-align-items-center full-height">
+      <ion-col size="4">
+      </ion-col>
+      <ion-col size="4">
+        <div id="portal-title" class="ion-margin-vertical">
+          <img src="/assets/img/121-logo.png" alt="121-logo">
+          <h1>PORTAL</h1>
+        </div>
+        <ion-card class="ion-padding auth-form-container">
           <form
             method="POST"
             #loginForm="ngForm"
             (ngSubmit)="doLogin()"
             (keyup.enter)="doLogin()"
           >
-            <ion-item>
-              <ion-label position="stacked">{{ 'page.login.form.email.label'|translate }}</ion-label>
+            <ion-item lines="none" class="ion-no-padding">
+              <ion-label position="stacked" color="medium">{{ 'page.login.form.email.label'|translate }}</ion-label>
               <ion-input
                 type="email"
                 inputmode="email"
@@ -32,10 +37,11 @@
                 name="email"
                 [(ngModel)]="email"
                 ngDefaultControl
+                class="login-field ion-margin-vertical"
               ></ion-input>
             </ion-item>
-            <ion-item>
-              <ion-label position="stacked">{{ 'page.login.form.password.label'|translate }}</ion-label>
+            <ion-item lines="none" class="ion-no-padding">
+              <ion-label position="stacked" color="medium">{{ 'page.login.form.password.label'|translate }}</ion-label>
               <ion-input
                 type="password"
                 autocomplete="current-password"
@@ -46,18 +52,26 @@
                 name="password"
                 [(ngModel)]="password"
                 ngDefaultControl
+                class="login-field ion-margin-vertical"
               ></ion-input>
+              <a href="#" class="ion-margin-bottom">Forgot password?</a>
             </ion-item>
 
-            <ion-button
-              type="submit"
-              expand="block"
-              [disabled]="!loginForm?.form?.valid"
-            >
-              {{ 'page.login.form.submit.label'|translate }}
-            </ion-button>
-
+            <ion-item lines="none" class="ion-margin-top ion-no-padding">
+              <ion-button
+                type="submit"
+                expand="block"
+                size="big"
+                [disabled]="!loginForm?.form?.valid"
+                class="auth-button"
+              >
+                {{ 'page.login.form.submit.label'|translate }}
+              </ion-button>
+            </ion-item>
           </form>
+        </ion-card>
+      </ion-col>
+      <ion-col size="4">
       </ion-col>
     </ion-row>
   </ion-grid>

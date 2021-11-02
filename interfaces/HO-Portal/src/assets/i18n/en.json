@@ -29,7 +29,7 @@
       "pageTitle": "Log in",
       "form": {
         "email": {
-          "label": "E-mail"
+          "label": "Email Address"
         },
         "password": {
           "label": "Password"
