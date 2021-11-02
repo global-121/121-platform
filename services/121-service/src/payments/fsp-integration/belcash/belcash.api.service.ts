@@ -10,7 +10,7 @@ export class BelcashApiService {
     const payload = {
       principal: process.env.BELCASH_LOGIN,
       system: process.env.BELCASH_SYSTEM,
-      credentials: process.env.BELCASH_PASSWORD,
+      token: process.env.BELCASH_API_TOKEN,
     };
     const authenticationResult = await this.post(`authenticate`, payload);
     return authenticationResult.data.token;
