@@ -26,10 +26,10 @@ describe('MetricsComponent', () => {
     }).compileComponents();
   }));
 
-  let mockTranslatableStringService: jasmine.SpyObj<TranslatableStringService>;
+  let mockTranslatableStringService: jasmine.SpyObj<any>;
 
   beforeEach(() => {
-    mockTranslatableStringService = TestBed.get(TranslatableStringService);
+    mockTranslatableStringService = TestBed.inject(TranslatableStringService);
     mockTranslatableStringService.get.and.returnValue('');
 
     fixture = TestBed.createComponent(TestHostComponent);

@@ -43,7 +43,8 @@ export class SoapService {
   }
 
   public async readXmlAsJs(xmlName: string): Promise<any> {
-    const path = './src/payments/intersolve/xml/' + xmlName + '.xml';
+    const path =
+      './src/payments/fsp-integration/intersolve/xml/' + xmlName + '.xml';
     const xml = fs.readFileSync(path, 'utf-8');
     const jsObject = convert.xml2js(xml);
     return jsObject;

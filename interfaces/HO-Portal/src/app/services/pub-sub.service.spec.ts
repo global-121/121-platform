@@ -5,12 +5,12 @@ describe('PubSubService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: PubSubService = TestBed.get(PubSubService);
+    const service: PubSubService = TestBed.inject(PubSubService);
     expect(service).toBeTruthy();
   });
 
   it('should call a subscribed function, when an event is published', () => {
-    const service: PubSubService = TestBed.get(PubSubService);
+    const service: PubSubService = TestBed.inject(PubSubService);
 
     const subscriber = jasmine.createSpy();
     service.subscribe(PubSubEvent.dataRegistrationChanged, subscriber);
@@ -21,7 +21,7 @@ describe('PubSubService', () => {
   });
 
   it('should call all subscribed functions, when an event is published', () => {
-    const service: PubSubService = TestBed.get(PubSubService);
+    const service: PubSubService = TestBed.inject(PubSubService);
 
     const subscriber1 = jasmine.createSpy();
     const subscriber2 = jasmine.createSpy();
@@ -35,7 +35,7 @@ describe('PubSubService', () => {
   });
 
   it('should call the subscribed function, every time an event is published', () => {
-    const service: PubSubService = TestBed.get(PubSubService);
+    const service: PubSubService = TestBed.inject(PubSubService);
 
     const subscriber = jasmine.createSpy();
     service.subscribe(PubSubEvent.dataRegistrationChanged, subscriber);
@@ -47,7 +47,7 @@ describe('PubSubService', () => {
   });
 
   it('should NOT call the subscribed function, when NO event is published', () => {
-    const service: PubSubService = TestBed.get(PubSubService);
+    const service: PubSubService = TestBed.inject(PubSubService);
 
     const subscriber = jasmine.createSpy();
     service.subscribe(PubSubEvent.dataRegistrationChanged, subscriber);

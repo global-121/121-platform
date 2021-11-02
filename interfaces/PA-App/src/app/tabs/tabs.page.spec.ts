@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { MockPaDataService } from '../mocks/padata.service.mock';
 import { PaDataService } from '../services/padata.service';
@@ -18,6 +18,9 @@ describe('TabsPage', () => {
       providers: [
         {
           provide: ModalController,
+        },
+        {
+          provide: AngularDelegate,
         },
         {
           provide: PaDataService,

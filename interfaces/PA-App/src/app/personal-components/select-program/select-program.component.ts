@@ -6,7 +6,7 @@ import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { PersonalComponent } from '../personal-component.class';
+import { PersonalDirective } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 @Component({
@@ -14,7 +14,7 @@ import { PersonalComponents } from '../personal-components.enum';
   templateUrl: './select-program.component.html',
   styleUrls: ['./select-program.component.scss'],
 })
-export class SelectProgramComponent extends PersonalComponent {
+export class SelectProgramComponent extends PersonalDirective {
   @Input()
   public data;
 

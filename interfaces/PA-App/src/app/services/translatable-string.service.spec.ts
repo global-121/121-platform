@@ -20,8 +20,8 @@ describe('TranslatableStringService', () => {
       ],
       providers: [],
     });
-    service = TestBed.get(TranslatableStringService);
-    translateService = TestBed.get(TranslateService);
+    service = TestBed.inject(TranslatableStringService);
+    translateService = TestBed.inject(TranslateService);
   });
 
   it('should be created', () => {

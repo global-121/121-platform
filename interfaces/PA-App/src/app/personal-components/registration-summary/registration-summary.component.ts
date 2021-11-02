@@ -5,7 +5,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { PersonalComponent } from '../personal-component.class';
+import { PersonalDirective } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 @Component({
@@ -13,7 +13,7 @@ import { PersonalComponents } from '../personal-components.enum';
   templateUrl: './registration-summary.component.html',
   styleUrls: ['./registration-summary.component.scss'],
 })
-export class RegistrationSummaryComponent extends PersonalComponent {
+export class RegistrationSummaryComponent extends PersonalDirective {
   @Input()
   public data: any;
 

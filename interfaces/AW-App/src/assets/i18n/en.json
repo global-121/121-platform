@@ -92,6 +92,7 @@
     "close": "Close"
   },
   "shared": {
+    "close": "Close",
     "submit-button": "Submit"
   }
 }

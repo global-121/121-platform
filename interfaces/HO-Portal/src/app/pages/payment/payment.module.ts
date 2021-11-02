@@ -24,7 +24,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  entryComponents: [PaymentStatusPopupComponent],
   declarations: [
     PaymentPage,
     ProgramPayoutComponent,

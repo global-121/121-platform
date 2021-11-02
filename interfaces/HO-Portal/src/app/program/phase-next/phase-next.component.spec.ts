@@ -35,13 +35,13 @@ describe('PhaseNextComponent', () => {
     }).compileComponents();
   }));
 
-  let mockAuthService: jasmine.SpyObj<AuthService>;
-  let mockProgramPhaseService: jasmine.SpyObj<ProgramPhaseService>;
+  let mockAuthService: jasmine.SpyObj<any>;
+  let mockProgramPhaseService: jasmine.SpyObj<any>;
   beforeEach(() => {
-    mockAuthService = TestBed.get(AuthService);
+    mockAuthService = TestBed.inject(AuthService);
     mockAuthService.hasUserRole.and.returnValue(true);
 
-    mockProgramPhaseService = TestBed.get(ProgramPhaseService);
+    mockProgramPhaseService = TestBed.inject(ProgramPhaseService);
     mockProgramPhaseService.getPhases.and.returnValue(
       new Promise((r) => r([mockProgramPhase])),
     );

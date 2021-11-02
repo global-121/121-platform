@@ -82,12 +82,5 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     UpdateFspComponent,
     UserStateComponent,
   ],
-  entryComponents: [
-    EditPersonAffectedPopupComponent,
-    FilePickerPromptComponent,
-    InputPromptComponent,
-    TooltipComponent,
-    UpdatePropertyItemComponent,
-  ],
 })
 export class SharedModule {}

@@ -55,7 +55,6 @@ export function HttpLoaderFactory(http: HttpClient) {
 
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [],
   imports: [
     BrowserModule,
     IonicModule.forRoot({

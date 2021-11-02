@@ -1,5 +1,6 @@
 export enum LanguageEnum {
   en = 'en',
+  amET = 'am_ET',
   ar = 'ar',
   ti = 'ti',
   tl = 'tl',
@@ -8,4 +9,5 @@ export enum LanguageEnum {
   saqKE = 'saq_KE',
   in = 'in',
   nl = 'nl',
+  es = 'es',
 }

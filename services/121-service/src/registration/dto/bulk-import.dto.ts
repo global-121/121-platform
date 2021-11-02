@@ -11,6 +11,12 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { FspName } from '../../fsp/financial-service-provider.entity';
 import { LanguageEnum } from '../enum/language.enum';
 
+export enum ImportStatus {
+  imported = 'imported',
+  invalidPhoneNumber = 'invalidPhoneNumber',
+  existingPhoneNumber = 'existingPhoneNumber',
+}
+
 export class BulkImportDto {
   @ApiModelProperty()
   @IsNotEmpty()
@@ -29,7 +35,16 @@ export class BulkImportDto {
   public paymentAmountMultiplier: number;
 }
 
+export class BulkImportResult extends BulkImportDto {
+  public importStatus: ImportStatus;
+}
+
 export class ImportResult {
+  public aggregateImportResult: AggregateImportResult;
+  public importResult?: BulkImportResult[];
+}
+
+export class AggregateImportResult {
   public countImported: number;
   public countExistingPhoneNr?: number;
   public countInvalidPhoneNr?: number;
