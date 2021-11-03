@@ -14,6 +14,7 @@ import { UserStateComponent } from '../components/user-state/user-state.componen
 import { BulkImportComponent } from '../program/bulk-import/bulk-import.component';
 import { DisableRegistrationComponent } from '../program/disable-registration/disable-registration.component';
 import { EditPersonAffectedPopupComponent } from '../program/edit-person-affected-popup/edit-person-affected-popup.component';
+import { ExportFspInstructionsComponent } from '../program/export-fsp-instructions/export-fsp-instructions.component';
 import { ExportListComponent } from '../program/export-list/export-list.component';
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
@@ -32,6 +33,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     ConfirmPromptComponent,
     EditPersonAffectedPopupComponent,
     ExportListComponent,
+    ExportFspInstructionsComponent,
     FilePickerPromptComponent,
     HeaderComponent,
     InputPromptComponent,
@@ -63,6 +65,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     ConfirmPromptComponent,
     EditPersonAffectedPopupComponent,
     ExportListComponent,
+    ExportFspInstructionsComponent,
     FilePickerPromptComponent,
     HeaderComponent,
     InputPromptComponent,
