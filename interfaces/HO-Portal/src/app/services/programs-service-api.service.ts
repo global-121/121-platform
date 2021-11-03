@@ -141,7 +141,7 @@ export class ProgramsServiceApiService {
 
   getPastPayments(programId: number | string): Promise<PaymentData[]> {
     return this.apiService
-      .get(environment.url_121_service_api, `/payments/${programId}`)
+      .get(environment.url_121_service_api, `/programs/${programId}/payments`)
       .pipe(
         map((response) => {
           return response
@@ -166,7 +166,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/payments/transactions/${programId}${
+        `/programs/${programId}/payments/transactions${
           minPayment ? '?minPayment=' + minPayment : ''
         }`,
       )
@@ -221,13 +221,16 @@ export class ProgramsServiceApiService {
     customDataValue: string,
   ): Promise<any | Transaction> {
     return this.apiService
-      .post(environment.url_121_service_api, `/payments/transactions/get-one`, {
-        referenceId,
-        payment: Number(payment),
-        programId: Number(programId),
-        customDataKey,
-        customDataValue,
-      })
+      .post(
+        environment.url_121_service_api,
+        `programs/${programId}/payments/transactions/one`,
+        {
+          referenceId,
+          payment: Number(payment),
+          customDataKey,
+          customDataValue,
+        },
+      )
       .toPromise();
   }
 
@@ -238,12 +241,15 @@ export class ProgramsServiceApiService {
     referenceId?: string,
   ): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, `/payments`, {
-        programId: Number(programId),
-        payment: Number(payment),
-        amount: Number(amount),
-        referenceId,
-      })
+      .post(
+        environment.url_121_service_api,
+        `/programs/${programId}/payments`,
+        {
+          payment: Number(payment),
+          amount: Number(amount),
+          referenceId,
+        },
+      )
       .toPromise();
   }
 
