@@ -56,16 +56,17 @@ export class PaymentsController {
       'Get payments instructions for past payment to post in Financial Service Provider Portal',
   })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiImplicitParam({ name: 'payment', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description:
       'Get payments instructions for past payment to post in Financial Service Provider Portal',
   })
-  @Get(':programId/fsp-instructions/:payment')
-  public async getPaymentInstructions(@Param() params): Promise<any> {
+  @Get('programs/:programId/payments/:payment/fsp-instructions')
+  public async getFspInstructions(@Param() params): Promise<any> {
     return await this.paymentsService.getFspInstructions(
       Number(params.programId),
-      params.payment,
+      Number(params.payment),
     );
   }
 }
