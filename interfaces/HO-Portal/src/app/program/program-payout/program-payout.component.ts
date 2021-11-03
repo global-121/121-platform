@@ -53,6 +53,8 @@ export class ProgramPayoutComponent implements OnInit {
   public minPayment: number;
   public maxPayment: number;
 
+  public hasFspWithCsvIntegration = true;
+
   constructor(
     private programsService: ProgramsServiceApiService,
     private pastPaymentsService: PastPaymentsService,
@@ -76,6 +78,7 @@ export class ProgramPayoutComponent implements OnInit {
     await this.createPayments();
     this.lastPaymentResults = await this.getLastPaymentResults();
     this.checkPhaseReady();
+    console.log('this.exportPaymentId: ', this.exportPaymentId);
   }
 
   private checkCanMakePayment(): boolean {
@@ -228,7 +231,7 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   public changeExportPayment() {
-    console.log(this.exportPaymentId);
+    console.log('this.exportPaymentId: ', this.exportPaymentId);
     if (Number(this.exportPaymentId) === 0) {
       this.exportPaymentAvailable = false;
       return;

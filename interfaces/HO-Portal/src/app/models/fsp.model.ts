@@ -29,3 +29,9 @@ export class FspAttributeOption {
   option: string;
   label: TranslatableString;
 }
+
+export enum FspIntegrationType {
+  api = 'api',
+  csv = 'csv',
+}
+

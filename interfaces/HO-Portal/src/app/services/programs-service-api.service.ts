@@ -294,6 +294,18 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  exportFspInstructions(
+    programId: number,
+    payment: number
+  ) {
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        `/programs/${programId}/payments/${payment}/fsp-instructions`,
+      )
+      .toPromise();
+  }
+
   exportList(
     programId: number,
     type: ExportType,
