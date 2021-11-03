@@ -10,11 +10,30 @@ import { PaStatus } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { FilePickerProps } from 'src/app/shared/file-picker-prompt/file-picker-prompt.component';
 import { environment } from 'src/environments/environment';
+import { arrayToCsv } from '../../shared/array-to-csv';
 
-export class ImportResult {
+export class AggregateImportResult {
   countImported: number;
   countExistingPhoneNr: number;
   countInvalidPhoneNr: number;
+}
+
+export class ImportResult {
+  public aggregateImportResult: AggregateImportResult;
+  public importResult?: BulkImportResult[];
+}
+
+export enum ImportStatus {
+  imported = 'imported',
+  invalidPhoneNumber = 'invalidPhoneNumber',
+  existingPhoneNumber = 'existingPhoneNumber',
+}
+
+export class BulkImportResult {
+  public phoneNumber: string;
+  public namePartnerOrganization: string;
+  public paymentAmountMultiplier: number;
+  public importStatus: ImportStatus;
 }
 
 @Component({
@@ -94,41 +113,58 @@ export class BulkImportComponent implements OnInit {
     ]);
   }
 
+  public exportCSV(importResponse: any[]) {
+    const filename = 'import-people-affected-response';
+    arrayToCsv(importResponse, filename);
+  }
+
   public importPeopleAffected(event: { file: File }, destination: PaStatus) {
     this.isInProgress = true;
 
     this.programsService.import(this.programId, event.file, destination).then(
       (response) => {
+        const aggregateResult = response.aggregateImportResult;
         this.isInProgress = false;
         let resultMessage =
           this.translate.instant(
             'page.program.bulk-import.import-result.ready',
-          ) + '<br><br>';
+          ) +
+          (destination === PaStatus.imported
+            ? ' ' +
+              this.translate.instant(
+                'page.program.bulk-import.import-result.csv',
+              )
+            : '') +
+          '<br><br>';
 
         resultMessage +=
           this.translate.instant('page.program.bulk-import.import-result.new', {
-            countImported: `<strong>${response.countImported}</strong>`,
+            countImported: `<strong>${aggregateResult.countImported}</strong>`,
           }) + '<br><br>';
 
-        if (response.countExistingPhoneNr) {
+        if (aggregateResult.countExistingPhoneNr) {
           resultMessage +=
             this.translate.instant(
               'page.program.bulk-import.import-result.existing',
               {
-                countExistingPhoneNr: `<strong>${response.countExistingPhoneNr}</strong>`,
+                countExistingPhoneNr: `<strong>${aggregateResult.countExistingPhoneNr}</strong>`,
               },
             ) + '<br><br>';
         }
-        if (response.countInvalidPhoneNr) {
+        if (aggregateResult.countInvalidPhoneNr) {
           resultMessage += this.translate.instant(
             'page.program.bulk-import.import-result.invalid',
             {
-              countInvalidPhoneNr: `<strong>${response.countInvalidPhoneNr}</strong>`,
+              countInvalidPhoneNr: `<strong>${aggregateResult.countInvalidPhoneNr}</strong>`,
             },
           );
         }
 
         this.actionResult(resultMessage, true);
+
+        if (destination === PaStatus.imported) {
+          this.exportCSV(response.importResult);
+        }
       },
       (err) => {
         this.isInProgress = false;

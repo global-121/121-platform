@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Program } from 'src/app/models/program.model';
-import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
+import { PersonalDirective } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './preprinted-qrcode.component.html',
   styleUrls: ['./preprinted-qrcode.component.scss'],
 })
-export class PreprintedQrcodeComponent extends PersonalComponent {
+export class PreprintedQrcodeComponent extends PersonalDirective {
   @Input()
   public data: any;
 

@@ -17,9 +17,11 @@ import { FinancialServiceProviderEntity } from '../../fsp/financial-service-prov
 import { LanguageEnum } from '../enum/language.enum';
 import {
   BulkImportDto,
+  BulkImportResult,
   DynamicImportAttribute,
   ImportRegistrationsDto,
   ImportResult,
+  ImportStatus,
 } from '../dto/bulk-import.dto';
 import { v4 as uuid } from 'uuid';
 import csv from 'csv-parser';
@@ -56,28 +58,38 @@ export class BulkImportService {
     const validatedImportRecords = await this.csvToValidatedBulkImport(csvFile);
 
     let countImported = 0;
-    let countInvalidPhoneNr = 0;
     let countExistingPhoneNr = 0;
+    let countInvalidPhoneNr = 0;
+
+    const importResponseRecords = [];
     for await (const record of validatedImportRecords) {
+      const importResponseRecord = record as BulkImportResult;
       const throwNoException = true;
       const phoneNumberResult = await this.lookupService.lookupAndCorrect(
         record.phoneNumber,
         throwNoException,
       );
       if (!phoneNumberResult) {
+        importResponseRecord.importStatus = ImportStatus.invalidPhoneNumber;
+        importResponseRecords.push(importResponseRecord);
         countInvalidPhoneNr += 1;
         continue;
       }
 
-      let existingRegistrations = await this.registrationRepository.find({
+      let existingRegistrations = await this.registrationRepository.findOne({
         where: { phoneNumber: phoneNumberResult },
       });
-      if (existingRegistrations.length > 0) {
+      if (existingRegistrations) {
+        importResponseRecord.importStatus = ImportStatus.existingPhoneNumber;
+        importResponseRecords.push(importResponseRecord);
         countExistingPhoneNr += 1;
         continue;
       }
 
+      importResponseRecord.importStatus = ImportStatus.imported;
+      importResponseRecords.push(importResponseRecord);
       countImported += 1;
+
       const newRegistration = new RegistrationEntity();
       newRegistration.referenceId = uuid();
       newRegistration.phoneNumber = phoneNumberResult;
@@ -100,9 +112,12 @@ export class BulkImportService {
     );
 
     return {
-      countImported,
-      countInvalidPhoneNr,
-      countExistingPhoneNr,
+      importResult: importResponseRecords,
+      aggregateImportResult: {
+        countExistingPhoneNr,
+        countImported,
+        countInvalidPhoneNr,
+      },
     };
   }
 
@@ -178,7 +193,7 @@ export class BulkImportService {
       countImported += 1;
     }
 
-    return { countImported };
+    return { aggregateImportResult: { countImported } };
   }
 
   private async storeProgramAnswersImportRegistrations(

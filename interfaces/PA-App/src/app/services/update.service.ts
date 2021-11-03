@@ -27,7 +27,7 @@ export class UpdateService {
   ) {}
 
   checkInclusionStatus(programId: number, referenceId: string) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const subscription = this.listenForInclusionStatus(
         programId,
         referenceId,
@@ -60,13 +60,10 @@ export class UpdateService {
 
   createUpdateToast(messageKey: string, pageNav: string) {
     this.translate.get(messageKey).subscribe((message: string) => {
-      const closeButtonText = this.translate.instant('notification.close');
       this.toastController
         .create({
           header: message,
           animated: true,
-          showCloseButton: true,
-          closeButtonText,
           cssClass: 'update-toast',
           position: 'bottom',
           buttons: [
@@ -76,6 +73,11 @@ export class UpdateService {
               handler: () => {
                 this.router.navigate([pageNav]);
               },
+            },
+            {
+              side: 'end',
+              role: 'cancel',
+              text: this.translate.instant('shared.close-button'),
             },
           ],
         })

@@ -27,7 +27,7 @@ import { TransactionsService } from './transactions.service';
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('payments/transactions')
-@Controller('payments/transactions')
+@Controller()
 export class TransactionsController {
   public constructor(
     private readonly transactionsService: TransactionsService,
@@ -45,7 +45,7 @@ export class TransactionsController {
     status: 200,
     description: 'Get all transactions',
   })
-  @Get(':programId')
+  @Get('programs/:programId/payments/transactions')
   public async getTransactions(
     @Param('programId') programId: number,
     @Query('minPayment') minPayment: number,
@@ -59,14 +59,19 @@ export class TransactionsController {
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get a single transaction' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description: 'Get a single transaction',
   })
-  @Post('get-one')
+  @Post('programs/:programId/payments/transactions/one')
   public async getTransaction(
+    @Param() params,
     @Body() data: GetTransactionDto,
   ): Promise<GetTransactionOutputDto> {
-    return await this.transactionsService.getTransaction(data);
+    return await this.transactionsService.getTransaction(
+      params.programId,
+      data,
+    );
   }
 }

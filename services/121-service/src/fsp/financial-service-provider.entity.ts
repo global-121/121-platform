@@ -40,5 +40,5 @@ export enum FspName {
   intersolveNoWhatsapp = 'Intersolve-no-whatsapp',
   africasTalking = 'Africas-talking',
   belcash = 'belcash',
-  bobFinance = 'bob-finance',
+  bobFinance = 'BoB-finance',
 }

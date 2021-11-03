@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { InstanceInformation } from 'src/app/models/instance.model';
-import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
+import { PersonalDirective } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { InstanceService } from 'src/app/services/instance.service';
@@ -15,7 +15,7 @@ export enum ConsentChoices {
   templateUrl: './consent-question.component.html',
   styleUrls: ['./consent-question.component.scss'],
 })
-export class ConsentQuestionComponent extends PersonalComponent {
+export class ConsentQuestionComponent extends PersonalDirective {
   @Input()
   public data: any;
 

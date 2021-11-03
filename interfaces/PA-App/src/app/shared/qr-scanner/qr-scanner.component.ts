@@ -8,7 +8,7 @@ import { ZXingScannerComponent } from '@zxing/ngx-scanner';
   styleUrls: ['./qr-scanner.component.scss'],
 })
 export class QrScannerComponent {
-  @ViewChild('scanner', { static: false })
+  @ViewChild('scanner')
   scanner: ZXingScannerComponent;
 
   @Input()
@@ -23,7 +23,7 @@ export class QrScannerComponent {
 
   public currentCamera: any = null;
   public switchCamerasAvailable = false;
-  public camerasAvailable: any[];
+  private camerasAvailable: any[];
 
   constructor(private modalController: ModalController) {}
 
@@ -40,6 +40,7 @@ export class QrScannerComponent {
       this.switchCamerasAvailable = true;
       this.camerasAvailable = cameras;
     }
+    this.currentCamera = cameras[0];
   }
 
   public onCamerasNotFound() {
