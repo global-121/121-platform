@@ -4,6 +4,7 @@ export class Fsp {
   id: number;
   fsp: string;
   fspDisplayName: TranslatableString | string;
+  integrationType: FspIntegrationType;
   attributes?: FspAttribute[];
 }
 
@@ -28,4 +29,9 @@ export class FspAttribute {
 export class FspAttributeOption {
   option: string;
   label: TranslatableString;
+}
+
+export enum FspIntegrationType {
+  api = 'api',
+  csv = 'csv',
 }

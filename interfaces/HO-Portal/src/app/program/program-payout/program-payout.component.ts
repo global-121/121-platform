@@ -255,7 +255,6 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   public async retryLastPayment() {
-    // this.isInProgress = true;
     await this.programsService
       .submitPayout(
         this.programId,
@@ -265,12 +264,11 @@ export class ProgramPayoutComponent implements OnInit {
       )
       .then(
         (response) => {
-          // this.isInProgress = false;
           let message = '';
 
           if (response) {
             message += this.translate.instant(
-              'page.program.program-payout.result',
+              'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv' becuse retry cannot happen for 'csv'
               {
                 nrPa: `<strong>${response}</strong>`,
               },
@@ -283,7 +281,6 @@ export class ProgramPayoutComponent implements OnInit {
           if (err && err.error && err.error.error) {
             this.actionResult(err.error.errors);
           }
-          // this.isInProgress = false;
         },
       );
   }
