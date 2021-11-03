@@ -11,6 +11,7 @@ import {
 import { TransactionsService } from '../../transactions/transactions.service';
 import { BelcashApiService } from './belcash.api.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+import { BelcashTransferPayload } from './belcash-transfer-payload.dto';
 
 @Injectable()
 export class BelcashService {
@@ -65,7 +66,7 @@ export class BelcashService {
     paymentNr: number,
     amount: number,
     currency: string,
-  ): object {
+  ): BelcashTransferPayload {
     const payload = {
       amount: amount,
       to: `+${paymentData.paymentAddress}`,
@@ -82,7 +83,7 @@ export class BelcashService {
   }
 
   public async sendPaymentPerPa(
-    payload: any,
+    payload: BelcashTransferPayload,
     referenceId: string,
     authorizationToken: string,
   ): Promise<PaTransactionResultDto> {

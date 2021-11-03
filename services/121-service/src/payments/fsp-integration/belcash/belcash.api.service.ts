@@ -1,6 +1,7 @@
 import { HttpService, Injectable } from '@nestjs/common';
 import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { BelcashTransferPayload } from './belcash-transfer-payload.dto';
 
 @Injectable()
 export class BelcashApiService {
@@ -17,7 +18,7 @@ export class BelcashApiService {
   }
 
   public async transfer(
-    payload: any,
+    payload: BelcashTransferPayload,
     authorizationToken?: string,
   ): Promise<any> {
     return await this.post('transfers', payload, authorizationToken);

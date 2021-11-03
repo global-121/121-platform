@@ -247,9 +247,7 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private async checkIntersolve(program: Program): Promise<boolean> {
-    console.log('program: ', program);
     for (const fsp of program.financialServiceProviders) {
-      console.log('fsp: ', fsp);
       if (fsp.fsp.toLowerCase().includes('intersolve')) {
         return true;
       }
