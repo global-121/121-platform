@@ -12,10 +12,12 @@
     <ion-row class="ion-justify-content-center ion-align-items-center full-height">
       <ion-col size="4">
       </ion-col>
-      <ion-col size="4">
+      <ion-col size="12" size-lg="4">
         <div id="portal-title" class="ion-margin-vertical">
-          <img src="/assets/img/121-logo.png" alt="121-logo">
-          <h1>PORTAL</h1>
+          <div id="logo-container">
+            <img src="/assets/img/121-logo.png" alt="121">
+          </div>
+          <h1>{{ 'page.login.portalTitle'|translate }}</h1>
         </div>
         <ion-card class="ion-padding auth-form-container">
           <form
@@ -37,7 +39,7 @@
                 name="email"
                 [(ngModel)]="email"
                 ngDefaultControl
-                class="login-field ion-margin-vertical"
+                class="ion-margin-vertical"
               ></ion-input>
             </ion-item>
             <ion-item lines="none" class="ion-no-padding">
@@ -52,16 +54,16 @@
                 name="password"
                 [(ngModel)]="password"
                 ngDefaultControl
-                class="login-field ion-margin-vertical"
+                class="ion-margin-vertical"
               ></ion-input>
-              <a href="#" class="ion-margin-bottom">Forgot password?</a>
+              <a href="#" class="ion-margin-bottom">{{ 'page.login.form.password.forgot'|translate }}</a>
             </ion-item>
 
             <ion-item lines="none" class="ion-margin-top ion-no-padding">
               <ion-button
                 type="submit"
                 expand="block"
-                size="big"
+                size="default"
                 [disabled]="!loginForm?.form?.valid"
                 class="auth-button"
               >

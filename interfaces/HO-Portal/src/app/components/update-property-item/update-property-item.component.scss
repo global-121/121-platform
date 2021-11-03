@@ -1,0 +1,11 @@
+.fake-ion-item {
+  display: flex;
+  padding: 16px;
+  background-color: white;
+
+  .fake-ion-item--contents {
+    flex: 1 1 auto;
+  }
+  .fake-ion-item--label {
+  }
+}
