@@ -1,5 +1,6 @@
 {
   "fsp": "FSP - no attributes",
+  "integrationType": "api",
   "fspDisplayName": {
     "en": "FSP - no attributes"
   },

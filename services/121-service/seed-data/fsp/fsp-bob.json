@@ -1,0 +1,39 @@
+{
+  "fsp": "BoB-finance",
+  "fspDisplayName": {
+    "en": "BoB Finance"
+  },
+  "integrationType": "csv",
+  "attributes": [
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Which phone number do you want to receive your BoB Finance information on? (With country-code. It should look like: <strong>+961 00 000 000</strong>)"
+      },
+      "placeholder": {
+        "en": "+961 000 000 000"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "tel",
+      "options": null
+    },
+    {
+      "name": "nameFirst",
+      "label": {
+        "en": "What is your first name? (We will use this when we sent the payment using BoB Finance)"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "nameLast",
+      "label": {
+        "en": "What is your last name? (We will use this when we sent the payment using BoB Finance)"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "options": null
+    }
+  ]
+}

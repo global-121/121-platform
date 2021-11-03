@@ -7,6 +7,7 @@ import { ActionType } from 'src/app/models/actions.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
+import { FspIntegrationType } from '../../models/fsp.model';
 import { PastPaymentsService } from '../../services/past-payments.service';
 
 @Component({
@@ -27,6 +28,7 @@ export class MakePaymentComponent implements OnInit {
   public totalIncluded: number;
   public totalTransferAmounts: number;
   public lastPaymentId: number;
+  private fspIntegrationType: FspIntegrationType;
 
   public amountInput: number;
   public totalAmountMessage: string;
@@ -52,6 +54,9 @@ export class MakePaymentComponent implements OnInit {
     if (!this.program) {
       return;
     }
+
+    await this.getFspIntegrationType();
+
     this.amountInput = this.program.fixedTransferValue;
     const totalIncluded = await this.programsService.getTotalIncluded(
       this.programId,
@@ -98,14 +103,38 @@ export class MakePaymentComponent implements OnInit {
       );
   }
 
+  async getFspIntegrationType() {
+    // Theoretically a program could contain multiple FSP's with different integrationTypes, in practice this does not happen yet
+    this.fspIntegrationType =
+      this.program.financialServiceProviders[0].integrationType;
+  }
+
+  private getPaymentResultText(nrPa: number) {
+    let message = '';
+    if (this.fspIntegrationType === FspIntegrationType.api) {
+      message += this.translate.instant(
+        'page.program.program-payout.result.api',
+        {
+          nrPa: `<strong>${nrPa}</strong>`,
+        },
+      );
+    } else if (this.fspIntegrationType === FspIntegrationType.csv) {
+      message += this.translate.instant(
+        'page.program.program-payout.result.csv',
+        {
+          nrPa: `<strong>${nrPa}</strong>`,
+        },
+      );
+    }
+    return message;
+  }
+
   private onPaymentSuccess(response) {
     this.resetProgress();
     let message = '';
 
     if (response) {
-      message += this.translate.instant('page.program.program-payout.result', {
-        nrPa: `<strong>${response}</strong>`,
-      });
+      message += this.getPaymentResultText(response);
     }
     this.actionResult(message, true);
   }

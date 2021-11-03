@@ -31,6 +31,9 @@
     },
     {
       "id": 2
+    },
+    {
+      "id": 3
     }
   ],
   "inclusionCalculationType": "highestScoresX",

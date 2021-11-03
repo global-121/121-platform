@@ -3,6 +3,7 @@ import { Entity, Column, ManyToMany, OneToMany } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { FspAttributeEntity } from './fsp-attribute.entity';
+import { FspIntegrationType } from './enum/fsp-integration-type.enum';
 
 @Entity('fsp')
 export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
@@ -11,6 +12,9 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
 
   @Column('json', { nullable: true })
   public fspDisplayName: JSON;
+
+  @Column({ default: FspIntegrationType.api })
+  public integrationType: FspIntegrationType;
 
   @OneToMany(
     _type => FspAttributeEntity,
@@ -36,4 +40,5 @@ export enum FspName {
   intersolveNoWhatsapp = 'Intersolve-no-whatsapp',
   africasTalking = 'Africas-talking',
   belcash = 'BelCash',
+  bobFinance = 'BoB-finance',
 }

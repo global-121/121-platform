@@ -202,7 +202,10 @@
         "start-payout": "Start payout now",
         "total-included": "Payout to: {{totalIncluded}} PA(s)",
         "total-amount": "Total amount: {{totalCost}}",
-        "result": "Successfully sent payment request for {{nrPa}} PA(s).<br><br>The payments can take some time to process. Inspect the PA-table below for the up-to-date status of the payment(s).<br><br>You can close this popup.",
+        "result": {
+          "api": "Successfully sent payment request for {{nrPa}} PA(s).<br><br>The payments can take some time to process. Inspect the PA-table below for the up-to-date status of the payment(s).<br><br>You can close this popup.",
+          "csv": "Successfully prepared payment data for {{nrPa}} PA(s).<br><br>You will need to export this data by<ol><li>selecting the payment in the <strong>Choose payment...</strong> dropdown</li><li>using the <strong>Export payment instructions</strong> button</li><li>uploading the resulting CSV in the portal of the Financial Service Provider.</li></ol>"
+        },
         "in-progress": "Payment in progress",
         "make-export": "Export payment data",
         "last-payment": {
@@ -396,7 +399,7 @@
           "confirm-message": "This will download a CSV-file with all People Affected selected for validation, to be used for Validation visits."
         },
         "payment": {
-          "btn-text": "Export list",
+          "btn-text": "Export Report",
           "confirm-message": "This will download a CSV-file with all People Affected included in this payment, to be shared with institutions requiring this data."
         },
         "unused-vouchers": {
@@ -407,6 +410,11 @@
           "btn-text": "Export list of duplicate phone-numbers",
           "confirm-message": "This will download a CSV-file with all PA that share any phone-number."
         }
+      },
+      "export-fsp-intructions": {
+        "btn-text": "Export Payment Instructions",
+        "confirm-message": "This will download a CSV-file with payment instructions for the Financial Service Provider.",
+        "sub-message": "You should only use this file <strong>once per payment</strong> in the portal of the Financial Service Provider."
       },
       "manage-aidworkers": {
         "section-title": "Manage aidworkers",

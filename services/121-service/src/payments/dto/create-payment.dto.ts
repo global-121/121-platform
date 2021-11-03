@@ -5,9 +5,6 @@ import { IsNumber, IsOptional, IsString, Length } from 'class-validator';
 export class CreatePaymentDto {
   @ApiModelProperty({ example: 1 })
   @IsNumber()
-  public readonly programId: number;
-  @ApiModelProperty({ example: 1 })
-  @IsNumber()
   public readonly payment: number;
   @ApiModelProperty({ example: 10 })
   @IsNumber()

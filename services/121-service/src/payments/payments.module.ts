@@ -1,3 +1,4 @@
+import { BobFinanceModule } from './fsp-integration/bob-finance/bob-finance.module';
 import { UserEntity } from './../user/user.entity';
 import { Module, HttpModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -30,6 +31,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     AfricasTalkingModule,
     BelcashModule,
     TransactionsModule,
+    BobFinanceModule,
   ],
   providers: [PaymentsService],
   controllers: [PaymentsController],

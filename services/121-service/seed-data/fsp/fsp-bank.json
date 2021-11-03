@@ -1,5 +1,6 @@
 {
   "fsp": "Bank A",
+  "integrationType": "api",
   "fspDisplayName": {
     "en": "Bank A"
   },

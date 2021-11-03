@@ -1,5 +1,6 @@
 {
   "fsp": "BelCash",
+  "integrationType": "api",
   "fspDisplayName": {
     "en": "BelCash"
   },
@@ -12,7 +13,11 @@
       "placeholder": {
         "en": "+251 000 000 000"
       },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "answerType": "tel",
       "options": null
     }

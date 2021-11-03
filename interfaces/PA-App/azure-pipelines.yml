@@ -43,3 +43,5 @@ steps:
   - script: npm run build -- --prod
     displayName: Build Production-mode
     workingDirectory: $(workingDir)
+    env:
+      CI: true
