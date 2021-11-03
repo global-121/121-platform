@@ -75,6 +75,7 @@ export class BelcashService {
         paymentData.referenceId
       }-payment-${paymentNr}-${+new Date()}`,
       notifyto: false,
+      notifyfrom: false,
     };
 
     return payload;

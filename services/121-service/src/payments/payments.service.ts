@@ -92,13 +92,13 @@ export class PaymentsService {
       targetedRegistrations,
     );
 
-    // await this.actionService.saveAction(
-    //   userId,
-    //   programId,
-    //   payment === -1
-    //     ? AdditionalActionType.testMpesaPayment
-    //     : AdditionalActionType.paymentStarted,
-    // );
+    await this.actionService.saveAction(
+      userId,
+      programId,
+      payment === -1
+        ? AdditionalActionType.testMpesaPayment
+        : AdditionalActionType.paymentStarted,
+    );
 
     const paymentTransactionResult = await this.payout(
       paPaymentDataList,
