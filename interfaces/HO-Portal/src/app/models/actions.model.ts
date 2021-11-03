@@ -4,7 +4,7 @@ export enum ActionType {
   paymentFinished = 'payment-finished',
   paymentStarted = 'payment-started',
   testMpesaPayment = 'test-mpesa-payment',
-  exportFspInstructions = 'export-fsp-instructions'
+  exportFspInstructions = 'export-fsp-instructions',
 }
 
 export class LatestAction {

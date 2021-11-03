@@ -409,7 +409,7 @@
         }
       },
       "export-fsp-intructions": {
-        "btn-text": "Export Fsp Instructions",
+        "btn-text": "Export Payment Instructions",
         "confirm-message": "This will download a CSV-file with payment instructions for the Financial Service Provider.",
         "sub-message": "You should only use this file once in the portal of the Financial Service Provider."
       },

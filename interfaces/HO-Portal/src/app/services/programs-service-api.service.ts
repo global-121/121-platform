@@ -300,10 +300,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  exportFspInstructions(
-    programId: number,
-    payment: number
-  ) {
+  exportFspInstructions(programId: number, payment: number) {
     return this.apiService
       .get(
         environment.url_121_service_api,

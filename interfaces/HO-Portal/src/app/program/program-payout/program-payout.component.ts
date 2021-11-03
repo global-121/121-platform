@@ -12,6 +12,7 @@ import {
 } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { FspIntegrationType } from '../../models/fsp.model';
 import { PastPaymentsService } from '../../services/past-payments.service';
 
 class LastPaymentResults {
@@ -53,8 +54,6 @@ export class ProgramPayoutComponent implements OnInit {
   public minPayment: number;
   public maxPayment: number;
 
-  public hasFspWithCsvIntegration = true;
-
   constructor(
     private programsService: ProgramsServiceApiService,
     private pastPaymentsService: PastPaymentsService,
@@ -78,7 +77,6 @@ export class ProgramPayoutComponent implements OnInit {
     await this.createPayments();
     this.lastPaymentResults = await this.getLastPaymentResults();
     this.checkPhaseReady();
-    console.log('this.exportPaymentId: ', this.exportPaymentId);
   }
 
   private checkCanMakePayment(): boolean {
@@ -231,7 +229,6 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   public changeExportPayment() {
-    console.log('this.exportPaymentId: ', this.exportPaymentId);
     if (Number(this.exportPaymentId) === 0) {
       this.exportPaymentAvailable = false;
       return;
@@ -251,6 +248,16 @@ export class ProgramPayoutComponent implements OnInit {
     this.program = await this.programsService.getProgramById(this.programId);
     for (const fsp of this.program.financialServiceProviders) {
       if (fsp.fsp.toLowerCase().includes('intersolve')) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  async hasFspWithCsvIntegration() {
+    this.program = await this.programsService.getProgramById(this.programId);
+    for (const fsp of this.program.financialServiceProviders) {
+      if (fsp.integrationType === FspIntegrationType.api) {
         return true;
       }
     }

@@ -14,10 +14,13 @@ import { arrayToCsv } from '../../shared/array-to-csv';
 export class ExportFspInstructionsComponent implements OnChanges {
   @Input()
   public programId: number;
-  // @Input()
-  public disabled: boolean;
+
   @Input()
   public payment: number;
+  @Input()
+  public lastPaymentId: number;
+
+  public disabled: boolean;
   public isInProgress = false;
 
   public btnText: string;
@@ -29,7 +32,7 @@ export class ExportFspInstructionsComponent implements OnChanges {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.btnText = this.translate.instant(
@@ -46,33 +49,33 @@ export class ExportFspInstructionsComponent implements OnChanges {
     this.subHeader = this.translate.instant(
       'page.program.export-fsp-intructions.confirm-message',
     );
-    this.message = this.translate.instant('page.program.export-fsp-intructions.sub-message')
+    this.message = this.translate.instant(
+      'page.program.export-fsp-intructions.sub-message',
+    );
   }
 
   private btnEnabled() {
     return (
-      this.authService.hasUserRole([UserRole.PersonalData]) && this.payment > 0
+      this.authService.hasUserRole([UserRole.PersonalData]) &&
+      this.payment > 0 &&
+      this.payment <= this.lastPaymentId
     );
   }
 
   public async getExportFspInstructions() {
     this.isInProgress = true;
     this.programsService
-      .exportFspInstructions(
-        Number(this.programId),
-        this.payment
-      )
+      .exportFspInstructions(Number(this.programId), this.payment)
       .then(
         (res) => {
           this.isInProgress = false;
-          console.log('res: ', res);
-          arrayToCsv(res.data, 'test.csv')
-          if (!res.data) {
+          if (res.length < 1) {
             this.actionResult(
               this.translate.instant('page.program.export-list.no-data'),
             );
             return;
           }
+          arrayToCsv(res, `payment-instructions-#${this.payment}-date`);
           this.updateSubHeader();
         },
         (err) => {
