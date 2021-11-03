@@ -320,7 +320,6 @@ export class PaymentsService {
     const transactions = await this.transactionService.getTransactions(
       programId,
       false,
-      0,
     );
     const paymentTransactions = transactions.filter(
       transaction => transaction.payment === payment,
@@ -337,8 +336,6 @@ export class PaymentsService {
           transaction,
         );
         instructions.push(instruction);
-      } else {
-        continue;
       }
     }
     return instructions;

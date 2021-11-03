@@ -4,15 +4,6 @@ export class BobFinanceFspInstructions {
   public 'Mobile Number': string;
   public 'Email': string;
   public 'Amount': number;
+  public 'Currency': string;
   public 'Expiry Date': string;
-}
-
-export enum BobFinanceFspInstructionsEnum {
-  receiverFirstName = 'Receiver First name',
-  receiverLastName = 'Receiver last name',
-  mobileNumber = 'Mobile Number',
-  email = 'Email',
-  amount = 'Amount',
-  currency = 'Currency',
-  expiryDate = 'Expiry Date',
 }

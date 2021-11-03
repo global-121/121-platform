@@ -75,7 +75,7 @@ export class ExportFspInstructionsComponent implements OnChanges {
             );
             return;
           }
-          arrayToCsv(res, `payment-instructions-#${this.payment}-date`);
+          arrayToCsv(res, `payment#${this.payment}-fsp-instructions`);
           this.updateSubHeader();
         },
         (err) => {

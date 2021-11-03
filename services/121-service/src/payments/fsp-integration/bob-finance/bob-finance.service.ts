@@ -10,10 +10,7 @@ import {
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
-import {
-  BobFinanceFspInstructions,
-  BobFinanceFspInstructionsEnum,
-} from './dto/bob-finance-fsp-instructions.dto';
+import { BobFinanceFspInstructions } from './dto/bob-finance-fsp-instructions.dto';
 
 @Injectable()
 export class BobFinanceService {
@@ -53,17 +50,17 @@ export class BobFinanceService {
     transaction: TransactionEntity,
   ): BobFinanceFspInstructions {
     const bobFinanceFspInstructions = new BobFinanceFspInstructions();
-    bobFinanceFspInstructions[BobFinanceFspInstructionsEnum.receiverFirstName] =
+
+    bobFinanceFspInstructions['Receiver First name'] =
       registration.customData[CustomDataAttributes.nameFirst];
-    bobFinanceFspInstructions[BobFinanceFspInstructionsEnum.receiverLastName] =
+    bobFinanceFspInstructions['Receiver last name'] =
       registration.customData[CustomDataAttributes.nameLast];
-    bobFinanceFspInstructions[BobFinanceFspInstructionsEnum.mobileNumber] =
+    bobFinanceFspInstructions['Mobile Number'] =
       registration.customData[CustomDataAttributes.phoneNumber];
-    bobFinanceFspInstructions[BobFinanceFspInstructionsEnum.email] = null;
-    bobFinanceFspInstructions[BobFinanceFspInstructionsEnum.amount] =
-      transaction.amount;
-    bobFinanceFspInstructions[BobFinanceFspInstructionsEnum.currency] = 'LBP';
-    bobFinanceFspInstructions[BobFinanceFspInstructionsEnum.expiryDate] = null;
+    bobFinanceFspInstructions.Email = null;
+    bobFinanceFspInstructions.Amount = transaction.amount;
+    bobFinanceFspInstructions.Currency = 'LBP';
+    bobFinanceFspInstructions['Expiry Date'] = null;
 
     return bobFinanceFspInstructions;
   }
