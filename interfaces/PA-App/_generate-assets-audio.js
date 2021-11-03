@@ -151,6 +151,11 @@ function getEnabledLocales(env) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+if (!!process.env.CI) {
+  console.info('Skipping generation of audio-files in Test/CI-environment.');
+  return process.exit();
+}
+
 // When the `--convertFrom` flag is used, convert the source-files to mp3 first
 if (process.argv[3] === '--convertFrom') {
   return convertToMp3(process.argv[2], process.argv[4]);
