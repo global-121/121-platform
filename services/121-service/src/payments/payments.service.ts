@@ -1,3 +1,4 @@
+import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
@@ -12,7 +13,6 @@ import { RegistrationStatusEnum } from '../registration/enum/registration-status
 import { RegistrationEntity } from '../registration/registration.entity';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
-import { FspTransactionResultDto } from './dto/payment-transaction-result.dto';
 import { UnusedVoucherDto } from './dto/unused-voucher.dto';
 import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
@@ -36,6 +36,7 @@ export class PaymentsService {
     private readonly intersolveService: IntersolveService,
     private readonly africasTalkingService: AfricasTalkingService,
     private readonly belcashService: BelcashService,
+    private readonly bobFinanceService: BobFinanceService,
   ) {}
 
   public async getPayments(
@@ -137,6 +138,7 @@ export class PaymentsService {
     const intersolveNoWhatsappPaPayment = [];
     const africasTalkingPaPayment = [];
     const belcashPaPayment = [];
+    const bobFinancePaPayment = [];
     for (let paPaymentData of paPaymentDataList) {
       if (paPaymentData.fspName === FspName.intersolve) {
         intersolvePaPayment.push(paPaymentData);
@@ -146,6 +148,8 @@ export class PaymentsService {
         africasTalkingPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.belcash) {
         belcashPaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === FspName.bobFinance) {
+        bobFinancePaPayment.push(paPaymentData);
       } else {
         console.log('fsp does not exist: paPaymentData: ', paPaymentData);
         throw new HttpException('fsp does not exist.', HttpStatus.NOT_FOUND);
@@ -156,6 +160,7 @@ export class PaymentsService {
       intersolveNoWhatsappPaPayment,
       africasTalkingPaPayment,
       belcashPaPayment,
+      bobFinancePaPayment,
     };
   }
 
@@ -165,57 +170,49 @@ export class PaymentsService {
     payment: number,
     amount: number,
   ): Promise<any> {
-    let intersolveTransactionResult = new FspTransactionResultDto();
     if (paLists.intersolvePaPayment.length) {
-      intersolveTransactionResult = await this.intersolveService.sendPayment(
+      await this.intersolveService.sendPayment(
         paLists.intersolvePaPayment,
         true,
         amount,
         payment,
       );
-    } else {
-      intersolveTransactionResult.paList = [];
     }
-    let intersolveNoWhatsappTransactionResult = new FspTransactionResultDto();
     if (paLists.intersolveNoWhatsappPaPayment.length) {
-      intersolveNoWhatsappTransactionResult = await this.intersolveService.sendPayment(
+      await this.intersolveService.sendPayment(
         paLists.intersolveNoWhatsappPaPayment,
         false,
         amount,
         payment,
       );
-    } else {
-      intersolveNoWhatsappTransactionResult.paList = [];
     }
-    let africasTalkingTransactionResult = new FspTransactionResultDto();
+
     if (paLists.africasTalkingPaPayment.length) {
-      africasTalkingTransactionResult = await this.africasTalkingService.sendPayment(
+      await this.africasTalkingService.sendPayment(
         paLists.africasTalkingPaPayment,
         programId,
         payment,
         amount,
       );
-    } else {
-      africasTalkingTransactionResult.paList = [];
     }
 
-    let belcashTransactionResult = new FspTransactionResultDto();
     if (paLists.belcashPaPayment.length) {
-      belcashTransactionResult = await this.belcashService.sendPayment(
+      await this.belcashService.sendPayment(
         paLists.belcashPaPayment,
         programId,
         payment,
         amount,
       );
-    } else {
-      belcashTransactionResult.paList = [];
     }
-    return {
-      intersolveTransactionResult,
-      intersolveNoWhatsappTransactionResult,
-      africasTalkingTransactionResult,
-      belcashTransactionResult,
-    };
+
+    if (paLists.bobFinancePaPayment.length) {
+      await this.bobFinanceService.sendPayment(
+        paLists.bobFinancePaPayment,
+        programId,
+        payment,
+        amount,
+      );
+    }
   }
 
   private async getRegistrationsForPayment(
@@ -270,16 +267,7 @@ export class PaymentsService {
       const paPaymentData = new PaPaymentDataDto();
       paPaymentData.referenceId = includedRegistration.referenceId;
       const fsp = await this.fspService.getFspById(includedRegistration.fsp.id);
-      // NOTE: this is ugly, but spent too much time already on how to automate this..
-      if (fsp.fsp === FspName.intersolve) {
-        paPaymentData.fspName = FspName.intersolve;
-      } else if (fsp.fsp === FspName.intersolveNoWhatsapp) {
-        paPaymentData.fspName = FspName.intersolveNoWhatsapp;
-      } else if (fsp.fsp === FspName.africasTalking) {
-        paPaymentData.fspName = FspName.africasTalking;
-      } else if (fsp.fsp === FspName.belcash) {
-        paPaymentData.fspName = FspName.belcash;
-      }
+      paPaymentData.fspName = fsp.fsp as FspName;
       paPaymentData.paymentAddress = await this.getPaymentAddress(
         includedRegistration,
         fsp.attributes,
@@ -326,5 +314,30 @@ export class PaymentsService {
 
   public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
     return this.intersolveService.getUnusedVouchers();
+  }
+
+  public async getFspInstructions(programId, payment): Promise<any> {
+    const transactions = await this.transactionService.getTransactions(
+      programId,
+      false,
+    );
+    const paymentTransactions = transactions.filter(
+      transaction => transaction.payment === payment,
+    );
+    const instructions = [];
+    for await (const transaction of paymentTransactions) {
+      const registration = await this.registrationRepository.findOne({
+        where: { referenceId: transaction.referenceId },
+        relations: ['fsp'],
+      });
+      if (registration.fsp.fsp === FspName.bobFinance) {
+        const instruction = this.bobFinanceService.getFspInstructions(
+          registration,
+          transaction,
+        );
+        instructions.push(instruction);
+      }
+    }
+    return instructions;
   }
 }

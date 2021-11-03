@@ -75,6 +75,7 @@ export class TransactionsService {
   }
 
   public async getTransaction(
+    programId: number,
     input: GetTransactionDto,
   ): Promise<GetTransactionOutputDto> {
     const registration = await this.registrationRepository.findOne({
@@ -94,7 +95,7 @@ export class TransactionsService {
       ])
       .leftJoin('transaction.registration', 'c')
       .where('transaction.program.id = :programId', {
-        programId: input.programId,
+        programId: programId,
       })
       .andWhere('transaction.payment = :paymentId', {
         paymentId: input.payment,
@@ -162,8 +163,7 @@ export class TransactionsService {
   ): Promise<void> {
     // Intersolve transactions are now stored during PA-request-loop already
     // Align across FSPs in future again
-    for (let transaction of transactionResults.africasTalkingTransactionResult
-      .paList) {
+    for (let transaction of transactionResults.paList) {
       await this.storeTransaction(transaction, programId, payment);
     }
   }

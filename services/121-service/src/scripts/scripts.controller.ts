@@ -1,3 +1,4 @@
+import { SeedProgramLbn } from './seed-program-lbn';
 import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
 import { ApiOperation, ApiModelProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
@@ -12,6 +13,7 @@ enum SeedScript {
   pilotNL = 'pilot-nl',
   pilotNLPV = 'pilot-nl-pv',
   pilotETH = 'pilot-eth',
+  pilotLBN = 'pilot-lbn',
   demo = 'demo',
   validation = 'validation',
 }
@@ -47,6 +49,8 @@ export class ScriptsController {
       seed = new SeedPilotNL2Program(this.connection);
     } else if (body.script == SeedScript.pilotETH) {
       seed = new SeedProgramEth(this.connection);
+    } else if (body.script == SeedScript.pilotLBN) {
+      seed = new SeedProgramLbn(this.connection);
     } else {
       seed = new SeedProgramValidation(this.connection);
     }

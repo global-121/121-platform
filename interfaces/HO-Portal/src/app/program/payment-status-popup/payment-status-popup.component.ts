@@ -141,7 +141,7 @@ export class PaymentStatusPopupComponent implements OnInit {
 
           if (response) {
             message += this.translate.instant(
-              'page.program.program-payout.result',
+              'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv' becuse retry cannot happen for 'csv'
               {
                 nrPa: `<strong>${response}</strong>`,
               },

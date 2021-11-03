@@ -9,6 +9,7 @@ import { PaymentData } from 'src/app/models/payment.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ActionType } from '../../models/actions.model';
+import { FspIntegrationType } from '../../models/fsp.model';
 import { MakePaymentComponent } from './make-payment.component';
 
 describe('MakePaymentComponent', () => {
@@ -32,6 +33,7 @@ describe('MakePaymentComponent', () => {
     },
   ];
   const mockLastPaymentId = 2;
+  const mockfspIntegrationType = FspIntegrationType.api;
 
   const mockLatestStartAction = {
     id: 1,
@@ -83,6 +85,9 @@ describe('MakePaymentComponent', () => {
 
     component.program = apiProgramsMock.programs[mockProgramId];
     component.program.distributionDuration = mockPastPayments.length + 1;
+    component.program.financialServiceProviders = [
+      { integrationType: mockfspIntegrationType },
+    ];
   });
 
   it('should create', () => {

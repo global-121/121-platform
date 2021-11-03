@@ -1,5 +1,6 @@
 {
   "fsp": "Mobile Money Provider B",
+  "integrationType": "api",
   "fspDisplayName": {
     "en": "Mobile Money Provider B"
   },

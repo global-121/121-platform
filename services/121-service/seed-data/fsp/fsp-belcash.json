@@ -1,5 +1,6 @@
 {
   "fsp": "belcash",
+  "integrationType": "api",
   "fspDisplayName": {
     "en": "BelCash"
   },

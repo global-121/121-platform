@@ -12,6 +12,7 @@ import {
 } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { FspIntegrationType } from '../../models/fsp.model';
 import { PastPaymentsService } from '../../services/past-payments.service';
 
 class LastPaymentResults {
@@ -228,7 +229,6 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   public changeExportPayment() {
-    console.log(this.exportPaymentId);
     if (Number(this.exportPaymentId) === 0) {
       this.exportPaymentAvailable = false;
       return;
@@ -254,8 +254,17 @@ export class ProgramPayoutComponent implements OnInit {
     return false;
   }
 
+  async hasFspWithCsvIntegration() {
+    this.program = await this.programsService.getProgramById(this.programId);
+    for (const fsp of this.program.financialServiceProviders) {
+      if (fsp.integrationType === FspIntegrationType.api) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public async retryLastPayment() {
-    // this.isInProgress = true;
     await this.programsService
       .submitPayout(
         this.programId,
@@ -265,12 +274,11 @@ export class ProgramPayoutComponent implements OnInit {
       )
       .then(
         (response) => {
-          // this.isInProgress = false;
           let message = '';
 
           if (response) {
             message += this.translate.instant(
-              'page.program.program-payout.result',
+              'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv' becuse retry cannot happen for 'csv'
               {
                 nrPa: `<strong>${response}</strong>`,
               },
@@ -283,7 +291,6 @@ export class ProgramPayoutComponent implements OnInit {
           if (err && err.error && err.error.error) {
             this.actionResult(err.error.errors);
           }
-          // this.isInProgress = false;
         },
       );
   }
