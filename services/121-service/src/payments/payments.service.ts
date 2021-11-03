@@ -13,7 +13,6 @@ import { RegistrationStatusEnum } from '../registration/enum/registration-status
 import { RegistrationEntity } from '../registration/registration.entity';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
-import { FspTransactionResultDto } from './dto/payment-transaction-result.dto';
 import { UnusedVoucherDto } from './dto/unused-voucher.dto';
 import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
@@ -141,7 +140,6 @@ export class PaymentsService {
     const belcashPaPayment = [];
     const bobFinancePaPayment = [];
     for (let paPaymentData of paPaymentDataList) {
-      console.log('paPaymentData: ', paPaymentData);
       if (paPaymentData.fspName === FspName.intersolve) {
         intersolvePaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.intersolveNoWhatsapp) {
@@ -319,7 +317,30 @@ export class PaymentsService {
   }
 
   public async getFspInstructions(programId, payment): Promise<any> {
-    console.log('programId, payment: ', programId, payment);
-    return 'works';
+    const transactions = await this.transactionService.getTransactions(
+      programId,
+      false,
+      0,
+    );
+    const paymentTransactions = transactions.filter(
+      transaction => transaction.payment === payment,
+    );
+    const instructions = [];
+    for await (const transaction of paymentTransactions) {
+      const registration = await this.registrationRepository.findOne({
+        where: { referenceId: transaction.referenceId },
+        relations: ['fsp'],
+      });
+      if (registration.fsp.fsp === FspName.bobFinance) {
+        const instruction = this.bobFinanceService.getFspInstructions(
+          registration,
+          transaction,
+        );
+        instructions.push(instruction);
+      } else {
+        continue;
+      }
+    }
+    return instructions;
   }
 }

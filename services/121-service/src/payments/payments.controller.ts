@@ -16,7 +16,7 @@ import { CreatePaymentDto } from './dto/create-payment.dto';
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('payments')
-@Controller('payments')
+@Controller()
 export class PaymentsController {
   public constructor(private readonly paymentsService: PaymentsService) {}
 
@@ -27,7 +27,7 @@ export class PaymentsController {
     status: 200,
     description: 'Get past payments for program',
   })
-  @Get(':programId')
+  @Get('programs/:programId/payments')
   public async getPayments(@Param() params): Promise<any> {
     return await this.paymentsService.getPayments(Number(params.programId));
   }
@@ -36,14 +36,16 @@ export class PaymentsController {
   @ApiOperation({
     title: 'Send payout instruction to financial service provider',
   })
-  @Post()
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('programs/:programId/payments')
   public async createPayment(
     @Body() data: CreatePaymentDto,
+    @Param() param,
     @User('id') userId: number,
   ): Promise<number> {
     return await this.paymentsService.createPayment(
       userId,
-      data.programId,
+      param.programId,
       data.payment,
       data.amount,
       data.referenceId,
@@ -56,16 +58,17 @@ export class PaymentsController {
       'Get payments instructions for past payment to post in Financial Service Provider Portal',
   })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiImplicitParam({ name: 'payment', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description:
       'Get payments instructions for past payment to post in Financial Service Provider Portal',
   })
-  @Get(':programId/fsp-instructions/:payment')
-  public async getPaymentInstructions(@Param() params): Promise<any> {
+  @Get('programs/:programId/payments/:payment/fsp-instructions')
+  public async getFspInstructions(@Param() params): Promise<any> {
     return await this.paymentsService.getFspInstructions(
       Number(params.programId),
-      params.payment,
+      Number(params.payment),
     );
   }
 }
