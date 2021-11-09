@@ -109,7 +109,7 @@
       "label": {
         "en": "What is your national identification number?"
       },
-      "answerType": "numeric",
+      "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
