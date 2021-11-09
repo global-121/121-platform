@@ -9,7 +9,7 @@ import { SeedInit } from './seed-init';
 import fspBelcash from '../../seed-data/fsp/fsp-belcash.json';
 
 import programPilotEth from '../../seed-data/program/program-pilot-eth.json';
-import instanceAnonymous from '../../seed-data/instance/instance-anonymous.json';
+import instancePilotEth from '../../seed-data/instance/instance-pilot-eth.json';
 
 @Injectable()
 export class SeedProgramEth implements InterfaceScript {
@@ -73,7 +73,7 @@ export class SeedProgramEth implements InterfaceScript {
     ]);
 
     // ***** CREATE INSTANCE *****
-    await this.seedHelper.addInstance(instanceAnonymous);
+    await this.seedHelper.addInstance(instancePilotEth);
   }
 }
 

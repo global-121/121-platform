@@ -8,7 +8,7 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Which phone number do you want to receive your BelCash notification on? (With country-code. It should look like: <strong>+251 000 000 000</strong>)"
+        "en": "Which phone number do you want to receive your mobile money transfer from HelloCash on? (With country-code. It should look like: <strong>+251 000 000 000</strong>)"
       },
       "placeholder": {
         "en": "+251 000 000 000"
@@ -16,6 +16,37 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "tel",
       "options": null
+    },
+    {
+      "name": "typePhoneNumber",
+      "label": {
+        "en": "What best describes this phone number?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "ownSmartPhone",
+          "label": {
+            "en": "Own smartphone number"
+          }
+        },
+        {
+          "option": "ownFeaturePhone",
+          "label": {
+            "en": "Own basic / feature phone number"
+          }
+        },
+        {
+          "option": "notOwnPhone",
+          "label": {
+            "en": "Someone else's phone number"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
     }
   ]
 }
