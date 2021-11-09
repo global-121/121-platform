@@ -1,18 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/financial-service-provider.entity';
+import { ProgramEntity } from '../../../programs/program.entity';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import { FspTransactionResultDto } from '../../dto/payment-transaction-result.dto';
+import {
+  FspTransactionResultDto,
+  PaTransactionResultDto,
+} from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { BelcashApiService } from './belcash.api.service';
+import { StatusEnum } from '../../../shared/enum/status.enum';
+import { BelcashTransferPayload } from './belcash-transfer-payload.dto';
 
 @Injectable()
 export class BelcashService {
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
   public constructor(
     private readonly belcashApiService: BelcashApiService,
     private readonly transactionsService: TransactionsService,
   ) {}
-
-  // NOTE: ALL BELOW IS COPIED FROM AFRICAS-TALKING. THIS MUST BE ADJUSTED TO BELCASH STILL.
 
   public async sendPayment(
     paymentList: PaPaymentDataDto[],
@@ -24,17 +32,23 @@ export class BelcashService {
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.belcash;
 
+    const program = await this.programRepository.findOne(programId);
+
+    const authorizationToken = await this.belcashApiService.authenticate();
+
     for (let payment of paymentList) {
       const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
       const payload = this.createPayloadPerPa(
         payment,
-        programId,
         paymentNr,
         calculatedAmount,
+        program.currency,
       );
 
-      const paymentRequestResultPerPa = await this.belcashApiService.sendPaymentPerPa(
+      const paymentRequestResultPerPa = await this.sendPaymentPerPa(
         payload,
+        payment.referenceId,
+        authorizationToken,
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
     }
@@ -49,33 +63,51 @@ export class BelcashService {
 
   public createPayloadPerPa(
     paymentData: PaPaymentDataDto,
-    programId: number,
-    payment: number,
+    paymentNr: number,
     amount: number,
-  ): object {
+    currency: string,
+  ): BelcashTransferPayload {
     const payload = {
-      username: process.env.AFRICASTALKING_USERNAME,
-      productName: process.env.AFRICASTALKING_PRODUCT_NAME,
-      recipients: [],
-    };
-
-    const recipient = {
-      phoneNumber: paymentData.paymentAddress,
-      currencyCode: process.env.AFRICASTALKING_CURRENCY_CODE,
       amount: amount,
-      metadata: {
-        programId: String(programId),
-        payment: String(payment),
-        referenceId: String(paymentData.referenceId),
-        amount: String(amount),
-      },
+      to: `+${paymentData.paymentAddress}`,
+      currency: currency,
+      description: `121 program: payment ${paymentNr}`,
+      referenceid: `${
+        paymentData.referenceId
+      }-payment-${paymentNr}-${+new Date()}`,
+      notifyto: false,
+      notifyfrom: false,
     };
-    if (process.env.AFRICASTALKING_PROVIDER_CHANNEL) {
-      recipient['providerChannel'] =
-        process.env.AFRICASTALKING_PROVIDER_CHANNEL;
-    }
-    payload.recipients.push(recipient);
 
     return payload;
+  }
+
+  public async sendPaymentPerPa(
+    payload: BelcashTransferPayload,
+    referenceId: string,
+    authorizationToken: string,
+  ): Promise<PaTransactionResultDto> {
+    // A timeout of 100ms to not overload belcash server
+    await new Promise(r => setTimeout(r, 100));
+
+    const paTransactionResult = new PaTransactionResultDto();
+    paTransactionResult.fspName = FspName.belcash;
+    paTransactionResult.referenceId = referenceId;
+    paTransactionResult.date = new Date();
+    paTransactionResult.calculatedAmount = payload.amount;
+
+    const result = await this.belcashApiService.transfer(
+      payload,
+      authorizationToken,
+    );
+
+    if ([200, 201].includes(result.status)) {
+      paTransactionResult.status = StatusEnum.success;
+      paTransactionResult.message = 'Payment instructions succesfully sent.';
+    } else {
+      paTransactionResult.status = StatusEnum.error;
+      paTransactionResult.message = result.data.error.message;
+    }
+    return paTransactionResult;
   }
 }

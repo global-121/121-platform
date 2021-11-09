@@ -153,7 +153,7 @@ export class TransactionsService {
     transaction.customData = transactionResponse.customData;
     transaction.transactionStep = 1;
 
-    this.transactionRepository.save(transaction);
+    await this.transactionRepository.save(transaction);
   }
 
   public async storeAllTransactions(
