@@ -12,11 +12,16 @@ import { TransactionsService } from '../../transactions/transactions.service';
 import { BelcashApiService } from './belcash.api.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { BelcashTransferPayload } from './belcash-transfer-payload.dto';
+import { BelcashPaymentStatusDto } from './dto/belcash-payment-status.dto';
+import { BelcashRequestEntity } from './belcash-request.entity';
 
 @Injectable()
 export class BelcashService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(BelcashRequestEntity)
+  private readonly belcashRequestRepository: Repository<BelcashRequestEntity>;
+
   public constructor(
     private readonly belcashApiService: BelcashApiService,
     private readonly transactionsService: TransactionsService,
@@ -43,6 +48,7 @@ export class BelcashService {
         paymentNr,
         calculatedAmount,
         program.currency,
+        program.id,
       );
 
       const paymentRequestResultPerPa = await this.sendPaymentPerPa(
@@ -66,15 +72,19 @@ export class BelcashService {
     paymentNr: number,
     amount: number,
     currency: string,
+    programId: number,
   ): BelcashTransferPayload {
     const payload = {
       amount: amount,
       to: `+${paymentData.paymentAddress}`,
       currency: currency,
       description: `121 program: payment ${paymentNr}`,
-      referenceid: `${
+      tracenumber: `referenceId-${
         paymentData.referenceId
-      }-payment-${paymentNr}-${+new Date()}`,
+      }_program-${programId}_payment-${paymentNr}_timestamp-${+new Date()}`,
+      referenceid: `referenceId-${
+        paymentData.referenceId
+      }_program-${programId}_payment-${paymentNr}_timestamp-${+new Date()}`,
       notifyto: false,
       notifyfrom: false,
     };
@@ -102,12 +112,59 @@ export class BelcashService {
     );
 
     if ([200, 201].includes(result.status)) {
-      paTransactionResult.status = StatusEnum.success;
-      paTransactionResult.message = 'Payment instructions succesfully sent.';
+      paTransactionResult.status = StatusEnum.waiting;
+      paTransactionResult.message =
+        'Payment request sent succesfully. Awaiting status update.';
     } else {
       paTransactionResult.status = StatusEnum.error;
       paTransactionResult.message = result.data.error.message;
     }
     return paTransactionResult;
+  }
+
+  public async processTransactionStatus(
+    belcashCallbackData: BelcashPaymentStatusDto,
+  ): Promise<void> {
+    const belcashRequest = await this.belcashRequestRepository.save(
+      belcashCallbackData,
+    );
+
+    const successStatuses = ['PROCESSED'];
+    const errorStatuses = ['CANCELED', 'EXPIRED', 'DENIED', 'FAILED'];
+
+    if (
+      [...successStatuses, ...errorStatuses].includes(belcashRequest.status)
+    ) {
+      // Unclear as of yet when which attribute is returned, but we pass equal values to both attributes
+      const matchingString =
+        belcashRequest.referenceid || belcashRequest.tracenumber;
+
+      const referenceId = matchingString
+        .split('_')[0]
+        .replace('referenceId-', '');
+      const programId = Number(
+        matchingString.split('_')[1].replace('program-', ''),
+      );
+      const payment = Number(
+        matchingString.split('_')[2].replace('payment-', ''),
+      );
+
+      const paTransactionResult = new PaTransactionResultDto();
+      paTransactionResult.fspName = FspName.belcash;
+      paTransactionResult.referenceId = referenceId;
+      paTransactionResult.status = successStatuses.includes(
+        belcashRequest.status,
+      )
+        ? StatusEnum.success
+        : StatusEnum.error;
+      paTransactionResult.message = '';
+      paTransactionResult.calculatedAmount = Number(belcashRequest.amount);
+
+      this.transactionsService.storeTransaction(
+        paTransactionResult,
+        programId,
+        payment,
+      );
+    }
   }
 }
