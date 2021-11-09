@@ -212,10 +212,6 @@ export class ValidateFspComponent implements ValidationComponent {
     await this.storage.set(IonicStorageTypes.validatedData, validatedData);
   }
 
-  public doReload(): void {
-    window.location.reload();
-  }
-
   getNextSection() {
     return ValidationComponents.mainMenu;
   }
