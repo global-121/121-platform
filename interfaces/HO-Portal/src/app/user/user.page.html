@@ -29,39 +29,44 @@
       <ion-col size="10" sizeSm="6" sizeMd="4" class="">
 
           <h2>{{ 'page.user.change-password.title'|translate }}</h2>
-
-          <form
-            *ngIf="!passwordChanged"
-            method="POST"
-            #newPasswordForm="ngForm"
-            (ngSubmit)="updatePassword()"
-            (keyup.enter)="updatePassword()"
-          >
-            <ion-item>
-              <ion-label position="stacked">{{ 'page.user.change-password.new-password'|translate }}</ion-label>
-              <ion-input
-                type="password"
-                autocomplete="new-password"
-                autocapitalize="off"
-                clearInput="true"
-                clearOnEdit="false"
-                required
-                [minlength]="8"
-                name="new-password"
-                [(ngModel)]="newPassword"
-                ngDefaultControl
-              ></ion-input>
-            </ion-item>
-
-            <ion-button
-              type="submit"
-              expand="block"
-              [disabled]="!newPasswordForm?.form?.valid"
+          <div class="ion-padding auth-form-container">
+            <form
+              *ngIf="!passwordChanged"
+              method="POST"
+              #newPasswordForm="ngForm"
+              (ngSubmit)="updatePassword()"
+              (keyup.enter)="updatePassword()"
             >
-              {{ 'common.update'|translate }}
-            </ion-button>
+              <div class="fake-ion-item ion-margin-bottom ion-padding-bottom">
+                <label color="medium" class="fake-ion-item--label auth-label">{{ 'page.user.change-password.new-password'|translate }}</label>
+                <ion-input
+                  type="password"
+                  autocomplete="new-password"
+                  autocapitalize="off"
+                  clearInput="true"
+                  clearOnEdit="false"
+                  required
+                  [minlength]="8"
+                  name="new-password"
+                  [(ngModel)]="newPassword"
+                  ngDefaultControl
+                  class="ion-margin-vertical">
+                </ion-input>
+              </div>
 
-          </form>
+              <div class="ion-margin-top ion-no-padding">
+                <ion-button
+                  type="submit"
+                  expand="block"
+                    size="default"
+                  [disabled]="!newPasswordForm?.form?.valid"
+                >
+                  {{ 'common.update'|translate }}
+                </ion-button>
+              </div>
+
+            </form>
+          </div>
           <div
             *ngIf="passwordChanged"
            class="ion-text-center"
