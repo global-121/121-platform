@@ -44,13 +44,559 @@
   "phoneNumberPlaceholder": "+251 000 000 000",
   "programQuestions": [
     {
-      "name": "exampleQuestion",
+      "name": "name",
       "label": {
-        "en": "Example question:"
+        "en": "What is your name?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "age",
+      "label": {
+        "en": "How old are you?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "education",
+      "label": {
+        "en": "What is your highest level of education?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "primary",
+          "label": {
+            "en": "Primary school (grade 1-8)"
+          }
+        },
+        {
+          "option": "secondary",
+          "label": {
+            "en": "Secondary school (grade 9-12)"
+          }
+        },
+        {
+          "option": "university",
+          "label": {
+            "en": "University"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "nationalIdNumber",
+      "label": {
+        "en": "What is your national identification number?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "nrOfChildren",
+      "label": {
+        "en": "How many children do you have, if any?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "hasHusband",
+      "label": {
+        "en": "Do you have a husband?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "disability",
+      "label": {
+        "en": "Which of the following best describes your situation?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "no",
+          "label": {
+            "en": "No disability or health issue"
+          }
+        },
+        {
+          "option": "disabled",
+          "label": {
+            "en": "Disabled"
+          }
+        },
+        {
+          "option": "health",
+          "label": {
+            "en": "Health issue"
+          }
+        },
+        {
+          "option": "hiv",
+          "label": {
+            "en": "HIV"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other health issue/disability"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "disabilityOther",
+      "label": {
+        "en": "What other type of health issue or disability? (type '-' if not applicable)"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "whenReturnee",
+      "label": {
+        "en": "Did you return to Ethiopia from a country in the Middle East? (For example: Saudi Arabia, Kuwait, Qatar, Bahrain, Jordan, Yemen)<br><br>If so, how many years has it been since you got deported from abroad or came back to Ethiopia as a returnee?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "noReturnee",
+          "label": {
+            "en": "I did not return from a county in the Middle East"
+          }
+        },
+        {
+          "option": "less1years",
+          "label": {
+            "en": "Less than 1 year"
+          }
+        },
+        {
+          "option": "1-2years",
+          "label": {
+            "en": "1 - 2 years"
+          }
+        },
+        {
+          "option": "3-4years",
+          "label": {
+            "en": "3 - 4 years"
+          }
+        },
+        {
+          "option": "more4years",
+          "label": {
+            "en": "More than 4 years"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "isHouseholdLeader",
+      "label": {
+        "en": "Are you a household leader or responsible for taking care of your family financially?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "businessLicenseAddis",
+      "label": {
+        "en": "Do you have a business license under your name in Addis Ababa?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "noBusiness",
+          "label": {
+            "en": "I do not own a business"
+          }
+        },
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "typeBusiness",
+      "label": {
+        "en": "What type of business do you own?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "noBusiness",
+          "label": {
+            "en": "I do not own a business"
+          }
+        },
+        {
+          "option": "restaurant",
+          "label": {
+            "en": "Small cafe or restaurant"
+          }
+        },
+        {
+          "option": "coffee",
+          "label": {
+            "en": "Coffee house"
+          }
+        },
+        {
+          "option": "bakery",
+          "label": {
+            "en": "Bakery"
+          }
+        },
+        {
+          "option": "hair",
+          "label": {
+            "en": "Hair salon / beauty salon"
+          }
+        },
+        {
+          "option": "clothes",
+          "label": {
+            "en": "Clothes shop / boutique"
+          }
+        },
+        {
+          "option": "retail",
+          "label": {
+            "en": "Retail shop"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "typeBusinessOther",
+      "label": {
+        "en": "What other type of business do you own? (type '-' if not applicable)"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "businessPlan",
+      "label": {
+        "en": "Please explain your goal how you want to expand or advance your small business, if any. (type '-' if not applicable, or no business goal yet)"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "ageBusiness",
+      "label": {
+        "en": "How long has it been since you started your business?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "noBusiness",
+          "label": {
+            "en": "I don't have a business"
+          }
+        },
+        {
+          "option": "1year-",
+          "label": {
+            "en": "Less than 1 year"
+          }
+        },
+        {
+          "option": "1-2years",
+          "label": {
+            "en": "1 - 2 years"
+          }
+        },
+        {
+          "option": "3-4years",
+          "label": {
+            "en": "3 - 4 years"
+          }
+        },
+        {
+          "option": "4years+",
+          "label": {
+            "en": "More than 4 years"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "incomeBusiness",
+      "label": {
+        "en": "What is your estimated average income from your business per month?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "noBusiness",
+          "label": {
+            "en": "I don't have a business"
+          }
+        },
+        {
+          "option": "4000-",
+          "label": {
+            "en": "Less than 4,000 birr per month"
+          }
+        },
+        {
+          "option": "4000-6000",
+          "label": {
+            "en": "4,000 - 6,000 birr per month"
+          }
+        },
+        {
+          "option": "6000+",
+          "label": {
+            "en": "More than 6,000 birr per month"
+          }
+        },
+        {
+          "option": "notSure",
+          "label": {
+            "en": "I don't know"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "costBusiness",
+      "label": {
+        "en": "What is your estimated average expenditure/cost for your business per month?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "noBusiness",
+          "label": {
+            "en": "I don't have a business"
+          }
+        },
+        {
+          "option": "3000-",
+          "label": {
+            "en": "Less than 3,000 birr per month"
+          }
+        },
+        {
+          "option": "3000-5000",
+          "label": {
+            "en": "3,000 - 5,000 birr per month"
+          }
+        },
+        {
+          "option": "5000+",
+          "label": {
+            "en": "More than 5,000 birr per month"
+          }
+        },
+        {
+          "option": "notSure",
+          "label": {
+            "en": "I don't know"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "committedToTraining",
+      "label": {
+        "en": "Are you able to be fully committed, responsive and available to attend all ZOA's training sessions and assessments?<br><br>Training will take maximum one week."
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        },
+        {
+          "option": "notSure",
+          "label": {
+            "en": "Not sure"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "vocationalTraining",
+      "label": {
+        "en": "Which skill based/vocational training certificate do you have, if any? (type '-' if not applicable)"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "savingMethod",
+      "label": {
+        "en": "What kind of saving method do you use?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "homeSaving",
+          "label": {
+            "en": "Home saving"
+          }
+        },
+        {
+          "option": "bank",
+          "label": {
+            "en": "Bank"
+          }
+        },
+        {
+          "option": "mobileMoney",
+          "label": {
+            "en": "Mobile money"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
