@@ -1,5 +1,6 @@
 import { HttpModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProgramEntity } from '../../../programs/program.entity';
 import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
 import { TransactionsModule } from '../../transactions/transactions.module';
@@ -9,7 +10,7 @@ import { BelcashService } from './belcash.service';
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, ProgramEntity]),
     UserModule,
     TransactionsModule,
   ],

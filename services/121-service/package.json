@@ -15,7 +15,7 @@
     "fix:code": "npm run lint:code -- --fix",
     "lint:seed-data": "prettier --check \"seed-data/**/*.json\"",
     "lint:syntax": "prettier --check \"**/*.{md,js,yml}\"",
-    "fix:syntax": "npm run lint:syntax -- --write",
+    "fix:syntax": "npm run lint:syntax -- --write && npm run lint:seed-data -- --write",
     "prestart": "npm run migration:run && ts-node src/scripts seed-prod",
     "start": "node index.js",
     "prestart:dev": "npm install --no-fund --no-audit --no-save && npm run prestart",

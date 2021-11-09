@@ -1,57 +1,57 @@
-import { Injectable } from '@nestjs/common';
-import { FspName } from '../../../fsp/financial-service-provider.entity';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
+import { HttpService, Injectable } from '@nestjs/common';
+import { catchError, map } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { BelcashTransferPayload } from './belcash-transfer-payload.dto';
 
 @Injectable()
 export class BelcashApiService {
-  public constructor() {}
+  public constructor(private readonly httpService: HttpService) {}
 
-  // NOTE: ALL BELOW IS COPIED FROM AFRICAS-TALKING. THIS MUST BE ADJUSTED TO BELCASH STILL.
-
-  public async sendPaymentPerPa(payload): Promise<PaTransactionResultDto> {
-    // A timeout of 123ms to not overload africa's talking server
-    await new Promise(r => setTimeout(r, 123));
-    const credentials = {
-      apiKey: process.env.AFRICASTALKING_API_KEY,
-      username: process.env.AFRICASTALKING_USERNAME,
+  public async authenticate(): Promise<string> {
+    const payload = {
+      principal: process.env.BELCASH_LOGIN,
+      system: process.env.BELCASH_SYSTEM,
+      token: process.env.BELCASH_API_TOKEN,
     };
-    const Belcash = require('africastalking')(credentials);
-    const payments = Belcash.PAYMENTS;
+    const authenticationResult = await this.post(`authenticate`, payload);
+    return authenticationResult.data.token;
+  }
 
-    const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.fspName = FspName.belcash;
-    paTransactionResult.referenceId =
-      payload.recipients[0].metadata.referenceId;
-    paTransactionResult.date = new Date();
-    paTransactionResult.calculatedAmount =
-      payload.recipients[0].metadata.amount;
+  public async transfer(
+    payload: BelcashTransferPayload,
+    authorizationToken?: string,
+  ): Promise<any> {
+    return await this.post('transfers', payload, authorizationToken);
+  }
 
-    let result;
-    await payments
-      .mobileB2C(payload)
-      .then((response: any) => {
-        result = { response: response };
+  private async post(
+    endpoint: string,
+    payload: any,
+    authorizationToken?: string,
+  ): Promise<any> {
+    const url = `${process.env.BELCASH_API_URL}/${endpoint}`;
+    return await this.httpService
+      .post(url, payload, {
+        headers: this.createHeaders(authorizationToken),
       })
-      .catch((error: any) => {
-        console.log('error: ', error);
-        result = { error: error };
-      });
+      .pipe(
+        map(response => {
+          return response;
+        }),
+        catchError(err => {
+          return of(err.response);
+        }),
+      )
+      .toPromise();
+  }
 
-    if (result.response?.entries[0]?.errorMessage) {
-      paTransactionResult.status = StatusEnum.error;
-      paTransactionResult.message = result.response.entries[0].errorMessage;
-    } else if (result.response?.errorMessage) {
-      paTransactionResult.status = StatusEnum.error;
-      paTransactionResult.message = result.response.errorMessage;
-    } else if (result.error) {
-      paTransactionResult.status = StatusEnum.error;
-      paTransactionResult.message = result.error;
-    } else {
-      paTransactionResult.status = StatusEnum.waiting;
-      paTransactionResult.message =
-        'No notification of payment status received yet.';
+  private createHeaders(authorizationToken?: string): object {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    if (authorizationToken) {
+      headers['Authorization'] = `Bearer ${authorizationToken}`;
     }
-    return paTransactionResult;
+    return headers;
   }
 }
