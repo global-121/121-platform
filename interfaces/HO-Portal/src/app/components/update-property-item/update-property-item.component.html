@@ -3,70 +3,70 @@
   #updatePropertyForm="ngForm"
   (ngSubmit)="doUpdate()"
 >
-  <ion-item
-    [disabled]="isDisabled"
+  <div
+    class="fake-ion-item divider-bottom ion-padding"
+    [attr.disabled]="isDisabled"
   >
-    <ion-label position="stacked">
+    <label class="fake-ion-item--label">
       {{ label }}
-    </ion-label>
-    <ng-container [ngSwitch]="type">
-      <ng-container *ngSwitchCase="'number'">
-        <ion-input
-          ngDefaultControl
-          name="propertyInput"
-          [(ngModel)]="propertyModel"
-          [value]="value"
-          [placeholder]="placeholder"
-          type="number"
-          inputmode="numeric"
-          min="1"
-        ></ion-input>
+    </label>
+    <div class="fake-ion-item--contents">
+      <ng-container [ngSwitch]="type">
+        <ng-container *ngSwitchCase="'number'">
+          <ion-input
+            ngDefaultControl
+            name="propertyInput"
+            [(ngModel)]="propertyModel"
+            [value]="value"
+            [placeholder]="placeholder"
+            type="number"
+            inputmode="numeric"
+            min="1"
+          ></ion-input>
+        </ng-container>
+        <ng-container *ngSwitchCase="'tel'">
+          <ion-input
+            ngDefaultControl
+            name="propertyInput"
+            [(ngModel)]="propertyModel"
+            [value]="value"
+            [placeholder]="placeholder"
+            type="tel"
+            inputmode="tel"
+            pattern="[0-9]*"
+          ></ion-input>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <ion-input
+            ngDefaultControl
+            name="propertyInput"
+            [(ngModel)]="propertyModel"
+            [value]="value"
+            [placeholder]="placeholder"
+            type="text"
+          ></ion-input>
+        </ng-container>
       </ng-container>
-      <ng-container *ngSwitchCase="'tel'">
-        <ion-input
-          ngDefaultControl
-          name="propertyInput"
-          [(ngModel)]="propertyModel"
-          [value]="value"
-          [placeholder]="placeholder"
-          type="tel"
-          inputmode="tel"
-          pattern="[0-9]*"
-        ></ion-input>
+      <ng-container *ngIf="!hideButton">
+        <ion-button
+          *ngIf="!inProgress"
+          type="submit"
+          class="ion-margin-start"
+        >
+          {{ 'common.update'|translate }}
+        </ion-button>
+        <ion-spinner
+          *ngIf="inProgress"
+          color="primary"
+          class="ion-margin-start"
+        ></ion-spinner>
       </ng-container>
-      <ng-container *ngSwitchDefault>
-        <ion-input
-          ngDefaultControl
-          name="propertyInput"
-          [(ngModel)]="propertyModel"
-          [value]="value"
-          [placeholder]="placeholder"
-          type="text"
-        ></ion-input>
-      </ng-container>
-    </ng-container>
+    </div>
     <ion-note
       *ngIf="explanation"
       class="ion-margin-bottom"
     >
       {{ explanation }}
     </ion-note>
-    <ion-row
-      slot="end"
-      class="ion-align-items-center ion-align-self-stretch"
-    >
-      <ion-button
-        *ngIf="!inProgress"
-        type="submit"
-        size="small"
-      >
-        {{ 'common.update'|translate }}
-      </ion-button>
-      <ion-spinner
-        *ngIf="inProgress"
-        color="primary"
-        size="small"
-      ></ion-spinner>
-    </ion-row>
-  </ion-item>
+  </div>
 </form>

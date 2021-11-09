@@ -41,6 +41,7 @@ export class UpdateFspComponent implements OnInit {
   updated: EventEmitter<string> = new EventEmitter<string>();
 
   public propertyModel: any | NgModel;
+  public attributeModel: any | NgModel;
 
   constructor(
     private programsService: ProgramsServiceApiService,
