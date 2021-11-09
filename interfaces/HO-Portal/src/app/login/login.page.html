@@ -7,57 +7,76 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-
-<ion-content class="ion-padding">
-  <ion-grid>
-    <ion-row class="ion-align-items-center ion-justify-content-center">
-      <ion-col size="4" class="">
-
+<ion-content>
+  <ion-grid class="full-height">
+    <ion-row class="ion-justify-content-center ion-align-items-center full-height">
+      <ion-col size="4">
+      </ion-col>
+      <ion-col size="12" size-lg="4">
+        <div id="portal-title" class="ion-margin-vertical">
+          <div id="logo-container">
+            <img src="/assets/img/121-logo.png" alt="121">
+          </div>
+          <h1>{{ 'page.login.portalTitle'|translate }}</h1>
+        </div>
+        <div class="ion-padding auth-form-container">
           <form
             method="POST"
             #loginForm="ngForm"
             (ngSubmit)="doLogin()"
             (keyup.enter)="doLogin()"
           >
-            <ion-item>
-              <ion-label position="stacked">{{ 'page.login.form.email.label'|translate }}</ion-label>
-              <ion-input
-                type="email"
-                inputmode="email"
-                autocomplete="username email"
-                autocapitalize="off"
-                autofocus="true"
-                clearInput="true"
-                required
-                name="email"
-                [(ngModel)]="email"
-                ngDefaultControl
-              ></ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-label position="stacked">{{ 'page.login.form.password.label'|translate }}</ion-label>
-              <ion-input
-                type="password"
-                autocomplete="current-password"
-                autocapitalize="off"
-                clearInput="false"
-                clearOnEdit="false"
-                required
-                name="password"
-                [(ngModel)]="password"
-                ngDefaultControl
-              ></ion-input>
-            </ion-item>
+            <div class="fake-ion-item ion-margin-bottom">
+              <label color="medium" class="fake-ion-item--label auth-label">{{ 'page.login.form.email.label'|translate }}</label>
+              <div class="fake-ion-item--contents">
+                <ion-input
+                  type="email"
+                  inputmode="email"
+                  autocomplete="username email"
+                  autocapitalize="off"
+                  autofocus="true"
+                  clearInput="true"
+                  required
+                  name="email"
+                  [(ngModel)]="email"
+                  ngDefaultControl
+                  class="ion-margin-vertical"
+                ></ion-input>
+              </div>
+            </div>
+            <div class="fake-ion-item ion-margin-bottom ion-padding-bottom">
+              <label color="medium" class="fake-ion-item--label auth-label">{{ 'page.login.form.password.label'|translate }}</label>
+              <div class="fake-ion-item--contents">
+                <ion-input
+                  type="password"
+                  autocomplete="current-password"
+                  autocapitalize="off"
+                  clearInput="false"
+                  clearOnEdit="false"
+                  required
+                  name="password"
+                  [(ngModel)]="password"
+                  ngDefaultControl
+                  class="ion-margin-vertical"
+                ></ion-input>
+              </div>
+            </div>
 
-            <ion-button
-              type="submit"
-              expand="block"
-              [disabled]="!loginForm?.form?.valid"
-            >
-              {{ 'page.login.form.submit.label'|translate }}
-            </ion-button>
-
+            <div class="ion-margin-top ion-no-padding">
+              <ion-button
+                type="submit"
+                expand="block"
+                size="default"
+                [disabled]="!loginForm?.form?.valid"
+                class="auth-button"
+              >
+                {{ 'page.login.form.submit.label'|translate }}
+              </ion-button>
+            </div>
           </form>
+        </div>
+      </ion-col>
+      <ion-col size="4">
       </ion-col>
     </ion-row>
   </ion-grid>

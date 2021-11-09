@@ -27,12 +27,14 @@
     },
     "login": {
       "pageTitle": "Log in",
+      "portalTitle": "PORTAL",
       "form": {
         "email": {
-          "label": "E-mail"
+          "label": "Email Address"
         },
         "password": {
-          "label": "Password"
+          "label": "Password",
+          "forgot": "Forgot password?"
         },
         "submit": {
           "label": "Log in"

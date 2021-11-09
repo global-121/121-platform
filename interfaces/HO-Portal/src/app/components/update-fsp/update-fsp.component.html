@@ -3,31 +3,33 @@
   #updatePropertyForm="ngForm"
   (ngSubmit)="updateChosenFsp()"
 >
-  <ion-item>
-    <ion-label position="stacked">
+
+  <div class="fake-ion-item divider-bottom ion-padding">
+    <label class="fake-ion-item--label">
       {{ label }}
-    </ion-label>
-    <ng-container>
-      <ion-item class="ion-margin-top ion-align-self-stretch">
-        <ion-select
-          style="max-width: 100%;"
-          ngDefaultControl
-          name="propertyInput"
-          [(ngModel)]="propertyModel"
-          [value]="value"
-          [placeholder]="placeholder"
-          interface="popover"
-          (ionChange)="onFspChange($event)"
-        >
-          <ion-select-option
-            *ngFor="let fspItem of fspList"
-            value="{{ fspItem.fsp }}">
-              {{ fspItem.fsp }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
+    </label>
+    <div class="fake-ion-item--contents">
+      <div>
+        <ion-item class="ion-margin-vertical">
+          <ion-select
+            style="max-width: 100%;"
+            ngDefaultControl
+            name="propertyInput"
+            [(ngModel)]="propertyModel"
+            [value]="value"
+            [placeholder]="placeholder"
+            interface="popover"
+            (ionChange)="onFspChange($event)"
+          >
+            <ion-select-option
+              *ngFor="let fspItem of fspList"
+              value="{{ fspItem.fsp }}">
+                {{ fspItem.fsp }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
       <ng-container *ngIf="propertyModel != startingFspName">
-        <ion-text class="ion-padding-vertical" *ngIf="attributeDifference.length > 0">
+        <ion-text class="ion-padding" *ngIf="attributeDifference.length > 0">
           {{ 'page.program.program-people-affected.edit-person-affected-popup.fspChangeWarning' | translate }}<br>
           <div>
             <ul>
@@ -40,45 +42,39 @@
         <p *ngIf="selectedFspAttributes.length > 0">
           {{ 'page.program.program-people-affected.edit-person-affected-popup.fspNewAttributesExplanation' | translate }}
         </p>
-        <ion-item *ngFor="let attribute of selectedFspAttributes" position="stacked">
-          <ion-label position="stacked">
-            {{ 'page.program.program-people-affected.edit-person-affected-popup.properties.' + attribute.name + '.label' | translate }}
-          </ion-label>
-          <ion-input
-            ngDefaultControl
-            [name]="attribute.name"
-            [value]="attribute.value"
+        <div
+          class="fake-ion-item divider-bottom ion-padding"
+          *ngFor="let attribute of selectedFspAttributes"
+        >
+          <app-update-property-item
+            [type]="attribute.answerType"
+            [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.' + attribute.name + '.label' | translate "
+            [explanation]="explanation | translate"
             [placeholder]="attribute.placeholder?.en"
+            class="ion-margin-vertical"
             (ionChange)="onAttributeChange(attribute.name, $event)"
-          ></ion-input>
-        </ion-item>
+            hideButton="true"
+          ></app-update-property-item>
+        </div>
       </ng-container>
-    </ng-container>
-    <ng-container *ngIf="propertyModel != startingFspName">
-      <ion-note
-        *ngIf="explanation"
-        class="ion-margin-bottom"
-      >
-        {{ explanation }}
-      </ion-note>
-      <ion-row
-        slot="end"
-        class="ion-align-items-center ion-align-self-stretch"
-      >
+
+      </div>
+      <div>
         <ion-button
           *ngIf="!inProgress"
           [disabled]="!enableUpdateBtn"
           type="submit"
-          size="small"
+          size="default"
+          class="ion-margin-start"
         >
           {{ 'common.update'|translate }}
         </ion-button>
         <ion-spinner
           *ngIf="inProgress"
           color="primary"
-          size="small"
+          size="default"
+          class="ion-margin-start"
         ></ion-spinner>
-      </ion-row>
-    </ng-container>
-  </ion-item>
-</form>
+      </div>
+    </div>
+  </div>
