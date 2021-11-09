@@ -18,24 +18,18 @@
   }
 }
 
-.full-height {
-  height: 100%;
-}
-
 .auth-form-container {
   max-width: 339px;
   margin: auto;
   border: 1px solid #b3bcd0;
   border-radius: 0;
-  box-shadow: none;
 }
 
 .auth-button {
   width: 100%;
 }
 
-form {
-  ion-label {
-    font-size: 1.5em;
-  }
+.auth-label {
+  font-size: 1.2em;
+  color: var(--ion-color-medium);
 }

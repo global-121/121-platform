@@ -19,47 +19,51 @@
           </div>
           <h1>{{ 'page.login.portalTitle'|translate }}</h1>
         </div>
-        <ion-card class="ion-padding auth-form-container">
+        <div class="ion-padding auth-form-container">
           <form
             method="POST"
             #loginForm="ngForm"
             (ngSubmit)="doLogin()"
             (keyup.enter)="doLogin()"
           >
-            <ion-item lines="none" class="ion-no-padding">
-              <ion-label position="stacked" color="medium">{{ 'page.login.form.email.label'|translate }}</ion-label>
-              <ion-input
-                type="email"
-                inputmode="email"
-                autocomplete="username email"
-                autocapitalize="off"
-                autofocus="true"
-                clearInput="true"
-                required
-                name="email"
-                [(ngModel)]="email"
-                ngDefaultControl
-                class="ion-margin-vertical"
-              ></ion-input>
-            </ion-item>
-            <ion-item lines="none" class="ion-no-padding">
-              <ion-label position="stacked" color="medium">{{ 'page.login.form.password.label'|translate }}</ion-label>
-              <ion-input
-                type="password"
-                autocomplete="current-password"
-                autocapitalize="off"
-                clearInput="false"
-                clearOnEdit="false"
-                required
-                name="password"
-                [(ngModel)]="password"
-                ngDefaultControl
-                class="ion-margin-vertical"
-              ></ion-input>
-              <a href="#" class="ion-margin-bottom">{{ 'page.login.form.password.forgot'|translate }}</a>
-            </ion-item>
+            <div class="fake-ion-item ion-margin-bottom">
+              <label color="medium" class="fake-ion-item--label auth-label">{{ 'page.login.form.email.label'|translate }}</label>
+              <div class="fake-ion-item--contents">
+                <ion-input
+                  type="email"
+                  inputmode="email"
+                  autocomplete="username email"
+                  autocapitalize="off"
+                  autofocus="true"
+                  clearInput="true"
+                  required
+                  name="email"
+                  [(ngModel)]="email"
+                  ngDefaultControl
+                  class="ion-margin-vertical"
+                ></ion-input>
+              </div>
+            </div>
+            <div class="fake-ion-item ion-margin-bottom ion-padding-bottom">
+              <label color="medium" class="fake-ion-item--label auth-label">{{ 'page.login.form.password.label'|translate }}</label>
+              <div class="fake-ion-item--contents">
+                <ion-input
+                  type="password"
+                  autocomplete="current-password"
+                  autocapitalize="off"
+                  clearInput="false"
+                  clearOnEdit="false"
+                  required
+                  name="password"
+                  [(ngModel)]="password"
+                  ngDefaultControl
+                  class="ion-margin-vertical"
+                ></ion-input>
+              </div>
+              <a href="#" class="ion-margin-vertical">{{ 'page.login.form.password.forgot'|translate }}</a>
+            </div>
 
-            <ion-item lines="none" class="ion-margin-top ion-no-padding">
+            <div class="ion-margin-top ion-no-padding">
               <ion-button
                 type="submit"
                 expand="block"
@@ -69,9 +73,9 @@
               >
                 {{ 'page.login.form.submit.label'|translate }}
               </ion-button>
-            </ion-item>
+            </div>
           </form>
-        </ion-card>
+        </div>
       </ion-col>
       <ion-col size="4">
       </ion-col>

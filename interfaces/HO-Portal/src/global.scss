@@ -42,15 +42,22 @@ ion-button {
   text-transform: none;
 }
 
-.fake-ion-item,
-ion-item {
-  --inner-padding-end: 0;
+.fake-ion-item {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
 
-  // &::part(native) {
-  //   --padding-end: 16px;
-  //   --padding-top: 16px;
-  //   --padding-bottom: 16px;
-  // }
+  &.divider-bottom {
+    border-bottom: 1px solid var(--ion-color-light);
+  }
+
+  .fake-ion-item--contents {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1 1 auto;
+  }
 
   ion-input {
     border: 1px solid #b3bcd0;
@@ -58,9 +65,25 @@ ion-item {
     margin-top: 8px;
     margin-bottom: 8px;
 
+    &.has-value {
+      &.ion-invalid {
+        border-color: var(--ion-color-danger);
+      }
+    }
+
+    &.has-focus {
+      &.ion-valid {
+        border-color: var(--ion-color-success);
+      }
+    }
+
     input {
       --padding-start: 8px;
       --padding-end: 8px;
     }
   }
+}
+
+.full-height {
+  height: 100%;
 }

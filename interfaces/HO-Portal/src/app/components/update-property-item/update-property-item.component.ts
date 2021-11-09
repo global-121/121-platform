@@ -28,6 +28,9 @@ export class UpdatePropertyItemComponent implements OnInit {
   @Input()
   public inProgress: boolean;
 
+  @Input()
+  public hideButton: boolean;
+
   @Output()
   updated: EventEmitter<string> = new EventEmitter<string>();
 
