@@ -23,8 +23,8 @@
   "endDate": "2022-05-31T12:00:00Z",
   "currency": "ETB",
   "distributionFrequency": "month",
-  "distributionDuration": 6,
-  "fixedTransferValue": 1000,
+  "distributionDuration": 3,
+  "fixedTransferValue": 6250,
   "financialServiceProviders": [
     {
       "id": 1
@@ -34,11 +34,11 @@
   "minimumScore": 0,
   "highestScoresX": 50,
   "meetingDocuments": {
-    "en": "Document 1; Document 2; Document 3"
+    "en": "Photo; National ID card"
   },
   "notifications": {
     "en": {
-      "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS message with more information within 1 week."
+      "registered": "This is a message from ZOA.\n\nThank you for your registration. We will inform you later if you are included in this project or not."
     }
   },
   "phoneNumberPlaceholder": "+251 000 000 000",
