@@ -69,7 +69,7 @@ export class ProgramPayoutComponent implements OnInit {
 
     this.program = await this.programsService.getProgramById(this.programId);
     this.isIntersolve = await this.checkIntersolve(this.program);
-    this.hasFspWithCsvIntegration = await this.checkFspWithCsvIntegration()
+    this.hasFspWithCsvIntegration = await this.checkFspWithCsvIntegration();
 
     this.canMakePayment = this.checkCanMakePayment();
     this.canMakeExport = this.checkCanMakeExport();
