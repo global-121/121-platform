@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('belcash-request')
+@Entity('belcash_request')
 export class BelcashRequestEntity {
   @PrimaryGeneratedColumn()
   public belcashRequestId: number;

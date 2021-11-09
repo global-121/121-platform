@@ -68,19 +68,6 @@ export class BelcashPaymentStatusDto {
 
   @ApiModelProperty({ example: 'AUTHORIZING' })
   @IsString()
-  @IsIn([
-    'INITIALIZING',
-    'VERIFYING',
-    'AUTHORIZING',
-    'PREPARED',
-    'PENDING',
-    'RECEIVED',
-    'CANCELED',
-    'DENIED',
-    'EXPIRED',
-    'PROCESSED',
-    'FAILED',
-  ])
   public readonly status: string;
 
   @ApiModelProperty({

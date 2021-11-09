@@ -157,7 +157,7 @@ export class BelcashService {
       )
         ? StatusEnum.success
         : StatusEnum.error;
-      paTransactionResult.message = '';
+      paTransactionResult.message = belcashRequest.status;
       paTransactionResult.calculatedAmount = Number(belcashRequest.amount);
 
       this.transactionsService.storeTransaction(
