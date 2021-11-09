@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.17.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.18.0...master)
 
 ---
+
+## [1.18.0](https://github.com/global-121/121-platform/compare/v1.17.0...v1.18.0) - 2021-11-09
+
+### Added
+- 2021-11-09: Belcash as FSP
+- 2021-11-09: BoB-finance as FSP
+- 2021-11-09: `BELCASH_API_URL`, `BELCASH_LOGIN`, `BELCASH_API_TOKEN`, `BELCASH_SYSTEM` to `services/.env`
 
 ## [1.17.0](https://github.com/global-121/121-platform/compare/v1.16.0...v1.17.0) - 2021-10-27
 
