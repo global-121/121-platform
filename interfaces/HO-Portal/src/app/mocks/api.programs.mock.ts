@@ -10,6 +10,7 @@ const programsArray: Program[] = [
   {
     id: 1,
     titlePortal: { en: 'Program Alpha' },
+    titlePaApp: { en: 'Program Alpha' },
     description: { en: 'Description of program' },
     location: 'Location',
     startDate: '1970-01-01T01:01:01Z',
