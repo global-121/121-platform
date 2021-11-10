@@ -62,11 +62,19 @@ export class MetricsComponent implements OnChanges {
   private renderProgramProperties() {
     const group = MetricGroup.programProperties;
 
-    this.metricsMap.set(`${group}.title`, {
+    this.metricsMap.set(`${group}.titlePortal`, {
       group,
       icon: 'document',
-      label: 'page.program.program-details.title',
+      label: 'page.program.program-details.titlePortal',
       value: getValueOrEmpty(this.program.titlePortal, (value) =>
+        this.translatableString.get(value),
+      ),
+    });
+    this.metricsMap.set(`${group}.titlePaApp`, {
+      group,
+      icon: 'document',
+      label: 'page.program.program-details.titlePaApp',
+      value: getValueOrEmpty(this.program.titlePaApp, (value) =>
         this.translatableString.get(value),
       ),
     });

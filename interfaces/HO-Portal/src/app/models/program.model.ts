@@ -7,6 +7,7 @@ export class Program {
   startDate: string;
   endDate?: string;
   titlePortal: string | TranslatableString;
+  titlePaApp: string | TranslatableString;
   description: string | TranslatableString;
   location: string | TranslatableString;
   descCashType?: string | TranslatableString;
