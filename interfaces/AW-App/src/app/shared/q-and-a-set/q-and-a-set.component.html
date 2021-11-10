@@ -16,6 +16,7 @@
         <div *ngSwitchCase="answerType.Enum">
           <ion-radio-group
             [name]="question.name"
+            [value]="answers[question.name]?.value"
             (ionChange)="onAnswerChange(question.name,$event.target.value)"
             debounce="100"
           >
@@ -28,7 +29,6 @@
               <ion-label class="ion-text-wrap ion-padding-end">{{ option.label }}</ion-label>
               <ion-radio
                 [value]="option.value"
-                [checked]="(option.value === answers[question.name]?.value)"
                 [disabled]="isSubmitted"
               ></ion-radio>
             </ion-item>
