@@ -355,7 +355,11 @@
           "get-balance": "Get current balance of voucher",
           "current-balance": "Current balance: {{currentBalance}}<br><br>at: {{timestamp}}",
           "print-voucher": "Print voucher",
-          "download-voucher": "Download voucher"
+          "download-voucher": "Download voucher",
+          "single-payment": {
+            "intro": "Do payment for 1 PA only",
+            "start-payout": "Start payout now for {{paNr}}"
+          }
         }
       },
       "program-modal": {

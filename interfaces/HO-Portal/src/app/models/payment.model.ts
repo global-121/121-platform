@@ -17,6 +17,12 @@ export class PopupPayoutDetails {
   currency: string;
 }
 
+export class SinglePayoutDetails {
+  paNr: string;
+  amount: number;
+  currency: string;
+}
+
 export class TotalIncluded {
   public registrations: number;
   public transferAmounts: number;
