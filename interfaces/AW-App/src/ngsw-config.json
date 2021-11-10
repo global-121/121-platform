@@ -1,31 +1,14 @@
 {
-  "index": "/index.html",
-  "dataGroups": [
-    {
-      "name": "api",
-      "urls": [
-        "**/api/**"
-      ],
-      "cacheConfig": {
-        "strategy": "freshness",
-        "maxSize": 1,
-        "maxAge": "1s",
-        "timeout": "1s"
-      }
-    }
-  ],
+  "$schema": "../node_modules/@angular/service-worker/config/schema.json",
+  "index": "index.html",
+  "dataGroups": [],
   "assetGroups": [
     {
       "name": "app",
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": [
-          "/index.html",
-          "/*.css",
-          "/*.js",
-          "/manifest.webmanifest"
-        ]
+        "files": ["/index.html", "/**.css", "/**.js", "/manifest.webmanifest"]
       }
     },
     {
@@ -33,11 +16,7 @@
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": [
-          "/assets/**",
-          "/svg/md*",
-          "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
-        ]
+        "files": ["/assets/**", "/svg/**"]
       }
     }
   ]
