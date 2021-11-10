@@ -2,7 +2,7 @@ import { Program } from '../models/program.model';
 
 export const mockProgram: Program = {
   id: 1,
-  title: 'Program Test Title',
+  titlePaApp: 'Program Test Title',
   description: 'Program Test Description',
   created: new Date().toISOString(),
   updated: new Date().toISOString(),
