@@ -95,7 +95,7 @@
           "rejected": "Rejected"
         },
         "state-explanation": {
-          "imported": "PAs that were imported in the HO-portal, based on phone-number.",
+          "imported": "PAs that were imported, based on phone-number.",
           "invited": "PAs that were invited (after import).",
           "startedRegistration": "PAs that started registration in the PA-app.",
           "registered": "PAs that finished registration in the PA-app.",
