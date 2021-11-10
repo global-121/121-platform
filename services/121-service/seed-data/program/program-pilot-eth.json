@@ -24,7 +24,7 @@
   "currency": "ETB",
   "distributionFrequency": "month",
   "distributionDuration": 3,
-  "fixedTransferValue": 6250,
+  "fixedTransferValue": 25,
   "financialServiceProviders": [
     {
       "id": 1
