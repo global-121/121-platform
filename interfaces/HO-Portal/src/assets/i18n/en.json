@@ -358,7 +358,8 @@
           "download-voucher": "Download voucher",
           "single-payment": {
             "intro": "Do payment for 1 PA only",
-            "start-payout": "Start payout now for {{paNr}}"
+            "start-payout": "Start payout now for {{paNr}}",
+            "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
         }
       },

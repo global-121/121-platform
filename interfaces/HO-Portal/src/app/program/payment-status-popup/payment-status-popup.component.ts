@@ -141,8 +141,15 @@ export class PaymentStatusPopupComponent implements OnInit {
   }
 
   public updateTotalAmountMessage(): void {
-    const totalCost = this.singlePayoutDetails.amount;
+    const cost = this.singlePayoutDetails.amount;
     const symbol = `${this.singlePayoutDetails.currency} `;
+    const costFormatted = formatCurrency(
+      cost,
+      environment.defaultLocale,
+      symbol,
+      this.singlePayoutDetails.currency,
+    );
+    const totalCost = cost * this.singlePayoutDetails.multiplier;
     const totalCostFormatted = formatCurrency(
       totalCost,
       environment.defaultLocale,
@@ -156,19 +163,35 @@ export class PaymentStatusPopupComponent implements OnInit {
     );
 
     this.totalAmountMessage = this.translate.instant(
-      'page.program.program-payout.total-amount',
-      { totalCost: totalCostFormatted },
+      'page.program.program-people-affected.payment-status-popup.single-payment.total-amount',
+      {
+        cost: costFormatted,
+        multiplier: this.singlePayoutDetails.multiplier,
+        totalCost: totalCostFormatted,
+      },
     );
   }
 
   public async retryPayment() {
+    this.doPayment(this.payoutDetails);
+  }
+
+  public async singlePayment() {
+    this.doPayment(this.singlePayoutDetails);
+  }
+
+  public resetProgress(): void {
+    this.isInProgress = false;
+  }
+
+  public async doPayment(payoutDetails) {
     this.isInProgress = true;
     await this.programsService
       .submitPayout(
-        this.payoutDetails.programId,
-        this.payoutDetails.payment,
-        this.payoutDetails.amount,
-        this.payoutDetails.referenceId,
+        payoutDetails.programId,
+        payoutDetails.payment,
+        payoutDetails.amount,
+        payoutDetails.referenceId,
       )
       .then(
         (response) => {

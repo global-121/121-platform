@@ -21,6 +21,10 @@ export class SinglePayoutDetails {
   paNr: string;
   amount: number;
   currency: string;
+  multiplier: number;
+  programId: number;
+  payment: number;
+  referenceId: string;
 }
 
 export class TotalIncluded {

@@ -890,6 +890,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           paNr: row.pa,
           amount: this.program.fixedTransferValue,
           currency: this.program.currency,
+          multiplier: row.paymentAmountMultiplier
+            ? Number(row.paymentAmountMultiplier.substr(0, 1))
+            : 1,
+          programId: this.programId,
+          payment: column.paymentIndex,
+          referenceId: row.referenceId,
         }
       : null;
     let voucherUrl = null;

@@ -103,7 +103,7 @@
 
       <confirm-prompt
         [disabled]="isInProgress"
-        (confirm)="retryPayment()"
+        (confirm)="singlePayment()"
         (cancel)="resetProgress()"
         [subHeader]="totalIncludedMessage"
         [message]="totalAmountMessage"
