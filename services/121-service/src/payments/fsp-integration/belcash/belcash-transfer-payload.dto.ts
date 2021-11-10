@@ -4,6 +4,7 @@ export class BelcashTransferPayload {
   public currency: string;
   public description: string;
   public referenceid: string;
+  public tracenumber: string;
   public notifyto: boolean;
   public notifyfrom: boolean;
 }

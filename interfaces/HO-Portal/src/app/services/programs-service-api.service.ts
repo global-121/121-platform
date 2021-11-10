@@ -223,7 +223,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        `programs/${programId}/payments/transactions/one`,
+        `/programs/${programId}/payments/transactions/one`,
         {
           referenceId,
           payment: Number(payment),
