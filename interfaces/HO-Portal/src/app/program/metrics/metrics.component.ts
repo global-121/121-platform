@@ -66,7 +66,7 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'document',
       label: 'page.program.program-details.title',
-      value: getValueOrEmpty(this.program.title, (value) =>
+      value: getValueOrEmpty(this.program.titlePortal, (value) =>
         this.translatableString.get(value),
       ),
     });

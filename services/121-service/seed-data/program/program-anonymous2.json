@@ -4,17 +4,14 @@
   "phase": "design",
   "location": "Location B",
   "ngo": "NGO B",
-  "title": {
+  "titlePortal": {
+    "en": "Program 2"
+  },
+  "titlePaApp": {
     "en": "Program 2"
   },
   "description": {
     "en": "Short description."
-  },
-  "descLocation": {
-    "en": "Location such and such."
-  },
-  "descHumanitarianObjective": {
-    "en": "Humanitarian objective of program is such and such."
   },
   "descCashType": {
     "en": "Unconditional multi-purpose"

@@ -90,7 +90,8 @@ export class ProgramService {
     let program = new ProgramEntity();
     program.location = programData.location;
     program.ngo = programData.ngo;
-    program.title = programData.title;
+    program.titlePortal = programData.titlePortal;
+    program.titlePaApp = programData.titlePaApp;
     program.startDate = programData.startDate;
     program.endDate = programData.endDate;
     program.currency = programData.currency;
@@ -104,8 +105,6 @@ export class ProgramService {
     program.notifications = programData.notifications;
     program.phoneNumberPlaceholder = programData.phoneNumberPlaceholder;
     program.description = programData.description;
-    program.descLocation = programData.descLocation;
-    program.descHumanitarianObjective = programData.descHumanitarianObjective;
     program.descCashType = programData.descCashType;
     program.validation = programData.validation;
     program.programQuestions = [];
@@ -218,7 +217,7 @@ export class ProgramService {
   private buildProgramRO(program: ProgramEntity): SimpleProgramRO {
     const simpleProgramRO = {
       id: program.id,
-      title: program.title,
+      titlePortal: program.titlePortal,
       phase: program.phase,
     };
 

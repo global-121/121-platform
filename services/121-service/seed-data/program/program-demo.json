@@ -4,17 +4,14 @@
   "phase": "design",
   "location": "Westeros",
   "ngo": "Yellow Cross",
-  "title": {
+  "titlePortal": {
+    "en": "Cash program Westeros"
+  },
+  "titlePaApp": {
     "en": "Cash program Westeros"
   },
   "description": {
     "en": "This program is aimed to help the commoners in Westeros most affected by the War of the Five Kings."
-  },
-  "descLocation": {
-    "en": "Location such and such."
-  },
-  "descHumanitarianObjective": {
-    "en": "Humanitarian objective of program is such and such."
   },
   "descCashType": {
     "en": "Unconditional multi-purpose"

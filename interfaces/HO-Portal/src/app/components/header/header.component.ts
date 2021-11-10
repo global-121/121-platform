@@ -38,7 +38,7 @@ export class HeaderComponent implements OnInit {
 
   private async loadProgramDetails() {
     this.program = await this.programsService.getProgramById(this.programId);
-    this.programTitle = this.translatableString.get(this.program.title);
+    this.programTitle = this.translatableString.get(this.program?.titlePortal);
   }
 
   private canManageAidWorkers(): boolean {

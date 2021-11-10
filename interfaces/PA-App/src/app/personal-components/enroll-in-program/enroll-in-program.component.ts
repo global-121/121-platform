@@ -226,7 +226,7 @@ export class EnrollInProgramComponent extends PersonalDirective {
       data: {
         currentProgram: {
           id: this.currentProgram.id,
-          title: this.currentProgram.title,
+          title: this.currentProgram.titlePaApp,
           description: this.currentProgram.description,
           programQuestions: this.currentProgram.programQuestions,
         },

@@ -74,7 +74,7 @@ export class SelectProgramComponent extends PersonalDirective {
 
   private translateProgramProperties(programs: Program[]) {
     return programs.map((program: Program) => {
-      program.title = this.translatableString.get(program.title);
+      program.titlePaApp = this.translatableString.get(program.titlePaApp);
       program.description = this.translatableString.get(program.description);
       return program;
     });
@@ -109,7 +109,7 @@ export class SelectProgramComponent extends PersonalDirective {
       data: {
         chosenProgram: {
           id: chosenProgram.id,
-          title: chosenProgram.title,
+          titlePaApp: chosenProgram.titlePaApp,
           description: chosenProgram.description,
         },
       },
