@@ -13,10 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.19.0](https://github.com/global-121/121-platform/compare/v1.18.0...v1.19.0) - 2021-11-09
 
+### Changed
+
+- 2021-11-09: Renamed "HO-Portal" to "121 Portal" or "Portal"
+
 ## [1.18.0](https://github.com/global-121/121-platform/compare/v1.17.0...v1.18.0) - 2021-11-09
 
 ### Added
-- 2021-11-09: Belcash as FSP
+
+- 2021-11-09: BelCash as FSP
 - 2021-11-09: BoB-finance as FSP
 - 2021-11-09: `BELCASH_API_URL`, `BELCASH_LOGIN`, `BELCASH_API_TOKEN`, `BELCASH_SYSTEM` to `services/.env`
 
