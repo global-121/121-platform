@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/web-manifest",
-  "name": "HO-Portal",
-  "short_name": "HO-Portal",
+  "name": "121 Portal",
+  "short_name": "121 Portal",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "browser",
