@@ -9,7 +9,7 @@ import { getRandomInt } from './helpers';
 const programsArray: Program[] = [
   {
     id: 1,
-    title: { en: 'Program Alpha' },
+    titlePortal: { en: 'Program Alpha' },
     description: { en: 'Description of program' },
     location: 'Location',
     startDate: '1970-01-01T01:01:01Z',
