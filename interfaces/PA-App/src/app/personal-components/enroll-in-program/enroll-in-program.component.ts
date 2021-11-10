@@ -112,7 +112,7 @@ export class EnrollInProgramComponent extends PersonalDirective {
 
   private buildDetails(response: Program) {
     const programDetails = [];
-    const details = ['title', 'description', 'contactDetails'];
+    const details = ['titlePaApp', 'description', 'contactDetails'];
     for (const detail of details) {
       // Skip optional, non-existing program-properties
       if (!response[detail]) {
@@ -226,7 +226,7 @@ export class EnrollInProgramComponent extends PersonalDirective {
       data: {
         currentProgram: {
           id: this.currentProgram.id,
-          title: this.currentProgram.titlePaApp,
+          titlePaApp: this.currentProgram.titlePaApp,
           description: this.currentProgram.description,
           programQuestions: this.currentProgram.programQuestions,
         },

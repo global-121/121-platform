@@ -11,7 +11,7 @@ Feature: Navigate home page and main menu
     Given the user views the "home" page
     When the user clicks on a program in the list
     Then a program-specific page opens
-    And the header shows the "title" of the program
+    And the header shows the "portal title" of the program
 
   Scenario: Go back to home-page
     Given a logged-in user
