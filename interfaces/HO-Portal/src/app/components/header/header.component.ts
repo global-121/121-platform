@@ -17,7 +17,7 @@ export class HeaderComponent implements OnInit {
 
   public programId: number;
   private program: Program;
-  public programTitle: string;
+  public programTitlePortal: string;
 
   public showManageAidworkers: boolean;
 
@@ -38,7 +38,9 @@ export class HeaderComponent implements OnInit {
 
   private async loadProgramDetails() {
     this.program = await this.programsService.getProgramById(this.programId);
-    this.programTitle = this.translatableString.get(this.program.title);
+    this.programTitlePortal = this.translatableString.get(
+      this.program?.titlePortal,
+    );
   }
 
   private canManageAidWorkers(): boolean {

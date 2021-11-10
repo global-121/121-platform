@@ -68,7 +68,7 @@ export class ProgramPayoutComponent implements OnInit {
     this.isCompleted.emit(false);
 
     this.program = await this.programsService.getProgramById(this.programId);
-    this.isIntersolve = await this.checkIntersolve(this.program);
+    this.isIntersolve = await this.checkIntersolve();
     this.hasFspWithCsvIntegration = await this.checkFspWithCsvIntegration();
 
     this.canMakePayment = this.checkCanMakePayment();
@@ -248,8 +248,9 @@ export class ProgramPayoutComponent implements OnInit {
     }
   }
 
-  private async checkIntersolve(program: Program): Promise<boolean> {
-    for (const fsp of program.financialServiceProviders) {
+  private async checkIntersolve(): Promise<boolean> {
+    this.program = await this.programsService.getProgramById(this.programId);
+    for (const fsp of this.program.financialServiceProviders) {
       if (fsp.fsp.toLowerCase().includes('intersolve')) {
         return true;
       }

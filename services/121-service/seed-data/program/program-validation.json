@@ -4,16 +4,13 @@
   "phase": "design",
   "location": "Location A",
   "ngo": "NGO A",
-  "title": {
+  "titlePortal": {
+    "en": "Test Program - with validation"
+  },
+  "titlePaApp": {
     "en": "Test Program - with validation"
   },
   "description": {
-    "en": ""
-  },
-  "descLocation": {
-    "en": ""
-  },
-  "descHumanitarianObjective": {
     "en": ""
   },
   "descCashType": {

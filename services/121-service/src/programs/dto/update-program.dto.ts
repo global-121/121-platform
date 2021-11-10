@@ -27,7 +27,11 @@ export class UpdateProgramDto {
 
   @ApiModelProperty({ example: { en: 'title' } })
   @IsOptional()
-  public readonly title: JSON;
+  public readonly titlePortal: JSON;
+
+  @ApiModelProperty({ example: { en: 'title' } })
+  @IsOptional()
+  public readonly titlePaApp: JSON;
 
   @ApiModelProperty()
   @IsOptional()
@@ -133,14 +137,6 @@ export class UpdateProgramDto {
   @ApiModelProperty({ example: { en: 'description' } })
   @IsOptional()
   public readonly description: JSON;
-
-  @ApiModelProperty({ example: { en: 'descLocation' } })
-  @IsOptional()
-  public readonly descLocation: JSON;
-
-  @ApiModelProperty({ example: { en: 'descHumanitarianObjective' } })
-  @IsOptional()
-  public readonly descHumanitarianObjective: JSON;
 
   @ApiModelProperty({ example: { en: 'descCashType' } })
   @IsOptional()

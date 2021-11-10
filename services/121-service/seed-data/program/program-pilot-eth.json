@@ -1,19 +1,16 @@
 {
   "published": false,
-  "validation": true,
+  "validation": false,
   "phase": "design",
   "location": "Ethiopia",
   "ngo": "ZOA",
-  "title": {
+  "titlePortal": {
+    "en": "121 Digital Cash Aid Program"
+  },
+  "titlePaApp": {
     "en": "121 Digital Cash Aid Program"
   },
   "description": {
-    "en": ""
-  },
-  "descLocation": {
-    "en": ""
-  },
-  "descHumanitarianObjective": {
     "en": ""
   },
   "descCashType": {

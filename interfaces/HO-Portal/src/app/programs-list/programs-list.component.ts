@@ -23,7 +23,7 @@ export class ProgramsListComponent implements OnInit {
 
   private translateProperties(programs: Program[]): Program[] {
     return programs.map((program: Program) => {
-      program.title = this.translatableString.get(program.title);
+      program.titlePortal = this.translatableString.get(program.titlePortal);
       program.description = this.translatableString.get(program.description);
 
       return program;

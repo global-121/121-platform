@@ -2,7 +2,7 @@ import { ProgramEntity } from './program.entity';
 
 export interface SimpleProgramRO {
   id: number;
-  title: JSON;
+  titlePortal: JSON;
   phase: string;
 }
 

@@ -23,7 +23,11 @@ export class CreateProgramDto {
 
   @ApiModelProperty({ example: { en: 'title' } })
   @IsNotEmpty()
-  public readonly title: JSON;
+  public readonly titlePortal: JSON;
+
+  @ApiModelProperty({ example: { en: 'title' } })
+  @IsNotEmpty()
+  public readonly titlePaApp: JSON;
 
   @ApiModelProperty()
   @IsNotEmpty()
@@ -187,12 +191,6 @@ export class CreateProgramDto {
 
   @ApiModelProperty({ example: { en: 'description' } })
   public readonly description: JSON;
-
-  @ApiModelProperty({ example: { en: 'descLocation' } })
-  public readonly descLocation: JSON;
-
-  @ApiModelProperty({ example: { en: 'descHumanitarianObjective' } })
-  public readonly descHumanitarianObjective: JSON;
 
   @ApiModelProperty({ example: { en: 'descCashType' } })
   public readonly descCashType: JSON;

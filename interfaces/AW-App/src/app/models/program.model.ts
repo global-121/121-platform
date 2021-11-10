@@ -2,7 +2,7 @@ import { TranslatableString } from './translatable-string.model';
 
 export class Program {
   id: number;
-  title: string | TranslatableString;
+  titlePortal: string | TranslatableString;
   description: string | TranslatableString;
   created: string;
   updated: string;

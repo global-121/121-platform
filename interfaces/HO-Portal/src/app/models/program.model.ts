@@ -6,11 +6,10 @@ export class Program {
   contactDetails?: string | TranslatableString;
   startDate: string;
   endDate?: string;
-  title: string | TranslatableString;
+  titlePortal: string | TranslatableString;
+  titlePaApp: string | TranslatableString;
   description: string | TranslatableString;
-  descHumanitarianObjective?: string | TranslatableString;
   location: string | TranslatableString;
-  descLocation?: string | TranslatableString;
   descCashType?: string | TranslatableString;
   currency: string;
   fixedTransferValue: number;

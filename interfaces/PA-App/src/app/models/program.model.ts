@@ -4,7 +4,7 @@ import { TranslatableString } from './translatable-string.model';
 
 export class Program {
   id: number;
-  title: string | TranslatableString;
+  titlePaApp: string | TranslatableString;
   description: string | TranslatableString;
   contactDetails?: string | TranslatableString;
   created: string;
