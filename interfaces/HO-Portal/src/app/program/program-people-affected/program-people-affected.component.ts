@@ -970,6 +970,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return row.checkboxVisible || false;
   }
 
+  public enableSinglePayment(row: PersonRow, column) {
+    const included = row.status === PaStatus.included;
+    const noPaymentDone = !row[column.prop];
+    const noFuturePayment = column.paymentIndex <= this.lastPaymentId;
+    const onlyLast3Payments = column.paymentIndex > this.lastPaymentId - 3;
+
+    return included && noPaymentDone && noFuturePayment && onlyLast3Payments;
+  }
+
   public onSelect(newSelected: PersonRow[]) {
     // This extra hack for 'de-select all' to work properly
     if (
