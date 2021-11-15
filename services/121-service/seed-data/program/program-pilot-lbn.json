@@ -41,16 +41,249 @@
   "phoneNumberPlaceholder": "+251 000 000 000",
   "programQuestions": [
     {
-      "name": "exampleQuestion",
+      "name": "name",
       "label": {
-        "en": "Example question:"
+        "en": "What is your name?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
+    },
+    {
+      "name": "age",
+      "label": {
+        "en": "How old are you?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {}
+    },
+    {
+      "name": "gender",
+      "label": {
+        "en": "What is your gender?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male"
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {}
+    },
+    {
+      "name": "gender",
+      "label": {
+        "en": "What is your gender?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male"
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {}
+    },
+    {
+      "name": "nationality",
+      "label": {
+        "en": "What is your nationality?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "lebanese",
+          "label": {
+            "en": "Lebanese"
+          }
+        },
+        {
+          "option": "syrian",
+          "label": {
+            "en": "Syrian"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {}
+    },
+    {
+      "name": "name",
+      "label": {
+        "en": "What is your social registry number?"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {}
+    },
+    {
+      "name": "family-status",
+      "label": {
+        "en": "What is your family status?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "married",
+          "label": {
+            "en": "Married"
+          }
+        },
+        {
+          "option": "single-no-children",
+          "label": {
+            "en": "Divorced/Single/Widow (no Children)"
+          }
+        },
+        {
+          "option": "single-parent",
+          "label": {
+            "en": "Single parent"
+          }
+        },
+        {
+          "option": "child-headed",
+          "label": {
+            "en": "Child headed house hold"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "married": 0,
+        "single-no-children": 1,
+        "single-parent": 3,
+        "child-headed": 6
+      }
+    },
+    {
+      "name": "household-composition",
+      "label": {
+        "en": "Who is living in your household?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "married",
+          "label": {
+            "en": "Elderly men (60+ years old)"
+          }
+        },
+        {
+          "option": "single-no-children",
+          "label": {
+            "en": "Elderly women (60+ years old)"
+          }
+        },
+        {
+          "option": "single-parent",
+          "label": {
+            "en": "Adult men (18-59 years old)"
+          }
+        },
+        {
+          "option": "child-headed",
+          "label": {
+            "en": "Adult women (18-59 years old)"
+          }
+        },
+        {
+          "option": "child-headed",
+          "label": {
+            "en": "Boys (-18 years old)"
+          }
+        },
+        {
+          "option": "child-headed",
+          "label": {
+            "en": "Girls (-18 years old)"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "married": 0,
+        "single-no-children": 1,
+        "single-parent": 3,
+        "child-headed": 6
+      }
     }
   ]
 }
