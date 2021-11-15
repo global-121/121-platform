@@ -3,7 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { PopupPayoutDetails } from 'src/app/models/payment.model';
+import {
+  PopupPayoutDetails,
+  SinglePayoutDetails,
+} from 'src/app/models/payment.model';
 import {
   IntersolvePayoutStatus,
   TransactionCustomData,
@@ -21,6 +24,7 @@ export class PaymentStatusPopupComponent implements OnInit {
   public titleMessageIcon: string;
   public titleMoneyIcon: string;
   public titleError: string;
+  public titleSinglePayment: string;
 
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, HH:mm';
@@ -33,6 +37,11 @@ export class PaymentStatusPopupComponent implements OnInit {
   public voucherButtons: boolean;
   public imageUrl: string;
   public sanitizedIimageUrl: string;
+
+  public singlePaymentPayout: string;
+  public singlePayoutDetails: SinglePayoutDetails;
+  public totalAmountMessage: string;
+  public totalIncludedMessage: string;
 
   public isInProgress = false;
 
@@ -47,6 +56,12 @@ export class PaymentStatusPopupComponent implements OnInit {
   }
 
   async ngOnInit() {
+    if (this.singlePayoutDetails) {
+      this.singlePaymentPayout = this.translate.instant(
+        'page.program.program-people-affected.payment-status-popup.single-payment.start-payout',
+        { paNr: this.singlePayoutDetails.paNr },
+      );
+    }
     if (this.payoutDetails) {
       this.titleMessageIcon = await this.getMessageTitle();
       this.titleMoneyIcon = await this.getMoneyTitle();
@@ -125,14 +140,58 @@ export class PaymentStatusPopupComponent implements OnInit {
     }
   }
 
+  public updateTotalAmountMessage(): void {
+    const cost = this.singlePayoutDetails.amount;
+    const symbol = `${this.singlePayoutDetails.currency} `;
+    const costFormatted = formatCurrency(
+      cost,
+      environment.defaultLocale,
+      symbol,
+      this.singlePayoutDetails.currency,
+    );
+    const totalCost = cost * this.singlePayoutDetails.multiplier;
+    const totalCostFormatted = formatCurrency(
+      totalCost,
+      environment.defaultLocale,
+      symbol,
+      this.singlePayoutDetails.currency,
+    );
+
+    this.totalIncludedMessage = this.translate.instant(
+      'page.program.program-payout.total-included',
+      { totalIncluded: 1 },
+    );
+
+    this.totalAmountMessage = this.translate.instant(
+      'page.program.program-people-affected.payment-status-popup.single-payment.total-amount',
+      {
+        cost: costFormatted,
+        multiplier: this.singlePayoutDetails.multiplier,
+        totalCost: totalCostFormatted,
+      },
+    );
+  }
+
   public async retryPayment() {
+    this.doPayment(this.payoutDetails);
+  }
+
+  public async singlePayment() {
+    this.doPayment(this.singlePayoutDetails);
+  }
+
+  public resetProgress(): void {
+    this.isInProgress = false;
+  }
+
+  public async doPayment(payoutDetails) {
     this.isInProgress = true;
     await this.programsService
       .submitPayout(
-        this.payoutDetails.programId,
-        this.payoutDetails.payment,
-        this.payoutDetails.amount,
-        this.payoutDetails.referenceId,
+        payoutDetails.programId,
+        payoutDetails.payment,
+        payoutDetails.amount,
+        payoutDetails.referenceId,
       )
       .then(
         (response) => {

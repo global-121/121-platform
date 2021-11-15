@@ -269,6 +269,27 @@
           </ion-icon>
         </button>
       </ng-container>
+      <ng-container
+        *ngIf="enableSinglePayment(row,column)"
+      >
+        <button
+          type="button"
+          (click)="statusPopup(row, column, value)"
+          [ngClass]="{
+            'is-error': hasError(row, column.paymentIndex),
+            'ion-no-padding popup-button': true
+          }"
+          [attr.title]="'page.program.program-people-affected.transaction.do-single-payment'|translate"
+          [attr.aria-label]="'page.program.program-people-affected.transaction.do-single-payment'|translate"
+        >
+          <ion-icon
+            name="add-circle-outline"
+            size="small"
+            aria-hidden="true"
+          >
+          </ion-icon>
+        </button>
+      </ng-container>
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>

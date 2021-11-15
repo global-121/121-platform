@@ -6,7 +6,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
-import { PopupPayoutDetails } from 'src/app/models/payment.model';
+import {
+  PopupPayoutDetails,
+  SinglePayoutDetails,
+} from 'src/app/models/payment.model';
 import { PaStatus, Person, PersonRow } from 'src/app/models/person.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
@@ -843,8 +846,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public async statusPopup(row: PersonRow, column, value) {
+    const isSinglePayment = this.enableSinglePayment(row, column);
     const hasError = this.hasError(row, column.paymentIndex);
     const hasWaiting = this.hasWaiting(row, column.paymentIndex);
+
     const content = hasWaiting
       ? row[column.prop + '-error']
       : hasError
@@ -856,6 +861,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         '</strong><br><br>' +
         this.translate.instant(
           'page.program.program-people-affected.payment-status-popup.fix-error',
+        )
+      : isSinglePayment
+      ? this.translate.instant(
+          'page.program.program-people-affected.payment-status-popup.single-payment.intro',
         )
       : null;
     const contentNotes = hasWaiting
@@ -876,6 +885,19 @@ export class ProgramPeopleAffectedComponent implements OnInit {
             currency: this.program.currency,
           }
         : null;
+    const singlePayoutDetails: SinglePayoutDetails = isSinglePayment
+      ? {
+          paNr: row.pa,
+          amount: this.program.fixedTransferValue,
+          currency: this.program.currency,
+          multiplier: row.paymentAmountMultiplier
+            ? Number(row.paymentAmountMultiplier.substr(0, 1))
+            : 1,
+          programId: this.programId,
+          payment: column.paymentIndex,
+          referenceId: row.referenceId,
+        }
+      : null;
     let voucherUrl = null;
     let voucherButtons = null;
 
@@ -891,6 +913,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     const titleError = hasError ? `${column.name}: ${value.text}` : null;
     const titleMessageIcon = value.hasMessageIcon ? `${column.name}: ` : null;
     const titleMoneyIcon = value.hasMoneyIconTable ? `${column.name}: ` : null;
+    const titleSinglePayment = isSinglePayment ? column.name : null;
 
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PaymentStatusPopupComponent,
@@ -898,10 +921,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         titleMessageIcon,
         titleMoneyIcon,
         titleError,
+        titleSinglePayment,
         content,
         contentNotes,
         showRetryButton,
         payoutDetails,
+        singlePayoutDetails,
         voucherButtons,
         imageUrl: voucherUrl,
       },
@@ -968,6 +993,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public isRowSelectable(row: PersonRow): boolean {
     return row.checkboxVisible || false;
+  }
+
+  public enableSinglePayment(row: PersonRow, column) {
+    const included = row.status === PaStatus.included;
+    const noPaymentDone = !row[column.prop];
+    const noFuturePayment = column.paymentIndex <= this.lastPaymentId;
+    const onlyLast3Payments = column.paymentIndex > this.lastPaymentId - 3;
+
+    return included && noPaymentDone && noFuturePayment && onlyLast3Payments;
   }
 
   public onSelect(newSelected: PersonRow[]) {

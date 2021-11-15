@@ -293,7 +293,8 @@
           "failed": "Failed",
           "waiting": "Waiting",
           "waiting-message": "Still waiting for status update on this transaction. Refresh the page for the latest status.",
-          "show-status": "Show status"
+          "show-status": "Show status",
+          "do-single-payment": "Do single payment"
         },
         "edit-person-affected-popup": {
           "edit-icon-title": "Edit information of Person Affected",
@@ -353,7 +354,12 @@
           "get-balance": "Get current balance of voucher",
           "current-balance": "Current balance: {{currentBalance}}<br><br>at: {{timestamp}}",
           "print-voucher": "Print voucher",
-          "download-voucher": "Download voucher"
+          "download-voucher": "Download voucher",
+          "single-payment": {
+            "intro": "Do payment for 1 PA only",
+            "start-payout": "Start payout now for {{paNr}}",
+            "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
+          }
         }
       },
       "program-modal": {

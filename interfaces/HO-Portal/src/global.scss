@@ -87,3 +87,8 @@ ion-button {
 .full-height {
   height: 100%;
 }
+
+// Hide tooltip of ion-icon title
+ion-icon {
+  pointer-events: none;
+}
