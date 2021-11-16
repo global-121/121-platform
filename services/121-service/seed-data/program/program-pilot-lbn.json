@@ -49,11 +49,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -65,11 +61,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -94,11 +86,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -129,11 +117,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -145,11 +129,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -161,11 +141,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -202,11 +178,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "married": 0,
         "single-no-children": 1,
@@ -223,11 +195,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "multiplier": 3
       }
@@ -241,11 +209,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "multiplier": 3
       }
@@ -259,11 +223,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "multiplier": 1
       }
@@ -277,11 +237,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "multiplier": 1
       }
@@ -295,11 +251,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "multiplier": 2
       }
@@ -313,11 +265,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "multiplier": 2
       }
@@ -344,11 +292,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -376,11 +320,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -408,11 +348,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -440,11 +376,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -472,11 +404,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -504,11 +432,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 4,
         "no": 0
@@ -536,11 +460,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -568,11 +488,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 4,
         "no": 0
@@ -600,11 +516,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 2,
         "no": 0
@@ -644,11 +556,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "no": 0,
         "yes-some": 2,
@@ -690,11 +598,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "no": 0,
         "yes-some": 2,
@@ -736,11 +640,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "no": 0,
         "yes-some": 2,
@@ -782,11 +682,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "no": 0,
         "yes-some": 2,
@@ -828,11 +724,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "no": 0,
         "yes-some": 2,
@@ -874,11 +766,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "no": 0,
         "yes-some": 2,
@@ -914,11 +802,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "below-500000": 0,
         "500000-1000000": 1,
@@ -959,11 +843,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "below-1000000": 2,
         "1000000-3000000": 4,
@@ -1005,11 +885,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "below-1000000": 2,
         "1000000-3000000": 4,
@@ -1039,11 +915,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1071,11 +943,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1103,11 +971,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1135,11 +999,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1167,11 +1027,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1199,11 +1055,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1231,11 +1083,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1263,11 +1111,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "yes": 1,
         "no": 0
@@ -1313,11 +1157,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "never": 0,
         "yes-1-2": 1,
@@ -1366,11 +1206,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "never": 0,
         "yes-1-2": 1,
@@ -1419,11 +1255,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "never": 0,
         "yes-1-2": 1,
@@ -1472,11 +1304,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "never": 0,
         "yes-1-2": 1,
@@ -1525,11 +1353,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "never": 0,
         "yes-1-2": 1,
@@ -1572,11 +1396,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "below-1000000": 4,
         "1000000-3000000": 3,
@@ -1642,11 +1462,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "salary-regular": 1,
         "salary-occasional": 4,
@@ -1698,11 +1514,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "below-1000000": 1,
         "1000000-3000000": 2,
@@ -1757,11 +1569,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "no": 4,
         "yes-nfi": 2,
@@ -1794,11 +1602,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -1810,11 +1614,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     }
   ]
