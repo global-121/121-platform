@@ -102,35 +102,6 @@
       "scoring": {}
     },
     {
-      "name": "gender",
-      "label": {
-        "en": "What is your gender?"
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "male",
-          "label": {
-            "en": "Male"
-          }
-        },
-        {
-          "option": "female",
-          "label": {
-            "en": "Female"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
-      "scoring": {}
-    },
-    {
       "name": "nationality",
       "label": {
         "en": "What is your nationality?"
@@ -166,7 +137,23 @@
       "scoring": {}
     },
     {
-      "name": "name",
+      "name": "address",
+      "label": {
+        "en": "What is your addres? (City, Street, Building, Floor)"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {}
+    },
+    {
+      "name": "social-registry",
       "label": {
         "en": "What is your social registry number?"
       },
@@ -228,47 +215,131 @@
       }
     },
     {
-      "name": "household-composition",
+      "name": "men-60+",
       "label": {
-        "en": "Who is living in your household?"
+        "en": "How many elderly men (60+ years old) are in your household?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "multiplier": 3
+      }
+    },
+    {
+      "name": "women-60+",
+      "label": {
+        "en": "How many elderly woman (60+ years old) are in your household?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "multiplier": 3
+      }
+    },
+    {
+      "name": "men-18-15",
+      "label": {
+        "en": "How many adult men (18-59 years old) are in your household?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "multiplier": 1
+      }
+    },
+    {
+      "name": "women-18-59",
+      "label": {
+        "en": "How many adult women (18-59 years old) are in your household?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "multiplier": 1
+      }
+    },
+    {
+      "name": "men-18-",
+      "label": {
+        "en": "How many boys (-18 years old) are in your household?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "multiplier": 2
+      }
+    },
+    {
+      "name": "woman-18-",
+      "label": {
+        "en": "How many girls (-18 years old) are in your household?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "multiplier": 2
+      }
+    },
+    {
+      "name": "woman-pregnant",
+      "label": {
+        "en": "Are there any pregnant or lactating women in your household?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
       "options": [
         {
-          "option": "married",
+          "option": "yes",
           "label": {
-            "en": "Elderly men (60+ years old)"
+            "en": "Yes"
           }
         },
         {
-          "option": "single-no-children",
+          "option": "no",
           "label": {
-            "en": "Elderly women (60+ years old)"
-          }
-        },
-        {
-          "option": "single-parent",
-          "label": {
-            "en": "Adult men (18-59 years old)"
-          }
-        },
-        {
-          "option": "child-headed",
-          "label": {
-            "en": "Adult women (18-59 years old)"
-          }
-        },
-        {
-          "option": "child-headed",
-          "label": {
-            "en": "Boys (-18 years old)"
-          }
-        },
-        {
-          "option": "child-headed",
-          "label": {
-            "en": "Girls (-18 years old)"
+            "en": "No"
           }
         }
       ],
@@ -279,11 +350,1466 @@
         "selected-for-validation"
       ],
       "scoring": {
-        "married": 0,
-        "single-no-children": 1,
-        "single-parent": 3,
-        "child-headed": 6
+        "yes": 2,
+        "no": 0
       }
+    },
+    {
+      "name": "children-3-",
+      "label": {
+        "en": "Are there any children younger than 3 years old in your household?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 2,
+        "no": 0
+      }
+    },
+    {
+      "name": "beirut-blast-affected",
+      "label": {
+        "en": "Were you affected by the Beirut blast?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 2,
+        "no": 0
+      }
+    },
+    {
+      "name": "beirut-blast-move",
+      "label": {
+        "en": "Did the blast force you to move?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 2,
+        "no": 0
+      }
+    },
+    {
+      "name": "foster-family",
+      "label": {
+        "en": "Are you living with a foster family?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 2,
+        "no": 0
+      }
+    },
+    {
+      "name": "chronic-disease-child",
+      "label": {
+        "en": "Does any child (younger than 18) from you household suffer from a chronic disease or serious medical conditions other than disability?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 4,
+        "no": 0
+      }
+    },
+    {
+      "name": "chronic-disease-adult",
+      "label": {
+        "en": "Does any adult (older than 18) from you household suffer from a chronic disease or serious medical conditions other than disability?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 2,
+        "no": 0
+      }
+    },
+    {
+      "name": "hospital-child",
+      "label": {
+        "en": "Are there any children (younger than 18) in the hospital?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 4,
+        "no": 0
+      }
+    },
+    {
+      "name": "hospital-adult",
+      "label": {
+        "en": "Are there any adults (older than 18) in the hospital?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 2,
+        "no": 0
+      }
+    },
+    {
+      "name": "disability-adult-seeing",
+      "label": {
+        "en": "Do you, or does any other household member have difficulty with seeing, even when wearing glasses?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        },
+        {
+          "option": "yes-some",
+          "label": {
+            "en": "Yes/Some difficulty"
+          }
+        },
+        {
+          "option": "yes-lot",
+          "label": {
+            "en": "Yes/A lot of difficulty"
+          }
+        },
+        {
+          "option": "yes-completely",
+          "label": {
+            "en": "Yes/A lot of difficulty"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "no": 0,
+        "yes-some": 2,
+        "yes-lot": 4,
+        "yes-completely": 6
+      }
+    },
+    {
+      "name": "disability-adult-hearing",
+      "label": {
+        "en": "Do you, or does any other household member have difficulty with hearing, even when using a hearing aid?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        },
+        {
+          "option": "yes-some",
+          "label": {
+            "en": "Yes/Some difficulty"
+          }
+        },
+        {
+          "option": "yes-lot",
+          "label": {
+            "en": "Yes/A lot of difficulty"
+          }
+        },
+        {
+          "option": "yes-completely",
+          "label": {
+            "en": "Yes/A lot of difficulty"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "no": 0,
+        "yes-some": 2,
+        "yes-lot": 4,
+        "yes-completely": 6
+      }
+    },
+    {
+      "name": "disability-adult-walking",
+      "label": {
+        "en": "Do you, or does any other household member have difficulty with walking or climbing steps?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        },
+        {
+          "option": "yes-some",
+          "label": {
+            "en": "Yes/Some difficulty"
+          }
+        },
+        {
+          "option": "yes-lot",
+          "label": {
+            "en": "Yes/A lot of difficulty"
+          }
+        },
+        {
+          "option": "yes-completely",
+          "label": {
+            "en": "Yes/A lot of difficulty"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "no": 0,
+        "yes-some": 2,
+        "yes-lot": 4,
+        "yes-completely": 6
+      }
+    },
+    {
+      "name": "disability-adult-remembering",
+      "label": {
+        "en": "Do you, or does any other household member have difficulty with remembering or concentrating?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        },
+        {
+          "option": "yes-some",
+          "label": {
+            "en": "Yes/Some difficulty"
+          }
+        },
+        {
+          "option": "yes-lot",
+          "label": {
+            "en": "Yes/A lot of difficulty"
+          }
+        },
+        {
+          "option": "yes-completely",
+          "label": {
+            "en": "Yes/A lot of difficulty"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "no": 0,
+        "yes-some": 2,
+        "yes-lot": 4,
+        "yes-completely": 6
+      }
+    },
+    {
+      "name": "disability-adult-self-care",
+      "label": {
+        "en": "Do you, or does any other household member have difficulty with self-care such as washing or dressing?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        },
+        {
+          "option": "yes-some",
+          "label": {
+            "en": "Yes/Some difficulty"
+          }
+        },
+        {
+          "option": "yes-lot",
+          "label": {
+            "en": "Yes/A lot of difficulty"
+          }
+        },
+        {
+          "option": "yes-completely",
+          "label": {
+            "en": "Yes/A lot of difficulty"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "no": 0,
+        "yes-some": 2,
+        "yes-lot": 4,
+        "yes-completely": 6
+      }
+    },
+    {
+      "name": "disability-adult-self-communicating",
+      "label": {
+        "en": "Do you, or does any other household member have difficulty with communicating, when using your (customary) language?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        },
+        {
+          "option": "yes-some",
+          "label": {
+            "en": "Yes/Some difficulty"
+          }
+        },
+        {
+          "option": "yes-lot",
+          "label": {
+            "en": "Yes/A lot of difficulty"
+          }
+        },
+        {
+          "option": "yes-completely",
+          "label": {
+            "en": "Yes/A lot of difficulty"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "no": 0,
+        "yes-some": 2,
+        "yes-lot": 4,
+        "yes-completely": 6
+      }
+    },
+    {
+      "name": "expenses-health",
+      "label": {
+        "en": "What are your monthly expenses for health?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "below-500000",
+          "label": {
+            "en": "Below 500.000 LBP"
+          }
+        },
+        {
+          "option": "500000-1000000",
+          "label": {
+            "en": "Between 500.000 and 1.000.000 LBP"
+          }
+        },
+        {
+          "option": "above-1000000",
+          "label": {
+            "en": "Above 1.000.000 LBP"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "below-500000": 0,
+        "500000-1000000": 1,
+        "above-1000000": 2
+      }
+    },
+    {
+      "name": "expenses-shelter",
+      "label": {
+        "en": "What are your monthly expenses for shelter?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "below-1000000",
+          "label": {
+            "en": "Below 1.000.000 LBP"
+          }
+        },
+        {
+          "option": "1000000-3000000",
+          "label": {
+            "en": "Between 1.000.000 and 3.000.000 LBP"
+          }
+        },
+        {
+          "option": "3000000-5000000",
+          "label": {
+            "en": "Between 3.000.000 and 5.000.000 LBP"
+          }
+        },
+        {
+          "option": "above-5000000",
+          "label": {
+            "en": "Above 5.000.000 LBP"
+          }
+        }
+      ],
+      "scoring": {
+        "below-1000000": 2,
+        "1000000-3000000": 4,
+        "3000000-5000000": 6,
+        "above-5000000": 8
+      }
+    },
+    {
+      "name": "expenses-food",
+      "label": {
+        "en": "What are your monthly expenses for food?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "below-1000000",
+          "label": {
+            "en": "Below 1.000.000 LBP"
+          }
+        },
+        {
+          "option": "1000000-3000000",
+          "label": {
+            "en": "Between 1.000.000 and 3.000.000 LBP"
+          }
+        },
+        {
+          "option": "3000000-5000000",
+          "label": {
+            "en": "Between 3.000.000 and 5.000.000 LBP"
+          }
+        },
+        {
+          "option": "above-5000000",
+          "label": {
+            "en": "Above 5.000.000 LBP"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "below-1000000": 2,
+        "1000000-3000000": 4,
+        "3000000-5000000": 6,
+        "above-5000000": 8
+      }
+    },
+    {
+      "name": "food-sold-assests",
+      "label": {
+        "en": "During the last 30 days, did anyone in your household sell household assets/goods (radio, furniture, refrigerator, television, etc..), due to the lack of food or of money to buy food?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 1,
+        "no": 0
+      }
+    },
+    {
+      "name": "food-spent-saving",
+      "label": {
+        "en": "During the last 30 days, did anyone in your household spent savings (e.g., sale of jewelry, cash savings), due to the lack of food or of money to buy food?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 1,
+        "no": 0
+      }
+    },
+    {
+      "name": "food-borrowed-money",
+      "label": {
+        "en": "During the last 30 days, did anyone in your household borrow money/food from formal lender/bank, due to the lack of food or of money to buy food?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 1,
+        "no": 0
+      }
+    },
+    {
+      "name": "food-recuded-expenses",
+      "label": {
+        "en": "During the last 30 days, did anyone in your household reduce non-food expenses on health (including drugs) and education, due to the lack of food or of money to buy food?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 1,
+        "no": 0
+      }
+    },
+    {
+      "name": "food-withdrew-school",
+      "label": {
+        "en": "During the last 30 days, did anyone in your household withdrew children from school, due to the lack of food or of money to buy food?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 1,
+        "no": 0
+      }
+    },
+    {
+      "name": "food-child-labor",
+      "label": {
+        "en": "During the last 30 days, did any child in your household get involved in labor, due to the lack of food or of money to buy food?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 1,
+        "no": 0
+      }
+    },
+    {
+      "name": "food-household-migrated",
+      "label": {
+        "en": "During the last 30 days, did your entire household migrate, due to the lack of food or of money to buy food?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 1,
+        "no": 0
+      }
+    },
+    {
+      "name": "food-sold-real-estate",
+      "label": {
+        "en": "During the last 30 days, did anyone of your household sell a house or land, due to the lack of food or of money to buy food?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "yes": 1,
+        "no": 0
+      }
+    },
+    {
+      "name": "7-days-eat-less",
+      "label": {
+        "en": "During the last 7 days, how many times did you, as a household find yourself eating less preferred/expensive foods?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "never",
+          "label": {
+            "en": "Never"
+          }
+        },
+        {
+          "option": "yes-1-2",
+          "label": {
+            "en": "Yes - Between 1-2"
+          }
+        },
+        {
+          "option": "yes-3-4",
+          "label": {
+            "en": "Yes - Between 3-4"
+          }
+        },
+        {
+          "option": "yes-5-6",
+          "label": {
+            "en": "Yes - Between 5-7"
+          }
+        },
+        {
+          "option": "yes-7",
+          "label": {
+            "en": "Yes - 7 Days"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "never": 0,
+        "yes-1-2": 1,
+        "yes-3-4": 2,
+        "yes-5-6": 3,
+        "yes-7": 4
+      }
+    },
+    {
+      "name": "7-days-borrowed-food",
+      "label": {
+        "en": "During the last 7 days, how many times did you, as a household find yourself borrowing food or relying on help from friends and relatives.?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "never",
+          "label": {
+            "en": "Never"
+          }
+        },
+        {
+          "option": "yes-1-2",
+          "label": {
+            "en": "Yes - Between 1-2"
+          }
+        },
+        {
+          "option": "yes-3-4",
+          "label": {
+            "en": "Yes - Between 3-4"
+          }
+        },
+        {
+          "option": "yes-5-6",
+          "label": {
+            "en": "Yes - Between 5-7"
+          }
+        },
+        {
+          "option": "yes-7",
+          "label": {
+            "en": "Yes - 7 Days"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "never": 0,
+        "yes-1-2": 1,
+        "yes-3-4": 2,
+        "yes-5-6": 3,
+        "yes-7": 4
+      }
+    },
+    {
+      "name": "7-days-reduce-portions",
+      "label": {
+        "en": "During the last 7 days, how many times did you, as a household find yourself limiting portion size at mealtime?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "never",
+          "label": {
+            "en": "Never"
+          }
+        },
+        {
+          "option": "yes-1-2",
+          "label": {
+            "en": "Yes - Between 1-2"
+          }
+        },
+        {
+          "option": "yes-3-4",
+          "label": {
+            "en": "Yes - Between 3-4"
+          }
+        },
+        {
+          "option": "yes-5-6",
+          "label": {
+            "en": "Yes - Between 5-7"
+          }
+        },
+        {
+          "option": "yes-7",
+          "label": {
+            "en": "Yes - 7 Days"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "never": 0,
+        "yes-1-2": 1,
+        "yes-3-4": 2,
+        "yes-5-6": 3,
+        "yes-7": 4
+      }
+    },
+    {
+      "name": "7-days-reduce-portions-adults",
+      "label": {
+        "en": "During the last 7 days, how many times did you, as a household find yourself limiting adult intake in order for small children to eat?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "never",
+          "label": {
+            "en": "Never"
+          }
+        },
+        {
+          "option": "yes-1-2",
+          "label": {
+            "en": "Yes - Between 1-2"
+          }
+        },
+        {
+          "option": "yes-3-4",
+          "label": {
+            "en": "Yes - Between 3-4"
+          }
+        },
+        {
+          "option": "yes-5-6",
+          "label": {
+            "en": "Yes - Between 5-7"
+          }
+        },
+        {
+          "option": "yes-7",
+          "label": {
+            "en": "Yes - 7 Days"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "never": 0,
+        "yes-1-2": 1,
+        "yes-3-4": 2,
+        "yes-5-6": 3,
+        "yes-7": 4
+      }
+    },
+    {
+      "name": "7-days-reduce-nr-meals",
+      "label": {
+        "en": "During the last 7 days, how many times did you, as a household find yourself reducing the number of meals per day?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "never",
+          "label": {
+            "en": "Never"
+          }
+        },
+        {
+          "option": "yes-1-2",
+          "label": {
+            "en": "Yes - Between 1-2"
+          }
+        },
+        {
+          "option": "yes-3-4",
+          "label": {
+            "en": "Yes - Between 3-4"
+          }
+        },
+        {
+          "option": "yes-5-6",
+          "label": {
+            "en": "Yes - Between 5-7"
+          }
+        },
+        {
+          "option": "yes-7",
+          "label": {
+            "en": "Yes - 7 Days"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "never": 0,
+        "yes-1-2": 1,
+        "yes-3-4": 2,
+        "yes-5-6": 3,
+        "yes-7": 4
+      }
+    },
+    {
+      "name": "income",
+      "label": {
+        "en": "What is your income?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "below-1000000",
+          "label": {
+            "en": "Below 1.000.000 LBP"
+          }
+        },
+        {
+          "option": "1000000-3000000",
+          "label": {
+            "en": "Between 1.000.000 and 3.000.000 LBP"
+          }
+        },
+        {
+          "option": "3000000-5000000",
+          "label": {
+            "en": "Between 3.000.000 and 5.000.000 LBP"
+          }
+        },
+        {
+          "option": "above-5000000",
+          "label": {
+            "en": "Above 5.000.000 LBP"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "below-1000000": 4,
+        "1000000-3000000": 3,
+        "3000000-5000000": 2,
+        "above-5000000": 1
+      }
+    },
+    {
+      "name": "income-source",
+      "label": {
+        "en": "What is your main source of income?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "salary-regular",
+          "label": {
+            "en": "Salary for regular work"
+          }
+        },
+        {
+          "option": "salary-occasional",
+          "label": {
+            "en": "Salary for occasional work"
+          }
+        },
+        {
+          "option": "savings",
+          "label": {
+            "en": "Savings"
+          }
+        },
+        {
+          "option": "debts",
+          "label": {
+            "en": "Debts"
+          }
+        },
+        {
+          "option": "gifts",
+          "label": {
+            "en": "Gifts"
+          }
+        },
+        {
+          "option": "remittances",
+          "label": {
+            "en": "Remittances"
+          }
+        },
+        {
+          "option": "pension",
+          "label": {
+            "en": "Pension"
+          }
+        },
+        {
+          "option": "humanitarian-assistance",
+          "label": {
+            "en": "Humanitarian assistance"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "salary-regular": 1,
+        "salary-occasional": 4,
+        "savings": 2,
+        "debts": 5,
+        "gifts": 3,
+        "remittances": 1,
+        "pension": 2,
+        "humanitarian-assistance": 4
+      }
+    },
+    {
+      "name": "debt",
+      "label": {
+        "en": "Do you have any debt?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "below-1000000",
+          "label": {
+            "en": "Below 1.000.000 LBP"
+          }
+        },
+        {
+          "option": "1000000-3000000",
+          "label": {
+            "en": "Between 1.000.000 and 3.000.000 LBP"
+          }
+        },
+        {
+          "option": "3000000-5000000",
+          "label": {
+            "en": "Between 3.000.000 and 5.000.000 LBP"
+          }
+        },
+        {
+          "option": "above-5000000",
+          "label": {
+            "en": "Above 5.000.000 LBP"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "I don’t have any debt"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "below-1000000": 1,
+        "1000000-3000000": 2,
+        "3000000-5000000": 3,
+        "above-5000000": 4,
+        "no": 0
+      }
+    },
+    {
+      "name": "other-help",
+      "label": {
+        "en": "Have you received any help from other organisations?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "no",
+          "label": {
+            "en": "No."
+          }
+        },
+        {
+          "option": "yes-nfi",
+          "label": {
+            "en": "Yes, NFI during the last 3 months or expected with 3 months."
+          }
+        },
+        {
+          "option": "yes-food",
+          "label": {
+            "en": "Yes, food during last 3 months or expected within 3 months."
+          }
+        },
+        {
+          "option": "yes-hygiene",
+          "label": {
+            "en": "Yes, hygiene kit during last 3 months or expected within 3 months."
+          }
+        },
+        {
+          "option": "yes-medicine",
+          "label": {
+            "en": "Yes, medicines during last 3 months or expected within 3 months."
+          }
+        },
+        {
+          "option": "yes-cash",
+          "label": {
+            "en": "Yes, cash during last 6 months or expected within 3 months."
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {
+        "no": 4,
+        "yes-nfi": 2,
+        "yes-food": 2,
+        "yes-hygiene": 0,
+        "yes-medicine": 0,
+        "yes-cash": 0,
+        "ongoing": 0
+      }
+    },
+    {
+      "name": "where-register",
+      "label": {
+        "en": "Did you register:"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "self",
+          "label": {
+            "en": "Yourself/at home"
+          }
+        },
+        {
+          "option": "at-centre",
+          "label": {
+            "en": "At the centre"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {}
+    },
+    {
+      "name": "name-social-worker",
+      "label": {
+        "en": "What is the name of the social worker that helped you? (Type – if not applicable)"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {}
     }
   ]
 }
