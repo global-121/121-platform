@@ -25,4 +25,7 @@ export class Attribute {
 export enum AnswerTypes {
   tel = 'tel',
   dropdown = 'dropdown',
+  numeric = 'numeric',
+  text = 'text',
+  date = 'date',
 }

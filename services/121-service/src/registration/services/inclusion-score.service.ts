@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
 import { Repository } from 'typeorm';
 import { RegistrationEntity } from '../registration.entity';
+import { AnswerTypes } from '../enum/custom-data-attributes';
 
 @Injectable()
 export class InlusionScoreService {
@@ -19,10 +20,7 @@ export class InlusionScoreService {
       relations: ['program'],
     });
 
-    const scoreList = await this.createQuestionAnswerListPrefilled(
-      referenceId,
-      registration.program.id,
-    );
+    const scoreList = await this.createQuestionAnswerListPrefilled(referenceId);
 
     let program = await this.programRepository.findOne(
       registration.program.id,
@@ -42,7 +40,6 @@ export class InlusionScoreService {
 
   private async createQuestionAnswerListPrefilled(
     referenceId: string,
-    programId: number,
   ): Promise<object> {
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
@@ -67,11 +64,11 @@ export class InlusionScoreService {
       if (scoreList[questionName]) {
         let answerPA = scoreList[questionName];
         switch (question.answerType) {
-          case 'dropdown': {
+          case AnswerTypes.dropdown: {
             totalScore =
               totalScore + this.getScoreForDropDown(question, answerPA);
           }
-          case 'numeric':
+          case AnswerTypes.numeric:
             totalScore =
               totalScore + this.getScoreForNumeric(question, answerPA);
         }
@@ -91,7 +88,7 @@ export class InlusionScoreService {
     let score = 0;
     const options = JSON.parse(JSON.stringify(programQuestion.options));
     for (let value of options) {
-      if (value.option == answerPA) {
+      if (value.option == answerPA && programQuestion.scoring[value.option]) {
         score = programQuestion.scoring[value.option];
       }
     }

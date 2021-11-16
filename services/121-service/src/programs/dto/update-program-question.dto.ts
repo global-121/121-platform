@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { CreateOptionsDto } from './create-options.dto';
 import { Type } from 'class-transformer';
+import { AnswerTypes } from '../../registration/enum/custom-data-attributes';
 
 export class UpdateProgramQuestionDto {
   @ApiModelProperty()
@@ -21,13 +22,19 @@ export class UpdateProgramQuestionDto {
   @ApiModelProperty()
   @IsOptional()
   @IsString()
-  @IsIn(['numeric', 'dropdown', 'text', 'date', 'tel'])
+  @IsIn([
+    AnswerTypes.numeric,
+    AnswerTypes.dropdown,
+    AnswerTypes.tel,
+    AnswerTypes.text,
+    AnswerTypes.date,
+  ])
   public readonly answerType: string;
   @ApiModelProperty()
   @IsOptional()
   public readonly questionType: string;
   @ApiModelProperty()
-  @ValidateIf(o => o.answerType === 'dropdown')
+  @ValidateIf(o => o.answerType === AnswerTypes.dropdown)
   @ValidateNested()
   @IsOptional()
   @Type(() => CreateOptionsDto)

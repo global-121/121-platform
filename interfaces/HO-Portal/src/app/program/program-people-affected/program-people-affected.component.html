@@ -194,6 +194,16 @@
   ></ngx-datatable-column>
 
   <ngx-datatable-column
+    *ngIf="showInclusionScore() && [phaseEnum.registrationValidation, phaseEnum.inclusion, phaseEnum.reviewInclusion].includes(thisPhase)"
+    prop="inclusionScore"
+    [name]="'page.program.program-people-affected.column.inclusion-score'|translate"
+    minWidth="80"
+    [draggable]="columnDefaults.draggable"
+    [resizeable]="columnDefaults.resizeable"
+    [sortable]="columnDefaults.sortable"
+    [headerClass]="columnDefaults.headerClass"
+  ></ngx-datatable-column>
+  <ngx-datatable-column
     *ngIf="showWhatsappNumber() && [phaseEnum.registrationValidation, phaseEnum.inclusion, phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) && canViewPersonalData"
     prop="whatsappPhoneNumber"
     [name]="'page.program.program-people-affected.column.whatsappPhoneNumber'|translate"

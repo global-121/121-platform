@@ -383,16 +383,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         width: columnDateTimeWidth,
       },
       {
-        prop: 'inclusionScore',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.inclusion-score',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
-        showIfNoValidation: false,
-        width: columnScoreWidth,
-      },
-      {
         prop: 'selectedForValidation',
         name: this.translate.instant(
           'page.program.program-people-affected.column.selected-for-validation',
@@ -802,6 +792,17 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public hasVoucherSupport(fsp: string) {
     const voucherFsps = ['Intersolve-no-whatsapp', 'Intersolve-whatsapp'];
     return voucherFsps.includes(fsp);
+  }
+
+  public showInclusionScore() {
+    let show = false;
+    for (const pa of this.allPeopleAffected) {
+      show = !!pa.inclusionScore;
+      if (show) {
+        break;
+      }
+    }
+    return show;
   }
 
   public showWhatsappNumber() {
