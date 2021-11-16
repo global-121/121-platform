@@ -3,7 +3,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { ActionType } from 'src/app/models/actions.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
@@ -67,7 +66,8 @@ export class MakePaymentComponent implements OnInit {
       this.programId,
     );
 
-    this.paymentInProgress = await this.checkPaymentInProgress();
+    this.paymentInProgress =
+      await this.pastPaymentsService.checkPaymentInProgress(this.programId);
     this.updateTotalAmountMessage();
     this.checkIsEnabled();
   }
@@ -196,31 +196,6 @@ export class MakePaymentComponent implements OnInit {
       'page.program.program-payout.total-amount',
       { totalCost: totalCostFormatted },
     );
-  }
-
-  public async checkPaymentInProgress(): Promise<boolean> {
-    const latestPaymentStartedAction =
-      await this.programsService.retrieveLatestActions(
-        ActionType.paymentStarted,
-        this.programId,
-      );
-    // If never started, then not in progress
-    if (!latestPaymentStartedAction) {
-      return false;
-    }
-    const latestPaymentFinishedAction =
-      await this.programsService.retrieveLatestActions(
-        ActionType.paymentFinished,
-        this.programId,
-      );
-    // If started, but never finished, then in progress
-    if (!latestPaymentFinishedAction) {
-      return true;
-    }
-    // If started and finished, then compare timestamps
-    const startTimestamp = new Date(latestPaymentStartedAction.created);
-    const finishTimestamp = new Date(latestPaymentFinishedAction.created);
-    return finishTimestamp < startTimestamp;
   }
 
   public refresh() {

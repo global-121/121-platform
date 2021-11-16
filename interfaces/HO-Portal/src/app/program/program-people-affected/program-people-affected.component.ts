@@ -65,6 +65,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public headerSelectAllVisible = false;
 
   public isInProgress = false;
+  public paymentInProgress = false;
 
   public action: BulkActionId = BulkActionId.chooseAction;
   public bulkActions: BulkAction[] = [
@@ -483,6 +484,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.program = await this.programsService.getProgramById(this.programId);
     this.activePhase = this.program.phase;
+
+    this.paymentInProgress =
+      await this.pastPaymentsService.checkPaymentInProgress(this.program.id);
 
     this.canViewPersonalData = this.authService.hasUserRole([
       UserRole.View,
@@ -995,13 +999,19 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return row.checkboxVisible || false;
   }
 
-  public enableSinglePayment(row: PersonRow, column) {
+  public enableSinglePayment(row: PersonRow, column): boolean {
     const included = row.status === PaStatus.included;
     const noPaymentDone = !row[column.prop];
     const noFuturePayment = column.paymentIndex <= this.lastPaymentId;
     const onlyLast3Payments = column.paymentIndex > this.lastPaymentId - 3;
-
-    return included && noPaymentDone && noFuturePayment && onlyLast3Payments;
+    const noPaymentInProgress = !this.paymentInProgress;
+    return (
+      included &&
+      noPaymentDone &&
+      noFuturePayment &&
+      onlyLast3Payments &&
+      noPaymentInProgress
+    );
   }
 
   public onSelect(newSelected: PersonRow[]) {

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ActionType } from '../models/actions.model';
 import { PaymentData } from '../models/payment.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
@@ -72,5 +73,30 @@ export class PastPaymentsService {
     }[]
   > {
     return this.programsService.getPaymentsWithStateSums(programId);
+  }
+
+  public async checkPaymentInProgress(programId: number): Promise<boolean> {
+    const latestPaymentStartedAction =
+      await this.programsService.retrieveLatestActions(
+        ActionType.paymentStarted,
+        programId,
+      );
+    // If never started, then not in progress
+    if (!latestPaymentStartedAction) {
+      return false;
+    }
+    const latestPaymentFinishedAction =
+      await this.programsService.retrieveLatestActions(
+        ActionType.paymentFinished,
+        programId,
+      );
+    // If started, but never finished, then in progress
+    if (!latestPaymentFinishedAction) {
+      return true;
+    }
+    // If started and finished, then compare timestamps
+    const startTimestamp = new Date(latestPaymentStartedAction.created);
+    const finishTimestamp = new Date(latestPaymentFinishedAction.created);
+    return finishTimestamp < startTimestamp;
   }
 }
