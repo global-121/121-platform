@@ -57,12 +57,28 @@
       "label": {
         "en": "How old are you?"
       },
-      "answerType": "numeric",
+      "answerType": "dropdown",
       "questionType": "standard",
-      "options": null,
+      "options": [
+        {
+          "option": "18-40",
+          "label": {
+            "en": "Between 18 and 40 years old"
+          }
+        },
+        {
+          "option": "over40",
+          "label": {
+            "en": "Over 40 years old"
+          }
+        }
+      ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {
+        "18-40": 2,
+        "over40": 1
+      }
     },
     {
       "name": "education",
@@ -100,6 +116,48 @@
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
+    },
+    {
+      "name": "literacy",
+      "label": {
+        "en": "Are you able to read and write?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "no",
+          "label": {
+            "en": "I am not able to read and write"
+          }
+        },
+        {
+          "option": "read",
+          "label": {
+            "en": "I am only able to read"
+          }
+        },
+        {
+          "option": "write",
+          "label": {
+            "en": "I am only able to write"
+          }
+        },
+        {
+          "option": "readwrite",
+          "label": {
+            "en": "I am able to read and write"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {
+        "no": 1,
+        "read": 2,
+        "write": 2,
+        "readwrite": 3
+      }
     },
     {
       "name": "nationalIdNumber",
@@ -216,25 +274,19 @@
         {
           "option": "noReturnee",
           "label": {
-            "en": "I did not return from a county in the Middle East"
+            "en": "I did not return from a country in the Middle East"
           }
         },
         {
-          "option": "less1years",
+          "option": "less2years",
           "label": {
-            "en": "Less than 1 year"
+            "en": "Less than 2 years"
           }
         },
         {
-          "option": "1-2years",
+          "option": "2-4years",
           "label": {
-            "en": "1 - 2 years"
-          }
-        },
-        {
-          "option": "3-4years",
-          "label": {
-            "en": "3 - 4 years"
+            "en": "2 - 4 years"
           }
         },
         {
@@ -246,7 +298,12 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {
+        "noReturnee": 0,
+        "less2years": 1,
+        "2-4years": 2,
+        "more4years": 3
+      }
     },
     {
       "name": "isHouseholdLeader",
@@ -271,12 +328,15 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {
+        "yes": 2,
+        "no": 1
+      }
     },
     {
       "name": "businessLicenseAddis",
       "label": {
-        "en": "Do you have a business license under your name in Addis Ababa?"
+        "en": "Do you own a business and have a business license under your name in Addis Ababa?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -288,9 +348,15 @@
           }
         },
         {
-          "option": "yes",
+          "option": "yeslicense",
           "label": {
-            "en": "Yes"
+            "en": "Yes, with a Business License"
+          }
+        },
+        {
+          "option": "yesnolicense",
+          "label": {
+            "en": "Yes, but no Business License"
           }
         },
         {
@@ -302,7 +368,11 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {
+        "yeslicense": 3,
+        "yesnolicense": 1,
+        "no": 0
+      }
     },
     {
       "name": "typeBusiness",
@@ -378,9 +448,44 @@
       "scoring": {}
     },
     {
+      "name": "businessGoal",
+      "label": {
+        "en": "Do you have a serious and thought out goal and interest to expand or advance your small business in Ethiopia?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "fullGoal",
+          "label": {
+            "en": "I am able to explain fully the type of opportunity sought, with detail on the area"
+          }
+        },
+        {
+          "option": "initialThoughts",
+          "label": {
+            "en": "I have some initial thoughts about the future but have some concerns or questions"
+          }
+        },
+        {
+          "option": "veryLimited",
+          "label": {
+            "en": "I have very limited ideas to express"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {
+        "fullGoal": 3,
+        "initialThoughts": 2,
+        "veryLimited": 1
+      }
+    },
+    {
       "name": "businessPlan",
       "label": {
-        "en": "Please explain your goal how you want to expand or advance your small business, if any. (type '-' if not applicable, or no business goal yet)"
+        "en": "If you have a serious and thought out goal and interest to expand or advance your small business in Ethiopia, then please explain (type '-' if not applicable, or no business goal yet)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -416,21 +521,19 @@
           }
         },
         {
-          "option": "3-4years",
+          "option": "3years+",
           "label": {
-            "en": "3 - 4 years"
-          }
-        },
-        {
-          "option": "4years+",
-          "label": {
-            "en": "More than 4 years"
+            "en": "3 years or more"
           }
         }
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {
+        "1year-": 1,
+        "1-2years": 2,
+        "3years+": 3
+      }
     },
     {
       "name": "incomeBusiness",
@@ -473,7 +576,12 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {
+        "4000-": 3,
+        "4000-6000": 2,
+        "6000+": 1,
+        "notSure": 0
+      }
     },
     {
       "name": "costBusiness",
@@ -516,7 +624,12 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {
+        "3000-": 1,
+        "3000-5000": 2,
+        "5000+": 3,
+        "notSure": 0
+      }
     },
     {
       "name": "committedToTraining",
@@ -547,19 +660,53 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {
+        "yes": 2,
+        "no": 0,
+        "notSure": 1
+      }
     },
     {
-      "name": "vocationalTraining",
+      "name": "vocationalCourses",
       "label": {
-        "en": "Which skill based/vocational training certificate do you have, if any? (type '-' if not applicable)"
+        "en": "Which kind of vocational or specialised courses do you have?"
       },
-      "answerType": "text",
+      "answerType": "dropdown",
       "questionType": "standard",
-      "options": null,
+      "options": [
+        {
+          "option": "specificAlign",
+          "label": {
+            "en": "I am trained in a specific vocational or specialised courses that aligns with my business areas"
+          }
+        },
+        {
+          "option": "specificNoAlign",
+          "label": {
+            "en": "I am trained in a specific vocational or specialised courses but that doesn't align with my business areas"
+          }
+        },
+        {
+          "option": "usefulSkills",
+          "label": {
+            "en": "I am able to list useful skills"
+          }
+        },
+        {
+          "option": "none",
+          "label": {
+            "en": "I do not have any"
+          }
+        }
+      ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {
+        "specificAlign": 3,
+        "specificNoAlign": 2,
+        "usefulSkills": 1,
+        "none": 0
+      }
     },
     {
       "name": "savingMethod",

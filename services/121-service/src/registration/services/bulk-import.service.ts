@@ -179,15 +179,13 @@ export class BulkImportService {
 
     for await (let registration of registrations) {
       registration.registrationStatus = RegistrationStatusEnum.registered;
-      // Mimic 'register for program' step for each registration
-      await this.inclusionScoreService.calculateInclusionScore(
-        registration.referenceId,
-      );
-
       await this.storeProgramAnswersImportRegistrations(
         registration,
         program.id,
         registration.customData,
+      );
+      await this.inclusionScoreService.calculateInclusionScore(
+        registration.referenceId,
       );
 
       countImported += 1;
@@ -203,7 +201,7 @@ export class BulkImportService {
   ): Promise<void> {
     const dynamicAttributes = await this.getDynamicAttributes(programId, false);
     let programAnswers: ProgramAnswerEntity[] = [];
-    dynamicAttributes.forEach(async attribute => {
+    for await (let attribute of dynamicAttributes) {
       let programAnswer = new ProgramAnswerEntity();
       programAnswer.registration = registration;
       const programQuestion = await this.programQuestionRepository.findOne({
@@ -212,7 +210,7 @@ export class BulkImportService {
       programAnswer.programQuestion = programQuestion;
       programAnswer.programAnswer = customData[attribute.attribute];
       programAnswers.push(programAnswer);
-    });
+    }
     await this.programAnswerRepository.save(programAnswers);
   }
 
