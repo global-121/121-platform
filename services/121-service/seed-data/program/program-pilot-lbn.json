@@ -5,10 +5,10 @@
   "location": "Lebanon",
   "ngo": "Dorcas",
   "titlePortal": {
-    "en": "121 Digital Cash Aid Program"
+    "en": "Dorcas-Tabitha cash aid program"
   },
   "titlePaApp": {
-    "en": "121 Digital Cash Aid Program"
+    "en": "Dorcas-Tabitha cash aid program"
   },
   "description": {
     "en": ""
@@ -21,7 +21,7 @@
   "currency": "LBP",
   "distributionFrequency": "month",
   "distributionDuration": 6,
-  "fixedTransferValue": 1000,
+  "fixedTransferValue": 76200,
   "financialServiceProviders": [
     {
       "id": 1
@@ -31,7 +31,7 @@
   "minimumScore": 0,
   "highestScoresX": 50,
   "meetingDocuments": {
-    "en": "Document 1; Document 2; Document 3"
+    "en": " &bull;Personal ID card of the person that registered <br> &bull; Family social registry<br> &bull; Proof of residence<br> &bull; Proof of medical condition (if available)"
   },
   "notifications": {
     "en": {
@@ -43,7 +43,7 @@
     {
       "name": "name",
       "label": {
-        "en": "What is your name?"
+        "en": "Questions should be answered truthfully. We may call you to make an appoint for a home visit to check your situation<br><br>What is your name?"
       },
       "answerType": "text",
       "questionType": "standard",
