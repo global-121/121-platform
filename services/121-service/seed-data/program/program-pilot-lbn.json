@@ -43,7 +43,7 @@
     {
       "name": "name",
       "label": {
-        "en": "Questions should be answered truthfully. We may call you to make an appoint for a home visit to check your situation<br><br>What is your name?"
+        "en": "Questions should be answered truthfully. We may call you to make an appointment for a home visit to check your situation.<br><br>What is your name? (First name, Father's name, Last name)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -777,7 +777,7 @@
     {
       "name": "expenses-health",
       "label": {
-        "en": "What are your monthly expenses for health?"
+        "en": "What are your household's monthly expenses for health?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -812,7 +812,7 @@
     {
       "name": "expenses-shelter",
       "label": {
-        "en": "What are your monthly expenses for shelter?"
+        "en": "What are your household's monthly expenses for shelter?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -854,7 +854,7 @@
     {
       "name": "expenses-food",
       "label": {
-        "en": "What are your monthly expenses for food?"
+        "en": "What are your household's monthly expenses for food?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1538,33 +1538,15 @@
           }
         },
         {
-          "option": "yes-nfi",
-          "label": {
-            "en": "Yes, NFI during the last 3 months or expected with 3 months."
-          }
-        },
-        {
           "option": "yes-food",
           "label": {
             "en": "Yes, food during last 3 months or expected within 3 months."
           }
         },
         {
-          "option": "yes-hygiene",
+          "option": "yes-nfi",
           "label": {
-            "en": "Yes, hygiene kit during last 3 months or expected within 3 months."
-          }
-        },
-        {
-          "option": "yes-medicine",
-          "label": {
-            "en": "Yes, medicines during last 3 months or expected within 3 months."
-          }
-        },
-        {
-          "option": "yes-cash",
-          "label": {
-            "en": "Yes, cash during last 6 months or expected within 3 months."
+            "en": "Yes, non food items during the last 3 months or expected with 3 months."
           }
         }
       ],
