@@ -9,6 +9,7 @@ import {
 import { ProgramEntity } from './program.entity';
 import { ProgramAnswerEntity } from '../registration/program-answer.entity';
 import { Base121Entity } from '../base.entity';
+import { ExportType } from '../export-metrics/dto/export-details';
 
 @Entity('program_question')
 export class ProgramQuestionEntity extends Base121Entity {
@@ -48,11 +49,15 @@ export class ProgramQuestionEntity extends Base121Entity {
   )
   public program: ProgramEntity;
 
-  @Column({ default: false })
+  @Column({ default: true })
   public persistence: boolean;
 
   @Column('json', {
-    default: ['all-people-affected', 'included', 'selected-for-validation'],
+    default: [
+      ExportType.allPeopleAffected,
+      ExportType.included,
+      ExportType.selectedForValidation,
+    ],
   })
   public export: JSON;
 
