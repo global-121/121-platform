@@ -7,6 +7,7 @@ import { IsNull, Not, Repository, getRepository } from 'typeorm';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import {
+  AnswerTypes,
   CustomDataAttributes,
   GenericAttributes,
 } from '../registration/enum/custom-data-attributes';
@@ -176,7 +177,6 @@ export class ExportMetricsService {
         RegistrationStatusEnum[status],
       );
     }
-
     return row;
   }
 
@@ -188,8 +188,13 @@ export class ExportMetricsService {
   ): object {
     programQuestions.forEach(question => {
       if (question.export && question.export.includes(exportType)) {
-        row[question.programQuestion] =
-          registration.customData[question.programQuestion];
+        const key = question.programQuestion;
+        let value = registration.customData[question.programQuestion];
+        if (question.answerType === AnswerTypes.dropdown) {
+          value = question.options.find(option => option.option === value)
+            .label['en'];
+        }
+        row[key] = value;
       }
     });
     return row;
@@ -202,6 +207,8 @@ export class ExportMetricsService {
       .map(question => {
         return {
           programQuestion: question.name,
+          answerType: question.answerType as AnswerTypes,
+          options: JSON.parse(JSON.stringify(question.options)),
           export: JSON.parse(JSON.stringify(question.export)),
         };
       })
@@ -209,6 +216,8 @@ export class ExportMetricsService {
         (await this.fspAttributeRepository.find()).map(question => {
           return {
             programQuestion: question.name,
+            answerType: question.answerType as AnswerTypes,
+            options: JSON.parse(JSON.stringify(question.options)),
             export: JSON.parse(JSON.stringify(question.export)),
           };
         }),
@@ -278,13 +287,13 @@ export class ExportMetricsService {
 
     for await (let registration of registrations) {
       let row = {};
+      row = await this.addGenericFieldsToExport(row, registration);
       row = this.addProgramQuestionsToExport(
         row,
         questions,
         registration,
         ExportType.allPeopleAffected,
       );
-      row = await this.addGenericFieldsToExport(row, registration);
       row = await this.addPaymentFieldsToExport(
         row,
         registration,
@@ -313,13 +322,13 @@ export class ExportMetricsService {
     const inclusionDetails = [];
     for await (let registration of includedRegistrations) {
       let row = {};
+      row = await this.addGenericFieldsToExport(row, registration);
       row = this.addProgramQuestionsToExport(
         row,
         questions,
         registration,
         ExportType.included,
       );
-      row = await this.addGenericFieldsToExport(row, registration);
       inclusionDetails.push(row);
     }
     const filteredColumnDetails = this.filterUnusedColumn(inclusionDetails);
@@ -368,13 +377,13 @@ export class ExportMetricsService {
     const columnDetails = [];
     for await (let registration of selectedRegistrations) {
       let row = {};
+      row = await this.addGenericFieldsToExport(row, registration);
       row = this.addProgramQuestionsToExport(
         row,
         programQuestions,
         registration,
         ExportType.selectedForValidation,
       );
-      row = await this.addGenericFieldsToExport(row, registration);
       columnDetails.push(row);
     }
 
