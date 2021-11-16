@@ -5,6 +5,7 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { ConversationService } from '../services/conversation.service';
 import { InfoPopupComponent } from '../shared/info-popup/info-popup.component';
 import { SharedModule } from '../shared/shared.module';
+import { AutoSignupComponent } from './auto-signup/auto-signup.component';
 import { ConsentQuestionComponent } from './consent-question/consent-question.component';
 import { ContactDetailsComponent } from './contact-details/contact-details.component';
 import { CreateAccountComponent } from './create-account/create-account.component';
@@ -37,6 +38,7 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     SetNotificationNumberComponent,
     SignupSigninComponent,
     InfoPopupComponent,
+    AutoSignupComponent,
   ],
   imports: [CommonModule, SharedModule, FormsModule, QRCodeModule],
   exports: [
@@ -54,6 +56,7 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     SelectProgramComponent,
     SetNotificationNumberComponent,
     SignupSigninComponent,
+    AutoSignupComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [ConversationService],
