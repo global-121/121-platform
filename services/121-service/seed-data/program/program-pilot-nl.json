@@ -5,14 +5,10 @@
   "location": "Nederland",
   "ngo": "NLRC",
   "titlePortal": {
-    "ar": "121 برنامج المعونات النقدية الرقمي",
-    "en": "121 Digital Cash Aid Program",
-    "nl": "121 Digitaal Cash Hulp Programma"
+    "en": "NLRC Direct Digital Aid (LVV)"
   },
   "titlePaApp": {
-    "ar": "121 برنامج المعونات النقدية الرقمي",
-    "en": "121 Digital Cash Aid Program",
-    "nl": "121 Digitaal Cash Hulp Programma"
+    "en": "Red Cross Digital Voucher Support"
   },
   "description": {
     "en": ""

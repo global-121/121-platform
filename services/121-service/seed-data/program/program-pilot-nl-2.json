@@ -5,14 +5,10 @@
   "location": "Nederland",
   "ngo": "NLRC",
   "titlePortal": {
-    "en": "121 Digital Cash Aid Program (PV)",
-    "pt_BR": "121 Programa de Ajuda de Dinheiro Eletrônico (PV)",
-    "es": "121 Programa de Ayuda Monetaria Digital (PV)"
+    "en": "NLRC Direct Digital Aid Program (PV)"
   },
   "titlePaApp": {
-    "en": "121 Digital Cash Aid Program (PV)",
-    "pt_BR": "121 Programa de Ajuda de Dinheiro Eletrônico (PV)",
-    "es": "121 Programa de Ayuda Monetaria Digital (PV)"
+    "en": "Red Cross Digital Voucher Support"
   },
   "description": {
     "en": ""
