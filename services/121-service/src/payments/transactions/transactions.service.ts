@@ -132,6 +132,7 @@ export class TransactionsService {
     transactionResponse: PaTransactionResultDto,
     programId: number,
     payment: number,
+    transactionStep?: number,
   ): Promise<void> {
     const program = await this.programRepository.findOne(programId);
     const fsp = await this.financialServiceProviderRepository.findOne({
@@ -151,7 +152,7 @@ export class TransactionsService {
     transaction.status = transactionResponse.status;
     transaction.errorMessage = transactionResponse.message;
     transaction.customData = transactionResponse.customData;
-    transaction.transactionStep = 1;
+    transaction.transactionStep = transactionStep || 1;
 
     await this.transactionRepository.save(transaction);
   }

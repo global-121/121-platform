@@ -574,6 +574,7 @@ export class IntersolveService {
       transactionResultDto,
       this.programId,
       paymentNr,
+      transactionStep,
     );
   }
 
