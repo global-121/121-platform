@@ -191,8 +191,14 @@ export class ExportMetricsService {
         const key = question.programQuestion;
         let value = registration.customData[question.programQuestion];
         if (question.answerType === AnswerTypes.dropdown) {
-          value = question.options.find(option => option.option === value)
-            .label['en'];
+          const rawValue = question.options.find(
+            option => option.option === value,
+          );
+          if (rawValue && rawValue.label && rawValue.label['en']) {
+            value = rawValue.label['en'];
+          } else {
+            value = '';
+          }
         }
         row[key] = value;
       }
