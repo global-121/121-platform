@@ -20,7 +20,7 @@
     {
       "name": "nameFirst",
       "label": {
-        "en": "What is your first name? (We will use this when we sent the payment using BoB Finance)"
+        "en": "What is your first name? (We will use this when we send the payment using BoB Finance)"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
@@ -29,7 +29,7 @@
     {
       "name": "nameLast",
       "label": {
-        "en": "What is your last name? (We will use this when we sent the payment using BoB Finance)"
+        "en": "What is your last name? (We will use this when we send the payment using BoB Finance)"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
