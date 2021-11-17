@@ -41,9 +41,28 @@
   "phoneNumberPlaceholder": "+251 000 000 000",
   "programQuestions": [
     {
+      "name": "invited-by-dorcas",
+      "label": {
+        "en": "Questions should be answered truthfully. We may call you to make an appointment for a home visit to check your situation.<br><br>Where you invited by Dorcas to participate in this aid program? If not then leave this registration process by closing the app."
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
       "name": "name",
       "label": {
-        "en": "Questions should be answered truthfully. We may call you to make an appointment for a home visit to check your situation.<br><br>What is your name? (First name, Father's name, Last name)"
+        "en": "What is your name? (First name, Father's name, Last name)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -121,9 +140,45 @@
       "scoring": {}
     },
     {
-      "name": "address",
+      "name": "address-city",
       "label": {
-        "en": "What is your addres? (City, Street, Building, Floor)"
+        "en": "In which city do you live?"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "address-street",
+      "label": {
+        "en": "In which street do you live?"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "address-building",
+      "label": {
+        "en": "In which building do you live?"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "address-floor",
+      "label": {
+        "en": "On what floor do you live?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -137,7 +192,7 @@
       "label": {
         "en": "What is your social registry number?"
       },
-      "answerType": "text",
+      "answerType": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -189,7 +244,7 @@
     {
       "name": "men-60+",
       "label": {
-        "en": "How many elderly men (60+ years old) are in your household?"
+        "en": "How many elderly men (60+ years old) are in your household? (enter 0 when none)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -203,7 +258,7 @@
     {
       "name": "women-60+",
       "label": {
-        "en": "How many elderly woman (60+ years old) are in your household?"
+        "en": "How many elderly women (60+ years old) are in your household? (enter 0 when none)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -217,7 +272,7 @@
     {
       "name": "men-18-15",
       "label": {
-        "en": "How many adult men (18-59 years old) are in your household?"
+        "en": "How many adult men (18-59 years old) are in your household? (enter 0 when none)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -231,7 +286,7 @@
     {
       "name": "women-18-59",
       "label": {
-        "en": "How many adult women (18-59 years old) are in your household?"
+        "en": "How many adult women (18-59 years old) are in your household? (enter 0 when none)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -245,7 +300,7 @@
     {
       "name": "men-18-",
       "label": {
-        "en": "How many boys (-18 years old) are in your household?"
+        "en": "How many boys (0-17 years old) are in your household? (enter 0 when none)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -259,7 +314,7 @@
     {
       "name": "woman-18-",
       "label": {
-        "en": "How many girls (-18 years old) are in your household?"
+        "en": "How many girls (0-17 years old) are in your household? (enter 0 when none)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -413,7 +468,7 @@
     {
       "name": "chronic-disease-child",
       "label": {
-        "en": "Does any child (younger than 18) from you household suffer from a chronic disease or serious medical conditions other than disability?"
+        "en": "Does any child (younger than 18) from your household suffer from a chronic disease or serious medical conditions other than disability?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -441,7 +496,7 @@
     {
       "name": "chronic-disease-adult",
       "label": {
-        "en": "Does any adult (older than 18) from you household suffer from a chronic disease or serious medical conditions other than disability?"
+        "en": "Does any adult (18 or older) from your household suffer from a chronic disease or serious medical conditions other than disability?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -497,7 +552,7 @@
     {
       "name": "hospital-adult",
       "label": {
-        "en": "Are there any adults (older than 18) in the hospital?"
+        "en": "Are there any adults (18 or older) in the hospital?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -551,7 +606,7 @@
         {
           "option": "yes-completely",
           "label": {
-            "en": "Yes/A lot of difficulty"
+            "en": "Yes/Cannot do at all"
           }
         }
       ],
@@ -593,7 +648,7 @@
         {
           "option": "yes-completely",
           "label": {
-            "en": "Yes/A lot of difficulty"
+            "en": "Yes/Cannot do at all"
           }
         }
       ],
@@ -635,7 +690,7 @@
         {
           "option": "yes-completely",
           "label": {
-            "en": "Yes/A lot of difficulty"
+            "en": "Yes/Cannot do at all"
           }
         }
       ],
@@ -677,7 +732,7 @@
         {
           "option": "yes-completely",
           "label": {
-            "en": "Yes/A lot of difficulty"
+            "en": "Yes/Cannot do at all"
           }
         }
       ],
@@ -719,7 +774,7 @@
         {
           "option": "yes-completely",
           "label": {
-            "en": "Yes/A lot of difficulty"
+            "en": "Yes/Cannot do at all"
           }
         }
       ],
@@ -761,7 +816,7 @@
         {
           "option": "yes-completely",
           "label": {
-            "en": "Yes/A lot of difficulty"
+            "en": "Yes/Cannot do at all"
           }
         }
       ],
@@ -777,7 +832,7 @@
     {
       "name": "expenses-health",
       "label": {
-        "en": "What are your household's monthly expenses for health?"
+        "en": "What are your household's monthly expenses for <strong>health</strong>?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -812,7 +867,7 @@
     {
       "name": "expenses-shelter",
       "label": {
-        "en": "What are your household's monthly expenses for shelter?"
+        "en": "What are your household's monthly expenses for <strong>shelter</strong>?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -854,7 +909,7 @@
     {
       "name": "expenses-food",
       "label": {
-        "en": "What are your household's monthly expenses for food?"
+        "en": "What are your household's monthly expenses for <strong>food</strong>?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -896,7 +951,7 @@
     {
       "name": "food-sold-assests",
       "label": {
-        "en": "During the last 30 days, did anyone in your household sell household assets/goods (radio, furniture, refrigerator, television, etc..), due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did anyone in your household <strong>sell household assets/goods (radio, furniture, refrigerator, television, etc..)</strong>, due to the lack of food or of money to buy food?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -924,7 +979,7 @@
     {
       "name": "food-spent-saving",
       "label": {
-        "en": "During the last 30 days, did anyone in your household spent savings (e.g., sale of jewelry, cash savings), due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did anyone in your household <strong>spent savings (e.g., sale of jewelry, cash savings)</strong>, due to the lack of food or of money to buy food?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -952,7 +1007,7 @@
     {
       "name": "food-borrowed-money",
       "label": {
-        "en": "During the last 30 days, did anyone in your household borrow money/food from formal lender/bank, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did anyone in your household <strong>borrow money/food from formal lender/bank</strong>, due to the lack of food or of money to buy food?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -980,7 +1035,7 @@
     {
       "name": "food-recuded-expenses",
       "label": {
-        "en": "During the last 30 days, did anyone in your household reduce non-food expenses on health (including drugs) and education, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did anyone in your household <strong>reduce expenses on health (including medication) and education</strong>, due to the lack of food or of money to buy food?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1006,9 +1061,9 @@
       }
     },
     {
-      "name": "food-withdrew-school",
+      "name": "food-withdraw-school",
       "label": {
-        "en": "During the last 30 days, did anyone in your household withdrew children from school, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did anyone in your household <strong>withdraw children from school</strong>, due to the lack of food or of money to buy food?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1036,7 +1091,7 @@
     {
       "name": "food-child-labor",
       "label": {
-        "en": "During the last 30 days, did any child in your household get involved in labor, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did any child in your household <strong>get involved in labor</strong>, due to the lack of food or of money to buy food?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1064,7 +1119,7 @@
     {
       "name": "food-household-migrated",
       "label": {
-        "en": "During the last 30 days, did your entire household migrate, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did your entire household <strong>migrate</strong>, due to the lack of food or of money to buy food?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1092,7 +1147,7 @@
     {
       "name": "food-sold-real-estate",
       "label": {
-        "en": "During the last 30 days, did anyone of your household sell a house or land, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did anyone of your household <strong>sell a house or land</strong>, due to the lack of food or of money to buy food?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1120,7 +1175,7 @@
     {
       "name": "7-days-eat-less",
       "label": {
-        "en": "During the last 7 days, how many times did you, as a household find yourself eating less preferred/expensive foods?"
+        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself eating less preferred/expensive foods?</strong>"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1134,25 +1189,25 @@
         {
           "option": "yes-1-2",
           "label": {
-            "en": "Yes - Between 1-2"
+            "en": "1 or 2 days"
           }
         },
         {
           "option": "yes-3-4",
           "label": {
-            "en": "Yes - Between 3-4"
+            "en": "3 or 4 days"
           }
         },
         {
           "option": "yes-5-6",
           "label": {
-            "en": "Yes - Between 5-7"
+            "en": "5 or 6 days"
           }
         },
         {
           "option": "yes-7",
           "label": {
-            "en": "Yes - 7 Days"
+            "en": "7 days"
           }
         }
       ],
@@ -1169,7 +1224,7 @@
     {
       "name": "7-days-borrowed-food",
       "label": {
-        "en": "During the last 7 days, how many times did you, as a household find yourself borrowing food or relying on help from friends and relatives.?"
+        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself borrowing food or relying on help from friends and relatives?</strong>"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1183,25 +1238,25 @@
         {
           "option": "yes-1-2",
           "label": {
-            "en": "Yes - Between 1-2"
+            "en": "1 or 2 days"
           }
         },
         {
           "option": "yes-3-4",
           "label": {
-            "en": "Yes - Between 3-4"
+            "en": "3 or 4 days"
           }
         },
         {
           "option": "yes-5-6",
           "label": {
-            "en": "Yes - Between 5-7"
+            "en": "5 or 6 days"
           }
         },
         {
           "option": "yes-7",
           "label": {
-            "en": "Yes - 7 Days"
+            "en": "7 days"
           }
         }
       ],
@@ -1218,7 +1273,7 @@
     {
       "name": "7-days-reduce-portions",
       "label": {
-        "en": "During the last 7 days, how many times did you, as a household find yourself limiting portion size at mealtime?"
+        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself limiting portion size at mealtime?</strong>"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1232,25 +1287,25 @@
         {
           "option": "yes-1-2",
           "label": {
-            "en": "Yes - Between 1-2"
+            "en": "1 or 2 days"
           }
         },
         {
           "option": "yes-3-4",
           "label": {
-            "en": "Yes - Between 3-4"
+            "en": "3 or 4 days"
           }
         },
         {
           "option": "yes-5-6",
           "label": {
-            "en": "Yes - Between 5-7"
+            "en": "5 or 6 days"
           }
         },
         {
           "option": "yes-7",
           "label": {
-            "en": "Yes - 7 Days"
+            "en": "7 days"
           }
         }
       ],
@@ -1267,7 +1322,7 @@
     {
       "name": "7-days-reduce-portions-adults",
       "label": {
-        "en": "During the last 7 days, how many times did you, as a household find yourself limiting adult intake in order for small children to eat?"
+        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself limiting adult intake in order for small children to eat?</strong>"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1281,25 +1336,25 @@
         {
           "option": "yes-1-2",
           "label": {
-            "en": "Yes - Between 1-2"
+            "en": "1 or 2 days"
           }
         },
         {
           "option": "yes-3-4",
           "label": {
-            "en": "Yes - Between 3-4"
+            "en": "3 or 4 days"
           }
         },
         {
           "option": "yes-5-6",
           "label": {
-            "en": "Yes - Between 5-7"
+            "en": "5 or 6 days"
           }
         },
         {
           "option": "yes-7",
           "label": {
-            "en": "Yes - 7 Days"
+            "en": "7 days"
           }
         }
       ],
@@ -1316,7 +1371,7 @@
     {
       "name": "7-days-reduce-nr-meals",
       "label": {
-        "en": "During the last 7 days, how many times did you, as a household find yourself reducing the number of meals per day?"
+        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself reducing the number of meals per day?</strong>"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1330,25 +1385,25 @@
         {
           "option": "yes-1-2",
           "label": {
-            "en": "Yes - Between 1-2"
+            "en": "1 or 2 days"
           }
         },
         {
           "option": "yes-3-4",
           "label": {
-            "en": "Yes - Between 3-4"
+            "en": "3 or 4 days"
           }
         },
         {
           "option": "yes-5-6",
           "label": {
-            "en": "Yes - Between 5-7"
+            "en": "5 or 6 days"
           }
         },
         {
           "option": "yes-7",
           "label": {
-            "en": "Yes - 7 Days"
+            "en": "7 days"
           }
         }
       ],
@@ -1365,7 +1420,7 @@
     {
       "name": "income",
       "label": {
-        "en": "What is your income?"
+        "en": "What is your household's income?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1407,7 +1462,7 @@
     {
       "name": "income-source",
       "label": {
-        "en": "What is your main source of income?"
+        "en": "What is your household's main source of income?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1477,11 +1532,17 @@
     {
       "name": "debt",
       "label": {
-        "en": "Do you have any debt?"
+        "en": "Does your household have any debt?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
       "options": [
+        {
+          "option": "no",
+          "label": {
+            "en": "I don’t have any debt"
+          }
+        },
         {
           "option": "below-1000000",
           "label": {
@@ -1505,12 +1566,6 @@
           "label": {
             "en": "Above 5.000.000 LBP"
           }
-        },
-        {
-          "option": "no",
-          "label": {
-            "en": "I don’t have any debt"
-          }
         }
       ],
       "persistence": true,
@@ -1526,27 +1581,21 @@
     {
       "name": "other-help",
       "label": {
-        "en": "Have you received any help from other organisations?"
+        "en": "Have you received any help from other organizations during the last 3 months or do you expect it within 3 months?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
       "options": [
         {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
           "option": "no",
           "label": {
-            "en": "No."
-          }
-        },
-        {
-          "option": "yes-food",
-          "label": {
-            "en": "Yes, food during last 3 months or expected within 3 months."
-          }
-        },
-        {
-          "option": "yes-nfi",
-          "label": {
-            "en": "Yes, non food items during the last 3 months or expected with 3 months."
+            "en": "No"
           }
         }
       ],
@@ -1554,12 +1603,7 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "no": 4,
-        "yes-nfi": 2,
-        "yes-food": 2,
-        "yes-hygiene": 0,
-        "yes-medicine": 0,
-        "yes-cash": 0,
-        "ongoing": 0
+        "yes": 0
       }
     },
     {
@@ -1571,15 +1615,15 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "self",
-          "label": {
-            "en": "Yourself/at home"
-          }
-        },
-        {
           "option": "at-centre",
           "label": {
             "en": "At the centre"
+          }
+        },
+        {
+          "option": "self",
+          "label": {
+            "en": "Somewhere else"
           }
         }
       ],
@@ -1590,7 +1634,7 @@
     {
       "name": "name-social-worker",
       "label": {
-        "en": "What is the name of the social worker that helped you? (Type – if not applicable)"
+        "en": "What is the name of the social worker that helped you? (Type 'none' if not applicable)"
       },
       "answerType": "text",
       "questionType": "standard",

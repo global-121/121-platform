@@ -8,7 +8,7 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Which phone number do you want to receive your BoB Finance information on? (With country-code. It should look like: <strong>+961 00 000 000</strong>)"
+        "en": "If you are included in the program, which phone number do you want to receive your BoB Finance information on? (With country-code. It should look like: <strong>+961 00 000 000</strong>)"
       },
       "placeholder": {
         "en": "+961 000 000 000"
@@ -20,7 +20,7 @@
     {
       "name": "nameFirst",
       "label": {
-        "en": "What is your first name? (We will use this when we send the payment using BoB Finance)"
+        "en": "If you are included in the program, what is first name on the ID that will be used to pick up the payment at BoB Finance?"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
@@ -29,7 +29,7 @@
     {
       "name": "nameLast",
       "label": {
-        "en": "What is your last name? (We will use this when we send the payment using BoB Finance)"
+        "en": "If you are included in the program, what is <strong>last name</strong> on the ID that will be used to pick up the payment at BoB Finance?"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",

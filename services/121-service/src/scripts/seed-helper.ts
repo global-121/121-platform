@@ -1,3 +1,4 @@
+import { HttpException } from '@nestjs/common';
 import { Connection, In } from 'typeorm';
 
 import { ProgramEntity } from '../programs/program.entity';
@@ -11,6 +12,7 @@ import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { UserRole } from '../user-role.enum';
 import { UserType } from '../user/user-type-enum';
+import { assert } from 'console';
 
 export class SeedHelper {
   public constructor(private connection: Connection) {}
@@ -53,6 +55,22 @@ export class SeedHelper {
     program.programQuestions = [];
 
     for (let question of programQuestions) {
+      if (question.answerType === 'dropdown') {
+        const scoringKeys = Object.keys(question.scoring);
+        if (scoringKeys.length > 0) {
+          const optionKeys = question.options.map(({ option }) => option);
+          const areOptionScoriingEqual =
+            JSON.stringify(scoringKeys.sort()) ==
+            JSON.stringify(optionKeys.sort());
+          if (!areOptionScoriingEqual) {
+            throw new HttpException(
+              'Option and scoring is not equal of question  ' + question.name,
+              404,
+            );
+          }
+        }
+        // assert(optionsArray.includes(scoringkey));
+      }
       let questionReturn = await programQuestionRepository.save(question);
       program.programQuestions.push(questionReturn);
     }
