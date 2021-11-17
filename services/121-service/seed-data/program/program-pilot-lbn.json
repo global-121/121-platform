@@ -31,11 +31,11 @@
   "minimumScore": 0,
   "highestScoresX": 50,
   "meetingDocuments": {
-    "en": " &bull;Personal ID card of the person that registered <br> &bull; Family social registry<br> &bull; Proof of residence<br> &bull; Proof of medical condition (if available)"
+    "en": "Personal ID card of the person that registered; Family social registry; Proof of residence; Proof of medical condition (if available)"
   },
   "notifications": {
     "en": {
-      "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS message with more information within 1 week."
+      "registered": "This is a message from Dorcas-Tabitha.\n\nWe have received your application for support."
     }
   },
   "phoneNumberPlaceholder": "+251 000 000 000",
