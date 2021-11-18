@@ -63,7 +63,8 @@
                     [color]="torchEnabled ? 'success' : 'light'"
                     class="ion-margin-vertical"
     >
-      <ion-icon [name]="torchEnabled ? 'flash' : 'flash-off'" aria-hidden="true"></ion-icon>
+      <ion-icon *ngIf="torchEnabled" name="flash" aria-hidden="true"></ion-icon>
+      <ion-icon *ngIf="!torchEnabled" name="flash-off" aria-hidden="true"></ion-icon>
     </ion-fab-button>
     <ion-fab-button *ngIf="switchCamerasAvailable"
                     [title]="'qr-scanner.switch-camera'|translate"
