@@ -580,7 +580,7 @@
     {
       "name": "disability-adult-seeing",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with seeing, even when wearing glasses?"
+        "en": "Do you, or does any other household member have difficulty with <b>seeing, even when wearing glasses</b>?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -622,7 +622,7 @@
     {
       "name": "disability-adult-hearing",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with hearing, even when using a hearing aid?"
+        "en": "Do you, or does any other household member have difficulty with <b>hearing, even when using a hearing aid</b>?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -664,7 +664,7 @@
     {
       "name": "disability-adult-walking",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with walking or climbing steps?"
+        "en": "Do you, or does any other household member have difficulty with <b>walking or climbing steps</b>?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -706,7 +706,7 @@
     {
       "name": "disability-adult-remembering",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with remembering or concentrating?"
+        "en": "Do you, or does any other household member have difficulty with <b>remembering or concentrating</b>?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -748,7 +748,7 @@
     {
       "name": "disability-adult-self-care",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with self-care such as washing or dressing?"
+        "en": "Do you, or does any other household member have difficulty with <b>self-care such as washing or dressing</b>?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -790,7 +790,7 @@
     {
       "name": "disability-adult-self-communicating",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with communicating, when using your (customary) language?"
+        "en": "Do you, or does any other household member have difficulty with <b>communicating, when using your (customary) language</b>?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
