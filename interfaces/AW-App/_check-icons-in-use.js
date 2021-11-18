@@ -69,14 +69,16 @@ if (angularJson.includes(globLine)) {
   return process.exit(0);
 } else {
   console.error(`Icon-list is out-of-date!\n`);
-  console.error(`Update angular.json to the following lines:`);
-  console.error('In the location: projects/app/architect/build/options/assets');
+  console.error(`Update angular.json to change the following lines:`);
+  console.error(
+    'In the location: projects/app/architect/build/configurations/production/assets',
+  );
   console.error(`
-              {
-                ${globLine}
-                "input": "node_modules/ionicons/dist/ionicons/svg",
-                "output": "svg"
-              },
+    {
+      ${globLine}
+      "input": "node_modules/ionicons/dist/ionicons/svg",
+      "output": "svg"
+    },
 `);
   process.exit(1);
 }
