@@ -43,7 +43,7 @@
     {
       "name": "invited-by-dorcas",
       "label": {
-        "en": "Questions should be answered truthfully. We may call you to make an appointment for a home visit to check your situation.<br><br>Where you invited by Dorcas to participate in this aid program? If not then leave this registration process by closing the app."
+        "en": "Questions should be answered truthfully. We may call you to make an appointment for a home visit to check your situation.<br><br>Were you invited by Dorcas to apply for this aid program? If not then leave this registration process by closing the app."
       },
       "answerType": "dropdown",
       "questionType": "standard",
