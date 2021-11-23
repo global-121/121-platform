@@ -979,7 +979,7 @@
     {
       "name": "food-spent-saving",
       "label": {
-        "en": "During the last 30 days, did anyone in your household <strong>spent savings (e.g., sale of jewelry, cash savings)</strong>, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did anyone in your household <strong>spend savings (e.g., sale of jewelry, cash savings)</strong>, due to the lack of food or of money to buy food?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
