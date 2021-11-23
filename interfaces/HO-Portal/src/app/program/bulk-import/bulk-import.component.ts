@@ -107,10 +107,7 @@ export class BulkImportComponent implements OnInit {
   }
 
   private btnEnabled(): boolean {
-    return this.authService.hasUserRole([
-      UserRole.PersonalData,
-      UserRole.RunProgram,
-    ]);
+    return this.authService.hasUserRole([UserRole.PersonalData]);
   }
 
   public exportCSV(importResponse: any[]) {
