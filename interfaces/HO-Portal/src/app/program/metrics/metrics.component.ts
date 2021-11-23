@@ -144,10 +144,6 @@ export class MetricsComponent implements OnChanges {
         }
       }),
     });
-    console.log(
-      'this.program.distributionDuration: ',
-      this.program.distributionDuration,
-    );
     this.metricsMap.set(`${group}.distributionDuration`, {
       group,
       icon: 'hourglass',
