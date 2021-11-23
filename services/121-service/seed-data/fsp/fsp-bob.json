@@ -20,7 +20,7 @@
     {
       "name": "nameFirst",
       "label": {
-        "en": "If you are included in the program, what is <strong>first name</strong> on the ID that will be used to pick up the payment at BoB Finance?"
+        "en": "If you are included in the program, what is the <strong>first name</strong> on the ID that will be used to pick up the payment at BoB Finance?"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
@@ -29,7 +29,7 @@
     {
       "name": "nameLast",
       "label": {
-        "en": "If you are included in the program, what is <strong>last name</strong> on the ID that will be used to pick up the payment at BoB Finance?"
+        "en": "If you are included in the program, what is the <strong>last name</strong> on the ID that will be used to pick up the payment at BoB Finance?"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
