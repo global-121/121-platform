@@ -144,22 +144,15 @@ export class MetricsComponent implements OnChanges {
         }
       }),
     });
+    console.log(
+      'this.program.distributionDuration: ',
+      this.program.distributionDuration,
+    );
     this.metricsMap.set(`${group}.distributionDuration`, {
       group,
       icon: 'hourglass',
       label: 'page.program.program-details.distributionDuration',
-      value: getValueOrEmpty(this.program.distributionDuration, (value) => {
-        if (value === DistributionFrequency.week) {
-          return `${value} ${this.translate.instant(
-            'page.program.metrics.units.duration.week',
-          )}`;
-        }
-        if (value === DistributionFrequency.month) {
-          return `${value} ${this.translate.instant(
-            'page.program.metrics.units.duration.month',
-          )}`;
-        }
-      }),
+      value: getValueOrEmpty(this.program.distributionDuration),
     });
     this.metricsMap.set(`${group}.fixedTransferValue`, {
       group,
