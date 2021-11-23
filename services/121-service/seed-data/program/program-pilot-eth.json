@@ -246,7 +246,7 @@
     {
       "name": "business",
       "label": {
-        "en": "Do you own a business? (if you do now own a business, then stop the registration process, it is a precondition to own a business)"
+        "en": "Do you own a business? (if you do not own a business, then stop the registration process, it is a precondition to own a business)"
       },
       "answerType": "dropdown",
       "questionType": "standard",
