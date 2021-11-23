@@ -102,11 +102,11 @@ export class BulkImportComponent implements OnInit {
       changes.programId &&
       ['string', 'number'].includes(typeof changes.programId.currentValue)
     ) {
-      this.disabled = !this.btnEnabledPa();
+      this.disabled = !this.btnEnabled();
     }
   }
 
-  private btnEnabledPa(): boolean {
+  private btnEnabled(): boolean {
     return this.authService.hasUserRole([UserRole.PersonalData]);
   }
 
