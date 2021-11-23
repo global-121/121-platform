@@ -1,6 +1,6 @@
 <ion-row class="ion-align-items-center">
   <confirm-prompt
-    [disabled]="disabledPA || isInProgress"
+    [disabled]="disabled || isInProgress"
     (confirm)="importPeopleAffected($event, PaStatus.imported)"
     [subHeader]="'page.program.bulk-import.imported.confirm-message'|translate"
     [message]="message?.imported"
@@ -13,7 +13,7 @@
 &nbsp;&nbsp;
 
   <confirm-prompt
-    [disabled]="disabledRegistrations || isInProgress"
+    [disabled]="disabled || isInProgress"
     (confirm)="importPeopleAffected($event, PaStatus.registered)"
     [subHeader]="'page.program.bulk-import.registered.confirm-message'|translate"
     [message]="message?.registered"

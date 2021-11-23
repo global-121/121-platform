@@ -45,8 +45,7 @@ export class BulkImportComponent implements OnInit {
   @Input()
   public programId: number;
 
-  public disabledRegistrations: boolean;
-  public disabledPA: boolean;
+  public disabled: boolean;
   public isInProgress = false;
 
   public PaStatus = PaStatus;
@@ -103,20 +102,12 @@ export class BulkImportComponent implements OnInit {
       changes.programId &&
       ['string', 'number'].includes(typeof changes.programId.currentValue)
     ) {
-      this.disabledRegistrations = !this.btnEnabledRegistrations();
-      this.disabledPA = !this.btnEnabledPa();
+      this.disabled = !this.btnEnabledPa();
     }
   }
 
-  private btnEnabledRegistrations(): boolean {
-    return this.authService.hasUserRole([UserRole.PersonalData]);
-  }
-
   private btnEnabledPa(): boolean {
-    return this.authService.hasUserRole([
-      UserRole.PersonalData,
-      UserRole.RunProgram,
-    ]);
+    return this.authService.hasUserRole([UserRole.PersonalData]);
   }
 
   public exportCSV(importResponse: any[]) {
