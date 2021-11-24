@@ -99,15 +99,19 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   private buildQuestions(programQuestions: ProgramQuestion[]) {
-    return programQuestions.map((question): Question => {
-      return {
-        name: question.name,
-        answerType: question.answerType,
-        label: this.translatableString.get(question.label),
-        placeholder: this.translatableString.get(question.placeholder),
-        options: !question.options ? null : this.buildOptions(question.options),
-      };
-    });
+    return programQuestions
+      .sort((a, b) => (a.id > b.id ? 1 : -1))
+      .map((question): Question => {
+        return {
+          name: question.name,
+          answerType: question.answerType,
+          label: this.translatableString.get(question.label),
+          placeholder: this.translatableString.get(question.placeholder),
+          options: !question.options
+            ? null
+            : this.buildOptions(question.options),
+        };
+      });
   }
 
   private buildOptions(optionSet: ProgramQuestionOption[]): QuestionOption[] {

@@ -119,17 +119,19 @@ export class SelectFspComponent extends PersonalDirective {
   }
 
   private buildQuestions(fspAttributes: FspAttribute[]) {
-    return fspAttributes.map((attribute): Question => {
-      return {
-        code: attribute.name,
-        answerType: attribute.answerType,
-        label: this.translatableString.get(attribute.label),
-        placeholder: this.translatableString.get(attribute.placeholder),
-        options: !attribute.options
-          ? null
-          : this.buildOptions(attribute.options),
-      };
-    });
+    return fspAttributes
+      .sort((a, b) => (a.id > b.id ? 1 : -1))
+      .map((attribute): Question => {
+        return {
+          code: attribute.name,
+          answerType: attribute.answerType,
+          label: this.translatableString.get(attribute.label),
+          placeholder: this.translatableString.get(attribute.placeholder),
+          options: !attribute.options
+            ? null
+            : this.buildOptions(attribute.options),
+        };
+      });
   }
 
   private buildOptions(optionSet: FspAttributeOption[]): QuestionOption[] {
