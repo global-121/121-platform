@@ -76,6 +76,7 @@ export class EnrollInProgramComponent extends PersonalDirective {
 
   initHistory() {
     this.isDisabled = true;
+    this.submitChoice = this.submitActions.confirm;
     this.currentProgram = this.data.currentProgram;
     this.prepareProgramDetails(this.data.currentProgram);
     this.answers = this.data.answers;
