@@ -1,3 +1,4 @@
+import { RegistrationStatusEnum } from './../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { TimeoutError } from 'rxjs';
@@ -40,6 +41,11 @@ export class FindByPhoneComponent implements ValidationComponent {
   public paChoice: string;
   public noPeopleAffectedFound = false;
 
+  private validatableStatuses = [
+    RegistrationStatusEnum.registered,
+    RegistrationStatusEnum.selectedForValidation
+  ]
+
   public phoneNumberInput = {
     value: '',
     isValid: false,
@@ -64,6 +70,10 @@ export class FindByPhoneComponent implements ValidationComponent {
     return this.inputPhonenumber.replace(/\D/g, '');
   }
 
+  public changePhoneNumber(): void {
+    this.noPeopleAffectedFound = false;
+  }
+
   private async getPaRegistrationId(phoneNumber: string): Promise<any> {
     let foundRegistrations = await this.getRegistrationForPhoneOffline(phoneNumber);
     if (foundRegistrations) {
@@ -80,13 +90,7 @@ export class FindByPhoneComponent implements ValidationComponent {
     } else if (foundRegistrations.length === 1) {
       this.findPaData(foundRegistrations[0].referenceId);
     } else if (foundRegistrations.length > 1) {
-      this.peopleAffectedFound = foundRegistrations.map((pa) => {
-        return {
-          referenceId: pa.referenceId,
-          name: this.getName(pa.customData),
-          phoneNumber: pa.phoneNumber,
-        } as PaToValidateOption;
-      });
+      this.peopleAffectedFound = foundRegistrations
     }
   }
 
@@ -100,35 +104,9 @@ export class FindByPhoneComponent implements ValidationComponent {
     this.findPaData(this.paChoice);
   }
 
-  public getName(customData): string {
-    if (customData[CustomDataNameAttributes.name]) {
-      return customData[CustomDataNameAttributes.name];
-    } else if (customData[CustomDataNameAttributes.firstName]) {
-      return (
-        customData[CustomDataNameAttributes.firstName] +
-        (customData[CustomDataNameAttributes.secondName]
-          ? ' ' + customData[CustomDataNameAttributes.secondName]
-          : '') +
-        (customData[CustomDataNameAttributes.thirdName]
-          ? ' ' + customData[CustomDataNameAttributes.thirdName]
-          : '')
-      );
-    } else if (customData[CustomDataNameAttributes.nameFirst]) {
-      return (
-        customData[CustomDataNameAttributes.nameFirst] +
-        (customData[CustomDataNameAttributes.nameLast]
-          ? ' ' + customData[CustomDataNameAttributes.nameLast]
-          : '')
-      );
-    } else {
-      return '';
-    }
-  }
-
   private async getRegistrationForPhoneOffline(
     phoneNumber: string,
   ): Promise<any> {
-    console.log('getRegistrationForPhoneOffline: ');
     const validationDataProgram = await this.storage.get(
       IonicStorageTypes.validationProgramData,
     );
@@ -176,7 +154,7 @@ export class FindByPhoneComponent implements ValidationComponent {
     const paToValidateOptions = []
     for (const referenceId of referenceIds) {
       const paToValidateOption = new PaToValidateOption()
-      paToValidateOption.name = validationData.find(o => (o.referenceId === 'referenceId' && o.name === 'name'));
+      paToValidateOption.name = validationData.find(o => (o.referenceId === referenceId && o.name === 'name')).programAnswer;
       paToValidateOption.referenceId = referenceId
       paToValidateOption.phoneNumber = phoneNumber
       paToValidateOptions.push(paToValidateOption)
@@ -187,14 +165,21 @@ export class FindByPhoneComponent implements ValidationComponent {
   private async getRegistrationForPhoneOnline(
     phoneNumber: string,
   ): Promise<string> {
-    console.log('getRegistrationForPhoneOnline: ');
     try {
-      const response = await this.programsService.getPaByPhoneNr(phoneNumber);
-      console.log('getRegistrationForPhoneOnline response: ', response);
-      if (response.length === 0) {
+      const rawRegistrations = await this.programsService.getPaByPhoneNr(phoneNumber);
+      const registrations = rawRegistrations.filter(r => (this.validatableStatuses.includes(r.registrationStatus)))
+
+      if (registrations.length === 0) {
         return;
       }
-      return response;
+
+      return registrations.map((pa) => {
+        return {
+          referenceId: pa.referenceId,
+          name: pa.customData.name,
+          phoneNumber: pa.phoneNumber,
+        } as PaToValidateOption;
+      });
     } catch (e) {
       console.log('Error: ', e);
       if (e.status === 0 || e instanceof TimeoutError) {

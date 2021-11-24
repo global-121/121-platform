@@ -13,6 +13,7 @@
       [placeholder]="phonenumberPlaceholder"
       [name]="questionName"
       [disabled]="0 || paDataResult || returnMainMenu"
+      (ionChange)="changePhoneNumber()"
     ></phone-number-input>
   </dialogue-turn>
 
@@ -32,8 +33,8 @@
       {{ 'validation.find-by-phone.main-menu' | translate }}
     </ion-button>
   </dialogue-turn>
-  <dialogue-turn 
-    *ngIf="noPeopleAffectedFound" 
+  <dialogue-turn
+    *ngIf="noPeopleAffectedFound"
     [isSpoken]="noPeopleAffectedFound"
   >
     {{ 'validation.find-by-phone.error' | translate }}
@@ -52,36 +53,45 @@
           (ionChange)="changePaChoice($event)"
           [disabled]="paChoice"
         >
-          <ion-item *ngFor="let pa of peopleAffectedFound"
-                    color="light"
-                    lines="full"
-                    class="ion-no-padding"
+          <ion-item
+            *ngFor="let pa of peopleAffectedFound"
+            color="light"
+            lines="full"
+            class="ion-no-padding"
           >
             <ion-item
               lines="none"
               color="light"
               class="ion-no-padding"
-              style="width: 100%;"
+              style="width: 100%"
             >
               <ion-label class="ion-text-wrap ion-padding-end">
-                <strong>{{ 'validation.find-by-phone.name' | translate }}:</strong> {{ pa.name }}
+                <strong
+                  >{{ 'validation.find-by-phone.name' | translate }}:</strong
+                >
+                {{ pa.name }}
               </ion-label>
               <ion-radio
                 [value]="pa.referenceId"
                 [checked]="pa.id === paChoice"
-                [disabled]="(paChoice && isDisabled) || paDataResult || returnMainMenu"
+                [disabled]="
+                  (paChoice && isDisabled) || paDataResult || returnMainMenu
+                "
               ></ion-radio>
             </ion-item>
           </ion-item>
         </ion-radio-group>
-        <ion-row *ngIf="paChoice"
-                class="ion-nowrap ion-align-items-center ion-margin-top"
+        <ion-row
+          *ngIf="paChoice"
+          class="ion-nowrap ion-align-items-center ion-margin-top"
         >
-          <ion-button type="submit"
-                      expand="block"
-                      style="flex-basis:100%"
-                      [disabled]="paDataResult"
-          >{{ 'shared.submit-button'|translate }}</ion-button>
+          <ion-button
+            type="submit"
+            expand="block"
+            style="flex-basis: 100%"
+            [disabled]="paDataResult"
+            >{{ 'shared.submit-button' | translate }}</ion-button
+          >
         </ion-row>
       </form>
     </dialogue-turn>
