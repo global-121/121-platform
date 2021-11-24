@@ -105,9 +105,6 @@ export class ConversationService {
       moment,
       data,
     });
-
-    console.log('this.history: ', this.history);
-    console.log('this.conversation: ', this.conversation);
   }
 
   private storeSection(section: ConversationSection) {
