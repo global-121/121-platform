@@ -9,9 +9,9 @@
   [disabled]="disabled"
   [placeholder]="placeholder"
   [pattern]="pattern ? pattern : '[0-9]+'"
-  (ionInput)="onInput()"
   (ionChange)="onChange()"
   debounce="300"
   ngDefaultControl
   [required]="required"
+  appOnlyAllowedInput
 ></ion-input>

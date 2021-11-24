@@ -18,3 +18,10 @@
 [dir='rtl'] .ion-float-end {
   float: left !important;
 }
+
+// Make numeric input data stand out more
+input[inputmode='tel'],
+input[inputmode='numeric'] {
+  font-family: monospace !important;
+  font-feature-settings: 'tnum';
+}

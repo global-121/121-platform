@@ -103,7 +103,7 @@ export class ValidateProgramComponent implements ValidationComponent {
       .sort((a, b) => (a.id > b.id ? 1 : -1))
       .map((question): Question => {
         return {
-          name: question.name,
+          code: question.name,
           answerType: question.answerType,
           label: this.translatableString.get(question.label),
           placeholder: this.translatableString.get(question.placeholder),
@@ -125,7 +125,7 @@ export class ValidateProgramComponent implements ValidationComponent {
 
   private getQuestionByCode(questionCode: string): Question {
     const result = this.questions.find((question: Question) => {
-      return question.name === questionCode;
+      return question.code === questionCode;
     });
 
     return result;
@@ -145,7 +145,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   private buildAnswer(questionName: string, answerValue: string) {
     const question = this.getQuestionByCode(questionName);
     const answer: Answer = {
-      name: questionName,
+      code: questionName,
       value: answerValue,
       label: answerValue,
     };
@@ -183,7 +183,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     answers.forEach((item: Answer) => {
       attributes.push({
         attributeId: 0,
-        programQuestionName: item.name,
+        programQuestionName: item.code,
         programAnswer: item.value,
       });
     });
