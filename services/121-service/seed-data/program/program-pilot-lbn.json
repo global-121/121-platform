@@ -1,6 +1,7 @@
 {
   "published": false,
   "validation": true,
+  "validationByQr": false,
   "phase": "design",
   "location": "Lebanon",
   "ngo": "Dorcas",

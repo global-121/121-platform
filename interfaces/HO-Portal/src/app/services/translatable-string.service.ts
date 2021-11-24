@@ -13,7 +13,7 @@ export class TranslatableStringService {
   }
 
   public get(property: TranslatableString | string): string {
-    if (!property) {
+    if (typeof property === undefined) {
       return '';
     }
 
