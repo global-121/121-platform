@@ -36,6 +36,53 @@
     {{ 'validation.find-by-phone.error' | translate }}
   </dialogue-turn>
 
+  <ng-container
+    *ngIf="multipleFound"
+    [isSpoken]="multipleFound"
+  >
+    <dialogue-turn>
+      {{ 'validation.find-by-phone.multiple-found' | translate }}
+    </dialogue-turn>
+    <dialogue-turn actor="self">
+      <form (submit)="submitPaChoice()">
+        <ion-radio-group
+          (ionChange)="changePaChoice($event)"
+          [disabled]="paChoice"
+        >
+          <ion-item *ngFor="let pa of peopleAffectedFound"
+                    color="light"
+                    lines="full"
+                    class="ion-no-padding"
+          >
+            <ion-item
+              lines="none"
+              color="light"
+              class="ion-no-padding"
+              style="width: 100%;"
+            >
+              <ion-label class="ion-text-wrap ion-padding-end">
+                {{ pa.name }}
+              </ion-label>
+              <ion-radio
+                [value]="pa.referenceId"
+                [checked]="pa.id === paChoice"
+                [disabled]="paChoice && isDisabled"
+              ></ion-radio>
+            </ion-item>
+          </ion-item>
+        </ion-radio-group>
+        <ion-row *ngIf="paChoice"
+                class="ion-nowrap ion-align-items-center ion-margin-top"
+        >
+          <ion-button type="submit"
+                      expand="block"
+                      style="flex-basis:100%"
+          >{{ 'shared.submit-button'|translate }}</ion-button>
+        </ion-row>
+      </form>
+    </dialogue-turn>
+  </ng-container>
+
   <dialogue-turn
     *ngIf="unknownReferenceIdCombination"
     [isSpoken]="unknownReferenceIdCombination"

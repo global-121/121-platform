@@ -8,12 +8,20 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 
+export enum CustomDataNameAttributes {
+  name = 'name',
+  nameFirst = 'nameFirst',
+  nameLast = 'nameLast',
+  firstName = 'firstName',
+  secondName = 'secondName',
+  thirdName = 'thirdName',
+}
+
 class PaToValidateOption {
   referenceId: string;
   name: string;
   phoneNumber: string;
-};
-
+}
 
 @Component({
   selector: 'app-find-by-phone',
@@ -27,15 +35,19 @@ export class FindByPhoneComponent implements ValidationComponent {
   public unknownReferenceIdCombination = false;
   public returnMainMenu = false;
 
-  public inputPhonenumber = ''
-  public questionName = 'checkPhoneNr'
-  public phonenumberPlaceholder = '+00'
-  public isFirst = true
+  public inputPhonenumber = '';
+  public questionName = 'checkPhoneNr';
+  public phonenumberPlaceholder = '+00';
+  public isFirst = true;
+
+  public multipleFound = false;
+  public peopleAffectedFound: PaToValidateOption[] = [];
+  public paChoice: string;
 
   public phoneNumberInput = {
     value: '',
-    isValid: false
-  }
+    isValid: false,
+  };
 
   constructor(
     public conversationService: ConversationService,
@@ -45,9 +57,8 @@ export class FindByPhoneComponent implements ValidationComponent {
   ) {}
 
   async ngOnInit() {
-    console.log('Find by phone')
-    // this.doScan();
-    console.log(this.modalController)
+    console.log('Find by phone');
+    console.log(this.modalController);
   }
 
   public async findPaByPhone() {
@@ -56,23 +67,73 @@ export class FindByPhoneComponent implements ValidationComponent {
   }
 
   private async getPaRegistrationId(phoneNumber: string): Promise<any> {
-    let foundValidationData = await this.getRegistrationForPhoneOffline(phoneNumber);
+    let foundValidationData = await this.getRegistrationForPhoneOffline(
+      phoneNumber,
+    );
     if (foundValidationData) {
       foundValidationData;
     } else {
       try {
-        foundValidationData = await this.getRegistrationForPhoneOnline(phoneNumber);
+        foundValidationData = await this.getRegistrationForPhoneOnline(
+          phoneNumber,
+        );
         console.log('foundData: ', foundValidationData);
       } catch {
         return null;
       }
     }
     if (foundValidationData.length === 1) {
-      this.findPaData(foundValidationData[0].referenceId)
+      this.findPaData(foundValidationData[0].referenceId);
+    } else if (foundValidationData.length > 1) {
+      this.multipleFound = true;
+      this.peopleAffectedFound = foundValidationData.map((pa) => {
+        return {
+          referenceId: pa.referenceId,
+          name: this.getName(pa.customData),
+          phoneNumber: pa.phoneNumber,
+        } as PaToValidateOption;
+      });
+      console.log('this.peopleAffectedFound: ', this.peopleAffectedFound);
     }
   }
 
-  private async getRegistrationForPhoneOffline(phoneNumber: string): Promise<any> {
+  public changePaChoice($event) {
+    this.paChoice = $event.detail.value;
+  }
+
+  public submitPaChoice() {
+    console.log('this.paChoice: ', this.paChoice);
+    this.findPaData(this.paChoice);
+  }
+
+  public getName(customData): string {
+    if (customData[CustomDataNameAttributes.name]) {
+      return customData[CustomDataNameAttributes.name];
+    } else if (customData[CustomDataNameAttributes.firstName]) {
+      return (
+        customData[CustomDataNameAttributes.firstName] +
+        (customData[CustomDataNameAttributes.secondName]
+          ? ' ' + customData[CustomDataNameAttributes.secondName]
+          : '') +
+        (customData[CustomDataNameAttributes.thirdName]
+          ? ' ' + customData[CustomDataNameAttributes.thirdName]
+          : '')
+      );
+    } else if (customData[CustomDataNameAttributes.nameFirst]) {
+      return (
+        customData[CustomDataNameAttributes.nameFirst] +
+        (customData[CustomDataNameAttributes.nameLast]
+          ? ' ' + customData[CustomDataNameAttributes.nameLast]
+          : '')
+      );
+    } else {
+      return '';
+    }
+  }
+
+  private async getRegistrationForPhoneOffline(
+    phoneNumber: string,
+  ): Promise<any> {
     console.log('getRegistrationForPhoneOffline: ');
     const validationDataProgram = await this.storage.get(
       IonicStorageTypes.validationProgramData,
@@ -81,12 +142,18 @@ export class FindByPhoneComponent implements ValidationComponent {
       IonicStorageTypes.validationFspData,
     );
     console.log('validationDataFsp: ', validationDataFsp);
-    let validationData = [...(validationDataProgram || []), ...(validationDataFsp || [])];
+    let validationData = [
+      ...(validationDataProgram || []),
+      ...(validationDataFsp || []),
+    ];
     console.log('validationData: ', validationData);
-    const matchingReferenceId = []
+    const matchingReferenceId = [];
     for (const element of validationData) {
       console.log('element: ', element);
-      if (element.name === 'phoneNumber' && phoneNumber === element.phoneNumber) {
+      if (
+        element.name === 'phoneNumber' &&
+        phoneNumber === element.phoneNumber
+      ) {
         matchingReferenceId.push(element.referenceId);
       }
     }
@@ -97,12 +164,14 @@ export class FindByPhoneComponent implements ValidationComponent {
     }
 
     if (matchingReferenceId.length === 1) {
-      return matchingReferenceId[0]
+      return matchingReferenceId[0];
     }
-    return
+    return;
   }
 
-  private async getRegistrationForPhoneOnline(phoneNumber: string): Promise<string> {
+  private async getRegistrationForPhoneOnline(
+    phoneNumber: string,
+  ): Promise<string> {
     console.log('getRegistrationForPhoneOnline: ');
     try {
       const response = await this.programsService.getPaByPhoneNr(phoneNumber);
@@ -125,11 +194,10 @@ export class FindByPhoneComponent implements ValidationComponent {
     if (!paData) {
       paData = await this.findPaDataOnline(referenceId);
       console.log('paData: findPaData', paData);
-
     }
 
     await this.storePaData(paData);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     this.openValidateProgramComponent();
   }
 
@@ -175,7 +243,6 @@ export class FindByPhoneComponent implements ValidationComponent {
   private async storePaData(paData: any) {
     await window.sessionStorage.setItem('paData', JSON.stringify(paData));
   }
-
 
   public openValidateProgramComponent() {
     this.paDataResult = true;
