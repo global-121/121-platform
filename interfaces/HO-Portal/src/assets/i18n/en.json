@@ -27,7 +27,7 @@
     },
     "login": {
       "pageTitle": "Log in",
-      "portalTitle": "PORTAL",
+      "portalTitle": "Portal",
       "form": {
         "email": {
           "label": "Email Address"

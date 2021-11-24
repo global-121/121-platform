@@ -17,7 +17,7 @@
           <div id="logo-container">
             <img src="./assets/img/121-logo.png" alt="121">
           </div>
-          <h1>{{ 'page.login.portalTitle'|translate }}</h1>
+          <h1 class="text-uppercase">{{ 'page.login.portalTitle'|translate }}</h1>
         </div>
         <div class="ion-padding auth-form-container">
           <form
@@ -66,7 +66,6 @@
               <ion-button
                 type="submit"
                 expand="block"
-                size="default"
                 [disabled]="!loginForm?.form?.valid"
                 class="auth-button"
               >
