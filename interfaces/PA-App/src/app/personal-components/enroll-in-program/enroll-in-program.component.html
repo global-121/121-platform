@@ -35,7 +35,10 @@
     </ul>
 
     <div class="ion-margin-top">
-      <ion-radio-group (ionChange)="submitChoice = $event.detail.value">
+      <ion-radio-group
+        (ionChange)="submitChoice = $event.detail.value"
+        [value]="isDisabled ? submitChoice : ''"
+      >
         <ion-item
           color="light"
           lines="full"
@@ -57,7 +60,6 @@
             </ion-label>
             <ion-radio
               [value]="submitActions.confirm"
-              [checked]="isDisabled"
               [disabled]="isDisabled"
             ></ion-radio>
           </ion-item>

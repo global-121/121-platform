@@ -6,7 +6,10 @@
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self">
-      <ion-radio-group (ionChange)="changeSignupSignin($event.detail.value)">
+      <ion-radio-group
+        (ionChange)="changeSignupSignin($event.detail.value)"
+        [value]="signupSigninChoice"
+      >
         <ion-item
           color="light"
           lines="full"
@@ -28,7 +31,6 @@
             </ion-label>
             <ion-radio
               [value]="idChoices.create"
-              [checked]="signupSigninChoice === idChoices.create"
               [disabled]="typeChosen"
             ></ion-radio>
           </ion-item>
@@ -54,7 +56,6 @@
             </ion-label>
             <ion-radio
               [value]="idChoices.login"
-              [checked]="signupSigninChoice === idChoices.login"
               [disabled]="typeChosen"
             ></ion-radio>
           </ion-item>

@@ -20,7 +20,10 @@
                  [isSpoken]="programs?.length"
   >
     <form (submit)="submitProgram()">
-      <ion-radio-group (ionChange)="changeProgram($event)">
+      <ion-radio-group
+        (ionChange)="changeProgram($event)"
+        [value]="programChoice"
+      >
         <ion-item *ngFor="let program of programs"
                   color="light"
                   lines="full"
@@ -36,7 +39,6 @@
             </ng-container>
           </ion-label>
           <ion-radio [value]="program.id"
-                     [checked]="(program.id === programChoice)"
                      [disabled]="isDisabled"
           ></ion-radio>
         </ion-item>

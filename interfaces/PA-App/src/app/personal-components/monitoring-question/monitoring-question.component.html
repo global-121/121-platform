@@ -3,7 +3,10 @@
     <p [innerHTML]="monitoringQuestion?.intro"></p>
   </dialogue-turn>
   <dialogue-turn actor="self">
-      <ion-radio-group (ionChange)="changeMonitoringChoice($event.detail.value)">
+      <ion-radio-group
+        (ionChange)="changeMonitoringChoice($event.detail.value)"
+        [value]="monitoringChoice"
+      >
         <ion-item
           *ngFor="let option of monitoringQuestion?.options"
           color="light"
@@ -16,7 +19,6 @@
           ></ion-label>
           <ion-radio
             [value]="option.option"
-            [checked]="monitoringChoice === option.option"
             [disabled]="monitoringSubmitted"
           ></ion-radio>
         </ion-item>
