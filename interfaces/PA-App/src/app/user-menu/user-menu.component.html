@@ -10,9 +10,19 @@
       detail="true"
       detail-icon="trash"
       [attr.aria-label]="'account.delete-data'|translate"
-      class="ion-margin-bottom"
     >
       {{ 'account.delete-data'|translate }}
+    </ion-item>
+    <ion-item
+      button="true"
+      [disabled]="!isLoggedIn"
+      (click)="logout()"
+      detail="true"
+      detail-icon="log-out"
+      [attr.aria-label]="'account.logout'|translate"
+      class="ion-margin-bottom"
+    >
+      {{ 'account.logout'|translate }}
     </ion-item>
     <ion-button
       type="button"
