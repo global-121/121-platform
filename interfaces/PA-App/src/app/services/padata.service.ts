@@ -193,13 +193,14 @@ export class PaDataService {
     window.sessionStorage.removeItem(this.type.username);
     this.setLoggedOut();
   }
-  public async deleteAccount(password: string): Promise<any> {
+
+  public async deleteData(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       if (!this.hasAccount) {
         return reject('');
       }
 
-      await this.programService.deleteAccount(password).then(
+      await this.programService.deleteData().then(
         async () => {
           this.setLoggedOut();
           return resolve(true);

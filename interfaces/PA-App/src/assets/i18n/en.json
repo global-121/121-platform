@@ -4,7 +4,7 @@
     "change-password": "Change password",
     "delete-account-header": "Enter your password if you are sure you want to delete your account",
     "delete-account-message": "Deleting your account is irreversible, all your data will be lost!",
-    "delete-digital-id": "Delete account",
+    "delete-data": "Delete my data",
     "delete-fail": "Something went wrong, your account could not by fully deleted.",
     "delete-success": "Your account has been succesfully deleted. You will now logout",
     "enter-password": "Your Password",
