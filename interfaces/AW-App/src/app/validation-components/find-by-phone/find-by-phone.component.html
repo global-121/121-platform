@@ -12,14 +12,14 @@
       required
       [placeholder]="phonenumberPlaceholder"
       [name]="questionName"
-      [disabled]="0"
+      [disabled]="0 || paDataResult || returnMainMenu"
     ></phone-number-input>
   </dialogue-turn>
 
   <dialogue-turn actor="self" isSpoken="true">
     <ion-button
       expand="block"
-      [disabled]="inputPhonenumber === ''"
+      [disabled]="inputPhonenumber === '' || paDataResult || returnMainMenu"
       (click)="findPaByPhone()"
     >
       {{ 'validation.find-by-phone.find-phone' | translate }}
@@ -32,13 +32,16 @@
       {{ 'validation.find-by-phone.main-menu' | translate }}
     </ion-button>
   </dialogue-turn>
-  <dialogue-turn *ngIf="scanError" [isSpoken]="scanError">
+  <dialogue-turn 
+    *ngIf="noPeopleAffectedFound" 
+    [isSpoken]="noPeopleAffectedFound"
+  >
     {{ 'validation.find-by-phone.error' | translate }}
   </dialogue-turn>
 
   <ng-container
-    *ngIf="multipleFound"
-    [isSpoken]="multipleFound"
+    *ngIf="peopleAffectedFound.length"
+    [isSpoken]="peopleAffectedFound.length"
   >
     <dialogue-turn>
       {{ 'validation.find-by-phone.multiple-found' | translate }}
@@ -61,12 +64,12 @@
               style="width: 100%;"
             >
               <ion-label class="ion-text-wrap ion-padding-end">
-                {{ pa.name }}
+                <strong>{{ 'validation.find-by-phone.name' | translate }}:</strong> {{ pa.name }}
               </ion-label>
               <ion-radio
                 [value]="pa.referenceId"
                 [checked]="pa.id === paChoice"
-                [disabled]="paChoice && isDisabled"
+                [disabled]="(paChoice && isDisabled) || paDataResult || returnMainMenu"
               ></ion-radio>
             </ion-item>
           </ion-item>
@@ -77,18 +80,13 @@
           <ion-button type="submit"
                       expand="block"
                       style="flex-basis:100%"
+                      [disabled]="paDataResult"
           >{{ 'shared.submit-button'|translate }}</ion-button>
         </ion-row>
       </form>
     </dialogue-turn>
   </ng-container>
 
-  <dialogue-turn
-    *ngIf="unknownReferenceIdCombination"
-    [isSpoken]="unknownReferenceIdCombination"
-  >
-    {{ 'validation.find-by-phone.unknownReferenceIdCombination' | translate }}
-  </dialogue-turn>
   <dialogue-turn *ngIf="paDataResult" [isSpoken]="paDataResult">
     {{ 'validation.find-by-phone.conclusion' | translate }}
   </dialogue-turn>

@@ -29,20 +29,17 @@ class PaToValidateOption {
   styleUrls: ['./find-by-phone.component.scss'],
 })
 export class FindByPhoneComponent implements ValidationComponent {
-  public scanResult: string;
-  public scanError = false;
   public paDataResult = false;
-  public unknownReferenceIdCombination = false;
   public returnMainMenu = false;
 
   public inputPhonenumber = '';
   public questionName = 'checkPhoneNr';
-  public phonenumberPlaceholder = '+00';
+  public phonenumberPlaceholder = '+000 00 000 000';
   public isFirst = true;
 
-  public multipleFound = false;
   public peopleAffectedFound: PaToValidateOption[] = [];
   public paChoice: string;
+  public noPeopleAffectedFound = false;
 
   public phoneNumberInput = {
     value: '',
@@ -62,6 +59,7 @@ export class FindByPhoneComponent implements ValidationComponent {
   }
 
   public async findPaByPhone() {
+    this.noPeopleAffectedFound = false;
     console.log('findPaByPhone: ');
     await this.getPaRegistrationId(this.inputPhonenumber);
   }
@@ -82,10 +80,11 @@ export class FindByPhoneComponent implements ValidationComponent {
         return null;
       }
     }
-    if (foundValidationData.length === 1) {
+    if (!foundValidationData) {
+      this.noPeopleAffectedFound = true;
+    } else if (foundValidationData.length === 1) {
       this.findPaData(foundValidationData[0].referenceId);
     } else if (foundValidationData.length > 1) {
-      this.multipleFound = true;
       this.peopleAffectedFound = foundValidationData.map((pa) => {
         return {
           referenceId: pa.referenceId,
@@ -93,16 +92,16 @@ export class FindByPhoneComponent implements ValidationComponent {
           phoneNumber: pa.phoneNumber,
         } as PaToValidateOption;
       });
-      console.log('this.peopleAffectedFound: ', this.peopleAffectedFound);
     }
   }
 
   public changePaChoice($event) {
+    this.noPeopleAffectedFound = false;
     this.paChoice = $event.detail.value;
   }
 
   public submitPaChoice() {
-    console.log('this.paChoice: ', this.paChoice);
+    this.noPeopleAffectedFound = false;
     this.findPaData(this.paChoice);
   }
 
@@ -196,8 +195,7 @@ export class FindByPhoneComponent implements ValidationComponent {
       console.log('paData: findPaData', paData);
     }
 
-    await this.storePaData(paData);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    this.storePaData(paData);
     this.openValidateProgramComponent();
   }
 
@@ -240,14 +238,12 @@ export class FindByPhoneComponent implements ValidationComponent {
     }
   }
 
-  private async storePaData(paData: any) {
-    await window.sessionStorage.setItem('paData', JSON.stringify(paData));
+  private storePaData(paData: any) {
+    window.sessionStorage.setItem('paData', JSON.stringify(paData));
   }
 
   public openValidateProgramComponent() {
     this.paDataResult = true;
-    this.unknownReferenceIdCombination = false;
-    this.scanError = false;
     this.complete();
   }
 
