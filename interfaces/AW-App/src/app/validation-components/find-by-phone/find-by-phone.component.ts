@@ -45,61 +45,90 @@ export class FindByPhoneComponent implements ValidationComponent {
   ) {}
 
   async ngOnInit() {
-    console.log('Find by phone')
     // this.doScan();
     console.log(this.modalController)
   }
 
   public async findPaByPhone() {
-    console.log('findPaByPhone: ');
-    await this.getPaRegistrationId(this.inputPhonenumber);
+    const cleanedPhoneNr = this.cleanPhoneNumber()
+    await this.getPaRegistrationId(cleanedPhoneNr);
+  }
+
+  private cleanPhoneNumber(): string {
+    return this.inputPhonenumber.replace(/\D/g, '');
   }
 
   private async getPaRegistrationId(phoneNumber: string): Promise<any> {
-    let foundValidationData = await this.getRegistrationForPhoneOffline(phoneNumber);
-    if (foundValidationData) {
-      foundValidationData;
+    let foundRegistrations = await this.getRegistrationForPhoneOffline(phoneNumber);
+    if (foundRegistrations) {
+      foundRegistrations;
     } else {
       try {
-        foundValidationData = await this.getRegistrationForPhoneOnline(phoneNumber);
-        console.log('foundData: ', foundValidationData);
+        foundRegistrations = await this.getRegistrationForPhoneOnline(phoneNumber);
+        console.log('foundRegistrations: ', foundRegistrations);
       } catch {
         return null;
       }
     }
-    if (foundValidationData.length === 1) {
-      this.findPaData(foundValidationData[0].referenceId)
+    if (foundRegistrations.length === 1) {
+      this.findPaData(foundRegistrations[0].referenceId)
     }
   }
 
   private async getRegistrationForPhoneOffline(phoneNumber: string): Promise<any> {
-    console.log('getRegistrationForPhoneOffline: ');
     const validationDataProgram = await this.storage.get(
       IonicStorageTypes.validationProgramData,
     );
     const validationDataFsp = await this.storage.get(
       IonicStorageTypes.validationFspData,
-    );
-    console.log('validationDataFsp: ', validationDataFsp);
-    let validationData = [...(validationDataProgram || []), ...(validationDataFsp || [])];
-    console.log('validationData: ', validationData);
-    const matchingReferenceId = []
-    for (const element of validationData) {
-      console.log('element: ', element);
-      if (element.name === 'phoneNumber' && phoneNumber === element.phoneNumber) {
-        matchingReferenceId.push(element.referenceId);
+    );;
+    let validationData
+    if (validationDataProgram) {
+      validationData = validationDataProgram
+    } else {
+      validationData = []
+    }
+    if (validationDataFsp) {
+      for (const registrationElement of validationDataFsp) {
+        if (registrationElement.answers['phoneNumber']) {
+          const appendItem = {
+            referenceId: registrationElement.referenceId,
+            programAnswer: registrationElement.answers['phoneNumber'].value,
+            name: 'phoneNumber'
+          }
+          validationData.push(appendItem)
+
+        }
       }
     }
-    console.log('matchingReferenceId: ', matchingReferenceId);
-
-    if (matchingReferenceId.length === 0) {
+    const matchingReferenceIds = []
+    for (const element of validationData) {
+      if (element.name === 'phoneNumber' && phoneNumber === element.programAnswer) {
+        matchingReferenceIds.push(element.referenceId);
+      }
+    }
+    if (matchingReferenceIds.length === 0) {
       return;
     }
 
-    if (matchingReferenceId.length === 1) {
-      return matchingReferenceId[0]
+    if (matchingReferenceIds.length === 1) {
+      return [{ referenceId: matchingReferenceIds[0]}]
     }
-    return
+    if (matchingReferenceIds.length > 1) {
+      return this.createOfflineOptionToValidate(matchingReferenceIds, validationData, phoneNumber)
+    }
+  }
+
+  private createOfflineOptionToValidate(referenceIds: string[], validationData: any[], phoneNumber: string) {
+    const paToValidateOptions = []
+    for (const referenceId of referenceIds) {
+      const paToValidateOption = new PaToValidateOption()
+      paToValidateOption.name = validationData.find(o => (o.referenceId === 'referenceId' && o.name === 'name'));
+      paToValidateOption.referenceId = referenceId
+      paToValidateOption.phoneNumber = phoneNumber
+      paToValidateOptions.push(paToValidateOption)
+    }
+    return paToValidateOptions
   }
 
   private async getRegistrationForPhoneOnline(phoneNumber: string): Promise<string> {
@@ -120,11 +149,9 @@ export class FindByPhoneComponent implements ValidationComponent {
   }
 
   private async findPaData(referenceId: string): Promise<any> {
-    console.log('referenceId: findPaData', referenceId);
     let paData = await this.findPaDataOffline(referenceId);
     if (!paData) {
       paData = await this.findPaDataOnline(referenceId);
-      console.log('paData: findPaData', paData);
 
     }
 
@@ -136,7 +163,6 @@ export class FindByPhoneComponent implements ValidationComponent {
   private async findPaDataOnline(referenceId: string): Promise<any> {
     try {
       const response = await this.programsService.getRegistration(referenceId);
-      console.log('response: findPaDataOnline ', response);
       if (response.length === 0) {
         return;
       }
@@ -150,7 +176,6 @@ export class FindByPhoneComponent implements ValidationComponent {
   }
 
   private async findPaDataOffline(referenceId: string): Promise<any> {
-    console.log('findPaDataOffline()');
     const offlineData = await this.storage.get(
       IonicStorageTypes.validationProgramData,
     );
