@@ -29,7 +29,7 @@ export class UpdatePropertyItemComponent implements OnInit {
   public inProgress: boolean;
 
   @Input()
-  public hideButton: boolean;
+  public showSubmit = true;
 
   @Output()
   updated: EventEmitter<string> = new EventEmitter<string>();

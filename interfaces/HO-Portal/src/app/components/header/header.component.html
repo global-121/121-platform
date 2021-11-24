@@ -37,7 +37,8 @@
         {{ 'header.dashboard'|translate }}
       </ion-button>
       <ion-button
-        [disabled]="!showManageAidworkers"
+        *ngIf="showManageAidworkers"
+        [disabled]="!canManageAidWorkers()"
         [routerLink]="['/program', programId, 'aid-workers']"
         routerLinkActive
         #rlaAidWorkers="routerLinkActive"

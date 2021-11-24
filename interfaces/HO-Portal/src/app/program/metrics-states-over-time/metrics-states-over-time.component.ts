@@ -32,9 +32,7 @@ export class MetricsStatesOverTimeComponent implements OnChanges, OnInit {
     private pastPaymentsService: PastPaymentsService,
     private chartToolTipService: TooltipService,
     private appRef: ApplicationRef,
-  ) {
-    console.log('this.appRef: ', this.appRef);
-  }
+  ) {}
 
   public async ngOnInit() {
     if (!this.appRef.components[0]) {
