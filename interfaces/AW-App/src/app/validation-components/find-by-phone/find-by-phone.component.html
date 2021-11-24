@@ -12,14 +12,14 @@
       required
       [placeholder]="phonenumberPlaceholder"
       [name]="questionName"
-      [disabled]="0"
+      [disabled]="0 || paDataResult || returnMainMenu"
     ></phone-number-input>
   </dialogue-turn>
 
   <dialogue-turn actor="self" isSpoken="true">
     <ion-button
       expand="block"
-      [disabled]="inputPhonenumber === ''"
+      [disabled]="inputPhonenumber === '' || paDataResult || returnMainMenu"
       (click)="findPaByPhone()"
     >
       {{ 'validation.find-by-phone.find-phone' | translate }}
@@ -32,16 +32,61 @@
       {{ 'validation.find-by-phone.main-menu' | translate }}
     </ion-button>
   </dialogue-turn>
-  <dialogue-turn *ngIf="scanError" [isSpoken]="scanError">
+  <dialogue-turn 
+    *ngIf="noPeopleAffectedFound" 
+    [isSpoken]="noPeopleAffectedFound"
+  >
     {{ 'validation.find-by-phone.error' | translate }}
   </dialogue-turn>
 
-  <dialogue-turn
-    *ngIf="unknownReferenceIdCombination"
-    [isSpoken]="unknownReferenceIdCombination"
+  <ng-container
+    *ngIf="peopleAffectedFound.length"
+    [isSpoken]="peopleAffectedFound.length"
   >
-    {{ 'validation.find-by-phone.unknownReferenceIdCombination' | translate }}
-  </dialogue-turn>
+    <dialogue-turn>
+      {{ 'validation.find-by-phone.multiple-found' | translate }}
+    </dialogue-turn>
+    <dialogue-turn actor="self">
+      <form (submit)="submitPaChoice()">
+        <ion-radio-group
+          (ionChange)="changePaChoice($event)"
+          [disabled]="paChoice"
+        >
+          <ion-item *ngFor="let pa of peopleAffectedFound"
+                    color="light"
+                    lines="full"
+                    class="ion-no-padding"
+          >
+            <ion-item
+              lines="none"
+              color="light"
+              class="ion-no-padding"
+              style="width: 100%;"
+            >
+              <ion-label class="ion-text-wrap ion-padding-end">
+                <strong>{{ 'validation.find-by-phone.name' | translate }}:</strong> {{ pa.name }}
+              </ion-label>
+              <ion-radio
+                [value]="pa.referenceId"
+                [checked]="pa.id === paChoice"
+                [disabled]="(paChoice && isDisabled) || paDataResult || returnMainMenu"
+              ></ion-radio>
+            </ion-item>
+          </ion-item>
+        </ion-radio-group>
+        <ion-row *ngIf="paChoice"
+                class="ion-nowrap ion-align-items-center ion-margin-top"
+        >
+          <ion-button type="submit"
+                      expand="block"
+                      style="flex-basis:100%"
+                      [disabled]="paDataResult"
+          >{{ 'shared.submit-button'|translate }}</ion-button>
+        </ion-row>
+      </form>
+    </dialogue-turn>
+  </ng-container>
+
   <dialogue-turn *ngIf="paDataResult" [isSpoken]="paDataResult">
     {{ 'validation.find-by-phone.conclusion' | translate }}
   </dialogue-turn>

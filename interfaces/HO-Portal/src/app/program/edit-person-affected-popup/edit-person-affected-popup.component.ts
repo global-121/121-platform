@@ -75,9 +75,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   }
 
   private formatErrors(error, attribute: string): string {
-    console.log('error: formatErrors', error);
     if (error.errors) {
-      return this.formatConstraintsErrors(error, attribute);
+      return this.formatConstraintsErrors(error.errors, attribute);
     }
     if (error.message) {
       return '<br><br>' + error.message + '<br>';

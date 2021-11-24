@@ -25,8 +25,8 @@
     "main-menu": {
       "introduction": "The following actions are available. Please select one.",
       "download-data": "Download validation data",
-      "scan-qr": "Scan Person Affected's QR-code",
-      "find-by-phone": "Find a Person Affected by phonenumber",
+      "scan-qr": "Find Person Affected by QR-code",
+      "find-by-phone": "Find Person Affected by phonenumber",
       "upload-data": "Upload validation data"
     },
     "download-data": {
@@ -46,9 +46,10 @@
       "introduction": "Enter phonenumber to retrieve Person Affected's information.",
       "enter-phone": "Enter phonenumber with country code",
       "find-phone": "Find phonenumber",
-      "error": "The scanned QR-code is not valid.",
-      "unknownReferenceIdCombination": "QR-code not found. You can try scanning another QR-code.",
-      "conclusion": "Thank you. You have scanned a valid reference-ID.",
+      "error": "No Person Affected found with this phonenumber. Please try again by changing the phonenumber above and pressing the button again.",
+      "name": "Name",
+      "multiple-found": "Multiple PA's are found for this phone-number. Please select the right one.",
+      "conclusion": "Thank you. You have correctly identified a Person Affected.",
       "main-menu": "Back to main menu"
     },
     "upload-data": {

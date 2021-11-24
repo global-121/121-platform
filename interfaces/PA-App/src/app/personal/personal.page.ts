@@ -8,6 +8,7 @@ import {
 import { IonContent } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
+import { AutoSignupComponent } from '../personal-components/auto-signup/auto-signup.component';
 import { ConsentQuestionComponent } from '../personal-components/consent-question/consent-question.component';
 import { ContactDetailsComponent } from '../personal-components/contact-details/contact-details.component';
 import { CreateAccountComponent } from '../personal-components/create-account/create-account.component';
@@ -66,6 +67,7 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.selectProgram]: SelectProgramComponent,
     [PersonalComponents.setNotificationNumber]: SetNotificationNumberComponent,
     [PersonalComponents.signupSignin]: SignupSigninComponent,
+    [PersonalComponents.autoSignup]: AutoSignupComponent,
   };
   public debugSections = Object.keys(this.availableSections);
 

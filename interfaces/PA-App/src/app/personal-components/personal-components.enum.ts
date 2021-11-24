@@ -13,6 +13,7 @@ export enum PersonalComponents {
   selectProgram = 'select-program',
   setNotificationNumber = 'set-notification-number',
   signupSignin = 'signup-signin',
+  autoSignup = 'auto-signup',
 }
 
 // These sections are no longer available in the PA-app, but PA might have data for these in their ConversationHistory

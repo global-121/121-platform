@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { TimeoutError } from 'rxjs';
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -8,12 +7,20 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 
+export enum CustomDataNameAttributes {
+  name = 'name',
+  nameFirst = 'nameFirst',
+  nameLast = 'nameLast',
+  firstName = 'firstName',
+  secondName = 'secondName',
+  thirdName = 'thirdName',
+}
+
 class PaToValidateOption {
   referenceId: string;
   name: string;
   phoneNumber: string;
-};
-
+}
 
 @Component({
   selector: 'app-find-by-phone',
@@ -21,32 +28,31 @@ class PaToValidateOption {
   styleUrls: ['./find-by-phone.component.scss'],
 })
 export class FindByPhoneComponent implements ValidationComponent {
-  public scanResult: string;
-  public scanError = false;
   public paDataResult = false;
-  public unknownReferenceIdCombination = false;
   public returnMainMenu = false;
 
-  public inputPhonenumber = ''
-  public questionName = 'checkPhoneNr'
-  public phonenumberPlaceholder = '+00'
-  public isFirst = true
+  public inputPhonenumber = '';
+  public questionName = 'checkPhoneNr';
+  public phonenumberPlaceholder = '+000 00 000 000';
+  public isFirst = true;
+
+  public peopleAffectedFound: PaToValidateOption[] = [];
+  public paChoice: string;
+  public noPeopleAffectedFound = false;
 
   public phoneNumberInput = {
     value: '',
-    isValid: false
-  }
+    isValid: false,
+  };
 
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
     private storage: Storage,
-    private modalController: ModalController,
   ) {}
 
   async ngOnInit() {
-    // this.doScan();
-    console.log(this.modalController)
+
   }
 
   public async findPaByPhone() {
@@ -65,17 +71,64 @@ export class FindByPhoneComponent implements ValidationComponent {
     } else {
       try {
         foundRegistrations = await this.getRegistrationForPhoneOnline(phoneNumber);
-        console.log('foundRegistrations: ', foundRegistrations);
       } catch {
         return null;
       }
     }
-    if (foundRegistrations.length === 1) {
-      this.findPaData(foundRegistrations[0].referenceId)
+    if (!foundRegistrations) {
+      this.noPeopleAffectedFound = true;
+    } else if (foundRegistrations.length === 1) {
+      this.findPaData(foundRegistrations[0].referenceId);
+    } else if (foundRegistrations.length > 1) {
+      this.peopleAffectedFound = foundRegistrations.map((pa) => {
+        return {
+          referenceId: pa.referenceId,
+          name: this.getName(pa.customData),
+          phoneNumber: pa.phoneNumber,
+        } as PaToValidateOption;
+      });
     }
   }
 
-  private async getRegistrationForPhoneOffline(phoneNumber: string): Promise<any> {
+  public changePaChoice($event) {
+    this.noPeopleAffectedFound = false;
+    this.paChoice = $event.detail.value;
+  }
+
+  public submitPaChoice() {
+    this.noPeopleAffectedFound = false;
+    this.findPaData(this.paChoice);
+  }
+
+  public getName(customData): string {
+    if (customData[CustomDataNameAttributes.name]) {
+      return customData[CustomDataNameAttributes.name];
+    } else if (customData[CustomDataNameAttributes.firstName]) {
+      return (
+        customData[CustomDataNameAttributes.firstName] +
+        (customData[CustomDataNameAttributes.secondName]
+          ? ' ' + customData[CustomDataNameAttributes.secondName]
+          : '') +
+        (customData[CustomDataNameAttributes.thirdName]
+          ? ' ' + customData[CustomDataNameAttributes.thirdName]
+          : '')
+      );
+    } else if (customData[CustomDataNameAttributes.nameFirst]) {
+      return (
+        customData[CustomDataNameAttributes.nameFirst] +
+        (customData[CustomDataNameAttributes.nameLast]
+          ? ' ' + customData[CustomDataNameAttributes.nameLast]
+          : '')
+      );
+    } else {
+      return '';
+    }
+  }
+
+  private async getRegistrationForPhoneOffline(
+    phoneNumber: string,
+  ): Promise<any> {
+    console.log('getRegistrationForPhoneOffline: ');
     const validationDataProgram = await this.storage.get(
       IonicStorageTypes.validationProgramData,
     );
@@ -131,7 +184,9 @@ export class FindByPhoneComponent implements ValidationComponent {
     return paToValidateOptions
   }
 
-  private async getRegistrationForPhoneOnline(phoneNumber: string): Promise<string> {
+  private async getRegistrationForPhoneOnline(
+    phoneNumber: string,
+  ): Promise<string> {
     console.log('getRegistrationForPhoneOnline: ');
     try {
       const response = await this.programsService.getPaByPhoneNr(phoneNumber);
@@ -152,11 +207,9 @@ export class FindByPhoneComponent implements ValidationComponent {
     let paData = await this.findPaDataOffline(referenceId);
     if (!paData) {
       paData = await this.findPaDataOnline(referenceId);
-
     }
 
-    await this.storePaData(paData);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    this.storePaData(paData);
     this.openValidateProgramComponent();
   }
 
@@ -197,15 +250,12 @@ export class FindByPhoneComponent implements ValidationComponent {
     }
   }
 
-  private async storePaData(paData: any) {
-    await window.sessionStorage.setItem('paData', JSON.stringify(paData));
+  private storePaData(paData: any) {
+    window.sessionStorage.setItem('paData', JSON.stringify(paData));
   }
-
 
   public openValidateProgramComponent() {
     this.paDataResult = true;
-    this.unknownReferenceIdCombination = false;
-    this.scanError = false;
     this.complete();
   }
 

@@ -123,16 +123,18 @@ export class ValidateFspComponent implements ValidationComponent {
   }
 
   private buildQuestions(fspAttributes: FspAttribute[]) {
-    return fspAttributes.map((attribute): Question => {
-      return {
-        name: attribute.name,
-        answerType: attribute.answerType,
-        label: this.translatableString.get(attribute.label),
-        options: !attribute.options
-          ? null
-          : this.buildOptions(attribute.options),
-      };
-    });
+    return fspAttributes
+      .sort((a, b) => (a.id > b.id ? 1 : -1))
+      .map((attribute): Question => {
+        return {
+          name: attribute.name,
+          answerType: attribute.answerType,
+          label: this.translatableString.get(attribute.label),
+          options: !attribute.options
+            ? null
+            : this.buildOptions(attribute.options),
+        };
+      });
   }
 
   private buildOptions(optionSet: FspAttributeOption[]): QuestionOption[] {

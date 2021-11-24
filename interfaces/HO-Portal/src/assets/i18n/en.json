@@ -191,7 +191,8 @@
         "programQuestions": "Inclusion criteria",
         "aidworkerAssignments": "Assigned aidworkers",
         "financialServiceProviders": "Financial Service-providers",
-        "validation": "Program includes validation"
+        "validation": "Program includes validation",
+        "validationByQr": "Program includes validation via QR-code"
       },
       "program-payout": {
         "section-title": "Manage Payments",

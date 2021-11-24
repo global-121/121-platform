@@ -67,7 +67,7 @@ export class ConsentQuestionComponent extends PersonalDirective {
   }
 
   getNextSection() {
-    return PersonalComponents.signupSignin;
+    return PersonalComponents.autoSignup;
   }
 
   complete() {
