@@ -6,16 +6,6 @@
     <ion-item
       button="true"
       [disabled]="!isLoggedIn"
-      (click)="deleteData()"
-      detail="true"
-      detail-icon="trash"
-      [attr.aria-label]="'account.delete-data'|translate"
-    >
-      {{ 'account.delete-data'|translate }}
-    </ion-item>
-    <ion-item
-      button="true"
-      [disabled]="!isLoggedIn"
       (click)="logout()"
       detail="true"
       detail-icon="log-out"
@@ -23,6 +13,16 @@
       class="ion-margin-bottom"
     >
       {{ 'account.logout'|translate }}
+    </ion-item>
+    <ion-item
+      button="true"
+      [disabled]="!isLoggedIn"
+      (click)="deleteData()"
+      detail="true"
+      detail-icon="trash"
+      [attr.aria-label]="'account.delete-data'|translate"
+    >
+      {{ 'account.delete-data'|translate }}
     </ion-item>
     <ion-button
       type="button"

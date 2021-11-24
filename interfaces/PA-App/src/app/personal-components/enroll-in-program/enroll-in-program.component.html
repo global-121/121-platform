@@ -4,13 +4,6 @@
       <play-text-audio key="personal.enroll-in-program.introduction-information" class="ion-float-start ion-margin-end"></play-text-audio>
       <span [innerHTML]="'personal.enroll-in-program.introduction-information'|translate"></span>
     </p>
-
-    <more-info-button
-      *ngIf="instanceInformation?.dataPolicy"
-      buttonKey="personal.enroll-in-program.more-info-questions"
-      [message]="instanceInformation?.dataPolicy"
-      headingKey="personal.enroll-in-program.more-info-questions"
-    ></more-info-button>
   </dialogue-turn>
 
   <q-and-a-set [questions]="questions"
