@@ -26,6 +26,7 @@
       "introduction": "The following actions are available. Please select one.",
       "download-data": "Download validation data",
       "scan-qr": "Scan Person Affected's QR-code",
+      "find-by-phone": "Find a Person Affected by phonenumber",
       "upload-data": "Upload validation data"
     },
     "download-data": {
@@ -36,6 +37,15 @@
     "scan-qr": {
       "introduction": "Scan QR-code to retrieve Person Affected's information.",
       "scan-button": "Scan QR-code",
+      "error": "The scanned QR-code is not valid.",
+      "unknownReferenceIdCombination": "QR-code not found. You can try scanning another QR-code.",
+      "conclusion": "Thank you. You have scanned a valid reference-ID.",
+      "main-menu": "Back to main menu"
+    },
+    "find-by-phone": {
+      "introduction": "Enter phonenumber to retrieve Person Affected's information.",
+      "enter-phone": "Enter phonenumber with country code",
+      "find-phone": "Find phonenumber",
       "error": "The scanned QR-code is not valid.",
       "unknownReferenceIdCombination": "QR-code not found. You can try scanning another QR-code.",
       "conclusion": "Thank you. You have scanned a valid reference-ID.",

@@ -375,9 +375,10 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.PersonalData)
+  @Roles(UserRole.PersonalData, UserRole.FieldValidation)
   @ApiOperation({
-    title: 'Find registration by name and/or phone number for PM (Swagger)',
+    title:
+      'Find registration by name and/or phone number for PM and FieldValidation',
   })
   @ApiResponse({
     status: 200,

@@ -1,3 +1,4 @@
+import { FindByPhoneComponent } from './find-by-phone/find-by-phone.component';
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +18,7 @@ import { ValidateProgramComponent } from './validate-program/validate-program.co
     MainMenuComponent,
     QrScannerComponent,
     ScanQrComponent,
+    FindByPhoneComponent,
     ValidateProgramComponent,
     ValidateFspComponent,
     DownloadDataComponent,
@@ -26,6 +28,7 @@ import { ValidateProgramComponent } from './validate-program/validate-program.co
   exports: [
     MainMenuComponent,
     ScanQrComponent,
+    FindByPhoneComponent,
     QrScannerComponent,
     ValidateProgramComponent,
     ValidateFspComponent,

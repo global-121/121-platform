@@ -1,3 +1,4 @@
+import { FindByPhoneComponent } from './../validation-components/find-by-phone/find-by-phone.component';
 import {
   Component,
   ComponentFactoryResolver,
@@ -40,6 +41,7 @@ export class ValidationPage implements OnInit {
   public availableSections = {
     [ValidationComponents.mainMenu]: MainMenuComponent,
     [ValidationComponents.scanQr]: ScanQrComponent,
+    [ValidationComponents.findByPhone]: FindByPhoneComponent,
     [ValidationComponents.validateProgram]: ValidateProgramComponent,
     [ValidationComponents.validateFsp]: ValidateFspComponent,
     [ValidationComponents.downloadData]: DownloadDataComponent,

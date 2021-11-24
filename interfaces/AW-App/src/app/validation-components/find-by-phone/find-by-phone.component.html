@@ -1,0 +1,48 @@
+<section #findByPhone>
+  <dialogue-turn>
+    {{ 'validation.find-by-phone.introduction' | translate }}
+  </dialogue-turn>
+
+  <dialogue-turn actor="self" [isConnected]="!isFirst">
+    <p>{{ 'validation.find-by-phone.enter-phone' | translate }}</p>
+    <phone-number-input
+      #phoneNumberInput
+      ngDefaultControl
+      [(ngModel)]="inputPhonenumber"
+      required
+      [placeholder]="phonenumberPlaceholder"
+      [name]="questionName"
+      [disabled]="0"
+    ></phone-number-input>
+  </dialogue-turn>
+
+  <dialogue-turn actor="self" isSpoken="true">
+    <ion-button
+      expand="block"
+      [disabled]="inputPhonenumber === ''"
+      (click)="findPaByPhone()"
+    >
+      {{ 'validation.find-by-phone.find-phone' | translate }}
+    </ion-button>
+    <ion-button
+      expand="block"
+      [disabled]="paDataResult || returnMainMenu"
+      (click)="backMainMenu()"
+    >
+      {{ 'validation.find-by-phone.main-menu' | translate }}
+    </ion-button>
+  </dialogue-turn>
+  <dialogue-turn *ngIf="scanError" [isSpoken]="scanError">
+    {{ 'validation.find-by-phone.error' | translate }}
+  </dialogue-turn>
+
+  <dialogue-turn
+    *ngIf="unknownReferenceIdCombination"
+    [isSpoken]="unknownReferenceIdCombination"
+  >
+    {{ 'validation.find-by-phone.unknownReferenceIdCombination' | translate }}
+  </dialogue-turn>
+  <dialogue-turn *ngIf="paDataResult" [isSpoken]="paDataResult">
+    {{ 'validation.find-by-phone.conclusion' | translate }}
+  </dialogue-turn>
+</section>
