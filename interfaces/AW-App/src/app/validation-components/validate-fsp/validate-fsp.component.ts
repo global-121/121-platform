@@ -127,7 +127,7 @@ export class ValidateFspComponent implements ValidationComponent {
       .sort((a, b) => (a.id > b.id ? 1 : -1))
       .map((attribute): Question => {
         return {
-          name: attribute.name,
+          code: attribute.name,
           answerType: attribute.answerType,
           label: this.translatableString.get(attribute.label),
           options: !attribute.options
@@ -165,7 +165,7 @@ export class ValidateFspComponent implements ValidationComponent {
       (answer: Answer) =>
         fspAnswers.push({
           referenceId: this.referenceId,
-          code: answer.name,
+          code: answer.code,
           value: answer.value,
         }),
     )

@@ -73,13 +73,13 @@ export class QAndASetComponent implements OnChanges {
 
   private fillAnswerModels() {
     Object.values(this.answers).forEach((item) => {
-      this.theFormModels[item.name] = item.value;
+      this.theFormModels[item.code] = item.value;
     });
   }
 
-  private getQuestionByName(questionName: string): Question {
+  private getQuestionByCode(questionCode: string): Question {
     const result = this.questions.find((question: Question) => {
-      return question.name === questionName;
+      return question.code === questionCode;
     });
 
     return result;
@@ -98,7 +98,7 @@ export class QAndASetComponent implements OnChanges {
 
   private createAnswer(question: Question, answerValue: string): Answer {
     const answer: Answer = {
-      name: question.name,
+      code: question.code,
       value: answerValue,
       label: answerValue,
     };
@@ -114,16 +114,16 @@ export class QAndASetComponent implements OnChanges {
     return answer;
   }
 
-  public onAnswerChange(questionName: string, answerValue: string) {
+  public onAnswerChange(questionCode: string, answerValue: string) {
     // Remove 'false positive' change-events on load/initiation of the component with data
     if (!answerValue) {
       return;
     }
-    const question = this.getQuestionByName(questionName);
+    const question = this.getQuestionByCode(questionCode);
     const answer = this.createAnswer(question, answerValue);
 
     // Save answer
-    this.answers[questionName] = answer;
+    this.answers[questionCode] = answer;
 
     const answersArray = Object.keys(this.answers);
 
@@ -131,7 +131,7 @@ export class QAndASetComponent implements OnChanges {
       this.questions,
       answersArray,
     );
-    this.showNextQuestion(answersArray.indexOf(questionName));
+    this.showNextQuestion(answersArray.indexOf(questionCode));
   }
 
   private showNextQuestion(currentIndex: number) {
@@ -183,12 +183,12 @@ export class QAndASetComponent implements OnChanges {
     }
   }
 
-  public checkValidationErrors(questionCode?: string): boolean {
-    if (!questionCode) {
-      return this.validationErrors.length > 0;
-    }
-
+  public checkValidationError(questionCode: string): boolean {
     return this.validationErrors.includes(questionCode);
+  }
+
+  public checkValidationErrors(): boolean {
+    return this.validationErrors.length > 0;
   }
 
   public doSubmit() {
