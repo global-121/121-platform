@@ -125,18 +125,20 @@ export class EnrollInProgramComponent extends PersonalDirective {
   }
 
   private buildQuestions(programQuestions: ProgramQuestion[]) {
-    return programQuestions.map((programQuestion): Question => {
-      return {
-        code: programQuestion.name,
-        answerType: programQuestion.answerType,
-        label: this.translatableString.get(programQuestion.label),
-        placeholder: this.translatableString.get(programQuestion.placeholder),
-        pattern: programQuestion.pattern,
-        options: programQuestion.options
-          ? this.buildOptions(programQuestion.options)
-          : null,
-      };
-    });
+    return programQuestions
+      .sort((a, b) => (a.id > b.id ? 1 : -1))
+      .map((programQuestion): Question => {
+        return {
+          code: programQuestion.name,
+          answerType: programQuestion.answerType,
+          label: this.translatableString.get(programQuestion.label),
+          placeholder: this.translatableString.get(programQuestion.placeholder),
+          pattern: programQuestion.pattern,
+          options: programQuestion.options
+            ? this.buildOptions(programQuestion.options)
+            : null,
+        };
+      });
   }
 
   private buildOptions(optionSet: ProgramQuestionOption[]): QuestionOption[] {

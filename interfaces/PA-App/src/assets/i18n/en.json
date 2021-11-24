@@ -4,7 +4,7 @@
     "change-password": "Change password",
     "delete-account-header": "Enter your password if you are sure you want to delete your account",
     "delete-account-message": "Deleting your account is irreversible, all your data will be lost!",
-    "delete-digital-id": "Delete account",
+    "delete-data": "Delete my data",
     "delete-fail": "Something went wrong, your account could not by fully deleted.",
     "delete-success": "Your account has been succesfully deleted. You will now logout",
     "enter-password": "Your Password",
@@ -75,7 +75,7 @@
       "more-info-documents": "About these documents",
       "no-validation-conclusion": "Thank you. Your registration is now complete.   <br><br>   You should receive an SMS on the provided phone number shortly that confirms your registration.   <br><br>   You will be informed if your application has been successful within 14 days.   <br><br>   This is the final message for now.",
       "qr-code": "Please show this QR-code to the aidworker when asked.",
-      "validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS on the provided phone number shortly that confirms your registration.<br><br>An aidworker of the NGO will organize a meeting with you to validate your information, probably by visiting your home."
+      "validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS on the provided phone number shortly that confirms your registration.<br><br>An aidworker of the NGO might organize a meeting with you to validate your information, probably by visiting your home."
     },
     "select-fsp": {
       "attributes": {

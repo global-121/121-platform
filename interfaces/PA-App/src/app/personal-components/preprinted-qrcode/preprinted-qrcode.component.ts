@@ -74,7 +74,7 @@ export class PreprintedQrcodeComponent extends PersonalDirective {
   }
 
   async checkValidation() {
-    if (!this.program.validation) {
+    if (!this.program.validation || !this.program.validationByQr) {
       this.cancel();
       return;
     }

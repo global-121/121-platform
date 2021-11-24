@@ -1,6 +1,7 @@
 {
   "published": false,
   "validation": true,
+  "validationByQr": false,
   "phase": "design",
   "location": "Lebanon",
   "ngo": "Dorcas",
@@ -43,7 +44,7 @@
     {
       "name": "invited-by-dorcas",
       "label": {
-        "en": "Questions should be answered truthfully. We may call you to make an appointment for a home visit to check your situation.<br><br>Were you invited by Dorcas to apply for this aid program? If not then leave this registration process by closing the app."
+        "en": "Questions should be answered truthfully. We may call you to make an appointment for a home visit to check your situation.<br><br>Has your household been informed by a Dorcas/Tabitha employee about the possibility to participate in this program?<br><br><small>Note: If you have NOT been informed by a Dorcas/Tabitha employee about this program, you can close this website now. Your household will NOT be considered for participation, regardless of whether you answer the questions or not.</small>"
       },
       "answerType": "dropdown",
       "questionType": "standard",

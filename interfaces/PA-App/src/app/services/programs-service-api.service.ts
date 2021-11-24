@@ -91,16 +91,9 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  deleteAccount(password: string): Promise<any> {
+  deleteData(): Promise<any> {
     return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/user/delete-person-affected',
-        {
-          password,
-        },
-        false,
-      )
+      .post(environment.url_121_service_api, '/user/delete', {}, false)
       .toPromise();
   }
 

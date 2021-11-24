@@ -1,6 +1,7 @@
 {
   "published": false,
   "validation": false,
+  "validationByQr": false,
   "phase": "design",
   "location": "Nederland",
   "ngo": "NLRC",
