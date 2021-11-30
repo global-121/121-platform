@@ -3,7 +3,7 @@
     {{ 'validation.find-by-phone.introduction' | translate }}
   </dialogue-turn>
 
-  <dialogue-turn actor="self" [isConnected]="!isFirst">
+  <dialogue-turn actor="self">
     <p>{{ 'validation.find-by-phone.enter-phone' | translate }}</p>
     <phone-number-input
       #phoneNumberInput
