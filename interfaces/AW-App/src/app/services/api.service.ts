@@ -40,7 +40,7 @@ export class ApiService {
 
     return this.http
       .get(endpoint + path, {
-        headers: this.createHeaders(false),
+        headers: this.createHeaders(anonymous),
       })
       .pipe(
         tap((response) =>

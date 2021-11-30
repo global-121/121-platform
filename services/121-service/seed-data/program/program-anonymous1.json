@@ -1,6 +1,7 @@
 {
   "published": false,
   "validation": true,
+  "validationByQr": true,
   "phase": "design",
   "location": "Location A",
   "ngo": "NGO A",

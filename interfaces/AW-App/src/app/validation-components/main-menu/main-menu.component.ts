@@ -44,6 +44,12 @@ export class MainMenuComponent implements ValidationComponent {
         connectionRequired: false,
       },
       {
+        id: ValidationComponents.findByPhone,
+        option: this.translate.instant('validation.main-menu.find-by-phone'),
+        disabled: false,
+        connectionRequired: false,
+      },
+      {
         id: ValidationComponents.uploadData,
         option: this.translate.instant('validation.main-menu.upload-data'),
         counter: pendingUploadCount,

@@ -251,7 +251,7 @@ export class ProgramPayoutComponent implements OnInit {
   private async checkIntersolve(): Promise<boolean> {
     this.program = await this.programsService.getProgramById(this.programId);
     for (const fsp of this.program.financialServiceProviders || []) {
-      if (fsp.fsp && fsp.fsp.toLowerCase().includes('intersolve')) {
+      if (fsp && fsp.fsp && fsp.fsp.toLowerCase().includes('intersolve')) {
         return true;
       }
     }
@@ -261,7 +261,7 @@ export class ProgramPayoutComponent implements OnInit {
   async checkFspWithCsvIntegration() {
     this.program = await this.programsService.getProgramById(this.programId);
     for (const fsp of this.program.financialServiceProviders || []) {
-      if (fsp.integrationType === FspIntegrationType.csv) {
+      if (fsp && fsp.integrationType === FspIntegrationType.csv) {
         return true;
       }
     }

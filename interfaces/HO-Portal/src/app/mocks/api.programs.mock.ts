@@ -23,6 +23,7 @@ const programsArray: Program[] = [
     updated: '1970-01-01T01:01:01Z',
     phase: ProgramPhase.design,
     validation: false,
+    validationByQr: false,
     author: {},
     published: false,
   },

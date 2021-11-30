@@ -68,6 +68,19 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  getPaByPhoneNr(phoneNumber: string): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/registrations/search-name-phone',
+        {
+          phoneNumber,
+        },
+        false,
+      )
+      .toPromise();
+  }
+
   getRegistration(referenceId: string): Promise<any> {
     return this.apiService
       .get(environment.url_121_service_api, '/registrations/get/' + referenceId)
