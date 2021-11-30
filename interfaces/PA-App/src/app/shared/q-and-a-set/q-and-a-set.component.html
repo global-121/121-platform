@@ -16,7 +16,7 @@
         <div *ngSwitchCase="answerType.Enum">
           <ion-radio-group
             [name]="question.code"
-            [value]="answers[question.name]?.value"
+            [value]="answers[question.code]?.value"
             (ionChange)="onAnswerChange(question.code,$event.target.value)"
             debounce="100"
           >

@@ -25,6 +25,7 @@ export class Program {
   updated: string;
   phase: ProgramPhase;
   validation: boolean;
+  validationByQr: boolean;
   published: boolean;
 }
 

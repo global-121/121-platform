@@ -781,10 +781,14 @@ export class RegistrationsService {
   }
 
   public async searchRegistration(
-    phoneNumber?: string,
+    rawPhoneNumber?: string,
     name?: string,
     id?: number,
   ): Promise<RegistrationEntity[]> {
+    const phoneNumber = await this.lookupService.lookupAndCorrect(
+      rawPhoneNumber,
+    );
+
     const registrations = await this.registrationRepository.find({
       relations: ['fsp'],
     });

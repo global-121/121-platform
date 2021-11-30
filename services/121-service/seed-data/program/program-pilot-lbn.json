@@ -1,20 +1,24 @@
 {
   "published": false,
   "validation": true,
+  "validationByQr": false,
   "phase": "design",
   "location": "Lebanon",
   "ngo": "Dorcas",
   "titlePortal": {
-    "en": "Dorcas-Tabitha cash aid program"
+    "en": "Dorcas-Tabitha cash aid program",
+    "ar": "برنامج دوركاس طابيثا للمساعدات النقدية "
   },
   "titlePaApp": {
-    "en": "Dorcas-Tabitha cash aid program"
+    "en": "Dorcas-Tabitha cash aid program",
+    "ar": "برنامج دوركاس طابيثا للمساعدات النقدية "
   },
   "description": {
     "en": ""
   },
   "descCashType": {
-    "en": "Unconditional multi-purpose"
+    "en": "Unconditional multi-purpose",
+    "ar": "متعدد الأهداف و غير مشروط"
   },
   "startDate": "2021-12-01T12:00:00Z",
   "endDate": "2022-05-31T12:00:00Z",
@@ -31,11 +35,15 @@
   "minimumScore": 0,
   "highestScoresX": 50,
   "meetingDocuments": {
-    "en": "Personal ID card of the person that registered; Family social registry; Proof of residence; Proof of medical condition (if available)"
+    "en": "Personal ID card of the person that registered; Family social registry; Proof of residence; Proof of medical condition (if available)",
+    "ar": "بطاقة الهوية الشخصية للشخص الذي قام بالتسجيل ; أخراج قيد عائلي ; أفادة سكن ; إثبات الحالة الطبية (إن وجد) "
   },
   "notifications": {
     "en": {
       "registered": "This is a message from Dorcas-Tabitha.\n\nWe have received your application for support."
+    },
+    "ar": {
+      "registered": "هذه رسالة من دوركاس-طابيثا. لقد تلقينا طلبك للحصول على الدعم. "
     }
   },
   "phoneNumberPlaceholder": "+251 000 000 000",
@@ -43,7 +51,8 @@
     {
       "name": "invited-by-dorcas",
       "label": {
-        "en": "Questions should be answered truthfully. We may call you to make an appointment for a home visit to check your situation.<br><br>Has your household been informed by a Dorcas/Tabitha employee about the possibility to participate in this program?<br><br><small>Note: If you have NOT been informed by a Dorcas/Tabitha employee about this program, you can close this website now. Your household will NOT be considered for participation, regardless of whether you answer the questions or not.</small>"
+        "en": "Questions should be answered truthfully. We may call you to make an appointment for a home visit to check your situation.<br><br>Has your household been informed by a Dorcas/Tabitha employee about the possibility to participate in this program?<br><br><small>Note: If you have NOT been informed by a Dorcas/Tabitha employee about this program, you can close this website now. Your household will NOT be considered for participation, regardless of whether you answer the questions or not.</small>",
+        "ar": "يجب الإجابة على الأسئلة بصدق. قد نتصل بكم لتحديد موعد لزيارة منزلية للتحقق من وضعكم<br><br>. هل تم إبلاغ أسرتكم من قبل موظف دوركاس / طابيثا بإمكانية المشاركة في هذا البرنامج؟ <br><br><small>ملاحظة: أذا لم يتم أبلاغكم من قبل موظف من دوركاس-طابيثا  حول هذا البرنامج ، يمكنك إغلاق هذا الموقع الآن. لن يتم الأخذ بطلب أسرتكم للمشاركة ، بغض النظر عما إذا كنت تجيب على الأسئلة أم لا. </small>"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -51,7 +60,8 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         }
       ],
@@ -62,7 +72,8 @@
     {
       "name": "name",
       "label": {
-        "en": "What is your name? (First name, Father's name, Last name)"
+        "en": "What is your name? (First name, Father's name, Last name)",
+        "ar": "الاسم الثلاثي؟ (الاسم الأول ، اسم الأب ، اسم العائلة) "
       },
       "answerType": "text",
       "questionType": "standard",
@@ -74,7 +85,8 @@
     {
       "name": "age",
       "label": {
-        "en": "How old are you?"
+        "en": "How old are you?",
+        "ar": "كم عمرك؟ "
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -86,7 +98,8 @@
     {
       "name": "gender",
       "label": {
-        "en": "What is your gender?"
+        "en": "What is your gender?",
+        "ar": "الجنس؟"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -94,13 +107,15 @@
         {
           "option": "male",
           "label": {
-            "en": "Male"
+            "en": "Male",
+            "ar": "ذكر"
           }
         },
         {
           "option": "female",
           "label": {
-            "en": "Female"
+            "en": "Female",
+            "ar": "أنثى"
           }
         }
       ],
@@ -111,7 +126,8 @@
     {
       "name": "nationality",
       "label": {
-        "en": "What is your nationality?"
+        "en": "What is your nationality?",
+        "ar": "ما هي جنسيتك؟"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -119,19 +135,22 @@
         {
           "option": "lebanese",
           "label": {
-            "en": "Lebanese"
+            "en": "Lebanese",
+            "ar": "لبنانية"
           }
         },
         {
           "option": "syrian",
           "label": {
-            "en": "Syrian"
+            "en": "Syrian",
+            "ar": "سورية"
           }
         },
         {
           "option": "other",
           "label": {
-            "en": "Other"
+            "en": "Other",
+            "ar": "اُخرى"
           }
         }
       ],
@@ -142,7 +161,8 @@
     {
       "name": "address-city",
       "label": {
-        "en": "In which city do you live?"
+        "en": "In which city do you live?",
+        "ar": "عنوان السكن - المدينة؟"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -154,7 +174,8 @@
     {
       "name": "address-street",
       "label": {
-        "en": "In which street do you live?"
+        "en": "In which street do you live?",
+        "ar": "عنوان السكن - الشارع؟"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -166,7 +187,8 @@
     {
       "name": "address-building",
       "label": {
-        "en": "In which building do you live?"
+        "en": "In which building do you live?",
+        "ar": "عنوان السكن - البناية؟"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -178,7 +200,8 @@
     {
       "name": "address-floor",
       "label": {
-        "en": "On what floor do you live?"
+        "en": "On what floor do you live?",
+        "ar": "عنوان السكن - الطابق؟"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -190,7 +213,8 @@
     {
       "name": "social-registry",
       "label": {
-        "en": "What is your social registry number?"
+        "en": "What is your social registry number?",
+        "ar": "رقم أخراج القيد؟"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -202,7 +226,8 @@
     {
       "name": "family-status",
       "label": {
-        "en": "What is your family status?"
+        "en": "What is your family status?",
+        "ar": "الوضع العائلي؟"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -210,25 +235,29 @@
         {
           "option": "married",
           "label": {
-            "en": "Married"
+            "en": "Married",
+            "ar": "متزوج"
           }
         },
         {
           "option": "single-no-children",
           "label": {
-            "en": "Divorced/Single/Widow (no Children)"
+            "en": "Divorced/Single/Widow (no Children)",
+            "ar": "مطلق/أعزب/أرمل ( لا أولاد)"
           }
         },
         {
           "option": "single-parent",
           "label": {
-            "en": "Single parent"
+            "en": "Single parent",
+            "ar": "مقدم(ة) الرعاية الوحيد(ة)"
           }
         },
         {
           "option": "child-headed",
           "label": {
-            "en": "Child headed house hold"
+            "en": "Child headed house hold",
+            "ar": "أسرة يعيلها طفل "
           }
         }
       ],
@@ -244,7 +273,8 @@
     {
       "name": "men-60+",
       "label": {
-        "en": "How many elderly men (60+ years old) are in your household? (enter 0 when none)"
+        "en": "How many elderly men (60+ years old) are in your household? (enter 0 when none)",
+        "ar": "كم عدد الرجال المسنين (60 سنة و ما فوق ) في منزلك؟ (أدخل 0 في حال لا يوجد) "
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -258,7 +288,8 @@
     {
       "name": "women-60+",
       "label": {
-        "en": "How many elderly women (60+ years old) are in your household? (enter 0 when none)"
+        "en": "How many elderly women (60+ years old) are in your household? (enter 0 when none)",
+        "ar": "كم عدد النساء المسنين (60 سنة و ما فوق ) في منزلك؟ (أدخل 0 في حال لا يوجد) "
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -272,7 +303,8 @@
     {
       "name": "men-18-15",
       "label": {
-        "en": "How many adult men (18-59 years old) are in your household? (enter 0 when none)"
+        "en": "How many adult men (18-59 years old) are in your household? (enter 0 when none)",
+        "ar": "كم عدد الرجال البالغين (18-59 سنة) في منزلك؟ (أدخل 0 عندما لا شيء) "
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -286,7 +318,8 @@
     {
       "name": "women-18-59",
       "label": {
-        "en": "How many adult women (18-59 years old) are in your household? (enter 0 when none)"
+        "en": "How many adult women (18-59 years old) are in your household? (enter 0 when none)",
+        "ar": "كم عدد النساء البالغين (18-59 سنة) في منزلك؟ (أدخل 0 عندما لا شيء) "
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -300,7 +333,8 @@
     {
       "name": "men-18-",
       "label": {
-        "en": "How many boys (0-17 years old) are in your household? (enter 0 when none)"
+        "en": "How many boys (0-17 years old) are in your household? (enter 0 when none)",
+        "ar": "كم عدد الصبيان (0-17 سنة) في منزلك؟ (أدخل 0 عندما لا شيء) "
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -314,7 +348,8 @@
     {
       "name": "woman-18-",
       "label": {
-        "en": "How many girls (0-17 years old) are in your household? (enter 0 when none)"
+        "en": "How many girls (0-17 years old) are in your household? (enter 0 when none)",
+        "ar": "كم عدد الفتيات (0-17 سنة) في منزلك؟ (أدخل 0 عندما لا شيء) "
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -328,7 +363,8 @@
     {
       "name": "woman-pregnant",
       "label": {
-        "en": "Are there any pregnant or lactating women in your household?"
+        "en": "Are there any pregnant or lactating women in your household?",
+        "ar": "هل يوجد أي امرأة حامل أو مرضعة في منزلك؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -336,13 +372,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -356,7 +394,8 @@
     {
       "name": "children-3-",
       "label": {
-        "en": "Are there any children younger than 3 years old in your household?"
+        "en": "Are there any children younger than 3 years old in your household?",
+        "ar": "هل يوجد في منزلك أي أطفال تقل أعمارهم عن 3 سنوات؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -364,13 +403,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -384,7 +425,8 @@
     {
       "name": "beirut-blast-affected",
       "label": {
-        "en": "Were you affected by the Beirut blast?"
+        "en": "Were you affected by the Beirut blast?",
+        "ar": "هل تضررت من انفجار بيروت؟"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -392,13 +434,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -412,7 +456,8 @@
     {
       "name": "beirut-blast-move",
       "label": {
-        "en": "Did the blast force you to move?"
+        "en": "Did the blast force you to move?",
+        "ar": "هل أرغمك الانفجار على ترك منزلك؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -420,13 +465,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -440,7 +487,8 @@
     {
       "name": "foster-family",
       "label": {
-        "en": "Are you living with a foster family?"
+        "en": "Are you living with a foster family?",
+        "ar": "هل تعيش مع أسرة حاضنة؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -448,13 +496,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -468,7 +518,8 @@
     {
       "name": "chronic-disease-child",
       "label": {
-        "en": "Does any child (younger than 18) from your household suffer from a chronic disease or serious medical conditions other than disability?"
+        "en": "Does any child (younger than 18) from your household suffer from a chronic disease or serious medical conditions other than disability?",
+        "ar": "هل يعاني أي طفل (أقل من 18 عامًا) من أسرتك من مرض مزمن أو حالات طبية خطيرة غير الإعاقة؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -476,13 +527,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -496,7 +549,8 @@
     {
       "name": "chronic-disease-adult",
       "label": {
-        "en": "Does any adult (18 or older) from your household suffer from a chronic disease or serious medical conditions other than disability?"
+        "en": "Does any adult (18 or older) from your household suffer from a chronic disease or serious medical conditions other than disability?",
+        "ar": "هل يعاني أي شخص بالغ (18 عامًا و ما فوق) من أسرتك من مرض مزمن أو حالات طبية خطيرة بخلاف الإعاقة؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -504,13 +558,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -524,7 +580,8 @@
     {
       "name": "hospital-child",
       "label": {
-        "en": "Are there any children (younger than 18) in the hospital?"
+        "en": "Are there any children (younger than 18) in the hospital?",
+        "ar": "هل يوجد أطفال (أقل من 18 سنة) في المستشفى؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -532,13 +589,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -552,7 +611,8 @@
     {
       "name": "hospital-adult",
       "label": {
-        "en": "Are there any adults (18 or older) in the hospital?"
+        "en": "Are there any adults (18 or older) in the hospital?",
+        "ar": "هل يوجد أي بالغين (18 عامًا أو أكبر) في المستشفى؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -560,13 +620,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -580,7 +642,8 @@
     {
       "name": "disability-adult-seeing",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with <b>seeing, even when wearing glasses</b>?"
+        "en": "Do you, or does any other household member have difficulty with <b>seeing, even when wearing glasses</b>?",
+        "ar": "هل تجد أنت أو أي فرد آخر من أفراد أسرتك صعوبة في<b> الرؤية ، حتى عند ارتداء النظارات</b>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -588,25 +651,29 @@
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         },
         {
           "option": "yes-some",
           "label": {
-            "en": "Yes/Some difficulty"
+            "en": "Yes/Some difficulty",
+            "ar": "نعم / بعض الصعوبة "
           }
         },
         {
           "option": "yes-lot",
           "label": {
-            "en": "Yes/A lot of difficulty"
+            "en": "Yes/A lot of difficulty",
+            "ar": "نعم / الكثير من الصعوبة"
           }
         },
         {
           "option": "yes-completely",
           "label": {
-            "en": "Yes/Cannot do at all"
+            "en": "Yes/Cannot do at all",
+            "ar": "نعم / لا يمكن القيام به على الإطلاق "
           }
         }
       ],
@@ -622,7 +689,8 @@
     {
       "name": "disability-adult-hearing",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with <b>hearing, even when using a hearing aid</b>?"
+        "en": "Do you, or does any other household member have difficulty with <b>hearing, even when using a hearing aid</b>?",
+        "ar": "هل تواجه أنت أو أي فرد آخر من أفراد أسرتك صعوبة في<b> السمع ، حتى عند استخدام المعينات السمعية</b>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -630,25 +698,29 @@
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         },
         {
           "option": "yes-some",
           "label": {
-            "en": "Yes/Some difficulty"
+            "en": "Yes/Some difficulty",
+            "ar": "نعم / بعض الصعوبة "
           }
         },
         {
           "option": "yes-lot",
           "label": {
-            "en": "Yes/A lot of difficulty"
+            "en": "Yes/A lot of difficulty",
+            "ar": "نعم / الكثير من الصعوبة"
           }
         },
         {
           "option": "yes-completely",
           "label": {
-            "en": "Yes/Cannot do at all"
+            "en": "Yes/Cannot do at all",
+            "ar": "نعم / لا يمكن القيام به على الإطلاق "
           }
         }
       ],
@@ -664,7 +736,8 @@
     {
       "name": "disability-adult-walking",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with <b>walking or climbing steps</b>?"
+        "en": "Do you, or does any other household member have difficulty with <b>walking or climbing steps</b>?",
+        "ar": "هل تجد أنت أو أي فرد آخر من أفراد أسرتك صعوبة في <b>المشي أو صعود السلم</b>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -672,25 +745,29 @@
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         },
         {
           "option": "yes-some",
           "label": {
-            "en": "Yes/Some difficulty"
+            "en": "Yes/Some difficulty",
+            "ar": "نعم / بعض الصعوبة "
           }
         },
         {
           "option": "yes-lot",
           "label": {
-            "en": "Yes/A lot of difficulty"
+            "en": "Yes/A lot of difficulty",
+            "ar": "نعم / الكثير من الصعوبة"
           }
         },
         {
           "option": "yes-completely",
           "label": {
-            "en": "Yes/Cannot do at all"
+            "en": "Yes/Cannot do at all",
+            "ar": "نعم / لا يمكن القيام به على الإطلاق "
           }
         }
       ],
@@ -706,7 +783,8 @@
     {
       "name": "disability-adult-remembering",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with <b>remembering or concentrating</b>?"
+        "en": "Do you, or does any other household member have difficulty with <b>remembering or concentrating</b>?",
+        "ar": "هل تجد أنت أو أي فرد آخر من أفراد أسرتك صعوبة في <b>التذكر أو التركيز</b>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -714,25 +792,29 @@
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         },
         {
           "option": "yes-some",
           "label": {
-            "en": "Yes/Some difficulty"
+            "en": "Yes/Some difficulty",
+            "ar": "نعم / بعض الصعوبة "
           }
         },
         {
           "option": "yes-lot",
           "label": {
-            "en": "Yes/A lot of difficulty"
+            "en": "Yes/A lot of difficulty",
+            "ar": "نعم / الكثير من الصعوبة"
           }
         },
         {
           "option": "yes-completely",
           "label": {
-            "en": "Yes/Cannot do at all"
+            "en": "Yes/Cannot do at all",
+            "ar": "نعم / لا يمكن القيام به على الإطلاق "
           }
         }
       ],
@@ -748,7 +830,8 @@
     {
       "name": "disability-adult-self-care",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with <b>self-care such as washing or dressing</b>?"
+        "en": "Do you, or does any other household member have difficulty with <b>self-care such as washing or dressing</b>?",
+        "ar": "هل تعاني أنت أو أي فرد آخر من أفراد أسرتك من صعوبة في<b> العناية بالذات مثل الاغتسال أو ارتداء الملابس</b>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -756,25 +839,29 @@
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         },
         {
           "option": "yes-some",
           "label": {
-            "en": "Yes/Some difficulty"
+            "en": "Yes/Some difficulty",
+            "ar": "نعم / بعض الصعوبة "
           }
         },
         {
           "option": "yes-lot",
           "label": {
-            "en": "Yes/A lot of difficulty"
+            "en": "Yes/A lot of difficulty",
+            "ar": "نعم / الكثير من الصعوبة"
           }
         },
         {
           "option": "yes-completely",
           "label": {
-            "en": "Yes/Cannot do at all"
+            "en": "Yes/Cannot do at all",
+            "ar": "نعم / لا يمكن القيام به على الإطلاق "
           }
         }
       ],
@@ -790,7 +877,8 @@
     {
       "name": "disability-adult-self-communicating",
       "label": {
-        "en": "Do you, or does any other household member have difficulty with <b>communicating, when using your (customary) language</b>?"
+        "en": "Do you, or does any other household member have difficulty with <b>communicating, when using your (customary) language</b>?",
+        "ar": "هل تجد أنت أو أي فرد آخر من أفراد أسرتك صعوبة في <b>التواصل عند استخدام لغتك (العرفية)</b>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -798,25 +886,29 @@
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         },
         {
           "option": "yes-some",
           "label": {
-            "en": "Yes/Some difficulty"
+            "en": "Yes/Some difficulty",
+            "ar": "نعم / بعض الصعوبة "
           }
         },
         {
           "option": "yes-lot",
           "label": {
-            "en": "Yes/A lot of difficulty"
+            "en": "Yes/A lot of difficulty",
+            "ar": "نعم / الكثير من الصعوبة"
           }
         },
         {
           "option": "yes-completely",
           "label": {
-            "en": "Yes/Cannot do at all"
+            "en": "Yes/Cannot do at all",
+            "ar": "نعم / لا يمكن القيام به على الإطلاق "
           }
         }
       ],
@@ -832,7 +924,8 @@
     {
       "name": "expenses-health",
       "label": {
-        "en": "What are your household's monthly expenses for <strong>health</strong>?"
+        "en": "What are your household's monthly expenses for <strong>health</strong>?",
+        "ar": "ما هي نفقات أسرتكم الشهرية على<strong> الامور الصحية</strong>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -840,19 +933,22 @@
         {
           "option": "below-500000",
           "label": {
-            "en": "Below 500.000 LBP"
+            "en": "Below 500.000 LBP",
+            "ar": "أقل من 500.000 ليرة لبنانية "
           }
         },
         {
           "option": "500000-1000000",
           "label": {
-            "en": "Between 500.000 and 1.000.000 LBP"
+            "en": "Between 500.000 and 1.000.000 LBP",
+            "ar": "بين 500.000 و 1.000.000 ليرة لبنانية "
           }
         },
         {
           "option": "above-1000000",
           "label": {
-            "en": "Above 1.000.000 LBP"
+            "en": "Above 1.000.000 LBP",
+            "ar": "فوق 1.000.000 ليرة لبنانية "
           }
         }
       ],
@@ -867,7 +963,8 @@
     {
       "name": "expenses-shelter",
       "label": {
-        "en": "What are your household's monthly expenses for <strong>shelter</strong>?"
+        "en": "What are your household's monthly expenses for <strong>shelter</strong>?",
+        "ar": "ما هي نفقات أسرتكم الشهرية على <strong>المأوى</strong>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -875,25 +972,29 @@
         {
           "option": "below-1000000",
           "label": {
-            "en": "Below 1.000.000 LBP"
+            "en": "Below 1.000.000 LBP",
+            "ar": "أقل من 1.000.000 ليرة لبنانية "
           }
         },
         {
           "option": "1000000-3000000",
           "label": {
-            "en": "Between 1.000.000 and 3.000.000 LBP"
+            "en": "Between 1.000.000 and 3.000.000 LBP",
+            "ar": "بين 1.000.000 و 3.000.000 ليرة لبنانية "
           }
         },
         {
           "option": "3000000-5000000",
           "label": {
-            "en": "Between 3.000.000 and 5.000.000 LBP"
+            "en": "Between 3.000.000 and 5.000.000 LBP",
+            "ar": "بين 3.000.000 و 5.000.000 ليرة لبنانية "
           }
         },
         {
           "option": "above-5000000",
           "label": {
-            "en": "Above 5.000.000 LBP"
+            "en": "Above 5.000.000 LBP",
+            "ar": "فوق 5.000.000 ليرة لبنانية "
           }
         }
       ],
@@ -909,7 +1010,8 @@
     {
       "name": "expenses-food",
       "label": {
-        "en": "What are your household's monthly expenses for <strong>food</strong>?"
+        "en": "What are your household's monthly expenses for <strong>food</strong>?",
+        "ar": "ما هي نفقات أسرتكم الشهرية على <strong>الطعام</strong>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -917,25 +1019,29 @@
         {
           "option": "below-1000000",
           "label": {
-            "en": "Below 1.000.000 LBP"
+            "en": "Below 1.000.000 LBP",
+            "ar": "أقل من 1.000.000 ليرة لبنانية "
           }
         },
         {
           "option": "1000000-3000000",
           "label": {
-            "en": "Between 1.000.000 and 3.000.000 LBP"
+            "en": "Between 1.000.000 and 3.000.000 LBP",
+            "ar": "بين 1.000.000 و 3.000.000 ليرة لبنانية "
           }
         },
         {
           "option": "3000000-5000000",
           "label": {
-            "en": "Between 3.000.000 and 5.000.000 LBP"
+            "en": "Between 3.000.000 and 5.000.000 LBP",
+            "ar": "بين 3.000.000 و 5.000.000 ليرة لبنانية "
           }
         },
         {
           "option": "above-5000000",
           "label": {
-            "en": "Above 5.000.000 LBP"
+            "en": "Above 5.000.000 LBP",
+            "ar": "فوق 5.000.000 ليرة لبنانية "
           }
         }
       ],
@@ -951,7 +1057,8 @@
     {
       "name": "food-sold-assests",
       "label": {
-        "en": "During the last 30 days, did anyone in your household <strong>sell household assets/goods (radio, furniture, refrigerator, television, etc..)</strong>, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did anyone in your household <strong>sell household assets/goods (radio, furniture, refrigerator, television, etc..)</strong>, due to the lack of food or of money to buy food?",
+        "ar": "خلال الثلاثين يومًا الماضية ، هل قام أي شخص في  أسرتكم <strong> ببيع ممتلكات / سلع منزلية (راديو ، أثاث ، ثلاجة ، تلفزيون ، إلخ ..)</strong> ، بسبب نقص الطعام أو المال لشراء الطعام؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -959,13 +1066,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -979,7 +1088,8 @@
     {
       "name": "food-spent-saving",
       "label": {
-        "en": "During the last 30 days, did anyone in your household <strong>spend savings (e.g., sale of jewelry, cash savings)</strong>, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did anyone in your household <strong>spend savings (e.g., sale of jewelry, cash savings)</strong>, due to the lack of food or of money to buy food?",
+        "ar": "خلال الثلاثين يومًا الماضية ، هل أنفق أي شخص في أسرتكم<strong> مدخرات (على سبيل المثال ، بيع المجوهرات ، والمدخرات النقدية)</strong> ، بسبب نقص الطعام أو المال لشراء الطعام؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -987,13 +1097,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -1007,7 +1119,8 @@
     {
       "name": "food-borrowed-money",
       "label": {
-        "en": "During the last 30 days, did anyone in your household <strong>borrow money/food from formal lender/bank</strong>, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did anyone in your household <strong>borrow money/food from formal lender/bank</strong>, due to the lack of food or of money to buy food?",
+        "ar": "خلال الثلاثين يومًا الماضية ، هل أي شخص في أسرتكم<strong>  اقترض المال / الطعام من المقرض / البنك الرسمي</strong> ، بسبب نقص الطعام أو المال لشراء الطعام؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1015,13 +1128,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -1035,7 +1150,8 @@
     {
       "name": "food-recuded-expenses",
       "label": {
-        "en": "During the last 30 days, did anyone in your household <strong>reduce expenses on health (including medication) and education</strong>, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did anyone in your household <strong>reduce expenses on health (including medication) and education</strong>, due to the lack of food or of money to buy food?",
+        "ar": "خلال الثلاثين يومًا الماضية ، هل قام أي شخص في أسرتكم <strong>بتخفيض نفقات الصحة (بما في ذلك الأدوية) والتعليم </strong>، بسبب نقص الطعام أو المال لشراء الطعام؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1043,13 +1159,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -1063,7 +1181,8 @@
     {
       "name": "food-withdraw-school",
       "label": {
-        "en": "During the last 30 days, did anyone in your household <strong>withdraw children from school</strong>, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did anyone in your household <strong>withdraw children from school</strong>, due to the lack of food or of money to buy food?",
+        "ar": "خلال الثلاثين يومًا الماضية ، هل قام أي فرد في أسرتكم<strong> بسحب الأطفال من المدرسة </strong>بسبب نقص الطعام أو المال لشراء الطعام؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1071,13 +1190,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -1091,7 +1212,8 @@
     {
       "name": "food-child-labor",
       "label": {
-        "en": "During the last 30 days, did any child in your household <strong>get involved in labor</strong>, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did any child in your household <strong>get involved in labor</strong>, due to the lack of food or of money to buy food?",
+        "ar": "خلال الثلاثين يومًا الماضية ، هل  أي طفل في أسرتكم<strong> انخرط في العمل</strong> بسبب نقص الطعام أو المال لشراء الطعام؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1099,13 +1221,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -1119,7 +1243,8 @@
     {
       "name": "food-household-migrated",
       "label": {
-        "en": "During the last 30 days, did your entire household <strong>migrate</strong>, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did your entire household <strong>migrate</strong>, due to the lack of food or of money to buy food?",
+        "ar": "خلال الثلاثين يومًا الماضية ، هل <strong>نزحت</strong> أسرتكم بأكملها بسبب نقص الطعام أو المال لشراء الطعام؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1127,13 +1252,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -1147,7 +1274,8 @@
     {
       "name": "food-sold-real-estate",
       "label": {
-        "en": "During the last 30 days, did anyone of your household <strong>sell a house or land</strong>, due to the lack of food or of money to buy food?"
+        "en": "During the last 30 days, did anyone of your household <strong>sell a house or land</strong>, due to the lack of food or of money to buy food?",
+        "ar": "خلال الثلاثين يومًا الماضية ، هل قام أي فرد من أسرتك <strong>ببيع منزل أو أرض</strong> ، بسبب نقص الطعام أو المال لشراء الطعام؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1155,13 +1283,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -1175,7 +1305,8 @@
     {
       "name": "7-days-eat-less",
       "label": {
-        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself eating less preferred/expensive foods?</strong>"
+        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself eating less preferred/expensive foods?</strong>",
+        "ar": "خلال الأيام السبعة الماضية ، كم عدد الأيام التي وجدت فيها نفسك كعائلة <strong>تتناول أطعمة أقل تفضيلاً / باهظة الثمن</strong>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1183,31 +1314,36 @@
         {
           "option": "never",
           "label": {
-            "en": "Never"
+            "en": "Never",
+            "ar": "أبداً"
           }
         },
         {
           "option": "yes-1-2",
           "label": {
-            "en": "1 or 2 days"
+            "en": "1 or 2 days",
+            "ar": "يوم أو يومين "
           }
         },
         {
           "option": "yes-3-4",
           "label": {
-            "en": "3 or 4 days"
+            "en": "3 or 4 days",
+            "ar": "3 أو 4 أيام "
           }
         },
         {
           "option": "yes-5-6",
           "label": {
-            "en": "5 or 6 days"
+            "en": "5 or 6 days",
+            "ar": "5 أو 6 أيام "
           }
         },
         {
           "option": "yes-7",
           "label": {
-            "en": "7 days"
+            "en": "7 days",
+            "ar": "7 أيام"
           }
         }
       ],
@@ -1224,7 +1360,8 @@
     {
       "name": "7-days-borrowed-food",
       "label": {
-        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself borrowing food or relying on help from friends and relatives?</strong>"
+        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself borrowing food or relying on help from friends and relatives?</strong>",
+        "ar": "خلال الأيام السبعة الماضية ، كم عدد الأيام التي وجدت فيه أسرتكم نفسها<strong> تقترض طعامًا أو تعتمد على مساعدة الأصدقاء والأقارب</strong>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1232,31 +1369,36 @@
         {
           "option": "never",
           "label": {
-            "en": "Never"
+            "en": "Never",
+            "ar": "أبداً"
           }
         },
         {
           "option": "yes-1-2",
           "label": {
-            "en": "1 or 2 days"
+            "en": "1 or 2 days",
+            "ar": "يوم أو يومين "
           }
         },
         {
           "option": "yes-3-4",
           "label": {
-            "en": "3 or 4 days"
+            "en": "3 or 4 days",
+            "ar": "3 أو 4 أيام "
           }
         },
         {
           "option": "yes-5-6",
           "label": {
-            "en": "5 or 6 days"
+            "en": "5 or 6 days",
+            "ar": "5 أو 6 أيام "
           }
         },
         {
           "option": "yes-7",
           "label": {
-            "en": "7 days"
+            "en": "7 days",
+            "ar": "7 أيام"
           }
         }
       ],
@@ -1273,7 +1415,8 @@
     {
       "name": "7-days-reduce-portions",
       "label": {
-        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself limiting portion size at mealtime?</strong>"
+        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself limiting portion size at mealtime?</strong>",
+        "ar": "خلال الأيام السبعة الماضية ، كم عدد الأيام التي وجدت فيها أسرتكم نفسها ، <strong> تحد من حجم الوجبة</strong>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1281,31 +1424,36 @@
         {
           "option": "never",
           "label": {
-            "en": "Never"
+            "en": "Never",
+            "ar": "أبداً"
           }
         },
         {
           "option": "yes-1-2",
           "label": {
-            "en": "1 or 2 days"
+            "en": "1 or 2 days",
+            "ar": "يوم أو يومين "
           }
         },
         {
           "option": "yes-3-4",
           "label": {
-            "en": "3 or 4 days"
+            "en": "3 or 4 days",
+            "ar": "3 أو 4 أيام "
           }
         },
         {
           "option": "yes-5-6",
           "label": {
-            "en": "5 or 6 days"
+            "en": "5 or 6 days",
+            "ar": "5 أو 6 أيام "
           }
         },
         {
           "option": "yes-7",
           "label": {
-            "en": "7 days"
+            "en": "7 days",
+            "ar": "7 أيام"
           }
         }
       ],
@@ -1322,7 +1470,8 @@
     {
       "name": "7-days-reduce-portions-adults",
       "label": {
-        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself limiting adult intake in order for small children to eat?</strong>"
+        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself limiting adult intake in order for small children to eat?</strong>",
+        "ar": "خلال السبعة أيام الماضية ، كم عدد الأيام التي وجدت فيها  أسرتكم نفسها ،<strong> تحد من تناول البالغين الطعام حتى يأكل الأطفال الصغار</strong>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1330,31 +1479,36 @@
         {
           "option": "never",
           "label": {
-            "en": "Never"
+            "en": "Never",
+            "ar": "أبداً"
           }
         },
         {
           "option": "yes-1-2",
           "label": {
-            "en": "1 or 2 days"
+            "en": "1 or 2 days",
+            "ar": "يوم أو يومين "
           }
         },
         {
           "option": "yes-3-4",
           "label": {
-            "en": "3 or 4 days"
+            "en": "3 or 4 days",
+            "ar": "3 أو 4 أيام "
           }
         },
         {
           "option": "yes-5-6",
           "label": {
-            "en": "5 or 6 days"
+            "en": "5 or 6 days",
+            "ar": "5 أو 6 أيام "
           }
         },
         {
           "option": "yes-7",
           "label": {
-            "en": "7 days"
+            "en": "7 days",
+            "ar": "7 أيام"
           }
         }
       ],
@@ -1371,7 +1525,8 @@
     {
       "name": "7-days-reduce-nr-meals",
       "label": {
-        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself reducing the number of meals per day?</strong>"
+        "en": "During the last 7 days, how many days did you, as a household <strong>find yourself reducing the number of meals per day?</strong>",
+        "ar": "خلال الأيام السبعة الماضية ، كم عدد الأيام التي وجدت فيها  أسرتكم نفسها ، <strong>تقلل من عدد الوجبات في اليوم</strong>؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1379,31 +1534,36 @@
         {
           "option": "never",
           "label": {
-            "en": "Never"
+            "en": "Never",
+            "ar": "أبداً"
           }
         },
         {
           "option": "yes-1-2",
           "label": {
-            "en": "1 or 2 days"
+            "en": "1 or 2 days",
+            "ar": "يوم أو يومين "
           }
         },
         {
           "option": "yes-3-4",
           "label": {
-            "en": "3 or 4 days"
+            "en": "3 or 4 days",
+            "ar": "3 أو 4 أيام "
           }
         },
         {
           "option": "yes-5-6",
           "label": {
-            "en": "5 or 6 days"
+            "en": "5 or 6 days",
+            "ar": "5 أو 6 أيام "
           }
         },
         {
           "option": "yes-7",
           "label": {
-            "en": "7 days"
+            "en": "7 days",
+            "ar": "7 أيام"
           }
         }
       ],
@@ -1420,7 +1580,8 @@
     {
       "name": "income",
       "label": {
-        "en": "What is your household's income?"
+        "en": "What is your household's income?",
+        "ar": "ما هو دخل أسرتكم الشهري؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1428,25 +1589,29 @@
         {
           "option": "below-1000000",
           "label": {
-            "en": "Below 1.000.000 LBP"
+            "en": "Below 1.000.000 LBP",
+            "ar": "أقل من 1.000.000 ليرة لبنانية "
           }
         },
         {
           "option": "1000000-3000000",
           "label": {
-            "en": "Between 1.000.000 and 3.000.000 LBP"
+            "en": "Between 1.000.000 and 3.000.000 LBP",
+            "ar": "بين 1.000.000 و 3.000.000 ليرة لبنانية "
           }
         },
         {
           "option": "3000000-5000000",
           "label": {
-            "en": "Between 3.000.000 and 5.000.000 LBP"
+            "en": "Between 3.000.000 and 5.000.000 LBP",
+            "ar": "بين 3.000.000 و 5.000.000 ليرة لبنانية "
           }
         },
         {
           "option": "above-5000000",
           "label": {
-            "en": "Above 5.000.000 LBP"
+            "en": "Above 5.000.000 LBP",
+            "ar": "فوق 5.000.000 ليرة لبنانية "
           }
         }
       ],
@@ -1462,7 +1627,8 @@
     {
       "name": "income-source",
       "label": {
-        "en": "What is your household's main source of income?"
+        "en": "What is your household's main source of income?",
+        "ar": "ما هو مصدر الدخل الرئيسي لأسرتكم؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1470,49 +1636,57 @@
         {
           "option": "salary-regular",
           "label": {
-            "en": "Salary for regular work"
+            "en": "Salary for regular work",
+            "ar": "الراتب عن العمل المنتظم "
           }
         },
         {
           "option": "salary-occasional",
           "label": {
-            "en": "Salary for occasional work"
+            "en": "Salary for occasional work",
+            "ar": "الراتب للعمل يومي أو متقطع"
           }
         },
         {
           "option": "savings",
           "label": {
-            "en": "Savings"
+            "en": "Savings",
+            "ar": "مدخرات"
           }
         },
         {
           "option": "debts",
           "label": {
-            "en": "Debts"
+            "en": "Debts",
+            "ar": "ديون"
           }
         },
         {
           "option": "gifts",
           "label": {
-            "en": "Gifts"
+            "en": "Gifts",
+            "ar": "هدايا "
           }
         },
         {
           "option": "remittances",
           "label": {
-            "en": "Remittances"
+            "en": "Remittances",
+            "ar": "التحويلات "
           }
         },
         {
           "option": "pension",
           "label": {
-            "en": "Pension"
+            "en": "Pension",
+            "ar": "راتب تقاعد"
           }
         },
         {
           "option": "humanitarian-assistance",
           "label": {
-            "en": "Humanitarian assistance"
+            "en": "Humanitarian assistance",
+            "ar": "مساعدات إنسانية"
           }
         }
       ],
@@ -1532,7 +1706,8 @@
     {
       "name": "debt",
       "label": {
-        "en": "Does your household have any debt?"
+        "en": "Does your household have any debt?",
+        "ar": "هل يتكبد أسرتكم أي ديون؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1540,31 +1715,36 @@
         {
           "option": "no",
           "label": {
-            "en": "I don’t have any debt"
+            "en": "I don’t have any debt",
+            "ar": "ليس لدينا أي ديون "
           }
         },
         {
           "option": "below-1000000",
           "label": {
-            "en": "Below 1.000.000 LBP"
+            "en": "Below 1.000.000 LBP",
+            "ar": "أقل من 1.000.000 ليرة لبنانية "
           }
         },
         {
           "option": "1000000-3000000",
           "label": {
-            "en": "Between 1.000.000 and 3.000.000 LBP"
+            "en": "Between 1.000.000 and 3.000.000 LBP",
+            "ar": "بين 1.000.000 و 3.000.000 ليرة لبنانية "
           }
         },
         {
           "option": "3000000-5000000",
           "label": {
-            "en": "Between 3.000.000 and 5.000.000 LBP"
+            "en": "Between 3.000.000 and 5.000.000 LBP",
+            "ar": "بين 3.000.000 و 5.000.000 ليرة لبنانية "
           }
         },
         {
           "option": "above-5000000",
           "label": {
-            "en": "Above 5.000.000 LBP"
+            "en": "Above 5.000.000 LBP",
+            "ar": "فوق 5.000.000 ليرة لبنانية "
           }
         }
       ],
@@ -1581,7 +1761,8 @@
     {
       "name": "other-help",
       "label": {
-        "en": "Have you received any help from other organizations during the last 3 months or do you expect it within 3 months?"
+        "en": "Have you received any help from other organizations during the last 3 months or do you expect it within 3 months?",
+        "ar": "هل تلقيت أي مساعدة من منظمات أخرى خلال الأشهر الثلاثة الماضية أو هل تتوقعها في غضون 3 أشهر المقبلة؟ "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1589,13 +1770,15 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "نعم"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "لا"
           }
         }
       ],
@@ -1609,7 +1792,8 @@
     {
       "name": "where-register",
       "label": {
-        "en": "Did you register:"
+        "en": "Did you register:",
+        "ar": "هل قمت بالتسجيل: "
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1617,13 +1801,15 @@
         {
           "option": "at-centre",
           "label": {
-            "en": "At the centre"
+            "en": "At the centre",
+            "ar": "في مركز"
           }
         },
         {
           "option": "self",
           "label": {
-            "en": "Somewhere else"
+            "en": "Somewhere else",
+            "ar": "مكان آخر"
           }
         }
       ],
@@ -1634,7 +1820,8 @@
     {
       "name": "name-social-worker",
       "label": {
-        "en": "What is the name of the social worker that helped you? (Type 'none' if not applicable)"
+        "en": "What is the name of the social worker that helped you? (Type 'none' if not applicable)",
+        "ar": "ما هو اسم المساعدة الاجتماعية الذي ساعدتكم؟ (اكتب \"لا أحد\" إذا لا يوجد) "
       },
       "answerType": "text",
       "questionType": "standard",

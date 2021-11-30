@@ -3,7 +3,7 @@
     "change-password": "Palitan ang password",
     "delete-account-header": "Ilagay ang iyong password kung sigurado kang gusto mong burahin ang iyong account",
     "delete-account-message": "Ang pagbubura ng iyong account ay hindi na maiibalik, lahat ng iyong data ay mawawala!",
-    "delete-digital-id": "Burahin ang account",
+    "delete-data": "Burahin ang account",
     "delete-fail": "May maling nangyari, ang iyong account ay hindi lubusang nabura.",
     "delete-success": "Ang iyong account ay matagumpay na nabura. Ikaw ay log-out na",
     "enter-password": "Ang Password mo"

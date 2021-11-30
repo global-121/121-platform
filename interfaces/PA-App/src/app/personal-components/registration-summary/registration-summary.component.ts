@@ -18,6 +18,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   public data: any;
 
   public validation: boolean;
+  public validationByQr: boolean;
 
   public registrationStatus: boolean;
 
@@ -55,7 +56,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   async initNew() {
     this.conversationService.startLoading();
 
-    this.validation = await this.checkValidation();
+    await this.checkValidation();
 
     await this.getReferenceId();
     await this.getProgram();
@@ -64,7 +65,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
       this.referenceId,
     );
 
-    if (this.validation) {
+    if (this.validation && this.validationByQr) {
       await this.shouldShowQrCode();
       await this.generateContent();
     }
@@ -76,19 +77,26 @@ export class RegistrationSummaryComponent extends PersonalDirective {
 
   async initHistory() {
     this.isDisabled = this.data.isDisabled;
+    this.validation = this.data.validation;
     this.registrationStatus = this.data.registrationStatus;
+    this.meetingDocuments = this.data.meetingDocuments;
   }
 
   async checkValidation() {
     const currentProgram = await this.paData.getCurrentProgram();
-    return currentProgram.validation;
+    this.validation = currentProgram.validation;
+    this.validationByQr = currentProgram.validationByQr;
   }
 
   private async shouldShowQrCode() {
     const usePreprintedQrCodeData = await this.paData.retrieve(
       this.paData.type.usePreprintedQrCode,
     );
-    this.showQrCode = !JSON.parse(usePreprintedQrCodeData);
+    if (typeof usePreprintedQrCodeData !== undefined) {
+      this.showQrCode = !JSON.parse(usePreprintedQrCodeData);
+    } else {
+      this.showQrCode = false;
+    }
   }
 
   private async getReferenceId() {
@@ -140,7 +148,9 @@ export class RegistrationSummaryComponent extends PersonalDirective {
       name: PersonalComponents.registrationSummary,
       data: {
         isDisabled: this.isDisabled,
+        validation: this.validation,
         registrationStatus: this.registrationStatus,
+        meetingDocuments: this.meetingDocuments,
       },
       next: this.getNextSection(),
     });

@@ -71,11 +71,9 @@
     },
     "registration-summary": {
       "documents": "Make sure to have these documents ready:",
-      "info-message": "To activate your account   <br><br>   When you create your account you will receive a print out of your digital ID that looks like this.<br> You will need to bring this and the following physical documents below to a meeting with an Aid worker to activate your account.<br> <ul> <li>Your National Identity Card</li> </ul><br> What if I don’t have a card? Then you have 2 options: <ol> <li>Bring a letter from the chief that confirms his/her identity</li> <li>Bring your X number (need the name of this number like BSN number) from the National Bureau of Registration. You will have to pay for a new one the price will be X.</li> </ol>",
-      "more-info-documents": "About these documents",
       "no-validation-conclusion": "Thank you. Your registration is now complete.   <br><br>   You should receive an SMS on the provided phone number shortly that confirms your registration.   <br><br>   You will be informed if your application has been successful within 14 days.   <br><br>   This is the final message for now.",
       "qr-code": "Please show this QR-code to the aidworker when asked.",
-      "validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS on the provided phone number shortly that confirms your registration.<br><br>An aidworker of the NGO will organize a meeting with you to validate your information, probably by visiting your home."
+      "validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS on the phone number you provided. This SMS confirms your registration.<br><br>In the following weeks, an Aid Worker from the organisation might reach out to you to organise a meeting to validate the information you provided. The Aid Worker will come to you for this meeting."
     },
     "select-fsp": {
       "attributes": {

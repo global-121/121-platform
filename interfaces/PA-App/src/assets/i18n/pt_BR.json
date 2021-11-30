@@ -3,7 +3,7 @@
     "change-password": "Alterar a senha",
     "delete-account-header": "Digite sua senha se você tem certeza de que deseja apagar sua conta",
     "delete-account-message": "Apagar sua conta é irreversível, todos os seus dados serão perdidos!",
-    "delete-digital-id": "Apagar conta",
+    "delete-data": "Apagar conta",
     "delete-fail": "Algo deu errado, sua conta não pôde ser totalmente apagada.",
     "delete-success": "Sua conta foi apagada com sucesso. Agora você vai desconectar.",
     "enter-password": "Sua senha",
