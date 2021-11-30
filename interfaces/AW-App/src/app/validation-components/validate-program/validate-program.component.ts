@@ -98,7 +98,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     }
   }
 
-  private buildQuestions(programQuestions: ProgramQuestion[]) {
+  private buildQuestions(programQuestions: ProgramQuestion[]): Question[] {
     return programQuestions
       .sort((a, b) => (a.id > b.id ? 1 : -1))
       .map((question): Question => {
