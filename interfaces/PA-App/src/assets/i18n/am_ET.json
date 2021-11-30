@@ -4,7 +4,7 @@
     "change-password": "የሚስጥር ቁልፍ ይቀይሩ",
     "delete-account-header": "መለያዎን መሰረዝ እንደሚፈልጉ እርግጠኛ ከሆኑ የይለፍ ቃልዎን ያስገቡ",
     "delete-account-message": "መለያዎን መሰረዝ የማይቀለበስ ነው ፣ ሁሉም ውሂብዎ ይጠፋል!",
-    "delete-digital-id": "መለያ ሰርዝ",
+    "delete-data": "መለያ ሰርዝ",
     "delete-fail": "የሆነ ችግር ተፈጥሯል ፣ መለያዎ ሙሉ በሙሉ በመሰረዝ አልቻለም።",
     "delete-success": "መለያዎ በተሳካ ሁኔታ ተሰርዟል! አሁን ዘግተው ይወጣሉ",
     "enter-password": "የይለፍ ቃልዎ",

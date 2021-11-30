@@ -3,7 +3,7 @@
     "change-password": "Changez le mot de passe ",
     "delete-account-header": "Veuillez entrer votre mot de passe si vous êtes sûr vous voulez effacer votre compte",
     "delete-account-message": "La suppression de votre compte est irréversible, toutes vos données seront perdues!",
-    "delete-digital-id": "Effacez le compte",
+    "delete-data": "Effacez le compte",
     "delete-fail": "Quelque chose s'est passé, ce n'était pas possible de supprimer completement votre compte.",
     "delete-success": "Votre compte était supprimé avec succès. Vous allez maintenant se déconnecter.",
     "enter-password": "Votre mot de passe",

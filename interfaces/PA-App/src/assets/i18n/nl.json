@@ -3,7 +3,7 @@
     "change-password": "Verander wachtwoord",
     "delete-account-header": "Vul je wachtwoord in als je zeker bent dat je je account wilt verwijderen.",
     "delete-account-message": "Verwijderen van je account is niet terug te draaien, al je data zal verloren gaan!",
-    "delete-digital-id": "Verwijder account",
+    "delete-data": "Verwijder account",
     "delete-fail": "Er ging iets mis, je account kon niet volledig worden verwijderd.",
     "delete-success": "Je account is succesvol verwijderd. Je zal nu worden uitgelogd.",
     "enter-password": "Jouw wachtwoord",
