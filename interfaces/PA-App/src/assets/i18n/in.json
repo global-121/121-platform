@@ -4,7 +4,7 @@
     "change-password": "Ganti password",
     "delete-account-header": "Isi password anda apabila anda yakin bahwa anda ingin menghapus akun anda",
     "delete-account-message": "Menghapus akun tidak bisa dirubah lagi, sehingga semua data anda akan hilang!",
-    "delete-digital-id": "Hapus akun",
+    "delete-data": "Hapus akun",
     "delete-fail": "Ada kesalahan yang terjadi, akun anda tidak bisa dihapus total.",
     "delete-success": "Akun anda telah berhasil dihapus. Anda sekarang harus logout.",
     "enter-password": "Password anda",

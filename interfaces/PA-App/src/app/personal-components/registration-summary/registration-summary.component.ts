@@ -66,7 +66,6 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     );
 
     if (this.validation && this.validationByQr) {
-      console.log('this.validationByQr: ', this.validationByQr);
       await this.shouldShowQrCode();
       await this.generateContent();
     }
@@ -80,6 +79,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     this.isDisabled = this.data.isDisabled;
     this.validation = this.data.validation;
     this.registrationStatus = this.data.registrationStatus;
+    this.meetingDocuments = this.data.meetingDocuments;
   }
 
   async checkValidation() {
@@ -150,6 +150,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
         isDisabled: this.isDisabled,
         validation: this.validation,
         registrationStatus: this.registrationStatus,
+        meetingDocuments: this.meetingDocuments,
       },
       next: this.getNextSection(),
     });
