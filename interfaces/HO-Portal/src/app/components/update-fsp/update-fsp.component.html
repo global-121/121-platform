@@ -53,7 +53,7 @@
             [placeholder]="attribute.placeholder?.en"
             class="ion-margin-vertical"
             (ionChange)="onAttributeChange(attribute.name, $event)"
-            hideButton="true"
+            [showSubmit]="false"
           ></app-update-property-item>
         </div>
       </ng-container>

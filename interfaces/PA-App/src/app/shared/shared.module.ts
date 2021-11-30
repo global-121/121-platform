@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { OnlyAllowedInputDirective } from '../directives/only-allowed-input.directive';
 import { DateInputComponent } from './date-input/date-input.component';
 import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
 import { MoreInfoButtonComponent } from './more-info-button/more-info-button.component';
@@ -16,12 +17,13 @@ import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
 
 @NgModule({
   declarations: [
+    DateInputComponent,
     DialogueTurnComponent,
     MoreInfoButtonComponent,
     NumericInputComponent,
+    OnlyAllowedInputDirective,
     PasswordToggleInputComponent,
     PhoneNumberInputComponent,
-    DateInputComponent,
     PlayTextAudioComponent,
     QAndASetComponent,
     QrScannerComponent,

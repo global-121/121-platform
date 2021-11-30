@@ -10,7 +10,11 @@
   </dialogue-turn>
   <dialogue-turn actor="self" *ngIf="fsps" [isSpoken]="fsps">
     <form (submit)="submitFsp()">
-      <ion-radio-group name="fsps" (ionChange)="changeFsp($event)">
+      <ion-radio-group
+        name="fsps"
+        (ionChange)="changeFsp($event)"
+        [value]="fspChoice"
+      >
         <ion-item
           *ngFor="let fsp of fsps"
           color="light"
@@ -22,7 +26,6 @@
           </ion-label>
           <ion-radio
             [value]="fsp.id"
-            [checked]="fsp.id === fspChoice"
             [disabled]="fspSubmitted"
           ></ion-radio>
         </ion-item>

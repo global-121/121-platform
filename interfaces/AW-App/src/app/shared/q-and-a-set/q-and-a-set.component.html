@@ -3,7 +3,7 @@
   (keydown.enter)="$event.preventDefault()"
 >
 
-  <div *ngFor="let question of questions; let i=index; first as isFirst;">
+  <ng-container *ngFor="let question of questions; let i=index; first as isFirst;">
     <dialogue-turn
       actor="self"
       [isConnected]="!isFirst"
@@ -15,9 +15,9 @@
       <div [ngSwitch]="question.answerType">
         <div *ngSwitchCase="answerType.Enum">
           <ion-radio-group
-            [name]="question.name"
+            [name]="question.code"
             [value]="answers[question.name]?.value"
-            (ionChange)="onAnswerChange(question.name,$event.target.value)"
+            (ionChange)="onAnswerChange(question.code,$event.target.value)"
             debounce="100"
           >
             <ion-item
@@ -38,50 +38,52 @@
           <numeric-input
             #numInput
             ngDefaultControl
-            [(ngModel)]="theFormModels[question.name]"
+            [(ngModel)]="theFormModels[question.code]"
             required
-            [name]="question.name"
+            [name]="question.code"
+            [placeholder]="question.placeholder"
+            [pattern]="question.pattern"
             [disabled]="isSubmitted"
-            (isValidChange)="onChangeWithValidation(question.name, numInput.value, numInput.isValid)"
+            (isValidChange)="onChangeWithValidation(question.code, numInput.value, numInput.isValid)"
           ></numeric-input>
         </div>
         <div *ngSwitchCase="answerType.Date">
           <date-input
             #dateInput
             ngDefaultControl
-            [(ngModel)]="theFormModels[question.name]"
+            [(ngModel)]="theFormModels[question.code]"
             required
-            [name]="question.name"
+            [name]="question.code"
             [disabled]="isSubmitted"
-            (isValidChange)="onChangeWithValidation(question.name, dateInput.value, dateInput.isValid)"
+            (isValidChange)="onChangeWithValidation(question.code, dateInput.value, dateInput.isValid)"
           ></date-input>
         </div>
         <div *ngSwitchCase="answerType.phoneNumber">
           <phone-number-input
             #phoneNumberInput
             ngDefaultControl
-            [(ngModel)]="theFormModels[question.name]"
+            [(ngModel)]="theFormModels[question.code]"
             required
             [placeholder]="question.placeholder"
-            [name]="question.name"
+            [name]="question.code"
             [disabled]="isSubmitted"
-            (isValidChange)="onChangeWithValidation(question.name, phoneNumberInput.value, phoneNumberInput.isValid)"
+            (isValidChange)="onChangeWithValidation(question.code, phoneNumberInput.value, phoneNumberInput.isValid)"
           ></phone-number-input>
         </div>
         <div *ngSwitchCase="answerType.email">
           <ion-input
             #emailInput="ngModel"
             ngDefaultControl
-            [(ngModel)]="theFormModels[question.name]"
+            [(ngModel)]="theFormModels[question.code]"
             type="email"
             inputmode="email"
             autocomplete="email"
             pattern="^[\w\-+]+(\.[\w\-+]+)*@(([\w\-]+\.)*[\w\-]+)\.[a-z]{2,}$"
             [title]="'q-and-a-set.validation.email'|translate"
             required
-            [name]="question.name"
+            [name]="question.code"
             [disabled]="isSubmitted"
-            (ionChange)="onChangeWithValidation(question.name, emailInput.value, emailInput.valid && ((emailInput.dirty || emailInput.touched) || allQuestionsShown))"
+            (ionChange)="onChangeWithValidation(question.code, emailInput.value, emailInput.valid && ((emailInput.dirty || emailInput.touched) || allQuestionsShown))"
             debounce="300"
           ></ion-input>
         </div>
@@ -89,23 +91,24 @@
           <ion-input
             #defaultInput="ngModel"
             ngDefaultControl
-            [(ngModel)]="theFormModels[question.name]"
+            [(ngModel)]="theFormModels[question.code]"
             type="text"
-            pattern=".*\S+.*"
+            [placeholder]="question.placeholder"
+            [pattern]="question.pattern ? question.pattern : '.*\\S+.*'"
             required
-            [name]="question.name"
+            [name]="question.code"
             [disabled]="isSubmitted"
-            (ionChange)="onChangeWithValidation(question.name, defaultInput.value, defaultInput.valid && ((defaultInput.dirty || defaultInput.touched) || allQuestionsShown))"
+            (ionChange)="onChangeWithValidation(question.code, defaultInput.value, defaultInput.valid && ((defaultInput.dirty || defaultInput.touched) || allQuestionsShown))"
             debounce="300"
           ></ion-input>
         </div>
       </div>
     </dialogue-turn>
     <div
-      *ngIf="checkValidationErrors(question.name) && !isSubmitted"
+      *ngIf="checkValidationError(question.code) && !isSubmitted"
       class="ion-margin-bottom ion-padding-bottom"
     >
-      <dialogue-turn [isSpoken]="checkValidationErrors(question.name)">
+      <dialogue-turn [isSpoken]="checkValidationError(question.code)">
         <p *ngIf="(question.answerType === answerType.phoneNumber)">
           {{ 'q-and-a-set.validation.phone-number'|translate }}
         </p>
@@ -123,7 +126,7 @@
         </p>
       </dialogue-turn>
     </div>
-  </div>
+  </ng-container>
 
   <dialogue-turn
     *ngIf="((theForm.invalid && (theForm.dirty || theForm.touched)) || checkValidationErrors()) && allQuestionsShown && !isSubmitted"

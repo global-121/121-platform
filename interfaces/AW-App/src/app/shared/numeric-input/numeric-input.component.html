@@ -2,16 +2,16 @@
   #numericInput
   type="text"
   inputmode="numeric"
-  pattern="[0-9]+"
   [name]="name"
   [(ngModel)]="ngModel"
   [value]="value"
   [autocomplete]="autocomplete"
   [disabled]="disabled"
   [placeholder]="placeholder"
-  (ionInput)="onInput()"
+  [pattern]="pattern ? pattern : '[0-9]+'"
   (ionChange)="onChange()"
   debounce="300"
   ngDefaultControl
   [required]="required"
+  appOnlyAllowedInput
 ></ion-input>

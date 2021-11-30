@@ -9,10 +9,11 @@ export enum AnswerType {
 }
 
 export class Question {
-  name: string;
+  code: string;
   answerType: AnswerType;
   label: string;
   placeholder?: string;
+  pattern?: string;
   options: QuestionOption[] | null;
 }
 
@@ -22,7 +23,7 @@ export class QuestionOption {
 }
 
 export class Answer {
-  name: string;
+  code: string;
   value: string;
   label: string;
 }

@@ -28,12 +28,11 @@ export class HeaderComponent implements OnInit {
     private translatableString: TranslatableStringService,
   ) {
     this.programId = this.route.snapshot.params.id;
-
-    this.showManageAidworkers = this.canManageAidWorkers();
   }
 
-  ngOnInit() {
-    this.loadProgramDetails();
+  public async ngOnInit() {
+    await this.loadProgramDetails();
+    this.showManageAidworkers = !!this.program.validation;
   }
 
   private async loadProgramDetails() {
@@ -43,7 +42,7 @@ export class HeaderComponent implements OnInit {
     );
   }
 
-  private canManageAidWorkers(): boolean {
+  public canManageAidWorkers(): boolean {
     return this.authService.hasUserRole([UserRole.RunProgram]);
   }
 }

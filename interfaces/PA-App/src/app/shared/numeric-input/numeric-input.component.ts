@@ -13,7 +13,7 @@ import { NgModel } from '@angular/forms';
   styleUrls: ['./numeric-input.component.scss'],
 })
 export class NumericInputComponent {
-  @ViewChild('numericInput')
+  @ViewChild('numericInput', { static: false })
   public numericInput: any;
 
   @Input()
@@ -47,23 +47,10 @@ export class NumericInputComponent {
 
   constructor() {}
 
-  public async onInput() {
+  public async onChange() {
     // 'export' the value of the input-ELEMENT to be used as value of this COMPONENT
     this.value = this.numericInput.value;
 
-    const nativeInput = await this.numericInput.getInputElement();
-    let cursorPosition = nativeInput.selectionStart;
-
-    const clean = this.value.replace(/[^0-9]/g, '');
-
-    const strippedLength = this.value.length - clean.length;
-    cursorPosition = cursorPosition - strippedLength;
-
-    this.value = clean;
-    nativeInput.setSelectionRange(cursorPosition, cursorPosition);
-  }
-
-  public async onChange() {
     const nativeInput = await this.numericInput.getInputElement();
     const nativeIsValid = nativeInput.checkValidity();
 
