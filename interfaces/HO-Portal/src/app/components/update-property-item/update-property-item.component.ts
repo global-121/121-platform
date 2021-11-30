@@ -43,6 +43,8 @@ export class UpdatePropertyItemComponent implements OnInit {
   }
 
   public doUpdate() {
+    if (this.type === 'number' && !isNaN(Number(this.propertyModel)))
+      this.propertyModel = Number(this.propertyModel);
     this.updated.emit(this.propertyModel);
   }
 }
