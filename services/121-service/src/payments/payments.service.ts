@@ -331,7 +331,7 @@ export class PaymentsService {
         relations: ['fsp'],
       });
       if (registration.fsp.fsp === FspName.bobFinance) {
-        const instruction = this.bobFinanceService.getFspInstructions(
+        const instruction = await this.bobFinanceService.getFspInstructions(
           registration,
           transaction,
         );

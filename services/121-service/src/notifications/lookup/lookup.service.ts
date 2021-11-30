@@ -47,6 +47,23 @@ export class LookupService {
     }
   }
 
+  public async getLocalNumber(phoneNumber: string): Promise<number> {
+    try {
+      // Add additional sanitizing (incl NL-specific) because user is given no opportunity to correct here
+      const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);
+
+      const lookupResponse = await twilioClient.lookups
+        .phoneNumbers(updatedPhone)
+        .fetch({ type: ['carrier'] });
+      return Number(lookupResponse.nationalFormat.replace(/\s/g, ''));
+    } catch (e) {
+      if (e.status === HttpStatus.NOT_FOUND) {
+        const errors = `Phone number incorrect`;
+        throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+      }
+    }
+  }
+
   private sanitizePhoneNrExtra(phoneNumber: string): string {
     return phoneNumber.substr(0, 2) == '00'
       ? phoneNumber.substr(2, phoneNumber.length - 2)
