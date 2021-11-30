@@ -17,8 +17,7 @@
     "en": ""
   },
   "descCashType": {
-    "en": "Unconditional multi-purpose",
-    "am_ET": "Unconditional multi-purpose"
+    "en": "Unconditional multi-purpose"
   },
   "startDate": "2021-12-01T12:00:00Z",
   "endDate": "2022-05-31T12:00:00Z",
@@ -36,10 +35,13 @@
   "highestScoresX": 50,
   "meetingDocuments": {
     "en": "Photo; National ID card",
-    "am_ET": "Photo; National ID card"
+    "am_ET": "ፎቶ; መታወቂያ ወረቀት"
   },
   "notifications": {
     "en": {
+      "registered": "This is a message from ZOA.\n\nThank you for your registration. We will inform you later if you are included in this project or not."
+    },
+    "am_ET": {
       "registered": "ይህ ከዞአ የመጣ መልእክት ነው።\n\n ስለተመዘገቡ እናመሰግናለን። በዚህ ፕሮጀክት ውስጥ ስለመካተትዎ በኋላ እናሳውቅዎታለን።"
     }
   },
