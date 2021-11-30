@@ -45,10 +45,10 @@
     *ngIf="peopleAffectedFound.length"
     [isSpoken]="peopleAffectedFound.length"
   >
-    <dialogue-turn>
+    <dialogue-turn isSpoken="true">
       {{ 'validation.find-by-phone.multiple-found' | translate }}
     </dialogue-turn>
-    <dialogue-turn actor="self">
+    <dialogue-turn actor="self" isSpoken="true">
       <form (submit)="submitPaChoice()">
         <ion-radio-group
           (ionChange)="changePaChoice($event)"
