@@ -92,9 +92,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     const usePreprintedQrCodeData = await this.paData.retrieve(
       this.paData.type.usePreprintedQrCode,
     );
-    console.log('usePreprintedQrCodeData: ', usePreprintedQrCodeData);
     if (typeof usePreprintedQrCodeData !== undefined) {
-      console.log('usePreprintedQrCodeData: ', usePreprintedQrCodeData);
       this.showQrCode = !JSON.parse(usePreprintedQrCodeData);
     } else {
       this.showQrCode = false;
