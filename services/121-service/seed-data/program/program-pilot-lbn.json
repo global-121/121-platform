@@ -22,10 +22,10 @@
   },
   "startDate": "2021-12-01T12:00:00Z",
   "endDate": "2022-05-31T12:00:00Z",
-  "currency": "LBP",
+  "currency": "USD",
   "distributionFrequency": "month",
   "distributionDuration": 6,
-  "fixedTransferValue": 76200,
+  "fixedTransferValue": 50,
   "financialServiceProviders": [
     {
       "id": 1

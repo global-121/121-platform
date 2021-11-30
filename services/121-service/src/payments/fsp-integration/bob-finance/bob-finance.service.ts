@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FspName } from '../../../fsp/financial-service-provider.entity';
+import { LookupService } from '../../../notifications/lookup/lookup.service';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
@@ -16,6 +17,7 @@ import { BobFinanceFspInstructions } from './dto/bob-finance-fsp-instructions.dt
 export class BobFinanceService {
   public constructor(
     private readonly transactionsService: TransactionsService,
+    private readonly lookupService: LookupService,
   ) {}
 
   public async sendPayment(
@@ -45,23 +47,28 @@ export class BobFinanceService {
     return fspTransactionResult;
   }
 
-  public getFspInstructions(
+  public async getFspInstructions(
     registration: RegistrationEntity,
     transaction: TransactionEntity,
-  ): BobFinanceFspInstructions {
+  ): Promise<BobFinanceFspInstructions> {
     const bobFinanceFspInstructions = new BobFinanceFspInstructions();
 
     bobFinanceFspInstructions['Receiver First name'] =
       registration.customData[CustomDataAttributes.nameFirst];
     bobFinanceFspInstructions['Receiver last name'] =
       registration.customData[CustomDataAttributes.nameLast];
-    bobFinanceFspInstructions['Mobile Number'] =
-      registration.customData[CustomDataAttributes.phoneNumber];
+    bobFinanceFspInstructions['Mobile Number'] = await this.formatToLocalNumber(
+      registration.customData[CustomDataAttributes.phoneNumber],
+    );
     bobFinanceFspInstructions.Email = null;
     bobFinanceFspInstructions.Amount = transaction.amount;
-    bobFinanceFspInstructions.Currency = 'LBP';
+    bobFinanceFspInstructions.Currency = 'USD';
     bobFinanceFspInstructions['Expiry Date'] = null;
 
     return bobFinanceFspInstructions;
+  }
+
+  private async formatToLocalNumber(phonenumber: string): Promise<number> {
+    return await this.lookupService.getLocalNumber(`+${phonenumber}`);
   }
 }
