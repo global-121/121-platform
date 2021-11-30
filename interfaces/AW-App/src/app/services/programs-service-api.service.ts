@@ -81,7 +81,6 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-
   getRegistration(referenceId: string): Promise<any> {
     return this.apiService
       .get(environment.url_121_service_api, '/registrations/get/' + referenceId)

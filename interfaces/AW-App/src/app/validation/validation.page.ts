@@ -1,4 +1,3 @@
-import { FindByPhoneComponent } from './../validation-components/find-by-phone/find-by-phone.component';
 import {
   Component,
   ComponentFactoryResolver,
@@ -18,6 +17,7 @@ import { UploadDataComponent } from '../validation-components/upload-data/upload
 import { ValidateFspComponent } from '../validation-components/validate-fsp/validate-fsp.component';
 import { ValidateProgramComponent } from '../validation-components/validate-program/validate-program.component';
 import { ValidationComponents } from '../validation-components/validation-components.enum';
+import { FindByPhoneComponent } from './../validation-components/find-by-phone/find-by-phone.component';
 
 @Component({
   selector: 'app-validation',

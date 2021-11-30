@@ -5,5 +5,5 @@ export enum ValidationComponents {
   validateFsp = 'validate-fsp',
   downloadData = 'download-data',
   uploadData = 'upload-data',
-  findByPhone = 'find-by-phone'
+  findByPhone = 'find-by-phone',
 }
