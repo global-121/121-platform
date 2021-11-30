@@ -42,7 +42,7 @@ ion-button {
   text-transform: none;
 }
 
-.fake-ion-item {
+.update-property-item {
   display: flex;
   flex-direction: column;
   background-color: white;
@@ -51,7 +51,7 @@ ion-button {
     border-bottom: 1px solid var(--ion-color-light);
   }
 
-  .fake-ion-item--contents {
+  .update-property-item--contents {
     display: flex;
     flex-direction: row;
     justify-content: space-between;

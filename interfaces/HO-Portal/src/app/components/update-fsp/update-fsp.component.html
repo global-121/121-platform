@@ -4,11 +4,11 @@
   (ngSubmit)="updateChosenFsp()"
 >
 
-  <div class="fake-ion-item divider-bottom ion-padding">
-    <label class="fake-ion-item--label">
+  <div class="update-property-item divider-bottom ion-padding">
+    <label class="update-property-item--label">
       {{ label }}
     </label>
-    <div class="fake-ion-item--contents">
+    <div class="update-property-item--contents">
       <div>
         <ion-item class="ion-margin-vertical">
           <ion-select
@@ -43,7 +43,7 @@
           {{ 'page.program.program-people-affected.edit-person-affected-popup.fspNewAttributesExplanation' | translate }}
         </p>
         <div
-          class="fake-ion-item divider-bottom ion-padding"
+          class="update-property-item divider-bottom ion-padding"
           *ngFor="let attribute of selectedFspAttributes"
         >
           <app-update-property-item

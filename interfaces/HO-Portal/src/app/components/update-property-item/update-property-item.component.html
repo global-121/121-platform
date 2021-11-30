@@ -4,13 +4,13 @@
   (ngSubmit)="doUpdate()"
 >
   <div
-    class="fake-ion-item divider-bottom ion-padding"
+    class="update-property-item divider-bottom ion-padding"
     [attr.disabled]="isDisabled"
   >
-    <label class="fake-ion-item--label">
+    <label class="update-property-item--label">
       {{ label }}
     </label>
-    <div class="fake-ion-item--contents">
+    <div class="update-property-item--contents">
       <ng-container [ngSwitch]="type">
         <ng-container *ngSwitchCase="'number'">
           <ion-input
