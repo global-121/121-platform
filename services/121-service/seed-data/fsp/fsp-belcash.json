@@ -16,11 +16,7 @@
         "en": "+251 000 000 000",
         "ar": "+251 000 000 000"
       },
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "tel",
       "options": null
     },
@@ -56,11 +52,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     }
   ]
