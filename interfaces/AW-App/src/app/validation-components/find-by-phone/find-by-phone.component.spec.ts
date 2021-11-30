@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { AngularDelegate, ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
@@ -24,7 +25,11 @@ describe('FindByPhoneComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [FindByPhoneComponent],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      imports: [
+        TranslateModule.forRoot(),
+        HttpClientTestingModule,
+        FormsModule,
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {

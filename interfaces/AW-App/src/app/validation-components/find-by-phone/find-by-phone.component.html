@@ -17,7 +17,7 @@
     ></phone-number-input>
   </dialogue-turn>
 
-  <dialogue-turn actor="self" isSpoken="true">
+  <dialogue-turn actor="self" isSpoken="true" isConnected="true">
     <ion-button
       expand="block"
       [disabled]="inputPhonenumber === '' || paDataResult || returnMainMenu"
@@ -36,6 +36,7 @@
   <dialogue-turn
     *ngIf="noPeopleAffectedFound"
     [isSpoken]="noPeopleAffectedFound"
+    isConnected="true"
   >
     {{ 'validation.find-by-phone.error' | translate }}
   </dialogue-turn>
@@ -97,7 +98,11 @@
     </dialogue-turn>
   </ng-container>
 
-  <dialogue-turn *ngIf="paDataResult" [isSpoken]="paDataResult">
+  <dialogue-turn
+    *ngIf="paDataResult"
+    [isSpoken]="paDataResult"
+    isConnected="true"
+  >
     {{ 'validation.find-by-phone.conclusion' | translate }}
   </dialogue-turn>
 </section>
