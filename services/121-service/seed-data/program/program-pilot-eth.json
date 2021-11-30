@@ -7,18 +7,18 @@
   "ngo": "ZOA",
   "titlePortal": {
     "en": "121 Digital Cash Aid Program",
-    "ar": "121 ዲጂታል የገንዘብ እርዳታ ፕሮግራም"
+    "am_ET": "121 ዲጂታል የገንዘብ እርዳታ ፕሮግራም"
   },
   "titlePaApp": {
     "en": "121 Digital Cash Aid Program",
-    "ar": "121 ዲጂታል የገንዘብ እርዳታ ፕሮግራም"
+    "am_ET": "121 ዲጂታል የገንዘብ እርዳታ ፕሮግራም"
   },
   "description": {
     "en": ""
   },
   "descCashType": {
     "en": "Unconditional multi-purpose",
-    "ar": "Unconditional multi-purpose"
+    "am_ET": "Unconditional multi-purpose"
   },
   "startDate": "2021-12-01T12:00:00Z",
   "endDate": "2022-05-31T12:00:00Z",
@@ -36,7 +36,7 @@
   "highestScoresX": 50,
   "meetingDocuments": {
     "en": "Photo; National ID card",
-    "ar": "Photo; National ID card"
+    "am_ET": "Photo; National ID card"
   },
   "notifications": {
     "en": {
@@ -49,7 +49,7 @@
       "name": "name",
       "label": {
         "en": "What is your full name?",
-        "ar": "ሙሉ ስምዎ ማን ነው?"
+        "am_ET": "ሙሉ ስምዎ ማን ነው?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -62,7 +62,7 @@
       "name": "age",
       "label": {
         "en": "How old are you? (if you are between 0 and 17 years old, then stop the registration process, it is a precondition to be an adult)",
-        "ar": "እድሜዎ ስንት ነው? (ዕድሜዎ ከ0 እስከ 17 ዓመት ከሆኑ፣ የምዝገባ ሂደቱን ያቁሙ፣ ክ 18 ዓምት በላይ መሆን ቅድመ ሁኔታ ነው)"
+        "am_ET": "እድሜዎ ስንት ነው? (ዕድሜዎ ከ0 እስከ 17 ዓመት ከሆኑ፣ የምዝገባ ሂደቱን ያቁሙ፣ ክ 18 ዓምት በላይ መሆን ቅድመ ሁኔታ ነው)"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -71,21 +71,21 @@
           "option": "0-17",
           "label": {
             "en": "0 - 17 years",
-            "ar": "0 - 17 ዓመት"
+            "am_ET": "0 - 17 ዓመት"
           }
         },
         {
           "option": "18-30",
           "label": {
             "en": "18 - 30 years",
-            "ar": "18 - 30 ዓመታት"
+            "am_ET": "18 - 30 ዓመታት"
           }
         },
         {
           "option": "31-",
           "label": {
             "en": "31 years or older",
-            "ar": "31 ዓመት ወይም ከዚያ በላይ"
+            "am_ET": "31 ዓመት ወይም ከዚያ በላይ"
           }
         }
       ],
@@ -101,7 +101,7 @@
       "name": "education",
       "label": {
         "en": "What is your highest level of education?",
-        "ar": "ከፍተኛ የትምህርት ደረጃዎ ምንድነው?"
+        "am_ET": "ከፍተኛ የትምህርት ደረጃዎ ምንድነው?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -110,28 +110,28 @@
           "option": "primary",
           "label": {
             "en": "Primary school (grade 1-8)",
-            "ar": "የመጀመሪያ ደረጃ ትምህርት ያጠናቀቀ  (1-8 ክፍል)"
+            "am_ET": "የመጀመሪያ ደረጃ ትምህርት ያጠናቀቀ  (1-8 ክፍል)"
           }
         },
         {
           "option": "secondary",
           "label": {
             "en": "Secondary school (grade 9-12)",
-            "ar": "የሁለተኛ ደረጃ ትምህርት ያጠናቀቀ (9-12 ክፍል)"
+            "am_ET": "የሁለተኛ ደረጃ ትምህርት ያጠናቀቀ (9-12 ክፍል)"
           }
         },
         {
           "option": "university",
           "label": {
             "en": "University",
-            "ar": "ዩኒቨርሲቲ"
+            "am_ET": "ዩኒቨርሲቲ"
           }
         },
         {
           "option": "other",
           "label": {
             "en": "Other",
-            "ar": "ሌላ"
+            "am_ET": "ሌላ"
           }
         }
       ],
@@ -143,7 +143,7 @@
       "name": "nationalIdNumber",
       "label": {
         "en": "What is your national identification number?",
-        "ar": "የእርስዎ የመታወቂያ ቁጥር ስንት ነው?"
+        "am_ET": "የእርስዎ የመታወቂያ ቁጥር ስንት ነው?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -156,7 +156,7 @@
       "name": "nrOfChildren",
       "label": {
         "en": "How many children do you have, if any?",
-        "ar": "ስንት ልጆች አሎት?"
+        "am_ET": "ስንት ልጆች አሎት?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -169,7 +169,7 @@
       "name": "hasHusband",
       "label": {
         "en": "Do you have a husband?",
-        "ar": "ባለ ትዳር ነዎት"
+        "am_ET": "ባለ ትዳር ነዎት"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -178,14 +178,14 @@
           "option": "yes",
           "label": {
             "en": "Yes",
-            "ar": "አዎ"
+            "am_ET": "አዎ"
           }
         },
         {
           "option": "no",
           "label": {
             "en": "No",
-            "ar": "አይ"
+            "am_ET": "አይ"
           }
         }
       ],
@@ -197,7 +197,7 @@
       "name": "whenReturnee",
       "label": {
         "en": "Did you return to Ethiopia from a country in the Middle East? (For example: Saudi Arabia, Kuwait, Qatar, Bahrain, Jordan, Yemen)<br><br>If so, how many years has it been since you got deported from abroad or came back to Ethiopia as a returnee?",
-        "ar": "ከመካከለኛው ምስራቅ ሀገር ወደ ኢትዮጵያ ተመለሽ ነዎት? (ለምሳሌ፡ ሳውዲ አረቢያ፡ ኩዌት፡ ኳታር፡ ባህሬን፡ ዮርዳኖስ፡ የመን)<br><br> ከሆነ፡ ከውጪ ከተባረሩ ወይም ወደ ኢትዮጵያ ከተመለሱ ስንት አመት ሆኖት?"
+        "am_ET": "ከመካከለኛው ምስራቅ ሀገር ወደ ኢትዮጵያ ተመለሽ ነዎት? (ለምሳሌ፡ ሳውዲ አረቢያ፡ ኩዌት፡ ኳታር፡ ባህሬን፡ ዮርዳኖስ፡ የመን)<br><br> ከሆነ፡ ከውጪ ከተባረሩ ወይም ወደ ኢትዮጵያ ከተመለሱ ስንት አመት ሆኖት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -206,28 +206,28 @@
           "option": "noReturnee",
           "label": {
             "en": "I did not return from a country in the Middle East",
-            "ar": "ከመካከለኛው ምስራቅ ሀገር አልተመለስኩም"
+            "am_ET": "ከመካከለኛው ምስራቅ ሀገር አልተመለስኩም"
           }
         },
         {
           "option": "less2years",
           "label": {
             "en": "Less than 2 years",
-            "ar": "ከ 2 ዓመት በታች"
+            "am_ET": "ከ 2 ዓመት በታች"
           }
         },
         {
           "option": "2-4years",
           "label": {
             "en": "2 - 4 years",
-            "ar": "2-4 ዓመት"
+            "am_ET": "2-4 ዓመት"
           }
         },
         {
           "option": "more4years",
           "label": {
             "en": "More than 4 years",
-            "ar": "ከ 4 ዓመት በላይ"
+            "am_ET": "ከ 4 ዓመት በላይ"
           }
         }
       ],
@@ -244,7 +244,7 @@
       "name": "isHouseholdLeader",
       "label": {
         "en": "Are you a household leader or responsible for taking care of your family financially?",
-        "ar": "እርስዎ የቤተሰብ መሪ ነዎት ወይም ቤተሰብዎን በገንዘብ የመደጋፍ ኃላፊነት አለብዎት?"
+        "am_ET": "እርስዎ የቤተሰብ መሪ ነዎት ወይም ቤተሰብዎን በገንዘብ የመደጋፍ ኃላፊነት አለብዎት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -253,14 +253,14 @@
           "option": "yes",
           "label": {
             "en": "Yes",
-            "ar": "አዎ"
+            "am_ET": "አዎ"
           }
         },
         {
           "option": "no",
           "label": {
             "en": "No",
-            "ar": "አይ"
+            "am_ET": "አይ"
           }
         }
       ],
@@ -275,7 +275,7 @@
       "name": "business",
       "label": {
         "en": "Do you own a business? (if you do not own a business, then stop the registration process, it is a precondition to own a business)",
-        "ar": "የግል ድርጅት ወይንም የንግድ ሱቅ ባለቤት ነዎት? (የንግድ ስራ ባለቤት ካልሆኑ, የምዝገባ ሂደቱን ያቁሙ, የንግድ ሥራ ባለቤት መሆን ቅድመ ሁኔታ ነው)"
+        "am_ET": "የግል ድርጅት ወይንም የንግድ ሱቅ ባለቤት ነዎት? (የንግድ ስራ ባለቤት ካልሆኑ, የምዝገባ ሂደቱን ያቁሙ, የንግድ ሥራ ባለቤት መሆን ቅድመ ሁኔታ ነው)"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -284,14 +284,14 @@
           "option": "yes",
           "label": {
             "en": "Yes",
-            "ar": "አዎ"
+            "am_ET": "አዎ"
           }
         },
         {
           "option": "no",
           "label": {
             "en": "No",
-            "ar": "አይ"
+            "am_ET": "አይ"
           }
         }
       ],
@@ -306,7 +306,7 @@
       "name": "businessLicenseAddis",
       "label": {
         "en": "Do you have a business license under your name in Addis Ababa?",
-        "ar": " አዲስ አበባ ውስጥ በስምዎ የንግድ ፍቃድ አሎት?"
+        "am_ET": " አዲስ አበባ ውስጥ በስምዎ የንግድ ፍቃድ አሎት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -315,14 +315,14 @@
           "option": "yes",
           "label": {
             "en": "Yes",
-            "ar": "አዎ"
+            "am_ET": "አዎ"
           }
         },
         {
           "option": "no",
           "label": {
             "en": "No",
-            "ar": "አይ"
+            "am_ET": "አይ"
           }
         }
       ],
@@ -337,7 +337,7 @@
       "name": "typeBusiness",
       "label": {
         "en": "What type of business do you own?",
-        "ar": "የምን አይነት ንግድ ባለቤት ነዎት?"
+        "am_ET": "የምን አይነት ንግድ ባለቤት ነዎት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -346,49 +346,49 @@
           "option": "restaurant",
           "label": {
             "en": "Small cafe or restaurant",
-            "ar": "አነስተኛ ካፌ ወይም ምግብ ቤት"
+            "am_ET": "አነስተኛ ካፌ ወይም ምግብ ቤት"
           }
         },
         {
           "option": "coffee",
           "label": {
             "en": "Coffee house",
-            "ar": "ቡና ቤት"
+            "am_ET": "ቡና ቤት"
           }
         },
         {
           "option": "bakery",
           "label": {
             "en": "Bakery",
-            "ar": "ዳቦ ቤት"
+            "am_ET": "ዳቦ ቤት"
           }
         },
         {
           "option": "hair",
           "label": {
             "en": "Hair salon / beauty salon",
-            "ar": "የፀጉር ሳሎን / የውበት ሳሎን"
+            "am_ET": "የፀጉር ሳሎን / የውበት ሳሎን"
           }
         },
         {
           "option": "clothes",
           "label": {
             "en": "Clothes shop / boutique",
-            "ar": "የልብስ ሱቅ / ቡቲክ"
+            "am_ET": "የልብስ ሱቅ / ቡቲክ"
           }
         },
         {
           "option": "retail",
           "label": {
             "en": "Retail shop",
-            "ar": "የችርቻሮ ሱቅ"
+            "am_ET": "የችርቻሮ ሱቅ"
           }
         },
         {
           "option": "other",
           "label": {
             "en": "Other",
-            "ar": "ሌላ"
+            "am_ET": "ሌላ"
           }
         }
       ],
@@ -400,7 +400,7 @@
       "name": "typeBusinessOther",
       "label": {
         "en": "What other type of business do you own? (type '-' if not applicable)",
-        "ar": "ሌላ ምን አይነት ንግድ አለዎት? (የሚመለከተው ካልሆነ '-' ይተይቡ)"
+        "am_ET": "ሌላ ምን አይነት ንግድ አለዎት? (የሚመለከተው ካልሆነ '-' ይተይቡ)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -413,7 +413,7 @@
       "name": "businessGoal",
       "label": {
         "en": "Do you have a serious and thought out goal and interest to expand or advance your small business in Ethiopia?",
-        "ar": "በኢትዮጵያ አነስተኛ ንግድዎን ለማስፋት ወይም ለማሳደግ አቅድ ,የታሰበ ግብ እና ፍላጎት አለዎት?"
+        "am_ET": "በኢትዮጵያ አነስተኛ ንግድዎን ለማስፋት ወይም ለማሳደግ አቅድ ,የታሰበ ግብ እና ፍላጎት አለዎት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -422,21 +422,21 @@
           "option": "yes",
           "label": {
             "en": "Yes",
-            "ar": "አዎ"
+            "am_ET": "አዎ"
           }
         },
         {
           "option": "no",
           "label": {
             "en": "No",
-            "ar": "አይ"
+            "am_ET": "አይ"
           }
         },
         {
           "option": "limited",
           "label": {
             "en": "I have a limited goal and interest to expand my small business",
-            "ar": "የእኔን አነስተኛ ንግድ ለማስፋፋት የተወሰነ ግብ እና ፍላጎት አለኝ"
+            "am_ET": "የእኔን አነስተኛ ንግድ ለማስፋፋት የተወሰነ ግብ እና ፍላጎት አለኝ"
           }
         }
       ],
@@ -452,7 +452,7 @@
       "name": "businessPlan",
       "label": {
         "en": "If you have a serious and thought out goal and interest to expand or advance your small business in Ethiopia, then please explain (type '-' if not applicable, or no business goal yet)",
-        "ar": "በኢትዮጵያ አነስተኛ ንግድዎን ለማስፋት ወይም ለማሳደግ አቅድ ,የታሰበ ግብ እና ፍላጎት ካሎት እባክዎን ያብራሩ (የማይመለከቶት ከሆነ '-' ብለው ይተይቡ ወይም እስካሁን ምንም የንግድ አቅድ የለም)"
+        "am_ET": "በኢትዮጵያ አነስተኛ ንግድዎን ለማስፋት ወይም ለማሳደግ አቅድ ,የታሰበ ግብ እና ፍላጎት ካሎት እባክዎን ያብራሩ (የማይመለከቶት ከሆነ '-' ብለው ይተይቡ ወይም እስካሁን ምንም የንግድ አቅድ የለም)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -465,7 +465,7 @@
       "name": "ageBusiness",
       "label": {
         "en": "How long has it been since you started your business?",
-        "ar": "ንግድዎን ከጀመሩ ምን ያህል ጊዜ ሆነዎት?"
+        "am_ET": "ንግድዎን ከጀመሩ ምን ያህል ጊዜ ሆነዎት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -474,28 +474,28 @@
           "option": "1year-",
           "label": {
             "en": "Less than 1 year",
-            "ar": "ከ1 አመት በታች"
+            "am_ET": "ከ1 አመት በታች"
           }
         },
         {
           "option": "1-2years",
           "label": {
             "en": "1 - 2 years",
-            "ar": "1-2 ዓመት"
+            "am_ET": "1-2 ዓመት"
           }
         },
         {
           "option": "3-4years",
           "label": {
             "en": "3 - 4 years",
-            "ar": "3-4 ዓመት"
+            "am_ET": "3-4 ዓመት"
           }
         },
         {
           "option": "4years+",
           "label": {
             "en": "More than 4 years",
-            "ar": "ከ 4 ዓመት በላይ"
+            "am_ET": "ከ 4 ዓመት በላይ"
           }
         }
       ],
@@ -512,7 +512,7 @@
       "name": "incomeBusiness",
       "label": {
         "en": "What is your estimated average income from your business per month (in LBR)?",
-        "ar": "በየወሩ ከንግድዎ የሚያገኙት አማካይ ገቢ (በ ብር) ምን ያህል ነው?"
+        "am_ET": "በየወሩ ከንግድዎ የሚያገኙት አማካይ ገቢ (በ ብር) ምን ያህል ነው?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -525,7 +525,7 @@
       "name": "costBusiness",
       "label": {
         "en": "What is your estimated average expenditure/cost for your business per month (in LBR)?",
-        "ar": "ለንግድዎ በወር የሚያወጡት አማካይ ወጪ/ዋጋ ግመት ምን ያህል ነው(በ ብር)"
+        "am_ET": "ለንግድዎ በወር የሚያወጡት አማካይ ወጪ/ዋጋ ግመት ምን ያህል ነው(በ ብር)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -538,7 +538,7 @@
       "name": "committedToTraining",
       "label": {
         "en": "Are you able to be fully committed, responsive and available to attend all ZOA's training sessions and assessments?<br><br>The training sessions and support will take maximum 4 months.",
-        "ar": "በሁሉም የዞአ ስልጠና ክፍለ ጊዜዎች እና ግምገማዎች ላይ ለመሳተፍ ሙሉ በሙሉ ቁርጠኝነት፣ መልስ ለመስጠት ዝግጁ መሆን ይችላሉ? የስልጠና ክፍለ ጊዜዎቹ እና ድጋፉ ቢበዛ 4 ወራትን ይወስዳል።"
+        "am_ET": "በሁሉም የዞአ ስልጠና ክፍለ ጊዜዎች እና ግምገማዎች ላይ ለመሳተፍ ሙሉ በሙሉ ቁርጠኝነት፣ መልስ ለመስጠት ዝግጁ መሆን ይችላሉ? የስልጠና ክፍለ ጊዜዎቹ እና ድጋፉ ቢበዛ 4 ወራትን ይወስዳል።"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -547,21 +547,21 @@
           "option": "yes",
           "label": {
             "en": "Yes",
-            "ar": "አዎ"
+            "am_ET": "አዎ"
           }
         },
         {
           "option": "no",
           "label": {
             "en": "No",
-            "ar": "አይ"
+            "am_ET": "አይ"
           }
         },
         {
           "option": "notSure",
           "label": {
             "en": "Not sure",
-            "ar": "እርግጠኛ አይደለሁም"
+            "am_ET": "እርግጠኛ አይደለሁም"
           }
         }
       ],
@@ -577,7 +577,7 @@
       "name": "vocationalCourses",
       "label": {
         "en": "Which kind of vocational or specialised courses do you have?",
-        "ar": "ምን ዓይነት ሙያ ወይም ልዩ ኮርሶች አሉዎት?"
+        "am_ET": "ምን ዓይነት ሙያ ወይም ልዩ ኮርሶች አሉዎት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -586,28 +586,28 @@
           "option": "specificAlign",
           "label": {
             "en": "I am trained in a specific vocational or specialised courses that aligns with my business areas",
-            "ar": "ከንግድ አካባቢዎቼ ጋር በሚጣጣሙ ልዩ የሙያ ወይም ልዩ ኮርሶች ሰልጥኛለሁ።"
+            "am_ET": "ከንግድ አካባቢዎቼ ጋር በሚጣጣሙ ልዩ የሙያ ወይም ልዩ ኮርሶች ሰልጥኛለሁ።"
           }
         },
         {
           "option": "specificNoAlign",
           "label": {
             "en": "I am trained in a specific vocational or specialised courses but that doesn't align with my business areas",
-            "ar": "በልዩ ሙያ ወይም በልዩ ኮርሶች ሰልጥኛለሁ ግን ያ ከንግድ ስራዬ ጋር አይጣጣምም።"
+            "am_ET": "በልዩ ሙያ ወይም በልዩ ኮርሶች ሰልጥኛለሁ ግን ያ ከንግድ ስራዬ ጋር አይጣጣምም።"
           }
         },
         {
           "option": "usefulSkills",
           "label": {
             "en": "I only have practical skills",
-            "ar": "የእጅ ሙያ ብቻ ነው ያለኝ"
+            "am_ET": "የእጅ ሙያ ብቻ ነው ያለኝ"
           }
         },
         {
           "option": "none",
           "label": {
             "en": "I do not have any",
-            "ar": "ምንም የለኝም"
+            "am_ET": "ምንም የለኝም"
           }
         }
       ],
@@ -624,7 +624,7 @@
       "name": "savingMethod",
       "label": {
         "en": "What kind of saving method do you use?",
-        "ar": "ምን ዓይነት የቁጠባ ዘዴ ይጠቀማሉ?"
+        "am_ET": "ምን ዓይነት የቁጠባ ዘዴ ይጠቀማሉ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -633,35 +633,35 @@
           "option": "homeSaving",
           "label": {
             "en": "Home saving",
-            "ar": "የቤት ቁጠባ"
+            "am_ET": "የቤት ቁጠባ"
           }
         },
         {
           "option": "bank",
           "label": {
             "en": "Bank",
-            "ar": "ባንክ"
+            "am_ET": "ባንክ"
           }
         },
         {
           "option": "mobileMoney",
           "label": {
             "en": "Mobile money",
-            "ar": "የሞባይል ገንዘብ"
+            "am_ET": "የሞባይል ገንዘብ"
           }
         },
         {
           "option": "ekrub",
           "label": {
             "en": "Ekrub",
-            "ar": "እቁብ"
+            "am_ET": "እቁብ"
           }
         },
         {
           "option": "other",
           "label": {
             "en": "Other",
-            "ar": "ሌላ"
+            "am_ET": "ሌላ"
           }
         }
       ],

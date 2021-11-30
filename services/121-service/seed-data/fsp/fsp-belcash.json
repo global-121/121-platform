@@ -3,18 +3,18 @@
   "integrationType": "api",
   "fspDisplayName": {
     "en": "HelloCash",
-    "ar": "HelloCash"
+    "am_ET": "HelloCash"
   },
   "attributes": [
     {
       "name": "phoneNumber",
       "label": {
         "en": "Which phone number do you want to receive your mobile money transfer from HelloCash on? (With country-code. It should look like: <strong>+251 000 000 000</strong>)",
-        "ar": "ከሄሎካሽ የሞባይል ገንዘብ ማስተላለፍ በየትኛው ስልክ መቀበል ይፈልጋሉ? (ከሀገር-ኮድ ጋር፡ መምሰል ያለበት፡ <strong>+251 000 000 000</strong>)"
+        "am_ET": "ከሄሎካሽ የሞባይል ገንዘብ ማስተላለፍ በየትኛው ስልክ መቀበል ይፈልጋሉ? (ከሀገር-ኮድ ጋር፡ መምሰል ያለበት፡ <strong>+251 000 000 000</strong>)"
       },
       "placeholder": {
         "en": "+251 000 000 000",
-        "ar": "+251 000 000 000"
+        "am_ET": "+251 000 000 000"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "tel",
@@ -24,7 +24,7 @@
       "name": "typePhoneNumber",
       "label": {
         "en": "What best describes this phone number?",
-        "ar": "ይህ ስልክ ቁጥር የማን ነው?"
+        "am_ET": "ይህ ስልክ ቁጥር የማን ነው?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -33,21 +33,21 @@
           "option": "ownSmartPhone",
           "label": {
             "en": "Own smartphone number",
-            "ar": "የግል ሞባይል መስመር"
+            "am_ET": "የግል ሞባይል መስመር"
           }
         },
         {
           "option": "ownFeaturePhone",
           "label": {
             "en": "Own basic / feature phone number",
-            "ar": "የግል የቤት ሰልክ መስመር"
+            "am_ET": "የግል የቤት ሰልክ መስመር"
           }
         },
         {
           "option": "notOwnPhone",
           "label": {
             "en": "Someone else's phone number",
-            "ar": "የጎረቤት ስልክ መስመር"
+            "am_ET": "የጎረቤት ስልክ መስመር"
           }
         }
       ],
