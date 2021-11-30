@@ -63,11 +63,24 @@ export class ValidateFspComponent implements ValidationComponent {
       attributesAnswers.attributes.length > 0
     ) {
       this.questions = this.buildQuestions(attributesAnswers.attributes);
-      this.customAttributeAnswers = attributesAnswers.answers;
+      this.customAttributeAnswers = this.getAnsersByCode(
+        attributesAnswers.answers,
+      );
     } else {
       this.fspQuestionAvailable = false;
       this.backToMainMenu = true;
     }
+  }
+
+  private getAnsersByCode(answers) {
+    const codeAnswers = {};
+    Object.values(answers).forEach((item: any): any => {
+      codeAnswers[item.name] = {
+        code: item.name,
+        value: item.value,
+      };
+    });
+    return codeAnswers;
   }
 
   private getPaData(): Registration | null {
