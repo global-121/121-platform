@@ -59,7 +59,7 @@ export class BobFinanceService {
       registration.customData[CustomDataAttributes.phoneNumber];
     bobFinanceFspInstructions.Email = null;
     bobFinanceFspInstructions.Amount = transaction.amount;
-    bobFinanceFspInstructions.Currency = 'LBP';
+    bobFinanceFspInstructions.Currency = 'USD';
     bobFinanceFspInstructions['Expiry Date'] = null;
 
     return bobFinanceFspInstructions;
