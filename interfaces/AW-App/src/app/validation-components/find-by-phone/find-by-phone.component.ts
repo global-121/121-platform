@@ -76,9 +76,7 @@ export class FindByPhoneComponent implements ValidationComponent {
     let foundRegistrations = await this.getRegistrationForPhoneOffline(
       phoneNumber,
     );
-    if (foundRegistrations) {
-      foundRegistrations;
-    } else {
+    if (!foundRegistrations) {
       try {
         foundRegistrations = await this.getRegistrationForPhoneOnline(
           phoneNumber,
@@ -123,10 +121,10 @@ export class FindByPhoneComponent implements ValidationComponent {
     }
     if (validationDataFsp) {
       for (const registrationElement of validationDataFsp) {
-        if (registrationElement.answers['phoneNumber']) {
+        if (registrationElement.answers.phoneNumber) {
           const appendItem = {
             referenceId: registrationElement.referenceId,
-            programAnswer: registrationElement.answers['phoneNumber'].value,
+            programAnswer: registrationElement.answers.phoneNumber.value,
             name: 'phoneNumber',
           };
           validationData.push(appendItem);
