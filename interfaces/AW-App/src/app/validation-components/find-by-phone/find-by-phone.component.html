@@ -12,7 +12,7 @@
       required
       [placeholder]="phonenumberPlaceholder"
       [name]="questionName"
-      [disabled]="0 || paDataResult || returnMainMenu"
+      [disabled]="0 || paDataResult || returnMainMenu || peopleAffectedFound.length > 1"
       (ionChange)="changePhoneNumber()"
     ></phone-number-input>
   </dialogue-turn>
@@ -20,7 +20,7 @@
   <dialogue-turn actor="self" isSpoken="true" isConnected="true">
     <ion-button
       expand="block"
-      [disabled]="inputPhonenumber === '' || paDataResult || returnMainMenu"
+      [disabled]="inputPhonenumber === '' || paDataResult || returnMainMenu || peopleAffectedFound.length > 1"
       (click)="findPaByPhone()"
     >
       {{ 'validation.find-by-phone.find-phone' | translate }}
