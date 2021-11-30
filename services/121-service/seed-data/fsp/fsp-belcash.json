@@ -2,25 +2,33 @@
   "fsp": "BelCash",
   "integrationType": "api",
   "fspDisplayName": {
-    "en": "HelloCash"
+    "en": "HelloCash",
+    "ar": "HelloCash"
   },
   "attributes": [
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Which phone number do you want to receive your mobile money transfer from HelloCash on? (With country-code. It should look like: <strong>+251 000 000 000</strong>)"
+        "en": "Which phone number do you want to receive your mobile money transfer from HelloCash on? (With country-code. It should look like: <strong>+251 000 000 000</strong>)",
+        "ar": "ከሄሎካሽ የሞባይል ገንዘብ ማስተላለፍ በየትኛው ስልክ መቀበል ይፈልጋሉ? (ከሀገር-ኮድ ጋር፡ መምሰል ያለበት፡ <strong>+251 000 000 000</strong>)"
       },
       "placeholder": {
-        "en": "+251 000 000 000"
+        "en": "+251 000 000 000",
+        "ar": "+251 000 000 000"
       },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "answerType": "tel",
       "options": null
     },
     {
       "name": "typePhoneNumber",
       "label": {
-        "en": "What best describes this phone number?"
+        "en": "What best describes this phone number?",
+        "ar": "ይህ ስልክ ቁጥር የማን ነው?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -28,24 +36,31 @@
         {
           "option": "ownSmartPhone",
           "label": {
-            "en": "Own smartphone number"
+            "en": "Own smartphone number",
+            "ar": "የግል ሞባይል መስመር"
           }
         },
         {
           "option": "ownFeaturePhone",
           "label": {
-            "en": "Own basic / feature phone number"
+            "en": "Own basic / feature phone number",
+            "ar": "የግል የቤት ሰልክ መስመር"
           }
         },
         {
           "option": "notOwnPhone",
           "label": {
-            "en": "Someone else's phone number"
+            "en": "Someone else's phone number",
+            "ar": "የጎረቤት ስልክ መስመር"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     }
   ]

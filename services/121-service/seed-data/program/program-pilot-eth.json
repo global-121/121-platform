@@ -6,16 +6,19 @@
   "location": "Ethiopia",
   "ngo": "ZOA",
   "titlePortal": {
-    "en": "121 Digital Cash Aid Program"
+    "en": "121 Digital Cash Aid Program",
+    "ar": "121 ዲጂታል የገንዘብ እርዳታ ፕሮግራም"
   },
   "titlePaApp": {
-    "en": "121 Digital Cash Aid Program"
+    "en": "121 Digital Cash Aid Program",
+    "ar": "121 ዲጂታል የገንዘብ እርዳታ ፕሮግራም"
   },
   "description": {
     "en": ""
   },
   "descCashType": {
-    "en": "Unconditional multi-purpose"
+    "en": "Unconditional multi-purpose",
+    "ar": "Unconditional multi-purpose"
   },
   "startDate": "2021-12-01T12:00:00Z",
   "endDate": "2022-05-31T12:00:00Z",
@@ -32,11 +35,12 @@
   "minimumScore": 0,
   "highestScoresX": 50,
   "meetingDocuments": {
-    "en": "Photo; National ID card"
+    "en": "Photo; National ID card",
+    "ar": "Photo; National ID card"
   },
   "notifications": {
     "en": {
-      "registered": "This is a message from ZOA.\n\nThank you for your registration. We will inform you later if you are included in this project or not."
+      "registered": "ይህ ከዞአ የመጣ መልእክት ነው።\n\n ስለተመዘገቡ እናመሰግናለን። በዚህ ፕሮጀክት ውስጥ ስለመካተትዎ በኋላ እናሳውቅዎታለን።"
     }
   },
   "phoneNumberPlaceholder": "+251 000 000 000",
@@ -44,19 +48,25 @@
     {
       "name": "name",
       "label": {
-        "en": "What is your full name?"
+        "en": "What is your full name?",
+        "ar": "ሙሉ ስምዎ ማን ነው?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
       "name": "age",
       "label": {
-        "en": "How old are you? (if you are between 0 and 17 years old, then stop the registration process, it is a precondition to be an adult)"
+        "en": "How old are you? (if you are between 0 and 17 years old, then stop the registration process, it is a precondition to be an adult)",
+        "ar": "እድሜዎ ስንት ነው? (ዕድሜዎ ከ0 እስከ 17 ዓመት ከሆኑ፣ የምዝገባ ሂደቱን ያቁሙ፣ ክ 18 ዓምት በላይ መሆን ቅድመ ሁኔታ ነው)"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -64,24 +74,31 @@
         {
           "option": "0-17",
           "label": {
-            "en": "0 - 17 years"
+            "en": "0 - 17 years",
+            "ar": "0 - 17 ዓመት"
           }
         },
         {
           "option": "18-30",
           "label": {
-            "en": "18 - 30 years"
+            "en": "18 - 30 years",
+            "ar": "18 - 30 ዓመታት"
           }
         },
         {
           "option": "31-",
           "label": {
-            "en": "31 years or older"
+            "en": "31 years or older",
+            "ar": "31 ዓመት ወይም ከዚያ በላይ"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {
         "0-17": 0,
         "18-30": 5,
@@ -91,7 +108,8 @@
     {
       "name": "education",
       "label": {
-        "en": "What is your highest level of education?"
+        "en": "What is your highest level of education?",
+        "ar": "ከፍተኛ የትምህርት ደረጃዎ ምንድነው?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -99,60 +117,79 @@
         {
           "option": "primary",
           "label": {
-            "en": "Primary school (grade 1-8)"
+            "en": "Primary school (grade 1-8)",
+            "ar": "የመጀመሪያ ደረጃ ትምህርት ያጠናቀቀ  (1-8 ክፍል)"
           }
         },
         {
           "option": "secondary",
           "label": {
-            "en": "Secondary school (grade 9-12)"
+            "en": "Secondary school (grade 9-12)",
+            "ar": "የሁለተኛ ደረጃ ትምህርት ያጠናቀቀ (9-12 ክፍል)"
           }
         },
         {
           "option": "university",
           "label": {
-            "en": "University"
+            "en": "University",
+            "ar": "ዩኒቨርሲቲ"
           }
         },
         {
           "option": "other",
           "label": {
-            "en": "Other"
+            "en": "Other",
+            "ar": "ሌላ"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
       "name": "nationalIdNumber",
       "label": {
-        "en": "What is your national identification number?"
+        "en": "What is your national identification number?",
+        "ar": "የእርስዎ የመታወቂያ ቁጥር ስንት ነው?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
       "name": "nrOfChildren",
       "label": {
-        "en": "How many children do you have, if any?"
+        "en": "How many children do you have, if any?",
+        "ar": "ስንት ልጆች አሎት?"
       },
       "answerType": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
       "name": "hasHusband",
       "label": {
-        "en": "Do you have a husband?"
+        "en": "Do you have a husband?",
+        "ar": "ባለ ትዳር ነዎት"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -160,24 +197,31 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "አዎ"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "አይ"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
       "name": "whenReturnee",
       "label": {
-        "en": "Did you return to Ethiopia from a country in the Middle East? (For example: Saudi Arabia, Kuwait, Qatar, Bahrain, Jordan, Yemen)<br><br>If so, how many years has it been since you got deported from abroad or came back to Ethiopia as a returnee?"
+        "en": "Did you return to Ethiopia from a country in the Middle East? (For example: Saudi Arabia, Kuwait, Qatar, Bahrain, Jordan, Yemen)<br><br>If so, how many years has it been since you got deported from abroad or came back to Ethiopia as a returnee?",
+        "ar": "ከመካከለኛው ምስራቅ ሀገር ወደ ኢትዮጵያ ተመለሽ ነዎት? (ለምሳሌ፡ ሳውዲ አረቢያ፡ ኩዌት፡ ኳታር፡ ባህሬን፡ ዮርዳኖስ፡ የመን)<br><br> ከሆነ፡ ከውጪ ከተባረሩ ወይም ወደ ኢትዮጵያ ከተመለሱ ስንት አመት ሆኖት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -185,30 +229,38 @@
         {
           "option": "noReturnee",
           "label": {
-            "en": "I did not return from a country in the Middle East"
+            "en": "I did not return from a country in the Middle East",
+            "ar": "ከመካከለኛው ምስራቅ ሀገር አልተመለስኩም"
           }
         },
         {
           "option": "less2years",
           "label": {
-            "en": "Less than 2 years"
+            "en": "Less than 2 years",
+            "ar": "ከ 2 ዓመት በታች"
           }
         },
         {
           "option": "2-4years",
           "label": {
-            "en": "2 - 4 years"
+            "en": "2 - 4 years",
+            "ar": "2-4 ዓመት"
           }
         },
         {
           "option": "more4years",
           "label": {
-            "en": "More than 4 years"
+            "en": "More than 4 years",
+            "ar": "ከ 4 ዓመት በላይ"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {
         "noReturnee": 0,
         "less2years": 5,
@@ -219,7 +271,8 @@
     {
       "name": "isHouseholdLeader",
       "label": {
-        "en": "Are you a household leader or responsible for taking care of your family financially?"
+        "en": "Are you a household leader or responsible for taking care of your family financially?",
+        "ar": "እርስዎ የቤተሰብ መሪ ነዎት ወይም ቤተሰብዎን በገንዘብ የመደጋፍ ኃላፊነት አለብዎት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -227,18 +280,24 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "አዎ"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "አይ"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {
         "yes": 3,
         "no": 1
@@ -247,7 +306,8 @@
     {
       "name": "business",
       "label": {
-        "en": "Do you own a business? (if you do not own a business, then stop the registration process, it is a precondition to own a business)"
+        "en": "Do you own a business? (if you do not own a business, then stop the registration process, it is a precondition to own a business)",
+        "ar": "የግል ድርጅት ወይንም የንግድ ሱቅ ባለቤት ነዎት? (የንግድ ስራ ባለቤት ካልሆኑ, የምዝገባ ሂደቱን ያቁሙ, የንግድ ሥራ ባለቤት መሆን ቅድመ ሁኔታ ነው)"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -255,18 +315,24 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "አዎ"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "አይ"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {
         "yes": 5,
         "no": 0
@@ -275,7 +341,8 @@
     {
       "name": "businessLicenseAddis",
       "label": {
-        "en": "Do you have a business license under your name in Addis Ababa?"
+        "en": "Do you have a business license under your name in Addis Ababa?",
+        "ar": " አዲስ አበባ ውስጥ በስምዎ የንግድ ፍቃድ አሎት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -283,18 +350,24 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "አዎ"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "አይ"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {
         "yes": 5,
         "no": 2
@@ -303,7 +376,8 @@
     {
       "name": "typeBusiness",
       "label": {
-        "en": "What type of business do you own?"
+        "en": "What type of business do you own?",
+        "ar": "የምን አይነት ንግድ ባለቤት ነዎት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -311,66 +385,83 @@
         {
           "option": "restaurant",
           "label": {
-            "en": "Small cafe or restaurant"
+            "en": "Small cafe or restaurant",
+            "ar": "አነስተኛ ካፌ ወይም ምግብ ቤት"
           }
         },
         {
           "option": "coffee",
           "label": {
-            "en": "Coffee house"
+            "en": "Coffee house",
+            "ar": "ቡና ቤት"
           }
         },
         {
           "option": "bakery",
           "label": {
-            "en": "Bakery"
+            "en": "Bakery",
+            "ar": "ዳቦ ቤት"
           }
         },
         {
           "option": "hair",
           "label": {
-            "en": "Hair salon / beauty salon"
+            "en": "Hair salon / beauty salon",
+            "ar": "የፀጉር ሳሎን / የውበት ሳሎን"
           }
         },
         {
           "option": "clothes",
           "label": {
-            "en": "Clothes shop / boutique"
+            "en": "Clothes shop / boutique",
+            "ar": "የልብስ ሱቅ / ቡቲክ"
           }
         },
         {
           "option": "retail",
           "label": {
-            "en": "Retail shop"
+            "en": "Retail shop",
+            "ar": "የችርቻሮ ሱቅ"
           }
         },
         {
           "option": "other",
           "label": {
-            "en": "Other"
+            "en": "Other",
+            "ar": "ሌላ"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
       "name": "typeBusinessOther",
       "label": {
-        "en": "What other type of business do you own? (type '-' if not applicable)"
+        "en": "What other type of business do you own? (type '-' if not applicable)",
+        "ar": "ሌላ ምን አይነት ንግድ አለዎት? (የሚመለከተው ካልሆነ '-' ይተይቡ)"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
       "name": "businessGoal",
       "label": {
-        "en": "Do you have a serious and thought out goal and interest to expand or advance your small business in Ethiopia?"
+        "en": "Do you have a serious and thought out goal and interest to expand or advance your small business in Ethiopia?",
+        "ar": "በኢትዮጵያ አነስተኛ ንግድዎን ለማስፋት ወይም ለማሳደግ አቅድ ,የታሰበ ግብ እና ፍላጎት አለዎት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -378,24 +469,31 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "አዎ"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "አይ"
           }
         },
         {
           "option": "limited",
           "label": {
-            "en": "I have a limited goal and interest to expand my small business"
+            "en": "I have a limited goal and interest to expand my small business",
+            "ar": "የእኔን አነስተኛ ንግድ ለማስፋፋት የተወሰነ ግብ እና ፍላጎት አለኝ"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {
         "yes": 5,
         "no": 0,
@@ -405,19 +503,25 @@
     {
       "name": "businessPlan",
       "label": {
-        "en": "If you have a serious and thought out goal and interest to expand or advance your small business in Ethiopia, then please explain (type '-' if not applicable, or no business goal yet)"
+        "en": "If you have a serious and thought out goal and interest to expand or advance your small business in Ethiopia, then please explain (type '-' if not applicable, or no business goal yet)",
+        "ar": "በኢትዮጵያ አነስተኛ ንግድዎን ለማስፋት ወይም ለማሳደግ አቅድ ,የታሰበ ግብ እና ፍላጎት ካሎት እባክዎን ያብራሩ (የማይመለከቶት ከሆነ '-' ብለው ይተይቡ ወይም እስካሁን ምንም የንግድ አቅድ የለም)"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
       "name": "ageBusiness",
       "label": {
-        "en": "How long has it been since you started your business?"
+        "en": "How long has it been since you started your business?",
+        "ar": "ንግድዎን ከጀመሩ ምን ያህል ጊዜ ሆነዎት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -425,30 +529,38 @@
         {
           "option": "1year-",
           "label": {
-            "en": "Less than 1 year"
+            "en": "Less than 1 year",
+            "ar": "ከ1 አመት በታች"
           }
         },
         {
           "option": "1-2years",
           "label": {
-            "en": "1 - 2 years"
+            "en": "1 - 2 years",
+            "ar": "1-2 ዓመት"
           }
         },
         {
           "option": "3-4years",
           "label": {
-            "en": "3 - 4 years"
+            "en": "3 - 4 years",
+            "ar": "3-4 ዓመት"
           }
         },
         {
           "option": "4years+",
           "label": {
-            "en": "More than 4 years"
+            "en": "More than 4 years",
+            "ar": "ከ 4 ዓመት በላይ"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {
         "1year-": 0,
         "1-2years": 1,
@@ -459,31 +571,42 @@
     {
       "name": "incomeBusiness",
       "label": {
-        "en": "What is your estimated average income from your business per month (in LBR)?"
+        "en": "What is your estimated average income from your business per month (in LBR)?",
+        "ar": "በየወሩ ከንግድዎ የሚያገኙት አማካይ ገቢ (በ ብር) ምን ያህል ነው?"
       },
       "answerType": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
       "name": "costBusiness",
       "label": {
-        "en": "What is your estimated average expenditure/cost for your business per month (in LBR)?"
+        "en": "What is your estimated average expenditure/cost for your business per month (in LBR)?",
+        "ar": "ለንግድዎ በወር የሚያወጡት አማካይ ወጪ/ዋጋ ግመት ምን ያህል ነው(በ ብር)"
       },
       "answerType": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
       "name": "committedToTraining",
       "label": {
-        "en": "Are you able to be fully committed, responsive and available to attend all ZOA's training sessions and assessments?<br><br>The training sessions and support will take maximum 4 months."
+        "en": "Are you able to be fully committed, responsive and available to attend all ZOA's training sessions and assessments?<br><br>The training sessions and support will take maximum 4 months.",
+        "ar": "በሁሉም የዞአ ስልጠና ክፍለ ጊዜዎች እና ግምገማዎች ላይ ለመሳተፍ ሙሉ በሙሉ ቁርጠኝነት፣ መልስ ለመስጠት ዝግጁ መሆን ይችላሉ? የስልጠና ክፍለ ጊዜዎቹ እና ድጋፉ ቢበዛ 4 ወራትን ይወስዳል።"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -491,24 +614,31 @@
         {
           "option": "yes",
           "label": {
-            "en": "Yes"
+            "en": "Yes",
+            "ar": "አዎ"
           }
         },
         {
           "option": "no",
           "label": {
-            "en": "No"
+            "en": "No",
+            "ar": "አይ"
           }
         },
         {
           "option": "notSure",
           "label": {
-            "en": "Not sure"
+            "en": "Not sure",
+            "ar": "እርግጠኛ አይደለሁም"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {
         "yes": 5,
         "no": 0,
@@ -518,7 +648,8 @@
     {
       "name": "vocationalCourses",
       "label": {
-        "en": "Which kind of vocational or specialised courses do you have?"
+        "en": "Which kind of vocational or specialised courses do you have?",
+        "ar": "ምን ዓይነት ሙያ ወይም ልዩ ኮርሶች አሉዎት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -526,30 +657,38 @@
         {
           "option": "specificAlign",
           "label": {
-            "en": "I am trained in a specific vocational or specialised courses that aligns with my business areas"
+            "en": "I am trained in a specific vocational or specialised courses that aligns with my business areas",
+            "ar": "ከንግድ አካባቢዎቼ ጋር በሚጣጣሙ ልዩ የሙያ ወይም ልዩ ኮርሶች ሰልጥኛለሁ።"
           }
         },
         {
           "option": "specificNoAlign",
           "label": {
-            "en": "I am trained in a specific vocational or specialised courses but that doesn't align with my business areas"
+            "en": "I am trained in a specific vocational or specialised courses but that doesn't align with my business areas",
+            "ar": "በልዩ ሙያ ወይም በልዩ ኮርሶች ሰልጥኛለሁ ግን ያ ከንግድ ስራዬ ጋር አይጣጣምም።"
           }
         },
         {
           "option": "usefulSkills",
           "label": {
-            "en": "I only have practical skills"
+            "en": "I only have practical skills",
+            "ar": "የእጅ ሙያ ብቻ ነው ያለኝ"
           }
         },
         {
           "option": "none",
           "label": {
-            "en": "I do not have any"
+            "en": "I do not have any",
+            "ar": "ምንም የለኝም"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {
         "specificAlign": 4,
         "specificNoAlign": 3,
@@ -560,7 +699,8 @@
     {
       "name": "savingMethod",
       "label": {
-        "en": "What kind of saving method do you use?"
+        "en": "What kind of saving method do you use?",
+        "ar": "ምን ዓይነት የቁጠባ ዘዴ ይጠቀማሉ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -568,36 +708,45 @@
         {
           "option": "homeSaving",
           "label": {
-            "en": "Home saving"
+            "en": "Home saving",
+            "ar": "የቤት ቁጠባ"
           }
         },
         {
           "option": "bank",
           "label": {
-            "en": "Bank"
+            "en": "Bank",
+            "ar": "ባንክ"
           }
         },
         {
           "option": "mobileMoney",
           "label": {
-            "en": "Mobile money"
+            "en": "Mobile money",
+            "ar": "የሞባይል ገንዘብ"
           }
         },
         {
           "option": "ekrub",
           "label": {
-            "en": "Ekrub"
+            "en": "Ekrub",
+            "ar": "እቁብ"
           }
         },
         {
           "option": "other",
           "label": {
-            "en": "Other"
+            "en": "Other",
+            "ar": "ሌላ"
           }
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     }
   ]
