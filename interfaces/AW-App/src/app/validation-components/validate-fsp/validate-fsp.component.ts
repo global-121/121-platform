@@ -36,6 +36,7 @@ export class ValidateFspComponent implements ValidationComponent {
 
   public fspQuestionAvailable = true;
   public backToMainMenu = false;
+  public backToMainMenuClicked = false;
 
   constructor(
     public translatableString: TranslatableStringService,
@@ -232,6 +233,7 @@ export class ValidateFspComponent implements ValidationComponent {
   }
 
   complete() {
+    this.backToMainMenuClicked = true;
     this.conversationService.onSectionCompleted({
       name: ValidationComponents.validateProgram,
       data: {},

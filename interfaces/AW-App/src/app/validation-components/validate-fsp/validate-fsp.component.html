@@ -44,6 +44,7 @@
     [isSpoken]="backToMainMenu"
   >
     <ion-button (click)="complete()"
+                [disabled]="backToMainMenuClicked"
                 expand="block"
                 style="flex-basis:100%;"
     >
