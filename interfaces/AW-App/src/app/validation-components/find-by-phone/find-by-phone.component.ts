@@ -4,9 +4,9 @@ import { TimeoutError } from 'rxjs';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { RegistrationStatusEnum } from '../../models/registration-status.enum';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
-import { RegistrationStatusEnum } from './../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 
 export enum CustomDataNameAttributes {
   name = 'name',
