@@ -53,6 +53,10 @@ export class PhoneNumberInputComponent {
     // 'export' the value of the input-ELEMENT to be used as value of this COMPONENT
     this.value = this.telInput.value;
 
+    if (this.telInput.disabled) {
+      return;
+    }
+
     const nativeInput = await this.telInput.getInputElement();
     const nativeIsValid = nativeInput.checkValidity();
 

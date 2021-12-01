@@ -4,13 +4,13 @@
   (ngSubmit)="doUpdate()"
 >
   <div
-    class="fake-ion-item divider-bottom ion-padding"
+    class="input-item divider-bottom ion-padding"
     [attr.disabled]="isDisabled"
   >
-    <label class="fake-ion-item--label">
+    <label class="input-item--label">
       {{ label }}
     </label>
-    <div class="fake-ion-item--contents">
+    <div class="input-item--contents">
       <ng-container [ngSwitch]="type">
         <ng-container *ngSwitchCase="'number'">
           <ion-input
@@ -22,6 +22,8 @@
             type="number"
             inputmode="numeric"
             min="1"
+            pattern="[0-9]+"
+            appOnlyAllowedInput
           ></ion-input>
         </ng-container>
         <ng-container *ngSwitchCase="'tel'">
@@ -33,7 +35,8 @@
             [placeholder]="placeholder"
             type="tel"
             inputmode="tel"
-            pattern="[0-9]*"
+            pattern="[0-9]+"
+            appOnlyAllowedInput
           ></ion-input>
         </ng-container>
         <ng-container *ngSwitchDefault>

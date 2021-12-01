@@ -4,7 +4,11 @@
       {{ 'qr-scanner.title'|translate }}
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="closeModal()" [attr.title]="'qr-scanner.close'|translate">
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'qr-scanner.close'|translate"
+        [attr.aria-label]="'qr-scanner.close'|translate"
+      >
         <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -15,8 +19,9 @@
   class="qr-scanner"
 >
 
-  <div *ngIf="showCompatibilityError || showPermissionError"
-       class="ion-text-center ion-padding"
+  <div
+    *ngIf="showCompatibilityError || showPermissionError"
+    class="ion-text-center ion-padding"
   >
     <ion-icon name="alert" size="large" aria-hidden="true"></ion-icon>
     <p *ngIf="showCompatibilityError">
@@ -29,8 +34,9 @@
       {{ 'qr-scanner.error-generic'|translate }}
     </p>
     <p class="ion-margin-top ion-text-center">
-      <ion-button type="button"
-                  (click)="tryAgain()"
+      <ion-button
+        type="button"
+        (click)="tryAgain()"
       >
         <ion-icon name="refresh" size="small" slot="start" aria-hidden="true"></ion-icon>
         {{ 'qr-scanner.try-again'|translate }}
@@ -38,39 +44,41 @@
     </p>
   </div>
 
-  <zxing-scanner #scanner
-                 [device]="currentCamera"
-                 previewFitMode="fill"
-                 (hasDevices)="onHasDevices($event)"
-                 (permissionResponse)="onPermissionResponse($event)"
-                 (torchCompatible)="onTorchCompatible($event)"
-                 [torch]="torchEnabled"
-                 (camerasFound)="onCamerasFound($event)"
-                 (camerasNotFound)="onCamerasNotFound()"
-                 (scanSuccess)="onScanSuccess($event)"
-                 (scanError)="onScanError()"
-                 class="qr-scanner--zxing-component"
+  <zxing-scanner
+    #scanner
+    [device]="currentCamera"
+    previewFitMode="fill"
+    (hasDevices)="onHasDevices($event)"
+    (permissionResponse)="onPermissionResponse($event)"
+    (torchCompatible)="onTorchCompatible($event)"
+    [torch]="torchEnabled"
+    (camerasFound)="onCamerasFound($event)"
+    (camerasNotFound)="onCamerasNotFound()"
+    (scanSuccess)="onScanSuccess($event)"
+    (scanError)="onScanError()"
+    class="qr-scanner--zxing-component"
   ></zxing-scanner>
 
-  <ion-spinner name="dots"
-               class="qr-scanner--loading"
-  ></ion-spinner>
+  <ion-spinner name="dots" class="qr-scanner--loading"></ion-spinner>
 
   <ion-fab vertical="top" horizontal="end" slot="fixed">
-    <ion-fab-button *ngIf="torchAvailable"
-                    [title]="'qr-scanner.toggle-flash'|translate"
-                    (click)="torchEnabled=!torchEnabled"
-                    [color]="torchEnabled ? 'success' : 'light'"
-                    class="ion-margin-vertical"
+    <ion-fab-button
+      *ngIf="torchAvailable"
+      [title]="'qr-scanner.toggle-flash'|translate"
+      [attr.aria-label]="'qr-scanner.toggle-flash'|translate"
+      (click)="torchEnabled=!torchEnabled"
+      [color]="torchEnabled ? 'success' : 'light'"
+      class="ion-margin-vertical"
     >
       <ion-icon *ngIf="torchEnabled" name="flash" aria-hidden="true"></ion-icon>
       <ion-icon *ngIf="!torchEnabled" name="flash-off" aria-hidden="true"></ion-icon>
     </ion-fab-button>
-    <ion-fab-button *ngIf="switchCamerasAvailable"
-                    [title]="'qr-scanner.switch-camera'|translate"
-                    (click)="switchCamera()"
-                    color="light"
-                    class="ion-margin-vertical"
+    <ion-fab-button
+      *ngIf="switchCamerasAvailable"
+      [title]="'qr-scanner.switch-camera'|translate"
+      (click)="switchCamera()"
+      color="light"
+      class="ion-margin-vertical"
     >
       <ion-icon name="camera-reverse" aria-hidden="true"></ion-icon>
     </ion-fab-button>

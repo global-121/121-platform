@@ -9,10 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "incremental": true,
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "lib": ["es2018", "dom"],
     "module": "esnext",
     "moduleResolution": "node",
     "noUnusedLocals": true,
@@ -22,8 +19,6 @@
     "sourceMap": true,
     "strict": false,
     "target": "es2015",
-    "typeRoots": [
-      "node_modules/@types"
-    ]
+    "typeRoots": ["node_modules/@types"]
   }
 }

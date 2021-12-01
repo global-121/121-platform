@@ -11,6 +11,7 @@ import { HeaderComponent } from '../components/header/header.component';
 import { UpdateFspComponent } from '../components/update-fsp/update-fsp.component';
 import { UpdatePropertyItemComponent } from '../components/update-property-item/update-property-item.component';
 import { UserStateComponent } from '../components/user-state/user-state.component';
+import { OnlyAllowedInputDirective } from '../directives/only-allowed-input.directive';
 import { BulkImportComponent } from '../program/bulk-import/bulk-import.component';
 import { DisableRegistrationComponent } from '../program/disable-registration/disable-registration.component';
 import { EditPersonAffectedPopupComponent } from '../program/edit-person-affected-popup/edit-person-affected-popup.component';
@@ -31,12 +32,14 @@ import { TooltipComponent } from './tooltip/tooltip.component';
   declarations: [
     BulkImportComponent,
     ConfirmPromptComponent,
+    DisableRegistrationComponent,
     EditPersonAffectedPopupComponent,
-    ExportListComponent,
     ExportFspInstructionsComponent,
+    ExportListComponent,
     FilePickerPromptComponent,
     HeaderComponent,
     InputPromptComponent,
+    OnlyAllowedInputDirective,
     PasswordToggleInputComponent,
     PhaseNavigationComponent,
     PhaseNextComponent,
@@ -44,10 +47,9 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     RefreshDataComponent,
     TestPaymentComponent,
     TooltipComponent,
-    UpdatePropertyItemComponent,
     UpdateFspComponent,
+    UpdatePropertyItemComponent,
     UserStateComponent,
-    DisableRegistrationComponent,
   ],
   imports: [
     CommonModule,

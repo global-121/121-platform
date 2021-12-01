@@ -45,9 +45,8 @@ function check_shared_code() {
 
   compare_code "_set-env-variables.js" "$repo_pa" "$repo_aw"
   compare_code "_set-env-variables.js" "$repo_pa" "$repo_ho"
-  compare_code "ngx-translate-lint.config.json" "$repo_pa" "$repo_aw"
-  compare_code "ngx-translate-lint.config.json" "$repo_pa" "$repo_ho"
   compare_code "_convert-styles-to-async.js" "$repo_pa" "$repo_aw"
+  compare_code "ngx-translate-lint.config.json" "$repo_pa" "$repo_aw"
 
   compare_code "src/app/shared/dialogue-turn/" "$repo_pa" "$repo_aw"
   compare_code "src/app/shared/q-and-a-set/" "$repo_pa" "$repo_aw"
@@ -56,12 +55,19 @@ function check_shared_code() {
   compare_code "src/app/shared/numeric-input/" "$repo_pa" "$repo_aw"
   compare_code "src/app/shared/phone-number-input/" "$repo_pa" "$repo_aw"
 
-  compare_code "src/app/services/jwt.service.*" "$repo_pa" "$repo_aw"
-  compare_code "src/app/services/jwt.service.*" "$repo_pa" "$repo_ho"
-  compare_code "src/app/services/api.service.*" "$repo_pa" "$repo_aw"
-  compare_code "src/app/services/api.service.*" "$repo_pa" "$repo_ho"
-  compare_code "src/app/services/translatable-string.*" "$repo_pa" "$repo_aw"
-  compare_code "src/app/services/translatable-string.*" "$repo_pa" "$repo_ho"
+  compare_code "src/app/directives/only-allowed-input.directive.ts" "$repo_pa" "$repo_aw"
+  compare_code "src/app/directives/only-allowed-input.directive.spec.ts" "$repo_pa" "$repo_aw"
+  compare_code "src/app/directives/only-allowed-input.directive.ts" "$repo_pa" "$repo_ho"
+  compare_code "src/app/directives/only-allowed-input.directive.spec.ts" "$repo_pa" "$repo_ho"
+
+  compare_code "src/app/services/jwt.service.ts" "$repo_pa" "$repo_aw"
+  compare_code "src/app/services/jwt.service.ts" "$repo_pa" "$repo_ho"
+  compare_code "src/app/services/api.service.ts" "$repo_pa" "$repo_aw"
+  compare_code "src/app/services/api.service.ts" "$repo_pa" "$repo_ho"
+  compare_code "src/app/services/translatable-string.service.ts" "$repo_pa" "$repo_aw"
+  compare_code "src/app/services/translatable-string.service.spec.ts" "$repo_pa" "$repo_aw"
+  compare_code "src/app/services/translatable-string.service.ts" "$repo_pa" "$repo_ho"
+  compare_code "src/app/services/translatable-string.service.spec.ts" "$repo_pa" "$repo_ho"
 
   compare_code ".editorconfig" "$repo_pa" "$repo_aw"
   compare_code ".editorconfig" "$repo_pa" "$repo_ho"
@@ -73,6 +79,12 @@ function check_shared_code() {
   compare_code "tslint.json" "$repo_pa" "$repo_ho"
   compare_code "tsconfig.json" "$repo_pa" "$repo_aw"
   compare_code "tsconfig.json" "$repo_pa" "$repo_ho"
+  compare_code "src/tsconfig.app.json" "$repo_pa" "$repo_aw"
+  compare_code "src/tsconfig.app.json" "$repo_pa" "$repo_ho"
+  compare_code "src/tsconfig.spec.json" "$repo_pa" "$repo_aw"
+  compare_code "src/tsconfig.spec.json" "$repo_pa" "$repo_ho"
+  compare_code "src/tslint.json" "$repo_pa" "$repo_aw"
+  compare_code "src/tslint.json" "$repo_pa" "$repo_ho"
 
   log "Done."
 }
