@@ -19,8 +19,9 @@
   class="qr-scanner"
 >
 
-  <div *ngIf="showCompatibilityError || showPermissionError"
-       class="ion-text-center ion-padding"
+  <div
+    *ngIf="showCompatibilityError || showPermissionError"
+    class="ion-text-center ion-padding"
   >
     <ion-icon name="alert" size="large" aria-hidden="true"></ion-icon>
     <p *ngIf="showCompatibilityError">
@@ -58,19 +59,19 @@
     class="qr-scanner--zxing-component"
   ></zxing-scanner>
 
-  <ion-spinner name="dots"
-               class="qr-scanner--loading"
-  ></ion-spinner>
+  <ion-spinner name="dots" class="qr-scanner--loading"></ion-spinner>
 
   <ion-fab vertical="top" horizontal="end" slot="fixed">
     <ion-fab-button
       *ngIf="torchAvailable"
       [title]="'qr-scanner.toggle-flash'|translate"
+      [attr.aria-label]="'qr-scanner.toggle-flash'|translate"
       (click)="torchEnabled=!torchEnabled"
       [color]="torchEnabled ? 'success' : 'light'"
       class="ion-margin-vertical"
     >
-      <ion-icon [name]="torchEnabled ? 'flash' : 'flash-off'" aria-hidden="true"></ion-icon>
+      <ion-icon *ngIf="torchEnabled" name="flash" aria-hidden="true"></ion-icon>
+      <ion-icon *ngIf="!torchEnabled" name="flash-off" aria-hidden="true"></ion-icon>
     </ion-fab-button>
     <ion-fab-button
       *ngIf="switchCamerasAvailable"
