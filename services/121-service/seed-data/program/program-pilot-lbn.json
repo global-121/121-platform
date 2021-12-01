@@ -25,7 +25,7 @@
   "currency": "USD",
   "distributionFrequency": "month",
   "distributionDuration": 6,
-  "fixedTransferValue": 340,
+  "fixedTransferValue": 50,
   "financialServiceProviders": [
     {
       "id": 1
@@ -33,7 +33,7 @@
   ],
   "inclusionCalculationType": "highestScoresX",
   "minimumScore": 0,
-  "highestScoresX": 50,
+  "highestScoresX": 340,
   "meetingDocuments": {
     "en": "Personal ID card of the person that registered; Family social registry; Proof of residence; Proof of medical condition (if available)",
     "ar": "بطاقة الهوية الشخصية للشخص الذي قام بالتسجيل ; أخراج قيد عائلي ; أفادة سكن ; إثبات الحالة الطبية (إن وجد) "
