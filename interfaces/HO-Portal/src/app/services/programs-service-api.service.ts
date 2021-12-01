@@ -14,6 +14,7 @@ import { Program } from '../models/program.model';
 import { Transaction } from '../models/transaction.model';
 import { UserModel } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
+import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -325,10 +326,7 @@ export class ProgramsServiceApiService {
       .pipe(
         map((response) => {
           if (response.data) {
-            saveAs(
-              new Blob([response.data], { type: 'text/csv' }),
-              response.fileName,
-            );
+            arrayToXlsx(response.data, response.fileName);
           }
           return response;
         }),

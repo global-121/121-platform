@@ -107,7 +107,7 @@ export class ExportMetricsService {
           ? minPaymentId
           : `${minPaymentId}-to-${maxPaymentId}`
       }.csv`,
-      data: this.jsonToCsv(pastPaymentDetails),
+      data: pastPaymentDetails,
     };
 
     return csvFile;
@@ -139,7 +139,7 @@ export class ExportMetricsService {
 
     const response = {
       fileName: this.getExportFileName(ExportType.unusedVouchers),
-      data: this.jsonToCsv(unusedVouchers),
+      data: unusedVouchers,
     };
 
     return response;
@@ -310,7 +310,7 @@ export class ExportMetricsService {
     }
     const response = {
       fileName: this.getExportFileName(ExportType.allPeopleAffected),
-      data: this.jsonToCsv(registrationDetails),
+      data: registrationDetails,
     };
 
     return response;
@@ -340,7 +340,7 @@ export class ExportMetricsService {
     const filteredColumnDetails = this.filterUnusedColumn(inclusionDetails);
     const response = {
       fileName: this.getExportFileName('inclusion-list'),
-      data: this.jsonToCsv(filteredColumnDetails),
+      data: filteredColumnDetails,
     };
 
     return response;
@@ -396,7 +396,7 @@ export class ExportMetricsService {
     const filteredColumnDetails = this.filterUnusedColumn(columnDetails);
     const response = {
       fileName: this.getExportFileName(ExportType.selectedForValidation),
-      data: this.jsonToCsv(filteredColumnDetails),
+      data: filteredColumnDetails,
     };
 
     return response;
@@ -453,7 +453,7 @@ export class ExportMetricsService {
 
     return {
       fileName: this.getExportFileName(ExportType.duplicatePhoneNumbers),
-      data: this.jsonToCsv(result),
+      data: result,
     };
   }
 
@@ -511,25 +511,6 @@ export class ExportMetricsService {
       .getRawMany();
 
     return transactions;
-  }
-
-  private jsonToCsv(items: any[]): any[] | string {
-    if (items.length === 0) {
-      return '';
-    }
-    const cleanValues = (_key, value): any => (value === null ? '' : value);
-
-    const columns = Object.keys(items[0]);
-
-    let rows = items.map(row =>
-      columns
-        .map(fieldName => JSON.stringify(row[fieldName], cleanValues))
-        .join(','),
-    );
-
-    rows.unshift(columns.join(',')); // Add header row
-
-    return rows.join('\r\n');
   }
 
   private getExportFileName(base: string): string {
