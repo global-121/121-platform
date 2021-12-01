@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage';
 import { FspAnswer, ValidatedPaData } from 'src/app/models/pa-data.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { DownloadService } from '../../services/download.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 import { ProgramsServiceApiService } from './../../services/programs-service-api.service';
@@ -22,6 +23,7 @@ export class UploadDataComponent implements ValidationComponent {
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
     private storage: Storage,
+    private downloadService: DownloadService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -48,20 +50,9 @@ export class UploadDataComponent implements ValidationComponent {
           paAnswers.referenceId,
           IonicStorageTypes.validatedData,
         );
-        await this.removeLocalStorageData(
-          paAnswers.referenceId,
-          IonicStorageTypes.validationProgramData,
-        );
-        await this.removeLocalStorageData(
-          paAnswers.referenceId,
-          IonicStorageTypes.validationFspData,
-        );
-        await this.removeLocalStorageData(
-          paAnswers.referenceId,
-          IonicStorageTypes.qrRegistrationMapping,
-        );
       }
       this.uploadReady = true;
+      await this.downloadService.downloadData();
     } else {
       this.uploadDataStored = false;
     }
@@ -69,7 +60,6 @@ export class UploadDataComponent implements ValidationComponent {
   }
 
   public async validateProgramAnswers(paData: ValidatedPaData): Promise<void> {
-    console.log('paData: ', paData);
     if (!paData.programAnswers) {
       console.log('UploadData: No attributes validated, nothing to upload.');
       return;
