@@ -19,6 +19,7 @@ import { BelcashService } from './fsp-integration/belcash/belcash.service';
 import { IntersolveService } from './fsp-integration/intersolve/intersolve.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
+import { BulkImportService } from '../registration/services/bulk-import.service';
 
 @Injectable()
 export class PaymentsService {
@@ -37,6 +38,7 @@ export class PaymentsService {
     private readonly africasTalkingService: AfricasTalkingService,
     private readonly belcashService: BelcashService,
     private readonly bobFinanceService: BobFinanceService,
+    private readonly bulkImportService: BulkImportService,
   ) {}
 
   public async getPayments(
@@ -339,5 +341,12 @@ export class PaymentsService {
       }
     }
     return instructions;
+  }
+
+  public async importFspReconciliationData(
+    csvFile,
+    programId: number,
+  ): Promise<void> {
+    await this.bulkImportService.importBulk(csvFile, program, userId);
   }
 }

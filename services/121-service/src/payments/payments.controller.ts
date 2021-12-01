@@ -1,4 +1,13 @@
-import { Post, Body, Controller, UseGuards, Get, Param } from '@nestjs/common';
+import {
+  Post,
+  Body,
+  Controller,
+  UseGuards,
+  Get,
+  Param,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { User } from '../user/user.decorator';
 import {
@@ -7,11 +16,16 @@ import {
   ApiResponse,
   ApiOperation,
   ApiImplicitParam,
+  ApiConsumes,
+  ApiImplicitFile,
 } from '@nestjs/swagger';
 import { RolesGuard } from '../roles.guard';
 import { Roles } from '../roles.decorator';
 import { UserRole } from '../user-role.enum';
 import { CreatePaymentDto } from './dto/create-payment.dto';
+import { UploadFspReconciliationDto } from './dto/upload-fsp-reconciliation.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImportResult } from '../registration/dto/bulk-import.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -69,6 +83,30 @@ export class PaymentsController {
     return await this.paymentsService.getFspInstructions(
       Number(params.programId),
       Number(params.payment),
+    );
+  }
+
+  @Roles(UserRole.PersonalData)
+  @ApiOperation({
+    title:
+      'Upload payment reconciliation data from FSP - for any number of payments at once',
+  })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Uploaded payment reconciliation data',
+  })
+  @Post('programs/:programId/payments/reconciliation')
+  @ApiConsumes('multipart/form-data')
+  @ApiImplicitFile({ name: 'file', required: true })
+  @UseInterceptors(FileInterceptor('file'))
+  public async importFspReconciliationData(
+    @UploadedFile() csvFile,
+    @Param() params,
+  ): Promise<any> {
+    return await this.paymentsService.importFspReconciliationData(
+      csvFile,
+      Number(params.programId),
     );
   }
 }

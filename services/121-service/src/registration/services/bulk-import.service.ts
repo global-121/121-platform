@@ -380,4 +380,111 @@ export class BulkImportService {
     }
     return validatatedArray;
   }
+
+  public async importFspReconciliation(
+    csvFile,
+    programId: number,
+  ): Promise<ImportResult> {
+    const validatedImportRecords = await this.csvToValidatedFspReconciliation(
+      csvFile,
+    );
+
+    let countImported = 0;
+    let countExistingPhoneNr = 0;
+    let countInvalidPhoneNr = 0;
+
+    const importResponseRecords = [];
+    for await (const record of validatedImportRecords) {
+      const importResponseRecord = record as BulkImportResult;
+      const throwNoException = true;
+      const phoneNumberResult = await this.lookupService.lookupAndCorrect(
+        record.phoneNumber,
+        throwNoException,
+      );
+      if (!phoneNumberResult) {
+        importResponseRecord.importStatus = ImportStatus.invalidPhoneNumber;
+        importResponseRecords.push(importResponseRecord);
+        countInvalidPhoneNr += 1;
+        continue;
+      }
+
+      let existingRegistrations = await this.registrationRepository.findOne({
+        where: { phoneNumber: phoneNumberResult },
+      });
+      if (existingRegistrations) {
+        importResponseRecord.importStatus = ImportStatus.existingPhoneNumber;
+        importResponseRecords.push(importResponseRecord);
+        countExistingPhoneNr += 1;
+        continue;
+      }
+
+      importResponseRecord.importStatus = ImportStatus.imported;
+      importResponseRecords.push(importResponseRecord);
+      countImported += 1;
+
+      const newRegistration = new RegistrationEntity();
+      newRegistration.referenceId = uuid();
+      newRegistration.phoneNumber = phoneNumberResult;
+      newRegistration.preferredLanguage = LanguageEnum.en;
+      newRegistration.namePartnerOrganization = record.namePartnerOrganization;
+      newRegistration.paymentAmountMultiplier = record.paymentAmountMultiplier;
+      newRegistration.program = program;
+      const savedRegistration = await this.registrationRepository.save(
+        newRegistration,
+      );
+      // Save already before status change, otherwise 'registration.subscriber' does not work
+      savedRegistration.registrationStatus = RegistrationStatusEnum.imported;
+      await this.registrationRepository.save(savedRegistration);
+    }
+
+    this.actionService.saveAction(
+      userId,
+      program.id,
+      AdditionalActionType.importPeopleAffected,
+    );
+
+    return {
+      importResult: importResponseRecords,
+      aggregateImportResult: {
+        countExistingPhoneNr,
+        countImported,
+        countInvalidPhoneNr,
+      },
+    };
+  }
+
+  private async csvToValidatedFspReconciliation(
+    csvFile,
+  ): Promise<BulkImportDto[]> {
+    const importRecords = await this.validateCsv(csvFile);
+    return await this.validateFspReonciliationCsvInput(importRecords);
+  }
+
+  private async validateFspReonciliationCsvInput(
+    csvArray,
+  ): Promise<BulkImportDto[]> {
+    const errors = [];
+    const validatatedArray = [];
+    for (const [i, row] of csvArray.entries()) {
+      if (this.checkForCompletelyEmptyRow(row)) {
+        continue;
+      }
+      let importRecord = new BulkImportDto();
+      importRecord.phoneNumber = row.phoneNumber;
+      importRecord.namePartnerOrganization = row.namePartnerOrganization;
+      importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
+      const result = await validate(importRecord);
+      if (result.length > 0) {
+        const errorObj = {
+          lineNumber: i + 1,
+          column: result[0].property,
+          value: result[0].value,
+        };
+        errors.push(errorObj);
+        throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+      }
+      validatatedArray.push(importRecord);
+    }
+    return validatatedArray;
+  }
 }

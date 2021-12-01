@@ -424,6 +424,10 @@
         "confirm-message": "This will download a CSV-file with payment instructions for the Financial Service Provider.",
         "sub-message": "You should only use this file <strong>once per payment</strong> in the portal of the Financial Service Provider."
       },
+      "import-fsp-reconciliation": {
+        "btn-text": "Import Payment Reconciliation Data",
+        "confirm-message": "Import Payment Reconciliation Data"
+      },
       "manage-aidworkers": {
         "section-title": "Manage aidworkers",
         "column-email": "Email-adress",
