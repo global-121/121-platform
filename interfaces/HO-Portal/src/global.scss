@@ -42,7 +42,7 @@ ion-button {
   text-transform: none;
 }
 
-.update-property-item {
+.input-item {
   display: flex;
   flex-direction: column;
   background-color: white;
@@ -51,7 +51,7 @@ ion-button {
     border-bottom: 1px solid var(--ion-color-light);
   }
 
-  .update-property-item--contents {
+  .input-item--contents {
     display: flex;
     flex-direction: row;
     justify-content: space-between;

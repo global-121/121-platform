@@ -4,13 +4,13 @@
   (ngSubmit)="doUpdate()"
 >
   <div
-    class="update-property-item divider-bottom ion-padding"
+    class="input-item divider-bottom ion-padding"
     [attr.disabled]="isDisabled"
   >
-    <label class="update-property-item--label">
+    <label class="input-item--label">
       {{ label }}
     </label>
-    <div class="update-property-item--contents">
+    <div class="input-item--contents">
       <ng-container [ngSwitch]="type">
         <ng-container *ngSwitchCase="'number'">
           <ion-input
@@ -19,10 +19,11 @@
             [(ngModel)]="propertyModel"
             [value]="value"
             [placeholder]="placeholder"
-            type="text"
+            type="number"
             inputmode="numeric"
             min="1"
-            pattern="^[0-9]*[1-9][0-9]*$"
+            pattern="[0-9]+"
+            appOnlyAllowedInput
           ></ion-input>
         </ng-container>
         <ng-container *ngSwitchCase="'tel'">
@@ -34,7 +35,8 @@
             [placeholder]="placeholder"
             type="tel"
             inputmode="tel"
-            pattern="[0-9]*"
+            pattern="[0-9]+"
+            appOnlyAllowedInput
           ></ion-input>
         </ng-container>
         <ng-container *ngSwitchDefault>
