@@ -21,11 +21,11 @@
     "ar": "متعدد الأهداف و غير مشروط"
   },
   "startDate": "2021-12-01T12:00:00Z",
-  "endDate": "2022-05-31T12:00:00Z",
+  "endDate": "2022-06-30T12:00:00Z",
   "currency": "USD",
   "distributionFrequency": "month",
   "distributionDuration": 6,
-  "fixedTransferValue": 50,
+  "fixedTransferValue": 340,
   "financialServiceProviders": [
     {
       "id": 1
