@@ -3,13 +3,13 @@
     {{ 'validation.find-by-phone.introduction' | translate }}
   </dialogue-turn>
 
-  <dialogue-turn actor="self" isSpoken="true">
+  <dialogue-turn actor="self" [isSpoken]="true">
     <p>{{ 'validation.find-by-phone.enter-phone' | translate }}</p>
     <phone-number-input
       #phoneNumberInput
       ngDefaultControl
       [(ngModel)]="inputPhonenumber"
-      required
+      [required]="true"
       [placeholder]="phonenumberPlaceholder"
       [name]="questionName"
       [disabled]="0 || paDataResult || returnMainMenu || peopleAffectedFound.length > 1"
@@ -17,7 +17,7 @@
     ></phone-number-input>
   </dialogue-turn>
 
-  <dialogue-turn actor="self" isSpoken="true" isConnected="true">
+  <dialogue-turn actor="self" [isSpoken]="true" [isConnected]="true">
     <ion-button
       expand="block"
       [disabled]="inputPhonenumber === '' || paDataResult || returnMainMenu || peopleAffectedFound.length > 1"
@@ -36,23 +36,23 @@
   <dialogue-turn
     *ngIf="noPeopleAffectedFound"
     [isSpoken]="noPeopleAffectedFound"
-    isConnected="true"
+    [isConnected]="true"
   >
     {{ 'validation.find-by-phone.error' | translate }}
   </dialogue-turn>
 
   <ng-container
     *ngIf="peopleAffectedFound.length"
-    [isSpoken]="peopleAffectedFound.length"
   >
-    <dialogue-turn isSpoken="true">
+    <dialogue-turn [isSpoken]="true">
       {{ 'validation.find-by-phone.multiple-found' | translate }}
     </dialogue-turn>
-    <dialogue-turn actor="self" isSpoken="true">
+    <dialogue-turn actor="self" [isSpoken]="true">
       <form (submit)="submitPaChoice()">
         <ion-radio-group
           (ionChange)="changePaChoice($event)"
           [disabled]="paChoice"
+          [value]="paChoice"
         >
           <ion-item
             *ngFor="let pa of peopleAffectedFound"
@@ -67,14 +67,13 @@
               style="width: 100%"
             >
               <ion-label class="ion-text-wrap ion-padding-end">
-                <strong
-                  >{{ 'validation.find-by-phone.name' | translate }}:</strong
-                >
+                <strong>
+                  {{ 'validation.find-by-phone.name' | translate }}:
+                </strong>
                 {{ pa.name }}
               </ion-label>
               <ion-radio
                 [value]="pa.referenceId"
-                [checked]="pa.id === paChoice"
                 [disabled]="
                   (paChoice && isDisabled) || paDataResult || returnMainMenu
                 "
@@ -101,7 +100,7 @@
   <dialogue-turn
     *ngIf="paDataResult"
     [isSpoken]="paDataResult"
-    isConnected="true"
+    [isConnected]="true"
   >
     {{ 'validation.find-by-phone.conclusion' | translate }}
   </dialogue-turn>

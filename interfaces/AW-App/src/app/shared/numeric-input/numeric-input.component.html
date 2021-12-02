@@ -5,12 +5,12 @@
   [name]="name"
   [(ngModel)]="ngModel"
   [value]="value"
-  [autocomplete]="autocomplete"
+  [attr.autocomplete]="autocomplete"
   [disabled]="disabled"
   [placeholder]="placeholder"
   [pattern]="pattern ? pattern : '[0-9]+'"
   (ionChange)="onChange()"
-  debounce="300"
+  [debounce]="300"
   ngDefaultControl
   [required]="required"
   appOnlyAllowedInput
