@@ -1,5 +1,5 @@
-<section #findByPhone>
-  <dialogue-turn>
+<section>
+  <dialogue-turn [isSpoken]="true">
     {{ 'validation.find-by-phone.introduction' | translate }}
   </dialogue-turn>
 
@@ -15,9 +15,9 @@
       [disabled]="0 || paDataResult || returnMainMenu || peopleAffectedFound.length > 1"
       (ionChange)="changePhoneNumber()"
     ></phone-number-input>
-  </dialogue-turn>
 
-  <dialogue-turn actor="self" [isSpoken]="true" [isConnected]="true">
+    <br>
+
     <ion-button
       expand="block"
       [disabled]="inputPhonenumber === '' || paDataResult || returnMainMenu || peopleAffectedFound.length > 1"
@@ -90,8 +90,9 @@
             expand="block"
             style="flex-basis: 100%"
             [disabled]="paDataResult"
-            >{{ 'shared.submit-button' | translate }}</ion-button
           >
+            {{ 'shared.submit-button' | translate }}
+          </ion-button>
         </ion-row>
       </form>
     </dialogue-turn>
