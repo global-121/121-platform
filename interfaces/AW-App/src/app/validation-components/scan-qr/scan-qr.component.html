@@ -1,9 +1,9 @@
 <section #scanQr>
-  <dialogue-turn isSpoken="true">
+  <dialogue-turn [isSpoken]="true">
     {{ 'validation.scan-qr.introduction'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self"
-                 isSpoken="true"
+                 [isSpoken]="true"
   >
     <ion-button expand="block"
                 [disabled]="paDataResult || returnMainMenu"

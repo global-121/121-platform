@@ -64,7 +64,7 @@ export class ValidateFspComponent implements ValidationComponent {
       attributesAnswers.attributes.length > 0
     ) {
       this.questions = this.buildQuestions(attributesAnswers.attributes);
-      this.customAttributeAnswers = this.getAnsersByCode(
+      this.customAttributeAnswers = this.getAnswersByCode(
         attributesAnswers.answers,
       );
     } else {
@@ -73,7 +73,7 @@ export class ValidateFspComponent implements ValidationComponent {
     }
   }
 
-  private getAnsersByCode(answers) {
+  private getAnswersByCode(answers) {
     const codeAnswers = {};
     Object.values(answers).forEach((item: any): any => {
       codeAnswers[item.name] = {

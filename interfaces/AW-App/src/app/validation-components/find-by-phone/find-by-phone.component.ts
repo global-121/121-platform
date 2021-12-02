@@ -26,10 +26,11 @@ class PaToValidateOption {
   styleUrls: ['./find-by-phone.component.scss'],
 })
 export class FindByPhoneComponent implements ValidationComponent {
+  public isDisabled: boolean;
   public paDataResult = false;
   public returnMainMenu = false;
 
-  public inputPhonenumber = '';
+  public inputPhonenumber: any = '';
   public questionName = 'checkPhoneNr';
   public phonenumberPlaceholder = '+000 00 000 000';
   public isFirst = true;

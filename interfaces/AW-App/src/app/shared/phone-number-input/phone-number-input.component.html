@@ -5,14 +5,14 @@
   autocomplete="tel"
   pattern="^[0-9 \+\-\(\)]+"
   [placeholder]="placeholder ? placeholder : '+0 000 000 000'"
-  minlength="8"
-  maxlength="17"
+  [minlength]="8"
+  [maxlength]="17"
   [name]="name"
   [(ngModel)]="ngModel"
   [value]="value"
   [disabled]="disabled"
   (ionChange)="onChange()"
-  debounce="500"
+  [debounce]="500"
   ngDefaultControl
   [required]="required"
   appOnlyAllowedInput

@@ -21,7 +21,7 @@
     {{ 'account.conclusion'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self"
-                 isSpoken="true"
+                 [isSpoken]="true"
   >
     <form method="POST" (submit)="doLogin($event)" *ngIf="!isLoggedIn">
       <input type="submit" hidden /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
@@ -30,11 +30,11 @@
         <ion-input #email type="email"
                    name="email"
                    inputmode="email"
-                   autocomplete="username email"
+                   [attr.autocomplete]="'username email'"
                    autocapitalize="off"
-                   autofocus="true"
-                   clearInput="true"
-                   required
+                   [autofocus]="true"
+                   [clearInput]="true"
+                   [required]="true"
         ></ion-input>
       </ion-item>
       <ion-item color="light">
@@ -43,9 +43,9 @@
                    name="password"
                    autocomplete="current-password"
                    autocapitalize="off"
-                   clearInput="true"
-                   clearOnEdit="false"
-                   required
+                   [clearInput]="true"
+                   [clearOnEdit]="false"
+                   [required]="true"
         ></ion-input>
       </ion-item>
 
@@ -69,7 +69,7 @@
     </ion-button>
   </dialogue-turn>
   <dialogue-turn actor="self"
-                 isConnected="true"
+                 [isConnected]="true"
                  *ngIf="changePasswordForm"
                  [isSpoken]="changePasswordForm"
   >
@@ -82,9 +82,9 @@
                    #create
                    autocomplete="new-password"
                    autocapitalize="off"
-                   clearInput="true"
-                   clearOnEdit="false"
-                   required
+                   [clearInput]="true"
+                   [clearOnEdit]="false"
+                   [required]="true"
         ></ion-input>
       </ion-item>
       <ion-item color="light">
@@ -94,9 +94,9 @@
                      #confirm
                      autocomplete="off"
                      autocapitalize="off"
-                     clearInput="true"
-                     clearOnEdit="false"
-                     required
+                     [clearInput]="true"
+                     [clearOnEdit]="false"
+                     [required]="true"
         ></ion-input>
       </ion-item>
 

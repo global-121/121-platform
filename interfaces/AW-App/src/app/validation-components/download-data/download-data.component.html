@@ -1,6 +1,6 @@
 <section>
   <dialogue-turn *ngIf="!downloadReady && !downloadAborted"
-                 isSpoken="!downloadReady && !downloadAborted"
+                 [isSpoken]="!downloadReady && !downloadAborted"
   >
     {{ 'validation.download-data.downloading'|translate }}
   </dialogue-turn>
