@@ -24,7 +24,7 @@ import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { FspName } from '../fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
-import { InlusionScoreService } from './services/inclusion-score.service';
+import { InclusionScoreService } from './services/inclusion-score.service';
 import { BulkImportService } from './services/bulk-import.service';
 import { ImportResult } from './dto/bulk-import.dto';
 import { RegistrationResponse } from './dto/registration-response.model';
@@ -62,7 +62,7 @@ export class RegistrationsService {
   public constructor(
     private readonly lookupService: LookupService,
     private readonly smsService: SmsService,
-    private readonly inclusionScoreService: InlusionScoreService,
+    private readonly inclusionScoreService: InclusionScoreService,
     private readonly bulkImportService: BulkImportService,
   ) {}
 

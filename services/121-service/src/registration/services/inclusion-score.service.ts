@@ -7,7 +7,7 @@ import { RegistrationEntity } from '../registration.entity';
 import { AnswerTypes } from '../enum/custom-data-attributes';
 
 @Injectable()
-export class InlusionScoreService {
+export class InclusionScoreService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(RegistrationEntity)

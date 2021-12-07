@@ -10,11 +10,13 @@ import {
 import { ApiModelProperty } from '@nestjs/swagger';
 import { FspName } from '../../fsp/financial-service-provider.entity';
 import { LanguageEnum } from '../enum/language.enum';
+import { UploadFspReconciliationDto } from '../../payments/dto/upload-fsp-reconciliation.dto';
 
 export enum ImportStatus {
   imported = 'imported',
   invalidPhoneNumber = 'invalidPhoneNumber',
   existingPhoneNumber = 'existingPhoneNumber',
+  unmatched = 'unmatched',
 }
 
 export class BulkImportDto {
@@ -39,15 +41,21 @@ export class BulkImportResult extends BulkImportDto {
   public importStatus: ImportStatus;
 }
 
+export class UploadFspReconciliationResult extends UploadFspReconciliationDto {
+  public importStatus: ImportStatus;
+}
+
 export class ImportResult {
   public aggregateImportResult: AggregateImportResult;
   public importResult?: BulkImportResult[];
+  public uploadFspReconciliationResult?: UploadFspReconciliationResult[];
 }
 
 export class AggregateImportResult {
   public countImported: number;
   public countExistingPhoneNr?: number;
   public countInvalidPhoneNr?: number;
+  public countNotFound?: number;
 }
 
 const fspArray = Object.values(FspName).map(item => String(item));

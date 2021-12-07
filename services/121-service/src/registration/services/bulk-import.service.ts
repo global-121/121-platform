@@ -13,7 +13,10 @@ import {
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { ProgramQuestionEntity } from '../../programs/program-question.entity';
 import { FspAttributeEntity } from '../../fsp/fsp-attribute.entity';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import {
+  FinancialServiceProviderEntity,
+  FspName,
+} from '../../fsp/financial-service-provider.entity';
 import { LanguageEnum } from '../enum/language.enum';
 import {
   BulkImportDto,
@@ -22,6 +25,7 @@ import {
   ImportRegistrationsDto,
   ImportResult,
   ImportStatus,
+  UploadFspReconciliationResult,
 } from '../dto/bulk-import.dto';
 import { v4 as uuid } from 'uuid';
 import csv from 'csv-parser';
@@ -29,7 +33,11 @@ import { ActionService } from '../../actions/action.service';
 import { AdditionalActionType } from '../../actions/action.entity';
 import { validate } from 'class-validator';
 import { Readable } from 'stream';
-import { InlusionScoreService } from './inclusion-score.service';
+import { InclusionScoreService } from './inclusion-score.service';
+import { UploadFspReconciliationDto } from '../../payments/dto/upload-fsp-reconciliation.dto';
+import { TransactionsService } from '../../payments/transactions/transactions.service';
+import { PaTransactionResultDto } from '../../payments/dto/payment-transaction-result.dto';
+import { StatusEnum } from '../../shared/enum/status.enum';
 
 @Injectable()
 export class BulkImportService {
@@ -47,7 +55,8 @@ export class BulkImportService {
   public constructor(
     private readonly lookupService: LookupService,
     private readonly actionService: ActionService,
-    private readonly inclusionScoreService: InlusionScoreService,
+    private readonly inclusionScoreService: InclusionScoreService,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async importBulk(
@@ -384,95 +393,84 @@ export class BulkImportService {
   public async importFspReconciliation(
     csvFile,
     programId: number,
+    userId: number,
   ): Promise<ImportResult> {
     const validatedImportRecords = await this.csvToValidatedFspReconciliation(
       csvFile,
     );
 
     let countImported = 0;
-    let countExistingPhoneNr = 0;
-    let countInvalidPhoneNr = 0;
+    let countNotFound = 0;
 
     const importResponseRecords = [];
     for await (const record of validatedImportRecords) {
-      const importResponseRecord = record as BulkImportResult;
-      const throwNoException = true;
-      const phoneNumberResult = await this.lookupService.lookupAndCorrect(
-        record.phoneNumber,
-        throwNoException,
-      );
-      if (!phoneNumberResult) {
-        importResponseRecord.importStatus = ImportStatus.invalidPhoneNumber;
+      const importResponseRecord = record as UploadFspReconciliationResult;
+
+      const registration = await this.registrationRepository.findOne({
+        where: { referenceId: record.referenceId },
+        relations: ['fsp'],
+      });
+      if (!registration) {
+        importResponseRecord.importStatus = ImportStatus.unmatched;
         importResponseRecords.push(importResponseRecord);
-        countInvalidPhoneNr += 1;
+        countNotFound += 1;
         continue;
       }
 
-      let existingRegistrations = await this.registrationRepository.findOne({
-        where: { phoneNumber: phoneNumberResult },
-      });
-      if (existingRegistrations) {
-        importResponseRecord.importStatus = ImportStatus.existingPhoneNumber;
-        importResponseRecords.push(importResponseRecord);
-        countExistingPhoneNr += 1;
-        continue;
-      }
+      const paTransactionResult = new PaTransactionResultDto();
+      paTransactionResult.referenceId = record.referenceId;
+      paTransactionResult.status = record.status as StatusEnum;
+      paTransactionResult.fspName = registration.fsp.fsp as FspName;
+      paTransactionResult.message = '';
+      paTransactionResult.calculatedAmount = Number(record.amount);
+
+      await this.transactionsService.storeTransaction(
+        paTransactionResult,
+        programId,
+        Number(record.payment),
+      );
 
       importResponseRecord.importStatus = ImportStatus.imported;
       importResponseRecords.push(importResponseRecord);
       countImported += 1;
-
-      const newRegistration = new RegistrationEntity();
-      newRegistration.referenceId = uuid();
-      newRegistration.phoneNumber = phoneNumberResult;
-      newRegistration.preferredLanguage = LanguageEnum.en;
-      newRegistration.namePartnerOrganization = record.namePartnerOrganization;
-      newRegistration.paymentAmountMultiplier = record.paymentAmountMultiplier;
-      newRegistration.program = program;
-      const savedRegistration = await this.registrationRepository.save(
-        newRegistration,
-      );
-      // Save already before status change, otherwise 'registration.subscriber' does not work
-      savedRegistration.registrationStatus = RegistrationStatusEnum.imported;
-      await this.registrationRepository.save(savedRegistration);
     }
 
     this.actionService.saveAction(
       userId,
-      program.id,
+      programId,
       AdditionalActionType.importPeopleAffected,
     );
 
     return {
       importResult: importResponseRecords,
       aggregateImportResult: {
-        countExistingPhoneNr,
         countImported,
-        countInvalidPhoneNr,
+        countNotFound,
       },
     };
   }
 
   private async csvToValidatedFspReconciliation(
     csvFile,
-  ): Promise<BulkImportDto[]> {
+  ): Promise<UploadFspReconciliationDto[]> {
     const importRecords = await this.validateCsv(csvFile);
-    return await this.validateFspReonciliationCsvInput(importRecords);
+    return await this.validateFspReconciliationCsvInput(importRecords);
   }
 
-  private async validateFspReonciliationCsvInput(
+  private async validateFspReconciliationCsvInput(
     csvArray,
-  ): Promise<BulkImportDto[]> {
+  ): Promise<UploadFspReconciliationDto[]> {
     const errors = [];
     const validatatedArray = [];
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
       }
-      let importRecord = new BulkImportDto();
-      importRecord.phoneNumber = row.phoneNumber;
-      importRecord.namePartnerOrganization = row.namePartnerOrganization;
-      importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
+      let importRecord = new UploadFspReconciliationDto();
+      importRecord.referenceId = row.referenceId;
+      importRecord.payment = row.payment;
+      importRecord.status = row.status;
+      importRecord.amount = row.amount;
       const result = await validate(importRecord);
       if (result.length > 0) {
         const errorObj = {

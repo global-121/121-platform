@@ -14,13 +14,14 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { SmsModule } from '../notifications/sms/sms.module';
-import { InlusionScoreService } from './services/inclusion-score.service';
+import { InclusionScoreService } from './services/inclusion-score.service';
 import { BulkImportService } from './services/bulk-import.service';
 import { ActionModule } from '../actions/action.module';
 import { ProgramModule } from '../programs/programs.module';
 import { FspModule } from '../fsp/fsp.module';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { RegistrationAnswersService } from './services/registration-answers.service';
+import { TransactionsService } from '../payments/transactions/transactions.service';
 
 @Module({
   imports: [
@@ -47,8 +48,9 @@ import { RegistrationAnswersService } from './services/registration-answers.serv
   providers: [
     RegistrationsService,
     BulkImportService,
-    InlusionScoreService,
+    InclusionScoreService,
     RegistrationAnswersService,
+    TransactionsService,
   ],
   controllers: [RegistrationsController],
   exports: [RegistrationsService],

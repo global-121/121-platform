@@ -103,10 +103,12 @@ export class PaymentsController {
   public async importFspReconciliationData(
     @UploadedFile() csvFile,
     @Param() params,
-  ): Promise<any> {
+    @User('id') userId: number,
+  ): Promise<ImportResult> {
     return await this.paymentsService.importFspReconciliationData(
       csvFile,
       Number(params.programId),
+      userId,
     );
   }
 }

@@ -14,6 +14,14 @@ import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsModule } from './transactions/transactions.module';
+import { BulkImportService } from '../registration/services/bulk-import.service';
+import { LookupModule } from '../notifications/lookup/lookup.module';
+import { InclusionScoreService } from '../registration/services/inclusion-score.service';
+import { RegistrationsModule } from '../registration/registrations.module';
+import { ProgramAnswerEntity } from '../registration/program-answer.entity';
+import { ProgramQuestionEntity } from '../programs/program-question.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 
 @Module({
   imports: [
@@ -22,18 +30,24 @@ import { TransactionsModule } from './transactions/transactions.module';
       TransactionEntity,
       RegistrationEntity,
       UserEntity,
+      ProgramAnswerEntity,
+      ProgramQuestionEntity,
+      FinancialServiceProviderEntity,
+      FspAttributeEntity,
     ]),
     UserModule,
     HttpModule,
     ActionModule,
+    LookupModule,
     FspModule,
+    TransactionsModule,
     IntersolveModule,
     AfricasTalkingModule,
     BelcashModule,
-    TransactionsModule,
     BobFinanceModule,
+    RegistrationsModule,
   ],
-  providers: [PaymentsService],
+  providers: [PaymentsService, BulkImportService, InclusionScoreService],
   controllers: [PaymentsController],
   exports: [PaymentsService],
 })

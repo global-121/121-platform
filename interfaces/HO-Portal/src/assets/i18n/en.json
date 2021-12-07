@@ -426,7 +426,13 @@
       },
       "import-fsp-reconciliation": {
         "btn-text": "Import Payment Reconciliation Data",
-        "confirm-message": "Import Payment Reconciliation Data"
+        "confirm-message": "Import Payment Reconciliation Data",
+        "explanation": "Make sure to match the required format of the template CSV-file.",
+        "import-result": {
+          "ready": "Import ready.",
+          "new": "There are {{countImported}} transactions updated.",
+          "not-found": "There were {{countNotFound}} transactions for which no matching Person Affected was found. Try to correct them and upload again."
+        }
       },
       "manage-aidworkers": {
         "section-title": "Manage aidworkers",

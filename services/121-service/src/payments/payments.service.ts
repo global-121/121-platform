@@ -20,6 +20,7 @@ import { IntersolveService } from './fsp-integration/intersolve/intersolve.servi
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
 import { BulkImportService } from '../registration/services/bulk-import.service';
+import { ImportResult } from '../registration/dto/bulk-import.dto';
 
 @Injectable()
 export class PaymentsService {
@@ -346,7 +347,12 @@ export class PaymentsService {
   public async importFspReconciliationData(
     csvFile,
     programId: number,
-  ): Promise<void> {
-    await this.bulkImportService.importBulk(csvFile, program, userId);
+    userId: number,
+  ): Promise<ImportResult> {
+    return await this.bulkImportService.importFspReconciliation(
+      csvFile,
+      programId,
+      userId,
+    );
   }
 }

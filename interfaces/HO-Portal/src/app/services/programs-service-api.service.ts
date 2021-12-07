@@ -310,6 +310,20 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  importFspReconciliation(
+    programId: number,
+    file: File,
+  ): Promise<ImportResult> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    let path = `/programs/${programId}/payments/reconciliation`;
+
+    return this.apiService
+      .post(environment.url_121_service_api, path, formData, false, false, true)
+      .toPromise();
+  }
+
   exportList(
     programId: number,
     type: ExportType,

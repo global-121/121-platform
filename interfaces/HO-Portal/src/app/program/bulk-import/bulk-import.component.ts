@@ -16,6 +16,7 @@ export class AggregateImportResult {
   countImported: number;
   countExistingPhoneNr: number;
   countInvalidPhoneNr: number;
+  countNotFound: number;
 }
 
 export class ImportResult {
@@ -139,7 +140,7 @@ export class BulkImportComponent implements OnInit {
             countImported: `<strong>${aggregateResult.countImported}</strong>`,
           }) + '<br><br>';
 
-        if (aggregateResult.countExistingPhoneNr) {
+        if (aggregateResult.countNotFound) {
           resultMessage +=
             this.translate.instant(
               'page.program.bulk-import.import-result.existing',

@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ImportType } from '../../models/import-type.enum';
 import { FilePickerProps } from '../../shared/file-picker-prompt/file-picker-prompt.component';
 
 @Component({
@@ -38,6 +39,14 @@ export class ImportFspReconciliationComponent implements OnChanges {
       'page.program.import-fsp-reconciliation.btn-text',
     );
     this.updateSubHeader();
+    this.filePickerProps = {
+      type: 'csv',
+      explanation: this.translate.instant(
+        'page.program.import-fsp-reconciliation.explanation',
+      ),
+      programId: this.programId,
+      downloadTemplate: ImportType.imported,
+    };
   }
 
   async ngOnChanges() {
@@ -48,9 +57,6 @@ export class ImportFspReconciliationComponent implements OnChanges {
     this.subHeader = this.translate.instant(
       'page.program.import-fsp-reconciliation.confirm-message',
     );
-    this.message = this.translate.instant(
-      'page.program.import-fsp-reconciliation.sub-message',
-    );
   }
 
   private btnEnabled() {
@@ -60,20 +66,39 @@ export class ImportFspReconciliationComponent implements OnChanges {
     );
   }
 
-  public async importFspReconciliation() {
+  public async importFspReconciliation(event: { file: File }) {
     this.isInProgress = true;
+
     this.programsService
-      .importFspReconciliation(Number(this.programId), this.payment)
+      .importFspReconciliation(this.programId, event.file)
       .then(
-        (res) => {
+        (response) => {
+          const aggregateResult = response.aggregateImportResult;
           this.isInProgress = false;
-          if (res.length < 1) {
-            this.actionResult(
-              this.translate.instant('page.program.export-list.no-data'),
-            );
-            return;
+          let resultMessage =
+            this.translate.instant(
+              'page.program.import-fsp-reconciliation.import-result.ready',
+            ) + '<br><br>';
+
+          resultMessage +=
+            this.translate.instant(
+              'page.program.import-fsp-reconciliation.import-result.new',
+              {
+                countImported: `<strong>${aggregateResult.countImported}</strong>`,
+              },
+            ) + '<br><br>';
+
+          if (aggregateResult.countNotFound) {
+            resultMessage +=
+              this.translate.instant(
+                'page.program.import-fsp-reconciliation.import-result.not-found',
+                {
+                  countNotFound: `<strong>${aggregateResult.countNotFound}</strong>`,
+                },
+              ) + '<br><br>';
           }
-          this.updateSubHeader();
+
+          this.actionResult(resultMessage);
         },
         (err) => {
           this.isInProgress = false;
