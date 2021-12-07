@@ -7,7 +7,7 @@ Feature: Export People Affected list
 
   Scenario: Export People Affected list
     When the user clicks the "export people affected" button and confirms the confirm prompt
-    Then a CSV-file is downloaded
+    Then an Excel-file is downloaded
     And it shows a list of all People Affected that are also in the PA-table, irrespective of status
     And it shows the "name" and other dynamic program-attributes, that are also in the PA-table
     And it shows "id" and other generic attributes, that are also in the PA-table
@@ -18,7 +18,7 @@ Feature: Export People Affected list
   Scenario: Export inclusion list with 5000 PAs
     Given there are 5000 PAs in the system (see Admin-user/Import_test_registrations_NL.feature)
     When the user clicks the "export people affected" and confirms the confirm prompt
-    Then a CSV-file is downloaded as in the scenario above quickly and without problem
+    Then an Excel-file is downloaded as in the scenario above quickly and without problem
 
   Scenario: Viewing the export options without permission
     Given a logged-in user does not have the "personal data" role
