@@ -35,7 +35,7 @@ export class BobFinanceService {
       transactionResult.calculatedAmount = calculatedAmount;
       transactionResult.fspName = FspName.bobFinance;
       transactionResult.referenceId = payment.referenceId;
-      transactionResult.status = StatusEnum.success;
+      transactionResult.status = StatusEnum.waiting;
       fspTransactionResult.paList.push(transactionResult);
     }
     await this.transactionsService.storeAllTransactions(
