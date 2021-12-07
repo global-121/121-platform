@@ -5,7 +5,6 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { arrayToCsv } from '../../shared/array-to-csv';
-import { arrayToXlsx } from '../../shared/array-to-xlsx';
 
 @Component({
   selector: 'app-export-fsp-instructions',
