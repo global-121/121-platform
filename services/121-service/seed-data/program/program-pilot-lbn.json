@@ -21,7 +21,7 @@
     "ar": "متعدد الأهداف و غير مشروط"
   },
   "startDate": "2021-12-01T12:00:00Z",
-  "endDate": "2022-05-31T12:00:00Z",
+  "endDate": "2022-06-30T12:00:00Z",
   "currency": "USD",
   "distributionFrequency": "month",
   "distributionDuration": 6,
@@ -33,7 +33,7 @@
   ],
   "inclusionCalculationType": "highestScoresX",
   "minimumScore": 0,
-  "highestScoresX": 50,
+  "highestScoresX": 340,
   "meetingDocuments": {
     "en": "Personal ID card of the person that registered; Family social registry; Proof of residence; Proof of medical condition (if available)",
     "ar": "بطاقة الهوية الشخصية للشخص الذي قام بالتسجيل ; أخراج قيد عائلي ; أفادة سكن ; إثبات الحالة الطبية (إن وجد) "
@@ -516,68 +516,6 @@
       }
     },
     {
-      "name": "chronic-disease-child",
-      "label": {
-        "en": "Does any child (younger than 18) from your household suffer from a chronic disease or serious medical conditions other than disability?",
-        "ar": "هل يعاني أي طفل (أقل من 18 عامًا) من أسرتك من مرض مزمن أو حالات طبية خطيرة غير الإعاقة؟ "
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "yes",
-          "label": {
-            "en": "Yes",
-            "ar": "نعم"
-          }
-        },
-        {
-          "option": "no",
-          "label": {
-            "en": "No",
-            "ar": "لا"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {
-        "yes": 4,
-        "no": 0
-      }
-    },
-    {
-      "name": "chronic-disease-adult",
-      "label": {
-        "en": "Does any adult (18 or older) from your household suffer from a chronic disease or serious medical conditions other than disability?",
-        "ar": "هل يعاني أي شخص بالغ (18 عامًا و ما فوق) من أسرتك من مرض مزمن أو حالات طبية خطيرة بخلاف الإعاقة؟ "
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "yes",
-          "label": {
-            "en": "Yes",
-            "ar": "نعم"
-          }
-        },
-        {
-          "option": "no",
-          "label": {
-            "en": "No",
-            "ar": "لا"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {
-        "yes": 2,
-        "no": 0
-      }
-    },
-    {
       "name": "hospital-child",
       "label": {
         "en": "Are there any children (younger than 18) in the hospital?",
@@ -919,6 +857,68 @@
         "yes-some": 2,
         "yes-lot": 4,
         "yes-completely": 6
+      }
+    },
+    {
+      "name": "chronic-disease-child",
+      "label": {
+        "en": "Does any child (younger than 18) from your household suffer from a chronic disease or serious medical conditions other than disability?",
+        "ar": "هل يعاني أي طفل (أقل من 18 عامًا) من أسرتك من مرض مزمن أو حالات طبية خطيرة غير الإعاقة؟ "
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "ar": "نعم"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "ar": "لا"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {
+        "yes": 4,
+        "no": 0
+      }
+    },
+    {
+      "name": "chronic-disease-adult",
+      "label": {
+        "en": "Does any adult (18 or older) from your household suffer from a chronic disease or serious medical conditions other than disability?",
+        "ar": "هل يعاني أي شخص بالغ (18 عامًا و ما فوق) من أسرتك من مرض مزمن أو حالات طبية خطيرة بخلاف الإعاقة؟ "
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "ar": "نعم"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "ar": "لا"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {
+        "yes": 2,
+        "no": 0
       }
     },
     {

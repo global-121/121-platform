@@ -12,9 +12,6 @@ export enum CustomDataNameAttributes {
   name = 'name',
   nameFirst = 'nameFirst',
   nameLast = 'nameLast',
-  firstName = 'firstName',
-  secondName = 'secondName',
-  thirdName = 'thirdName',
 }
 
 class PaToValidateOption {
@@ -29,10 +26,11 @@ class PaToValidateOption {
   styleUrls: ['./find-by-phone.component.scss'],
 })
 export class FindByPhoneComponent implements ValidationComponent {
+  public isDisabled: boolean;
   public paDataResult = false;
   public returnMainMenu = false;
 
-  public inputPhonenumber = '';
+  public inputPhonenumber: any = '';
   public questionName = 'checkPhoneNr';
   public phonenumberPlaceholder = '+000 00 000 000';
   public isFirst = true;
@@ -165,7 +163,9 @@ export class FindByPhoneComponent implements ValidationComponent {
     for (const referenceId of referenceIds) {
       const paToValidateOption = new PaToValidateOption();
       paToValidateOption.name = validationData.find(
-        (o) => o.referenceId === referenceId && o.name === 'name',
+        (o) =>
+          o.referenceId === referenceId &&
+          Object.values(CustomDataNameAttributes).includes(o.name),
       ).programAnswer;
       paToValidateOption.referenceId = referenceId;
       paToValidateOption.phoneNumber = phoneNumber;
@@ -192,7 +192,7 @@ export class FindByPhoneComponent implements ValidationComponent {
       return registrations.map((pa) => {
         return {
           referenceId: pa.referenceId,
-          name: pa.customData.name,
+          name: this.getNameAttribute(pa.customData),
           phoneNumber: pa.phoneNumber,
         } as PaToValidateOption;
       });
@@ -200,6 +200,14 @@ export class FindByPhoneComponent implements ValidationComponent {
       console.log('Error: ', e);
       if (e.status === 0 || e instanceof TimeoutError) {
         return;
+      }
+    }
+  }
+
+  private getNameAttribute(input: any): string {
+    for (const attribute of Object.values(CustomDataNameAttributes)) {
+      if (input[attribute]) {
+        return input[attribute];
       }
     }
   }

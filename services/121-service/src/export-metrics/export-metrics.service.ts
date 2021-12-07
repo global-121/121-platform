@@ -92,7 +92,7 @@ export class ExportMetricsService {
 
     if (pastPaymentDetails.length === 0) {
       return {
-        fileName: `details-future-payment-${minPaymentId}.csv`,
+        fileName: `details-future-payment-${minPaymentId}`,
         data: (await this.getInclusionList(programId)).data,
       };
     }
@@ -101,16 +101,16 @@ export class ExportMetricsService {
       pastPaymentDetails,
     );
 
-    const csvFile = {
+    const fileInput = {
       fileName: `details-completed-payment-${
         minPaymentId === maxPaymentId
           ? minPaymentId
           : `${minPaymentId}-to-${maxPaymentId}`
-      }.csv`,
-      data: this.jsonToCsv(pastPaymentDetails),
+      }`,
+      data: pastPaymentDetails,
     };
 
-    return csvFile;
+    return fileInput;
   }
 
   private async filterAttributesToExport(pastPaymentDetails): Promise<any[]> {
@@ -138,8 +138,8 @@ export class ExportMetricsService {
     });
 
     const response = {
-      fileName: this.getExportFileName(ExportType.unusedVouchers),
-      data: this.jsonToCsv(unusedVouchers),
+      fileName: ExportType.unusedVouchers,
+      data: unusedVouchers,
     };
 
     return response;
@@ -309,8 +309,8 @@ export class ExportMetricsService {
       registrationDetails.push(row);
     }
     const response = {
-      fileName: this.getExportFileName(ExportType.allPeopleAffected),
-      data: this.jsonToCsv(registrationDetails),
+      fileName: ExportType.allPeopleAffected,
+      data: registrationDetails,
     };
 
     return response;
@@ -339,8 +339,8 @@ export class ExportMetricsService {
     }
     const filteredColumnDetails = this.filterUnusedColumn(inclusionDetails);
     const response = {
-      fileName: this.getExportFileName('inclusion-list'),
-      data: this.jsonToCsv(filteredColumnDetails),
+      fileName: 'inclusion-list',
+      data: filteredColumnDetails,
     };
 
     return response;
@@ -395,8 +395,8 @@ export class ExportMetricsService {
 
     const filteredColumnDetails = this.filterUnusedColumn(columnDetails);
     const response = {
-      fileName: this.getExportFileName(ExportType.selectedForValidation),
-      data: this.jsonToCsv(filteredColumnDetails),
+      fileName: ExportType.selectedForValidation,
+      data: filteredColumnDetails,
     };
 
     return response;
@@ -452,8 +452,8 @@ export class ExportMetricsService {
     });
 
     return {
-      fileName: this.getExportFileName(ExportType.duplicatePhoneNumbers),
-      data: this.jsonToCsv(result),
+      fileName: ExportType.duplicatePhoneNumbers,
+      data: result,
     };
   }
 
@@ -511,29 +511,6 @@ export class ExportMetricsService {
       .getRawMany();
 
     return transactions;
-  }
-
-  private jsonToCsv(items: any[]): any[] | string {
-    if (items.length === 0) {
-      return '';
-    }
-    const cleanValues = (_key, value): any => (value === null ? '' : value);
-
-    const columns = Object.keys(items[0]);
-
-    let rows = items.map(row =>
-      columns
-        .map(fieldName => JSON.stringify(row[fieldName], cleanValues))
-        .join(','),
-    );
-
-    rows.unshift(columns.join(',')); // Add header row
-
-    return rows.join('\r\n');
-  }
-
-  private getExportFileName(base: string): string {
-    return `${base}_${new Date().toISOString().substr(0, 10)}.csv`;
   }
 
   public async getPaMetrics(

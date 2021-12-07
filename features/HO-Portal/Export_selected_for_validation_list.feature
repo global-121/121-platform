@@ -8,7 +8,7 @@ Feature: Export selected for validation list
   Scenario: Export selected for validation list
     Given a logged-in user with "personal data" role
     When the user clicks the "export list: selected for validation" and confirms the confirm prompt
-    Then a CSV-file is downloaded
+    Then an Excel-file is downloaded
     And it shows a list of the registrations that are "selected for validation"
     And it shows the "name" and "phonenumber" to be able to identify people
     And it shows the dates at which the person reached each status, to be able to assess the trajectory towards "selected for validation"

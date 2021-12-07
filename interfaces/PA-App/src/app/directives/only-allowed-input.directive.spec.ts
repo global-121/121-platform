@@ -62,7 +62,7 @@ describe('OnlyAllowedInputDirective', () => {
     });
   });
 
-  it('should strip invalid characters from pasted input', () => {
+  it('should strip invalid characters from pasted input (where possible)', () => {
     const pasteSpy = spyOn(document, 'execCommand');
 
     const tests = [
@@ -85,6 +85,21 @@ describe('OnlyAllowedInputDirective', () => {
         input: 'abc123ABC',
         pattern: '[a-zA-Z+]',
         output: 'abcABC',
+      },
+      {
+        input: 'abc1234567890',
+        pattern: '^\\d{10}$',
+        output: '1234567890',
+      },
+      {
+        input: '+123 45 67 890abc',
+        pattern: '^+?[0-9 ]+{10}$',
+        output: '+123 45 67 890abc',
+      },
+      {
+        input: '+123 45 67 890abc',
+        pattern: '^+?\\d{3} \\d{2} \\d{2} \\d{3}$',
+        output: '+123 45 67 890abc',
       },
     ];
 

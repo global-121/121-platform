@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { arrayToXlsx } from '../../shared/array-to-xlsx';
+import { arrayToCsv } from '../../shared/array-to-csv';
 
 @Component({
   selector: 'app-export-fsp-instructions',
@@ -75,7 +75,7 @@ export class ExportFspInstructionsComponent implements OnChanges {
             );
             return;
           }
-          arrayToXlsx(res, `payment#${this.payment}-fsp-instructions`);
+          arrayToCsv(res, `payment#${this.payment}-fsp-instructions`);
           this.updateSubHeader();
         },
         (err) => {

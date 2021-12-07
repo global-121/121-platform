@@ -1,6 +1,6 @@
 <section #startMeeting>
   <form *ngIf="questions?.length">
-    <dialogue-turn isSpoken="true">
+    <dialogue-turn [isSpoken]="true">
       <p>
         {{ 'validation.validate-fsp.introduction'|translate }}
       </p>

@@ -206,7 +206,7 @@
         "total-amount": "Total amount: {{totalCost}}",
         "result": {
           "api": "Successfully sent payment request for {{nrPa}} PA(s).<br><br>The payments can take some time to process. Inspect the PA-table below for the up-to-date status of the payment(s).<br><br>You can close this popup.",
-          "csv": "Successfully prepared payment data for {{nrPa}} PA(s).<br><br>You will need to export this data by<ol><li>selecting the payment in the <strong>Choose payment...</strong> dropdown</li><li>using the <strong>Export payment instructions</strong> button</li><li>uploading the resulting CSV in the portal of the Financial Service Provider.</li></ol>"
+          "csv": "Successfully prepared payment data for {{nrPa}} PA(s).<br><br>Next, please:<ol><li>select the payment in the <strong>Choose payment...</strong> dropdown</li><li>use the <strong>Export payment instructions</strong> button</li><li>save the resulting CSV as XLSX</li><li>upload the result in the portal of the Financial Service Provider.</li></ol>"
         },
         "in-progress": "Payment in progress",
         "make-export": "Export payment data",
@@ -396,27 +396,27 @@
         "no-data": "There are currently no People Affected to download",
         "all-people-affected": {
           "btn-text": "Export People Affected",
-          "confirm-message": "This will download a CSV-file with all People Affected."
+          "confirm-message": "This will download an Excel-file with all People Affected."
         },
         "included": {
           "btn-text": "Export inclusion list",
-          "confirm-message": "This will download a CSV-file with all included People Affected, to be used for a Community Review."
+          "confirm-message": "This will download an Excel-file with all included People Affected, to be used for a Community Review."
         },
         "selected-for-validation": {
           "btn-text": "Export list: selected for validation",
-          "confirm-message": "This will download a CSV-file with all People Affected selected for validation, to be used for Validation visits."
+          "confirm-message": "This will download an Excel-file with all People Affected selected for validation, to be used for Validation visits."
         },
         "payment": {
           "btn-text": "Export Report",
-          "confirm-message": "This will download a CSV-file with all People Affected included in this payment, to be shared with institutions requiring this data."
+          "confirm-message": "This will download an Excel-file with all People Affected included in this payment, to be shared with institutions requiring this data."
         },
         "unused-vouchers": {
           "btn-text": "Export list of unused vouchers",
-          "confirm-message": "This will download a CSV-file with all unused voucher(s).<br /><br />Note that this action can take a while to complete. Do not leave this page in the meantime."
+          "confirm-message": "This will download an Excel-file with all unused voucher(s).<br /><br />Note that this action can take a while to complete. Do not leave this page in the meantime."
         },
         "duplicate-phone-numbers": {
           "btn-text": "Export list of duplicate phone-numbers",
-          "confirm-message": "This will download a CSV-file with all PA that share any phone-number."
+          "confirm-message": "This will download an Excel-file with all PA that share any phone-number."
         }
       },
       "export-fsp-intructions": {

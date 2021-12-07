@@ -38,17 +38,18 @@ export class DialogueTurnComponent implements OnInit {
   @Input()
   isConnected = false;
 
+  @Input()
+  animate = environment.useAnimation;
+
   isSelf: boolean;
   isSystem: boolean;
-
-  animate = environment.useAnimation;
 
   constructor(@Optional() private instanceService: InstanceService) {}
 
   ngOnInit() {
+    this.moment = new Date();
     this.isSelf = this.actor === Actor.self;
     this.isSystem = this.actor === Actor.system;
-    this.moment = new Date();
     this.getInstanceInformation();
   }
 
