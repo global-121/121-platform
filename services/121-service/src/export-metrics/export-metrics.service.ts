@@ -92,7 +92,7 @@ export class ExportMetricsService {
 
     if (pastPaymentDetails.length === 0) {
       return {
-        fileName: `details-future-payment-${minPaymentId}.csv`,
+        fileName: `details-future-payment-${minPaymentId}`,
         data: (await this.getInclusionList(programId)).data,
       };
     }
@@ -101,16 +101,16 @@ export class ExportMetricsService {
       pastPaymentDetails,
     );
 
-    const csvFile = {
+    const fileInput = {
       fileName: `details-completed-payment-${
         minPaymentId === maxPaymentId
           ? minPaymentId
           : `${minPaymentId}-to-${maxPaymentId}`
-      }.csv`,
+      }`,
       data: pastPaymentDetails,
     };
 
-    return csvFile;
+    return fileInput;
   }
 
   private async filterAttributesToExport(pastPaymentDetails): Promise<any[]> {
@@ -138,7 +138,7 @@ export class ExportMetricsService {
     });
 
     const response = {
-      fileName: this.getExportFileName(ExportType.unusedVouchers),
+      fileName: ExportType.unusedVouchers,
       data: unusedVouchers,
     };
 
@@ -309,7 +309,7 @@ export class ExportMetricsService {
       registrationDetails.push(row);
     }
     const response = {
-      fileName: this.getExportFileName(ExportType.allPeopleAffected),
+      fileName: ExportType.allPeopleAffected,
       data: registrationDetails,
     };
 
@@ -339,7 +339,7 @@ export class ExportMetricsService {
     }
     const filteredColumnDetails = this.filterUnusedColumn(inclusionDetails);
     const response = {
-      fileName: this.getExportFileName('inclusion-list'),
+      fileName: 'inclusion-list',
       data: filteredColumnDetails,
     };
 
@@ -395,7 +395,7 @@ export class ExportMetricsService {
 
     const filteredColumnDetails = this.filterUnusedColumn(columnDetails);
     const response = {
-      fileName: this.getExportFileName(ExportType.selectedForValidation),
+      fileName: ExportType.selectedForValidation,
       data: filteredColumnDetails,
     };
 
@@ -452,7 +452,7 @@ export class ExportMetricsService {
     });
 
     return {
-      fileName: this.getExportFileName(ExportType.duplicatePhoneNumbers),
+      fileName: ExportType.duplicatePhoneNumbers,
       data: result,
     };
   }
@@ -511,10 +511,6 @@ export class ExportMetricsService {
       .getRawMany();
 
     return transactions;
-  }
-
-  private getExportFileName(base: string): string {
-    return `${base}_${new Date().toISOString().substr(0, 10)}.csv`;
   }
 
   public async getPaMetrics(

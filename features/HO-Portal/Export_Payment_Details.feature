@@ -13,7 +13,7 @@ Feature: Export payment details
     When the user selects the first "open" payment from the dropdown-list
     Then the "export list" button is enabled
     When the user clicks the "export list" button
-    Then a CSV-file is downloaded
+    Then an Excel-file is downloaded
     And it is equal to the "export inclusion list" (see: HO-Portal/Export_Inclusion_List.feature)
 
   Scenario: Export payment details after payment
@@ -22,7 +22,7 @@ Feature: Export payment details
     When the user selects an "closed" payment from the dropdown-list
     Then the "export list" button is enabled
     When the user clicks the "export list" button
-    Then a CSV-file is dowloaded
+    Then an Excel-file is dowloaded
     And it shows a list of the registrations that are "included"
     And "transaction" information where the "amount" is the multiplication of the PA's "paymentAmountMultiplier" and the supplied "transfer value"
     And the "payment-number"
