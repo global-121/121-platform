@@ -35,12 +35,12 @@ export class LoginPage {
       .catch(({ error }) => (this.errorStatusCode = error.statusCode));
   }
 
-  public onChange() {
+  public onBlur() {
     this.checkValidEmail();
   }
 
   private checkValidEmail() {
     this.validEmail =
-      this.email === '' || this.loginForm.form.get('email').status === 'VALID';
+      this.email === '' || this.loginForm.form.get('email').valid;
   }
 }

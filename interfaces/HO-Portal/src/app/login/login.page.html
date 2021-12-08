@@ -43,7 +43,7 @@
                   pattern="[a-zA-Z0-9.-_-]+@[a-z0-9.-]+\.[a-z0-9]+"
                   minlength="4"
                   class="ion-margin-vertical auth-field"
-                  (ionBlur)="onChange()"
+                  (ionBlur)="onBlur()"
                 ></ion-input>
               </div>
               <div class="validation-message"><ion-note *ngIf="!validEmail">{{ 'page.login.form.error-messages.invalid-email'|translate }}</ion-note></div>
@@ -64,7 +64,12 @@
                   class="ion-margin-vertical auth-field"
                 ></ion-input>
               </div>
-              <div class="validation-message"><ion-note *ngIf="errorStatusCode != 0">{{ 'page.login.form.error-messages.'+ errorStatusCode |translate }}</ion-note></div>
+              <div class="validation-message">
+                <ng-container [ngSwitch]="errorStatusCode">
+                  <ion-note *ngSwitchCase="401">{{ 'page.login.form.error-messages.401'|translate }}</ion-note>
+                  <ion-note *ngSwitchCase="500">{{ 'page.login.form.error-messages.500'|translate }}</ion-note>
+                </ng-container>
+              </div>
             </div>
 
             <div class="ion-margin-top ion-no-padding">
