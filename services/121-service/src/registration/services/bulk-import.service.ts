@@ -438,7 +438,7 @@ export class BulkImportService {
     this.actionService.saveAction(
       userId,
       programId,
-      AdditionalActionType.importPeopleAffected,
+      AdditionalActionType.importFspReconciliation,
     );
 
     return {

@@ -29,6 +29,7 @@ export enum AdditionalActionType {
   paymentStarted = 'payment-started',
   testMpesaPayment = 'test-mpesa-payment',
   exportFspInstructions = 'export-fsp-instructions',
+  importFspReconciliation = 'import-fsp-reconciliation',
 }
 export type ActionType = ExportType | AdditionalActionType;
 
