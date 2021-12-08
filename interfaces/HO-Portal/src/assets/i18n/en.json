@@ -38,6 +38,11 @@
         },
         "submit": {
           "label": "Log in"
+        },
+        "error-messages": {
+          "invalid-email": "Please enter a valid email address.",
+          "401": "You have entered an incorrect username or password ",
+          "500": "Internal server error"
         }
       }
     },
