@@ -17,14 +17,14 @@
     "en": ""
   },
   "descCashType": {
-    "en": "Unconditional multi-purpose"
+    "en": "Conditional livelihood"
   },
   "startDate": "2021-12-01T12:00:00Z",
-  "endDate": "2022-05-31T12:00:00Z",
+  "endDate": "2022-03-31T12:00:00Z",
   "currency": "ETB",
   "distributionFrequency": "month",
   "distributionDuration": 3,
-  "fixedTransferValue": 25,
+  "fixedTransferValue": 6250,
   "financialServiceProviders": [
     {
       "id": 1
@@ -32,7 +32,7 @@
   ],
   "inclusionCalculationType": "highestScoresX",
   "minimumScore": 0,
-  "highestScoresX": 50,
+  "highestScoresX": 55,
   "meetingDocuments": {
     "en": "Photo; National ID card",
     "am_ET": "ፎቶ; መታወቂያ ወረቀት"
