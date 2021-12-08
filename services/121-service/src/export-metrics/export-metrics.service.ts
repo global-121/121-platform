@@ -475,8 +475,7 @@ export class ExportMetricsService {
     minPaymentId: number,
     maxPaymentId: number,
   ): Promise<any> {
-    const latestSuccessTransactionPerPa = await this.transactionRepository
-
+    const latestTransactionPerPa = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('transaction.registrationId', 'registrationId')
       .addSelect('transaction.payment', 'payment')
@@ -486,26 +485,27 @@ export class ExportMetricsService {
         minPaymentId: minPaymentId,
         maxPaymentId: maxPaymentId,
       })
-      .andWhere('transaction.status = :status', { status: StatusEnum.success })
       .groupBy('transaction.registrationId')
       .addGroupBy('transaction.payment');
 
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
-        'transaction.amount as "amount"',
         'transaction.payment as "payment"',
         'registration.phoneNumber as "phoneNumber"',
+        'transaction.amount as "amount"',
+        'transaction.status as "status"',
+        'transaction."errorMessage" as "errorMessage"',
         'registration.customData as "customData"',
         'registration.namePartnerOrganization as "partnerOrganization"',
         'fsp.fsp AS financialServiceProvider',
       ])
       .innerJoin(
-        '(' + latestSuccessTransactionPerPa.getQuery() + ')',
+        '(' + latestTransactionPerPa.getQuery() + ')',
         'subquery',
         'transaction.registrationId = subquery."registrationId" AND transaction.payment = subquery.payment AND transaction.created = subquery."maxCreated"',
       )
-      .setParameters(latestSuccessTransactionPerPa.getParameters())
+      .setParameters(latestTransactionPerPa.getParameters())
       .leftJoin('transaction.registration', 'registration')
       .leftJoin('registration.fsp', 'fsp')
       .getRawMany();
