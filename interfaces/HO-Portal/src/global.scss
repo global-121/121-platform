@@ -65,15 +65,30 @@ ion-button {
     margin-top: 8px;
     margin-bottom: 8px;
 
-    &.has-value {
-      &.ion-invalid {
-        border-color: var(--ion-color-danger);
+    &:not(.auth-field) {
+      &.has-value {
+        &.ion-invalid {
+          border-color: var(--ion-color-danger);
+        }
+      }
+
+      &.has-focus {
+        &.ion-valid {
+          border-color: var(--ion-color-success);
+        }
       }
     }
 
-    &.has-focus {
-      &.ion-valid {
-        border-color: var(--ion-color-success);
+    &.auth-field {
+      &.ion-dirty {
+        &:not(.has-focus) {
+          &.ion-valid {
+            border-color: var(--ion-color-success);
+          }
+          &.ion-invalid {
+            border-color: var(--ion-color-danger);
+          }
+        }
       }
     }
 
