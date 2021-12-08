@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-var-requires */
+
+// examples
+// node services/121-service/seed-data/process-translation-files.js convert-to-locale --locale am_ET --in ~/510/121-import-csv/zoa/for_use_121-platform_fsp-belcash_am_ETH.json --out services/121-service/seed-data/fsp/fsp-belcash.json --merge
 const fs = require('fs');
 const _ = require('lodash');
 
