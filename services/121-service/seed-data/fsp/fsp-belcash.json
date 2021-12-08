@@ -10,7 +10,7 @@
       "name": "phoneNumber",
       "label": {
         "en": "Which phone number do you want to receive your mobile money transfer from HelloCash on? (With country-code. It should look like: <strong>+251 000 000 000</strong>)",
-        "am_ET": "ከሄሎካሽ የሞባይል ገንዘብ ማስተላለፍ በየትኛው ስልክ መቀበል ይፈልጋሉ? (ከሀገር-ኮድ ጋር፡ መምሰል ያለበት፡ <strong>+251 000 000 000</strong>)"
+        "am_ET": "ከሄሎካሽ የሞባይል ገንዘብ ለማስተላለፍ በየትኛው ስልክ መቀበል ይፈልጋሉ? (ከሀገር-ኮድ ጋር፡ መምሰል ያለበት፡ <strong>+251 000 000 000</strong>)"
       },
       "placeholder": {
         "en": "+251 000 000 000",

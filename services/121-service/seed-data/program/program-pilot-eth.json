@@ -35,7 +35,7 @@
   "highestScoresX": 55,
   "meetingDocuments": {
     "en": "Photo; National ID card",
-    "am_ET": "ፎቶ; መታወቂያ ወረቀት"
+    "am_ET": "ፎቶ; መታወቂያ "
   },
   "notifications": {
     "en": {
@@ -64,7 +64,7 @@
       "name": "age",
       "label": {
         "en": "How old are you? (if you are between 0 and 17 years old, then stop the registration process, it is a precondition to be an adult)",
-        "am_ET": "እድሜዎ ስንት ነው? (ዕድሜዎ ከ0 እስከ 17 ዓመት ከሆኑ፣ የምዝገባ ሂደቱን ያቁሙ፣ ክ 18 ዓምት በላይ መሆን ቅድመ ሁኔታ ነው)"
+        "am_ET": "እድሜዎ ስንት ነው? (ዕድሜዎ ከ0 እስከ 17 ዓመት ከሆኑ፣ የምዝገባ ሂደቱን ያቁሙ፣ ከ 18 ዓመት በላይ መሆን ቅድመ ሁኔታ ነው)"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -80,7 +80,7 @@
           "option": "18-30",
           "label": {
             "en": "18 - 30 years",
-            "am_ET": "18 - 30 ዓመታት"
+            "am_ET": "18 - 30 ዓመት"
           }
         },
         {
@@ -171,7 +171,7 @@
       "name": "hasHusband",
       "label": {
         "en": "Do you have a husband?",
-        "am_ET": "ባለ ትዳር ነዎት"
+        "am_ET": "ባለትዳር ኖት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -199,7 +199,7 @@
       "name": "whenReturnee",
       "label": {
         "en": "Did you return to Ethiopia from a country in the Middle East? (For example: Saudi Arabia, Kuwait, Qatar, Bahrain, Jordan, Yemen)<br><br>If so, how many years has it been since you got deported from abroad or came back to Ethiopia as a returnee?",
-        "am_ET": "ከመካከለኛው ምስራቅ ሀገር ወደ ኢትዮጵያ ተመለሽ ነዎት? (ለምሳሌ፡ ሳውዲ አረቢያ፡ ኩዌት፡ ኳታር፡ ባህሬን፡ ዮርዳኖስ፡ የመን)<br><br> ከሆነ፡ ከውጪ ከተባረሩ ወይም ወደ ኢትዮጵያ ከተመለሱ ስንት አመት ሆኖት?"
+        "am_ET": "ከመካከለኛው ምስራቅ ሀገር ወደ ኢትዮጵያ ተመላሽ ነዎት? (ለምሳሌ፡ ሳውዲ አረቢያ፡ ኩዌት፡ ኳታር፡ ባህሬን፡ ዮርዳኖስ፡ የመን)<br><br> ከሆነ፡ ከውጪ ከተባረሩ ወይም ወደ ኢትዮጵያ ከተመለሱ ስንት አመት ሆኖት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -415,7 +415,7 @@
       "name": "businessGoal",
       "label": {
         "en": "Do you have a serious and thought out goal and interest to expand or advance your small business in Ethiopia?",
-        "am_ET": "በኢትዮጵያ አነስተኛ ንግድዎን ለማስፋት ወይም ለማሳደግ አቅድ ,የታሰበ ግብ እና ፍላጎት አለዎት?"
+        "am_ET": "በኢትዮጵያ አነስተኛ ንግድዎን ለማስፋት ወይም ለማሳደግ እቅድ ,የታሰበ ግብ እና ፍላጎት አለዎት?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -588,7 +588,7 @@
           "option": "specificAlign",
           "label": {
             "en": "I am trained in a specific vocational or specialised courses that aligns with my business areas",
-            "am_ET": "ከንግድ አካባቢዎቼ ጋር በሚጣጣሙ ልዩ የሙያ ወይም ልዩ ኮርሶች ሰልጥኛለሁ።"
+            "am_ET": "ከንግድ አካባቢዎቼ ጋር የሚጣጣሙ ልዩ የሙያ ወይም ልዩ ኮርሶች ሰልጥኛለሁ።"
           }
         },
         {
