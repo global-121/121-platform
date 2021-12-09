@@ -39,7 +39,8 @@
         "submit": {
           "label": "Log in"
         }
-      }
+      },
+      "toast-message": "This dashboard is not compatible with Internet Explorer 11"
     },
     "home": {
       "pageTitle": "Home"

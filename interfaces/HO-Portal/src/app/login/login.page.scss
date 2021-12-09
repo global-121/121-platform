@@ -33,3 +33,13 @@
   font-size: 1.2em;
   color: var(--ion-color-medium);
 }
+
+.login-notification {
+  --max-width: 100%;
+  --width: 100%;
+  --box-shadow: none;
+  --border-radius: none;
+  --start: 0;
+  --end: 0;
+  --ion-safe-area-top: -8px; // override .toast-wrapper.toast-top inline style top rule
+}
