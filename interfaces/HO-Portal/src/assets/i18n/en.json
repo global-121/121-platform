@@ -486,5 +486,8 @@
   "password-toggle": {
     "show": "Show password",
     "hide": "Hide password"
+  },
+  "system-notifications": {
+    "compatible-browsers": "This dashboard works best in Chrome, Firefox, Safari and Microsoft Edge. This dashboard is not compatible with Internet Explorer 11"
   }
 }
