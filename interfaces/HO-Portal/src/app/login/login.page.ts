@@ -1,13 +1,11 @@
-import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ToastController } from '@ionic/angular';
 import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
-  encapsulation: ViewEncapsulation.None,
 })
 export class LoginPage {
   @ViewChild('loginForm', { static: true })
@@ -16,10 +14,7 @@ export class LoginPage {
   public email: any;
   public password: any;
 
-  constructor(
-    private authService: AuthService,
-    public toastController: ToastController,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   public async doLogin() {
     console.log('doLogin()');
