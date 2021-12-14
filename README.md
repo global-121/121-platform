@@ -11,10 +11,10 @@
 
 ## Status
 
-| Interfaces | Build Status                                                                                                                                                                                                               |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PA-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master) |
-| AW-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master) |
+| Interfaces | Build Status                                                                                                                                                                                                                  |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PA-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master)    |
+| AW-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master)    |
 | HO-Portal  | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/HO-Portal?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=13&branchName=master) |
 
 | Service     | Build Status                                                                                                                                                                                                                  |
@@ -141,32 +141,36 @@ All individual Angular applications, when started will be available via:
 
 ## Local development
 
-### Process for implementing datamodel changes
+### Process for implementing data-model changes
 
-When making changes to the datamodel of the `121-service` (creating/editing any *.entity.ts files), you need to create a migration script to take these changes into affect.
+When making changes to the data-model of the `121-service` (creating/editing any `\*.entity.ts` files), you need to create a migration script to take these changes into affect.
 
 The process is:
-1. Make the changes in the *.entity.ts file
-2. Generate a migration-script with `docker-compose exec 121-service npm run migration:generate <descriptive-name-for-migration-script>`. This will compare the datamodel according to your code with the datamodel according to your database, and generate any CREATE, ALTER, etc SQL-statements that are needed to make the database align with code again.
-3. Restart the 121-service through `docker restart 121-service`: this will always run any new migration-scripts (and thus update the datamodel in the database), so in this case the just generated migration-script. 
+
+1. Make the changes in the `\*.entity.ts` file
+2. Generate a migration-script with `docker-compose exec 121-service npm run migration:generate <descriptive-name-for-migration-script>`. This will compare the data-model according to your code with the data-model according to your database, and generate any CREATE, ALTER, etc SQL-statements that are needed to make the database align with code again.
+3. Restart the 121-service through `docker restart 121-service`: this will always run any new migration-scripts (and thus update the data-model in the database), so in this case the just generated migration-script.
 4. If more changes required, then follow the above process as often as needed.
 5. If ever running into issues with migrations locally, the reset process is:
-  - Delete all tables in the `121-service` database schema
-  - Restart `121-service` container
-  - This will now run all migration-scripts, which starts with the `InitialMigration`-script, which creates all tables
-  - (Run seed)
+
+- Delete all tables in the `121-service` database schema
+- Restart `121-service` container
+- This will now run all migration-scripts, which starts with the `InitialMigration`-script, which creates all tables
+- (Run seed)
+
 6. See also [TypeORM migration documentation](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) for more info
 
-NOTE: if you're making many datamodel changes at once, or are doing a lot of trial and error, there is an alternative option:
-1. In services/121-service/ormconfig.js set `synchronize` to `true` and restart `121-service`.
-2. This will make sure that any changes you make to *.entity.ts files are automatically updated in your database tables, which allows for quicker development/testing.
+NOTE: if you're making many data-model changes at once, or are doing a lot of trial and error, there is an alternative option:
+
+1. In `services/121-service/ormconfig.js` set `synchronize` to `true` and restart `121-service`.
+2. This will make sure that any changes you make to `\*.entity.ts` files are automatically updated in your database tables, which allows for quicker development/testing.
 3. When you're done with all your changes, you will need to revert all changes temporarily to be able to create a migration script. There are multiple ways to do this, for example by stashing all your changes, or working with a new branch, etc. Either way:
-    - stashing all your changes (git stash)
-    - restart 121-service and wait until the datamodel changes are actually reverted again
-    - set `synchronize` back to `false` and restart 121-service
-    - load your stashed changes again (git stash pop)
-    - generate migration-script (see above)
-    - restart 121-service (like above, to run the new migration-script)
+   - stashing all your changes (git stash)
+   - restart 121-service and wait until the data-model changes are actually reverted again
+   - set `synchronize` back to `false` and restart 121-service
+   - load your stashed changes again (git stash pop)
+   - generate migration-script (see above)
+   - restart 121-service (like above, to run the new migration-script)
 
 ### Recommended code-editor/IDE tools/extensions
 
@@ -295,7 +299,7 @@ Keep the following points in mind while writing test cases:
 - There are several methods which serve the purpose of defining class wide variables, which we should also test and verify. One of the typical examples of one such method is `ngOnInit`
 
 ```ts
-it("ngOnInit: should set up variables", () => {
+it('ngOnInit: should set up variables', () => {
   expect(component.isLoggedIn).toBeDefined(); // check for class variables to be defined
   expect(component.someValye).toBeTruthy(); // check for a variable to be TRUE
   expect(component.someValye).toBeFalsy(); // check for a variable to be FALSE
@@ -339,8 +343,8 @@ it("Test when xyz !== 'some-value'", () => {});
 - Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
 
 ```ts
-let spy = spyOn(component.programsService, "changePassword").and.returnValue(
-  Promise.resolve(true)
+let spy = spyOn(component.programsService, 'changePassword').and.returnValue(
+  Promise.resolve(true),
 );
 ```
 
@@ -356,7 +360,7 @@ spy.calls.mostRecent().returnValue.then(() => {
 - Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
 
 ```ts
-it("XYZ", (done) => {
+it('XYZ', (done) => {
   // spies and stubs
 
   spy.calls.mostRecent().returnValue.then(() => {
