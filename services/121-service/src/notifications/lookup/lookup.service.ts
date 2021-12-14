@@ -10,11 +10,10 @@ export class LookupService {
   ): Promise<{ result: boolean | undefined }> {
     let numberCorrect: boolean;
     try {
-      // Add additional sanitizing (incl NL-specific) because user is given no opportunity to correct here
-      const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);
+      const sanitizedNumber = this.sanitizePhoneNrExtra(phoneNumber);
 
       await twilioClient.lookups
-        .phoneNumbers(updatedPhone)
+        .phoneNumbers(sanitizedNumber)
         .fetch({ type: ['carrier'] });
       numberCorrect = true;
     } catch (e) {
