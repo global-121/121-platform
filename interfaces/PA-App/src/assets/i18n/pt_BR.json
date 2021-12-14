@@ -73,9 +73,9 @@
       "documents": "Certifique-se de ter estes documentos prontos:",
       "info-message": "Para ativar sua conta <br><br> Ao criar sua conta, você receberá uma impressão de sua identificação digital que se parece com isso.<br>  Você precisa levar isto e os seguintes documentos físicos para uma reunião com um assistente/voluntário para ativar sua conta.<br><ul><li> Sua carteira de identidade </ul><br>E se eu não tiver um cartão? Você tem 2 opções:<ol><li>Traga uma carta do/da chefe que confirme a identidade dele/dela</li><li>Traga seu número de CPF, da Receita Federal. Você terá que pagar por um novo, o preço será X.</li></ol>",
       "more-info-documents": "Sobre estes documentos ",
-      "no-validation-conclusion": "Obrigado. Agora, seu registro está completo. <br><br> Em breve, você receberá um SMS no número de telefone fornecido que confirma seu registro. <br><br> Você será informado se sua solicitação tiver sido bem sucedida no prazo de 14 dias.  <br><br> Esta é a mensagem final, por enquanto.",
+      "no-validation-conclusion": "Obrigado. Agora, seu registro está completo. <br><br> Em breve, você receberá um SMS/Whatsapp no número de telefone fornecido que confirma seu registro. <br><br> Você será informado se sua solicitação tiver sido bem sucedida no prazo de 14 dias.  <br><br> Esta é a mensagem final, por enquanto.",
       "qr-code": "Por favor, mostre este código QR ao trabalhador humanitário quando pedido.",
-      "validation-conclusion": "Obrigado. Agora seu registro está completo. Em breve, você receberá um SMS no número de telefone fornecido que confirma seu cadastro. <br><br>Um trabalhador da ONG organizará uma reunião com você para validar suas informações, provavelmente visitando sua casa."
+      "validation-conclusion": "Obrigado. Agora seu registro está completo. Em breve, você receberá um SMS/Whatsapp no número de telefone fornecido que confirma seu cadastro. <br><br>Um trabalhador da ONG organizará uma reunião com você para validar suas informações, provavelmente visitando sua casa."
     },
     "select-fsp": {
       "attributes": {
@@ -99,7 +99,7 @@
       "conclusion-submitted": "Obrigado. Agora você receberá notificações neste número de telefone: {{phone}}",
       "input-label": "Seu número de telefone com o código do país. Deverá se parecer com esse exemplo: {{phoneNumberExample}} ",
       "introduction1": "É opcional digitar seu número de telefone.",
-      "introduction2": "Usamos isto para enviar-lhe notificações de SMS se você estiver incluído e quando você puder receber ajuda.",
+      "introduction2": "Usamos isto para enviar-lhe notificações de SMS/Whatsapp se você estiver incluído e quando você puder receber ajuda.",
       "introduction3": "Se você não quiser digitar seu número de telefone, você terá que fazer login neste app para saber de atualizações.",
       "introduction4": "Ao final do programa, apagaremos seu número.",
       "skip": "Pular",

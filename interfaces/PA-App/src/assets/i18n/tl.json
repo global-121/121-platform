@@ -71,9 +71,9 @@
       "documents": "Siguraduhing  nakahanda ang mga sumusunod na dokumento:",
       "info-message": "Upang ma-activate ang iyong account  <br><br>Kapag nakagawa ka ng iyong account makakatanggap ka ng print out ng iyong digital ID na ganito ang itsura.<br>Kailangan mo itong dalhin at ang mga sumusunod na physical na dokumento sa baba upang mapagana ang iyong account.<br><ul><li> Ang iyong National Identity Catd</li></ul><br> Paano kung wala akong card? Kung gayon ay may 2 kang pagpipilian: <ol><li> Magdala ng sulat galing sa hepe na nagpapatunay ng pagkakakilanlan </li><li> Magdala ng X number (kailangan ang pangalan ng numero gaya ng BSN number) galing sa National Bureau of Registration. Maaaring bayaran ito sa halagang X.</li></ol>",
       "more-info-documents": "Tungkol sa mga dokumentong ito",
-      "no-validation-conclusion": "Salamat. Ang iyong registration ay kumpleto na.<br><br> Dapat ay may matanggap kang SMS sa phone number na iyong binigay maya-maya lamang na nagpapatunay ng iyong registration.<br><br>Ipagbibigay alam sayo kung ang iyong aplikasyon ay matagumpay sa loob ng 14 na araw. <br><br>Ito na ang huling mensahe sa ngayon.",
+      "no-validation-conclusion": "Salamat. Ang iyong registration ay kumpleto na.<br><br> Dapat ay may matanggap kang SMS/Whatsapp sa phone number na iyong binigay maya-maya lamang na nagpapatunay ng iyong registration.<br><br>Ipagbibigay alam sayo kung ang iyong aplikasyon ay matagumpay sa loob ng 14 na araw. <br><br>Ito na ang huling mensahe sa ngayon.",
       "qr-code": "Ipakita ang QR-code sa aidworker pag hinanap.",
-      "validation-conclusion": "Salamat. Ang iyong rehistrasyon ay tapos na. Dapat ay may matanggap kang SMS sa numerong iyong binigay maya-maya lamang na nagpapatunay ng iyong rehistrasyon.<br><br>Magtatalaga ng pagkikita ang aidworker ng NGO upang patunayan ang iyong impormasyon, maaaring sa pamamagitan ng pagbisita sa iyong tahanan."
+      "validation-conclusion": "Salamat. Ang iyong rehistrasyon ay tapos na. Dapat ay may matanggap kang SMS/Whatsapp sa numerong iyong binigay maya-maya lamang na nagpapatunay ng iyong rehistrasyon.<br><br>Magtatalaga ng pagkikita ang aidworker ng NGO upang patunayan ang iyong impormasyon, maaaring sa pamamagitan ng pagbisita sa iyong tahanan."
     },
     "select-fsp": {
       "attributes": {

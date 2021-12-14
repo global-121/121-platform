@@ -71,9 +71,9 @@
     },
     "registration-summary": {
       "documents": "Make sure to have these documents ready:",
-      "no-validation-conclusion": "Thank you. Your registration is now complete.   <br><br>   You should receive an SMS on the provided phone number shortly that confirms your registration.   <br><br>   You will be informed if your application has been successful within 14 days.   <br><br>   This is the final message for now.",
+      "no-validation-conclusion": "Thank you. Your registration is now complete.   <br><br>   You should receive an SMS/Whatsapp on the provided phone number shortly that confirms your registration.   <br><br>   You will be informed if your application has been successful within 14 days.   <br><br>   This is the final message for now.",
       "qr-code": "Please show this QR-code to the aidworker when asked.",
-      "validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS on the phone number you provided. This SMS confirms your registration.<br><br>In the following weeks, an Aid Worker from the organisation might reach out to you to organise a meeting to validate the information you provided. The Aid Worker will come to you for this meeting."
+      "validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS/Whatsapp on the phone number you provided. This SMS/Whatsapp confirms your registration.<br><br>In the following weeks, an Aid Worker from the organisation might reach out to you to organise a meeting to validate the information you provided. The Aid Worker will come to you for this meeting."
     },
     "select-fsp": {
       "attributes": {
