@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - 2021-12-28: "Automatic hotfix deployment" is now an opt-in behavior by setting the ENV-variable `DEPLOY_PATCH=1`. See [tools/README](./tools/README.md#webhook-script).
 
+### Added
+
+- 2021-12-14: Added whatsappGenericMesage to the NL program in notifications.
+
 ---
 
 ## [1.30.4](https://github.com/global-121/121-platform/compare/v1.30.3...v1.30.4) - 2021-12-22
