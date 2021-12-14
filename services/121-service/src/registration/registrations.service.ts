@@ -1,3 +1,4 @@
+import { WhatsappService } from './../notifications/whatsapp/whatsapp.service';
 import { TwilioMessageEntity } from './../notifications/twilio.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { SmsService } from './../notifications/sms/sms.service';
@@ -59,9 +60,12 @@ export class RegistrationsService {
   @InjectRepository(FspAttributeEntity)
   private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
 
+  private readonly fallbackLanguage = 'en';
+
   public constructor(
     private readonly lookupService: LookupService,
     private readonly smsService: SmsService,
+    private readonly whatsappService: WhatsappService,
     private readonly inclusionScoreService: InlusionScoreService,
     private readonly bulkImportService: BulkImportService,
   ) {}
@@ -395,10 +399,8 @@ export class RegistrationsService {
       RegistrationStatusEnum.registered,
     );
     this.inclusionScoreService.calculateInclusionScore(referenceId);
-    this.smsService.notifyBySms(
-      registration.id,
-      registration.phoneNumber,
-      registration.preferredLanguage,
+    this.sendTextMessage(
+      registration,
       registration.program.id,
       null,
       RegistrationStatusEnum.registered,
@@ -733,7 +735,7 @@ export class RegistrationsService {
       );
 
       if (message) {
-        this.sendSmsMessage(registration, programId, message);
+        this.sendTextMessage(registration, programId, message);
       }
     }
   }
@@ -760,24 +762,77 @@ export class RegistrationsService {
       );
 
       if (message) {
-        this.sendSmsMessage(registration, programId, message);
+        this.sendTextMessage(registration, programId, message);
       }
     }
   }
 
-  private async sendSmsMessage(
+  private async sendTextMessage(
     registration: RegistrationEntity,
     programId: number,
     message?: string,
+    key?: string,
   ): Promise<void> {
-    this.smsService.notifyBySms(
-      registration.id,
-      registration.phoneNumber,
-      registration.preferredLanguage,
-      programId,
-      message,
-      null,
-    );
+    if (!message && !key) {
+      throw new HttpException(
+        'A message or a key should be supplied.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    let whatsappNumber;
+    if (registration.customData) {
+      whatsappNumber =
+        registration.customData[CustomDataAttributes.whatsappPhoneNumber];
+    }
+    if (registration.phoneNumber && !whatsappNumber) {
+      throw new HttpException(
+        'A recipientPhoneNr should be supplied.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const messageText = message
+      ? message
+      : await this.getNotificationText(
+          registration.preferredLanguage,
+          key,
+          programId,
+        );
+
+    if (whatsappNumber) {
+      this.whatsappService.queueMessageSendTemplate(
+        messageText,
+        whatsappNumber,
+        null,
+        null,
+        registration.id,
+        registration.preferredLanguage,
+      );
+    } else if (registration.phoneNumber) {
+      this.smsService.sendSms(
+        messageText,
+        registration.phoneNumber,
+        registration.id,
+      );
+    }
+  }
+
+  public async getNotificationText(
+    language: string,
+    key: string,
+    programId: number,
+  ): Promise<string> {
+    const program = await getRepository(ProgramEntity).findOne(programId);
+    const fallbackNotifications = program.notifications[this.fallbackLanguage];
+    let notifications = fallbackNotifications;
+
+    if (program.notifications[language]) {
+      notifications = program.notifications[language];
+    }
+    if (notifications[key]) {
+      return notifications[key];
+    }
+    return fallbackNotifications[key] ? fallbackNotifications[key] : '';
   }
 
   public async searchRegistration(
@@ -1124,14 +1179,15 @@ export class RegistrationsService {
     return inclusionStatus;
   }
 
-  public async sendCustomSms(
+  public async sendCustomTextMessage(
     referenceIds: string[],
     message: string,
   ): Promise<void> {
-    const validRegistrations = [];
+    const validRegistrations: RegistrationEntity[] = [];
     for (const referenceId of referenceIds) {
       const registration = await this.getRegistrationFromReferenceId(
         referenceId,
+        ['program'],
       );
       if (!registration.phoneNumber) {
         const errors = `Registration with referenceId: ${registration.referenceId} has no phonenumber.`;
@@ -1140,10 +1196,10 @@ export class RegistrationsService {
       validRegistrations.push(registration);
     }
     for (const validRegistration of validRegistrations) {
-      this.smsService.sendSms(
+      this.sendTextMessage(
+        validRegistration,
+        validRegistration.program.id,
         message,
-        validRegistration.phoneNumber,
-        validRegistration.id,
       );
     }
   }

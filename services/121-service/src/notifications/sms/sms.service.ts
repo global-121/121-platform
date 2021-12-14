@@ -14,27 +14,6 @@ export class SmsService {
 
   public constructor() {}
 
-  public async notifyBySms(
-    registrationId: number,
-    recipientPhoneNr: string,
-    language: string,
-    programId: number,
-    message?: string,
-    key?: string,
-  ): Promise<void> {
-    if (recipientPhoneNr) {
-      if (!message && !key) {
-        throw new HttpException(
-          'A message or a key should be supplied.',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      const smsText =
-        message || (await this.getSmsText(language, key, programId));
-      this.sendSms(smsText, recipientPhoneNr, registrationId);
-    }
-  }
-
   public async sendSms(
     message: string,
     recipientPhoneNr: string,
@@ -50,15 +29,6 @@ export class SmsService {
       })
       .then(message => this.storeSendSms(message, registrationId))
       .catch(err => console.log('Error from Twilio:', err));
-  }
-
-  public async getSmsText(
-    language: string,
-    key: string,
-    programId: number,
-  ): Promise<string> {
-    const program = await getRepository(ProgramEntity).findOne(programId);
-    return program.notifications[language][key];
   }
 
   public storeSendSms(message, registrationId: number): void {
