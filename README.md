@@ -54,36 +54,27 @@ To set up a local development-environment:
 
 With these tools in place you can checkout the code and start setting up:
 
-```
-git clone https://github.com/global-121/121-platform.git
-```
+    git clone https://github.com/global-121/121-platform.git
 
 Navigate to the root folder of this repository:
 
-```
-cd 121-platform
-```
+    cd 121-platform
 
 Then install the required version of Node.js and `npm`:
 
-- If you installed NVM
+- If you use NVM
 
-  - On macOs/Linux
+  - On macOS/Linux:
 
-    ```
-    nvm install && nvm install-latest-npm
-    ```
+        nvm install && npm install --global npm@7
 
-  - On Windows
+  - On Windows:
 
-    ```
-    nvm install <version in .node-version> && nvm install-latest-npm
-    ```
+         nvm install <version in .node-version> && npm install --global npm@7
 
-- If you installed FNM
-  ```
-  fnm install && fnm install-latest-npm
-  ```
+- If you use FNM:
+
+         fnm use && npm install --global npm@7
 
 ---
 
