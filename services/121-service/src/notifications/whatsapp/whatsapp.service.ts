@@ -1,4 +1,3 @@
-import { InstanceEntity } from './../../instance/instance.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import {
   Injectable,
@@ -25,7 +24,6 @@ import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { IntersolvePayoutStatus } from '../../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
 import { IntersolveService } from '../../payments/fsp-integration/intersolve/intersolve.service';
-import whatsappGenericMessage from './whatsapp-generic-message.json';
 
 @Injectable()
 export class WhatsappService {
@@ -41,8 +39,8 @@ export class WhatsappService {
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
   public pendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
-  @InjectRepository(InstanceEntity)
-  public instanceRepository: Repository<InstanceEntity>;
+  @InjectRepository(ProgramEntity)
+  public programRepository: Repository<ProgramEntity>;
 
   private readonly programId = 1;
   private readonly fallbackLanguage = 'en';
@@ -103,18 +101,40 @@ export class WhatsappService {
     const language = preferedLanguage
       ? preferedLanguage
       : this.fallbackLanguage;
-    const instance = await this.instanceRepository.findOne();
-    const senderDisplay = instance.displayName[preferedLanguage];
-    const genericReplyMessage = whatsappGenericMessage[language]
-      .split('{{1}}')
-      .join(senderDisplay);
+    const registration = await this.registrationRepository.findOne(
+      registrationId,
+      {
+        relations: ['program'],
+      },
+    );
+    const whatsappGenericMesage = this.getGenericNotificationText(
+      language,
+      registration.program,
+    );
     this.sendWhatsapp(
-      genericReplyMessage,
+      whatsappGenericMesage,
       recipientPhoneNr,
       messageType,
       mediaUrl,
       registrationId,
     );
+  }
+
+  public getGenericNotificationText(
+    language: string,
+    program: ProgramEntity,
+  ): string {
+    const key = 'whatsappGenericMesage';
+    const fallbackNotifications = program.notifications[this.fallbackLanguage];
+    let notifications = fallbackNotifications;
+
+    if (program.notifications[language]) {
+      notifications = program.notifications[language];
+    }
+    if (notifications[key]) {
+      return notifications[key];
+    }
+    return fallbackNotifications[key] ? fallbackNotifications[key] : '';
   }
 
   public storeSendWhatsapp(

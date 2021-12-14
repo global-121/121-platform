@@ -1,9 +1,0 @@
-{
-  "ar": "{{1}}",
-  "es": "{{1}}",
-  "en": "This is a message from {{1}}.\n\nThere is a message waiting for you. Please reply “yes” to this message to receive it.",
-  "nl": "Dit is een bericht van {{1}}.\n\nEr staat een bericht klaar voor je. Antwoord met “ja” op dit bericht om het te ontvangen.",
-  "pt_BR": "{{1}}",
-  "tl": "{{1}}",
-  "in": "{{1}}"
-}

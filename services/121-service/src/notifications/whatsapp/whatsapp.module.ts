@@ -30,7 +30,6 @@ import { IntersolveModule } from '../../payments/fsp-integration/intersolve/inte
       RegistrationEntity,
       TransactionEntity,
       WhatsappPendingMessageEntity,
-      InstanceEntity,
     ]),
     ImageCodeModule,
     forwardRef(() => IntersolveModule),
