@@ -1,3 +1,5 @@
+import { InstanceEntity } from './../../instance/instance.entity';
+import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { RegistrationEntity } from './../../registration/registration.entity';
 import { ProgramEntity } from './../../programs/program.entity';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
@@ -27,6 +29,8 @@ import { IntersolveModule } from '../../payments/fsp-integration/intersolve/inte
       ProgramEntity,
       RegistrationEntity,
       TransactionEntity,
+      WhatsappPendingMessageEntity,
+      InstanceEntity,
     ]),
     ImageCodeModule,
     forwardRef(() => IntersolveModule),
