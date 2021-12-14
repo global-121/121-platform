@@ -483,6 +483,6 @@
     "hide": "Hide password"
   },
   "system-notifications": {
-    "compatible-browsers": "This dashboard works best in Chrome, Firefox, Safari and Microsoft Edge. This dashboard is not compatible with Internet Explorer 11"
+    "compatible-browsers": "The 121 Portal works best in Chrome, Firefox, Safari and Microsoft Edge. The 121 Portal does not work in Internet Explorer."
   }
 }
