@@ -785,7 +785,7 @@ export class RegistrationsService {
       whatsappNumber =
         registration.customData[CustomDataAttributes.whatsappPhoneNumber];
     }
-    if (registration.phoneNumber && !whatsappNumber) {
+    if (!registration.phoneNumber && !whatsappNumber) {
       throw new HttpException(
         'A recipientPhoneNr should be supplied.',
         HttpStatus.BAD_REQUEST,
