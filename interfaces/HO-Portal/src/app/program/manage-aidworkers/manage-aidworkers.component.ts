@@ -86,6 +86,14 @@ export class ManageAidworkersComponent implements OnInit {
     this.isLoading = false;
   }
 
+  public disableDelete(row) {
+    // Disable delete if user has also other roles beside 'field-validation'
+    return (
+      row.roles.filter((role) => role.role !== UserRole.FieldValidation)
+        .length > 0
+    );
+  }
+
   public async deleteAidworker(row) {
     await this.programsService.deleteUser(row.user.id);
     this.loadData();
