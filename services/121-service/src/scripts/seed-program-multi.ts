@@ -92,6 +92,8 @@ export class SeedMultiProgram implements InterfaceScript {
         program.id,
         [UserRole.FieldValidation],
       );
+
+      await this.seedHelper.assignAdminUserToProgram(program.id);
     }
 
     // ***** CREATE INSTANCE *****

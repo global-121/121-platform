@@ -65,6 +65,8 @@ export class SeedPilotNL2Program implements InterfaceScript {
       UserRole.View,
     ]);
 
+    await this.seedHelper.assignAdminUserToProgram(program.id);
+
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instancePilotNL2);
   }

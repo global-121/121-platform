@@ -72,6 +72,8 @@ export class SeedProgramEth implements InterfaceScript {
       UserRole.FieldValidation,
     ]);
 
+    await this.seedHelper.assignAdminUserToProgram(program.id);
+
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instancePilotEth);
   }
