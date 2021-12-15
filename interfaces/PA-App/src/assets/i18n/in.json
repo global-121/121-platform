@@ -74,9 +74,9 @@
       "documents": "Harap siap dengan dokumen-dokumen ini:",
       "info-message": "Untuk mengaktifkan akun anda <br><br>Apabila anda telah membuat akun anda, anda akan menerima sebuah print out dari ID digital anda yang tampaknya seperti ini <br>Anda akan perlu membawa ini dan dokumen-dokumen dibawah secara fisik ke sebuah pertemuan dengan petugas Bantuan  untuk mengaktifkan akun anda <br><ul><li>Kartu Identitas Nasional anda </li></ul><br>Bagaimana kalau saya tidak memiliki kartu itu? Berarti anda memiliki 2 pilihan <ol><li>Bawa surat dari ketua, yang mengkonfirmasi identitas anda </li><li>Bawa nomor X  (butuh nama dari nomor ini yang serupa dengan nomor BSN) dari Biro Registrasi Nasional. Anda harus membayar untuk yang baru yang harganya adalah X </li></ol>",
       "more-info-documents": "Tentang dokumen-dokumen ini",
-      "no-validation-conclusion": "Terima kasih. Registrasi anda sekarang sudah lengkap. <br><br>Anda akan menerima SMS/Whatsapp di nomor HP yang telah anda berikan yang mengkonfirmasikan registrasi anda. <br><br>Anda akan diberitahukan seandainya aplikasi anda telah berhasil, dalam waktu 14 hari. <br><br> Ini adalah berita terakhir.",
+      "no-validation-conclusion": "Terima kasih. Registrasi anda sekarang sudah lengkap. <br><br>Anda akan menerima SMS/WhatsApp di nomor HP yang telah anda berikan yang mengkonfirmasikan registrasi anda. <br><br>Anda akan diberitahukan seandainya aplikasi anda telah berhasil, dalam waktu 14 hari. <br><br> Ini adalah berita terakhir.",
       "qr-code": "Harap tunjukkan QR-code ini ke petugas Bantuan, bila diminta",
-      "validation-conclusion": "Terima kasih. Registrasi anda telah lengkap. Anda akan menerima SMS/Whatsapp di nomor telpon yang anda berikan secepatnya, yang akan mengkonfirmasi registrasi anda. <br><br>\nSeorang petugas Bantuan dari NGO ini akan mengoranisir pertemuan dengan anda untuk memvalidasi informasi anda, mungkin dengan mampir ke alamat anda."
+      "validation-conclusion": "Terima kasih. Registrasi anda telah lengkap. Anda akan menerima SMS/WhatsApp di nomor telpon yang anda berikan secepatnya, yang akan mengkonfirmasi registrasi anda. <br><br>\nSeorang petugas Bantuan dari NGO ini akan mengoranisir pertemuan dengan anda untuk memvalidasi informasi anda, mungkin dengan mampir ke alamat anda."
     },
     "select-fsp": {
       "attributes": {
