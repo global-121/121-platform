@@ -54,4 +54,21 @@ describe('PubSubService', () => {
 
     expect(subscriber).toHaveBeenCalledTimes(0);
   });
+
+  it('should NOT call the subscribed function, after getting unsubscribed from the event', () => {
+    const service: PubSubService = TestBed.inject(PubSubService);
+
+    const subscriber = jasmine.createSpy();
+    const subscription = service.subscribe(
+      PubSubEvent.dataRegistrationChanged,
+      subscriber,
+    );
+    service.publish(PubSubEvent.dataRegistrationChanged);
+
+    subscription.unsubscribe();
+
+    service.publish(PubSubEvent.dataRegistrationChanged);
+
+    expect(subscriber).toHaveBeenCalledTimes(1);
+  });
 });
