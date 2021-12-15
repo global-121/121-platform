@@ -28,6 +28,7 @@ import { Roles } from '../roles.decorator';
 import { UserRole } from '../user-role.enum';
 import { UserType } from './user-type-enum';
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
+import { UserRoleEntity } from './user-role.entity';
 
 @UseGuards(RolesGuard)
 @ApiUseTags('user')
@@ -144,7 +145,7 @@ export class UserController {
   @Post('user/assign-to-program')
   public async assignFieldValidationAidworkerToProgram(
     @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<void> {
+  ): Promise<UserRoleEntity[]> {
     return await this.userService.assigAidworkerToProgram(
       assignAidworkerToProgram,
     );

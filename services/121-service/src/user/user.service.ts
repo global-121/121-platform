@@ -115,9 +115,16 @@ export class UserService {
 
   public async assigAidworkerToProgram(
     assignAidworkerToProgram: AssignAidworkerToProgramDto,
-  ): Promise<void> {
+  ): Promise<UserRoleEntity[]> {
     const user = await this.userRepository.findOne(
       assignAidworkerToProgram.userId,
+      {
+        relations: [
+          'programAssignments',
+          'programAssignments.program',
+          'programAssignments.roles',
+        ],
+      },
     );
     if (!user) {
       const errors = { User: ' not found' };
@@ -130,18 +137,45 @@ export class UserService {
       const errors = { Program: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    if (!user.programAssignments) {
-      console.log('No program assigned');
+
+    const newRoles = await this.userRoleRepository.find({
+      where: {
+        role: In(assignAidworkerToProgram.roles),
+      },
+    });
+
+    // if already assigned add roles to program assignment
+    for (const programAssignement of user.programAssignments) {
+      if (
+        programAssignement.program.id === assignAidworkerToProgram.programId
+      ) {
+        const mergedRoles = this.mergeRoles(programAssignement.roles, newRoles);
+        programAssignement.roles = mergedRoles;
+        await this.assignmentRepository.save(programAssignement);
+        return programAssignement.roles;
+      }
     }
+
+    // if not assigned to program create new asignment
     await this.assignmentRepository.save({
       user: { id: user.id },
       program: { id: program.id },
-      roles: await this.userRoleRepository.find({
-        where: {
-          role: In(assignAidworkerToProgram.roles),
-        },
-      }),
+      roles: newRoles,
     });
+    return newRoles;
+  }
+
+  private mergeRoles(
+    userRoleList1: UserRoleEntity[],
+    userRoleList2: UserRoleEntity[],
+  ): UserRoleEntity[] {
+    const rolesList1 = userRoleList1.map(ur => ur.role);
+    for (const userRole of userRoleList2) {
+      if (!rolesList1.includes(userRole.role)) {
+        userRoleList1.push(userRole);
+      }
+    }
+    return userRoleList1;
   }
 
   public async delete(userId: number): Promise<UserEntity> {
