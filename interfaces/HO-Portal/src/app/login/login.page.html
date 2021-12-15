@@ -1,12 +1,4 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>
-      <h1 class="ion-no-margin">
-        {{ 'page.login.pageTitle'|translate }}
-      </h1>
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-system-notification [message]="'system-notifications.compatible-browsers'|translate" color="tertiary"></app-system-notification>
 <ion-content>
   <ion-grid class="full-height">
     <ion-row class="ion-justify-content-center ion-align-items-center full-height">
@@ -40,9 +32,13 @@
                   name="email"
                   [(ngModel)]="email"
                   ngDefaultControl
-                  class="ion-margin-vertical"
+                  pattern="[a-zA-Z0-9.-_-]+@[a-z0-9.-]+\.[a-z0-9]+"
+                  minlength="4"
+                  class="ion-margin-vertical auth-field"
+                  (ionBlur)="onBlur()"
                 ></ion-input>
               </div>
+              <div class="validation-message"><ion-note *ngIf="!validEmail">{{ 'page.login.form.error-messages.invalid-email'|translate }}</ion-note></div>
             </div>
             <div class="input-item ion-margin-bottom ion-padding-bottom">
               <label color="medium" class="input-item--label auth-label">{{ 'page.login.form.password.label'|translate }}</label>
@@ -57,8 +53,14 @@
                   name="password"
                   [(ngModel)]="password"
                   ngDefaultControl
-                  class="ion-margin-vertical"
+                  class="ion-margin-vertical auth-field"
                 ></ion-input>
+              </div>
+              <div class="validation-message">
+                <ng-container [ngSwitch]="errorStatusCode">
+                  <ion-note *ngSwitchCase="401">{{ 'page.login.form.error-messages.401'|translate }}</ion-note>
+                  <ion-note *ngSwitchCase="500">{{ 'page.login.form.error-messages.500'|translate }}</ion-note>
+                </ng-container>
               </div>
             </div>
 

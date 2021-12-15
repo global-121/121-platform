@@ -14,6 +14,9 @@ describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 
+  let mockAuthService: jasmine.SpyObj<any>;
+  let mockProgramsApi: jasmine.SpyObj<any>;
+
   const mockProgramId = 1;
 
   beforeEach(async(() => {
@@ -37,12 +40,7 @@ describe('HeaderComponent', () => {
         provideMagicalMock(TranslatableStringService),
       ],
     }).compileComponents();
-  }));
 
-  let mockAuthService: jasmine.SpyObj<any>;
-  let mockProgramsApi: jasmine.SpyObj<any>;
-
-  beforeEach(() => {
     mockAuthService = TestBed.inject(AuthService);
     mockAuthService.hasUserRole.and.returnValue(true);
 
@@ -54,9 +52,9 @@ describe('HeaderComponent', () => {
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+  }));
 
-  it('should create', () => {
+  it('should create', async () => {
     expect(component).toBeTruthy();
   });
 });

@@ -38,6 +38,11 @@
         },
         "submit": {
           "label": "Log in"
+        },
+        "error-messages": {
+          "invalid-email": "Please enter a valid email address.",
+          "401": "You have entered an incorrect username or password ",
+          "500": "Internal server error"
         }
       }
     },
@@ -491,5 +496,8 @@
   "password-toggle": {
     "show": "Show password",
     "hide": "Hide password"
+  },
+  "system-notifications": {
+    "compatible-browsers": "The 121 Portal works best in Chrome, Firefox, Safari and Microsoft Edge. The 121 Portal does not work in Internet Explorer."
   }
 }
