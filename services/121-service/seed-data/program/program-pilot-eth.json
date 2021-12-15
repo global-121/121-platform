@@ -155,10 +155,36 @@
       "scoring": {}
     },
     {
-      "name": "nrOfChildren",
+      "name": "nrOfFamilyMembers",
       "label": {
-        "en": "How many children do you have, if any?",
-        "am_ET": "ስንት ልጆች አሎት?"
+        "en": "How many family members do you have in your household, including yourself?",
+        "am_ET": "እራስዎን ጨምሮ በቤተሰብዎ ውስጥ ስንት የቤተሰብ አባላት አሉዎት?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "nrOfFemale",
+      "label": {
+        "en": "How many family members are female?",
+        "am_ET": "ስንት ሴቶች በቤተሰብዎ ውስጥ ይገኛሉ?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "nrOfMale",
+      "label": {
+        "en": "How many family members are male?",
+        "am_ET": "ስንት ወንዶች በቤተሰብዎ ውስጥ ይገኛሉ?"
       },
       "answerType": "numeric",
       "questionType": "standard",
