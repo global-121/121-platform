@@ -5,7 +5,7 @@ import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, DeleteResult, RemoveEvent } from 'typeorm';
+import { Repository, getRepository, In } from 'typeorm';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
 import crypto from 'crypto';
@@ -15,10 +15,10 @@ import { ProgramEntity } from '../programs/program.entity';
 import { LoginUserDto, UpdateUserDto } from './dto';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
-import { UserRole } from '../user-role.enum';
 import { UserRoleEntity } from './user-role.entity';
 import { UserType } from './user-type-enum';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
+import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 
 @Injectable()
 export class UserService {
@@ -113,16 +113,19 @@ export class UserService {
     return this.buildUserRO(updated);
   }
 
-  public async assignFieldValidationAidworkerToProgram(
-    userId: number,
-    programId: number,
+  public async assigAidworkerToProgram(
+    assignAidworkerToProgram: AssignAidworkerToProgramDto,
   ): Promise<void> {
-    let user = await this.userRepository.findOne(userId);
+    const user = await this.userRepository.findOne(
+      assignAidworkerToProgram.userId,
+    );
     if (!user) {
       const errors = { User: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOne(
+      assignAidworkerToProgram.programId,
+    );
     if (!program) {
       const errors = { Program: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -131,11 +134,11 @@ export class UserService {
       console.log('No program assigned');
     }
     await this.assignmentRepository.save({
-      user: { id: userId },
-      program: { id: programId },
+      user: { id: user.id },
+      program: { id: program.id },
       roles: await this.userRoleRepository.find({
         where: {
-          role: UserRole.FieldValidation,
+          role: In(assignAidworkerToProgram.roles),
         },
       }),
     });

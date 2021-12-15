@@ -475,16 +475,11 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  addUser(
-    email: string,
-    password: string,
-    roles: UserRole[] | string[],
-  ): Promise<any> {
+  addUser(email: string, password: string): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/user/aidworker`, {
         email,
         password,
-        roles,
       })
       .toPromise();
   }
@@ -492,9 +487,14 @@ export class ProgramsServiceApiService {
   assignAidworker(
     programId: number | string,
     userId: number,
+    roles: UserRole[] | string[],
   ): Promise<Program> {
     return this.apiService
-      .post(environment.url_121_service_api, `/user/${userId}/${programId}`, {})
+      .post(environment.url_121_service_api, `/user/assign-to-program`, {
+        programId,
+        userId,
+        roles,
+      })
       .toPromise();
   }
 

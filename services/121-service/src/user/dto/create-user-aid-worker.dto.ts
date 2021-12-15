@@ -1,6 +1,5 @@
-import { IsNotEmpty, MinLength, IsEmail, IsArray } from 'class-validator';
+import { IsNotEmpty, MinLength, IsEmail } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { UserRole } from '../../user-role.enum';
 
 export class CreateUserAidWorkerDto {
   @ApiModelProperty({ example: 'admin@example.org' })
@@ -12,11 +11,4 @@ export class CreateUserAidWorkerDto {
   @IsNotEmpty()
   @MinLength(8)
   public readonly password: string;
-
-  @ApiModelProperty({
-    example: Object.values(UserRole),
-    enum: UserRole,
-  })
-  @IsArray()
-  public readonly roles: UserRole[];
 }

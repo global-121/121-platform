@@ -23,11 +23,11 @@ import {
   ApiOperation,
   ApiImplicitParam,
 } from '@nestjs/swagger';
-import { DeleteResult } from 'typeorm';
 import { RolesGuard } from '../roles.guard';
 import { Roles } from '../roles.decorator';
 import { UserRole } from '../user-role.enum';
 import { UserType } from './user-type-enum';
+import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 
 @UseGuards(RolesGuard)
 @ApiUseTags('user')
@@ -141,16 +141,12 @@ export class UserController {
   @ApiBearerAuth()
   @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Assign Aidworker to program' })
-  @Post('user/:userId/:programId')
-  @ApiImplicitParam({ name: 'userId', required: true, type: 'integer' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('user/assign-to-program')
   public async assignFieldValidationAidworkerToProgram(
-    @Param('userId') userId: number,
-    @Param('programId') programId: number,
+    @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
   ): Promise<void> {
-    return await this.userService.assignFieldValidationAidworkerToProgram(
-      Number(userId),
-      Number(programId),
+    return await this.userService.assigAidworkerToProgram(
+      assignAidworkerToProgram,
     );
   }
 }
