@@ -2,10 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaTransactionResultDto } from '../dto/payment-transaction-result.dto';
-import {
-  FinancialServiceProviderEntity,
-  FspName,
-} from '../../fsp/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import {

@@ -13,10 +13,7 @@ import {
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { ProgramQuestionEntity } from '../../programs/program-question.entity';
 import { FspAttributeEntity } from '../../fsp/fsp-attribute.entity';
-import {
-  FinancialServiceProviderEntity,
-  FspName,
-} from '../../fsp/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { LanguageEnum } from '../enum/language.enum';
 import {
   BulkImportDto,
@@ -25,7 +22,6 @@ import {
   ImportRegistrationsDto,
   ImportResult,
   ImportStatus,
-  UploadFspReconciliationResult,
 } from '../dto/bulk-import.dto';
 import { v4 as uuid } from 'uuid';
 import csv from 'csv-parser';
@@ -34,10 +30,6 @@ import { AdditionalActionType } from '../../actions/action.entity';
 import { validate } from 'class-validator';
 import { Readable } from 'stream';
 import { InclusionScoreService } from './inclusion-score.service';
-import { UploadFspReconciliationDto } from '../../payments/dto/upload-fsp-reconciliation.dto';
-import { TransactionsService } from '../../payments/transactions/transactions.service';
-import { PaTransactionResultDto } from '../../payments/dto/payment-transaction-result.dto';
-import { StatusEnum } from '../../shared/enum/status.enum';
 
 @Injectable()
 export class BulkImportService {
@@ -56,7 +48,6 @@ export class BulkImportService {
     private readonly lookupService: LookupService,
     private readonly actionService: ActionService,
     private readonly inclusionScoreService: InclusionScoreService,
-    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async importBulk(
@@ -236,7 +227,7 @@ export class BulkImportService {
     return await this.validateRegistrationsCsvInput(importRecords, programId);
   }
 
-  private async validateCsv(csvFile): Promise<object[]> {
+  public async validateCsv(csvFile): Promise<object[]> {
     const indexLastPoint = csvFile.originalname.lastIndexOf('.');
     const extension = csvFile.originalname.substr(
       indexLastPoint,
@@ -270,7 +261,7 @@ export class BulkImportService {
     });
   }
 
-  private checkForCompletelyEmptyRow(row): boolean {
+  public checkForCompletelyEmptyRow(row): boolean {
     if (Object.keys(row).every(key => !row[key])) {
       return true;
     }
@@ -375,102 +366,6 @@ export class BulkImportService {
         importRecord.programAttributes.push(programAttribute);
       }
 
-      const result = await validate(importRecord);
-      if (result.length > 0) {
-        const errorObj = {
-          lineNumber: i + 1,
-          column: result[0].property,
-          value: result[0].value,
-        };
-        errors.push(errorObj);
-        throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-      }
-      validatatedArray.push(importRecord);
-    }
-    return validatatedArray;
-  }
-
-  public async importFspReconciliation(
-    csvFile,
-    programId: number,
-    userId: number,
-  ): Promise<ImportResult> {
-    const validatedImportRecords = await this.csvToValidatedFspReconciliation(
-      csvFile,
-    );
-
-    let countImported = 0;
-    let countNotFound = 0;
-
-    const importResponseRecords = [];
-    for await (const record of validatedImportRecords) {
-      const importResponseRecord = record as UploadFspReconciliationResult;
-
-      const registration = await this.registrationRepository.findOne({
-        where: { referenceId: record.referenceId },
-        relations: ['fsp'],
-      });
-      if (!registration) {
-        importResponseRecord.importStatus = ImportStatus.unmatched;
-        importResponseRecords.push(importResponseRecord);
-        countNotFound += 1;
-        continue;
-      }
-
-      const paTransactionResult = new PaTransactionResultDto();
-      paTransactionResult.referenceId = record.referenceId;
-      paTransactionResult.status = record.status as StatusEnum;
-      paTransactionResult.fspName = registration.fsp.fsp as FspName;
-      paTransactionResult.message = '';
-      paTransactionResult.calculatedAmount = Number(record.amount);
-
-      await this.transactionsService.storeTransaction(
-        paTransactionResult,
-        programId,
-        Number(record.payment),
-      );
-
-      importResponseRecord.importStatus = ImportStatus.imported;
-      importResponseRecords.push(importResponseRecord);
-      countImported += 1;
-    }
-
-    this.actionService.saveAction(
-      userId,
-      programId,
-      AdditionalActionType.importFspReconciliation,
-    );
-
-    return {
-      importResult: importResponseRecords,
-      aggregateImportResult: {
-        countImported,
-        countNotFound,
-      },
-    };
-  }
-
-  private async csvToValidatedFspReconciliation(
-    csvFile,
-  ): Promise<UploadFspReconciliationDto[]> {
-    const importRecords = await this.validateCsv(csvFile);
-    return await this.validateFspReconciliationCsvInput(importRecords);
-  }
-
-  private async validateFspReconciliationCsvInput(
-    csvArray,
-  ): Promise<UploadFspReconciliationDto[]> {
-    const errors = [];
-    const validatatedArray = [];
-    for (const [i, row] of csvArray.entries()) {
-      if (this.checkForCompletelyEmptyRow(row)) {
-        continue;
-      }
-      let importRecord = new UploadFspReconciliationDto();
-      importRecord.referenceId = row.referenceId;
-      importRecord.payment = row.payment;
-      importRecord.status = row.status;
-      importRecord.amount = row.amount;
       const result = await validate(importRecord);
       if (result.length > 0) {
         const errorObj = {

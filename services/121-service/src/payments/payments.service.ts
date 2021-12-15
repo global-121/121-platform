@@ -20,7 +20,14 @@ import { IntersolveService } from './fsp-integration/intersolve/intersolve.servi
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
 import { BulkImportService } from '../registration/services/bulk-import.service';
-import { ImportResult } from '../registration/dto/bulk-import.dto';
+import {
+  ImportResult,
+  ImportStatus,
+  UploadFspReconciliationResult,
+} from '../registration/dto/bulk-import.dto';
+import { PaTransactionResultDto } from './dto/payment-transaction-result.dto';
+import { validate } from 'class-validator';
+import { UploadFspReconciliationDto } from './dto/upload-fsp-reconciliation.dto';
 
 @Injectable()
 export class PaymentsService {
@@ -349,10 +356,95 @@ export class PaymentsService {
     programId: number,
     userId: number,
   ): Promise<ImportResult> {
-    return await this.bulkImportService.importFspReconciliation(
+    const validatedImportRecords = await this.csvToValidatedFspReconciliation(
       csvFile,
-      programId,
-      userId,
     );
+
+    let countImported = 0;
+    let countNotFound = 0;
+
+    const importResponseRecords = [];
+    for await (const record of validatedImportRecords) {
+      const importResponseRecord = record as UploadFspReconciliationResult;
+
+      // For now assume BoB Finance
+      const registration = await this.bobFinanceService.findRegistrationFromInput(
+        record,
+      );
+      if (!registration) {
+        importResponseRecord.importStatus = ImportStatus.unmatched;
+        importResponseRecords.push(importResponseRecord);
+        countNotFound += 1;
+        continue;
+      }
+
+      // For now assume BoB Finance
+      const paTransactionResult = await this.bobFinanceService.uploadReconciliationData(
+        registration,
+        record,
+        programId,
+      );
+
+      await this.transactionService.storeTransaction(
+        paTransactionResult,
+        programId,
+        paTransactionResult.payment,
+      );
+
+      importResponseRecord.importStatus = ImportStatus.imported;
+      importResponseRecords.push(importResponseRecord);
+      countImported += 1;
+    }
+
+    this.actionService.saveAction(
+      userId,
+      programId,
+      AdditionalActionType.importFspReconciliation,
+    );
+
+    return {
+      importResult: importResponseRecords,
+      aggregateImportResult: {
+        countImported,
+        countNotFound,
+      },
+    };
+  }
+
+  private async csvToValidatedFspReconciliation(
+    csvFile,
+  ): Promise<UploadFspReconciliationDto[]> {
+    const importRecords = await this.bulkImportService.validateCsv(csvFile);
+    return await this.validateFspReconciliationCsvInput(importRecords);
+  }
+
+  private async validateFspReconciliationCsvInput(
+    csvArray,
+  ): Promise<UploadFspReconciliationDto[]> {
+    const errors = [];
+    const validatatedArray = [];
+    for (const [i, row] of csvArray.entries()) {
+      if (this.bulkImportService.checkForCompletelyEmptyRow(row)) {
+        continue;
+      }
+
+      // For now assume BoB Finance
+      const importRecord = this.bobFinanceService.validateReconciliationData(
+        row,
+      );
+
+      const result = await validate(importRecord);
+      if (result.length > 0) {
+        const errorObj = {
+          lineNumber: i + 1,
+          column: result[0].property,
+          value: result[0].value,
+        };
+        errors.push(errorObj);
+        throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+      }
+      validatatedArray.push(importRecord);
+    }
+    return validatatedArray;
   }
 }
