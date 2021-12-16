@@ -15,6 +15,8 @@ export class UserPage implements OnInit {
   public confirmPassword: any;
   public passwordChanged = false;
 
+  public minLength = 8;
+
   constructor(private authService: AuthService) {}
 
   ngOnInit() {}
@@ -40,7 +42,7 @@ export class UserPage implements OnInit {
   }
 
   private shortPassword(): boolean {
-    return this.newPassword.length < 8;
+    return this.newPassword.length < this.minLength;
   }
 
   private passwordEmpty(): boolean {

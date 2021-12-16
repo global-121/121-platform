@@ -51,7 +51,7 @@
                     clearInput="true"
                     clearOnEdit="false"
                     required
-                    [minlength]="8"
+                    [minlength]="minLength"
                     name="new-password"
                     [(ngModel)]="newPassword"
                     ngDefaultControl
@@ -74,7 +74,7 @@
                     clearInput="true"
                     clearOnEdit="false"
                     required
-                    [minlength]="8"
+                    [minlength]="minLength"
                     name="confirm-password"
                     [(ngModel)]="confirmPassword"
                     ngDefaultControl
@@ -91,7 +91,7 @@
                 <ion-button
                   type="submit"
                   expand="block"
-                    size="default"
+                  size="default"
                   [disabled]="!newPasswordForm?.form?.valid"
                 >
                   {{ 'common.update'|translate }}
