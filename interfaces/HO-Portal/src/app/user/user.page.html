@@ -46,7 +46,7 @@
                 <div class="input-item--content">
                   <ion-input
                     type="password"
-                    autocomlete="off"
+                    autocomplete="new-password"
                     autocapitalize="off"
                     clearInput="true"
                     clearOnEdit="false"
@@ -59,8 +59,8 @@
                     class="ion-margin-vertical auth-field">
                   </ion-input>
                   <div class="validation-message">
-                      <ion-note color="danger" *ngIf="showShowPasswordMessage()">{{ 'page.user.error-messages.password-length'|translate: {minLength: minLength} }}</ion-note>
-                      <ion-note color="danger" *ngIf="showInvalidPasswordMessage()">{{ 'page.user.error-messages.password-characters'|translate }}</ion-note>
+                    <ion-note color="danger" *ngIf="showShowPasswordMessage()"><small><strong>{{ 'page.user.error-messages.password-length'|translate: {minLength: minLength} }}</strong></small></ion-note>
+                    <ion-note color="danger" *ngIf="showInvalidPasswordMessage()">{{ 'page.user.error-messages.password-characters'|translate }}</ion-note>
                   </div>
                 </div>
               </div>
@@ -69,7 +69,7 @@
                 <div class="input-item--content">
                   <ion-input
                     type="password"
-                    autocomlete="off"
+                    autocomplete="off"
                     autocapitalize="off"
                     clearInput="true"
                     clearOnEdit="false"
