@@ -59,7 +59,7 @@
                     class="ion-margin-vertical auth-field">
                   </ion-input>
                   <div class="validation-message">
-                      <ion-note color="danger" *ngIf="showShowPasswordMessage()">{{ 'page.user.error-messages.password-length'|translate }}</ion-note>
+                      <ion-note color="danger" *ngIf="showShowPasswordMessage()">{{ 'page.user.error-messages.password-length'|translate: {minLength: minLength} }}</ion-note>
                       <ion-note color="danger" *ngIf="showInvalidPasswordMessage()">{{ 'page.user.error-messages.password-characters'|translate }}</ion-note>
                   </div>
                 </div>

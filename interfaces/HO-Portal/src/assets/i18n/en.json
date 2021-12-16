@@ -461,7 +461,7 @@
         "success": "Password changed"
       },
       "error-messages": {
-        "password-length": "Password should be more than 8 charachters.",
+        "password-length": "Password should be more than {{minLength}} charachters.",
         "password-characters": "Password should contain one capital letter, one lowercase letter and one number.",
         "different-passwords": "Passwords do not match."
       }
