@@ -11,8 +11,11 @@ export class UserPage implements OnInit {
   @ViewChild('newPasswordForm')
   public newPasswordForm: NgForm;
 
-  public newPassword: any;
+  public newPassword = '';
+  public confirmPassword: any;
   public passwordChanged = false;
+
+  public minLength = 8;
 
   constructor(private authService: AuthService) {}
 
@@ -30,5 +33,30 @@ export class UserPage implements OnInit {
         this.passwordChanged = false;
       }, 3000);
     });
+  }
+
+  public checkConfirmPasswords() {
+    this.confirmPassword !== this.newPassword
+      ? this.newPasswordForm.form.setErrors({ differentPasswords: true })
+      : this.newPasswordForm.form.setErrors(null);
+  }
+
+  private shortPassword(): boolean {
+    return this.newPassword.length < this.minLength;
+  }
+
+  private passwordEmpty(): boolean {
+    return this.newPassword === '';
+  }
+
+  public showShowPasswordMessage(): boolean {
+    return this.shortPassword() && !this.passwordEmpty();
+  }
+
+  public showInvalidPasswordMessage(): boolean {
+    return (
+      !this.shortPassword() &&
+      !this.newPasswordForm?.form?.get('new-password')?.valid
+    );
   }
 }

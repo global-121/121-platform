@@ -97,6 +97,10 @@ ion-button {
       --padding-end: 8px;
     }
   }
+
+  .validation-message {
+    min-height: 36px;
+  }
 }
 
 .full-height {
@@ -106,4 +110,40 @@ ion-button {
 // Hide tooltip of ion-icon title
 ion-icon {
   pointer-events: none;
+}
+
+#portal-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 48px;
+
+  #logo-container {
+    margin: 0 4px 0 0;
+    padding: 0;
+    width: 48px;
+  }
+
+  h1 {
+    margin-top: 10px;
+    margin-left: 4px;
+    letter-spacing: 3px;
+  }
+}
+
+.auth-form-container {
+  max-width: 339px;
+  margin: auto;
+  border: 1px solid #b3bcd0;
+  border-radius: 0;
+}
+
+.auth-button {
+  width: 100%;
+}
+
+.auth-label {
+  font-size: 1.2em;
+  color: var(--ion-color-medium);
 }
