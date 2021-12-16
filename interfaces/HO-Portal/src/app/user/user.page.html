@@ -1,4 +1,3 @@
-<app-system-notification [message]="'system-notifications.compatible-browsers'|translate" color="tertiary"></app-system-notification>
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
@@ -23,14 +22,18 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
-<ion-content class="ion-padding">
-  <ion-grid>
-    <ion-row class="ion-align-items-center ion-justify-content-center">
-      <ion-col size="10" sizeSm="6" sizeMd="4" class="">
-
-          <h2>{{ 'page.user.change-password.title'|translate }}</h2>
-          <div class="ion-padding auth-form-container">
+<ion-content>
+  <ion-grid class="full-height">
+    <ion-row class="ion-justify-content-center ion-align-items-center full-height">
+      <ion-col size="4"></ion-col>
+      <ion-col size="12" size-lg="4">
+        <div id="portal-title" class="ion-margin-vertical">
+          <div id="logo-container">
+            <img src="./assets/img/121-logo.png" alt="121">
+          </div>
+          <h1 class="text-uppercase">{{ 'page.login.portalTitle'|translate }}</h1>
+        </div>
+        <div class="ion-padding auth-form-container">
             <form
               *ngIf="!passwordChanged"
               method="POST"
@@ -40,21 +43,50 @@
             >
               <div class="input-item ion-margin-bottom ion-padding-bottom">
                 <label color="medium" class="input-item--label auth-label">{{ 'page.user.change-password.new-password'|translate }}</label>
-                <ion-input
-                  type="password"
-                  autocomplete="new-password"
-                  autocapitalize="off"
-                  clearInput="true"
-                  clearOnEdit="false"
-                  required
-                  [minlength]="8"
-                  name="new-password"
-                  [(ngModel)]="newPassword"
-                  ngDefaultControl
-                  class="ion-margin-vertical">
-                </ion-input>
+                <div class="input-item--content">
+                  <ion-input
+                    type="password"
+                    autocomlete="off"
+                    autocapitalize="off"
+                    clearInput="true"
+                    clearOnEdit="false"
+                    required
+                    [minlength]="8"
+                    name="new-password"
+                    [(ngModel)]="newPassword"
+                    ngDefaultControl
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}"
+                    class="ion-margin-vertical auth-field">
+                  </ion-input>
+                  <div class="validation-message">
+                      <ion-note color="danger" *ngIf="showShowPasswordMessage()">{{ 'page.user.error-messages.password-length'|translate }}</ion-note>
+                      <ion-note color="danger" *ngIf="showInvalidPasswordMessage()">{{ 'page.user.error-messages.password-characters'|translate }}</ion-note>
+                  </div>
+                </div>
               </div>
-
+              <div class="input-item ion-margin-bottom ion-padding-bottom">
+                <label color="medium" class="input-item--label auth-label">{{ 'page.user.change-password.confirm-password'|translate }}</label>
+                <div class="input-item--content">
+                  <ion-input
+                    type="password"
+                    autocomlete="off"
+                    autocapitalize="off"
+                    clearInput="true"
+                    clearOnEdit="false"
+                    required
+                    [minlength]="8"
+                    name="confirm-password"
+                    [(ngModel)]="confirmPassword"
+                    ngDefaultControl
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}"
+                    (ionChange)="checkConfirmPasswords()"
+                    class="ion-margin-vertical auth-field">
+                  </ion-input>
+                </div>
+                <div class="validation-message">
+                  <ion-note *ngIf="newPasswordForm?.form?.errors?.differentPasswords">{{ "page.user.error-messages.different-passwords" |translate }}</ion-note>
+                </div>
+              </div>
               <div class="ion-margin-top ion-no-padding">
                 <ion-button
                   type="submit"
@@ -77,6 +109,7 @@
             <strong>{{ 'page.user.change-password.success'|translate }}</strong>
           </div>
       </ion-col>
+      <ion-col size="4"></ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
