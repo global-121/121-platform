@@ -12,7 +12,6 @@ import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { UserRole } from '../user-role.enum';
 import { UserType } from '../user/user-type-enum';
-import { assert } from 'console';
 
 export class SeedHelper {
   public constructor(private connection: Connection) {}
@@ -135,5 +134,13 @@ export class SeedHelper {
         },
       }),
     });
+  }
+
+  public async assignAdminUserToProgram(programId: number): Promise<void> {
+    const userRepository = this.connection.getRepository(UserEntity);
+    const adminUser = await userRepository.findOne({
+      where: { username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN },
+    });
+    this.assignAidworker(adminUser.id, programId, [UserRole.Admin]);
   }
 }

@@ -86,6 +86,14 @@ export class ManageAidworkersComponent implements OnInit {
     this.isLoading = false;
   }
 
+  public disableDelete(row) {
+    // Disable delete if user has also other roles beside 'field-validation'
+    return (
+      row.roles.filter((role) => role.role !== UserRole.FieldValidation)
+        .length > 0
+    );
+  }
+
   public async deleteAidworker(row) {
     await this.programsService.deleteUser(row.user.id);
     this.loadData();
@@ -93,9 +101,7 @@ export class ManageAidworkersComponent implements OnInit {
 
   public async addAidworker() {
     this.programsService
-      .addUser(this.emailAidworker, this.passwordAidworker, [
-        UserRole.FieldValidation,
-      ])
+      .addUser(this.emailAidworker, this.passwordAidworker)
       .then(
         (res) => {
           this.succesCreatedAidworker(res.user.id);
@@ -122,7 +128,11 @@ export class ManageAidworkersComponent implements OnInit {
   }
 
   private async succesCreatedAidworker(userId: number) {
-    await this.programsService.assignAidworker(this.programId, userId);
+    await this.programsService.assignAidworker(
+      Number(this.programId),
+      Number(userId),
+      [UserRole.FieldValidation],
+    );
     this.loadData();
     const message = this.translate.instant(
       'page.program.manage-aidworkers.succes-create',

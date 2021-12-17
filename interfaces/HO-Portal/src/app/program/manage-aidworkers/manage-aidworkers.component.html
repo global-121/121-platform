@@ -31,6 +31,7 @@
         <confirm-prompt
           (confirm)="deleteAidworker(row)"
           [message]="'page.program.manage-aidworkers.column-delete'|translate"
+          [disabled]="disableDelete(row)"
           size="small"
           fill="outline"
         >

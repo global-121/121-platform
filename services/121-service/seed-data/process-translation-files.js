@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-// examples
+// EXAMPLES
+
+// Merge file from transifex with local file
 // node services/121-service/seed-data/process-translation-files.js convert-to-locale --locale am_ET --in ~/510/121-import-csv/zoa/for_use_121-platform_fsp-belcash_am_ETH.json --out services/121-service/seed-data/fsp/fsp-belcash.json --merge
+
+// Prepare file for transifex
+// node services/121-service/seed-data/process-translation-files.js prepare-to-update-transifex --in services/121-service/seed-data/program/program-pilot-nl-2.json --out ./program-pilot-nl-2.json
 const fs = require('fs');
 const _ = require('lodash');
 
