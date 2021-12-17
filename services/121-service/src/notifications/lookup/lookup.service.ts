@@ -10,10 +10,10 @@ export class LookupService {
   ): Promise<{ result: boolean | undefined }> {
     let numberCorrect: boolean;
     try {
-      const sanitizedNumber = this.sanitizePhoneNrExtra(phoneNumber);
+      const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);
 
       await twilioClient.lookups
-        .phoneNumbers(sanitizedNumber)
+        .phoneNumbers(updatedPhone)
         .fetch({ type: ['carrier'] });
       numberCorrect = true;
     } catch (e) {
@@ -36,6 +36,12 @@ export class LookupService {
       const lookupResponse = await twilioClient.lookups
         .phoneNumbers(updatedPhone)
         .fetch({ type: ['carrier'] });
+
+      if (lookupResponse.phoneNumber.substr(0, 4) == '+961') {
+        lookupResponse.phoneNumber = this.processLebanonException(
+          lookupResponse,
+        );
+      }
       return lookupResponse.phoneNumber.replace(/\D/g, '');
     } catch (e) {
       console.log('e: ', e);
@@ -63,6 +69,14 @@ export class LookupService {
         const errors = `Phone number incorrect`;
         throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
+    }
+  }
+
+  private processLebanonException(lookupResponse): string {
+    if (lookupResponse.nationalFormat.substr(0, 1) == '0') {
+      return lookupResponse.phoneNumber.replace('+961', '+9610');
+    } else {
+      return lookupResponse.phoneNumber;
     }
   }
 
