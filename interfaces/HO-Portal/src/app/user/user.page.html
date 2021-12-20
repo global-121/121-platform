@@ -80,6 +80,7 @@
                     ngDefaultControl
                     pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}"
                     (ionBlur)="checkConfirmPasswords()"
+                    (ionChange)="onChange()"
                     class="ion-margin-vertical auth-field">
                   </ion-input>
                 </div>

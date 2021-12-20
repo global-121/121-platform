@@ -45,4 +45,10 @@ export class UserPage implements OnInit {
   public checkConfirmPasswords() {
     this.samePassword = this.confirmPassword === this.newPassword;
   }
+
+  public onChange() {
+    if (this.confirmPassword === this.newPassword) {
+      this.samePassword = true;
+    }
+  }
 }
