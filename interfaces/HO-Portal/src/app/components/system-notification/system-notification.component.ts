@@ -11,6 +11,8 @@ export class SystemNotificationComponent implements OnInit {
   @Input() public message: string;
   @Input() public color: string;
 
+  private toast: HTMLIonToastElement;
+
   constructor(public toastController: ToastController) {}
 
   ngOnInit(): void {
@@ -18,7 +20,7 @@ export class SystemNotificationComponent implements OnInit {
   }
 
   async presentToast() {
-    const toast = await this.toastController.create({
+    this.toast = await this.toastController.create({
       message: this.message,
       cssClass: 'system-notification ion-text-center',
       position: 'top',
@@ -31,6 +33,10 @@ export class SystemNotificationComponent implements OnInit {
         },
       ],
     });
-    await toast.present();
+    await this.toast.present();
+  }
+
+  public closeToast() {
+    this.toast.dismiss();
   }
 }
