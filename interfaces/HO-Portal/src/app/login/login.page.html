@@ -38,7 +38,7 @@
                   (ionBlur)="onBlur()"
                 ></ion-input>
               </div>
-              <div class="validation-message"><ion-note *ngIf="!validEmail">{{ 'page.login.form.error-messages.invalid-email'|translate }}</ion-note></div>
+              <div class="validation-message"><ion-note *ngIf="!validEmail" color="danger"><small><strong>{{ 'page.login.form.error-messages.invalid-email'|translate }}</strong></small></ion-note></div>
             </div>
             <div class="input-item ion-margin-bottom ion-padding-bottom">
               <label color="medium" class="input-item--label auth-label">{{ 'page.login.form.password.label'|translate }}</label>
@@ -58,8 +58,8 @@
               </div>
               <div class="validation-message">
                 <ng-container [ngSwitch]="errorStatusCode">
-                  <ion-note *ngSwitchCase="401">{{ 'page.login.form.error-messages.401'|translate }}</ion-note>
-                  <ion-note *ngSwitchCase="500">{{ 'page.login.form.error-messages.500'|translate }}</ion-note>
+                  <ion-note *ngSwitchCase="401" color="danger"><small><strong>{{ 'page.login.form.error-messages.401'|translate }}</strong></small></ion-note>
+                  <ion-note *ngSwitchCase="500" color="danger"><small><strong>{{ 'page.login.form.error-messages.500'|translate }}</strong></small></ion-note>
                 </ng-container>
               </div>
             </div>
