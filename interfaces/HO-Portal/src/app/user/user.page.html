@@ -55,12 +55,12 @@
                     name="new-password"
                     [(ngModel)]="newPassword"
                     ngDefaultControl
+                    (ionBlur)="checkNewPassword()"
                     pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}"
                     class="ion-margin-vertical auth-field">
                   </ion-input>
                   <div class="validation-message">
-                    <ion-note color="danger" *ngIf="showShowPasswordMessage()"><small><strong>{{ 'page.user.error-messages.password-length'|translate: {minLength: minLength} }}</strong></small></ion-note>
-                    <ion-note color="danger" *ngIf="showInvalidPasswordMessage()">{{ 'page.user.error-messages.password-characters'|translate }}</ion-note>
+                    <ion-note [color]="validPassword ? 'medium' : 'danger'"><small><strong>{{ 'page.user.notification-messages.password-requirements'|translate: {minLength: minLength} }}</strong></small></ion-note>
                   </div>
                 </div>
               </div>
@@ -79,12 +79,13 @@
                     [(ngModel)]="confirmPassword"
                     ngDefaultControl
                     pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}"
-                    (ionChange)="checkConfirmPasswords()"
+                    (ionBlur)="checkConfirmPasswords()"
+                    (ionChange)="onChange()"
                     class="ion-margin-vertical auth-field">
                   </ion-input>
                 </div>
                 <div class="validation-message">
-                  <ion-note *ngIf="newPasswordForm?.form?.errors?.differentPasswords">{{ "page.user.error-messages.different-passwords" |translate }}</ion-note>
+                  <ion-note color="danger" *ngIf="!samePassword"><small><strong>{{ "page.user.notification-messages.different-passwords" |translate }}</strong></small></ion-note>
                 </div>
               </div>
               <div class="ion-margin-top ion-no-padding">
