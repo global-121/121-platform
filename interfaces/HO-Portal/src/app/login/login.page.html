@@ -19,9 +19,16 @@
             (keyup.enter)="doLogin()"
           >
             <div class="input-item ion-margin-bottom">
-              <label color="medium" class="input-item--label auth-label">{{ 'page.login.form.email.label'|translate }}</label>
+              <label
+                color="medium"
+                class="input-item--label auth-label"
+                (click)="emailInput.setFocus()"
+              >
+                {{ 'page.login.form.email.label'|translate }}
+              </label>
               <div class="input-item--contents">
                 <ion-input
+                  #emailInput
                   type="email"
                   inputmode="email"
                   autocomplete="username email"
@@ -41,9 +48,16 @@
               <div class="validation-message"><ion-note *ngIf="!validEmail">{{ 'page.login.form.error-messages.invalid-email'|translate }}</ion-note></div>
             </div>
             <div class="input-item ion-margin-bottom ion-padding-bottom">
-              <label color="medium" class="input-item--label auth-label">{{ 'page.login.form.password.label'|translate }}</label>
+              <label
+                color="medium"
+                class="input-item--label auth-label"
+                (click)="passwordInput.setFocus()"
+              >
+                {{ 'page.login.form.password.label'|translate }}
+              </label>
               <div class="input-item--contents">
                 <ion-input
+                  #passwordInput
                   type="password"
                   autocomplete="current-password"
                   autocapitalize="off"

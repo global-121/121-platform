@@ -42,9 +42,16 @@
               (keyup.enter)="updatePassword()"
             >
               <div class="input-item ion-margin-bottom ion-padding-bottom">
-                <label color="medium" class="input-item--label auth-label">{{ 'page.user.change-password.new-password'|translate }}</label>
+                <label
+                  color="medium"
+                  class="input-item--label auth-label"
+                  (click)="newPasswordInput.setFocus()"
+                >
+                  {{ 'page.user.change-password.new-password'|translate }}
+                </label>
                 <div class="input-item--content">
                   <ion-input
+                    #newPasswordInput
                     type="password"
                     autocomplete="new-password"
                     autocapitalize="off"
@@ -65,9 +72,16 @@
                 </div>
               </div>
               <div class="input-item ion-margin-bottom ion-padding-bottom">
-                <label color="medium" class="input-item--label auth-label">{{ 'page.user.change-password.confirm-password'|translate }}</label>
+                <label
+                  color="medium"
+                  class="input-item--label auth-label"
+                  (click)="confirmPasswordInput.setFocus()"
+                >
+                  {{ 'page.user.change-password.confirm-password'|translate }}
+                </label>
                 <div class="input-item--content">
                   <ion-input
+                    #confirmPasswordInput
                     type="password"
                     autocomplete="off"
                     autocapitalize="off"
