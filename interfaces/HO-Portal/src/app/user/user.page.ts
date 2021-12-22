@@ -12,13 +12,21 @@ export class UserPage implements OnInit {
   public newPasswordForm: NgForm;
 
   public newPassword = '';
-  public confirmPassword: any;
+  public confirmPassword = '';
   public passwordChanged = false;
 
   public minLength = 8;
 
+  private borderValues = {
+    normal: '',
+    valid: 'valid-border',
+    invalid: 'invalid-border',
+  };
+
   public validPassword = true;
+  public newPasswordBorder = this.borderValues.normal;
   public samePassword = true;
+  public confirmPasswordBorder = this.borderValues.normal;
 
   constructor(private authService: AuthService) {}
 
@@ -40,15 +48,31 @@ export class UserPage implements OnInit {
 
   public checkNewPassword() {
     this.validPassword = this.newPasswordForm?.form?.get('new-password')?.valid;
+    this.newPasswordBorder = this.validPassword
+      ? this.borderValues.valid
+      : this.borderValues.invalid;
   }
 
   public checkConfirmPasswords() {
-    this.samePassword = this.confirmPassword === this.newPassword;
+    if (
+      this.confirmPassword !== '' &&
+      this.confirmPassword === this.newPassword
+    ) {
+      this.samePassword = true;
+      this.confirmPasswordBorder = this.borderValues.valid;
+    } else {
+      this.samePassword = false;
+      this.confirmPasswordBorder = this.borderValues.invalid;
+    }
   }
 
   public onChange() {
-    if (this.confirmPassword === this.newPassword) {
+    if (
+      this.confirmPassword !== '' &&
+      this.confirmPassword === this.newPassword
+    ) {
       this.samePassword = true;
+      this.confirmPasswordBorder = this.borderValues.valid;
     }
   }
 }
