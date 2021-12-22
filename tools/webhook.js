@@ -88,8 +88,23 @@ http
       }
 
       if (
+        process.env.DEPLOY_PRE_RELEASE &&
+        payload.action === "prereleased" &&
         process.env.NODE_ENV === "production" &&
+        payload.release.draft === false &&
+        payload.release.prerelease === true &&
+        payload.release.target_commitish &&
+        isMinorUpgrade(payload.release.target_commitish)
+      ) {
+        console.log(`Release (hotfix) deployment for: ${payload.release.target_commitish}`);
+        deploy(payload.release.target_commitish);
+        return
+      }
+
+      if (
+        process.env.DEPLOY_RELEASE &&
         payload.action === "released" &&
+        process.env.NODE_ENV === "production" &&
         payload.release.draft === false &&
         payload.release.target_commitish &&
         isMinorUpgrade(payload.release.target_commitish)
