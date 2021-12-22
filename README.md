@@ -392,11 +392,16 @@ This is how we create and publish a new release of the 121-platform.
 - [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
   - [ ] Commit changes to `master`-branch on GitHub.
 - [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch and push this branch to GitHub
+- [ ] Given current setup of automatic deployments on release: Make any server config changes (ENV-variables, etc.) on staging-servers before creating prerelease (see below)
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
   - [ ] Add the `version` to create a new tag
   - [ ] Select the new `release/<version>`-branch
   - [ ] Set the title of the release to `version`. Add a short description and/or link to relevant other documents (if applicable)
+  - [ ] **!!!IMPORTANT!!! UPDATE 2021/12/22**: check the 'prelease' checkbox. Given current setup this makes sure the release is only automatically deployed to staging-servers, and not to production-servers.
   - [ ] Publish the release on GitHub
+  - [ ] Check the the deployed release on staging server(s)
+  - [ ] Make any needed server config changes (ENV-variables, etc.) on production-servers
+  - [ ] Edit the release by unchecking the 'prelease' checkbox and publishing again. Given current setup this will now automatically deploy to production-servers (and to staging again).
 
 ### Patch/Hotfix Checklist
 
