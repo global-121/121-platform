@@ -1,4 +1,4 @@
-<app-system-notification [message]="'system-notifications.compatible-browsers'|translate" color="tertiary"></app-system-notification>
+<app-system-notification [message]="'system-notifications.compatible-browsers'|translate" color="tertiary" #systemNotification></app-system-notification>
 <ion-content>
   <ion-grid class="full-height">
     <ion-row class="ion-justify-content-center ion-align-items-center full-height">
@@ -45,7 +45,7 @@
                   (ionBlur)="onBlur()"
                 ></ion-input>
               </div>
-              <div class="validation-message"><ion-note *ngIf="!validEmail">{{ 'page.login.form.error-messages.invalid-email'|translate }}</ion-note></div>
+              <div class="validation-message"><ion-note *ngIf="!validEmail" color="danger"><small><strong>{{ 'page.login.form.error-messages.invalid-email'|translate }}</strong></small></ion-note></div>
             </div>
             <div class="input-item ion-margin-bottom ion-padding-bottom">
               <label
@@ -72,8 +72,8 @@
               </div>
               <div class="validation-message">
                 <ng-container [ngSwitch]="errorStatusCode">
-                  <ion-note *ngSwitchCase="401">{{ 'page.login.form.error-messages.401'|translate }}</ion-note>
-                  <ion-note *ngSwitchCase="500">{{ 'page.login.form.error-messages.500'|translate }}</ion-note>
+                  <ion-note *ngSwitchCase="401" color="danger"><small><strong>{{ 'page.login.form.error-messages.401'|translate }}</strong></small></ion-note>
+                  <ion-note *ngSwitchCase="500" color="danger"><small><strong>{{ 'page.login.form.error-messages.500'|translate }}</strong></small></ion-note>
                 </ng-container>
               </div>
             </div>
