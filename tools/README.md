@@ -49,7 +49,8 @@ Where `<webroot-path>` is for example: `/var/www/121-platform/`;
 
 ## Manual Deployment
 
-The bash-script [`deploy.sh`](./deploy.sh) can be run on the test/production-environment to perform all necessary steps.
+The bash-script [`deploy.sh`](./deploy.sh) can be run on the test/production-environment to perform all necessary steps.  
+For all available options, run: `deploy.sh --help`
 
 ## Continuous Deployment
 
