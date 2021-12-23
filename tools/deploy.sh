@@ -17,6 +17,9 @@ function deploy() {
   local repo_ho=$repo_interfaces/HO-Portal
   local repo_aw=$repo_interfaces/AW-App
 
+  ${GLOBAL_121_STATUS_URL:=http://localhost:3000/docs/}
+  local services_status_url=$GLOBAL_121_STATUS_URL
+
   local web_root=$GLOBAL_121_WEB_ROOT
   local pa_dir=$GLOBAL_121_PA_DIR
   local ho_dir=$GLOBAL_121_HO_DIR
@@ -110,6 +113,22 @@ END
     log "Disable Maintenance-mode..."
 
     rm "$web_root/.maintenance"
+  }
+
+  function disable_maintenance_mode_when_done() {
+    log "Waiting for services to disable Maintenance-mode..."
+
+    cd "$repo" || return
+
+    if [[ -e "./tools/wait-for.sh" ]];
+    then
+      # Run status check in a parallel process...
+      (
+        ./tools/wait-for.sh "$services_status_url" -- rm "$web_root/.maintenance"
+      ) &
+    else
+      disable_maintenance_mode
+    fi
   }
 
   function build_services() {
@@ -218,7 +237,7 @@ END
     enable_maintenance_mode
     restart_webhook_service
     build_services
-    disable_maintenance_mode
+    disable_maintenance_mode_when_done
     cleanup_services
 
     do_interface "pa"
@@ -227,6 +246,7 @@ END
 
     publish_version
 
+    wait # Make sure the status-check has finised
     log "Done."
   }
 

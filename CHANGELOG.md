@@ -9,11 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.30.4...master)
 
+### Added
+
+- 2021-12-23: Conditional Maintenance-mode with status-check for deploy-script  
+  Make sure to define `GLOBAL_121_STATUS_URL` in `./tools/.env` when using a custom hostname/port-number for the 121-service
+
 ---
+
 ## [1.30.4](https://github.com/global-121/121-platform/compare/v1.30.3...v1.30.4) - 2021-12-22
+
 - Test release
 
 ## [1.30.3](https://github.com/global-121/121-platform/compare/v1.30.2...v1.30.3) - 2021-12-22
+
 - Test release
 
 ## [1.30.2](https://github.com/global-121/121-platform/compare/v1.30.1...v1.30.2) - 2021-12-22
@@ -23,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 2021-12-22: Added pre-release option to webhook-script
 
 ## [1.30.1](https://github.com/global-121/121-platform/compare/v1.30.0...v1.30.1) - 2021-12-22
+
 - Test release
 
 ## [1.30.0](https://github.com/global-121/121-platform/compare/v1.29.3...v1.30.0) - 2021-12-22
