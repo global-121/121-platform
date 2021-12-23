@@ -235,7 +235,6 @@ END
     set_version
 
     enable_maintenance_mode
-    restart_webhook_service
     build_services
     disable_maintenance_mode_when_done
     cleanup_services
@@ -244,10 +243,14 @@ END
     do_interface "aw"
     do_interface "ho"
 
+    wait # Make sure the status-check has finised
+
     publish_version
 
-    wait # Make sure the status-check has finised
     log "Done."
+
+    # Restart as the final step because it will kill the process running this script
+    restart_webhook_service
   }
 
   ###########################################################################
