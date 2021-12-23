@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# See: https://github.com/eficode/wait-for
+
 # The MIT License (MIT)
 #
 # Copyright (c) 2017 Eficode Oy
@@ -22,6 +24,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+VERSION="2.2.1"
+
 set -- "$@" -- "$TIMEOUT" "$QUIET" "$PROTOCOL" "$HOST" "$PORT" "$result"
 TIMEOUT=15
 QUIET=0
@@ -39,6 +43,7 @@ Usage:
   $0 host:port|url [-t timeout] [-- command args]
   -q | --quiet                        Do not output any status messages
   -t TIMEOUT | --timeout=timeout      Timeout in seconds, zero for no timeout
+  -v | --version                      Show the version of this tool
   -- COMMAND ARGS                     Execute command with args after the test finishes
 USAGE
   exit "$exitcode"
@@ -54,11 +59,13 @@ wait_for() {
       ;;
     wget)
       if ! command -v wget >/dev/null; then
-        echoerr 'nc command is missing!'
+        echoerr 'wget command is missing!'
         exit 1
       fi
       ;;
   esac
+
+  TIMEOUT_END=$(($(date +%s) + TIMEOUT))
 
   while :; do
     case "$PROTOCOL" in
@@ -91,15 +98,13 @@ wait_for() {
       exit 0
     fi
 
-    if [ "$TIMEOUT" -le 0 ]; then
-      break
+    if [ $(date +%s) -ge $TIMEOUT_END ]; then
+      echo "Operation timed out" >&2
+      exit 1
     fi
-    TIMEOUT=$((TIMEOUT - 1))
 
     sleep 1
   done
-  echo "Operation timed out" >&2
-  exit 1
 }
 
 while :; do
@@ -113,6 +118,10 @@ while :; do
     HOST=$(printf "%s\n" "$1"| cut -d : -f 1)
     PORT=$(printf "%s\n" "$1"| cut -d : -f 2)
     shift 1
+    ;;
+    -v | --version)
+    echo $VERSION
+    exit
     ;;
     -q | --quiet)
     QUIET=1
