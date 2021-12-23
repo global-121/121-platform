@@ -35,6 +35,25 @@ function deploy() {
     printf "\n"
   }
 
+  function get_help() {
+    cat <<END
+
+-----------------------------------------------------------------------------
+ Deploy Script options:
+-----------------------------------------------------------------------------
+
+* Full deploy of latest:                        $0
+
+* Full deploy of target branch "release/v2":    $0 release/v2
+
+* Only deploy a specific interface:             $0 --only pa
+
+* See this help:                                $0 --help
+
+-----------------------------------------------------------------------------
+END
+  }
+
   function setup_log_file() {
     # If a log-file is specified in the ENV-variable
     # Output all STDOUT and STDERR to file AND to console
@@ -146,6 +165,33 @@ function deploy() {
     cp -r www/ "$web_root/$web_app_dir"
   }
 
+  function do_interface() {
+    local interface=$1
+
+    if [[ $interface == 'aw' ]];
+    then
+      log "Deploying interface: AW-App"
+      build_interface "AW-App" "$repo_aw" "$aw_dir"
+      deploy_interface "AW-App" "$repo_aw" "$aw_dir"
+
+    elif [[ $interface == 'pa' ]];
+    then
+      log "Deploying interface: PA-App"
+      build_interface "PA-App" "$repo_pa" "$pa_dir"
+      deploy_interface "PA-App" "$repo_pa" "$pa_dir"
+
+    elif [[ $interface == 'ho' ]];
+    then
+      log "Deploying interface: HO-Portal"
+      build_interface "HO-Portal" "$repo_ho" "$ho_dir"
+      deploy_interface "HO-Portal" "$repo_ho" "$ho_dir"
+
+    else
+      log "Invalid interface name. Use: aw | pa | ho "
+      exit 1
+    fi
+  }
+
   function restart_webhook_service() {
     service webhook restart
 
@@ -159,37 +205,57 @@ function deploy() {
     log "Deployed: $GLOBAL_121_VERSION"
   }
 
+  function full_deployment() {
+    local target=$1
 
-  #
-  # Actual deployment:
-  #
-  setup_log_file
+    log "Doing full deployment with target: $target"
+    setup_log_file
 
-  clear_version
+    clear_version
+    update_code "$target"
+    set_version
 
-  update_code "$target"
+    enable_maintenance_mode
+    restart_webhook_service
+    build_services
+    disable_maintenance_mode
+    cleanup_services
 
-  set_version
+    do_interface "pa"
+    do_interface "aw"
+    do_interface "ho"
 
-  enable_maintenance_mode
-  build_services
-  disable_maintenance_mode
-  cleanup_services
+    publish_version
 
-  build_interface "PA-App" "$repo_pa" "$pa_dir"
-  deploy_interface "PA-App" "$repo_pa" "$pa_dir"
+    log "Done."
+  }
 
-  build_interface "AW-App" "$repo_aw" "$aw_dir"
-  deploy_interface "AW-App" "$repo_aw" "$aw_dir"
+  ###########################################################################
 
-  build_interface "HO-Portal" "$repo_ho" "$ho_dir"
-  deploy_interface "HO-Portal" "$repo_ho" "$ho_dir"
+  # Check command-line options/flags:
+  while [[ "$1" =~ ^- && ! "$1" == "--" ]];
+    do case $1 in
+      -h | --help )
+        get_help
+        exit 0
+        ;;
+      -o | --only )
+        shift;
+        local only=$1
+        do_interface "$only"
+        exit 0
+        ;;
+    esac;
+    shift;
+  done
+  if [[ "$1" == '--' ]];
+  then
+    shift;
+  fi
 
-  publish_version
+  # If no options provided, do a full deployment:
+  full_deployment "$target"
 
-  restart_webhook_service
-
-  log "Done."
 
   # Return to start:
   cd "$repo" || return
