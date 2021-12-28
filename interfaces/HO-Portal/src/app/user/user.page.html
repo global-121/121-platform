@@ -1,25 +1,44 @@
-<ion-header>
+<ion-header class="top-header">
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button
-        [title]="'page.home.pageTitle'|translate"
-        [attr.aria-label]="'page.home.pageTitle'|translate"
-        routerLink="/home"
-        fill="clear"
-        size="small"
-        color="medium"
-      >
-        <ion-icon name="home" slot="icon-only" aria-hidden="true"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>
-      <h1 class="ion-no-margin">
-        {{ 'page.user.pageTitle'|translate }}
-      </h1>
-    </ion-title>
-    <ion-buttons slot="end">
-      <app-user-state></app-user-state>
-    </ion-buttons>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-row>
+            <ion-buttons>
+              <ion-button
+                [title]="'page.home.pageTitle'|translate"
+                [attr.aria-label]="'page.home.pageTitle'|translate"
+                routerLink="/home"
+                fill="clear"
+                size="small"
+                color="medium"
+              >
+                <ion-icon name="home" slot="icon-only" aria-hidden="true"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+            <ion-title>
+              <h1 class="ion-no-margin">
+                {{ 'page.user.pageTitle'|translate }}
+              </h1>
+            </ion-title>
+          </ion-row>
+        </ion-col>
+        <ion-col>
+          <ion-row class="ion-justify-content-center">
+            <div id="logo-container">
+              <img src="./assets/img/121-logo.png" alt="121">
+            </div>
+          </ion-row>
+        </ion-col>
+        <ion-col>
+          <ion-row class="ion-justify-content-end">
+            <ion-buttons>
+              <app-user-state></app-user-state>
+            </ion-buttons>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-toolbar>
 </ion-header>
 <ion-content>
