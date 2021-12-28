@@ -103,7 +103,7 @@ http
         isMinorUpgrade(payload.release.target_commitish)
       ) {
         console.log(
-          `Release (hotfix) deployment for: ${payload.release.target_commitish}`,
+          `Pre-release deployment for: ${payload.release.target_commitish}`,
         );
         deploy(payload.release.target_commitish);
         return;
