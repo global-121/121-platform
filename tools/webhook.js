@@ -1,7 +1,7 @@
-const http = require("http");
-const crypto = require("crypto");
-const child_process = require("child_process");
-const fs = require("fs");
+const http = require('http');
+const crypto = require('crypto');
+const child_process = require('child_process');
+const fs = require('fs');
 
 // ----------------------------------------------------------------------------
 //   Functions/Methods/etc:
@@ -28,7 +28,7 @@ function deploy(target) {
         console.error(error);
         return;
       }
-    }
+    },
   );
 }
 
@@ -37,8 +37,14 @@ function deploy(target) {
  * @param {string} target
  */
 function isMinorUpgrade(target) {
-  const currentVersion = fs.readFileSync(`${process.env.GLOBAL_121_WEB_ROOT}/VERSION.txt`, { encoding: 'utf-8' });
-  const currentMinorVersion = currentVersion.replace(/v(\d+)\.(\d+)\.([\S\s]*)/, 'v$1.');
+  const currentVersion = fs.readFileSync(
+    `${process.env.GLOBAL_121_WEB_ROOT}/VERSION.txt`,
+    { encoding: 'utf-8' },
+  );
+  const currentMinorVersion = currentVersion.replace(
+    /v(\d+)\.(\d+)\.([\S\s]*)/,
+    'v$1.',
+  );
 
   return target.includes(currentMinorVersion);
 }
@@ -48,70 +54,74 @@ function isMinorUpgrade(target) {
 // ----------------------------------------------------------------------------
 
 http
-  .createServer(function(req, res) {
+  .createServer(function (req, res) {
     let body = [];
-    req.on("data", function(chunk) {
+    req.on('data', function (chunk) {
       body.push(chunk);
     });
-    req.on("end", function() {
+    req.on('end', function () {
       let str = Buffer.concat(body).toString();
       let sig =
-        "sha1=" +
+        'sha1=' +
         crypto
-          .createHmac("sha1", process.env.GITHUB_WEBHOOK_SECRET)
+          .createHmac('sha1', process.env.GITHUB_WEBHOOK_SECRET)
           .update(str)
-          .digest("hex");
+          .digest('hex');
       let payload = JSON.parse(str);
 
-      if (req.headers["x-hub-signature"] !== sig) {
+      if (req.headers['x-hub-signature'] !== sig) {
         console.warn('Invalid GitHub signature!');
-        return
+        return;
       }
 
       if (
         payload.pull_request &&
         payload.pull_request.merged &&
-        payload.pull_request.title.includes("[SKIP CD]")
+        payload.pull_request.title.includes('[SKIP CD]')
       ) {
         console.log('PR deployment skipped with [SKIP CD]');
-        return
+        return;
       }
 
       if (
-        process.env.NODE_ENV === "test" &&
-        payload.action === "closed" &&
+        process.env.NODE_ENV === 'test' &&
+        payload.action === 'closed' &&
         payload.pull_request.merged
       ) {
         console.log('PR deployment for test-environment.');
-        deploy()
-        return
+        deploy();
+        return;
       }
 
       if (
         process.env.DEPLOY_PRE_RELEASE &&
-        payload.action === "prereleased" &&
-        process.env.NODE_ENV === "production" &&
+        payload.action === 'prereleased' &&
+        process.env.NODE_ENV === 'production' &&
         payload.release.draft === false &&
         payload.release.prerelease === true &&
         payload.release.target_commitish &&
         isMinorUpgrade(payload.release.target_commitish)
       ) {
-        console.log(`Release (hotfix) deployment for: ${payload.release.target_commitish}`);
+        console.log(
+          `Release (hotfix) deployment for: ${payload.release.target_commitish}`,
+        );
         deploy(payload.release.target_commitish);
-        return
+        return;
       }
 
       if (
         process.env.DEPLOY_RELEASE &&
-        payload.action === "released" &&
-        process.env.NODE_ENV === "production" &&
+        payload.action === 'released' &&
+        process.env.NODE_ENV === 'production' &&
         payload.release.draft === false &&
         payload.release.target_commitish &&
         isMinorUpgrade(payload.release.target_commitish)
       ) {
-        console.log(`Release (hotfix) deployment for: ${payload.release.target_commitish}`);
+        console.log(
+          `Release (hotfix) deployment for: ${payload.release.target_commitish}`,
+        );
         deploy(payload.release.target_commitish);
-        return
+        return;
       }
     });
     res.end();
