@@ -99,8 +99,7 @@ http
         process.env.NODE_ENV === 'production' &&
         payload.release.draft === false &&
         payload.release.prerelease === true &&
-        payload.release.target_commitish &&
-        isMinorUpgrade(payload.release.target_commitish)
+        payload.release.target_commitish
       ) {
         console.log(
           `Pre-release deployment for: ${payload.release.target_commitish}`,
