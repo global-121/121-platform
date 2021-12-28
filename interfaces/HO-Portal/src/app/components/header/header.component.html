@@ -38,26 +38,39 @@
 <ion-grid>
   <ion-row class="ion-align-items-center">
     <ion-col size="auto">
-      <ion-button
-        [routerLink]="['/program', programId, 'dashboard']"
-        routerLinkActive
-        #rlaDashboard="routerLinkActive"
-        [fill]=" rlaDashboard.isActive ? 'solid' : 'outline'"
-        size="small"
-      >
-        {{ 'header.dashboard'|translate }}
-      </ion-button>
-      <ion-button
-        *ngIf="showManageAidworkers"
-        [disabled]="!canManageAidWorkers()"
-        [routerLink]="['/program', programId, 'aid-workers']"
-        routerLinkActive
-        #rlaAidWorkers="routerLinkActive"
-        [fill]=" rlaAidWorkers.isActive ? 'solid' : 'outline'"
-        size="small"
-      >
-        {{ 'header.aid-workers'|translate }}
-      </ion-button>
+      <span class="phase-navigation">
+        <ion-button
+          [routerLink]="['/program', programId, 'dashboard']"
+          routerLinkActive
+          #rlaDashboard="routerLinkActive"
+          [color]="rlaDashboard.isActive ? 'secondary' : 'primary'"
+          fill="clear"
+          size="small"
+        >
+          {{ 'header.dashboard'|translate }}
+        </ion-button>
+        <span
+          *ngIf="rlaDashboard.isActive"
+          class="phase-navigation--indicator"
+        ></span>
+      </span>
+      <span *ngIf="showManageAidworkers" class="phase-navigation">
+        <ion-button
+          [disabled]="!canManageAidWorkers()"
+          [routerLink]="['/program', programId, 'aid-workers']"
+          routerLinkActive
+          #rlaAidWorkers="routerLinkActive"
+          [color]="rlaAidWorkers.isActive ? 'secondary' : 'primary'"
+          fill="clear"
+          size="small"
+        >
+          {{ 'header.aid-workers'|translate }}
+        </ion-button>
+        <span
+          *ngIf="rlaAidWorkers.isActive"
+          class="phase-navigation--indicator"
+        ></span>
+      </span>
     </ion-col>
     <ion-col size="auto">
       {{ 'header.phases'|translate }}:

@@ -23,17 +23,17 @@ export class PhaseNavigationComponent implements OnInit {
     );
   }
 
-  public getFill(phase: Phase): string {
-    let fill = 'outline';
+  // public getFill(phase: Phase): string {
+  //   let fill = 'outline';
 
-    if (phase.active) {
-      fill = 'solid';
-    }
+  //   if (phase.active) {
+  //     fill = 'solid';
+  //   }
 
-    if (phase.disabled) {
-      fill = 'clear';
-    }
+  //   if (phase.disabled) {
+  //     fill = 'clear';
+  //   }
 
-    return fill;
-  }
+  //   return fill;
+  // }
 }

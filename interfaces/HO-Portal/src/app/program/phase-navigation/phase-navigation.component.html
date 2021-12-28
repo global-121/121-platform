@@ -6,9 +6,9 @@
     [routerLink]="['/program', programId, phase.name]"
     routerLinkActive
     #rlaPhase="routerLinkActive"
-    [color]="rlaPhase.isActive ? 'primary' : 'medium'"
+    [color]="rlaPhase.isActive ? 'secondary' : 'primary'"
     [disabled]="phase.disabled"
-    [fill]="getFill(phase)"
+    fill="clear"
     size="small"
   >
     {{ phase.label }}
