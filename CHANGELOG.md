@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - 2021-12-23: Conditional Maintenance-mode with status-check for deploy-script  
   Make sure to define `GLOBAL_121_STATUS_URL` in `./tools/.env` when using a custom hostname/port-number for the 121-service
+- 2021-12-22: Add configuration flags for `webhook.js`-script:  
+  `DEPLOY_PRE_RELEASE` and `DEPLOY_RELEASE` to enable auto-deployment of these type of (pre-)release payloads.
+- 2021-12-28: Added 'manual deployment' via the `webhook.js`-script. See [tools/README](./tools/README.md#webhook-script).
+
+## Changed
+
+- 2021-12-28: "Automatic hotfix deployment" is now an opt-in behavior by setting the ENV-variable `DEPLOY_PATCH=1`. See [tools/README](./tools/README.md#webhook-script).
 
 ---
 
