@@ -11,6 +11,12 @@
           </div>
           <h1 class="text-uppercase">{{ 'page.login.portalTitle'|translate }}</h1>
         </div>
+        <ion-item *ngIf="errorStatusCode != 0" color="danger" lines="none" class="login-notification ion-margin-vertical">
+          <ng-container color="warning" [ngSwitch]="errorStatusCode">
+            <ion-text *ngSwitchCase="401" ><small><strong>{{ 'page.login.form.error-messages.401'|translate }}</strong></small></ion-text>
+            <ion-text *ngSwitchCase="500" ><small><strong>{{ 'page.login.form.error-messages.500'|translate }}</strong></small></ion-text>
+          </ng-container>
+        </ion-item>
         <div class="ion-padding auth-form-container">
           <form
             method="POST"
@@ -18,7 +24,7 @@
             (ngSubmit)="doLogin()"
             (keyup.enter)="doLogin()"
           >
-            <div class="input-item ion-margin-bottom">
+            <div class="input-item auth-item ion-margin-bottom">
               <label
                 color="medium"
                 class="input-item--label auth-label"
@@ -41,13 +47,14 @@
                   ngDefaultControl
                   pattern="[a-zA-Z0-9.-_-]+@[a-z0-9.-]+\.[a-z0-9]+"
                   minlength="4"
-                  class="ion-margin-vertical auth-field"
-                  (ionBlur)="onBlur()"
+                  class="ion-margin-vertical"
+                  [ngClass]="{ 'invalid-border': showLoginFail.email || invalidEmail}"
+                  (ionBlur)="onEmailBlur()"
                 ></ion-input>
               </div>
-              <div class="validation-message"><ion-note *ngIf="!validEmail" color="danger"><small><strong>{{ 'page.login.form.error-messages.invalid-email'|translate }}</strong></small></ion-note></div>
+              <div class="validation-message"><ion-text *ngIf="invalidEmail" color="danger"><small><strong>{{ 'page.login.form.error-messages.invalid-email'|translate }}</strong></small></ion-text></div>
             </div>
-            <div class="input-item ion-margin-bottom ion-padding-bottom">
+            <div class="input-item auth-item ion-margin-bottom ion-padding-bottom">
               <label
                 color="medium"
                 class="input-item--label auth-label"
@@ -67,15 +74,12 @@
                   name="password"
                   [(ngModel)]="password"
                   ngDefaultControl
-                  class="ion-margin-vertical auth-field"
+                  class="ion-margin-vertical"
+                  [ngClass]="{ 'invalid-border': showLoginFail.password || emptyPassword}"
+                  (ionBlur)="onPasswordBlur()"
                 ></ion-input>
               </div>
-              <div class="validation-message">
-                <ng-container [ngSwitch]="errorStatusCode">
-                  <ion-note *ngSwitchCase="401" color="danger"><small><strong>{{ 'page.login.form.error-messages.401'|translate }}</strong></small></ion-note>
-                  <ion-note *ngSwitchCase="500" color="danger"><small><strong>{{ 'page.login.form.error-messages.500'|translate }}</strong></small></ion-note>
-                </ng-container>
-              </div>
+              <div class="validation-message"><ion-text *ngIf="emptyPassword" color="danger"><small><strong>{{ 'page.login.form.error-messages.empty-password'|translate }}</strong></small></ion-text></div>
             </div>
 
             <div class="ion-margin-top ion-no-padding">

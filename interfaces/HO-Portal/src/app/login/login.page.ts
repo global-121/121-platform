@@ -16,10 +16,15 @@ export class LoginPage {
   private systemNotification: SystemNotificationComponent;
 
   public email = '';
-  public password: any;
+  public password = '';
 
-  public validEmail = true;
   public errorStatusCode = 0;
+  public showLoginFail = {
+    email: false,
+    password: false,
+  };
+  public invalidEmail = false;
+  public emptyPassword = false;
 
   constructor(private authService: AuthService) {}
 
@@ -32,23 +37,43 @@ export class LoginPage {
       return;
     }
 
+    this.errorStatusCode = 0;
+    this.showLoginFail.email = false;
+    this.showLoginFail.password = false;
+
     this.authService
       .login(this.email, this.password)
       .then(() => {
         // Remove credentials from interface-state to prevent re-use after log-out:
         this.loginForm.resetForm();
-        this.errorStatusCode = 0;
-        this.validEmail = true;
+        this.invalidEmail = false;
+        this.emptyPassword = false;
       })
-      .catch(({ error }) => (this.errorStatusCode = error?.statusCode));
+      .catch(({ error }) => {
+        console.error(error);
+        this.errorStatusCode = error?.statusCode;
+        if (error?.statusCode === 401) {
+          this.showLoginFail.email = true;
+          this.showLoginFail.password = true;
+        }
+      });
   }
 
-  public onBlur() {
+  public onEmailBlur() {
     this.checkValidEmail();
+    this.showLoginFail.email = false;
   }
 
   private checkValidEmail() {
-    this.validEmail =
-      this.email === '' || this.loginForm.form.get('email').valid;
+    this.invalidEmail = this.loginForm.form.get('email').invalid;
+  }
+
+  public onPasswordBlur() {
+    this.checkEmptyPassword();
+    this.showLoginFail.password = false;
+  }
+
+  private checkEmptyPassword() {
+    this.emptyPassword = this.password === '';
   }
 }
