@@ -1,10 +1,6 @@
-<div
-  style="display: flex;"
-  class="ion-align-items-center ion-justify-content-end"
->
-
-<ion-item *ngIf="program">
+<ion-row *ngIf="program" class="ion-align-items-center">
   <ion-label>{{ 'page.program.phases.registrationValidation.toggleText-enable-registrations'|translate }} </ion-label>
-  <ion-toggle  [ngModel]=publishedStatus (click)="updateRegistrationStatus()"></ion-toggle>
-</ion-item>
-</div>
+  <ion-toggle  [ngModel]=publishedStatus (click)="updateRegistrationStatus()" color="secondary"></ion-toggle>
+</ion-row>
+
+
