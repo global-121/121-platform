@@ -17,7 +17,7 @@
         <h1 class="ion-no-margin">
           {{ title }}
         </h1>
-        <ion-note>
+        <ion-note *ngIf="programPage">
           {{ programTitlePortal }}
           &nbsp;<!-- 'placeholder' to reserve vertical space for async-loaded programTitlePortal -->
         </ion-note>

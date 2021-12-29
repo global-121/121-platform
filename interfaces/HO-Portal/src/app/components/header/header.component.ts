@@ -35,9 +35,6 @@ export class HeaderComponent implements OnInit {
   }
 
   public async ngOnInit() {
-    if (this.programPage) {
-      return;
-    }
     await this.loadProgramDetails();
   }
 
