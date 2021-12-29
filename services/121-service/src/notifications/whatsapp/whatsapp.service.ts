@@ -107,12 +107,12 @@ export class WhatsappService {
         relations: ['program'],
       },
     );
-    const whatsappGenericMesage = this.getGenericNotificationText(
+    const whatsappGenericMessage = this.getGenericNotificationText(
       language,
       registration.program,
     );
     this.sendWhatsapp(
-      whatsappGenericMesage,
+      whatsappGenericMessage,
       recipientPhoneNr,
       messageType,
       mediaUrl,
@@ -124,7 +124,7 @@ export class WhatsappService {
     language: string,
     program: ProgramEntity,
   ): string {
-    const key = 'whatsappGenericMesage';
+    const key = 'whatsappGenericMessage';
     const fallbackNotifications = program.notifications[this.fallbackLanguage];
     let notifications = fallbackNotifications;
 

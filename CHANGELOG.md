@@ -16,14 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 2021-12-22: Add configuration flags for `webhook.js`-script:  
   `DEPLOY_PRE_RELEASE` and `DEPLOY_RELEASE` to enable auto-deployment of these type of (pre-)release payloads.
 - 2021-12-28: Added 'manual deployment' via the `webhook.js`-script. See [tools/README](./tools/README.md#webhook-script).
+- 2021-12-29: Added `whatsappGenericMessage` to the NL program notifications.
 
 ## Changed
 
 - 2021-12-28: "Automatic hotfix deployment" is now an opt-in behavior by setting the ENV-variable `DEPLOY_PATCH=1`. See [tools/README](./tools/README.md#webhook-script).
-
-### Added
-
-- 2021-12-14: Added whatsappGenericMesage to the NL program in notifications.
 
 ---
 
