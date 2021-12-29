@@ -21,6 +21,7 @@ import { ProgramModule } from '../programs/programs.module';
 import { FspModule } from '../fsp/fsp.module';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { RegistrationAnswersService } from './services/registration-answers.service';
+import { WhatsappModule } from '../notifications/whatsapp/whatsapp.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { RegistrationAnswersService } from './services/registration-answers.serv
     ActionModule,
     ProgramModule,
     FspModule,
+    WhatsappModule,
   ],
   providers: [
     RegistrationsService,

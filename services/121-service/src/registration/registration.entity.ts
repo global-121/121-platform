@@ -1,3 +1,4 @@
+import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsapp-pending-message.entity';
 import { CascadeDeleteEntity } from './../base.entity';
 import { UserEntity } from '../user/user.entity';
 import {
@@ -106,6 +107,12 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   )
   public twilioMessages: TwilioMessageEntity[];
 
+  @OneToMany(
+    _type => WhatsappPendingMessageEntity,
+    whatsappPendingMessages => whatsappPendingMessages.registration,
+  )
+  public whatsappPendingMessages: WhatsappPendingMessageEntity[];
+
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     await this.deleteAllOneToMany([
@@ -127,6 +134,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       },
       {
         entityClass: TwilioMessageEntity,
+        columnName: 'registration',
+      },
+      {
+        entityClass: WhatsappPendingMessageEntity,
         columnName: 'registration',
       },
     ]);
