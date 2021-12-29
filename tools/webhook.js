@@ -63,8 +63,16 @@ function showManualDeployForm() {
 </form>`;
 }
 
+/**
+ * Remove unneccessary characters, return a predictable value
+ * @param {string | number} input
+ * @returns {string}
+ */
 function sanitizeTarget(input) {
-  return input.replace(/[^a-z/-_.0-9]/gi, '');
+  if (!input) {
+    return '';
+  }
+  return input.toString().replace(/[^a-z/-_.0-9]/gi, '');
 }
 
 // ----------------------------------------------------------------------------
