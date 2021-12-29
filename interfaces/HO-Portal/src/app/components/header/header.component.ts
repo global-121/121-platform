@@ -1,7 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/auth/auth.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -15,15 +13,21 @@ export class HeaderComponent implements OnInit {
   @Input()
   public title: string;
 
+  @Input()
+  public startButtonRouterLink: string;
+
+  @Input()
+  public startButtonIcon: string;
+
+  @Input()
+  public programPage: boolean;
+
   public programId: number;
   private program: Program;
   public programTitlePortal: string;
 
-  public showManageAidworkers: boolean;
-
   constructor(
     private route: ActivatedRoute,
-    private authService: AuthService,
     private programsService: ProgramsServiceApiService,
     private translatableString: TranslatableStringService,
   ) {
@@ -31,8 +35,10 @@ export class HeaderComponent implements OnInit {
   }
 
   public async ngOnInit() {
+    if (this.programPage) {
+      return;
+    }
     await this.loadProgramDetails();
-    this.showManageAidworkers = !!this.program.validation;
   }
 
   private async loadProgramDetails() {
@@ -40,9 +46,5 @@ export class HeaderComponent implements OnInit {
     this.programTitlePortal = this.translatableString.get(
       this.program?.titlePortal,
     );
-  }
-
-  public canManageAidWorkers(): boolean {
-    return this.authService.hasUserRole([UserRole.RunProgram]);
   }
 }
