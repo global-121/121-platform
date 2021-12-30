@@ -1,5 +1,5 @@
 [Unit]
-Description=Github webhook
+Description=GitHub Webhook
 After=network.target
 
 [Service]
@@ -7,6 +7,10 @@ Environment=NODE_ENV=production
 Environment=NODE_PORT=3099
 Environment=GLOBAL_121_REPO=/home/121-platform/
 Environment=GLOBAL_121_WEB_ROOT=/var/www/121-platform
+Environment=DEPLOY_SECRET=<secret>
+Environment=DEPLOY_PATCH=1
+Environment=DEPLOY_RELEASE=1
+Environment=DEPLOY_PRE_RELEASE=1
 Environment=GITHUB_WEBHOOK_SECRET=<secret>
 Type=simple
 User=<user>

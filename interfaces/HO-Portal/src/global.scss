@@ -78,7 +78,14 @@ ion-button {
     margin-top: 8px;
     margin-bottom: 8px;
 
-    &:not(.auth-field) {
+    input {
+      --padding-start: 8px;
+      --padding-end: 8px;
+    }
+  }
+
+  &.update-property-item {
+    ion-input {
       &.has-value {
         &.ion-invalid {
           border-color: var(--ion-color-danger);
@@ -91,26 +98,18 @@ ion-button {
         }
       }
     }
-
-    &.auth-field {
-      &.ion-dirty {
-        &:not(.has-focus) {
-          &.ion-valid {
-            border-color: var(--ion-color-success);
-          }
-          &.ion-invalid {
-            border-color: var(--ion-color-danger);
-          }
-        }
-      }
-    }
-
-    input {
-      --padding-start: 8px;
-      --padding-end: 8px;
-    }
   }
 
+  &.auth-item {
+    ion-input {
+      &.valid-border {
+        border-color: var(--ion-color-success);
+      }
+      &.invalid-border {
+        border-color: var(--ion-color-danger);
+      }
+    }
+  }
   .validation-message {
     min-height: 36px;
   }
@@ -165,20 +164,4 @@ ion-icon {
   max-width: 339px;
   margin-left: auto;
   margin-right: auto;
-}
-
-.phase-navigation {
-  --phase-navigation--indicator-size: 2px;
-
-  display: inline-block;
-  position: relative;
-}
-.phase-navigation--indicator {
-  display: block;
-  position: absolute;
-  top: 90%;
-  left: 0.85em;
-  right: 0.85em;
-  border-top: var(--phase-navigation--indicator-size) solid
-    var(--ion-color-secondary);
 }

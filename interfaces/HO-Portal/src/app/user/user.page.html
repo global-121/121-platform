@@ -19,7 +19,7 @@
               (ngSubmit)="updatePassword()"
               (keyup.enter)="updatePassword()"
             >
-              <div class="input-item ion-margin-bottom ion-padding-bottom">
+              <div class="input-item auth-item ion-margin-bottom ion-padding-bottom">
                 <label
                   color="medium"
                   class="input-item--label auth-label"
@@ -40,16 +40,17 @@
                     name="new-password"
                     [(ngModel)]="newPassword"
                     ngDefaultControl
-                    (ionBlur)="checkNewPassword()"
                     pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}"
-                    class="ion-margin-vertical auth-field">
+                    (ionBlur)="checkNewPassword()"
+                    [ngClass]="newPasswordBorder"
+                    class="ion-margin-vertical">
                   </ion-input>
                   <div class="validation-message">
-                    <ion-note [color]="validPassword ? 'medium' : 'danger'"><small><strong>{{ 'page.user.notification-messages.password-requirements'|translate: {minLength: minLength} }}</strong></small></ion-note>
+                    <ion-note [color]="!validPassword ? 'danger' : 'medium'"><small><strong>{{ 'page.user.notification-messages.password-requirements'|translate: {minLength: minLength} }}</strong></small></ion-note>
                   </div>
                 </div>
               </div>
-              <div class="input-item ion-margin-bottom ion-padding-bottom">
+              <div class="input-item auth-item ion-margin-bottom ion-padding-bottom">
                 <label
                   color="medium"
                   class="input-item--label auth-label"
@@ -73,7 +74,8 @@
                     pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}"
                     (ionBlur)="checkConfirmPasswords()"
                     (ionChange)="onChange()"
-                    class="ion-margin-vertical auth-field">
+                    [ngClass]="confirmPasswordBorder"
+                    class="ion-margin-vertical">
                   </ion-input>
                 </div>
                 <div class="validation-message">

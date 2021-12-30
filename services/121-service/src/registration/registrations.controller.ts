@@ -1,4 +1,3 @@
-import { PersonAffectedRole } from './../user-role.enum';
 import { RegistrationEntity } from './registration.entity';
 import {
   Post,
@@ -43,8 +42,8 @@ import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
-import { SendCustomSmsDto } from './dto/send-custom-sms.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
+import { SendCustomTextDto } from './dto/send-custom-text.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -497,10 +496,15 @@ export class RegistrationsController {
   }
 
   @Roles(UserRole.PersonalData, UserRole.RunProgram)
-  @ApiOperation({ title: 'Send custom sms to array of registrations' })
-  @Post('sms')
-  public async sendCustomSms(@Body() data: SendCustomSmsDto): Promise<void> {
-    return await this.registrationsService.sendCustomSms(
+  @ApiOperation({
+    title:
+      'Send custom text-message (whatsapp or sms) to array of registrations',
+  })
+  @Post('text-message')
+  public async sendCustomTextMessage(
+    @Body() data: SendCustomTextDto,
+  ): Promise<void> {
+    return await this.registrationsService.sendCustomTextMessage(
       data.referenceIds,
       data.message,
     );

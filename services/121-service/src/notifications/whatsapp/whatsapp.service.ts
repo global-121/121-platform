@@ -1,3 +1,4 @@
+import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import {
   Injectable,
   Inject,
@@ -36,6 +37,10 @@ export class WhatsappService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
+  @InjectRepository(WhatsappPendingMessageEntity)
+  public pendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
+  @InjectRepository(ProgramEntity)
+  public programRepository: Repository<ProgramEntity>;
 
   private readonly programId = 1;
   private readonly fallbackLanguage = 'en';
@@ -45,37 +50,6 @@ export class WhatsappService {
     @Inject(forwardRef(() => IntersolveService))
     private readonly intersolveService: IntersolveService,
   ) {}
-
-  public async notifyByWhatsapp(
-    registrationId: number,
-    recipientPhoneNr: string,
-    language: string,
-    programId: number,
-    message?: string,
-    key?: string,
-  ): Promise<void> {
-    if (!recipientPhoneNr) {
-      throw new HttpException(
-        'A recipientPhoneNr should be supplied.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    if (!message && !key) {
-      throw new HttpException(
-        'A message or a key should be supplied.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const whatsappText =
-      message || (await this.getWhatsappText(language, key, programId));
-    await this.sendWhatsapp(
-      whatsappText,
-      recipientPhoneNr,
-      null,
-      null,
-      registrationId,
-    );
-  }
 
   public async sendWhatsapp(
     message: string,
@@ -109,12 +83,48 @@ export class WhatsappService {
       });
   }
 
-  public async getWhatsappText(
+  public async queueMessageSendTemplate(
+    message: string,
+    recipientPhoneNr: string,
+    messageType: null | IntersolvePayoutStatus,
+    mediaUrl: null | string,
+    registrationId?: number,
+    preferedLanguage?: string,
+  ): Promise<void> {
+    const pendingMesssage = new WhatsappPendingMessageEntity();
+    pendingMesssage.body = message;
+    pendingMesssage.to = recipientPhoneNr;
+    pendingMesssage.mediaUrl = mediaUrl;
+    pendingMesssage.messageType = messageType;
+    pendingMesssage.registrationId = registrationId;
+    this.pendingMessageRepo.save(pendingMesssage);
+    const language = preferedLanguage
+      ? preferedLanguage
+      : this.fallbackLanguage;
+    const registration = await this.registrationRepository.findOne(
+      registrationId,
+      {
+        relations: ['program'],
+      },
+    );
+    const whatsappGenericMessage = this.getGenericNotificationText(
+      language,
+      registration.program,
+    );
+    this.sendWhatsapp(
+      whatsappGenericMessage,
+      recipientPhoneNr,
+      messageType,
+      mediaUrl,
+      registrationId,
+    );
+  }
+
+  public getGenericNotificationText(
     language: string,
-    key: string,
-    programId: number,
-  ): Promise<string> {
-    const program = await getRepository(ProgramEntity).findOne(programId);
+    program: ProgramEntity,
+  ): string {
+    const key = 'whatsappGenericMessage';
     const fallbackNotifications = program.notifications[this.fallbackLanguage];
     let notifications = fallbackNotifications;
 
@@ -183,6 +193,11 @@ export class WhatsappService {
           whatsappPhoneNumber: phoneNumber,
         },
       })
+      .leftJoinAndSelect(
+        'registration.whatsappPendingMessages',
+        'whatsappPendingMessages',
+      )
+      .orderBy('whatsappPendingMessages.created', 'ASC')
       .getMany();
 
     if (!registrationsWithPhoneNumber.length) {
@@ -242,15 +257,24 @@ export class WhatsappService {
     const registrationsWithPhoneNumber = await this.getRegistrationsWithPhoneNumber(
       fromNumber,
     );
+
+    const registrationsWithPendingMessage = registrationsWithPhoneNumber.filter(
+      (registration: RegistrationEntity) =>
+        registration.whatsappPendingMessages,
+    );
+
     const registrationsWithOpenVouchers = await this.getRegistrationsWithOpenVouchers(
       registrationsWithPhoneNumber,
     );
 
-    // If no registrations with outstanding barcodes: send auto-reply
+    // If no registrations with outstanding barcodes or messages: send auto-reply
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     const language =
       registrationsWithOpenVouchers[0]?.preferredLanguage || 'en';
-    if (registrationsWithOpenVouchers.length === 0) {
+    if (
+      registrationsWithOpenVouchers.length === 0 &&
+      registrationsWithPendingMessage.length === 0
+    ) {
       const whatsappDefaultReply =
         program.notifications[language]['whatsappReply'];
       await this.sendWhatsapp(
@@ -318,6 +342,33 @@ export class WhatsappService {
           EXTERNAL_API.voucherInstructionsUrl,
           registration.id,
         );
+      }
+    }
+    if (
+      registrationsWithPendingMessage &&
+      registrationsWithPendingMessage.length > 0
+    ) {
+      this.sendPendingWhatsappMessages(registrationsWithPendingMessage);
+    }
+  }
+  private sendPendingWhatsappMessages(
+    registrationsWithPendingMessage: RegistrationEntity[],
+  ): void {
+    for (const registration of registrationsWithPendingMessage) {
+      if (registration.whatsappPendingMessages) {
+        for (const message of registration.whatsappPendingMessages) {
+          this.sendWhatsapp(
+            message.body,
+            message.to,
+            message.messageType
+              ? (message.messageType as IntersolvePayoutStatus)
+              : null,
+            message.mediaUrl,
+            message.registrationId,
+          ).then(() => {
+            this.pendingMessageRepo.remove(message);
+          });
+        }
       }
     }
   }

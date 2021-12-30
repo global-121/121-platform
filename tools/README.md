@@ -49,15 +49,26 @@ Where `<webroot-path>` is for example: `/var/www/121-platform/`;
 
 ## Manual Deployment
 
-The bash-script [`deploy.sh`](./deploy.sh) can be run on the test/production-environment to perform all necessary steps.
+The bash-script [`deploy.sh`](./deploy.sh) can be run on the test/production-environment to perform all necessary steps.  
+For all available options, run: `deploy.sh --help`
 
 ## Continuous Deployment
 
-### GitHub webhook
+### Webhook Script
 
-A [GitHub webhook](https://developer.github.com/webhooks/) is fired after every merged Pull Request to an endpoint on the server. Upon arrival a script is run. See [`webhook.js`](webhook.js).
+A Webhook script is run on our server(s) to respond to events in our GitHub-repository. See [`webhook.js`](webhook.js).
 
-This is currently set up. To reproduce, you would follow these steps:
+The Webhook script responds to [GitHub webhook](https://developer.github.com/webhooks/)-payloads depending on the feature-flags set via ENV-variables or depending on the specific event/action provided by GitHub, for example "when a Pull-Request is merged" or "when a Release is published".
+
+The features/flags are:
+
+- If `DEPLOY_PRE_RELEASE=1` is set, every _**pre**-release_ published on GitHub will be automatically deployed.
+- If `DEPLOY_RELEASE=1` is set, every _release_ published on GitHub will be automatically deployed.
+- If `DEPLOY_PATCH=1` is set, every **hotfix/patch**-release published on GitHub will be automatically deployed ONLY if its version-number is of the same _minor_ version. (So `v1.2.1` will be deployed automatically ONLY when the current version is `v1.2.0`.)
+
+There is also a 'manual override', when going to the webhook's public endpoint in a browser with the URL `?do=deploy`. In the form the `DEPLOY_SECRET` and the target branch can be submitted to run the deploy-script with the code from that branch.
+
+Our current set-up is:
 
 1.  Create a `systemd-service`.  
     Use the template [`webhook.service`](webhook.service), fill in:
@@ -67,6 +78,8 @@ This is currently set up. To reproduce, you would follow these steps:
     - Set `GLOBAL_121_REPO` to the absolute path of this git-repository
     - Set `GLOBAL_121_WEB_ROOT` to the absolute path of the deployment location of the web-apps
     - Set `GITHUB_WEBHOOK_SECRET` to the value configured on [GitHub](https://github.com/global-121/121-platform/settings/hooks)
+    - Set `DEPLOY_SECRET` to a secure secret value stored elsewhere (i.e. Bitwarden)
+    - Set or remove the preferred flags of `DEPLOY_PATCH`, `DEPLOY_PRE_RELEASE` and/or `DEPLOY_RELEASE`.
 
 2.  Install Node.js:  
     See: <https://github.com/nodesource/distributions#installation-instructions> for instructions for Ubuntu.  

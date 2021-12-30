@@ -17,6 +17,9 @@ function deploy() {
   local repo_ho=$repo_interfaces/HO-Portal
   local repo_aw=$repo_interfaces/AW-App
 
+  ${GLOBAL_121_STATUS_URL:=http://localhost:3000/docs/}
+  local services_status_url=$GLOBAL_121_STATUS_URL
+
   local web_root=$GLOBAL_121_WEB_ROOT
   local pa_dir=$GLOBAL_121_PA_DIR
   local ho_dir=$GLOBAL_121_HO_DIR
@@ -33,6 +36,25 @@ function deploy() {
     echo " " "$@"
     echo "------------------------------------------------------------------------------"
     printf "\n"
+  }
+
+  function get_help() {
+    cat <<END
+
+-----------------------------------------------------------------------------
+ Deploy Script options:
+-----------------------------------------------------------------------------
+
+* Full deploy of latest:                        $0
+
+* Full deploy of target branch "release/v2":    $0 release/v2
+
+* Only deploy a specific interface:             $0 --only pa
+
+* See this help:                                $0 --help
+
+-----------------------------------------------------------------------------
+END
   }
 
   function setup_log_file() {
@@ -93,6 +115,22 @@ function deploy() {
     rm "$web_root/.maintenance"
   }
 
+  function disable_maintenance_mode_when_done() {
+    log "Waiting for services to disable Maintenance-mode..."
+
+    cd "$repo" || return
+
+    if [[ -e "./tools/wait-for.sh" ]];
+    then
+      # Run status check in a parallel process...
+      (
+        ./tools/wait-for.sh "$services_status_url" -- rm "$web_root/.maintenance"
+      ) &
+    else
+      disable_maintenance_mode
+    fi
+  }
+
   function build_services() {
     log "Updating/building services..."
 
@@ -146,6 +184,33 @@ function deploy() {
     cp -r www/ "$web_root/$web_app_dir"
   }
 
+  function do_interface() {
+    local interface=$1
+
+    if [[ $interface == 'aw' ]];
+    then
+      log "Deploying interface: AW-App"
+      build_interface "AW-App" "$repo_aw" "$aw_dir"
+      deploy_interface "AW-App" "$repo_aw" "$aw_dir"
+
+    elif [[ $interface == 'pa' ]];
+    then
+      log "Deploying interface: PA-App"
+      build_interface "PA-App" "$repo_pa" "$pa_dir"
+      deploy_interface "PA-App" "$repo_pa" "$pa_dir"
+
+    elif [[ $interface == 'ho' ]];
+    then
+      log "Deploying interface: HO-Portal"
+      build_interface "HO-Portal" "$repo_ho" "$ho_dir"
+      deploy_interface "HO-Portal" "$repo_ho" "$ho_dir"
+
+    else
+      log "Invalid interface name. Use: aw | pa | ho "
+      exit 1
+    fi
+  }
+
   function restart_webhook_service() {
     service webhook restart
 
@@ -159,37 +224,61 @@ function deploy() {
     log "Deployed: $GLOBAL_121_VERSION"
   }
 
+  function full_deployment() {
+    local target=$1
 
-  #
-  # Actual deployment:
-  #
-  setup_log_file
+    log "Doing full deployment with target: $target"
+    setup_log_file
 
-  clear_version
+    clear_version
+    update_code "$target"
+    set_version
 
-  update_code "$target"
+    enable_maintenance_mode
+    build_services
+    disable_maintenance_mode_when_done
+    cleanup_services
 
-  set_version
+    do_interface "pa"
+    do_interface "aw"
+    do_interface "ho"
 
-  enable_maintenance_mode
-  build_services
-  disable_maintenance_mode
-  cleanup_services
+    wait # Make sure the status-check has finised
 
-  build_interface "PA-App" "$repo_pa" "$pa_dir"
-  deploy_interface "PA-App" "$repo_pa" "$pa_dir"
+    publish_version
 
-  build_interface "AW-App" "$repo_aw" "$aw_dir"
-  deploy_interface "AW-App" "$repo_aw" "$aw_dir"
+    log "Done."
 
-  build_interface "HO-Portal" "$repo_ho" "$ho_dir"
-  deploy_interface "HO-Portal" "$repo_ho" "$ho_dir"
+    # Restart as the final step because it will kill the process running this script
+    restart_webhook_service
+  }
 
-  publish_version
+  ###########################################################################
 
-  restart_webhook_service
+  # Check command-line options/flags:
+  while [[ "$1" =~ ^- && ! "$1" == "--" ]];
+    do case $1 in
+      -h | --help )
+        get_help
+        exit 0
+        ;;
+      -o | --only )
+        shift;
+        local only=$1
+        do_interface "$only"
+        exit 0
+        ;;
+    esac;
+    shift;
+  done
+  if [[ "$1" == '--' ]];
+  then
+    shift;
+  fi
 
-  log "Done."
+  # If no options provided, do a full deployment:
+  full_deployment "$target"
+
 
   # Return to start:
   cd "$repo" || return

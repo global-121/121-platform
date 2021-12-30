@@ -3,6 +3,7 @@
 
 variables:
   workingDir: interfaces/AW-App/
+  npm_config_cache: $(Pipeline.Workspace)/.npm
 
 trigger:
   branches:
@@ -27,6 +28,14 @@ steps:
   - task: NodeTool@0
     inputs:
       versionSpec: '12.x'
+
+  - task: Cache@2
+    displayName: Cache npm
+    inputs:
+      key: 'npm | "$(Agent.OS)" | "$(workingDir)package-lock.json"'
+      restoreKeys: |
+        npm | "$(Agent.OS)"
+      path: $(npm_config_cache)
 
   - script: npm ci
     displayName: Install

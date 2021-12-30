@@ -30,13 +30,12 @@ export class WhatsappController {
   @ApiImplicitParam({ name: 'number' })
   @Get(':number')
   public async sendWhatsapp(@Param() params): Promise<void> {
-    return await this.whatsappService.notifyByWhatsapp(
-      1,
+    return await this.whatsappService.sendWhatsapp(
+      'Test whatsapp',
       params.number,
-      'en',
-      1,
       null,
-      RegistrationStatusEnum.registered,
+      null,
+      null,
     );
   }
 
