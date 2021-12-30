@@ -1,20 +1,12 @@
 {
-  "_dir": "ltr",
   "account": {
-    "change-password": "Ganti password",
-    "delete-account-header": "Isi password anda apabila anda yakin bahwa anda ingin menghapus akun anda",
-    "delete-account-message": "Menghapus akun tidak bisa dirubah lagi, sehingga semua data anda akan hilang!",
     "delete-data": "Hapus akun",
-    "delete-fail": "Ada kesalahan yang terjadi, akun anda tidak bisa dihapus total.",
-    "delete-success": "Akun anda telah berhasil dihapus. Anda sekarang harus logout.",
-    "enter-password": "Password anda",
     "logout": "Log out"
   },
   "connection": {
     "error-retry": "Ada sesuatu yang tidak berjalan dengan baik, apakah anda ingin mencoba lagi?"
   },
   "notification": {
-    "close": "Tutup",
     "inclusion": "Status penerimaan telah diterima"
   },
   "password-toggle": {
@@ -43,7 +35,6 @@
     "enroll-in-program": {
       "change": "Ubah informasi saya",
       "introduction-information": "Untuk menjamin bahwa anda bisa dibantu sebaik mungkin, melalui proses yang aman, kami butuh beberapa informasi pribadi anda.",
-      "more-info-questions": "Tentang informasi pribadi",
       "please-confirm": "Dibawah ini adalah rangkuman dari informasi anda. Harap diperiksa dan setelah itu klik 'send'.",
       "submit-confirm": "Kirim informasi saya"
     },
@@ -72,8 +63,6 @@
     },
     "registration-summary": {
       "documents": "Harap siap dengan dokumen-dokumen ini:",
-      "info-message": "Untuk mengaktifkan akun anda <br><br>Apabila anda telah membuat akun anda, anda akan menerima sebuah print out dari ID digital anda yang tampaknya seperti ini <br>Anda akan perlu membawa ini dan dokumen-dokumen dibawah secara fisik ke sebuah pertemuan dengan petugas Bantuan  untuk mengaktifkan akun anda <br><ul><li>Kartu Identitas Nasional anda </li></ul><br>Bagaimana kalau saya tidak memiliki kartu itu? Berarti anda memiliki 2 pilihan <ol><li>Bawa surat dari ketua, yang mengkonfirmasi identitas anda </li><li>Bawa nomor X  (butuh nama dari nomor ini yang serupa dengan nomor BSN) dari Biro Registrasi Nasional. Anda harus membayar untuk yang baru yang harganya adalah X </li></ol>",
-      "more-info-documents": "Tentang dokumen-dokumen ini",
       "no-validation-conclusion": "Terima kasih. Registrasi anda sekarang sudah lengkap. <br><br>Anda akan menerima SMS/WhatsApp di nomor HP yang telah anda berikan yang mengkonfirmasikan registrasi anda. <br><br>Anda akan diberitahukan seandainya aplikasi anda telah berhasil, dalam waktu 14 hari. <br><br> Ini adalah berita terakhir.",
       "qr-code": "Harap tunjukkan QR-code ini ke petugas Bantuan, bila diminta",
       "validation-conclusion": "Terima kasih. Registrasi anda telah lengkap. Anda akan menerima SMS/WhatsApp di nomor telpon yang anda berikan secepatnya, yang akan mengkonfirmasi registrasi anda. <br><br>\nSeorang petugas Bantuan dari NGO ini akan mengoranisir pertemuan dengan anda untuk memvalidasi informasi anda, mungkin dengan mampir ke alamat anda."
@@ -88,35 +77,7 @@
       "introduction": "Harap pilih bagaimana anda ingin menerima Bantuan ini, apabila anda sudah dimasukkan dalam program."
     },
     "select-language": {
-      "introduction": {
-        "en": "Please select your language.",
-        "ar": "الرجاء اختيار لغتك",
-        "fr": "Choisissez votre langue, s'il vous plaît.",
-        "nl": "Kies jouw taal.",
-        "ny_MW": "Chonde sankhani chiyankhulo chanu.",
-        "om_ET": "Maaloo qooqa keessan filadhaa.",
-        "pt_BR": "Por favor, selecione seu idioma.",
-        "saq_KE": "Enjere tegelu ng'ituk ino.",
-        "ti": "",
-        "tl": "Pumili ng iyong wika.",
-        "tuv_KE": "Aarimatoi, tetheu akituk kon.",
-        "in": "Pilih bahasa anda."
-      },
-      "result": "Terima kasih, anda telah memilih  {{language}}.",
-      "language": {
-        "en": "English",
-        "ar": "عربى",
-        "fr": "Français",
-        "nl": "Nederlands",
-        "ny_MW": "Chichewa",
-        "om_ET": "Afaan Oromoo",
-        "pt_BR": "Portuguese",
-        "saq_KE": "Samburu",
-        "ti": "ትግርኛ",
-        "tl": "Tagalog",
-        "tuv_KE": "Ng'aturkana",
-        "in": "Bahasa Indonesia"
-      }
+      "result": "Terima kasih, anda telah memilih  {{language}}."
     },
     "select-program": {
       "introduction": "Anda bisa menggunakan app ini untuk mendaftar ke program bantuan ini. Harap pilih dibawah.",
@@ -164,7 +125,6 @@
     "try-again": "Coba lagi"
   },
   "shared": {
-    "cancel-button": "Cancel",
     "close-button": "Tutup",
     "more-info": "Baca seterusnya....",
     "retry": "Coba lagi",

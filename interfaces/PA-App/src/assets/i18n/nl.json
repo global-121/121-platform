@@ -1,19 +1,12 @@
 {
   "account": {
-    "change-password": "Verander wachtwoord",
-    "delete-account-header": "Vul je wachtwoord in als je zeker bent dat je je account wilt verwijderen.",
-    "delete-account-message": "Verwijderen van je account is niet terug te draaien, al je data zal verloren gaan!",
-    "delete-data": "Verwijder account",
-    "delete-fail": "Er ging iets mis, je account kon niet volledig worden verwijderd.",
-    "delete-success": "Je account is succesvol verwijderd. Je zal nu worden uitgelogd.",
-    "enter-password": "Jouw wachtwoord",
+    "delete-data": "Verwijder mijn data",
     "logout": "Uitloggen"
   },
   "connection": {
     "error-retry": "Er ging iets mis, wil je het opnieuw proberen?"
   },
   "notification": {
-    "close": "sluit",
     "inclusion": "Registratie status is ontvangen"
   },
   "password-toggle": {
@@ -42,7 +35,6 @@
     "enroll-in-program": {
       "change": "Wijzig mijn informatie",
       "introduction-information": "Om de best mogelijke hulp en een eerlijk proces te bieden, hebben we wat persoonlijke informatie nodig.",
-      "more-info-questions": "Over persoonlijke informatie",
       "please-confirm": "Hieronder is een overzicht van jouw persoonlijke informatie. Controleer en klik op versturen.",
       "submit-confirm": "Verstuur mijn informatie"
     },
@@ -71,11 +63,9 @@
     },
     "registration-summary": {
       "documents": "Houd deze documenten gereed:",
-      "info-message": "Om jouw account te activeren <br><br> Zodra je jouw account aanmaakt, zal je een afdruk ontvangen van jouw digitale ID, die er zo uitziet. <br> Je moet deze, en de fysieke documenten hieronder, naar de afspraak met een medewerker brengen om je account te activeren. <br><ul><li> Jouw identiteitsbewijs </li></ul><br> Wat als je geen identiteitsbewijs hebt? Dan heb je 2 opties: <ol><li> Breng een brief van \"the chief\" die zijn/haar identiteit bevestigt </li><li> Haal jouw X nummer af bij het Nationaal Register. Je zal moeten betalen voor een nieuw X nummer. De prijs daarvoor is X. </li></ol>",
-      "more-info-documents": "Over deze documenten",
-      "no-validation-conclusion": "Bedankt. Je inschrijving is nu compleet.   <br><br>   Je ontvangt binnenkort een SMS/WhatsApp op het door jou ingevulde nummer om je inschrijving te bevestigen.   <br><br>   Je wordt binnen 14 dagen geïnformeerd of je toelating succesvol is.   <br><br>   Dit is voor nu het laatste bericht. ",
+      "no-validation-conclusion": "Bedankt. Je inschrijving is nu compleet. <br><br> Je ontvangt binnenkort een SMS/WhatsApp op het door jou ingevulde nummer om je inschrijving te bevestigen. <br><br> Je wordt binnen 14 dagen geïnformeerd of je toelating succesvol is. <br><br> Dit is voor nu het laatste bericht. ",
       "qr-code": "Toon de QR-code aan de medewerker wanneer deze daar om vraagt.",
-      "validation-conclusion": "Bedankt. Je registratie is nu compleet. Je ontvangt binnenkort een SMS/WhatsApp op het door jou ingevulde nummer om je registratie te bevestigen. <br><br> Een medewerker van de NGO zal met jou een afspraak maken om je informatie te bevestigen, waarschijnlijk door je thuis te bezoeken. "
+      "validation-conclusion": "Bedankt. Je registratie is nu compleet. Je ontvangt binnenkort een SMS/WhatsApp op het door jou ingevulde nummer om je registratie te bevestigen. <br><br> Een medewerker van de NGO zal met jou een afspraak maken om je informatie te bevestigen, waarschijnlijk door je thuis te bezoeken."
     },
     "select-fsp": {
       "attributes": {
@@ -135,7 +125,6 @@
     "try-again": "Probeer opnieuw"
   },
   "shared": {
-    "cancel-button": "Annuleren",
     "close-button": "Sluiten",
     "more-info": "Lees meer...",
     "retry": "Probeer opnieuw",

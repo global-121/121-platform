@@ -1,19 +1,12 @@
 {
   "account": {
-    "change-password": "Mbelekenya password",
-    "delete-account-header": "Tipika password ino tanaa isip ajo iyeu nimputa akount ino.",
-    "delete-account-message": "Tini mputa akaunt ino, mintoki arinyokino, nepoiyei lomon linono",
     "delete-data": "Mputa akaunt",
-    "delete-fail": "Keeyetae ntoki naitaroiye, meiputaroi akaunt ino",
-    "delete-success": "Eiputaru tata akaunt ino tata, mpungo tata",
-    "enter-password": "Password ino",
     "logout": "Mpungo"
   },
   "connection": {
     "error-retry": "Ketii ntoki nataroiye, iyeu nisaan aitoki?"
   },
   "notification": {
-    "close": "Nkeno",
     "inclusion": "Etumoki nikipikeki"
   },
   "password-toggle": {
@@ -42,12 +35,10 @@
     "enroll-in-program": {
       "change": "Mbelekenya lomon lainen",
       "introduction-information": "Pii itum reto naishakino oo tengoitei naishakino, ikiyeu lomon lekimpirita",
-      "more-info-questions": "Loipirta lomon lainen",
       "please-confirm": "Lokulo lomon linono tene te abori. Ngurai nisei meshomo.",
       "submit-confirm": "Terewa lomon lainen"
     },
     "inclusion-status": {
-      "creating": "Ijoo iyo lomon linono laitosha pii kidol tanaa ikingeluni tijinga ana reto",
       "inclusion-status-negative": "Tapaliki iyoo amu mitum ana reto. Tanaa keyatae niyeu niparu tooshoki iyoo.",
       "inclusion-status-positive": "Ikitipikaki atua ana reto",
       "notify": "Ikiliki iye tanaa ikitipikaki atua ana reto"
@@ -75,7 +66,7 @@
       "introduction": "Enjere tegelu nigikunakini ana reto tanaaku igeluno."
     },
     "select-language": {
-      "result": "Ashe. Itegelua '{{language}}'."
+      "result": "Ashe. Kitegeluaki '{{language}}'."
     },
     "select-program": {
       "introduction": "Idim nitumia ana app ayere reto. Enjere nchaguai tene te abori.",
@@ -115,7 +106,6 @@
     "close": "Nkeno"
   },
   "shared": {
-    "cancel-button": "Tudungo",
     "close-button": "Nkeno",
     "more-info": "Soma ichu...",
     "submit-button": "Terewa"

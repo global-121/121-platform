@@ -1,12 +1,6 @@
 {
   "account": {
-    "change-password": "Palitan ang password",
-    "delete-account-header": "Ilagay ang iyong password kung sigurado kang gusto mong burahin ang iyong account",
-    "delete-account-message": "Ang pagbubura ng iyong account ay hindi na maiibalik, lahat ng iyong data ay mawawala!",
-    "delete-data": "Burahin ang account",
-    "delete-fail": "May maling nangyari, ang iyong account ay hindi lubusang nabura.",
-    "delete-success": "Ang iyong account ay matagumpay na nabura. Ikaw ay log-out na",
-    "enter-password": "Ang Password mo"
+    "delete-data": "Burahin ang account"
   },
   "connection": {
     "error-retry": "May maling nangyari, nais mo bang subukan muli?"
@@ -39,12 +33,10 @@
     "enroll-in-program": {
       "change": "Palitan ang aking impormasyon",
       "introduction-information": "Upang masigurado ang pinakamainam na tulong at patas na proseso, kailangan namin ng ilang personal na impormasyon.",
-      "more-info-questions": "Tungkol sa personal na impormasyon",
       "please-confirm": "Sa ibaba ay ang iyong mga impormasyon. Suriin at i-tap ang send.",
       "submit-confirm": "i-send ang aking impormasyon"
     },
     "inclusion-status": {
-      "creating": "Nakapagbigay ka ng sapat na personal na impormasyon upang makita namin kung maaari kang maging kabahagi ng programa.",
       "inclusion-status-negative": "Ikinalulungkot naming ipagbigay-alam sa iyo na hindi ka na makakatanggap ng supermarket vouchers para sa programang ito. Kung may mga katanungan ka, i-contact- mo kami.",
       "inclusion-status-positive": "Ikaw ay naisali na sa programa.",
       "notify": "Ipagbibigay alam namin sayo kung ikaw ay nakasali."
@@ -69,8 +61,6 @@
     },
     "registration-summary": {
       "documents": "Siguraduhing  nakahanda ang mga sumusunod na dokumento:",
-      "info-message": "Upang ma-activate ang iyong account  <br><br>Kapag nakagawa ka ng iyong account makakatanggap ka ng print out ng iyong digital ID na ganito ang itsura.<br>Kailangan mo itong dalhin at ang mga sumusunod na physical na dokumento sa baba upang mapagana ang iyong account.<br><ul><li> Ang iyong National Identity Catd</li></ul><br> Paano kung wala akong card? Kung gayon ay may 2 kang pagpipilian: <ol><li> Magdala ng sulat galing sa hepe na nagpapatunay ng pagkakakilanlan </li><li> Magdala ng X number (kailangan ang pangalan ng numero gaya ng BSN number) galing sa National Bureau of Registration. Maaaring bayaran ito sa halagang X.</li></ol>",
-      "more-info-documents": "Tungkol sa mga dokumentong ito",
       "no-validation-conclusion": "Salamat. Ang iyong registration ay kumpleto na.<br><br> Dapat ay may matanggap kang SMS/WhatsApp sa phone number na iyong binigay maya-maya lamang na nagpapatunay ng iyong registration.<br><br>Ipagbibigay alam sayo kung ang iyong aplikasyon ay matagumpay sa loob ng 14 na araw. <br><br>Ito na ang huling mensahe sa ngayon.",
       "qr-code": "Ipakita ang QR-code sa aidworker pag hinanap.",
       "validation-conclusion": "Salamat. Ang iyong rehistrasyon ay tapos na. Dapat ay may matanggap kang SMS/WhatsApp sa numerong iyong binigay maya-maya lamang na nagpapatunay ng iyong rehistrasyon.<br><br>Magtatalaga ng pagkikita ang aidworker ng NGO upang patunayan ang iyong impormasyon, maaaring sa pamamagitan ng pagbisita sa iyong tahanan."

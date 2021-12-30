@@ -1,19 +1,12 @@
 {
   "account": {
-    "change-password": "Paaswoordii jijjiiri",
-    "delete-account-header": "Adda-baastuu Dijitaalaa keessan haquuf murteessitaniittu taanaan paaswoordii keessan galchaa",
-    "delete-account-message": "Adda-baastuu Dijitaalaa keessan haquun waan duubatti hin deebinedha daataan keessan hunduu ni bada!",
     "delete-data": "Adda-baastuu Dijitalaa haqaa",
-    "delete-fail": "Dogoggorri ta'e uumameera, akkaawontii kee guutummaatti haquun hin danda'amne.",
-    "delete-success": "Akkaawontiin keessan haala milkaa'aa ta'een haqameera. Amma keessaa ba'uuf jirtu.",
-    "enter-password": "Paaswoordii keessan",
     "logout": "Keessaa ba'aa"
   },
   "connection": {
     "error-retry": "Dogoggorri ta'e uumameera, irra deebitanii yaaluu barbaadduu?"
   },
   "notification": {
-    "close": "Cufi",
     "inclusion": "Sadarkaan itti-makamuu qaqqabeera"
   },
   "password-toggle": {
@@ -21,6 +14,9 @@
     "show": "Paaswoordii agarsiisi"
   },
   "personal": {
+    "consent-question": {
+      "more-info-personal-information": "Waa'ee odeeffannoo dhuunfaa"
+    },
     "create-account": {
       "conclusion": "Gaariidha! Adda-baastuu Dijitaalaa tolfattaniittu.",
       "confirm-password": "Paaswoordii koo mirkaneessi:",
@@ -33,11 +29,9 @@
     "enroll-in-program": {
       "change": "Odeeffannoo koo jijjiiri",
       "introduction-information": "Gargaarsa jira jedhame argachuu keessaniifi adeemsa bilisaa ta'uu isaa mirkaneeffachuuf odeeffannoo dhuunfaa hanga tokko ni barbaadna.",
-      "more-info-questions": "Waa'ee odeeffannoo dhuunfaa",
       "please-confirm": "Kan armaan gadii odeeffannoo keessan waliigalaati. Maaloo ilaaluun mirkaneeffadhaa galchaa.",
       "submit-confirm": "Odeeffannoo koo ol naaf kaa'i"
     },
-    "inclusion-status": {},
     "login-account": {
       "incorrect-credentials": "Walta'insi maqaa fayyadamaafi paaswoordiin isin tolfattan hin fudhatamne. Maaloo irra deebi'aa yaalaa.",
       "introduction": "Adda-baastuu Dijitaalaa duraan jiru fayyadamuuf maqaa-fayyadamtaniifi paaswoordiitiin seenuu sin barbaachisa.",
@@ -46,7 +40,6 @@
     },
     "registration-summary": {
       "documents": "Dokumentoota kanneen fiduu keessan mirkaneeffadhaa:",
-      "more-info-documents": "Waa'ee dokumantiiwwanii",
       "qr-code": "Maaloo walga'ii keessan irratti  koodii -QR kana agarsiisaa."
     },
     "select-fsp": {
@@ -59,9 +52,7 @@
       }
     },
     "select-language": {
-      "result": "Galatoomaa, {{language}} filattaniittu.",
-      "introduction": {},
-      "language": {}
+      "result": "Galatoomaa, {{language}} filattaniittu."
     },
     "select-program": {
       "introduction": "Sadarkaan itti aanu: Sagantaa keessan filadhaa.",
@@ -93,13 +84,14 @@
       "phone-number": "Tikulephera kupeza foni nambala mwayikayo. Chonde yikaniso ndiye muyeseso"
     }
   },
+  "qr-scanner": {
+    "close": "Cufi"
+  },
   "shared": {
-    "cancel-button": "Dhiisaa",
     "close-button": "Cufi",
     "more-info": "Dabalataan dubbisaa...",
     "submit-button": "Galchi"
   },
-  "speak-text": {},
   "tabs": {
     "community": "Hawaasa",
     "you": "Isini"

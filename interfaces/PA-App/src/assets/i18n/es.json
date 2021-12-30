@@ -1,20 +1,13 @@
 {
   "_dir": "ltr",
   "account": {
-    "change-password": "Cambiar contraseña",
-    "delete-account-header": "Ingrese su contraseña si esta seguro que quiere eliminar su cuenta",
-    "delete-account-message": "Eliminar su cuenta es irreversible, todos sus datos se perderán",
-    "delete-data": "Eliminar cuenta ",
-    "delete-fail": "Algo salió mal, su cuenta no ha podido ser eliminada completamente.",
-    "delete-success": "Su cuenta ha sido eliminada exitosamente. Ya puede cerrar sesión",
-    "enter-password": "Su Contraseña",
+    "delete-data": "Eliminar cuenta",
     "logout": "Cerrar sesión"
   },
   "connection": {
     "error-retry": "Algo salió mal, desea intentarlo otra vez?"
   },
   "notification": {
-    "close": "cerrar",
     "inclusion": "Estado de Inclusión recibido"
   },
   "password-toggle": {
@@ -43,7 +36,6 @@
     "enroll-in-program": {
       "change": "Cambiar mi información",
       "introduction-information": "Para asegurarnos que tengas la mejor asistencia posible y un proceso justo necesitamos alguna información personal.",
-      "more-info-questions": "Acerca de Información Personal",
       "please-confirm": "A continuación se muestra una descripción general de su información. Marque y luego toque enviar.",
       "submit-confirm": "Enviar mi Información"
     },
@@ -72,8 +64,6 @@
     },
     "registration-summary": {
       "documents": "Asegúrate de contar con los siguientes documentos:",
-      "info-message": "Para activar su cuenta <br> <br> Cuando cree su cuenta, recibirá una copia impresa de su identificación digital que se ve así. <br> Deberá traer este y los siguientes documentos físicos a continuación a una reunión con un asistente social para activar su cuenta. <ul><li>Tarjeta de Identificación Nacional</li></ul><br> ¿Qué hacer si no cuenta con ella? Tiene 2 opciones: <ol><li> Llevar una carta del jefe que confirme su identidad</li> <li>Traiga su número X (necesita el nombre de este número como el número BSN) de la Oficina Nacional de Registro. Tendrá que pagar por uno nuevo, el precio será X</li></ol>",
-      "more-info-documents": "Acerca de éstos documentos",
       "no-validation-conclusion": "Gracias. Su registro está completo.<br><br> Recibirá un SMS/WhatsApp al numero de teléfono proporcionado a la brevedad para confirmar su registro. <br><br> Se le informará si su aplicación ha sido exitosa dentro de un periodo de 14 días.<br><br> Es todo por el momento.",
       "qr-code": "Por favor muestre éste código QR al Trabajador Humanitario cuando se le solicite",
       "validation-conclusion": "Gracias. Su registro esta completo. Recibirá un mensaje de texto a la brevedad al número proporcionado para confirmar su registro. <br><br> Un trabajador Humanitario del NGO organizará una cita con usted para validar su información, probablemente al hacerle una visita en casa."
@@ -88,27 +78,7 @@
       "introduction": "Por favor seleccione cómo le gustaría recibir su ayuda, si es que está dentro del programa."
     },
     "select-language": {
-      "introduction": {
-        "en": "Por favor seleccione su idioma",
-        "ar": "الرجاء اختيار لغتك",
-        "ti": "ትሕስ እስ ዓ ተስት።",
-        "tl": "Pumili ng iyong wika.",
-        "ny_MW": "Chonde sankhani chiyankhulo chanu.",
-        "om_ET": "Maaloo qooqa keessan filadhaa.",
-        "saq_KE": "Enjere tegelu ng'ituk ino.",
-        "tuv_KE": "Aarimatoi, tetheu akituk kon."
-      },
-      "result": "Gracias, ha seleccionado {{language}}.",
-      "language": {
-        "en": "English",
-        "ar": "عربى",
-        "ti": "ትግርኛ",
-        "tl": "Tagalog",
-        "ny_MW": "Chichewa",
-        "om_ET": "Afaan Oromoo",
-        "saq_KE": "Samburu",
-        "tuv_KE": "Ng'aturkana"
-      }
+      "result": "Gracias, ha seleccionado {{language}}."
     },
     "select-program": {
       "introduction": "Puede utilizar esta aplicación para solicitar un programa de ayuda. Seleccione a continuación.",
@@ -156,7 +126,6 @@
     "try-again": "Intentar de nuevo"
   },
   "shared": {
-    "cancel-button": "Cancelar",
     "close-button": "Cerrar",
     "more-info": "Leer más...",
     "retry": "Intentar de nuevo",

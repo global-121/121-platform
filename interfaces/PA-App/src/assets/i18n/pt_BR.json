@@ -1,19 +1,12 @@
 {
   "account": {
-    "change-password": "Alterar a senha",
-    "delete-account-header": "Digite sua senha se você tem certeza de que deseja apagar sua conta",
-    "delete-account-message": "Apagar sua conta é irreversível, todos os seus dados serão perdidos!",
     "delete-data": "Apagar conta",
-    "delete-fail": "Algo deu errado, sua conta não pôde ser totalmente apagada.",
-    "delete-success": "Sua conta foi apagada com sucesso. Agora você vai desconectar.",
-    "enter-password": "Sua senha",
     "logout": "Desconectar"
   },
   "connection": {
     "error-retry": "Algo deu errado, você quer tentar novamente?"
   },
   "notification": {
-    "close": "fechar",
     "inclusion": "Estado de inclusão recebido"
   },
   "password-toggle": {
@@ -42,7 +35,6 @@
     "enroll-in-program": {
       "change": "Mudar minhas informações",
       "introduction-information": "Para garantir que você obtenha a melhor ajuda possível e um processo justo, precisamos de algumas informações pessoais.",
-      "more-info-questions": "Sobre informações pessoais",
       "please-confirm": "Abaixo está um resumo de suas informações. Por favor, verifique e depois clique em enviar.",
       "submit-confirm": "Enviar minhas informações"
     },
@@ -71,8 +63,6 @@
     },
     "registration-summary": {
       "documents": "Certifique-se de ter estes documentos prontos:",
-      "info-message": "Para ativar sua conta <br><br> Ao criar sua conta, você receberá uma impressão de sua identificação digital que se parece com isso.<br>  Você precisa levar isto e os seguintes documentos físicos para uma reunião com um assistente/voluntário para ativar sua conta.<br><ul><li> Sua carteira de identidade </ul><br>E se eu não tiver um cartão? Você tem 2 opções:<ol><li>Traga uma carta do/da chefe que confirme a identidade dele/dela</li><li>Traga seu número de CPF, da Receita Federal. Você terá que pagar por um novo, o preço será X.</li></ol>",
-      "more-info-documents": "Sobre estes documentos ",
       "no-validation-conclusion": "Obrigado. Agora, seu registro está completo. <br><br> Em breve, você receberá um SMS/WhatsApp no número de telefone fornecido que confirma seu registro. <br><br> Você será informado se sua solicitação tiver sido bem sucedida no prazo de 14 dias.  <br><br> Esta é a mensagem final, por enquanto.",
       "qr-code": "Por favor, mostre este código QR ao trabalhador humanitário quando pedido.",
       "validation-conclusion": "Obrigado. Agora seu registro está completo. Em breve, você receberá um SMS/WhatsApp no número de telefone fornecido que confirma seu cadastro. <br><br>Um trabalhador da ONG organizará uma reunião com você para validar suas informações, provavelmente visitando sua casa."
@@ -135,7 +125,6 @@
     "try-again": "Tente novamente"
   },
   "shared": {
-    "cancel-button": "Cancelar",
     "close-button": "Fechar",
     "more-info": "Ler mais...",
     "retry": "Tente novamente",
