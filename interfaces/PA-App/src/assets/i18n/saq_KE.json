@@ -13,7 +13,6 @@
     "error-retry": "Ketii ntoki nataroiye, iyeu nisaan aitoki?"
   },
   "notification": {
-    "close": "Nkeno",
     "inclusion": "Etumoki nikipikeki"
   },
   "password-toggle": {
@@ -47,7 +46,6 @@
       "submit-confirm": "Terewa lomon lainen"
     },
     "inclusion-status": {
-      "creating": "Ijoo iyo lomon linono laitosha pii kidol tanaa ikingeluni tijinga ana reto",
       "inclusion-status-negative": "Tapaliki iyoo amu mitum ana reto. Tanaa keyatae niyeu niparu tooshoki iyoo.",
       "inclusion-status-positive": "Ikitipikaki atua ana reto",
       "notify": "Ikiliki iye tanaa ikitipikaki atua ana reto"
@@ -75,7 +73,7 @@
       "introduction": "Enjere tegelu nigikunakini ana reto tanaaku igeluno."
     },
     "select-language": {
-      "result": "Ashe. Itegelua '{{language}}'."
+      "result": "Ashe. Kitegeluaki '{{language}}'."
     },
     "select-program": {
       "introduction": "Idim nitumia ana app ayere reto. Enjere nchaguai tene te abori.",

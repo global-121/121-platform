@@ -13,7 +13,6 @@
     "error-retry": "Eeyei ebere aruner, ithaki abongokin naboo?"
   },
   "notification": {
-    "close": "togol",
     "inclusion": "Aanyun nikipeakinere"
   },
   "password-toggle": {
@@ -47,7 +46,6 @@
       "submit-confirm": "Temea ng'akiro kang"
     },
     "inclusion-status": {
-      "creating": "Kiinak iyong sua ng'akiro niitemokino akiolikin kitheunio iyong anaking'arakinio kana.",
       "inclusion-status-negative": "Terimakinae thua kotere kithaki alimokin iyong atamar nipedori anyuun aking'arakinio naga. Keya ni nithaki akingita kingitae thua.",
       "inclusion-status-positive": "Kipiakin iyong Naking'arakino na.",
       "notify": "Kitaanyuni iyong kiwankitae iyong naking'akino na."

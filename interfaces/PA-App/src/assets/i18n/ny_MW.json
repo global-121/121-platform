@@ -1,8 +1,6 @@
 {
   "account": {
     "change-password": "Sinthani nambala yanga yachinsinsi",
-    "delete-account-header": "Yikani nambala yanu ya chinsinsi ngati mukufuna kufufuta nambala yanu",
-    "delete-account-message": "Kufufuta nambala simungatheso kusintha, zonse zokhudza inu zitayika",
     "delete-data": "Fufutani nambala",
     "delete-fail": "china chinalakwika, ndodomeko yanu siyinafufutidwe mwathunthu",
     "delete-success": "Akaunti yanu yafufutidwa. Mutha kutuluka tsopano",
@@ -13,7 +11,6 @@
     "error-retry": "China chinalakwika, kodi mukufuna kuyesaso"
   },
   "notification": {
-    "close": "Tsekani",
     "inclusion": "Mwalandira kuti mwalowetsedwa"
   },
   "password-toggle": {
@@ -21,6 +18,9 @@
     "show": "Onetsani nambala yanga yachinsinsi"
   },
   "personal": {
+    "consent-question": {
+      "more-info-personal-information": "Zinthu zokhudza munthu"
+    },
     "create-account": {
       "conclusion": "Zatheka! Mwapanga nambala yanu",
       "confirm-password": "Tsimikizani nambala yanga ya chinsinsi",
@@ -50,7 +50,6 @@
     },
     "registration-summary": {
       "documents": "Onetsetsani kuti mwabweretsa zinthu izi",
-      "more-info-documents": "Zokhudza zitupa izi",
       "qr-code": "Chonde onetsani nambala iyi pamkumano wanu"
     },
     "select-fsp": {
@@ -63,9 +62,7 @@
       }
     },
     "select-language": {
-      "result": "Zikomo, mwasankha {{language}}.",
-      "introduction": {},
-      "language": {}
+      "result": "Zikomo, mwasankha {{language}}."
     },
     "select-program": {
       "introduction": "Tsopano: Sankhani pulogalamu yanu",
@@ -97,13 +94,15 @@
       "phone-number": "Tikulephera kupeza foni nambala mwayikayo. Chonde yikaniso ndiye muyeseso"
     }
   },
+  "qr-scanner": {
+    "close": "Tsekani"
+  },
   "shared": {
     "cancel-button": "Chotsani",
     "close-button": "Tsekani",
     "more-info": "Werengani zina",
     "submit-button": "Tumizani"
   },
-  "speak-text": {},
   "tabs": {
     "community": "Dera",
     "you": "Inu"

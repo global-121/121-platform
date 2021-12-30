@@ -13,7 +13,6 @@
     "error-retry": "Dogoggorri ta'e uumameera, irra deebitanii yaaluu barbaadduu?"
   },
   "notification": {
-    "close": "Cufi",
     "inclusion": "Sadarkaan itti-makamuu qaqqabeera"
   },
   "password-toggle": {
@@ -21,6 +20,9 @@
     "show": "Paaswoordii agarsiisi"
   },
   "personal": {
+    "consent-question": {
+      "more-info-personal-information": "Waa'ee odeeffannoo dhuunfaa"
+    },
     "create-account": {
       "conclusion": "Gaariidha! Adda-baastuu Dijitaalaa tolfattaniittu.",
       "confirm-password": "Paaswoordii koo mirkaneessi:",
@@ -37,7 +39,6 @@
       "please-confirm": "Kan armaan gadii odeeffannoo keessan waliigalaati. Maaloo ilaaluun mirkaneeffadhaa galchaa.",
       "submit-confirm": "Odeeffannoo koo ol naaf kaa'i"
     },
-    "inclusion-status": {},
     "login-account": {
       "incorrect-credentials": "Walta'insi maqaa fayyadamaafi paaswoordiin isin tolfattan hin fudhatamne. Maaloo irra deebi'aa yaalaa.",
       "introduction": "Adda-baastuu Dijitaalaa duraan jiru fayyadamuuf maqaa-fayyadamtaniifi paaswoordiitiin seenuu sin barbaachisa.",
@@ -59,9 +60,7 @@
       }
     },
     "select-language": {
-      "result": "Galatoomaa, {{language}} filattaniittu.",
-      "introduction": {},
-      "language": {}
+      "result": "Galatoomaa, {{language}} filattaniittu."
     },
     "select-program": {
       "introduction": "Sadarkaan itti aanu: Sagantaa keessan filadhaa.",
@@ -93,13 +92,15 @@
       "phone-number": "Tikulephera kupeza foni nambala mwayikayo. Chonde yikaniso ndiye muyeseso"
     }
   },
+  "qr-scanner": {
+    "close": "Cufi"
+  },
   "shared": {
     "cancel-button": "Dhiisaa",
     "close-button": "Cufi",
     "more-info": "Dabalataan dubbisaa...",
     "submit-button": "Galchi"
   },
-  "speak-text": {},
   "tabs": {
     "community": "Hawaasa",
     "you": "Isini"

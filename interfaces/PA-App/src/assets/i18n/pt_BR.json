@@ -13,7 +13,6 @@
     "error-retry": "Algo deu errado, você quer tentar novamente?"
   },
   "notification": {
-    "close": "fechar",
     "inclusion": "Estado de inclusão recebido"
   },
   "password-toggle": {
@@ -71,8 +70,6 @@
     },
     "registration-summary": {
       "documents": "Certifique-se de ter estes documentos prontos:",
-      "info-message": "Para ativar sua conta <br><br> Ao criar sua conta, você receberá uma impressão de sua identificação digital que se parece com isso.<br>  Você precisa levar isto e os seguintes documentos físicos para uma reunião com um assistente/voluntário para ativar sua conta.<br><ul><li> Sua carteira de identidade </ul><br>E se eu não tiver um cartão? Você tem 2 opções:<ol><li>Traga uma carta do/da chefe que confirme a identidade dele/dela</li><li>Traga seu número de CPF, da Receita Federal. Você terá que pagar por um novo, o preço será X.</li></ol>",
-      "more-info-documents": "Sobre estes documentos ",
       "no-validation-conclusion": "Obrigado. Agora, seu registro está completo. <br><br> Em breve, você receberá um SMS/WhatsApp no número de telefone fornecido que confirma seu registro. <br><br> Você será informado se sua solicitação tiver sido bem sucedida no prazo de 14 dias.  <br><br> Esta é a mensagem final, por enquanto.",
       "qr-code": "Por favor, mostre este código QR ao trabalhador humanitário quando pedido.",
       "validation-conclusion": "Obrigado. Agora seu registro está completo. Em breve, você receberá um SMS/WhatsApp no número de telefone fornecido que confirma seu cadastro. <br><br>Um trabalhador da ONG organizará uma reunião com você para validar suas informações, provavelmente visitando sua casa."
