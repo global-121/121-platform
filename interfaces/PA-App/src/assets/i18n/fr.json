@@ -1,12 +1,6 @@
 {
   "account": {
-    "change-password": "Changez le mot de passe ",
-    "delete-account-header": "Si vous voulez supprimer votre compte, veuillez saisir votre mot de passe.",
-    "delete-account-message": "La suppression de votre compte est irréversible, toutes vos données seront perdues!",
     "delete-data": "Effacez le compte",
-    "delete-fail": "Une erreur c'est produite, ce n'était pas possible de supprimer completement votre compte.",
-    "delete-success": "Votre compte est supprimé avec succès. Vous allez maintenant se déconnecter.",
-    "enter-password": "Votre mot de passe",
     "logout": "Se déconnecter"
   },
   "connection": {
@@ -41,7 +35,6 @@
     "enroll-in-program": {
       "change": "Changer mes informations.",
       "introduction-information": "Afin de garantir que vous recevez la meilleure assistance possible et que votre demande sera traitée correctement, nous avons besoin de certaines données personnelles de vous.",
-      "more-info-questions": "À propos des informations personnelles",
       "please-confirm": "Vous trouvez ci-dessous un récapitulatif de vos informations. Veuillez les vérifier. Après cliquez sur envoyer.",
       "submit-confirm": "Envoyez mes informations."
     },
@@ -132,7 +125,6 @@
     "try-again": "Réessayez s'il vous plaît"
   },
   "shared": {
-    "cancel-button": "Annulez",
     "close-button": "Fermez",
     "more-info": "Lire la suite...",
     "retry": "Essayez encore une fois",

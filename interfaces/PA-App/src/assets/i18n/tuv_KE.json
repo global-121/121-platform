@@ -1,12 +1,6 @@
 {
   "account": {
-    "change-password": "Kulokony password",
-    "delete-account-header": "Kuak password kon kithaki dir aputar akount kon",
-    "delete-account-message": "Iputayong akaunt kon, nibongokini nabo, iputae ngakuroon daang.",
     "delete-data": "Kiputa akaunt",
-    "delete-fail": "Eeyei ibere aroner, ang'ere akaunt kon akiputar.",
-    "delete-success": "Eputar akaunt kon pii, topudoo tokona.",
-    "enter-password": "A password kon",
     "logout": "Topudoo"
   },
   "connection": {
@@ -41,7 +35,6 @@
     "enroll-in-program": {
       "change": "Kulokony ng'akiro kang'",
       "introduction-information": "Taanyuneia aking'arakinio nianyokon ee rot alo ichaakina echamit ipotori ng'akiro naarai nakon.",
-      "more-info-questions": "Ng'akiro nakon",
       "please-confirm": "Kop ne eyeia ng'akiro kon. Kitheme tatap temea.",
       "submit-confirm": "Temea ng'akiro kang"
     },
@@ -114,7 +107,6 @@
     "error-generic": "Iyei ibere aruner."
   },
   "shared": {
-    "cancel-button": "Totub",
     "close-button": "Togol",
     "more-info": "Kisoma torumoo...",
     "submit-button": "Temea"

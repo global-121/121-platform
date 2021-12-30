@@ -1,11 +1,6 @@
 {
   "account": {
-    "delete-account-header": "ፓስዎርድ ወይ ከኣ መቆለፊ የኣቱ እንተድኣ ኣካውንትኻ ክትድምስሶ ርግጸኛ ኮይንካ",
-    "delete-account-message": "ሓንሳብ ኣካውንትኻ እንተደምሲስካዮ ኣይምለስን ኢዩ፣ ኩሉ ሓበሬታኻ ከኣ ይጠፍእ",
     "delete-data": "Delete my data",
-    "delete-fail": "ገለ ነገር ጌጋ ኮይኑ ኣሎ፣ ኣካውንታኻ ምሉእ ብምሉእ ክድምሰስ ኣይከኣለን",
-    "delete-success": "ኣካውንትኻ ብዕዉት ተደምሲሱ ኣሎ። ሕጂ ዓጺካዮ ክትወጽእ ትክእል",
-    "enter-password": "ፓስዎርድካ ወይ መቆለፊ ኮድካ",
     "logout": "ዓጺኻዮ ውጻኣ"
   },
   "connection": {
@@ -33,9 +28,6 @@
       "create-username": "ምሉእ ስምካ የእቱ፥",
       "introduction": "ኣካውንት ንክትገብር ነዚ ዝስዕብ እስቴብ ወይ ደረጃ ክትመልእ የድልየካ፥",
       "password-too-short": "በጃኻ እንተወሓደ {{እቲ ዝተሓተ ንውሓት}}  ዘለዎ ፊደላት የእቱ።"
-    },
-    "enroll-in-program": {
-      "more-info-questions": "ብዛዕባ ውልቃዊ ሓበሬታ"
     }
   }
 }

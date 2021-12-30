@@ -1,10 +1,6 @@
 {
   "account": {
-    "change-password": "Sinthani nambala yanga yachinsinsi",
     "delete-data": "Fufutani nambala",
-    "delete-fail": "china chinalakwika, ndodomeko yanu siyinafufutidwe mwathunthu",
-    "delete-success": "Akaunti yanu yafufutidwa. Mutha kutuluka tsopano",
-    "enter-password": "Mawu anu achinsinsi",
     "logout": "Tulukani"
   },
   "connection": {
@@ -33,12 +29,10 @@
     "enroll-in-program": {
       "change": "Sinthani mbiri yanga",
       "introduction-information": "Kuti muthandizike bwino komanso kuti mukhale pandondomeko yabwino, tifuna mbiri yanu",
-      "more-info-questions": "Zinthu zokhudza munthu",
       "please-confirm": "Pansipa pali zinthu zokhuza inu. Onani ndipo mupereke",
       "submit-confirm": "Sungani mbiri yanga"
     },
     "inclusion-status": {
-      "creating": "Mwatipatsa mbiri yanu yokwanila kuti tione ngati mungakhale nawo mu pulogalamu",
       "inclusion-status-positive": "Zikomo chifukwa chakudekha kwanu. Mwayikidwa mu pulogalamu",
       "notify": "Tikudziwitsani ngati mwayikidwa mu pulogalamu"
     },
@@ -98,7 +92,6 @@
     "close": "Tsekani"
   },
   "shared": {
-    "cancel-button": "Chotsani",
     "close-button": "Tsekani",
     "more-info": "Werengani zina",
     "submit-button": "Tumizani"

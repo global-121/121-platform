@@ -1,12 +1,6 @@
 {
   "account": {
-    "change-password": "Alterar a senha",
-    "delete-account-header": "Digite sua senha se você tem certeza de que deseja apagar sua conta",
-    "delete-account-message": "Apagar sua conta é irreversível, todos os seus dados serão perdidos!",
     "delete-data": "Apagar conta",
-    "delete-fail": "Algo deu errado, sua conta não pôde ser totalmente apagada.",
-    "delete-success": "Sua conta foi apagada com sucesso. Agora você vai desconectar.",
-    "enter-password": "Sua senha",
     "logout": "Desconectar"
   },
   "connection": {
@@ -41,7 +35,6 @@
     "enroll-in-program": {
       "change": "Mudar minhas informações",
       "introduction-information": "Para garantir que você obtenha a melhor ajuda possível e um processo justo, precisamos de algumas informações pessoais.",
-      "more-info-questions": "Sobre informações pessoais",
       "please-confirm": "Abaixo está um resumo de suas informações. Por favor, verifique e depois clique em enviar.",
       "submit-confirm": "Enviar minhas informações"
     },
@@ -132,7 +125,6 @@
     "try-again": "Tente novamente"
   },
   "shared": {
-    "cancel-button": "Cancelar",
     "close-button": "Fechar",
     "more-info": "Ler mais...",
     "retry": "Tente novamente",

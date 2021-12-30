@@ -1,12 +1,6 @@
 {
   "account": {
-    "change-password": "Ganti password",
-    "delete-account-header": "Isi password anda apabila anda yakin bahwa anda ingin menghapus akun anda",
-    "delete-account-message": "Menghapus akun tidak bisa dirubah lagi, sehingga semua data anda akan hilang!",
     "delete-data": "Hapus akun",
-    "delete-fail": "Ada kesalahan yang terjadi, akun anda tidak bisa dihapus total.",
-    "delete-success": "Akun anda telah berhasil dihapus. Anda sekarang harus logout.",
-    "enter-password": "Password anda",
     "logout": "Log out"
   },
   "connection": {
@@ -41,7 +35,6 @@
     "enroll-in-program": {
       "change": "Ubah informasi saya",
       "introduction-information": "Untuk menjamin bahwa anda bisa dibantu sebaik mungkin, melalui proses yang aman, kami butuh beberapa informasi pribadi anda.",
-      "more-info-questions": "Tentang informasi pribadi",
       "please-confirm": "Dibawah ini adalah rangkuman dari informasi anda. Harap diperiksa dan setelah itu klik 'send'.",
       "submit-confirm": "Kirim informasi saya"
     },
@@ -132,7 +125,6 @@
     "try-again": "Coba lagi"
   },
   "shared": {
-    "cancel-button": "Cancel",
     "close-button": "Tutup",
     "more-info": "Baca seterusnya....",
     "retry": "Coba lagi",

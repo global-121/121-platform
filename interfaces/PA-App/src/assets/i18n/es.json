@@ -1,13 +1,7 @@
 {
   "_dir": "ltr",
   "account": {
-    "change-password": "Cambiar contraseña",
-    "delete-account-header": "Ingrese su contraseña si esta seguro que quiere eliminar su cuenta",
-    "delete-account-message": "Eliminar su cuenta es irreversible, todos sus datos se perderán",
     "delete-data": "Eliminar cuenta",
-    "delete-fail": "Algo salió mal, su cuenta no ha podido ser eliminada completamente.",
-    "delete-success": "Su cuenta ha sido eliminada exitosamente. Ya puede cerrar sesión",
-    "enter-password": "Su Contraseña",
     "logout": "Cerrar sesión"
   },
   "connection": {
@@ -42,7 +36,6 @@
     "enroll-in-program": {
       "change": "Cambiar mi información",
       "introduction-information": "Para asegurarnos que tengas la mejor asistencia posible y un proceso justo necesitamos alguna información personal.",
-      "more-info-questions": "Acerca de Información Personal",
       "please-confirm": "A continuación se muestra una descripción general de su información. Marque y luego toque enviar.",
       "submit-confirm": "Enviar mi Información"
     },
@@ -133,7 +126,6 @@
     "try-again": "Intentar de nuevo"
   },
   "shared": {
-    "cancel-button": "Cancelar",
     "close-button": "Cerrar",
     "more-info": "Leer más...",
     "retry": "Intentar de nuevo",

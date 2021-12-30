@@ -1,12 +1,6 @@
 {
   "account": {
-    "change-password": "Palitan ang password",
-    "delete-account-header": "Ilagay ang iyong password kung sigurado kang gusto mong burahin ang iyong account",
-    "delete-account-message": "Ang pagbubura ng iyong account ay hindi na maiibalik, lahat ng iyong data ay mawawala!",
-    "delete-data": "Burahin ang account",
-    "delete-fail": "May maling nangyari, ang iyong account ay hindi lubusang nabura.",
-    "delete-success": "Ang iyong account ay matagumpay na nabura. Ikaw ay log-out na",
-    "enter-password": "Ang Password mo"
+    "delete-data": "Burahin ang account"
   },
   "connection": {
     "error-retry": "May maling nangyari, nais mo bang subukan muli?"
@@ -39,7 +33,6 @@
     "enroll-in-program": {
       "change": "Palitan ang aking impormasyon",
       "introduction-information": "Upang masigurado ang pinakamainam na tulong at patas na proseso, kailangan namin ng ilang personal na impormasyon.",
-      "more-info-questions": "Tungkol sa personal na impormasyon",
       "please-confirm": "Sa ibaba ay ang iyong mga impormasyon. Suriin at i-tap ang send.",
       "submit-confirm": "i-send ang aking impormasyon"
     },

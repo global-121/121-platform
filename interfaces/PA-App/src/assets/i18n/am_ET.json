@@ -1,13 +1,7 @@
 {
   "_dir": "ltr",
   "account": {
-    "change-password": "የይለፍ ቃልዎን ይቀይሩ",
-    "delete-account-header": "መለያዎን መሰረዝ እንደሚፈልጉ እርግጠኛ ከሆኑ የይለፍ ቃልዎን ያስገቡ",
-    "delete-account-message": "መለያዎን መሰረዝ የማይቀለበስ ነው ፣ ሁሉም መረጃ ይጠፋል!",
     "delete-data": "መረጃዬን ሰርዝ",
-    "delete-fail": "የሆነ ችግር ተፈጥሯል ፣ መለያዎ ሙሉ በሙሉ በመሰረዝ አልቻለም።",
-    "delete-success": "መለያዎ በተሳካ ሁኔታ ተሰርዟል! አሁን ዘግተው ይዉጡ",
-    "enter-password": "የይለፍ ቃል ያስገቡ",
     "logout": "ውጣ"
   },
   "connection": {
@@ -42,7 +36,6 @@
     "enroll-in-program": {
       "change": "መረጃዬን ቀይር",
       "introduction-information": "የሚቻለውን እገዛ በፍትሃዊ ሂደት ማግኘትዎን ለማረጋገጥ ፣ አንዳንድ የግል መረጃዎች ያስፈልጉናል።",
-      "more-info-questions": "ስለግል መረጃ",
       "please-confirm": "ከዚህ በታች የእርስዎ አጠቃላይ መረጃ ነው። እባክዎን መረጃው ትክክል መሆኑን አረጋግጠው ላክ የሚለዉን ይጫኑ።",
       "submit-confirm": "መረጃዬን ላክ"
     },
@@ -133,7 +126,6 @@
     "try-again": "እንደገና ሞክር"
   },
   "shared": {
-    "cancel-button": "ሰርዝ",
     "close-button": "ዝጋ",
     "more-info": "ተጨማሪ ያንብቡ...",
     "retry": "እንደገና ሞክር",

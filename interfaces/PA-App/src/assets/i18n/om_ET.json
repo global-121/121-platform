@@ -1,12 +1,6 @@
 {
   "account": {
-    "change-password": "Paaswoordii jijjiiri",
-    "delete-account-header": "Adda-baastuu Dijitaalaa keessan haquuf murteessitaniittu taanaan paaswoordii keessan galchaa",
-    "delete-account-message": "Adda-baastuu Dijitaalaa keessan haquun waan duubatti hin deebinedha daataan keessan hunduu ni bada!",
     "delete-data": "Adda-baastuu Dijitalaa haqaa",
-    "delete-fail": "Dogoggorri ta'e uumameera, akkaawontii kee guutummaatti haquun hin danda'amne.",
-    "delete-success": "Akkaawontiin keessan haala milkaa'aa ta'een haqameera. Amma keessaa ba'uuf jirtu.",
-    "enter-password": "Paaswoordii keessan",
     "logout": "Keessaa ba'aa"
   },
   "connection": {
@@ -35,7 +29,6 @@
     "enroll-in-program": {
       "change": "Odeeffannoo koo jijjiiri",
       "introduction-information": "Gargaarsa jira jedhame argachuu keessaniifi adeemsa bilisaa ta'uu isaa mirkaneeffachuuf odeeffannoo dhuunfaa hanga tokko ni barbaadna.",
-      "more-info-questions": "Waa'ee odeeffannoo dhuunfaa",
       "please-confirm": "Kan armaan gadii odeeffannoo keessan waliigalaati. Maaloo ilaaluun mirkaneeffadhaa galchaa.",
       "submit-confirm": "Odeeffannoo koo ol naaf kaa'i"
     },
@@ -47,7 +40,6 @@
     },
     "registration-summary": {
       "documents": "Dokumentoota kanneen fiduu keessan mirkaneeffadhaa:",
-      "more-info-documents": "Waa'ee dokumantiiwwanii",
       "qr-code": "Maaloo walga'ii keessan irratti  koodii -QR kana agarsiisaa."
     },
     "select-fsp": {
@@ -96,7 +88,6 @@
     "close": "Cufi"
   },
   "shared": {
-    "cancel-button": "Dhiisaa",
     "close-button": "Cufi",
     "more-info": "Dabalataan dubbisaa...",
     "submit-button": "Galchi"

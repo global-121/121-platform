@@ -1,13 +1,7 @@
 {
   "_dir": "ltr",
   "account": {
-    "change-password": "Change password",
-    "delete-account-header": "Enter your password if you are sure you want to delete your account",
-    "delete-account-message": "Deleting your account is irreversible, all your data will be lost!",
     "delete-data": "Delete my data",
-    "delete-fail": "Something went wrong, your account could not by fully deleted.",
-    "delete-success": "Your account has been succesfully deleted. You will now logout",
-    "enter-password": "Your Password",
     "logout": "Log out"
   },
   "connection": {
@@ -42,7 +36,6 @@
     "enroll-in-program": {
       "change": "Change my information",
       "introduction-information": "To make sure you get the best possible help and a fair process, we need some personal information.",
-      "more-info-questions": "About personal information",
       "please-confirm": "Below is an overview of your information. Please check and then tap send.",
       "submit-confirm": "Send my information"
     },
@@ -165,7 +158,6 @@
     "try-again": "Try again"
   },
   "shared": {
-    "cancel-button": "Cancel",
     "close-button": "Close",
     "more-info": "Read more...",
     "retry": "Try again",

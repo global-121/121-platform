@@ -1,12 +1,6 @@
 {
   "account": {
-    "change-password": "Mbelekenya password",
-    "delete-account-header": "Tipika password ino tanaa isip ajo iyeu nimputa akount ino.",
-    "delete-account-message": "Tini mputa akaunt ino, mintoki arinyokino, nepoiyei lomon linono",
     "delete-data": "Mputa akaunt",
-    "delete-fail": "Keeyetae ntoki naitaroiye, meiputaroi akaunt ino",
-    "delete-success": "Eiputaru tata akaunt ino tata, mpungo tata",
-    "enter-password": "Password ino",
     "logout": "Mpungo"
   },
   "connection": {
@@ -41,7 +35,6 @@
     "enroll-in-program": {
       "change": "Mbelekenya lomon lainen",
       "introduction-information": "Pii itum reto naishakino oo tengoitei naishakino, ikiyeu lomon lekimpirita",
-      "more-info-questions": "Loipirta lomon lainen",
       "please-confirm": "Lokulo lomon linono tene te abori. Ngurai nisei meshomo.",
       "submit-confirm": "Terewa lomon lainen"
     },
@@ -113,7 +106,6 @@
     "close": "Nkeno"
   },
   "shared": {
-    "cancel-button": "Tudungo",
     "close-button": "Nkeno",
     "more-info": "Soma ichu...",
     "submit-button": "Terewa"

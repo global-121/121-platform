@@ -1,12 +1,6 @@
 {
   "account": {
-    "change-password": "Verander wachtwoord",
-    "delete-account-header": "Vul je wachtwoord in als je zeker bent dat je je account wilt verwijderen.",
-    "delete-account-message": "Verwijderen van je account is niet terug te draaien, al je data zal verloren gaan!",
     "delete-data": "Verwijder mijn data",
-    "delete-fail": "Er ging iets mis, je account kon niet volledig worden verwijderd.",
-    "delete-success": "Je account is succesvol verwijderd. Je zal nu worden uitgelogd.",
-    "enter-password": "Jouw wachtwoord",
     "logout": "Uitloggen"
   },
   "connection": {
@@ -41,7 +35,6 @@
     "enroll-in-program": {
       "change": "Wijzig mijn informatie",
       "introduction-information": "Om de best mogelijke hulp en een eerlijk proces te bieden, hebben we wat persoonlijke informatie nodig.",
-      "more-info-questions": "Over persoonlijke informatie",
       "please-confirm": "Hieronder is een overzicht van jouw persoonlijke informatie. Controleer en klik op versturen.",
       "submit-confirm": "Verstuur mijn informatie"
     },
@@ -132,7 +125,6 @@
     "try-again": "Probeer opnieuw"
   },
   "shared": {
-    "cancel-button": "Annuleren",
     "close-button": "Sluiten",
     "more-info": "Lees meer...",
     "retry": "Probeer opnieuw",
