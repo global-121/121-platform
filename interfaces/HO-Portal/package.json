@@ -71,7 +71,7 @@
     "@types/node": "^12.x",
     "codelyzer": "^5.1.2",
     "dotenv": "^10.0.0",
-    "gzipper": "^5.0.0",
+    "gzipper": "^6.2.1",
     "http-server": "^13.0.2",
     "jasmine-core": "^3.7.1",
     "jasmine-spec-reporter": "~5.0.2",
