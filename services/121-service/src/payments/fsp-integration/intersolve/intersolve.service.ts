@@ -492,6 +492,16 @@ export class IntersolveService {
     return realBalance;
   }
 
+  public async getToCancelVouchers(): Promise<IntersolveRequestEntity[]> {
+    const toCancelVouchers = await this.intersolveRequestRepository.find({
+      where: {
+        toCancel: true,
+      },
+    });
+
+    return toCancelVouchers;
+  }
+
   public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
     const maxId = (
       await this.intersolveBarcodeRepository.findOne({

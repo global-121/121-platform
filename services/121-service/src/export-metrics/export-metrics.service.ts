@@ -73,6 +73,9 @@ export class ExportMetricsService {
       case ExportType.unusedVouchers: {
         return this.getUnusedVouchers();
       }
+      case ExportType.toCancelVouchers: {
+        return this.getToCancelVouchers();
+      }
       case ExportType.duplicatePhoneNumbers: {
         return this.getDuplicatePhoneNumbers(programId);
       }
@@ -140,6 +143,17 @@ export class ExportMetricsService {
     const response = {
       fileName: ExportType.unusedVouchers,
       data: unusedVouchers,
+    };
+
+    return response;
+  }
+
+  private async getToCancelVouchers(): Promise<FileDto> {
+    const toCancelVouchers = await this.paymentsService.getToCancelVouchers();
+
+    const response = {
+      fileName: ExportType.toCancelVouchers,
+      data: toCancelVouchers,
     };
 
     return response;
