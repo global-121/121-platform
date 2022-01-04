@@ -22,6 +22,7 @@ export class Person {
   whatsappPhoneNumber?: string;
   namePartnerOrganization?: string;
   paymentAmountMultiplier?: number;
+  preferredLanguage?: LanguageEnum;
 }
 
 // Model for display (in table)
@@ -50,6 +51,7 @@ export class PersonRow {
   whatsappPhoneNumber?: string | null;
   namePartnerOrganization?: string | null;
   paymentAmountMultiplier?: string | null;
+  preferredLanguage?: string | null;
 }
 
 export enum PaStatus {
@@ -69,4 +71,18 @@ export enum PaStatus {
 export class Note {
   public note: string;
   public noteUpdated: string;
+}
+
+export enum LanguageEnum {
+  en = 'en',
+  amET = 'am_ET',
+  ar = 'ar',
+  ti = 'ti',
+  tl = 'tl',
+  ptBR = 'pt_BR',
+  tuvKE = 'tuv_KE',
+  saqKE = 'saq_KE',
+  in = 'in',
+  nl = 'nl',
+  es = 'es',
 }
