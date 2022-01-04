@@ -167,53 +167,18 @@ export class IntersolveApiService {
     return result;
   }
 
-  public async cancel(
+  public async markAsToCancel(
     cardId: string,
     transactionIdString: string,
-  ): Promise<IntersolveCancelResponse> {
-    let payload = await this.soapService.readXmlAsJs(
-      IntersolveSoapElements.Cancel,
-    );
-    payload = this.soapService.changeSoapBody(
-      payload,
-      IntersolveSoapElements.Cancel,
-      ['EAN'],
-      process.env.INTERSOLVE_EAN,
-    );
-    payload = this.soapService.changeSoapBody(
-      payload,
-      IntersolveSoapElements.Cancel,
-      ['CardId'],
-      cardId,
-    );
-    payload = this.soapService.changeSoapBody(
-      payload,
-      IntersolveSoapElements.Cancel,
-      ['TransactionId'],
-      transactionIdString,
-    );
-
-    const responseBody = await this.soapService.post(payload);
-    const result = {
-      resultCode: responseBody.CancelResponse.ResultCode._text,
-      resultDescription: responseBody.CancelResponse.ResultDescription._text,
-    };
+  ): Promise<void> {
     const transactionId = Number(transactionIdString);
     const intersolveRequest = await this.intersolveRequestRepository.findOne({
       cardId,
       transactionId,
     });
     intersolveRequest.updated = new Date();
-    intersolveRequest.isCancelled =
-      result.resultCode == IntersolveResultCode.Ok;
-    intersolveRequest.cancellationAttempts =
-      intersolveRequest.cancellationAttempts + 1;
-    intersolveRequest.cancelResultCode = result.resultCode;
-    intersolveRequest.toCancel = !this.stopCancelByRefposCodes.includes(
-      Number(result.resultCode),
-    );
+    intersolveRequest.isCancelled = false;
+    intersolveRequest.toCancel = true;
     await this.intersolveRequestRepository.save(intersolveRequest);
-
-    return result;
   }
 }

@@ -199,21 +199,6 @@ export class IntersolveService {
     return barcodeData;
   }
 
-  private async cancelVoucher(
-    voucherInfo: IntersolveIssueCardResponse,
-  ): Promise<void> {
-    if (voucherInfo.transactionId) {
-      await this.intersolveApiService.cancel(
-        voucherInfo.cardId,
-        voucherInfo.transactionId,
-      );
-    } else {
-      await this.intersolveApiService.cancelTransactionByRefPos(
-        voucherInfo.refPos,
-      );
-    }
-  }
-
   private async sendWhatsapp(
     paymentInfo: PaPaymentDataDto,
     voucherInfo: IntersolveIssueCardResponse,
@@ -475,7 +460,7 @@ export class IntersolveService {
     cardId: string,
     transactionId: string,
   ): Promise<void> {
-    await this.intersolveApiService.cancel(cardId, transactionId);
+    await this.intersolveApiService.markAsToCancel(cardId, transactionId);
     const barcode = await this.intersolveBarcodeRepository.findOne({
       where: { barcode: cardId },
       relations: ['image'],
