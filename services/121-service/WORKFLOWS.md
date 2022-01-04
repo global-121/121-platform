@@ -48,6 +48,8 @@ In this file we document "how to do X", manually. As not everything is possible 
 
 ## Change Financial Service Provider for Person Affected
 
+> ⚠️ This is now possible directly from HO-portal.
+
 1. PA gets in contact with **Pilot-team** if Financial Service Provider needs to be updated
 2. **Pilot-team** provides to **121-dev-team**:
    - Name: can be any of the first/second/third/last name attributes
@@ -94,6 +96,22 @@ In this file we document "how to do X", manually. As not everything is possible 
    - Monitoring-question answer
    - Registration duration (in seconds)
    - PA status
+
+---
+
+## Get list of vouchers marked as 'to cancel' (Intersolve)
+
+Since 2022-01-04 (code-date not deploy-date) we are not canceling vouchers any more, but do keep marking them as 'to cancel'.
+This workflow explains how to get out a list of 'to cancel' vouchers.
+
+1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) with a user with the "`personal data`"-role
+2. Use the endpoint: [`/export-metrics/export-list`](https://test-vm.121.global/121-service/docs/#/export-metrics/post_export_metrics_export_list)
+   Fill in `type` = "to-cancel-vouchers" and `programId` = 1. Delete the other (optional) properties.
+
+   This will return an object which includes the relevant 'data' property in json-format
+
+3. Use any online json-to-csv converter if needed.
+4. Filter on date before/after 2022-01-04 to distinguish between actual canceled vouchers or 'marked as canceled' vouchers
 
 ---
 
