@@ -705,10 +705,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           : null,
       name: person.name,
       namePartnerOrganization: person.namePartnerOrganization,
-      preferredLanguage: this.translate.instant(
-        'page.program.program-people-affected.language.' +
-          person.preferredLanguage,
-      ),
+      preferredLanguage: person.preferredLanguage
+        ? this.translate.instant(
+            'page.program.program-people-affected.language.' +
+              person.preferredLanguage,
+          )
+        : '',
       phoneNumber: formatPhoneNumber(person.phoneNumber),
       whatsappPhoneNumber: formatPhoneNumber(person.whatsappPhoneNumber),
       vnumber: person.vnumber,
