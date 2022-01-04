@@ -314,6 +314,20 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         minWidth: columnPhoneNumberWidth,
       },
       {
+        prop: 'preferredLanguage',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.preferredLanguage',
+        ),
+        ...this.columnDefaults,
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.reviewInclusion,
+          ProgramPhase.payment,
+        ],
+        roles: [UserRole.View, UserRole.PersonalData, UserRole.RunProgram],
+      },
+      {
         prop: 'namePartnerOrganization',
         name: this.translate.instant(
           'page.program.program-people-affected.column.namePartnerOrganization',
@@ -691,6 +705,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           : null,
       name: person.name,
       namePartnerOrganization: person.namePartnerOrganization,
+      preferredLanguage: this.translate.instant(
+        'page.program.program-people-affected.language.' +
+          person.preferredLanguage,
+      ),
       phoneNumber: formatPhoneNumber(person.phoneNumber),
       whatsappPhoneNumber: formatPhoneNumber(person.whatsappPhoneNumber),
       vnumber: person.vnumber,

@@ -260,8 +260,22 @@
           "vnumber": "V-number",
           "whatsappPhoneNumber": "WhatsApp nr.",
           "namePartnerOrganization": "Partner organization",
+          "preferredLanguage": "Preferred language",
           "paymentAmountMultiplier": "Transfer value(s)",
           "fsp": "Financial Service Provider"
+        },
+        "language": {
+          "en": "English",
+          "amET": "Amharic",
+          "ar": "Arabic",
+          "ti": "Tigrinya",
+          "tl": "Tagalog",
+          "ptBR": "Portuguese",
+          "tuvKE": "Turkana",
+          "saqKE": "Samburu",
+          "in": "Indonesian",
+          "nl": "Dutch",
+          "es": "Spanish"
         },
         "status": {
           "imported": "Imported",
