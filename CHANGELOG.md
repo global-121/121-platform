@@ -5,9 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.31.0...master)
+
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.30.4...master)
+## [1.31.0](https://github.com/global-121/121-platform/compare/v1.30.4...1.31.0) - 2022-01-04
 
 ### Added
 
@@ -21,8 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 
 - 2021-12-28: "Automatic hotfix deployment" is now an opt-in behavior by setting the ENV-variable `DEPLOY_PATCH=1`. See [tools/README](./tools/README.md#webhook-script).
-
----
 
 ## [1.30.4](https://github.com/global-121/121-platform/compare/v1.30.3...v1.30.4) - 2021-12-22
 
