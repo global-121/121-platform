@@ -42,7 +42,7 @@
         "error-messages": {
           "invalid-email": "Please enter a valid email address.",
           "empty-password": "Please enter a password.",
-          "401": "You have entered an incorrect username or password ",
+          "401": "This combination of email address and password is unknown.",
           "500": "Internal server error"
         }
       }
