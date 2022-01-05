@@ -277,6 +277,7 @@ export class ExportMetricsService {
         );
       }
       row[`payment${payment}_status`] = creationTransaction?.status;
+      row[`payment${payment}_amount`] = creationTransaction?.amount;
       row[`payment${payment}_voucherCreated_date`] =
         creationTransaction?.status === StatusEnum.success
           ? creationTransaction?.paymentDate
