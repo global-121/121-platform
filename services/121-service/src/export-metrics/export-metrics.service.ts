@@ -168,6 +168,7 @@ export class ExportMetricsService {
       GenericAttributes.phoneNumber,
       GenericAttributes.namePartnerOrganization,
       GenericAttributes.paymentAmountMultiplier,
+      GenericAttributes.preferredLanguage,
       'note',
     ];
     genericFields.forEach(field => {
