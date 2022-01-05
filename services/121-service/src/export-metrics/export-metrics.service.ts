@@ -278,11 +278,11 @@ export class ExportMetricsService {
       }
       row[`payment${payment}_status`] = creationTransaction?.status;
       row[`payment${payment}_amount`] = creationTransaction?.amount;
-      row[`payment${payment}_voucherCreated_date`] =
+      row[`payment${payment}_date`] =
         creationTransaction?.status === StatusEnum.success
           ? creationTransaction?.paymentDate
           : null;
-      row[`payment${payment}_voucherSent_date`] =
+      row[`payment${payment}_voucherClaimed_date`] =
         transaction[IntersolvePayoutStatus.VoucherSent]?.status ===
         StatusEnum.success
           ? transaction[IntersolvePayoutStatus.VoucherSent]?.paymentDate
