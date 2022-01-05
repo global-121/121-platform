@@ -121,7 +121,9 @@ export class CronjobService {
     console.log('CronjobService - Complete: cronSendWhatsappReminders');
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  // @Cron(CronExpression.EVERY_10_MINUTES)
+  // Turned off as currently not cancelling vouchers any more.
+  // Code is left in to easily turn back on in future.
   private async cronCancelByRefposIntersolve(): Promise<void> {
     // This function periodically checks if some of the IssueCard calls failed.
     // and tries to cancel the

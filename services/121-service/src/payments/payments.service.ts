@@ -19,6 +19,7 @@ import { BelcashService } from './fsp-integration/belcash/belcash.service';
 import { IntersolveService } from './fsp-integration/intersolve/intersolve.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
+import { IntersolveRequestEntity } from './fsp-integration/intersolve/intersolve-request.entity';
 
 @Injectable()
 export class PaymentsService {
@@ -314,6 +315,10 @@ export class PaymentsService {
 
   public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
     return this.intersolveService.getUnusedVouchers();
+  }
+
+  public async getToCancelVouchers(): Promise<IntersolveRequestEntity[]> {
+    return this.intersolveService.getToCancelVouchers();
   }
 
   public async getFspInstructions(programId, payment): Promise<any> {
