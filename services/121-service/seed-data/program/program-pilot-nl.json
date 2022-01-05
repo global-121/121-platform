@@ -46,7 +46,7 @@
       "whatsappReply": "هذا رسالة آلية، إذا كانت لديك اسئلة يمكنك مراسلة الصليب الأحمر على واتس آب: +31614458781"
     },
     "en": {
-      "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS message with more information within 1 week.",
+      "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS or WhatsApp message with more information within 1 week.",
       "whatsappGenericMessage": "This is a message from the Red Cross.\n\nThere is a message waiting for you. Please reply “yes” to this message to receive it.",
       "whatsappPayment": "This is a message from the Red Cross.\n\nYour €{{1}} Albert Heijn supermarket voucher is ready to be sent.\n\nPlease reply “yes” to this message in order to receive:\n1. This week's voucher.\n2. Any previous vouchers you haven't received yet.\n",
       "whatsappPaymentMultiple": "This is a message from the Red Cross.\n\nYour €{{1}} Albert Heijn supermarket voucher is ready to be sent.\n\nPlease reply “yes” to this message in order to receive:\n1. This week's voucher.\n2. Any previous vouchers you haven't received yet.\n3. The voucher for a friend or family member who is registered on the same phone number.\nThis happens only when he/she is also put on the list of the partner organisation to receive the voucher.\n",
@@ -55,7 +55,7 @@
       "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781"
     },
     "nl": {
-      "registered": "Dit is een bericht van het Rode Kruis.\n\nWe hebben je aanmelding voor hulp ontvangen.\n\nJe ontvangt binnen 1 week een volgende SMS met meer informatie.",
+      "registered": "Dit is een bericht van het Rode Kruis.\n\nWe hebben je aanmelding voor hulp ontvangen.\n\nJe ontvangt binnen 1 week een volgende SMS of WhatsApp bericht met meer informatie.",
       "whatsappGenericMessage": "Dit is een bericht van het Rode Kruis.\n\nEr staat een bericht klaar voor je. Antwoord met “ja” op dit bericht om het te ontvangen.",
       "whatsappPayment": "Dit is een bericht van het Rode Kruis.\n\nJe Albert Heijn supermarkt voucher van €{{1}} is klaar om verzonden te worden.\n\nAntwoord met \"ja\" op dit bericht om het volgende te ontvangen:\n1. De voucher van deze week.\n2. Vorige vouchers die je nog niet hebt ontvangen.\n",
       "whatsappPaymentMultiple": "Dit is een bericht van het Rode Kruis.\n\nJe Albert Heijn supermarkt voucher van €{{1}} is klaar om verzonden te worden.\n\nAntwoord met \"ja\" op dit bericht om het volgende te ontvangen:\n1. De voucher van deze week.\n2. Vorige vouchers die je nog niet hebt ontvangen.\n3. De voucher voor een vriend of familielid die is geregistreerd met hetzelfde telefoonnummer.\nDit gebeurt alleen als hij/zij ook op de lijst staat van de partnerorganisatie om een voucher te ontvangen.\n",
