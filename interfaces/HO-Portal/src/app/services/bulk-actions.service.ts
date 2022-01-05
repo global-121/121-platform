@@ -75,6 +75,7 @@ export class BulkActionsService {
           PaStatus.imported,
           PaStatus.invited,
           PaStatus.noLongerEligible,
+          PaStatus.startedRegistration,
         ]);
         break;
     }
