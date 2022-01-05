@@ -50,3 +50,12 @@
     border-color: currentColor;
   }
 }
+
+.payment-cell-money-line {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.payment-cell-no-popup {
+  cursor: default;
+}

@@ -244,12 +244,7 @@
       let-row="row"
     >
       <ng-container
-        *ngIf="value && !hasVoucherSupport(row.fsp) && !hasError(row, column.paymentIndex)"
-      >
-        {{ value.text }}
-      </ng-container>
-      <ng-container
-        *ngIf="value && (hasVoucherSupport(row.fsp) || hasError(row, column.paymentIndex))"
+        *ngIf="value"
       >
         <button
           type="button"
@@ -260,23 +255,30 @@
            }"
           [attr.title]="'page.program.program-people-affected.transaction.show-status'|translate"
           [attr.aria-label]="'page.program.program-people-affected.transaction.show-status'|translate"
+          [class.payment-cell-no-popup]="!hasVoucherSupport(row.fsp) && !hasError(row, column.paymentIndex)"
         >
-          {{ value.text }}
+          {{ value.text }} 
           <br>
-          <ion-icon
-            *ngIf="value.hasMessageIcon"
-            name="mail"
-            size="small"
-            aria-hidden="true"
-          >
-          </ion-icon>
-          <ion-icon
-            *ngIf="value.hasMoneyIconTable"
-            name="cash"
-            size="small"
-            aria-hidden="true"
-          >
-          </ion-icon>
+          <div>
+            <span class="payment-cell-money-line">{{value.amount}}</span>
+            <span class="payment-cell-money-line" *ngIf="value.hasMessageIcon || value.hasMoneyIconTable">&nbsp;</span>
+            <ion-icon
+              *ngIf="value.hasMessageIcon"
+              name="mail"
+              size="small"
+              aria-hidden="true"
+              class="payment-cell-money-line"
+            >
+            </ion-icon>
+            <ion-icon
+              *ngIf="value.hasMoneyIconTable"
+              name="cash"
+              size="small"
+              aria-hidden="true"
+              class="payment-cell-money-line"
+            >
+            </ion-icon>
+          </div>
         </button>
       </ng-container>
       <ng-container
