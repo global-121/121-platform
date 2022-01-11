@@ -1,6 +1,5 @@
 <app-header
-  [title]="(program?.validation ? 'page.program.phases.registrationValidation.label' : 'page.program.phases.registrationValidation.label-no-validation') | translate"
-  startButtonRouterLink="/home" startButtonIcon="home" programPage="true"
+  [title]="(program?.validation ? 'page.program.phases.registrationValidation.label' : 'page.program.phases.registrationValidation.label-no-validation') | translate" [showHome]="true"
 ></app-header>
 <app-program-navigation></app-program-navigation>
 

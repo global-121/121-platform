@@ -1,24 +1,38 @@
-<ion-header class="top-header">
+<ion-header>
   <ion-grid>
     <ion-row>
       <ion-col size="1">
         <ion-button
-          [title]="startButtonRouterLink === '/home' ? ('header.home'|translate) : ('header.help'|translate)"
-          [attr.aria-label]="startButtonRouterLink === '/home' ? ('header.home'|translate) : ('header.help'|translate)"
-          [routerLink]="startButtonRouterLink"
+          [title]="'header.help'|translate"
+          [attr.aria-label]="'header.help'|translate"
+          routerLink="/help"
           fill="clear"
           size="small"
           color="medium"
+          *ngIf="showHelp"
         >
-          <ion-icon [name]="startButtonIcon" slot="icon-only"></ion-icon>
+          <ion-icon name="help" slot="icon-only"></ion-icon>
         </ion-button>
+        <ion-button
+          [title]="'header.home'|translate"
+          [attr.aria-label]="'header.home'|translate"
+          routerLink="/home"
+          fill="clear"
+          size="small"
+          color="medium"
+          *ngIf="showHome"
+        >
+          <ion-icon name="home" slot="icon-only"></ion-icon>
+        </ion-button>
+
+
       </ion-col>
       <ion-col size="4">
         <h1 class="ion-no-margin">
           {{ title }}
         </h1>
-        <ion-note *ngIf="programPage">
-          {{ programTitlePortal }}
+        <ion-note *ngIf="subtitle">
+          {{ subtitle }}
           &nbsp;<!-- 'placeholder' to reserve vertical space for async-loaded programTitlePortal -->
         </ion-note>
       </ion-col>

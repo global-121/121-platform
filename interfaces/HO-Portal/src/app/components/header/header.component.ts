@@ -14,17 +14,14 @@ export class HeaderComponent implements OnInit {
   public title: string;
 
   @Input()
-  public startButtonRouterLink: string;
+  public showHome = false;
 
   @Input()
-  public startButtonIcon: string;
-
-  @Input()
-  public programPage: boolean;
+  public showHelp = false;
 
   public programId: number;
   private program: Program;
-  public programTitlePortal: string;
+  public subtitle: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,8 +37,6 @@ export class HeaderComponent implements OnInit {
 
   private async loadProgramDetails() {
     this.program = await this.programsService.getProgramById(this.programId);
-    this.programTitlePortal = this.translatableString.get(
-      this.program?.titlePortal,
-    );
+    this.subtitle = this.translatableString.get(this.program?.titlePortal);
   }
 }

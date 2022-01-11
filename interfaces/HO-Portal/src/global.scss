@@ -46,15 +46,9 @@
   -webkit-overflow-scrolling: touch;
 }
 
-.top-header {
-  border-bottom: 1px solid #c2c2c2;
-  &::after {
-    background-image: none;
-  }
-}
-
 ion-button {
   text-transform: none;
+  --box-shadow: none;
 }
 
 .input-item {
@@ -167,18 +161,18 @@ ion-icon {
   margin-left: auto;
   margin-right: auto;
 }
-.active-page-button {
-  --phase-navigation--indicator-size: 2px;
+.navigation-button {
+  --navigation-button--indicator-size: 2px;
 
   display: inline-block;
   position: relative;
 }
-.active-page-button--indicator {
+.navigation-button--indicator {
   display: block;
   position: absolute;
   top: 90%;
   left: 0.85em;
   right: 0.85em;
-  border-top: var(--phase-navigation--indicator-size) solid
+  border-top: var(--navigation-button--indicator-size) solid
     var(--ion-color-secondary);
 }

@@ -1,7 +1,7 @@
 <ion-grid>
   <ion-row class="ion-align-items-center">
     <ion-col size="auto">
-      <span class="active-page-button">
+      <span class="navigation-button">
         <ion-button
           [routerLink]="['/program', programId, 'dashboard']"
           routerLinkActive
@@ -14,10 +14,10 @@
         </ion-button>
         <span
           *ngIf="rlaDashboard.isActive"
-          class="active-page-button--indicator"
+          class="navigation-button--indicator"
         ></span>
       </span>
-      <span *ngIf="showManageAidworkers" class="active-page-button">
+      <span *ngIf="showManageAidworkers" class="navigation-button">
         <ion-button
           [disabled]="!canManageAidWorkers()"
           [routerLink]="['/program', programId, 'aid-workers']"
@@ -31,7 +31,7 @@
         </ion-button>
         <span
           *ngIf="rlaAidWorkers.isActive"
-          class="active-page-button--indicator"
+          class="navigation-button--indicator"
         ></span>
       </span>
     </ion-col>
