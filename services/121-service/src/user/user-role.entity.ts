@@ -3,6 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { Base121Entity } from '../base.entity';
+import { PermissionsEntity } from './permissions.entity';
 
 @Entity('user_role')
 export class UserRoleEntity extends Base121Entity {
@@ -17,4 +18,10 @@ export class UserRoleEntity extends Base121Entity {
     assignment => assignment.roles,
   )
   public assignments: ProgramAidworkerAssignmentEntity[];
+
+  @ManyToMany(
+    () => PermissionsEntity,
+    permission => permission.roles,
+  )
+  public permissions: PermissionsEntity[];
 }
