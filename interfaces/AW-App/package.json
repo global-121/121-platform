@@ -65,7 +65,7 @@
     "@types/jasmine": "^3.7.4",
     "@types/node": "12.x",
     "codelyzer": "^5.1.2",
-    "dotenv": "^10.0.0",
+    "dotenv": "^11.0.0",
     "gzipper": "^5.0.0",
     "http-server": "^13.0.2",
     "jasmine-core": "^3.7.1",
