@@ -16,6 +16,40 @@ import { UserType } from '../user/user-type-enum';
 export class SeedHelper {
   public constructor(private connection: Connection) {}
 
+  public async addDefaultUsers(program: ProgramEntity): Promise<void> {
+    const fullAccessUser = await this.addUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FULL_ACCESS,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
+    });
+
+    const runProgramUser = await this.addUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
+    });
+
+    const personalDataUser = await this.addUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_PERSONAL_DATA,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_PERSONAL_DATA,
+    });
+
+    const viewOnlyUser = await this.addUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+    });
+
+    // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
+    await this.assignAidworker(fullAccessUser.id, program.id, [UserRole.Admin]);
+    await this.assignAidworker(runProgramUser.id, program.id, [
+      UserRole.RunProgram,
+    ]);
+    await this.assignAidworker(personalDataUser.id, program.id, [
+      UserRole.PersonalData,
+    ]);
+    await this.assignAidworker(viewOnlyUser.id, program.id, [UserRole.View]);
+
+    await this.assignAdminUserToProgram(program.id);
+  }
+
   public async addUser(userInput: any): Promise<UserEntity> {
     const userRepository = this.connection.getRepository(UserEntity);
     return await userRepository.save({

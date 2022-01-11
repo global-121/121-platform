@@ -6,6 +6,8 @@ import { UserEntity } from '../user/user.entity';
 import crypto from 'crypto';
 import { UserRoleEntity } from '../user/user-role.entity';
 import { UserType } from '../user/user-type-enum';
+import { PermissionEnum } from '../user/permission.enum';
+import { PermissionEntity } from '../user/permissions.entity';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {
@@ -14,31 +16,79 @@ export class SeedInit implements InterfaceScript {
   public async run(): Promise<void> {
     await this.dropAll();
     await this.runAllMigrations();
+    const permissions = await this.addPermissions();
+    await this.createDefaultRoles(permissions);
+    await this.createAdminRole();
+  }
 
+  private async addPermissions(): Promise<PermissionEntity[]> {
+    const permissionsRepository = this.connection.getRepository(
+      PermissionEntity,
+    );
+    const permissionEntities = [];
+    for (const permissionName of Object.values(PermissionEnum)) {
+      const permission = new PermissionEntity();
+      permission.name = permissionName as PermissionEnum;
+      const permissionEntity = await permissionsRepository.save(permission);
+      permissionEntities.push(permissionEntity);
+    }
+    return permissionEntities;
+  }
+
+  private async createDefaultRoles(
+    permissions: PermissionEntity[],
+  ): Promise<UserRoleEntity[]> {
     const userRoleRepository = this.connection.getRepository(UserRoleEntity);
-    await userRoleRepository.save([
+    const defaultRoles = [
       {
         role: UserRole.Admin,
         label: 'Admin',
-      },
-      {
-        role: UserRole.View,
-        label: 'Only view data, including Personally Identifiable Information',
-      },
-      {
-        role: UserRole.PersonalData,
-        label: 'Handle Personally Identifiable Information',
+        permissions: Object.values(PermissionEnum),
       },
       {
         role: UserRole.RunProgram,
         label: 'Run Program',
+        permissions: [
+          PermissionEnum.changePassword,
+          PermissionEnum.includeReject,
+        ],
+      },
+      {
+        role: UserRole.View,
+        label: 'Only view data, including Personally Identifiable Information',
+        permissions: [PermissionEnum.changePassword],
+      },
+      {
+        role: UserRole.PersonalData,
+        label: 'Handle Personally Identifiable Information',
+        permissions: [
+          PermissionEnum.changePassword,
+          PermissionEnum.includeReject,
+        ],
       },
       {
         role: UserRole.FieldValidation,
         label: 'Do Field Validation',
+        permissions: [PermissionEnum.changePassword],
       },
-    ]);
+    ];
+    const userRoleEntities = [];
+    for (const defaultRole of defaultRoles) {
+      const defaultRoleEntity = new UserRoleEntity();
+      defaultRoleEntity.role = defaultRole.role;
+      defaultRoleEntity.label = defaultRole.label;
+      defaultRoleEntity.permissions = permissions.filter(permission =>
+        defaultRole.permissions.includes(permission.name),
+      );
+      console.log('permissions: ', permissions);
+      console.log('defaultRole.permissions: ', defaultRole.permissions);
+      console.log('defaultRoleEntity: ', defaultRoleEntity);
+      userRoleEntities.push(await userRoleRepository.save(defaultRoleEntity));
+    }
+    return userRoleEntities;
+  }
 
+  private async createAdminRole(): Promise<void> {
     // ***** CREATE ADMIN USER *****
 
     const userRepository = this.connection.getRepository(UserEntity);

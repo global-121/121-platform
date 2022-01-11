@@ -3,10 +3,10 @@ import { Entity, Column, ManyToMany } from 'typeorm';
 import { Base121Entity } from '../base.entity';
 import { UserRoleEntity } from './user-role.entity';
 
-@Entity('permissions')
-export class PermissionsEntity extends Base121Entity {
+@Entity('permission')
+export class PermissionEntity extends Base121Entity {
   @Column()
-  public permission: PermissionEnum;
+  public name: PermissionEnum;
 
   @ManyToMany(
     () => UserRoleEntity,
