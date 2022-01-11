@@ -26,7 +26,7 @@ export class BulkImportDto {
   @ApiModelProperty()
   @IsNotEmpty()
   @IsString()
-  public namePartnerOrganization: string;
+  public segment: string;
 
   @ApiModelProperty()
   @IsNumber()
@@ -63,7 +63,7 @@ export class ImportRegistrationsDto {
 
   @ApiModelProperty()
   @IsString()
-  public namePartnerOrganization: string;
+  public segment: string;
 
   @ApiModelProperty()
   @IsNotEmpty()

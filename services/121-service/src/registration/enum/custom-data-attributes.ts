@@ -12,7 +12,7 @@ export enum CustomDataAttributes {
 export enum GenericAttributes {
   phoneNumber = 'phoneNumber',
   preferredLanguage = 'preferredLanguage',
-  namePartnerOrganization = 'namePartnerOrganization',
+  segment = 'segment',
   fspName = 'fspName',
   paymentAmountMultiplier = 'paymentAmountMultiplier',
 }

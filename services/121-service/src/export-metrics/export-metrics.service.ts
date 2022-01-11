@@ -47,7 +47,7 @@ export class ExportMetricsService {
     private readonly paymentsService: PaymentsService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
-  ) {}
+  ) { }
 
   public getExportList(
     programId: number,
@@ -105,11 +105,10 @@ export class ExportMetricsService {
     );
 
     const fileInput = {
-      fileName: `details-completed-payment-${
-        minPaymentId === maxPaymentId
-          ? minPaymentId
-          : `${minPaymentId}-to-${maxPaymentId}`
-      }`,
+      fileName: `details-completed-payment-${minPaymentId === maxPaymentId
+        ? minPaymentId
+        : `${minPaymentId}-to-${maxPaymentId}`
+        }`,
       data: pastPaymentDetails,
     };
 
@@ -166,7 +165,7 @@ export class ExportMetricsService {
     const genericFields = [
       'id',
       GenericAttributes.phoneNumber,
-      GenericAttributes.namePartnerOrganization,
+      GenericAttributes.segment,
       GenericAttributes.paymentAmountMultiplier,
       GenericAttributes.preferredLanguage,
       'note',
@@ -285,7 +284,7 @@ export class ExportMetricsService {
           : null;
       row[`payment${payment}_voucherClaimed_date`] =
         transaction[IntersolvePayoutStatus.VoucherSent]?.status ===
-        StatusEnum.success
+          StatusEnum.success
           ? transaction[IntersolvePayoutStatus.VoucherSent]?.paymentDate
           : null;
     }
@@ -460,7 +459,7 @@ export class ExportMetricsService {
         name: this.registrationsService.getName(registration.customData),
         status: registration.registrationStatus,
         fsp: registration.fsp ? registration.fsp.fsp : null,
-        namePartnerOrganization: registration.namePartnerOrganization,
+        segment: registration.segment,
         phoneNumber: registration.customData[CustomDataAttributes.phoneNumber],
         whatsappPhoneNumber:
           registration.customData[CustomDataAttributes.whatsappPhoneNumber],
@@ -513,7 +512,7 @@ export class ExportMetricsService {
         'transaction.status as "status"',
         'transaction."errorMessage" as "errorMessage"',
         'registration.customData as "customData"',
-        'registration.namePartnerOrganization as "partnerOrganization"',
+        'registration.segment as "segment"',
         'fsp.fsp AS financialServiceProvider',
       ])
       .innerJoin(
@@ -890,7 +889,7 @@ export class ExportMetricsService {
       },
       relations: ['fsp'],
     });
-    const sum = includedRegistrations.reduce(function(a, b) {
+    const sum = includedRegistrations.reduce(function (a, b) {
       return a + (b[Attributes.paymentAmountMultiplier] || 1);
     }, 0);
     return {

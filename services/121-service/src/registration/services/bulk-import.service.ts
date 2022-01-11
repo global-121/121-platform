@@ -48,7 +48,7 @@ export class BulkImportService {
     private readonly lookupService: LookupService,
     private readonly actionService: ActionService,
     private readonly inclusionScoreService: InlusionScoreService,
-  ) {}
+  ) { }
 
   public async importBulk(
     csvFile,
@@ -94,7 +94,7 @@ export class BulkImportService {
       newRegistration.referenceId = uuid();
       newRegistration.phoneNumber = phoneNumberResult;
       newRegistration.preferredLanguage = LanguageEnum.en;
-      newRegistration.namePartnerOrganization = record.namePartnerOrganization;
+      newRegistration.segment = record.segment;
       newRegistration.paymentAmountMultiplier = record.paymentAmountMultiplier;
       newRegistration.program = program;
       const savedRegistration = await this.registrationRepository.save(
@@ -150,7 +150,7 @@ export class BulkImportService {
     for await (const record of validatedImportRecords) {
       const registration = new RegistrationEntity();
       registration.referenceId = uuid();
-      registration.namePartnerOrganization = record.namePartnerOrganization;
+      registration.segment = record.segment;
       registration.phoneNumber = record.phoneNumber;
       registration.preferredLanguage = record.preferredLanguage;
       registration.program = program;
@@ -277,7 +277,7 @@ export class BulkImportService {
       }
       let importRecord = new BulkImportDto();
       importRecord.phoneNumber = row.phoneNumber;
-      importRecord.namePartnerOrganization = row.namePartnerOrganization;
+      importRecord.segment = row.segment;
       importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
       const result = await validate(importRecord);
       if (result.length > 0) {
@@ -339,7 +339,7 @@ export class BulkImportService {
       }
       let importRecord = new ImportRegistrationsDto();
       importRecord.preferredLanguage = row.preferredLanguage;
-      importRecord.namePartnerOrganization = row.namePartnerOrganization;
+      importRecord.segment = row.segment;
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;
       importRecord.programAttributes = [];

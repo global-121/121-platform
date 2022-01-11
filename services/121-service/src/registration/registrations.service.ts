@@ -68,7 +68,7 @@ export class RegistrationsService {
     private readonly whatsappService: WhatsappService,
     private readonly inclusionScoreService: InlusionScoreService,
     private readonly bulkImportService: BulkImportService,
-  ) {}
+  ) { }
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -316,8 +316,8 @@ export class RegistrationsService {
 
     // If imported registration found ..
     // .. then transfer relevant attributes from imported registration to current registration
-    currentRegistration.namePartnerOrganization =
-      importedRegistration.namePartnerOrganization;
+    currentRegistration.segment =
+      importedRegistration.segment;
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
 
@@ -456,8 +456,8 @@ export class RegistrationsService {
       .addSelect('registration.inclusionScore', 'inclusionScore')
       .addSelect('fsp.fsp', 'fsp')
       .addSelect(
-        'registration.namePartnerOrganization',
-        'namePartnerOrganization',
+        'registration.segment',
+        'segment',
       )
       .addSelect(
         'registration.paymentAmountMultiplier',
@@ -795,10 +795,10 @@ export class RegistrationsService {
     const messageText = message
       ? message
       : await this.getNotificationText(
-          registration.preferredLanguage,
-          key,
-          programId,
-        );
+        registration.preferredLanguage,
+        key,
+        programId,
+      );
 
     if (whatsappNumber) {
       this.whatsappService.queueMessageSendTemplate(
@@ -857,12 +857,12 @@ export class RegistrationsService {
             registration.customData[CustomDataAttributes.firstName] === name ||
             registration.customData[CustomDataAttributes.secondName] === name ||
             registration.customData[CustomDataAttributes.thirdName] ===
-              name)) ||
+            name)) ||
         (phoneNumber &&
           (registration.customData[CustomDataAttributes.phoneNumber] ===
             phoneNumber ||
             registration.customData[
-              CustomDataAttributes.whatsappPhoneNumber
+            CustomDataAttributes.whatsappPhoneNumber
             ] === phoneNumber ||
             registration.phoneNumber === phoneNumber)) ||
         registration.id === id
