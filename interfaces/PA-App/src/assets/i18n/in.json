@@ -63,7 +63,7 @@
     },
     "registration-summary": {
       "documents": "Harap siap dengan dokumen-dokumen ini:",
-      "no-validation-conclusion": "Terima kasih. Registrasi anda sekarang sudah lengkap. <br><br>Anda akan menerima SMS/WhatsApp di nomor HP yang telah anda berikan yang mengkonfirmasikan registrasi anda. <br><br>Anda akan diberitahukan seandainya aplikasi anda telah berhasil, dalam waktu 14 hari. <br><br> Ini adalah berita terakhir.",
+      "no-validation-conclusion": "Terima kasih. Registrasi anda sekarang sudah lengkap. <br><br>Anda akan menerima SMS/WhatsApp di nomor HP yang telah anda berikan yang mengkonfirmasikan registrasi anda. <br><br>Anda akan diberitahukan seandainya aplikasi anda telah berhasil, dalam waktu 7 hari. <br><br> Ini adalah berita terakhir.",
       "qr-code": "Harap tunjukkan QR-code ini ke petugas Bantuan, bila diminta",
       "validation-conclusion": "Terima kasih. Registrasi anda telah lengkap. Anda akan menerima SMS/WhatsApp di nomor telpon yang anda berikan secepatnya, yang akan mengkonfirmasi registrasi anda. <br><br>\nSeorang petugas Bantuan dari NGO ini akan mengoranisir pertemuan dengan anda untuk memvalidasi informasi anda, mungkin dengan mampir ke alamat anda."
     },
