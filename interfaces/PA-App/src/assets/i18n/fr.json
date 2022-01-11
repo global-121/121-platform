@@ -63,7 +63,7 @@
     },
     "registration-summary": {
       "documents": "Préparez les documents suivants:",
-      "no-validation-conclusion": "Merci. Votre inscription est maintenant complète. <br><br>Vous devriez recevoir bientôt la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni. <br><br>Vous serez informé si votre demande a été acceptée dans les 14 jours. <br><br>   Ceci est le dernier message pour l'instant.",
+      "no-validation-conclusion": "Merci. Votre inscription est maintenant complète. <br><br>Vous devriez recevoir bientôt la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni. <br><br>Vous serez informé si votre demande a été acceptée dans les 7 jours. <br><br>   Ceci est le dernier message pour l'instant.",
       "qr-code": "Veuillez montrer ce code QR au travailleur humanitaire quand c'est demandé.",
       "validation-conclusion": "Merci. Votre inscription est maintenant complète. Vous devriez recevoir la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni.<br><br>Un travailleur humanitaire de l'ONG organisera un rendez-vous avec vous pour valider vos informations. Probablement ce rendez-vous sera organisé chez vous."
     },
