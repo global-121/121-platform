@@ -37,10 +37,18 @@
   border: 1px solid #bbb;
   border-radius: 0.3em;
 
-  &:hover,
-  &:focus {
+  &:not(:disabled):hover,
+  &:not(:disabled):focus {
     color: var(--ion-color-primary);
     border-color: currentColor;
+  }
+
+  &.no-action:hover,
+  &.no-action:focus,
+  &.no-action {
+    cursor: default;
+    color: inherit;
+    border-color: inherit;
   }
 }
 
@@ -49,13 +57,4 @@
     color: var(--ion-color-danger);
     border-color: currentColor;
   }
-}
-
-.payment-cell-money-line {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.payment-cell-no-popup {
-  cursor: default;
 }
