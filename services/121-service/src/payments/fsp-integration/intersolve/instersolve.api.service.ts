@@ -66,7 +66,6 @@ export class IntersolveApiService {
       const responseBody = !!process.env.MOCK_INTERSOLVE
         ? await this.intersolveMock.post(payload)
         : await this.soapService.post(payload);
-
       result = {
         resultCode: responseBody.IssueCardResponse.ResultCode._text,
         resultDescription:
@@ -165,6 +164,16 @@ export class IntersolveApiService {
     );
     await this.intersolveRequestRepository.save(intersolveRequest);
     return result;
+  }
+
+  public async markAsToCancelByRefPos(refPos: number): Promise<void> {
+    const intersolveRequest = await this.intersolveRequestRepository.findOne({
+      refPos,
+    });
+    intersolveRequest.updated = new Date();
+    intersolveRequest.isCancelled = false;
+    intersolveRequest.toCancel = true;
+    await this.intersolveRequestRepository.save(intersolveRequest);
   }
 
   public async markAsToCancel(
