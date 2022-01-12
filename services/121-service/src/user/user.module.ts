@@ -9,6 +9,7 @@ import { ProgramEntity } from '../programs/program.entity';
 import { UserRoleEntity } from './user-role.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
+import { PermissionEntity } from './permissions.entity';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-
       PersonAffectedAppDataEntity,
       RegistrationEntity,
       TransactionEntity,
+      PermissionEntity,
     ]),
   ],
   providers: [UserService],

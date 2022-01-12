@@ -4,19 +4,10 @@ import { PersonAffectedRole } from './user-role.enum';
 import { UserEntity } from './user.entity';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
-import {
-  Get,
-  Post,
-  Body,
-  Param,
-  Controller,
-  HttpStatus,
-  UseGuards,
-} from '@nestjs/common';
+import { Get, Post, Body, Param, Controller, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
 import { LoginUserDto, UpdateUserDto } from './dto';
-import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { User } from './user.decorator';
 
 import {
@@ -28,10 +19,10 @@ import {
 import { RolesGuard } from '../roles.guard';
 import { Roles } from '../roles.decorator';
 import { DefaultUserRole } from './user-role.enum';
-import { UserType } from './user-type-enum';
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 import { UserRoleEntity } from './user-role.entity';
 import { Permissions } from '../permissions.decorator';
+import { CreateUserRoleDto } from './dto/create-user-role.dto';
 
 @UseGuards(RolesGuard, PermissionsGuard)
 @ApiUseTags('user')
@@ -40,6 +31,16 @@ export class UserController {
   private readonly userService: UserService;
   public constructor(userService: UserService) {
     this.userService = userService;
+  }
+
+  @ApiBearerAuth()
+  @Roles(DefaultUserRole.Admin)
+  @ApiOperation({ title: 'Create new user role' })
+  @Post('role')
+  public async addUserRole(
+    @Body() userRoleData: CreateUserRoleDto,
+  ): Promise<UserRoleEntity> {
+    return await this.userService.addUserRole(userRoleData);
   }
 
   @ApiBearerAuth()
