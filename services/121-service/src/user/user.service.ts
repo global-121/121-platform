@@ -126,7 +126,11 @@ export class UserService {
 
   public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {
     let toUpdate = await this.userRepository.findOne(id, {
-      relations: ['programAssignments', 'programAssignments.roles'],
+      relations: [
+        'programAssignments',
+        'programAssignments.roles',
+        'programAssignments.roles.permissions',
+      ],
     });
     let updated = toUpdate;
     updated.password = crypto.createHmac('sha256', dto.password).digest('hex');
@@ -234,7 +238,11 @@ export class UserService {
   public async findByUsername(username: string): Promise<UserRO> {
     const user = await this.userRepository.findOne({
       where: { username: username },
-      relations: ['programAssignments', 'programAssignments.roles'],
+      relations: [
+        'programAssignments',
+        'programAssignments.roles',
+        'programAssignments.roles.permissions',
+      ],
     });
     return this.buildUserRO(user);
   }

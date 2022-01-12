@@ -1,3 +1,5 @@
+import { PermissionsGuard } from './../permissions.guard';
+import { PermissionEnum } from './permission.enum';
 import { PersonAffectedRole } from './../user-role.enum';
 import { UserEntity } from './user.entity';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
@@ -29,8 +31,9 @@ import { UserRole } from '../user-role.enum';
 import { UserType } from './user-type-enum';
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 import { UserRoleEntity } from './user-role.entity';
+import { Permissions } from '../permissions.decorator';
 
-@UseGuards(RolesGuard)
+@UseGuards(RolesGuard, PermissionsGuard)
 @ApiUseTags('user')
 @Controller()
 export class UserController {
@@ -70,6 +73,7 @@ export class UserController {
     UserRole.PersonalData,
     UserRole.FieldValidation,
   )
+  @Permissions(PermissionEnum.changePassword)
   @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
   public async update(

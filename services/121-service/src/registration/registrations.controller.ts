@@ -1,3 +1,4 @@
+import { PermissionsGuard } from './../permissions.guard';
 import { RegistrationEntity } from './registration.entity';
 import {
   Post,
@@ -44,9 +45,11 @@ import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
+import { Permissions } from '../permissions.decorator';
+import { PermissionEnum } from '../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
+@UseGuards(RolesGuard, PermissionsGuard)
 @ApiUseTags('registrations')
 @Controller('registrations')
 export class RegistrationsController {
@@ -307,7 +310,8 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  // @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Permissions(PermissionEnum.includeReject)
   @ApiOperation({ title: 'Include set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('include/:programId')
