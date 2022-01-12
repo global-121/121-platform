@@ -20,13 +20,15 @@ import { UserRoleEntity } from './user-role.entity';
 import { UserType } from './user-type-enum';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
+import { CreateUserRoleDto } from './dto/create-user-role.dto';
+import { PermissionEntity } from './permissions.entity';
 
 @Injectable()
 export class UserService {
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
+  @InjectRepository(PermissionEntity)
+  private readonly permissionRepository: Repository<PermissionEntity>;
   @InjectRepository(UserRoleEntity)
   private readonly userRoleRepository: Repository<UserRoleEntity>;
   @InjectRepository(ProgramEntity)
@@ -89,6 +91,23 @@ export class UserService {
       dto.password,
       UserType.personAffected,
     );
+  }
+
+  public async addUserRole(
+    userRoleData: CreateUserRoleDto,
+  ): Promise<UserRoleEntity> {
+    const userRoleEntity = new UserRoleEntity();
+    userRoleEntity.role = userRoleData.role;
+    userRoleEntity.label = userRoleData.label;
+    const permissionEntities = [];
+    for await (const permission of userRoleData.permissions) {
+      permissionEntities.push(
+        await this.permissionRepository.findOne({ name: permission }),
+      );
+    }
+    userRoleEntity.permissions = permissionEntities;
+
+    return await this.userRoleRepository.save(userRoleEntity);
   }
 
   public async createAidWorker(dto: CreateUserAidWorkerDto): Promise<UserRO> {
