@@ -63,7 +63,7 @@
     },
     "registration-summary": {
       "documents": "Certifique-se de ter estes documentos prontos:",
-      "no-validation-conclusion": "Obrigado. Agora, seu registro está completo. <br><br> Em breve, você receberá um SMS/WhatsApp no número de telefone fornecido que confirma seu registro. <br><br> Você será informado se sua solicitação tiver sido bem sucedida no prazo de 14 dias.  <br><br> Esta é a mensagem final, por enquanto.",
+      "no-validation-conclusion": "Obrigado. Agora, seu registro está completo. <br><br> Em breve, você receberá um SMS/WhatsApp no número de telefone fornecido que confirma seu registro. <br><br> Você será informado se sua solicitação tiver sido bem sucedida no prazo de 7 dias.  <br><br> Esta é a mensagem final, por enquanto.",
       "qr-code": "Por favor, mostre este código QR ao trabalhador humanitário quando pedido.",
       "validation-conclusion": "Obrigado. Agora seu registro está completo. Em breve, você receberá um SMS/WhatsApp no número de telefone fornecido que confirma seu cadastro. <br><br>Um trabalhador da ONG organizará uma reunião com você para validar suas informações, provavelmente visitando sua casa."
     },
