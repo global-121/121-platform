@@ -5,6 +5,6 @@ export enum ImportType {
 
 export const csvTemplateImported = [
   'phoneNumber',
-  'namePartnerOrganization',
+  'segment',
   'paymentAmountMultiplier',
 ];

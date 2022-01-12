@@ -20,7 +20,7 @@ export class Person {
   fsp?: string;
   vnumber?: string;
   whatsappPhoneNumber?: string;
-  namePartnerOrganization?: string;
+  segment?: string;
   paymentAmountMultiplier?: number;
   preferredLanguage?: LanguageEnum;
 }
@@ -49,7 +49,7 @@ export class PersonRow {
   fsp?: string | null;
   vnumber?: string | null;
   whatsappPhoneNumber?: string | null;
-  namePartnerOrganization?: string | null;
+  segment?: string | null;
   paymentAmountMultiplier?: string | null;
   preferredLanguage?: string | null;
 }

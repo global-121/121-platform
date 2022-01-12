@@ -31,7 +31,7 @@ export enum ImportStatus {
 
 export class BulkImportResult {
   public phoneNumber: string;
-  public namePartnerOrganization: string;
+  public segment: string;
   public paymentAmountMultiplier: number;
   public importStatus: ImportStatus;
 }
@@ -128,9 +128,9 @@ export class BulkImportComponent implements OnInit {
           ) +
           (destination === PaStatus.imported
             ? ' ' +
-              this.translate.instant(
-                'page.program.bulk-import.import-result.csv',
-              )
+            this.translate.instant(
+              'page.program.bulk-import.import-result.csv',
+            )
             : '') +
           '<br><br>';
 
@@ -174,8 +174,8 @@ export class BulkImportComponent implements OnInit {
               imported:
                 destination === PaStatus.imported
                   ? this.translate.instant(
-                      'page.program.bulk-import.import-error.imported',
-                    )
+                    'page.program.bulk-import.import-error.imported',
+                  )
                   : '',
             },
           ),
