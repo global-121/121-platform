@@ -1,11 +1,11 @@
-import { Entity, Column, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, ManyToMany, JoinTable, Unique } from 'typeorm';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { Base121Entity } from '../base.entity';
 import { PermissionEntity } from './permissions.entity';
 
 @Entity('user_role')
 export class UserRoleEntity extends Base121Entity {
-  @Column()
+  @Column({ unique: true })
   public role: string;
 
   @Column({ nullable: true })
