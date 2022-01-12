@@ -187,20 +187,22 @@ export class UserService {
         role: In(assignAidworkerToProgram.roles),
       },
     });
+    if (!newRoles.length) {
+      const errors = { Roles: ' not found' };
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
 
-    // if already assigned add roles to program assignment
-    for (const programAssignement of user.programAssignments) {
-      if (
-        programAssignement.program.id === assignAidworkerToProgram.programId
-      ) {
-        const mergedRoles = this.mergeRoles(programAssignement.roles, newRoles);
-        programAssignement.roles = mergedRoles;
-        await this.assignmentRepository.save(programAssignement);
-        return programAssignement.roles;
+    // if already assigned: add roles to program assignment
+    for (const programAssignment of user.programAssignments) {
+      if (programAssignment.program.id === assignAidworkerToProgram.programId) {
+        const mergedRoles = this.mergeRoles(programAssignment.roles, newRoles);
+        programAssignment.roles = mergedRoles;
+        await this.assignmentRepository.save(programAssignment);
+        return programAssignment.roles;
       }
     }
 
-    // if not assigned to program create new asignment
+    // if not assigned to program: create new asignment
     await this.assignmentRepository.save({
       user: { id: user.id },
       program: { id: program.id },
