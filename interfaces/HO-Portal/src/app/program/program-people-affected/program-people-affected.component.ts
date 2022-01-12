@@ -673,10 +673,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         : null,
       digitalIdCreated: person.startedRegistrationDate
         ? formatDate(
-          person.startedRegistrationDate,
-          this.dateFormat,
-          this.locale,
-        )
+            person.startedRegistrationDate,
+            this.dateFormat,
+            this.locale,
+          )
         : null,
       vulnerabilityAssessmentCompleted: person.registeredDate
         ? formatDate(person.registeredDate, this.dateFormat, this.locale)
@@ -684,10 +684,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       inclusionScore: person.inclusionScore,
       selectedForValidation: person.selectedForValidationDate
         ? formatDate(
-          person.selectedForValidationDate,
-          this.dateFormat,
-          this.locale,
-        )
+            person.selectedForValidationDate,
+            this.dateFormat,
+            this.locale,
+          )
         : null,
       vulnerabilityAssessmentValidated: person.validationDate
         ? formatDate(person.validationDate, this.dateFormat, this.locale)
@@ -707,9 +707,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       segment: person.segment,
       preferredLanguage: person.preferredLanguage
         ? this.translate.instant(
-          'page.program.program-people-affected.language.' +
-          person.preferredLanguage,
-        )
+            'page.program.program-people-affected.language.' +
+              person.preferredLanguage,
+          )
         : '',
       phoneNumber: formatPhoneNumber(person.phoneNumber),
       whatsappPhoneNumber: formatPhoneNumber(person.whatsappPhoneNumber),
@@ -801,7 +801,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     if (
       (!transaction.customData.IntersolvePayoutStatus ||
         transaction.customData.IntersolvePayoutStatus ===
-        IntersolvePayoutStatus.voucherSent) &&
+          IntersolvePayoutStatus.voucherSent) &&
       transaction.status === StatusEnum.success
     ) {
       return true;
@@ -878,7 +878,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     const content = hasWaiting
       ? row[column.prop + '-error']
       : hasError
-        ? this.translate.instant(
+      ? this.translate.instant(
           'page.program.program-people-affected.payment-status-popup.error-message',
         ) +
         ': <strong>' +
@@ -887,41 +887,41 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         this.translate.instant(
           'page.program.program-people-affected.payment-status-popup.fix-error',
         )
-        : isSinglePayment
-          ? this.translate.instant(
-            'page.program.program-people-affected.payment-status-popup.single-payment.intro',
-          )
-          : null;
+      : isSinglePayment
+      ? this.translate.instant(
+          'page.program.program-people-affected.payment-status-popup.single-payment.intro',
+        )
+      : null;
     const contentNotes = hasWaiting
       ? null
       : hasError
-        ? this.translate.instant(
+      ? this.translate.instant(
           'page.program.program-people-affected.payment-status-popup.notes',
         )
-        : null;
+      : null;
     const showRetryButton = hasWaiting ? false : hasError ? true : false;
     const payoutDetails: PopupPayoutDetails =
       hasError || value.hasMessageIcon || value.hasMoneyIconTable
         ? {
-          programId: this.programId,
-          payment: column.paymentIndex,
-          amount: row[column.prop + '-amount'],
-          referenceId: row.referenceId,
-          currency: this.program.currency,
-        }
+            programId: this.programId,
+            payment: column.paymentIndex,
+            amount: row[column.prop + '-amount'],
+            referenceId: row.referenceId,
+            currency: this.program.currency,
+          }
         : null;
     const singlePayoutDetails: SinglePayoutDetails = isSinglePayment
       ? {
-        paNr: row.pa,
-        amount: this.program.fixedTransferValue,
-        currency: this.program.currency,
-        multiplier: row.paymentAmountMultiplier
-          ? Number(row.paymentAmountMultiplier.substr(0, 1))
-          : 1,
-        programId: this.programId,
-        payment: column.paymentIndex,
-        referenceId: row.referenceId,
-      }
+          paNr: row.pa,
+          amount: this.program.fixedTransferValue,
+          currency: this.program.currency,
+          multiplier: row.paymentAmountMultiplier
+            ? Number(row.paymentAmountMultiplier.substr(0, 1))
+            : 1,
+          programId: this.programId,
+          payment: column.paymentIndex,
+          referenceId: row.referenceId,
+        }
       : null;
     let voucherUrl = null;
     let voucherButtons = null;
