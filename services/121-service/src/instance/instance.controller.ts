@@ -4,7 +4,7 @@ import { ApiUseTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { RolesGuard } from '../roles.guard';
 import { InstanceEntity } from './instance.entity';
 import { UpdateInstanceDto } from './dto/update-instance.dto';
-import { UserRole } from '../user-role.enum';
+import { DefaultUserRole } from '../user/user-role.enum';
 import { Roles } from '../roles.decorator';
 
 @UseGuards(RolesGuard)
@@ -23,7 +23,7 @@ export class InstanceController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.Admin)
+  @Roles(DefaultUserRole.Admin)
   @ApiOperation({ title: 'Update instance' })
   @Post('update')
   public async updateInstance(

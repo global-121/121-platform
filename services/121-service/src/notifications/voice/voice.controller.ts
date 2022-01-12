@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { VoiceService } from './voice.service';
 import { Response } from 'express-serve-static-core';
-import { UserRole } from '../../user-role.enum';
+import { DefaultUserRole } from '../../user/user-role.enum';
 import { Roles } from '../../roles.decorator';
 
 @ApiUseTags('notifications')
@@ -28,7 +28,7 @@ export class VoiceController {
     this.voiceService = voiceService;
   }
 
-  @Roles(UserRole.Admin)
+  @Roles(DefaultUserRole.Admin)
   @ApiResponse({ status: 200, description: 'Test voice call' })
   @ApiImplicitParam({ name: 'number' })
   @Get(':number')

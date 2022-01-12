@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
-import { UserRole } from '../user-role.enum';
+import { DefaultUserRole } from '../user/user-role.enum';
 
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
@@ -56,20 +56,20 @@ export class SeedProgramLbn implements InterfaceScript {
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.assignAidworker(fullAccessUser.id, program.id, [
-      UserRole.PersonalData,
-      UserRole.RunProgram,
+      DefaultUserRole.PersonalData,
+      DefaultUserRole.RunProgram,
     ]);
     await this.seedHelper.assignAidworker(runProgramUser.id, program.id, [
-      UserRole.RunProgram,
+      DefaultUserRole.RunProgram,
     ]);
     await this.seedHelper.assignAidworker(personalDataUser.id, program.id, [
-      UserRole.PersonalData,
+      DefaultUserRole.PersonalData,
     ]);
     await this.seedHelper.assignAidworker(viewOnlyUser.id, program.id, [
-      UserRole.View,
+      DefaultUserRole.View,
     ]);
     await this.seedHelper.assignAidworker(fieldValidationUser.id, program.id, [
-      UserRole.FieldValidation,
+      DefaultUserRole.FieldValidation,
     ]);
 
     await this.seedHelper.assignAdminUserToProgram(program.id);

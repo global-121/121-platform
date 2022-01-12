@@ -15,7 +15,7 @@ import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
 import programAnonymousExample1 from '../../seed-data/program/program-anonymous1.json';
 import programAnonymousExample2 from '../../seed-data/program/program-anonymous2.json';
 import instanceAnonymous from '../../seed-data/instance/instance-anonymous.json';
-import { UserRole } from '../user-role.enum';
+import { DefaultUserRole } from '../user/user-role.enum';
 
 @Injectable()
 export class SeedMultiProgram implements InterfaceScript {
@@ -75,22 +75,22 @@ export class SeedMultiProgram implements InterfaceScript {
     const programs = [program1, program2, program3, program4];
     for (let program of programs) {
       await this.seedHelper.assignAidworker(fullAccessUser.id, program.id, [
-        UserRole.PersonalData,
-        UserRole.RunProgram,
+        DefaultUserRole.PersonalData,
+        DefaultUserRole.RunProgram,
       ]);
       await this.seedHelper.assignAidworker(runProgramUser.id, program.id, [
-        UserRole.RunProgram,
+        DefaultUserRole.RunProgram,
       ]);
       await this.seedHelper.assignAidworker(personalDataUser.id, program.id, [
-        UserRole.PersonalData,
+        DefaultUserRole.PersonalData,
       ]);
       await this.seedHelper.assignAidworker(viewOnlyUser.id, program.id, [
-        UserRole.View,
+        DefaultUserRole.View,
       ]);
       await this.seedHelper.assignAidworker(
         fieldValidationUser.id,
         program.id,
-        [UserRole.FieldValidation],
+        [DefaultUserRole.FieldValidation],
       );
 
       await this.seedHelper.assignAdminUserToProgram(program.id);

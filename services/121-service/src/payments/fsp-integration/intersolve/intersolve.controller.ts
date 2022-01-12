@@ -23,7 +23,7 @@ import { Response } from 'express-serve-static-core';
 import stream from 'stream';
 import { Roles } from '../../../roles.decorator';
 import { RolesGuard } from '../../../roles.guard';
-import { UserRole } from '../../../user-role.enum';
+import { DefaultUserRole } from '../../../user/user-role.enum';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -32,7 +32,11 @@ import { UserRole } from '../../../user-role.enum';
 export class IntersolveController {
   public constructor(private intersolveService: IntersolveService) {}
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData, UserRole.View)
+  @Roles(
+    DefaultUserRole.RunProgram,
+    DefaultUserRole.PersonalData,
+    DefaultUserRole.View,
+  )
   @ApiOperation({
     title: 'Export Intersolve vouchers',
   })
@@ -54,7 +58,11 @@ export class IntersolveController {
     bufferStream.pipe(response);
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData, UserRole.View)
+  @Roles(
+    DefaultUserRole.RunProgram,
+    DefaultUserRole.PersonalData,
+    DefaultUserRole.View,
+  )
   @ApiOperation({
     title: 'Get Intersolve voucher balance',
   })
@@ -86,7 +94,7 @@ export class IntersolveController {
     bufferStream.pipe(response);
   }
 
-  @Roles(UserRole.Admin)
+  @Roles(DefaultUserRole.Admin)
   @ApiOperation({
     title: 'Post intersolve instructions',
   })

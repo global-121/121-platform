@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { Roles } from '../../roles.decorator';
 import { RolesGuard } from '../../roles.guard';
-import { UserRole } from '../../user-role.enum';
+import { DefaultUserRole } from '../../user/user-role.enum';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
@@ -33,7 +33,11 @@ export class TransactionsController {
     private readonly transactionsService: TransactionsService,
   ) {}
 
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(
+    DefaultUserRole.View,
+    DefaultUserRole.RunProgram,
+    DefaultUserRole.PersonalData,
+  )
   @ApiOperation({ title: 'Get transactions' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiImplicitQuery({
@@ -57,7 +61,11 @@ export class TransactionsController {
     );
   }
 
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(
+    DefaultUserRole.View,
+    DefaultUserRole.RunProgram,
+    DefaultUserRole.PersonalData,
+  )
   @ApiOperation({ title: 'Get a single transaction' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({

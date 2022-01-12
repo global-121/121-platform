@@ -18,7 +18,7 @@ import {
 import { RolesGuard } from '../roles.guard';
 import { ExportMetricsService } from './export-metrics.service';
 import { Roles } from '../roles.decorator';
-import { UserRole } from '../user-role.enum';
+import { DefaultUserRole } from '../user/user-role.enum';
 import { ExportDetails } from './dto/export-details';
 import { User } from '../user/user.decorator';
 import { ProgramMetrics } from './dto/program-metrics.dto';
@@ -34,7 +34,7 @@ export class ExportMetricsController {
     this.exportMetricsService = exportMetricsService;
   }
 
-  @Roles(UserRole.PersonalData)
+  @Roles(DefaultUserRole.PersonalData)
   @ApiOperation({
     title: 'Get an exported list of people',
   })
@@ -56,7 +56,11 @@ export class ExportMetricsController {
     );
   }
 
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(
+    DefaultUserRole.View,
+    DefaultUserRole.RunProgram,
+    DefaultUserRole.PersonalData,
+  )
   @ApiOperation({ title: 'Get metrics by program-id' })
   @ApiImplicitParam({
     name: 'programId',
@@ -104,7 +108,11 @@ export class ExportMetricsController {
     };
   }
 
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(
+    DefaultUserRole.View,
+    DefaultUserRole.RunProgram,
+    DefaultUserRole.PersonalData,
+  )
   @ApiOperation({ title: 'Get payments with state sums by program-id' })
   @ApiImplicitParam({
     name: 'programId',
@@ -123,7 +131,7 @@ export class ExportMetricsController {
     );
   }
 
-  @Roles(UserRole.Admin)
+  @Roles(DefaultUserRole.Admin)
   @ApiOperation({ title: 'Get monitoring data' })
   @ApiResponse({ status: 200, description: 'All monitoring data of a program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -134,7 +142,11 @@ export class ExportMetricsController {
     );
   }
 
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(
+    DefaultUserRole.View,
+    DefaultUserRole.RunProgram,
+    DefaultUserRole.PersonalData,
+  )
   @ApiOperation({ title: 'Get total number of included per program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({

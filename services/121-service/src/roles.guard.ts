@@ -1,4 +1,3 @@
-import { UserRO } from './user/user.interface';
 import { UserEntity } from './user/user.entity';
 import {
   Injectable,
@@ -10,21 +9,13 @@ import {
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
 import { UserService } from './user/user.service';
-import { DEBUG } from './config';
-import {
-  UserRole,
-  AuthenticationRole,
-  PersonAffectedRole,
-} from './user-role.enum';
+import { DefaultUserRole, AuthenticationRole } from './user/user-role.enum';
 import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
 import { Repository } from 'typeorm';
 import { UserType } from './user/user-type-enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  @InjectRepository(UserEntity)
-  private readonly userRepository: Repository<UserEntity>;
-
   public constructor(
     private readonly reflector: Reflector,
     private readonly userService: UserService,
@@ -42,8 +33,8 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     // This line allows the Admin role to access every controller
-    if (!endpointRoles.includes(UserRole.Admin)) {
-      endpointRoles.push(UserRole.Admin);
+    if (!endpointRoles.includes(DefaultUserRole.Admin)) {
+      endpointRoles.push(DefaultUserRole.Admin);
     }
 
     const request = context.switchToHttp().getRequest();
