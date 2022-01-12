@@ -16,7 +16,10 @@ import { UserType } from '../user/user-type-enum';
 export class SeedHelper {
   public constructor(private connection: Connection) {}
 
-  public async addDefaultUsers(program: ProgramEntity): Promise<void> {
+  public async addDefaultUsers(
+    program: ProgramEntity,
+    addFieldValidation: boolean,
+  ): Promise<void> {
     const fullAccessUser = await this.addUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FULL_ACCESS,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
@@ -50,6 +53,18 @@ export class SeedHelper {
     await this.assignAidworker(viewOnlyUser.id, program.id, [
       DefaultUserRole.View,
     ]);
+
+    if (addFieldValidation) {
+      const fieldValidationUser = await this.addUser({
+        username:
+          process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FIELD_VALIDATION,
+        password:
+          process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FIELD_VALIDATION,
+      });
+      await this.assignAidworker(fieldValidationUser.id, program.id, [
+        DefaultUserRole.FieldValidation,
+      ]);
+    }
 
     await this.assignAdminUserToProgram(program.id);
   }
