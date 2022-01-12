@@ -27,7 +27,7 @@ import { StoreProgramAnswersDto } from './dto/store-program-answers.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
 import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
-import { UserRole } from '../user-role.enum';
+import { DefaultUserRole } from '../user/user-role.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImportResult } from './dto/bulk-import.dto';
 import { Roles } from '../roles.decorator';
@@ -155,7 +155,7 @@ export class RegistrationsController {
     return await this.registrationsService.register(referenceIdDto.referenceId);
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'Import set of PAs to invite, based on CSV' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('import-bulk/:programId')
@@ -174,7 +174,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @ApiOperation({
     title: 'Get a CSV template for importing registrations',
   })
@@ -188,7 +188,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.PersonalData, UserRole.Admin)
+  @Roles(DefaultUserRole.PersonalData, DefaultUserRole.Admin)
   @ApiOperation({
     title: 'Import set of registered PAs, from CSV',
   })
@@ -207,7 +207,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.View, UserRole.RunProgram)
+  @Roles(DefaultUserRole.View, DefaultUserRole.RunProgram)
   @ApiOperation({
     title: 'Get all People Affected for program EXCLUDING personal data',
   })
@@ -224,7 +224,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.View, UserRole.PersonalData)
+  @Roles(DefaultUserRole.View, DefaultUserRole.PersonalData)
   @ApiOperation({
     title: 'Get all People Affected for program INCLUDING personal data',
   })
@@ -243,7 +243,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'Update attribute for registration' })
   @ApiResponse({
     status: 200,
@@ -260,7 +260,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'Update note for registration' })
   @ApiResponse({ status: 200, description: 'Update note for registration' })
   @Post('/note')
@@ -271,7 +271,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.PersonalData)
+  @Roles(DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'Get note for registration' })
   @ApiResponse({ status: 200, description: 'Get note for registration' })
   @ApiImplicitParam({ name: 'referenceId', required: true })
@@ -280,7 +280,7 @@ export class RegistrationsController {
     return await this.registrationsService.retrieveNote(params.referenceId);
   }
 
-  @Roles(UserRole.RunProgram)
+  @Roles(DefaultUserRole.RunProgram)
   @ApiOperation({ title: 'Select set of PAs for validation' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('select-validation/:programId')
@@ -295,7 +295,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.PersonalData)
+  @Roles(DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'Mark set of PAs as no longer eligible' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('no-longer-eligible/:programId')
@@ -310,7 +310,7 @@ export class RegistrationsController {
     );
   }
 
-  // @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  // @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @Permissions(PermissionEnum.includeReject)
   @ApiOperation({ title: 'Include set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -328,7 +328,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'End inclusion of set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('end/:programId')
@@ -345,7 +345,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'Reject set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('reject/:programId')
@@ -362,7 +362,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.PersonalData)
+  @Roles(DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'Invite set of PAs for registration' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('invite/:programId')
@@ -378,7 +378,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.PersonalData, UserRole.FieldValidation)
+  @Roles(DefaultUserRole.PersonalData, DefaultUserRole.FieldValidation)
   @ApiOperation({
     title:
       'Find registration by name and/or phone number for PM and FieldValidation',
@@ -398,7 +398,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.PersonalData)
+  @Roles(DefaultUserRole.PersonalData)
   @ApiOperation({
     title:
       'Update chosen fsp and attributes. This will delete any custom data field related to the old FSP!',
@@ -418,14 +418,14 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'Delete set of registrations' })
   @Post('delete')
   public async delete(@Body() data: ReferenceIdsDto): Promise<void> {
     await this.registrationsService.deleteBatch(data);
   }
 
-  @Roles(UserRole.FieldValidation)
+  @Roles(DefaultUserRole.FieldValidation)
   @ApiOperation({ title: 'Download all program answers (for validation)' })
   @ApiResponse({ status: 200, description: 'Program answers downloaded' })
   @Get('/download/validation-data')
@@ -435,7 +435,7 @@ export class RegistrationsController {
     return await this.registrationsService.downloadValidationData(userId);
   }
 
-  @Roles(UserRole.FieldValidation)
+  @Roles(DefaultUserRole.FieldValidation)
   @ApiOperation({ title: 'Get registration with prefilled answers (for AW)' })
   @ApiResponse({ status: 200, description: 'Registration received' })
   @ApiImplicitParam({
@@ -446,7 +446,7 @@ export class RegistrationsController {
     return await this.registrationsService.get(params.referenceId);
   }
 
-  @Roles(UserRole.FieldValidation)
+  @Roles(DefaultUserRole.FieldValidation)
   @ApiOperation({ title: 'Find fsp and attributes' })
   @ApiResponse({
     status: 200,
@@ -461,7 +461,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.FieldValidation)
+  @Roles(DefaultUserRole.FieldValidation)
   @ApiOperation({ title: 'Issue validationData (For AW)' })
   @ApiResponse({ status: 200, description: 'Validation Data issued' })
   @Post('/issue-validation')
@@ -471,7 +471,7 @@ export class RegistrationsController {
     return await this.registrationsService.issueValidation(validationIssueData);
   }
 
-  @Roles(UserRole.FieldValidation)
+  @Roles(DefaultUserRole.FieldValidation)
   @ApiOperation({ title: 'Find reference id using qr identifier' })
   @ApiResponse({
     status: 200,
@@ -499,7 +499,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.PersonalData, UserRole.RunProgram)
+  @Roles(DefaultUserRole.PersonalData, DefaultUserRole.RunProgram)
   @ApiOperation({
     title:
       'Send custom text-message (whatsapp or sms) to array of registrations',
@@ -514,7 +514,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.PersonalData)
+  @Roles(DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'Get message history for one registration' })
   @Get('message-history/:referenceId')
   public async getMessageHistoryRegistration(

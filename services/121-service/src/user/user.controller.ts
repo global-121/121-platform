@@ -1,6 +1,6 @@
 import { PermissionsGuard } from './../permissions.guard';
 import { PermissionEnum } from './permission.enum';
-import { PersonAffectedRole } from './../user-role.enum';
+import { PersonAffectedRole } from './user-role.enum';
 import { UserEntity } from './user.entity';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
@@ -27,7 +27,7 @@ import {
 } from '@nestjs/swagger';
 import { RolesGuard } from '../roles.guard';
 import { Roles } from '../roles.decorator';
-import { UserRole } from '../user-role.enum';
+import { DefaultUserRole } from './user-role.enum';
 import { UserType } from './user-type-enum';
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 import { UserRoleEntity } from './user-role.entity';
@@ -43,7 +43,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.RunProgram)
+  @Roles(DefaultUserRole.RunProgram)
   @ApiOperation({ title: 'Sign-up new Aid Worker user' })
   @Post('user/aidworker')
   public async createAw(
@@ -68,10 +68,10 @@ export class UserController {
 
   @ApiBearerAuth()
   @Roles(
-    UserRole.View,
-    UserRole.RunProgram,
-    UserRole.PersonalData,
-    UserRole.FieldValidation,
+    DefaultUserRole.View,
+    DefaultUserRole.RunProgram,
+    DefaultUserRole.PersonalData,
+    DefaultUserRole.FieldValidation,
   )
   @Permissions(PermissionEnum.changePassword)
   @ApiOperation({ title: 'Change password of logged in user' })
@@ -84,7 +84,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.RunProgram)
+  @Roles(DefaultUserRole.RunProgram)
   @ApiOperation({ title: 'Delete user by userId' })
   @Post('user/delete/:userId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'integer' })
@@ -104,7 +104,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.RunProgram)
+  @Roles(DefaultUserRole.RunProgram)
   @ApiOperation({ title: 'User deletes itself' })
   @Post('user/delete')
   public async deleteCurrentUser(
@@ -115,10 +115,10 @@ export class UserController {
 
   @ApiBearerAuth()
   @Roles(
-    UserRole.View,
-    UserRole.RunProgram,
-    UserRole.PersonalData,
-    UserRole.FieldValidation,
+    DefaultUserRole.View,
+    DefaultUserRole.RunProgram,
+    DefaultUserRole.PersonalData,
+    DefaultUserRole.FieldValidation,
   )
   @ApiOperation({ title: 'Get current user' })
   @Get('user')
@@ -127,7 +127,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.RunProgram)
+  @Roles(DefaultUserRole.RunProgram)
   @ApiOperation({ title: 'Assign Aidworker to program' })
   @Post('user/assign-to-program')
   public async assignFieldValidationAidworkerToProgram(

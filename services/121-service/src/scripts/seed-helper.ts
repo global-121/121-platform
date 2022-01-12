@@ -10,7 +10,7 @@ import crypto from 'crypto';
 import { UserRoleEntity } from '../user/user-role.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
-import { UserRole } from '../user-role.enum';
+import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
 
 export class SeedHelper {
@@ -38,14 +38,18 @@ export class SeedHelper {
     });
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.assignAidworker(fullAccessUser.id, program.id, [UserRole.Admin]);
+    await this.assignAidworker(fullAccessUser.id, program.id, [
+      DefaultUserRole.Admin,
+    ]);
     await this.assignAidworker(runProgramUser.id, program.id, [
-      UserRole.RunProgram,
+      DefaultUserRole.RunProgram,
     ]);
     await this.assignAidworker(personalDataUser.id, program.id, [
-      UserRole.PersonalData,
+      DefaultUserRole.PersonalData,
     ]);
-    await this.assignAidworker(viewOnlyUser.id, program.id, [UserRole.View]);
+    await this.assignAidworker(viewOnlyUser.id, program.id, [
+      DefaultUserRole.View,
+    ]);
 
     await this.assignAdminUserToProgram(program.id);
   }
@@ -146,7 +150,7 @@ export class SeedHelper {
   public async assignAidworker(
     userId: number,
     programId: number,
-    roles: UserRole[],
+    roles: DefaultUserRole[],
   ): Promise<void> {
     const userRepository = this.connection.getRepository(UserEntity);
     const programRepository = this.connection.getRepository(ProgramEntity);
@@ -175,6 +179,6 @@ export class SeedHelper {
     const adminUser = await userRepository.findOne({
       where: { username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN },
     });
-    this.assignAidworker(adminUser.id, programId, [UserRole.Admin]);
+    this.assignAidworker(adminUser.id, programId, [DefaultUserRole.Admin]);
   }
 }

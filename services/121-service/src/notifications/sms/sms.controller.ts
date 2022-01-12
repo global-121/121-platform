@@ -6,7 +6,7 @@ import {
   ApiImplicitParam,
   ApiConsumes,
 } from '@nestjs/swagger';
-import { UserRole } from '../../user-role.enum';
+import { DefaultUserRole } from '../../user/user-role.enum';
 import { Roles } from '../../roles.decorator';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 

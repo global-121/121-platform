@@ -1,4 +1,4 @@
-import { UserRole } from '../user-role.enum';
+import { DefaultUserRole } from '../user/user-role.enum';
 import { Injectable } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
@@ -18,7 +18,7 @@ export class SeedInit implements InterfaceScript {
     await this.runAllMigrations();
     const permissions = await this.addPermissions();
     await this.createDefaultRoles(permissions);
-    await this.createAdminRole();
+    await this.createAdminUser();
   }
 
   private async addPermissions(): Promise<PermissionEntity[]> {
@@ -41,12 +41,12 @@ export class SeedInit implements InterfaceScript {
     const userRoleRepository = this.connection.getRepository(UserRoleEntity);
     const defaultRoles = [
       {
-        role: UserRole.Admin,
+        role: DefaultUserRole.Admin,
         label: 'Admin',
         permissions: Object.values(PermissionEnum),
       },
       {
-        role: UserRole.RunProgram,
+        role: DefaultUserRole.RunProgram,
         label: 'Run Program',
         permissions: [
           PermissionEnum.changePassword,
@@ -54,12 +54,12 @@ export class SeedInit implements InterfaceScript {
         ],
       },
       {
-        role: UserRole.View,
+        role: DefaultUserRole.View,
         label: 'Only view data, including Personally Identifiable Information',
         permissions: [PermissionEnum.changePassword],
       },
       {
-        role: UserRole.PersonalData,
+        role: DefaultUserRole.PersonalData,
         label: 'Handle Personally Identifiable Information',
         permissions: [
           PermissionEnum.changePassword,
@@ -67,7 +67,7 @@ export class SeedInit implements InterfaceScript {
         ],
       },
       {
-        role: UserRole.FieldValidation,
+        role: DefaultUserRole.FieldValidation,
         label: 'Do Field Validation',
         permissions: [PermissionEnum.changePassword],
       },
@@ -80,17 +80,12 @@ export class SeedInit implements InterfaceScript {
       defaultRoleEntity.permissions = permissions.filter(permission =>
         defaultRole.permissions.includes(permission.name),
       );
-      console.log('permissions: ', permissions);
-      console.log('defaultRole.permissions: ', defaultRole.permissions);
-      console.log('defaultRoleEntity: ', defaultRoleEntity);
       userRoleEntities.push(await userRoleRepository.save(defaultRoleEntity));
     }
     return userRoleEntities;
   }
 
-  private async createAdminRole(): Promise<void> {
-    // ***** CREATE ADMIN USER *****
-
+  private async createAdminUser(): Promise<void> {
     const userRepository = this.connection.getRepository(UserEntity);
     await userRepository.save({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,

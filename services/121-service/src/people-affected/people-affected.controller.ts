@@ -1,4 +1,4 @@
-import { PersonAffectedRole } from './../user-role.enum';
+import { PersonAffectedRole } from '../user/user-role.enum';
 import { Post, Body, Controller, UseGuards, Get, Param } from '@nestjs/common';
 import {
   ApiBearerAuth,

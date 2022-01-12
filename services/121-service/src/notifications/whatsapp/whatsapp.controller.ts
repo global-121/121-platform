@@ -6,7 +6,7 @@ import {
   ApiImplicitParam,
   ApiConsumes,
 } from '@nestjs/swagger';
-import { UserRole } from '../../user-role.enum';
+import { DefaultUserRole } from '../../user/user-role.enum';
 import { Roles } from '../../roles.decorator';
 import {
   TwilioStatusCallbackDto,
@@ -22,7 +22,7 @@ export class WhatsappController {
     this.whatsappService = whatsappService;
   }
 
-  @Roles(UserRole.Admin)
+  @Roles(DefaultUserRole.Admin)
   @ApiResponse({
     status: 200,
     description: 'Test controller to test sending whatsapp',
