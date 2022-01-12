@@ -60,24 +60,7 @@ export class UserController {
   @ApiOperation({ title: 'Log in existing user' })
   @Post('user/login')
   public async login(@Body() loginUserDto: LoginUserDto): Promise<UserRO> {
-    const _user = await this.userService.findOne(loginUserDto);
-    if (!_user) {
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    }
-
-    const token = await this.userService.generateJWT(_user);
-    const username = _user.username;
-    let roles = [];
-    if (_user.userType === UserType.aidWorker) {
-      roles = _user.programAssignments[0].roles;
-    }
-    const user = {
-      username,
-      token,
-      roles,
-    };
-
-    return { user };
+    return await this.userService.login(loginUserDto);
   }
 
   @ApiBearerAuth()

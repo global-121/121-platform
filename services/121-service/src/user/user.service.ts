@@ -1,3 +1,4 @@
+import { PermissionEnum } from './permission.enum';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
 import { PersonAffectedAppDataEntity } from './../people-affected/person-affected-app-data.entity';
@@ -43,21 +44,41 @@ export class UserService {
 
   public constructor() {}
 
-  public async findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
+  public async login(loginUserDto: LoginUserDto): Promise<UserRO> {
     const findOneOptions = {
       username: loginUserDto.username,
       password: crypto
         .createHmac('sha256', loginUserDto.password)
         .digest('hex'),
     };
-    const user = await getRepository(UserEntity)
+    const userEntity = await getRepository(UserEntity)
       .createQueryBuilder('user')
       .addSelect('password')
       .leftJoinAndSelect('user.programAssignments', 'assignment')
       .leftJoinAndSelect('assignment.roles', 'roles')
+      .leftJoinAndSelect('roles.permissions', 'permissions')
       .where(findOneOptions)
       .getOne();
-    return user;
+    if (!userEntity) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
+    const username = userEntity.username;
+    let roles: UserRoleEntity[] = [];
+
+    if (userEntity.userType === UserType.aidWorker) {
+      roles = userEntity.programAssignments[0].roles;
+    }
+
+    const token = await this.generateJWT(userEntity);
+
+    const user = {
+      username,
+      token,
+      roles,
+    };
+
+    return { user };
   }
 
   public async createPersonAffected(
@@ -224,8 +245,13 @@ export class UserService {
     exp.setDate(today.getDate() + 60);
 
     let roles = [];
+    let permissions = [];
     if (user.programAssignments && user.programAssignments[0]) {
       roles = user.programAssignments[0].roles.map(role => role.role);
+      for (const role of user.programAssignments[0].roles) {
+        const permissionNames = role.permissions.map(a => a.name);
+        permissions = [...new Set([...permissions, ...permissionNames])];
+      }
     }
 
     const result = jwt.sign(
@@ -234,6 +260,7 @@ export class UserService {
         username: user.username,
         roles,
         exp: exp.getTime() / 1000,
+        permissions,
       },
       process.env.SECRETS_121_SERVICE_SECRET,
     );
