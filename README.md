@@ -138,6 +138,16 @@ All individual Angular applications, when started will be available via:
 
 ## Local development
 
+When you use [VS Code](https://code.visualstudio.com/), you can start multiple editor-windows at once, from the root of this repository, run:
+
+    npm run code:all
+
+To start an individual interface/service in VS Code:
+
+- Run: (where `<package>` is one of `pa`, `aw`, `ho`, `121-service`)
+
+      npm run code:<package>
+
 ### Process for implementing data-model changes
 
 When making changes to the data-model of the `121-service` (creating/editing any `\*.entity.ts` files), you need to create a migration script to take these changes into affect.
