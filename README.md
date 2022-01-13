@@ -93,9 +93,8 @@ To see the status/logs of all Docker-containers, run from the `services/`-folder
     docker-compose logs -f <container-name>
 
 To verify the successful installation and setup of services, access their Swagger UI:
-| | URL | or run: |
-| ------------------- | ----------------------------- | -------------------------- |
-| 121-service | <http://localhost:3000/docs/> | `npm rum open:121-service` |
+
+- 121-service: <http://localhost:3000/docs/>
 
 ---
 
@@ -131,11 +130,9 @@ To start an individual interface in development mode:
 
 All individual Angular applications, when started will be available via:
 
-|           | URL                     | or run:           |
-| --------- | ----------------------- | ----------------- |
-| PA-App    | <http://localhost:8008> | `npm run open:pa` |
-| AW-App    | <http://localhost:8080> | `npm run open:aw` |
-| HO-Portal | <http://localhost:8888> | `npm run open:ho` |
+- PA-App: <http://localhost:8008>
+- AW-App: <http://localhost:8080>
+- HO-Portal: <http://localhost:8888>
 
 ---
 
