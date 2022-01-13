@@ -95,7 +95,9 @@ To see the status/logs of all Docker-containers, run from the `services/`-folder
 To verify the successful installation and setup of services, access their Swagger UI:
 | | URL | or run: |
 | ------------------- | ----------------------------- | -------------------------- |
-| 121-service | <http://localhost:3000/docs/> | `npm rum open:121-service` |
+| 121-service | <http://localhost:3000/docs/> | `npm run open:121-service` |
+
+NOTE: the 'open' command only works on macOS.
 
 ---
 
@@ -136,6 +138,8 @@ All individual Angular applications, when started will be available via:
 | PA-App    | <http://localhost:8008> | `npm run open:pa` |
 | AW-App    | <http://localhost:8080> | `npm run open:aw` |
 | HO-Portal | <http://localhost:8888> | `npm run open:ho` |
+
+NOTE: the 'open' command only works on macOS.
 
 ---
 
@@ -299,7 +303,7 @@ Keep the following points in mind while writing test cases:
 - There are several methods which serve the purpose of defining class wide variables, which we should also test and verify. One of the typical examples of one such method is `ngOnInit`
 
 ```ts
-it('ngOnInit: should set up variables', () => {
+it("ngOnInit: should set up variables", () => {
   expect(component.isLoggedIn).toBeDefined(); // check for class variables to be defined
   expect(component.someValye).toBeTruthy(); // check for a variable to be TRUE
   expect(component.someValye).toBeFalsy(); // check for a variable to be FALSE
@@ -343,8 +347,8 @@ it("Test when xyz !== 'some-value'", () => {});
 - Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
 
 ```ts
-let spy = spyOn(component.programsService, 'changePassword').and.returnValue(
-  Promise.resolve(true),
+let spy = spyOn(component.programsService, "changePassword").and.returnValue(
+  Promise.resolve(true)
 );
 ```
 
@@ -360,7 +364,7 @@ spy.calls.mostRecent().returnValue.then(() => {
 - Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
 
 ```ts
-it('XYZ', (done) => {
+it("XYZ", (done) => {
   // spies and stubs
 
   spy.calls.mostRecent().returnValue.then(() => {
