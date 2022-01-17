@@ -17,7 +17,6 @@
 
 <ion-content
   color="light"
-  class="ion-padding"
 >
   <section>
     <div>
@@ -48,6 +47,7 @@
         [inProgress]="inProgress?.phoneNumber || false"
         class="ion-margin-vertical"
       ></app-update-property-item>
+      
       <app-update-property-item
         *ngIf="person.whatsappPhoneNumber"
         type="tel"
@@ -87,10 +87,17 @@
       style="font-family: monospace; border: 1px solid currentColor; height:150px"
     ></ion-textarea>
     <ion-row class="ion-align-items-center">
+      <ion-note *ngIf="noteLastUpdate">
+        {{ 'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'|translate:{
+            timestamp: noteLastUpdate|date:"yyyy-MM-dd, HH:mm"
+          } }}
+      </ion-note>
       <ion-button
         (click)="saveNote()"
         [disabled]="inProgress?.note || false"
-        class="ion-margin-end"
+        class="ion-margin-end text-bold ion-text-uppercase"
+        color="secondary"
+        fill=clear
       >
         {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}
       </ion-button>
@@ -99,11 +106,6 @@
         color="primary"
         size="small"
       ></ion-spinner>
-      <ion-note *ngIf="noteLastUpdate">
-        {{ 'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'|translate:{
-            timestamp: noteLastUpdate|date:"yyyy-MM-dd, HH:mm"
-          } }}
-      </ion-note>
     </ion-row>
   </section>
   <section *ngIf="messageHistory">

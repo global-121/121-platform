@@ -52,8 +52,8 @@ ion-button {
 }
 
 .input-item {
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: column;
   background-color: white;
 
   &.divider-bottom {
@@ -61,11 +61,11 @@ ion-button {
   }
 
   .input-item--contents {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    flex: 1 1 auto;
+    // display: flex;
+    // flex-direction: row;
+    // justify-content: space-between;
+    // align-items: center;
+    // flex: 1 1 auto;
   }
 
   ion-input {
@@ -175,4 +175,8 @@ ion-icon {
   right: 0.85em;
   border-top: var(--navigation-button--indicator-size) solid
     var(--ion-color-secondary);
+}
+
+.text-bold {
+  font-weight: bold;
 }
