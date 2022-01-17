@@ -78,6 +78,14 @@ export class BulkActionsService {
           PaStatus.startedRegistration,
         ]);
         break;
+      case BulkActionId.doPayment:
+        personData.checkboxVisible = this.hasStatus(personData, [
+          PaStatus.registered,
+          PaStatus.selectedForValidation,
+          PaStatus.validated,
+          PaStatus.included,
+        ]);
+        break;
     }
     return personData;
   }

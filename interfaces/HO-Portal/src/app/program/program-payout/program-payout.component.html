@@ -48,12 +48,12 @@
       [disabled]="!exportPaymentAvailable"
     ></app-export-list>
 
-     <app-export-fsp-instructions *ngIf="hasFspWithCsvIntegration"
+    <app-export-fsp-instructions
+      *ngIf="hasFspWithCsvIntegration"
       [programId]="programId"
       [payment]="exportPaymentId"
       [lastPaymentId]="lastPaymentId"
     ></app-export-fsp-instructions>
-
   </ion-row>
   <ion-row *ngIf="isIntersolve" class="ion-margin-vertical">
     <app-export-list
@@ -104,7 +104,7 @@
       }}
     </confirm-prompt>
   </ion-col>
-  <ion-col [sizeXs]="12" [sizeMd]="lastPaymentId ? 8 : 12">
+  <!-- <ion-col [sizeXs]="12" [sizeMd]="lastPaymentId ? 8 : 12">
     <h3>
       {{
         'page.program.program-payout.make-payment.make-payment'
@@ -115,5 +115,5 @@
       [programId]="programId"
       [program]="program"
     ></app-make-payment>
-  </ion-col>
+  </ion-col> -->
 </ion-row>

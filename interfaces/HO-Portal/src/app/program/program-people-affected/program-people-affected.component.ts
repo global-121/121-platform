@@ -7,11 +7,17 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import {
+  Payment,
+  PaymentData,
   PopupPayoutDetails,
   SinglePayoutDetails,
 } from 'src/app/models/payment.model';
 import { PaStatus, Person, PersonRow } from 'src/app/models/person.model';
-import { Program, ProgramPhase } from 'src/app/models/program.model';
+import {
+  DistributionFrequency,
+  Program,
+  ProgramPhase,
+} from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
@@ -66,6 +72,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public isInProgress = false;
   public paymentInProgress = false;
+
+  public payments: Payment[];
+  private pastPayments: PaymentData[];
+  public nextPaymentId: number;
+  private totalIncluded: number;
 
   public action: BulkActionId = BulkActionId.chooseAction;
   public bulkActions: BulkAction[] = [
@@ -232,6 +243,54 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       ),
       roles: [UserRole.RunProgram, UserRole.PersonalData],
       phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: true,
+    },
+    {
+      id: BulkActionId.doPayment,
+      enabled: true,
+      label: 'Do payment 1',
+      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      phases: [ProgramPhase.payment],
+      showIfNoValidation: true,
+    },
+    {
+      id: BulkActionId.doPayment,
+      enabled: true,
+      label: 'Do payment 2',
+      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      phases: [ProgramPhase.payment],
+      showIfNoValidation: true,
+    },
+    {
+      id: BulkActionId.doPayment,
+      enabled: true,
+      label: 'Do payment 3',
+      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      phases: [ProgramPhase.payment],
+      showIfNoValidation: true,
+    },
+    {
+      id: BulkActionId.doPayment,
+      enabled: true,
+      label: 'Do payment 4',
+      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      phases: [ProgramPhase.payment],
+      showIfNoValidation: true,
+    },
+    {
+      id: BulkActionId.doPayment,
+      enabled: true,
+      label: 'Do payment 5',
+      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      phases: [ProgramPhase.payment],
+      showIfNoValidation: true,
+    },
+    {
+      id: BulkActionId.doPayment,
+      enabled: true,
+      label: 'Do payment 6',
+      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      phases: [ProgramPhase.payment],
       showIfNoValidation: true,
     },
   ];
@@ -515,6 +574,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     await this.loadData();
 
     this.isLoading = false;
+
+    await this.createPayments();
+    // this.lastPaymentResults = await this.getLastPaymentResults();
 
     this.updateBulkActions();
 
@@ -1161,5 +1223,101 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.isLoading = true;
     await this.loadData();
     this.isLoading = false;
+  }
+
+  private getPaymentById(id: number): Payment {
+    return this.payments.find((item) => item.id === id);
+  }
+
+  private fillPaymentHistory(pastPayments: Payment[]): void {
+    pastPayments.forEach((pastPayment) => {
+      const payment = this.getPaymentById(pastPayment.id);
+      payment.amount = pastPayment.amount;
+      payment.paymentDate = pastPayment.paymentDate;
+      payment.statusOpen = false;
+      payment.isExportAvailable = true;
+
+      // Save updated values:
+      this.payments[this.payments.indexOf(payment)] = payment;
+    });
+  }
+
+  private setFutureDates(
+    startDate: Date,
+    frequency: DistributionFrequency,
+  ): void {
+    const maxPaymentDate = new Date(startDate);
+
+    this.payments = this.payments.map((payment) => {
+      // Skip past-payments
+      if (!payment.statusOpen) {
+        return payment;
+      }
+
+      switch (frequency) {
+        case DistributionFrequency.week:
+          maxPaymentDate.setDate(maxPaymentDate.getDate() + 7);
+          break;
+        case DistributionFrequency.month:
+        default:
+          maxPaymentDate.setMonth(maxPaymentDate.getMonth() + 1);
+          break;
+      }
+
+      payment.paymentDate = new Date(maxPaymentDate);
+
+      return payment;
+    });
+  }
+
+  private createTemplatePayments(count: number): Payment[] {
+    return Array(count)
+      .fill(1)
+      .map((_, index) => ({
+        id: index + 1,
+        paymentDate: new Date(),
+        amount: this.program.fixedTransferValue,
+        statusOpen: true,
+        isExportAvailable: false,
+      }));
+  }
+  private async createPayments() {
+    this.payments = this.createTemplatePayments(
+      this.program.distributionDuration,
+    );
+
+    this.pastPayments = await this.programsService.getPastPayments(
+      this.programId,
+    );
+    this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
+      this.programId,
+      this.pastPayments,
+    );
+    this.nextPaymentId =
+      this.lastPaymentId < this.program.distributionDuration
+        ? this.lastPaymentId + 1
+        : 0;
+
+    this.fillPaymentHistory(this.pastPayments);
+
+    let startDate = new Date();
+    if (this.pastPayments && this.pastPayments.length > 1) {
+      startDate = this.pastPayments[this.pastPayments.length - 1].paymentDate;
+    }
+    this.setFutureDates(startDate, this.program.distributionFrequency);
+
+    this.setupNextPayment();
+    console.log('Payments: ' + this.payments.length);
+    console.log('Past payments: ' + this.pastPayments.length);
+  }
+
+  private setupNextPayment() {
+    const nextPaymentIndex = this.payments.findIndex(
+      (payment) => payment.statusOpen === true,
+    );
+    if (nextPaymentIndex > -1) {
+      this.payments[nextPaymentIndex].isExportAvailable =
+        this.totalIncluded > 0;
+    }
   }
 }

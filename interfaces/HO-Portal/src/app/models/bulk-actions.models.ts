@@ -13,6 +13,7 @@ export enum BulkActionId {
   markNoLongerEligible = 'mark-no-longer-eligible',
   sendMessage = 'send-message',
   deletePa = 'delete-pa',
+  doPayment = 'do-payment',
 }
 
 export class BulkAction {
