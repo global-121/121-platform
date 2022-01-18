@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
-import { DefaultUserRole } from '../user/user-role.enum';
 
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
@@ -28,7 +27,6 @@ export class SeedProgramEth implements InterfaceScript {
     const program = await this.seedHelper.addProgram(programPilotEth);
 
     this.seedHelper.addDefaultUsers(program, true);
-    await this.seedHelper.assignAdminUserToProgram(program.id);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instancePilotEth);

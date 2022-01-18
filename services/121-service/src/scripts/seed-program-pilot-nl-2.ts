@@ -10,7 +10,6 @@ import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-no-whats
 
 import programPilotNL2 from '../../seed-data/program/program-pilot-nl-2.json';
 import instancePilotNL2 from '../../seed-data/instance/instance-pilot-nl-2.json';
-import { DefaultUserRole } from '../user/user-role.enum';
 
 @Injectable()
 export class SeedPilotNL2Program implements InterfaceScript {
@@ -31,7 +30,6 @@ export class SeedPilotNL2Program implements InterfaceScript {
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     this.seedHelper.addDefaultUsers(program, false);
-    await this.seedHelper.assignAdminUserToProgram(program.id);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instancePilotNL2);

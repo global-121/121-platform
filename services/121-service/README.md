@@ -43,16 +43,9 @@ Upon application start, automatically a basic seed-script is run which adds 1 `a
 To seed the database with more data (e.g. programs) additional seed-scripts can be run manually.  
 **NOTE:** These seed-scripts delete _all existing data_. They cannot be run on production; When run locally or on test-environment, you are prompted with '`Are you sure? (y/n)`'.
 
-- For basic testing (1 program):  
-  `docker exec -it 121-service npm run seed:single-program`
-- For basic testing (4 programs):  
-  `docker exec -it 121-service npm run seed:multi-program`
+See `services/121-service/package.json` for exact commands per program.
 
-- Add your custom testing data:  
-  `docker exec -it 121-service npm run seed:dev`
-
-- For pilot:  
-  `docker exec -it 121-service npm run seed:pilot`
+The same can be achieved by using the `api/reset` endpoint from the Swagger UI.
 
 ### API Sign-up/Log-in
 

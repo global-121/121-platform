@@ -13,7 +13,6 @@ import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
 
 import programDemo from '../../seed-data/program/program-demo.json';
 import instanceDemo from '../../seed-data/instance/instance-demo.json';
-import { DefaultUserRole } from '../user/user-role.enum';
 
 @Injectable()
 export class SeedDemoProgram implements InterfaceScript {
@@ -36,7 +35,6 @@ export class SeedDemoProgram implements InterfaceScript {
     const program = await this.seedHelper.addProgram(programDemo);
 
     this.seedHelper.addDefaultUsers(program, true);
-    await this.seedHelper.assignAdminUserToProgram(program.id);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instanceDemo);
