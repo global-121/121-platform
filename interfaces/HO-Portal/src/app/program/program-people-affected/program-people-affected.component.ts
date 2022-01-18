@@ -7,8 +7,6 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import {
-  Payment,
-  PaymentData,
   PopupPayoutDetails,
   SinglePayoutDetails,
 } from 'src/app/models/payment.model';
@@ -23,6 +21,7 @@ import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { PastPaymentsService } from '../../services/past-payments.service';
+import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 
@@ -69,10 +68,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public isInProgress = false;
   public paymentInProgress = false;
 
-  public payments: Payment[];
-  private pastPayments: PaymentData[];
-  public nextPaymentId: number;
-  private totalIncluded: number;
+  public submitPaymentProps: SubmitPaymentProps;
 
   public action: BulkActionId = BulkActionId.chooseAction;
   public bulkActions: BulkAction[] = [
@@ -532,6 +528,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.isLoading = false;
 
     this.updateBulkActions();
+
+    this.submitPaymentProps = {
+      programId: this.programId,
+      payment:
+        (await this.pastPaymentsService.getLastPaymentId(this.programId)) + 1,
+      referenceIds: [],
+    };
 
     // Timeout to make sure the datatable elements are rendered/generated:
     window.setTimeout(() => {
@@ -1095,6 +1098,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     }
 
     this.updateSubmitWarning(this.selectedPeople.length);
+
+    if (this.action === BulkActionId.doPayment) {
+      this.submitPaymentProps.referenceIds = this.selectedPeople.map(
+        (p) => p.referenceId,
+      );
+    }
   }
 
   private countSelectable(rows: PersonRow[]) {

@@ -1,0 +1,16 @@
+<ion-content
+  color="light"
+  class="ion-padding"
+>
+  <h3>
+    {{
+      'page.program.program-payout.make-payment.make-payment'
+        | translate: { nr: nextPaymentId ? '#' + nextPaymentId : '-' }
+    }}
+  </h3>
+  <app-make-payment
+    [programId]="submitPaymentProps.programId"
+    [program]="program"
+    [referenceIds]="submitPaymentProps.referenceIds"
+  ></app-make-payment>
+</ion-content>

@@ -206,10 +206,10 @@ export class ProgramPayoutComponent implements OnInit {
       this.programId,
       this.pastPayments,
     );
-    this.nextPaymentId =
-      this.lastPaymentId < this.program.distributionDuration
-        ? this.lastPaymentId + 1
-        : 0;
+    this.nextPaymentId = this.pastPaymentsService.getNextPaymentId(
+      this.lastPaymentId,
+      this.program,
+    );
 
     this.fillPaymentHistory(this.pastPayments);
 

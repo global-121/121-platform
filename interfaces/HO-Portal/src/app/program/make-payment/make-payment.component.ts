@@ -19,11 +19,12 @@ export class MakePaymentComponent implements OnInit {
   public programId: number;
 
   @Input()
-  public program: Program;
+  public referenceIds: string[];
 
   public isEnabled: boolean;
   public isInProgress: boolean;
 
+  public program: Program;
   public totalIncluded: number;
   public totalTransferAmounts: number;
   public lastPaymentId: number;
@@ -50,18 +51,21 @@ export class MakePaymentComponent implements OnInit {
   }
 
   async ngOnInit() {
-    if (!this.program) {
-      return;
-    }
+    this.program = await this.programsService.getProgramById(this.programId);
 
     await this.getFspIntegrationType();
 
     this.amountInput = this.program.fixedTransferValue;
-    const totalIncluded = await this.programsService.getTotalIncluded(
-      this.programId,
-    );
-    this.totalIncluded = totalIncluded.registrations;
-    this.totalTransferAmounts = totalIncluded.transferAmounts;
+    if (!this.referenceIds) {
+      const totalIncluded = await this.programsService.getTotalIncluded(
+        this.programId,
+      );
+      this.totalIncluded = totalIncluded.registrations;
+      this.totalTransferAmounts = totalIncluded.transferAmounts;
+    } else {
+      this.totalIncluded = this.referenceIds.length;
+      this.totalTransferAmounts = null; // TO DO!!!
+    }
     this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
       this.programId,
     );
@@ -94,9 +98,15 @@ export class MakePaymentComponent implements OnInit {
     this.isInProgress = true;
 
     const nextPaymentId = await this.getNextPaymentId();
+    const referenceIds = this.referenceIds.length ? this.referenceIds : null;
 
     await this.programsService
-      .submitPayout(this.programId, nextPaymentId, this.amountInput)
+      .submitPayout(
+        this.programId,
+        nextPaymentId,
+        this.amountInput,
+        referenceIds,
+      )
       .then(
         (response) => this.onPaymentSuccess(response),
         (error) => this.onPaymentError(error),

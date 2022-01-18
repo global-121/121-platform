@@ -248,7 +248,9 @@ export class ProgramsServiceApiService {
         {
           payment: Number(payment),
           amount: Number(amount),
-          referenceIds: { referenceIds: JSON.stringify(referenceIds) },
+          referenceIds: referenceIds
+            ? { referenceIds: JSON.stringify(referenceIds) }
+            : null,
         },
       )
       .toPromise();
