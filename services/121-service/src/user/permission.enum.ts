@@ -78,6 +78,10 @@ export enum PermissionEnum {
   // Registration(s) - Import
   RegistrationImportTemplateREAD = 'registration:import-template.read',
 
+  // Action(s)
+  ActionREAD = 'action.read',
+  ActionCREATE = 'action.create',
+
   // User(s)
   AidWorkerCREATE = 'aid-worker.create',
   AidWorkerDELETE = 'aid-worker.delete',
