@@ -93,9 +93,8 @@ To see the status/logs of all Docker-containers, run from the `services/`-folder
     docker-compose logs -f <container-name>
 
 To verify the successful installation and setup of services, access their Swagger UI:
-| | URL | or run: |
-| ------------------- | ----------------------------- | -------------------------- |
-| 121-service | <http://localhost:3000/docs/> | `npm rum open:121-service` |
+
+- 121-service: <http://localhost:3000/docs/>
 
 ---
 
@@ -131,15 +130,23 @@ To start an individual interface in development mode:
 
 All individual Angular applications, when started will be available via:
 
-|           | URL                     | or run:           |
-| --------- | ----------------------- | ----------------- |
-| PA-App    | <http://localhost:8008> | `npm run open:pa` |
-| AW-App    | <http://localhost:8080> | `npm run open:aw` |
-| HO-Portal | <http://localhost:8888> | `npm run open:ho` |
+- PA-App: <http://localhost:8008>
+- AW-App: <http://localhost:8080>
+- HO-Portal: <http://localhost:8888>
 
 ---
 
 ## Local development
+
+When you use [VS Code](https://code.visualstudio.com/), you can start multiple editor-windows at once, from the root of this repository, run:
+
+    npm run code:all
+
+To start an individual interface/service in VS Code:
+
+- Run: (where `<package>` is one of `pa`, `aw`, `ho`, `121-service`)
+
+      npm run code:<package>
 
 ### Process for implementing data-model changes
 
@@ -299,7 +306,7 @@ Keep the following points in mind while writing test cases:
 - There are several methods which serve the purpose of defining class wide variables, which we should also test and verify. One of the typical examples of one such method is `ngOnInit`
 
 ```ts
-it('ngOnInit: should set up variables', () => {
+it("ngOnInit: should set up variables", () => {
   expect(component.isLoggedIn).toBeDefined(); // check for class variables to be defined
   expect(component.someValye).toBeTruthy(); // check for a variable to be TRUE
   expect(component.someValye).toBeFalsy(); // check for a variable to be FALSE
@@ -343,8 +350,8 @@ it("Test when xyz !== 'some-value'", () => {});
 - Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
 
 ```ts
-let spy = spyOn(component.programsService, 'changePassword').and.returnValue(
-  Promise.resolve(true),
+let spy = spyOn(component.programsService, "changePassword").and.returnValue(
+  Promise.resolve(true)
 );
 ```
 
@@ -360,7 +367,7 @@ spy.calls.mostRecent().returnValue.then(() => {
 - Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
 
 ```ts
-it('XYZ', (done) => {
+it("XYZ", (done) => {
   // spies and stubs
 
   spy.calls.mostRecent().returnValue.then(() => {
@@ -397,11 +404,11 @@ This is how we create and publish a new release of the 121-platform.
   - [ ] Add the `version` to create a new tag
   - [ ] Select the new `release/<version>`-branch
   - [ ] Set the title of the release to `version`. Add a short description and/or link to relevant other documents (if applicable)
-  - [ ] **!!!IMPORTANT!!! UPDATE 2021/12/22**: check the 'prelease' checkbox. Given current setup this makes sure the release is only automatically deployed to staging-servers, and not to production-servers.
+  - [ ] **!!!IMPORTANT!!! UPDATE 2021/12/22**: check the 'pre-release' checkbox. Given current setup this makes sure the release is only automatically deployed to staging-servers, and not to production-servers.
   - [ ] Publish the release on GitHub
   - [ ] Check the the deployed release on staging server(s)
   - [ ] Make any needed server config changes (ENV-variables, etc.) on production-servers
-  - [ ] Edit the release by unchecking the 'prelease' checkbox and publishing again. Given current setup this will now automatically deploy to production-servers (and to staging again).
+  - [ ] Edit the release by unchecking the 'pre-release' checkbox and publishing again. Given current setup this will now automatically deploy to production-servers (and to staging again).
 
 ### Patch/Hotfix Checklist
 

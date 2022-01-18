@@ -6,8 +6,8 @@
 check_if_need_to_lint() {
   if git diff --cached --name-only | grep --quiet "$1*"
   then
-    cd $(git rev-parse --show-toplevel)
-    npm run lint --prefix $1
+    cd "$(git rev-parse --show-toplevel)" || exit
+    npm run lint --if-present --prefix "$1"
   fi
 }
 
@@ -36,6 +36,7 @@ check_if_need_to_be_in_sync() {
 check_if_need_to_be_in_sync ".editorconfig"
 check_if_need_to_be_in_sync ".prettierignore"
 check_if_need_to_be_in_sync ".prettierrc.yml"
+check_if_need_to_be_in_sync ".vscode/settings.json"
 check_if_need_to_be_in_sync "app/shared/dialogue-turn"
 check_if_need_to_be_in_sync "app/shared/q-and-a-set"
 check_if_need_to_be_in_sync "app/shared/qr-scanner"
