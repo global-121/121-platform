@@ -20,7 +20,7 @@
   class="ion-padding"
 >
 <h2 class="ion-padding-bottom text-bold">{{ person?.name }}</h2>
-  <section>
+  <section style="max-width: 60%;">
     <div>
 
       <app-update-property-item
@@ -113,7 +113,10 @@
     </div>
     </ion-row>
   </section>
-  <section *ngIf="messageHistory">
+  <section class="ion-padding-vertical">
+    <strong>{{ 'page.program.program-people-affected.column.status'|translate }}: </strong> {{ person?.status}}
+  </section>
+  <section *ngIf="messageHistory" class="ion-padding-top">
     <h4 class="text-bold"> {{ 'page.program.program-people-affected.edit-person-affected-popup.messageHistory.section-title'|translate }}</h4>
 
     <ion-list>
