@@ -50,10 +50,13 @@ Feature: Make a new payment
     And the "export payment data" component now shows that the payment is "closed"
     And the "export payment data" component now has the next payment enabled
     And the "PA-table" now has the payment column filled for every PA
-    And for successful transactions it shows a date+time, which can be clickable depending on the program
-    And for failed transactions it shows 'Failed', which can be clickable depending on the program
+    And for successful transactions it shows a date+time and the transaction amount
+    And it is clickable for programs with voucher-support (Intersolve)
+    And for failed transactions it shows 'Failed' and the transaction amount, and it is clickable
+    And for waiting transactions it shows 'Waiting' and the transaction amount, and it is clickable
     And a new empty payment column for the next payment is visible
     And - for successful transactions - the PA receives (notification about) voucher/cash depending on the FSP
+    And the 'Export people affected' in the 'Registration' phase now contains 4 new columns for the new payment: status, amount, date and 'voucher-claimed-date'
 
   Scenario: Send payment instructions with small amount of PAs with 0 successful transactions
     When payment instructions are sent to the Financial Service Provider and have finished processing
