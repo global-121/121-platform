@@ -1014,8 +1014,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       return;
     }
 
-    this.applyBtnDisabled = false;
-
     if (this.action === BulkActionId.doPayment) {
       const dropdownOptionLabel =
         $event.target.options[$event.target.options.selectedIndex].text;
@@ -1132,6 +1130,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       this.submitPaymentProps.referenceIds = this.selectedPeople.map(
         (p) => p.referenceId,
       );
+    }
+
+    if (this.selectedPeople.length) {
+      this.applyBtnDisabled = false;
+    } else {
+      this.applyBtnDisabled = true;
     }
   }
 
