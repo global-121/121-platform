@@ -3,6 +3,12 @@ import { BulkActionId } from '../models/bulk-actions.models';
 import { PaStatus, PersonRow } from '../models/person.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
+class CustomBulkActionInput {
+  message?: string;
+  payment?: number;
+  paymentAmount?: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -94,14 +100,14 @@ export class BulkActionsService {
     action: BulkActionId,
     programId: number,
     selectedPeople: PersonRow[],
-    message?: string,
+    customBulkActionInput?: CustomBulkActionInput,
   ): Promise<void> {
     switch (action) {
       case BulkActionId.invite:
         return await this.programsService.invite(
           programId,
           selectedPeople.map((pa) => pa.phoneNumber),
-          message,
+          customBulkActionInput.message,
         );
       case BulkActionId.markNoLongerEligible:
         return await this.programsService.markNoLongerEligible(
@@ -117,33 +123,40 @@ export class BulkActionsService {
         return await this.programsService.include(
           programId,
           this.onlyIds(selectedPeople),
-          message,
+          customBulkActionInput.message,
         );
       case BulkActionId.includePersonalDataRole:
         return await this.programsService.include(
           programId,
           this.onlyIds(selectedPeople),
-          message,
+          customBulkActionInput.message,
         );
       case BulkActionId.endInclusion:
         return await this.programsService.end(
           programId,
           this.onlyIds(selectedPeople),
-          message,
+          customBulkActionInput.message,
         );
       case BulkActionId.reject:
         return await this.programsService.reject(
           programId,
           this.onlyIds(selectedPeople),
-          message,
+          customBulkActionInput.message,
         );
       case BulkActionId.sendMessage:
         return await this.programsService.sendMessage(
           this.onlyIds(selectedPeople),
-          message,
+          customBulkActionInput.message,
         );
       case BulkActionId.deletePa:
         return await this.programsService.deleteRegistrations(
+          this.onlyIds(selectedPeople),
+        );
+      case BulkActionId.doPayment:
+        return await this.programsService.submitPayout(
+          programId,
+          1,
+          10,
           this.onlyIds(selectedPeople),
         );
     }

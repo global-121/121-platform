@@ -239,7 +239,7 @@ export class ProgramsServiceApiService {
     programId: number,
     payment: number,
     amount: number,
-    referenceId?: string,
+    referenceIds?: string[],
   ): Promise<any> {
     return this.apiService
       .post(
@@ -248,7 +248,7 @@ export class ProgramsServiceApiService {
         {
           payment: Number(payment),
           amount: Number(amount),
-          referenceId,
+          referenceIds: JSON.stringify(referenceIds),
         },
       )
       .toPromise();

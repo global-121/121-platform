@@ -20,6 +20,7 @@ import { IntersolveService } from './fsp-integration/intersolve/intersolve.servi
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
 import { IntersolveRequestEntity } from './fsp-integration/intersolve/intersolve-request.entity';
+import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 
 @Injectable()
 export class PaymentsService {
@@ -69,7 +70,7 @@ export class PaymentsService {
     programId: number,
     payment: number,
     amount: number,
-    referenceId?: string,
+    referenceIds?: ReferenceIdsDto,
   ): Promise<number> {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
@@ -82,7 +83,7 @@ export class PaymentsService {
     const targetedRegistrations = await this.getRegistrationsForPayment(
       programId,
       payment,
-      referenceId,
+      referenceIds,
     );
 
     if (targetedRegistrations.length < 1) {
@@ -219,7 +220,7 @@ export class PaymentsService {
   private async getRegistrationsForPayment(
     programId: number,
     payment: number,
-    referenceId?: string,
+    referenceIds?: ReferenceIdsDto,
   ): Promise<RegistrationEntity[]> {
     const knownPayment = await this.transactionRepository.findOne({
       where: { payment: payment },
@@ -235,12 +236,12 @@ export class PaymentsService {
       });
     }
 
-    // If 'referenceId' is passed (only in retry-payment-per PA) use this PA only,
-    // If known payment, then only failed registrations
-    // otherwise (new payment) get all included PA's
-    return referenceId
+    // If: 'referenceIds' is passed, use these PAs only,
+    // Else if: known payment, then only failed registrations
+    // Else: (new payment) get all included PAs
+    return referenceIds
       ? await this.registrationRepository.find({
-          where: { referenceId: referenceId },
+          where: { referenceId: In(JSON.parse(referenceIds['referenceIds'])) },
           relations: ['fsp'],
         })
       : knownPayment

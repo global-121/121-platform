@@ -48,7 +48,7 @@ export class PaymentsController {
       param.programId,
       data.payment,
       data.amount,
-      data.referenceId,
+      data.referenceIds,
     );
   }
 
