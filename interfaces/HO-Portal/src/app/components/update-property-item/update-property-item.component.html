@@ -4,72 +4,84 @@
   (ngSubmit)="doUpdate()"
 >
   <div
-    class="input-item update-property-item divider-bottom ion-padding"
+    class="input-item update-property-item"
     [attr.disabled]="isDisabled"
   >
-    <label class="input-item--label">
+    <label class="input-item--label text-bold">
       {{ label }}
     </label>
     <div class="input-item--contents">
-      <ng-container [ngSwitch]="type">
-        <ng-container *ngSwitchCase="'number'">
-          <ion-input
-            ngDefaultControl
-            name="propertyInput"
-            [(ngModel)]="propertyModel"
-            [value]="value"
-            [placeholder]="placeholder"
-            type="number"
-            inputmode="numeric"
-            min="1"
-            pattern="[0-9]+"
-            appOnlyAllowedInput
-          ></ion-input>
-        </ng-container>
-        <ng-container *ngSwitchCase="'tel'">
-          <ion-input
-            ngDefaultControl
-            name="propertyInput"
-            [(ngModel)]="propertyModel"
-            [value]="value"
-            [placeholder]="placeholder"
-            type="tel"
-            inputmode="tel"
-            pattern="[0-9]+"
-            appOnlyAllowedInput
-          ></ion-input>
-        </ng-container>
-        <ng-container *ngSwitchDefault>
-          <ion-input
-            ngDefaultControl
-            name="propertyInput"
-            [(ngModel)]="propertyModel"
-            [value]="value"
-            [placeholder]="placeholder"
-            type="text"
-          ></ion-input>
-        </ng-container>
-      </ng-container>
-      <ng-container *ngIf="showSubmit">
-        <ion-button
+      <ion-row class="ion-no-padding">
+        <ion-col class="ion-no-padding">
+          <ng-container [ngSwitch]="type">
+            <ng-container *ngSwitchCase="'number'">
+              <ion-input
+                ngDefaultControl
+                name="propertyInput"
+                [(ngModel)]="propertyModel"
+                [value]="value"
+                [placeholder]="placeholder"
+                type="number"
+                inputmode="numeric"
+                min="1"
+                pattern="[0-9]+"
+                appOnlyAllowedInput
+              ></ion-input>
+            </ng-container>
+            <ng-container *ngSwitchCase="'tel'">
+              <ion-input
+                ngDefaultControl
+                name="propertyInput"
+                [(ngModel)]="propertyModel"
+                [value]="value"
+                [placeholder]="placeholder"
+                type="tel"
+                inputmode="tel"
+                pattern="[0-9]+"
+                appOnlyAllowedInput
+              ></ion-input>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <ion-input
+                ngDefaultControl
+                name="propertyInput"
+                [(ngModel)]="propertyModel"
+                [value]="value"
+                [placeholder]="placeholder"
+                type="text"
+              ></ion-input>
+            </ng-container>
+          </ng-container>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-align-items-center">
+        <ion-col size="8" class="ion-no-padding">
+          <ion-note
+          *ngIf="explanation"
+          class="ion-margin-bottom"
+          >
+          {{ explanation }}
+        </ion-note>
+      </ion-col>
+      <ion-col size="4" class="ion-no-padding">
+        <ng-container *ngIf="showSubmit">
+          <ion-button
           *ngIf="!inProgress"
           type="submit"
-          class="ion-margin-start"
-        >
-          {{ 'common.update'|translate }}
+          class="ion-margin-start ion-float-right text-bold ion-text-uppercase"
+          color="secondary"
+          fill=clear
+          >
+          {{ 'common.save'|translate }}
         </ion-button>
         <ion-spinner
-          *ngIf="inProgress"
-          color="primary"
-          class="ion-margin-start"
+        *ngIf="inProgress"
+        color="primary"
+        class="ion-margin-start ion-float-right"
         ></ion-spinner>
       </ng-container>
-    </div>
-    <ion-note
-      *ngIf="explanation"
-      class="ion-margin-bottom"
-    >
-      {{ explanation }}
-    </ion-note>
+    </ion-col>
+  </ion-row>
   </div>
+</div>
 </form>
