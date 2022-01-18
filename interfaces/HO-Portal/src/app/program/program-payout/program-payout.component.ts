@@ -75,7 +75,7 @@ export class ProgramPayoutComponent implements OnInit {
     this.canMakeExport = this.checkCanMakeExport();
 
     this.totalIncluded = (
-      await this.programsService.getTotalIncluded(this.programId)
+      await this.programsService.getTotalTransferAmounts(this.programId, [])
     ).registrations;
 
     await this.createPayments();

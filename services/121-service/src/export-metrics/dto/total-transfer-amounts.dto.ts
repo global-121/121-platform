@@ -1,4 +1,4 @@
-export class TotalIncluded {
+export class TotalTransferAmounts {
   public registrations: number;
   public transferAmounts: number;
 }

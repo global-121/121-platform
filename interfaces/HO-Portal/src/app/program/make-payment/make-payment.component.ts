@@ -30,7 +30,6 @@ export class MakePaymentComponent implements OnInit {
   public program: Program;
   public totalIncluded: number;
   public totalTransferAmounts: number;
-  public lastPaymentId: number;
   private fspIntegrationType: FspIntegrationType;
 
   public amountInput: number;
@@ -59,19 +58,14 @@ export class MakePaymentComponent implements OnInit {
     await this.getFspIntegrationType();
 
     this.amountInput = this.program.fixedTransferValue;
-    if (!this.referenceIds) {
-      const totalIncluded = await this.programsService.getTotalIncluded(
+    const totalTransferAmounts =
+      await this.programsService.getTotalTransferAmounts(
         this.programId,
+        this.referenceIds || [],
       );
-      this.totalIncluded = totalIncluded.registrations;
-      this.totalTransferAmounts = totalIncluded.transferAmounts;
-    } else {
-      this.totalIncluded = this.referenceIds.length;
-      this.totalTransferAmounts = null; // TO DO!!!
-    }
-    this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
-      this.programId,
-    );
+
+    this.totalIncluded = totalTransferAmounts.registrations;
+    this.totalTransferAmounts = totalTransferAmounts.transferAmounts;
 
     this.paymentInProgress =
       await this.pastPaymentsService.checkPaymentInProgress(this.programId);
@@ -82,7 +76,7 @@ export class MakePaymentComponent implements OnInit {
   private checkIsEnabled(): boolean {
     this.isEnabled =
       this.totalIncluded > 0 &&
-      this.lastPaymentId < this.program.distributionDuration &&
+      this.payment <= this.program.distributionDuration &&
       !this.paymentInProgress;
     return this.isEnabled;
   }
