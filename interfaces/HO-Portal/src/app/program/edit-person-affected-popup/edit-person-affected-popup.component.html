@@ -16,7 +16,8 @@
 </ion-header>
 
 <ion-content
-  color="light"
+  color="white"
+  class="ion-padding"
 >
   <section>
     <div>
@@ -58,18 +59,19 @@
         [inProgress]="inProgress?.whatsappPhoneNumber || false"
         class="ion-margin-vertical"
       ></app-update-property-item>
+
       <app-update-fsp
         *ngIf="fspList.length === programFspLength && person?.fsp"
         [fspList]="fspList"
         [label]="'page.program.program-people-affected.column.fsp'|translate"
         [value]="person?.fsp"
         [referenceId]="person?.referenceId"
+        class="ion-margin-vertical"
       ></app-update-fsp>
     </div>
   </section>
-  <hr />
-  <section>
-    <h4>
+  <section class="ion-margin-vertical">
+    <h4 class="text-bold">
       {{ 'page.program.program-people-affected.edit-person-affected-popup.note.section-title'|translate }}
     </h4>
     <p>
@@ -86,16 +88,17 @@
       [placeholder]="'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'|translate"
       style="font-family: monospace; border: 1px solid currentColor; height:150px"
     ></ion-textarea>
-    <ion-row class="ion-align-items-center">
+    <ion-row class="ion-align-items-center ion-justify-content-between">
       <ion-note *ngIf="noteLastUpdate">
         {{ 'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'|translate:{
             timestamp: noteLastUpdate|date:"yyyy-MM-dd, HH:mm"
           } }}
       </ion-note>
+      <div style="margin-left: auto">
       <ion-button
         (click)="saveNote()"
         [disabled]="inProgress?.note || false"
-        class="ion-margin-end text-bold ion-text-uppercase"
+        class="text-bold ion-text-uppercase"
         color="secondary"
         fill=clear
       >
@@ -106,10 +109,11 @@
         color="primary"
         size="small"
       ></ion-spinner>
+    </div>
     </ion-row>
   </section>
   <section *ngIf="messageHistory">
-    <h4> {{ 'page.program.program-people-affected.edit-person-affected-popup.messageHistory.section-title'|translate }}</h4>
+    <h4 class="text-bold"> {{ 'page.program.program-people-affected.edit-person-affected-popup.messageHistory.section-title'|translate }}</h4>
 
     <ion-list>
       <ion-item

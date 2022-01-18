@@ -4,13 +4,13 @@
   (ngSubmit)="updateChosenFsp()"
 >
 
-  <div class="input-item divider-bottom ion-padding">
-    <label class="input-item--label">
+  <div class="input-item ion-padding-vertical">
+    <label class="input-item--label text-bold">
       {{ label }}
     </label>
     <div class="input-item--contents">
       <div>
-        <ion-item class="ion-margin-vertical">
+        <ion-item class="ion-margin-bottom">
           <ion-select
             style="max-width: 100%;"
             ngDefaultControl
@@ -59,7 +59,7 @@
       </ng-container>
 
       </div>
-      <div>
+      <ion-row class="ion-justify-content-end">
         <ion-button
           *ngIf="!inProgress"
           [disabled]="!enableUpdateBtn"
@@ -77,6 +77,6 @@
           size="default"
           class="ion-margin-start"
         ></ion-spinner>
-      </div>
+      </ion-row>
     </div>
   </div>
