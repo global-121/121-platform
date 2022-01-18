@@ -1,14 +1,6 @@
 import { SmsService } from './sms.service';
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
-import {
-  ApiResponse,
-  ApiUseTags,
-  ApiImplicitParam,
-  ApiConsumes,
-} from '@nestjs/swagger';
-import { DefaultUserRole } from '../../user/user-role.enum';
-import { Roles } from '../../roles.decorator';
-import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
+import { Controller, Post, Body } from '@nestjs/common';
+import { ApiUseTags, ApiConsumes } from '@nestjs/swagger';
 
 @ApiUseTags('notifications')
 @Controller('notifications/sms')

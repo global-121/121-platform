@@ -47,7 +47,6 @@ export class TransactionsController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Get all transactions',
   })
   @Get('programs/:programId/payments/transactions')
   public async getTransactions(
@@ -70,7 +69,6 @@ export class TransactionsController {
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
-    description: 'Get a single transaction',
   })
   @Post('programs/:programId/payments/transactions/one')
   public async getTransaction(

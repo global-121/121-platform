@@ -87,7 +87,7 @@ export class RegistrationsController {
   }
 
   @ApiOperation({ title: 'Set Financial Service Provider (FSP)' })
-  @ApiResponse({ status: 200, description: 'FSP set for registration' })
+  @ApiResponse({ status: 200 })
   @Post('/fsp')
   public async addFsp(@Body() setFsp: SetFspDto): Promise<RegistrationEntity> {
     return await this.registrationsService.addFsp(
@@ -401,7 +401,7 @@ export class RegistrationsController {
   @Roles(DefaultUserRole.PersonalData)
   @ApiOperation({
     title:
-      'Update chosen fsp and attributes. This will delete any custom data field related to the old FSP!',
+      'Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
   })
   @ApiResponse({
     status: 200,
@@ -437,7 +437,7 @@ export class RegistrationsController {
 
   @Roles(DefaultUserRole.FieldValidation)
   @ApiOperation({ title: 'Get registration with prefilled answers (for AW)' })
-  @ApiResponse({ status: 200, description: 'Registration received' })
+  @ApiResponse({ status: 200 })
   @ApiImplicitParam({
     name: 'referenceId',
   })

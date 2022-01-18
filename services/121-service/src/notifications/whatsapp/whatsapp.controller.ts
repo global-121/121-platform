@@ -12,7 +12,6 @@ import {
   TwilioStatusCallbackDto,
   TwilioIncomingCallbackDto,
 } from '../twilio.dto';
-import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 
 @ApiUseTags('notifications')
 @Controller('notifications/whatsapp')
