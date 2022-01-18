@@ -11,6 +11,9 @@ export class CreateUserRoleDto {
   @IsString()
   public readonly label: string;
 
-  @ApiModelProperty({ example: [PermissionEnum.changePassword] })
+  @ApiModelProperty({
+    enum: PermissionEnum,
+    example: Object.values(PermissionEnum),
+  })
   public readonly permissions: PermissionEnum[];
 }
