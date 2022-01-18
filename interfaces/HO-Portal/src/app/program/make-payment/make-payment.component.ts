@@ -19,6 +19,9 @@ export class MakePaymentComponent implements OnInit {
   public programId: number;
 
   @Input()
+  public payment: number;
+
+  @Input()
   public referenceIds: string[];
 
   public isEnabled: boolean;
@@ -87,18 +90,13 @@ export class MakePaymentComponent implements OnInit {
   public async performPayment(): Promise<void> {
     this.isInProgress = true;
 
-    const nextPaymentId = await this.pastPaymentsService.getNextPaymentId(
-      this.program,
-    );
+    const paymentId =
+      this.payment ||
+      (await this.pastPaymentsService.getNextPaymentId(this.program));
     const referenceIds = this.referenceIds.length ? this.referenceIds : null;
 
     await this.programsService
-      .submitPayout(
-        this.programId,
-        nextPaymentId,
-        this.amountInput,
-        referenceIds,
-      )
+      .submitPayout(this.programId, paymentId, this.amountInput, referenceIds)
       .then(
         (response) => this.onPaymentSuccess(response),
         (error) => this.onPaymentError(error),

@@ -640,7 +640,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       const paymentBulkAction = {
         id: BulkActionId.doPayment,
         enabled: true,
-        label: `Do payment #${paymentId}`,
+        label: `${this.translate.instant(
+          'page.program.program-people-affected.actions.do-payment',
+        )} #${paymentId}`,
         roles: [UserRole.RunProgram, UserRole.PersonalData],
         phases: [ProgramPhase.payment],
         showIfNoValidation: true,
@@ -1007,7 +1009,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     await modal.present();
   }
 
-  public selectAction() {
+  public selectAction($event) {
     if (this.action === BulkActionId.chooseAction) {
       this.resetBulkAction();
       return;
@@ -1031,6 +1033,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.no-checkboxes',
         ),
       );
+    }
+
+    if (this.action === BulkActionId.doPayment) {
+      const optionText =
+        $event.target.options[$event.target.options.selectedIndex].text;
+      this.submitPaymentProps.payment = Number(optionText.split('#')[1]);
     }
   }
 

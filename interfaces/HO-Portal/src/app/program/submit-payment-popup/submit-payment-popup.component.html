@@ -5,12 +5,12 @@
   <h3>
     {{
       'page.program.program-payout.make-payment.make-payment'
-        | translate: { nr: nextPaymentId ? '#' + nextPaymentId : '-' }
+        | translate: { nr: '#' + submitPaymentProps.payment }
     }}
   </h3>
   <app-make-payment
     [programId]="submitPaymentProps.programId"
-    [program]="program"
+    [payment]="submitPaymentProps.payment"
     [referenceIds]="submitPaymentProps.referenceIds"
   ></app-make-payment>
 </ion-content>

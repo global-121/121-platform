@@ -4,7 +4,7 @@
   <select
     name="bulkActions"
     [title]="'page.program.program-people-affected.choose-action'|translate"
-    (change)="selectAction()"
+    (change)="selectAction($event)"
     class="styled-select ion-margin-end"
     [(ngModel)]="action"
   >
