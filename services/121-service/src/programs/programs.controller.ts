@@ -18,9 +18,12 @@ import { DefaultUserRole } from '../user/user-role.enum';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ChangePhaseDto } from './dto/change-phase.dto';
+import { PermissionsGuard } from '../permissions.guard';
+import { Permissions } from '../permissions.decorator';
+import { PermissionEnum } from '../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
+@UseGuards(RolesGuard, PermissionsGuard)
 @ApiUseTags('programs')
 @Controller('programs')
 export class ProgramController {
@@ -52,6 +55,7 @@ export class ProgramController {
   }
 
   @Roles(DefaultUserRole.RunProgram)
+  @Permissions(PermissionEnum.ProgramCREATE)
   @ApiOperation({ title: 'Create program' })
   @ApiResponse({
     status: 201,
@@ -66,6 +70,7 @@ export class ProgramController {
   }
 
   @Roles(DefaultUserRole.RunProgram)
+  @Permissions(PermissionEnum.ProgramPhaseUPDATE)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('change-phase/:programId')
@@ -80,6 +85,7 @@ export class ProgramController {
   }
 
   @Roles(DefaultUserRole.Admin, DefaultUserRole.RunProgram)
+  @Permissions(PermissionEnum.ProgramUPDATE)
   @ApiOperation({ title: 'Update program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('update/:programId')
@@ -94,6 +100,7 @@ export class ProgramController {
   }
 
   @Roles(DefaultUserRole.Admin)
+  @Permissions(PermissionEnum.ProgramQuestionUPDATE)
   @ApiOperation({ title: 'Update program questions' })
   @Post('update/program-question')
   public async updateProgramQuestion(

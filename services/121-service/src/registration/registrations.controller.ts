@@ -155,6 +155,7 @@ export class RegistrationsController {
     return await this.registrationsService.register(referenceIdDto.referenceId);
   }
 
+  @Permissions(PermissionEnum.RegistrationCREATE)
   @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'Import set of PAs to invite, based on CSV' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -174,6 +175,7 @@ export class RegistrationsController {
     );
   }
 
+  @Permissions(PermissionEnum.RegistrationImportTemplateREAD)
   @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @ApiOperation({
     title: 'Get a CSV template for importing registrations',
@@ -188,6 +190,7 @@ export class RegistrationsController {
     );
   }
 
+  @Permissions(PermissionEnum.RegistrationCREATE)
   @Roles(DefaultUserRole.PersonalData, DefaultUserRole.Admin)
   @ApiOperation({
     title: 'Import set of registered PAs, from CSV',
@@ -207,6 +210,7 @@ export class RegistrationsController {
     );
   }
 
+  @Permissions(PermissionEnum.RegistrationREAD)
   @Roles(DefaultUserRole.View, DefaultUserRole.RunProgram)
   @ApiOperation({
     title: 'Get all People Affected for program EXCLUDING personal data',
@@ -224,6 +228,7 @@ export class RegistrationsController {
     );
   }
 
+  @Permissions(PermissionEnum.RegistrationPersonalREAD)
   @Roles(DefaultUserRole.View, DefaultUserRole.PersonalData)
   @ApiOperation({
     title: 'Get all People Affected for program INCLUDING personal data',
@@ -243,6 +248,7 @@ export class RegistrationsController {
     );
   }
 
+  @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
   @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'Update attribute for registration' })
   @ApiResponse({
@@ -261,6 +267,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
+  @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
   @ApiOperation({ title: 'Update note for registration' })
   @ApiResponse({ status: 200, description: 'Update note for registration' })
   @Post('/note')
@@ -272,6 +279,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.PersonalData)
+  @Permissions(PermissionEnum.RegistrationPersonalREAD)
   @ApiOperation({ title: 'Get note for registration' })
   @ApiResponse({ status: 200, description: 'Get note for registration' })
   @ApiImplicitParam({ name: 'referenceId', required: true })
@@ -281,7 +289,8 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.RunProgram)
-  @ApiOperation({ title: 'Select set of PAs for validation' })
+  @Permissions(PermissionEnum.RegistrationStatusSelectedForValidationUPDATE)
+  @ApiOperation({ title: 'Mark set of PAs for validation' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('select-validation/:programId')
   public async selectForValidation(
@@ -296,6 +305,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.PersonalData)
+  @Permissions(PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE)
   @ApiOperation({ title: 'Mark set of PAs as no longer eligible' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('no-longer-eligible/:programId')
@@ -310,8 +320,8 @@ export class RegistrationsController {
     );
   }
 
-  // @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
-  @Permissions(PermissionEnum.includeReject)
+  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
+  @Permissions(PermissionEnum.RegistrationStatusIncludedUPDATE)
   @ApiOperation({ title: 'Include set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('include/:programId')
@@ -329,6 +339,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
+  @Permissions(PermissionEnum.RegistrationStatusRejectedUPDATE)
   @ApiOperation({ title: 'End inclusion of set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('end/:programId')
@@ -346,6 +357,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
+  @Permissions(PermissionEnum.RegistrationStatusRejectedUPDATE)
   @ApiOperation({ title: 'Reject set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('reject/:programId')
@@ -363,6 +375,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.PersonalData)
+  @Permissions(PermissionEnum.RegistrationStatusInvitedUPDATE)
   @ApiOperation({ title: 'Invite set of PAs for registration' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('invite/:programId')
@@ -379,6 +392,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.PersonalData, DefaultUserRole.FieldValidation)
+  @Permissions(PermissionEnum.RegistrationPersonalSEARCH)
   @ApiOperation({
     title:
       'Find registration by name and/or phone number for PM and FieldValidation',
@@ -399,6 +413,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.PersonalData)
+  @Permissions(PermissionEnum.RegistrationFspUPDATE)
   @ApiOperation({
     title:
       'Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
@@ -419,6 +434,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
+  @Permissions(PermissionEnum.RegistrationDELETE)
   @ApiOperation({ title: 'Delete set of registrations' })
   @Post('delete')
   public async delete(@Body() data: ReferenceIdsDto): Promise<void> {
@@ -426,6 +442,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.FieldValidation)
+  @Permissions(PermissionEnum.RegistrationPersonalForValidationREAD)
   @ApiOperation({ title: 'Download all program answers (for validation)' })
   @ApiResponse({ status: 200, description: 'Program answers downloaded' })
   @Get('/download/validation-data')
@@ -436,6 +453,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.FieldValidation)
+  @Permissions(PermissionEnum.RegistrationPersonalForValidationREAD)
   @ApiOperation({ title: 'Get registration with prefilled answers (for AW)' })
   @ApiResponse({ status: 200 })
   @ApiImplicitParam({
@@ -447,7 +465,8 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.FieldValidation)
-  @ApiOperation({ title: 'Find fsp and attributes' })
+  @Permissions(PermissionEnum.RegistrationFspREAD)
+  @ApiOperation({ title: 'Find FSP and attributes' })
   @ApiResponse({
     status: 200,
     description: 'Found fsp and attributes',
@@ -462,6 +481,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.FieldValidation)
+  @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
   @ApiOperation({ title: 'Issue validationData (For AW)' })
   @ApiResponse({ status: 200, description: 'Validation Data issued' })
   @Post('/issue-validation')
@@ -472,6 +492,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.FieldValidation)
+  @Permissions(PermissionEnum.RegistrationReferenceIdSEARCH)
   @ApiOperation({ title: 'Find reference id using qr identifier' })
   @ApiResponse({
     status: 200,
@@ -500,6 +521,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.PersonalData, DefaultUserRole.RunProgram)
+  @Permissions(PermissionEnum.RegistratonNotificationCREATE)
   @ApiOperation({
     title:
       'Send custom text-message (whatsapp or sms) to array of registrations',
@@ -515,6 +537,7 @@ export class RegistrationsController {
   }
 
   @Roles(DefaultUserRole.PersonalData)
+  @Permissions(PermissionEnum.RegistratonNotificationREAD)
   @ApiOperation({ title: 'Get message history for one registration' })
   @Get('message-history/:referenceId')
   public async getMessageHistoryRegistration(

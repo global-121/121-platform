@@ -35,6 +35,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @Roles(DefaultUserRole.Admin)
+  @Permissions(PermissionEnum.RoleCREATE)
   @ApiOperation({ title: 'Create new user role' })
   @Post('user/role')
   public async addUserRole(
@@ -45,6 +46,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @Roles(DefaultUserRole.RunProgram)
+  @Permissions(PermissionEnum.AidWorkerCREATE)
   @ApiOperation({ title: 'Sign-up new Aid Worker user' })
   @Post('user/aidworker')
   public async createAw(
@@ -74,7 +76,6 @@ export class UserController {
     DefaultUserRole.PersonalData,
     DefaultUserRole.FieldValidation,
   )
-  @Permissions(PermissionEnum.changePassword)
   @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
   public async update(
@@ -86,6 +87,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @Roles(DefaultUserRole.RunProgram)
+  @Permissions(PermissionEnum.AidWorkerDELETE)
   @ApiOperation({ title: 'Delete user by userId' })
   @Post('user/delete/:userId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'integer' })
@@ -129,6 +131,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @Roles(DefaultUserRole.RunProgram)
+  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
   @ApiOperation({ title: 'Assign Aidworker to program' })
   @Post('user/assign-to-program')
   public async assignFieldValidationAidworkerToProgram(

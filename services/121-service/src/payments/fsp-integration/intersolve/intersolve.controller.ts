@@ -24,9 +24,12 @@ import stream from 'stream';
 import { Roles } from '../../../roles.decorator';
 import { RolesGuard } from '../../../roles.guard';
 import { DefaultUserRole } from '../../../user/user-role.enum';
+import { PermissionsGuard } from '../../../permissions.guard';
+import { Permissions } from '../../../permissions.decorator';
+import { PermissionEnum } from '../../../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
+@UseGuards(RolesGuard, PermissionsGuard)
 @ApiUseTags('payments/intersolve')
 @Controller('payments/intersolve')
 export class IntersolveController {
@@ -37,6 +40,7 @@ export class IntersolveController {
     DefaultUserRole.PersonalData,
     DefaultUserRole.View,
   )
+  @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
     title: 'Export Intersolve vouchers',
   })
@@ -63,6 +67,7 @@ export class IntersolveController {
     DefaultUserRole.PersonalData,
     DefaultUserRole.View,
   )
+  @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
     title: 'Get Intersolve voucher balance',
   })
@@ -95,6 +100,7 @@ export class IntersolveController {
   }
 
   @Roles(DefaultUserRole.Admin)
+  @Permissions(PermissionEnum.PaymentVoucherInstructionUPDATE)
   @ApiOperation({
     title: 'Post intersolve instructions',
   })

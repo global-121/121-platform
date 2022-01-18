@@ -12,9 +12,12 @@ import { RolesGuard } from '../roles.guard';
 import { Roles } from '../roles.decorator';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { CreatePaymentDto } from './dto/create-payment.dto';
+import { PermissionsGuard } from '../permissions.guard';
+import { Permissions } from '../permissions.decorator';
+import { PermissionEnum } from '../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
+@UseGuards(RolesGuard, PermissionsGuard)
 @ApiUseTags('payments')
 @Controller()
 export class PaymentsController {
@@ -25,6 +28,7 @@ export class PaymentsController {
     DefaultUserRole.RunProgram,
     DefaultUserRole.PersonalData,
   )
+  @Permissions(PermissionEnum.PaymentREAD)
   @ApiOperation({ title: 'Get past payments for program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -37,6 +41,7 @@ export class PaymentsController {
   }
 
   @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
+  @Permissions(PermissionEnum.PaymentCREATE)
   @ApiOperation({
     title: 'Send payout instruction to financial service provider',
   })
@@ -57,6 +62,7 @@ export class PaymentsController {
   }
 
   @Roles(DefaultUserRole.PersonalData)
+  @Permissions(PermissionEnum.PaymentFspInstructionREAD)
   @ApiOperation({
     title:
       'Get payments instructions for past payment to post in Financial Service Provider Portal',

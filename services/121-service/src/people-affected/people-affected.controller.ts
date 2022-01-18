@@ -11,9 +11,12 @@ import { PeopleAffectedService } from './people-affected.service';
 import { User } from '../user/user.decorator';
 import { StoreDataDto } from './dto/store-data.dto';
 import { Roles } from '../roles.decorator';
+import { PermissionsGuard } from '../permissions.guard';
+import { Permissions } from '../permissions.decorator';
+import { PermissionEnum } from '../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
+@UseGuards(RolesGuard, PermissionsGuard)
 @ApiUseTags('people-affected')
 @Controller('people-affected')
 export class PeopleAffectedController {
@@ -23,6 +26,7 @@ export class PeopleAffectedController {
   }
   @ApiBearerAuth()
   @Roles(PersonAffectedRole.PersonAffected)
+  @Permissions(PermissionEnum.PersonAffectedUPDATE)
   @ApiOperation({ title: 'Post data to storage' })
   @Post('data-storage')
   public async postData(
@@ -34,6 +38,7 @@ export class PeopleAffectedController {
 
   @ApiBearerAuth()
   @Roles(PersonAffectedRole.PersonAffected)
+  @Permissions(PermissionEnum.PersonAffectedREAD)
   @ApiOperation({ title: 'Get data from storage' })
   @ApiImplicitParam({
     name: 'type',

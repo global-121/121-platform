@@ -13,9 +13,12 @@ import { Roles } from '../roles.decorator';
 import { UpdateFspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
 import { FspAttributeEntity } from './fsp-attribute.entity';
 import { RolesGuard } from '../roles.guard';
+import { PermissionsGuard } from '../permissions.guard';
+import { Permissions } from '../permissions.decorator';
+import { PermissionEnum } from '../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
+@UseGuards(RolesGuard, PermissionsGuard)
 @ApiUseTags('fsp')
 @Controller('fsp')
 export class FspController {
@@ -35,6 +38,7 @@ export class FspController {
   }
 
   @Roles(DefaultUserRole.Admin)
+  @Permissions(PermissionEnum.FspUPDATE)
   @ApiOperation({ title: 'Update FSP' })
   @Post('update/fsp')
   public async updateFsp(
@@ -44,6 +48,7 @@ export class FspController {
   }
 
   @Roles(DefaultUserRole.Admin)
+  @Permissions(PermissionEnum.FspAttributeUPDATE)
   @ApiOperation({ title: 'Update FSP attribute' })
   @Post('update/fsp-attribute')
   public async updateFspAttribute(

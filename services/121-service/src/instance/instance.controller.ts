@@ -6,8 +6,11 @@ import { InstanceEntity } from './instance.entity';
 import { UpdateInstanceDto } from './dto/update-instance.dto';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { Roles } from '../roles.decorator';
+import { PermissionsGuard } from '../permissions.guard';
+import { Permissions } from '../permissions.decorator';
+import { PermissionEnum } from '../user/permission.enum';
 
-@UseGuards(RolesGuard)
+@UseGuards(RolesGuard, PermissionsGuard)
 @ApiUseTags('instance')
 @Controller('instance')
 export class InstanceController {
@@ -24,6 +27,7 @@ export class InstanceController {
 
   @ApiBearerAuth()
   @Roles(DefaultUserRole.Admin)
+  @Permissions(PermissionEnum.InstanceUPDATE)
   @ApiOperation({ title: 'Update instance' })
   @Post('update')
   public async updateInstance(

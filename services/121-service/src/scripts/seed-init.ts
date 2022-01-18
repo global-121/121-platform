@@ -48,28 +48,22 @@ export class SeedInit implements InterfaceScript {
       {
         role: DefaultUserRole.RunProgram,
         label: 'Run Program',
-        permissions: [
-          PermissionEnum.changePassword,
-          PermissionEnum.includeReject,
-        ],
+        permissions: [],
       },
       {
         role: DefaultUserRole.View,
         label: 'Only view data, including Personally Identifiable Information',
-        permissions: [PermissionEnum.changePassword],
+        permissions: [],
       },
       {
         role: DefaultUserRole.PersonalData,
         label: 'Handle Personally Identifiable Information',
-        permissions: [
-          PermissionEnum.changePassword,
-          PermissionEnum.includeReject,
-        ],
+        permissions: [],
       },
       {
         role: DefaultUserRole.FieldValidation,
         label: 'Do Field Validation',
-        permissions: [PermissionEnum.changePassword],
+        permissions: [],
       },
     ];
     const userRoleEntities = [];
