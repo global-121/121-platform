@@ -28,6 +28,7 @@ export enum PermissionEnum {
   ProgramPhaseUPDATE = 'program:phase.update',
   ProgramQuestionUPDATE = 'program:question.update',
   ProgramMetricsREAD = 'program:metrics.read',
+  ProgramMetricsAdminREAD = 'program:metrics.admin.read',
 
   // FSP(s)
   FspUPDATE = 'fsp.update',
@@ -42,10 +43,6 @@ export enum PermissionEnum {
   // Payment(s) - Voucher(s)
   PaymentVoucherREAD = 'payment:voucher.read',
   PaymentVoucherInstructionUPDATE = 'payment:voucher:instruction.update',
-
-  // People Affected
-  PersonAffectedREAD = 'person-affected.read',
-  PersonAffectedUPDATE = 'person-affected.update',
 
   // Registration(s)
   RegistrationREAD = 'registration.read',
