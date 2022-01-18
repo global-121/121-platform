@@ -70,6 +70,8 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.AidWorkerCREATE,
           PermissionEnum.AidWorkerDELETE,
           PermissionEnum.AidWorkerProgramUPDATE,
+          PermissionEnum.ActionREAD,
+          PermissionEnum.ActionCREATE,
         ],
       },
       {
@@ -82,6 +84,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.PaymentVoucherREAD,
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationPersonalREAD,
+          PermissionEnum.ActionREAD,
         ],
       },
       {
@@ -109,6 +112,8 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationStatusRejectedUPDATE,
           PermissionEnum.RegistrationStatusInvitedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
+          PermissionEnum.ActionREAD,
+          PermissionEnum.ActionCREATE,
         ],
       },
       {

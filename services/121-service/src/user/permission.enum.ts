@@ -28,7 +28,6 @@ export enum PermissionEnum {
   ProgramPhaseUPDATE = 'program:phase.update',
   ProgramQuestionUPDATE = 'program:question.update',
   ProgramMetricsREAD = 'program:metrics.read',
-  ProgramMetricsAdminREAD = 'program:metrics.admin.read',
 
   // FSP(s)
   FspUPDATE = 'fsp.update',
