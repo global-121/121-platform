@@ -16,7 +16,6 @@
 </ion-header>
 
 <ion-content
-  color="white"
   class="ion-padding"
 >
 <h2 class="ion-padding-bottom text-bold">{{ person?.name }}</h2>
@@ -49,7 +48,7 @@
         [inProgress]="inProgress?.phoneNumber || false"
         class="ion-margin-vertical"
       ></app-update-property-item>
-      
+
       <app-update-property-item
         *ngIf="person.whatsappPhoneNumber"
         type="tel"
@@ -100,7 +99,6 @@
         (click)="saveNote()"
         [disabled]="inProgress?.note || false"
         class="text-bold ion-text-uppercase"
-        color="secondary"
         fill=clear
       >
         {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}

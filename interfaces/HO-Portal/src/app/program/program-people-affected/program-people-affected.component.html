@@ -29,7 +29,6 @@
         [message]="submitWarning.message"
         [inputProps]="getCurrentBulkAction()?.confirmConditions"
         class="ion-float-end"
-        color="secondary"
       >
         {{ 'page.program.program-people-affected.apply-action'|translate }}
       </confirm-prompt>
@@ -180,28 +179,29 @@
     </ng-template>
   </ngx-datatable-column>
 
+
   <ngx-datatable-column
-    *ngFor="let column of columns;"
-    [prop]="column.prop"
-    [name]="column.name"
-    [width]="column.width"
-    [minWidth]="column.minWidth"
-    [maxWidth]="column.maxWidth"
-    [draggable]="column.draggable"
-    [resizeable]="column.resizable"
-    [sortable]="column.sortable"
-    [comparator]="column.comparator"
-    [canAutoResize]="column.canAutoResize"
-    [headerClass]="column.headerClass"
-    [cellClass]="column.cellClass"
-    [frozenLeft]="column.frozenLeft"
+  *ngFor="let column of columns;"
+  [prop]="column.prop"
+  [name]="column.name"
+  [width]="column.width"
+  [minWidth]="column.minWidth"
+  [maxWidth]="column.maxWidth"
+  [draggable]="column.draggable"
+  [resizeable]="column.resizable"
+  [sortable]="column.sortable"
+  [comparator]="column.comparator"
+  [canAutoResize]="column.canAutoResize"
+  [headerClass]="column.headerClass"
+  [cellClass]="column.cellClass"
+  [frozenLeft]="column.frozenLeft"
   ></ngx-datatable-column>
 
   <ngx-datatable-column
     name=""
-    width="40"
-    minWidth="40"
-    maxWidth="40"
+    [width]="emptySeparatorWidth"
+    [minWidth]="emptySeparatorWidth"
+    [maxWidth]="emptySeparatorWidth"
     [resizeable]="false"
     [sortable]="false"
     headerClass="no-border"

@@ -57,7 +57,7 @@ bootstrap table theme
           a {
             color: var(--ion-color-medium);
             &[role='button'] {
-              color: var(--ion-color-secondary);
+              color: var(--ion-color-primary);
             }
           }
 
@@ -66,7 +66,7 @@ bootstrap table theme
             &:hover {
               background-color: var(--ion-color-light);
               a {
-                color: var(--ion-color-secondary);
+                color: var(--ion-color-primary);
                 font-weight: bold;
               }
             }

@@ -31,14 +31,16 @@
   padding: 0.45em;
   border: 2px solid var(--ion-color-tertiary);
   background: var(--ion-color-tertiary);
-  color: var(--ion-color-secondary);
+  color: var(--ion-color-primary);
   border-radius: 4px;
 
   option {
-    color: var(--ion-color-secondary);
-  }
+    color: var(--ion-color-primary);
 
-  accent-color: var(--ion-color-secondary);
+    &[disabled] {
+      color: var(--ion-color-medium);
+    }
+  }
 }
 
 .horizontal-scroll-container {
@@ -174,7 +176,7 @@ ion-icon {
   left: 0.85em;
   right: 0.85em;
   border-top: var(--navigation-button--indicator-size) solid
-    var(--ion-color-secondary);
+    var(--ion-color-primary);
 }
 
 .text-bold {

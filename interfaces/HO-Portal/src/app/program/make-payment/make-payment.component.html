@@ -30,7 +30,6 @@
     (cancel)="resetProgress()"
     [subHeader]="totalIncludedMessage"
     [message]="totalAmountMessage"
-    color="secondary"
   >
     {{ 'page.program.program-payout.start-payout'|translate }}
   </confirm-prompt>
@@ -45,7 +44,6 @@
     <ion-button
       size="small"
       fill="clear"
-      color="medium"
       [title]="'common.update'|translate"
       [attr.aria-label]="'common.update'|translate"
       (click)="refresh()"
