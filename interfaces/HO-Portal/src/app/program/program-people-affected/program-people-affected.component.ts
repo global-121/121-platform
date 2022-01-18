@@ -874,7 +874,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public async statusPopup(row: PersonRow, column, value) {
     if (
       !this.hasVoucherSupport(row.fsp) &&
-      !this.hasError(row, column.paymentIndex)
+      !this.hasError(row, column.paymentIndex) &&
+      !this.enableSinglePayment(row, column)
     ) {
       return;
     }
