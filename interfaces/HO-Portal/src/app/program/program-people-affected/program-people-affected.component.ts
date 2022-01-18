@@ -523,8 +523,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.submitPaymentProps = {
       programId: this.programId,
-      payment:
-        (await this.pastPaymentsService.getLastPaymentId(this.programId)) + 1,
+      payment: null,
       referenceIds: [],
     };
 
@@ -1017,9 +1016,17 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.applyBtnDisabled = false;
 
+    if (this.action === BulkActionId.doPayment) {
+      const dropdownOptionLabel =
+        $event.target.options[$event.target.options.selectedIndex].text;
+      this.submitPaymentProps.payment = Number(
+        dropdownOptionLabel.split('#')[1],
+      );
+    }
     this.allPeopleAffected = this.updatePeopleForAction(
       this.allPeopleAffected,
       this.action,
+      this.submitPaymentProps.payment,
     );
 
     this.toggleHeaderCheckbox();
@@ -1034,17 +1041,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
       );
     }
-
-    if (this.action === BulkActionId.doPayment) {
-      const optionText =
-        $event.target.options[$event.target.options.selectedIndex].text;
-      this.submitPaymentProps.payment = Number(optionText.split('#')[1]);
-    }
   }
 
-  private updatePeopleForAction(people: PersonRow[], action: BulkActionId) {
+  private updatePeopleForAction(
+    people: PersonRow[],
+    action: BulkActionId,
+    payment?: number,
+  ) {
     return people.map((person) =>
-      this.bulkActionService.updateCheckbox(action, person),
+      this.bulkActionService.updateCheckbox(action, person, payment),
     );
   }
 

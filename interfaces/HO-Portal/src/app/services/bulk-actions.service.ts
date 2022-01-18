@@ -23,7 +23,11 @@ export class BulkActionsService {
     return requiredStates.includes(person.status);
   }
 
-  public updateCheckbox(action: BulkActionId, personData: PersonRow) {
+  public updateCheckbox(
+    action: BulkActionId,
+    personData: PersonRow,
+    payment?: number,
+  ) {
     switch (action) {
       case BulkActionId.invite:
         personData.checkboxVisible = this.hasStatus(personData, [
@@ -85,9 +89,9 @@ export class BulkActionsService {
         ]);
         break;
       case BulkActionId.doPayment:
-        personData.checkboxVisible = this.hasStatus(personData, [
-          PaStatus.included,
-        ]);
+        personData.checkboxVisible =
+          this.hasStatus(personData, [PaStatus.included]) &&
+          !personData[`payment${payment}`];
         break;
     }
     return personData;
@@ -147,13 +151,6 @@ export class BulkActionsService {
         );
       case BulkActionId.deletePa:
         return await this.programsService.deleteRegistrations(
-          this.onlyIds(selectedPeople),
-        );
-      case BulkActionId.doPayment:
-        return await this.programsService.submitPayout(
-          programId,
-          1,
-          10,
           this.onlyIds(selectedPeople),
         );
     }

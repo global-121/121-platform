@@ -886,7 +886,6 @@ export class ExportMetricsService {
     programId: number,
     referenceIdsInput: object,
   ): Promise<TotalTransferAmounts> {
-    console.log('referenceIdsInput: ', referenceIdsInput);
     const referenceIds = JSON.parse(referenceIdsInput['referenceIds']);
     let registrations;
     if (referenceIds.length) {
