@@ -26,7 +26,7 @@ export class ProgramNavigationComponent implements OnInit {
 
   public async ngOnInit() {
     await this.loadProgramDetails();
-    this.showManageAidworkers = !!this.program.validation;
+    this.showManageAidworkers = !!this.program?.validation;
   }
 
   private async loadProgramDetails() {
