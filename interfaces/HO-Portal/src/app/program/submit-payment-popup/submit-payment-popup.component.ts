@@ -16,7 +16,6 @@ export class SubmitPaymentPopupComponent implements OnInit {
 
   public program: Program;
 
-  public lastPaymentId: number;
   public nextPaymentId: number;
 
   constructor(
@@ -29,11 +28,7 @@ export class SubmitPaymentPopupComponent implements OnInit {
     const programId = this.submitPaymentProps.programId;
     this.program = await this.programsService.getProgramById(programId);
 
-    this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
-      programId,
-    );
-    this.nextPaymentId = this.pastPaymentsService.getNextPaymentId(
-      this.lastPaymentId,
+    this.nextPaymentId = await this.pastPaymentsService.getNextPaymentId(
       this.program,
     );
   }

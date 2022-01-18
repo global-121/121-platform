@@ -84,20 +84,12 @@ export class MakePaymentComponent implements OnInit {
     return this.isEnabled;
   }
 
-  private async getNextPaymentId(): Promise<number> {
-    let previousId = 0;
-
-    if (this.lastPaymentId > 0) {
-      previousId = this.lastPaymentId;
-    }
-
-    return previousId + 1;
-  }
-
   public async performPayment(): Promise<void> {
     this.isInProgress = true;
 
-    const nextPaymentId = await this.getNextPaymentId();
+    const nextPaymentId = await this.pastPaymentsService.getNextPaymentId(
+      this.program,
+    );
     const referenceIds = this.referenceIds.length ? this.referenceIds : null;
 
     await this.programsService

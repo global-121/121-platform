@@ -206,8 +206,7 @@ export class ProgramPayoutComponent implements OnInit {
       this.programId,
       this.pastPayments,
     );
-    this.nextPaymentId = this.pastPaymentsService.getNextPaymentId(
-      this.lastPaymentId,
+    this.nextPaymentId = await this.pastPaymentsService.getNextPaymentId(
       this.program,
     );
 

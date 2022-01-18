@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { BulkActionId } from '../../models/bulk-actions.models';
 import { SubmitPaymentPopupComponent } from '../../program/submit-payment-popup/submit-payment-popup.component';
 import {
   FilePickerPromptComponent,
@@ -50,6 +51,9 @@ export class ConfirmPromptComponent {
   @Input()
   public submitPaymentProps: SubmitPaymentProps;
 
+  @Input()
+  public action: BulkActionId;
+
   @Output()
   private confirm = new EventEmitter<string>();
 
@@ -74,8 +78,10 @@ export class ConfirmPromptComponent {
           filePickerProps: this.filePickerProps,
         },
       });
-    }
-    if (this.submitPaymentProps) {
+    } else if (
+      this.action === BulkActionId.doPayment &&
+      this.submitPaymentProps
+    ) {
       modal = await this.modalController.create({
         component: SubmitPaymentPopupComponent,
         componentProps: {

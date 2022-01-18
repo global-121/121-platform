@@ -237,14 +237,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
     },
-    {
-      id: BulkActionId.doPayment,
-      enabled: true,
-      label: 'Do payment',
-      roles: [UserRole.RunProgram, UserRole.PersonalData],
-      phases: [ProgramPhase.payment],
-      showIfNoValidation: true,
-    },
   ];
   public applyBtnDisabled = true;
   public submitWarning: any;
@@ -527,7 +519,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.isLoading = false;
 
-    this.updateBulkActions();
+    await this.updateBulkActions();
 
     this.submitPaymentProps = {
       programId: this.programId,
@@ -624,7 +616,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     }
   }
 
-  private updateBulkActions() {
+  private async updateBulkActions() {
     this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
         this.authService.hasUserRole(action.roles) &&
@@ -633,6 +625,29 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         this.checkValidationColumnOrAction(action);
       return action;
     });
+
+    await this.addPaymentBulkActions();
+  }
+
+  private async addPaymentBulkActions() {
+    const nextPaymentId = await this.pastPaymentsService.getNextPaymentId(
+      this.program,
+    );
+    let paymentId = nextPaymentId || this.program.distributionDuration;
+
+    // Add bulk-action for 1st upcoming payment & past 5 payments
+    while (paymentId > nextPaymentId - 6 && paymentId > 0) {
+      const paymentBulkAction = {
+        id: BulkActionId.doPayment,
+        enabled: true,
+        label: `Do payment #${paymentId}`,
+        roles: [UserRole.RunProgram, UserRole.PersonalData],
+        phases: [ProgramPhase.payment],
+        showIfNoValidation: true,
+      };
+      this.bulkActions.push(paymentBulkAction);
+      paymentId--;
+    }
   }
 
   public hasEnabledActions(): boolean {
@@ -1130,7 +1145,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       this.action,
       this.programId,
       this.selectedPeople,
-      confirmInput ? { message: confirmInput } : null,
+      { message: confirmInput },
     );
     this.isInProgress = false;
 

@@ -23,7 +23,8 @@ export class PastPaymentsService {
     return pastPayments[pastPayments.length - 1].id;
   }
 
-  public getNextPaymentId(lastPaymentId: number, program: Program): number {
+  public async getNextPaymentId(program: Program): Promise<number> {
+    const lastPaymentId = await this.getLastPaymentId(program.id);
     return lastPaymentId < program.distributionDuration ? lastPaymentId + 1 : 0;
   }
 
