@@ -70,12 +70,6 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(
-    DefaultUserRole.View,
-    DefaultUserRole.RunProgram,
-    DefaultUserRole.PersonalData,
-    DefaultUserRole.FieldValidation,
-  )
   @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
   public async update(
@@ -93,17 +87,6 @@ export class UserController {
   @ApiImplicitParam({ name: 'userId', required: true, type: 'integer' })
   public async delete(@Param() params): Promise<UserEntity> {
     return await this.userService.delete(Number(params.userId));
-  }
-
-  @ApiBearerAuth()
-  @ApiOperation({ title: 'Person Affected deletes itself an related entities' })
-  @Roles(PersonAffectedRole.PersonAffected)
-  @Post('user/delete-person-affected')
-  @ApiImplicitParam({ name: 'userId', required: true, type: 'integer' })
-  public async deletePersonAffected(
-    @User('id') deleterId: number,
-  ): Promise<UserEntity> {
-    return await this.userService.deletePersonAffected(deleterId);
   }
 
   @ApiBearerAuth()

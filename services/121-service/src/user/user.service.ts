@@ -234,11 +234,6 @@ export class UserService {
     return await this.userRepository.remove(user);
   }
 
-  public async deletePersonAffected(userId: number): Promise<UserEntity> {
-    const user = await this.userRepository.findOne(userId);
-    return await this.userRepository.remove(user);
-  }
-
   public async findById(id: number): Promise<UserEntity> {
     const user = await this.userRepository.findOne(id, {
       relations: [
