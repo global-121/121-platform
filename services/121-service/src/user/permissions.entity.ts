@@ -1,11 +1,12 @@
 import { PermissionEnum } from './permission.enum';
-import { Entity, Column, ManyToMany } from 'typeorm';
+import { Entity, Column, ManyToMany, Index } from 'typeorm';
 import { Base121Entity } from '../base.entity';
 import { UserRoleEntity } from './user-role.entity';
 
 @Entity('permission')
 export class PermissionEntity extends Base121Entity {
   @Column()
+  @Index({ unique: true })
   public name: PermissionEnum;
 
   @ManyToMany(
