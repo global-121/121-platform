@@ -36,7 +36,7 @@ export class UserController {
   @ApiBearerAuth()
   @Roles(DefaultUserRole.Admin)
   @ApiOperation({ title: 'Create new user role' })
-  @Post('role')
+  @Post('user/role')
   public async addUserRole(
     @Body() userRoleData: CreateUserRoleDto,
   ): Promise<UserRoleEntity> {

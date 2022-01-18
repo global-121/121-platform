@@ -100,7 +100,7 @@ export class UserService {
     userRoleEntity.role = userRoleData.role;
     userRoleEntity.label = userRoleData.label;
     const permissionEntities = [];
-    for await (const permission of userRoleData.permissions) {
+    for (const permission of userRoleData.permissions) {
       permissionEntities.push(
         await this.permissionRepository.findOne({ name: permission }),
       );
