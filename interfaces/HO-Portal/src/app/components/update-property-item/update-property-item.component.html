@@ -55,7 +55,7 @@
         </ion-col>
       </ion-row>
       <ion-row class="ion-align-items-center">
-        <ion-col class="ion-no-padding">
+        <ion-col size="8" class="ion-no-padding">
           <ion-note
           *ngIf="explanation"
           class="ion-margin-bottom"
@@ -63,7 +63,7 @@
           {{ explanation }}
         </ion-note>
       </ion-col>
-      <ion-col class="ion-no-padding">
+      <ion-col size="4" class="ion-no-padding">
         <ng-container *ngIf="showSubmit">
           <ion-button
           *ngIf="!inProgress"
@@ -77,7 +77,7 @@
         <ion-spinner
         *ngIf="inProgress"
         color="primary"
-        class="ion-margin-start"
+        class="ion-margin-start ion-float-right"
         ></ion-spinner>
       </ng-container>
     </ion-col>
