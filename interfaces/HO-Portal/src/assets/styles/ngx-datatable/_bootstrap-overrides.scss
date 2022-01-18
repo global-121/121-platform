@@ -13,6 +13,8 @@
   /* Mark the 'end' of the fixed/pinned columns:  */
   .datatable-row-left {
     display: flex; // Allow to vertically stretch/align
+    /* Use solid background-colors to create real 'overlap' when scrolling horizontally */
+    background-color: #ffffff;
   }
 
   .datatable-header-inner {
@@ -36,11 +38,9 @@
       &.no-border {
         border: none;
       }
-      /* Use solid background-colors to create real 'overlap' when scrolling horizontally */
     }
 
     .datatable-body-row {
-      /* Use solid background-colors to create real 'overlap' when scrolling horizontally */
       &.active .datatable-row-left,
       &.active {
         background-color: $body-color--active;
