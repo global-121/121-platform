@@ -12,7 +12,6 @@ bootstrap table theme
     .datatable-header-cell {
       vertical-align: bottom;
       padding: 0.75rem;
-      border-bottom: 1px solid #d1d4d7;
       .datatable-header-cell-label {
         line-height: 24px;
       }
@@ -22,16 +21,6 @@ bootstrap table theme
   .datatable-body {
     .datatable-body-row {
       vertical-align: top;
-      border-top: 1px solid #d1d4d7;
-
-      &.datatable-row-even {
-        background-color: rgba(0, 0, 0, 0.05);
-      }
-
-      &.active {
-        background-color: #1483ff;
-        color: #fff;
-      }
 
       .datatable-body-cell {
         padding: 0.75rem;
@@ -50,10 +39,6 @@ bootstrap table theme
   }
 
   .datatable-footer {
-    background: #424242;
-    color: #ededed;
-    margin-top: -1px;
-
     .page-count {
       line-height: 50px;
       height: 50px;
@@ -67,12 +52,21 @@ bootstrap table theme
       ul {
         li {
           margin: 10px 0px;
+          border: 1px solid var(--ion-color-light);
+
+          a {
+            color: var(--ion-color-medium);
+            &[role='button'] {
+              color: var(--ion-color-primary);
+            }
+          }
 
           &:not(.disabled) {
             &.active,
             &:hover {
+              background-color: var(--ion-color-light);
               a {
-                background-color: #545454;
+                color: var(--ion-color-primary);
                 font-weight: bold;
               }
             }

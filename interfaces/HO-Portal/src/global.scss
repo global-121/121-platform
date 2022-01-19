@@ -29,8 +29,18 @@
 // Default styles for a 'styled' select:
 .styled-select {
   padding: 0.45em;
-  border: 1px solid var(--ion-color-medium);
-  border-radius: var(--ion-border-radius);
+  border: 2px solid var(--ion-color-tertiary);
+  background: var(--ion-color-tertiary);
+  color: var(--ion-color-primary);
+  border-radius: 4px;
+
+  option {
+    color: var(--ion-color-primary);
+
+    &[disabled] {
+      color: var(--ion-color-medium);
+    }
+  }
 }
 
 .horizontal-scroll-container {
@@ -40,11 +50,12 @@
 
 ion-button {
   text-transform: none;
+  --box-shadow: none;
 }
 
 .input-item {
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: column;
   background-color: white;
 
   &.divider-bottom {
@@ -52,18 +63,18 @@ ion-button {
   }
 
   .input-item--contents {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    flex: 1 1 auto;
+    // display: flex;
+    // flex-direction: row;
+    // justify-content: space-between;
+    // align-items: center;
+    // flex: 1 1 auto;
   }
 
   ion-input {
     border: 1px solid #b3bcd0;
     border-radius: 5px;
     margin-top: 8px;
-    margin-bottom: 8px;
+    // margin-bottom: 8px;
 
     input {
       --padding-start: 8px;
@@ -102,6 +113,12 @@ ion-button {
   }
 }
 
+#logo-container {
+  margin: 0 4px 0 0;
+  padding: 0;
+  width: 48px;
+}
+
 .full-height {
   height: 100%;
 }
@@ -117,12 +134,6 @@ ion-icon {
   justify-content: center;
   align-items: center;
   height: 48px;
-
-  #logo-container {
-    margin: 0 4px 0 0;
-    padding: 0;
-    width: 48px;
-  }
 
   h1 {
     margin-top: 10px;
@@ -151,4 +162,27 @@ ion-icon {
   max-width: 339px;
   margin-left: auto;
   margin-right: auto;
+}
+.navigation-button {
+  --navigation-button--indicator-size: 2px;
+
+  display: inline-block;
+  position: relative;
+}
+.navigation-button--indicator {
+  display: block;
+  position: absolute;
+  top: 90%;
+  left: 0.85em;
+  right: 0.85em;
+  border-top: var(--navigation-button--indicator-size) solid
+    var(--ion-color-primary);
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.ml-auto {
+  margin-left: auto;
 }
