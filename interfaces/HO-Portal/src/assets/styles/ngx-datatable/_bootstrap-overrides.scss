@@ -1,35 +1,56 @@
 .ngx-datatable.bootstrap {
   $border-color: #d1d4d7;
-  $body-color--odd: #fff;
-  $body-color--even: #f2f2f2;
-  $body-color--active: #1483ff;
+  $body-color--active: var(--ion-color-tertiary);
+
+  datatable-header {
+    border-top: 1px solid $border-color;
+    border-right: 1px solid $border-color;
+    border-left: 1px solid $border-color;
+    border-radius: 4px 4px 0 0;
+    color: var(--ion-color-medium);
+  }
 
   /* Mark the 'end' of the fixed/pinned columns:  */
   .datatable-row-left {
     display: flex; // Allow to vertically stretch/align
-    background-color: $body-color--odd;
-    border-right: 1px solid $border-color;
-    box-shadow: 0.3em 0 0.6em rgba(0, 0, 0, 0.2);
+    /* Use solid background-colors to create real 'overlap' when scrolling horizontally */
+    background-color: #ffffff;
+  }
+
+  .datatable-header-inner {
+    .datatable-header-cell {
+      border-bottom: 1px solid $border-color;
+
+      &.no-border {
+        border: none;
+      }
+    }
   }
 
   .datatable-body {
+    border-right: 1px solid $border-color;
+    border-left: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+    border-radius: 0 0 4px 4px;
+
+    .datatable-body-cell {
+      border-top: 1px solid $border-color;
+      &.no-border {
+        border: none;
+      }
+    }
+
     .datatable-body-row {
-      /* Use solid background-colors to create real 'overlap' when scrolling horizontally */
-      &.datatable-row-even .datatable-row-left,
-      &.datatable-row-even {
-        background-color: $body-color--even;
-      }
-
-      &.datatable-row-odd .datatable-row-left,
-      &.datatable-row-odd {
-        background-color: $body-color--odd;
-      }
-
       &.active .datatable-row-left,
       &.active {
         background-color: $body-color--active;
+        color: var(--ion-color-tertiary--contrast);
       }
     }
+  }
+
+  input[type='checkbox'] {
+    accent-color: var(--ion-color-primary);
   }
 
   /**

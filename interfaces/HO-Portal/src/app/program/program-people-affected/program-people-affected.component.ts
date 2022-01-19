@@ -67,6 +67,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public isInProgress = false;
   public paymentInProgress = false;
 
+  public emptySeparatorWidth = 40;
+
   public action: BulkActionId = BulkActionId.chooseAction;
   public bulkActions: BulkAction[] = [
     {

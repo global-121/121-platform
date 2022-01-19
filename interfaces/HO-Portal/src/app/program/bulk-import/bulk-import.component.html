@@ -1,28 +1,28 @@
-<ion-row class="ion-align-items-center">
-  <confirm-prompt
-    [disabled]="disabled || isInProgress"
-    (confirm)="importPeopleAffected($event, PaStatus.imported)"
-    [subHeader]="'page.program.bulk-import.imported.confirm-message'|translate"
-    [message]="message?.imported"
-    [filePickerProps]="filePickerProps?.imported"
-  >
-    <ion-icon name="cloud-upload" slot="start" aria-hidden="true"></ion-icon>
-    {{ 'page.program.bulk-import.imported.btn-text'|translate }}
-  </confirm-prompt>
-
-&nbsp;&nbsp;
-
-  <confirm-prompt
-    [disabled]="disabled || isInProgress"
-    (confirm)="importPeopleAffected($event, PaStatus.registered)"
-    [subHeader]="'page.program.bulk-import.registered.confirm-message'|translate"
-    [message]="message?.registered"
-    [filePickerProps]="filePickerProps?.registered"
-  >
-    <ion-icon name="cloud-upload" slot="start" aria-hidden="true"></ion-icon>
-    {{ 'page.program.bulk-import.registered.btn-text'|translate }}
-  </confirm-prompt>
-
+<ion-row>
+  <div class="ion-no-padding ion-margin-end">
+    <confirm-prompt
+      [disabled]="disabled || isInProgress"
+      (confirm)="importPeopleAffected($event, PaStatus.imported)"
+      [subHeader]="'page.program.bulk-import.imported.confirm-message'|translate"
+      [message]="message?.imported"
+      [filePickerProps]="filePickerProps?.imported"
+    >
+      <ion-icon name="cloud-upload" slot="start" aria-hidden="true"></ion-icon>
+      {{ 'page.program.bulk-import.imported.btn-text'|translate }}
+    </confirm-prompt>
+  </div>
+  <div class="ion-no-padding">
+    <confirm-prompt
+      [disabled]="disabled || isInProgress"
+      (confirm)="importPeopleAffected($event, PaStatus.registered)"
+      [subHeader]="'page.program.bulk-import.registered.confirm-message'|translate"
+      [message]="message?.registered"
+      [filePickerProps]="filePickerProps?.registered"
+    >
+      <ion-icon name="cloud-upload" slot="start" aria-hidden="true"></ion-icon>
+      {{ 'page.program.bulk-import.registered.btn-text'|translate }}
+    </confirm-prompt>
+  </div>
   <ion-spinner
     *ngIf="isInProgress"
     color="primary"

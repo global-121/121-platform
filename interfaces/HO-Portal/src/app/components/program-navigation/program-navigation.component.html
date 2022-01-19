@@ -1,0 +1,48 @@
+<ion-grid>
+  <ion-row class="ion-align-items-center">
+    <ion-col size="auto">
+      <span class="navigation-button">
+        <ion-button
+          [routerLink]="['/program', programId, 'dashboard']"
+          routerLinkActive
+          #rlaDashboard="routerLinkActive"
+          [color]="rlaDashboard.isActive ? 'primary' : 'secondary'"
+          fill="clear"
+          size="small"
+        >
+          {{ 'header.dashboard'|translate }}
+        </ion-button>
+        <span
+          *ngIf="rlaDashboard.isActive"
+          class="navigation-button--indicator"
+        ></span>
+      </span>
+      <span *ngIf="showManageAidworkers" class="navigation-button">
+        <ion-button
+          [disabled]="!canManageAidWorkers()"
+          [routerLink]="['/program', programId, 'aid-workers']"
+          routerLinkActive
+          #rlaAidWorkers="routerLinkActive"
+          [color]="rlaAidWorkers.isActive ? 'primary' : 'secondary'"
+          fill="clear"
+          size="small"
+        >
+          {{ 'header.aid-workers'|translate }}
+        </ion-button>
+        <span
+          *ngIf="rlaAidWorkers.isActive"
+          class="navigation-button--indicator"
+        ></span>
+      </span>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col class="horizontal-scroll-container">
+      <div class="ion-text-nowrap">
+        <app-phase-navigation
+          [programId]="programId"
+        ></app-phase-navigation>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>

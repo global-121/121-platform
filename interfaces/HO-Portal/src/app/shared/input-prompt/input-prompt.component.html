@@ -14,11 +14,10 @@
 </ion-header>
 
 <ion-content
-  color="light"
   class="ion-padding"
 >
-  <h2 
-    *ngIf="subHeader" 
+  <h2
+    *ngIf="subHeader"
     [innerHTML]="subHeader">
   </h2>
   <div
@@ -40,7 +39,7 @@
       <ion-label
         [innerHTML]="inputProps.checkbox"
       ></ion-label>
-      <ion-checkbox 
+      <ion-checkbox
         slot="start"
         [checked]="checked"
         (ionChange)="checkboxChange($event.detail.checked)"

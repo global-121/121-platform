@@ -1,6 +1,7 @@
 {
   "header": {
     "home": "Home",
+    "help": "Help",
     "dashboard": "Dashboard",
     "aid-workers": "Aid-workers",
     "phases": "Phases",
@@ -483,6 +484,7 @@
   },
   "common": {
     "update": "Update",
+    "save": "Save",
     "confirm": "Are you sure?",
     "confirm-message-label": "The message needs to be longer than {{minLength}} characters.",
     "cancel": "Cancel",
