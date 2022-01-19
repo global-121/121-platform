@@ -22,18 +22,4 @@ export class PhaseNavigationComponent implements OnInit {
       this.programId,
     );
   }
-
-  public getFill(phase: Phase): string {
-    let fill = 'outline';
-
-    if (phase.active) {
-      fill = 'solid';
-    }
-
-    if (phase.disabled) {
-      fill = 'clear';
-    }
-
-    return fill;
-  }
 }

@@ -1,27 +1,5 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button
-        [title]="'page.home.pageTitle'|translate"
-        [attr.aria-label]="'page.home.pageTitle'|translate"
-        routerLink="/home"
-        fill="clear"
-        size="small"
-        color="medium"
-      >
-        <ion-icon name="home" slot="icon-only" aria-hidden="true"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>
-      <h1 class="ion-no-margin">
-        {{ 'page.user.pageTitle'|translate }}
-      </h1>
-    </ion-title>
-    <ion-buttons slot="end">
-      <app-user-state></app-user-state>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<app-header [title]="'page.user.pageTitle'|translate" [showHome]="true"></app-header>
+
 <ion-content>
   <ion-grid class="full-height">
     <ion-row class="ion-justify-content-center ion-align-items-center full-height">
@@ -110,6 +88,7 @@
                   expand="block"
                   size="default"
                   [disabled]="!newPasswordForm?.form?.valid"
+                  color="secondary"
                 >
                   {{ 'common.update'|translate }}
                 </ion-button>
