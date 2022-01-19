@@ -616,16 +616,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   private async updateBulkActions() {
+    await this.addPaymentBulkActions();
+
     this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
         this.authService.hasUserRole(action.roles) &&
-        // action.phases.includes(this.activePhase) &&
         action.phases.includes(this.thisPhase) &&
         this.checkValidationColumnOrAction(action);
       return action;
     });
-
-    await this.addPaymentBulkActions();
   }
 
   private async addPaymentBulkActions() {

@@ -11,8 +11,6 @@ export class SubmitPaymentPopupComponent implements OnInit {
   @Input()
   public submitPaymentProps: SubmitPaymentProps;
 
-  public nextPaymentId: number;
-
   constructor(private modalController: ModalController) {}
 
   async ngOnInit() {}
