@@ -444,11 +444,11 @@ This follows the same process as a regular release + deployment. With some small
 
 ### To "test" environment
 
-- Merged PR's to 'master' branch are automatically deployed to the test-server. (via [webhook](tools/webhook.service), see: [/tools#GitHub-webhook](tools/README.md#github-webhook))
+- Merged PR's to the branch `master` are automatically deployed to the test-server. (via [webhook](tools/webhook.service), see: [/tools#GitHub-webhook](tools/README.md#github-webhook))
   - To skip deployment after a PR is merged, add `[SKIP CD]` to the title of the PR before merging. (For example when only updating documentation)
-- Make sure to update the environment-settings as soon as possible, preferably before the merge+deploy.
+- Make sure to update any environment-settings/configurations as soon as possible, preferably before the merge & deploy.
 
-### To "production" environment
+### To "production" environment(s)
 
 #### On initial deployment (only)
 
@@ -464,9 +464,12 @@ This follows the same process as a regular release + deployment. With some small
 
 - [ ] Decide on what version to deploy
 - [ ] Check for any changes/additions/removals in the [CHANGELOG](CHANGELOG.md)
-- [ ] Prepare the environment accordingly (in all `.env`-files)
-  - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):  
-         Run: `sudo ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v1.1.0`
+- [ ] Prepare the environment accordingly (In all `.env`-files)
+  - [ ] Build/Deploy the platform (where `<target-branch>` is for example: `release/v1.1.0`)
+    - Either by running the [deploy script](./tools/deploy.sh):  
+      Run: `sudo ./tools/deploy.sh <target-branch>`
+    - OR by using the [webhook](tools/README.md#github-webhook)-interface at: `https://<server>/webhook?do=deploy`  
+      Providing the `DEPLOY_SECRET` (1st field) and the target `<target-branch>`(2nd field).
 
 ## Glossary
 
