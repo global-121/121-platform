@@ -13,7 +13,7 @@ import { UserService } from './user/user.service';
 import { UserType } from './user/user-type-enum';
 
 @Injectable()
-export class PermissionsGuard implements CanActivate {
+export class PersonAffectedAuthGuard implements CanActivate {
   public constructor(
     private readonly reflector: Reflector,
     private readonly userService: UserService,
@@ -22,29 +22,30 @@ export class PermissionsGuard implements CanActivate {
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     let hasAccess: boolean;
 
-    const endpointPermissions = this.reflector.get<PermissionEnum[]>(
-      'permissions',
+    const endpointPersonAffectedAuth = this.reflector.get<PermissionEnum[]>(
+      'personAffectedAuth',
       context.getHandler(),
     );
 
-    if (!endpointPermissions) {
+    if (!endpointPersonAffectedAuth) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
     const authHeaders = request.headers.authorization;
-    if (authHeaders && (authHeaders as string).split(' ')[1]) {
+    if (
+      authHeaders &&
+      (authHeaders as string).split(' ')[1] &&
+      endpointPersonAffectedAuth.length === 0
+    ) {
       const token = (authHeaders as string).split(' ')[1];
       const decoded: any = jwt.verify(
         token,
         process.env.SECRETS_121_SERVICE_SECRET,
       );
-
-      if (decoded.permissions) {
-        hasAccess = await this.aidworkerCanActivate(
-          decoded.permissions,
-          endpointPermissions,
-        );
+      const user = await this.userService.findById(decoded.id);
+      if (user.userType === UserType.personAffected) {
+        hasAccess = await this.personAffectedCanActivate(user, request);
       }
     } else {
       hasAccess = false;
@@ -57,13 +58,33 @@ export class PermissionsGuard implements CanActivate {
     return hasAccess;
   }
 
-  private async aidworkerCanActivate(
-    userPermissions: PermissionEnum[],
-    endpointPermissions: PermissionEnum[],
+  private async personAffectedCanActivate(
+    user: UserEntity,
+    request: any,
   ): Promise<boolean> {
-    const overlappingPermissions = userPermissions.filter(role =>
-      endpointPermissions.includes(role),
-    );
-    return overlappingPermissions.length > 0;
+    let referenceIdsOfUser = [];
+
+    if (user.registrations && user.registrations[0]) {
+      referenceIdsOfUser = user.registrations.map(r => r.referenceId);
+    }
+
+    if (
+      request.body &&
+      request.body.referenceId &&
+      !referenceIdsOfUser.includes(request.body.referenceId)
+    ) {
+      // Person affected send request with reference id in body that is not part of its registrations
+      return false;
+    }
+    if (
+      request.params &&
+      request.params.referenceId &&
+      !referenceIdsOfUser.includes(request.params.referenceId)
+    ) {
+      // Person affected send request with reference id in body that is not part of its registrations
+      return false;
+    }
+
+    return true;
   }
 }
