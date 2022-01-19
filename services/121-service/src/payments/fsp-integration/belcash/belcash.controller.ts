@@ -5,12 +5,10 @@ import {
   ApiOperation,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { RolesGuard } from '../../../roles.guard';
 import { BelcashService } from './belcash.service';
 import { BelcashPaymentStatusDto } from './dto/belcash-payment-status.dto';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
 @ApiUseTags('payments/belcash')
 @Controller('payments/belcash')
 export class BelcashController {

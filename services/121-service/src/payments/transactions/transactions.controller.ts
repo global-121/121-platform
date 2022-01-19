@@ -15,9 +15,6 @@ import {
   ApiResponse,
   ApiUseTags,
 } from '@nestjs/swagger';
-import { Roles } from '../../roles.decorator';
-import { RolesGuard } from '../../roles.guard';
-import { DefaultUserRole } from '../../user/user-role.enum';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
@@ -28,7 +25,7 @@ import { Permissions } from '../../permissions.decorator';
 import { PermissionEnum } from '../../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard, PermissionsGuard)
+@UseGuards(PermissionsGuard)
 @ApiUseTags('payments/transactions')
 @Controller()
 export class TransactionsController {
@@ -36,11 +33,6 @@ export class TransactionsController {
     private readonly transactionsService: TransactionsService,
   ) {}
 
-  @Roles(
-    DefaultUserRole.View,
-    DefaultUserRole.RunProgram,
-    DefaultUserRole.PersonalData,
-  )
   @Permissions(PermissionEnum.PaymentTransactionREAD)
   @ApiOperation({ title: 'Get all transactions' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -64,11 +56,6 @@ export class TransactionsController {
     );
   }
 
-  @Roles(
-    DefaultUserRole.View,
-    DefaultUserRole.RunProgram,
-    DefaultUserRole.PersonalData,
-  )
   @Permissions(PermissionEnum.PaymentTransactionREAD)
   @ApiOperation({ title: 'Get a single transaction' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })

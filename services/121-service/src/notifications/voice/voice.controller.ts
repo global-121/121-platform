@@ -1,3 +1,6 @@
+import { PermissionsGuard } from './../../permissions.guard';
+import { Permissions } from './../../permissions.decorator';
+import { PermissionEnum } from './../../user/permission.enum';
 import {
   Controller,
   Get,
@@ -7,6 +10,7 @@ import {
   Param,
   Body,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiUseTags,
@@ -17,9 +21,8 @@ import {
 } from '@nestjs/swagger';
 import { VoiceService } from './voice.service';
 import { Response } from 'express-serve-static-core';
-import { DefaultUserRole } from '../../user/user-role.enum';
-import { Roles } from '../../roles.decorator';
 
+@UseGuards(PermissionsGuard)
 @ApiUseTags('notifications')
 @Controller('notifications/voice')
 export class VoiceController {
@@ -28,7 +31,7 @@ export class VoiceController {
     this.voiceService = voiceService;
   }
 
-  @Roles(DefaultUserRole.Admin)
+  @Permissions(PermissionEnum.Test)
   @ApiResponse({ status: 200, description: 'Test voice call' })
   @ApiImplicitParam({ name: 'number' })
   @Get(':number')

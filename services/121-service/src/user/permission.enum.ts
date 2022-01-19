@@ -87,4 +87,7 @@ export enum PermissionEnum {
   AidWorkerProgramUPDATE = 'aid-worker:program.update',
 
   RoleCREATE = 'role.create',
+
+  // Used for development purposes to test endpoints only the admin can access
+  Test = 'test',
 }

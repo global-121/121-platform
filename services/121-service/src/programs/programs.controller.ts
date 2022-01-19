@@ -12,9 +12,6 @@ import {
   ApiImplicitParam,
 } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
-import { RolesGuard } from '../roles.guard';
-import { Roles } from '../roles.decorator';
-import { DefaultUserRole } from '../user/user-role.enum';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ChangePhaseDto } from './dto/change-phase.dto';
@@ -23,7 +20,7 @@ import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard, PermissionsGuard)
+@UseGuards(PermissionsGuard)
 @ApiUseTags('programs')
 @Controller('programs')
 export class ProgramController {
@@ -54,7 +51,6 @@ export class ProgramController {
     return await this.programService.getPublishedPrograms();
   }
 
-  @Roles(DefaultUserRole.RunProgram)
   @Permissions(PermissionEnum.ProgramCREATE)
   @ApiOperation({ title: 'Create program' })
   @ApiResponse({
@@ -69,7 +65,6 @@ export class ProgramController {
     return this.programService.create(programData);
   }
 
-  @Roles(DefaultUserRole.RunProgram)
   @Permissions(PermissionEnum.ProgramPhaseUPDATE)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -84,7 +79,6 @@ export class ProgramController {
     );
   }
 
-  @Roles(DefaultUserRole.Admin, DefaultUserRole.RunProgram)
   @Permissions(PermissionEnum.ProgramUPDATE)
   @ApiOperation({ title: 'Update program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -99,7 +93,6 @@ export class ProgramController {
     );
   }
 
-  @Roles(DefaultUserRole.Admin)
   @Permissions(PermissionEnum.ProgramQuestionUPDATE)
   @ApiOperation({ title: 'Update program questions' })
   @Post('update/program-question')

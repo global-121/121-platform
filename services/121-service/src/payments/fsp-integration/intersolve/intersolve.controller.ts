@@ -21,25 +21,17 @@ import { IntersolveService } from './intersolve.service';
 import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
 import { Response } from 'express-serve-static-core';
 import stream from 'stream';
-import { Roles } from '../../../roles.decorator';
-import { RolesGuard } from '../../../roles.guard';
-import { DefaultUserRole } from '../../../user/user-role.enum';
 import { PermissionsGuard } from '../../../permissions.guard';
 import { Permissions } from '../../../permissions.decorator';
 import { PermissionEnum } from '../../../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard, PermissionsGuard)
+@UseGuards(PermissionsGuard)
 @ApiUseTags('payments/intersolve')
 @Controller('payments/intersolve')
 export class IntersolveController {
   public constructor(private intersolveService: IntersolveService) {}
 
-  @Roles(
-    DefaultUserRole.RunProgram,
-    DefaultUserRole.PersonalData,
-    DefaultUserRole.View,
-  )
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
     title: 'Export Intersolve vouchers',
@@ -62,11 +54,6 @@ export class IntersolveController {
     bufferStream.pipe(response);
   }
 
-  @Roles(
-    DefaultUserRole.RunProgram,
-    DefaultUserRole.PersonalData,
-    DefaultUserRole.View,
-  )
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
     title: 'Get Intersolve voucher balance',
@@ -99,7 +86,6 @@ export class IntersolveController {
     bufferStream.pipe(response);
   }
 
-  @Roles(DefaultUserRole.Admin)
   @Permissions(PermissionEnum.PaymentVoucherInstructionUPDATE)
   @ApiOperation({
     title: 'Post intersolve instructions',

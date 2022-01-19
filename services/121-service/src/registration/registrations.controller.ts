@@ -19,7 +19,6 @@ import {
   ApiConsumes,
   ApiImplicitFile,
 } from '@nestjs/swagger';
-import { RolesGuard } from '../roles.guard';
 import { RegistrationsService } from './registrations.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { User } from '../user/user.decorator';
@@ -27,10 +26,8 @@ import { StoreProgramAnswersDto } from './dto/store-program-answers.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
 import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
-import { DefaultUserRole } from '../user/user-role.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImportResult } from './dto/bulk-import.dto';
-import { Roles } from '../roles.decorator';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
 import { MessageDto } from './dto/message.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
@@ -49,7 +46,7 @@ import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard, PermissionsGuard)
+@UseGuards(PermissionsGuard)
 @ApiUseTags('registrations')
 @Controller('registrations')
 export class RegistrationsController {
@@ -156,7 +153,6 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationCREATE)
-  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'Import set of PAs to invite, based on CSV' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('import-bulk/:programId')
@@ -176,7 +172,6 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationImportTemplateREAD)
-  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @ApiOperation({
     title: 'Get a CSV template for importing registrations',
   })
@@ -191,7 +186,6 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationCREATE)
-  @Roles(DefaultUserRole.PersonalData, DefaultUserRole.Admin)
   @ApiOperation({
     title: 'Import set of registered PAs, from CSV',
   })
@@ -211,7 +205,6 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationREAD)
-  @Roles(DefaultUserRole.View, DefaultUserRole.RunProgram)
   @ApiOperation({
     title: 'Get all People Affected for program EXCLUDING personal data',
   })
@@ -229,7 +222,6 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationPersonalREAD)
-  @Roles(DefaultUserRole.View, DefaultUserRole.PersonalData)
   @ApiOperation({
     title: 'Get all People Affected for program INCLUDING personal data',
   })
@@ -249,7 +241,6 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
-  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @ApiOperation({ title: 'Update attribute for registration' })
   @ApiResponse({
     status: 200,
@@ -266,7 +257,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
   @ApiOperation({ title: 'Update note for registration' })
   @ApiResponse({ status: 200, description: 'Update note for registration' })
@@ -278,7 +268,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(DefaultUserRole.PersonalData)
   @Permissions(PermissionEnum.RegistrationPersonalREAD)
   @ApiOperation({ title: 'Get note for registration' })
   @ApiResponse({ status: 200, description: 'Get note for registration' })
@@ -288,7 +277,6 @@ export class RegistrationsController {
     return await this.registrationsService.retrieveNote(params.referenceId);
   }
 
-  @Roles(DefaultUserRole.RunProgram)
   @Permissions(PermissionEnum.RegistrationStatusSelectedForValidationUPDATE)
   @ApiOperation({ title: 'Mark set of PAs for validation' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -304,7 +292,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(DefaultUserRole.PersonalData)
   @Permissions(PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE)
   @ApiOperation({ title: 'Mark set of PAs as no longer eligible' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -320,7 +307,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @Permissions(PermissionEnum.RegistrationStatusIncludedUPDATE)
   @ApiOperation({ title: 'Include set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -338,7 +324,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @Permissions(PermissionEnum.RegistrationStatusRejectedUPDATE)
   @ApiOperation({ title: 'End inclusion of set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -356,7 +341,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @Permissions(PermissionEnum.RegistrationStatusRejectedUPDATE)
   @ApiOperation({ title: 'Reject set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -374,7 +358,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(DefaultUserRole.PersonalData)
   @Permissions(PermissionEnum.RegistrationStatusInvitedUPDATE)
   @ApiOperation({ title: 'Invite set of PAs for registration' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -391,7 +374,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(DefaultUserRole.PersonalData, DefaultUserRole.FieldValidation)
   @Permissions(PermissionEnum.RegistrationPersonalSEARCH)
   @ApiOperation({
     title:
@@ -412,7 +394,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(DefaultUserRole.PersonalData)
   @Permissions(PermissionEnum.RegistrationFspUPDATE)
   @ApiOperation({
     title:
@@ -433,7 +414,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(DefaultUserRole.RunProgram, DefaultUserRole.PersonalData)
   @Permissions(PermissionEnum.RegistrationDELETE)
   @ApiOperation({ title: 'Delete set of registrations' })
   @Post('delete')
@@ -441,7 +421,6 @@ export class RegistrationsController {
     await this.registrationsService.deleteBatch(data);
   }
 
-  @Roles(DefaultUserRole.FieldValidation)
   @Permissions(PermissionEnum.RegistrationPersonalForValidationREAD)
   @ApiOperation({ title: 'Download all program answers (for validation)' })
   @ApiResponse({ status: 200, description: 'Program answers downloaded' })
@@ -452,7 +431,6 @@ export class RegistrationsController {
     return await this.registrationsService.downloadValidationData(userId);
   }
 
-  @Roles(DefaultUserRole.FieldValidation)
   @Permissions(PermissionEnum.RegistrationPersonalForValidationREAD)
   @ApiOperation({ title: 'Get registration with prefilled answers (for AW)' })
   @ApiResponse({ status: 200 })
@@ -464,7 +442,6 @@ export class RegistrationsController {
     return await this.registrationsService.get(params.referenceId);
   }
 
-  @Roles(DefaultUserRole.FieldValidation)
   @Permissions(PermissionEnum.RegistrationFspREAD)
   @ApiOperation({ title: 'Find FSP and attributes' })
   @ApiResponse({
@@ -480,7 +457,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(DefaultUserRole.FieldValidation)
   @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
   @ApiOperation({ title: 'Issue validationData (For AW)' })
   @ApiResponse({ status: 200, description: 'Validation Data issued' })
@@ -491,7 +467,6 @@ export class RegistrationsController {
     return await this.registrationsService.issueValidation(validationIssueData);
   }
 
-  @Roles(DefaultUserRole.FieldValidation)
   @Permissions(PermissionEnum.RegistrationReferenceIdSEARCH)
   @ApiOperation({ title: 'Find reference id using qr identifier' })
   @ApiResponse({
@@ -520,7 +495,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(DefaultUserRole.PersonalData, DefaultUserRole.RunProgram)
   @Permissions(PermissionEnum.RegistratonNotificationCREATE)
   @ApiOperation({
     title:
@@ -536,7 +510,6 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(DefaultUserRole.PersonalData)
   @Permissions(PermissionEnum.RegistratonNotificationREAD)
   @ApiOperation({ title: 'Get message history for one registration' })
   @Get('message-history/:referenceId')

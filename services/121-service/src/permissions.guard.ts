@@ -10,8 +10,6 @@ import {
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
 import { UserService } from './user/user.service';
-import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
-import { Repository } from 'typeorm';
 import { UserType } from './user/user-type-enum';
 
 @Injectable()

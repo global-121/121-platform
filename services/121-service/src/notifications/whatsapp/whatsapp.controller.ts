@@ -1,13 +1,6 @@
 import { WhatsappService } from './whatsapp.service';
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
-import {
-  ApiResponse,
-  ApiUseTags,
-  ApiImplicitParam,
-  ApiConsumes,
-} from '@nestjs/swagger';
-import { DefaultUserRole } from '../../user/user-role.enum';
-import { Roles } from '../../roles.decorator';
+import { Controller, Post, Body } from '@nestjs/common';
+import { ApiUseTags, ApiConsumes } from '@nestjs/swagger';
 import {
   TwilioStatusCallbackDto,
   TwilioIncomingCallbackDto,
@@ -19,23 +12,6 @@ export class WhatsappController {
   private readonly whatsappService: WhatsappService;
   public constructor(whatsappService: WhatsappService) {
     this.whatsappService = whatsappService;
-  }
-
-  @Roles(DefaultUserRole.Admin)
-  @ApiResponse({
-    status: 200,
-    description: 'Test controller to test sending whatsapp',
-  })
-  @ApiImplicitParam({ name: 'number' })
-  @Get(':number')
-  public async sendWhatsapp(@Param() params): Promise<void> {
-    return await this.whatsappService.sendWhatsapp(
-      'Test whatsapp',
-      params.number,
-      null,
-      null,
-      null,
-    );
   }
 
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')

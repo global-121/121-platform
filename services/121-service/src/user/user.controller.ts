@@ -16,15 +16,13 @@ import {
   ApiOperation,
   ApiImplicitParam,
 } from '@nestjs/swagger';
-import { RolesGuard } from '../roles.guard';
-import { Roles } from '../roles.decorator';
 import { DefaultUserRole } from './user-role.enum';
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 import { UserRoleEntity } from './user-role.entity';
 import { Permissions } from '../permissions.decorator';
 import { CreateUserRoleDto } from './dto/create-user-role.dto';
 
-@UseGuards(RolesGuard, PermissionsGuard)
+@UseGuards(PermissionsGuard)
 @ApiUseTags('user')
 @Controller()
 export class UserController {
@@ -34,7 +32,6 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(DefaultUserRole.Admin)
   @Permissions(PermissionEnum.RoleCREATE)
   @ApiOperation({ title: 'Create new user role' })
   @Post('user/role')
@@ -45,7 +42,6 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(DefaultUserRole.RunProgram)
   @Permissions(PermissionEnum.AidWorkerCREATE)
   @ApiOperation({ title: 'Sign-up new Aid Worker user' })
   @Post('user/aidworker')
@@ -80,7 +76,6 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(DefaultUserRole.RunProgram)
   @Permissions(PermissionEnum.AidWorkerDELETE)
   @ApiOperation({ title: 'Delete user by userId' })
   @Post('user/delete/:userId')
@@ -90,7 +85,6 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(DefaultUserRole.RunProgram)
   @ApiOperation({ title: 'User deletes itself' })
   @Post('user/delete')
   public async deleteCurrentUser(
@@ -100,12 +94,6 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(
-    DefaultUserRole.View,
-    DefaultUserRole.RunProgram,
-    DefaultUserRole.PersonalData,
-    DefaultUserRole.FieldValidation,
-  )
   @ApiOperation({ title: 'Get current user' })
   @Get('user')
   public async findMe(@User('username') username: string): Promise<UserRO> {
@@ -113,7 +101,6 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(DefaultUserRole.RunProgram)
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
   @ApiOperation({ title: 'Assign Aidworker to program' })
   @Post('user/assign-to-program')
