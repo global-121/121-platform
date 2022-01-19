@@ -18,11 +18,11 @@
 <ion-content
   class="ion-padding"
 >
-<h2 class="ion-padding-bottom text-bold">{{ person?.name }}</h2>
-  <section class="ion-padding-vertical">
-    <strong>{{ 'page.program.program-people-affected.column.status'|translate }}: </strong> {{ person?.status}}
+  <h2 class="text-bold">{{ person?.name }}</h2>
+  <section class="ion-padding-bottom">
+    <strong>{{ 'page.program.program-people-affected.column.status'|translate }}:</strong> {{'page.program.program-people-affected.status.' + person?.status | translate }}
   </section>
-  <section style="max-width: 80%;">
+  <section style="max-width: 80%;" class="ion-margin-top">
     <div>
 
       <app-update-property-item
