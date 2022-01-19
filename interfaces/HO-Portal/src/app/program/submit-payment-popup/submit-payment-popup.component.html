@@ -1,13 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      {{
+        'page.program.program-payout.make-payment.make-payment'
+          | translate: { nr: '#' + submitPaymentProps.payment }
+      }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel'|translate"
+        [attr.aria-label]="'common.cancel'|translate"
+      >
+        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content
   color="light"
   class="ion-padding"
 >
-  <h3>
-    {{
-      'page.program.program-payout.make-payment.make-payment'
-        | translate: { nr: '#' + submitPaymentProps.payment }
-    }}
-  </h3>
   <app-make-payment
     [programId]="submitPaymentProps.programId"
     [payment]="submitPaymentProps.payment"
