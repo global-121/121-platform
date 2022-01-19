@@ -9,7 +9,6 @@ import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
-import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
@@ -75,7 +74,7 @@ export class PaymentsService {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
     });
-    if (!program || program.phase === 'design') {
+    if (!program) {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
@@ -222,41 +221,25 @@ export class PaymentsService {
     payment: number,
     referenceIds?: ReferenceIdsDto,
   ): Promise<RegistrationEntity[]> {
-    const knownPayment = await this.transactionRepository.findOne({
-      where: { payment: payment },
-    });
-    let failedRegistrations;
-    if (knownPayment) {
-      const failedReferenceIds = (
-        await this.getFailedTransactions(programId, payment)
-      ).map(t => t.referenceId);
-      failedRegistrations = await this.registrationRepository.find({
-        where: { referenceId: In(failedReferenceIds) },
+    if (referenceIds) {
+      return await this.registrationRepository.find({
+        where: { referenceId: In(JSON.parse(referenceIds['referenceIds'])) },
         relations: ['fsp'],
       });
     }
 
-    // If: 'referenceIds' is passed, use these PAs only,
-    // Else if: known payment, then only failed registrations
-    // Else: (new payment) get all included PAs
-    return referenceIds
-      ? await this.registrationRepository.find({
-          where: { referenceId: In(JSON.parse(referenceIds['referenceIds'])) },
-          relations: ['fsp'],
-        })
-      : knownPayment
-      ? failedRegistrations
-      : await this.getIncludedRegistrations(programId);
-  }
+    // If no referenceIds passed, this must be because of the 'retry all failed' scenario ..
+    const failedReferenceIds = (
+      await this.getFailedTransactions(programId, payment)
+    ).map(t => t.referenceId);
+    // .. if nothing found, throw an error
+    if (!failedReferenceIds.length) {
+      const errors = 'No failed transactions found for this payment.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
 
-  private async getIncludedRegistrations(
-    programId: number,
-  ): Promise<RegistrationEntity[]> {
     return await this.registrationRepository.find({
-      where: {
-        program: { id: programId },
-        registrationStatus: RegistrationStatusEnum.included,
-      },
+      where: { referenceId: In(failedReferenceIds) },
       relations: ['fsp'],
     });
   }
@@ -302,7 +285,7 @@ export class PaymentsService {
   private async getFailedTransactions(
     programId: number,
     payment: number,
-  ): Promise<any> {
+  ): Promise<any[]> {
     const allLatestTransactionAttemptsPerPa = await this.transactionService.getTransactions(
       programId,
       false,
