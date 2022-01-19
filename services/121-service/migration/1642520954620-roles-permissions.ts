@@ -5,14 +5,15 @@ import { PermissionEntity } from './../src/user/permissions.entity';
 import { UserRoleEntity } from './../src/user/user-role.entity';
 
 export class rolesPermissions1642520954620 implements MigrationInterface {
-  public constructor(private connection: Connection) {}
+  public constructor(queryRunner: QueryRunner) {}
 
   name = 'rolesPermissions1642520954620';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
+    const resultCreate = await queryRunner.query(
       `CREATE TABLE "121-service"."permission" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "name" character varying NOT NULL, CONSTRAINT "PK_3b8b97af9d9d8807e41e6f48362" PRIMARY KEY ("id"))`,
     );
+    console.log('resultCreate: ', resultCreate);
     await queryRunner.query(
       `CREATE INDEX "IDX_2139f3b5ad8f7e095679fb50cf" ON "121-service"."permission" ("created") `,
     );
@@ -34,7 +35,11 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."whatsapp_pending_message" ADD CONSTRAINT "FK_a7153217f085fbb3a6e30588c4b" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
-    this.migrateData();
+    // Commit transaction because the tables are needed before the insert
+    await queryRunner.commitTransaction();
+    await this.migrateData(queryRunner.connection);
+    // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
+    await queryRunner.startTransaction();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -62,10 +67,8 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "121-service"."permission"`);
   }
 
-  private async migrateData(): Promise<void> {
-    const permissionsRepository = this.connection.getRepository(
-      PermissionEntity,
-    );
+  private async migrateData(connection: Connection): Promise<void> {
+    const permissionsRepository = connection.getRepository(PermissionEntity);
     const permissionEntities = [];
     for (const permissionName of Object.values(PermissionEnum)) {
       const permission = new PermissionEntity();
@@ -75,7 +78,7 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
     }
     const permissions = permissionEntities;
 
-    const userRoleRepository = this.connection.getRepository(UserRoleEntity);
+    const userRoleRepository = connection.getRepository(UserRoleEntity);
 
     const defaultRoles = [
       {

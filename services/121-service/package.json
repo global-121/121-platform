@@ -35,7 +35,8 @@
     "test:coverage": "npm test -- --coverage --coverageDirectory=coverage",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:generate": "npm run typeorm migration:generate -- -n",
-    "migration:run": "npm run typeorm migration:run"
+    "migration:run": "npm run typeorm migration:run",
+    "migration:revert": "npm run typeorm migration:revert"
   },
   "private": true,
   "dependencies": {
