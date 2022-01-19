@@ -13,7 +13,6 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
     const resultCreate = await queryRunner.query(
       `CREATE TABLE "121-service"."permission" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "name" character varying NOT NULL, CONSTRAINT "PK_3b8b97af9d9d8807e41e6f48362" PRIMARY KEY ("id"))`,
     );
-    console.log('resultCreate: ', resultCreate);
     await queryRunner.query(
       `CREATE INDEX "IDX_2139f3b5ad8f7e095679fb50cf" ON "121-service"."permission" ("created") `,
     );
@@ -175,6 +174,10 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
       const defaultRoleEntity = await userRoleRepository.findOne({
         where: { role: defaultRole.role },
       });
+      if (!defaultRoleEntity) {
+        // Migrations are also run, during seed, so on empty database, in which case there are no users to update
+        continue;
+      }
       defaultRoleEntity.role = defaultRole.role;
       defaultRoleEntity.label = defaultRole.label;
       defaultRoleEntity.permissions = permissions.filter(permission =>

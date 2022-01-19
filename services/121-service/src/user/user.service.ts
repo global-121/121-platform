@@ -37,12 +37,6 @@ export class UserService {
   private readonly assignmentRepository: Repository<
     ProgramAidworkerAssignmentEntity
   >;
-  @InjectRepository(PersonAffectedAppDataEntity)
-  private readonly personAffectedAppDataRepo: Repository<
-    PersonAffectedAppDataEntity
-  >;
-  @InjectRepository(TransactionEntity)
-  private readonly transactionRepository: Repository<TransactionEntity>;
 
   public constructor() {}
 

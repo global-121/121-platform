@@ -27,9 +27,14 @@ export class SeedInit implements InterfaceScript {
     );
     const permissionEntities = [];
     for (const permissionName of Object.values(PermissionEnum)) {
-      const permission = new PermissionEntity();
-      permission.name = permissionName as PermissionEnum;
-      const permissionEntity = await permissionsRepository.save(permission);
+      let permissionEntity = await permissionsRepository.findOne({
+        where: { name: permissionName },
+      });
+      if (!permissionEntity) {
+        const permission = new PermissionEntity();
+        permission.name = permissionName as PermissionEnum;
+        permissionEntity = await permissionsRepository.save(permission);
+      }
       permissionEntities.push(permissionEntity);
     }
     return permissionEntities;

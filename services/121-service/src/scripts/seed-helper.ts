@@ -42,7 +42,8 @@ export class SeedHelper {
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.assignAidworker(fullAccessUser.id, program.id, [
-      DefaultUserRole.Admin,
+      DefaultUserRole.RunProgram,
+      DefaultUserRole.PersonalData,
     ]);
     await this.assignAidworker(runProgramUser.id, program.id, [
       DefaultUserRole.RunProgram,
@@ -165,7 +166,7 @@ export class SeedHelper {
   public async assignAidworker(
     userId: number,
     programId: number,
-    roles: DefaultUserRole[],
+    roles: DefaultUserRole[] | string[],
   ): Promise<void> {
     const userRepository = this.connection.getRepository(UserEntity);
     const programRepository = this.connection.getRepository(ProgramEntity);
