@@ -1,4 +1,4 @@
-import { PersonAffectedAuthGuard } from '../person-affected-auth.auth';
+import { PersonAffectedAuthGuard } from '../person-affected-auth.guard';
 import { PermissionsGuard } from './../permissions.guard';
 import { RegistrationEntity } from './registration.entity';
 import {
