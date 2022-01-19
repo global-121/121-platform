@@ -1,3 +1,4 @@
+import { PersonAffectedAuthGuard } from '../person-affected-auth.auth';
 import { PermissionsGuard } from './../permissions.guard';
 import { RegistrationEntity } from './registration.entity';
 import {
@@ -44,9 +45,10 @@ import { MessageHistoryDto } from './dto/message-history.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
+import { PersonAffectedAuth } from '../person-affected-auth.decorator';
 
 @ApiBearerAuth()
-@UseGuards(PermissionsGuard)
+@UseGuards(PermissionsGuard, PersonAffectedAuthGuard)
 @ApiUseTags('registrations')
 @Controller('registrations')
 export class RegistrationsController {
@@ -68,6 +70,7 @@ export class RegistrationsController {
     );
   }
 
+  @PersonAffectedAuth()
   @ApiOperation({ title: 'Store program answers for registration' })
   @ApiResponse({
     status: 200,
@@ -83,6 +86,7 @@ export class RegistrationsController {
     );
   }
 
+  @PersonAffectedAuth()
   @ApiOperation({ title: 'Set Financial Service Provider (FSP)' })
   @ApiResponse({ status: 200 })
   @Post('/fsp')
@@ -93,6 +97,7 @@ export class RegistrationsController {
     );
   }
 
+  @PersonAffectedAuth()
   @ApiOperation({ title: 'Set custom data for registration' })
   @ApiResponse({
     status: 200,
@@ -109,6 +114,7 @@ export class RegistrationsController {
     );
   }
 
+  @PersonAffectedAuth()
   @ApiOperation({ title: 'Set phone number' })
   @ApiResponse({ status: 200, description: 'Phone set for registration' })
   @Post('/phone')
@@ -123,6 +129,7 @@ export class RegistrationsController {
     );
   }
 
+  @PersonAffectedAuth()
   @ApiOperation({ title: 'Set QR identifier for registration' })
   @ApiResponse({
     status: 201,
@@ -138,6 +145,7 @@ export class RegistrationsController {
     );
   }
 
+  @PersonAffectedAuth()
   @ApiOperation({
     title:
       'Person Affected switches from started registration to registered for program',
@@ -482,6 +490,7 @@ export class RegistrationsController {
     );
   }
 
+  @PersonAffectedAuth()
   @ApiOperation({ title: 'Get inclusion status (Used by PA)' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('inclusion-status/:programId')
