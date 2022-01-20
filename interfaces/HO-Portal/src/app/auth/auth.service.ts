@@ -56,22 +56,6 @@ export class AuthService {
 
     try {
       user = this.jwtService.decodeToken(rawToken);
-
-      // Upgrade existing user to new roles
-      if (user && user.role && !user.roles) {
-        if (user.role === 'aidworker') {
-          user.role = UserRole.FieldValidation;
-        }
-        if (user.role === 'project-officer') {
-          user.role = UserRole.RunProgram;
-        }
-        if (user.role === 'program-manager') {
-          user.role = UserRole.PersonalData;
-        }
-        if (user.role) {
-          user.roles = [user.role];
-        }
-      }
     } catch {
       console.warn('AuthService: Invalid token');
       return null;
