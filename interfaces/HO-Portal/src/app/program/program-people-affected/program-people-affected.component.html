@@ -1,65 +1,68 @@
 <h2>{{ 'page.program.program-people-affected.section-title'|translate }}</h2>
 
-<ion-row class="ion-align-items-center">
-  <select
-    name="bulkActions"
-    [title]="'page.program.program-people-affected.choose-action'|translate"
-    (change)="selectAction()"
-    class="styled-select ion-margin-end"
-    [(ngModel)]="action"
-  >
-    <option value="">
-      <ng-container *ngIf="!hasEnabledActions()">{{ 'page.program.program-people-affected.no-actions'|translate }}</ng-container>
-      <ng-container *ngIf="hasEnabledActions()">{{ 'page.program.program-people-affected.choose-action'|translate }}</ng-container>
-    </option>
+<ion-row class="ion-align-items-center ion-justify-content-between ion-margin-bottom">
+  <div>
+    <ion-row>
+      <select
+        name="bulkActions"
+        [title]="'page.program.program-people-affected.choose-action'|translate"
+        (change)="selectAction()"
+        class="styled-select ion-margin-end"
+        [(ngModel)]="action"
+      >
+        <option value="">
+          <ng-container *ngIf="!hasEnabledActions()">{{ 'page.program.program-people-affected.no-actions'|translate }}</ng-container>
+          <ng-container *ngIf="hasEnabledActions()">{{ 'page.program.program-people-affected.choose-action'|translate }}</ng-container>
+        </option>
 
-    <ng-container *ngFor="let action of bulkActions;">
-      <option
-        *ngIf="action.enabled"
-        [value]="action.id"
-      >{{ action.label }}</option>
-    </ng-container>
-  </select>
-  <confirm-prompt
-    [disabled]="applyBtnDisabled"
-    (confirm)="applyAction($event)"
-    [subHeader]="'page.program.program-people-affected.submit-warning'|translate"
-    [message]="submitWarning.message"
-    [inputProps]="getCurrentBulkAction()?.confirmConditions"
-    class="ion-float-end"
-  >
-    {{ 'page.program.program-people-affected.apply-action'|translate }}
-  </confirm-prompt>
+        <ng-container *ngFor="let action of bulkActions;">
+          <option
+            *ngIf="action.enabled"
+            [value]="action.id"
+          >{{ action.label }}</option>
+        </ng-container>
+      </select>
+      <confirm-prompt
+        [disabled]="applyBtnDisabled"
+        (confirm)="applyAction($event)"
+        [subHeader]="'page.program.program-people-affected.submit-warning'|translate"
+        [message]="submitWarning.message"
+        [inputProps]="getCurrentBulkAction()?.confirmConditions"
+        class="ion-float-end"
+      >
+        {{ 'page.program.program-people-affected.apply-action'|translate }}
+      </confirm-prompt>
 
-  <ion-spinner
-    *ngIf="isInProgress"
-    color="primary"
-    class="ion-margin-start"
-  ></ion-spinner>
-</ion-row>
-
-<ion-row class="ion-margin-vertical">
-  <ion-input
-    [placeholder]="'page.program.program-people-affected.filter-placeholder'|translate"
-    [attr.title]="'page.program.program-people-affected.filter-placeholder'|translate"
-    [attr.aria-label]="'page.program.program-people-affected.filter-placeholder'|translate"
-    (ionChange)="filterRowsVisible($event.target.value)"
-    (debounce)="1000"
-    [value]="filterRowsVisibleQuery"
-    [clearInput]="true"
-    class="filter-input"
-  >
-    <ion-icon
-      name="funnel"
+      <ion-spinner
+        *ngIf="isInProgress"
+        color="primary"
+        class="ion-margin-start"
+      ></ion-spinner>
+    </ion-row>
+  </div>
+  <div>
+    <ion-input
+      [placeholder]="'page.program.program-people-affected.filter-placeholder'|translate"
       [attr.title]="'page.program.program-people-affected.filter-placeholder'|translate"
-      aria-hidden="true"
-      size="small"
-      slot="start"
-      style="padding-inline-start: var(--padding-start)"
-    ></ion-icon>
-  </ion-input>
-</ion-row>
+      [attr.aria-label]="'page.program.program-people-affected.filter-placeholder'|translate"
+      (ionChange)="filterRowsVisible($event.target.value)"
+      (debounce)="1000"
+      [value]="filterRowsVisibleQuery"
+      [clearInput]="true"
+      class="filter-input"
+    >
+      <ion-icon
+        name="funnel"
+        [attr.title]="'page.program.program-people-affected.filter-placeholder'|translate"
+        aria-hidden="true"
+        size="small"
+        slot="start"
+        style="padding-inline-start: var(--padding-start)"
+      ></ion-icon>
+    </ion-input>
 
+  </div>
+</ion-row>
 <div
   class="proxy-scrollbar"
   data-target="datatable-body"
@@ -176,22 +179,36 @@
     </ng-template>
   </ngx-datatable-column>
 
+
   <ngx-datatable-column
-    *ngFor="let column of columns;"
-    [prop]="column.prop"
-    [name]="column.name"
-    [width]="column.width"
-    [minWidth]="column.minWidth"
-    [maxWidth]="column.maxWidth"
-    [draggable]="column.draggable"
-    [resizeable]="column.resizable"
-    [sortable]="column.sortable"
-    [comparator]="column.comparator"
-    [canAutoResize]="column.canAutoResize"
-    [headerClass]="column.headerClass"
-    [cellClass]="column.cellClass"
-    [frozenLeft]="column.frozenLeft"
+  *ngFor="let column of columns;"
+  [prop]="column.prop"
+  [name]="column.name"
+  [width]="column.width"
+  [minWidth]="column.minWidth"
+  [maxWidth]="column.maxWidth"
+  [draggable]="column.draggable"
+  [resizeable]="column.resizable"
+  [sortable]="column.sortable"
+  [comparator]="column.comparator"
+  [canAutoResize]="column.canAutoResize"
+  [headerClass]="column.headerClass"
+  [cellClass]="column.cellClass"
+  [frozenLeft]="column.frozenLeft"
   ></ngx-datatable-column>
+
+  <ngx-datatable-column
+    name=""
+    [width]="emptySeparatorWidth"
+    [minWidth]="emptySeparatorWidth"
+    [maxWidth]="emptySeparatorWidth"
+    [resizeable]="false"
+    [sortable]="false"
+    headerClass="no-border"
+    cellClass="no-border"
+    [frozenLeft]="true"
+  >
+  </ngx-datatable-column>
 
   <ngx-datatable-column
     *ngIf="showInclusionScore() && [phaseEnum.registrationValidation, phaseEnum.inclusion, phaseEnum.reviewInclusion].includes(thisPhase)"
@@ -243,40 +260,35 @@
       let-value="value"
       let-row="row"
     >
-      <ng-container
-        *ngIf="value && !hasVoucherSupport(row.fsp) && !hasError(row, column.paymentIndex)"
-      >
-        {{ value.text }}
-      </ng-container>
-      <ng-container
-        *ngIf="value && (hasVoucherSupport(row.fsp) || hasError(row, column.paymentIndex))"
-      >
+      <ng-container *ngIf="value">
         <button
           type="button"
           (click)="statusPopup(row, column, value)"
           [ngClass]="{
             'is-error': hasError(row, column.paymentIndex),
+            'no-action': !hasVoucherSupport(row.fsp) && !hasError(row, column.paymentIndex),
             'ion-no-padding popup-button status-pop-up': true
            }"
           [attr.title]="'page.program.program-people-affected.transaction.show-status'|translate"
           [attr.aria-label]="'page.program.program-people-affected.transaction.show-status'|translate"
         >
           {{ value.text }}
-          <br>
-          <ion-icon
-            *ngIf="value.hasMessageIcon"
-            name="mail"
-            size="small"
-            aria-hidden="true"
-          >
-          </ion-icon>
-          <ion-icon
-            *ngIf="value.hasMoneyIconTable"
-            name="cash"
-            size="small"
-            aria-hidden="true"
-          >
-          </ion-icon>
+          <div style="display: flex;" class="ion-justify-content-center ion-align-items-center">
+            {{ value.amount }}
+            <span *ngIf="value.hasMessageIcon || value.hasMoneyIconTable">&nbsp;</span>
+            <ion-icon
+              *ngIf="value.hasMessageIcon"
+              name="mail"
+              size="small"
+              aria-hidden="true"
+            ></ion-icon>
+            <ion-icon
+              *ngIf="value.hasMoneyIconTable"
+              name="cash"
+              size="small"
+              aria-hidden="true"
+            ></ion-icon>
+          </div>
         </button>
       </ng-container>
       <ng-container
@@ -289,8 +301,6 @@
             'is-error': hasError(row, column.paymentIndex),
             'ion-no-padding popup-button': true
           }"
-          [attr.title]="'page.program.program-people-affected.transaction.do-single-payment'|translate"
-          [attr.aria-label]="'page.program.program-people-affected.transaction.do-single-payment'|translate"
         >
           {{ 'page.program.program-people-affected.transaction.do-single-payment'|translate }}
           <br>
@@ -298,8 +308,7 @@
             name="add-circle-outline"
             size="small"
             aria-hidden="true"
-          >
-          </ion-icon>
+          ></ion-icon>
         </button>
       </ng-container>
     </ng-template>

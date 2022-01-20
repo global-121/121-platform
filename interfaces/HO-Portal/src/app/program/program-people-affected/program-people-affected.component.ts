@@ -67,6 +67,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public isInProgress = false;
   public paymentInProgress = false;
 
+  public emptySeparatorWidth = 40;
+
   public action: BulkActionId = BulkActionId.chooseAction;
   public bulkActions: BulkAction[] = [
     {
@@ -776,6 +778,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
       const paymentColumnValue = {
         text: paymentColumnText,
+        amount: `${this.program.currency} ${transaction.amount}`,
         hasMessageIcon: this.enableMessageSentIcon(transaction),
         hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
       };
@@ -871,6 +874,14 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public async statusPopup(row: PersonRow, column, value) {
+    if (
+      !this.hasVoucherSupport(row.fsp) &&
+      !this.hasError(row, column.paymentIndex) &&
+      !this.enableSinglePayment(row, column)
+    ) {
+      return;
+    }
+
     const isSinglePayment = this.enableSinglePayment(row, column);
     const hasError = this.hasError(row, column.paymentIndex);
     const hasWaiting = this.hasWaiting(row, column.paymentIndex);

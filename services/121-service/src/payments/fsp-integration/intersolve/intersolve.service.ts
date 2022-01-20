@@ -148,6 +148,7 @@ export class IntersolveService {
       await this.cancelAndDeleteVoucher(
         voucherInfo.cardId,
         voucherInfo.transactionId,
+        voucherInfo.refPos,
       );
       return paResult;
     }
@@ -315,6 +316,7 @@ export class IntersolveService {
     await this.cancelAndDeleteVoucher(
       voucherInfo.cardId,
       voucherInfo.transactionId,
+      voucherInfo.refPos,
     );
 
     return transactionResult;
@@ -376,6 +378,7 @@ export class IntersolveService {
       this.cancelAndDeleteVoucher(
         voucher.barcode,
         String(intersolveRequest.transactionId),
+        null,
       );
       status = StatusEnum.error;
     } else {
@@ -459,8 +462,13 @@ export class IntersolveService {
   public async cancelAndDeleteVoucher(
     cardId: string,
     transactionId: string,
+    refPos: number,
   ): Promise<void> {
-    await this.intersolveApiService.markAsToCancel(cardId, transactionId);
+    if (cardId && transactionId) {
+      await this.intersolveApiService.markAsToCancel(cardId, transactionId);
+    } else if (refPos) {
+      await this.intersolveApiService.markAsToCancelByRefPos(refPos);
+    }
     const barcode = await this.intersolveBarcodeRepository.findOne({
       where: { barcode: cardId },
       relations: ['image'],

@@ -1,62 +1,51 @@
-<ion-grid>
-  <ion-row>
-    <ion-col size="1">
-      <ion-button
-        [title]="'header.home'|translate"
-        [attr.aria-label]="'header.home'|translate"
-        routerLink="/home"
-        fill="clear"
-        size="small"
-        color="medium"
-      >
-        <ion-icon name="home" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-col>
-    <ion-col>
-      <h1 class="ion-no-margin">
-        {{ title }}
-      </h1>
-      <ion-note>
-        {{ programTitlePortal }}
-        &nbsp;<!-- 'placeholder' to reserve vertical space for async-loaded programTitlePortal -->
-      </ion-note>
-    </ion-col>
-    <ion-col class="ion-text-end">
-      <app-user-state></app-user-state>
-    </ion-col>
-  </ion-row>
-  <ion-row class="ion-align-items-center">
-    <ion-col size="auto">
-      <ion-button
-        [routerLink]="['/program', programId, 'dashboard']"
-        routerLinkActive
-        #rlaDashboard="routerLinkActive"
-        [fill]=" rlaDashboard.isActive ? 'solid' : 'outline'"
-        size="small"
-      >
-        {{ 'header.dashboard'|translate }}
-      </ion-button>
-      <ion-button
-        *ngIf="showManageAidWorkers"
-        [disabled]="!canManageAidWorkers()"
-        [routerLink]="['/program', programId, 'aid-workers']"
-        routerLinkActive
-        #rlaAidWorkers="routerLinkActive"
-        [fill]=" rlaAidWorkers.isActive ? 'solid' : 'outline'"
-        size="small"
-      >
-        {{ 'header.aid-workers'|translate }}
-      </ion-button>
-    </ion-col>
-    <ion-col size="auto">
-      {{ 'header.phases'|translate }}:
-    </ion-col>
-    <ion-col class="horizontal-scroll-container">
-      <div class="ion-text-nowrap">
-        <app-phase-navigation
-          [programId]="programId"
-        ></app-phase-navigation>
-      </div>
-    </ion-col>
-  </ion-row>
-</ion-grid>
+<ion-header>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="1">
+        <ion-button
+          [title]="'header.help'|translate"
+          [attr.aria-label]="'header.help'|translate"
+          routerLink="/help"
+          fill="clear"
+          size="small"
+          color="medium"
+          *ngIf="showHelp"
+        >
+          <ion-icon name="help" slot="icon-only"></ion-icon>
+        </ion-button>
+        <ion-button
+          [title]="'header.home'|translate"
+          [attr.aria-label]="'header.home'|translate"
+          routerLink="/home"
+          fill="clear"
+          size="small"
+          color="medium"
+          *ngIf="showHome"
+        >
+          <ion-icon name="home" slot="icon-only"></ion-icon>
+        </ion-button>
+
+
+      </ion-col>
+      <ion-col size="4">
+        <h1 class="ion-no-margin">
+          {{ title }}
+        </h1>
+        <ion-note *ngIf="subtitle">
+          {{ subtitle }}
+          &nbsp;<!-- 'placeholder' to reserve vertical space for async-loaded programTitlePortal -->
+        </ion-note>
+      </ion-col>
+      <ion-col size="2">
+        <ion-row class="ion-justify-content-center">
+          <div id="logo-container">
+            <img src="./assets/img/121-logo.png" alt="121">
+          </div>
+        </ion-row>
+      </ion-col>
+      <ion-col size="5" class="ion-text-end">
+        <app-user-state></app-user-state>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-header>

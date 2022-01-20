@@ -39,14 +39,14 @@ function deploy(target) {
  * Check whether to deploy/ignore a release
  * @param {string} target
  */
-function isMinorUpgrade(target) {
+function isPatchUpgrade(target) {
   const currentVersion = fs.readFileSync(
     `${process.env.GLOBAL_121_WEB_ROOT}/VERSION.txt`,
     { encoding: 'utf-8' },
   );
   const currentMinorVersion = currentVersion.replace(
     /v(\d+)\.(\d+)\.([\S\s]*)/,
-    'v$1.',
+    'v$1.$2.',
   );
 
   return target.includes(currentMinorVersion);
@@ -170,7 +170,7 @@ http
         payload.release.draft === false &&
         payload.release.target_commitish &&
         (!!process.env.DEPLOY_PATCH
-          ? isMinorUpgrade(payload.release.target_commitish)
+          ? isPatchUpgrade(payload.release.target_commitish)
           : true)
       ) {
         console.log(

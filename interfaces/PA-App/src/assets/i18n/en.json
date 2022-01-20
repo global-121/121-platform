@@ -17,7 +17,7 @@
   "personal": {
     "consent-question": {
       "agree": "I agree",
-      "answer": "I have read/listened to how my personal information will be stored securely. I understand that it is required to send my personal information to receive cash aid.   <br><br>   I understand who sees my personal information.   <br><br>   By tapping &quot;<b>I agree</b>&quot; I choose to participate in the aid program.   <br><br>   By tapping &quot;<b>I disagree</b>&quot; I choose not to participate in the aid program.",
+      "answer": "I have read/listened to how my personal information will be stored securely. I understand that it is required to send my personal information to receive a digital voucher.   <br><br>   I understand who sees my personal information.   <br><br>   By tapping &quot;<b>I agree</b>&quot; I choose to participate in the aid program.   <br><br>   By tapping &quot;<b>I disagree</b>&quot; I choose not to participate in the aid program.",
       "disagree": "I disagree",
       "more-info-personal-information": "About personal information",
       "question": "To apply for this aid program you need to agree to <strong>how we secure your personal information.</strong><br /><br /> Please read or listen to how we secure your personal information."
@@ -64,7 +64,7 @@
     },
     "registration-summary": {
       "documents": "Make sure to have these documents ready:",
-      "no-validation-conclusion": "Thank you. Your registration is now complete.   <br><br>   You should receive an SMS/WhatsApp on the provided phone number shortly that confirms your registration.   <br><br>   You will be informed if your application has been successful within 14 days.   <br><br>   This is the final message for now.",
+      "no-validation-conclusion": "Thank you. Your registration is now complete.   <br><br>   You should receive an SMS/WhatsApp on the provided phone number shortly that confirms your registration.   <br><br>   You will be informed if your application has been successful within 7 days.   <br><br>   This is the final message for now.",
       "qr-code": "Please show this QR-code to the aidworker when asked.",
       "validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS/WhatsApp on the phone number you provided. This SMS/WhatsApp confirms your registration.<br><br>In the following weeks, an Aid Worker from the organisation might reach out to you to organise a meeting to validate the information you provided. The Aid Worker will come to you for this meeting."
     },

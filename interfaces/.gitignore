@@ -18,9 +18,11 @@ www/
 *.js.map
 coverage/
 
+# IDE / Editor configurations
+.vscode/*
+!.vscode/settings.json
 
 # IDE-specific files
 *.sublime-project
 *.sublime-workspace
-.vscode/
 .idea/

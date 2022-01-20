@@ -63,7 +63,7 @@
     },
     "registration-summary": {
       "documents": "Houd deze documenten gereed:",
-      "no-validation-conclusion": "Bedankt. Je inschrijving is nu compleet. <br><br> Je ontvangt binnenkort een SMS/WhatsApp op het door jou ingevulde nummer om je inschrijving te bevestigen. <br><br> Je wordt binnen 14 dagen geïnformeerd of je toelating succesvol is. <br><br> Dit is voor nu het laatste bericht. ",
+      "no-validation-conclusion": "Bedankt. Je inschrijving is nu compleet. <br><br> Je ontvangt binnenkort een SMS/WhatsApp op het door jou ingevulde nummer om je inschrijving te bevestigen. <br><br> Je wordt binnen 7 dagen geïnformeerd of je toelating succesvol is. <br><br> Dit is voor nu het laatste bericht. ",
       "qr-code": "Toon de QR-code aan de medewerker wanneer deze daar om vraagt.",
       "validation-conclusion": "Bedankt. Je registratie is nu compleet. Je ontvangt binnenkort een SMS/WhatsApp op het door jou ingevulde nummer om je registratie te bevestigen. <br><br> Een medewerker van de NGO zal met jou een afspraak maken om je informatie te bevestigen, waarschijnlijk door je thuis te bezoeken."
     },

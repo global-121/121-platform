@@ -16,10 +16,13 @@
 </ion-header>
 
 <ion-content
-  color="light"
   class="ion-padding"
 >
-  <section>
+  <h2 class="text-bold">{{ person?.name }}</h2>
+  <section class="ion-padding-bottom">
+    <strong>{{ 'page.program.program-people-affected.column.status'|translate }}:</strong> {{'page.program.program-people-affected.status.' + person?.status | translate }}
+  </section>
+  <section style="max-width: 80%;" class="ion-margin-top">
     <div>
 
       <app-update-property-item
@@ -48,6 +51,7 @@
         [inProgress]="inProgress?.phoneNumber || false"
         class="ion-margin-vertical"
       ></app-update-property-item>
+
       <app-update-property-item
         *ngIf="person.whatsappPhoneNumber"
         type="tel"
@@ -58,18 +62,19 @@
         [inProgress]="inProgress?.whatsappPhoneNumber || false"
         class="ion-margin-vertical"
       ></app-update-property-item>
+
       <app-update-fsp
         *ngIf="fspList.length === programFspLength && person?.fsp"
         [fspList]="fspList"
         [label]="'page.program.program-people-affected.column.fsp'|translate"
         [value]="person?.fsp"
         [referenceId]="person?.referenceId"
+        class="ion-margin-vertical"
       ></app-update-fsp>
     </div>
   </section>
-  <hr />
-  <section>
-    <h4>
+  <section class="ion-margin-bottom">
+    <h4 class="text-bold">
       {{ 'page.program.program-people-affected.edit-person-affected-popup.note.section-title'|translate }}
     </h4>
     <p>
@@ -86,11 +91,18 @@
       [placeholder]="'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'|translate"
       style="font-family: monospace; border: 1px solid currentColor; height:150px"
     ></ion-textarea>
-    <ion-row class="ion-align-items-center">
+    <ion-row class="ion-align-items-center ion-justify-content-between">
+      <ion-note *ngIf="noteLastUpdate">
+        {{ 'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'|translate:{
+            timestamp: noteLastUpdate|date:"yyyy-MM-dd, HH:mm"
+          } }}
+      </ion-note>
+      <div class="ml-auto">
       <ion-button
         (click)="saveNote()"
         [disabled]="inProgress?.note || false"
-        class="ion-margin-end"
+        class="text-bold ion-text-uppercase"
+        fill=clear
       >
         {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}
       </ion-button>
@@ -99,15 +111,11 @@
         color="primary"
         size="small"
       ></ion-spinner>
-      <ion-note *ngIf="noteLastUpdate">
-        {{ 'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'|translate:{
-            timestamp: noteLastUpdate|date:"yyyy-MM-dd, HH:mm"
-          } }}
-      </ion-note>
+    </div>
     </ion-row>
   </section>
-  <section *ngIf="messageHistory">
-    <h4> {{ 'page.program.program-people-affected.edit-person-affected-popup.messageHistory.section-title'|translate }}</h4>
+  <section *ngIf="messageHistory" class="ion-padding-top">
+    <h4 class="text-bold"> {{ 'page.program.program-people-affected.edit-person-affected-popup.messageHistory.section-title'|translate }}</h4>
 
     <ion-list>
       <ion-item

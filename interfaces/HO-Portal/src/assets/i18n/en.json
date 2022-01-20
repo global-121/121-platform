@@ -1,6 +1,7 @@
 {
   "header": {
     "home": "Home",
+    "help": "Help",
     "dashboard": "Dashboard",
     "aid-workers": "Aid-workers",
     "phases": "Phases",
@@ -266,13 +267,13 @@
         },
         "language": {
           "en": "English",
-          "amET": "Amharic",
+          "am_ET": "Amharic",
           "ar": "Arabic",
           "ti": "Tigrinya",
           "tl": "Tagalog",
-          "ptBR": "Portuguese",
-          "tuvKE": "Turkana",
-          "saqKE": "Samburu",
+          "pt_BR": "Portuguese",
+          "tuv_KE": "Turkana",
+          "saq_KE": "Samburu",
           "in": "Indonesian",
           "nl": "Dutch",
           "es": "Spanish"
@@ -483,6 +484,7 @@
   },
   "common": {
     "update": "Update",
+    "save": "Save",
     "confirm": "Are you sure?",
     "confirm-message-label": "The message needs to be longer than {{minLength}} characters.",
     "cancel": "Cancel",
