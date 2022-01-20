@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
 import { JwtService } from '../services/jwt.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { UserRole } from './user-role.enum';
+import Permission from './permission.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +33,18 @@ export class AuthService {
     return this.getUserFromToken() !== null;
   }
 
+  public hasPermission(requiredPermission: Permission, user?: User): boolean {
+    if (!user) {
+      user = this.getUserFromToken();
+    }
+    return user.permissions && user.permissions.includes(requiredPermission);
+  }
+
+  public hasAllPermissions(requiredPermissions: Permission[]): boolean {
+    const user = this.getUserFromToken();
+    return requiredPermissions.every((p) => this.hasPermission(p, user));
+  }
+
   private getUserFromToken(): User | null {
     const rawToken = this.jwtService.getToken();
 
@@ -44,29 +56,20 @@ export class AuthService {
 
     try {
       user = this.jwtService.decodeToken(rawToken);
-
-      // Upgrade existing user to new roles
-      if (!user.roles && user.role && user.role === 'aidworker') {
-        user.roles = [UserRole.FieldValidation];
-      }
     } catch {
       console.warn('AuthService: Invalid token');
       return null;
     }
 
-    if (!user || !this.isAllowedUser(user)) {
+    if (!user || !user.permissions) {
       console.warn('AuthService: No valid user');
       return null;
     }
 
     return {
       username: user.username,
-      roles: user.roles,
+      permissions: user.permissions,
     };
-  }
-
-  private isAllowedUser(user: User): boolean {
-    return user.roles && user.roles.includes(UserRole.FieldValidation);
   }
 
   public async login(email: string, password: string): Promise<any> {

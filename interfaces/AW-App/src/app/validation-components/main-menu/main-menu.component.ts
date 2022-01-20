@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthService } from 'src/app/auth/auth.service';
+import Permission from 'src/app/auth/permission.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { NoConnectionService } from 'src/app/services/no-connection.service';
@@ -26,6 +28,7 @@ export class MainMenuComponent implements ValidationComponent {
     public router: Router,
     private storage: Storage,
     private noConnectionService: NoConnectionService,
+    private authService: AuthService,
   ) {}
 
   async ngOnInit() {
@@ -46,7 +49,7 @@ export class MainMenuComponent implements ValidationComponent {
       {
         id: ValidationComponents.findByPhone,
         option: this.translate.instant('validation.main-menu.find-by-phone'),
-        disabled: false,
+        disabled: !this.hasPermissionForFindByPhone(),
         connectionRequired: false,
       },
       {
@@ -57,6 +60,13 @@ export class MainMenuComponent implements ValidationComponent {
         connectionRequired: true,
       },
     ];
+  }
+
+  private hasPermissionForFindByPhone(): boolean {
+    return this.authService.hasAllPermissions([
+      Permission.RegistrationPersonalSEARCH,
+      Permission.RegistrationPersonalForValidationREAD,
+    ]);
   }
 
   private async getPendingUploadCount(): Promise<number> {
