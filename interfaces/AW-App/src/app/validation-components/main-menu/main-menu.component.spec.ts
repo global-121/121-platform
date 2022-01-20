@@ -15,6 +15,12 @@ describe('MainMenuComponent', () => {
   let component: MainMenuComponent;
   let fixture: ComponentFixture<MainMenuComponent>;
 
+  const authServiceMock = jasmine.createSpyObj('AuthService', {
+    isLoggedIn: () => true,
+    hasAllPermissions: () => true,
+    hasPermission: () => true,
+  });
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MainMenuComponent],
@@ -29,7 +35,10 @@ describe('MainMenuComponent', () => {
           provide: Storage,
           useValue: storageIonicMock,
         },
-        { provide: AuthService },
+        {
+          provide: AuthService,
+          useValue: authServiceMock,
+        },
       ],
     }).compileComponents();
   }));

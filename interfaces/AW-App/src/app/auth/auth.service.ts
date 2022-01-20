@@ -33,11 +33,16 @@ export class AuthService {
     return this.getUserFromToken() !== null;
   }
 
-  public hasPermission(requiredPermission: Permission, user?: User): boolean {
+  public hasPermission(
+    requiredPermission: Permission,
+    user?: User | null,
+  ): boolean {
     if (!user) {
       user = this.getUserFromToken();
     }
-    return user.permissions && user.permissions.includes(requiredPermission);
+    return (
+      user && user.permissions && user.permissions.includes(requiredPermission)
+    );
   }
 
   public hasAllPermissions(requiredPermissions: Permission[]): boolean {
