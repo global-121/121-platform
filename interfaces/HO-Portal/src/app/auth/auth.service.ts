@@ -46,6 +46,18 @@ export class AuthService {
     });
   }
 
+  public hasPermission(requiredPermission: Permission, user?: User): boolean {
+    if (!user) {
+      user = this.getUserFromToken();
+    }
+    return user.permissions && user.permissions.includes(requiredPermission);
+  }
+
+  public hasAllPermissions(requiredPermissions: Permission[]): boolean {
+    const user = this.getUserFromToken();
+    return requiredPermissions.every((p) => this.hasPermission(p, user));
+  }
+
   private getUserFromToken(): User | null {
     const rawToken = this.jwtService.getToken();
 

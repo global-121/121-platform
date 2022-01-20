@@ -24,12 +24,25 @@ export class AuthGuard implements CanActivate {
   }
 
   checkLogin(url: string, route: ActivatedRouteSnapshot): boolean {
-    // If no specific role is required, only require a valid login
-    if (!route.data.roles && this.authService.isLoggedIn()) {
+    // If no specific role/permission is required, only require a valid login
+    if (
+      !route.data.roles &&
+      !route.data.permissions &&
+      this.authService.isLoggedIn()
+    ) {
       return true;
     }
 
-    if (route.data.roles && this.authService.hasUserRole(route.data.roles)) {
+    if (
+      route.data.permissions &&
+      this.authService.hasAllPermissions(route.data.permissions)
+    ) {
+      return true;
+    } else if (
+      // Keep roles-check as fallback
+      route.data.roles &&
+      this.authService.hasUserRole(route.data.roles)
+    ) {
       return true;
     }
 
