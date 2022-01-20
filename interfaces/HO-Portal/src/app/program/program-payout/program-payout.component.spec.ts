@@ -37,7 +37,7 @@ describe('ProgramPayoutComponent', () => {
 
   beforeEach(() => {
     mockAuthService = TestBed.inject(AuthService);
-    mockAuthService.hasUserRole.and.returnValue(true);
+    mockAuthService.hasAllPermissions.and.returnValue(true);
 
     mockProgramsApi = TestBed.inject(ProgramsServiceApiService);
     mockProgramsApi.getProgramById.and.returnValue(
