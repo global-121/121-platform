@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
 import { JwtService } from '../services/jwt.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import Permission from './permission.enum';
 import { UserRole } from './user-role.enum';
 
 @Injectable({
@@ -61,12 +62,7 @@ export class AuthService {
       return null;
     }
 
-    if (
-      !user ||
-      !user.username ||
-      !user.roles ||
-      (user.roles.length === 1 && user.roles.includes(UserRole.FieldValidation))
-    ) {
+    if (!user || !user.username || !user.permissions) {
       console.warn('AuthService: No valid user');
       return null;
     }
@@ -74,6 +70,7 @@ export class AuthService {
     return {
       username: user.username,
       roles: user.roles,
+      permissions: user.permissions,
     };
   }
 

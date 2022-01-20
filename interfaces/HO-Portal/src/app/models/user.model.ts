@@ -1,3 +1,4 @@
+import Permission from '../auth/permission.enum';
 import { UserRole } from '../auth/user-role.enum';
 
 export class UserModel {
@@ -7,5 +8,6 @@ export class UserModel {
 export class User {
   token?: string;
   username: string;
-  roles: UserRole[] | any; // During transition, use 'any'
+  roles?: UserRole[];
+  permissions: Permission[];
 }
