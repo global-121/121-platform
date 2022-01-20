@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
+import Permission from 'src/app/auth/permission.enum';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -19,7 +19,7 @@ export class HeaderComponent implements OnInit {
   private program: Program;
   public programTitlePortal: string;
 
-  public showManageAidworkers: boolean;
+  public showManageAidWorkers: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,7 +32,7 @@ export class HeaderComponent implements OnInit {
 
   public async ngOnInit() {
     await this.loadProgramDetails();
-    this.showManageAidworkers = !!this.program.validation;
+    this.showManageAidWorkers = this.program.validation;
   }
 
   private async loadProgramDetails() {
@@ -43,6 +43,10 @@ export class HeaderComponent implements OnInit {
   }
 
   public canManageAidWorkers(): boolean {
-    return this.authService.hasUserRole([UserRole.RunProgram]);
+    return this.authService.hasAllPermissions([
+      Permission.AidWorkerCREATE,
+      Permission.AidWorkerDELETE,
+      Permission.AidWorkerProgramUPDATE,
+    ]);
   }
 }
