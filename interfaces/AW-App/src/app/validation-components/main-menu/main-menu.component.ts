@@ -37,7 +37,7 @@ export class MainMenuComponent implements ValidationComponent {
       {
         id: ValidationComponents.downloadData,
         option: this.translate.instant('validation.main-menu.download-data'),
-        disabled: false,
+        disabled: !this.hasPermissionForDownloadData(),
         connectionRequired: true,
       },
       {
@@ -60,6 +60,12 @@ export class MainMenuComponent implements ValidationComponent {
         connectionRequired: true,
       },
     ];
+  }
+
+  private hasPermissionForDownloadData(): boolean {
+    return this.authService.hasAllPermissions([
+      Permission.RegistrationPersonalForValidationREAD,
+    ]);
   }
 
   private hasPermissionForScanQr(): boolean {
