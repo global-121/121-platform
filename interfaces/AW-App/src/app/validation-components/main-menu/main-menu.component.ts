@@ -56,7 +56,7 @@ export class MainMenuComponent implements ValidationComponent {
         id: ValidationComponents.uploadData,
         option: this.translate.instant('validation.main-menu.upload-data'),
         counter: pendingUploadCount,
-        disabled: !pendingUploadCount,
+        disabled: !pendingUploadCount && !this.hasPermissionForUploadData(),
         connectionRequired: true,
       },
     ];
@@ -79,6 +79,12 @@ export class MainMenuComponent implements ValidationComponent {
     return this.authService.hasAllPermissions([
       Permission.RegistrationPersonalSEARCH,
       Permission.RegistrationPersonalForValidationREAD,
+    ]);
+  }
+
+  private hasPermissionForUploadData(): boolean {
+    return this.authService.hasAllPermissions([
+      Permission.RegistrationPersonalUPDATE,
     ]);
   }
 
