@@ -43,7 +43,7 @@ export class MainMenuComponent implements ValidationComponent {
       {
         id: ValidationComponents.scanQr,
         option: this.translate.instant('validation.main-menu.scan-qr'),
-        disabled: false,
+        disabled: !this.hasPermissionForScanQr(),
         connectionRequired: false,
       },
       {
@@ -60,6 +60,13 @@ export class MainMenuComponent implements ValidationComponent {
         connectionRequired: true,
       },
     ];
+  }
+
+  private hasPermissionForScanQr(): boolean {
+    return this.authService.hasAllPermissions([
+      Permission.RegistrationReferenceIdSEARCH,
+      Permission.RegistrationPersonalForValidationREAD,
+    ]);
   }
 
   private hasPermissionForFindByPhone(): boolean {
