@@ -37,6 +37,7 @@ export class ProgramController {
     return await this.programService.findOne(Number(params.programId));
   }
 
+  @Permissions(PermissionEnum.ProgramAllREAD)
   @ApiOperation({ title: 'Get all programs' })
   @ApiResponse({ status: 200, description: 'Return all programs.' })
   @Get()
