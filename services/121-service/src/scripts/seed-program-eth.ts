@@ -181,8 +181,8 @@ export class SeedProgramEth implements InterfaceScript {
         ],
       },
       {
-        role: 'operation-management',
-        label: 'Operation Management',
+        role: 'manager-of-operations',
+        label: 'Manager of Operations',
         permissions: [
           // Listing all permissions here to show which are not assigned (commented):
           PermissionEnum.InstanceUPDATE,
@@ -200,6 +200,49 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.RegistrationCREATE, // No importing
           PermissionEnum.RegistrationDELETE,
           // PermissionEnum.RegistrationAttributeUPDATE, // No editing from PA popup
+          // PermissionEnum.RegistrationReferenceIdSEARCH, // Needed for AW-app
+          PermissionEnum.RegistrationFspREAD,
+          PermissionEnum.RegistrationFspUPDATE,
+          PermissionEnum.RegistratonNotificationREAD,
+          // PermissionEnum.RegistratonNotificationCREATE, // No sending messages
+          PermissionEnum.RegistrationPersonalREAD,
+          // PermissionEnum.RegistrationPersonalForValidationREAD, // Needed for AW-app
+          PermissionEnum.RegistrationPersonalEXPORT,
+          PermissionEnum.RegistrationPersonalSEARCH,
+          // PermissionEnum.RegistrationPersonalUPDATE,
+          // PermissionEnum.RegistrationStatusSelectedForValidationUPDATE, // assuming all PA status updates not allowed
+          // PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,
+          // PermissionEnum.RegistrationStatusIncludedUPDATE,
+          // PermissionEnum.RegistrationStatusRejectedUPDATE,
+          // PermissionEnum.RegistrationStatusInclusionEndedUPDATE,
+          // PermissionEnum.RegistrationStatusInvitedUPDATE,
+          PermissionEnum.RegistrationImportTemplateREAD,
+          PermissionEnum.ActionREAD,
+          PermissionEnum.ActionCREATE,
+          // PermissionEnum.AidWorkerCREATE, // No aidworker management
+          // PermissionEnum.AidWorkerDELETE,
+          // PermissionEnum.AidWorkerProgramUPDATE,
+        ],
+      },
+      {
+        role: 'manager-of-programme-quality',
+        label: 'Manager of Programme Quality',
+        permissions: [
+          // Listing all permissions of 'administratorZOA' role here to show which are not assigned (commented):
+          PermissionEnum.InstanceUPDATE,
+          PermissionEnum.ProgramUPDATE,
+          // PermissionEnum.ProgramPhaseUPDATE, // 'Open registration' not allowed, so no phase updates allowed
+          PermissionEnum.ProgramQuestionUPDATE,
+          PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.FspUPDATE,
+          PermissionEnum.FspAttributeUPDATE,
+          PermissionEnum.PaymentREAD,
+          PermissionEnum.PaymentCREATE,
+          PermissionEnum.PaymentTransactionREAD,
+          PermissionEnum.RegistrationREAD,
+          // PermissionEnum.RegistrationCREATE, // No importing
+          PermissionEnum.RegistrationDELETE,
+          PermissionEnum.RegistrationAttributeUPDATE, // No editing from PA popup // But can edit from AW
           PermissionEnum.RegistrationReferenceIdSEARCH,
           PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE,
@@ -292,13 +335,22 @@ export class SeedProgramEth implements InterfaceScript {
       ['programme-management'],
     );
     const operationManagementUser = await this.seedHelper.addUser({
-      username: 'operation-management-user@example.org',
+      username: 'manager-of-operations-user@example.org',
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
     await this.seedHelper.assignAidworker(
       operationManagementUser.id,
       program.id,
-      ['operation-management'],
+      ['manager-of-operations'],
+    );
+    const managerOfProgramQualiyUser = await this.seedHelper.addUser({
+      username: 'manager-of-programme-quality-user@example.org',
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
+    });
+    await this.seedHelper.assignAidworker(
+      managerOfProgramQualiyUser.id,
+      program.id,
+      ['manager-of-programme-quality'],
     );
     const projectOfficerUser = await this.seedHelper.addUser({
       username: 'project-officer-user@example.org',
