@@ -2,12 +2,14 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AuthService } from 'src/app/auth/auth.service';
+import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramPhase } from 'src/app/models/program.model';
 import {
   Phase,
   ProgramPhaseService,
 } from 'src/app/services/program-phase.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PhaseNextComponent } from './phase-next.component';
 
 describe('PhaseNextComponent', () => {
@@ -30,16 +32,24 @@ describe('PhaseNextComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         provideMagicalMock(AuthService),
+        provideMagicalMock(ProgramsServiceApiService),
         provideMagicalMock(ProgramPhaseService),
       ],
     }).compileComponents();
   }));
 
   let mockAuthService: jasmine.SpyObj<any>;
+  let mockProgramsApi: jasmine.SpyObj<any>;
   let mockProgramPhaseService: jasmine.SpyObj<any>;
+
   beforeEach(() => {
     mockAuthService = TestBed.inject(AuthService);
     mockAuthService.hasUserRole.and.returnValue(true);
+
+    mockProgramsApi = TestBed.inject(ProgramsServiceApiService);
+    mockProgramsApi.getProgramById.and.returnValue(
+      new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
+    );
 
     mockProgramPhaseService = TestBed.inject(ProgramPhaseService);
     mockProgramPhaseService.getPhases.and.returnValue(

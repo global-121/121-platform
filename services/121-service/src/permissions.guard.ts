@@ -61,8 +61,8 @@ export class PermissionsGuard implements CanActivate {
     userPermissions: PermissionEnum[],
     endpointPermissions: PermissionEnum[],
   ): Promise<boolean> {
-    const overlappingPermissions = userPermissions.filter(role =>
-      endpointPermissions.includes(role),
+    const overlappingPermissions = userPermissions.filter(permission =>
+      endpointPermissions.includes(permission),
     );
     return overlappingPermissions.length > 0;
   }
