@@ -60,7 +60,10 @@ export class AuthService {
 
   public hasAllPermissions(requiredPermissions: Permission[]): boolean {
     const user = this.getUserFromToken();
-    return requiredPermissions.every((p) => this.hasPermission(p, user));
+    return (
+      !!requiredPermissions &&
+      requiredPermissions.every((p) => this.hasPermission(p, user))
+    );
   }
 
   private getUserFromToken(): User | null {
