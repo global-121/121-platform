@@ -202,7 +202,6 @@
         "validationByQr": "Program includes validation via QR-code"
       },
       "program-payout": {
-        "section-title": "Manage Payments",
         "payment-nr": "Payment #{{number}}",
         "choose-payment": "Choose payment...",
         "all-closed-payments": "All closed payments",
@@ -234,7 +233,6 @@
         }
       },
       "program-people-affected": {
-        "section-title": "Manage People Affected",
         "choose-action": "Choose action...",
         "no-actions": "No actions available",
         "apply-action": "Apply action",
