@@ -17,6 +17,7 @@
           <option
             *ngIf="action.enabled"
             [value]="action.id"
+            [disabled]="action.id === BulkActionEnum.divider"
           >{{ action.label }}</option>
         </ng-container>
       </select>

@@ -72,6 +72,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public emptySeparatorWidth = 40;
 
   public action: BulkActionId = BulkActionId.chooseAction;
+  public BulkActionEnum = BulkActionId;
   public bulkActions: BulkAction[] = [
     {
       id: BulkActionId.invite,
@@ -236,6 +237,14 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       ),
       roles: [UserRole.RunProgram, UserRole.PersonalData],
       phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: true,
+    },
+    {
+      id: BulkActionId.divider,
+      enabled: false,
+      label: '-------------------------------',
+      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      phases: [ProgramPhase.payment],
       showIfNoValidation: true,
     },
   ];
