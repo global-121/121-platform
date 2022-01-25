@@ -85,6 +85,7 @@ export class MainMenuComponent implements ValidationComponent {
   private hasPermissionForUploadData(): boolean {
     return this.authService.hasAllPermissions([
       Permission.RegistrationPersonalUPDATE,
+      Permission.RegistrationAttributeUPDATE,
     ]);
   }
 
