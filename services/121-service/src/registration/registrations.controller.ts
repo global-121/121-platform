@@ -332,7 +332,7 @@ export class RegistrationsController {
     );
   }
 
-  @Permissions(PermissionEnum.RegistrationStatusRejectedUPDATE)
+  @Permissions(PermissionEnum.RegistrationStatusInclusionEndedUPDATE)
   @ApiOperation({ title: 'End inclusion of set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('end/:programId')
