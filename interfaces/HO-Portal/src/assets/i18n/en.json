@@ -229,7 +229,7 @@
           "error": {
             "generic": "Something went wrong with the payment. Please contact the 121 development team."
           },
-          "make-payment": "New payment: {{nr}}",
+          "make-payment": "Do payment: {{nr}}",
           "number-included": "PA included: {{number}}"
         }
       },
