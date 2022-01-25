@@ -41,7 +41,6 @@ export class PermissionsGuard implements CanActivate {
       );
 
       if (decoded.permissions) {
-        console.log('decoded.permissions: ', decoded.permissions);
         hasAccess = await this.aidworkerCanActivate(
           decoded.permissions,
           endpointPermissions,
