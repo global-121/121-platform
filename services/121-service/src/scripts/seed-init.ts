@@ -58,6 +58,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.ProgramCREATE,
           PermissionEnum.ProgramUPDATE,
           PermissionEnum.ProgramAllREAD,
+          PermissionEnum.ProgramPhaseUPDATE,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentCREATE,
