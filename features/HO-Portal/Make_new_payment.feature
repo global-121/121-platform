@@ -5,14 +5,15 @@ Feature: Make a new payment
     Given a logged-in user with the "run program" role
     And the user views the "payment" page
 
-  Scenario: No PA included
-    Given a new payment is possible on the program
-    When the number of "PA included" is "0"
-    Then the "start payout now" button is disabled
-
   Scenario: Show total amount
     Given a new payment is possible on the program
-    And the number of "PA included" is more then "0"
+    Given the number of "PA included" is more then "0"
+    Given the generic "select bulk action" scenario (see Manage_people_affected.feature)
+    When the user selects the "Do payment" action
+    Then a "row checkbox" appears in the "select" column for eligible rows
+    When the user selects 1 or more PA's
+    Then the "apply action" button is enabled
+    And the pop-up "Do payment" is shown
     And the "Transfer Value" is filled in with the program's default value
     When the user clicks the button "start payout now"
     Then the pop-up "Are you sure?" is shown
@@ -21,6 +22,7 @@ Feature: Make a new payment
     And this total amount reflects that some PAs may receive more than the supplied "Transfer Value" because of a "paymentAmountMultiplier" greater than 1
 
   Scenario: Send payment instructions with changed transfer value
+    Given the "Do payment" prompt is open
     Given the user changes the Transfer value to "20"
     And the user clicks the button "start payout now"
     And the pop-up "Are you sure?" is shown
@@ -31,6 +33,8 @@ Feature: Make a new payment
 
   Scenario: Send payment instructions for small amount of PAs with at least 1 successful transaction
     Given this is not the last payment for the program
+    And the user selects the "Do payment" action
+    And the user clicks the button "apply action"
     And the user clicks the button "start payout now"
     And the pop-up "Are you sure?" is shown
     When the user clicks the button "OK"
@@ -40,13 +44,6 @@ Feature: Make a new payment
     And it shows an "OK" button
     When the users presses "OK"
     Then the page refreshes
-    And the "payout" button  is now disabled
-    And it mentions that a payout is in progress
-    And it shows a refresh icon
-    When the user clicks the refresh icon (and the payment has indeed finished)
-    Then the payout-in-progress message is gone
-    And the "payout" button for the next payment is enabled again
-    And the "new payment" component now shows the number of the next payment
     And the "export payment data" component now shows that the payment is "closed"
     And the "export payment data" component now has the next payment enabled
     And the "PA-table" now has the payment column filled for every PA
