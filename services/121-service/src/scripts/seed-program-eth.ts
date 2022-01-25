@@ -51,6 +51,7 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.InstanceUPDATE,
           // PermissionEnum.ProgramCREATE, // Admin-only
           PermissionEnum.ProgramUPDATE,
+          PermissionEnum.ProgramAllREAD,
           PermissionEnum.ProgramPhaseUPDATE,
           // PermissionEnum.ProgramQuestionUPDATE, // Admin-only
           PermissionEnum.ProgramMetricsREAD,
@@ -95,9 +96,10 @@ export class SeedProgramEth implements InterfaceScript {
         role: 'project-management',
         label: 'Project Management',
         permissions: [
-          // Listing all permissions of 'administratorZOA' role here to show which are not assigned (commented):
+          // Listing all permissions here to show which are not assigned (commented):
           PermissionEnum.InstanceUPDATE,
           PermissionEnum.ProgramUPDATE,
+          PermissionEnum.ProgramAllREAD,
           PermissionEnum.ProgramPhaseUPDATE,
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
@@ -138,9 +140,10 @@ export class SeedProgramEth implements InterfaceScript {
         role: 'programme-management',
         label: 'Programme Management',
         permissions: [
-          // Listing all permissions of 'administratorZOA' role here to show which are not assigned (commented):
+          // Listing all permissions here to show which are not assigned (commented):
           PermissionEnum.InstanceUPDATE,
           PermissionEnum.ProgramUPDATE,
+          PermissionEnum.ProgramAllREAD,
           PermissionEnum.ProgramPhaseUPDATE, // 'Open registration' is allowed, so all phase updates allowed
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
@@ -181,9 +184,10 @@ export class SeedProgramEth implements InterfaceScript {
         role: 'operation-management',
         label: 'Operation Management',
         permissions: [
-          // Listing all permissions of 'administratorZOA' role here to show which are not assigned (commented):
+          // Listing all permissions here to show which are not assigned (commented):
           PermissionEnum.InstanceUPDATE,
           PermissionEnum.ProgramUPDATE,
+          PermissionEnum.ProgramAllREAD,
           // PermissionEnum.ProgramPhaseUPDATE, // 'Open registration' not allowed, so no phase updates allowed
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
@@ -225,6 +229,7 @@ export class SeedProgramEth implements InterfaceScript {
         label: 'Project Officer',
         permissions: [
           // Assuming this is equal to Default View Role
+          PermissionEnum.ProgramAllREAD,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
