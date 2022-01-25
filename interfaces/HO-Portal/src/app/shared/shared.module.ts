@@ -13,6 +13,7 @@ import { SystemNotificationComponent } from '../components/system-notification/s
 import { UpdateFspComponent } from '../components/update-fsp/update-fsp.component';
 import { UpdatePropertyItemComponent } from '../components/update-property-item/update-property-item.component';
 import { UserStateComponent } from '../components/user-state/user-state.component';
+import { IfPermissionsDirective } from '../directives/if-permissions.directive';
 import { OnlyAllowedInputDirective } from '../directives/only-allowed-input.directive';
 import { BulkImportComponent } from '../program/bulk-import/bulk-import.component';
 import { DisableRegistrationComponent } from '../program/disable-registration/disable-registration.component';
@@ -40,20 +41,21 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     ExportListComponent,
     FilePickerPromptComponent,
     HeaderComponent,
+    IfPermissionsDirective,
     InputPromptComponent,
     OnlyAllowedInputDirective,
     PasswordToggleInputComponent,
     PhaseNavigationComponent,
     PhaseNextComponent,
+    ProgramNavigationComponent,
     ProgramPeopleAffectedComponent,
     RefreshDataComponent,
+    SystemNotificationComponent,
     TestPaymentComponent,
     TooltipComponent,
     UpdateFspComponent,
     UpdatePropertyItemComponent,
     UserStateComponent,
-    SystemNotificationComponent,
-    ProgramNavigationComponent,
   ],
   imports: [
     CommonModule,
@@ -67,13 +69,14 @@ import { TooltipComponent } from './tooltip/tooltip.component';
   ],
   exports: [
     BulkImportComponent,
-    DisableRegistrationComponent,
     ConfirmPromptComponent,
+    DisableRegistrationComponent,
     EditPersonAffectedPopupComponent,
-    ExportListComponent,
     ExportFspInstructionsComponent,
+    ExportListComponent,
     FilePickerPromptComponent,
     HeaderComponent,
+    IfPermissionsDirective,
     InputPromptComponent,
     NgxChartsModule,
     NgxDatatableModule,
@@ -81,17 +84,17 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     PasswordToggleInputComponent,
     PhaseNavigationComponent,
     PhaseNextComponent,
+    ProgramNavigationComponent,
     ProgramPeopleAffectedComponent,
     RefreshDataComponent,
     RouterModule,
+    SystemNotificationComponent,
     TestPaymentComponent,
     TooltipComponent,
     TranslateModule,
-    UpdatePropertyItemComponent,
     UpdateFspComponent,
+    UpdatePropertyItemComponent,
     UserStateComponent,
-    SystemNotificationComponent,
-    ProgramNavigationComponent,
   ],
 })
 export class SharedModule {}
