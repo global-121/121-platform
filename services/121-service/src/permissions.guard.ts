@@ -41,6 +41,7 @@ export class PermissionsGuard implements CanActivate {
       );
 
       if (decoded.permissions) {
+        console.log('decoded.permissions: ', decoded.permissions);
         hasAccess = await this.aidworkerCanActivate(
           decoded.permissions,
           endpointPermissions,
@@ -61,8 +62,8 @@ export class PermissionsGuard implements CanActivate {
     userPermissions: PermissionEnum[],
     endpointPermissions: PermissionEnum[],
   ): Promise<boolean> {
-    const overlappingPermissions = userPermissions.filter(role =>
-      endpointPermissions.includes(role),
+    const overlappingPermissions = userPermissions.filter(permission =>
+      endpointPermissions.includes(permission),
     );
     return overlappingPermissions.length > 0;
   }
