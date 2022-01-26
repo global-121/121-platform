@@ -189,8 +189,7 @@ export class UserService {
     // if already assigned: add roles to program assignment
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === assignAidworkerToProgram.programId) {
-        const mergedRoles = this.mergeRoles(programAssignment.roles, newRoles);
-        programAssignment.roles = mergedRoles;
+        programAssignment.roles = newRoles;
         await this.assignmentRepository.save(programAssignment);
         return programAssignment.roles;
       }
@@ -203,19 +202,6 @@ export class UserService {
       roles: newRoles,
     });
     return newRoles;
-  }
-
-  private mergeRoles(
-    userRoleList1: UserRoleEntity[],
-    userRoleList2: UserRoleEntity[],
-  ): UserRoleEntity[] {
-    const rolesList1 = userRoleList1.map(ur => ur.role);
-    for (const userRole of userRoleList2) {
-      if (!rolesList1.includes(userRole.role)) {
-        userRoleList1.push(userRole);
-      }
-    }
-    return userRoleList1;
   }
 
   public async delete(userId: number): Promise<UserEntity> {
