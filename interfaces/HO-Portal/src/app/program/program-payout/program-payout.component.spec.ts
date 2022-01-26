@@ -43,7 +43,7 @@ describe('ProgramPayoutComponent', () => {
     mockProgramsApi.getProgramById.and.returnValue(
       new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
     );
-    mockProgramsApi.getTotalIncluded.and.returnValue(
+    mockProgramsApi.getTotalTransferAmounts.and.returnValue(
       new Promise((r) => r({ registrations: 0, transferAmounts: 0 })),
     );
     mockProgramsApi.getPastPayments.and.returnValue(new Promise((r) => r([])));

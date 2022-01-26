@@ -19,14 +19,17 @@ export class MakePaymentComponent implements OnInit {
   public programId: number;
 
   @Input()
-  public program: Program;
+  public payment: number;
+
+  @Input()
+  public referenceIds: string[];
 
   public isEnabled: boolean;
   public isInProgress: boolean;
 
+  public program: Program;
   public totalIncluded: number;
   public totalTransferAmounts: number;
-  public lastPaymentId: number;
   private fspIntegrationType: FspIntegrationType;
 
   public amountInput: number;
@@ -50,21 +53,19 @@ export class MakePaymentComponent implements OnInit {
   }
 
   async ngOnInit() {
-    if (!this.program) {
-      return;
-    }
+    this.program = await this.programsService.getProgramById(this.programId);
 
     await this.getFspIntegrationType();
 
     this.amountInput = this.program.fixedTransferValue;
-    const totalIncluded = await this.programsService.getTotalIncluded(
-      this.programId,
-    );
-    this.totalIncluded = totalIncluded.registrations;
-    this.totalTransferAmounts = totalIncluded.transferAmounts;
-    this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
-      this.programId,
-    );
+    const totalTransferAmounts =
+      await this.programsService.getTotalTransferAmounts(
+        this.programId,
+        this.referenceIds || [],
+      );
+
+    this.totalIncluded = totalTransferAmounts.registrations;
+    this.totalTransferAmounts = totalTransferAmounts.transferAmounts;
 
     this.paymentInProgress =
       await this.pastPaymentsService.checkPaymentInProgress(this.programId);
@@ -75,28 +76,21 @@ export class MakePaymentComponent implements OnInit {
   private checkIsEnabled(): boolean {
     this.isEnabled =
       this.totalIncluded > 0 &&
-      this.lastPaymentId < this.program.distributionDuration &&
+      this.payment <= this.program.distributionDuration &&
       !this.paymentInProgress;
     return this.isEnabled;
-  }
-
-  private async getNextPaymentId(): Promise<number> {
-    let previousId = 0;
-
-    if (this.lastPaymentId > 0) {
-      previousId = this.lastPaymentId;
-    }
-
-    return previousId + 1;
   }
 
   public async performPayment(): Promise<void> {
     this.isInProgress = true;
 
-    const nextPaymentId = await this.getNextPaymentId();
+    const paymentId =
+      this.payment ||
+      (await this.pastPaymentsService.getNextPaymentId(this.program));
+    const referenceIds = this.referenceIds.length ? this.referenceIds : null;
 
     await this.programsService
-      .submitPayout(this.programId, nextPaymentId, this.amountInput)
+      .submitPayout(this.programId, paymentId, this.amountInput, referenceIds)
       .then(
         (response) => this.onPaymentSuccess(response),
         (error) => this.onPaymentError(error),
