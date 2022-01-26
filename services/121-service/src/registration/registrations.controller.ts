@@ -504,7 +504,7 @@ export class RegistrationsController {
     );
   }
 
-  @Permissions(PermissionEnum.RegistratonNotificationCREATE)
+  @Permissions(PermissionEnum.RegistrationNotificationCREATE)
   @ApiOperation({
     title:
       'Send custom text-message (whatsapp or sms) to array of registrations',
@@ -519,7 +519,7 @@ export class RegistrationsController {
     );
   }
 
-  @Permissions(PermissionEnum.RegistratonNotificationREAD)
+  @Permissions(PermissionEnum.RegistrationNotificationREAD)
   @ApiOperation({ title: 'Get message history for one registration' })
   @Get('message-history/:referenceId')
   public async getMessageHistoryRegistration(

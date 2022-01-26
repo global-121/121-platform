@@ -70,8 +70,8 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationReferenceIdSEARCH,
           PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE, // Maybe N.A. to ZOA as only 1 FSP??
-          PermissionEnum.RegistratonNotificationREAD,
-          PermissionEnum.RegistratonNotificationCREATE,
+          PermissionEnum.RegistrationNotificationREAD,
+          PermissionEnum.RegistrationNotificationCREATE,
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationPersonalForValidationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
@@ -115,8 +115,8 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationReferenceIdSEARCH,
           PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE,
-          PermissionEnum.RegistratonNotificationREAD,
-          PermissionEnum.RegistratonNotificationCREATE,
+          PermissionEnum.RegistrationNotificationREAD,
+          PermissionEnum.RegistrationNotificationCREATE,
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationPersonalForValidationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
@@ -159,8 +159,8 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationReferenceIdSEARCH,
           PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE,
-          PermissionEnum.RegistratonNotificationREAD,
-          PermissionEnum.RegistratonNotificationCREATE,
+          PermissionEnum.RegistrationNotificationREAD,
+          PermissionEnum.RegistrationNotificationCREATE,
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationPersonalForValidationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
@@ -203,8 +203,8 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.RegistrationReferenceIdSEARCH, // Needed for AW-app
           PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE,
-          PermissionEnum.RegistratonNotificationREAD,
-          // PermissionEnum.RegistratonNotificationCREATE, // No sending messages
+          PermissionEnum.RegistrationNotificationREAD,
+          // PermissionEnum.RegistrationNotificationCREATE, // No sending messages
           PermissionEnum.RegistrationPersonalREAD,
           // PermissionEnum.RegistrationPersonalForValidationREAD, // Needed for AW-app
           PermissionEnum.RegistrationPersonalEXPORT,
@@ -246,8 +246,8 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationReferenceIdSEARCH,
           PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE,
-          PermissionEnum.RegistratonNotificationREAD,
-          // PermissionEnum.RegistratonNotificationCREATE, // No sending messages
+          PermissionEnum.RegistrationNotificationREAD,
+          // PermissionEnum.RegistrationNotificationCREATE, // No sending messages
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationPersonalForValidationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,

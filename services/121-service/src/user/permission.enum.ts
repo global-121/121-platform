@@ -56,8 +56,8 @@ export enum PermissionEnum {
   RegistrationFspREAD = 'registration:fsp.read',
   RegistrationFspUPDATE = 'registration:fsp.update',
 
-  RegistratonNotificationREAD = 'registration:notification.read',
-  RegistratonNotificationCREATE = 'registration:notification.create',
+  RegistrationNotificationREAD = 'registration:notification.read',
+  RegistrationNotificationCREATE = 'registration:notification.create',
 
   // Registration(s) - Personal
   // What is 'personal'?
