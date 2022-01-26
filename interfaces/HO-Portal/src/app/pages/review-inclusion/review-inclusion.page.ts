@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import Permission from 'src/app/auth/permission.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramPhase } from 'src/app/models/program.model';
 
@@ -9,6 +10,8 @@ import { ProgramPhase } from 'src/app/models/program.model';
   styleUrls: ['./review-inclusion.page.scss'],
 })
 export class ReviewInclusionPage implements OnInit {
+  public Permission = Permission;
+
   public programId = this.route.snapshot.params.id;
   public thisPhase = ProgramPhase.reviewInclusion;
   public isReady: boolean;
