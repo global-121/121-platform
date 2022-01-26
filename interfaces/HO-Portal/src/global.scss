@@ -29,14 +29,9 @@
 // Default styles for a 'styled' select:
 .styled-select {
   padding: 0.45em;
-  border: 2px solid var(--ion-color-tertiary);
-  background: var(--ion-color-tertiary);
-  color: var(--ion-color-primary);
   border-radius: 4px;
 
   option {
-    color: var(--ion-color-primary);
-
     &[disabled] {
       color: var(--ion-color-medium);
     }

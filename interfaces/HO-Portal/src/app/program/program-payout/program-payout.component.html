@@ -1,7 +1,3 @@
-<h2 *ngIf="canMakeExport || canMakePayment">
-  {{ 'page.program.program-payout.section-title' | translate }}
-</h2>
-
 <div *ngIf="canMakeExport" class="ion-margin-vertical">
   <h3>{{ 'page.program.program-payout.make-export' | translate }}</h3>
   <ion-row class="ion-align-items-center">
@@ -48,12 +44,12 @@
       [disabled]="!exportPaymentAvailable"
     ></app-export-list>
 
-     <app-export-fsp-instructions *ngIf="hasFspWithCsvIntegration"
+    <app-export-fsp-instructions
+      *ngIf="hasFspWithCsvIntegration"
       [programId]="programId"
       [payment]="exportPaymentId"
       [lastPaymentId]="lastPaymentId"
     ></app-export-fsp-instructions>
-
   </ion-row>
   <ion-row *ngIf="isIntersolve" class="ion-margin-vertical">
     <app-export-list
@@ -103,17 +99,5 @@
           | translate: { number: lastPaymentResults?.error }
       }}
     </confirm-prompt>
-  </ion-col>
-  <ion-col [sizeXs]="12" [sizeMd]="lastPaymentId ? 8 : 12">
-    <h3>
-      {{
-        'page.program.program-payout.make-payment.make-payment'
-          | translate: { nr: nextPaymentId ? '#' + nextPaymentId : '-' }
-      }}
-    </h3>
-    <app-make-payment
-      [programId]="programId"
-      [program]="program"
-    ></app-make-payment>
   </ion-col>
 </ion-row>

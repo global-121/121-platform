@@ -75,7 +75,7 @@ export class ProgramPayoutComponent implements OnInit {
     this.canMakeExport = this.checkCanMakeExport();
 
     this.totalIncluded = (
-      await this.programsService.getTotalIncluded(this.programId)
+      await this.programsService.getTotalTransferAmounts(this.programId, [])
     ).registrations;
 
     await this.createPayments();
@@ -206,10 +206,9 @@ export class ProgramPayoutComponent implements OnInit {
       this.programId,
       this.pastPayments,
     );
-    this.nextPaymentId =
-      this.lastPaymentId < this.program.distributionDuration
-        ? this.lastPaymentId + 1
-        : 0;
+    this.nextPaymentId = await this.pastPaymentsService.getNextPaymentId(
+      this.program,
+    );
 
     this.fillPaymentHistory(this.pastPayments);
 

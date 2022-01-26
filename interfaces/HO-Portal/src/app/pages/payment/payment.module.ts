@@ -7,6 +7,7 @@ import { MakePaymentComponent } from 'src/app/program/make-payment/make-payment.
 import { PaymentStatusPopupComponent } from 'src/app/program/payment-status-popup/payment-status-popup.component';
 import { ProgramPayoutComponent } from 'src/app/program/program-payout/program-payout.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { SubmitPaymentPopupComponent } from '../../program/submit-payment-popup/submit-payment-popup.component';
 import { PaymentPage } from './payment.page';
 
 const routes: Routes = [
@@ -29,6 +30,7 @@ const routes: Routes = [
     ProgramPayoutComponent,
     MakePaymentComponent,
     PaymentStatusPopupComponent,
+    SubmitPaymentPopupComponent,
   ],
 })
 export class PaymentPageModule {}

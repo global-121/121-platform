@@ -21,6 +21,7 @@ import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { PastPaymentsService } from '../../services/past-payments.service';
+import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 
@@ -67,9 +68,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public isInProgress = false;
   public paymentInProgress = false;
 
+  public submitPaymentProps: SubmitPaymentProps;
   public emptySeparatorWidth = 40;
 
   public action: BulkActionId = BulkActionId.chooseAction;
+  public BulkActionEnum = BulkActionId;
   public bulkActions: BulkAction[] = [
     {
       id: BulkActionId.invite,
@@ -234,6 +237,14 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       ),
       roles: [UserRole.RunProgram, UserRole.PersonalData],
       phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: true,
+    },
+    {
+      id: BulkActionId.divider,
+      enabled: false,
+      label: '-------------------------------',
+      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      phases: [ProgramPhase.payment],
       showIfNoValidation: true,
     },
   ];
@@ -518,7 +529,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.isLoading = false;
 
-    this.updateBulkActions();
+    await this.updateBulkActions();
+
+    this.submitPaymentProps = {
+      programId: this.programId,
+      payment: null,
+      referenceIds: [],
+    };
 
     // Timeout to make sure the datatable elements are rendered/generated:
     window.setTimeout(() => {
@@ -608,15 +625,39 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     }
   }
 
-  private updateBulkActions() {
+  private async updateBulkActions() {
+    await this.addPaymentBulkActions();
+
     this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
         this.authService.hasUserRole(action.roles) &&
-        // action.phases.includes(this.activePhase) &&
         action.phases.includes(this.thisPhase) &&
         this.checkValidationColumnOrAction(action);
       return action;
     });
+  }
+
+  private async addPaymentBulkActions() {
+    const nextPaymentId = await this.pastPaymentsService.getNextPaymentId(
+      this.program,
+    );
+    let paymentId = nextPaymentId || this.program.distributionDuration;
+
+    // Add bulk-action for 1st upcoming payment & past 5 payments
+    while (paymentId > nextPaymentId - 6 && paymentId > 0) {
+      const paymentBulkAction = {
+        id: BulkActionId.doPayment,
+        enabled: true,
+        label: `${this.translate.instant(
+          'page.program.program-people-affected.actions.do-payment',
+        )} #${paymentId}`,
+        roles: [UserRole.RunProgram, UserRole.PersonalData],
+        phases: [ProgramPhase.payment],
+        showIfNoValidation: true,
+      };
+      this.bulkActions.push(paymentBulkAction);
+      paymentId--;
+    }
   }
 
   public hasEnabledActions(): boolean {
@@ -976,17 +1017,23 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     await modal.present();
   }
 
-  public selectAction() {
+  public selectAction($event) {
     if (this.action === BulkActionId.chooseAction) {
       this.resetBulkAction();
       return;
     }
 
-    this.applyBtnDisabled = false;
-
+    if (this.action === BulkActionId.doPayment) {
+      const dropdownOptionLabel =
+        $event.target.options[$event.target.options.selectedIndex].text;
+      this.submitPaymentProps.payment = Number(
+        dropdownOptionLabel.split('#')[1],
+      );
+    }
     this.allPeopleAffected = this.updatePeopleForAction(
       this.allPeopleAffected,
       this.action,
+      this.submitPaymentProps.payment,
     );
 
     this.toggleHeaderCheckbox();
@@ -1003,9 +1050,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     }
   }
 
-  private updatePeopleForAction(people: PersonRow[], action: BulkActionId) {
+  private updatePeopleForAction(
+    people: PersonRow[],
+    action: BulkActionId,
+    payment?: number,
+  ) {
     return people.map((person) =>
-      this.bulkActionService.updateCheckbox(action, person),
+      this.bulkActionService.updateCheckbox(action, person, payment),
     );
   }
 
@@ -1083,6 +1134,18 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     }
 
     this.updateSubmitWarning(this.selectedPeople.length);
+
+    if (this.action === BulkActionId.doPayment) {
+      this.submitPaymentProps.referenceIds = this.selectedPeople.map(
+        (p) => p.referenceId,
+      );
+    }
+
+    if (this.selectedPeople.length) {
+      this.applyBtnDisabled = false;
+    } else {
+      this.applyBtnDisabled = true;
+    }
   }
 
   private countSelectable(rows: PersonRow[]) {
@@ -1109,7 +1172,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       this.action,
       this.programId,
       this.selectedPeople,
-      confirmInput,
+      { message: confirmInput },
     );
     this.isInProgress = false;
 

@@ -7,7 +7,7 @@ import { ActionType, LatestAction } from '../models/actions.model';
 import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { csvTemplateImported, ImportType } from '../models/import-type.enum';
-import { PaymentData, TotalIncluded } from '../models/payment.model';
+import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
 import { Note, PaStatus, Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
@@ -131,11 +131,17 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getTotalIncluded(programId: number | string): Promise<TotalIncluded> {
+  getTotalTransferAmounts(
+    programId: number | string,
+    referenceIds?: string[],
+  ): Promise<TotalTransferAmounts> {
     return this.apiService
-      .get(
+      .post(
         environment.url_121_service_api,
-        `/export-metrics/total-included/${programId}`,
+        `/export-metrics/total-transfer-amounts/${programId}`,
+        {
+          referenceIds: JSON.stringify(referenceIds),
+        },
       )
       .toPromise();
   }
@@ -239,7 +245,7 @@ export class ProgramsServiceApiService {
     programId: number,
     payment: number,
     amount: number,
-    referenceId?: string,
+    referenceIds?: string[],
   ): Promise<any> {
     return this.apiService
       .post(
@@ -248,7 +254,9 @@ export class ProgramsServiceApiService {
         {
           payment: Number(payment),
           amount: Number(amount),
-          referenceId,
+          referenceIds: referenceIds
+            ? { referenceIds: JSON.stringify(referenceIds) }
+            : null,
         },
       )
       .toPromise();
