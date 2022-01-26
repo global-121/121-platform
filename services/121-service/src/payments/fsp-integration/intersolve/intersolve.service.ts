@@ -122,35 +122,50 @@ export class IntersolveService {
       paymentInfo.paymentAmountMultiplier,
     );
     paResult.calculatedAmount = calculatedAmount;
-    const voucherInfo = await this.issueVoucher(
-      calculatedAmount,
-      intersolveRefPos,
-    );
-    voucherInfo.refPos = intersolveRefPos;
 
-    if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
-      voucherInfo.voucher = await this.storeVoucher(
-        voucherInfo,
-        paymentInfo,
-        payment,
-        calculatedAmount,
-      );
+    let cardId;
+
+    const voucher = await this.getReusableVoucher(
+      paymentInfo.referenceId,
+      amount,
+      payment,
+    );
+
+    if (voucher) {
+      cardId = voucher.barcode;
       paResult.status = StatusEnum.success;
     } else {
-      paResult.status = StatusEnum.error;
-      paResult.message =
-        'Creating intersolve voucher failed. Status code: ' +
-        (voucherInfo.resultCode ? voucherInfo.resultCode : 'unknown') +
-        ' message: ' +
-        (voucherInfo.resultDescription
-          ? voucherInfo.resultDescription
-          : 'unknown');
-      await this.cancelAndDeleteVoucher(
-        voucherInfo.cardId,
-        voucherInfo.transactionId,
-        voucherInfo.refPos,
+      const voucherInfo = await this.issueVoucher(
+        calculatedAmount,
+        intersolveRefPos,
       );
-      return paResult;
+      cardId = voucherInfo.cardId;
+      voucherInfo.refPos = intersolveRefPos;
+
+      if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
+        voucherInfo.voucher = await this.storeVoucher(
+          voucherInfo,
+          paymentInfo,
+          payment,
+          calculatedAmount,
+        );
+        paResult.status = StatusEnum.success;
+      } else {
+        paResult.status = StatusEnum.error;
+        paResult.message =
+          'Creating intersolve voucher failed. Status code: ' +
+          (voucherInfo.resultCode ? voucherInfo.resultCode : 'unknown') +
+          ' message: ' +
+          (voucherInfo.resultDescription
+            ? voucherInfo.resultDescription
+            : 'unknown');
+        await this.cancelAndDeleteVoucher(
+          voucherInfo.cardId,
+          voucherInfo.transactionId,
+          voucherInfo.refPos,
+        );
+        return paResult;
+      }
     }
 
     // If no whatsapp: return early
@@ -160,11 +175,50 @@ export class IntersolveService {
     }
 
     // Continue with whatsapp:
-    return await this.sendWhatsapp(paymentInfo, voucherInfo, paResult, amount);
+    return await this.sendWhatsapp(
+      paymentInfo,
+      paResult,
+      amount,
+      cardId,
+      payment,
+    );
   }
 
   private getIntersolveRefPos(): number {
     return parseInt(crypto.randomBytes(5).toString('hex'), 16);
+  }
+
+  private async getReusableVoucher(
+    referenceId: string,
+    amount: number,
+    payment: number,
+  ): Promise<IntersolveBarcodeEntity> {
+    const registration = await this.registrationRepository.findOne({
+      where: { referenceId: referenceId },
+      relations: ['images', 'images.barcode'],
+    });
+
+    const barcode = await this.registrationRepository
+      .createQueryBuilder('registration')
+      .select('barcode')
+      .leftJoin('registration.images', 'images')
+      .leftJoin('images.barcode', 'barcode')
+      .where('barcode.availableForReuse = :availableForReuse', {
+        availableForReuse: true,
+      })
+      .where('barcode.amount = :amount', {
+        amount: amount,
+      })
+      .andWhere('registration.referenceId = :referenceId', {
+        referenceId: referenceId,
+      })
+      .getRawOne();
+    console.log('barcode: ', barcode);
+    if (barcode) {
+      return;
+    }
+    barcode.payment = payment;
+    return await this.intersolveBarcodeRepository.save(barcode);
   }
 
   private async issueVoucher(
@@ -202,13 +256,14 @@ export class IntersolveService {
 
   private async sendWhatsapp(
     paymentInfo: PaPaymentDataDto,
-    voucherInfo: IntersolveIssueCardResponse,
     paResult: PaTransactionResultDto,
     amount: number,
+    cardId: string,
+    payment: number,
   ): Promise<PaTransactionResultDto> {
     const transferResult = await this.sendVoucherWhatsapp(
       paymentInfo,
-      voucherInfo,
+      payment,
       amount,
     );
 
@@ -221,7 +276,7 @@ export class IntersolveService {
       paResult = await this.processFailedWhatsappResult(
         paResult,
         transferResult,
-        voucherInfo,
+        cardId,
       );
     }
     return paResult;
@@ -229,7 +284,7 @@ export class IntersolveService {
 
   public async sendVoucherWhatsapp(
     paymentInfo: PaPaymentDataDto,
-    voucherInfo: IntersolveIssueCardResponse,
+    payment: number,
     amount: number,
   ): Promise<PaTransactionResultDto> {
     const result = new PaTransactionResultDto();
@@ -260,8 +315,8 @@ export class IntersolveService {
         async response => {
           const messageSid = response;
           await this.storeTransactionResult(
-            voucherInfo.voucher.payment,
-            voucherInfo.voucher.amount,
+            payment,
+            amount,
             registration.id,
             1,
             StatusEnum.waiting,
@@ -305,7 +360,7 @@ export class IntersolveService {
   private async processFailedWhatsappResult(
     transactionResult: PaTransactionResultDto,
     transferResult: PaTransactionResultDto,
-    voucherInfo: IntersolveIssueCardResponse,
+    cardId: string,
   ): Promise<PaTransactionResultDto> {
     transactionResult.status = StatusEnum.error;
     transactionResult.message =
@@ -313,12 +368,7 @@ export class IntersolveService {
       transferResult.message;
 
     // If sending failed cancel and delete voucher again
-    await this.cancelAndDeleteVoucher(
-      voucherInfo.cardId,
-      voucherInfo.transactionId,
-      voucherInfo.refPos,
-    );
-
+    await this.markVoucherAsReusable(cardId);
     return transactionResult;
   }
 
@@ -374,12 +424,8 @@ export class IntersolveService {
       const intersolveRequest = await this.intersolveRequestRepository.findOne({
         where: { cardId: voucher.barcode },
       });
+      await this.markVoucherAsReusable(voucher.barcode);
 
-      this.cancelAndDeleteVoucher(
-        voucher.barcode,
-        String(intersolveRequest.transactionId),
-        null,
-      );
       status = StatusEnum.error;
     } else {
       // For other statuses, no update needed
@@ -620,5 +666,13 @@ export class IntersolveService {
       transactionResult.fspName = FspName.intersolveNoWhatsapp;
     }
     return transactionResult;
+  }
+
+  private async markVoucherAsReusable(barcode: string): Promise<void> {
+    const voucher = await this.intersolveBarcodeRepository.findOne({
+      where: { barcode: barcode },
+    });
+    voucher.availableForReuse = true;
+    await this.intersolveBarcodeRepository.save(voucher);
   }
 }

@@ -23,6 +23,9 @@ export class IntersolveBarcodeEntity extends Base121Entity {
   public send: boolean;
 
   @Column({ default: false })
+  public availableForReuse: boolean;
+
+  @Column({ default: false })
   public balanceUsed: boolean;
 
   @OneToMany(
