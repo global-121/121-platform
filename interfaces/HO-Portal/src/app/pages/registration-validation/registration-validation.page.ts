@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import Permission from 'src/app/auth/permission.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -10,6 +11,8 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   styleUrls: ['./registration-validation.page.scss'],
 })
 export class RegistrationValidationPage implements OnInit {
+  public Permission = Permission;
+
   public programId = this.route.snapshot.params.id;
   public program: Program;
   public thisPhase = ProgramPhase.registrationValidation;

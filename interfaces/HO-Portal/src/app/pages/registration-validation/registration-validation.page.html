@@ -9,11 +9,13 @@
     <ion-row>
       <ion-col>
         <app-bulk-import
+          *appIfPermissions="[Permission.RegistrationCREATE, Permission.RegistrationImportTemplateREAD]"
           [programId]="programId"
         ></app-bulk-import>
       </ion-col>
       <ion-col>
         <app-phase-next
+          *appIfPermissions="[Permission.ProgramPhaseUPDATE]"
           [programId]="programId"
           [thisPhaseName]="thisPhase"
           [phaseReady]="isReady"
@@ -22,7 +24,7 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-row>
+        <ion-row *appIfPermissions="[Permission.RegistrationPersonalEXPORT]">
           <div class="ion-no-padding ion-margin-end">
             <app-export-list
               [programId]="programId"
@@ -40,7 +42,9 @@
       </ion-col>
       <ion-col>
         <ion-row class="ion-justify-content-end">
-          <app-disable-registration [programId]="programId"
+          <app-disable-registration
+            *appIfPermissions="[Permission.ProgramUPDATE]"
+            [programId]="programId"
           ></app-disable-registration>
         </ion-row>
       </ion-col>
@@ -48,6 +52,7 @@
   </ion-grid>
 
   <app-program-people-affected
+    *appIfPermissions="[Permission.RegistrationREAD]"
     [programId]="programId"
     [thisPhase]="thisPhase"
     (isCompleted)="onReady($event)"
