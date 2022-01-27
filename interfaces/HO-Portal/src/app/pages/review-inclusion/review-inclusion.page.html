@@ -14,7 +14,7 @@
 
   <ion-row>
     <app-test-payment
-      *appIfPermissions="[Permission.PaymentCREATE]"
+      *appIfPermissions="[Permission.PaymentCREATE, Permission.ActionREAD]"
       [programId]="programId"
     ></app-test-payment>
   </ion-row>
