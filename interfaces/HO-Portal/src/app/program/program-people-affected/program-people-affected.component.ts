@@ -5,7 +5,6 @@ import { AlertController, ModalController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
-import { UserRole } from 'src/app/auth/user-role.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import {
   PaymentColumn,
@@ -88,7 +87,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.invite',
       ),
-      roles: [UserRole.PersonalData],
+      permissions: [Permission.RegistrationStatusInvitedUPDATE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
       confirmConditions: {
@@ -110,7 +109,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.no-longer-eligible',
       ),
-      roles: [UserRole.PersonalData],
+      permissions: [Permission.RegistrationStatusNoLongerEligibleUPDATE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
     },
@@ -120,7 +119,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.select-for-validation',
       ),
-      roles: [UserRole.RunProgram],
+      permissions: [Permission.RegistrationStatusSelectedForValidationUPDATE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: false,
     },
@@ -130,7 +129,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.include',
       ),
-      roles: [UserRole.RunProgram],
+      permissions: [Permission.RegistrationStatusIncludedUPDATE],
       phases: [ProgramPhase.inclusion],
       showIfNoValidation: true,
       confirmConditions: {
@@ -151,7 +150,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.include',
       ),
-      roles: [UserRole.PersonalData],
+      permissions: [
+        Permission.RegistrationStatusIncludedUPDATE,
+        Permission.RegistrationPersonalREAD,
+      ],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
@@ -172,7 +174,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.reject',
       ),
-      roles: [UserRole.PersonalData],
+      permissions: [Permission.RegistrationStatusRejectedUPDATE],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
@@ -195,7 +197,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.end-inclusion',
       ),
-      roles: [UserRole.PersonalData],
+      permissions: [Permission.RegistrationStatusInclusionEndedUPDATE],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
@@ -216,7 +218,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.send-message',
       ),
-      roles: [UserRole.PersonalData],
+      permissions: [Permission.RegistrationNotificationCREATE],
       phases: [
         ProgramPhase.registrationValidation,
         ProgramPhase.inclusion,
@@ -243,7 +245,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.delete-pa',
       ),
-      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      permissions: [Permission.RegistrationDELETE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
     },
@@ -251,7 +253,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       id: BulkActionId.divider,
       enabled: false,
       label: '-------------------------------',
-      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      permissions: [],
       phases: [ProgramPhase.payment],
       showIfNoValidation: true,
     },
@@ -655,7 +657,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
-        this.authService.hasUserRole(action.roles) &&
+        this.authService.hasAllPermissions(action.permissions) &&
         action.phases.includes(this.thisPhase) &&
         this.checkValidationColumnOrAction(action);
       return action;
@@ -676,7 +678,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         label: `${this.translate.instant(
           'page.program.program-people-affected.actions.do-payment',
         )} #${paymentId}`,
-        roles: [UserRole.RunProgram, UserRole.PersonalData],
+        permissions: [Permission.PaymentCREATE],
         phases: [ProgramPhase.payment],
         showIfNoValidation: true,
       };
