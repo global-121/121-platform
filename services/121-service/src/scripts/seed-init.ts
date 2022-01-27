@@ -85,6 +85,7 @@ export class SeedInit implements InterfaceScript {
         role: DefaultUserRole.View,
         label: 'Only view data, including Personally Identifiable Information',
         permissions: [
+          PermissionEnum.ProgramAllREAD,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
@@ -98,6 +99,7 @@ export class SeedInit implements InterfaceScript {
         role: DefaultUserRole.PersonalData,
         label: 'Handle Personally Identifiable Information',
         permissions: [
+          PermissionEnum.ProgramAllREAD,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentCREATE,
