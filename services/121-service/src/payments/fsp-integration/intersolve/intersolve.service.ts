@@ -193,31 +193,28 @@ export class IntersolveService {
     amount: number,
     payment: number,
   ): Promise<IntersolveBarcodeEntity> {
-    const registration = await this.registrationRepository.findOne({
-      where: { referenceId: referenceId },
-      relations: ['images', 'images.barcode'],
-    });
-
-    const barcode = await this.registrationRepository
+    const rawBarcode = await this.registrationRepository
       .createQueryBuilder('registration')
-      .select('barcode')
+      //The .* is to prevent the raw query from prefixing with barcode_
+      .select('barcode.*')
       .leftJoin('registration.images', 'images')
       .leftJoin('images.barcode', 'barcode')
-      .where('barcode.availableForReuse = :availableForReuse', {
-        availableForReuse: true,
-      })
-      .where('barcode.amount = :amount', {
-        amount: amount,
-      })
-      .andWhere('registration.referenceId = :referenceId', {
+      .where('registration.referenceId = :referenceId', {
         referenceId: referenceId,
       })
+      .andWhere('barcode.availableForReuse = :availableForReuse', {
+        availableForReuse: true,
+      })
+      .andWhere('barcode.amount = :amount', {
+        amount: amount,
+      })
       .getRawOne();
-    console.log('barcode: ', barcode);
-    if (barcode) {
+    if (!rawBarcode) {
       return;
     }
+    const barcode: IntersolveBarcodeEntity = this.intersolveBarcodeRepository.create(rawBarcode as IntersolveBarcodeEntity)
     barcode.payment = payment;
+    barcode.availableForReuse = false;
     return await this.intersolveBarcodeRepository.save(barcode);
   }
 
