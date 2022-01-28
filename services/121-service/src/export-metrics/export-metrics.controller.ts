@@ -145,11 +145,11 @@ export class ExportMetricsController {
   @Post('total-transfer-amounts/:programId')
   public async getTotalTransferAmounts(
     @Param() params,
-    @Body() data: ReferenceIdsDto,
-  ): Promise<TotalTransferAmounts> {
-    return await this.exportMetricsService.getTotalTransferAmounts(
+    @Body() referenceIdsDto: ReferenceIdsDto,
+    ): Promise<TotalTransferAmounts> {
+      return await this.exportMetricsService.getTotalTransferAmounts(
       Number(params.programId),
-      data,
+      referenceIdsDto,
     );
   }
 }

@@ -69,7 +69,7 @@ export class PaymentsService {
     programId: number,
     payment: number,
     amount: number,
-    referenceIds?: ReferenceIdsDto,
+    referenceIdsDto?: ReferenceIdsDto,
   ): Promise<number> {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
@@ -78,11 +78,11 @@ export class PaymentsService {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-
+    
     const targetedRegistrations = await this.getRegistrationsForPayment(
       programId,
       payment,
-      referenceIds,
+      referenceIdsDto,
     );
 
     if (targetedRegistrations.length < 1) {
@@ -219,11 +219,11 @@ export class PaymentsService {
   private async getRegistrationsForPayment(
     programId: number,
     payment: number,
-    referenceIds?: ReferenceIdsDto,
-  ): Promise<RegistrationEntity[]> {
-    if (referenceIds) {
+    referenceIdsDto?: ReferenceIdsDto,
+    ): Promise<RegistrationEntity[]> {
+      if (referenceIdsDto) {
       return await this.registrationRepository.find({
-        where: { referenceId: In(JSON.parse(referenceIds['referenceIds'])) },
+        where: { referenceId: In(referenceIdsDto.referenceIds) },
         relations: ['fsp'],
       });
     }

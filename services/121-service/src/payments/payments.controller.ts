@@ -42,8 +42,8 @@ export class PaymentsController {
     @Body() data: CreatePaymentDto,
     @Param() param,
     @User('id') userId: number,
-  ): Promise<number> {
-    return await this.paymentsService.createPayment(
+    ): Promise<number> {
+      return await this.paymentsService.createPayment(
       userId,
       param.programId,
       data.payment,

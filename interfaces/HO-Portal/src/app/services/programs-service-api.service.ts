@@ -76,7 +76,7 @@ export class ProgramsServiceApiService {
   deleteRegistrations(referenceIds: string[]): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/registrations/delete`, {
-        referenceIds: JSON.stringify(referenceIds),
+        referenceIds: referenceIds,
       })
       .toPromise();
   }
@@ -139,9 +139,7 @@ export class ProgramsServiceApiService {
       .post(
         environment.url_121_service_api,
         `/export-metrics/total-transfer-amounts/${programId}`,
-        {
-          referenceIds: JSON.stringify(referenceIds),
-        },
+        { referenceIds: referenceIds },
       )
       .toPromise();
   }
@@ -254,9 +252,7 @@ export class ProgramsServiceApiService {
         {
           payment: Number(payment),
           amount: Number(amount),
-          referenceIds: referenceIds
-            ? { referenceIds: JSON.stringify(referenceIds) }
-            : null,
+          referenceIds: { referenceIds },
         },
       )
       .toPromise();
@@ -392,7 +388,7 @@ export class ProgramsServiceApiService {
         environment.url_121_service_api,
         `/registrations/${action}/${programId}`,
         {
-          referenceIds: JSON.stringify(referenceIds),
+          referenceIds: referenceIds,
           message,
         },
       )
