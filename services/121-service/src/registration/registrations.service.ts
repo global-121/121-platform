@@ -156,8 +156,8 @@ export class RegistrationsService {
         await this.programAnswerRepository.save(newAnswer);
       }
     }
-
     await this.storePersistentAnswers(programAnswers, referenceId);
+    await this.inclusionScoreService.calculateInclusionScore(referenceId);
   }
 
   public async cleanAnswers(
@@ -228,6 +228,7 @@ export class RegistrationsService {
       }
     }
     registration.customData = JSON.parse(JSON.stringify(customDataToStore));
+    
     await this.registrationRepository.save(registration);
   }
 
@@ -1134,9 +1135,9 @@ export class RegistrationsService {
 
   // Used by Aidworker
   public async issueValidation(payload: ValidationIssueDataDto): Promise<void> {
-    await this.storePersistentAnswers(
-      payload.programAnswers,
+    await this.storeProgramAnswers(
       payload.referenceId,
+      payload.programAnswers,
     );
     await this.setRegistrationStatus(
       payload.referenceId,
