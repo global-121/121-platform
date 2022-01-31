@@ -228,7 +228,7 @@ export class RegistrationsService {
       }
     }
     registration.customData = JSON.parse(JSON.stringify(customDataToStore));
-    
+
     await this.registrationRepository.save(registration);
   }
 
@@ -1135,10 +1135,7 @@ export class RegistrationsService {
 
   // Used by Aidworker
   public async issueValidation(payload: ValidationIssueDataDto): Promise<void> {
-    await this.storeProgramAnswers(
-      payload.referenceId,
-      payload.programAnswers,
-    );
+    await this.storeProgramAnswers(payload.referenceId, payload.programAnswers);
     await this.setRegistrationStatus(
       payload.referenceId,
       RegistrationStatusEnum.validated,
