@@ -33,6 +33,10 @@ export class BulkImportDto {
   @IsInt()
   @Min(1)
   public paymentAmountMultiplier: number;
+
+  @ApiModelProperty()
+  @IsArray()
+  public programAttributes: DynamicImportAttribute[];
 }
 
 export class BulkImportResult extends BulkImportDto {

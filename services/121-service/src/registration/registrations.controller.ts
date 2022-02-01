@@ -176,12 +176,14 @@ export class RegistrationsController {
     title: 'Get a CSV template for importing registrations',
   })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Get('import-template/:programId')
+  @ApiImplicitParam({ name: 'type', required: true, type: 'string' })
+  @Get('import-template/:programId/:type')
   public async getImportRegistrationsTemplate(
     @Param() params,
   ): Promise<string[]> {
     return await this.registrationsService.getImportRegistrationsTemplate(
       Number(params.programId),
+      params.type,
     );
   }
 

@@ -6,7 +6,7 @@ import { UserRole } from '../auth/user-role.enum';
 import { ActionType, LatestAction } from '../models/actions.model';
 import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
-import { csvTemplateImported, ImportType } from '../models/import-type.enum';
+import { ImportType } from '../models/import-type.enum';
 import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
 import { Note, PaStatus, Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
@@ -262,20 +262,13 @@ export class ProgramsServiceApiService {
     programId: number,
     type: ImportType,
   ): Promise<void> {
-    let downloadData: string[];
-
-    if (type === ImportType.imported) {
-      // Use a hard-coded value for the 'default' template:
-      downloadData = csvTemplateImported;
-    } else {
-      downloadData = await this.apiService
-        .get(
-          environment.url_121_service_api,
-          `/registrations/import-template/${programId}`,
-          false,
-        )
-        .toPromise();
-    }
+    const downloadData: string[] = await this.apiService
+      .get(
+        environment.url_121_service_api,
+        `/registrations/import-template/${programId}/${type}`,
+        false,
+      )
+      .toPromise();
 
     const csvContents = downloadData.join(';') + '\r\n';
 

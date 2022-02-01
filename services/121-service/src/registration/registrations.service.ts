@@ -1,5 +1,4 @@
 import { WhatsappService } from './../notifications/whatsapp/whatsapp.service';
-import { TwilioMessageEntity } from './../notifications/twilio.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { SmsService } from './../notifications/sms/sms.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
@@ -26,7 +25,7 @@ import { FspName } from '../fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { InlusionScoreService } from './services/inclusion-score.service';
-import { BulkImportService } from './services/bulk-import.service';
+import { BulkImportService, ImportType } from './services/bulk-import.service';
 import { ImportResult } from './dto/bulk-import.dto';
 import { RegistrationResponse } from './dto/registration-response.model';
 import { NoteDto } from './dto/note.dto';
@@ -419,9 +418,14 @@ export class RegistrationsService {
 
   public async getImportRegistrationsTemplate(
     programId: number,
+    type: ImportType,
   ): Promise<string[]> {
+    if (!Object.values(ImportType).includes(type)) {
+      throw new HttpException('Wrong import type', HttpStatus.BAD_REQUEST);
+    }
     return await this.bulkImportService.getImportRegistrationsTemplate(
       programId,
+      type,
     );
   }
 

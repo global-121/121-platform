@@ -30,6 +30,12 @@ import { AdditionalActionType } from '../../actions/action.entity';
 import { validate } from 'class-validator';
 import { Readable } from 'stream';
 import { InlusionScoreService } from './inclusion-score.service';
+import { ProgramCustomAttributeEntity } from '../../programs/program-custom-attribute.entity';
+
+export enum ImportType {
+  imported = 'import-as-imported',
+  registered = 'import-as-registered',
+}
 
 @Injectable()
 export class BulkImportService {
@@ -39,6 +45,10 @@ export class BulkImportService {
   private readonly programAnswerRepository: Repository<ProgramAnswerEntity>;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
+  @InjectRepository(ProgramCustomAttributeEntity)
+  private readonly programCustomAttributeRepository: Repository<
+    ProgramCustomAttributeEntity
+  >;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspAttributeEntity)
@@ -55,11 +65,18 @@ export class BulkImportService {
     program: ProgramEntity,
     userId: number,
   ): Promise<ImportResult> {
-    const validatedImportRecords = await this.csvToValidatedBulkImport(csvFile);
+    const validatedImportRecords = await this.csvToValidatedBulkImport(
+      csvFile,
+      program.id,
+    );
 
     let countImported = 0;
     let countExistingPhoneNr = 0;
     let countInvalidPhoneNr = 0;
+
+    const programCustomAttributes = await this.getProgramCustomAttributes(
+      program.id,
+    );
 
     const importResponseRecords = [];
     for await (const record of validatedImportRecords) {
@@ -97,6 +114,16 @@ export class BulkImportService {
       newRegistration.namePartnerOrganization = record.namePartnerOrganization;
       newRegistration.paymentAmountMultiplier = record.paymentAmountMultiplier;
       newRegistration.program = program;
+
+      newRegistration.customData = JSON.parse(JSON.stringify({}));
+      programCustomAttributes.forEach(att => {
+        newRegistration.customData[
+          att.attribute
+        ] = record.programAttributes.find(
+          a => a.attribute === att.attribute,
+        ).value;
+      });
+
       const savedRegistration = await this.registrationRepository.save(
         newRegistration,
       );
@@ -123,14 +150,29 @@ export class BulkImportService {
 
   public async getImportRegistrationsTemplate(
     programId: number,
+    type: ImportType,
   ): Promise<string[]> {
-    const genericAttributes = Object.values(GenericAttributes).map(item =>
-      String(item),
-    );
-    const dynamicAttributes = await this.getDynamicAttributes(programId, true);
-    const attributes = genericAttributes.concat(
-      dynamicAttributes.map(d => d.attribute),
-    );
+    let genericAttributes: string[];
+    let dynamicAttributes: string[];
+
+    if (type === ImportType.registered) {
+      genericAttributes = Object.values(GenericAttributes).map(item =>
+        String(item),
+      );
+      dynamicAttributes = (await this.getDynamicAttributes(programId)).map(
+        d => d.attribute,
+      );
+    } else if (type === ImportType.imported) {
+      genericAttributes = [
+        GenericAttributes.phoneNumber,
+        GenericAttributes.paymentAmountMultiplier,
+      ].map(item => String(item));
+      dynamicAttributes = (
+        await this.getProgramCustomAttributes(programId)
+      ).map(d => d.attribute);
+    }
+
+    const attributes = genericAttributes.concat(dynamicAttributes);
     return [...new Set(attributes)]; // Deduplicates attributes
   }
 
@@ -146,7 +188,7 @@ export class BulkImportService {
     let countImported = 0;
     let registrations: RegistrationEntity[] = [];
 
-    const dynamicAttributes = await this.getDynamicAttributes(program.id, true);
+    const dynamicAttributes = await this.getDynamicAttributes(program.id);
     for await (const record of validatedImportRecords) {
       const registration = new RegistrationEntity();
       registration.referenceId = uuid();
@@ -199,24 +241,29 @@ export class BulkImportService {
     programId: number,
     customData: any,
   ): Promise<void> {
-    const dynamicAttributes = await this.getDynamicAttributes(programId, false);
+    const dynamicAttributes = await this.getDynamicAttributes(programId);
     let programAnswers: ProgramAnswerEntity[] = [];
     for await (let attribute of dynamicAttributes) {
-      let programAnswer = new ProgramAnswerEntity();
-      programAnswer.registration = registration;
       const programQuestion = await this.programQuestionRepository.findOne({
         where: { name: attribute.attribute },
       });
-      programAnswer.programQuestion = programQuestion;
-      programAnswer.programAnswer = customData[attribute.attribute];
-      programAnswers.push(programAnswer);
+      if (programQuestion) {
+        let programAnswer = new ProgramAnswerEntity();
+        programAnswer.registration = registration;
+        programAnswer.programQuestion = programQuestion;
+        programAnswer.programAnswer = customData[attribute.attribute];
+        programAnswers.push(programAnswer);
+      }
     }
     await this.programAnswerRepository.save(programAnswers);
   }
 
-  private async csvToValidatedBulkImport(csvFile): Promise<BulkImportDto[]> {
+  private async csvToValidatedBulkImport(
+    csvFile,
+    programId: number,
+  ): Promise<BulkImportDto[]> {
     const importRecords = await this.validateCsv(csvFile);
-    return await this.validateBulkImportCsvInput(importRecords);
+    return await this.validateBulkImportCsvInput(importRecords, programId);
   }
 
   private async csvToValidatedRegistrations(
@@ -268,9 +315,15 @@ export class BulkImportService {
     return false;
   }
 
-  private async validateBulkImportCsvInput(csvArray): Promise<BulkImportDto[]> {
+  private async validateBulkImportCsvInput(
+    csvArray,
+    programId: number,
+  ): Promise<BulkImportDto[]> {
     const errors = [];
     const validatatedArray = [];
+    const programCustomAttributes = await this.getProgramCustomAttributes(
+      programId,
+    );
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
@@ -279,6 +332,14 @@ export class BulkImportService {
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.namePartnerOrganization = row.namePartnerOrganization;
       importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
+      importRecord.programAttributes = [];
+      for await (const att of programCustomAttributes) {
+        const programAttribute = new DynamicImportAttribute();
+        programAttribute.attribute = att.attribute;
+        programAttribute.value = row[att.attribute];
+        importRecord.programAttributes.push(programAttribute);
+      }
+
       const result = await validate(importRecord);
       if (result.length > 0) {
         const errorObj = {
@@ -294,11 +355,29 @@ export class BulkImportService {
     return validatatedArray;
   }
 
-  private async getDynamicAttributes(
+  private async getProgramCustomAttributes(
     programId: number,
-    alsoFsp: boolean,
   ): Promise<Attribute[]> {
-    const programAttributes = (
+    return (
+      await this.programCustomAttributeRepository.find({
+        where: { program: { id: programId } },
+      })
+    ).map(c => {
+      return {
+        attribute: c.name,
+        type: c.type,
+      };
+    });
+  }
+
+  private async getDynamicAttributes(programId: number): Promise<Attribute[]> {
+    let attributes = [];
+    const programCustomAttributes = await this.getProgramCustomAttributes(
+      programId,
+    );
+    attributes = [...attributes, ...programCustomAttributes];
+
+    const programQuestions = (
       await this.programQuestionRepository.find({
         where: { program: { id: programId } },
       })
@@ -308,9 +387,7 @@ export class BulkImportService {
         type: c.answerType,
       };
     });
-    if (!alsoFsp) {
-      return programAttributes;
-    }
+    attributes = [...attributes, ...programQuestions];
 
     const fspAttributes = await this.fspAttributeRepository.find({
       relations: ['fsp', 'fsp.program'],
@@ -323,7 +400,7 @@ export class BulkImportService {
           type: c.answerType,
         };
       });
-    return programAttributes.concat(programFspAttributes);
+    return [...attributes, ...programFspAttributes];
   }
 
   private async validateRegistrationsCsvInput(
@@ -332,7 +409,7 @@ export class BulkImportService {
   ): Promise<ImportRegistrationsDto[]> {
     const errors = [];
     const validatatedArray = [];
-    const dynamicAttributes = await this.getDynamicAttributes(programId, true);
+    const dynamicAttributes = await this.getDynamicAttributes(programId);
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
