@@ -167,7 +167,7 @@ export class IntersolveService {
           (voucherInfo.resultDescription
             ? voucherInfo.resultDescription
             : 'unknown');
-        await this.cancelAndDeleteVoucher(
+        await this.markVoucherAsToCancel(
           voucherInfo.cardId,
           voucherInfo.transactionId,
           voucherInfo.refPos,
@@ -261,17 +261,15 @@ export class IntersolveService {
       amount,
     );
 
-    if (transferResult.status !== StatusEnum.error) {
-      paResult = await this.processSucceededWhatsappResult(
-        paResult,
-        transferResult,
-      );
+    paResult.status = transferResult.status;
+    if (transferResult.status === StatusEnum.error) {
+      paResult.message =
+        'Voucher(s) created, but something went wrong in sending voucher.\n' +
+        transferResult.message;
     } else {
-      paResult = await this.processFailedWhatsappResult(
-        paResult,
-        transferResult,
-      );
+      paResult.customData = transferResult.customData;
     }
+
     return paResult;
   }
 
@@ -339,27 +337,6 @@ export class IntersolveService {
         })
       )?.preferredLanguage || 'en'
     );
-  }
-
-  private async processSucceededWhatsappResult(
-    transactionResult: PaTransactionResultDto,
-    transferResult: PaTransactionResultDto,
-  ): Promise<PaTransactionResultDto> {
-    transactionResult.status = transferResult.status;
-    transactionResult.customData = transferResult.customData;
-    return transactionResult;
-  }
-
-  private async processFailedWhatsappResult(
-    transactionResult: PaTransactionResultDto,
-    transferResult: PaTransactionResultDto,
-  ): Promise<PaTransactionResultDto> {
-    transactionResult.status = StatusEnum.error;
-    transactionResult.message =
-      'Voucher(s) created, but something went wrong in sending voucher.\n' +
-      transferResult.message;
-
-    return transactionResult;
   }
 
   private async storeBarcodeData(
@@ -482,7 +459,7 @@ export class IntersolveService {
     this.intersolveInstructionsRepository.save(intersolveInstructionsEntity);
   }
 
-  public async cancelAndDeleteVoucher(
+  private async markVoucherAsToCancel(
     cardId: string,
     transactionId: string,
     refPos: number,
@@ -491,16 +468,6 @@ export class IntersolveService {
       await this.intersolveApiService.markAsToCancel(cardId, transactionId);
     } else if (refPos) {
       await this.intersolveApiService.markAsToCancelByRefPos(refPos);
-    }
-    const barcode = await this.intersolveBarcodeRepository.findOne({
-      where: { barcode: cardId },
-      relations: ['image'],
-    });
-    if (barcode) {
-      for (const image of barcode.image) {
-        await this.imageCodeService.removeImageExportVoucher(image);
-      }
-      await this.intersolveBarcodeRepository.remove(barcode);
     }
   }
 
