@@ -2,7 +2,7 @@
 Feature: Download validation data
 
   Background:
-    Given a logged-in "field-validation" user
+    Given a logged-in user with "RegistrationPersonalForValidationREAD" permission
     Given the user is on the "actions" page
 
   Scenario: Downloading validation data successfully
