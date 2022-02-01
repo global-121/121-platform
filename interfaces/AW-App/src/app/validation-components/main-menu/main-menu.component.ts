@@ -29,60 +29,66 @@ export class MainMenuComponent implements ValidationComponent {
     private storage: Storage,
     private noConnectionService: NoConnectionService,
     private authService: AuthService,
-  ) {}
+  ) {
+    this.authService.authenticationState$.subscribe(() => {
+      // Refresh all option when current logged in user changes
+      this.ngOnInit();
+    });
+  }
 
   async ngOnInit() {
     const pendingUploadCount = await this.getPendingUploadCount();
+
     this.menuOptions = [
       {
         id: ValidationComponents.downloadData,
         option: this.translate.instant('validation.main-menu.download-data'),
-        disabled: !this.hasPermissionForDownloadData(),
+        disabled: !this.canDownloadData(),
         connectionRequired: true,
       },
       {
         id: ValidationComponents.scanQr,
         option: this.translate.instant('validation.main-menu.scan-qr'),
-        disabled: !this.hasPermissionForScanQr(),
+        disabled: !this.canScanQr(),
         connectionRequired: false,
       },
       {
         id: ValidationComponents.findByPhone,
         option: this.translate.instant('validation.main-menu.find-by-phone'),
-        disabled: !this.hasPermissionForFindByPhone(),
+        disabled: !this.canFindByPhone(),
         connectionRequired: false,
       },
       {
         id: ValidationComponents.uploadData,
         option: this.translate.instant('validation.main-menu.upload-data'),
         counter: pendingUploadCount,
-        disabled: !pendingUploadCount && !this.hasPermissionForUploadData(),
+        disabled: !pendingUploadCount && !this.canUploadData(),
         connectionRequired: true,
       },
     ];
   }
 
-  private hasPermissionForDownloadData(): boolean {
+  private canDownloadData() {
     return this.authService.hasAllPermissions([
       Permission.RegistrationPersonalForValidationREAD,
     ]);
   }
 
-  private hasPermissionForScanQr(): boolean {
+  private canScanQr() {
     return this.authService.hasAllPermissions([
       Permission.RegistrationReferenceIdSEARCH,
       Permission.RegistrationPersonalForValidationREAD,
     ]);
   }
 
-  private hasPermissionForFindByPhone(): boolean {
+  private canFindByPhone() {
     return this.authService.hasAllPermissions([
       Permission.RegistrationPersonalSEARCH,
       Permission.RegistrationPersonalForValidationREAD,
     ]);
   }
 
-  private hasPermissionForUploadData(): boolean {
+  private canUploadData() {
     return this.authService.hasAllPermissions([
       Permission.RegistrationPersonalUPDATE,
       Permission.RegistrationAttributeUPDATE,

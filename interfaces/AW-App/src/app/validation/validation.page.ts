@@ -8,6 +8,8 @@ import {
 import { IonContent } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { environment } from 'src/environments/environment';
+import { AuthService } from '../auth/auth.service';
+import { User } from '../models/user.model';
 import { ConversationService } from '../services/conversation.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { DownloadDataComponent } from '../validation-components/download-data/download-data.component';
@@ -54,6 +56,7 @@ export class ValidationPage implements OnInit {
     public conversationService: ConversationService,
     private resolver: ComponentFactoryResolver,
     private storage: Storage,
+    private authService: AuthService,
   ) {
     // Listen for completed sections, to continue with next steps
     this.conversationService.sectionCompleted$.subscribe((response: string) => {
@@ -103,6 +106,29 @@ export class ValidationPage implements OnInit {
 
   public scrollDown() {
     this.ionContent.scrollToBottom(this.scrollSpeed);
+  }
+
+  public debugShowPermissions() {
+    this.authService.authenticationState$
+      .subscribe((user: User | null) => {
+        if (!user) {
+          return;
+        }
+        const userPermissions = user.permissions.sort();
+
+        let allPermissions = '';
+        userPermissions.forEach((p) => (allPermissions += `${p}\n`));
+
+        const userIdCard =
+          `User: ${user.username}\n\n` +
+          `Permissions: (${userPermissions.length})\n\n` +
+          `${allPermissions}\n`;
+
+        // tslint:disable:no-console
+        console.info(userIdCard);
+        window.alert(userIdCard);
+      })
+      .unsubscribe();
   }
 
   public debugClearAllStorage() {
