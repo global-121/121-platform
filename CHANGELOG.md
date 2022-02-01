@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.33.1...master)
 
+### Changed
+
+- 2022-??-??: From Role-based access to Permission-based access
+
+  All access-checks on back-end endpoints and visibility of interface-features is now handled via specific [Permissions](services/121-service/src/user/permission.enum.ts).  
+  `Permission`s are assigned to `User`s per `Program`.
+  Sets of `Permission`s (`Role`s) can be defined per `Program`, to be assigned to `User`s.
+
+  Data-migrations and definitions of existing `User`s and their `Role`s are included in the [TypeORM migration script](migration/1642520954620-roles-permissions.ts).
+
 ---
 
 ## [1.33.1](https://github.com/global-121/121-platform/compare/v1.33.0...1.33.1) - 2022-01-19

@@ -1,9 +1,9 @@
 import { formatDate } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
+import Permission from 'src/app/auth/permission.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
@@ -13,17 +13,22 @@ import { environment } from 'src/environments/environment';
   templateUrl: './export-list.component.html',
   styleUrls: ['./export-list.component.scss'],
 })
-export class ExportListComponent implements OnChanges {
+export class ExportListComponent {
   @Input()
   public programId: number;
+
   @Input()
   public exportType: ExportType;
+
   @Input()
   public minPayment: number;
+
   @Input()
   public maxPayment: number;
+
   @Input()
   public disabled: boolean;
+
   public isInProgress = false;
 
   public btnText: string;
@@ -31,7 +36,6 @@ export class ExportListComponent implements OnChanges {
   public message: string;
 
   private locale: string;
-  private actionTimestamp: string;
   private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   constructor(
@@ -50,32 +54,20 @@ export class ExportListComponent implements OnChanges {
     this.updateSubHeader();
   }
 
-  async ngOnChanges(changes: SimpleChanges) {
-    if (
-      changes.programId &&
-      ['string', 'number'].includes(typeof changes.programId.currentValue)
-    ) {
-      this.disabled = !this.btnEnabled();
-    }
-  }
-
   private async updateSubHeader() {
-    await this.getLatestActionTime();
     this.subHeader = this.translate.instant(
       'page.program.export-list.' + this.exportType + '.confirm-message',
     );
-    this.message = this.actionTimestamp
-      ? this.translate.instant('page.program.export-list.timestamp', {
-          dateTime: this.actionTimestamp,
-        })
-      : '';
-  }
+    this.message = '';
 
-  private btnEnabled() {
-    return (
-      this.authService.hasUserRole([UserRole.PersonalData]) &&
-      this.exportType !== ExportType.payment
-    );
+    if (this.authService.hasPermission(Permission.ActionREAD)) {
+      const actionTimestamp = await this.getLatestActionTime();
+      this.message = actionTimestamp
+        ? this.translate.instant('page.program.export-list.timestamp', {
+            dateTime: actionTimestamp,
+          })
+        : '';
+    }
   }
 
   public async getExportList() {
@@ -115,17 +107,18 @@ export class ExportListComponent implements OnChanges {
     await alert.present();
   }
 
-  public async getLatestActionTime(): Promise<void> {
+  private async getLatestActionTime(): Promise<string | null> {
     const latestAction = await this.programsService.retrieveLatestActions(
       this.exportType,
       this.programId,
     );
-    if (latestAction) {
-      this.actionTimestamp = formatDate(
-        new Date(latestAction.created),
-        this.dateFormat,
-        this.locale,
-      );
+    if (!latestAction) {
+      return null;
     }
+    return formatDate(
+      new Date(latestAction.created),
+      this.dateFormat,
+      this.locale,
+    );
   }
 }

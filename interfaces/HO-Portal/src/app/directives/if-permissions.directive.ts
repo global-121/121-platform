@@ -16,13 +16,12 @@ export class IfPermissionsDirective {
 
   @Input()
   set appIfPermissions(requiredPermissions: Permission[]) {
-    if (!requiredPermissions && !this.hasView) {
+    const condition = this.authService.hasAllPermissions(requiredPermissions);
+
+    if (condition && !this.hasView) {
       this.viewContainer.createEmbeddedView(this.templateRef);
       this.hasView = true;
-    } else if (
-      this.authService.hasAllPermissions(requiredPermissions) &&
-      this.hasView
-    ) {
+    } else if (!condition && this.hasView) {
       this.viewContainer.clear();
       this.hasView = false;
     }

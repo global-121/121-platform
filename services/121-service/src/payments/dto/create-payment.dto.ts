@@ -1,6 +1,7 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 
-import { IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
+import { ReferenceIdsDto } from '../../registration/dto/reference-id.dto';
 
 export class CreatePaymentDto {
   @ApiModelProperty({ example: 1 })
@@ -9,9 +10,7 @@ export class CreatePaymentDto {
   @ApiModelProperty({ example: 10 })
   @IsNumber()
   public readonly amount: number;
-  @ApiModelProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
-  @Length(29, 36)
-  @IsString()
+  @ApiModelProperty()
   @IsOptional()
-  public readonly referenceId: string;
+  public readonly referenceIds: ReferenceIdsDto;
 }

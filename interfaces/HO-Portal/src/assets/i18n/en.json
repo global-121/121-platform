@@ -202,7 +202,6 @@
         "validationByQr": "Program includes validation via QR-code"
       },
       "program-payout": {
-        "section-title": "Manage Payments",
         "payment-nr": "Payment #{{number}}",
         "choose-payment": "Choose payment...",
         "all-closed-payments": "All closed payments",
@@ -229,12 +228,11 @@
           "error": {
             "generic": "Something went wrong with the payment. Please contact the 121 development team."
           },
-          "make-payment": "New payment: {{nr}}",
+          "make-payment": "Do payment: {{nr}}",
           "number-included": "PA included: {{number}}"
         }
       },
       "program-people-affected": {
-        "section-title": "Manage People Affected",
         "choose-action": "Choose action...",
         "no-actions": "No actions available",
         "apply-action": "Apply action",
@@ -299,7 +297,8 @@
           "reject": "Reject from program",
           "end-inclusion": "End inclusion in program",
           "send-message": "Send Message to PA's",
-          "delete-pa": "Delete PA"
+          "delete-pa": "Delete PA",
+          "do-payment": "Do payment"
         },
         "action-inputs": {
           "message-checkbox": "Send a message to these People Affected",

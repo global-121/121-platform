@@ -30,12 +30,7 @@ describe('RegistrationValidationPage', () => {
     }).compileComponents();
   }));
 
-  let mockAuthService: jasmine.SpyObj<any>;
-
   beforeEach(() => {
-    mockAuthService = TestBed.inject(AuthService);
-    mockAuthService.hasUserRole.and.returnValue(false);
-
     fixture = TestBed.createComponent(RegistrationValidationPage);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -8,7 +8,6 @@ import {
   ApiOperation,
   ApiImplicitParam,
 } from '@nestjs/swagger';
-import { DefaultUserRole } from '../user/user-role.enum';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { PermissionsGuard } from '../permissions.guard';
 import { Permissions } from '../permissions.decorator';
@@ -49,7 +48,7 @@ export class PaymentsController {
       param.programId,
       data.payment,
       data.amount,
-      data.referenceId,
+      data.referenceIds,
     );
   }
 

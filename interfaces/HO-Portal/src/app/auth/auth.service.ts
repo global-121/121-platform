@@ -5,7 +5,6 @@ import { User } from '../models/user.model';
 import { JwtService } from '../services/jwt.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import Permission from './permission.enum';
-import { UserRole } from './user-role.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -34,18 +33,6 @@ export class AuthService {
     return this.getUserFromToken() !== null;
   }
 
-  public hasUserRole(requiredRoles: UserRole[]): boolean {
-    const user = this.getUserFromToken();
-
-    if (!user || !user.roles) {
-      return false;
-    }
-
-    return requiredRoles.some((role) => {
-      return user.roles.includes(role);
-    });
-  }
-
   public hasPermission(
     requiredPermission: Permission,
     user?: User | null,
@@ -60,7 +47,10 @@ export class AuthService {
 
   public hasAllPermissions(requiredPermissions: Permission[]): boolean {
     const user = this.getUserFromToken();
-    return requiredPermissions.every((p) => this.hasPermission(p, user));
+    return (
+      !!requiredPermissions &&
+      requiredPermissions.every((p) => this.hasPermission(p, user))
+    );
   }
 
   private getUserFromToken(): User | null {
@@ -86,7 +76,6 @@ export class AuthService {
 
     return {
       username: user.username,
-      roles: user.roles,
       permissions: user.permissions,
     };
   }
