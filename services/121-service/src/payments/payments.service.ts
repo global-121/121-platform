@@ -78,7 +78,7 @@ export class PaymentsService {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    
+
     const targetedRegistrations = await this.getRegistrationsForPayment(
       programId,
       payment,
@@ -220,8 +220,8 @@ export class PaymentsService {
     programId: number,
     payment: number,
     referenceIdsDto?: ReferenceIdsDto,
-    ): Promise<RegistrationEntity[]> {
-      if (referenceIdsDto) {
+  ): Promise<RegistrationEntity[]> {
+    if (referenceIdsDto) {
       return await this.registrationRepository.find({
         where: { referenceId: In(referenceIdsDto.referenceIds) },
         relations: ['fsp'],

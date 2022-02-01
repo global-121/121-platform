@@ -146,8 +146,8 @@ export class ExportMetricsController {
   public async getTotalTransferAmounts(
     @Param() params,
     @Body() referenceIdsDto: ReferenceIdsDto,
-    ): Promise<TotalTransferAmounts> {
-      return await this.exportMetricsService.getTotalTransferAmounts(
+  ): Promise<TotalTransferAmounts> {
+    return await this.exportMetricsService.getTotalTransferAmounts(
       Number(params.programId),
       referenceIdsDto,
     );
