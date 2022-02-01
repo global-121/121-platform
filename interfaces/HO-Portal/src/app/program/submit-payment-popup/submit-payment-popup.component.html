@@ -2,9 +2,9 @@
   <ion-toolbar>
     <ion-title>
       {{
-      'page.program.program-people-affected.actions.do-payment' | translate
+        'page.program.program-payout.make-payment.make-payment'
+          | translate: { nr: submitPaymentProps.payment ? '#' + submitPaymentProps.payment : '-' }
       }}
-      #{{ submitPaymentProps.payment }}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="closeModal()" [attr.title]="'common.cancel'|translate"

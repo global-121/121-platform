@@ -28,6 +28,7 @@ import { PaymentsService } from '../payments/payments.service';
 import { ProgramEntity } from '../programs/program.entity';
 import { TransactionsService } from '../payments/transactions/transactions.service';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
+import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
 
 @Injectable()
 export class ExportMetricsService {
@@ -884,14 +885,13 @@ export class ExportMetricsService {
 
   public async getTotalTransferAmounts(
     programId: number,
-    referenceIdsInput: object,
+    referenceIdsDto: ReferenceIdsDto,
   ): Promise<TotalTransferAmounts> {
-    const referenceIds = JSON.parse(referenceIdsInput['referenceIds']);
     let registrations;
-    if (referenceIds.length) {
+    if (referenceIdsDto.referenceIds.length) {
       registrations = await this.registrationRepository.find({
         where: {
-          referenceId: In(referenceIds),
+          referenceId: In(referenceIdsDto.referenceIds),
         },
       });
     } else {
