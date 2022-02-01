@@ -181,8 +181,8 @@ export class SeedProgramEth implements InterfaceScript {
         ],
       },
       {
-        role: 'manager-of-operations',
-        label: 'Manager of Operations',
+        role: 'operation-management',
+        label: 'Operation management',
         permissions: [
           // Listing all permissions here to show which are not assigned (commented):
           PermissionEnum.InstanceUPDATE,
@@ -225,8 +225,8 @@ export class SeedProgramEth implements InterfaceScript {
         ],
       },
       {
-        role: 'manager-of-programme-quality',
-        label: 'Manager of Programme Quality',
+        role: 'programme-quality',
+        label: 'Programme Quality',
         permissions: [
           // Listing all permissions of 'administratorZOA' role here to show which are not assigned (commented):
           PermissionEnum.InstanceUPDATE,
@@ -335,7 +335,7 @@ export class SeedProgramEth implements InterfaceScript {
       ['programme-management'],
     );
     const operationManagementUser = await this.seedHelper.addUser({
-      username: 'manager-of-operations-user@example.org',
+      username: 'operation-management-user@example.org',
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
     await this.seedHelper.assignAidworker(
@@ -343,15 +343,13 @@ export class SeedProgramEth implements InterfaceScript {
       program.id,
       ['manager-of-operations'],
     );
-    const managerOfProgramQualiyUser = await this.seedHelper.addUser({
-      username: 'manager-of-programme-quality-user@example.org',
+    const programQualiyUser = await this.seedHelper.addUser({
+      username: 'programme-quality-user@example.org',
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
-    await this.seedHelper.assignAidworker(
-      managerOfProgramQualiyUser.id,
-      program.id,
-      ['manager-of-programme-quality'],
-    );
+    await this.seedHelper.assignAidworker(programQualiyUser.id, program.id, [
+      'manager-of-programme-quality',
+    ]);
     const projectOfficerUser = await this.seedHelper.addUser({
       username: 'project-officer-user@example.org',
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,

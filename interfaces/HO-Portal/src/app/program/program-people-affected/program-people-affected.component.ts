@@ -262,6 +262,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public submitWarning: any;
 
   public canViewPersonalData: boolean;
+  private canUpdatePaData: boolean;
+  private canUpdatePersonalData: boolean;
   private canViewPaymentData: boolean;
   private canViewVouchers: boolean;
   private canDoSinglePayment: boolean;
@@ -518,8 +520,14 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.paymentInProgress =
       await this.pastPaymentsService.checkPaymentInProgress(this.program.id);
 
+    this.canUpdatePaData = this.authService.hasAllPermissions([
+      Permission.RegistrationAttributeUPDATE,
+    ]);
     this.canViewPersonalData = this.authService.hasAllPermissions([
       Permission.RegistrationPersonalREAD,
+    ]);
+    this.canUpdatePersonalData = this.authService.hasAllPermissions([
+      Permission.RegistrationPersonalUPDATE,
     ]);
     this.canViewPaymentData = this.authService.hasAllPermissions([
       Permission.PaymentREAD,
@@ -931,6 +939,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       componentProps: {
         person,
         programId,
+        readOnly: !this.canUpdatePaData,
+        canViewPersonalData: this.canViewPersonalData,
+        canUpdataPersonalData: this.canUpdatePersonalData,
       },
     });
 
