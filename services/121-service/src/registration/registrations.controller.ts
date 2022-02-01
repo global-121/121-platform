@@ -520,4 +520,13 @@ export class RegistrationsController {
       params.referenceId,
     );
   }
+
+  @Roles(UserRole.PersonalData)
+  @ApiOperation({
+    title: 'Fix inclusionscore after update answers from customdata',
+  })
+  @Post('fix-inclusionscore')
+  public async fixInclusionscore(): Promise<void> {
+    return await this.registrationsService.fixAllInclusionscore();
+  }
 }
