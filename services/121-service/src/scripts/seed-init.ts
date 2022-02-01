@@ -113,6 +113,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationFspUPDATE,
           PermissionEnum.RegistrationNotificationREAD,
           PermissionEnum.RegistrationNotificationCREATE,
+          PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
           PermissionEnum.RegistrationPersonalSEARCH,
           PermissionEnum.RegistrationPersonalUPDATE,
