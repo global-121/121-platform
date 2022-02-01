@@ -525,7 +525,7 @@ export class RegistrationsController {
   @ApiOperation({
     title: 'Fix inclusionscore after update answers from customdata',
   })
-  @Get('fix-inclusionscore')
+  @Post('fix-inclusionscore')
   public async fixInclusionscore(): Promise<void> {
     return await this.registrationsService.fixAllInclusionscore();
   }

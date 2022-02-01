@@ -1234,9 +1234,8 @@ export class RegistrationsService {
   }
 
   public async fixAllInclusionscore(): Promise<void> {
-    const registrations = await this.registrationRepository
-      .createQueryBuilder('registration')
-      .getMany();
+    const registrations = await this.registrationRepository.find();
+    console.log('registrations: ', registrations);
     for (const registration of registrations) {
       await this.inclusionScoreService.calculateInclusionScore(
         registration.referenceId,
