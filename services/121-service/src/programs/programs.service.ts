@@ -1,5 +1,4 @@
 import { ProgramQuestionEntity } from './program-question.entity';
-import { ActionService } from '../actions/action.service';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,12 +9,11 @@ import { CreateProgramDto } from './dto/create-program.dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ActionEntity } from '../actions/action.entity';
-import { FspService } from '../fsp/fsp.service';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
-import { RegistrationEntity } from '../registration/registration.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
+import { UpdateProgramCustomAttributesDto } from './dto/update-program-custom-attribute.dto';
 
 @Injectable()
 export class ProgramService {
@@ -146,6 +144,32 @@ export class ProgramService {
 
     await this.programRepository.save(program);
     return program;
+  }
+
+  public async updateProgramCustomAttributes(
+    updateProgramCustomAttributes: UpdateProgramCustomAttributesDto,
+  ): Promise<ProgramCustomAttributeEntity[]> {
+    const savedAttributes = [];
+    for (const attribute of updateProgramCustomAttributes.attributes) {
+      const oldAttribute = await this.programCustomAttributeRepository.findOne({
+        where: { name: attribute.name },
+      });
+      if (oldAttribute) {
+        // If existing: update ..
+        oldAttribute.type = attribute.type;
+        const savedAttribute = await this.programCustomAttributeRepository.save(
+          oldAttribute,
+        );
+        savedAttributes.push(savedAttribute);
+      } else {
+        // .. otherwise, create new
+        const savedAttribute = await this.programCustomAttributeRepository.save(
+          attribute,
+        );
+        savedAttributes.push(savedAttribute);
+      }
+    }
+    return savedAttributes;
   }
 
   public async updateProgramQuestion(

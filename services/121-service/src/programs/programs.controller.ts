@@ -18,6 +18,8 @@ import { UserRole } from '../user-role.enum';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ChangePhaseDto } from './dto/change-phase.dto';
+import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
+import { UpdateProgramCustomAttributesDto } from './dto/update-program-custom-attribute.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -82,7 +84,7 @@ export class ProgramController {
   @Roles(UserRole.Admin, UserRole.RunProgram)
   @ApiOperation({ title: 'Update program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('update/:programId')
+  @Post(':programId/update')
   public async updateProgram(
     @Param() params,
     @Body() updateProgramDto: UpdateProgramDto,
@@ -94,13 +96,24 @@ export class ProgramController {
   }
 
   @Roles(UserRole.Admin)
-  @ApiOperation({ title: 'Update program questions' })
-  @Post('update/program-question')
+  @ApiOperation({ title: 'Update program question' })
+  @Post(':programId/update/program-question')
   public async updateProgramQuestion(
     @Body() updateProgramQuestionDto: UpdateProgramQuestionDto,
   ): Promise<ProgramQuestionEntity> {
     return await this.programService.updateProgramQuestion(
       updateProgramQuestionDto,
+    );
+  }
+
+  @Roles(UserRole.Admin)
+  @ApiOperation({ title: 'Update program custom attributes' })
+  @Post(':programId/update/program-custom-attributes')
+  public async updateProgramCustomAttributes(
+    @Body() updateProgramCustomAttributes: UpdateProgramCustomAttributesDto,
+  ): Promise<ProgramCustomAttributeEntity[]> {
+    return await this.programService.updateProgramCustomAttributes(
+      updateProgramCustomAttributes,
     );
   }
 }

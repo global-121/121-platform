@@ -528,7 +528,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        `/programs/update/${programId}`,
+        `/programs/${programId}/update`,
         updateBody,
       )
       .toPromise();
