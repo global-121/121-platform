@@ -16,6 +16,7 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ActionModule } from '../actions/action.module';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { LookupModule } from '../notifications/lookup/lookup.module';
+import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { LookupModule } from '../notifications/lookup/lookup.module';
       FspAttributeEntity,
       RegistrationEntity,
       ProgramQuestionEntity,
+      ProgramCustomAttributeEntity,
     ]),
     ActionModule,
     UserModule,

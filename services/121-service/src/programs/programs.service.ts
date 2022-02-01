@@ -1,8 +1,4 @@
 import { ProgramQuestionEntity } from './program-question.entity';
-import {
-  GetTransactionDto,
-  GetTransactionOutputDto,
-} from '../payments/transactions/dto/get-transaction.dto';
 import { ActionService } from '../actions/action.service';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
@@ -12,20 +8,14 @@ import { ProgramEntity } from './program.entity';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { CreateProgramDto } from './dto/create-program.dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
-import {
-  FinancialServiceProviderEntity,
-  FspName,
-} from '../fsp/financial-service-provider.entity';
-import { ActionEntity, AdditionalActionType } from '../actions/action.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { ActionEntity } from '../actions/action.entity';
 import { FspService } from '../fsp/fsp.service';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
-import { PaPaymentDataDto } from '../payments/dto/pa-payment-data.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
-import { StatusEnum } from '../shared/enum/status.enum';
-import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
-import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../registration/registration.entity';
+import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 
 @Injectable()
 export class ProgramService {
@@ -33,6 +23,10 @@ export class ProgramService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramQuestionEntity)
   public programQuestionRepository: Repository<ProgramQuestionEntity>;
+  @InjectRepository(ProgramCustomAttributeEntity)
+  public programCustomAttributeRepository: Repository<
+    ProgramCustomAttributeEntity
+  >;
   @InjectRepository(FspAttributeEntity)
   public fspAttributeRepository: Repository<FspAttributeEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
@@ -43,13 +37,8 @@ export class ProgramService {
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ActionEntity)
   public actionRepository: Repository<ActionEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
 
-  public constructor(
-    private readonly actionService: ActionService,
-    private readonly fspService: FspService,
-  ) {}
+  public constructor() {}
 
   public async findOne(where): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne(where, {
@@ -87,6 +76,7 @@ export class ProgramService {
   }
 
   public async create(programData: CreateProgramDto): Promise<ProgramEntity> {
+    console.log('programData: ', programData);
     let program = new ProgramEntity();
     program.location = programData.location;
     program.ngo = programData.ngo;
@@ -111,6 +101,12 @@ export class ProgramService {
     program.programQuestions = [];
     program.financialServiceProviders = [];
 
+    for (let customAttribute of programData.programCustomAttributes) {
+      let customAttributeReturn = await this.programCustomAttributeRepository.save(
+        customAttribute,
+      );
+      program.programCustomAttributes.push(customAttributeReturn);
+    }
     for (let programQuestion of programData.programQuestions) {
       let programQuestionReturn = await this.programQuestionRepository.save(
         programQuestion,

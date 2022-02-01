@@ -14,6 +14,10 @@ import {
 import { CreateProgramQuestionDto } from './create-program-question.dto';
 import { Type } from 'class-transformer';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import {
+  CreateProgramCustomAttributeDto,
+  CustomAttributeType,
+} from './create-program-custom-attribute.dto';
 
 export class CreateProgramDto {
   @ApiModelProperty()
@@ -122,6 +126,24 @@ export class CreateProgramDto {
   @ApiModelProperty({ example: '+000 000 00 00' })
   @IsString()
   public readonly phoneNumberPlaceholder: string;
+
+  @ApiModelProperty({
+    example: [
+      {
+        name: 'nameParterOrganization',
+        type: CustomAttributeType.string,
+      },
+      {
+        name: 'exampleBoolean',
+        type: CustomAttributeType.boolean,
+      },
+    ],
+  })
+  @IsArray()
+  @ValidateNested()
+  @IsDefined()
+  @Type(() => CreateProgramCustomAttributeDto)
+  public readonly programCustomAttributes: CreateProgramCustomAttributeDto[];
 
   @ApiModelProperty({
     example: [

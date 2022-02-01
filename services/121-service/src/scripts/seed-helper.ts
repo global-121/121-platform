@@ -12,6 +12,7 @@ import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { UserRole } from '../user-role.enum';
 import { UserType } from '../user/user-type-enum';
+import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 
 export class SeedHelper {
   public constructor(private connection: Connection) {}
@@ -42,6 +43,9 @@ export class SeedHelper {
       FinancialServiceProviderEntity,
     );
 
+    const programCustomAttributeRepository = this.connection.getRepository(
+      ProgramCustomAttributeEntity,
+    );
     const programQuestionRepository = this.connection.getRepository(
       ProgramQuestionEntity,
     );
@@ -49,10 +53,19 @@ export class SeedHelper {
     const programExampleDump = JSON.stringify(programExample);
     const program = JSON.parse(programExampleDump);
 
-    // Remove original program questions and add it to a sepperate variable
+    // Remove original program custom attributes and add it to a separate variable
+    const programCustomAttributes = program.programCustomAttributes;
+    program.programCustomAttributes = [];
+    for (let attribute of programCustomAttributes) {
+      let attributeReturn = await programCustomAttributeRepository.save(
+        attribute,
+      );
+      program.programCustomAttributes.push(attributeReturn);
+    }
+
+    // Remove original program questions and add it to a separate variable
     const programQuestions = program.programQuestions;
     program.programQuestions = [];
-
     for (let question of programQuestions) {
       if (question.answerType === 'dropdown') {
         const scoringKeys = Object.keys(question.scoring);
@@ -74,10 +87,9 @@ export class SeedHelper {
       program.programQuestions.push(questionReturn);
     }
 
-    // Remove original fsp questions and add it to a sepperate variable
+    // Remove original fsp questions and add it to a separate variable
     const fsps = program.financialServiceProviders;
     program.financialServiceProviders = [];
-
     for (let fsp of fsps) {
       let fspReturn = await fspRepository.findOne(fsp.id);
       program.financialServiceProviders.push(fspReturn);
