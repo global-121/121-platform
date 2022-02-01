@@ -1232,13 +1232,4 @@ export class RegistrationsService {
     }
     return messageHistoryArray;
   }
-
-  public async fixAllInclusionscore(): Promise<void> {
-    const registrations = await this.registrationRepository.find();
-    for (const registration of registrations) {
-      await this.inclusionScoreService.calculateInclusionScore(
-        registration.referenceId,
-      );
-    }
-  }
 }
