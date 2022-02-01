@@ -88,6 +88,12 @@
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
+  "programCustomAttributes": [
+    {
+      "name": "namePartnerOrganization",
+      "type": "string"
+    }
+  ],
   "programQuestions": [
     {
       "name": "nameFirst",
@@ -103,7 +109,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -120,7 +130,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
