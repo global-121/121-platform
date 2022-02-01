@@ -81,6 +81,9 @@ export class IntersolveService {
         amount,
         payment,
       );
+      if (!paResult) {
+        continue;
+      }
 
       result.paList.push(paResult);
       // If 'waiting' then transaction is stored already earlier, to make sure it's there before status-callback comes in
@@ -123,23 +126,28 @@ export class IntersolveService {
     );
     paResult.calculatedAmount = calculatedAmount;
 
-    let cardId;
-
     const voucher = await this.getReusableVoucher(
       paymentInfo.referenceId,
-      amount,
       payment,
     );
 
     if (voucher) {
-      cardId = voucher.barcode;
-      paResult.status = StatusEnum.success;
+      if (voucher.send) {
+        // If an existing voucher is found, but already claimed, then skip this PA (this route should never happen)
+        console.log(
+          `Cannot submit payment ${payment} for PA ${paymentInfo.referenceId} as there is already a claimed voucher for this PA and this payment.`,
+        );
+        return;
+      } else {
+        // .. if existing voucher is found, then continue with that one, and don't create new one
+        paResult.status = StatusEnum.success;
+      }
     } else {
+      // .. if no existing voucher found, then create new one
       const voucherInfo = await this.issueVoucher(
         calculatedAmount,
         intersolveRefPos,
       );
-      cardId = voucherInfo.cardId;
       voucherInfo.refPos = intersolveRefPos;
 
       if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
@@ -175,13 +183,7 @@ export class IntersolveService {
     }
 
     // Continue with whatsapp:
-    return await this.sendWhatsapp(
-      paymentInfo,
-      paResult,
-      amount,
-      cardId,
-      payment,
-    );
+    return await this.sendWhatsapp(paymentInfo, paResult, amount, payment);
   }
 
   private getIntersolveRefPos(): number {
@@ -190,7 +192,6 @@ export class IntersolveService {
 
   private async getReusableVoucher(
     referenceId: string,
-    amount: number,
     payment: number,
   ): Promise<IntersolveBarcodeEntity> {
     const rawBarcode = await this.registrationRepository
@@ -202,19 +203,16 @@ export class IntersolveService {
       .where('registration.referenceId = :referenceId', {
         referenceId: referenceId,
       })
-      .andWhere('barcode.availableForReuse = :availableForReuse', {
-        availableForReuse: true,
-      })
-      .andWhere('barcode.amount = :amount', {
-        amount: amount,
+      .andWhere('barcode.payment = :payment', {
+        payment: payment,
       })
       .getRawOne();
     if (!rawBarcode) {
       return;
     }
-    const barcode: IntersolveBarcodeEntity = this.intersolveBarcodeRepository.create(rawBarcode as IntersolveBarcodeEntity)
-    barcode.payment = payment;
-    barcode.availableForReuse = false;
+    const barcode: IntersolveBarcodeEntity = this.intersolveBarcodeRepository.create(
+      rawBarcode as IntersolveBarcodeEntity,
+    );
     return await this.intersolveBarcodeRepository.save(barcode);
   }
 
@@ -255,7 +253,6 @@ export class IntersolveService {
     paymentInfo: PaPaymentDataDto,
     paResult: PaTransactionResultDto,
     amount: number,
-    cardId: string,
     payment: number,
   ): Promise<PaTransactionResultDto> {
     const transferResult = await this.sendVoucherWhatsapp(
@@ -273,7 +270,6 @@ export class IntersolveService {
       paResult = await this.processFailedWhatsappResult(
         paResult,
         transferResult,
-        cardId,
       );
     }
     return paResult;
@@ -357,15 +353,12 @@ export class IntersolveService {
   private async processFailedWhatsappResult(
     transactionResult: PaTransactionResultDto,
     transferResult: PaTransactionResultDto,
-    cardId: string,
   ): Promise<PaTransactionResultDto> {
     transactionResult.status = StatusEnum.error;
     transactionResult.message =
       'Voucher(s) created, but something went wrong in sending voucher.\n' +
       transferResult.message;
 
-    // If sending failed cancel and delete voucher again
-    await this.markVoucherAsReusable(cardId);
     return transactionResult;
   }
 
@@ -410,19 +403,6 @@ export class IntersolveService {
     if (succesStatuses.includes(statusCallbackData.MessageStatus)) {
       status = StatusEnum.success;
     } else if (failStatuses.includes(statusCallbackData.MessageStatus)) {
-      const registration = await this.registrationRepository.findOne({
-        where: { id: transaction.registration.id },
-        relations: ['images', 'images.barcode'],
-      });
-      // NOTE: array.find yields 1st element, but this is line with 1 voucher per payment
-      const voucher = registration.images.find(
-        i => i.barcode.payment === transaction.payment,
-      ).barcode;
-      const intersolveRequest = await this.intersolveRequestRepository.findOne({
-        where: { cardId: voucher.barcode },
-      });
-      await this.markVoucherAsReusable(voucher.barcode);
-
       status = StatusEnum.error;
     } else {
       // For other statuses, no update needed
@@ -663,13 +643,5 @@ export class IntersolveService {
       transactionResult.fspName = FspName.intersolveNoWhatsapp;
     }
     return transactionResult;
-  }
-
-  private async markVoucherAsReusable(barcode: string): Promise<void> {
-    const voucher = await this.intersolveBarcodeRepository.findOne({
-      where: { barcode: barcode },
-    });
-    voucher.availableForReuse = true;
-    await this.intersolveBarcodeRepository.save(voucher);
   }
 }
