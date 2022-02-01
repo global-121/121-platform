@@ -2,7 +2,7 @@
 Feature: Manage aidworkers
 
   Background:
-    Given a logged-in user with the "AidWorkerCREATE", "AidWorkerDELETE" abd "AidWorkerProgramUPDATE" permissions
+    Given a logged-in user with the "AidWorkerCREATE", "AidWorkerDELETE" and "AidWorkerProgramUPDATE" permissions
     Given the user views the "aid-workers" page
 
   Scenario: View assigned aidworkers

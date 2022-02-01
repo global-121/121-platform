@@ -39,7 +39,7 @@ Feature: Navigate program phases
     Then the program will advance to the next phase (see scenario: "Advancing to next phase")
     And the program will now appear as a selectable program in the PA-app
 
-  Scenario: Publishing or Unpublishing a program for registration ("publishing")
+  Scenario: Open/Close a program for registration ("publishing"/"un-publishing")
     Given user views a "program" page
     Given the "current program phase" is "Registration"
     Given "selected phase" is "Registration"

@@ -91,7 +91,7 @@ Feature: Edit information on Person Affected
 
     When the user clicks the 'update' button
     Then the request is made
-    And response is given whether it was successfull or not (if not, likely due to validation errors on the input-fields)
+    And response is given whether it was successful or not (if not, likely due to validation errors on the input-fields)
 
     When the user closes and re-opens the pop-update
     Then the input-fields for attributes of the old FSP are gone
