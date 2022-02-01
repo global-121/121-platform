@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IntersolveCancelResponse } from './dto/intersolve-cancel-response.dto';
-import { IntersolveCancelTransactionByRefPosResponse } from './dto/intersolve-cancel-transaction-by-ref-pos-response.dto';
 import { IntersolveGetCardResponse } from './dto/intersolve-get-card-response.dto';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
 import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
@@ -22,13 +20,6 @@ export class IntersolveApiService {
     private readonly soapService: SoapService,
     private intersolveMock: IntersolveMockService,
   ) {}
-
-  // If we get one of these codes back from a cancel by refpos, stop cancelling
-  private readonly stopCancelByRefposCodes = [
-    IntersolveResultCode.Ok,
-    IntersolveResultCode.InvalidOrUnknownRetailer,
-    IntersolveResultCode.UnableToCancel,
-  ];
 
   public async issueCard(
     amount: number,
@@ -121,48 +112,6 @@ export class IntersolveApiService {
         responseBody.GetCardResponse.Card?.BalanceFactor?._text,
       ),
     };
-    return result;
-  }
-
-  public async cancelTransactionByRefPos(
-    refPos: number,
-  ): Promise<IntersolveCancelTransactionByRefPosResponse> {
-    let payload = await this.soapService.readXmlAsJs(
-      IntersolveSoapElements.CancelTransactionByRefPos,
-    );
-    payload = this.soapService.changeSoapBody(
-      payload,
-      IntersolveSoapElements.CancelTransactionByRefPos,
-      ['EAN'],
-      process.env.INTERSOLVE_EAN,
-    );
-    payload = this.soapService.changeSoapBody(
-      payload,
-      IntersolveSoapElements.CancelTransactionByRefPos,
-      ['RefPosToCancel'],
-      String(refPos),
-    );
-
-    const responseBody = await this.soapService.post(payload);
-    const result = {
-      resultCode:
-        responseBody.CancelTransactionByRefPosResponse.ResultCode._text,
-      resultDescription:
-        responseBody.CancelTransactionByRefPosResponse.ResultDescription._text,
-    };
-    const intersolveRequest = await this.intersolveRequestRepository.findOne({
-      refPos,
-    });
-    intersolveRequest.updated = new Date();
-    intersolveRequest.isCancelled =
-      result.resultCode == IntersolveResultCode.Ok;
-    intersolveRequest.cancellationAttempts =
-      intersolveRequest.cancellationAttempts + 1;
-    intersolveRequest.cancelByRefPosResultCode = result.resultCode;
-    intersolveRequest.toCancel = !this.stopCancelByRefposCodes.includes(
-      Number(result.resultCode),
-    );
-    await this.intersolveRequestRepository.save(intersolveRequest);
     return result;
   }
 
