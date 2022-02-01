@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- 2022-??-??: From Role-based access to Permission-based access
+- 2022-02-01: From Role-based access to Permission-based access
 
   All access-checks on back-end endpoints and visibility of interface-features is now handled via specific [Permissions](services/121-service/src/user/permission.enum.ts).  
   `Permission`s are assigned to `User`s per `Program`.
