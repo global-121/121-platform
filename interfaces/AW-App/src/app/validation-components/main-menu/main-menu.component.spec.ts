@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
+import { NoConnectionService } from 'src/app/services/no-connection.service';
 import { MainMenuComponent } from './main-menu.component';
 
 const storageIonicMock: any = {
@@ -14,12 +15,6 @@ const storageIonicMock: any = {
 describe('MainMenuComponent', () => {
   let component: MainMenuComponent;
   let fixture: ComponentFixture<MainMenuComponent>;
-
-  const authServiceMock = jasmine.createSpyObj('AuthService', {
-    isLoggedIn: () => true,
-    hasAllPermissions: () => true,
-    hasPermission: () => true,
-  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -36,8 +31,10 @@ describe('MainMenuComponent', () => {
           useValue: storageIonicMock,
         },
         {
+          provide: NoConnectionService,
+        },
+        {
           provide: AuthService,
-          useValue: authServiceMock,
         },
       ],
     }).compileComponents();
