@@ -252,7 +252,7 @@ export class ProgramsServiceApiService {
         {
           payment: Number(payment),
           amount: Number(amount),
-          referenceIds: { referenceIds },
+          referenceIds: referenceIds ? { referenceIds } : null,
         },
       )
       .toPromise();
