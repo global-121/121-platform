@@ -27,7 +27,7 @@ export class SinglePayoutDetails {
   referenceId: string;
 }
 
-export class TotalIncluded {
+export class TotalTransferAmounts {
   public registrations: number;
   public transferAmounts: number;
 }

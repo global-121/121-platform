@@ -22,7 +22,8 @@ import { UserRole } from '../user-role.enum';
 import { ExportDetails } from './dto/export-details';
 import { User } from '../user/user.decorator';
 import { ProgramMetrics } from './dto/program-metrics.dto';
-import { TotalIncluded } from './dto/total-included.dto';
+import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
+import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -135,16 +136,20 @@ export class ExportMetricsController {
   }
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({ title: 'Get total number of included per program' })
+  @ApiOperation({ title: 'Get total transfer amounts of people to pay out' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description: 'Total number of included per program',
   })
-  @Get('total-included/:programId')
-  public async getTotalIncluded(@Param() params): Promise<TotalIncluded> {
-    return await this.exportMetricsService.getTotalIncluded(
+  @Post('total-transfer-amounts/:programId')
+  public async getTotalTransferAmounts(
+    @Param() params,
+    @Body() referenceIdsDto: ReferenceIdsDto,
+  ): Promise<TotalTransferAmounts> {
+    return await this.exportMetricsService.getTotalTransferAmounts(
       Number(params.programId),
+      referenceIdsDto,
     );
   }
 }

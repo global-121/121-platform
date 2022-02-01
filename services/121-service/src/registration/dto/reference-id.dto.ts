@@ -1,4 +1,4 @@
-import { IsString, Length } from 'class-validator';
+import { IsArray, Length } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class ReferenceIdDto {
@@ -9,9 +9,11 @@ export class ReferenceIdDto {
 
 export class ReferenceIdsDto {
   @ApiModelProperty({
-    example:
-      '["910c50be-f131-4b53-b06b-6506a40a2734", "910c50be-f131-4b53-b06b-6506a40a2735"]',
+    example: [
+      '910c50be-f131-4b53-b06b-6506a40a2734',
+      '910c50be-f131-4b53-b06b-6506a40a2735',
+    ],
   })
-  @IsString()
-  public readonly referenceIds: string;
+  @IsArray()
+  public readonly referenceIds: string[];
 }

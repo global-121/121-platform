@@ -191,7 +191,7 @@ export class PaymentStatusPopupComponent implements OnInit {
         payoutDetails.programId,
         payoutDetails.payment,
         payoutDetails.amount,
-        payoutDetails.referenceId,
+        [payoutDetails.referenceId],
       )
       .then(
         (response) => {

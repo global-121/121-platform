@@ -36,7 +36,7 @@ import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { Attributes } from './dto/update-attribute.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
-import { ReferenceIdDto } from './dto/reference-id.dto';
+import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
 
 @Injectable()
@@ -156,8 +156,8 @@ export class RegistrationsService {
         await this.programAnswerRepository.save(newAnswer);
       }
     }
-
     await this.storePersistentAnswers(programAnswers, referenceId);
+    await this.inclusionScoreService.calculateInclusionScore(referenceId);
   }
 
   public async cleanAnswers(
@@ -228,6 +228,7 @@ export class RegistrationsService {
       }
     }
     registration.customData = JSON.parse(JSON.stringify(customDataToStore));
+
     await this.registrationRepository.save(registration);
   }
 
@@ -723,13 +724,13 @@ export class RegistrationsService {
 
   public async updateRegistrationStatusBatch(
     programId: number,
-    referenceIds: object,
+    referenceIdsDto: ReferenceIdsDto,
     registrationStatus: RegistrationStatusEnum,
     message?: string,
   ): Promise<void> {
     await this.findProgramOrThrow(programId);
 
-    for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
+    for (let referenceId of referenceIdsDto.referenceIds) {
       const registration = await this.setRegistrationStatus(
         referenceId,
         registrationStatus,
@@ -949,10 +950,10 @@ export class RegistrationsService {
     return await this.registrationRepository.save(updatedRegistration);
   }
 
-  public async deleteBatch(referenceIds: object): Promise<void> {
+  public async deleteBatch(referenceIdsDto: ReferenceIdsDto): Promise<void> {
     const registrations = [];
     const users = [];
-    for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
+    for (let referenceId of referenceIdsDto.referenceIds) {
       const registration = await this.registrationRepository.findOne({
         where: { referenceId: referenceId },
         relations: ['user'],
@@ -1134,10 +1135,7 @@ export class RegistrationsService {
 
   // Used by Aidworker
   public async issueValidation(payload: ValidationIssueDataDto): Promise<void> {
-    await this.storePersistentAnswers(
-      payload.programAnswers,
-      payload.referenceId,
-    );
+    await this.storeProgramAnswers(payload.referenceId, payload.programAnswers);
     await this.setRegistrationStatus(
       payload.referenceId,
       RegistrationStatusEnum.validated,

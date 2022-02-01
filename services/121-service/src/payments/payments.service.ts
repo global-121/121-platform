@@ -9,7 +9,6 @@ import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
-import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
@@ -20,6 +19,7 @@ import { IntersolveService } from './fsp-integration/intersolve/intersolve.servi
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
 import { IntersolveRequestEntity } from './fsp-integration/intersolve/intersolve-request.entity';
+import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 
 @Injectable()
 export class PaymentsService {
@@ -69,12 +69,12 @@ export class PaymentsService {
     programId: number,
     payment: number,
     amount: number,
-    referenceId?: string,
+    referenceIdsDto?: ReferenceIdsDto,
   ): Promise<number> {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
     });
-    if (!program || program.phase === 'design') {
+    if (!program) {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
@@ -82,7 +82,7 @@ export class PaymentsService {
     const targetedRegistrations = await this.getRegistrationsForPayment(
       programId,
       payment,
-      referenceId,
+      referenceIdsDto,
     );
 
     if (targetedRegistrations.length < 1) {
@@ -219,43 +219,27 @@ export class PaymentsService {
   private async getRegistrationsForPayment(
     programId: number,
     payment: number,
-    referenceId?: string,
+    referenceIdsDto?: ReferenceIdsDto,
   ): Promise<RegistrationEntity[]> {
-    const knownPayment = await this.transactionRepository.findOne({
-      where: { payment: payment },
-    });
-    let failedRegistrations;
-    if (knownPayment) {
-      const failedReferenceIds = (
-        await this.getFailedTransactions(programId, payment)
-      ).map(t => t.referenceId);
-      failedRegistrations = await this.registrationRepository.find({
-        where: { referenceId: In(failedReferenceIds) },
+    if (referenceIdsDto) {
+      return await this.registrationRepository.find({
+        where: { referenceId: In(referenceIdsDto.referenceIds) },
         relations: ['fsp'],
       });
     }
 
-    // If 'referenceId' is passed (only in retry-payment-per PA) use this PA only,
-    // If known payment, then only failed registrations
-    // otherwise (new payment) get all included PA's
-    return referenceId
-      ? await this.registrationRepository.find({
-          where: { referenceId: referenceId },
-          relations: ['fsp'],
-        })
-      : knownPayment
-      ? failedRegistrations
-      : await this.getIncludedRegistrations(programId);
-  }
+    // If no referenceIds passed, this must be because of the 'retry all failed' scenario ..
+    const failedReferenceIds = (
+      await this.getFailedTransactions(programId, payment)
+    ).map(t => t.referenceId);
+    // .. if nothing found, throw an error
+    if (!failedReferenceIds.length) {
+      const errors = 'No failed transactions found for this payment.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
 
-  private async getIncludedRegistrations(
-    programId: number,
-  ): Promise<RegistrationEntity[]> {
     return await this.registrationRepository.find({
-      where: {
-        program: { id: programId },
-        registrationStatus: RegistrationStatusEnum.included,
-      },
+      where: { referenceId: In(failedReferenceIds) },
       relations: ['fsp'],
     });
   }
@@ -301,7 +285,7 @@ export class PaymentsService {
   private async getFailedTransactions(
     programId: number,
     payment: number,
-  ): Promise<any> {
+  ): Promise<any[]> {
     const allLatestTransactionAttemptsPerPa = await this.transactionService.getTransactions(
       programId,
       false,

@@ -3,7 +3,7 @@ import { RegistrationResponse } from '../registration/dto/registration-response.
 import { RegistrationsService } from './../registration/registrations.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Not, Repository, getRepository } from 'typeorm';
+import { IsNull, Not, Repository, getRepository, In } from 'typeorm';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import {
@@ -22,12 +22,13 @@ import { StatusEnum } from '../shared/enum/status.enum';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { Attributes } from '../registration/dto/update-attribute.dto';
-import { TotalIncluded } from './dto/total-included.dto';
+import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
 import { PaymentStateSumDto } from './dto/payment-state-sum.dto';
 import { PaymentsService } from '../payments/payments.service';
 import { ProgramEntity } from '../programs/program.entity';
 import { TransactionsService } from '../payments/transactions/transactions.service';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
+import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
 
 @Injectable()
 export class ExportMetricsService {
@@ -882,19 +883,31 @@ export class ExportMetricsService {
     return await q.getRawMany();
   }
 
-  public async getTotalIncluded(programId: number): Promise<TotalIncluded> {
-    const includedRegistrations = await this.registrationRepository.find({
-      where: {
-        program: { id: programId },
-        registrationStatus: RegistrationStatusEnum.included,
-      },
-      relations: ['fsp'],
-    });
-    const sum = includedRegistrations.reduce(function(a, b) {
+  public async getTotalTransferAmounts(
+    programId: number,
+    referenceIdsDto: ReferenceIdsDto,
+  ): Promise<TotalTransferAmounts> {
+    let registrations;
+    if (referenceIdsDto.referenceIds.length) {
+      registrations = await this.registrationRepository.find({
+        where: {
+          referenceId: In(referenceIdsDto.referenceIds),
+        },
+      });
+    } else {
+      registrations = await this.registrationRepository.find({
+        where: {
+          program: { id: programId },
+          registrationStatus: RegistrationStatusEnum.included,
+        },
+        relations: ['fsp'],
+      });
+    }
+    const sum = registrations.reduce(function(a, b) {
       return a + (b[Attributes.paymentAmountMultiplier] || 1);
     }, 0);
     return {
-      registrations: includedRegistrations.length,
+      registrations: registrations.length,
       transferAmounts: sum,
     };
   }

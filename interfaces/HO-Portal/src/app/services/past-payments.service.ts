@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActionType } from '../models/actions.model';
 import { PaymentData } from '../models/payment.model';
+import { Program } from '../models/program.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
 @Injectable({
@@ -20,6 +21,11 @@ export class PastPaymentsService {
       return 0;
     }
     return pastPayments[pastPayments.length - 1].id;
+  }
+
+  public async getNextPaymentId(program: Program): Promise<number> {
+    const lastPaymentId = await this.getLastPaymentId(program.id);
+    return lastPaymentId < program.distributionDuration ? lastPaymentId + 1 : 0;
   }
 
   public async getPaymentsWithDates(programId: number): Promise<

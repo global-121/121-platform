@@ -1,12 +1,10 @@
-<h2>{{ 'page.program.program-people-affected.section-title'|translate }}</h2>
-
 <ion-row class="ion-align-items-center ion-justify-content-between ion-margin-bottom">
   <div>
     <ion-row>
       <select
         name="bulkActions"
         [title]="'page.program.program-people-affected.choose-action'|translate"
-        (change)="selectAction()"
+        (change)="selectAction($event)"
         class="styled-select ion-margin-end"
         [(ngModel)]="action"
       >
@@ -19,6 +17,7 @@
           <option
             *ngIf="action.enabled"
             [value]="action.id"
+            [disabled]="action.id === BulkActionEnum.divider"
           >{{ action.label }}</option>
         </ng-container>
       </select>
@@ -28,6 +27,8 @@
         [subHeader]="'page.program.program-people-affected.submit-warning'|translate"
         [message]="submitWarning.message"
         [inputProps]="getCurrentBulkAction()?.confirmConditions"
+        [submitPaymentProps]="submitPaymentProps"
+        [action]="action"
         class="ion-float-end"
       >
         {{ 'page.program.program-people-affected.apply-action'|translate }}
