@@ -406,8 +406,7 @@ export class IntersolveService {
     payment: number,
   ): Promise<any> {
     const voucher = await this.getVoucher(referenceId, payment);
-
-    return voucher.image;
+    return voucher?.image;
   }
 
   private async getVoucher(referenceId: string, payment: number): Promise<any> {
@@ -425,12 +424,6 @@ export class IntersolveService {
     const voucher = registration.images.find(
       image => image.barcode.payment === payment,
     );
-    if (!voucher) {
-      throw new HttpException(
-        'Voucher not found. Maybe this payment was not (yet) made to this PA.',
-        HttpStatus.NOT_FOUND,
-      );
-    }
     return voucher;
   }
 

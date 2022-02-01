@@ -978,13 +978,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     let voucherUrl = null;
     let voucherButtons = null;
 
-    if (this.hasVoucherSupport(row.fsp) && !hasError && !!value) {
+    if (this.hasVoucherSupport(row.fsp) && !!value) {
       const voucherBlob = await this.programsService.exportVoucher(
         row.referenceId,
         column.paymentIndex,
       );
-      voucherUrl = window.URL.createObjectURL(voucherBlob);
-      voucherButtons = true;
+      if (voucherBlob.size) {
+        voucherUrl = window.URL.createObjectURL(voucherBlob);
+        voucherButtons = true;
+      }
     }
 
     const titleError = hasError ? `${column.name}: ${value.text}` : null;

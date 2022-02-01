@@ -47,7 +47,7 @@ export class IntersolveController {
       identifyVoucherDto.payment,
     );
     var bufferStream = new stream.PassThrough();
-    bufferStream.end(Buffer.from(blob, 'binary'));
+    bufferStream.end(Buffer.from(blob || [], 'binary'));
     response.writeHead(HttpStatus.OK, {
       'Content-Type': 'image/png',
     });
