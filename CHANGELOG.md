@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.33.3](https://github.com/global-121/121-platform/compare/v1.33.2...1.33.3) - 2022-01-31
+## [1.33.3](https://github.com/global-121/121-platform/compare/v1.33.2...1.33.3) - 2022-02-01
 
 ## [1.33.2](https://github.com/global-121/121-platform/compare/v1.33.1...1.33.2) - 2022-01-31
 

@@ -2,7 +2,6 @@ import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
 import { ProgramQuestionEntity } from '../src/programs/program-question.entity';
 import { ProgramAnswerEntity } from '../src/registration/program-answer.entity';
 import { RegistrationEntity } from '../src/registration/registration.entity';
-import { InlusionScoreService } from '../src/registration/services/inclusion-score.service';
 
 export class fixAnswerAndInclusionscore1642520954625
   implements MigrationInterface {
@@ -30,8 +29,7 @@ export class fixAnswerAndInclusionscore1642520954625
     );
 
     const registrations = await registrationRepository.find();
-    for (let i = 0; i < registrations.length; i++) {
-      const registration = registrations[i];
+    for (const registration of registrations) {
       const customDataObject = Object.assign(registration.customData);
 
       for await (const key of Object.keys(customDataObject)) {
