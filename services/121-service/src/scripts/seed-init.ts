@@ -90,6 +90,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.PaymentVoucherREAD,
           PermissionEnum.ProgramAllREAD,
           PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.RegistrationNotificationREAD,
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationREAD,
         ],
