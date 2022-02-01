@@ -2,7 +2,7 @@
 Feature: Export duplicate phone-numbers list
 
   Background:
-    Given a logged-in user with "personal data" role
+    Given a logged-in user with "RegistrationPersonalEXPORT" permission
     Given the "selected phase" is the "review inclusion" phase
 
   Scenario: Export duplicate phone-numbers list
@@ -14,6 +14,6 @@ Feature: Export duplicate phone-numbers list
     And if no "duplicate phone-number" registrations are found then an alert is shown that "no data can be downloaded"
 
   Scenario: Viewing the export options without permission
-    Given a logged-in does not have the "personal data" role
+    Given a logged-in does not have the "RegistrationPersonalEXPORT" permission
     When the user views the "review inclusion" page
-    Then the export list button is disabled
+    Then the export list button is not visible

@@ -2,7 +2,7 @@
 Feature: Delete people affected (extension of Manage_people_affected.feature)
 
   Background:
-    Given a logged-in user with "run program" or "personal data" role
+    Given a logged-in user with "RegistrationDELETE" permission
     And the "active phase" is "registration"
 
   Scenario: Use bulk-action "delete PA"

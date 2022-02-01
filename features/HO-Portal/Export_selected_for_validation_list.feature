@@ -6,7 +6,7 @@ Feature: Export selected for validation list
     And the "selected phase" is "registration & validation"
 
   Scenario: Export selected for validation list
-    Given a logged-in user with "personal data" role
+    Given a logged-in user with "RegistrationPersonalEXPORT" permission
     When the user clicks the "export list: selected for validation" and confirms the confirm prompt
     Then an Excel-file is downloaded
     And it shows a list of the registrations that are "selected for validation"
@@ -16,6 +16,6 @@ Feature: Export selected for validation list
     And if no "selected for validation" registrations then an alert is shown that "no data can be downloaded"
 
   Scenario: Viewing the export button without access
-    Given a logged-in user without the "personal data" role
+    Given a logged-in user without the "RegistrationPersonalEXPORT" permission
     When the user views the "registration & validation" page
-    Then the "export list: selected for validation" button is disabled
+    Then the "export list: selected for validation" button is not visible

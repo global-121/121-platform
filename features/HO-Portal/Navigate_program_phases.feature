@@ -2,7 +2,7 @@
 Feature: Navigate program phases
 
   Background:
-    Given a logged-in user with the "run program" role
+    Given a logged-in user with the "ProgramAllREAD" permission
 
   Scenario: See current phase of the program
     When the user views a "program" page
@@ -10,9 +10,9 @@ Feature: Navigate program phases
     And sees the "current program phase" of the program highlighted in background-color and text-color
     And sees that future phases are disabled
     And sees that past phases are enabled
-    And sees the "move-to-next-phase"-button below the header, unless the "current program phase" is the last phase
-    And this button is "disabled" if the user does not have the "run program" role
-    And this button is "disabled" if the "selected phase" is not the "active phase"
+    And the "move-to-next-phase" button is not visible if the user does not have the "ProgramPhaseUPDATE" permission
+    And it is visible if the user has the "ProgramPhaseUPDATE" permission
+    And it is enabled unless the "current program phase" is the last phase
 
   Scenario: View past phase
     Given the user views a "program" page

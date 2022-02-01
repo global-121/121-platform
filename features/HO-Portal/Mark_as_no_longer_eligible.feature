@@ -2,7 +2,7 @@
 Feature: Mark Person Affected as no longer eligible (extension of Manage_people_affected.feature)
 
   Background:
-    Given a logged-in user with "run program" role
+    Given a logged-in user with "RegistrationStatusNoLongerEligibleUPDATE" permission
     And the "active phase" is "registration & validation"
 
   Scenario: Use bulk-action "mark as no longer eligible"

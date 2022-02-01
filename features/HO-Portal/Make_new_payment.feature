@@ -2,7 +2,7 @@
 Feature: Make a new payment
 
   Background:
-    Given a logged-in user with the "run program" role
+    Given a logged-in user with the "PaymentCREATE" permission
     And the user views the "payment" page
 
   Scenario: Show total amount

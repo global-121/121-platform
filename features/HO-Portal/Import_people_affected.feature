@@ -2,7 +2,7 @@
 Feature: Import people affected
 
   Background:
-    Given a logged-in user with either the "run program" or the "personal data" role
+    Given a logged-in user with the "RegistrationCREATE" and "RegistrationImportTemplateREAD" permissions
     Given the "selected phase" is "Registration (& Validation)"
 
   Scenario: Download template for import
@@ -20,10 +20,10 @@ Feature: Import people affected
     Given the user clicks the "Import People Affected" button
     When the user selects the CSV-file, through 'choose file' or 'drag and drop'
     Then the "OK" button becomes enabled
-    
+
     When the user clicks "OK" to confirm the import
     Then a loading spinner appears
-    
+
     When it is finished
     Then a feedback popup appears
     And it shows the number of successfully imported "phoneNumbers"
@@ -32,7 +32,7 @@ Feature: Import people affected
     And it shows an "OK" button
     And it mentions that a CSV is automatically downloaded with the import-result per row.
     And a download window for this CSV is appearing
-    
+
     When the users clicks "OK" on the popup
     Then The popup disappears
     And the page refreshes
@@ -84,7 +84,7 @@ Feature: Import registrations
 
 
   Background:
-    Given a logged-in user with either the "run program" or the "personal data" role
+    Given a logged-in user with the "RegistrationCREATE" and "RegistrationImportTemplateREAD" permissions
     Given the "selected phase" is "Registration (& Validation)"
     Given the user clicks the "Import registrations" button
 
