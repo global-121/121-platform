@@ -46,6 +46,7 @@ export class ProgramService {
         'aidworkerAssignments.user',
         'aidworkerAssignments.roles',
         'financialServiceProviders',
+        'programCustomAttributes',
       ],
     });
     return program;

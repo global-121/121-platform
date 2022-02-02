@@ -53,6 +53,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private columnsAvailable: any[] = [];
   private paymentColumnTemplate: any = {};
   public paymentColumns: any[] = [];
+  private customAttributeColumnTemplate: any = {};
+  public customAttributeColumns: any[] = [];
   private pastTransactions: Transaction[] = [];
   private lastPaymentId: number;
 
@@ -341,21 +343,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         roles: [UserRole.View, UserRole.PersonalData, UserRole.RunProgram],
       },
       {
-        prop: 'namePartnerOrganization',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.namePartnerOrganization',
-        ),
-        ...this.columnDefaults,
-        frozenLeft: this.platform.width() > 1280,
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.reviewInclusion,
-          ProgramPhase.payment,
-        ],
-        roles: [UserRole.View, UserRole.PersonalData, UserRole.RunProgram],
-      },
-      {
         prop: 'statusLabel',
         name: this.translate.instant(
           'page.program.program-people-affected.column.status',
@@ -494,6 +481,14 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       phases: [ProgramPhase.payment],
       width: columnDateTimeWidth,
     };
+    this.customAttributeColumnTemplate = {
+      prop: 'customAttribute',
+      name: '',
+      customAttributeIndex: 0,
+      ...this.columnDefaults,
+      phases: [ProgramPhase.inclusion, ProgramPhase.reviewInclusion],
+      width: columnDateTimeWidth,
+    };
   }
 
   async ngOnInit() {
@@ -524,6 +519,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       );
       this.addPaymentColumns(firstPaymentToShow);
     }
+
+    this.fillCustomAttributeColumns();
 
     await this.loadData();
 
@@ -610,6 +607,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     column.name += index;
     column.prop += index;
     column.paymentIndex = index;
+    return column;
+  }
+
+  private createCustomAttributeColumn(customAttribute: object) {
+    const column = JSON.parse(
+      JSON.stringify(this.customAttributeColumnTemplate),
+    ); // Hack to clone without reference;
+    column.name = customAttribute['name'];
+    column.prop = customAttribute['name'];
     return column;
   }
 
@@ -762,9 +768,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         : '',
       fsp: person.fsp,
       hasNote: !!person.hasNote,
+      customAttributes: person.customAttributes,
     };
 
     personRow = this.fillPaymentColumns(personRow);
+    personRow = this.fillCustomAttributeRows(personRow);
     return personRow;
   }
 
@@ -777,6 +785,24 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         transaction.payment === paymentIndex &&
         transaction.referenceId === referenceId,
     );
+  }
+
+  private fillCustomAttributeColumns() {
+    for (const customAttribute of this.program.programCustomAttributes) {
+      this.customAttributeColumns.push(
+        this.createCustomAttributeColumn(customAttribute),
+      );
+    }
+  }
+
+  private fillCustomAttributeRows(personRow: PersonRow): PersonRow {
+    for (const customAttribute of this.program.programCustomAttributes) {
+      for (const name of Object.keys(personRow.customAttributes)) {
+        personRow[customAttribute['name']] =
+          personRow.customAttributes[name]['value'];
+      }
+    }
+    return personRow;
   }
 
   private fillPaymentColumns(personRow: PersonRow): PersonRow {
