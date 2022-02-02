@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.33.3...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.34.0...master)
+
+---
+
+## [1.34.0](https://github.com/global-121/121-platform/compare/v1.33.3...1.34.0) - 2022-02-02
 
 ### Changed
 
@@ -16,8 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Sets of `Permission`s (`Role`s) can be defined per `Program`, to be assigned to `User`s.
 
   Data-migrations and definitions of existing `User`s and their `Role`s are included in the [TypeORM migration script](migration/1642520954620-roles-permissions.ts).
-
----
 
 ## [1.33.3](https://github.com/global-121/121-platform/compare/v1.33.2...1.33.3) - 2022-02-01
 
