@@ -343,7 +343,20 @@ export class RegistrationsService {
     await this.registrationRepository.remove(importedRegistration);
 
     // .. and save the updated import-registration
-    await this.registrationRepository.save(currentRegistration);
+    const updatedRegistration = await this.registrationRepository.save(
+      currentRegistration,
+    );
+
+    // .. if imported registration status was noLongerEligible set to registeredWhileNoLongerEligible
+    if (
+      importedRegistration.registrationStatus ===
+      RegistrationStatusEnum.noLongerEligible
+    ) {
+      await this.setRegistrationStatus(
+        updatedRegistration.referenceId,
+        RegistrationStatusEnum.registeredWhileNoLongerEligible,
+      );
+    }
   }
 
   private async findImportedRegistrationByPhoneNumber(
