@@ -31,7 +31,6 @@ export enum ImportStatus {
 
 export class BulkImportResult {
   public phoneNumber: string;
-  public namePartnerOrganization: string;
   public paymentAmountMultiplier: number;
   public importStatus: ImportStatus;
 }

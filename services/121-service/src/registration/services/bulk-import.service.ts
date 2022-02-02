@@ -18,7 +18,6 @@ import { LanguageEnum } from '../enum/language.enum';
 import {
   BulkImportDto,
   BulkImportResult,
-  DynamicImportAttribute,
   ImportRegistrationsDto,
   ImportResult,
   ImportStatus,
@@ -111,17 +110,11 @@ export class BulkImportService {
       newRegistration.referenceId = uuid();
       newRegistration.phoneNumber = phoneNumberResult;
       newRegistration.preferredLanguage = LanguageEnum.en;
-      newRegistration.namePartnerOrganization = record.namePartnerOrganization;
       newRegistration.paymentAmountMultiplier = record.paymentAmountMultiplier;
       newRegistration.program = program;
-
       newRegistration.customData = JSON.parse(JSON.stringify({}));
       programCustomAttributes.forEach(att => {
-        newRegistration.customData[
-          att.attribute
-        ] = record.programAttributes.find(
-          a => a.attribute === att.attribute,
-        ).value;
+        newRegistration.customData[att.attribute] = record[att.attribute];
       });
 
       const savedRegistration = await this.registrationRepository.save(
@@ -192,16 +185,13 @@ export class BulkImportService {
     for await (const record of validatedImportRecords) {
       const registration = new RegistrationEntity();
       registration.referenceId = uuid();
-      registration.namePartnerOrganization = record.namePartnerOrganization;
       registration.phoneNumber = record.phoneNumber;
       registration.preferredLanguage = record.preferredLanguage;
       registration.program = program;
 
       registration.customData = JSON.parse(JSON.stringify({}));
       dynamicAttributes.forEach(att => {
-        registration.customData[att.attribute] = record.programAttributes.find(
-          a => a.attribute === att.attribute,
-        ).value;
+        registration.customData[att.attribute] = record[att.attribute];
       });
 
       const fsp = await this.fspRepository.findOne({
@@ -330,14 +320,9 @@ export class BulkImportService {
       }
       let importRecord = new BulkImportDto();
       importRecord.phoneNumber = row.phoneNumber;
-      importRecord.namePartnerOrganization = row.namePartnerOrganization;
       importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
-      importRecord.programAttributes = [];
       for await (const att of programCustomAttributes) {
-        const programAttribute = new DynamicImportAttribute();
-        programAttribute.attribute = att.attribute;
-        programAttribute.value = row[att.attribute];
-        importRecord.programAttributes.push(programAttribute);
+        importRecord[att.attribute] = row[att.attribute];
       }
 
       const result = await validate(importRecord);
@@ -416,10 +401,8 @@ export class BulkImportService {
       }
       let importRecord = new ImportRegistrationsDto();
       importRecord.preferredLanguage = row.preferredLanguage;
-      importRecord.namePartnerOrganization = row.namePartnerOrganization;
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;
-      importRecord.programAttributes = [];
       for await (const att of dynamicAttributes) {
         if (att.type === AnswerTypes.tel && row[att.attribute]) {
           const sanitized = await this.lookupService.lookupAndCorrect(
@@ -437,10 +420,7 @@ export class BulkImportService {
           }
           row[att.attribute] = sanitized;
         }
-        const programAttribute = new DynamicImportAttribute();
-        programAttribute.attribute = att.attribute;
-        programAttribute.value = row[att.attribute];
-        importRecord.programAttributes.push(programAttribute);
+        importRecord[att.attribute] = row[att.attribute];
       }
 
       const result = await validate(importRecord);
