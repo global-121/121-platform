@@ -1,20 +1,13 @@
-import { PersonAffectedRole } from './../user-role.enum';
+import { PermissionsGuard } from './../permissions.guard';
+import { PermissionEnum } from './permission.enum';
+import { PersonAffectedRole } from './user-role.enum';
 import { UserEntity } from './user.entity';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
-import {
-  Get,
-  Post,
-  Body,
-  Param,
-  Controller,
-  HttpStatus,
-  UseGuards,
-} from '@nestjs/common';
+import { Get, Post, Body, Param, Controller, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
 import { LoginUserDto, UpdateUserDto } from './dto';
-import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { User } from './user.decorator';
 
 import {
@@ -23,14 +16,13 @@ import {
   ApiOperation,
   ApiImplicitParam,
 } from '@nestjs/swagger';
-import { RolesGuard } from '../roles.guard';
-import { Roles } from '../roles.decorator';
-import { UserRole } from '../user-role.enum';
-import { UserType } from './user-type-enum';
+import { DefaultUserRole } from './user-role.enum';
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 import { UserRoleEntity } from './user-role.entity';
+import { Permissions } from '../permissions.decorator';
+import { CreateUserRoleDto } from './dto/create-user-role.dto';
 
-@UseGuards(RolesGuard)
+@UseGuards(PermissionsGuard)
 @ApiUseTags('user')
 @Controller()
 export class UserController {
@@ -40,7 +32,17 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.RunProgram)
+  @Permissions(PermissionEnum.RoleCREATE)
+  @ApiOperation({ title: 'Create new user role' })
+  @Post('user/role')
+  public async addUserRole(
+    @Body() userRoleData: CreateUserRoleDto,
+  ): Promise<UserRoleEntity> {
+    return await this.userService.addUserRole(userRoleData);
+  }
+
+  @ApiBearerAuth()
+  @Permissions(PermissionEnum.AidWorkerCREATE)
   @ApiOperation({ title: 'Sign-up new Aid Worker user' })
   @Post('user/aidworker')
   public async createAw(
@@ -60,33 +62,10 @@ export class UserController {
   @ApiOperation({ title: 'Log in existing user' })
   @Post('user/login')
   public async login(@Body() loginUserDto: LoginUserDto): Promise<UserRO> {
-    const _user = await this.userService.findOne(loginUserDto);
-    if (!_user) {
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    }
-
-    const token = await this.userService.generateJWT(_user);
-    const username = _user.username;
-    let roles = [];
-    if (_user.userType === UserType.aidWorker) {
-      roles = _user.programAssignments[0].roles;
-    }
-    const user = {
-      username,
-      token,
-      roles,
-    };
-
-    return { user };
+    return await this.userService.login(loginUserDto);
   }
 
   @ApiBearerAuth()
-  @Roles(
-    UserRole.View,
-    UserRole.RunProgram,
-    UserRole.PersonalData,
-    UserRole.FieldValidation,
-  )
   @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
   public async update(
@@ -97,7 +76,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.RunProgram)
+  @Permissions(PermissionEnum.AidWorkerDELETE)
   @ApiOperation({ title: 'Delete user by userId' })
   @Post('user/delete/:userId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'integer' })
@@ -106,18 +85,6 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @ApiOperation({ title: 'Person Affected deletes itself an related entities' })
-  @Roles(PersonAffectedRole.PersonAffected)
-  @Post('user/delete-person-affected')
-  @ApiImplicitParam({ name: 'userId', required: true, type: 'integer' })
-  public async deletePersonAffected(
-    @User('id') deleterId: number,
-  ): Promise<UserEntity> {
-    return await this.userService.deletePersonAffected(deleterId);
-  }
-
-  @ApiBearerAuth()
-  @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'User deletes itself' })
   @Post('user/delete')
   public async deleteCurrentUser(
@@ -127,12 +94,6 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(
-    UserRole.View,
-    UserRole.RunProgram,
-    UserRole.PersonalData,
-    UserRole.FieldValidation,
-  )
   @ApiOperation({ title: 'Get current user' })
   @Get('user')
   public async findMe(@User('username') username: string): Promise<UserRO> {
@@ -140,7 +101,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.RunProgram)
+  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
   @ApiOperation({ title: 'Assign Aidworker to program' })
   @Post('user/assign-to-program')
   public async assignFieldValidationAidworkerToProgram(

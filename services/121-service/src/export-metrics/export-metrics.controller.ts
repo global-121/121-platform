@@ -15,18 +15,19 @@ import {
   Param,
   Query,
 } from '@nestjs/common';
-import { RolesGuard } from '../roles.guard';
 import { ExportMetricsService } from './export-metrics.service';
-import { Roles } from '../roles.decorator';
-import { UserRole } from '../user-role.enum';
+import { DefaultUserRole } from '../user/user-role.enum';
 import { ExportDetails } from './dto/export-details';
 import { User } from '../user/user.decorator';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
+import { PermissionsGuard } from '../permissions.guard';
+import { Permissions } from '../permissions.decorator';
+import { PermissionEnum } from '../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
+@UseGuards(PermissionsGuard)
 @ApiUseTags('export-metrics')
 @Controller('export-metrics')
 export class ExportMetricsController {
@@ -34,8 +35,7 @@ export class ExportMetricsController {
   public constructor(exportMetricsService: ExportMetricsService) {
     this.exportMetricsService = exportMetricsService;
   }
-
-  @Roles(UserRole.PersonalData)
+  @Permissions(PermissionEnum.RegistrationPersonalEXPORT)
   @ApiOperation({
     title: 'Get an exported list of people',
   })
@@ -57,7 +57,7 @@ export class ExportMetricsController {
     );
   }
 
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
+  @Permissions(PermissionEnum.ProgramMetricsREAD)
   @ApiOperation({ title: 'Get metrics by program-id' })
   @ApiImplicitParam({
     name: 'programId',
@@ -105,7 +105,7 @@ export class ExportMetricsController {
     };
   }
 
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
+  @Permissions(PermissionEnum.ProgramMetricsREAD)
   @ApiOperation({ title: 'Get payments with state sums by program-id' })
   @ApiImplicitParam({
     name: 'programId',
@@ -124,7 +124,7 @@ export class ExportMetricsController {
     );
   }
 
-  @Roles(UserRole.Admin)
+  @Permissions(PermissionEnum.ProgramMetricsREAD)
   @ApiOperation({ title: 'Get monitoring data' })
   @ApiResponse({ status: 200, description: 'All monitoring data of a program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -135,7 +135,7 @@ export class ExportMetricsController {
     );
   }
 
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
+  @Permissions(PermissionEnum.ProgramMetricsREAD)
   @ApiOperation({ title: 'Get total transfer amounts of people to pay out' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({

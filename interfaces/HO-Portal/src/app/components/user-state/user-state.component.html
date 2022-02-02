@@ -9,6 +9,18 @@
 &nbsp;
 
 <ion-button
+  *ngIf="isDebug && permissions"
+  size="small"
+  color="medium"
+  fill="clear"
+  (click)="debugShowPermissions()"
+  title="Show all Permissions"
+  aria-label="Show all Permissions"
+>
+  <ion-icon name="id-card" slot="icon-only" size="small" aria-hidden="true"></ion-icon>
+</ion-button>
+
+<ion-button
   type="button"
   [title]="'user-state.log-out'|translate"
   [attr.aria-label]="'user-state.log-out'|translate"

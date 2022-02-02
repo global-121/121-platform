@@ -7,11 +7,9 @@ import {
 } from '@nestjs/swagger';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
-import { RolesGuard } from '../../../roles.guard';
 import { AfricasTalkingService } from './africas-talking.service';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
 @ApiUseTags('payments/africas-talking')
 @Controller('payments/africas-talking')
 export class AfricasTalkingController {

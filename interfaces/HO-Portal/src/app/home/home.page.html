@@ -1,5 +1,5 @@
 <app-header [title]="'page.home.pageTitle'|translate" [showHelp]="true"></app-header>
 
 <ion-content class="ion-padding">
-  <app-programs-list></app-programs-list>
+  <app-programs-list *appIfPermissions="[Permission.ProgramAllREAD]"></app-programs-list>
 </ion-content>

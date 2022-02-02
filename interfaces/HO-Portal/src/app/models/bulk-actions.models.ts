@@ -1,4 +1,4 @@
-import { UserRole } from '../auth/user-role.enum';
+import Permission from '../auth/permission.enum';
 import { InputProps } from '../shared/input-prompt/input-prompt.component';
 import { ProgramPhase } from './program.model';
 
@@ -21,7 +21,7 @@ export class BulkAction {
   id: BulkActionId;
   enabled: boolean;
   label: string;
-  roles: UserRole[];
+  permissions: Permission[];
   phases: ProgramPhase[];
   showIfNoValidation: boolean;
   confirmConditions?: InputProps;

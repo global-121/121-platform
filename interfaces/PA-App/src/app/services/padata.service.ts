@@ -109,7 +109,6 @@ export class PaDataService {
     // 'Sanitize' username:
     username = username.trim();
 
-    console.log('CreateAccountPA');
     return this.programService.createAccountPA(username, password).then(() => {
       console.log('Account created.');
       this.setLoggedIn();

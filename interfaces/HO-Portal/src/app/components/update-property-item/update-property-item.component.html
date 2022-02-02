@@ -5,7 +5,6 @@
 >
   <div
     class="input-item update-property-item"
-    [attr.disabled]="isDisabled"
   >
     <label class="input-item--label text-bold">
       {{ label }}
@@ -26,6 +25,7 @@
                 min="1"
                 pattern="[0-9]+"
                 appOnlyAllowedInput
+                [disabled]="isDisabled"
               ></ion-input>
             </ng-container>
             <ng-container *ngSwitchCase="'tel'">
@@ -39,6 +39,7 @@
                 inputmode="tel"
                 pattern="[0-9]+"
                 appOnlyAllowedInput
+                [disabled]="isDisabled"
               ></ion-input>
             </ng-container>
             <ng-container *ngSwitchDefault>
@@ -49,6 +50,7 @@
                 [value]="value"
                 [placeholder]="placeholder"
                 type="text"
+                [disabled]="isDisabled"
               ></ion-input>
             </ng-container>
           </ng-container>
@@ -57,8 +59,8 @@
       <ion-row class="ion-align-items-center">
         <ion-col size="10" class="ion-no-padding">
           <ion-note
-          *ngIf="explanation"
-          class="ion-margin-bottom"
+            *ngIf="explanation"
+            class="ion-margin-bottom"
           >
           {{ explanation }}
         </ion-note>
@@ -66,17 +68,17 @@
       <ion-col size="2" class="ion-no-padding">
         <ng-container *ngIf="showSubmit">
           <ion-button
-          *ngIf="!inProgress"
-          type="submit"
-          class="ion-margin-start ion-float-right text-bold ion-text-uppercase"
-          fill=clear
+            *ngIf="!inProgress"
+            type="submit"
+            class="ion-margin-start ion-float-right text-bold ion-text-uppercase"
+            fill=clear
           >
           {{ 'common.save'|translate }}
         </ion-button>
         <ion-spinner
-        *ngIf="inProgress"
-        color="primary"
-        class="ion-margin-start ion-float-right"
+          *ngIf="inProgress"
+          color="primary"
+          class="ion-margin-start ion-float-right"
         ></ion-spinner>
       </ng-container>
     </ion-col>

@@ -2,7 +2,7 @@
 Feature: Import people affected
 
   Background:
-    Given a logged-in user with either the "run program" or the "personal data" role
+    Given a logged-in user with the "RegistrationCREATE" and "RegistrationImportTemplateREAD" permissions
     Given the "selected phase" is "Registration (& Validation)"
 
   Scenario: Download template for import
@@ -86,7 +86,7 @@ Feature: Import registrations
 
 
   Background:
-    Given a logged-in user with either the "run program" or the "personal data" role
+    Given a logged-in user with the "RegistrationCREATE" and "RegistrationImportTemplateREAD" permissions
     Given the "selected phase" is "Registration (& Validation)"
     Given the user clicks the "Import registrations" button
 

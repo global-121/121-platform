@@ -6,12 +6,14 @@
 <ion-content class="ion-padding">
 
   <app-phase-next
+    *appIfPermissions="[Permission.ProgramPhaseUPDATE]"
     [programId]="programId"
     [thisPhaseName]="thisPhase"
     [phaseReady]="isReady"
   ></app-phase-next>
 
   <app-program-people-affected
+    *appIfPermissions="[Permission.RegistrationREAD]"
     [programId]="programId"
     [thisPhase]="thisPhase"
     (isCompleted)="onReady($event)"

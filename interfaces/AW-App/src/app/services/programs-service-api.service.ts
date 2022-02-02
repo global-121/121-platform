@@ -101,19 +101,19 @@ export class ProgramsServiceApiService {
 
   postRegistrationCustomAttribute(
     referenceId: string,
-    key: string,
+    attribute: string,
     value: string,
   ): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/registrations/custom-data',
+        '/registrations/attribute',
         {
           referenceId,
-          key,
+          attribute,
           value,
         },
-        true,
+        false,
       )
       .toPromise();
   }

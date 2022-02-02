@@ -2,7 +2,7 @@
 Feature: Select people affected for validation (extension of Manage_people_affected.feature)
 
   Background:
-    Given a logged-in user with "run program" role
+    Given a logged-in user with "ProgramAllREAD" permission
     And a program with "validation"
     And the "active phase" is "registration & validation"
 
@@ -13,6 +13,10 @@ Feature: Select people affected for validation (extension of Manage_people_affec
     And for each person an "Inclusion Score" is shown (if already available)
     And for each person a "Selected for validation" date+time is shown (if already available)
     And for each person a "Validated Vulnerability Assessment " date+time is shown (if already available)
+
+Background:
+  Given a logged-in user with "RegistrationStatusSelectedForValidationUPDATE" permission
+  Then the "select for validation" action is visible
 
   Scenario: Use bulk-action "select for validation"
     Given the generic "select bulk action" scenario (see Manage_people_affected.feature)

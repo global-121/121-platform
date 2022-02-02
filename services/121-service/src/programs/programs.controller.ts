@@ -12,17 +12,17 @@ import {
   ApiImplicitParam,
 } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
-import { RolesGuard } from '../roles.guard';
-import { Roles } from '../roles.decorator';
-import { UserRole } from '../user-role.enum';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ChangePhaseDto } from './dto/change-phase.dto';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { UpdateProgramCustomAttributesDto } from './dto/update-program-custom-attribute.dto';
+import { PermissionsGuard } from '../permissions.guard';
+import { Permissions } from '../permissions.decorator';
+import { PermissionEnum } from '../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
+@UseGuards(PermissionsGuard)
 @ApiUseTags('programs')
 @Controller('programs')
 export class ProgramController {
@@ -39,6 +39,7 @@ export class ProgramController {
     return await this.programService.findOne(Number(params.programId));
   }
 
+  @Permissions(PermissionEnum.ProgramAllREAD)
   @ApiOperation({ title: 'Get all programs' })
   @ApiResponse({ status: 200, description: 'Return all programs.' })
   @Get()
@@ -53,7 +54,7 @@ export class ProgramController {
     return await this.programService.getPublishedPrograms();
   }
 
-  @Roles(UserRole.RunProgram)
+  @Permissions(PermissionEnum.ProgramCREATE)
   @ApiOperation({ title: 'Create program' })
   @ApiResponse({
     status: 201,
@@ -67,7 +68,7 @@ export class ProgramController {
     return this.programService.create(programData);
   }
 
-  @Roles(UserRole.RunProgram)
+  @Permissions(PermissionEnum.ProgramPhaseUPDATE)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('change-phase/:programId')
@@ -81,7 +82,7 @@ export class ProgramController {
     );
   }
 
-  @Roles(UserRole.Admin, UserRole.RunProgram)
+  @Permissions(PermissionEnum.ProgramUPDATE)
   @ApiOperation({ title: 'Update program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/update')
@@ -95,7 +96,7 @@ export class ProgramController {
     );
   }
 
-  @Roles(UserRole.Admin)
+  @Permissions(PermissionEnum.ProgramQuestionUPDATE)
   @ApiOperation({ title: 'Update program question' })
   @Post(':programId/update/program-question')
   public async updateProgramQuestion(
@@ -106,7 +107,7 @@ export class ProgramController {
     );
   }
 
-  @Roles(UserRole.Admin)
+  // @Permissions(PermissionEnum.Admin)
   @ApiOperation({ title: 'Update program custom attributes' })
   @Post(':programId/update/program-custom-attributes')
   public async updateProgramCustomAttributes(

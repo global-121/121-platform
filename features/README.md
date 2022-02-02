@@ -30,7 +30,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Invite people affected](HO-Portal/Invite_people_affected.feature)
 - [Delete people affected](HO-Portal/Delete_people_affected.feature)
 - [Mark as no longer eligible](HO-Portal/Mark_as_no_longer_eligible.feature)
-- [Import registered people affected](HO-Portal/Import_registered_PAs.feature)
+- [Import registered people affected](HO-Portal/Import_people_affected.feature#L83)
 - [Select people for validation](HO-Portal/Select_people_for_validation.feature)
 - [Export People Affected list](HO-Portal/Export_PA_list.feature)
 - [Export selected for validation list](HO-Portal/Export_selected_for_validation_list.feature)
@@ -65,7 +65,6 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 - Send a WhatsApp message
   - [Claim digital voucher](Other/Claim_digital_voucher.feature)
-
 
 #### Using PA-App
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import Permission from 'src/app/auth/permission.enum';
 import { ProgramPhase } from 'src/app/models/program.model';
 
 @Component({
@@ -8,6 +9,8 @@ import { ProgramPhase } from 'src/app/models/program.model';
   styleUrls: ['./inclusion.page.scss'],
 })
 export class InclusionPage implements OnInit {
+  public Permission = Permission;
+
   public programId = this.route.snapshot.params.id;
   public thisPhase = ProgramPhase.inclusion;
   public isReady: boolean;

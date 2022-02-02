@@ -1,4 +1,4 @@
-import { UserRO } from './user/user.interface';
+import { PermissionEnum } from './user/permission.enum';
 import { UserEntity } from './user/user.entity';
 import {
   Injectable,
@@ -10,21 +10,10 @@ import {
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
 import { UserService } from './user/user.service';
-import { DEBUG } from './config';
-import {
-  UserRole,
-  AuthenticationRole,
-  PersonAffectedRole,
-} from './user-role.enum';
-import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
-import { Repository } from 'typeorm';
 import { UserType } from './user/user-type-enum';
 
 @Injectable()
-export class RolesGuard implements CanActivate {
-  @InjectRepository(UserEntity)
-  private readonly userRepository: Repository<UserEntity>;
-
+export class PersonAffectedAuthGuard implements CanActivate {
   public constructor(
     private readonly reflector: Reflector,
     private readonly userService: UserService,
@@ -33,22 +22,22 @@ export class RolesGuard implements CanActivate {
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     let hasAccess: boolean;
 
-    const endpointRoles = this.reflector.get<AuthenticationRole[]>(
-      'roles',
+    const endpointPersonAffectedAuth = this.reflector.get<PermissionEnum[]>(
+      'personAffectedAuth',
       context.getHandler(),
     );
 
-    if (!endpointRoles) {
+    if (!endpointPersonAffectedAuth) {
       return true;
-    }
-    // This line allows the Admin role to access every controller
-    if (!endpointRoles.includes(UserRole.Admin)) {
-      endpointRoles.push(UserRole.Admin);
     }
 
     const request = context.switchToHttp().getRequest();
     const authHeaders = request.headers.authorization;
-    if (authHeaders && (authHeaders as string).split(' ')[1]) {
+    if (
+      authHeaders &&
+      (authHeaders as string).split(' ')[1] &&
+      endpointPersonAffectedAuth.length === 0
+    ) {
       const token = (authHeaders as string).split(' ')[1];
       const decoded: any = jwt.verify(
         token,
@@ -57,10 +46,6 @@ export class RolesGuard implements CanActivate {
       const user = await this.userService.findById(decoded.id);
       if (user.userType === UserType.personAffected) {
         hasAccess = await this.personAffectedCanActivate(user, request);
-      }
-
-      if (user.userType === UserType.aidWorker) {
-        hasAccess = await this.aidworkerCanActivate(user, endpointRoles);
       }
     } else {
       hasAccess = false;
@@ -73,30 +58,16 @@ export class RolesGuard implements CanActivate {
     return hasAccess;
   }
 
-  private async aidworkerCanActivate(
-    user: UserEntity,
-    endpointRoles: AuthenticationRole[],
-  ): Promise<boolean> {
-    let roles = [];
-    if (user.programAssignments && user.programAssignments[0]) {
-      roles = user.programAssignments[0].roles;
-    }
-
-    const userRoles = roles.map(role => role.role);
-    const overlappingRoles = userRoles.filter(role =>
-      endpointRoles.includes(role),
-    );
-    return overlappingRoles.length > 0;
-  }
-
   private async personAffectedCanActivate(
     user: UserEntity,
     request: any,
   ): Promise<boolean> {
     let referenceIdsOfUser = [];
+
     if (user.registrations && user.registrations[0]) {
       referenceIdsOfUser = user.registrations.map(r => r.referenceId);
     }
+
     if (
       request.body &&
       request.body.referenceId &&

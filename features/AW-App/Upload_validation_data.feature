@@ -2,7 +2,7 @@
 Feature: Upload validation data
 
   Background:
-    Given a logged-in "field-validation" user
+    Given a logged-in user with "RegistrationPersonalUPDATE" permission
     Given the user is on the "actions" page
 
   Scenario: Validated data to upload available

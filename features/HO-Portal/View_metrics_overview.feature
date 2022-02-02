@@ -1,13 +1,14 @@
 @ho-portal
 Feature: View metrics overview
 
+  Background:
+    Given a logged-in user with the "ProgramMetricsREAD" or "ProgramAllREAD" permissions
+
   Scenario: View metrics overview successfully
-    Given a logged-in user with the "run program" role
-    When the user views the "dashboard" page
-    And a date for "Last updated" is shown
+    Given the user sees the "dashboard" page
+    Then a date for "Last updated" is shown
 
   Scenario: Refresh metrics overview
-    Given a logged-in user with the "run program" role
     Given the user viewed the metrics overview before
     Given any program-metrics changed
     When the user clicks the "update"-button
