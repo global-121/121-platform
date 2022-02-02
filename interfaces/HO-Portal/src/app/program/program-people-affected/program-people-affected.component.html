@@ -243,6 +243,31 @@
   ></ngx-datatable-column>
 
   <ngx-datatable-column
+    *ngFor="let column of customAttributeColumns"
+    [prop]="column.prop"
+    [name]="column.name"
+    [width]="column.width"
+    [minWidth]="column.minWidth"
+    [maxWidth]="column.maxWidth"
+    [draggable]="column.draggable"
+    [resizeable]="column.resizable"
+    [sortable]="column.sortable"
+    [canAutoResize]="column.canAutoResize"
+    [headerClass]="column.headerClass"
+    [cellClass]="column.cellClass"
+  >
+  <ng-template
+  ngx-datatable-cell-template
+  let-value="value"
+  let-row="row"
+>
+      <ng-container *ngIf="value">
+        {{value}}
+      </ng-container>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column
     *ngFor="let column of paymentColumns"
     [prop]="column.prop"
     [name]="column.name"

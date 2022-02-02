@@ -27,6 +27,7 @@ export class Program {
   validation: boolean;
   validationByQr: boolean;
   published: boolean;
+  programCustomAttributes: any[];
 }
 
 export enum InclusionCalculationType {

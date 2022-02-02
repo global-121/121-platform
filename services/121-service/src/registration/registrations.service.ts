@@ -16,6 +16,7 @@ import { ProgramAnswer } from './dto/store-program-answers.dto';
 import { ProgramAnswerEntity } from './program-answer.entity';
 import {
   AnswerTypes,
+  Attribute,
   CustomDataAttributes,
 } from './enum/custom-data-attributes';
 import { LookupService } from '../notifications/lookup/lookup.service';
@@ -37,6 +38,7 @@ import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
+import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 
 @Injectable()
 export class RegistrationsService {
@@ -54,6 +56,10 @@ export class RegistrationsService {
   private readonly programAnswerRepository: Repository<ProgramAnswerEntity>;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
+  @InjectRepository(ProgramCustomAttributeEntity)
+  private readonly programCustomAttributeRepository: Repository<
+    ProgramCustomAttributeEntity
+  >;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspAttributeEntity)
@@ -446,6 +452,21 @@ export class RegistrationsService {
     return program;
   }
 
+  private async getProgramCustomAttributes(
+    programId: number,
+  ): Promise<Attribute[]> {
+    return (
+      await this.programCustomAttributeRepository.find({
+        where: { program: { id: programId } },
+      })
+    ).map(c => {
+      return {
+        attribute: c.name,
+        type: c.type,
+      };
+    });
+  }
+
   public async getRegistrationsForProgram(
     programId: number,
     includePersonalData: boolean,
@@ -587,6 +608,9 @@ export class RegistrationsService {
 
     const rows = await q.getRawMany();
     const responseRows = [];
+    const programCustomAttributes = await this.getProgramCustomAttributes(
+      programId,
+    );
     for (let row of rows) {
       row['name'] = this.getName(row.customData);
       row['hasNote'] = !!row.note;
@@ -595,6 +619,13 @@ export class RegistrationsService {
       row['whatsappPhoneNumber'] =
         row.customData[CustomDataAttributes.whatsappPhoneNumber];
       row['vnumber'] = row.customData['vnumber'];
+      row['customAttributes'] = {};
+      for (let attribute of programCustomAttributes) {
+        row['customAttributes'][attribute.attribute] = {
+          type: attribute.type,
+          value: row.customData[attribute.attribute],
+        };
+      }
       delete row.customData;
       responseRows.push(row);
     }

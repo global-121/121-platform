@@ -23,6 +23,7 @@ export class Person {
   namePartnerOrganization?: string;
   paymentAmountMultiplier?: number;
   preferredLanguage?: LanguageEnum;
+  customAttributes?: object;
 }
 
 // Model for display (in table)
@@ -52,6 +53,7 @@ export class PersonRow {
   namePartnerOrganization?: string | null;
   paymentAmountMultiplier?: string | null;
   preferredLanguage?: string | null;
+  customAttributes?: object;
 }
 
 export enum PaStatus {
@@ -85,4 +87,10 @@ export enum LanguageEnum {
   in = 'in',
   nl = 'nl',
   es = 'es',
+}
+
+export class CustomAttribute {
+  type: string;
+  value: string | boolean;
+  label?: string;
 }
