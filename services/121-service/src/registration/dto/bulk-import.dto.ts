@@ -1,5 +1,4 @@
 import {
-  IsArray,
   IsIn,
   IsInt,
   IsNotEmpty,
@@ -28,10 +27,6 @@ export class BulkImportDto {
   @IsInt()
   @Min(1)
   public paymentAmountMultiplier: number;
-
-  @ApiModelProperty()
-  @IsArray()
-  public programAttributes: DynamicImportAttribute[];
 }
 
 export class BulkImportResult extends BulkImportDto {
@@ -71,13 +66,4 @@ export class ImportRegistrationsDto {
   })
   @IsIn(fspArray)
   public fspName: FspName;
-
-  @ApiModelProperty()
-  @IsArray()
-  public programAttributes: DynamicImportAttribute[];
-}
-
-export class DynamicImportAttribute {
-  public attribute: string;
-  public value: string;
 }
