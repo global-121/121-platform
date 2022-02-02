@@ -1,8 +1,11 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
+import { AuthService } from 'src/app/auth/auth.service';
+import { NoConnectionService } from 'src/app/services/no-connection.service';
 import { MainMenuComponent } from './main-menu.component';
 
 const storageIonicMock: any = {
@@ -16,12 +19,22 @@ describe('MainMenuComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MainMenuComponent],
-      imports: [TranslateModule.forRoot(), RouterModule.forRoot([])],
+      imports: [
+        TranslateModule.forRoot(),
+        RouterTestingModule,
+        HttpClientTestingModule,
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: Storage,
           useValue: storageIonicMock,
+        },
+        {
+          provide: NoConnectionService,
+        },
+        {
+          provide: AuthService,
         },
       ],
     }).compileComponents();

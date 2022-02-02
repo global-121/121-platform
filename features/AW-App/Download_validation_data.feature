@@ -2,21 +2,25 @@
 Feature: Download validation data
 
   Background:
-    Given a logged-in "field-validation" user
+    Given a logged-in user with "RegistrationPersonalForValidationREAD" permission
     Given the user is on the "actions" page
 
   Scenario: Downloading validation data successfully
     Given the user sees the "main menu" options
-    Given "X" PAs who have filled in program questions and are not validated yet for all programs the "field-validation" user is assigned to
+    Given the user is assigned to program "X"
+    Given "N" PAs are NOT validated for program "X"
+    Given "N" PAs have filled in program questions for program "X"
     When the user selects the "download validation data" option
     Then a message "data is being downloaded" is shown
-    And when finished a message "data is downloaded for X People Affected" is shown
+    And when finished a message "data is downloaded for {N} People Affected" is shown
     And the validation data is stored in local storage where it replaces any existing validation data
     And the "main menu" is shown
 
   Scenario: Downloading validation data unsuccessfully because no available data
     Given the user sees the "main menu" options
-    Given 0 PAs who have filled in program questions and are not validated yet for all programs the "field-validation" user is assigned to
+    Given the user is assigned to program "X"
+    Given "0" PAs are NOT validated for program "X"
+    Given "0" PAs have filled in program questions for program "X"
     When the user selects the "download validation data" option
     Then a message "No validation data could be downloaded at this time" is shown
     And the "main menu" is shown

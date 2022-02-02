@@ -8,19 +8,19 @@ import {
   ApiOperation,
   ApiImplicitParam,
 } from '@nestjs/swagger';
-import { RolesGuard } from '../roles.guard';
-import { Roles } from '../roles.decorator';
-import { UserRole } from '../user-role.enum';
 import { CreatePaymentDto } from './dto/create-payment.dto';
+import { PermissionsGuard } from '../permissions.guard';
+import { Permissions } from '../permissions.decorator';
+import { PermissionEnum } from '../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
+@UseGuards(PermissionsGuard)
 @ApiUseTags('payments')
 @Controller()
 export class PaymentsController {
   public constructor(private readonly paymentsService: PaymentsService) {}
 
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
+  @Permissions(PermissionEnum.PaymentREAD)
   @ApiOperation({ title: 'Get past payments for program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -32,7 +32,7 @@ export class PaymentsController {
     return await this.paymentsService.getPayments(Number(params.programId));
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Permissions(PermissionEnum.PaymentCREATE)
   @ApiOperation({
     title: 'Send payout instruction to financial service provider',
   })
@@ -52,7 +52,7 @@ export class PaymentsController {
     );
   }
 
-  @Roles(UserRole.PersonalData)
+  @Permissions(PermissionEnum.PaymentFspInstructionREAD)
   @ApiOperation({
     title:
       'Get payments instructions for past payment to post in Financial Service Provider Portal',

@@ -2,7 +2,7 @@
 Feature: View PA-status metrics
 
   Background:
-    Given a logged-in user with the "run program" role
+    Given a logged-in user with the "ProgramMetricsREAD" or "ProgramAllREAD" permissions
 
   Scenario: View PA-status metrics successfully
     When the user views the "dashboard"-page

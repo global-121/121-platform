@@ -4,6 +4,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
+import { ProgramPhaseService } from 'src/app/services/program-phase.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { DashboardPage } from './dashboard.page';
@@ -22,7 +23,10 @@ describe('DashboardPage', () => {
         NoopAnimationsModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(ProgramsServiceApiService)],
+      providers: [
+        provideMagicalMock(ProgramsServiceApiService),
+        provideMagicalMock(ProgramPhaseService),
+      ],
     }).compileComponents();
   }));
 

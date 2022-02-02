@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
+import Permission from 'src/app/auth/permission.enum';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
@@ -34,6 +34,10 @@ export class ProgramNavigationComponent implements OnInit {
   }
 
   public canManageAidWorkers(): boolean {
-    return this.authService.hasUserRole([UserRole.RunProgram]);
+    return this.authService.hasAllPermissions([
+      Permission.AidWorkerCREATE,
+      Permission.AidWorkerDELETE,
+      Permission.AidWorkerProgramUPDATE,
+    ]);
   }
 }

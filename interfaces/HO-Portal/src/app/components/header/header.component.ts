@@ -36,6 +36,9 @@ export class HeaderComponent implements OnInit {
   }
 
   private async loadProgramDetails() {
+    if (!this.programId) {
+      return;
+    }
     this.program = await this.programsService.getProgramById(this.programId);
     this.subtitle = this.translatableString.get(this.program?.titlePortal);
   }
