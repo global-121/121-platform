@@ -1,8 +1,8 @@
 @ho-portal
-Feature: Include people affected by "personal data" role (extension of Manage_people_affected.feature)
+Feature: Include people affected by "RegistrationStatusIncludedUPDATE" and "RegistrationPersonalREAD" permissions (extension of Manage_people_affected.feature)
 
   Background:
-    Given a logged-in user with the "personal data" role
+    Given a logged-in user with the "RegistrationREAD" permission
     Given the "active phase" is "review inclusion" or "payment"
 
   Scenario: View people affected connected to a program
@@ -13,6 +13,10 @@ Feature: Include people affected by "personal data" role (extension of Manage_pe
     And for each person an "Included" date+time is shown (if already available)
     And for each person a "Rejected" date+time is shown (if already available)
     And for each person a "Inclusion ended" date+time is shown (if already available)
+
+  Background:
+    Given a logged-in user with the "RegistrationStatusIncludedUPDATE" and "RegistrationPersonalREAD" permissions
+    Then the "include for program" action is visible
 
   Scenario: Use bulk-action "include for program"
     Given the generic "select bulk action" scenario (see Manage_people_affected.feature)

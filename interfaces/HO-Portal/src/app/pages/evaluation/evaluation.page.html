@@ -6,6 +6,7 @@
 <ion-content class="ion-padding">
 
   <app-phase-next
+    *appIfPermissions="[Permission.ProgramPhaseUPDATE]"
     [programId]="programId"
     [thisPhaseName]="thisPhase"
     [phaseReady]="true"

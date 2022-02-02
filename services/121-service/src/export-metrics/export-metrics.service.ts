@@ -1,3 +1,4 @@
+import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
 import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
 import { RegistrationsService } from './../registration/registrations.service';
@@ -103,6 +104,7 @@ export class ExportMetricsService {
 
     pastPaymentDetails = await this.filterAttributesToExport(
       pastPaymentDetails,
+      programId,
     );
 
     const fileInput = {
@@ -117,14 +119,25 @@ export class ExportMetricsService {
     return fileInput;
   }
 
-  private async filterAttributesToExport(pastPaymentDetails): Promise<any[]> {
+  private async filterAttributesToExport(
+    pastPaymentDetails,
+    programId: number,
+  ): Promise<any[]> {
     const programQuestions = (await this.getAllQuestionsForExport()).map(
       c => c.programQuestion,
     );
+    const programCustomAttrs = (
+      await this.getAllProgramCustomAttributesForExport(programId)
+    ).map(c => c.name);
+
+    const registrationCustomDataOfInterest = programQuestions.concat(
+      programCustomAttrs,
+    );
+
     const outputPaymentDetails = [];
     pastPaymentDetails.forEach(transaction => {
       Object.keys(transaction.customData).forEach(key => {
-        if (programQuestions.includes(key)) {
+        if (registrationCustomDataOfInterest.includes(key)) {
           transaction[key] = transaction.customData[key];
         }
       });
@@ -167,7 +180,6 @@ export class ExportMetricsService {
     const genericFields = [
       'id',
       GenericAttributes.phoneNumber,
-      GenericAttributes.namePartnerOrganization,
       GenericAttributes.paymentAmountMultiplier,
       GenericAttributes.preferredLanguage,
       'note',
@@ -246,6 +258,15 @@ export class ExportMetricsService {
       );
   }
 
+  private async getAllProgramCustomAttributesForExport(
+    programId: number,
+  ): Promise<ProgramCustomAttributeEntity[]> {
+    const program = await this.programRepository.findOne(programId, {
+      relations: ['programCustomAttributes'],
+    });
+    return program.programCustomAttributes;
+  }
+
   private async addPaymentFieldsToExport(
     row: object,
     registration: RegistrationEntity,
@@ -308,6 +329,10 @@ export class ExportMetricsService {
       true,
     );
 
+    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
+      programId,
+    );
+
     for await (let registration of registrations) {
       let row = {};
       row = await this.addGenericFieldsToExport(row, registration);
@@ -322,6 +347,11 @@ export class ExportMetricsService {
         registration,
         payments,
         transactions,
+      );
+      row = this.registrationsService.addProgramCustomAttributesToRow(
+        row,
+        registration.customData,
+        programCustomAttrs,
       );
       registrationDetails.push(row);
     }
@@ -342,6 +372,9 @@ export class ExportMetricsService {
       relations: ['fsp'],
     });
     const questions = await this.getAllQuestionsForExport();
+    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
+      programId,
+    );
     const inclusionDetails = [];
     for await (let registration of includedRegistrations) {
       let row = {};
@@ -351,6 +384,11 @@ export class ExportMetricsService {
         questions,
         registration,
         ExportType.included,
+      );
+      row = this.registrationsService.addProgramCustomAttributesToRow(
+        row,
+        registration.customData,
+        programCustomAttrs,
       );
       inclusionDetails.push(row);
     }
@@ -396,7 +434,9 @@ export class ExportMetricsService {
     );
 
     const programQuestions = await this.getAllQuestionsForExport();
-
+    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
+      programId,
+    );
     const columnDetails = [];
     for await (let registration of selectedRegistrations) {
       let row = {};
@@ -406,6 +446,11 @@ export class ExportMetricsService {
         programQuestions,
         registration,
         ExportType.selectedForValidation,
+      );
+      row = this.registrationsService.addProgramCustomAttributesToRow(
+        row,
+        registration.customData,
+        programCustomAttrs,
       );
       columnDetails.push(row);
     }
@@ -454,18 +499,26 @@ export class ExportMetricsService {
 
       return hasDuplicateWhatsAppNr;
     });
+    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
+      programId,
+    );
 
     const result = sortBy(duplicates, 'id').map(registration => {
-      return {
+      let row: any = {
         id: registration.id,
         name: this.registrationsService.getName(registration.customData),
         status: registration.registrationStatus,
         fsp: registration.fsp ? registration.fsp.fsp : null,
-        namePartnerOrganization: registration.namePartnerOrganization,
         phoneNumber: registration.customData[CustomDataAttributes.phoneNumber],
         whatsappPhoneNumber:
           registration.customData[CustomDataAttributes.whatsappPhoneNumber],
       };
+      row = this.registrationsService.addProgramCustomAttributesToRow(
+        row,
+        registration.customData,
+        programCustomAttrs,
+      );
+      return row;
     });
 
     return {
@@ -514,7 +567,6 @@ export class ExportMetricsService {
         'transaction.status as "status"',
         'transaction."errorMessage" as "errorMessage"',
         'registration.customData as "customData"',
-        'registration.namePartnerOrganization as "partnerOrganization"',
         'fsp.fsp AS financialServiceProvider',
       ])
       .innerJoin(

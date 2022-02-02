@@ -19,10 +19,10 @@
   class="ion-padding"
 >
   <h2 class="text-bold">{{ person?.name }}</h2>
-  <section class="ion-padding-bottom">
+  <section class="ion-margin-vertical ion-padding-bottom">
     <strong>{{ 'page.program.program-people-affected.column.status'|translate }}:</strong> {{'page.program.program-people-affected.status.' + person?.status | translate }}
   </section>
-  <section style="max-width: 80%;" class="ion-margin-top">
+  <section style="max-width: 80%;" class="ion-margin-vertical ion-padding-bottom">
     <div>
 
       <app-update-property-item
@@ -30,6 +30,8 @@
         [value]="person?.namePartnerOrganization"
         (updated)="updatePaAttribute('namePartnerOrganization', $event)"
         [inProgress]="inProgress?.namePartnerOrganization || false"
+        [isDisabled]="readOnly"
+        [showSubmit]="!readOnly"
         class="ion-margin-vertical"
       ></app-update-property-item>
 
@@ -39,41 +41,60 @@
         [value]="person?.paymentAmountMultiplier"
         (updated)="updatePaAttribute('paymentAmountMultiplier', $event)"
         [inProgress]="inProgress?.paymentAmountMultiplier || false"
+        [isDisabled]="readOnly"
+        [showSubmit]="!readOnly"
         class="ion-margin-vertical"
       ></app-update-property-item>
 
       <app-update-property-item
+        *ngIf="canViewPersonalData"
         type="tel"
         [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.label'|translate"
         [explanation]="'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.explanation'|translate"
         [value]="person?.phoneNumber"
         (updated)="updatePaAttribute('phoneNumber', $event)"
         [inProgress]="inProgress?.phoneNumber || false"
+        [isDisabled]="!canUpdatePersonalData"
+        [showSubmit]="canUpdatePersonalData"
         class="ion-margin-vertical"
       ></app-update-property-item>
 
       <app-update-property-item
-        *ngIf="person.whatsappPhoneNumber"
+        *ngIf="canViewPersonalData && person.whatsappPhoneNumber"
         type="tel"
         [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.label'|translate"
         [explanation]="'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.explanation'|translate"
         [value]="person?.whatsappPhoneNumber"
         (updated)="updatePaAttribute('whatsappPhoneNumber', $event)"
         [inProgress]="inProgress?.whatsappPhoneNumber || false"
+        [isDisabled]="!canUpdatePersonalData"
+        [showSubmit]="canUpdatePersonalData"
         class="ion-margin-vertical"
       ></app-update-property-item>
 
+      <div
+        *ngIf="readOnly && fspList.length === programFspLength && person?.fsp"
+        class="ion-margin-vertical"
+      >
+        <strong>{{ 'page.program.program-people-affected.column.fsp'|translate }}:</strong>
+        &nbsp;&nbsp;
+        <code>{{ person?.fsp }}</code>
+      </div>
       <app-update-fsp
-        *ngIf="fspList.length === programFspLength && person?.fsp"
+        *ngIf="!readOnly && fspList.length === programFspLength && person?.fsp"
         [fspList]="fspList"
         [label]="'page.program.program-people-affected.column.fsp'|translate"
         [value]="person?.fsp"
         [referenceId]="person?.referenceId"
         class="ion-margin-vertical"
       ></app-update-fsp>
+
     </div>
   </section>
-  <section class="ion-margin-bottom">
+  <section
+    *ngIf="canViewPersonalData"
+    class="ion-margin-vertical"
+  >
     <h4 class="text-bold">
       {{ 'page.program.program-people-affected.edit-person-affected-popup.note.section-title'|translate }}
     </h4>
@@ -83,7 +104,7 @@
     <ion-textarea
       [(ngModel)]="noteModel"
       [ngModelOptions]="{ standalone: true }"
-      [disabled]="inProgress?.note || false"
+      [disabled]="!canUpdatePersonalData || inProgress?.note"
       ngDefaultControl
       rows="10"
       spellcheck="true"
@@ -97,24 +118,31 @@
             timestamp: noteLastUpdate|date:"yyyy-MM-dd, HH:mm"
           } }}
       </ion-note>
-      <div class="ml-auto">
-      <ion-button
-        (click)="saveNote()"
-        [disabled]="inProgress?.note || false"
-        class="text-bold ion-text-uppercase"
-        fill=clear
+      <div
+        *ngIf="canUpdatePersonalData"
+        class="ml-auto"
       >
-        {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}
-      </ion-button>
-      <ion-spinner
-        *ngIf="inProgress?.note"
-        color="primary"
-        size="small"
-      ></ion-spinner>
-    </div>
+        <ion-button
+          (click)="saveNote()"
+          [disabled]="inProgress?.note || false"
+          class="text-bold ion-text-uppercase"
+          fill=clear
+        >
+          {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}
+        </ion-button>
+        <ion-spinner
+          *ngIf="inProgress?.note"
+          color="primary"
+          size="small"
+        ></ion-spinner>
+      </div>
     </ion-row>
   </section>
-  <section *ngIf="messageHistory" class="ion-padding-top">
+
+  <section
+    *ngIf="canViewPersonalData && messageHistory"
+    class="ion-padding-top"
+  >
     <h4 class="text-bold"> {{ 'page.program.program-people-affected.edit-person-affected-popup.messageHistory.section-title'|translate }}</h4>
 
     <ion-list>
@@ -122,7 +150,7 @@
         *ngFor="let message of messageHistory | slice:0:historySize; let i=index"
         [button]="true"
         (click)="openMessageDetails(i)"
-        >
+      >
         <span class="ion-margin-end" >
           {{ message.created|date:"yyyy-MM-dd, HH:mm" }}
         </span>
@@ -137,13 +165,13 @@
           <span *ngIf=" rowIndex === i">{{ message.body || imageString}}</span>
         </ion-row>
         <ion-icon *ngIf=" rowIndex === i" name="chevron-up" slot="end" size="small"></ion-icon>
-        </ion-item>
+      </ion-item>
     </ion-list>
-   <ion-button
-        *ngIf="messageHistory.length>historySize"
-        (click)="loadMore(messageHistory.length)"
-   >
-    {{'common.show-more' | translate}}
-      </ion-button>
+    <ion-button
+      *ngIf="messageHistory.length>historySize"
+      (click)="loadMore(messageHistory.length)"
+    >
+      {{'common.show-more' | translate}}
+    </ion-button>
   </section>
 </ion-content>

@@ -120,47 +120,4 @@ export class CronjobService {
     );
     console.log('CronjobService - Complete: cronSendWhatsappReminders');
   }
-
-  // @Cron(CronExpression.EVERY_10_MINUTES)
-  // Turned off as currently not cancelling vouchers any more.
-  // Code is left in to easily turn back on in future.
-  private async cronCancelByRefposIntersolve(): Promise<void> {
-    // This function periodically checks if some of the IssueCard calls failed.
-    // and tries to cancel the
-    console.log('CronjobService - Started: cancelByRefposIntersolve');
-
-    const tenMinutes = 10 * 60 * 1000;
-    const tenMinutesAgo = new Date(Date.now() - tenMinutes);
-
-    const twoWeeks = 14 * 24 * 60 * 60 * 1000;
-    const twoWeeksAgo = new Date(Date.now() - twoWeeks);
-
-    const failedIntersolveRquests = await this.intersolveRequestRepository.find(
-      {
-        where: {
-          updated: Between(twoWeeksAgo, tenMinutesAgo),
-          toCancel: true,
-        },
-      },
-    );
-    for (let intersolveRequest of failedIntersolveRquests) {
-      this.cancelRequestRefpos(intersolveRequest);
-    }
-  }
-
-  private async cancelRequestRefpos(
-    intersolveRequest: IntersolveRequestEntity,
-  ): Promise<void> {
-    intersolveRequest.cancellationAttempts =
-      intersolveRequest.cancellationAttempts + 1;
-    try {
-      const cancelByRefPosResponse = await this.intersolveApiService.cancelTransactionByRefPos(
-        intersolveRequest.refPos,
-      );
-      intersolveRequest.cancelByRefPosResultCode =
-        cancelByRefPosResponse.resultCode;
-    } catch (Error) {
-      console.log('Error cancelling by refpos id', Error, intersolveRequest);
-    }
-  }
 }

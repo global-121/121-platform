@@ -1,3 +1,4 @@
+import { UserModule } from './../../user/user.module';
 import {
   Module,
   NestModule,
@@ -12,7 +13,7 @@ import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import { API_PATHS } from '../../config';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TwilioMessageEntity])],
+  imports: [TypeOrmModule.forFeature([TwilioMessageEntity]), UserModule],
   providers: [VoiceService],
   controllers: [VoiceController],
   exports: [VoiceService],

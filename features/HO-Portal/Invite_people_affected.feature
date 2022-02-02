@@ -2,8 +2,12 @@
 Feature: Invite people affected (extension of Manage_people_affected.feature)
 
   Background:
-    Given a logged-in user with "run program" role
+    Given a logged-in user with "RegistrationREAD" permission
     And the "selected phase" is "registration (& validation)"
+
+  Background:
+    Given a logged-in user with "RegistrationStatusInvitedUPDATE" permission
+    Then the "Invite for registration" action is visible
 
   Scenario: Use bulk-action "Invite for registration"
     Given the generic "select bulk action" scenario (see Manage_people_affected.feature)

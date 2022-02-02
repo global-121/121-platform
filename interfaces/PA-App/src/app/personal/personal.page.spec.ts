@@ -3,7 +3,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { MockConversationService } from '../mocks/conversation.service.mock';
+import { MockLoggingService } from '../mocks/logging.service.mock';
 import { ConversationService } from '../services/conversation.service';
+import { LoggingService } from '../services/logging.service';
 import { PersonalPage } from './personal.page';
 
 describe('PersonalPage', () => {
@@ -19,6 +21,10 @@ describe('PersonalPage', () => {
         {
           provide: ConversationService,
           useValue: MockConversationService,
+        },
+        {
+          provide: LoggingService,
+          useValue: MockLoggingService,
         },
       ],
     }).compileComponents();

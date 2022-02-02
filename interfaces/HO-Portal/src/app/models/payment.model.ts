@@ -1,3 +1,5 @@
+import { PersonTableColumn } from './person.model';
+
 export class PaymentData {
   id: number;
   paymentDate: Date;
@@ -7,6 +9,17 @@ export class PaymentData {
 export class Payment extends PaymentData {
   statusOpen?: boolean;
   isExportAvailable?: boolean;
+}
+
+export class PaymentColumn extends PersonTableColumn {
+  paymentIndex: number;
+}
+
+export class PaymentColumnDetail {
+  text: string;
+  amount: string;
+  hasMessageIcon: boolean;
+  hasMoneyIconTable: boolean;
 }
 
 export class PopupPayoutDetails {

@@ -24,4 +24,5 @@ export enum RegistrationStatusTimestampField {
   inclusionDate = 'inclusionDate',
   inclusionEndDate = 'inclusionEndDate',
   rejectionDate = 'rejectionDate',
+  registeredWhileNoLongerEligibleDate = 'registeredWhileNoLongerEligibleDate',
 }

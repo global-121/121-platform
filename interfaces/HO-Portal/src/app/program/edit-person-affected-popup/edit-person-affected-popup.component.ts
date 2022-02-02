@@ -18,6 +18,15 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   @Input()
   public programId: number;
 
+  @Input()
+  public readOnly = false;
+
+  @Input()
+  public canViewPersonalData = false;
+
+  @Input()
+  public canUpdatePersonalData = false;
+
   public inProgress: any = {};
 
   public noteModel: string;
@@ -41,9 +50,12 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.getNote();
     this.getFspList();
-    this.getMessageHistory();
+
+    if (this.canViewPersonalData) {
+      this.getNote();
+      this.getMessageHistory();
+    }
   }
 
   public async updatePaAttribute(
