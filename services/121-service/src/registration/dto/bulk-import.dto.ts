@@ -24,11 +24,6 @@ export class BulkImportDto {
   public phoneNumber: string;
 
   @ApiModelProperty()
-  @IsNotEmpty()
-  @IsString()
-  public namePartnerOrganization: string;
-
-  @ApiModelProperty()
   @IsNumber()
   @IsInt()
   @Min(1)
@@ -64,10 +59,6 @@ export class ImportRegistrationsDto {
   })
   @IsIn(languageArray)
   public preferredLanguage: LanguageEnum;
-
-  @ApiModelProperty()
-  @IsString()
-  public namePartnerOrganization: string;
 
   @ApiModelProperty()
   @IsNotEmpty()

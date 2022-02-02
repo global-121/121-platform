@@ -37,6 +37,7 @@ import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
+import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 
 @Injectable()
 export class RegistrationsService {
@@ -316,8 +317,10 @@ export class RegistrationsService {
 
     // If imported registration found ..
     // .. then transfer relevant attributes from imported registration to current registration
-    currentRegistration.namePartnerOrganization =
-      importedRegistration.namePartnerOrganization;
+    currentRegistration.customData = {
+      ...currentRegistration.customData,
+      ...importedRegistration.customData,
+    };
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
 
@@ -474,10 +477,6 @@ export class RegistrationsService {
       .addSelect('registration.inclusionScore', 'inclusionScore')
       .addSelect('fsp.fsp', 'fsp')
       .addSelect(
-        'registration.namePartnerOrganization',
-        'namePartnerOrganization',
-      )
-      .addSelect(
         'registration.paymentAmountMultiplier',
         'paymentAmountMultiplier',
       )
@@ -598,6 +597,10 @@ export class RegistrationsService {
     q = q.addSelect('registration.note', 'note');
     q = q.addSelect('registration.customData', 'customData');
 
+    const program = await this.programRepository.findOne(programId, {
+      relations: ['programCustomAttributes'],
+    });
+
     const rows = await q.getRawMany();
     const responseRows = [];
     for (let row of rows) {
@@ -608,6 +611,11 @@ export class RegistrationsService {
       row['whatsappPhoneNumber'] =
         row.customData[CustomDataAttributes.whatsappPhoneNumber];
       row['vnumber'] = row.customData['vnumber'];
+      row = this.addProgramCustomAttributesToRow(
+        row,
+        row.customData,
+        program.programCustomAttributes,
+      );
       delete row.customData;
       responseRows.push(row);
     }
@@ -679,6 +687,8 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.inclusionEndDate;
       case RegistrationStatusEnum.rejected:
         return RegistrationStatusTimestampField.rejectionDate;
+      case RegistrationStatusEnum.registeredWhileNoLongerEligible:
+        return RegistrationStatusTimestampField.registeredWhileNoLongerEligibleDate;
     }
   }
 
@@ -1248,5 +1258,17 @@ export class RegistrationsService {
       return [];
     }
     return messageHistoryArray;
+  }
+
+  public addProgramCustomAttributesToRow(
+    row: object,
+    customData: object,
+    programCustomAttributes: ProgramCustomAttributeEntity[],
+  ): object {
+    for (const programCustomAttribute of programCustomAttributes) {
+      row[programCustomAttribute.name] =
+        customData[programCustomAttribute.name];
+    }
+    return row;
   }
 }

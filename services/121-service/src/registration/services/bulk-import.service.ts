@@ -111,7 +111,6 @@ export class BulkImportService {
       newRegistration.referenceId = uuid();
       newRegistration.phoneNumber = phoneNumberResult;
       newRegistration.preferredLanguage = LanguageEnum.en;
-      newRegistration.namePartnerOrganization = record.namePartnerOrganization;
       newRegistration.paymentAmountMultiplier = record.paymentAmountMultiplier;
       newRegistration.program = program;
 
@@ -192,7 +191,6 @@ export class BulkImportService {
     for await (const record of validatedImportRecords) {
       const registration = new RegistrationEntity();
       registration.referenceId = uuid();
-      registration.namePartnerOrganization = record.namePartnerOrganization;
       registration.phoneNumber = record.phoneNumber;
       registration.preferredLanguage = record.preferredLanguage;
       registration.program = program;
@@ -330,7 +328,6 @@ export class BulkImportService {
       }
       let importRecord = new BulkImportDto();
       importRecord.phoneNumber = row.phoneNumber;
-      importRecord.namePartnerOrganization = row.namePartnerOrganization;
       importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
       importRecord.programAttributes = [];
       for await (const att of programCustomAttributes) {
@@ -416,7 +413,6 @@ export class BulkImportService {
       }
       let importRecord = new ImportRegistrationsDto();
       importRecord.preferredLanguage = row.preferredLanguage;
-      importRecord.namePartnerOrganization = row.namePartnerOrganization;
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;
       importRecord.programAttributes = [];
