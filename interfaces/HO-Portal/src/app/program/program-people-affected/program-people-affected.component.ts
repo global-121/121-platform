@@ -994,14 +994,18 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     let doSinglePaymentDetails: SinglePayoutDetails = null;
 
     if (this.canViewVouchers && this.hasVoucherSupport(row.fsp) && !!value) {
-      const voucherBlob = await this.programsService.exportVoucher(
-        row.referenceId,
-        column.paymentIndex,
-      );
-      if (voucherBlob.size) {
-        voucherUrl = window.URL.createObjectURL(voucherBlob);
-        voucherButtons = true;
-      }
+      await this.programsService
+        .exportVoucher(row.referenceId, column.paymentIndex)
+        .then(
+          async (voucherBlob) => {
+            voucherUrl = window.URL.createObjectURL(voucherBlob);
+            voucherButtons = true;
+          },
+          (error) => {
+            console.log('error: ', error);
+            voucherButtons = false;
+          },
+        );
     }
 
     if (hasError || value.hasMessageIcon || value.hasMoneyIconTable) {
