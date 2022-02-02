@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
+import Permission from 'src/app/auth/permission.enum';
 import { User } from 'src/app/models/user.model';
 import { UserStateComponent } from './user-state.component';
 
@@ -15,7 +15,7 @@ describe('UserStateComponent', () => {
   const mockUser: User = {
     token: 'test',
     username: 'test@example.org',
-    roles: [UserRole.Admin],
+    permissions: [Permission.Test],
   };
   const authServiceMock = {
     authenticationState$: of(mockUser),

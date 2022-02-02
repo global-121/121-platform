@@ -2,7 +2,7 @@
 Feature: Get Person Affected Validation Data
 
   Background:
-    Given a logged-in "field-validation" user
+    Given a logged-in user with "RegistrationPersonalForValidationREAD" permission
     And the user is on the "actions" page
     And the user selects "Scan Person Affected's QR-code" from the main-menu
 

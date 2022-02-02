@@ -1,3 +1,6 @@
+import Permission from '../auth/permission.enum';
+import { ProgramPhase } from './program.model';
+
 // Model for data from the API
 export class Person {
   id: number;
@@ -85,4 +88,18 @@ export enum LanguageEnum {
   in = 'in',
   nl = 'nl',
   es = 'es',
+}
+
+export class PersonTableColumn {
+  prop: string;
+  name: string;
+  draggable: boolean;
+  resizeable: boolean;
+  sortable: boolean;
+  frozenLeft: boolean;
+  comparator?: any;
+  phases: ProgramPhase[];
+  permissions: Permission[];
+  showIfNoValidation: boolean;
+  headerClass: string;
 }

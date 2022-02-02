@@ -2,7 +2,7 @@
 Feature: Reject or end inclusion of people affected (extension of Manage_people_affected.feature)
 
   Background:
-    Given a logged-in user with "personal data" role
+    Given a logged-in user with "ProgramAllREAD" permission
     Given the "active phase" is "review inclusion" or "payment"
 
   Scenario: View people affected connected to a program
@@ -13,6 +13,10 @@ Feature: Reject or end inclusion of people affected (extension of Manage_people_
     And for each person an "Included" date+time is shown (if already available)
     And for each person a "Rejected" date+time is shown (if already available)
     And for each person a "Inclusion ended" date+time is shown (if already available)
+
+  Background:
+    Given a logged-in user with "RegistrationStatusRejectedUPDATE" permission
+    Then the "reject from program" action is visible
 
   Scenario: Use bulk-action "reject from program"
     Given the generic "select bulk action" scenario (see Manage_people_affected.feature)
@@ -28,10 +32,18 @@ Feature: Reject or end inclusion of people affected (extension of Manage_people_
     And if the custom SMS option is used, an SMS is sent to the PA (see Manage_people_affected.feature)
     And in the PA-app - after return or refresh - a notification appears that the PA is "not included"
 
+  Background:
+    Given a logged-in user with "RegistrationStatusInclusionEndedUPDATE" permission
+    Then the "end inclusion in program" action is visible
+
   Scenario: Use bulk-action "end inclusion in program"
     Given the generic "select bulk action" scenario (see Manage_people_affected.feature)
     When user selects the "end inclusion in program" action
     Then the eligible rows are those with status "included"
+
+  Background:
+    Given a logged-in user with "RegistrationStatusRejectedUPDATE" or "RegistrationStatusInclusionEndedUPDATE" permissions
+    Then either the "reject from program" or the "end inclusion in program" actions are visible
 
   Scenario: Confirm "end inclusion in program" action
     Given the generic "confirm apply action" scenario (see Manage_people_affected.feature)

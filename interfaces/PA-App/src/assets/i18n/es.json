@@ -17,7 +17,7 @@
   "personal": {
     "consent-question": {
       "agree": "Estoy de Acuerdo",
-      "answer": "He leído/escuchado sobre cómo se almacenara de forma segura mi información personal. Entiendo que es necesario enviar mi información personal para recibir ayuda monetaria. <br><br> Entiendo quién ve mi información personal. <br><br> Seleccionar y cotizar; <b>Estoy de acuerdo</b> cotizar; Decido participar en el programa de ayuda. <br><br>Seleccionar y cotizar;<b> No estoy de acuerdo </b> No Cotizar: He decidido no participar en el programa de ayuda.",
+      "answer": "He leído/escuchado sobre cómo se almacenara de forma segura mi información personal. Entiendo que es necesario enviar mi información personal para recibir un vale digital. <br><br> Entiendo quién ve mi información personal. <br><br> Seleccionar y cotizar; <b>Estoy de acuerdo</b> cotizar; Decido participar en el programa de ayuda. <br><br>Seleccionar y cotizar;<b> No estoy de acuerdo </b> No Cotizar: He decidido no participar en el programa de ayuda.",
       "disagree": "No estoy de acuerdo",
       "more-info-personal-information": "Acerca de la Información Personal",
       "question": "Para aplicar a este programa de ayuda  necesita estar de acuerdo con <strong> cómo resguardamos su información personal.</strong><br /><br />Por favor lea o escuche sobre cómo resguardamos su información personal."

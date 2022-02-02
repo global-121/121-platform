@@ -1,8 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthService } from 'src/app/auth/auth.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { arrayToCsv } from '../../shared/array-to-csv';
 
@@ -17,6 +15,7 @@ export class ExportFspInstructionsComponent implements OnChanges {
 
   @Input()
   public payment: number;
+
   @Input()
   public lastPaymentId: number;
 
@@ -28,7 +27,6 @@ export class ExportFspInstructionsComponent implements OnChanges {
   public message: string;
 
   constructor(
-    private authService: AuthService,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
@@ -55,11 +53,7 @@ export class ExportFspInstructionsComponent implements OnChanges {
   }
 
   private btnEnabled() {
-    return (
-      this.authService.hasUserRole([UserRole.PersonalData]) &&
-      this.payment > 0 &&
-      this.payment <= this.lastPaymentId
-    );
+    return this.payment > 0 && this.payment <= this.lastPaymentId;
   }
 
   public async getExportFspInstructions() {

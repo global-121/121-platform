@@ -1,6 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/auth/auth.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import {
   Phase,
@@ -15,8 +13,10 @@ import {
 export class PhaseNextComponent implements OnInit {
   @Input()
   public programId: number;
+
   @Input()
   public thisPhaseName: ProgramPhase;
+
   @Input()
   public phaseReady: boolean;
 
@@ -29,10 +29,7 @@ export class PhaseNextComponent implements OnInit {
   public btnText: string;
   public isInProgress = false;
 
-  constructor(
-    private authService: AuthService,
-    private programPhaseService: ProgramPhaseService,
-  ) {}
+  constructor(private programPhaseService: ProgramPhaseService) {}
 
   async ngOnInit() {
     this.programPhases = await this.programPhaseService.getPhases(
@@ -48,12 +45,7 @@ export class PhaseNextComponent implements OnInit {
   }
 
   public checkDisabled(): boolean {
-    return (
-      this.thisPhaseName !== this.activePhase.name ||
-      this.isInProgress ||
-      // !this.phaseReady ||
-      !this.authService.hasUserRole([UserRole.RunProgram])
-    );
+    return this.thisPhaseName !== this.activePhase.name || this.isInProgress;
   }
 
   private async updatePhases() {

@@ -4,13 +4,20 @@ import { NavigationEnd, Router } from '@angular/router';
 import { AlertController, ModalController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
+import Permission from 'src/app/auth/permission.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import {
+  PaymentColumn,
+  PaymentColumnDetail,
   PopupPayoutDetails,
   SinglePayoutDetails,
 } from 'src/app/models/payment.model';
-import { PaStatus, Person, PersonRow } from 'src/app/models/person.model';
+import {
+  PaStatus,
+  Person,
+  PersonRow,
+  PersonTableColumn,
+} from 'src/app/models/person.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
@@ -49,10 +56,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public isLoading: boolean;
 
   public columnDefaults: any;
-  public columns: any[] = [];
-  private columnsAvailable: any[] = [];
-  private paymentColumnTemplate: any = {};
-  public paymentColumns: any[] = [];
+  public columns: PersonTableColumn[] = [];
+  private columnsAvailable: PersonTableColumn[] = [];
+  private paymentColumnTemplate: PaymentColumn;
+  public paymentColumns: PaymentColumn[] = [];
   private pastTransactions: Transaction[] = [];
   private lastPaymentId: number;
 
@@ -80,7 +87,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.invite',
       ),
-      roles: [UserRole.PersonalData],
+      permissions: [Permission.RegistrationStatusInvitedUPDATE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
       confirmConditions: {
@@ -102,7 +109,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.no-longer-eligible',
       ),
-      roles: [UserRole.PersonalData],
+      permissions: [Permission.RegistrationStatusNoLongerEligibleUPDATE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
     },
@@ -112,7 +119,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.select-for-validation',
       ),
-      roles: [UserRole.RunProgram],
+      permissions: [Permission.RegistrationStatusSelectedForValidationUPDATE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: false,
     },
@@ -122,7 +129,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.include',
       ),
-      roles: [UserRole.RunProgram],
+      permissions: [Permission.RegistrationStatusIncludedUPDATE],
       phases: [ProgramPhase.inclusion],
       showIfNoValidation: true,
       confirmConditions: {
@@ -143,7 +150,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.include',
       ),
-      roles: [UserRole.PersonalData],
+      permissions: [
+        Permission.RegistrationStatusIncludedUPDATE,
+        Permission.RegistrationPersonalREAD,
+      ],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
@@ -164,7 +174,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.reject',
       ),
-      roles: [UserRole.PersonalData],
+      permissions: [Permission.RegistrationStatusRejectedUPDATE],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
@@ -187,7 +197,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.end-inclusion',
       ),
-      roles: [UserRole.PersonalData],
+      permissions: [Permission.RegistrationStatusInclusionEndedUPDATE],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
@@ -208,7 +218,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.send-message',
       ),
-      roles: [UserRole.PersonalData],
+      permissions: [Permission.RegistrationNotificationCREATE],
       phases: [
         ProgramPhase.registrationValidation,
         ProgramPhase.inclusion,
@@ -235,7 +245,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.delete-pa',
       ),
-      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      permissions: [Permission.RegistrationDELETE],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
     },
@@ -243,7 +253,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       id: BulkActionId.divider,
       enabled: false,
       label: '-------------------------------',
-      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      permissions: [Permission.PaymentCREATE],
       phases: [ProgramPhase.payment],
       showIfNoValidation: true,
     },
@@ -252,6 +262,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public submitWarning: any;
 
   public canViewPersonalData: boolean;
+  private canUpdatePaData: boolean;
+  private canUpdatePersonalData: boolean;
+  private canViewPaymentData: boolean;
+  private canViewVouchers: boolean;
+  private canDoSinglePayment: boolean;
 
   constructor(
     private authService: AuthService,
@@ -291,7 +306,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ProgramPhase.reviewInclusion,
         ProgramPhase.payment,
       ],
-      roles: [UserRole.View, UserRole.RunProgram, UserRole.PersonalData],
+      permissions: [Permission.RegistrationREAD],
       showIfNoValidation: true,
       headerClass: 'ion-text-wrap ion-align-self-end',
     };
@@ -308,7 +323,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ...this.columnDefaults,
         frozenLeft: this.platform.width() > 768,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-        roles: [UserRole.View, UserRole.PersonalData],
+        permissions: [Permission.RegistrationPersonalREAD],
       },
       {
         prop: 'phoneNumber',
@@ -323,7 +338,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ProgramPhase.reviewInclusion,
           ProgramPhase.payment,
         ],
-        roles: [UserRole.View, UserRole.PersonalData],
+        permissions: [Permission.RegistrationPersonalREAD],
         minWidth: columnPhoneNumberWidth,
       },
       {
@@ -338,7 +353,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ProgramPhase.reviewInclusion,
           ProgramPhase.payment,
         ],
-        roles: [UserRole.View, UserRole.PersonalData, UserRole.RunProgram],
+        permissions: [Permission.RegistrationPersonalREAD],
       },
       {
         prop: 'namePartnerOrganization',
@@ -353,7 +368,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ProgramPhase.reviewInclusion,
           ProgramPhase.payment,
         ],
-        roles: [UserRole.View, UserRole.PersonalData, UserRole.RunProgram],
       },
       {
         prop: 'statusLabel',
@@ -493,6 +507,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       ...this.columnDefaults,
       phases: [ProgramPhase.payment],
       width: columnDateTimeWidth,
+      permissions: [Permission.PaymentTransactionREAD],
     };
   }
 
@@ -505,24 +520,44 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.paymentInProgress =
       await this.pastPaymentsService.checkPaymentInProgress(this.program.id);
 
-    this.canViewPersonalData = this.authService.hasUserRole([
-      UserRole.View,
-      UserRole.PersonalData,
+    this.canUpdatePaData = this.authService.hasAllPermissions([
+      Permission.RegistrationAttributeUPDATE,
+    ]);
+    this.canViewPersonalData = this.authService.hasAllPermissions([
+      Permission.RegistrationPersonalREAD,
+    ]);
+    this.canUpdatePersonalData = this.authService.hasAllPermissions([
+      Permission.RegistrationPersonalUPDATE,
+    ]);
+    this.canViewPaymentData = this.authService.hasAllPermissions([
+      Permission.PaymentREAD,
+      Permission.PaymentTransactionREAD,
+    ]);
+    this.canViewVouchers = this.authService.hasAllPermissions([
+      Permission.PaymentVoucherREAD,
+    ]);
+    this.canDoSinglePayment = this.authService.hasAllPermissions([
+      Permission.ActionREAD,
+      Permission.PaymentCREATE,
+      Permission.PaymentREAD,
+      Permission.PaymentTransactionREAD,
     ]);
 
     this.loadColumns();
 
-    this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
-      this.programId,
-    );
-    const firstPaymentToShow = 1;
-
-    if (this.thisPhase === ProgramPhase.payment) {
-      this.pastTransactions = await this.programsService.getTransactions(
+    if (this.canViewPaymentData) {
+      this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
         this.programId,
-        firstPaymentToShow,
       );
-      this.addPaymentColumns(firstPaymentToShow);
+      const firstPaymentToShow = 1;
+
+      if (this.thisPhase === ProgramPhase.payment) {
+        this.pastTransactions = await this.programsService.getTransactions(
+          this.programId,
+          firstPaymentToShow,
+        );
+        this.addPaymentColumns(firstPaymentToShow);
+      }
     }
 
     await this.loadData();
@@ -590,7 +625,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     for (const column of this.columnsAvailable) {
       if (
         column.phases.includes(this.thisPhase) &&
-        this.authService.hasUserRole(column.roles) &&
+        this.authService.hasAllPermissions(column.permissions) &&
         this.checkValidationColumnOrAction(column)
       ) {
         this.columns.push(column);
@@ -605,15 +640,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     );
   }
 
-  private createPaymentColumn(index: number) {
-    const column = JSON.parse(JSON.stringify(this.paymentColumnTemplate)); // Hack to clone without reference;
-    column.name += index;
-    column.prop += index;
+  private createPaymentColumn(index: number): PaymentColumn {
+    const column = Object.assign({}, this.paymentColumnTemplate);
+    column.name = `${column.name}${index}`;
+    column.prop = `${column.prop}${index}`;
     column.paymentIndex = index;
     return column;
   }
 
-  private async addPaymentColumns(firstPaymentToShow) {
+  private async addPaymentColumns(firstPaymentToShow: number) {
     const nrOfPayments = this.program.distributionDuration;
 
     const lastPaymentToShow = Math.min(this.lastPaymentId + 1, nrOfPayments);
@@ -630,7 +665,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
-        this.authService.hasUserRole(action.roles) &&
+        this.authService.hasAllPermissions(action.permissions) &&
         action.phases.includes(this.thisPhase) &&
         this.checkValidationColumnOrAction(action);
       return action;
@@ -651,7 +686,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         label: `${this.translate.instant(
           'page.program.program-people-affected.actions.do-payment',
         )} #${paymentId}`,
-        roles: [UserRole.RunProgram, UserRole.PersonalData],
+        permissions: [Permission.PaymentCREATE],
         phases: [ProgramPhase.payment],
         showIfNoValidation: true,
       };
@@ -764,14 +799,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       hasNote: !!person.hasNote,
     };
 
-    personRow = this.fillPaymentColumns(personRow);
+    if (this.canViewPaymentData) {
+      personRow = this.fillPaymentColumns(personRow);
+    }
     return personRow;
   }
 
   private getTransactionOfPaymentForRegistration(
     paymentIndex: number,
     referenceId: string,
-  ) {
+  ): Transaction {
     return this.pastTransactions.find(
       (transaction) =>
         transaction.payment === paymentIndex &&
@@ -817,7 +854,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         );
       }
 
-      const paymentColumnValue = {
+      const paymentColumnValue: PaymentColumnDetail = {
         text: paymentColumnText,
         amount: `${this.program.currency} ${transaction.amount}`,
         hasMessageIcon: this.enableMessageSentIcon(transaction),
@@ -828,37 +865,31 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return personRow;
   }
 
-  public enableMessageSentIcon(transaction: any) {
-    if (
+  public enableMessageSentIcon(transaction: Transaction): boolean {
+    return (
       transaction.customData &&
       [
         IntersolvePayoutStatus.initialMessage,
         IntersolvePayoutStatus.voucherSent,
       ].includes(transaction.customData.IntersolvePayoutStatus)
-    ) {
-      return true;
-    }
-    return false;
+    );
   }
 
-  public enableMoneySentIconTable(transaction: any) {
-    if (
+  public enableMoneySentIconTable(transaction: Transaction): boolean {
+    return (
       (!transaction.customData.IntersolvePayoutStatus ||
         transaction.customData.IntersolvePayoutStatus ===
           IntersolvePayoutStatus.voucherSent) &&
       transaction.status === StatusEnum.success
-    ) {
-      return true;
-    }
-    return false;
+    );
   }
 
-  public hasVoucherSupport(fsp: string) {
+  public hasVoucherSupport(fsp: string): boolean {
     const voucherFsps = ['Intersolve-no-whatsapp', 'Intersolve-whatsapp'];
     return voucherFsps.includes(fsp);
   }
 
-  public showInclusionScore() {
+  public showInclusionScore(): boolean {
     let show = false;
     for (const pa of this.allPeopleAffected) {
       show = !!pa.inclusionScore;
@@ -869,7 +900,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return show;
   }
 
-  public showWhatsappNumber() {
+  public showWhatsappNumber(): boolean {
     let show = false;
     for (const pa of this.allPeopleAffected) {
       show = this.hasVoucherSupport(pa.fsp);
@@ -880,7 +911,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return show;
   }
 
-  public showVnumber() {
+  public showVnumber(): boolean {
     let show = false;
     for (const pa of this.allPeopleAffected) {
       show = !!pa.vnumber;
@@ -891,11 +922,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return show;
   }
 
-  public hasError(row: PersonRow, paymentIndex: number) {
+  public hasError(row: PersonRow, paymentIndex: number): boolean {
     return !!row['payment' + paymentIndex + '-error'];
   }
 
-  public hasWaiting(row: PersonRow, paymentIndex: number) {
+  public hasWaiting(row: PersonRow, paymentIndex: number): boolean {
     return !!row['payment' + paymentIndex + '-waiting'];
   }
 
@@ -908,23 +939,27 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       componentProps: {
         person,
         programId,
+        readOnly: !this.canUpdatePaData,
+        canViewPersonalData: this.canViewPersonalData,
+        canUpdataPersonalData: this.canUpdatePersonalData,
       },
     });
 
     await modal.present();
   }
 
-  public async statusPopup(row: PersonRow, column, value) {
-    if (
-      !this.hasVoucherSupport(row.fsp) &&
-      !this.hasError(row, column.paymentIndex) &&
-      !this.enableSinglePayment(row, column)
-    ) {
+  public async statusPopup(
+    row: PersonRow,
+    column: PaymentColumn,
+    value: PaymentColumnDetail,
+  ) {
+    const isSinglePayment = this.enableSinglePayment(row, column);
+    const hasError = this.hasError(row, column.paymentIndex);
+
+    if (!this.hasVoucherSupport(row.fsp) && !hasError && !isSinglePayment) {
       return;
     }
 
-    const isSinglePayment = this.enableSinglePayment(row, column);
-    const hasError = this.hasError(row, column.paymentIndex);
     const hasWaiting = this.hasWaiting(row, column.paymentIndex);
 
     const content = hasWaiting
@@ -951,34 +986,14 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.payment-status-popup.notes',
         )
       : null;
-    const showRetryButton = hasWaiting ? false : hasError ? true : false;
-    const payoutDetails: PopupPayoutDetails =
-      hasError || value.hasMessageIcon || value.hasMoneyIconTable
-        ? {
-            programId: this.programId,
-            payment: column.paymentIndex,
-            amount: row[column.prop + '-amount'],
-            referenceId: row.referenceId,
-            currency: this.program.currency,
-          }
-        : null;
-    const singlePayoutDetails: SinglePayoutDetails = isSinglePayment
-      ? {
-          paNr: row.pa,
-          amount: this.program.fixedTransferValue,
-          currency: this.program.currency,
-          multiplier: row.paymentAmountMultiplier
-            ? Number(row.paymentAmountMultiplier.substr(0, 1))
-            : 1,
-          programId: this.programId,
-          payment: column.paymentIndex,
-          referenceId: row.referenceId,
-        }
-      : null;
     let voucherUrl = null;
     let voucherButtons = null;
 
-    if (this.hasVoucherSupport(row.fsp) && !!value) {
+    let paymentDetails: PopupPayoutDetails = null;
+    let showRetryButton = false;
+    let doSinglePaymentDetails: SinglePayoutDetails = null;
+
+    if (this.canViewVouchers && this.hasVoucherSupport(row.fsp) && !!value) {
       const voucherBlob = await this.programsService.exportVoucher(
         row.referenceId,
         column.paymentIndex,
@@ -987,6 +1002,31 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         voucherUrl = window.URL.createObjectURL(voucherBlob);
         voucherButtons = true;
       }
+    }
+
+    if (hasError || value.hasMessageIcon || value.hasMoneyIconTable) {
+      paymentDetails = {
+        programId: this.programId,
+        payment: column.paymentIndex,
+        amount: row[column.prop + '-amount'],
+        referenceId: row.referenceId,
+        currency: this.program.currency,
+      };
+    }
+
+    if (this.canDoSinglePayment) {
+      showRetryButton = !hasWaiting && hasError;
+      doSinglePaymentDetails = {
+        paNr: row.pa,
+        amount: this.program.fixedTransferValue,
+        currency: this.program.currency,
+        multiplier: row.paymentAmountMultiplier
+          ? Number(row.paymentAmountMultiplier.substr(0, 1))
+          : 1,
+        programId: this.programId,
+        payment: column.paymentIndex,
+        referenceId: row.referenceId,
+      };
     }
 
     const titleError = hasError ? `${column.name}: ${value.text}` : null;
@@ -1004,8 +1044,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         content,
         contentNotes,
         showRetryButton,
-        payoutDetails,
-        singlePayoutDetails,
+        payoutDetails: paymentDetails,
+        singlePayoutDetails: doSinglePaymentDetails,
         voucherButtons,
         imageUrl: voucherUrl,
       },
@@ -1085,12 +1125,14 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public enableSinglePayment(row: PersonRow, column): boolean {
+    const permission = this.canDoSinglePayment;
     const included = row.status === PaStatus.included;
     const noPaymentDone = !row[column.prop];
     const noFuturePayment = column.paymentIndex <= this.lastPaymentId;
     const onlyLast3Payments = column.paymentIndex > this.lastPaymentId - 3;
     const noPaymentInProgress = !this.paymentInProgress;
     return (
+      permission &&
       included &&
       noPaymentDone &&
       noFuturePayment &&

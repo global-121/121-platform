@@ -1,4 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PhoneNumberInputComponent } from './phone-number-input.component';
@@ -11,6 +12,7 @@ describe('PhoneNumberInputComponent', () => {
     TestBed.configureTestingModule({
       declarations: [PhoneNumberInputComponent],
       imports: [HttpClientTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: ProgramsServiceApiService,

@@ -1,4 +1,4 @@
-export enum UserRole {
+export enum DefaultUserRole {
   Admin = 'admin',
   FieldValidation = 'field-validation',
   PersonalData = 'personal-data',
@@ -10,4 +10,4 @@ export enum PersonAffectedRole {
   PersonAffected = 'person-affected',
 }
 
-export type AuthenticationRole = UserRole | PersonAffectedRole;
+export type AuthenticationRole = DefaultUserRole | PersonAffectedRole;
