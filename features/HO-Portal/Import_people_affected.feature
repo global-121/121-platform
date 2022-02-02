@@ -10,20 +10,22 @@ Feature: Import people affected
     When the user clicks the "Download template CSV-file" button
     Then a CSV-file is downloaded
     And it contains only 1 row of column names
-    And it contains the columns "phoneNumber", "namePartnerOrganization" and "paymentAmountMultiplier"
+    And it contains the columns "phoneNumber", and "paymentAmountMultiplier"
+    And the dynamic "programCustomAttributes" of that program
 
   Scenario: Successfully Import People Affected
     Given a valid import CSV file is prepared
-    And it has columns "phoneNumber", "namePartnerOrganization" and "paymentAmountMultiplier"
+    And it has columns "phoneNumber", and "paymentAmountMultiplier"
+    And the dynamic "programCustomAttributes" of that program
     And it has as delimiter ";" or ","
     And the "paymentAmountMultiplier" column has only positive integers as values
     Given the user clicks the "Import People Affected" button
     When the user selects the CSV-file, through 'choose file' or 'drag and drop'
     Then the "OK" button becomes enabled
-    
+
     When the user clicks "OK" to confirm the import
     Then a loading spinner appears
-    
+
     When it is finished
     Then a feedback popup appears
     And it shows the number of successfully imported "phoneNumbers"
@@ -32,7 +34,7 @@ Feature: Import people affected
     And it shows an "OK" button
     And it mentions that a CSV is automatically downloaded with the import-result per row.
     And a download window for this CSV is appearing
-    
+
     When the users clicks "OK" on the popup
     Then The popup disappears
     And the page refreshes
@@ -92,13 +94,15 @@ Feature: Import registrations
     When the user clicks the "Download template CSV-file" button
     Then a CSV-file is downloaded
     And it contains only 1 row of column names
-    And it contains the generic column names "namePartnerOrganization", "preferredLanguage", "phoneNumber", "fspName"
-    And it has program-dependent columns (for NL-LVV: "whatsappPhoneNumber", "nameFirst", "nameLast", "vnumber")
+    And it contains the generic column names "preferredLanguage", "phoneNumber", "fspName"
+    And it has the dynamic columns for programQuestions of that program (for NL-LVV: "whatsappPhoneNumber", "nameFirst", "nameLast", "vnumber")
+    And it has dynamic "programCustomAttributes" of that program
 
   Scenario: Successfully import registrations via CSV
     Given a valid import CSV file is prepared based on the template
-    And it has generic columns "namePartnerOrganization", "preferredLanguage", "phoneNumber", "fspName"
-    And it has program-dependent columns (for NL-LVV: "whatsappPhoneNumber", "nameFirst", "nameLast", "vnumber")
+    And it has generic columns "preferredLanguage", "phoneNumber", "fspName"
+    And it has the dynamic columns for programQuestions of that program  (for NL-LVV: "whatsappPhoneNumber", "nameFirst", "nameLast", "vnumber")
+    And it has the dynamic "programCustomAttributes" of that program
     And it has as delimiter ";" or ","
     And it has "X" rows
     And the input of each cell is valid
