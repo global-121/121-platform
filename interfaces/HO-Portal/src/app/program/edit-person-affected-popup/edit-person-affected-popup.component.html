@@ -26,16 +26,6 @@
     <div>
 
       <app-update-property-item
-        [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.namePartnerOrganization.label'|translate"
-        [value]="person?.namePartnerOrganization"
-        (updated)="updatePaAttribute('namePartnerOrganization', $event)"
-        [inProgress]="inProgress?.namePartnerOrganization || false"
-        [isDisabled]="readOnly"
-        [showSubmit]="!readOnly"
-        class="ion-margin-vertical"
-      ></app-update-property-item>
-
-      <app-update-property-item
         type="number"
         [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.label'|translate"
         [value]="person?.paymentAmountMultiplier"

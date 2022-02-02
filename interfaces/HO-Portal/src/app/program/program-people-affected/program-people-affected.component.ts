@@ -789,7 +789,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ? formatDate(person.inclusionEndDate, this.dateFormat, this.locale)
           : null,
       name: person.name,
-      namePartnerOrganization: person.namePartnerOrganization,
       preferredLanguage: person.preferredLanguage
         ? this.translate.instant(
             'page.program.program-people-affected.language.' +

@@ -258,7 +258,6 @@
           "payment": "Payment #",
           "vnumber": "V-number",
           "whatsappPhoneNumber": "WhatsApp nr.",
-          "namePartnerOrganization": "Partner organization",
           "preferredLanguage": "Preferred language",
           "paymentAmountMultiplier": "Transfer value(s)",
           "fsp": "Financial Service Provider"
@@ -324,9 +323,6 @@
           "properties": {
             "paymentAmountMultiplier": {
               "label": "× Transfer value"
-            },
-            "namePartnerOrganization": {
-              "label": "Name of Partner organisation"
             },
             "phoneNumber": {
               "label": "Phone number",

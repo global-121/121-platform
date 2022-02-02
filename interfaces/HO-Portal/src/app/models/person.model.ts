@@ -23,7 +23,6 @@ export class Person {
   fsp?: string;
   vnumber?: string;
   whatsappPhoneNumber?: string;
-  namePartnerOrganization?: string;
   paymentAmountMultiplier?: number;
   preferredLanguage?: LanguageEnum;
   customAttributes?: object;
@@ -53,7 +52,6 @@ export class PersonRow {
   fsp?: string | null;
   vnumber?: string | null;
   whatsappPhoneNumber?: string | null;
-  namePartnerOrganization?: string | null;
   paymentAmountMultiplier?: string | null;
   preferredLanguage?: string | null;
   customAttributes?: object;
