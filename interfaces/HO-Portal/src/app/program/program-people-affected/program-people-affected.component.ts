@@ -993,18 +993,19 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     let showRetryButton = false;
     let doSinglePaymentDetails: SinglePayoutDetails = null;
 
-    if (
-      this.canViewVouchers &&
-      this.hasVoucherSupport(row.fsp) &&
-      !hasError &&
-      !!value
-    ) {
-      const voucherBlob = await this.programsService.exportVoucher(
-        row.referenceId,
-        column.paymentIndex,
-      );
-      voucherUrl = window.URL.createObjectURL(voucherBlob);
-      voucherButtons = true;
+    if (this.canViewVouchers && this.hasVoucherSupport(row.fsp) && !!value) {
+      await this.programsService
+        .exportVoucher(row.referenceId, column.paymentIndex)
+        .then(
+          async (voucherBlob) => {
+            voucherUrl = window.URL.createObjectURL(voucherBlob);
+            voucherButtons = true;
+          },
+          (error) => {
+            console.log('error: ', error);
+            voucherButtons = false;
+          },
+        );
     }
 
     if (hasError || value.hasMessageIcon || value.hasMoneyIconTable) {

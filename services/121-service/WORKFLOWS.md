@@ -15,15 +15,13 @@ In this file we document "how to do X", manually. As not everything is possible 
   - If `whatsappPhoneNumber` is invalid (most observed scenario so far)
     - **Pilot-team** updates `whatsappPhoneNumber` in HO-portal
     - **Pilot-team** retries payment for each payment number from payment-status-popup in HO-portal
+    - Note that the voucher is visible in the portal anyway, so could also be transferred manuallly (but not preferred)
   - If failed for other reason
     - **Pilot-team** informs **121-dev-team**
     - **121-dev-team** does ad-hoc investigation
 - If transaction is on "waiting"
-  - Do not do anything for 24 hours. If the 'delivered' event was not properly communicated by Twilio to us for some reason, then the 'read' event is a 2nd chance to inform us of success.
-  - After that: **Pilot-team** gets in contact with PA to find out what's going on.
-  - If PA claims no voucher has been received and there is no reason to doubt this, then:
-    - **121-dev-team** manually cancels and deletes voucher: no endpoint available as of yet > do manually
-    - **121-dev-team** manually repeats payment for that PA: use [`/programs/payout`](https://test-vm.121.global/121-service/docs/#/programs/post_programs_payout)
+  - Note that the voucher is visible in the portal anyway, so can already be transferred manuallly
+  - In addition, it is still wise to find out why it's on 'waiting'. Wait for 24 hours, then contact PA to find out what's going on.
 
 ---
 
