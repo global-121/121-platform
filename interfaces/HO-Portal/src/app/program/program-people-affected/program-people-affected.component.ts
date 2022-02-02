@@ -253,7 +253,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       id: BulkActionId.divider,
       enabled: false,
       label: '-------------------------------',
-      permissions: [],
+      permissions: [Permission.PaymentCREATE],
       phases: [ProgramPhase.payment],
       showIfNoValidation: true,
     },
