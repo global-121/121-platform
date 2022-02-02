@@ -59,7 +59,8 @@
       class="ion-margin-start"
     ></ion-spinner>
   </div>
-  <div *ngIf="contentNotes" [innerHTML]="contentNotes">
+  <div *ngIf="content && voucherButtons">
+    <hr style="border-width: 1px 0 0 0 ">
   </div>
   <div *ngIf="voucherButtons">
     <ion-button (click)="getBalance()">

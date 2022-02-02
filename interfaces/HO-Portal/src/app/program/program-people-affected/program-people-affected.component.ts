@@ -979,13 +979,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.payment-status-popup.single-payment.intro',
         )
       : null;
-    const contentNotes = hasWaiting
-      ? null
-      : hasError
-      ? this.translate.instant(
-          'page.program.program-people-affected.payment-status-popup.notes',
-        )
-      : null;
     let voucherUrl = null;
     let voucherButtons = null;
 
@@ -1046,7 +1039,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         titleError,
         titleSinglePayment,
         content,
-        contentNotes,
         showRetryButton,
         payoutDetails: paymentDetails,
         singlePayoutDetails: doSinglePaymentDetails,
