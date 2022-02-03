@@ -75,9 +75,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public fsp: FinancialServiceProviderEntity;
 
   @Column({ nullable: true })
-  public namePartnerOrganization: string;
-
-  @Column({ nullable: true })
   @IsInt()
   @IsPositive()
   @IsOptional()

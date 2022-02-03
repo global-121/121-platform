@@ -2,7 +2,7 @@
 Feature: Delete people affected (extension of Manage_people_affected.feature)
 
   Background:
-    Given a logged-in user with "run program" or "personal data" role
+    Given a logged-in user with "RegistrationDELETE" permission
     And the "active phase" is "registration"
 
   Scenario: Use bulk-action "delete PA"
@@ -15,7 +15,7 @@ Feature: Delete people affected (extension of Manage_people_affected.feature)
     When the "bulk action" is "delete PA"
     Then the "Pop up" to confirm will open
     And it mentions the selected number of PAs to delete
-    When the user conffirms
+    When the user confirms
     Then the selected registrations will be deleted
     And all related entities will be deleted: "transactions", "twilio-messages", "program-answers", "status-changes" and "imagecode-export-vouchers", "whatsapp-pending-messages"
     And if present the relate "user" account will be deleted (not present if PA is imported)

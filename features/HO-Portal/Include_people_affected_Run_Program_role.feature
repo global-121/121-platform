@@ -1,14 +1,18 @@
 @ho-portal
-Feature: Include people affected by "run program" role (extension of Manage_people_affected.feature)
+Feature: Include people affected by "RegistrationREAD" permission (extension of Manage_people_affected.feature)
 
   Background:
-    Given a logged-in user with the "run program" role
+    Given a logged-in user with the "RegistrationREAD" permission
     Given the "active phase" is "inclusion"
 
   Scenario: View people affected connected to a program
     Given scenario "View people affected connected to a program" in Manage_people_affected.feature
     Then also for each person an "Inclusion Score" is shown
     And for each person an "Included" date+time is shown (if already available)
+
+  Background:
+    Given a logged-in user with the "RegistrationStatusIncludedUPDATE" permission
+    Then the "include for program" action is visible
 
   Scenario: Use bulk-action "include for program"
     Given the generic "select bulk action" scenario (see Manage_people_affected.feature)

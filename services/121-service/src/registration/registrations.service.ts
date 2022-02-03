@@ -322,8 +322,10 @@ export class RegistrationsService {
 
     // If imported registration found ..
     // .. then transfer relevant attributes from imported registration to current registration
-    currentRegistration.namePartnerOrganization =
-      importedRegistration.namePartnerOrganization;
+    currentRegistration.customData = {
+      ...currentRegistration.customData,
+      ...importedRegistration.customData,
+    };
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
 
@@ -349,7 +351,20 @@ export class RegistrationsService {
     await this.registrationRepository.remove(importedRegistration);
 
     // .. and save the updated import-registration
-    await this.registrationRepository.save(currentRegistration);
+    const updatedRegistration = await this.registrationRepository.save(
+      currentRegistration,
+    );
+
+    // .. if imported registration status was noLongerEligible set to registeredWhileNoLongerEligible
+    if (
+      importedRegistration.registrationStatus ===
+      RegistrationStatusEnum.noLongerEligible
+    ) {
+      await this.setRegistrationStatus(
+        updatedRegistration.referenceId,
+        RegistrationStatusEnum.registeredWhileNoLongerEligible,
+      );
+    }
   }
 
   private async findImportedRegistrationByPhoneNumber(
@@ -482,10 +497,6 @@ export class RegistrationsService {
       .addSelect('registration.inclusionScore', 'inclusionScore')
       .addSelect('fsp.fsp', 'fsp')
       .addSelect(
-        'registration.namePartnerOrganization',
-        'namePartnerOrganization',
-      )
-      .addSelect(
         'registration.paymentAmountMultiplier',
         'paymentAmountMultiplier',
       )
@@ -606,6 +617,10 @@ export class RegistrationsService {
     q = q.addSelect('registration.note', 'note');
     q = q.addSelect('registration.customData', 'customData');
 
+    const program = await this.programRepository.findOne(programId, {
+      relations: ['programCustomAttributes'],
+    });
+
     const rows = await q.getRawMany();
     const responseRows = [];
     const programCustomAttributes = await this.getProgramCustomAttributes(
@@ -697,6 +712,8 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.inclusionEndDate;
       case RegistrationStatusEnum.rejected:
         return RegistrationStatusTimestampField.rejectionDate;
+      case RegistrationStatusEnum.registeredWhileNoLongerEligible:
+        return RegistrationStatusTimestampField.registeredWhileNoLongerEligibleDate;
     }
   }
 
@@ -1266,5 +1283,17 @@ export class RegistrationsService {
       return [];
     }
     return messageHistoryArray;
+  }
+
+  public addProgramCustomAttributesToRow(
+    row: object,
+    customData: object,
+    programCustomAttributes: ProgramCustomAttributeEntity[],
+  ): object {
+    for (const programCustomAttribute of programCustomAttributes) {
+      row[programCustomAttribute.name] =
+        customData[programCustomAttribute.name];
+    }
+    return row;
   }
 }

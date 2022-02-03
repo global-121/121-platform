@@ -6,6 +6,7 @@
 <ion-content class="ion-padding">
 
   <app-phase-next
+    *appIfPermissions="[Permission.ProgramPhaseUPDATE]"
     [programId]="programId"
     [thisPhaseName]="thisPhase"
     [phaseReady]="true"
@@ -13,12 +14,14 @@
 
   <ion-row>
     <app-test-payment
+      *appIfPermissions="[Permission.PaymentCREATE, Permission.ActionREAD]"
       [programId]="programId"
     ></app-test-payment>
   </ion-row>
 
   <ion-row>
     <app-export-list
+      *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
       [programId]="programId"
       [exportType]="enumExportType.duplicatePhoneNumbers"
     ></app-export-list>
@@ -26,6 +29,7 @@
 
   <ion-row>
     <app-export-list
+      *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
       [programId]="programId"
       [exportType]="enumExportType.included"
     ></app-export-list>
@@ -34,6 +38,7 @@
   <br>
 
   <app-program-people-affected
+    *appIfPermissions="[Permission.RegistrationREAD]"
     [programId]="programId"
     [thisPhase]="thisPhase"
     (isCompleted)="onReady($event)"

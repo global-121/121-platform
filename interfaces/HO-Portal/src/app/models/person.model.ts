@@ -1,3 +1,6 @@
+import Permission from '../auth/permission.enum';
+import { ProgramPhase } from './program.model';
+
 // Model for data from the API
 export class Person {
   id: number;
@@ -20,7 +23,6 @@ export class Person {
   fsp?: string;
   vnumber?: string;
   whatsappPhoneNumber?: string;
-  namePartnerOrganization?: string;
   paymentAmountMultiplier?: number;
   preferredLanguage?: LanguageEnum;
   customAttributes?: object;
@@ -50,7 +52,6 @@ export class PersonRow {
   fsp?: string | null;
   vnumber?: string | null;
   whatsappPhoneNumber?: string | null;
-  namePartnerOrganization?: string | null;
   paymentAmountMultiplier?: string | null;
   preferredLanguage?: string | null;
   customAttributes?: object;
@@ -93,4 +94,18 @@ export class CustomAttribute {
   type: string;
   value: string | boolean;
   label?: string;
+}
+
+export class PersonTableColumn {
+  prop: string;
+  name: string;
+  draggable: boolean;
+  resizeable: boolean;
+  sortable: boolean;
+  frozenLeft: boolean;
+  comparator?: any;
+  phases: ProgramPhase[];
+  permissions: Permission[];
+  showIfNoValidation: boolean;
+  headerClass: string;
 }

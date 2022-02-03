@@ -1,3 +1,4 @@
+import { Fsp } from './fsp.model';
 import { TranslatableString } from './translatable-string.model';
 
 export class Program {
@@ -19,7 +20,7 @@ export class Program {
   distributionDuration: number;
   distributionFrequency: DistributionFrequency;
   meetingDocuments?: string | TranslatableString;
-  financialServiceProviders?: any[];
+  financialServiceProviders?: Fsp[];
   aidworkerAssignments?: any[];
   created: string;
   updated: string;

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
+import Permission from 'src/app/auth/permission.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { Payment, PaymentData } from 'src/app/models/payment.model';
 import {
@@ -40,6 +40,7 @@ export class ProgramPayoutComponent implements OnInit {
   public payments: Payment[];
   public isIntersolve: boolean;
   public hasFspWithCsvIntegration: boolean;
+  public canMakeFspInstructions: boolean;
 
   public canMakePayment: boolean;
   public canMakeExport: boolean;
@@ -52,7 +53,6 @@ export class ProgramPayoutComponent implements OnInit {
 
   public lastPaymentId: number;
   public nextPaymentId: number;
-  private totalIncluded: number;
   public minPayment: number;
   public maxPayment: number;
 
@@ -68,15 +68,21 @@ export class ProgramPayoutComponent implements OnInit {
     this.isCompleted.emit(false);
 
     this.program = await this.programsService.getProgramById(this.programId);
-    this.isIntersolve = await this.checkIntersolve();
-    this.hasFspWithCsvIntegration = await this.checkFspWithCsvIntegration();
+
+    this.isIntersolve = this.checkIntersolve(
+      this.program.financialServiceProviders,
+    );
+    this.hasFspWithCsvIntegration = this.checkFspWithCsvIntegration(
+      this.program.financialServiceProviders,
+    );
 
     this.canMakePayment = this.checkCanMakePayment();
     this.canMakeExport = this.checkCanMakeExport();
 
-    this.totalIncluded = (
-      await this.programsService.getTotalTransferAmounts(this.programId, [])
-    ).registrations;
+    if (!this.canMakeExport && !this.canMakePayment) {
+      return;
+    }
+    this.canMakeFspInstructions = this.checkCanMakeFspInstructions();
 
     await this.createPayments();
     this.lastPaymentResults = await this.getLastPaymentResults();
@@ -86,12 +92,24 @@ export class ProgramPayoutComponent implements OnInit {
   private checkCanMakePayment(): boolean {
     return (
       this.program.phase === ProgramPhase.payment &&
-      this.authService.hasUserRole([UserRole.RunProgram])
+      this.authService.hasAllPermissions([
+        Permission.PaymentREAD,
+        Permission.PaymentCREATE,
+        Permission.PaymentTransactionREAD,
+      ])
     );
   }
 
   private checkCanMakeExport(): boolean {
-    return this.authService.hasUserRole([UserRole.PersonalData]);
+    return this.authService.hasAllPermissions([
+      Permission.RegistrationPersonalEXPORT,
+      Permission.PaymentREAD,
+      Permission.PaymentTransactionREAD,
+    ]);
+  }
+
+  private checkCanMakeFspInstructions(): boolean {
+    return this.authService.hasPermission(Permission.PaymentFspInstructionREAD);
   }
 
   private async getLastPaymentResults(): Promise<LastPaymentResults> {
@@ -221,13 +239,16 @@ export class ProgramPayoutComponent implements OnInit {
     this.setupNextPayment();
   }
 
-  private setupNextPayment() {
+  private async setupNextPayment() {
+    const totalIncluded = (
+      await this.programsService.getTotalTransferAmounts(this.programId, [])
+    ).registrations;
+
     const nextPaymentIndex = this.payments.findIndex(
       (payment) => payment.statusOpen === true,
     );
     if (nextPaymentIndex > -1) {
-      this.payments[nextPaymentIndex].isExportAvailable =
-        this.totalIncluded > 0;
+      this.payments[nextPaymentIndex].isExportAvailable = totalIncluded > 0;
     }
   }
 
@@ -247,19 +268,19 @@ export class ProgramPayoutComponent implements OnInit {
     }
   }
 
-  private async checkIntersolve(): Promise<boolean> {
-    this.program = await this.programsService.getProgramById(this.programId);
-    for (const fsp of this.program.financialServiceProviders || []) {
-      if (fsp && fsp.fsp && fsp.fsp.toLowerCase().includes('intersolve')) {
+  private checkIntersolve(fsps: Program['financialServiceProviders']): boolean {
+    for (const fsp of fsps || []) {
+      if (fsp && fsp.fsp.toLowerCase().includes('intersolve')) {
         return true;
       }
     }
     return false;
   }
 
-  async checkFspWithCsvIntegration() {
-    this.program = await this.programsService.getProgramById(this.programId);
-    for (const fsp of this.program.financialServiceProviders || []) {
+  private checkFspWithCsvIntegration(
+    fsps: Program['financialServiceProviders'],
+  ): boolean {
+    for (const fsp of fsps || []) {
       if (fsp && fsp.integrationType === FspIntegrationType.csv) {
         return true;
       }

@@ -10,12 +10,66 @@ import crypto from 'crypto';
 import { UserRoleEntity } from '../user/user-role.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
-import { UserRole } from '../user-role.enum';
+import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 
 export class SeedHelper {
   public constructor(private connection: Connection) {}
+
+  public async addDefaultUsers(
+    program: ProgramEntity,
+    addFieldValidation: boolean,
+  ): Promise<void> {
+    const fullAccessUser = await this.addUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FULL_ACCESS,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
+    });
+
+    const runProgramUser = await this.addUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
+    });
+
+    const personalDataUser = await this.addUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_PERSONAL_DATA,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_PERSONAL_DATA,
+    });
+
+    const viewOnlyUser = await this.addUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+    });
+
+    // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
+    await this.assignAidworker(fullAccessUser.id, program.id, [
+      DefaultUserRole.RunProgram,
+      DefaultUserRole.PersonalData,
+    ]);
+    await this.assignAidworker(runProgramUser.id, program.id, [
+      DefaultUserRole.RunProgram,
+    ]);
+    await this.assignAidworker(personalDataUser.id, program.id, [
+      DefaultUserRole.PersonalData,
+    ]);
+    await this.assignAidworker(viewOnlyUser.id, program.id, [
+      DefaultUserRole.View,
+    ]);
+
+    if (addFieldValidation) {
+      const fieldValidationUser = await this.addUser({
+        username:
+          process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FIELD_VALIDATION,
+        password:
+          process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FIELD_VALIDATION,
+      });
+      await this.assignAidworker(fieldValidationUser.id, program.id, [
+        DefaultUserRole.FieldValidation,
+      ]);
+    }
+
+    await this.assignAdminUserToProgram(program.id);
+  }
 
   public async addUser(userInput: any): Promise<UserEntity> {
     const userRepository = this.connection.getRepository(UserEntity);
@@ -124,7 +178,7 @@ export class SeedHelper {
   public async assignAidworker(
     userId: number,
     programId: number,
-    roles: UserRole[],
+    roles: DefaultUserRole[] | string[],
   ): Promise<void> {
     const userRepository = this.connection.getRepository(UserEntity);
     const programRepository = this.connection.getRepository(ProgramEntity);
@@ -153,6 +207,6 @@ export class SeedHelper {
     const adminUser = await userRepository.findOne({
       where: { username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN },
     });
-    this.assignAidworker(adminUser.id, programId, [UserRole.Admin]);
+    this.assignAidworker(adminUser.id, programId, [DefaultUserRole.Admin]);
   }
 }

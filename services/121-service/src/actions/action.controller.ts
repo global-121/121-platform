@@ -7,14 +7,14 @@ import {
   ApiResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { RolesGuard } from '../roles.guard';
 import { ActionDto } from './dto/action.dto';
 import { ActionEntity } from './action.entity';
-import { UserRole } from '../user-role.enum';
-import { Roles } from '../roles.decorator';
+import { PermissionsGuard } from '../permissions.guard';
+import { Permissions } from '../permissions.decorator';
+import { PermissionEnum } from '../user/permission.enum';
 
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
+@UseGuards(PermissionsGuard)
 @ApiUseTags('actions')
 @Controller('actions')
 export class ActionController {
@@ -23,7 +23,7 @@ export class ActionController {
     this.actionService = actionService;
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData, UserRole.View)
+  @Permissions(PermissionEnum.ActionREAD)
   @ApiOperation({ title: 'Get latest action of type ' })
   @ApiResponse({
     status: 200,
@@ -39,7 +39,7 @@ export class ActionController {
     );
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Permissions(PermissionEnum.ActionCREATE)
   @ApiOperation({ title: 'Save action by id' })
   @ApiResponse({ status: 200, description: 'Action saved' })
   @Post('save')

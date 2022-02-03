@@ -2,7 +2,7 @@
 Feature: Export People Affected list
 
   Background:
-    Given a logged-in user with "personal data" role
+    Given a logged-in user with "RegistrationPersonalEXPORT" permission
     And the "selected phase" is the "registration" phase
 
   Scenario: Export People Affected list
@@ -21,6 +21,6 @@ Feature: Export People Affected list
     Then an Excel-file is downloaded as in the scenario above quickly and without problem
 
   Scenario: Viewing the export options without permission
-    Given a logged-in user does not have the "personal data" role
+    Given a logged-in user does not have the "RegistrationPersonalEXPORT" permission
     When the user views the "registration" page
-    Then the export list button is disabled
+    Then the export list button is not visible

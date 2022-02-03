@@ -2,7 +2,7 @@
 Feature: Validate Person Affected
 
   Background:
-    Given a logged-in "field-validation" user
+    Given a logged-in user
     And the user has retrieved the Person Affected's Validation Data (see feature "Get Person Affected Validation Data")
 
   Scenario: Validate PA-data without Financial Service Provider questions

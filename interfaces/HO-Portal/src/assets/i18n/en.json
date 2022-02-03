@@ -258,7 +258,6 @@
           "payment": "Payment #",
           "vnumber": "V-number",
           "whatsappPhoneNumber": "WhatsApp nr.",
-          "namePartnerOrganization": "Partner organization",
           "preferredLanguage": "Preferred language",
           "paymentAmountMultiplier": "Transfer value(s)",
           "fsp": "Financial Service Provider"
@@ -325,9 +324,6 @@
             "paymentAmountMultiplier": {
               "label": "× Transfer value"
             },
-            "namePartnerOrganization": {
-              "label": "Name of Partner organisation"
-            },
             "phoneNumber": {
               "label": "Phone number",
               "explanation": "The required format is: ONLY numbers, including country-code."
@@ -371,7 +367,6 @@
           "error-message": "Error message",
           "fix-error": "Please contact the 121 development team to fix this error. Then use the button below to retry payment for this Person Affected.",
           "retry": "Retry payment for this PA",
-          "notes": "<br>Note: If the payment failed for all People Affected, you can also use the original 'Start payout now' button again to retry the payment for all People Affected at once.",
           "get-balance": "Get current balance of voucher",
           "current-balance": "Current balance: {{currentBalance}}<br><br>at: {{timestamp}}",
           "print-voucher": "Print voucher",

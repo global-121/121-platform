@@ -9,11 +9,13 @@
     <ion-row>
       <ion-col>
         <app-bulk-import
+          *appIfPermissions="[Permission.RegistrationCREATE, Permission.RegistrationImportTemplateREAD]"
           [programId]="programId"
         ></app-bulk-import>
       </ion-col>
       <ion-col>
         <app-phase-next
+          *appIfPermissions="[Permission.ProgramPhaseUPDATE]"
           [programId]="programId"
           [thisPhaseName]="thisPhase"
           [phaseReady]="isReady"
@@ -25,13 +27,16 @@
         <ion-row>
           <div class="ion-no-padding ion-margin-end">
             <app-export-list
+              *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
               [programId]="programId"
               [exportType]="enumExportType.allPeopleAffected"
             ></app-export-list>
           </div>
-          <div class="ion-no-padding">
+          <div class="ion-no-padding"
+            *ngIf="program?.validation"
+          >
             <app-export-list
-              *ngIf="program?.validation"
+              *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
               [programId]="programId"
               [exportType]="enumExportType.selectedForValidation"
             ></app-export-list>
@@ -40,7 +45,9 @@
       </ion-col>
       <ion-col>
         <ion-row class="ion-justify-content-end">
-          <app-disable-registration [programId]="programId"
+          <app-disable-registration
+            *appIfPermissions="[Permission.ProgramUPDATE]"
+            [programId]="programId"
           ></app-disable-registration>
         </ion-row>
       </ion-col>
@@ -48,6 +55,7 @@
   </ion-grid>
 
   <app-program-people-affected
+    *appIfPermissions="[Permission.RegistrationREAD]"
     [programId]="programId"
     [thisPhase]="thisPhase"
     (isCompleted)="onReady($event)"

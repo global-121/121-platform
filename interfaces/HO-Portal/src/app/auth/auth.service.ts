@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
 import { JwtService } from '../services/jwt.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { UserRole } from './user-role.enum';
+import Permission from './permission.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -33,16 +33,24 @@ export class AuthService {
     return this.getUserFromToken() !== null;
   }
 
-  public hasUserRole(requiredRoles: UserRole[]): boolean {
-    const user = this.getUserFromToken();
-
-    if (!user || !user.roles) {
-      return false;
+  public hasPermission(
+    requiredPermission: Permission,
+    user?: User | null,
+  ): boolean {
+    if (!user) {
+      user = this.getUserFromToken();
     }
+    return (
+      user && user.permissions && user.permissions.includes(requiredPermission)
+    );
+  }
 
-    return requiredRoles.some((role) => {
-      return user.roles.includes(role);
-    });
+  public hasAllPermissions(requiredPermissions: Permission[]): boolean {
+    const user = this.getUserFromToken();
+    return (
+      !!requiredPermissions &&
+      requiredPermissions.every((p) => this.hasPermission(p, user))
+    );
   }
 
   private getUserFromToken(): User | null {
@@ -56,40 +64,19 @@ export class AuthService {
 
     try {
       user = this.jwtService.decodeToken(rawToken);
-
-      // Upgrade existing user to new roles
-      if (user && user.role && !user.roles) {
-        if (user.role === 'aidworker') {
-          user.role = UserRole.FieldValidation;
-        }
-        if (user.role === 'project-officer') {
-          user.role = UserRole.RunProgram;
-        }
-        if (user.role === 'program-manager') {
-          user.role = UserRole.PersonalData;
-        }
-        if (user.role) {
-          user.roles = [user.role];
-        }
-      }
     } catch {
       console.warn('AuthService: Invalid token');
       return null;
     }
 
-    if (
-      !user ||
-      !user.username ||
-      !user.roles ||
-      (user.roles.length === 1 && user.roles.includes(UserRole.FieldValidation))
-    ) {
+    if (!user || !user.username || !user.permissions) {
       console.warn('AuthService: No valid user');
       return null;
     }
 
     return {
       username: user.username,
-      roles: user.roles,
+      permissions: user.permissions,
     };
   }
 

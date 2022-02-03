@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsArray, IsNumber } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { UserRole } from '../../user-role.enum';
+import { DefaultUserRole } from '../user-role.enum';
 
 export class AssignAidworkerToProgramDto {
   @ApiModelProperty({ example: 1 })
@@ -14,9 +14,9 @@ export class AssignAidworkerToProgramDto {
   public readonly programId: number;
 
   @ApiModelProperty({
-    example: Object.values(UserRole),
-    enum: UserRole,
+    example: Object.values(DefaultUserRole),
+    enum: DefaultUserRole,
   })
   @IsArray()
-  public readonly roles: UserRole[];
+  public readonly roles: DefaultUserRole[];
 }

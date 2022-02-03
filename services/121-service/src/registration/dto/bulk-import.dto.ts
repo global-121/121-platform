@@ -1,5 +1,4 @@
 import {
-  IsArray,
   IsIn,
   IsInt,
   IsNotEmpty,
@@ -24,19 +23,10 @@ export class BulkImportDto {
   public phoneNumber: string;
 
   @ApiModelProperty()
-  @IsNotEmpty()
-  @IsString()
-  public namePartnerOrganization: string;
-
-  @ApiModelProperty()
   @IsNumber()
   @IsInt()
   @Min(1)
   public paymentAmountMultiplier: number;
-
-  @ApiModelProperty()
-  @IsArray()
-  public programAttributes: DynamicImportAttribute[];
 }
 
 export class BulkImportResult extends BulkImportDto {
@@ -66,10 +56,6 @@ export class ImportRegistrationsDto {
   public preferredLanguage: LanguageEnum;
 
   @ApiModelProperty()
-  @IsString()
-  public namePartnerOrganization: string;
-
-  @ApiModelProperty()
   @IsNotEmpty()
   @IsString()
   public phoneNumber: string;
@@ -80,13 +66,4 @@ export class ImportRegistrationsDto {
   })
   @IsIn(fspArray)
   public fspName: FspName;
-
-  @ApiModelProperty()
-  @IsArray()
-  public programAttributes: DynamicImportAttribute[];
-}
-
-export class DynamicImportAttribute {
-  public attribute: string;
-  public value: string;
 }

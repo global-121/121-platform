@@ -14,7 +14,6 @@ describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 
-  let mockAuthService: jasmine.SpyObj<any>;
   let mockProgramsApi: jasmine.SpyObj<any>;
 
   const mockProgramId = 1;
@@ -40,9 +39,6 @@ describe('HeaderComponent', () => {
         provideMagicalMock(TranslatableStringService),
       ],
     }).compileComponents();
-
-    mockAuthService = TestBed.inject(AuthService);
-    mockAuthService.hasUserRole.and.returnValue(true);
 
     mockProgramsApi = TestBed.inject(ProgramsServiceApiService);
     mockProgramsApi.getProgramById.and.returnValue(

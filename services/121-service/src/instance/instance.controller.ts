@@ -1,13 +1,13 @@
 import { Controller, UseGuards, Get, Post, Body } from '@nestjs/common';
 import { InstanceService } from './instance.service';
 import { ApiUseTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { RolesGuard } from '../roles.guard';
 import { InstanceEntity } from './instance.entity';
 import { UpdateInstanceDto } from './dto/update-instance.dto';
-import { UserRole } from '../user-role.enum';
-import { Roles } from '../roles.decorator';
+import { PermissionsGuard } from '../permissions.guard';
+import { Permissions } from '../permissions.decorator';
+import { PermissionEnum } from '../user/permission.enum';
 
-@UseGuards(RolesGuard)
+@UseGuards(PermissionsGuard)
 @ApiUseTags('instance')
 @Controller('instance')
 export class InstanceController {
@@ -23,7 +23,7 @@ export class InstanceController {
   }
 
   @ApiBearerAuth()
-  @Roles(UserRole.Admin)
+  @Permissions(PermissionEnum.InstanceUPDATE)
   @ApiOperation({ title: 'Update instance' })
   @Post('update')
   public async updateInstance(

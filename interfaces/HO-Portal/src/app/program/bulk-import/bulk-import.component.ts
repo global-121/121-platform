@@ -1,9 +1,7 @@
 import { formatDate } from '@angular/common';
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthService } from 'src/app/auth/auth.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
 import { ActionType } from 'src/app/models/actions.model';
 import { ImportType } from 'src/app/models/import-type.enum';
 import { PaStatus } from 'src/app/models/person.model';
@@ -31,7 +29,6 @@ export enum ImportStatus {
 
 export class BulkImportResult {
   public phoneNumber: string;
-  public namePartnerOrganization: string;
   public paymentAmountMultiplier: number;
   public importStatus: ImportStatus;
 }
@@ -45,7 +42,6 @@ export class BulkImportComponent implements OnInit {
   @Input()
   public programId: number;
 
-  public disabled: boolean;
   public isInProgress = false;
 
   public PaStatus = PaStatus;
@@ -62,7 +58,6 @@ export class BulkImportComponent implements OnInit {
   private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   constructor(
-    private authService: AuthService,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
@@ -95,19 +90,6 @@ export class BulkImportComponent implements OnInit {
         downloadTemplate: ImportType.registered,
       },
     };
-  }
-
-  async ngOnChanges(changes: SimpleChanges) {
-    if (
-      changes.programId &&
-      ['string', 'number'].includes(typeof changes.programId.currentValue)
-    ) {
-      this.disabled = !this.btnEnabled();
-    }
-  }
-
-  private btnEnabled(): boolean {
-    return this.authService.hasUserRole([UserRole.PersonalData]);
   }
 
   public exportCSV(importResponse: any[]) {

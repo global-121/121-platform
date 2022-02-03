@@ -2,7 +2,7 @@
 Feature: Make a new payment
 
   Background:
-    Given a logged-in user with the "run program" role
+    Given a logged-in user with the "PaymentCREATE" permission
     And the user views the "payment" page
 
   Scenario: Show total amount
@@ -49,8 +49,8 @@ Feature: Make a new payment
     And the "PA-table" now has the payment column filled for every PA
     And for successful transactions it shows a date+time and the transaction amount
     And it is clickable for programs with voucher-support (Intersolve)
-    And for failed transactions it shows 'Failed' and the transaction amount, and it is clickable
-    And for waiting transactions it shows 'Waiting' and the transaction amount, and it is clickable
+    And for failed transactions it shows 'Failed' and the transaction amount, and it is clickable (showing the voucher anyway + error message + retry-options)
+    And for waiting transactions it shows 'Waiting' and the transaction amount, and it is clickable (showing the voucher anyway + waiting message)
     And a new empty payment column for the next payment is visible
     And - for successful transactions - the PA receives (notification about) voucher/cash depending on the FSP
     And the 'Export people affected' in the 'Registration' phase now contains 4 new columns for the new payment: status, amount, date and 'voucher-claimed-date'
@@ -85,7 +85,7 @@ Feature: Make a new payment
     When the user refreshes the page again
     Then eventually all 'waiting' PAs have upgraded to 'success' or 'error' (unless some status callback fails for some reason)
 
-  Scenario: retry payment for 1 PA
+  Scenario: retry payment for 1 or all failed PAs
     Given the payment has failed for a PA
     When the user clicks the failed-popup for this PA
     Then a popup appears with an error message
