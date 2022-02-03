@@ -3,6 +3,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Fsp } from 'src/app/models/fsp.model';
 import { Person } from 'src/app/models/person.model';
+import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 
@@ -27,6 +28,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   @Input()
   public canUpdatePersonalData = false;
 
+  private program: Program;
+
   public inProgress: any = {};
 
   public noteModel: string;
@@ -36,6 +39,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public trimBodyLength = 20;
   public imageString = '(image)';
   public rowIndex: number;
+
+  public customAttributes: {}[] = [];
 
   public fspList: Fsp[] = [];
   public programFspLength = 0;
@@ -50,6 +55,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.program = await this.programsService.getProgramById(this.programId);
+
+    this.fillCustomAttributes();
     this.getFspList();
 
     if (this.canViewPersonalData) {
@@ -86,6 +94,14 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       );
   }
 
+  public async updatePaCustomAttribute(
+    key: string,
+    value: string | number | boolean,
+  ): Promise<void> {
+    console.log('key: ', key, ' - value: ', value);
+    // Endpoint missing
+  }
+
   private formatErrors(error, attribute: string): string {
     if (error.errors) {
       return this.formatConstraintsErrors(error.errors, attribute);
@@ -101,6 +117,17 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     );
     const attributeConstraints = Object.values(attributeError.constraints);
     return '<br><br>' + attributeConstraints.join('<br>');
+  }
+
+  private fillCustomAttributes() {
+    this.customAttributes = this.program?.programCustomAttributes.map((ca) => {
+      return {
+        name: ca.name,
+        type: ca.type,
+        label: ca.label[this.translate.getDefaultLang()],
+        value: this.person.customAttributes[ca.name].value,
+      };
+    });
   }
 
   private async getNote() {

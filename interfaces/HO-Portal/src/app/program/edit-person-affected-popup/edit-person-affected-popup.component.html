@@ -1,13 +1,16 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      {{ 'page.program.program-people-affected.edit-person-affected-popup.popup-title'|translate:{ pa: 'PA #' + person?.id } }}
+      {{
+        'page.program.program-people-affected.edit-person-affected-popup.popup-title'
+          | translate: { pa: 'PA #' + person?.id }
+      }}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button
         (click)="closeModal()"
-        [attr.title]="'common.cancel'|translate"
-        [attr.aria-label]="'common.cancel'|translate"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
       >
         <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
       </ion-button>
@@ -15,19 +18,30 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content
-  class="ion-padding"
->
+<ion-content class="ion-padding">
   <h2 class="text-bold">{{ person?.name }}</h2>
   <section class="ion-margin-vertical ion-padding-bottom">
-    <strong>{{ 'page.program.program-people-affected.column.status'|translate }}:</strong> {{'page.program.program-people-affected.status.' + person?.status | translate }}
+    <strong
+      >{{
+        'page.program.program-people-affected.column.status' | translate
+      }}:</strong
+    >
+    {{
+      'page.program.program-people-affected.status.' + person?.status
+        | translate
+    }}
   </section>
-  <section style="max-width: 80%;" class="ion-margin-vertical ion-padding-bottom">
+  <section
+    style="max-width: 80%"
+    class="ion-margin-vertical ion-padding-bottom"
+  >
     <div>
-
       <app-update-property-item
         type="number"
-        [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.label'|translate"
+        [label]="
+          'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.label'
+            | translate
+        "
         [value]="person?.paymentAmountMultiplier"
         (updated)="updatePaAttribute('paymentAmountMultiplier', $event)"
         [inProgress]="inProgress?.paymentAmountMultiplier || false"
@@ -39,8 +53,14 @@
       <app-update-property-item
         *ngIf="canViewPersonalData"
         type="tel"
-        [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.label'|translate"
-        [explanation]="'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.explanation'|translate"
+        [label]="
+          'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.label'
+            | translate
+        "
+        [explanation]="
+          'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.explanation'
+            | translate
+        "
         [value]="person?.phoneNumber"
         (updated)="updatePaAttribute('phoneNumber', $event)"
         [inProgress]="inProgress?.phoneNumber || false"
@@ -52,8 +72,14 @@
       <app-update-property-item
         *ngIf="canViewPersonalData && person.whatsappPhoneNumber"
         type="tel"
-        [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.label'|translate"
-        [explanation]="'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.explanation'|translate"
+        [label]="
+          'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.label'
+            | translate
+        "
+        [explanation]="
+          'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.explanation'
+            | translate
+        "
         [value]="person?.whatsappPhoneNumber"
         (updated)="updatePaAttribute('whatsappPhoneNumber', $event)"
         [inProgress]="inProgress?.whatsappPhoneNumber || false"
@@ -66,30 +92,47 @@
         *ngIf="readOnly && fspList.length === programFspLength && person?.fsp"
         class="ion-margin-vertical"
       >
-        <strong>{{ 'page.program.program-people-affected.column.fsp'|translate }}:</strong>
+        <strong
+          >{{
+            'page.program.program-people-affected.column.fsp' | translate
+          }}:</strong
+        >
         &nbsp;&nbsp;
         <code>{{ person?.fsp }}</code>
       </div>
       <app-update-fsp
         *ngIf="!readOnly && fspList.length === programFspLength && person?.fsp"
         [fspList]="fspList"
-        [label]="'page.program.program-people-affected.column.fsp'|translate"
+        [label]="'page.program.program-people-affected.column.fsp' | translate"
         [value]="person?.fsp"
         [referenceId]="person?.referenceId"
         class="ion-margin-vertical"
       ></app-update-fsp>
 
+      <ng-container *ngIf="canViewPersonalData && customAttributes">
+        <app-update-property-item
+          *ngFor="let ca of customAttributes"
+          [type]="ca.type"
+          [label]="ca.label"
+          [value]="ca.value"
+          (updated)="updatePaCustomAttribute(ca.name, $event)"
+          class="ion-margin-vertical"
+        ></app-update-property-item>
+      </ng-container>
     </div>
   </section>
-  <section
-    *ngIf="canViewPersonalData"
-    class="ion-margin-vertical"
-  >
+  <section *ngIf="canViewPersonalData" class="ion-margin-vertical">
     <h4 class="text-bold">
-      {{ 'page.program.program-people-affected.edit-person-affected-popup.note.section-title'|translate }}
+      {{
+        'page.program.program-people-affected.edit-person-affected-popup.note.section-title'
+          | translate
+      }}
     </h4>
     <p>
-      {{ 'page.program.program-people-affected.edit-person-affected-popup.note.introduction'|translate }}
+      {{
+        'page.program.program-people-affected.edit-person-affected-popup.note.introduction'
+          | translate
+      }}
     </p>
     <ion-textarea
       [(ngModel)]="noteModel"
@@ -99,26 +142,37 @@
       rows="10"
       spellcheck="true"
       wrap="soft"
-      [placeholder]="'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'|translate"
-      style="font-family: monospace; border: 1px solid currentColor; height:150px"
+      [placeholder]="
+        'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'
+          | translate
+      "
+      style="
+        font-family: monospace;
+        border: 1px solid currentColor;
+        height: 150px;
+      "
     ></ion-textarea>
     <ion-row class="ion-align-items-center ion-justify-content-between">
       <ion-note *ngIf="noteLastUpdate">
-        {{ 'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'|translate:{
-            timestamp: noteLastUpdate|date:"yyyy-MM-dd, HH:mm"
-          } }}
+        {{
+          'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'
+            | translate
+              : {
+                  timestamp: noteLastUpdate | date: 'yyyy-MM-dd, HH:mm'
+                }
+        }}
       </ion-note>
-      <div
-        *ngIf="canUpdatePersonalData"
-        class="ml-auto"
-      >
+      <div *ngIf="canUpdatePersonalData" class="ml-auto">
         <ion-button
           (click)="saveNote()"
           [disabled]="inProgress?.note || false"
           class="text-bold ion-text-uppercase"
-          fill=clear
+          fill="clear"
         >
-          {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}
+          {{
+            'page.program.program-people-affected.edit-person-affected-popup.note.save'
+              | translate
+          }}
         </ion-button>
         <ion-spinner
           *ngIf="inProgress?.note"
@@ -133,35 +187,54 @@
     *ngIf="canViewPersonalData && messageHistory"
     class="ion-padding-top"
   >
-    <h4 class="text-bold"> {{ 'page.program.program-people-affected.edit-person-affected-popup.messageHistory.section-title'|translate }}</h4>
+    <h4 class="text-bold">
+      {{
+        'page.program.program-people-affected.edit-person-affected-popup.messageHistory.section-title'
+          | translate
+      }}
+    </h4>
 
     <ion-list>
       <ion-item
-        *ngFor="let message of messageHistory | slice:0:historySize; let i=index"
+        *ngFor="
+          let message of messageHistory | slice: 0:historySize;
+          let i = index
+        "
         [button]="true"
         (click)="openMessageDetails(i)"
       >
-        <span class="ion-margin-end" >
-          {{ message.created|date:"yyyy-MM-dd, HH:mm" }}
+        <span class="ion-margin-end">
+          {{ message.created | date: 'yyyy-MM-dd, HH:mm' }}
         </span>
         <span class="ion-margin-end">
           <strong>{{ message.type }}</strong>
         </span>
-        <span *ngIf=" rowIndex !== i">
-          {{ message.body.substring(0, trimBodyLength).trim() || imageString}}<span *ngIf="message.body.length > trimBodyLength">&hellip;</span>
+        <span *ngIf="rowIndex !== i">
+          {{ message.body.substring(0, trimBodyLength).trim() || imageString
+          }}<span *ngIf="message.body.length > trimBodyLength">&hellip;</span>
         </span>
-        <ion-icon *ngIf=" rowIndex !== i" name="chevron-down" slot="end" size="small"></ion-icon>
-        <ion-row  >
-          <span *ngIf=" rowIndex === i">{{ message.body || imageString}}</span>
+        <ion-icon
+          *ngIf="rowIndex !== i"
+          name="chevron-down"
+          slot="end"
+          size="small"
+        ></ion-icon>
+        <ion-row>
+          <span *ngIf="rowIndex === i">{{ message.body || imageString }}</span>
         </ion-row>
-        <ion-icon *ngIf=" rowIndex === i" name="chevron-up" slot="end" size="small"></ion-icon>
+        <ion-icon
+          *ngIf="rowIndex === i"
+          name="chevron-up"
+          slot="end"
+          size="small"
+        ></ion-icon>
       </ion-item>
     </ion-list>
     <ion-button
-      *ngIf="messageHistory.length>historySize"
+      *ngIf="messageHistory.length > historySize"
       (click)="loadMore(messageHistory.length)"
     >
-      {{'common.show-more' | translate}}
+      {{ 'common.show-more' | translate }}
     </ion-button>
   </section>
 </ion-content>
