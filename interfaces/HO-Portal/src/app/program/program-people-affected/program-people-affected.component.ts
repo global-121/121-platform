@@ -841,10 +841,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private fillCustomAttributeRows(personRow: PersonRow): PersonRow {
     for (const customAttribute of this.program.programCustomAttributes) {
-      for (const name of Object.keys(personRow.customAttributes)) {
-        personRow[customAttribute['name']] =
-          personRow.customAttributes[name]['value'];
-      }
+      personRow[customAttribute.name] =
+        personRow.customAttributes[customAttribute.name].value;
     }
     return personRow;
   }
