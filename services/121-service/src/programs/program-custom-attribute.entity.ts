@@ -11,6 +11,9 @@ export class ProgramCustomAttributeEntity extends Base121Entity {
   @Column()
   public type: string;
 
+  @Column('json')
+  public label: JSON;
+
   @ManyToOne(
     _type => ProgramEntity,
     program => program.programCustomAttributes,
