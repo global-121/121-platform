@@ -26,6 +26,17 @@ const programsArray: Program[] = [
     validationByQr: false,
     author: {},
     published: false,
+    programCustomAttributes: [
+      {
+        id: 1,
+        name: 'namePartnerOrganization',
+        type: 'string',
+        programId: 1,
+        label: {
+          en: 'Partner Organization',
+        },
+      },
+    ],
   },
 ];
 // Copy 2:
