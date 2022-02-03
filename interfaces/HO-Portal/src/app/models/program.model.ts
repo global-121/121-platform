@@ -28,7 +28,7 @@ export class Program {
   validation: boolean;
   validationByQr: boolean;
   published: boolean;
-  programCustomAttributes: any[];
+  programCustomAttributes: ProgramCustomAttribute[];
 }
 
 export enum InclusionCalculationType {
@@ -53,4 +53,10 @@ export enum ProgramPhase {
 export class AidWorker {
   email: string;
   created: string | Date;
+}
+
+export class ProgramCustomAttribute {
+  label?: TranslatableString;
+  name: string;
+  type: string;
 }

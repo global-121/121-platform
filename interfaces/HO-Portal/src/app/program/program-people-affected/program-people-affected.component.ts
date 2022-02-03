@@ -18,13 +18,18 @@ import {
   PersonRow,
   PersonTableColumn,
 } from 'src/app/models/person.model';
-import { Program, ProgramPhase } from 'src/app/models/program.model';
+import {
+  Program,
+  ProgramCustomAttribute,
+  ProgramPhase,
+} from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { PastPaymentsService } from '../../services/past-payments.service';
@@ -281,6 +286,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     public platform: Platform,
     private pubSub: PubSubService,
     private router: Router,
+    private translatableStringService: TranslatableStringService,
   ) {
     this.locale = environment.defaultLocale;
     this.router.events.subscribe((event) => {
@@ -646,13 +652,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return column;
   }
 
-  private createCustomAttributeColumn(customAttribute: object) {
+  private createCustomAttributeColumn(customAttribute: ProgramCustomAttribute) {
     const column = JSON.parse(
       JSON.stringify(this.customAttributeColumnTemplate),
     ); // Hack to clone without reference;
 
-    column.name = customAttribute['label']['en'];
-    column.prop = customAttribute['name'];
+    column.name = this.translatableStringService.get(customAttribute.label);
+    column.prop = customAttribute.name;
     return column;
   }
 

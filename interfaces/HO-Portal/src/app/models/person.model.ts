@@ -90,10 +90,9 @@ export enum LanguageEnum {
   es = 'es',
 }
 
-export class CustomAttribute {
+export class PersonCustomAttribute {
   type: string;
   value: string | boolean;
-  label?: string;
 }
 
 export class PersonTableColumn {
