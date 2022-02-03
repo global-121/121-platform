@@ -651,8 +651,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       JSON.stringify(this.customAttributeColumnTemplate),
     ); // Hack to clone without reference;
 
-    column.name = customAttribute['label']['en'];
-    column.prop = customAttribute['name'];
+    const keys = { label: 'label', en: 'en', name: 'name' };
+
+    column.name = customAttribute[keys.label][keys.en];
+    column.prop = customAttribute[keys.name];
     return column;
   }
 
