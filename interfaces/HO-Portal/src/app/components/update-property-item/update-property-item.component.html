@@ -42,6 +42,15 @@
                 [disabled]="isDisabled"
               ></ion-input>
             </ng-container>
+            <ng-container *ngSwitchCase="'boolean'">
+              <ion-checkbox
+              ngDefaultControl
+              [(ngModel)]="propertyModel"
+              name="propertyInput"
+              [checked]="value"
+              class="ion-margin-top"
+              ></ion-checkbox>
+            </ng-container>
             <ng-container *ngSwitchDefault>
               <ion-input
                 ngDefaultControl

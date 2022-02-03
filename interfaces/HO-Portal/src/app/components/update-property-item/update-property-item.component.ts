@@ -32,7 +32,9 @@ export class UpdatePropertyItemComponent implements OnInit {
   public showSubmit = true;
 
   @Output()
-  updated: EventEmitter<string> = new EventEmitter<string>();
+  updated: EventEmitter<string | boolean> = new EventEmitter<
+    string | boolean
+  >();
 
   public propertyModel: any | NgModel;
 
