@@ -94,14 +94,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       );
   }
 
-  public async updatePaCustomAttribute(
-    key: string,
-    value: string | number | boolean,
-  ): Promise<void> {
-    console.log('key: ', key, ' - value: ', value);
-    // Endpoint missing
-  }
-
   private formatErrors(error, attribute: string): string {
     if (error.errors) {
       return this.formatConstraintsErrors(error.errors, attribute);

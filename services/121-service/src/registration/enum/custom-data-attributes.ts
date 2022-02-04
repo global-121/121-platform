@@ -7,6 +7,11 @@ export enum CustomDataAttributes {
   firstName = 'firstName',
   secondName = 'secondName',
   thirdName = 'thirdName',
+  namePartnerOrganization = 'namePartnerOrganization',
+  businessPlanDelivered = 'businessPlanDelivered',
+  completedTraining = 'completedTraining',
+  milestone1 = 'milestone1',
+  milestone2 = 'milestone2',
 }
 
 export enum GenericAttributes {
