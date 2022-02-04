@@ -56,7 +56,9 @@ export class AidWorker {
 }
 
 export class ProgramCustomAttribute {
-  label?: TranslatableString;
+  id: number;
+  programId: number;
   name: string;
   type: string;
+  label?: TranslatableString;
 }
