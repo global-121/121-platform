@@ -2,7 +2,7 @@ import { ProgramQuestionEntity } from './program-question.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, In } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { CreateProgramDto } from './dto/create-program.dto';
@@ -148,9 +148,14 @@ export class ProgramService {
   }
 
   public async updateProgramCustomAttributes(
+    programId: number,
     updateProgramCustomAttributes: UpdateProgramCustomAttributesDto,
   ): Promise<ProgramCustomAttributeEntity[]> {
-    const savedAttributes = [];
+    const savedAttributes: ProgramCustomAttributeEntity[] = [];
+    let program = await this.programRepository.findOne(programId, {
+      relations: ['programCustomAttributes'],
+    });
+
     for (const attribute of updateProgramCustomAttributes.attributes) {
       const oldAttribute = await this.programCustomAttributeRepository.findOne({
         where: { name: attribute.name },
@@ -162,14 +167,20 @@ export class ProgramService {
           oldAttribute,
         );
         savedAttributes.push(savedAttribute);
+        const attributeIndex = program.programCustomAttributes.findIndex(
+          attr => attr.id === savedAttribute.id,
+        );
+        program.programCustomAttributes[attributeIndex] = savedAttribute;
       } else {
         // .. otherwise, create new
         const savedAttribute = await this.programCustomAttributeRepository.save(
           attribute,
         );
         savedAttributes.push(savedAttribute);
+        program.programCustomAttributes.push(savedAttribute);
       }
     }
+    await this.programRepository.save(program);
     return savedAttributes;
   }
 

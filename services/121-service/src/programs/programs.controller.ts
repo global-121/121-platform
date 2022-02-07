@@ -111,9 +111,11 @@ export class ProgramController {
   @ApiOperation({ title: 'Update program custom attributes' })
   @Post(':programId/update/program-custom-attributes')
   public async updateProgramCustomAttributes(
+    @Param() params,
     @Body() updateProgramCustomAttributes: UpdateProgramCustomAttributesDto,
   ): Promise<ProgramCustomAttributeEntity[]> {
     return await this.programService.updateProgramCustomAttributes(
+      Number(params.programId),
       updateProgramCustomAttributes,
     );
   }
