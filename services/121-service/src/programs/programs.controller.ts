@@ -108,7 +108,7 @@ export class ProgramController {
     );
   }
 
-  // @Permissions(PermissionEnum.Admin)
+  @Permissions(PermissionEnum.ProgramCustomAttributeUPDATE)
   @ApiOperation({ title: 'Update program custom attributes' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/update/program-custom-attributes')

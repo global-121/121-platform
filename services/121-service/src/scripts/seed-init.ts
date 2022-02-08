@@ -78,6 +78,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationStatusIncludedUPDATE,
           PermissionEnum.RegistrationStatusRejectedUPDATE,
           PermissionEnum.RegistrationStatusSelectedForValidationUPDATE,
+          PermissionEnum.RegistrationStatusInclusionEndedUPDATE,
         ],
       },
       {
@@ -124,6 +125,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationStatusInvitedUPDATE,
           PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,
           PermissionEnum.RegistrationStatusRejectedUPDATE,
+          PermissionEnum.RegistrationStatusInclusionEndedUPDATE,
         ],
       },
       {
