@@ -75,7 +75,6 @@ export class ProgramService {
   }
 
   public async create(programData: CreateProgramDto): Promise<ProgramEntity> {
-    console.log('programData: ', programData);
     let program = new ProgramEntity();
     program.location = programData.location;
     program.ngo = programData.ngo;
