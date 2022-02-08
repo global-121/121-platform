@@ -33,6 +33,7 @@ Feature: New registration
     Then the PA receives an SMS confirming registration
     And the PA's status in the PA-table in the HO-portal is updated to "registered"
     And the PA's details are visible in the PA-table in the HO-portal
+    And the inclusion score is calculated correctly
     And the "registration summary"-step is shown
     And the "monitoring question"-step is shown
     When the PA completes this step
