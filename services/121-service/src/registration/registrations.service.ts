@@ -39,6 +39,7 @@ import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
+import { CustomAttributeType } from '../programs/dto/create-program-custom-attribute.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -95,11 +96,38 @@ export class RegistrationsService {
     registration.program = await this.programRepository.findOne(
       postData.programId,
     );
+    registration = await this.setDefaultValueForCustomAttributes(
+      registration,
+      postData.programId,
+    );
     await this.registrationRepository.save(registration);
     return this.setRegistrationStatus(
       postData.referenceId,
       RegistrationStatusEnum.startedRegistration,
     );
+  }
+
+  private async setDefaultValueForCustomAttributes(
+    registration: RegistrationEntity,
+    programId: number,
+  ): Promise<RegistrationEntity> {
+    if (!registration.customData) {
+      registration.customData = JSON.parse('{}');
+    }
+    const program = await this.programRepository.findOne(programId, {
+      relations: ['programCustomAttributes'],
+    });
+
+    for (const attr of program.programCustomAttributes) {
+      if (attr.type === CustomAttributeType.boolean) {
+        registration.customData[attr.name] = false;
+      }
+      if (attr.type === CustomAttributeType.string) {
+        registration.customData[attr.name] = '';
+      }
+    }
+
+    return registration;
   }
 
   public async setRegistrationStatus(
@@ -616,10 +644,6 @@ export class RegistrationsService {
     q = q.addSelect('registration.phoneNumber', 'phoneNumber');
     q = q.addSelect('registration.note', 'note');
     q = q.addSelect('registration.customData', 'customData');
-
-    const program = await this.programRepository.findOne(programId, {
-      relations: ['programCustomAttributes'],
-    });
 
     const rows = await q.getRawMany();
     const responseRows = [];

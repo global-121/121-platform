@@ -13,8 +13,7 @@ import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { UpdateProgramCustomAttributesDto } from './dto/update-program-custom-attribute.dto';
-
+import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -148,7 +147,7 @@ export class ProgramService {
 
   public async updateProgramCustomAttributes(
     programId: number,
-    updateProgramCustomAttributes: UpdateProgramCustomAttributesDto,
+    updateProgramCustomAttributes: CreateProgramCustomAttributesDto,
   ): Promise<ProgramCustomAttributeEntity[]> {
     const savedAttributes: ProgramCustomAttributeEntity[] = [];
     let program = await this.programRepository.findOne(programId, {
@@ -162,7 +161,7 @@ export class ProgramService {
       if (oldAttribute) {
         // If existing: update ..
         oldAttribute.type = attribute.type;
-        oldAttribute.label = JSON.parse(attribute.label);
+        oldAttribute.label = attribute.label;
         const savedAttribute = await this.programCustomAttributeRepository.save(
           oldAttribute,
         );
@@ -173,12 +172,8 @@ export class ProgramService {
         program.programCustomAttributes[attributeIndex] = savedAttribute;
       } else {
         // .. otherwise, create new
-        const customAttributeEntity = new ProgramCustomAttributeEntity();
-        customAttributeEntity.label = JSON.parse(attribute.label);
-        customAttributeEntity.type = attribute.type;
-        customAttributeEntity.name = attribute.name;
         const savedAttribute = await this.programCustomAttributeRepository.save(
-          customAttributeEntity,
+          attribute,
         );
         savedAttributes.push(savedAttribute);
         program.programCustomAttributes.push(savedAttribute);

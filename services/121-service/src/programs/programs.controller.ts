@@ -16,10 +16,10 @@ import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ChangePhaseDto } from './dto/change-phase.dto';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { UpdateProgramCustomAttributesDto } from './dto/update-program-custom-attribute.dto';
 import { PermissionsGuard } from '../permissions.guard';
 import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
+import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 
 @ApiBearerAuth()
 @UseGuards(PermissionsGuard)
@@ -114,7 +114,7 @@ export class ProgramController {
   @Post(':programId/update/program-custom-attributes')
   public async updateProgramCustomAttributes(
     @Param() params,
-    @Body() updateProgramCustomAttributes: UpdateProgramCustomAttributesDto,
+    @Body() updateProgramCustomAttributes: CreateProgramCustomAttributesDto,
   ): Promise<ProgramCustomAttributeEntity[]> {
     return await this.programService.updateProgramCustomAttributes(
       Number(params.programId),

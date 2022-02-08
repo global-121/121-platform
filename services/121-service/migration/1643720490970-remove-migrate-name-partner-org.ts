@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { RegistrationEntity } from '../src/registration/registration.entity';
 import { ProgramEntity } from '../src/programs/program.entity';
+import { CustomAttributeType } from '../src/programs/dto/create-program-custom-attribute.dto';
 
 export class removeMigrateNamePartnerOrg1643720490970
   implements MigrationInterface {
@@ -54,7 +55,7 @@ export class removeMigrateNamePartnerOrg1643720490970
       if (regsWithPartnerOrg.length > 0) {
         const attributeReturn = await programCustomAttributeRepository.save({
           name: 'namePartnerOrganization',
-          type: 'string',
+          type: CustomAttributeType.string,
         });
         program.programCustomAttributes.push(attributeReturn);
         await programRepository.save(program);
