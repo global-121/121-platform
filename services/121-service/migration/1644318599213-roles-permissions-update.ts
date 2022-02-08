@@ -18,77 +18,74 @@ export class rolesPermissionsUpdate1644318599213 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {}
 
   private async migrateData(connection: Connection): Promise<void> {
-    const permissions = [];
-    for (const permissionName of Object.values(PermissionEnum)) {
-      const permission = new PermissionEntity();
-      permission.name = permissionName as PermissionEnum;
-      permissions.push(permission);
-    }
+    const permissionRepository = connection.getRepository(PermissionEntity);
+    const permissions = await permissionRepository.find();
 
     const userRoleRepository = connection.getRepository(UserRoleEntity);
-
     const defaultRolesToUpdate = [
       {
         role: DefaultUserRole.RunProgram,
         label: 'Run Program',
         permissions: [
-          PermissionEnum.InstanceUPDATE,
-          PermissionEnum.ProgramCREATE,
-          PermissionEnum.ProgramUPDATE,
-          PermissionEnum.ProgramAllREAD,
-          PermissionEnum.ProgramPhaseUPDATE,
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentCREATE,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.PaymentVoucherREAD,
-          PermissionEnum.RegistrationREAD,
-          PermissionEnum.RegistrationCREATE,
-          PermissionEnum.RegistrationDELETE,
-          PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationNotificationCREATE,
-          PermissionEnum.RegistrationPersonalREAD,
-          PermissionEnum.RegistrationStatusSelectedForValidationUPDATE,
-          PermissionEnum.RegistrationStatusIncludedUPDATE,
-          PermissionEnum.RegistrationStatusRejectedUPDATE,
-          PermissionEnum.RegistrationStatusInclusionEndedUPDATE, // Forgotten in previous migration script
-          PermissionEnum.RegistrationImportTemplateREAD,
+          // Took version from seed-init.ts as latest version, not the one from previous migration-script
+          PermissionEnum.ActionCREATE,
+          PermissionEnum.ActionREAD,
           PermissionEnum.AidWorkerCREATE,
           PermissionEnum.AidWorkerDELETE,
           PermissionEnum.AidWorkerProgramUPDATE,
-          PermissionEnum.ActionREAD,
-          PermissionEnum.ActionCREATE,
+          PermissionEnum.InstanceUPDATE,
+          PermissionEnum.PaymentCREATE,
+          PermissionEnum.PaymentREAD,
+          PermissionEnum.PaymentTransactionREAD,
+          PermissionEnum.PaymentVoucherREAD,
+          PermissionEnum.ProgramAllREAD,
+          PermissionEnum.ProgramCREATE,
+          PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.ProgramPhaseUPDATE,
+          PermissionEnum.ProgramUPDATE,
+          PermissionEnum.RegistrationAttributeUPDATE,
+          PermissionEnum.RegistrationCREATE,
+          PermissionEnum.RegistrationDELETE,
+          PermissionEnum.RegistrationImportTemplateREAD,
+          PermissionEnum.RegistrationNotificationCREATE,
+          PermissionEnum.RegistrationREAD,
+          PermissionEnum.RegistrationStatusIncludedUPDATE,
+          PermissionEnum.RegistrationStatusRejectedUPDATE,
+          PermissionEnum.RegistrationStatusSelectedForValidationUPDATE,
+          PermissionEnum.RegistrationStatusInclusionEndedUPDATE, // Forgotten in seed-init / previous migration script
         ],
       },
       {
         role: DefaultUserRole.PersonalData,
         label: 'Handle Personally Identifiable Information',
         permissions: [
-          PermissionEnum.ProgramAllREAD,
-          PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.PaymentREAD,
+          // Took version from seed-init.ts as latest version, not the one from previous migration-script
+          PermissionEnum.ActionCREATE,
+          PermissionEnum.ActionREAD,
           PermissionEnum.PaymentCREATE,
           PermissionEnum.PaymentFspInstructionREAD,
+          PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
-          PermissionEnum.RegistrationREAD,
+          PermissionEnum.ProgramAllREAD,
+          PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.RegistrationAttributeUPDATE,
           PermissionEnum.RegistrationCREATE,
           PermissionEnum.RegistrationDELETE,
-          PermissionEnum.RegistrationAttributeUPDATE,
           PermissionEnum.RegistrationFspUPDATE,
-          PermissionEnum.RegistrationNotificationREAD,
+          PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.RegistrationNotificationCREATE,
+          PermissionEnum.RegistrationNotificationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
+          PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationPersonalSEARCH,
           PermissionEnum.RegistrationPersonalUPDATE,
-          PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,
+          PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationStatusIncludedUPDATE,
-          PermissionEnum.RegistrationStatusRejectedUPDATE,
-          PermissionEnum.RegistrationStatusInclusionEndedUPDATE, // Forgotten in previous migration script
           PermissionEnum.RegistrationStatusInvitedUPDATE,
-          PermissionEnum.RegistrationImportTemplateREAD,
-          PermissionEnum.ActionREAD,
-          PermissionEnum.ActionCREATE,
+          PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,
+          PermissionEnum.RegistrationStatusRejectedUPDATE,
+          PermissionEnum.RegistrationStatusInclusionEndedUPDATE, // Forgotten in seed-init / previous migration script
         ],
       },
     ];
@@ -97,11 +94,6 @@ export class rolesPermissionsUpdate1644318599213 implements MigrationInterface {
       const defaultRoleEntity = await userRoleRepository.findOne({
         where: { role: defaultRole.role },
       });
-      if (!defaultRoleEntity) {
-        continue;
-      }
-      defaultRoleEntity.role = defaultRole.role;
-      defaultRoleEntity.label = defaultRole.label;
       defaultRoleEntity.permissions = permissions.filter(permission =>
         defaultRole.permissions.includes(permission.name),
       );
