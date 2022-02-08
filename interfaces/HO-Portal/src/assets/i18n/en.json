@@ -199,7 +199,8 @@
         "aidworkerAssignments": "Assigned aidworkers",
         "financialServiceProviders": "Financial Service-providers",
         "validation": "Program includes validation",
-        "validationByQr": "Program includes validation via QR-code"
+        "validationByQr": "Program includes validation via QR-code",
+        "programCustomAttributes": "Program custom attributes"
       },
       "program-payout": {
         "payment-nr": "Payment #{{number}}",
