@@ -562,7 +562,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       }
     }
 
-    this.fillCustomAttributeColumns();
+    // Custom attributes can be personal data or not personal data
+    // for now only users that view custom data can see it
+    if (this.canViewPersonalData) {
+      this.fillCustomAttributeColumns();
+    }
 
     await this.loadData();
 
