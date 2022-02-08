@@ -941,7 +941,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         programId,
         readOnly: !this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
-        canUpdataPersonalData: this.canUpdatePersonalData,
+        canUpdatePersonalData: this.canUpdatePersonalData,
       },
     });
 
