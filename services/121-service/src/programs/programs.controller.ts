@@ -98,6 +98,7 @@ export class ProgramController {
 
   @Permissions(PermissionEnum.ProgramQuestionUPDATE)
   @ApiOperation({ title: 'Update program question' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/update/program-question')
   public async updateProgramQuestion(
     @Body() updateProgramQuestionDto: UpdateProgramQuestionDto,
@@ -109,6 +110,7 @@ export class ProgramController {
 
   // @Permissions(PermissionEnum.Admin)
   @ApiOperation({ title: 'Update program custom attributes' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/update/program-custom-attributes')
   public async updateProgramCustomAttributes(
     @Param() params,

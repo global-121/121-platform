@@ -173,8 +173,12 @@ export class ProgramService {
         program.programCustomAttributes[attributeIndex] = savedAttribute;
       } else {
         // .. otherwise, create new
+        const customAttributeEntity = new ProgramCustomAttributeEntity();
+        customAttributeEntity.label = JSON.parse(attribute.label);
+        customAttributeEntity.type = attribute.type;
+        customAttributeEntity.name = attribute.name;
         const savedAttribute = await this.programCustomAttributeRepository.save(
-          attribute,
+          customAttributeEntity,
         );
         savedAttributes.push(savedAttribute);
         program.programCustomAttributes.push(savedAttribute);

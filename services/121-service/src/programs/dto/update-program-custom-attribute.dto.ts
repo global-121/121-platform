@@ -1,5 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsIn } from 'class-validator';
+import { IsNotEmpty, IsString, IsIn, IsJSON } from 'class-validator';
 import { CustomAttributeType } from './create-program-custom-attribute.dto';
 
 export class UpdateProgramCustomAttributeDto {
@@ -12,9 +12,15 @@ export class UpdateProgramCustomAttributeDto {
   @IsString()
   @IsIn([CustomAttributeType.string, CustomAttributeType.boolean])
   public readonly type: string;
+  @ApiModelProperty()
+  @IsNotEmpty()
+  @IsJSON()
+  public label: string;
 }
 
 export class UpdateProgramCustomAttributesDto {
-  @ApiModelProperty()
+  @ApiModelProperty({
+    example: [{ name: 'mycustom', type: 'string', label: { en: 'MyCustom' } }],
+  })
   public readonly attributes: UpdateProgramCustomAttributeDto[];
 }
