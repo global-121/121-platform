@@ -768,8 +768,8 @@ export class RegistrationsService {
     }
 
     if (!attributeFound) {
-      const errors = 'This attribute is not known for this Person Affected.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      const message = 'This attribute is not known for this Person Affected.';
+      throw new HttpException({ message }, HttpStatus.NOT_FOUND);
     }
 
     const errors = await validate(registration);
