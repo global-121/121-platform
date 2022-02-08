@@ -20,9 +20,15 @@ export class processNewCustomAttributePermission1644332255958
   private async migrateData(connection: Connection): Promise<void> {
     // Add the new permission
     const permissionsRepository = connection.getRepository(PermissionEntity);
+    const newPermission = PermissionEnum.ProgramCustomAttributeUPDATE;
     const permission = new PermissionEntity();
-    permission.name = PermissionEnum.ProgramCustomAttributeUPDATE;
-    const permissionEntity = await permissionsRepository.save(permission);
+    permission.name = newPermission;
+    let permissionEntity = await permissionsRepository.findOne({
+      where: { name: newPermission },
+    });
+    if (!permissionEntity) {
+      permissionEntity = await permissionsRepository.save(permission);
+    }
 
     // Define closest permission to the new permission
     const closestPermission = PermissionEnum.ProgramQuestionUPDATE;
@@ -33,10 +39,10 @@ export class processNewCustomAttributePermission1644332255958
       relations: ['permissions'],
     });
     for (const role of userRoles) {
+      const permissions = role.permissions.map(p => p.name as PermissionEnum);
       if (
-        role.permissions
-          .map(p => p.name as PermissionEnum)
-          .includes(closestPermission)
+        permissions.includes(closestPermission) &&
+        !permissions.includes(newPermission)
       ) {
         role.permissions.push(permissionEntity);
         await userRoleRepository.save(role);
