@@ -96,38 +96,11 @@ export class RegistrationsService {
     registration.program = await this.programRepository.findOne(
       postData.programId,
     );
-    registration = await this.setDefaultValueForCustomAttributes(
-      registration,
-      postData.programId,
-    );
     await this.registrationRepository.save(registration);
     return this.setRegistrationStatus(
       postData.referenceId,
       RegistrationStatusEnum.startedRegistration,
     );
-  }
-
-  private async setDefaultValueForCustomAttributes(
-    registration: RegistrationEntity,
-    programId: number,
-  ): Promise<RegistrationEntity> {
-    if (!registration.customData) {
-      registration.customData = JSON.parse('{}');
-    }
-    const program = await this.programRepository.findOne(programId, {
-      relations: ['programCustomAttributes'],
-    });
-
-    for (const attr of program.programCustomAttributes) {
-      if (attr.type === CustomAttributeType.boolean) {
-        registration.customData[attr.name] = false;
-      }
-      if (attr.type === CustomAttributeType.string) {
-        registration.customData[attr.name] = '';
-      }
-    }
-
-    return registration;
   }
 
   public async setRegistrationStatus(
@@ -660,9 +633,17 @@ export class RegistrationsService {
       row['vnumber'] = row.customData['vnumber'];
       row['customAttributes'] = {};
       for (let attribute of programCustomAttributes) {
+        let value;
+        if (row.customData[attribute.attribute] != null) {
+          value = row.customData[attribute.attribute];
+        } else if (attribute.type === CustomAttributeType.boolean) {
+          value = false;
+        } else if (attribute.type === CustomAttributeType.string) {
+          value = '';
+        }
         row['customAttributes'][attribute.attribute] = {
           type: attribute.type,
-          value: row.customData[attribute.attribute],
+          value: value,
         };
       }
       delete row.customData;
@@ -743,33 +724,21 @@ export class RegistrationsService {
 
   public async updateAttribute(
     referenceId: string,
-    attribute: Attributes,
+    attribute: Attributes | string,
     value: string | number,
   ): Promise<RegistrationEntity> {
     const registration = await this.getRegistrationFromReferenceId(referenceId);
-    let attributeFound = false;
 
     if (typeof registration[attribute] !== 'undefined') {
       registration[attribute] = await this.cleanCustomDataIfPhoneNr(
         attribute,
         value,
       );
-      attributeFound = true;
-    }
-    if (
-      registration.customData &&
-      typeof registration.customData[attribute] !== 'undefined'
-    ) {
+    } else {
       registration.customData[attribute] = await this.cleanCustomDataIfPhoneNr(
         attribute,
         value,
       );
-      attributeFound = true;
-    }
-
-    if (!attributeFound) {
-      const message = 'This attribute is not known for this Person Affected.';
-      throw new HttpException({ message }, HttpStatus.NOT_FOUND);
     }
 
     const errors = await validate(registration);

@@ -18,8 +18,7 @@ export class UpdateAttributeDto {
     enum: attributesArray,
     example: attributesArray.join(' | '),
   })
-  @IsIn(attributesArray)
-  public readonly attribute: Attributes;
+  public readonly attribute: Attributes | string;
   @ApiModelProperty({ example: 'new value' })
   public readonly value: string | number;
 }
