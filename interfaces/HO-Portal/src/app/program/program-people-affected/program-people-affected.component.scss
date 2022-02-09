@@ -59,12 +59,11 @@
   }
 }
 
-.true-checkmark {
+.checkmark {
   font-size: 170%;
-  color: var(--ion-color-success);
-  background-color: white;
-}
 
-.false-checkmark {
-  font-size: 170%;
+  &.true {
+    color: var(--ion-color-success);
+    background-color: white;
+  }
 }
