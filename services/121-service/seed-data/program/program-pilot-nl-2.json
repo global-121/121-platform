@@ -143,7 +143,7 @@
         "pt_BR": "Por favor digite o número de telefone em que você pode receber um mensagem de texto / SMS. Usaremos este número de telefone para informá-lo sobre o programa de ajuda. <br><br> Deve parecer: <code>+31 6 00 00 00 00</code>",
         "tl": "Pakibahagi ang iyong phone number upang makatanggap ng SMS. Gagamitin namin ang iyong phone number upang ipagbigay alam sayo ang aid program. <br><br> Dapat ito ay gaya ng: <code>+31 6 00 00 00 00</code>",
         "in": "Harap bagi nomor HP anda di mana anda bisa menerima SMS. Kami akan menggunakan nomor ini untuk memberi informasi tentang bantuan dana ini <br><br>Nomor yang anda berikan harus mengikuti format <code>+31 6 00 00 00 00</code>",
-        "fr": "Veuillez indiquer le numéro de téléphone sur lequel vous pouvez recevoir un SMS. Nous utiliserons ce numéro de téléphone pour vous informer à propos du programme d'aide.<br><br> Cela devrait ressembler à:<code>3+31 6 00 00 00 00</code>"
+        "fr": "Veuillez indiquer le numéro de téléphone sur lequel vous pouvez recevoir un SMS. Nous utiliserons ce numéro de téléphone pour vous informer à propos du programme d'aide.<br><br> Cela devrait ressembler à: <code>+31 6 00 00 00 00</code>"
       },
       "placeholder": {
         "en": "+31 6 00 00 00 00"
