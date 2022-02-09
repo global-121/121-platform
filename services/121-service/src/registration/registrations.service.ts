@@ -1,5 +1,4 @@
 import { WhatsappService } from './../notifications/whatsapp/whatsapp.service';
-import { TwilioMessageEntity } from './../notifications/twilio.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { SmsService } from './../notifications/sms/sms.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
@@ -17,6 +16,7 @@ import { ProgramAnswer } from './dto/store-program-answers.dto';
 import { ProgramAnswerEntity } from './program-answer.entity';
 import {
   AnswerTypes,
+  Attribute,
   CustomDataAttributes,
 } from './enum/custom-data-attributes';
 import { LookupService } from '../notifications/lookup/lookup.service';
@@ -26,7 +26,7 @@ import { FspName } from '../fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { InlusionScoreService } from './services/inclusion-score.service';
-import { BulkImportService } from './services/bulk-import.service';
+import { BulkImportService, ImportType } from './services/bulk-import.service';
 import { ImportResult } from './dto/bulk-import.dto';
 import { RegistrationResponse } from './dto/registration-response.model';
 import { NoteDto } from './dto/note.dto';
@@ -38,6 +38,8 @@ import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
+import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
+import { CustomAttributeType } from '../programs/dto/create-program-custom-attribute.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -55,6 +57,10 @@ export class RegistrationsService {
   private readonly programAnswerRepository: Repository<ProgramAnswerEntity>;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
+  @InjectRepository(ProgramCustomAttributeEntity)
+  private readonly programCustomAttributeRepository: Repository<
+    ProgramCustomAttributeEntity
+  >;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspAttributeEntity)
@@ -317,8 +323,10 @@ export class RegistrationsService {
 
     // If imported registration found ..
     // .. then transfer relevant attributes from imported registration to current registration
-    currentRegistration.namePartnerOrganization =
-      importedRegistration.namePartnerOrganization;
+    currentRegistration.customData = {
+      ...currentRegistration.customData,
+      ...importedRegistration.customData,
+    };
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
 
@@ -344,7 +352,20 @@ export class RegistrationsService {
     await this.registrationRepository.remove(importedRegistration);
 
     // .. and save the updated import-registration
-    await this.registrationRepository.save(currentRegistration);
+    const updatedRegistration = await this.registrationRepository.save(
+      currentRegistration,
+    );
+
+    // .. if imported registration status was noLongerEligible set to registeredWhileNoLongerEligible
+    if (
+      importedRegistration.registrationStatus ===
+      RegistrationStatusEnum.noLongerEligible
+    ) {
+      await this.setRegistrationStatus(
+        updatedRegistration.referenceId,
+        RegistrationStatusEnum.registeredWhileNoLongerEligible,
+      );
+    }
   }
 
   private async findImportedRegistrationByPhoneNumber(
@@ -419,9 +440,14 @@ export class RegistrationsService {
 
   public async getImportRegistrationsTemplate(
     programId: number,
+    type: ImportType,
   ): Promise<string[]> {
+    if (!Object.values(ImportType).includes(type)) {
+      throw new HttpException('Wrong import type', HttpStatus.BAD_REQUEST);
+    }
     return await this.bulkImportService.getImportRegistrationsTemplate(
       programId,
+      type,
     );
   }
 
@@ -442,6 +468,21 @@ export class RegistrationsService {
     return program;
   }
 
+  private async getProgramCustomAttributes(
+    programId: number,
+  ): Promise<Attribute[]> {
+    return (
+      await this.programCustomAttributeRepository.find({
+        where: { program: { id: programId } },
+      })
+    ).map(c => {
+      return {
+        attribute: c.name,
+        type: c.type,
+      };
+    });
+  }
+
   public async getRegistrationsForProgram(
     programId: number,
     includePersonalData: boolean,
@@ -456,10 +497,6 @@ export class RegistrationsService {
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
       .addSelect('registration.inclusionScore', 'inclusionScore')
       .addSelect('fsp.fsp', 'fsp')
-      .addSelect(
-        'registration.namePartnerOrganization',
-        'namePartnerOrganization',
-      )
       .addSelect(
         'registration.paymentAmountMultiplier',
         'paymentAmountMultiplier',
@@ -583,6 +620,9 @@ export class RegistrationsService {
 
     const rows = await q.getRawMany();
     const responseRows = [];
+    const programCustomAttributes = await this.getProgramCustomAttributes(
+      programId,
+    );
     for (let row of rows) {
       row['name'] = this.getName(row.customData);
       row['hasNote'] = !!row.note;
@@ -591,6 +631,21 @@ export class RegistrationsService {
       row['whatsappPhoneNumber'] =
         row.customData[CustomDataAttributes.whatsappPhoneNumber];
       row['vnumber'] = row.customData['vnumber'];
+      row['customAttributes'] = {};
+      for (let attribute of programCustomAttributes) {
+        let value;
+        if (row.customData[attribute.attribute] != null) {
+          value = row.customData[attribute.attribute];
+        } else if (attribute.type === CustomAttributeType.boolean) {
+          value = false;
+        } else if (attribute.type === CustomAttributeType.string) {
+          value = '';
+        }
+        row['customAttributes'][attribute.attribute] = {
+          type: attribute.type,
+          value: value,
+        };
+      }
       delete row.customData;
       responseRows.push(row);
     }
@@ -662,38 +717,28 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.inclusionEndDate;
       case RegistrationStatusEnum.rejected:
         return RegistrationStatusTimestampField.rejectionDate;
+      case RegistrationStatusEnum.registeredWhileNoLongerEligible:
+        return RegistrationStatusTimestampField.registeredWhileNoLongerEligibleDate;
     }
   }
 
-  public async updateAttribute(
+  public async setAttribute(
     referenceId: string,
-    attribute: Attributes,
+    attribute: Attributes | string,
     value: string | number,
   ): Promise<RegistrationEntity> {
     const registration = await this.getRegistrationFromReferenceId(referenceId);
-    let attributeFound = false;
 
     if (typeof registration[attribute] !== 'undefined') {
       registration[attribute] = await this.cleanCustomDataIfPhoneNr(
         attribute,
         value,
       );
-      attributeFound = true;
-    }
-    if (
-      registration.customData &&
-      typeof registration.customData[attribute] !== 'undefined'
-    ) {
+    } else {
       registration.customData[attribute] = await this.cleanCustomDataIfPhoneNr(
         attribute,
         value,
       );
-      attributeFound = true;
-    }
-
-    if (!attributeFound) {
-      const errors = 'This attribute is not known for this Person Affected.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     const errors = await validate(registration);
@@ -1231,5 +1276,17 @@ export class RegistrationsService {
       return [];
     }
     return messageHistoryArray;
+  }
+
+  public addProgramCustomAttributesToRow(
+    row: object,
+    customData: object,
+    programCustomAttributes: ProgramCustomAttributeEntity[],
+  ): object {
+    for (const programCustomAttribute of programCustomAttributes) {
+      row[programCustomAttribute.name] =
+        customData[programCustomAttribute.name];
+    }
+    return row;
   }
 }

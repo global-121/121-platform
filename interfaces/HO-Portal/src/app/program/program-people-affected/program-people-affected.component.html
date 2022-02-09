@@ -243,6 +243,43 @@
   ></ngx-datatable-column>
 
   <ngx-datatable-column
+    *ngFor="let column of customAttributeColumns"
+    [prop]="column.prop"
+    [name]="column.name"
+    [width]="column.width"
+    [minWidth]="column.minWidth"
+    [maxWidth]="column.maxWidth"
+    [draggable]="column.draggable"
+    [resizeable]="column.resizable"
+    [sortable]="column.sortable"
+    [canAutoResize]="column.canAutoResize"
+    [headerClass]="column.headerClass"
+    [cellClass]="column.cellClass"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-value="value"
+      let-row="row"
+    >
+      <span
+        *ngIf="value === true"
+        [title]="'page.program.program-people-affected.column.custom-attribute-true'|translate"
+      >
+        <ion-icon class="checkmark true" name="checkmark-circle"></ion-icon>
+      </span>
+      <span 
+        *ngIf="value === false" 
+        [title]="'page.program.program-people-affected.column.custom-attribute-false'|translate"
+      >
+        <ion-icon class="checkmark" name="ellipse-outline"></ion-icon>
+      </span>
+      <ng-container *ngIf="value !== true && value !== false && value">
+        {{value}}
+      </ng-container>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column
     *ngFor="let column of paymentColumns"
     [prop]="column.prop"
     [name]="column.name"

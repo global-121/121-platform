@@ -58,3 +58,12 @@
     border-color: currentColor;
   }
 }
+
+.checkmark {
+  font-size: 170%;
+
+  &.true {
+    color: var(--ion-color-success);
+    background-color: white;
+  }
+}

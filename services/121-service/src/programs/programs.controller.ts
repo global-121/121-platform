@@ -15,9 +15,11 @@ import { ProgramEntity } from './program.entity';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ChangePhaseDto } from './dto/change-phase.dto';
+import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { PermissionsGuard } from '../permissions.guard';
 import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
+import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 
 @ApiBearerAuth()
 @UseGuards(PermissionsGuard)
@@ -83,7 +85,7 @@ export class ProgramController {
   @Permissions(PermissionEnum.ProgramUPDATE)
   @ApiOperation({ title: 'Update program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('update/:programId')
+  @Post(':programId/update')
   public async updateProgram(
     @Param() params,
     @Body() updateProgramDto: UpdateProgramDto,
@@ -95,13 +97,28 @@ export class ProgramController {
   }
 
   @Permissions(PermissionEnum.ProgramQuestionUPDATE)
-  @ApiOperation({ title: 'Update program questions' })
-  @Post('update/program-question')
+  @ApiOperation({ title: 'Update program question' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post(':programId/update/program-question')
   public async updateProgramQuestion(
     @Body() updateProgramQuestionDto: UpdateProgramQuestionDto,
   ): Promise<ProgramQuestionEntity> {
     return await this.programService.updateProgramQuestion(
       updateProgramQuestionDto,
+    );
+  }
+
+  @Permissions(PermissionEnum.ProgramCustomAttributeUPDATE)
+  @ApiOperation({ title: 'Update program custom attributes' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post(':programId/update/program-custom-attributes')
+  public async updateProgramCustomAttributes(
+    @Param() params,
+    @Body() updateProgramCustomAttributes: CreateProgramCustomAttributesDto,
+  ): Promise<ProgramCustomAttributeEntity[]> {
+    return await this.programService.updateProgramCustomAttributes(
+      Number(params.programId),
+      updateProgramCustomAttributes,
     );
   }
 }
