@@ -38,3 +38,5 @@ Feature: Upload validation data
     And the status of the PA in the HO-portal is updated to "Validated"
 
   Scenario: Upload validation data unsuccessfully
+
+  Scenario: Upload validation data with changed answers that would lead to a different inclusion score
