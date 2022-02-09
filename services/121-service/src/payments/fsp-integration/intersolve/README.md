@@ -8,14 +8,24 @@ NOTE: Currently the FSP Intersolve, which produces vouchers, is very much intert
 
 1. [Twilio portal](https://www.twilio.com/login)
 
-## Setting up WhatsApp sandbox to test locally
+### Use Twilio API during development
 
-1. Download ngrok
-2. Connect your local port on which the 121-service runs to ngrok using `ngrok http <port-number>`
-3. Copy the resulting https address as EXTERNAL_121_SERVICE_URL in .env (it must end with a slash!) and rebuild the 121-service.
-4. Log in to the [Twilio portal](https://www.twilio.com/login)
-5. Go to Messaging > Settings > WhatsApp sandbox settings
-6. Update both the 'When a messages comes in' and 'Status callback url' fields with the ngrok address. Note that instead you can also fill in here the test-vm or staging URL's if you want to test there.
-7. Subscribe yourself to the sandbox number by sending the requested message to the requested number.
-8. Make sure that the sandbox number is equal to TWILIO_WHATSAPP_NUMBER in your local .env file (or on test/staging if you are testing there)
-9. You are now set up to follow a full payment flow, including sending a 'yes' reply and receiving any outstanding vouchers and/or messages.
+See the Twilio API documentation: <https://www.twilio.com/docs>.
+
+- Make sure the `.env` file contains the correct access keys
+- Use a tool to inspect the responses from the Twilio API, for example:
+  - `ngrok`: <https://ngrok.com>:
+    - See also: <https://www.twilio.com/blog/2015/09/6-awesome-reasons-to-use-ngrok-when-testing-webhooks.html>
+    - Make sure to use the correct port(`3000`) of the 121-service.
+  - `Smee`: <https://smee.io/>
+    - You can use the client with:  
+      `npx smee -u https://smee.io/<unique-url>`
+  - Or any other service that gives a public accessible URL to inspect and/or forward to you local instance of the 121-service.
+- Set the ENV-variable `EXTERNAL_121_SERVICE_URL` to your personal url in the [services/.env](../.env)-file.
+  - Make sure to run `npm run start:services` after the changes, so the new value(s) will be used.
+
+To also test WhatsApp with Twilio:
+
+- Setup Twilio WhatsApp Sandbox <https://www.twilio.com/docs/whatsapp/sandbox>
+- Be sure to join the sandbox with the WhatsApp number you want to test <https://www.twilio.com/docs/whatsapp/sandbox#how-to-join-a-twilio-sandbox>
+- Set the callback url for `When a Message Comes in` to `<your-url>/api/notifications/whatsapp/incoming`
