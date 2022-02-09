@@ -257,10 +257,10 @@ export class RegistrationsController {
     description: 'Updated attribute for registration',
   })
   @Post('/attribute')
-  public async updateAttribute(
+  public async setAttribute(
     @Body() updateAttributeDto: UpdateAttributeDto,
   ): Promise<RegistrationEntity> {
-    return await this.registrationsService.updateAttribute(
+    return await this.registrationsService.setAttribute(
       updateAttributeDto.referenceId,
       updateAttributeDto.attribute,
       updateAttributeDto.value,

@@ -722,7 +722,7 @@ export class RegistrationsService {
     }
   }
 
-  public async updateAttribute(
+  public async setAttribute(
     referenceId: string,
     attribute: Attributes | string,
     value: string | number,
