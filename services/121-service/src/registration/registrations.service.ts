@@ -119,11 +119,12 @@ export class RegistrationsService {
     });
 
     for (const attr of program.programCustomAttributes) {
-      if (attr.type === CustomAttributeType.boolean) {
-        registration.customData[attr.name] = false;
-      }
-      if (attr.type === CustomAttributeType.string) {
-        registration.customData[attr.name] = '';
+      if (!registration.customData[attr.name]) {
+        if (attr.type === CustomAttributeType.boolean) {
+          registration.customData[attr.name] = false;
+        } else if (attr.type === CustomAttributeType.string) {
+          registration.customData[attr.name] = '';
+        }
       }
     }
 
