@@ -30,6 +30,7 @@ import { validate } from 'class-validator';
 import { Readable } from 'stream';
 import { InlusionScoreService } from './inclusion-score.service';
 import { ProgramCustomAttributeEntity } from '../../programs/program-custom-attribute.entity';
+import { CustomAttributeType } from '../../programs/dto/create-program-custom-attribute.dto';
 
 export enum ImportType {
   imported = 'import-as-imported',
@@ -114,7 +115,13 @@ export class BulkImportService {
       newRegistration.program = program;
       newRegistration.customData = JSON.parse(JSON.stringify({}));
       programCustomAttributes.forEach(att => {
-        newRegistration.customData[att.attribute] = record[att.attribute];
+        if (att.type === CustomAttributeType.boolean) {
+          newRegistration.customData[att.attribute] = JSON.parse(
+            record[att.attribute],
+          );
+        } else {
+          newRegistration.customData[att.attribute] = record[att.attribute];
+        }
       });
 
       const savedRegistration = await this.registrationRepository.save(
@@ -191,7 +198,13 @@ export class BulkImportService {
 
       registration.customData = JSON.parse(JSON.stringify({}));
       dynamicAttributes.forEach(att => {
-        registration.customData[att.attribute] = record[att.attribute];
+        if (att.type === CustomAttributeType.boolean) {
+          registration.customData[att.attribute] = JSON.parse(
+            record[att.attribute],
+          );
+        } else {
+          registration.customData[att.attribute] = record[att.attribute];
+        }
       });
 
       const fsp = await this.fspRepository.findOne({
