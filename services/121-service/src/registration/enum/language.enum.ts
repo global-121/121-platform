@@ -10,4 +10,5 @@ export enum LanguageEnum {
   in = 'in',
   nl = 'nl',
   es = 'es',
+  fr = 'fr',
 }
