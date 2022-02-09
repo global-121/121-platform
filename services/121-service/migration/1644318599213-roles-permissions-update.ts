@@ -94,10 +94,12 @@ export class rolesPermissionsUpdate1644318599213 implements MigrationInterface {
       const defaultRoleEntity = await userRoleRepository.findOne({
         where: { role: defaultRole.role },
       });
-      defaultRoleEntity.permissions = permissions.filter(permission =>
-        defaultRole.permissions.includes(permission.name),
-      );
-      await userRoleRepository.save(defaultRoleEntity);
+      if (defaultRoleEntity) {
+        defaultRoleEntity.permissions = permissions.filter(permission =>
+          defaultRole.permissions.includes(permission.name),
+        );
+        await userRoleRepository.save(defaultRoleEntity);
+      }
     }
   }
 }
