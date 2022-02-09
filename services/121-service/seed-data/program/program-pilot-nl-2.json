@@ -16,7 +16,8 @@
   },
   "descCashType": {
     "en": "Unconditional multi-purpose",
-    "es": "Multipropósito incondicional"
+    "es": "Multipropósito incondicional",
+    "fr": "Inconditionnel polyvalent"
   },
   "startDate": "2021-01-11T12:00:00Z",
   "endDate": "2022-12-31T12:00:00Z",
@@ -85,6 +86,14 @@
       "whatsappVoucher": "Ini adalah pesan dari Red Cross.\n\nDengan pesan ini anda akan menerima:\n1. Sebuah voucher supermarket Albert Heijn  (cadeaukaart) - Ini adalah gambar dari barcode-nya.\n2. Penjelasan bagaimana menggunakan voucher ini di Albert Heijn.\n\nApabila anda menerima lebih dari satu voucher ini adalah karena anda belum menerima voucher minggu-minggu sebelumnya. \n\nNilai dari setiap voucher adalah €{{1}}.\nAnda bisa menggunakan voucher di supermarket Albert Heijn manapun di negeri Belanda.\n\nAnda tidak perlu menghabiskan sekaligus apa yang ada di voucher.  Jadi simpanlah voucher dan gunakan kembali sampai €{{1}} yang ada di setiap voucher sudah habis.\n\nAnda akan menerima  €{{1}}   voucher Albert Heijn anda setiap minggu pada hari Selasa sampai:\n1.  Anda tidak tercantum  lagi di daftar organisasi anda. \n2. Akhir program (Kalian akan diberi informasi dua minggu sebelumnya).\n\nAdakah pertanyaan ? Kirim pesan di WhatsApp: \nhttps://wa.me/31614458781",
       "whatsappVoucherMultiple": "Ini adalah pesan dari Red Cross.\n\nDengan pesan ini anda akan menerima:\n1. Sebuah voucher supermarket Albert Heijn  (cadeaukaart) - Ini adalah gambar dengan barcode.\n2. Penjelasan bagaimana menggunakan voucher di  Albert Heijn.\n\nApabila anda menerima lebih dari satu voucher, ini adalah karena: \n1. Anda belum menerima voucher minggu-minggu sebelumnya. \n2. Seorang anggota keluarga atau teman terdaftar dengan nomor telpon yang sama.\nIni hanya akan terjadi apabila seseorang terdaftar pula oleh organisasi anda untuk menerima voucher ini.\n\nNilai setiap voucher adalah €{{1}}.\nAnda bisa menggunakan voucher ini di supermarket Albert Heijn manapun di negeri Belanda. \n\nAnda tidak perlu membelanjakan semua sekaligus. Ini berarti anda harus menyimpan voucher dengan dana yang tersisa dan menggunakannya lagi sampai   €{{1}} di setiap voucher sudah habis.\n\nAnda akan menerima  €{{1}} voucher Albert Heijn setiap minggu pada hari Selasa sampai ::\n1. Anda tidak ada lagi dalam daftar organisasi anda. \n2. Akhir program (Kalian akan diberi informasi dua minggu sebelumnya).\n\nApakah anda ada pertanyaan ? Kirim pesan di  WhatsApp: https://wa.me/31614458781",
       "whatsappReply": "Ini adalah pesan otomatis. apabila ada pertanyaan harap kontak the Red Cross Helpdesk di WhatsApp +31614458781"
+    },
+    "fr": {
+      "registered": "Ceci est un message de Croix Rouge.\n\nNous avons bien reçu votre application pour assistance.\n\nVous recevrez un autre SMS or de message WhatsApp avec plus d'informations dans un délai d' 1 semaine.",
+      "whatsappGenericMessage": "Ceci est un message de la Croix-Rouge.\n\nUn message vous attend. Veuillez répondre \"oui\" à ce message pour le recevoir.",
+      "whatsappPayment": "Ceci est un message de la Croix-Rouge.\n\nVotre bon de €{{1}} chez les supermarchés Albert Heijn est prêt à être envoyé.\n\nVeuillez répondre \"oui\" à ce message afin de recevoir :\n1. Le bon de cette semaine.\n2. Tous les bons précédents que vous n'avez pas encore reçus.\n\n",
+      "whatsappVoucher": "Ceci est un message de la Croix-Rouge.\n\nAvec ce message, vous recevrez:\n1. Un bon de supermarché Albert Heijn (cadeaukaart) - c'est la photo avec le code-barres.\n2. Une explication sur la façon d'utiliser le bon à Albert Heijn.\n\nSi vous avez reçu plusieurs bons, c'est parce que: \n1. Vous n'aviez pas encore reçu de bons des semaines précédentes.\n2. Un membre de la famille ou un ami est enregistré avec le même numéro de téléphone.\n\nLa valeur de chaque bon est de {{1}} €.\nVous pouvez utiliser les bons dans n'importe quel supermarché Albert Heijn aux Pays-Bas.\n\nCe n'est pas necessaire de tout dépenser d'un coup. Conservez donc les bons et réutilisez-les jusqu'à ce que les {{1}} € sur chaque bon soient épuisés.\n\nVous recevrez votre bon Albert Heijn de {{1}} € chaque semaine le mardi jusqu'au :\n1. Vous ne faites plus partie de la liste de nos organisations partenaires.\n2. Ou jusqu'à la fin du projet (vous serez informé deux semaines à l'avance).\n\nAvez-vous des questions? Envoyez-nous un message sur WhatsApp:\nhttps://wa.me/31614458781",
+      "whatsappVoucherMultiple": "Ceci est un message de la Croix-Rouge.\n\nAvec ce message, vous recevrez:\n1. Un bon de supermarché Albert Heijn (cadeaukaart) - c'est la photo avec le code-barres.\n2. Une explication sur la façon d'utiliser le bon à Albert Heijn.\n\nSi vous avez reçu plusieurs bons, c'est parce que: \n1. Vous n'aviez pas encore reçu de bons des semaines précédentes.\n2. Un membre de la famille ou un ami est enregistré avec le même numéro de téléphone.\n\nLa valeur de chaque bon est de {{1}} €.\nVous pouvez utiliser les bons dans n'importe quel supermarché Albert Heijn aux Pays-Bas.\n\nCe n'est pas necessaire de tout dépenser d'un coup. Conservez donc les bons et réutilisez-les jusqu'à ce que les {{1}} € sur chaque bon soient épuisés.\n\nVous recevrez votre bon Albert Heijn de {{1}} € chaque semaine le mardi jusqu'au :\n1. Vous ne faites plus partie de la liste de nos organisations partenaires.\n2. Ou jusqu'à la fin du projet (vous serez informé deux semaines à l'avance).\n\nAvez-vous des questions? Envoyez-nous un message sur WhatsApp:\nhttps://wa.me/31614458781",
+      "whatsappReply": "Ceci est un message automatisé, pour toutes questions, s'il vous plaît, veuillez contacter le Guiche d'information de la Croix-Rouge sur WhatsApp: +31614458781"
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
@@ -97,7 +106,8 @@
         "nl": "Vul je voornaam in:",
         "pt_BR": "Por favor, digite seu nome: ",
         "tl": "Ilagay ang pangalan:",
-        "in": "Harap isi nama depan anda"
+        "in": "Harap isi nama depan anda",
+        "fr": "Remplissez votre prénom, s'il vous plaît:"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -114,7 +124,8 @@
         "nl": "Vul je achternaam in:",
         "pt_BR": "Por favor, digite seu sobrenome:",
         "tl": "Ilagay ang apelyido:",
-        "in": "Harap isi nama akhir anda"
+        "in": "Harap isi nama akhir anda",
+        "fr": "Remplissez votre nom, s'il vous plaît:"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -131,7 +142,8 @@
         "nl": "Geef het telefoonnummer waar je een SMS op kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+31 6 00 00 00 00</code>",
         "pt_BR": "Por favor digite o número de telefone em que você pode receber um mensagem de texto / SMS. Usaremos este número de telefone para informá-lo sobre o programa de ajuda. <br><br> Deve parecer: <code>+31 6 00 00 00 00</code>",
         "tl": "Pakibahagi ang iyong phone number upang makatanggap ng SMS. Gagamitin namin ang iyong phone number upang ipagbigay alam sayo ang aid program. <br><br> Dapat ito ay gaya ng: <code>+31 6 00 00 00 00</code>",
-        "in": "Harap bagi nomor HP anda di mana anda bisa menerima SMS. Kami akan menggunakan nomor ini untuk memberi informasi tentang bantuan dana ini <br><br>Nomor yang anda berikan harus mengikuti format <code>+31 6 00 00 00 00</code>"
+        "in": "Harap bagi nomor HP anda di mana anda bisa menerima SMS. Kami akan menggunakan nomor ini untuk memberi informasi tentang bantuan dana ini <br><br>Nomor yang anda berikan harus mengikuti format <code>+31 6 00 00 00 00</code>",
+        "fr": "Veuillez indiquer le numéro de téléphone sur lequel vous pouvez recevoir un SMS. Nous utiliserons ce numéro de téléphone pour vous informer à propos du programme d'aide.<br><br> Cela devrait ressembler à: <code>+31 6 00 00 00 00</code>"
       },
       "placeholder": {
         "en": "+31 6 00 00 00 00"
