@@ -69,27 +69,9 @@ This user **_HAS_** to be created first, but the 'Authorize'-part is not necessa
 
 ## External services
 
-### Use Twilio API during development
+### FSP-specific instructions
 
-See the Twilio API documentation: <https://www.twilio.com/docs>.
-
-- Make sure the `.env` file contains the correct access keys
-- Use a tool to inspect the responses from the Twilio API, for example:
-  - `ngrok`: <https://ngrok.com>:
-    - See also: <https://www.twilio.com/blog/2015/09/6-awesome-reasons-to-use-ngrok-when-testing-webhooks.html>
-    - Make sure to use the correct port(`3000`) of the 121-service.
-  - `Smee`: <https://smee.io/>
-    - You can use the client with:  
-      `npx smee -u https://smee.io/<unique-url>`
-  - Or any other service that gives a public accessible URL to inspect and/or forward to you local instance of the 121-service.
-- Set the ENV-variable `EXTERNAL_121_SERVICE_URL` to your personal url in the [services/.env](../.env)-file.
-  - Make sure to run `npm run start:services` after the changes, so the new value(s) will be used.
-
-To also test WhatsApp with Twilio:
-
-- Setup Twilio WhatsApp Sandbox <https://www.twilio.com/docs/whatsapp/sandbox>
-- Be sure to join the sandbox with the WhatsApp number you want to test <https://www.twilio.com/docs/whatsapp/sandbox#how-to-join-a-twilio-sandbox>
-- Set the callback url for `When a Message Comes in` to `<your-url>/api/notifications/whatsapp/incoming`
+For FSP-specific instructions, see the README.md in each individual FSP-folder, e.g. for [Intersolve](./src/payments/fsp-integration/intersolve/README.md)
 
 ### Upload voice mp3
 
@@ -97,10 +79,6 @@ See: [`src/notifications/voice/voice.service.ts`](`src/notifications/voice/voice
 
 - Mp3's that are used when sending voice notifications can be added to the `voice`-folder:  
   The folder structure follows the pattern: `voice/<programId>/<language>/<notification-key>.mp3`
-
-### Use Africa's Talking API during development
-
-If setting up a validation callback, use `ngrok` (see above) here as well during development.
 
 ---
 

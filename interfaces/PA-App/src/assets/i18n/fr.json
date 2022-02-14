@@ -1,10 +1,10 @@
 {
   "account": {
-    "delete-data": "Effacez le compte",
+    "delete-data": "Supprimez mes données",
     "logout": "Se déconnecter"
   },
   "connection": {
-    "error-retry": "Une erreur c'est produite, voulez-vous réessayer?"
+    "error-retry": "Une erreur s'est produite, voulez-vous réessayer"
   },
   "notification": {
     "inclusion": "Statut d'inclusion reçu"
@@ -34,17 +34,17 @@
     },
     "enroll-in-program": {
       "change": "Changer mes informations.",
-      "introduction-information": "Afin de garantir que vous recevez la meilleure assistance possible et que votre demande sera traitée correctement, nous avons besoin de certaines données personnelles de vous.",
+      "introduction-information": "Afin de garantir que vous recevez la meilleure assistance possible et que votre demande sera traitée correctement, nous avons besoin de certaines données personnelles vous concernant.",
       "please-confirm": "Vous trouvez ci-dessous un récapitulatif de vos informations. Veuillez les vérifier. Après cliquez sur envoyer.",
       "submit-confirm": "Envoyez mes informations."
     },
     "inclusion-status": {
-      "inclusion-status-negative": "Malheureusement, nous vous informons que vous n'allez plus recevoir de paiements pour ce programme. Si vous avez de questions, contactez-nous, s'il vous plaît.",
+      "inclusion-status-negative": "Malheureusement, nous vous informons que vous n'allez plus recevoir de paiements pour ce programme. Si vous avez des questions, contactez-nous, s'il vous plaît.",
       "inclusion-status-positive": "Vous êtes inclus(e) dans le programme.",
       "notify": "Nous allons vous notifier si vous êtes inclus(e) dans le programme."
     },
     "login-account": {
-      "incorrect-credentials": "La combinaison de votre nom, prénom et du mot de passe que vous avez fourni n'est pas reconnue. Réessayer s'il vous plaît.",
+      "incorrect-credentials": "La combinaison de votre nom, prénom et du mot de passe que vous avez fourni n'est pas reconnue. Réessayez s'il vous plaît.",
       "introduction": "Pour utiliser un compte existant, vous devez vous connecter avec votre nom, prénom et votre mot de passe",
       "supply-password": "Votre mot de passe:",
       "supply-username": "Votre nom et prénom:"
@@ -52,19 +52,19 @@
     "preprinted-qrcode": {
       "error": "Le code QR scanné ne peut pas être utilisé, veuillez en essayer un autre.",
       "info-qr": "Plus de texte suivra",
-      "introduction": "Un travailleur humanitaire ou un volontaire scannera un code QR pour lier vos informations et vous les donner. Veuillez sauvegarder votre code QR en mode physique et dans un endroit  sûr.",
+      "introduction": "Un travailleur humanitaire ou un volontaire scannera un code QR pour rassembler vos informations et vous les transmettre. Veuillez sauvegarder votre code QR en mode physique et dans un endroit  sûr.",
       "more-info-qr": "À propos des codes QR",
       "no": "Non",
       "question": "Est-ce que le/la travailleur(use)  humanitaire/bénévole a un code QR pré-imprimé à scanner?",
       "result-ok": "Le code QR scanné est maintenant connecté à votre compte et à vos informations personnelles. Veuillez sauvegarder votre code QR en mode physique et dans un endroit sûr.",
-      "start-scanner": "Démarrer le scanneur.",
+      "start-scanner": "Démarrer le scanner.",
       "try-again": "Réessayez ",
       "yes": "Oui"
     },
     "registration-summary": {
       "documents": "Préparez les documents suivants:",
-      "no-validation-conclusion": "Merci. Votre inscription est maintenant complète. <br><br>Vous devriez recevoir bientôt la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni. <br><br>Vous serez informé si votre demande a été acceptée dans les 7 jours. <br><br>   Ceci est le dernier message pour l'instant.",
-      "qr-code": "Veuillez montrer ce code QR au travailleur humanitaire quand c'est demandé.",
+      "no-validation-conclusion": "Merci. Votre inscription est maintenant complète. <br><br>Vous devriez recevoir bientôt la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni. <br><br>Vous serez informé si votre demande a été acceptée dans les 7 jours. <br><br>   Ceci est le dernier message pour l'instant.",
+      "qr-code": "Veuillez montrer ce code QR au travailleur humanitaire s'il le réclame.",
       "validation-conclusion": "Merci. Votre inscription est maintenant complète. Vous devriez recevoir la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni.<br><br>Un travailleur humanitaire de l'ONG organisera un rendez-vous avec vous pour valider vos informations. Probablement ce rendez-vous sera organisé chez vous."
     },
     "select-fsp": {
@@ -74,24 +74,24 @@
         "success": "Merci. Vos informations sont enregistrées."
       },
       "conclusion": "Merci. Vous avez choisi {{name}}'.",
-      "introduction": "Veuillez sélectionner la manière comment vous souhaitez recevoir votre aide financière au cas vous seriez admis au programme."
+      "introduction": "Veuillez sélectionner la manière dont vous souhaitez recevoir votre aide financière au cas vous seriez admis au programme."
     },
     "select-language": {
       "result": "Merci, vous avez choisi {{language}}."
     },
     "select-program": {
-      "introduction": "Vous pouvez utiliser cette appli pour demander une aide financière. Veuillez sélectionner ci-dessous.",
+      "introduction": "Vous pouvez utiliser cette application pour demander une aide financière. Veuillez sélectionner ci-dessous.",
       "more-info-programs": "À propos du programme d'aide financière.",
-      "no-published-programs": "There are currently no programs open for registration. Please return here later."
+      "no-published-programs": "Aucun programme d'aide financière n'est actuellement disponible. Veuillez consulter ce site web plus tard."
     },
     "set-notification-number": {
-      "conclusion-skipped": "Vous n'avez pas saisi un numéro de téléphone pour vous contacter. Consulter cette site web régulièrement pour les mises à jour.",
+      "conclusion-skipped": "Vous n'avez pas saisi de numéro de téléphone permettant de vous contacter. Consultez ce site web régulièrement pour les mises à jour.",
       "conclusion-submitted": "Merci. Vous recevrez maintenant des notifications sur ce numéro de téléphone: {{phone}}",
       "input-label": "Votre numéro de téléphone avec le code du pays. Cela devrait ressembler à cet exemple : {{phoneNumberExample}}",
       "introduction1": "Il est optionnel d'entrer votre numéro de téléphone.",
       "introduction2": "Nous l'utilisons pour vous envoyer des notifications par SMS si vous êtes inclus et quand vous pourriez recevoir de l'aide.",
       "introduction3": "Si vous ne souhaitez pas entrer votre numéro de téléphone, vous devrez vous connecter à cette application pour les mises à jour.",
-      "introduction4": "À la fin du programme d'aide financière,  nous supprimerons votre numéro de téléphone.",
+      "introduction4": "À la fin du programme d'aide financière,  nous supprimerons votre numéro.",
       "skip": "Sautez",
       "submit": "Envoyez le numéro de téléphone",
       "validation": {
@@ -106,20 +106,20 @@
   },
   "q-and-a-set": {
     "validation": {
-      "date": "Le format de date que vous avez entré n'est pas valide. Un exemple de format de date valide est 31-12-1970 qui suit jour-mois-année, JJ-MM-AAAA",
-      "email": "L'e-mail doit être dans un format valide, par exemple: \"prénom.nom@exemple.com\". Veuillez le corriger et essayez à nouveau.",
+      "date": "Le format de date que vous avez entré n'est pas valide. Un exemple de date valide est 31-12-1970 selon le format jour-mois-année, JJ-MM-AAAA",
+      "email": "L'e-mail doit être dans un format valide, par exemple: 'prénom.nom@exemple.fr'. Veuillez le corriger et essayez à nouveau.",
       "generic-error": "Nous ne pouvons pas traiter certaines de vos réponses. Veuillez les vérifier et corrigez vos réponses.",
       "number": "La réponse doit être un nombre valide. Veuillez corriger et essayez à nouveau.",
       "phone-number": "Nous n'avons pas pu vérifier ce numéro de téléphone. Veuillez le corriger et essayez à nouveau.",
-      "required": "Une réponse est nécessaire pour cette question. Veuillez le corriger et réessayez."
+      "required": "Une réponse est nécessaire pour cette question. Veuillez corriger et réessayer."
     }
   },
   "qr-scanner": {
     "close": "Fermez",
     "error-generic": "Une erreur c'est produite.",
-    "error-no-permissions": "Veuillez autoriser l'utilisation de l'application photo ou vérifiez s'il n'est pas déjà utilisé et réessayez, s'il vous plaît.",
+    "error-no-permissions": "Veuillez autoriser l'utilisation de l'application photo ou vérifiez si elle n'est pas déjà utilisée et réessayez, s'il vous plaît.",
     "error-not-compatible": "Votre appareil ne peut pas scanner",
-    "switch-camera": "Changer de caméra.",
+    "switch-camera": "Changez de caméra.",
     "title": "Scannez le code QR",
     "toggle-flash": "Activez le flash",
     "try-again": "Réessayez s'il vous plaît"
@@ -133,7 +133,7 @@
   "speak-text": {
     "loading": "Chargement en cours",
     "pause": "Pause",
-    "play": "Jouez"
+    "play": "Marche"
   },
   "tabs": {
     "account": "Compte",

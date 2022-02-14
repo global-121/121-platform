@@ -1,38 +1,29 @@
 import { ProgramQuestionEntity } from './program-question.entity';
-import {
-  GetTransactionDto,
-  GetTransactionOutputDto,
-} from '../payments/transactions/dto/get-transaction.dto';
-import { ActionService } from '../actions/action.service';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, In } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { CreateProgramDto } from './dto/create-program.dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
-import {
-  FinancialServiceProviderEntity,
-  FspName,
-} from '../fsp/financial-service-provider.entity';
-import { ActionEntity, AdditionalActionType } from '../actions/action.entity';
-import { FspService } from '../fsp/fsp.service';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { ActionEntity } from '../actions/action.entity';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
-import { PaPaymentDataDto } from '../payments/dto/pa-payment-data.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
-import { StatusEnum } from '../shared/enum/status.enum';
-import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
-import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
-import { RegistrationEntity } from '../registration/registration.entity';
-
+import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
+import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramQuestionEntity)
   public programQuestionRepository: Repository<ProgramQuestionEntity>;
+  @InjectRepository(ProgramCustomAttributeEntity)
+  public programCustomAttributeRepository: Repository<
+    ProgramCustomAttributeEntity
+  >;
   @InjectRepository(FspAttributeEntity)
   public fspAttributeRepository: Repository<FspAttributeEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
@@ -43,13 +34,8 @@ export class ProgramService {
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ActionEntity)
   public actionRepository: Repository<ActionEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
 
-  public constructor(
-    private readonly actionService: ActionService,
-    private readonly fspService: FspService,
-  ) {}
+  public constructor() {}
 
   public async findOne(where): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne(where, {
@@ -59,6 +45,7 @@ export class ProgramService {
         'aidworkerAssignments.user',
         'aidworkerAssignments.roles',
         'financialServiceProviders',
+        'programCustomAttributes',
       ],
     });
     return program;
@@ -111,6 +98,12 @@ export class ProgramService {
     program.programQuestions = [];
     program.financialServiceProviders = [];
 
+    for (let customAttribute of programData.programCustomAttributes) {
+      let customAttributeReturn = await this.programCustomAttributeRepository.save(
+        customAttribute,
+      );
+      program.programCustomAttributes.push(customAttributeReturn);
+    }
     for (let programQuestion of programData.programQuestions) {
       let programQuestionReturn = await this.programQuestionRepository.save(
         programQuestion,
@@ -150,6 +143,44 @@ export class ProgramService {
 
     await this.programRepository.save(program);
     return program;
+  }
+
+  public async updateProgramCustomAttributes(
+    programId: number,
+    updateProgramCustomAttributes: CreateProgramCustomAttributesDto,
+  ): Promise<ProgramCustomAttributeEntity[]> {
+    const savedAttributes: ProgramCustomAttributeEntity[] = [];
+    let program = await this.programRepository.findOne(programId, {
+      relations: ['programCustomAttributes'],
+    });
+
+    for (const attribute of updateProgramCustomAttributes.attributes) {
+      const oldAttribute = await this.programCustomAttributeRepository.findOne({
+        where: { name: attribute.name },
+      });
+      if (oldAttribute) {
+        // If existing: update ..
+        oldAttribute.type = attribute.type;
+        oldAttribute.label = attribute.label;
+        const savedAttribute = await this.programCustomAttributeRepository.save(
+          oldAttribute,
+        );
+        savedAttributes.push(savedAttribute);
+        const attributeIndex = program.programCustomAttributes.findIndex(
+          attr => attr.id === savedAttribute.id,
+        );
+        program.programCustomAttributes[attributeIndex] = savedAttribute;
+      } else {
+        // .. otherwise, create new
+        const savedAttribute = await this.programCustomAttributeRepository.save(
+          attribute,
+        );
+        savedAttributes.push(savedAttribute);
+        program.programCustomAttributes.push(savedAttribute);
+      }
+    }
+    await this.programRepository.save(program);
+    return savedAttributes;
   }
 
   public async updateProgramQuestion(

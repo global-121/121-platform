@@ -22,6 +22,7 @@ import { FspModule } from '../fsp/fsp.module';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { RegistrationAnswersService } from './services/registration-answers.service';
 import { WhatsappModule } from '../notifications/whatsapp/whatsapp.module';
+import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { WhatsappModule } from '../notifications/whatsapp/whatsapp.module';
       FspAttributeEntity,
       RegistrationStatusChangeEntity,
       TransactionEntity,
+      ProgramCustomAttributeEntity,
     ]),
     UserModule,
     HttpModule,

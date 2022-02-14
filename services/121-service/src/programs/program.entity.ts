@@ -15,6 +15,7 @@ import { RegistrationEntity } from '../registration/registration.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramAidworkerAssignmentEntity } from './program-aidworker.entity';
 import { CascadeDeleteEntity } from '../base.entity';
+import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 
 @Entity('program')
 export class ProgramEntity extends CascadeDeleteEntity {
@@ -116,6 +117,12 @@ export class ProgramEntity extends CascadeDeleteEntity {
     programQuestions => programQuestions.program,
   )
   public programQuestions: ProgramQuestionEntity[];
+
+  @OneToMany(
+    () => ProgramCustomAttributeEntity,
+    programCustomAttributes => programCustomAttributes.program,
+  )
+  public programCustomAttributes: ProgramCustomAttributeEntity[];
 
   @OneToMany(
     () => TransactionEntity,

@@ -18,13 +18,18 @@ import {
   PersonRow,
   PersonTableColumn,
 } from 'src/app/models/person.model';
-import { Program, ProgramPhase } from 'src/app/models/program.model';
+import {
+  Program,
+  ProgramCustomAttribute,
+  ProgramPhase,
+} from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { PastPaymentsService } from '../../services/past-payments.service';
@@ -60,6 +65,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private columnsAvailable: PersonTableColumn[] = [];
   private paymentColumnTemplate: PaymentColumn;
   public paymentColumns: PaymentColumn[] = [];
+  private customAttributeColumnTemplate: any = {};
+  public customAttributeColumns: any[] = [];
   private pastTransactions: Transaction[] = [];
   private lastPaymentId: number;
 
@@ -279,6 +286,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     public platform: Platform,
     private pubSub: PubSubService,
     private router: Router,
+    private translatableStringService: TranslatableStringService,
   ) {
     this.locale = environment.defaultLocale;
     this.router.events.subscribe((event) => {
@@ -354,20 +362,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ProgramPhase.payment,
         ],
         permissions: [Permission.RegistrationPersonalREAD],
-      },
-      {
-        prop: 'namePartnerOrganization',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.namePartnerOrganization',
-        ),
-        ...this.columnDefaults,
-        frozenLeft: this.platform.width() > 1280,
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.reviewInclusion,
-          ProgramPhase.payment,
-        ],
       },
       {
         prop: 'statusLabel',
@@ -509,6 +503,14 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       width: columnDateTimeWidth,
       permissions: [Permission.PaymentTransactionREAD],
     };
+    this.customAttributeColumnTemplate = {
+      prop: 'customAttribute',
+      name: '',
+      customAttributeIndex: 0,
+      ...this.columnDefaults,
+      phases: [ProgramPhase.inclusion, ProgramPhase.reviewInclusion],
+      width: columnDateTimeWidth,
+    };
   }
 
   async ngOnInit() {
@@ -558,6 +560,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         );
         this.addPaymentColumns(firstPaymentToShow);
       }
+    }
+
+    // Custom attributes can be personal data or not personal data
+    // for now only users that view custom data can see it
+    if (this.canViewPersonalData) {
+      this.fillCustomAttributeColumns();
     }
 
     await this.loadData();
@@ -645,6 +653,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     column.name = `${column.name}${index}`;
     column.prop = `${column.prop}${index}`;
     column.paymentIndex = index;
+    return column;
+  }
+
+  private createCustomAttributeColumn(customAttribute: ProgramCustomAttribute) {
+    const column = JSON.parse(
+      JSON.stringify(this.customAttributeColumnTemplate),
+    ); // Hack to clone without reference;
+
+    column.name = this.translatableStringService.get(customAttribute.label);
+    column.prop = customAttribute.name;
     return column;
   }
 
@@ -782,7 +800,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ? formatDate(person.inclusionEndDate, this.dateFormat, this.locale)
           : null,
       name: person.name,
-      namePartnerOrganization: person.namePartnerOrganization,
       preferredLanguage: person.preferredLanguage
         ? this.translate.instant(
             'page.program.program-people-affected.language.' +
@@ -797,11 +814,19 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         : '',
       fsp: person.fsp,
       hasNote: !!person.hasNote,
+      customAttributes: person.customAttributes,
     };
 
     if (this.canViewPaymentData) {
       personRow = this.fillPaymentColumns(personRow);
     }
+
+    // Custom attributes can be personal data or not personal data
+    // for now only users that view custom data can see it
+    if (this.canViewPersonalData && personRow.customAttributes !== undefined) {
+      personRow = this.fillCustomAttributeRows(personRow);
+    }
+
     return personRow;
   }
 
@@ -814,6 +839,22 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         transaction.payment === paymentIndex &&
         transaction.referenceId === referenceId,
     );
+  }
+
+  private fillCustomAttributeColumns() {
+    for (const customAttribute of this.program.programCustomAttributes) {
+      this.customAttributeColumns.push(
+        this.createCustomAttributeColumn(customAttribute),
+      );
+    }
+  }
+
+  private fillCustomAttributeRows(personRow: PersonRow): PersonRow {
+    for (const customAttribute of this.program.programCustomAttributes) {
+      personRow[customAttribute.name] =
+        personRow.customAttributes[customAttribute.name].value;
+    }
+    return personRow;
   }
 
   private fillPaymentColumns(personRow: PersonRow): PersonRow {
@@ -941,7 +982,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         programId,
         readOnly: !this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
-        canUpdataPersonalData: this.canUpdatePersonalData,
+        canUpdatePersonalData: this.canUpdatePersonalData,
       },
     });
 

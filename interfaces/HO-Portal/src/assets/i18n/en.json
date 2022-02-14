@@ -199,7 +199,8 @@
         "aidworkerAssignments": "Assigned aidworkers",
         "financialServiceProviders": "Financial Service-providers",
         "validation": "Program includes validation",
-        "validationByQr": "Program includes validation via QR-code"
+        "validationByQr": "Program includes validation via QR-code",
+        "programCustomAttributes": "Program custom attributes"
       },
       "program-payout": {
         "payment-nr": "Payment #{{number}}",
@@ -258,10 +259,11 @@
           "payment": "Payment #",
           "vnumber": "V-number",
           "whatsappPhoneNumber": "WhatsApp nr.",
-          "namePartnerOrganization": "Partner organization",
           "preferredLanguage": "Preferred language",
           "paymentAmountMultiplier": "Transfer value(s)",
-          "fsp": "Financial Service Provider"
+          "fsp": "Financial Service Provider",
+          "custom-attribute-true": "Yes",
+          "custom-attribute-false": "No"
         },
         "language": {
           "en": "English",
@@ -274,7 +276,8 @@
           "saq_KE": "Samburu",
           "in": "Indonesian",
           "nl": "Dutch",
-          "es": "Spanish"
+          "es": "Spanish",
+          "fr": "French"
         },
         "status": {
           "imported": "Imported",
@@ -324,9 +327,6 @@
           "properties": {
             "paymentAmountMultiplier": {
               "label": "× Transfer value"
-            },
-            "namePartnerOrganization": {
-              "label": "Name of Partner organisation"
             },
             "phoneNumber": {
               "label": "Phone number",

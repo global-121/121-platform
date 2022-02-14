@@ -1,6 +1,5 @@
 import { PermissionsGuard } from './../permissions.guard';
 import { PermissionEnum } from './permission.enum';
-import { PersonAffectedRole } from './user-role.enum';
 import { UserEntity } from './user.entity';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
@@ -16,7 +15,6 @@ import {
   ApiOperation,
   ApiImplicitParam,
 } from '@nestjs/swagger';
-import { DefaultUserRole } from './user-role.enum';
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 import { UserRoleEntity } from './user-role.entity';
 import { Permissions } from '../permissions.decorator';

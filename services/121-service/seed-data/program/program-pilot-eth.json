@@ -46,6 +46,36 @@
     }
   },
   "phoneNumberPlaceholder": "+251 000 000 000",
+  "programCustomAttributes": [
+    {
+      "label": {
+        "en": "Business plan delivered"
+      },
+      "name": "businessPlanDelivered",
+      "type": "boolean"
+    },
+    {
+      "label": {
+        "en": "Completed training"
+      },
+      "name": "completedTraining",
+      "type": "boolean"
+    },
+    {
+      "label": {
+        "en": "Milestone 1"
+      },
+      "name": "milestone1",
+      "type": "boolean"
+    },
+    {
+      "label": {
+        "en": "Milestone 2"
+      },
+      "name": "milestone2",
+      "type": "boolean"
+    }
+  ],
   "programQuestions": [
     {
       "name": "name",

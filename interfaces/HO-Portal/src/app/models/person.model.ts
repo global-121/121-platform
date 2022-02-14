@@ -23,9 +23,9 @@ export class Person {
   fsp?: string;
   vnumber?: string;
   whatsappPhoneNumber?: string;
-  namePartnerOrganization?: string;
   paymentAmountMultiplier?: number;
   preferredLanguage?: LanguageEnum;
+  customAttributes?: object;
 }
 
 // Model for display (in table)
@@ -52,9 +52,9 @@ export class PersonRow {
   fsp?: string | null;
   vnumber?: string | null;
   whatsappPhoneNumber?: string | null;
-  namePartnerOrganization?: string | null;
   paymentAmountMultiplier?: string | null;
   preferredLanguage?: string | null;
+  customAttributes?: object;
 }
 
 export enum PaStatus {
@@ -88,6 +88,11 @@ export enum LanguageEnum {
   in = 'in',
   nl = 'nl',
   es = 'es',
+}
+
+export class PersonCustomAttribute {
+  type: string;
+  value: string | boolean;
 }
 
 export class PersonTableColumn {

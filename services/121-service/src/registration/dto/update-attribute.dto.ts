@@ -3,7 +3,6 @@ import { Length, IsString, IsIn } from 'class-validator';
 import { CustomDataAttributes } from '../enum/custom-data-attributes';
 
 export enum AdditionalAttributes {
-  namePartnerOrganization = 'namePartnerOrganization',
   paymentAmountMultiplier = 'paymentAmountMultiplier',
 }
 export const Attributes = { ...AdditionalAttributes, ...CustomDataAttributes };
@@ -19,8 +18,7 @@ export class UpdateAttributeDto {
     enum: attributesArray,
     example: attributesArray.join(' | '),
   })
-  @IsIn(attributesArray)
-  public readonly attribute: Attributes;
+  public readonly attribute: Attributes | string;
   @ApiModelProperty({ example: 'new value' })
   public readonly value: string | number;
 }
