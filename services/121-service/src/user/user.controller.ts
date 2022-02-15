@@ -37,7 +37,6 @@ export class UserController {
     this.userService = userService;
   }
 
-  @ApiBearerAuth()
   @Permissions(PermissionEnum.RoleCREATE)
   @ApiOperation({ title: 'Create new user role' })
   @Post('user/role')
@@ -47,7 +46,6 @@ export class UserController {
     return await this.userService.addUserRole(userRoleData);
   }
 
-  @ApiBearerAuth()
   @Permissions(PermissionEnum.AidWorkerCREATE)
   @ApiOperation({ title: 'Sign-up new Aid Worker user' })
   @Post('user/aidworker')
@@ -105,7 +103,6 @@ export class UserController {
     }
   }
 
-  @ApiBearerAuth()
   @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
   public async update(
@@ -115,7 +112,6 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
-  @ApiBearerAuth()
   @Permissions(PermissionEnum.AidWorkerDELETE)
   @ApiOperation({ title: 'Delete user by userId' })
   @Post('user/delete/:userId')
@@ -124,7 +120,6 @@ export class UserController {
     return await this.userService.delete(Number(params.userId));
   }
 
-  @ApiBearerAuth()
   @ApiOperation({ title: 'User deletes itself' })
   @Post('user/delete')
   public async deleteCurrentUser(
@@ -133,14 +128,12 @@ export class UserController {
     return await this.userService.delete(deleterId);
   }
 
-  @ApiBearerAuth()
   @ApiOperation({ title: 'Get current user' })
   @Get('user')
   public async findMe(@User('username') username: string): Promise<UserRO> {
     return await this.userService.findByUsername(username);
   }
 
-  @ApiBearerAuth()
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
   @ApiOperation({ title: 'Assign Aidworker to program' })
   @Post('user/assign-to-program')

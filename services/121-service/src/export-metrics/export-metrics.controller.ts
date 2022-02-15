@@ -26,7 +26,6 @@ import { PermissionsGuard } from '../permissions.guard';
 import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 
-@ApiBearerAuth()
 @UseGuards(PermissionsGuard)
 @ApiUseTags('export-metrics')
 @Controller('export-metrics')

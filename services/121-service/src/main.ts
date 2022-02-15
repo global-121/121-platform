@@ -35,7 +35,6 @@ async function bootstrap(): Promise<void> {
     .setVersion(APP_VERSION)
     .setBasePath(BASE_PATH)
     .setSchemes(SCHEME)
-    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/docs', app, document, {
