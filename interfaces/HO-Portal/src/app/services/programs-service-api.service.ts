@@ -38,11 +38,11 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         map((response) => {
-          if (response && response.user) {
+          if (response) {
             return {
-              username: response.user.username,
-              permissions: response.user.permissions,
-            } as User;
+              username: response.username,
+              permissions: response.permissions,
+            };
           }
           return null;
         }),

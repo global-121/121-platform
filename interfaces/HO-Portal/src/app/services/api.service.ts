@@ -10,7 +10,6 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   private showSecurity(anonymous: boolean) {
-    anonymous = false;
     return anonymous ? '🌐' : '🔐';
   }
 

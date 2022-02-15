@@ -61,8 +61,6 @@ function check_shared_code() {
   compare_code "src/app/directives/only-allowed-input.directive.ts" "$repo_pa" "$repo_ho"
   compare_code "src/app/directives/only-allowed-input.directive.spec.ts" "$repo_pa" "$repo_ho"
 
-  compare_code "src/app/services/jwt.service.ts" "$repo_pa" "$repo_aw"
-  compare_code "src/app/services/jwt.service.ts" "$repo_pa" "$repo_ho"
   compare_code "src/app/services/api.service.ts" "$repo_pa" "$repo_aw"
   compare_code "src/app/services/api.service.ts" "$repo_pa" "$repo_ho"
   compare_code "src/app/services/translatable-string.service.ts" "$repo_pa" "$repo_aw"
