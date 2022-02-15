@@ -13,6 +13,9 @@ export class AddCustomAttributes1643716964752 implements MigrationInterface {
     await queryRunner.query(
       `CREATE UNIQUE INDEX "IDX_40dd226b99324147dd82c9d50a" ON "121-service"."program_custom_attribute" ("name") `,
     );
+    // Explicitly needed here, because otherwise the subsequent migration file tries to insert in a non-existing table
+    await queryRunner.commitTransaction();
+    await queryRunner.startTransaction();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
