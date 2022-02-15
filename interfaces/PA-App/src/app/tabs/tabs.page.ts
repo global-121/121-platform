@@ -13,10 +13,10 @@ export class TabsPage {
 
   constructor(
     private modalController: ModalController,
-    public paData: PaDataService,
+    private paData: PaDataService,
   ) {
-    this.paData.authenticationState$.subscribe((authState) => {
-      this.isLoggedIn = authState;
+    this.paData.authenticationState$.subscribe((user) => {
+      this.isLoggedIn = !!user;
     });
   }
 
