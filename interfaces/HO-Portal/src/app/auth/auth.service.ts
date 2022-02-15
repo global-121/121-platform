@@ -53,7 +53,20 @@ export class AuthService {
   }
 
   private getUserFromStorage(): User | null {
-    const user: User = JSON.parse(localStorage.getItem(this.userKey));
+    const rawUser = localStorage.getItem(this.userKey);
+
+    if (!rawUser) {
+      return null;
+    }
+
+    let user: User;
+
+    try {
+      user = JSON.parse(rawUser);
+    } catch {
+      console.warn('AuthService: Invalid token');
+      return null;
+    }
     if (!user || !user.username || !user.permissions) {
       console.warn('AuthService: No valid user');
       return null;

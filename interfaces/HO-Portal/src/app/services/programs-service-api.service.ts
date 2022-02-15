@@ -50,7 +50,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  logout(): Promise<User | null> {
+  logout(): Promise<null> {
     return this.apiService
       .post(environment.url_121_service_api, '/user/logout', {}, true)
       .toPromise();
@@ -448,6 +448,7 @@ export class ProgramsServiceApiService {
       })
       .toPromise();
   }
+
   saveAction(actionType: ActionType, programId: number | string): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/actions/save`, {

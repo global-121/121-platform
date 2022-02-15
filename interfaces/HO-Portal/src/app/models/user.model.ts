@@ -1,9 +1,6 @@
-export class UserModel {
-  token: string;
-}
+import Permission from '../auth/permission.enum';
 
 export class User {
-  token?: string;
   username: string;
-  permissions: string[];
+  permissions: Permission[];
 }

@@ -13,7 +13,6 @@ describe('UserStateComponent', () => {
   let fixture: ComponentFixture<UserStateComponent>;
 
   const mockUser: User = {
-    token: 'test',
     username: 'test@example.org',
     permissions: [Permission.Test],
   };
