@@ -42,6 +42,7 @@ export class removeMigrateNamePartnerOrg1643720490970
     );
     const regsWithPartnerOrg = await getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
+      .select('registration.*')
       .where('"namePartnerOrganization" is not null')
       .getRawMany();
     for (const r of regsWithPartnerOrg) {
@@ -49,13 +50,20 @@ export class removeMigrateNamePartnerOrg1643720490970
       await registrationRepository.save(r);
     }
 
-    const programs = await programRepository.find();
+    const programs = await programRepository.find({
+      relations: ['programCustomAttributes'],
+    });
     for (const program of programs) {
-      // Than namePartnerOrganisation is part of this programCustomAttributes
+      // Then namePartnerOrganization is part of this programCustomAttributes
       if (regsWithPartnerOrg.length > 0) {
         const attributeReturn = await programCustomAttributeRepository.save({
           name: 'namePartnerOrganization',
           type: CustomAttributeType.string,
+          label: JSON.parse(
+            JSON.stringify({
+              en: 'Partner Organization',
+            }),
+          ),
         });
         program.programCustomAttributes.push(attributeReturn);
         await programRepository.save(program);
