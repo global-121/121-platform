@@ -12,7 +12,7 @@ import { Note, PaStatus, Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
 import { Transaction } from '../models/transaction.model';
-import { UserModel } from '../models/user.model';
+import { User, UserModel } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
@@ -23,7 +23,7 @@ import { ApiService } from './api.service';
 export class ProgramsServiceApiService {
   constructor(private apiService: ApiService) {}
 
-  login(username: string, password: string): Promise<UserModel | null> {
+  login(username: string, password: string): Promise<User | null> {
     console.log('ProgramsService : login()');
 
     return this.apiService
@@ -40,12 +40,19 @@ export class ProgramsServiceApiService {
         map((response) => {
           if (response && response.user) {
             return {
-              token: response.user.token,
-            };
+              username: response.user.username,
+              permissions: response.user.permissions,
+            } as User;
           }
           return null;
         }),
       )
+      .toPromise();
+  }
+
+  logout(): Promise<User | null> {
+    return this.apiService
+      .post(environment.url_121_service_api, '/user/logout', {}, true)
       .toPromise();
   }
 

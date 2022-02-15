@@ -2,22 +2,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { JwtService } from './jwt.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  constructor(private jwtService: JwtService, private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
   private showSecurity(anonymous: boolean) {
+    anonymous = false;
     return anonymous ? '🌐' : '🔐';
   }
 
-  private createHeaders(
-    anonymous: boolean = false,
-    isUpload: boolean = false,
-  ): HttpHeaders {
+  private createHeaders(isUpload: boolean = false): HttpHeaders {
     let headers = new HttpHeaders({
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -25,13 +22,6 @@ export class ApiService {
 
     if (isUpload) {
       headers = headers.delete('Content-Type');
-    }
-
-    if (!anonymous) {
-      headers = headers.set(
-        'Authorization',
-        `Token ${this.jwtService.getToken()}`,
-      );
     }
 
     return headers;
@@ -47,6 +37,7 @@ export class ApiService {
     return this.http
       .get(endpoint + path, {
         headers: this.createHeaders(anonymous),
+        withCredentials: true,
       })
       .pipe(
         tap((response) =>
@@ -72,8 +63,9 @@ export class ApiService {
 
     return this.http
       .post(endpoint + path, body, {
-        headers: this.createHeaders(anonymous, isUpload),
+        headers: this.createHeaders(isUpload),
         responseType: responseAsBlob ? 'blob' : null,
+        withCredentials: true,
       })
       .pipe(
         tap((response) =>

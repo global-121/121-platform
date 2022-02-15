@@ -13,15 +13,22 @@ import {
 } from './config';
 import * as bodyParser from 'body-parser';
 import appInsights = require('applicationinsights');
+import cookieParser from 'cookie-parser';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(ApplicationModule, { cors: true });
+  const app = await NestFactory.create(ApplicationModule);
   app.setGlobalPrefix('api');
 
   app
     .getHttpAdapter()
     .getInstance()
     .disable('x-powered-by');
+
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
 
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
@@ -49,6 +56,7 @@ async function bootstrap(): Promise<void> {
       extended: true,
     }),
   );
+  app.use(cookieParser());
   const server = await app.listen(PORT);
   server.setTimeout(10 * 60 * 1000);
 }

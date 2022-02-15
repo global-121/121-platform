@@ -1,5 +1,3 @@
-import Permission from '../auth/permission.enum';
-
 export class UserModel {
   token: string;
 }
@@ -7,5 +5,5 @@ export class UserModel {
 export class User {
   token?: string;
   username: string;
-  permissions: Permission[];
+  permissions: string[];
 }

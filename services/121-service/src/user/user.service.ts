@@ -60,18 +60,13 @@ export class UserService {
     }
 
     const username = userEntity.username;
-    let roles: UserRoleEntity[] = [];
-
-    if (userEntity.userType === UserType.aidWorker) {
-      roles = userEntity.programAssignments[0].roles;
-    }
-
+    const permissions = this.buildPermissionArray(userEntity);
     const token = await this.generateJWT(userEntity);
 
     const user = {
       username,
       token,
-      roles,
+      permissions,
     };
 
     return { user };
@@ -273,17 +268,39 @@ export class UserService {
   }
 
   private buildUserRO(user: UserEntity): UserRO {
-    let roles = [];
-    if (user.programAssignments && user.programAssignments[0]) {
-      roles = user.programAssignments[0].roles;
-    }
+    // let roles = [];
+    let permissions = this.buildPermissionArray(user);
 
+    // if (user.programAssignments && user.programAssignments[0]) {
+    //   roles = user.programAssignments[0].roles;
+    // }
+    // if (user.programAssignments && user.programAssignments[0]) {
+    //   roles = user.programAssignments[0].roles.map(role => role.role);
+    //   for (const role of user.programAssignments[0].roles) {
+    //     const permissionNames = role.permissions.map(a => a.name);
+    //     permissions = [...new Set([...permissions, ...permissionNames])];
+    //   }
+    // }
     const userRO = {
       id: user.id,
       username: user.username,
       token: this.generateJWT(user),
-      roles,
+      permissions,
     };
     return { user: userRO };
+  }
+
+  private buildPermissionArray(user: UserEntity): string[] {
+    let roles = [];
+    let permissions = [];
+
+    if (user.programAssignments && user.programAssignments[0]) {
+      roles = user.programAssignments[0].roles.map(role => role.role);
+      for (const role of user.programAssignments[0].roles) {
+        const permissionNames = role.permissions.map(a => a.name);
+        permissions = [...new Set([...permissions, ...permissionNames])];
+      }
+    }
+    return permissions;
   }
 }
