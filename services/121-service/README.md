@@ -49,21 +49,10 @@ The same can be achieved by using the `api/reset` endpoint from the Swagger UI.
 
 ### API Sign-up/Log-in
 
-- If you have no users in your database yet, start with: '`user` / `POST` `/user`'. Change the example-value where necessary, and execute.
-- If you have already created the above user earlier, start with '`user` / `POST` `/user/login`'. Change the example-value where necessary, and execute.
-- In either case, copy the value of the `token`-attribute from the response.
-- Click 'Authorize' (top-right) and fill in `Token <copied token>`
-- This will now give you access to all the API-endpoints applicable to the created users' user-role.
-
-**NOTE:** for ease of local development (in [DEBUG-mode](./src/config.ts#L1)), the first/default-user will be used for all requests.
-This user **_HAS_** to be created first, but the 'Authorize'-part is not necessary any more. Otherwise you would need to repeat the Authorize-setup after each refresh of the Swagger UI, i.e. after each code change.
-
-#### Admin vs other users
-
-- In USER /POST you can set `roles: ['admin']`. Or add one of the other available roles.
-- The `admin`-role has access to all API-endpoints
-- The other users have limited access to specific API-endpoints
-- NOTE: The user-role distinction is only in effect when using the Bearer-authentication described above. If not, then the default-user will be used, which will have `admin`-rights automatically (regardless of its' `roles`-value(s)).
+- If you have no users in your database yet, start with running one of the [reset/seed-scripts above](#seed-the-database).
+- If you have already created the above user earlier, make a request: `POST /user/login`'. Change the example-value where necessary, and execute.
+- The 121-service will respond with a (httpOnly-)Cookie containing the users's details and permissions, the cookie will be used automatically on subsequent requests.
+- This will give access to each API-endpoint for which a `Permission` is specified and a matching `Permission` is present in the users' token/cookie.
 
 ---
 
