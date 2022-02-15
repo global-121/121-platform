@@ -12,7 +12,7 @@ import { Note, PaStatus, Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
 import { Transaction } from '../models/transaction.model';
-import { User, UserModel } from '../models/user.model';
+import { User } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
@@ -56,21 +56,11 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  changePassword(newPassword: string): Promise<UserModel | null> {
+  changePassword(newPassword: string): Promise<null> {
     return this.apiService
       .post(environment.url_121_service_api, '/user/change-password', {
         password: newPassword,
       })
-      .pipe(
-        map((response) => {
-          if (response && response.user) {
-            return {
-              token: response.user.token,
-            };
-          }
-          return null;
-        }),
-      )
       .toPromise();
   }
 

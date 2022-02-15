@@ -80,7 +80,10 @@ export class UserController {
         expires: new Date(Date.now() + 60 * 24 * 3600000),
         httpOnly: true,
       });
-      return res.send(user);
+      return res.send({
+        username: user.user.username,
+        permissions: user.user.permissions,
+      });
     } catch (error) {
       throw error;
     }

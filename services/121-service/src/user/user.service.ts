@@ -268,19 +268,8 @@ export class UserService {
   }
 
   private buildUserRO(user: UserEntity): UserRO {
-    // let roles = [];
     let permissions = this.buildPermissionArray(user);
 
-    // if (user.programAssignments && user.programAssignments[0]) {
-    //   roles = user.programAssignments[0].roles;
-    // }
-    // if (user.programAssignments && user.programAssignments[0]) {
-    //   roles = user.programAssignments[0].roles.map(role => role.role);
-    //   for (const role of user.programAssignments[0].roles) {
-    //     const permissionNames = role.permissions.map(a => a.name);
-    //     permissions = [...new Set([...permissions, ...permissionNames])];
-    //   }
-    // }
     const userRO = {
       id: user.id,
       username: user.username,

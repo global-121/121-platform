@@ -100,19 +100,7 @@ export class AuthService {
   public async setPassword(newPassword: string): Promise<any> {
     return new Promise<void>((resolve, reject) => {
       this.programsService.changePassword(newPassword).then(
-        (response) => {
-          console.log('AuthService: Password changed!');
-          if (response && response.token) {
-            // this.jwtService.saveToken(response.token);
-          }
-
-          const user = this.getUserFromStorage();
-          this.authenticationState.next(user);
-
-          if (!user) {
-            return reject({ status: 401 });
-          }
-
+        () => {
           return resolve();
         },
         (error) => {

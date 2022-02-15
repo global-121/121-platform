@@ -104,7 +104,7 @@ require('yargs')(process.argv.slice(2))
     'prepare-to-update-transifex',
     'Create a file ready to import/update into Transifex',
     {},
-    argv => {
+    (argv) => {
       console.log(`Prepare to update Transifex...`);
       const source = loadFile(argv.in);
       const cleaned = deepReplaceTranslatableStrings(source, 'en');
@@ -126,7 +126,7 @@ require('yargs')(process.argv.slice(2))
         conflicts: 'overwrite',
       },
     },
-    argv => {
+    (argv) => {
       console.log(`Converting into: ${argv.locale}`);
       const source = loadFile(argv.in);
       const translatedContent = deepReplaceTranslatableStrings(
