@@ -1,10 +1,6 @@
-import { PermissionEnum } from './permission.enum';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { RegistrationEntity } from './../registration/registration.entity';
-import { PersonAffectedAppDataEntity } from './../people-affected/person-affected-app-data.entity';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, In } from 'typeorm';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
@@ -22,8 +18,12 @@ import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 import { CreateUserRoleDto } from './dto/create-user-role.dto';
 import { PermissionEntity } from './permissions.entity';
+import { CookieSettingsDto } from './dto/cookie-settings.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class UserService {
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
@@ -38,9 +38,9 @@ export class UserService {
     ProgramAidworkerAssignmentEntity
   >;
 
-  public constructor() {}
+  public constructor(@Inject(REQUEST) private readonly request: Request) {}
 
-  public async login(loginUserDto: LoginUserDto): Promise<UserRO> {
+  public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
     const findOneOptions = {
       username: loginUserDto.username,
       password: crypto
@@ -60,16 +60,18 @@ export class UserService {
     }
 
     const username = userEntity.username;
+    const token = this.generateJWT(userEntity);
     const permissions = this.buildPermissionArray(userEntity);
-    const token = await this.generateJWT(userEntity);
-
-    const user = {
-      username,
-      token,
-      permissions,
+    const user: UserRO = {
+      user: {
+        username,
+        token,
+        permissions,
+      },
     };
 
-    return { user };
+    const cookieSettings = this.buildCookieByRequest(token);
+    return { userRo: user, cookieSettings: cookieSettings };
   }
 
   public async createPersonAffected(
@@ -291,5 +293,64 @@ export class UserService {
       }
     }
     return permissions;
+  }
+
+  private buildCookieByRequest(token: string): CookieSettingsDto {
+    const origin = this.request.headers.origin;
+    const originPort = origin.split(':')[2];
+    const originPath = origin.split('/')[3];
+    let tokenKey: string;
+    let domain: string;
+    let path: string;
+    if (originPort) {
+      //This is a request from localhost using ports
+      switch (originPort) {
+        case '8888':
+          tokenKey = 'access_token_ho';
+          domain = 'localhost:8888';
+          break;
+        case '8080':
+          tokenKey = 'access_token_aw';
+          domain = 'localhost:8080';
+          break;
+        case '8008':
+          tokenKey = 'access_token_pa';
+          domain = 'localhost:8008';
+          break;
+
+        default:
+          break;
+      }
+    } else if (originPath) {
+      // This is a request from a deployed instance
+      switch (originPath) {
+        case process.env.GLOBAL_121_HO_DIR:
+          tokenKey = 'access_token_ho';
+          path = `/${process.env.GLOBAL_121_HO_DIR}`;
+          break;
+        case process.env.GLOBAL_121_AW_DIR:
+          tokenKey = 'access_token_aw';
+          path = `/${process.env.GLOBAL_121_AW_DIR}`;
+          break;
+        case process.env.GLOBAL_121_PA_DIR:
+          tokenKey = 'access_token_pa';
+          path = `/${process.env.GLOBAL_121_PA_DIR}`;
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    return {
+      tokenKey,
+      tokenValue: token,
+      domain,
+      path,
+      sameSite: 'Lax',
+      secure: process.env.NODE_ENV === 'production',
+      expires: new Date(Date.now() + 60 * 24 * 3600000),
+      httpOnly: true,
+    };
   }
 }

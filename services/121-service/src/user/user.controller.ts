@@ -11,18 +11,14 @@ import {
   Controller,
   UseGuards,
   Res,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
 import { LoginUserDto, UpdateUserDto } from './dto';
 import { User } from './user.decorator';
 
-import {
-  ApiUseTags,
-  ApiBearerAuth,
-  ApiOperation,
-  ApiImplicitParam,
-} from '@nestjs/swagger';
+import { ApiUseTags, ApiOperation, ApiImplicitParam } from '@nestjs/swagger';
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 import { UserRoleEntity } from './user-role.entity';
 import { Permissions } from '../permissions.decorator';
@@ -70,17 +66,20 @@ export class UserController {
     @Res() res,
   ): Promise<UserRO> {
     try {
-      const user = await this.userService.login(loginUserDto);
-
-      res.cookie('access_token', user.user.token, {
-        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
-        secure: process.env.NODE_ENV === 'production',
-        expires: new Date(Date.now() + 60 * 24 * 3600000),
-        httpOnly: true,
-      });
+      const loginResponse = await this.userService.login(loginUserDto);
+      res.cookie(
+        loginResponse.cookieSettings.tokenKey,
+        loginResponse.cookieSettings.tokenValue,
+        {
+          sameSite: loginResponse.cookieSettings.sameSite,
+          secure: loginResponse.cookieSettings.secure,
+          expires: loginResponse.cookieSettings.expires,
+          httpOnly: loginResponse.cookieSettings.httpOnly,
+        },
+      );
       return res.send({
-        username: user.user.username,
-        permissions: user.user.permissions,
+        username: loginResponse.userRo.user.username,
+        permissions: loginResponse.userRo.user.permissions,
       });
     } catch (error) {
       throw error;
@@ -91,6 +90,7 @@ export class UserController {
   @Post('user/logout')
   public async logout(@Res() res): Promise<UserRO> {
     try {
+      // TODO: Check for dynamic token
       res.cookie('access_token', '', {
         sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
         secure: process.env.NODE_ENV === 'production',
