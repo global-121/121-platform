@@ -734,12 +734,11 @@ export class RegistrationsService {
         attribute,
         value,
       );
-    } else {
-      registration.customData[attribute] = await this.cleanCustomDataIfPhoneNr(
-        attribute,
-        value,
-      );
     }
+    registration.customData[attribute] = await this.cleanCustomDataIfPhoneNr(
+      attribute,
+      value,
+    );
 
     const errors = await validate(registration);
     if (errors.length > 0) {
