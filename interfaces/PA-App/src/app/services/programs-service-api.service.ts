@@ -8,13 +8,12 @@ import { Program } from 'src/app/models/program.model';
 import { ApiService } from 'src/app/services/api.service';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/user.model';
-import { JwtService } from './jwt.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProgramsServiceApiService {
-  constructor(private apiService: ApiService, private jwtService: JwtService) {}
+  constructor(private apiService: ApiService) {}
 
   getInstanceInformation(): Promise<InstanceData> {
     return this.apiService
@@ -41,7 +40,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  createAccountPA(username: string, password: string): Promise<User> {
+  createAccountPA(username: string, password: string): Promise<User | null> {
     return this.apiService
       .post(
         environment.url_121_service_api,
@@ -51,17 +50,6 @@ export class ProgramsServiceApiService {
           password,
         },
         true,
-      )
-      .pipe(
-        map((response) => {
-          const user = response.user;
-
-          if (user && user.token) {
-            this.jwtService.saveToken(user.token);
-          }
-
-          return user;
-        }),
       )
       .toPromise();
   }
@@ -77,17 +65,12 @@ export class ProgramsServiceApiService {
         },
         true,
       )
-      .pipe(
-        map((response) => {
-          const user = response.user;
+      .toPromise();
+  }
 
-          if (user && user.token) {
-            this.jwtService.saveToken(user.token);
-          }
-
-          return user;
-        }),
-      )
+  logout(): Promise<null> {
+    return this.apiService
+      .post(environment.url_121_service_api, '/user/logout', {}, true)
       .toPromise();
   }
 
