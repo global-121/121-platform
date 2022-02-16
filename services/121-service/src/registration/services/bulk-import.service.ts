@@ -116,8 +116,9 @@ export class BulkImportService {
       newRegistration.customData = JSON.parse(JSON.stringify({}));
       programCustomAttributes.forEach(att => {
         if (att.type === CustomAttributeType.boolean) {
-          newRegistration.customData[att.attribute] = JSON.parse(
+          newRegistration.customData[att.attribute] = this.stringToBoolean(
             record[att.attribute],
+            false,
           );
         } else {
           newRegistration.customData[att.attribute] = record[att.attribute];
@@ -146,6 +147,22 @@ export class BulkImportService {
         countInvalidPhoneNr,
       },
     };
+  }
+
+  private stringToBoolean(string: string, defaultValue: boolean): boolean {
+    switch (string.toLowerCase().trim()) {
+      case 'true':
+      case 'yes':
+      case '1':
+        return true;
+      case 'false':
+      case 'no':
+      case '0':
+      case null:
+        return false;
+      default:
+        return defaultValue;
+    }
   }
 
   public async getImportRegistrationsTemplate(
@@ -199,8 +216,9 @@ export class BulkImportService {
       registration.customData = JSON.parse(JSON.stringify({}));
       dynamicAttributes.forEach(att => {
         if (att.type === CustomAttributeType.boolean) {
-          registration.customData[att.attribute] = JSON.parse(
+          registration.customData[att.attribute] = this.stringToBoolean(
             record[att.attribute],
+            false,
           );
         } else {
           registration.customData[att.attribute] = record[att.attribute];
