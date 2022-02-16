@@ -1283,9 +1283,15 @@ export class RegistrationsService {
     programCustomAttributes: ProgramCustomAttributeEntity[],
   ): object {
     for (const programCustomAttribute of programCustomAttributes) {
-      row[programCustomAttribute.name] =
-        customData[programCustomAttribute.name];
+      if (programCustomAttribute.type === CustomAttributeType.boolean) {
+        row[programCustomAttribute.name] =
+          customData[programCustomAttribute.name] || false;
+      } else {
+        row[programCustomAttribute.name] =
+          customData[programCustomAttribute.name];
+      }
     }
+    console.log('row: ', row);
     return row;
   }
 }
