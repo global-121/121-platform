@@ -8,12 +8,10 @@ export const User = createParamDecorator((data, req) => {
   }
 
   // in case a route is not protected, we still want to get the optional auth user from jwt
-  const token = req.headers.authorization
-    ? (req.headers.authorization as string).split(' ')
-    : null;
-  if (token && token[1]) {
+  const token = req.cookies ? req.cookies['access_token'] : null;
+  if (token) {
     const decoded: any = jwt.verify(
-      token[1],
+      token,
       process.env.SECRETS_121_SERVICE_SECRET,
     );
     return !!data ? decoded[data] : decoded.user;

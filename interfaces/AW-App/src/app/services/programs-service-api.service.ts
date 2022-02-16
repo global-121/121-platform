@@ -4,7 +4,7 @@ import { environment } from '../../environments/environment';
 import { InstanceData } from '../models/instance.model';
 import { ProgramAnswer } from '../models/pa-data.model';
 import { Program } from '../models/program.model';
-import { UserModel } from '../models/user.model';
+import { User } from '../models/user.model';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -19,7 +19,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  login(username: string, password: string): Promise<UserModel> {
+  login(username: string, password: string): Promise<User | null> {
     return this.apiService
       .post(
         environment.url_121_service_api,
@@ -32,11 +32,21 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         map((response) => {
-          return {
-            token: response.user.token,
-          };
+          if (response) {
+            return {
+              username: response.username,
+              permissions: response.permissions,
+            };
+          }
+          return null;
         }),
       )
+      .toPromise();
+  }
+
+  logout(): Promise<null> {
+    return this.apiService
+      .post(environment.url_121_service_api, '/user/logout', {}, true)
       .toPromise();
   }
 

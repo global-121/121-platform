@@ -2,30 +2,22 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { JwtService } from './jwt.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  constructor(private jwtService: JwtService, private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
   private showSecurity(anonymous: boolean) {
     return anonymous ? '🌐' : '🔐';
   }
 
-  private createHeaders(anonymous: boolean = false): HttpHeaders {
+  private createHeaders(): HttpHeaders {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json',
     });
-
-    if (!anonymous) {
-      return headers.set(
-        'Authorization',
-        `Token ${this.jwtService.getToken()}`,
-      );
-    }
 
     return headers;
   }
@@ -40,7 +32,8 @@ export class ApiService {
 
     return this.http
       .get(endpoint + path, {
-        headers: this.createHeaders(anonymous),
+        headers: this.createHeaders(),
+        withCredentials: true,
       })
       .pipe(
         tap((response) =>
@@ -64,7 +57,8 @@ export class ApiService {
 
     return this.http
       .post(endpoint + path, body, {
-        headers: this.createHeaders(anonymous),
+        headers: this.createHeaders(),
+        withCredentials: true,
       })
       .pipe(
         tap((response) =>
