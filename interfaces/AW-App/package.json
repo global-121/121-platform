@@ -40,7 +40,6 @@
     "@angular/platform-browser-dynamic": "^9.1.13",
     "@angular/router": "^9.1.13",
     "@angular/service-worker": "^9.1.13",
-    "@auth0/angular-jwt": "^4.2.0",
     "@ionic/angular": "^5.8.4",
     "@ionic/cli": "^6.11.8",
     "@ionic/storage": "2.2.0",
@@ -49,7 +48,6 @@
     "@ngx-translate/http-loader": "^5.0.0",
     "@zxing/ngx-scanner": "3.0.1",
     "core-js": "2.6.8",
-    "ngx-cookie-service": "^12.0.3",
     "rxjs": "^6.6.2",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
