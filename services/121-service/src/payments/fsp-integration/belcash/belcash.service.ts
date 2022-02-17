@@ -86,7 +86,7 @@ export class BelcashService {
       referenceid: `referenceId-${
         paymentData.referenceId
       }_program-${programId}_payment-${paymentNr}_timestamp-${+new Date()}`,
-      notifyto: false,
+      notifyto: true,
       notifyfrom: false,
     };
 

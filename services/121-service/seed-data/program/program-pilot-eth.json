@@ -63,16 +63,9 @@
     },
     {
       "label": {
-        "en": "Milestone 1"
+        "en": "Complete all milestones"
       },
-      "name": "milestone1",
-      "type": "boolean"
-    },
-    {
-      "label": {
-        "en": "Milestone 2"
-      },
-      "name": "milestone2",
+      "name": "milestones",
       "type": "boolean"
     }
   ],
