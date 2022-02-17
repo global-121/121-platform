@@ -74,7 +74,7 @@
 <ngx-datatable
   #people
   class="bootstrap data-table--max-height"
-  [rowHeight]="65"
+  [rowHeight]="80"
   [scrollbarV]="true"
   [scrollbarH]="true"
   [headerHeight]="95"
@@ -267,8 +267,8 @@
       >
         <ion-icon class="checkmark true" name="checkmark-circle"></ion-icon>
       </span>
-      <span 
-        *ngIf="value === false" 
+      <span
+        *ngIf="value === false"
         [title]="'page.program.program-people-affected.column.custom-attribute-false'|translate"
       >
         <ion-icon class="checkmark" name="ellipse-outline"></ion-icon>
@@ -280,6 +280,62 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column
+    *ngIf="thisPhase === phaseEnum.payment"
+    prop="lastPayment"
+    name="Last payment"
+    minWidth="300"
+    [draggable]="false"
+    [resizeable]="false"
+    [sortable]="false"
+    [headerClass]="columnDefaults.headerClass"
+  >
+  <ng-template
+      ngx-datatable-cell-template
+      let-value="value"
+      let-row="row"
+    >
+    <ng-container>
+      <button
+          *ngIf="value?.paymentIndex"
+          type="button"
+          [attr.title]="'page.program.program-people-affected.transaction.show-status'|translate"
+          [attr.aria-label]="'page.program.program-people-affected.transaction.show-status'|translate"
+          (click)="paymentHistoryPopup()"
+          [ngClass]="{
+            'is-error': hasError(row, value.paymentIndex),
+            'no-action': !hasVoucherSupport(row.fsp) && !hasError(row, value.paymentIndex),
+            'ion-no-padding popup-button status-pop-up': true
+          }"
+        >
+          <div *ngIf="value.paymentIndex" style="margin-bottom: 4px;">Payment #{{ value.paymentIndex }}</div>
+          <div style="margin-bottom: 4px;">{{ value.text }}</div>
+          <div style="display: flex;" class="ion-justify-content-center ion-align-items-center">
+            {{ value.amount }}
+            <span *ngIf="value.hasMessageIcon || value.hasMoneyIconTable">&nbsp;</span>
+            <ion-icon
+              *ngIf="value.hasMessageIcon"
+              name="mail"
+              size="small"
+              aria-hidden="true"
+            ></ion-icon>
+            <ion-icon
+              *ngIf="value.hasMoneyIconTable"
+              name="cash"
+              size="small"
+              aria-hidden="true"
+            ></ion-icon>
+          </div>
+        </button>
+        <span *ngIf="!value?.paymentIndex">
+          {{ value.text }}
+        </span>
+    </ng-container>
+  </ng-template>
+
+
+  </ngx-datatable-column>
+
+  <!-- <ngx-datatable-column
     *ngFor="let column of paymentColumns"
     [prop]="column.prop"
     [name]="column.name"
@@ -350,5 +406,5 @@
         </button>
       </ng-container>
     </ng-template>
-  </ngx-datatable-column>
+  </ngx-datatable-column> -->
 </ngx-datatable>

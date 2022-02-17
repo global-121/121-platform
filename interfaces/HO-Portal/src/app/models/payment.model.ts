@@ -12,14 +12,15 @@ export class Payment extends PaymentData {
 }
 
 export class PaymentColumn extends PersonTableColumn {
-  paymentIndex: number;
+  paymentIndex?: number;
 }
 
 export class PaymentColumnDetail {
   text: string;
-  amount: string;
-  hasMessageIcon: boolean;
-  hasMoneyIconTable: boolean;
+  paymentIndex?: number;
+  amount?: string;
+  hasMessageIcon?: boolean;
+  hasMoneyIconTable?: boolean;
 }
 
 export class PopupPayoutDetails {
