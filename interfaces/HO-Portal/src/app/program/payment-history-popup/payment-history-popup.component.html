@@ -22,17 +22,23 @@
   <h3>{{ paDisplayName }}</h3>
   <ng-container *ngFor="let paymentRow of paymentRows">
     <button
-      class="ion-padding-vertical full-width"
-      (click)="rowClick(paDisplayName)"
+      class="ion-padding-vertical full-width ion-text-start"
+      (click)="rowClick(paymentRow)"
     >
-      <ion-row class="ion-justify-content-between">
-        <ion-col
-          ><b class="ion-float-left"
-            >Payment #{{ paymentRow.paymentIndex }}</b
-          ></ion-col
-        >
+      <ion-row>
+        <b>Payment #{{ paymentRow.paymentIndex }}</b>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ng-container *ngIf="paymentRow.transaction?.status">
+            {{
+              'page.program.program-payout.last-payment.' +
+                paymentRow.transaction?.status | translate
+            }}
+          </ng-container>
+        </ion-col>
         <ion-col>{{ paymentRow.amount }}</ion-col>
-        <ion-col class="ion-float-right">{{ paymentRow.text }}</ion-col>
+        <ion-col>{{ paymentRow.text }}</ion-col>
       </ion-row>
     </button>
   </ng-container>

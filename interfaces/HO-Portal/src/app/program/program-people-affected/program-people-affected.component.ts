@@ -1070,19 +1070,22 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     await modal.present();
   }
 
-  public async paymentHistoryPopup(row: PersonRow, programId: number) {
+  public async paymentHistoryPopup(personRow: PersonRow, programId: number) {
     const person = this.allPeopleData.find(
-      (pa) => pa.referenceId === row.referenceId,
+      (pa) => pa.referenceId === personRow.referenceId,
     );
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PaymentHistoryPopupComponent,
       componentProps: {
         person,
+        personRow,
         programId,
         program: this.program,
         readOnly: !this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,
+        canDoSinglePayment: this.canDoSinglePayment,
+        canViewVouchers: this.canViewVouchers,
       },
     });
     await modal.present();

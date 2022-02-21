@@ -1,21 +1,21 @@
-import { formatCurrency, formatDate } from '@angular/common';
+import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { AlertController, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import {
   PaymentColumnDetail,
+  PaymentRowDetail,
   PopupPayoutDetails,
+  SinglePayoutDetails,
 } from 'src/app/models/payment.model';
-import { Person } from 'src/app/models/person.model';
+import { PaStatus, Person, PersonRow } from 'src/app/models/person.model';
 import { Program } from 'src/app/models/program.model';
-import {
-  IntersolvePayoutStatus,
-  TransactionCustomData,
-} from 'src/app/models/transaction-custom-data';
+import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
+import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 import { StatusEnum } from './../../models/status.enum';
 
 @Component({
@@ -25,6 +25,7 @@ import { StatusEnum } from './../../models/status.enum';
 })
 export class PaymentHistoryPopupComponent implements OnInit {
   public person: Person;
+  public personRow: PersonRow;
   public programId: number;
   public program: Program;
   private locale: string;
@@ -35,11 +36,14 @@ export class PaymentHistoryPopupComponent implements OnInit {
   public paymentRows: PaymentColumnDetail[] = [];
   public content: any;
   public payoutDetails: PopupPayoutDetails;
+  public paymentInProgress = false;
 
   public readOnly = false;
   public canViewPersonalData: boolean;
   public canUpdatePersonalData = false;
   public canViewPaymentData = true;
+  public canViewVouchers = true;
+  public canDoSinglePayment = true;
 
   public isInProgress = false;
   public paDisplayName: string;
@@ -48,7 +52,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
     private modalController: ModalController,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
-    private alertController: AlertController,
     private pastPaymentsService: PastPaymentsService,
   ) {
     this.locale = environment.defaultLocale;
@@ -76,168 +79,10 @@ export class PaymentHistoryPopupComponent implements OnInit {
     this.modalController.dismiss();
   }
 
-  public async getMessageTitle() {
-    const intersolveMessageTime = await this.getTransactionTime(
-      TransactionCustomData.intersolvePayoutStatus,
-      IntersolvePayoutStatus.initialMessage,
-    );
-    if (intersolveMessageTime) {
-      return this.translate.instant(
-        'page.program.program-people-affected.payment-history-popup.message-title',
-        {
-          payment: this.payoutDetails.payment,
-          timestamp: intersolveMessageTime,
-        },
-      );
-    }
-  }
-
-  public async getMoneyTitle() {
-    const intersolveMoneyTime = await this.getTransactionTime(
-      TransactionCustomData.intersolvePayoutStatus,
-      IntersolvePayoutStatus.voucherSent,
-    );
-    if (intersolveMoneyTime) {
-      return this.translate.instant(
-        'page.program.program-people-affected.payment-history-popup.money-title',
-        {
-          payment: this.payoutDetails.payment,
-          timestamp: intersolveMoneyTime,
-        },
-      );
-    }
-    const otherMoneyTime = await this.getTransactionTime('', '');
-    if (otherMoneyTime) {
-      return this.translate.instant(
-        'page.program.program-people-affected.payment-history-popup.money-title',
-        {
-          payment: this.payoutDetails.payment,
-          timestamp: otherMoneyTime,
-        },
-      );
-    }
-
-    return '';
-  }
-
-  public async getTransactionTime(customKey: string, customValue: string) {
-    const transaction = await this.programsService.getTransaction(
-      this.payoutDetails.referenceId,
-      this.payoutDetails.programId,
-      this.payoutDetails.payment,
-      customKey,
-      customValue,
-    );
-    if (transaction && transaction.status === StatusEnum.success) {
-      return formatDate(transaction.paymentDate, this.dateFormat, this.locale);
-    }
-  }
-
-  public async retryPayment() {
-    this.doPayment(this.payoutDetails);
-  }
-
   public resetProgress(): void {
     this.isInProgress = false;
   }
 
-  public async doPayment(payoutDetails) {
-    this.isInProgress = true;
-    await this.programsService
-      .submitPayout(
-        payoutDetails.programId,
-        payoutDetails.payment,
-        payoutDetails.amount,
-        [payoutDetails.referenceId],
-      )
-      .then(
-        (response) => {
-          this.isInProgress = false;
-          let message = '';
-
-          if (response) {
-            message += this.translate.instant(
-              'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv' becuse retry cannot happen for 'csv'
-              {
-                nrPa: `<strong>${response}</strong>`,
-              },
-            );
-          }
-          this.actionResult(message, true);
-        },
-        (err) => {
-          console.log('err: ', err);
-          if (err && err.error && err.error.error) {
-            this.actionResult(err.error.errors);
-          }
-          this.isInProgress = false;
-        },
-      );
-  }
-
-  public async getBalance() {
-    this.isInProgress = true;
-    await this.programsService
-      .getBalance(this.payoutDetails.referenceId, this.payoutDetails.payment)
-      .then(
-        (response) => {
-          this.isInProgress = false;
-          const message = this.translate.instant(
-            'page.program.program-people-affected.payment-history-popup.current-balance',
-            {
-              currentBalance: this.formatCurrency(response),
-              timestamp: formatDate(new Date(), this.dateFormat, this.locale),
-            },
-          );
-          this.actionResult(message);
-        },
-        (err) => {
-          console.log('err: ', err);
-          if (err && err.error && err.error.error) {
-            this.actionResult(err.error.error);
-          }
-          this.isInProgress = false;
-        },
-      );
-  }
-
-  public async printVoucher() {
-    const oHideFrame: any = document.getElementById('voucherIframe');
-    const contentWindow = oHideFrame.contentWindow;
-    contentWindow.focus(); // Required for IE
-    contentWindow.print();
-  }
-
-  private formatCurrency(balance) {
-    const symbol = `${this.payoutDetails.currency} `;
-    return formatCurrency(
-      balance,
-      environment.defaultLocale,
-      symbol,
-      this.payoutDetails.currency,
-    );
-  }
-
-  private async actionResult(resultMessage: string, refresh: boolean = false) {
-    const alert = await this.alertController.create({
-      backdropDismiss: false,
-      message: resultMessage,
-      buttons: [
-        {
-          text: this.translate.instant('common.ok'),
-          handler: () => {
-            alert.dismiss(true);
-            if (refresh) {
-              window.location.reload();
-            }
-            return false;
-          },
-        },
-      ],
-    });
-
-    await alert.present();
-  }
   private getTransactionOfPaymentForRegistration(
     paymentIndex: number,
     referenceId: string,
@@ -246,6 +91,25 @@ export class PaymentHistoryPopupComponent implements OnInit {
       (transaction) =>
         transaction.payment === paymentIndex &&
         transaction.referenceId === referenceId,
+    );
+  }
+
+  public enableMessageSentIcon(transaction: Transaction): boolean {
+    return (
+      transaction.customData &&
+      [
+        IntersolvePayoutStatus.initialMessage,
+        IntersolvePayoutStatus.voucherSent,
+      ].includes(transaction.customData.IntersolvePayoutStatus)
+    );
+  }
+
+  public enableMoneySentIconTable(transaction: Transaction): boolean {
+    return (
+      (!transaction.customData.IntersolvePayoutStatus ||
+        transaction.customData.IntersolvePayoutStatus ===
+          IntersolvePayoutStatus.voucherSent) &&
+      transaction.status === StatusEnum.success
     );
   }
 
@@ -266,8 +130,10 @@ export class PaymentHistoryPopupComponent implements OnInit {
       let paymentRowText;
 
       if (!transaction) {
-        paymentRowText = 'Do single payment placeholder';
-        const paymentRowValue: PaymentColumnDetail = {
+        paymentRowText = this.translate.instant(
+          'page.program.program-people-affected.transaction.do-single-payment',
+        );
+        const paymentRowValue: PaymentRowDetail = {
           paymentIndex: index,
           text: paymentRowText,
         };
@@ -295,18 +161,156 @@ export class PaymentHistoryPopupComponent implements OnInit {
             'page.program.program-people-affected.transaction.failed',
           );
         }
-
-        const paymentRowValue: PaymentColumnDetail = {
+        const paymentRowValue: PaymentRowDetail = {
           paymentIndex: index,
           text: paymentRowText,
-          amount: `${this.program.currency} ${transaction.amount}`,
+          transaction: transaction,
+          hasMessageIcon: this.enableMessageSentIcon(transaction),
+          hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
+          amount: `${transaction.amount} ${this.program.currency}`,
         };
         this.paymentRows.push(paymentRowValue);
       }
     }
   }
+  public hasWaiting(row: PersonRow, paymentIndex: number): boolean {
+    return !!row['payment' + paymentIndex + '-waiting'];
+  }
 
-  rowClick(paDisplayName: any) {
-    console.log(paDisplayName);
+  public hasError(row: PersonRow, paymentIndex: number): boolean {
+    return !!row['payment' + paymentIndex + '-error'];
+  }
+
+  public enableSinglePayment(
+    personRow: PersonRow,
+    paymentRow: PaymentRowDetail,
+  ): boolean {
+    const permission = this.canDoSinglePayment;
+    const included = personRow.status === PaStatus.included;
+    const noPaymentDone = !paymentRow.transaction;
+    const noFuturePayment = paymentRow.paymentIndex <= this.lastPaymentId;
+    const onlyLast3Payments = paymentRow.paymentIndex > this.lastPaymentId - 3;
+    const noPaymentInProgress = !this.paymentInProgress;
+
+    return (
+      permission &&
+      included &&
+      noPaymentDone &&
+      noFuturePayment &&
+      onlyLast3Payments &&
+      noPaymentInProgress
+    );
+  }
+
+  public hasVoucherSupport(fsp: string): boolean {
+    const voucherFsps = ['Intersolve-no-whatsapp', 'Intersolve-whatsapp'];
+    return voucherFsps.includes(fsp);
+  }
+
+  async rowClick(paymentRow: PaymentRowDetail) {
+    let voucherUrl = null;
+    let voucherButtons = null;
+    let showRetryButton = false;
+    let doSinglePaymentDetails: SinglePayoutDetails = null;
+    let paymentDetails: PopupPayoutDetails = null;
+    const hasWaiting = this.hasWaiting(this.personRow, paymentRow.paymentIndex);
+    const hasError = this.hasError(this.personRow, paymentRow.paymentIndex);
+    const isSinglePayment = this.enableSinglePayment(
+      this.personRow,
+      paymentRow,
+    );
+
+    const content = hasWaiting
+      ? this.personRow[paymentRow.paymentIndex + '-error']
+      : hasError
+      ? this.translate.instant(
+          'page.program.program-people-affected.payment-status-popup.error-message',
+        ) +
+        ': <strong>' +
+        this.personRow[paymentRow.paymentIndex + '-error'] +
+        '</strong><br><br>' +
+        this.translate.instant(
+          'page.program.program-people-affected.payment-status-popup.fix-error',
+        )
+      : isSinglePayment
+      ? this.translate.instant(
+          'page.program.program-people-affected.payment-status-popup.single-payment.intro',
+        )
+      : null;
+
+    if (
+      this.canViewVouchers &&
+      this.hasVoucherSupport(this.personRow.fsp) &&
+      !!paymentRow.transaction
+    ) {
+      await this.programsService
+        .exportVoucher(this.personRow.referenceId, paymentRow.paymentIndex)
+        .then(
+          async (voucherBlob) => {
+            voucherUrl = window.URL.createObjectURL(voucherBlob);
+            voucherButtons = true;
+          },
+          (error) => {
+            console.log('error: ', error);
+            voucherButtons = false;
+          },
+        );
+    }
+    if (hasError || paymentRow.hasMessageIcon || paymentRow.hasMoneyIconTable) {
+      paymentDetails = {
+        programId: this.programId,
+        payment: paymentRow.paymentIndex,
+        amount: paymentRow.transaction.amount,
+        referenceId: this.person.referenceId,
+        currency: this.program.currency,
+      };
+    }
+    if (this.canDoSinglePayment) {
+      showRetryButton = !hasWaiting && hasError;
+      doSinglePaymentDetails = {
+        paNr: this.personRow.pa,
+        amount: this.program.fixedTransferValue,
+        currency: this.program.currency,
+        multiplier: this.personRow.paymentAmountMultiplier
+          ? Number(this.personRow.paymentAmountMultiplier.substr(0, 1))
+          : 1,
+        programId: this.programId,
+        payment: paymentRow.paymentIndex,
+        referenceId: this.personRow.referenceId,
+      };
+    }
+    const titleError = hasError
+      ? `${paymentRow.paymentIndex}: ${paymentRow.text}`
+      : null;
+    const titleMessageIcon = paymentRow.hasMessageIcon
+      ? `${paymentRow.paymentIndex}: `
+      : null;
+    const titleMoneyIcon = paymentRow.hasMoneyIconTable
+      ? `${paymentRow.paymentIndex}: `
+      : null;
+    const titleSinglePayment = isSinglePayment ? paymentRow.paymentIndex : null;
+
+    const modal: HTMLIonModalElement = await this.modalController.create({
+      component: PaymentStatusPopupComponent,
+      componentProps: {
+        titleMessageIcon,
+        titleMoneyIcon,
+        titleError,
+        titleSinglePayment,
+        content,
+        showRetryButton,
+        payoutDetails: paymentDetails,
+        singlePayoutDetails: doSinglePaymentDetails,
+        voucherButtons,
+        imageUrl: voucherUrl,
+      },
+    });
+    modal.onDidDismiss().then(() => {
+      // Remove the image from browser memory
+      if (voucherUrl) {
+        window.URL.revokeObjectURL(voucherUrl);
+      }
+    });
+    await modal.present();
   }
 }
