@@ -380,6 +380,9 @@
             "start-payout": "Start payout now for {{paNr}}",
             "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
+        },
+        "payment-history-popup": {
+          "title": "Payment history"
         }
       },
       "program-modal": {

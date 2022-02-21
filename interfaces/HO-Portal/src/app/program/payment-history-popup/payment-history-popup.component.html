@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      {{
+        'page.program.program-people-affected.payment-history-popup.title'
+          | translate
+      }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
+      >
+        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light" class="ion-padding">
+  <h3>{{ paDisplayName }}</h3>
+  <ng-container *ngFor="let paymentRow of paymentRows">
+    <button
+      class="ion-padding-vertical full-width"
+      (click)="rowClick(paDisplayName)"
+    >
+      <ion-row class="ion-justify-content-between">
+        <ion-col
+          ><b class="ion-float-left"
+            >Payment #{{ paymentRow.paymentIndex }}</b
+          ></ion-col
+        >
+        <ion-col>{{ paymentRow.amount }}</ion-col>
+        <ion-col class="ion-float-right">{{ paymentRow.text }}</ion-col>
+      </ion-row>
+    </button>
+  </ng-container>
+</ion-content>

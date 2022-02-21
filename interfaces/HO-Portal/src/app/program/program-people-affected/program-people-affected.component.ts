@@ -35,6 +35,7 @@ import { environment } from 'src/environments/environment';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
+import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-history-popup.component';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 
 @Component({
@@ -1069,7 +1070,23 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     await modal.present();
   }
 
-  public async paymentHistoryPopup() {}
+  public async paymentHistoryPopup(row: PersonRow, programId: number) {
+    const person = this.allPeopleData.find(
+      (pa) => pa.referenceId === row.referenceId,
+    );
+    const modal: HTMLIonModalElement = await this.modalController.create({
+      component: PaymentHistoryPopupComponent,
+      componentProps: {
+        person,
+        programId,
+        program: this.program,
+        readOnly: !this.canUpdatePaData,
+        canViewPersonalData: this.canViewPersonalData,
+        canUpdatePersonalData: this.canUpdatePersonalData,
+      },
+    });
+    await modal.present();
+  }
 
   public async statusPopup(
     row: PersonRow,
