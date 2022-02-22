@@ -71,16 +71,17 @@ export class UserController {
   ): Promise<UserRO> {
     try {
       const user = await this.userService.login(loginUserDto);
-
+      const exp = new Date(Date.now() + 60 * 24 * 3600000);
       res.cookie('access_token', user.user.token, {
         sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
         secure: process.env.NODE_ENV === 'production',
-        expires: new Date(Date.now() + 60 * 24 * 3600000),
+        expires: exp,
         httpOnly: true,
       });
       return res.send({
         username: user.user.username,
         permissions: user.user.permissions,
+        expires: exp,
       });
     } catch (error) {
       throw error;
