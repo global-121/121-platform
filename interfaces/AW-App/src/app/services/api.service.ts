@@ -51,10 +51,14 @@ export class ApiService {
           ),
         ),
         catchError((error: HttpErrorResponse): Observable<any> => {
-          if (anonymous === true) throwError(error);
+          if (anonymous === true) {
+            throwError(error);
+          }
           if (error.status === 401) {
             const rawUser = localStorage.getItem(this.userKey);
-            if (!rawUser) throwError(error);
+            if (!rawUser) {
+              throwError(error);
+            }
 
             const user: User = JSON.parse(rawUser);
             const expires = Date.parse(user.expires);
@@ -92,10 +96,14 @@ export class ApiService {
           ),
         ),
         catchError((error: HttpErrorResponse): Observable<any> => {
-          if (anonymous === true) throwError(error);
+          if (anonymous === true) {
+            throwError(error);
+          }
           if (error.status === 401) {
             const rawUser = localStorage.getItem(this.userKey);
-            if (!rawUser) throwError(error);
+            if (!rawUser) {
+              throwError(error);
+            }
 
             const user: User = JSON.parse(rawUser);
             const expires = Date.parse(user.expires);
