@@ -51,23 +51,7 @@ export class ApiService {
           ),
         ),
         catchError((error: HttpErrorResponse): Observable<any> => {
-          if (anonymous === true) {
-            throwError(error);
-          }
-          if (error.status === 401) {
-            const rawUser = localStorage.getItem(this.userKey);
-            if (!rawUser) {
-              throwError(error);
-            }
-
-            const user: User = JSON.parse(rawUser);
-            const expires = Date.parse(user.expires);
-            if (expires < Date.now()) {
-              localStorage.removeItem(this.userKey);
-              window.location.reload();
-              return of('Token expired');
-            }
-          }
+          return this.handleError(error, anonymous);
         }),
       );
   }
@@ -96,24 +80,28 @@ export class ApiService {
           ),
         ),
         catchError((error: HttpErrorResponse): Observable<any> => {
-          if (anonymous === true) {
-            throwError(error);
-          }
-          if (error.status === 401) {
-            const rawUser = localStorage.getItem(this.userKey);
-            if (!rawUser) {
-              throwError(error);
-            }
-
-            const user: User = JSON.parse(rawUser);
-            const expires = Date.parse(user.expires);
-            if (expires < Date.now()) {
-              localStorage.removeItem(this.userKey);
-              window.location.reload();
-              return of('Token expired');
-            }
-          }
+          return this.handleError(error, anonymous);
         }),
       );
+  }
+
+  handleError(error: HttpErrorResponse, anonymous: boolean) {
+    if (anonymous === true) {
+      throwError(error);
+    }
+    if (error.status === 401) {
+      const rawUser = localStorage.getItem(this.userKey);
+      if (!rawUser) {
+        throwError(error);
+      }
+
+      const user: User = JSON.parse(rawUser);
+      const expires = Date.parse(user.expires);
+      if (expires < Date.now()) {
+        localStorage.removeItem(this.userKey);
+        window.location.reload();
+        return of('Token expired');
+      }
+    }
   }
 }
