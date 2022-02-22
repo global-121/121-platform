@@ -658,14 +658,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return column;
   }
 
-  // private createPaymentColumn(index: number): PaymentColumn {
-  //   const column = Object.assign({}, this.paymentColumnTemplate);
-  //   column.name = `${column.name}${index}`;
-  //   column.prop = `${column.prop}${index}`;
-  //   column.paymentIndex = index;
-  //   return column;
-  // }
-
   private createCustomAttributeColumn(customAttribute: ProgramCustomAttribute) {
     const column = JSON.parse(
       JSON.stringify(this.customAttributeColumnTemplate),
@@ -675,18 +667,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     column.prop = customAttribute.name;
     return column;
   }
-
-  // private async addPaymentColumns(firstPaymentToShow: number) {
-  //   const nrOfPayments = this.program.distributionDuration;
-
-  //   const lastPaymentToShow = Math.min(this.lastPaymentId + 1, nrOfPayments);
-
-  //   for (let index = firstPaymentToShow; index <= lastPaymentToShow; index++) {
-  //     const column = this.createPaymentColumn(index);
-
-  //     this.paymentColumns.push(column);
-  //   }
-  // }
 
   private async updateBulkActions() {
     await this.addPaymentBulkActions();

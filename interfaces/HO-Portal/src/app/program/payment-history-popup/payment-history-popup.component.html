@@ -26,7 +26,9 @@
       (click)="rowClick(paymentRow)"
     >
       <ion-row>
-        <b>Payment #{{ paymentRow.paymentIndex }}</b>
+        <ion-col>
+          <b>Payment #{{ paymentRow.paymentIndex }}</b>
+        </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>

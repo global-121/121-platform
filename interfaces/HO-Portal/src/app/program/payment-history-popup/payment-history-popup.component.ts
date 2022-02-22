@@ -288,7 +288,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
     const titleMoneyIcon = paymentRow.hasMoneyIconTable
       ? `${paymentRow.paymentIndex}: `
       : null;
-    const titleSinglePayment = isSinglePayment ? paymentRow.paymentIndex : null;
+    const titleSinglePayment = isSinglePayment ? paymentRow.text : null;
 
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PaymentStatusPopupComponent,
