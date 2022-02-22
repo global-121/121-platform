@@ -4,7 +4,7 @@ import {
   HttpHeaders,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { User } from '../models/user.model';
 
@@ -54,17 +54,17 @@ export class ApiService {
           ),
         ),
         catchError((error: HttpErrorResponse): Observable<any> => {
-          if (anonymous === true) return;
+          if (anonymous === true) throwError(error);
           if (error.status === 401) {
             const rawUser = localStorage.getItem(this.userKey);
-            if (!rawUser) return;
+            if (!rawUser) throwError(error);
 
             const user: User = JSON.parse(rawUser);
             const expires = Date.parse(user.expires);
             if (expires < Date.now()) {
               localStorage.removeItem(this.userKey);
               window.location.reload();
-              return;
+              return of('Token expired');
             }
           }
         }),
@@ -98,17 +98,17 @@ export class ApiService {
           ),
         ),
         catchError((error: HttpErrorResponse): Observable<any> => {
-          if (anonymous === true) return;
+          if (anonymous === true) throwError(error);
           if (error.status === 401) {
             const rawUser = localStorage.getItem(this.userKey);
-            if (!rawUser) return;
+            if (!rawUser) throwError(error);
 
             const user: User = JSON.parse(rawUser);
             const expires = Date.parse(user.expires);
             if (expires < Date.now()) {
               localStorage.removeItem(this.userKey);
               window.location.reload();
-              return;
+              return of('Token expired');
             }
           }
         }),

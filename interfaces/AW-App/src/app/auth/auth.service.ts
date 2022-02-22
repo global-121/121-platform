@@ -71,6 +71,7 @@ export class AuthService {
     return {
       username: user.username,
       permissions: user.permissions,
+      expires: user.expires,
     };
   }
 
