@@ -18,30 +18,43 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="light" class="ion-padding">
+<ion-content class="ion-padding">
   <h3>{{ paDisplayName }}</h3>
-  <ng-container *ngFor="let paymentRow of paymentRows">
-    <button
-      class="ion-padding-vertical full-width ion-text-start"
-      (click)="rowClick(paymentRow)"
-    >
-      <ion-row>
-        <ion-col>
-          <b>Payment #{{ paymentRow.paymentIndex }}</b>
-        </ion-col>
+  <ion-grid>
+    <ion-col>
+      <ion-row *ngFor="let paymentRow of paymentRows" class="full-width ion-justify-content-between ion-padding-bottom ion-margin-vertical">
+        <div>
+          <h5 class="ion-no-margin">Payment #{{ paymentRow.paymentIndex }}</h5>
+          <span *ngIf="paymentRow.transaction?.status">{{ 'page.program.program-payout.last-payment.' + paymentRow.transaction?.status | translate }}</span>
+        </div>
+        <button
+          type="button"
+          (click)="rowClick(paymentRow)"
+          [ngClass]="{
+            'is-error': paymentRow.transaction?.status !== 'success',
+            'no-action': paymentRow.transaction?.status === 'success',
+            'ion-no-padding popup-button': true
+          }"
+        >
+          {{ paymentRow.text }}
+          <div style="display: flex;" class="ion-justify-content-center ion-align-items-center">
+            {{ paymentRow.amount }}
+            <span *ngIf="paymentRow.hasMessageIcon || paymentRow.hasMoneyIconTable">&nbsp;</span>
+            <ion-icon
+              *ngIf="paymentRow.hasMessageIcon"
+              name="mail"
+              size="small"
+              aria-hidden="true"
+            ></ion-icon>
+            <ion-icon
+              *ngIf="paymentRow.hasMoneyIconTable"
+              name="cash"
+              size="small"
+              aria-hidden="true"
+            ></ion-icon>
+          </div>
+        </button>
       </ion-row>
-      <ion-row>
-        <ion-col>
-          <ng-container *ngIf="paymentRow.transaction?.status">
-            {{
-              'page.program.program-payout.last-payment.' +
-                paymentRow.transaction?.status | translate
-            }}
-          </ng-container>
-        </ion-col>
-        <ion-col>{{ paymentRow.amount }}</ion-col>
-        <ion-col>{{ paymentRow.text }}</ion-col>
-      </ion-row>
-    </button>
-  </ng-container>
+    </ion-col>
+  </ion-grid>
 </ion-content>

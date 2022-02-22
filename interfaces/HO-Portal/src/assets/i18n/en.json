@@ -263,7 +263,8 @@
           "paymentAmountMultiplier": "Transfer value(s)",
           "fsp": "Financial Service Provider",
           "custom-attribute-true": "Yes",
-          "custom-attribute-false": "No"
+          "custom-attribute-false": "No",
+          "payment-history": "Payment history"
         },
         "language": {
           "en": "English",
@@ -317,8 +318,11 @@
           "failed": "Failed",
           "waiting": "Waiting",
           "waiting-message": "Still waiting for status update on this transaction. Refresh the page for the latest status.",
+          "success": "Success",
+          "no-payment-yet": "No payment yet",
           "show-status": "Show status",
-          "do-single-payment": "Do single payment"
+          "do-single-payment": "Do single payment",
+          "payment-number": "Payment #"
         },
         "edit-person-affected-popup": {
           "edit-icon-title": "Edit information of Person Affected",
