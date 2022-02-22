@@ -164,7 +164,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
         const paymentRowValue: PaymentRowDetail = {
           paymentIndex: index,
           text: paymentRowText,
-          transaction: transaction,
+          transaction,
           hasMessageIcon: this.enableMessageSentIcon(transaction),
           hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
           amount: `${transaction.amount} ${this.program.currency}`,

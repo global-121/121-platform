@@ -908,7 +908,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       };
     }
 
-    personRow['paymentHistory'] = paymentColumnValue;
+    const paymentHistoryKey = 'paymentHistory';
+
+    personRow[paymentHistoryKey] = paymentColumnValue;
     return personRow;
   }
 
