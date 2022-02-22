@@ -65,8 +65,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public columns: PersonTableColumn[] = [];
   private columnsAvailable: PersonTableColumn[] = [];
   private paymentColumnTemplate: PaymentColumn;
-  public lastPaymentColumn: PaymentColumn;
-  // public paymentColumns: PaymentColumn[] = [];
+  public paymentHistoryColumn: PaymentColumn;
   private customAttributeColumnTemplate: any = {};
   public customAttributeColumns: any[] = [];
   private pastTransactions: Transaction[] = [];
@@ -560,8 +559,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           this.programId,
           firstPaymentToShow,
         );
-        // this.addPaymentColumns(firstPaymentToShow);
-        this.createLastPaymentColumn();
+        this.paymentHistoryColumn = this.createPaymentHistoryColumn();
       }
     }
 
@@ -651,10 +649,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     );
   }
 
-  private createLastPaymentColumn(): PaymentColumn {
+  private createPaymentHistoryColumn(): PaymentColumn {
     const column = Object.assign({}, this.paymentColumnTemplate);
-    column.name = 'Last payment';
-    column.prop = 'lastPayment';
+    column.name = 'Payment History';
+    column.prop = 'paymentHistory';
     return column;
   }
 
@@ -808,7 +806,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     };
 
     if (this.canViewPaymentData) {
-      personRow = this.fillLastPaymentColumn(personRow);
+      personRow = this.fillPaymentHistoryColumn(personRow);
     }
 
     // Custom attributes can be personal data or not personal data
@@ -847,7 +845,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return personRow;
   }
 
-  private fillLastPaymentColumn(personRow: PersonRow): PersonRow {
+  private fillPaymentHistoryColumn(personRow: PersonRow): PersonRow {
     let lastPayment = null;
 
     for (
@@ -872,15 +870,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     if (!lastPayment) {
       paymentColumnValue = {
-        text: 'No payment yet',
+        text: this.translate.instant(
+          'page.program.program-people-affected.transaction.no-payment-yet',
+        ),
       };
     } else {
       let paymentColumnText: string;
       if (lastPayment.status === StatusEnum.success) {
-        paymentColumnText = formatDate(
-          lastPayment.paymentDate,
-          this.dateFormat,
-          this.locale,
+        paymentColumnText = this.translate.instant(
+          'page.program.program-people-affected.transaction.success',
         );
       } else if (lastPayment.status === StatusEnum.waiting) {
         personRow['payment' + lastPayment.payment + '-error'] =
@@ -910,62 +908,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       };
     }
 
-    personRow['lastPayment'] = paymentColumnValue;
+    personRow['paymentHistory'] = paymentColumnValue;
     return personRow;
   }
-
-  // private fillPaymentColumns(personRow: PersonRow): PersonRow {
-  //   console.log('=LOGGER= this.lastPaymentId: ', this.lastPaymentId);
-  //   console.log('=LOGGER= personRow.referenceId: ', personRow.referenceId);
-  //   this.paymentColumns.forEach((paymentColumn) => {
-  //     const transaction = this.getTransactionOfPaymentForRegistration(
-  //       paymentColumn.paymentIndex,
-  //       personRow.referenceId,
-  //     );
-
-  //     console.log('=LOGGER= transaction: ', transaction);
-
-  //     if (!transaction) {
-  //       return;
-  //     }
-
-  //     let paymentColumnText;
-
-  //     if (transaction.status === StatusEnum.success) {
-  //       paymentColumnText = formatDate(
-  //         transaction.paymentDate,
-  //         this.dateFormat,
-  //         this.locale,
-  //       );
-  //     } else if (transaction.status === StatusEnum.waiting) {
-  //       personRow['payment' + paymentColumn.paymentIndex + '-error'] =
-  //         this.translate.instant(
-  //           'page.program.program-people-affected.transaction.waiting-message',
-  //         );
-  //       personRow['payment' + paymentColumn.paymentIndex + '-waiting'] = true;
-  //       paymentColumnText = this.translate.instant(
-  //         'page.program.program-people-affected.transaction.waiting',
-  //       );
-  //     } else {
-  //       personRow['payment' + paymentColumn.paymentIndex + '-error'] =
-  //         transaction.error;
-  //       personRow['payment' + paymentColumn.paymentIndex + '-amount'] =
-  //         transaction.amount;
-  //       paymentColumnText = this.translate.instant(
-  //         'page.program.program-people-affected.transaction.failed',
-  //       );
-  //     }
-
-  //     const paymentColumnValue: PaymentColumnDetail = {
-  //       text: paymentColumnText,
-  //       amount: `${this.program.currency} ${transaction.amount}`,
-  //       hasMessageIcon: this.enableMessageSentIcon(transaction),
-  //       hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
-  //     };
-  //     personRow['payment' + paymentColumn.paymentIndex] = paymentColumnValue;
-  //   });
-  //   return personRow;
-  // }
 
   public enableMessageSentIcon(transaction: Transaction): boolean {
     return (
