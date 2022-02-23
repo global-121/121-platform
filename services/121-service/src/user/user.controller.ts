@@ -39,7 +39,7 @@ export class UserController {
     this.userService = userService;
   }
 
-  @Permissions(PermissionEnum.RoleCREATE)
+  @Permissions(PermissionEnum.RoleREAD)
   @ApiOperation({ title: 'Get all user roles' })
   @Get('roles')
   public async getUserRoles(): Promise<UserRoleEntity[]> {
@@ -55,7 +55,7 @@ export class UserController {
     return await this.userService.addUserRole(userRoleData);
   }
 
-  @Permissions(PermissionEnum.RoleCREATE)
+  @Permissions(PermissionEnum.RoleUPDATE)
   @ApiOperation({ title: 'Update existing user role' })
   @ApiImplicitParam({ name: 'userRoleId', required: true, type: 'integer' })
   @Put('roles/:userRoleId')
@@ -69,7 +69,7 @@ export class UserController {
     );
   }
 
-  @Permissions(PermissionEnum.RoleCREATE)
+  @Permissions(PermissionEnum.RoleDELETE)
   @ApiOperation({ title: 'Delete existing user role' })
   @ApiImplicitParam({ name: 'userRoleId', required: true, type: 'integer' })
   @Delete('roles/:userRoleId')
