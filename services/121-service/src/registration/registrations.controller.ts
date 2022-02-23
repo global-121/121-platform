@@ -47,7 +47,6 @@ import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 import { PersonAffectedAuth } from '../person-affected-auth.decorator';
 
-@ApiBearerAuth()
 @UseGuards(PermissionsGuard, PersonAffectedAuthGuard)
 @ApiUseTags('registrations')
 @Controller('registrations')

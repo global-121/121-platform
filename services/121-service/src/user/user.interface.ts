@@ -1,9 +1,7 @@
-import { UserRoleEntity } from './user-role.entity';
-
 export interface UserData {
   username: string;
   token: string;
-  roles: UserRoleEntity[];
+  permissions: string[];
 }
 export interface UserRO {
   user: UserData;

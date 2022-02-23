@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.35.3...master)
 
+### Changed
+
+- 2022-02-18: JWT-tokens for authorization/authentication are now being stored/transported via browser-cookies, no longer via a `Authentication`-header and browser's local/session-storage.
+
 ---
+
 ## [1.35.3](https://github.com/global-121/121-platform/compare/v1.35.2...1.35.3) - 2022-02-16
 
 ## [1.35.2](https://github.com/global-121/121-platform/compare/v1.35.1...1.35.2) - 2022-02-16

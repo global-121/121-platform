@@ -1291,7 +1291,6 @@ export class RegistrationsService {
           customData[programCustomAttribute.name];
       }
     }
-    console.log('row: ', row);
     return row;
   }
 }

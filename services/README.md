@@ -54,7 +54,7 @@ We use the NestJS Swagger module for API documentation. [NestJS Swagger](https:/
 
 ### Authentication
 
-All services use [JSON Web Token](https://jwt.io/) (JWT) to handle authentication. The token should be passed with each request using the `Authorization` header with `Token` scheme. The JWT authentication middleware handles the validation and authentication of the token.
+All services use [JSON Web Token](https://jwt.io/) (JWT) to handle authentication. The token should be passed with each request by the browser via an `access_token` cookie. The JWT authentication middleware handles the validation and authentication of the token.
 
 ### Adding third party API tokens
 
