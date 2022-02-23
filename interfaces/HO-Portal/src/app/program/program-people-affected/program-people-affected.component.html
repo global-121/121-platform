@@ -346,7 +346,7 @@
     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
       <ng-container>
         <button
-          *ngIf="value?.paymentIndex"
+          *ngIf="value?.lastPaymentIndex"
           type="button"
           [attr.title]="
             'page.program.program-people-affected.transaction.show-status'
@@ -358,18 +358,18 @@
           "
           (click)="paymentHistoryPopup(row, programId)"
           [ngClass]="{
-            'is-error': hasError(row, value.paymentIndex),
+            'is-error': hasError(row, value.lastPaymentIndex),
             'no-action':
-              !hasVoucherSupport(row.fsp) && !hasError(row, value.paymentIndex),
+              !hasVoucherSupport(row.fsp) && !hasError(row, value.lastPaymentIndex),
             'ion-no-padding popup-button status-pop-up': true
           }"
         >
-          <div *ngIf="value.paymentIndex" style="margin-bottom: 4px">
-            {{ 'page.program.program-people-affected.transaction.payment-number' | translate }}{{ value.paymentIndex }}
+          <div *ngIf="value.lastPaymentIndex" style="margin-bottom: 4px">
+            {{ 'page.program.program-people-affected.transaction.payment-number' | translate }}{{ value.lastPaymentIndex }}
           </div>
           <div style="margin-bottom: 4px">{{ value.text }}</div>
         </button>
-        <span *ngIf="!value?.paymentIndex">
+        <span *ngIf="!value?.lastPaymentIndex">
           {{ value.text }}
         </span>
       </ng-container>

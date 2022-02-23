@@ -84,12 +84,12 @@ export class PaymentHistoryPopupComponent implements OnInit {
   }
 
   private getTransactionOfPaymentForRegistration(
-    paymentIndex: number,
+    lastPaymentIndex: number,
     referenceId: string,
   ): Transaction {
     return this.pastTransactions.find(
       (transaction) =>
-        transaction.payment === paymentIndex &&
+        transaction.payment === lastPaymentIndex &&
         transaction.referenceId === referenceId,
     );
   }
@@ -134,7 +134,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
           'page.program.program-people-affected.transaction.do-single-payment',
         );
         const paymentRowValue: PaymentRowDetail = {
-          paymentIndex: index,
+          lastPaymentIndex: index,
           text: paymentRowText,
         };
         this.paymentRows.push(paymentRowValue);
@@ -162,7 +162,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
           );
         }
         const paymentRowValue: PaymentRowDetail = {
-          paymentIndex: index,
+          lastPaymentIndex: index,
           text: paymentRowText,
           transaction,
           hasMessageIcon: this.enableMessageSentIcon(transaction),
@@ -173,12 +173,12 @@ export class PaymentHistoryPopupComponent implements OnInit {
       }
     }
   }
-  public hasWaiting(row: PersonRow, paymentIndex: number): boolean {
-    return !!row['payment' + paymentIndex + '-waiting'];
+  public hasWaiting(row: PersonRow, lastPaymentIndex: number): boolean {
+    return !!row['payment' + lastPaymentIndex + '-waiting'];
   }
 
-  public hasError(row: PersonRow, paymentIndex: number): boolean {
-    return !!row['payment' + paymentIndex + '-error'];
+  public hasError(row: PersonRow, lastPaymentIndex: number): boolean {
+    return !!row['payment' + lastPaymentIndex + '-error'];
   }
 
   public enableSinglePayment(
@@ -188,8 +188,9 @@ export class PaymentHistoryPopupComponent implements OnInit {
     const permission = this.canDoSinglePayment;
     const included = personRow.status === PaStatus.included;
     const noPaymentDone = !paymentRow.transaction;
-    const noFuturePayment = paymentRow.paymentIndex <= this.lastPaymentId;
-    const onlyLast3Payments = paymentRow.paymentIndex > this.lastPaymentId - 3;
+    const noFuturePayment = paymentRow.lastPaymentIndex <= this.lastPaymentId;
+    const onlyLast3Payments =
+      paymentRow.lastPaymentIndex > this.lastPaymentId - 3;
     const noPaymentInProgress = !this.paymentInProgress;
 
     return (
@@ -213,21 +214,24 @@ export class PaymentHistoryPopupComponent implements OnInit {
     let showRetryButton = false;
     let doSinglePaymentDetails: SinglePayoutDetails = null;
     let paymentDetails: PopupPayoutDetails = null;
-    const hasWaiting = this.hasWaiting(this.personRow, paymentRow.paymentIndex);
-    const hasError = this.hasError(this.personRow, paymentRow.paymentIndex);
+    const hasWaiting = this.hasWaiting(
+      this.personRow,
+      paymentRow.lastPaymentIndex,
+    );
+    const hasError = this.hasError(this.personRow, paymentRow.lastPaymentIndex);
     const isSinglePayment = this.enableSinglePayment(
       this.personRow,
       paymentRow,
     );
 
     const content = hasWaiting
-      ? this.personRow[paymentRow.paymentIndex + '-error']
+      ? this.personRow[paymentRow.lastPaymentIndex + '-error']
       : hasError
       ? this.translate.instant(
           'page.program.program-people-affected.payment-status-popup.error-message',
         ) +
         ': <strong>' +
-        this.personRow[paymentRow.paymentIndex + '-error'] +
+        this.personRow[paymentRow.lastPaymentIndex + '-error'] +
         '</strong><br><br>' +
         this.translate.instant(
           'page.program.program-people-affected.payment-status-popup.fix-error',
@@ -244,7 +248,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
       !!paymentRow.transaction
     ) {
       await this.programsService
-        .exportVoucher(this.personRow.referenceId, paymentRow.paymentIndex)
+        .exportVoucher(this.personRow.referenceId, paymentRow.lastPaymentIndex)
         .then(
           async (voucherBlob) => {
             voucherUrl = window.URL.createObjectURL(voucherBlob);
@@ -259,7 +263,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
     if (hasError || paymentRow.hasMessageIcon || paymentRow.hasMoneyIconTable) {
       paymentDetails = {
         programId: this.programId,
-        payment: paymentRow.paymentIndex,
+        payment: paymentRow.lastPaymentIndex,
         amount: paymentRow.transaction.amount,
         referenceId: this.person.referenceId,
         currency: this.program.currency,
@@ -275,18 +279,18 @@ export class PaymentHistoryPopupComponent implements OnInit {
           ? Number(this.personRow.paymentAmountMultiplier.substr(0, 1))
           : 1,
         programId: this.programId,
-        payment: paymentRow.paymentIndex,
+        payment: paymentRow.lastPaymentIndex,
         referenceId: this.personRow.referenceId,
       };
     }
     const titleError = hasError
-      ? `${paymentRow.paymentIndex}: ${paymentRow.text}`
+      ? `${paymentRow.lastPaymentIndex}: ${paymentRow.text}`
       : null;
     const titleMessageIcon = paymentRow.hasMessageIcon
-      ? `${paymentRow.paymentIndex}: `
+      ? `${paymentRow.lastPaymentIndex}: `
       : null;
     const titleMoneyIcon = paymentRow.hasMoneyIconTable
-      ? `${paymentRow.paymentIndex}: `
+      ? `${paymentRow.lastPaymentIndex}: `
       : null;
     const titleSinglePayment = isSinglePayment ? paymentRow.text : null;
 

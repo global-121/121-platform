@@ -13,12 +13,13 @@ export class Payment extends PaymentData {
 }
 
 export class PaymentColumn extends PersonTableColumn {
-  paymentIndex?: number;
+  lastPaymentIndex?: number;
 }
 
 export class PaymentColumnDetail {
   text: string;
-  paymentIndex?: number;
+  lastPaymentIndex?: number;
+  payments?: number[];
   amount?: string;
   hasMessageIcon?: boolean;
   hasMoneyIconTable?: boolean;
@@ -26,7 +27,7 @@ export class PaymentColumnDetail {
 
 export class PaymentRowDetail {
   text: string;
-  paymentIndex?: number;
+  lastPaymentIndex?: number;
   amount?: string;
   hasMessageIcon?: boolean;
   hasMoneyIconTable?: boolean;

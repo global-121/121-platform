@@ -498,7 +498,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       name: this.translate.instant(
         'page.program.program-people-affected.column.payment',
       ),
-      paymentIndex: 0,
+      lastPaymentIndex: 0,
       ...this.columnDefaults,
       phases: [ProgramPhase.payment],
       width: columnDateTimeWidth,
@@ -819,12 +819,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   private getTransactionOfPaymentForRegistration(
-    paymentIndex: number,
+    lastPaymentIndex: number,
     referenceId: string,
   ): Transaction {
     return this.pastTransactions.find(
       (transaction) =>
-        transaction.payment === paymentIndex &&
+        transaction.payment === lastPaymentIndex &&
         transaction.referenceId === referenceId,
     );
   }
@@ -849,12 +849,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     let lastPayment = null;
 
     for (
-      let paymentIndex = this.lastPaymentId;
-      paymentIndex > 0;
-      paymentIndex--
+      let lastPaymentIndex = this.lastPaymentId;
+      lastPaymentIndex > 0;
+      lastPaymentIndex--
     ) {
       const transaction = this.getTransactionOfPaymentForRegistration(
-        paymentIndex,
+        lastPaymentIndex,
         personRow.referenceId,
       );
 
@@ -866,14 +866,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       }
     }
 
-    let paymentColumnValue: PaymentColumnDetail;
+    let paymentColumnValue = new PaymentColumnDetail();
+    paymentColumnValue.payments = [];
 
     if (!lastPayment) {
-      paymentColumnValue = {
-        text: this.translate.instant(
-          'page.program.program-people-affected.transaction.no-payment-yet',
-        ),
-      };
+      paymentColumnValue.text = this.translate.instant(
+        'page.program.program-people-affected.transaction.no-payment-yet',
+      );
     } else {
       let paymentColumnText: string;
       if (lastPayment.status === StatusEnum.success) {
@@ -901,16 +900,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
       paymentColumnValue = {
         text: paymentColumnText,
-        paymentIndex: lastPayment.payment,
+        lastPaymentIndex: lastPayment.payment,
+        payments: this.pastTransactions.map((t) => t.payment),
         amount: `${this.program.currency} ${lastPayment.amount}`,
         hasMessageIcon: this.enableMessageSentIcon(lastPayment),
         hasMoneyIconTable: this.enableMoneySentIconTable(lastPayment),
       };
     }
 
-    const paymentHistoryKey = 'paymentHistory';
-
-    personRow[paymentHistoryKey] = paymentColumnValue;
+    personRow.paymentHistory = paymentColumnValue;
     return personRow;
   }
 
@@ -971,12 +969,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return show;
   }
 
-  public hasError(row: PersonRow, paymentIndex: number): boolean {
-    return !!row['payment' + paymentIndex + '-error'];
+  public hasError(row: PersonRow, lastPaymentIndex: number): boolean {
+    return !!row['payment' + lastPaymentIndex + '-error'];
   }
 
-  public hasWaiting(row: PersonRow, paymentIndex: number): boolean {
-    return !!row['payment' + paymentIndex + '-waiting'];
+  public hasWaiting(row: PersonRow, lastPaymentIndex: number): boolean {
+    return !!row['payment' + lastPaymentIndex + '-waiting'];
   }
 
   public async editPersonAffectedPopup(row: PersonRow, programId: number) {
@@ -1024,13 +1022,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     value: PaymentColumnDetail,
   ) {
     const isSinglePayment = this.enableSinglePayment(row, column);
-    const hasError = this.hasError(row, column.paymentIndex);
+    const hasError = this.hasError(row, column.lastPaymentIndex);
 
     if (!this.hasVoucherSupport(row.fsp) && !hasError && !isSinglePayment) {
       return;
     }
 
-    const hasWaiting = this.hasWaiting(row, column.paymentIndex);
+    const hasWaiting = this.hasWaiting(row, column.lastPaymentIndex);
 
     const content = hasWaiting
       ? row[column.prop + '-error']
@@ -1058,7 +1056,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     if (this.canViewVouchers && this.hasVoucherSupport(row.fsp) && !!value) {
       await this.programsService
-        .exportVoucher(row.referenceId, column.paymentIndex)
+        .exportVoucher(row.referenceId, column.lastPaymentIndex)
         .then(
           async (voucherBlob) => {
             voucherUrl = window.URL.createObjectURL(voucherBlob);
@@ -1074,7 +1072,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     if (hasError || value.hasMessageIcon || value.hasMoneyIconTable) {
       paymentDetails = {
         programId: this.programId,
-        payment: column.paymentIndex,
+        payment: column.lastPaymentIndex,
         amount: row[column.prop + '-amount'],
         referenceId: row.referenceId,
         currency: this.program.currency,
@@ -1091,7 +1089,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ? Number(row.paymentAmountMultiplier.substr(0, 1))
           : 1,
         programId: this.programId,
-        payment: column.paymentIndex,
+        payment: column.lastPaymentIndex,
         referenceId: row.referenceId,
       };
     }
@@ -1194,8 +1192,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     const permission = this.canDoSinglePayment;
     const included = row.status === PaStatus.included;
     const noPaymentDone = !row[column.prop];
-    const noFuturePayment = column.paymentIndex <= this.lastPaymentId;
-    const onlyLast3Payments = column.paymentIndex > this.lastPaymentId - 3;
+    const noFuturePayment = column.lastPaymentIndex <= this.lastPaymentId;
+    const onlyLast3Payments = column.lastPaymentIndex > this.lastPaymentId - 3;
     const noPaymentInProgress = !this.paymentInProgress;
     return (
       permission &&
