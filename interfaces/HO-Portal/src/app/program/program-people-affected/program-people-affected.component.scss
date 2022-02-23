@@ -45,6 +45,11 @@
 }
 
 .status-pop-up {
+  margin-top: 0;
+  color: var(--ion-color-primary);
+  text-transform: uppercase;
+  height: 30px;
+
   &.is-error {
     color: var(--ion-color-danger);
     border-color: currentColor;

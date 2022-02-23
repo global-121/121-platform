@@ -145,25 +145,19 @@ export class PaymentHistoryPopupComponent implements OnInit {
           amount: `${transaction.amount} ${this.program.currency}`,
           fsp: this.person.fsp,
         };
+        paymentRowValue.text = formatDate(
+          transaction.paymentDate,
+          this.dateFormat,
+          this.locale,
+        );
         if (transaction.status === StatusEnum.success) {
-          paymentRowValue.text = formatDate(
-            transaction.paymentDate,
-            this.dateFormat,
-            this.locale,
-          );
         } else if (transaction.status === StatusEnum.waiting) {
           paymentRowValue.errorMessage = this.translate.instant(
             'page.program.program-people-affected.transaction.waiting-message',
           );
           paymentRowValue.waiting = true;
-          paymentRowValue.text = this.translate.instant(
-            'page.program.program-people-affected.transaction.waiting',
-          );
         } else {
           paymentRowValue.errorMessage = transaction.error;
-          paymentRowValue.text = this.translate.instant(
-            'page.program.program-people-affected.transaction.failed',
-          );
         }
       }
       this.paymentRows.push(paymentRowValue);
