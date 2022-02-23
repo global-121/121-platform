@@ -84,12 +84,12 @@ export class PaymentHistoryPopupComponent implements OnInit {
   }
 
   private getTransactionOfPaymentForRegistration(
-    lastPaymentIndex: number,
+    paymentIndex: number,
     referenceId: string,
   ): Transaction {
     return this.pastTransactions.find(
       (transaction) =>
-        transaction.payment === lastPaymentIndex &&
+        transaction.payment === paymentIndex &&
         transaction.referenceId === referenceId,
     );
   }
@@ -127,58 +127,53 @@ export class PaymentHistoryPopupComponent implements OnInit {
         this.person.referenceId,
       );
 
-      let paymentRowText;
-
+      let paymentRowValue: PaymentRowDetail = {
+        paymentIndex: index,
+        text: '',
+      };
       if (!transaction) {
-        paymentRowText = this.translate.instant(
+        paymentRowValue.text = this.translate.instant(
           'page.program.program-people-affected.transaction.do-single-payment',
         );
-        const paymentRowValue: PaymentRowDetail = {
-          lastPaymentIndex: index,
-          text: paymentRowText,
-        };
-        this.paymentRows.push(paymentRowValue);
       } else {
-        if (transaction.status === StatusEnum.success) {
-          paymentRowText = formatDate(
-            transaction.paymentDate,
-            this.dateFormat,
-            this.locale,
-          );
-        } else if (transaction.status === StatusEnum.waiting) {
-          this.paymentRows['payment' + index + '-error'] =
-            this.translate.instant(
-              'page.program.program-people-affected.transaction.waiting-message',
-            );
-          this.paymentRows['payment' + index + '-waiting'] = true;
-          paymentRowText = this.translate.instant(
-            'page.program.program-people-affected.transaction.waiting',
-          );
-        } else {
-          this.paymentRows['payment' + index + '-error'] = transaction.error;
-          this.paymentRows['payment' + index + '-amount'] = transaction.amount;
-          paymentRowText = this.translate.instant(
-            'page.program.program-people-affected.transaction.failed',
-          );
-        }
-        const paymentRowValue: PaymentRowDetail = {
-          lastPaymentIndex: index,
-          text: paymentRowText,
+        paymentRowValue = {
+          paymentIndex: index,
+          text: '',
           transaction,
           hasMessageIcon: this.enableMessageSentIcon(transaction),
           hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
           amount: `${transaction.amount} ${this.program.currency}`,
         };
-        this.paymentRows.push(paymentRowValue);
+        if (transaction.status === StatusEnum.success) {
+          paymentRowValue.text = formatDate(
+            transaction.paymentDate,
+            this.dateFormat,
+            this.locale,
+          );
+        } else if (transaction.status === StatusEnum.waiting) {
+          paymentRowValue.errorMessage = this.translate.instant(
+            'page.program.program-people-affected.transaction.waiting-message',
+          );
+          paymentRowValue.waiting = true;
+          paymentRowValue.text = this.translate.instant(
+            'page.program.program-people-affected.transaction.waiting',
+          );
+        } else {
+          paymentRowValue.errorMessage = transaction.error;
+          paymentRowValue.text = this.translate.instant(
+            'page.program.program-people-affected.transaction.failed',
+          );
+        }
       }
+      this.paymentRows.push(paymentRowValue);
     }
   }
-  public hasWaiting(row: PersonRow, lastPaymentIndex: number): boolean {
-    return !!row['payment' + lastPaymentIndex + '-waiting'];
+  public hasWaiting(paymentRow: PaymentRowDetail): boolean {
+    return !!paymentRow.waiting;
   }
 
-  public hasError(row: PersonRow, lastPaymentIndex: number): boolean {
-    return !!row['payment' + lastPaymentIndex + '-error'];
+  public hasError(paymentRow: PaymentRowDetail): boolean {
+    return !!paymentRow.errorMessage;
   }
 
   public enableSinglePayment(
@@ -188,9 +183,8 @@ export class PaymentHistoryPopupComponent implements OnInit {
     const permission = this.canDoSinglePayment;
     const included = personRow.status === PaStatus.included;
     const noPaymentDone = !paymentRow.transaction;
-    const noFuturePayment = paymentRow.lastPaymentIndex <= this.lastPaymentId;
-    const onlyLast3Payments =
-      paymentRow.lastPaymentIndex > this.lastPaymentId - 3;
+    const noFuturePayment = paymentRow.paymentIndex <= this.lastPaymentId;
+    const onlyLast3Payments = paymentRow.paymentIndex > this.lastPaymentId - 3;
     const noPaymentInProgress = !this.paymentInProgress;
 
     return (
@@ -214,24 +208,21 @@ export class PaymentHistoryPopupComponent implements OnInit {
     let showRetryButton = false;
     let doSinglePaymentDetails: SinglePayoutDetails = null;
     let paymentDetails: PopupPayoutDetails = null;
-    const hasWaiting = this.hasWaiting(
-      this.personRow,
-      paymentRow.lastPaymentIndex,
-    );
-    const hasError = this.hasError(this.personRow, paymentRow.lastPaymentIndex);
+    const hasWaiting = this.hasWaiting(paymentRow);
+    const hasError = this.hasError(paymentRow);
     const isSinglePayment = this.enableSinglePayment(
       this.personRow,
       paymentRow,
     );
 
     const content = hasWaiting
-      ? this.personRow[paymentRow.lastPaymentIndex + '-error']
+      ? paymentRow.errorMessage
       : hasError
       ? this.translate.instant(
           'page.program.program-people-affected.payment-status-popup.error-message',
         ) +
         ': <strong>' +
-        this.personRow[paymentRow.lastPaymentIndex + '-error'] +
+        paymentRow.errorMessage +
         '</strong><br><br>' +
         this.translate.instant(
           'page.program.program-people-affected.payment-status-popup.fix-error',
@@ -248,7 +239,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
       !!paymentRow.transaction
     ) {
       await this.programsService
-        .exportVoucher(this.personRow.referenceId, paymentRow.lastPaymentIndex)
+        .exportVoucher(this.personRow.referenceId, paymentRow.paymentIndex)
         .then(
           async (voucherBlob) => {
             voucherUrl = window.URL.createObjectURL(voucherBlob);
@@ -263,7 +254,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
     if (hasError || paymentRow.hasMessageIcon || paymentRow.hasMoneyIconTable) {
       paymentDetails = {
         programId: this.programId,
-        payment: paymentRow.lastPaymentIndex,
+        payment: paymentRow.paymentIndex,
         amount: paymentRow.transaction.amount,
         referenceId: this.person.referenceId,
         currency: this.program.currency,
@@ -279,18 +270,18 @@ export class PaymentHistoryPopupComponent implements OnInit {
           ? Number(this.personRow.paymentAmountMultiplier.substr(0, 1))
           : 1,
         programId: this.programId,
-        payment: paymentRow.lastPaymentIndex,
+        payment: paymentRow.paymentIndex,
         referenceId: this.personRow.referenceId,
       };
     }
     const titleError = hasError
-      ? `${paymentRow.lastPaymentIndex}: ${paymentRow.text}`
+      ? `${paymentRow.paymentIndex}: ${paymentRow.text}`
       : null;
     const titleMessageIcon = paymentRow.hasMessageIcon
-      ? `${paymentRow.lastPaymentIndex}: `
+      ? `${paymentRow.paymentIndex}: `
       : null;
     const titleMoneyIcon = paymentRow.hasMoneyIconTable
-      ? `${paymentRow.lastPaymentIndex}: `
+      ? `${paymentRow.paymentIndex}: `
       : null;
     const titleSinglePayment = isSinglePayment ? paymentRow.text : null;
 

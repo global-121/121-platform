@@ -13,25 +13,28 @@ export class Payment extends PaymentData {
 }
 
 export class PaymentColumn extends PersonTableColumn {
-  lastPaymentIndex?: number;
+  paymentIndex?: number;
 }
 
 export class PaymentColumnDetail {
   text: string;
-  lastPaymentIndex?: number;
+  paymentIndex?: number;
   payments?: number[];
   amount?: string;
   hasMessageIcon?: boolean;
   hasMoneyIconTable?: boolean;
+  errorMessage?: string;
 }
 
 export class PaymentRowDetail {
   text: string;
-  lastPaymentIndex?: number;
+  paymentIndex?: number;
   amount?: string;
   hasMessageIcon?: boolean;
   hasMoneyIconTable?: boolean;
   transaction?: Transaction;
+  errorMessage?: string;
+  waiting?: boolean;
 }
 
 export class PopupPayoutDetails {
