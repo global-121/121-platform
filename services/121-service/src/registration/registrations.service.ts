@@ -956,14 +956,14 @@ export class RegistrationsService {
       where: { referenceId: referenceId },
       relations: ['fsp', 'fsp.attributes'],
     });
-    if (registration.fsp.id === newFsp.id) {
+    if (registration.fsp?.id === newFsp.id) {
       const errors = `New FSP is the same as existing FSP for this Person Affected.`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
 
     // Remove old attributes
     const oldFsp = registration.fsp;
-    oldFsp.attributes.forEach(attribute => {
+    oldFsp?.attributes.forEach(attribute => {
       Object.keys(registration.customData).forEach(key => {
         if (attribute.name === key) {
           delete registration.customData[key];
