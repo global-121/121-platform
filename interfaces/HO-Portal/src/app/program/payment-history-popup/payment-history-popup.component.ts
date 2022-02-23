@@ -143,6 +143,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
           hasMessageIcon: this.enableMessageSentIcon(transaction),
           hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
           amount: `${transaction.amount} ${this.program.currency}`,
+          fsp: this.person.fsp,
         };
         if (transaction.status === StatusEnum.success) {
           paymentRowValue.text = formatDate(
@@ -214,6 +215,14 @@ export class PaymentHistoryPopupComponent implements OnInit {
       this.personRow,
       paymentRow,
     );
+
+    if (
+      !this.hasVoucherSupport(paymentRow.fsp) &&
+      !hasError &&
+      !isSinglePayment
+    ) {
+      return;
+    }
 
     const content = hasWaiting
       ? paymentRow.errorMessage

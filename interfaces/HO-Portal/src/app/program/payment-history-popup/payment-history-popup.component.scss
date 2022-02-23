@@ -18,9 +18,12 @@
     border-color: var(--ion-color-danger);
   }
 
+  &.no-action:hover,
+  &.no-action:focus,
   &.no-action {
-    color: var(--ion-color-primary);
-    border-color: var(--ion-color-medium);
+    cursor: default;
+    color: inherit;
+    border-color: inherit;
   }
 
   &:hover,

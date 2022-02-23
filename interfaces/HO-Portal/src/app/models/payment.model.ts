@@ -35,6 +35,7 @@ export class PaymentRowDetail {
   transaction?: Transaction;
   errorMessage?: string;
   waiting?: boolean;
+  fsp?: string;
 }
 
 export class PopupPayoutDetails {

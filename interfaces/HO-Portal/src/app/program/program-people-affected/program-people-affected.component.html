@@ -359,8 +359,6 @@
           (click)="paymentHistoryPopup(row, programId)"
           [ngClass]="{
             'is-error': hasError(row),
-            'no-action':
-              !hasVoucherSupport(row.fsp) && !hasError(row),
             'ion-no-padding popup-button status-pop-up': true
           }"
         >

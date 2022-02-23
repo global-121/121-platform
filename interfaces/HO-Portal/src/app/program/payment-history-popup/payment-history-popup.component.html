@@ -31,8 +31,8 @@
           type="button"
           (click)="rowClick(paymentRow)"
           [ngClass]="{
-            'is-error': paymentRow.transaction?.status !== 'success',
-            'no-action': paymentRow.transaction?.status === 'success',
+            'is-error': hasError(paymentRow),
+            'no-action': !hasVoucherSupport(paymentRow.fsp) && !hasError(paymentRow),
             'ion-no-padding popup-button': true
           }"
         >
