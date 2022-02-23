@@ -17,3 +17,15 @@ export class CreateUserRoleDto {
   })
   public readonly permissions: PermissionEnum[];
 }
+
+export class UpdateUserRoleDto {
+  @ApiModelProperty({ example: 'Updated user role label' })
+  @IsString()
+  public readonly label: string;
+
+  @ApiModelProperty({
+    enum: PermissionEnum,
+    example: Object.values(PermissionEnum),
+  })
+  public readonly permissions: PermissionEnum[];
+}
