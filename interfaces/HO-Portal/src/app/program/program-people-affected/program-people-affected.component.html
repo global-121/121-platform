@@ -1,37 +1,49 @@
-<ion-row class="ion-align-items-center ion-justify-content-between ion-margin-bottom">
+<ion-row
+  class="ion-align-items-center ion-justify-content-between ion-margin-bottom"
+>
   <div>
     <ion-row>
       <select
         name="bulkActions"
-        [title]="'page.program.program-people-affected.choose-action'|translate"
+        [title]="
+          'page.program.program-people-affected.choose-action' | translate
+        "
         (change)="selectAction($event)"
         class="styled-select ion-margin-end"
         [(ngModel)]="action"
       >
         <option value="">
-          <ng-container *ngIf="!hasEnabledActions()">{{ 'page.program.program-people-affected.no-actions'|translate }}</ng-container>
-          <ng-container *ngIf="hasEnabledActions()">{{ 'page.program.program-people-affected.choose-action'|translate }}</ng-container>
+          <ng-container *ngIf="!hasEnabledActions()">{{
+            'page.program.program-people-affected.no-actions' | translate
+          }}</ng-container>
+          <ng-container *ngIf="hasEnabledActions()">{{
+            'page.program.program-people-affected.choose-action' | translate
+          }}</ng-container>
         </option>
 
-        <ng-container *ngFor="let action of bulkActions;">
+        <ng-container *ngFor="let action of bulkActions">
           <option
             *ngIf="action.enabled"
             [value]="action.id"
             [disabled]="action.id === BulkActionEnum.divider"
-          >{{ action.label }}</option>
+          >
+            {{ action.label }}
+          </option>
         </ng-container>
       </select>
       <confirm-prompt
         [disabled]="applyBtnDisabled"
         (confirm)="applyAction($event)"
-        [subHeader]="'page.program.program-people-affected.submit-warning'|translate"
+        [subHeader]="
+          'page.program.program-people-affected.submit-warning' | translate
+        "
         [message]="submitWarning.message"
         [inputProps]="getCurrentBulkAction()?.confirmConditions"
         [submitPaymentProps]="submitPaymentProps"
         [action]="action"
         class="ion-float-end"
       >
-        {{ 'page.program.program-people-affected.apply-action'|translate }}
+        {{ 'page.program.program-people-affected.apply-action' | translate }}
       </confirm-prompt>
 
       <ion-spinner
@@ -43,25 +55,32 @@
   </div>
   <div>
     <ion-input
-      [placeholder]="'page.program.program-people-affected.filter-placeholder'|translate"
-      [attr.title]="'page.program.program-people-affected.filter-placeholder'|translate"
-      [attr.aria-label]="'page.program.program-people-affected.filter-placeholder'|translate"
+      [placeholder]="
+        'page.program.program-people-affected.filter-placeholder' | translate
+      "
+      [attr.title]="
+        'page.program.program-people-affected.filter-placeholder' | translate
+      "
+      [attr.aria-label]="
+        'page.program.program-people-affected.filter-placeholder' | translate
+      "
       (ionChange)="filterRowsVisible($event.target.value)"
-      (debounce)="1000"
+      (debounce)="(1000)"
       [value]="filterRowsVisibleQuery"
       [clearInput]="true"
       class="filter-input"
     >
       <ion-icon
         name="funnel"
-        [attr.title]="'page.program.program-people-affected.filter-placeholder'|translate"
+        [attr.title]="
+          'page.program.program-people-affected.filter-placeholder' | translate
+        "
         aria-hidden="true"
         size="small"
         slot="start"
         style="padding-inline-start: var(--padding-start)"
       ></ion-icon>
     </ion-input>
-
   </div>
 </ion-row>
 <div
@@ -82,7 +101,7 @@
   [virtualization]="true"
   [reorderable]="false"
   sortType="single"
-  [sorts]="[{prop: 'pa', dir: 'asc'}]"
+  [sorts]="[{ prop: 'pa', dir: 'asc' }]"
   [loadingIndicator]="isLoading"
   [columns]="columns"
   [rows]="visiblePeopleAffected"
@@ -109,10 +128,10 @@
           type="checkbox"
           [checked]="headerChecked"
           [disabled]="!headerSelectAllVisible"
-          [ngStyle]="headerSelectAllVisible ? {} : { 'visibility': 'hidden' }"
+          [ngStyle]="headerSelectAllVisible ? {} : { visibility: 'hidden' }"
           (change)="selectFn(!allRowsSelected)"
         />
-        {{ 'page.program.program-people-affected.column.select'|translate }}
+        {{ 'page.program.program-people-affected.column.select' | translate }}
       </label>
     </ng-template>
 
@@ -134,7 +153,7 @@
 
   <ngx-datatable-column
     prop="pa"
-    [name]="'page.program.program-people-affected.column.person'|translate"
+    [name]="'page.program.program-people-affected.column.person' | translate"
     width="130"
     frozenLeft="true"
     [comparator]="paComparator"
@@ -143,23 +162,32 @@
     [sortable]="columnDefaults.sortable"
     [headerClass]="columnDefaults.headerClass"
   >
-    <ng-template
-      ngx-datatable-cell-template
-      let-value="value"
-      let-row="row"
-    >
-      <div
-        class="ion-align-items-center"
-        style="display: flex;"
-      >
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+      <div class="ion-align-items-center" style="display: flex">
         <button
           *ngIf="canViewPersonalData"
           id="edit-button"
           type="button"
           class="ion-no-padding popup-button"
           (click)="editPersonAffectedPopup(row, programId)"
-          [attr.title]="('page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'|translate) + (row.hasNote ? (' - ' + ('page.program.program-people-affected.edit-person-affected-popup.has-notes-title'|translate)) : '')"
-          [attr.aria-label]="('page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'|translate) + (row.hasNote ? (' - ' + ('page.program.program-people-affected.edit-person-affected-popup.has-notes-title'|translate)) : '')"
+          [attr.title]="
+            ('page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'
+              | translate) +
+            (row.hasNote
+              ? ' - ' +
+                ('page.program.program-people-affected.edit-person-affected-popup.has-notes-title'
+                  | translate)
+              : '')
+          "
+          [attr.aria-label]="
+            ('page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'
+              | translate) +
+            (row.hasNote
+              ? ' - ' +
+                ('page.program.program-people-affected.edit-person-affected-popup.has-notes-title'
+                  | translate)
+              : '')
+          "
         >
           <ion-icon
             name="information"
@@ -180,22 +208,21 @@
     </ng-template>
   </ngx-datatable-column>
 
-
   <ngx-datatable-column
-  *ngFor="let column of columns;"
-  [prop]="column.prop"
-  [name]="column.name"
-  [width]="column.width"
-  [minWidth]="column.minWidth"
-  [maxWidth]="column.maxWidth"
-  [draggable]="column.draggable"
-  [resizeable]="column.resizable"
-  [sortable]="column.sortable"
-  [comparator]="column.comparator"
-  [canAutoResize]="column.canAutoResize"
-  [headerClass]="column.headerClass"
-  [cellClass]="column.cellClass"
-  [frozenLeft]="column.frozenLeft"
+    *ngFor="let column of columns"
+    [prop]="column.prop"
+    [name]="column.name"
+    [width]="column.width"
+    [minWidth]="column.minWidth"
+    [maxWidth]="column.maxWidth"
+    [draggable]="column.draggable"
+    [resizeable]="column.resizable"
+    [sortable]="column.sortable"
+    [comparator]="column.comparator"
+    [canAutoResize]="column.canAutoResize"
+    [headerClass]="column.headerClass"
+    [cellClass]="column.cellClass"
+    [frozenLeft]="column.frozenLeft"
   ></ngx-datatable-column>
 
   <ngx-datatable-column
@@ -212,9 +239,18 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column
-    *ngIf="showInclusionScore() && [phaseEnum.registrationValidation, phaseEnum.inclusion, phaseEnum.reviewInclusion].includes(thisPhase)"
+    *ngIf="
+      showInclusionScore() &&
+      [
+        phaseEnum.registrationValidation,
+        phaseEnum.inclusion,
+        phaseEnum.reviewInclusion
+      ].includes(thisPhase)
+    "
     prop="inclusionScore"
-    [name]="'page.program.program-people-affected.column.inclusion-score'|translate"
+    [name]="
+      'page.program.program-people-affected.column.inclusion-score' | translate
+    "
     minWidth="80"
     [draggable]="columnDefaults.draggable"
     [resizeable]="columnDefaults.resizeable"
@@ -222,9 +258,21 @@
     [headerClass]="columnDefaults.headerClass"
   ></ngx-datatable-column>
   <ngx-datatable-column
-    *ngIf="showWhatsappNumber() && [phaseEnum.registrationValidation, phaseEnum.inclusion, phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) && canViewPersonalData"
+    *ngIf="
+      showWhatsappNumber() &&
+      [
+        phaseEnum.registrationValidation,
+        phaseEnum.inclusion,
+        phaseEnum.reviewInclusion,
+        phaseEnum.payment
+      ].includes(thisPhase) &&
+      canViewPersonalData
+    "
     prop="whatsappPhoneNumber"
-    [name]="'page.program.program-people-affected.column.whatsappPhoneNumber'|translate"
+    [name]="
+      'page.program.program-people-affected.column.whatsappPhoneNumber'
+        | translate
+    "
     minWidth="130"
     [draggable]="columnDefaults.draggable"
     [resizeable]="columnDefaults.resizeable"
@@ -232,9 +280,13 @@
     [headerClass]="columnDefaults.headerClass"
   ></ngx-datatable-column>
   <ngx-datatable-column
-    *ngIf="showVnumber() && [phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) && canViewPersonalData"
+    *ngIf="
+      showVnumber() &&
+      [phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) &&
+      canViewPersonalData
+    "
     prop="vnumber"
-    [name]="'page.program.program-people-affected.column.vnumber'|translate"
+    [name]="'page.program.program-people-affected.column.vnumber' | translate"
     minWidth="100"
     [draggable]="columnDefaults.draggable"
     [resizeable]="columnDefaults.resizeable"
@@ -256,25 +308,27 @@
     [headerClass]="column.headerClass"
     [cellClass]="column.cellClass"
   >
-    <ng-template
-      ngx-datatable-cell-template
-      let-value="value"
-      let-row="row"
-    >
-      <span
-        *ngIf="value === true"
-        [title]="'page.program.program-people-affected.column.custom-attribute-true'|translate"
-      >
-        <ion-icon class="checkmark true" name="checkmark-circle"></ion-icon>
-      </span>
-      <span 
-        *ngIf="value === false" 
-        [title]="'page.program.program-people-affected.column.custom-attribute-false'|translate"
-      >
-        <ion-icon class="checkmark" name="ellipse-outline"></ion-icon>
-      </span>
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+      <ng-container *ngIf="value === true || value === false">
+        <span
+          [title]="
+            value
+              ? ('page.program.program-people-affected.column.custom-attribute-true'
+                | translate)
+              : ('page.program.program-people-affected.column.custom-attribute-false'
+                | translate)
+          "
+        >
+          <ion-checkbox
+            color="success"
+            mode="ios"
+            [checked]="value"
+            (ionChange)="onCheckboxChange(row, column, !value)"
+          ></ion-checkbox>
+        </span>
+      </ng-container>
       <ng-container *ngIf="value !== true && value !== false && value">
-        {{value}}
+        {{ value }}
       </ng-container>
     </ng-template>
   </ngx-datatable-column>
@@ -293,27 +347,36 @@
     [headerClass]="column.headerClass"
     [cellClass]="column.cellClass"
   >
-    <ng-template
-      ngx-datatable-cell-template
-      let-value="value"
-      let-row="row"
-    >
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
       <ng-container *ngIf="value">
         <button
           type="button"
           (click)="statusPopup(row, column, value)"
           [ngClass]="{
             'is-error': hasError(row, column.paymentIndex),
-            'no-action': !hasVoucherSupport(row.fsp) && !hasError(row, column.paymentIndex),
+            'no-action':
+              !hasVoucherSupport(row.fsp) &&
+              !hasError(row, column.paymentIndex),
             'ion-no-padding popup-button status-pop-up': true
-           }"
-          [attr.title]="'page.program.program-people-affected.transaction.show-status'|translate"
-          [attr.aria-label]="'page.program.program-people-affected.transaction.show-status'|translate"
+          }"
+          [attr.title]="
+            'page.program.program-people-affected.transaction.show-status'
+              | translate
+          "
+          [attr.aria-label]="
+            'page.program.program-people-affected.transaction.show-status'
+              | translate
+          "
         >
           {{ value.text }}
-          <div style="display: flex;" class="ion-justify-content-center ion-align-items-center">
+          <div
+            style="display: flex"
+            class="ion-justify-content-center ion-align-items-center"
+          >
             {{ value.amount }}
-            <span *ngIf="value.hasMessageIcon || value.hasMoneyIconTable">&nbsp;</span>
+            <span *ngIf="value.hasMessageIcon || value.hasMoneyIconTable"
+              >&nbsp;</span
+            >
             <ion-icon
               *ngIf="value.hasMessageIcon"
               name="mail"
@@ -329,9 +392,7 @@
           </div>
         </button>
       </ng-container>
-      <ng-container
-        *ngIf="enableSinglePayment(row,column)"
-      >
+      <ng-container *ngIf="enableSinglePayment(row, column)">
         <button
           type="button"
           (click)="statusPopup(row, column, value)"
@@ -340,8 +401,11 @@
             'ion-no-padding popup-button': true
           }"
         >
-          {{ 'page.program.program-people-affected.transaction.do-single-payment'|translate }}
-          <br>
+          {{
+            'page.program.program-people-affected.transaction.do-single-payment'
+              | translate
+          }}
+          <br />
           <ion-icon
             name="add-circle-outline"
             size="small"
