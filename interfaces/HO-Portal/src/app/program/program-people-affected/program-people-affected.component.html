@@ -322,6 +322,7 @@
           <ion-checkbox
             color="success"
             mode="ios"
+            [disabled]="!canUpdatePaData"
             [checked]="value"
             (ionChange)="onCheckboxChange(row, column, !value)"
           ></ion-checkbox>

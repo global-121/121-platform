@@ -70,7 +70,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     attribute: string,
     value: string,
   ): Promise<void> {
-    console.log('attribute: ', attribute);
     this.inProgress[attribute] = true;
     this.programsService
       .updatePaAttribute(this.person.referenceId, attribute, value)
