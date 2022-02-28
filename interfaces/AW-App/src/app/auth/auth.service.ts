@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
-import { JwtService } from '../services/jwt.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import Permission from './permission.enum';
 
@@ -11,26 +10,26 @@ import Permission from './permission.enum';
 })
 export class AuthService {
   public redirectUrl: string;
+  private userKey = 'logged-in-user-AW';
 
   private authenticationState = new BehaviorSubject<User | null>(null);
   public authenticationState$ = this.authenticationState.asObservable();
 
   constructor(
     private programsService: ProgramsServiceApiService,
-    private jwtService: JwtService,
     private router: Router,
   ) {
     this.checkAuthenticationState();
   }
 
   checkAuthenticationState() {
-    const user = this.getUserFromToken();
+    const user = this.getUserFromStorage();
 
     this.authenticationState.next(user);
   }
 
   public isLoggedIn(): boolean {
-    return this.getUserFromToken() !== null;
+    return this.getUserFromStorage() !== null;
   }
 
   public hasPermission(
@@ -38,7 +37,7 @@ export class AuthService {
     user?: User | null,
   ): boolean {
     if (!user) {
-      user = this.getUserFromToken();
+      user = this.getUserFromStorage();
     }
     return (
       user && user.permissions && user.permissions.includes(requiredPermission)
@@ -46,46 +45,45 @@ export class AuthService {
   }
 
   public hasAllPermissions(requiredPermissions: Permission[]): boolean {
-    const user = this.getUserFromToken();
+    const user = this.getUserFromStorage();
     return requiredPermissions.every((p) => this.hasPermission(p, user));
   }
 
-  private getUserFromToken(): User | null {
-    const rawToken = this.jwtService.getToken();
+  private getUserFromStorage(): User | null {
+    const rawUser = localStorage.getItem(this.userKey);
 
-    if (!rawToken) {
+    if (!rawUser) {
       return null;
     }
 
-    let user: User | any;
+    let user: User;
 
     try {
-      user = this.jwtService.decodeToken(rawToken);
+      user = JSON.parse(rawUser);
     } catch {
       console.warn('AuthService: Invalid token');
       return null;
     }
-
-    if (!user || !user.permissions) {
+    if (!user || !user.username || !user.permissions) {
       console.warn('AuthService: No valid user');
       return null;
     }
-
     return {
       username: user.username,
       permissions: user.permissions,
+      expires: user.expires,
     };
   }
 
-  public async login(email: string, password: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.programsService.login(email, password).then(
+  public async login(username: string, password: string): Promise<any> {
+    return new Promise<void>((resolve, reject) => {
+      this.programsService.login(username, password).then(
         (response) => {
-          if (response && response.token) {
-            this.jwtService.saveToken(response.token);
+          if (response) {
+            localStorage.setItem(this.userKey, JSON.stringify(response));
           }
 
-          const user = this.getUserFromToken();
+          const user = this.getUserFromStorage();
           this.authenticationState.next(user);
 
           if (!user) {
@@ -95,8 +93,10 @@ export class AuthService {
           if (this.redirectUrl) {
             this.router.navigate([this.redirectUrl]);
             this.redirectUrl = null;
-            return;
+            return resolve();
           }
+
+          this.router.navigate(['/home']);
 
           return resolve();
         },
@@ -108,8 +108,10 @@ export class AuthService {
     });
   }
 
-  public logout() {
-    this.jwtService.destroyToken();
+  public async logout() {
+    localStorage.removeItem(this.userKey);
+    await this.programsService.logout();
+
     this.authenticationState.next(null);
   }
 }

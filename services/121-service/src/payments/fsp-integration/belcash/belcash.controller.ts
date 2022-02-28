@@ -8,7 +8,6 @@ import {
 import { BelcashService } from './belcash.service';
 import { BelcashPaymentStatusDto } from './dto/belcash-payment-status.dto';
 
-@ApiBearerAuth()
 @ApiUseTags('payments/belcash')
 @Controller('payments/belcash')
 export class BelcashController {

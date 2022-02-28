@@ -3,7 +3,15 @@ import { PermissionEnum } from './permission.enum';
 import { UserEntity } from './user.entity';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
-import { Get, Post, Body, Param, Controller, UseGuards } from '@nestjs/common';
+import {
+  Get,
+  Post,
+  Body,
+  Param,
+  Controller,
+  UseGuards,
+  Res,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
 import { LoginUserDto, UpdateUserDto } from './dto';
@@ -29,7 +37,6 @@ export class UserController {
     this.userService = userService;
   }
 
-  @ApiBearerAuth()
   @Permissions(PermissionEnum.RoleCREATE)
   @ApiOperation({ title: 'Create new user role' })
   @Post('user/role')
@@ -39,7 +46,6 @@ export class UserController {
     return await this.userService.addUserRole(userRoleData);
   }
 
-  @ApiBearerAuth()
   @Permissions(PermissionEnum.AidWorkerCREATE)
   @ApiOperation({ title: 'Sign-up new Aid Worker user' })
   @Post('user/aidworker')
@@ -59,11 +65,45 @@ export class UserController {
 
   @ApiOperation({ title: 'Log in existing user' })
   @Post('user/login')
-  public async login(@Body() loginUserDto: LoginUserDto): Promise<UserRO> {
-    return await this.userService.login(loginUserDto);
+  public async login(
+    @Body() loginUserDto: LoginUserDto,
+    @Res() res,
+  ): Promise<UserRO> {
+    try {
+      const user = await this.userService.login(loginUserDto);
+      const exp = new Date(Date.now() + 60 * 24 * 3600000);
+      res.cookie('access_token', user.user.token, {
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+        secure: process.env.NODE_ENV === 'production',
+        expires: exp,
+        httpOnly: true,
+      });
+      return res.send({
+        username: user.user.username,
+        permissions: user.user.permissions,
+        expires: exp,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
-  @ApiBearerAuth()
+  @ApiOperation({ title: 'Log out existing user' })
+  @Post('user/logout')
+  public async logout(@Res() res): Promise<UserRO> {
+    try {
+      res.cookie('access_token', '', {
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+        secure: process.env.NODE_ENV === 'production',
+        expires: new Date(Date.now() - 60 * 24 * 3600000),
+        httpOnly: true,
+      });
+      return res.send();
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
   public async update(
@@ -73,7 +113,6 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
-  @ApiBearerAuth()
   @Permissions(PermissionEnum.AidWorkerDELETE)
   @ApiOperation({ title: 'Delete user by userId' })
   @Post('user/delete/:userId')
@@ -82,7 +121,6 @@ export class UserController {
     return await this.userService.delete(Number(params.userId));
   }
 
-  @ApiBearerAuth()
   @ApiOperation({ title: 'User deletes itself' })
   @Post('user/delete')
   public async deleteCurrentUser(
@@ -91,14 +129,12 @@ export class UserController {
     return await this.userService.delete(deleterId);
   }
 
-  @ApiBearerAuth()
   @ApiOperation({ title: 'Get current user' })
   @Get('user')
   public async findMe(@User('username') username: string): Promise<UserRO> {
     return await this.userService.findByUsername(username);
   }
 
-  @ApiBearerAuth()
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
   @ApiOperation({ title: 'Assign Aidworker to program' })
   @Post('user/assign-to-program')

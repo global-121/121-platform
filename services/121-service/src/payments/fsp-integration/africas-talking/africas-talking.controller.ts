@@ -9,7 +9,6 @@ import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dt
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { AfricasTalkingService } from './africas-talking.service';
 
-@ApiBearerAuth()
 @ApiUseTags('payments/africas-talking')
 @Controller('payments/africas-talking')
 export class AfricasTalkingController {

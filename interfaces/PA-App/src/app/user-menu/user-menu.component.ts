@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   AlertController,
   LoadingController,
@@ -17,7 +17,7 @@ import { PaDataService } from 'src/app/services/padata.service';
   templateUrl: './user-menu.component.html',
   styleUrls: ['./user-menu.component.scss'],
 })
-export class UserMenuComponent implements OnInit {
+export class UserMenuComponent {
   public isLoggedIn = false;
   public username: string;
   private loadingDelete: HTMLIonLoadingElement;
@@ -29,11 +29,11 @@ export class UserMenuComponent implements OnInit {
     private alertController: AlertController,
     private loadingController: LoadingController,
     private logger: LoggingService,
-  ) {}
-
-  async ngOnInit() {
-    this.isLoggedIn = this.paData.hasAccount;
-    this.username = await this.paData.getUsername();
+  ) {
+    this.paData.authenticationState$.subscribe((user) => {
+      this.isLoggedIn = !!user;
+      this.username = user && user.username ? user.username : '';
+    });
   }
 
   close() {

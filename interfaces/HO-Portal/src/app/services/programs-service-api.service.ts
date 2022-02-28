@@ -12,7 +12,7 @@ import { Note, PaStatus, Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
 import { Transaction } from '../models/transaction.model';
-import { UserModel } from '../models/user.model';
+import { User } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { arrayToXlsx } from '../shared/array-to-xlsx';
 import { ApiService } from './api.service';
@@ -23,7 +23,7 @@ import { ApiService } from './api.service';
 export class ProgramsServiceApiService {
   constructor(private apiService: ApiService) {}
 
-  login(username: string, password: string): Promise<UserModel | null> {
+  login(username: string, password: string): Promise<User | null> {
     console.log('ProgramsService : login()');
 
     return this.apiService
@@ -38,9 +38,11 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         map((response) => {
-          if (response && response.user) {
+          if (response) {
             return {
-              token: response.user.token,
+              username: response.username,
+              permissions: response.permissions,
+              expires: response.expires,
             };
           }
           return null;
@@ -49,21 +51,17 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  changePassword(newPassword: string): Promise<UserModel | null> {
+  logout(): Promise<null> {
+    return this.apiService
+      .post(environment.url_121_service_api, '/user/logout', {}, true)
+      .toPromise();
+  }
+
+  changePassword(newPassword: string): Promise<null> {
     return this.apiService
       .post(environment.url_121_service_api, '/user/change-password', {
         password: newPassword,
       })
-      .pipe(
-        map((response) => {
-          if (response && response.user) {
-            return {
-              token: response.user.token,
-            };
-          }
-          return null;
-        }),
-      )
       .toPromise();
   }
 
@@ -451,6 +449,7 @@ export class ProgramsServiceApiService {
       })
       .toPromise();
   }
+
   saveAction(actionType: ActionType, programId: number | string): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/actions/save`, {

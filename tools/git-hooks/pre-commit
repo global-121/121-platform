@@ -42,7 +42,6 @@ check_if_need_to_be_in_sync "app/shared/q-and-a-set"
 check_if_need_to_be_in_sync "app/shared/qr-scanner"
 check_if_need_to_be_in_sync "app/shared/numeric-input"
 check_if_need_to_be_in_sync "app/shared/phone-number-input"
-check_if_need_to_be_in_sync "app/services/jwt.service"
 check_if_need_to_be_in_sync "app/services/api.service"
 check_if_need_to_be_in_sync "app/services/translatable-string"
 

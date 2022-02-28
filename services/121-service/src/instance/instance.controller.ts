@@ -22,7 +22,6 @@ export class InstanceController {
     return await this.instanceService.getInstance();
   }
 
-  @ApiBearerAuth()
   @Permissions(PermissionEnum.InstanceUPDATE)
   @ApiOperation({ title: 'Update instance' })
   @Post('update')

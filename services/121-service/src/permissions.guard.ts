@@ -32,14 +32,17 @@ export class PermissionsGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const authHeaders = request.headers.authorization;
-    if (authHeaders && (authHeaders as string).split(' ')[1]) {
-      const token = (authHeaders as string).split(' ')[1];
+
+    if (
+      request.cookies &&
+      request.cookies['access_token'] &&
+      endpointPermissions
+    ) {
+      const token = request.cookies['access_token'];
       const decoded: any = jwt.verify(
         token,
         process.env.SECRETS_121_SERVICE_SECRET,
       );
-
       if (decoded.permissions) {
         hasAccess = await this.aidworkerCanActivate(
           decoded.permissions,
