@@ -8,7 +8,6 @@
     "design": "Design",
     "registration-validation": "Registration & Validation",
     "inclusion": "Inclusion",
-    "review-inclusion": "Review Inclusion",
     "payment": "Payment",
     "evaluation": "Evaluation"
   },
@@ -72,10 +71,6 @@
         },
         "inclusion": {
           "label": "Inclusion",
-          "btnText": "Move to: Review inclusion"
-        },
-        "reviewInclusion": {
-          "label": "Review Inclusion",
           "btnText": "Move to: Payment"
         },
         "payment": {
