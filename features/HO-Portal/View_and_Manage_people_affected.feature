@@ -24,7 +24,7 @@ Feature: View and manage people affected (generic features)
     And "transfer value" column is shown
     And "inclusion score" column is shown (if "validation" is configured for the program)
     And "financial service provider" column is shown (in "reviewInclusion" and "payment" pages only)
-    And "payment columns" are shown (in "payment" page only)
+    And "Payment History" columns is shown (in "payment" page only)
 
   Scenario: View columns of table WITH access to personal data
     Given the logged-in user also has"RegistrationPersonalREAD" permission
