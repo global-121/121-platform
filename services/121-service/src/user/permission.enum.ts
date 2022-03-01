@@ -88,7 +88,11 @@ export enum PermissionEnum {
   AidWorkerDELETE = 'aid-worker.delete',
   AidWorkerProgramUPDATE = 'aid-worker:program.update',
 
+  // Roles
+  RoleREAD = 'role.read',
   RoleCREATE = 'role.create',
+  RoleUPDATE = 'role.update',
+  RoleDELETE = 'role.delete',
 
   // Used for development purposes to test endpoints only the admin can access
   Test = 'test',
