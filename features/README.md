@@ -17,9 +17,9 @@
 
 Features of the 121-platform are described in this folder in a standardizes way using the [Gherkin-language](https://cucumber.io/docs/gherkin/).
 
-### For Humanitarian Organization
+### For Aid Workers
 
-#### Using HO-Portal
+#### Using 121-Portal
 
 - [View metrics overview](HO-Portal/View_metrics_overview.feature)
 - [View PA-status metrics](HO-Portal/View_PA-status_metrics.feature)
@@ -34,8 +34,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Select people for validation](HO-Portal/Select_people_for_validation.feature)
 - [Export People Affected list](HO-Portal/Export_PA_list.feature)
 - [Export selected for validation list](HO-Portal/Export_selected_for_validation_list.feature)
-- [Include people affected (`Run Program` role)](HO-Portal/Include_people_affected_Run_Program_role.feature)
-- [Include people affected (`Personal Data` role)](HO-Portal/Include_people_affected_Personal_Data_role.feature)
+- [Include people affected](HO-Portal/Include_people_affected.feature)
 - [Reject or End Inclusion of people affected](HO-Portal/Reject_or_End_inclusion_people_affected.feature)
 - [Export inclusion list](HO-Portal/Export_Inclusion_List.feature)
 - [Export duplicate phone-numbers list](HO-Portal/Export_duplicate_phone-numbers_List.feature)
@@ -46,7 +45,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - Get voucher balance
 - View/Download/Print voucher
 
-#### Generic HO-Portal components/features
+#### Generic 121-Portal components/features
 
 - Login
 - Logout
@@ -54,10 +53,18 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Navigate home and main menu](HO-Portal/Navigate_home_and_main_menu.feature)
 - [Navigate program phases](HO-Portal/Navigate_program_phases.feature)
 
-#### Automated processes (121-service)
+#### Using AW-App
 
-- Send reminder on uncollected vouchers
-  - With 2000+ PAs in system
+- [Download validation data](AW-App/Download_validation_data.feature)
+- [Get Person Affected validation data](AW-App/Get_Person_Affected_Validation_Data.feature)
+- [Validate Person Affected](AW-App/Validate_Person_Affected.feature)
+- [Upload validation data](AW-App/Upload_validation_data.feature)
+
+#### Generic AW-App components/features
+
+- Login
+- Logout
+- Change password
 
 ### For Person/People Affected
 
@@ -65,6 +72,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 - Send a WhatsApp message
   - [Claim digital voucher](Other/Claim_digital_voucher.feature)
+  - Read queued notification
 
 #### Using PA-App
 
@@ -83,20 +91,9 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
 - Changes based on instance-configuration/values
 
-### For Aid-Worker
 
-#### Using AW-App
 
-- [Download validation data](AW-App/Download_validation_data.feature)
-- [Get Person Affected validation data](AW-App/Get_Person_Affected_Validation_Data.feature)
-- [Validate Person Affected](AW-App/Validate_Person_Affected.feature)
-- [Upload validation data](AW-App/Upload_validation_data.feature)
 
-#### Generic AW-App components/features
-
-- Login
-- Logout
-- Change password
 
 ### For Admin-user
 
@@ -104,6 +101,10 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 - [Update phone-numbers of Person Affected](Admin-user/Update_phone_numbers.feature)
 - [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provider.feature)
+
+### Automated processes (121-service)
+
+- Send reminder on uncollected vouchers
 
 ---
 
