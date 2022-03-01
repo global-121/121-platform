@@ -181,7 +181,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         'page.program.program-people-affected.actions.end-inclusion',
       ),
       permissions: [Permission.RegistrationStatusInclusionEndedUPDATE],
-      phases: [ProgramPhase.inclusion, ProgramPhase.payment],
+      phases: [ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         checkbox: this.translate.instant(
@@ -304,7 +304,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...this.columnDefaults,
         frozenLeft: this.platform.width() > 768,
-        phases: [ProgramPhase.inclusion, ProgramPhase.payment],
         permissions: [Permission.RegistrationPersonalREAD],
       },
       {
@@ -314,11 +313,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...this.columnDefaults,
         frozenLeft: this.platform.width() > 1280,
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
-        ],
         permissions: [Permission.RegistrationPersonalREAD],
         minWidth: columnPhoneNumberWidth,
       },
@@ -328,11 +322,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.preferredLanguage',
         ),
         ...this.columnDefaults,
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
-        ],
         permissions: [Permission.RegistrationPersonalREAD],
       },
       {
@@ -395,7 +384,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.selected-for-validation',
         ),
         ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation],
+        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
         showIfNoValidation: false,
         width: columnDateTimeWidth,
       },
@@ -442,11 +431,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.paymentAmountMultiplier',
         ),
         ...this.columnDefaults,
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.payment,
-        ],
         width: columnScoreWidth,
       },
       {
@@ -455,7 +439,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.fsp',
         ),
         ...this.columnDefaults,
-        phases: [ProgramPhase.inclusion, ProgramPhase.payment],
         width: 150,
       },
     ];
