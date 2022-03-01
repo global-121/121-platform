@@ -1,0 +1,33 @@
+.full-width {
+  width: 100%;
+}
+
+.popup-button {
+  padding: 0.2em 0.4em;
+  font-family: var(--ion-font-family);
+  font-size: inherit;
+  background: transparent;
+  border: 1px solid #bbb;
+  border-radius: 0.3em;
+  width: 160px;
+  height: 50px;
+
+  &:not(:disabled):hover,
+  &:not(:disabled):focus {
+    color: var(--ion-color-primary);
+    border-color: currentColor;
+  }
+
+  &.no-action:hover,
+  &.no-action:focus,
+  &.no-action {
+    cursor: default;
+    color: inherit;
+    border-color: inherit;
+  }
+
+  &.is-error {
+    color: var(--ion-color-danger);
+    border-color: var(--ion-color-danger);
+  }
+}

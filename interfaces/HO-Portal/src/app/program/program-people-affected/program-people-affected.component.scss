@@ -42,17 +42,18 @@
     color: var(--ion-color-primary);
     border-color: currentColor;
   }
+}
 
-  &.no-action:hover,
-  &.no-action:focus,
-  &.no-action {
-    cursor: default;
-    color: inherit;
-    border-color: inherit;
-  }
+.payment-history-button {
+  width: 180px;
 }
 
 .status-pop-up {
+  margin-top: 0;
+  color: var(--ion-color-primary);
+  text-transform: uppercase;
+  height: 30px;
+
   &.is-error {
     color: var(--ion-color-danger);
     border-color: currentColor;
