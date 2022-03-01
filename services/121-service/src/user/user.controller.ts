@@ -59,8 +59,25 @@ export class UserController {
   @Post('user/person-affected')
   public async createPA(
     @Body() userData: CreateUserPersonAffectedDto,
+    @Res() res,
   ): Promise<UserRO> {
-    return this.userService.createPersonAffected(userData);
+    try {
+      const user = await this.userService.createPersonAffected(userData);
+      const exp = new Date(Date.now() + 60 * 24 * 3600000);
+      res.cookie('access_token', user.user.token, {
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+        secure: process.env.NODE_ENV === 'production',
+        expires: exp,
+        httpOnly: true,
+      });
+      return res.send({
+        username: user.user.username,
+        permissions: user.user.permissions,
+        expires: exp,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   @ApiOperation({ title: 'Log in existing user' })
