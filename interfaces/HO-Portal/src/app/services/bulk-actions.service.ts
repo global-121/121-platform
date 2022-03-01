@@ -46,14 +46,7 @@ export class BulkActionsService {
           PaStatus.registered,
         ]);
         break;
-      case BulkActionId.includeRunProgramRole:
-        personData.checkboxVisible = this.hasStatus(personData, [
-          PaStatus.registered,
-          PaStatus.selectedForValidation,
-          PaStatus.validated,
-        ]);
-        break;
-      case BulkActionId.includePersonalDataRole:
+      case BulkActionId.include:
         personData.checkboxVisible = this.hasStatus(personData, [
           PaStatus.registered,
           PaStatus.selectedForValidation,
@@ -120,13 +113,7 @@ export class BulkActionsService {
           programId,
           this.onlyIds(selectedPeople),
         );
-      case BulkActionId.includeRunProgramRole:
-        return await this.programsService.include(
-          programId,
-          this.onlyIds(selectedPeople),
-          customBulkActionInput.message,
-        );
-      case BulkActionId.includePersonalDataRole:
+      case BulkActionId.include:
         return await this.programsService.include(
           programId,
           this.onlyIds(selectedPeople),

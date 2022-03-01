@@ -131,37 +131,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       showIfNoValidation: false,
     },
     {
-      id: BulkActionId.includeRunProgramRole,
+      id: BulkActionId.include,
       enabled: false,
       label: this.translate.instant(
         'page.program.program-people-affected.actions.include',
       ),
       permissions: [Permission.RegistrationStatusIncludedUPDATE],
       phases: [ProgramPhase.inclusion],
-      showIfNoValidation: true,
-      confirmConditions: {
-        checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
-        checkboxChecked: false,
-        inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
-        minLength: 20,
-      },
-    },
-    {
-      id: BulkActionId.includePersonalDataRole,
-      enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.include',
-      ),
-      permissions: [
-        Permission.RegistrationStatusIncludedUPDATE,
-        Permission.RegistrationPersonalREAD,
-      ],
-      phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         checkbox: this.translate.instant(
