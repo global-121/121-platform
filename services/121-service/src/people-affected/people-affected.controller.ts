@@ -11,7 +11,6 @@ import { User } from '../user/user.decorator';
 import { StoreDataDto } from './dto/store-data.dto';
 import { PermissionsGuard } from '../permissions.guard';
 
-@ApiBearerAuth()
 @UseGuards(PermissionsGuard)
 @ApiUseTags('people-affected')
 @Controller('people-affected')
@@ -20,7 +19,6 @@ export class PeopleAffectedController {
   public constructor(peopleAffectedService: PeopleAffectedService) {
     this.peopleAffectedService = peopleAffectedService;
   }
-  @ApiBearerAuth()
   @ApiOperation({ title: 'Post data to storage' })
   @Post('data-storage')
   public async postData(
@@ -30,7 +28,6 @@ export class PeopleAffectedController {
     return await this.peopleAffectedService.postData(userId, storeData);
   }
 
-  @ApiBearerAuth()
   @ApiOperation({ title: 'Get data from storage' })
   @ApiImplicitParam({
     name: 'type',

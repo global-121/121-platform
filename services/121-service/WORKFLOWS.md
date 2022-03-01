@@ -15,12 +15,12 @@ In this file we document "how to do X", manually. As not everything is possible 
   - If `whatsappPhoneNumber` is invalid (most observed scenario so far)
     - **Pilot-team** updates `whatsappPhoneNumber` in HO-portal
     - **Pilot-team** retries payment for each payment number from payment-status-popup in HO-portal
-    - Note that the voucher is visible in the portal anyway, so could also be transferred manuallly (but not preferred)
+    - Note that the voucher is visible in the portal anyway, so could also be transferred manually (but not preferred)
   - If failed for other reason
     - **Pilot-team** informs **121-dev-team**
     - **121-dev-team** does ad-hoc investigation
 - If transaction is on "waiting"
-  - Note that the voucher is visible in the portal anyway, so can already be transferred manuallly
+  - Note that the voucher is visible in the portal anyway, so can already be transferred manually
   - In addition, it is still wise to find out why it's on 'waiting'. Wait for 24 hours, then contact PA to find out what's going on.
 
 ---
@@ -67,7 +67,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 
 ## Find Reference ID of PA in database based on name and/or phone number
 
-1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) with a user with the "`personal-data`"-role
+1. [Log-in via Swagger-UI](./README.md#api-sign-uplog-in) as a user with the "`registration:reference-id.search`"-permission
 2. Find the `registration` of the PA that we want to update.
    Use the endpoint: [`/registrations/search-name-phone`](https://test-vm.121.global/121-service/docs/#/registrations/post_registrations_search_name_phone)
    Where you can optionally fill in `name` and/or old `phoneNumber` to search for.
@@ -85,7 +85,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 
 ## Get monitoring data
 
-1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) with a user with the "`admin`"-role
+1. [Log-in via Swagger-UI](./README.md#api-sign-uplog-in) as a user with the "`program:metrics.read`"-permission
 2. Use the endpoint: [`/programs/monitoring/{programId}`](https://test-vm.121.global/121-service/docs/#/programs/get_programs_monitoring__programId_)
    Fill in the `programId` = 1.
 
@@ -102,7 +102,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 Since 2022-01-04 (code-date not deploy-date) we are not canceling vouchers any more, but do keep marking them as 'to cancel'.
 This workflow explains how to get out a list of 'to cancel' vouchers.
 
-1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) with a user with the "`personal data`"-role
+1. [Log-in via Swagger-UI](./README.md#api-sign-uplog-in) as a user with the "`registration:personal.export`"-permission
 2. Use the endpoint: [`/export-metrics/export-list`](https://test-vm.121.global/121-service/docs/#/export-metrics/post_export_metrics_export_list)
    Fill in `type` = "to-cancel-vouchers" and `programId` = 1. Delete the other (optional) properties.
 

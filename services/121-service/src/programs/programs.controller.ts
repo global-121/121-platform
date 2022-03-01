@@ -21,7 +21,6 @@ import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 
-@ApiBearerAuth()
 @UseGuards(PermissionsGuard)
 @ApiUseTags('programs')
 @Controller('programs')

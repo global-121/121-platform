@@ -1,5 +1,5 @@
 @ho-portal
-Feature: Manage people affected (generic features)
+Feature: View and manage people affected (generic features)
 
   Background:
     Given a logged-in user with "RegistrationREAD" permission
@@ -9,11 +9,33 @@ Feature: Manage people affected (generic features)
     Then a table with all "people connected to a program" is shown
     And for each person the "Select" column is empty
     And for each person a "PA identifier" is shown
-    And for each person a "status" is shown
-    And depending on which "page" other columns are shown
+    And it has a clickable "i" button in front of it, which opens a popup
+    And depending on which "page" other columns are shown (see detailed scenarios below)
     And above the table a list of "bulk actions" is shown
     And next to it an "apply action" button is shown and it is "disabled"
     And above the table a free text "filter field" is shown
+  
+  Scenario: View columns of table WITHOUT access to personal data
+    When the user views the PA-table
+    Then the users sees the columns mentioned in the previous scenario
+    And for each person a "status" is shown
+    And all above columns are fixed when scrolling horizontally
+    And depending on which "page" several "status change date" columns are shown
+    And "transfer value" column is shown
+    And "inclusion score" column is shown (if "validation" is configured for the program)
+    And "financial service provider" column is shown (in "reviewInclusion" and "payment" pages only)
+    And "Payment History" column is shown (in "payment" page only)
+
+  Scenario: View columns of table WITH access to personal data
+    Given the logged-in user also has"RegistrationPersonalREAD" permission
+    When the user views the PA-table
+    Then the user sees all columns available in previous scenario
+    And the "i" button in front of the "PA identifier" contains a "note icon" if a note is saved for that PA 
+    And for each person a "name" is shown
+    And for each person a "phone number" is shown
+    And all above columns are fixed when scrolling horizontally
+    And "custom attribute" columns are shown
+    And some other hard-coded columns such as "vnumber" and "whatsappPhoneNumber" are shown if available
 
   Scenario: Filter rows of PA-table
     Given the table with all "people connected to a program" is shown

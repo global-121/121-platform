@@ -25,13 +25,13 @@ export class LoginAccountComponent extends PersonalDirective {
 
   constructor(
     public conversationService: ConversationService,
-    public paData: PaDataService,
+    private paData: PaDataService,
     private logger: LoggingService,
   ) {
     super();
 
-    this.paData.authenticationState$.subscribe((authState) => {
-      this.isLoggedIn = authState;
+    this.paData.authenticationState$.subscribe((user) => {
+      this.isLoggedIn = !!user;
 
       if (this.isLoggedIn) {
         this.isDisabled = true;

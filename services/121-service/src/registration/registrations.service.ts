@@ -734,12 +734,11 @@ export class RegistrationsService {
         attribute,
         value,
       );
-    } else {
-      registration.customData[attribute] = await this.cleanCustomDataIfPhoneNr(
-        attribute,
-        value,
-      );
     }
+    registration.customData[attribute] = await this.cleanCustomDataIfPhoneNr(
+      attribute,
+      value,
+    );
 
     const errors = await validate(registration);
     if (errors.length > 0) {
@@ -957,14 +956,14 @@ export class RegistrationsService {
       where: { referenceId: referenceId },
       relations: ['fsp', 'fsp.attributes'],
     });
-    if (registration.fsp.id === newFsp.id) {
+    if (registration.fsp?.id === newFsp.id) {
       const errors = `New FSP is the same as existing FSP for this Person Affected.`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
 
     // Remove old attributes
     const oldFsp = registration.fsp;
-    oldFsp.attributes.forEach(attribute => {
+    oldFsp?.attributes.forEach(attribute => {
       Object.keys(registration.customData).forEach(key => {
         if (attribute.name === key) {
           delete registration.customData[key];
@@ -1284,8 +1283,13 @@ export class RegistrationsService {
     programCustomAttributes: ProgramCustomAttributeEntity[],
   ): object {
     for (const programCustomAttribute of programCustomAttributes) {
-      row[programCustomAttribute.name] =
-        customData[programCustomAttribute.name];
+      if (programCustomAttribute.type === CustomAttributeType.boolean) {
+        row[programCustomAttribute.name] =
+          customData[programCustomAttribute.name] || false;
+      } else {
+        row[programCustomAttribute.name] =
+          customData[programCustomAttribute.name];
+      }
     }
     return row;
   }

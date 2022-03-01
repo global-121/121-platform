@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Program } from '../models/program.model';
 import { User } from '../models/user.model';
-import { JwtService } from './jwt.service';
 import { PaDataTypes } from './padata-types.enum';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
@@ -11,41 +10,19 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 })
 export class PaDataService {
   public type = PaDataTypes;
+  private sessionKey = 'logged-in-user-PA';
 
-  public hasAccount = false;
-  private username: string;
+  private hasAccount = false;
 
   private currentProgramId: number;
   private myPrograms: Program[] = [];
   public myAnswers: any = {};
 
-  private authenticationStateSource = new BehaviorSubject<boolean>(false);
+  private authenticationStateSource = new BehaviorSubject<User | null>(null);
   public authenticationState$ = this.authenticationStateSource.asObservable();
 
-  constructor(
-    private programService: ProgramsServiceApiService,
-    private jwtService: JwtService,
-  ) {
+  constructor(private programService: ProgramsServiceApiService) {
     this.checkAuthenticationState();
-  }
-
-  private setUsername(username: string) {
-    this.username = username;
-    window.sessionStorage.setItem(this.type.username, username);
-  }
-
-  public async getUsername(): Promise<string> {
-    if (!this.username) {
-      this.username = window.sessionStorage.getItem(this.type.username);
-    }
-
-    return new Promise<string>((resolve, reject) => {
-      if (!this.username) {
-        return reject();
-      }
-
-      return resolve(this.username);
-    });
   }
 
   public async setCurrentProgramId(programId: number): Promise<any> {
@@ -109,27 +86,29 @@ export class PaDataService {
     // 'Sanitize' username:
     username = username.trim();
 
-    return this.programService.createAccountPA(username, password).then(() => {
-      console.log('Account created.');
-      this.setLoggedIn();
-      this.setUsername(username);
-    });
+    return this.programService
+      .createAccountPA(username, password)
+      .then((user) => {
+        if (!user) {
+          return;
+        }
+        console.log('PaData: Account created.');
+        this.saveUserInStorage(user);
+        this.setLoggedIn(user);
+      });
   }
 
   async login(username: string, password: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.programService.login(username, password).then(
-        () => {
-          console.log('PaData: login successful');
-          const user = this.getUserFromToken();
-
+        (user) => {
           if (!user) {
             this.setLoggedOut();
-            return reject('No valid token.');
+            return reject('No valid user.');
           }
-
-          this.setLoggedIn();
-          this.setUsername(user.username);
+          console.log('PaData: login successful');
+          this.saveUserInStorage(user);
+          this.setLoggedIn(user);
 
           return resolve();
         },
@@ -142,39 +121,39 @@ export class PaDataService {
     });
   }
 
-  private setLoggedIn() {
+  private setLoggedIn(user: User) {
     this.hasAccount = true;
-    this.authenticationStateSource.next(true);
+    this.authenticationStateSource.next(user);
   }
 
   private setLoggedOut() {
     this.hasAccount = false;
-    this.authenticationStateSource.next(false);
+    this.authenticationStateSource.next(null);
   }
 
   private checkAuthenticationState() {
-    const user = this.getUserFromToken();
+    const user = this.getUserFromStorage();
 
     if (!user) {
       return;
     }
 
-    this.setLoggedIn();
+    this.setLoggedIn(user);
   }
 
-  private getUserFromToken(): User | null {
-    const rawToken = this.jwtService.getToken();
+  private getUserFromStorage(): User | null {
+    const rawUser = window.sessionStorage.getItem(this.sessionKey);
 
-    if (!rawToken) {
+    if (!rawUser) {
       return null;
     }
 
     let user: User | any;
 
     try {
-      user = this.jwtService.decodeToken(rawToken);
+      user = JSON.parse(rawUser);
     } catch {
-      console.warn('PaData: Invalid token');
+      console.warn('PaData: Invalid user-data');
       return null;
     }
 
@@ -186,10 +165,16 @@ export class PaDataService {
     return user;
   }
 
+  private saveUserInStorage(user: User) {
+    if (!user) {
+      return;
+    }
+    window.sessionStorage.setItem(this.sessionKey, JSON.stringify(user));
+  }
+
   public logout() {
     console.log('PaData: logout()');
-    this.jwtService.destroyToken();
-    window.sessionStorage.removeItem(this.type.username);
+    window.sessionStorage.removeItem(this.sessionKey);
     this.setLoggedOut();
   }
 

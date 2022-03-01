@@ -103,19 +103,22 @@ export class SelectFspComponent extends PersonalDirective {
   public async submitFsp() {
     this.fspSubmitted = true;
 
-    this.programsService.postFsp(this.referenceId, this.fspChoice);
+    this.programsService.postFsp(this.referenceId, this.fspChoice).then(
+      async () => {
+        // Update FSPs with more details:
+        this.chosenFsp = await this.programsService.getFspById(this.fspChoice);
+        this.chosenFsp.fspDisplayName = this.translatableString.get(
+          this.chosenFsp.fspDisplayName,
+        );
 
-    // Update FSPs with more details:
-    this.chosenFsp = await this.programsService.getFspById(this.fspChoice);
-    this.chosenFsp.fspDisplayName = this.translatableString.get(
-      this.chosenFsp.fspDisplayName,
+        if (!this.chosenFsp.attributes.length) {
+          return this.complete();
+        }
+
+        this.questions = this.buildQuestions(this.chosenFsp.attributes);
+      },
+      (error) => console.log('error', error),
     );
-
-    if (!this.chosenFsp.attributes.length) {
-      return this.complete();
-    }
-
-    this.questions = this.buildQuestions(this.chosenFsp.attributes);
   }
 
   private buildQuestions(fspAttributes: FspAttribute[]) {

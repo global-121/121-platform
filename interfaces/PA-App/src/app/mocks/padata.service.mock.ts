@@ -5,7 +5,7 @@ import { mockProgram } from './api.program.mock';
 export const MockPaDataService = {
   type: PaDataTypes,
   myPrograms: {},
-  authenticationState$: of(false),
+  authenticationState$: of(null),
   getUsername: () => Promise.resolve(''),
   setCurrentProgramId: () => {},
   getCurrentProgramId: () => Promise.resolve(mockProgram.id),
