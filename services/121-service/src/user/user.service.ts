@@ -1,7 +1,3 @@
-import { PermissionEnum } from './permission.enum';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { RegistrationEntity } from './../registration/registration.entity';
-import { PersonAffectedAppDataEntity } from './../people-affected/person-affected-app-data.entity';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { Injectable } from '@nestjs/common';
@@ -11,7 +7,6 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
 import crypto from 'crypto';
 import jwt = require('jsonwebtoken');
-
 import { ProgramEntity } from '../programs/program.entity';
 import { LoginUserDto, UpdateUserDto } from './dto';
 import { UserEntity } from './user.entity';
@@ -20,7 +15,7 @@ import { UserRoleEntity } from './user-role.entity';
 import { UserType } from './user-type-enum';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
-import { CreateUserRoleDto } from './dto/create-user-role.dto';
+import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import { PermissionEntity } from './permissions.entity';
 
 @Injectable()
@@ -82,9 +77,20 @@ export class UserService {
     );
   }
 
+  public async getUserRoles(): Promise<UserRoleEntity[]> {
+    return await this.userRoleRepository.find({ relations: ['permissions'] });
+  }
+
   public async addUserRole(
     userRoleData: CreateUserRoleDto,
   ): Promise<UserRoleEntity> {
+    const existingRole = await this.userRoleRepository.findOne({
+      where: { role: userRoleData.role },
+    });
+    if (existingRole) {
+      throw new HttpException('Role exists already', HttpStatus.BAD_REQUEST);
+    }
+
     const userRoleEntity = new UserRoleEntity();
     userRoleEntity.role = userRoleData.role;
     userRoleEntity.label = userRoleData.label;
@@ -97,6 +103,36 @@ export class UserService {
     userRoleEntity.permissions = permissionEntities;
 
     return await this.userRoleRepository.save(userRoleEntity);
+  }
+
+  public async updateUserRole(
+    userRoleId: number,
+    userRoleData: UpdateUserRoleDto,
+  ): Promise<UserRoleEntity> {
+    const existingRole = await this.findRoleOrThrow(userRoleId);
+    existingRole.label = userRoleData.label;
+    const permissionEntities = [];
+    for (const permission of userRoleData.permissions) {
+      permissionEntities.push(
+        await this.permissionRepository.findOne({ name: permission }),
+      );
+    }
+    existingRole.permissions = permissionEntities;
+
+    return await this.userRoleRepository.save(existingRole);
+  }
+
+  public async deleteUserRole(userRoleId: number): Promise<UserRoleEntity> {
+    const existingRole = await this.findRoleOrThrow(userRoleId);
+    return await this.userRoleRepository.remove(existingRole);
+  }
+
+  private async findRoleOrThrow(userRoleId: number): Promise<UserRoleEntity> {
+    const existingRole = await this.userRoleRepository.findOne(userRoleId);
+    if (!existingRole) {
+      throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
+    }
+    return existingRole;
   }
 
   public async createAidWorker(dto: CreateUserAidWorkerDto): Promise<UserRO> {

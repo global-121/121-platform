@@ -102,8 +102,10 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 #### Using Swagger UI
 
+- [Manage user roles](Admin-user/Manage_Roles.feature)
 - [Update phone-numbers of Person Affected](Admin-user/Update_phone_numbers.feature)
 - [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provider.feature)
+
 
 ---
 
