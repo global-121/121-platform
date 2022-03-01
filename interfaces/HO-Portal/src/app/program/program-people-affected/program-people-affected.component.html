@@ -359,7 +359,7 @@
           (click)="paymentHistoryPopup(row, programId)"
           [ngClass]="{
             'is-error': hasError(row),
-            'ion-no-padding popup-button status-pop-up': true
+            'ion-no-padding popup-button status-pop-up payment-history-button': true
           }"
         >
           <div *ngIf="value.paymentIndex" style="margin-bottom: 4px">

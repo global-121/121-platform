@@ -25,7 +25,7 @@
       <ion-row *ngFor="let paymentRow of paymentRows" class="full-width ion-justify-content-between ion-padding-bottom ion-margin-vertical">
         <div>
           <h5 class="ion-no-margin">Payment #{{ paymentRow.paymentIndex }}</h5>
-          <span *ngIf="paymentRow.transaction?.status">{{ 'page.program.program-payout.last-payment.' + paymentRow.transaction?.status | translate }}</span>
+          <ion-text *ngIf="paymentRow.transaction?.status" [color]="paymentRow.transaction?.status === 'success' ? 'dark' : 'danger'">{{ 'page.program.program-payout.last-payment.' + paymentRow.transaction?.status | translate }}</ion-text>
         </div>
         <ng-container *ngIf="paymentRow.transaction">
           <button
