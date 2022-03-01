@@ -3,7 +3,7 @@ Feature: Export inclusion list
 
   Background:
     Given a logged-in user with "RegistrationPersonalEXPORT" permission
-    And the "selected phase" is the "review inclusion" phase
+    And the "selected phase" is the "inclusion" phase
 
   Scenario: Export inclusion list
     When the user clicks the "export inclusion list" and confirms the confirm prompt
@@ -22,5 +22,5 @@ Feature: Export inclusion list
 
   Scenario: Viewing the export options without permission
     Given a logged-in does not have the "RegistrationPersonalEXPORT" permission
-    When the user views the "review inclusion" page
+    When the user views the "inclusion" page
     Then the export list button is not visible
