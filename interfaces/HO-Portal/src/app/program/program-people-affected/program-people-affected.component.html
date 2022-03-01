@@ -309,24 +309,25 @@
     [cellClass]="column.cellClass"
   >
     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-      <span
-        *ngIf="value === true"
-        [title]="
-          'page.program.program-people-affected.column.custom-attribute-true'
-            | translate
-        "
-      >
-        <ion-icon class="checkmark true" name="checkmark-circle"></ion-icon>
-      </span>
-      <span
-        *ngIf="value === false"
-        [title]="
-          'page.program.program-people-affected.column.custom-attribute-false'
-            | translate
-        "
-      >
-        <ion-icon class="checkmark" name="ellipse-outline"></ion-icon>
-      </span>
+      <ng-container *ngIf="value === true || value === false">
+        <span
+          [title]="
+            value
+              ? ('page.program.program-people-affected.column.custom-attribute-true'
+                | translate)
+              : ('page.program.program-people-affected.column.custom-attribute-false'
+                | translate)
+          "
+        >
+          <ion-checkbox
+            color="success"
+            mode="ios"
+            [disabled]="!canUpdatePaData"
+            [checked]="value"
+            (ionChange)="onCheckboxChange(row, column, !value)"
+          ></ion-checkbox>
+        </span>
+      </ng-container>
       <ng-container *ngIf="value !== true && value !== false && value">
         {{ value }}
       </ng-container>
@@ -363,7 +364,10 @@
           }"
         >
           <div *ngIf="value.paymentIndex" style="margin-bottom: 4px">
-            {{ 'page.program.program-people-affected.transaction.payment-number' | translate }}{{ value.paymentIndex }}{{' ' + value.text }}
+            {{
+              'page.program.program-people-affected.transaction.payment-number'
+                | translate
+            }}{{ value.paymentIndex }}{{ ' ' + value.text }}
           </div>
         </button>
         <span *ngIf="!value?.paymentIndex">

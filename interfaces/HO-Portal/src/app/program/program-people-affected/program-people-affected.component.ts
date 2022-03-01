@@ -1215,4 +1215,40 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     await this.loadData();
     this.isLoading = false;
   }
+
+  public onCheckboxChange(row: PersonRow, column: any, value: string) {
+    this.programsService
+      .updatePaAttribute(row.referenceId, column.prop, value)
+      .then(
+        () => {
+          this.actionResult(this.translate.instant('common.update-success'));
+        },
+        (error) => {
+          console.log('error: ', error);
+          if (error && error.error) {
+            const errorMessage = this.translate.instant('common.update-error', {
+              error: this.formatErrors(error.error, column.prop),
+            });
+            this.actionResult(errorMessage);
+          }
+        },
+      );
+  }
+
+  private formatErrors(error, attribute: string): string {
+    if (error.errors) {
+      return this.formatConstraintsErrors(error.errors, attribute);
+    }
+    if (error.message) {
+      return '<br><br>' + error.message + '<br>';
+    }
+  }
+
+  private formatConstraintsErrors(errors, attribute: string): string {
+    const attributeError = errors.find(
+      (message) => message.property === attribute,
+    );
+    const attributeConstraints = Object.values(attributeError.constraints);
+    return '<br><br>' + attributeConstraints.join('<br>');
+  }
 }

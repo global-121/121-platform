@@ -27,7 +27,7 @@ Feature: View and manage people affected (generic features)
     And "Payment History" column is shown (in "payment" page only)
 
   Scenario: View columns of table WITH access to personal data
-    Given the logged-in user also has"RegistrationPersonalREAD" permission
+    Given the logged-in user also has "RegistrationPersonalREAD" permission
     When the user views the PA-table
     Then the user sees all columns available in previous scenario
     And the "i" button in front of the "PA identifier" contains a "note icon" if a note is saved for that PA 
@@ -36,6 +36,13 @@ Feature: View and manage people affected (generic features)
     And all above columns are fixed when scrolling horizontally
     And "custom attribute" columns are shown
     And some other hard-coded columns such as "vnumber" and "whatsappPhoneNumber" are shown if available
+  
+  Scenario: Edit boolean custom attributes in PA table
+    Given the logged-in user also has "RegistrationAttributeUPDATE" permission
+    Given the logged-in user is viewing the PA-table
+    When the user clicks one of the "custom attribute" columns with type 'boolean'
+    Then the clicked "custom attribute" is updated
+    And the updated value is reflected in the PA-table
 
   Scenario: Filter rows of PA-table
     Given the table with all "people connected to a program" is shown
