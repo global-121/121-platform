@@ -679,7 +679,40 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       );
     }
     this.allPeopleAffected = this.createTableData(this.allPeopleData);
-    this.visiblePeopleAffected = [...this.allPeopleAffected];
+    this.filterPeopleAffectedByPhase();
+  }
+
+  private filterPeopleAffectedByPhase() {
+    let paStatusesToShow: PaStatus[];
+    switch (this.thisPhase) {
+      case ProgramPhase.registrationValidation:
+        paStatusesToShow = [
+          PaStatus.imported,
+          PaStatus.invited,
+          PaStatus.startedRegistration,
+          PaStatus.selectedForValidation,
+          PaStatus.registered,
+          PaStatus.noLongerEligible,
+          PaStatus.registeredWhileNoLongerEligible,
+        ];
+        break;
+      case ProgramPhase.inclusion:
+        paStatusesToShow = [
+          PaStatus.validated,
+          PaStatus.registered,
+          PaStatus.selectedForValidation,
+          PaStatus.rejected,
+          PaStatus.inclusionEnded,
+        ];
+        break;
+      case ProgramPhase.payment:
+        paStatusesToShow = [PaStatus.included];
+        break;
+    }
+
+    this.visiblePeopleAffected = this.allPeopleAffected.filter((pa) =>
+      paStatusesToShow.includes(pa.status),
+    );
   }
 
   private createTableData(source: Person[]): PersonRow[] {
@@ -1225,7 +1258,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public filterRowsVisible(value: string) {
     const filterVal = value.toLowerCase().trim();
-    const rowsVisible = this.allPeopleAffected.filter((row: PersonRow) => {
+    const rowsVisible = this.visiblePeopleAffected.filter((row: PersonRow) => {
       // Loop over all columns
       for (const key of Object.keys(row)) {
         try {
