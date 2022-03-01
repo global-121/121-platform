@@ -1238,6 +1238,34 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       this.selectedPeople,
       { message: confirmInput },
     );
+
+    const actionStatus = {
+      invite: 'invited',
+      selectForValidation: 'selectedForValidation',
+      include: 'included',
+      endInclusion: 'inclusionEnded',
+      reject: 'rejected',
+      markNoLongerEligible: 'noLongerEligible',
+    };
+
+    if (this.action !== BulkActionId.sendMessage) {
+      this.actionResult(
+        `<p>${this.translate.instant(
+          'page.program.program-people-affected.status-changed',
+          {
+            pastatus: this.translate.instant(
+              'page.program.program-people-affected.status.' +
+                actionStatus[this.action],
+            ),
+            panumber: this.selectedPeople.length,
+          },
+        )}
+          <p>${this.translate.instant(
+            'page.program.program-people-affected.pa-moved-phase',
+          )}</p>`,
+      );
+    }
+
     this.isInProgress = false;
 
     this.resetBulkAction();

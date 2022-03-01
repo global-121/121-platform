@@ -375,7 +375,9 @@
             "start-payout": "Start payout now for {{paNr}}",
             "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
-        }
+        },
+        "status-changed": "Status changed succesfully to {{pastatus}} for {{panumber}} People Affected",
+        "pa-moved-phase": "These People Affected might have moved to another phase because of this status change."
       },
       "program-modal": {
         "pageTitle": "Program JSON"
