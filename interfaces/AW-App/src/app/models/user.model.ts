@@ -7,4 +7,5 @@ export class UserModel {
 export class User {
   username: string;
   permissions: Permission[];
+  expires: string;
 }

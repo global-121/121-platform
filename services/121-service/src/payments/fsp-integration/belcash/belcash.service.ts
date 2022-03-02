@@ -86,7 +86,7 @@ export class BelcashService {
       referenceid: `referenceId-${
         paymentData.referenceId
       }_program-${programId}_payment-${paymentNr}_timestamp-${+new Date()}`,
-      notifyto: false,
+      notifyto: true,
       notifyfrom: false,
     };
 
@@ -140,32 +140,34 @@ export class BelcashService {
       const matchingString =
         belcashRequest.referenceid || belcashRequest.tracenumber;
 
-      const referenceId = matchingString
-        .split('_')[0]
-        .replace('referenceId-', '');
-      const programId = Number(
-        matchingString.split('_')[1].replace('program-', ''),
-      );
-      const payment = Number(
-        matchingString.split('_')[2].replace('payment-', ''),
-      );
+      if (matchingString) {
+        const referenceId = matchingString
+          .split('_')[0]
+          .replace('referenceId-', '');
+        const programId = Number(
+          matchingString.split('_')[1].replace('program-', ''),
+        );
+        const payment = Number(
+          matchingString.split('_')[2].replace('payment-', ''),
+        );
 
-      const paTransactionResult = new PaTransactionResultDto();
-      paTransactionResult.fspName = FspName.belcash;
-      paTransactionResult.referenceId = referenceId;
-      paTransactionResult.status = successStatuses.includes(
-        belcashRequest.status,
-      )
-        ? StatusEnum.success
-        : StatusEnum.error;
-      paTransactionResult.message = belcashRequest.status;
-      paTransactionResult.calculatedAmount = Number(belcashRequest.amount);
+        const paTransactionResult = new PaTransactionResultDto();
+        paTransactionResult.fspName = FspName.belcash;
+        paTransactionResult.referenceId = referenceId;
+        paTransactionResult.status = successStatuses.includes(
+          belcashRequest.status,
+        )
+          ? StatusEnum.success
+          : StatusEnum.error;
+        paTransactionResult.message = belcashRequest.status;
+        paTransactionResult.calculatedAmount = Number(belcashRequest.amount);
 
-      this.transactionsService.storeTransaction(
-        paTransactionResult,
-        programId,
-        payment,
-      );
+        this.transactionsService.storeTransaction(
+          paTransactionResult,
+          programId,
+          payment,
+        );
+      }
     }
   }
 }

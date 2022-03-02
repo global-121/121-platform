@@ -1,12 +1,19 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
+  private userKey = 'logged-in-user-HO';
+
   constructor(private http: HttpClient) {}
 
   private showSecurity(anonymous: boolean) {
@@ -46,6 +53,9 @@ export class ApiService {
             response,
           ),
         ),
+        catchError((error: HttpErrorResponse): Observable<any> => {
+          return this.handleError(error, anonymous);
+        }),
       );
   }
 
@@ -75,6 +85,29 @@ export class ApiService {
             response,
           ),
         ),
+        catchError((error: HttpErrorResponse): Observable<any> => {
+          return this.handleError(error, anonymous);
+        }),
       );
+  }
+
+  handleError(error: HttpErrorResponse, anonymous: boolean) {
+    if (anonymous === true) {
+      throwError(error);
+    }
+    if (error.status === 401) {
+      const rawUser = localStorage.getItem(this.userKey);
+      if (!rawUser) {
+        throwError(error);
+      }
+
+      const user: User = JSON.parse(rawUser);
+      const expires = Date.parse(user.expires);
+      if (expires < Date.now()) {
+        localStorage.removeItem(this.userKey);
+        window.location.reload();
+        return of('Token expired');
+      }
+    }
   }
 }

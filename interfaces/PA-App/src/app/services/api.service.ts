@@ -31,7 +31,7 @@ export class ApiService {
     return this.http
       .get(endpoint + path, {
         headers: this.createHeaders(),
-        withCredentials: anonymous ? false : true,
+        withCredentials: true,
       })
       .pipe(
         tap((response) =>

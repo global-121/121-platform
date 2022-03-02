@@ -46,12 +46,13 @@ Feature: Make a new payment
     Then the page refreshes
     And the "export payment data" component now shows that the payment is "closed"
     And the "export payment data" component now has the next payment enabled
-    And the "PA-table" now has the payment column filled for every PA
+    And the "PA-table" now shows the payment just completed in the "Payment History" column for all PAs that were selected
     And for successful transactions it shows a date+time and the transaction amount
-    And it is clickable for programs with voucher-support (Intersolve)
-    And for failed transactions it shows 'Failed' and the transaction amount, and it is clickable (showing the voucher anyway + error message + retry-options)
-    And for waiting transactions it shows 'Waiting' and the transaction amount, and it is clickable (showing the voucher anyway + waiting message)
-    And a new empty payment column for the next payment is visible
+    And it opens the payment history when clicked
+    And it shows the payment number and the payment state
+    And the payment state shows 'Success' when the payment went through
+    And it shows 'Failed' for failed transactions
+    And it shows 'Waiting' for waiting transactions
     And - for successful transactions - the PA receives (notification about) voucher/cash depending on the FSP
     And the 'Export people affected' in the 'Registration' phase now contains 4 new columns for the new payment: status, amount, date and 'voucher-claimed-date'
 
@@ -59,12 +60,15 @@ Feature: Make a new payment
     When payment instructions are sent to the Financial Service Provider and have finished processing
     Then the payment is not "closed"
     And the "export payment" dropdown does not update accordingly
-    And the "payment" column contains 'Failed' for all PAs, which can be clickable depending on the program
+    And the "Payment History" column contains the payment number and 'Failed' for all PAs
     And the same payment can be retried for all included PAs using the "payout" button
 
   Scenario: Send payment instructions for 5000 PAs
     Given there are 5000 PAs in the system (to import: see Admin-user/Import_test_registrations_NL.feature)
     And they are included (see e.g. HO-Portal/Include_people_affected_Run_Program_role.feature)
+    Then the user selects the "Do payment" action
+    And the user selects all 5000 PAs
+    And the user clicks the "Apply action" button and the "Do payment" popup shows up
     When the user clicks the "start payout now" button and confirms the confirm prompt
     Then the message "Payout request successfully sent to X PAs" is shown
     And it mentions that it can take some time (very rough estimation: 0.5 seconds per PA)
@@ -75,27 +79,34 @@ Feature: Make a new payment
     And it mentions that a payout is in progress
     And it shows a refresh icon
     When the user clicks the refresh icon
-    Then the payment-column will start showing more and more PA's with status waiting
+    Then the "Payment History" column will start showing more and more PA's with status waiting
     When the user clicks the refresh icon again
-    Then the payment-column will upgrade more and more PA's from 'waiting' to 'success' or 'error'
+    Then the "Payment History" column will upgrade more and more PA's from 'waiting' to 'success' or 'error'
     When the user clicks the refresh icon again (given the payment has finished)
     Then the payout-in-progress message is gone
     And the "payout" button for the next payment is enabled again
-    And the payment-column may still contain PA's on 'waiting', as the status-callbacks go on longer then the request-loop
+    And the "Payment History" column may still contain PA's on 'waiting', as the status-callbacks go on longer then the request-loop
     When the user refreshes the page again
     Then eventually all 'waiting' PAs have upgraded to 'success' or 'error' (unless some status callback fails for some reason)
 
   Scenario: retry payment for 1 or all failed PAs
     Given the payment has failed for a PA
-    When the user clicks the failed-popup for this PA
-    Then a popup appears with an error message
-    And it shows a retry-button for this PA
-    And it shows a retry-button for all PAs
-    When the user clicks the retry-button for 1 PA
-    Then a normal payment scenario is started for this 1 PA only (see other scenario)
-    When the user clicks the retry-button for all PAs
-    Then a normal payment scenario is started for all failed PAs of this payment only (see other scenario)
-    And it does not include 'waiting' transactions
+    When the user clicks the "Payment #x failed" button for this PA
+    Then the "Payment History" popup appears
+    And it shows all payments for this PA
+    And the failed payment button shows the date and is red
+    When the user clicks the button a new popup shows
+    Then the user clicks the retry-button
+    And a normal payment scenario is started for this 1 PA only (see other scenario)
+
+    Scenario: retry payment for all failed PAs
+    Given the payment has failed for more than 1 PA
+    Then the user sees the "Retry all failed" button above the bulk action dropdown
+    When the user clicks it
+    Then a popup appears
+    And it shows the number of PAs for which the payment will be retried
+    When the user clicks 'OK'
+    And a normal payment scenario is started for this all the PAs  (see other scenario)
 
   Scenario: Send payment instructions to a Person Affected with Financial Service Provider "Intersolve"
     Given the Person Affected has chosen the option "receive voucher via whatsApp"

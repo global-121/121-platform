@@ -24,7 +24,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [View metrics overview](HO-Portal/View_metrics_overview.feature)
 - [View PA-status metrics](HO-Portal/View_PA-status_metrics.feature)
 - [Manage aidworkers](HO-Portal/Manage_aidworkers.feature)
-- [Manage people affected](HO-Portal/Manage_people_affected.feature)
+- [View and Manage people affected](HO-Portal/View_and_Manage_people_affected.feature)
 - [Edit information of Person Affected](HO-Portal/Edit_Info_Person_Affected.feature)
 - [Import people affected](HO-Portal/Import_people_affected.feature)
 - [Invite people affected](HO-Portal/Invite_people_affected.feature)
@@ -102,8 +102,10 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 #### Using Swagger UI
 
+- [Manage user roles](Admin-user/Manage_Roles.feature)
 - [Update phone-numbers of Person Affected](Admin-user/Update_phone_numbers.feature)
 - [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provider.feature)
+
 
 ---
 

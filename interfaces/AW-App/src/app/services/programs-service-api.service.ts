@@ -36,6 +36,7 @@ export class ProgramsServiceApiService {
             return {
               username: response.username,
               permissions: response.permissions,
+              expires: response.expires,
             };
           }
           return null;

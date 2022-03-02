@@ -15,6 +15,7 @@ describe('UserStateComponent', () => {
   const mockUser: User = {
     username: 'test@example.org',
     permissions: [Permission.Test],
+    expires: Date().toString(),
   };
   const authServiceMock = {
     authenticationState$: of(mockUser),
