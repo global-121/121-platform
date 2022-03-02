@@ -1241,14 +1241,14 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     const actionStatus = {
       invite: 'invited',
-      selectForValidation: 'selectedForValidation',
+      'select-for-validation': 'selectedForValidation',
       include: 'included',
-      endInclusion: 'inclusionEnded',
+      'end-inclusion': 'inclusionEnded',
       reject: 'rejected',
-      markNoLongerEligible: 'noLongerEligible',
+      'mark-no-longer-eligible': 'noLongerEligible',
     };
 
-    if (this.action !== BulkActionId.sendMessage) {
+    if (actionStatus[this.action]) {
       this.actionResult(
         `<p>${this.translate.instant(
           'page.program.program-people-affected.status-changed',
