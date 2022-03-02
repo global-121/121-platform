@@ -1240,12 +1240,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     );
 
     const actionStatus = {
-      invite: 'invited',
-      'select-for-validation': 'selectedForValidation',
-      include: 'included',
-      'end-inclusion': 'inclusionEnded',
-      reject: 'rejected',
-      'mark-no-longer-eligible': 'noLongerEligible',
+      [BulkActionId.invite]: PaStatus.invited,
+      [BulkActionId.selectForValidation]: PaStatus.selectedForValidation,
+      [BulkActionId.include]: PaStatus.included,
+      [BulkActionId.endInclusion]: PaStatus.inclusionEnded,
+      [BulkActionId.reject]: PaStatus.rejected,
+      [BulkActionId.markNoLongerEligible]: PaStatus.noLongerEligible,
     };
 
     if (actionStatus[this.action]) {
@@ -1253,10 +1253,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         `<p>${this.translate.instant(
           'page.program.program-people-affected.status-changed',
           {
-            pastatus: this.translate.instant(
-              'page.program.program-people-affected.status.' +
-                actionStatus[this.action],
-            ),
+            pastatus: this.translate
+              .instant(
+                'page.program.program-people-affected.status.' +
+                  actionStatus[this.action],
+              )
+              .toLowerCase(),
             panumber: this.selectedPeople.length,
           },
         )}

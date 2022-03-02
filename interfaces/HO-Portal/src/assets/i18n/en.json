@@ -376,8 +376,8 @@
             "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
         },
-        "status-changed": "Status changed succesfully to {{pastatus}} for {{panumber}} People Affected",
-        "pa-moved-phase": "These People Affected might have moved to another phase because of this status change."
+        "status-changed": "You successfully changed the status to <strong>{{pastatus}}</strong> for <strong>{{panumber}}</strong> People Affected.",
+        "pa-moved-phase": "These People Affected might be visible in another phase after this status change."
       },
       "program-modal": {
         "pageTitle": "Program JSON"
