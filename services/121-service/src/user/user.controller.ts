@@ -11,12 +11,9 @@ import {
   Controller,
   UseGuards,
   Res,
-<<<<<<< HEAD
   Req,
-=======
   Put,
   Delete,
->>>>>>> 63e89136ed03402f1b22836c68e2ccf95aced563
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
