@@ -32,13 +32,12 @@ export class PersonAffectedAuthGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const authHeaders = request.headers.authorization;
     if (
-      authHeaders &&
-      (authHeaders as string).split(' ')[1] &&
+      request.cookies &&
+      request.cookies['access_token'] &&
       endpointPersonAffectedAuth.length === 0
     ) {
-      const token = (authHeaders as string).split(' ')[1];
+      const token = request.cookies['access_token'];
       const decoded: any = jwt.verify(
         token,
         process.env.SECRETS_121_SERVICE_SECRET,

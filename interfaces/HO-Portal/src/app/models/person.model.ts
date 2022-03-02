@@ -1,4 +1,5 @@
 import Permission from '../auth/permission.enum';
+import { PaymentColumnDetail } from './payment.model';
 import { ProgramPhase } from './program.model';
 
 // Model for data from the API
@@ -55,6 +56,7 @@ export class PersonRow {
   paymentAmountMultiplier?: string | null;
   preferredLanguage?: string | null;
   customAttributes?: object;
+  paymentHistory?: PaymentColumnDetail;
 }
 
 export enum PaStatus {

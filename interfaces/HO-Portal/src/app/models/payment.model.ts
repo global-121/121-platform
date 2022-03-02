@@ -1,4 +1,5 @@
 import { PersonTableColumn } from './person.model';
+import { Transaction } from './transaction.model';
 
 export class PaymentData {
   id: number;
@@ -12,14 +13,29 @@ export class Payment extends PaymentData {
 }
 
 export class PaymentColumn extends PersonTableColumn {
-  paymentIndex: number;
+  paymentIndex?: number;
 }
 
 export class PaymentColumnDetail {
   text: string;
-  amount: string;
-  hasMessageIcon: boolean;
-  hasMoneyIconTable: boolean;
+  paymentIndex?: number;
+  payments?: number[];
+  amount?: string;
+  hasMessageIcon?: boolean;
+  hasMoneyIconTable?: boolean;
+  errorMessage?: string;
+}
+
+export class PaymentRowDetail {
+  text: string;
+  paymentIndex?: number;
+  amount?: string;
+  hasMessageIcon?: boolean;
+  hasMoneyIconTable?: boolean;
+  transaction?: Transaction;
+  errorMessage?: string;
+  waiting?: boolean;
+  fsp?: string;
 }
 
 export class PopupPayoutDetails {
