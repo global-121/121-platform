@@ -336,18 +336,18 @@
 
   <ngx-datatable-column
     *ngIf="thisPhase === phaseEnum.payment"
-    [prop]="paymentHistoryColumn?.prop"
+    prop="paymentHistoryButton"
     [name]="paymentHistoryColumn?.name"
     minWidth="300"
     [draggable]="false"
     [resizeable]="false"
-    [sortable]="false"
+    [sortable]="true"
     [headerClass]="columnDefaults.headerClass"
   >
     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
       <ng-container>
         <button
-          *ngIf="value?.paymentIndex"
+          *ngIf="row.paymentHistory?.paymentIndex"
           type="button"
           [attr.title]="
             'page.program.program-people-affected.transaction.show-status'
@@ -363,15 +363,10 @@
             'ion-no-padding popup-button status-pop-up payment-history-button': true
           }"
         >
-          <div *ngIf="value.paymentIndex" style="margin-bottom: 4px">
-            {{
-              'page.program.program-people-affected.transaction.payment-number'
-                | translate
-            }}{{ value.paymentIndex }}{{ ' ' + value.text }}
-          </div>
+          {{ value }}
         </button>
-        <span *ngIf="!value?.paymentIndex">
-          {{ value.text }}
+        <span *ngIf="!row.paymentHistory?.paymentIndex">
+          {{ value }}
         </span>
       </ng-container>
     </ng-template>

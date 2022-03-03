@@ -866,10 +866,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     let paymentColumnValue = new PaymentColumnDetail();
     paymentColumnValue.payments = [];
 
+    const paymentHistoryButtonKey = 'paymentHistoryButton';
+
     if (!lastPayment) {
       paymentColumnValue.text = this.translate.instant(
         'page.program.program-people-affected.transaction.no-payment-yet',
       );
+      personRow[paymentHistoryButtonKey] = paymentColumnValue.text;
     } else {
       paymentColumnValue = {
         text: '',
@@ -896,6 +899,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.transaction.failed',
         );
       }
+      personRow[paymentHistoryButtonKey] =
+        this.translate.instant(
+          'page.program.program-people-affected.transaction.payment-number',
+        ) +
+        paymentColumnValue.paymentIndex +
+        ' ' +
+        paymentColumnValue.text;
     }
 
     personRow.paymentHistory = paymentColumnValue;
