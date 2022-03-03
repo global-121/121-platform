@@ -324,7 +324,7 @@
             mode="ios"
             [disabled]="!canUpdatePaData"
             [checked]="value"
-            (ionChange)="onCheckboxChange(row, column, !value)"
+            (click)="onCheckboxChange(row, column, !value)"
           ></ion-checkbox>
         </span>
       </ng-container>

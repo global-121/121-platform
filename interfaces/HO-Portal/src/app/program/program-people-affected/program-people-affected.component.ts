@@ -1221,6 +1221,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       .updatePaAttribute(row.referenceId, column.prop, value)
       .then(
         () => {
+          row[column.prop] = value;
+          const valueKey = 'value';
+          row.customAttributes[column.prop][valueKey] = value;
           this.actionResult(this.translate.instant('common.update-success'));
         },
         (error) => {
