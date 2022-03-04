@@ -318,9 +318,8 @@ export class UserService {
           return 'access_token_portal';
         case 'AW-app':
           return 'access_token_aw';
-        // This case below is for the aidworker login in PA-app
         case 'PA-app':
-          return 'access_token_pa_aw';
+          return 'access_token_pa';
 
         default:
           break;
