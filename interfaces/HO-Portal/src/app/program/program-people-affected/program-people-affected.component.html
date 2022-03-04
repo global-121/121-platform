@@ -306,24 +306,25 @@
     [cellClass]="column.cellClass"
   >
     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-      <span
-        *ngIf="value === true"
-        [title]="
-          'page.program.program-people-affected.column.custom-attribute-true'
-            | translate
-        "
-      >
-        <ion-icon class="checkmark true" name="checkmark-circle"></ion-icon>
-      </span>
-      <span
-        *ngIf="value === false"
-        [title]="
-          'page.program.program-people-affected.column.custom-attribute-false'
-            | translate
-        "
-      >
-        <ion-icon class="checkmark" name="ellipse-outline"></ion-icon>
-      </span>
+      <ng-container *ngIf="value === true || value === false">
+        <span
+          [title]="
+            value
+              ? ('page.program.program-people-affected.column.custom-attribute-true'
+                | translate)
+              : ('page.program.program-people-affected.column.custom-attribute-false'
+                | translate)
+          "
+        >
+          <ion-checkbox
+            color="success"
+            mode="ios"
+            [disabled]="!canUpdatePaData"
+            [checked]="value"
+            (click)="onCheckboxChange(row, column, !value)"
+          ></ion-checkbox>
+        </span>
+      </ng-container>
       <ng-container *ngIf="value !== true && value !== false && value">
         {{ value }}
       </ng-container>
@@ -331,31 +332,20 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column
-    *ngFor="let column of paymentColumns"
-    [prop]="column.prop"
-    [name]="column.name"
-    [width]="column.width"
-    [minWidth]="column.minWidth"
-    [maxWidth]="column.maxWidth"
-    [draggable]="column.draggable"
-    [resizeable]="column.resizable"
-    [sortable]="column.sortable"
-    [canAutoResize]="column.canAutoResize"
-    [headerClass]="column.headerClass"
-    [cellClass]="column.cellClass"
+    *ngIf="thisPhase === phaseEnum.payment"
+    [prop]="paymentHistoryColumn?.prop"
+    [name]="paymentHistoryColumn?.name"
+    minWidth="300"
+    [draggable]="false"
+    [resizeable]="false"
+    [sortable]="false"
+    [headerClass]="columnDefaults.headerClass"
   >
     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
       <ng-container *ngIf="value">
         <button
+          *ngIf="value?.paymentIndex"
           type="button"
-          (click)="statusPopup(row, column, value)"
-          [ngClass]="{
-            'is-error': hasError(row, column.paymentIndex),
-            'no-action':
-              !hasVoucherSupport(row.fsp) &&
-              !hasError(row, column.paymentIndex),
-            'ion-no-padding popup-button status-pop-up': true
-          }"
           [attr.title]="
             'page.program.program-people-affected.transaction.show-status'
               | translate
@@ -364,51 +354,22 @@
             'page.program.program-people-affected.transaction.show-status'
               | translate
           "
-        >
-          {{ value.text }}
-          <div
-            style="display: flex"
-            class="ion-justify-content-center ion-align-items-center"
-          >
-            {{ value.amount }}
-            <span *ngIf="value.hasMessageIcon || value.hasMoneyIconTable"
-              >&nbsp;</span
-            >
-            <ion-icon
-              *ngIf="value.hasMessageIcon"
-              name="mail"
-              size="small"
-              aria-hidden="true"
-            ></ion-icon>
-            <ion-icon
-              *ngIf="value.hasMoneyIconTable"
-              name="cash"
-              size="small"
-              aria-hidden="true"
-            ></ion-icon>
-          </div>
-        </button>
-      </ng-container>
-      <ng-container *ngIf="enableSinglePayment(row, column)">
-        <button
-          type="button"
-          (click)="statusPopup(row, column, value)"
+          (click)="paymentHistoryPopup(row, programId)"
           [ngClass]="{
-            'is-error': hasError(row, column.paymentIndex),
-            'ion-no-padding popup-button': true
+            'is-error': hasError(row),
+            'ion-no-padding popup-button status-pop-up payment-history-button': true
           }"
         >
-          {{
-            'page.program.program-people-affected.transaction.do-single-payment'
-              | translate
-          }}
-          <br />
-          <ion-icon
-            name="add-circle-outline"
-            size="small"
-            aria-hidden="true"
-          ></ion-icon>
+          <div *ngIf="value.paymentIndex" style="margin-bottom: 4px">
+            {{
+              'page.program.program-people-affected.transaction.payment-number'
+                | translate
+            }}{{ value.paymentIndex }}{{ ' ' + value.text }}
+          </div>
         </button>
+        <span *ngIf="!value?.paymentIndex">
+          {{ value.text }}
+        </span>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>

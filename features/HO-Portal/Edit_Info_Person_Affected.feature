@@ -22,7 +22,7 @@ Feature: Edit information on Person Affected
     Then a popup opens
     And in the title the ID-number of the Person Affected is mentioned
     And an input-field for the "paymentAmountMultiplier" and "phoneNumber" is shown
-    And an input-field for each Custom Attribute (such as "partnerOrganization") is shown
+    And an input-field for each Custom Attribute with type 'string' (such as "namePartnerOrganization") is shown
     And an input-field for each FSP-attribute (such as "whatsappPhoneNumber") is shown
     And all input-fields have an accompanying "update" button which is enabled
     And the pop-up shows a dropdown-list for the current FSP is shown

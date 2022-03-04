@@ -84,7 +84,7 @@ export class BulkActionsService {
       case BulkActionId.doPayment:
         personData.checkboxVisible =
           this.hasStatus(personData, [PaStatus.included]) &&
-          !personData[`payment${payment}`];
+          !personData.paymentHistory?.payments.includes(payment);
         break;
     }
     return personData;

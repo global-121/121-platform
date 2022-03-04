@@ -95,6 +95,7 @@ export class PaDataService {
         console.log('PaData: Account created.');
         this.saveUserInStorage(user);
         this.setLoggedIn(user);
+        return user;
       });
   }
 
@@ -110,7 +111,7 @@ export class PaDataService {
           this.saveUserInStorage(user);
           this.setLoggedIn(user);
 
-          return resolve();
+          return resolve(user);
         },
         (error) => {
           console.log('PaData: login error', error);

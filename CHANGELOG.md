@@ -5,13 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.35.3...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.36.1...master)
+
+---
+
+## [1.36.1](https://github.com/global-121/121-platform/compare/v1.36.0...1.36.1) - 2022-03-03
+
+## [1.36.0](https://github.com/global-121/121-platform/compare/v1.35.3...1.36.0) - 2022-03-02
 
 ### Changed
 
 - 2022-02-18: JWT-tokens for authorization/authentication are now being stored/transported via browser-cookies, no longer via a `Authentication`-header and browser's local/session-storage.
-
----
+- 2022-02-18: Changes in rules for caching in Apache-config
 
 ## [1.35.3](https://github.com/global-121/121-platform/compare/v1.35.2...1.35.3) - 2022-02-16
 

@@ -11,6 +11,8 @@ import {
   Controller,
   UseGuards,
   Res,
+  Put,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
@@ -26,7 +28,7 @@ import {
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 import { UserRoleEntity } from './user-role.entity';
 import { Permissions } from '../permissions.decorator';
-import { CreateUserRoleDto } from './dto/create-user-role.dto';
+import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 
 @UseGuards(PermissionsGuard)
 @ApiUseTags('user')
@@ -37,13 +39,42 @@ export class UserController {
     this.userService = userService;
   }
 
+  @Permissions(PermissionEnum.RoleREAD)
+  @ApiOperation({ title: 'Get all user roles' })
+  @Get('roles')
+  public async getUserRoles(): Promise<UserRoleEntity[]> {
+    return await this.userService.getUserRoles();
+  }
+
   @Permissions(PermissionEnum.RoleCREATE)
   @ApiOperation({ title: 'Create new user role' })
-  @Post('user/role')
+  @Post('roles')
   public async addUserRole(
     @Body() userRoleData: CreateUserRoleDto,
   ): Promise<UserRoleEntity> {
     return await this.userService.addUserRole(userRoleData);
+  }
+
+  @Permissions(PermissionEnum.RoleUPDATE)
+  @ApiOperation({ title: 'Update existing user role' })
+  @ApiImplicitParam({ name: 'userRoleId', required: true, type: 'integer' })
+  @Put('roles/:userRoleId')
+  public async updateUserRole(
+    @Param() params,
+    @Body() userRoleData: UpdateUserRoleDto,
+  ): Promise<UserRoleEntity> {
+    return await this.userService.updateUserRole(
+      params.userRoleId,
+      userRoleData,
+    );
+  }
+
+  @Permissions(PermissionEnum.RoleDELETE)
+  @ApiOperation({ title: 'Delete existing user role' })
+  @ApiImplicitParam({ name: 'userRoleId', required: true, type: 'integer' })
+  @Delete('roles/:userRoleId')
+  public async deleteUserRole(@Param() params): Promise<UserRoleEntity> {
+    return await this.userService.deleteUserRole(params.userRoleId);
   }
 
   @Permissions(PermissionEnum.AidWorkerCREATE)
@@ -59,8 +90,25 @@ export class UserController {
   @Post('user/person-affected')
   public async createPA(
     @Body() userData: CreateUserPersonAffectedDto,
+    @Res() res,
   ): Promise<UserRO> {
-    return this.userService.createPersonAffected(userData);
+    try {
+      const user = await this.userService.createPersonAffected(userData);
+      const exp = new Date(Date.now() + 60 * 24 * 3600000);
+      res.cookie('access_token', user.user.token, {
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+        secure: process.env.NODE_ENV === 'production',
+        expires: exp,
+        httpOnly: true,
+      });
+      return res.send({
+        username: user.user.username,
+        permissions: user.user.permissions,
+        expires: exp,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   @ApiOperation({ title: 'Log in existing user' })

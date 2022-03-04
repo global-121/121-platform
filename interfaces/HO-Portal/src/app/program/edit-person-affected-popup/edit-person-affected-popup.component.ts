@@ -3,7 +3,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Fsp } from 'src/app/models/fsp.model';
 import { Person } from 'src/app/models/person.model';
-import { Program } from 'src/app/models/program.model';
+import { Program, ProgramCustomAttribute } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 
@@ -120,6 +120,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         value: this.person.customAttributes[ca.name].value,
       };
     });
+    this.customAttributes = this.customAttributes.filter(
+      (attribute: ProgramCustomAttribute) => {
+        return attribute.type !== 'boolean';
+      },
+    );
   }
 
   private async getNote() {

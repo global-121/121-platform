@@ -1,0 +1,83 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      {{
+        'page.program.program-people-affected.payment-history-popup.title'
+          | translate
+      }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
+      >
+        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h3>{{ paDisplayName }}</h3>
+  <ion-grid>
+    <ion-col>
+      <ion-row *ngFor="let paymentRow of paymentRows" class="full-width ion-justify-content-between ion-padding-bottom ion-margin-vertical">
+        <div>
+          <h5 class="ion-no-margin">Payment #{{ paymentRow.paymentIndex }}</h5>
+          <ion-text *ngIf="paymentRow.transaction?.status" [color]="paymentRow.transaction?.status === 'success' ? 'dark' : 'danger'">{{ 'page.program.program-payout.last-payment.' + paymentRow.transaction?.status | translate }}</ion-text>
+        </div>
+        <ng-container *ngIf="paymentRow.transaction">
+          <button
+            type="button"
+            (click)="rowClick(paymentRow)"
+            [ngClass]="{
+              'is-error': hasError(paymentRow),
+              'no-action': !hasVoucherSupport(paymentRow.fsp) && !hasError(paymentRow),
+              'ion-no-padding popup-button': true
+            }"
+          >
+            {{ paymentRow.text }}
+            <div style="display: flex;" class="ion-justify-content-center ion-align-items-center">
+              {{ paymentRow.amount }}
+              <span *ngIf="paymentRow.hasMessageIcon || paymentRow.hasMoneyIconTable">&nbsp;</span>
+              <ion-icon
+                *ngIf="paymentRow.hasMessageIcon"
+                name="mail"
+                size="small"
+                aria-hidden="true"
+              ></ion-icon>
+              <ion-icon
+                *ngIf="paymentRow.hasMoneyIconTable"
+                name="cash"
+                size="small"
+                aria-hidden="true"
+              ></ion-icon>
+            </div>
+          </button>
+        </ng-container>
+
+        <ng-container
+          *ngIf="enableSinglePayment(personRow, paymentRow)"
+        >
+          <button
+            type="button"
+            (click)="rowClick(paymentRow)"
+            [ngClass]="{
+              'is-error': hasError(paymentRow),
+              'ion-no-padding popup-button': true
+            }"
+          >
+            {{ 'page.program.program-people-affected.transaction.do-single-payment'|translate }}
+            <br>
+            <ion-icon
+              name="add-circle-outline"
+              size="small"
+              aria-hidden="true"
+            ></ion-icon>
+          </button>
+        </ng-container>
+      </ion-row>
+    </ion-col>
+  </ion-grid>
+</ion-content>
