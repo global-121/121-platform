@@ -21,6 +21,7 @@ export class PersonAffectedAuthGuard implements CanActivate {
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     let hasAccess: boolean;
+    const accessTokenKey = 'access_token_pa';
 
     const endpointPersonAffectedAuth = this.reflector.get<PermissionEnum[]>(
       'personAffectedAuth',
@@ -34,10 +35,10 @@ export class PersonAffectedAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     if (
       request.cookies &&
-      request.cookies['access_token'] &&
+      request.cookies[accessTokenKey] &&
       endpointPersonAffectedAuth.length === 0
     ) {
-      const token = request.cookies['access_token'];
+      const token = request.cookies[accessTokenKey];
       const decoded: any = jwt.verify(
         token,
         process.env.SECRETS_121_SERVICE_SECRET,

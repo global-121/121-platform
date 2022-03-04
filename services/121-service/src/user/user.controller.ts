@@ -91,7 +91,7 @@ export class UserController {
     try {
       const user = await this.userService.createPersonAffected(userData);
       const exp = new Date(Date.now() + 60 * 24 * 3600000);
-      res.cookie('access_token', user.user.token, {
+      res.cookie('access_token_pa', user.user.token, {
         sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
         secure: process.env.NODE_ENV === 'production',
         expires: exp,
@@ -139,8 +139,8 @@ export class UserController {
   @Post('user/logout')
   public async logout(@Res() res): Promise<UserRO> {
     try {
-      // TODO: Check for dynamic token
-      res.cookie('access_token', '', {
+      const key = this.userService.getInterfaceKeyByHeader();
+      res.cookie(key, '', {
         sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
         secure: process.env.NODE_ENV === 'production',
         expires: new Date(Date.now() - 60 * 24 * 3600000),

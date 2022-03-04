@@ -309,6 +309,25 @@ export class UserService {
     return result;
   }
 
+  public getInterfaceKeyByHeader(): string {
+    const headerKey = 'x-121-interface';
+    const originInterface = this.request.headers[headerKey];
+    if (originInterface) {
+      switch (originInterface) {
+        case 'portal':
+          return 'access_token_portal';
+        case 'AW-app':
+          return 'access_token_aw';
+        // This case below is for the aidworker login in PA-app
+        case 'PA-app':
+          return 'access_token_pa_aw';
+
+        default:
+          break;
+      }
+    }
+  }
+
   private buildUserRO(user: UserEntity): UserRO {
     let permissions = this.buildPermissionArray(user);
 
@@ -336,51 +355,9 @@ export class UserService {
   }
 
   private buildCookieByRequest(token: string): CookieSettingsDto {
-    const origin = this.request.headers.origin;
-    const originPort = origin.split(':')[2];
-    const originPath = origin.split('/')[3];
-    let tokenKey: string;
     let domain: string;
     let path: string;
-    if (originPort) {
-      //This is a request from localhost using ports
-      switch (originPort) {
-        case '8888':
-          tokenKey = 'access_token_ho';
-          domain = 'localhost:8888';
-          break;
-        case '8080':
-          tokenKey = 'access_token_aw';
-          domain = 'localhost:8080';
-          break;
-        case '8008':
-          tokenKey = 'access_token_pa';
-          domain = 'localhost:8008';
-          break;
-
-        default:
-          break;
-      }
-    } else if (originPath) {
-      // This is a request from a deployed instance
-      switch (originPath) {
-        case process.env.GLOBAL_121_HO_DIR:
-          tokenKey = 'access_token_ho';
-          path = `/${process.env.GLOBAL_121_HO_DIR}`;
-          break;
-        case process.env.GLOBAL_121_AW_DIR:
-          tokenKey = 'access_token_aw';
-          path = `/${process.env.GLOBAL_121_AW_DIR}`;
-          break;
-        case process.env.GLOBAL_121_PA_DIR:
-          tokenKey = 'access_token_pa';
-          path = `/${process.env.GLOBAL_121_PA_DIR}`;
-          break;
-
-        default:
-          break;
-      }
-    }
+    let tokenKey: string = this.getInterfaceKeyByHeader();
 
     return {
       tokenKey,

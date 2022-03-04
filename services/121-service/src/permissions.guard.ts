@@ -21,6 +21,14 @@ export class PermissionsGuard implements CanActivate {
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     let hasAccess: boolean;
+    const headerKey = 'x-121-interface';
+    const accessTokenKeyPortal = 'access_token_portal';
+    const accessTokenKeyAwApp = 'access_token_aw';
+    const accessTokenKeyPaApp = 'access_token_pa';
+
+    const interfaceOriginPortal = 'portal';
+    const interfaceOriginAwApp = 'AW-app';
+    const interfaceOriginPaApp = 'PA-app';
 
     const endpointPermissions = this.reflector.get<PermissionEnum[]>(
       'permissions',
@@ -32,22 +40,42 @@ export class PermissionsGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
+    const originInterface = request.headers[headerKey];
 
     if (
       request.cookies &&
-      request.cookies['access_token'] &&
+      (request.cookies[accessTokenKeyPortal] ||
+        request.cookies[accessTokenKeyAwApp] ||
+        request.cookies[accessTokenKeyPaApp]) &&
       endpointPermissions
     ) {
-      const token = request.cookies['access_token'];
-      const decoded: any = jwt.verify(
-        token,
-        process.env.SECRETS_121_SERVICE_SECRET,
-      );
-      if (decoded.permissions) {
-        hasAccess = await this.aidworkerCanActivate(
-          decoded.permissions,
-          endpointPermissions,
+      let token;
+      switch (originInterface) {
+        case interfaceOriginPortal:
+          token = request.cookies[accessTokenKeyPortal];
+          break;
+        case interfaceOriginAwApp:
+          token = request.cookies[accessTokenKeyAwApp];
+          break;
+        case interfaceOriginPaApp:
+          token = request.cookies[accessTokenKeyPaApp];
+          // Or AW login: token = request.cookies['access_token_pa_aw'];
+          break;
+
+        default:
+          break;
+      }
+      if (token) {
+        const decoded: any = jwt.verify(
+          token,
+          process.env.SECRETS_121_SERVICE_SECRET,
         );
+        if (decoded.permissions) {
+          hasAccess = await this.aidworkerCanActivate(
+            decoded.permissions,
+            endpointPermissions,
+          );
+        }
       }
     } else {
       hasAccess = false;

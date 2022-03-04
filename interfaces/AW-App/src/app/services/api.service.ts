@@ -24,6 +24,7 @@ export class ApiService {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json',
+      'X-121-Interface': 'AW-app',
     });
 
     return headers;

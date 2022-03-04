@@ -24,6 +24,7 @@ export class ApiService {
     let headers = new HttpHeaders({
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      'X-121-Interface': 'portal',
     });
 
     if (isUpload) {
