@@ -4,7 +4,6 @@ import {
   HttpHeaders,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import InterfaceName from '../enums/interface-names.enum';
@@ -16,7 +15,7 @@ import { User } from '../models/user.model';
 export class ApiService {
   private userKey = 'logged-in-user-HO';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient) {}
 
   private showSecurity(anonymous: boolean) {
     return anonymous ? '🌐' : '🔐';
@@ -101,7 +100,7 @@ export class ApiService {
     if (error.status === 401) {
       if (error.error.message === 'Force logout.') {
         localStorage.removeItem(this.userKey);
-        this.router.navigate(['/login']);
+        window.location.reload();
       }
       const rawUser = localStorage.getItem(this.userKey);
       if (!rawUser) {
