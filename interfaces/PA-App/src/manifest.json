@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest",
+  "name": "PA-App",
+  "short_name": "PA-App",
+  "theme_color": "#1976d2",
+  "background_color": "#fafafa",
+  "display": "browser",
+  "scope": "./",
+  "start_url": "./"
+}
