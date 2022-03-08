@@ -1,5 +1,4 @@
 import { PermissionEnum } from './user/permission.enum';
-import { UserEntity } from './user/user.entity';
 import {
   Injectable,
   CanActivate,
@@ -10,7 +9,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
 import { UserService } from './user/user.service';
-import { UserType } from './user/user-type-enum';
+import { InterfaceNames } from './shared/enum/interface-names.enum';
+import { CookieNames } from './shared/enum/cookie-names.enums';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -22,13 +22,6 @@ export class PermissionsGuard implements CanActivate {
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     let hasAccess: boolean;
     const headerKey = 'x-121-interface';
-    const accessTokenKeyPortal = 'access_token_portal';
-    const accessTokenKeyAwApp = 'access_token_aw';
-    const accessTokenKeyPaApp = 'access_token_pa';
-
-    const interfaceOriginPortal = 'portal';
-    const interfaceOriginAwApp = 'AW-app';
-    const interfaceOriginPaApp = 'PA-app';
 
     const endpointPermissions = this.reflector.get<PermissionEnum[]>(
       'permissions',
@@ -44,21 +37,21 @@ export class PermissionsGuard implements CanActivate {
 
     if (
       request.cookies &&
-      (request.cookies[accessTokenKeyPortal] ||
-        request.cookies[accessTokenKeyAwApp] ||
-        request.cookies[accessTokenKeyPaApp]) &&
+      (request.cookies[CookieNames.portal] ||
+        request.cookies[CookieNames.awApp] ||
+        request.cookies[CookieNames.paApp]) &&
       endpointPermissions
     ) {
       let token;
       switch (originInterface) {
-        case interfaceOriginPortal:
-          token = request.cookies[accessTokenKeyPortal];
+        case InterfaceNames.portal:
+          token = request.cookies[CookieNames.portal];
           break;
-        case interfaceOriginAwApp:
-          token = request.cookies[accessTokenKeyAwApp];
+        case InterfaceNames.awApp:
+          token = request.cookies[CookieNames.awApp];
           break;
-        case interfaceOriginPaApp:
-          token = request.cookies[accessTokenKeyPaApp];
+        case InterfaceNames.paApp:
+          token = request.cookies[CookieNames.paApp];
           // Or AW login: token = request.cookies['access_token_pa_aw'];
           break;
 

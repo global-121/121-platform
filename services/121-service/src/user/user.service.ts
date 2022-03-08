@@ -21,6 +21,8 @@ import { CookieSettingsDto } from './dto/cookie-settings.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+import { InterfaceNames } from './../shared/enum/interface-names.enum';
+import { CookieNames } from './../shared/enum/cookie-names.enums';
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
@@ -314,12 +316,12 @@ export class UserService {
     const originInterface = this.request.headers[headerKey];
     if (originInterface) {
       switch (originInterface) {
-        case 'portal':
-          return 'access_token_portal';
-        case 'AW-app':
-          return 'access_token_aw';
-        case 'PA-app':
-          return 'access_token_pa';
+        case InterfaceNames.portal:
+          return CookieNames.portal;
+        case InterfaceNames.awApp:
+          return CookieNames.awApp;
+        case InterfaceNames.paApp:
+          return CookieNames.paApp;
 
         default:
           break;

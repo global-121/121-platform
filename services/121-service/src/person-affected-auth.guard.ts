@@ -11,6 +11,7 @@ import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
 import { UserService } from './user/user.service';
 import { UserType } from './user/user-type-enum';
+import { CookieNames } from './shared/enum/cookie-names.enums';
 
 @Injectable()
 export class PersonAffectedAuthGuard implements CanActivate {
@@ -21,7 +22,6 @@ export class PersonAffectedAuthGuard implements CanActivate {
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     let hasAccess: boolean;
-    const accessTokenKey = 'access_token_pa';
 
     const endpointPersonAffectedAuth = this.reflector.get<PermissionEnum[]>(
       'personAffectedAuth',
@@ -35,10 +35,10 @@ export class PersonAffectedAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     if (
       request.cookies &&
-      request.cookies[accessTokenKey] &&
+      request.cookies[CookieNames.paApp] &&
       endpointPersonAffectedAuth.length === 0
     ) {
-      const token = request.cookies[accessTokenKey];
+      const token = request.cookies[CookieNames.paApp];
       const decoded: any = jwt.verify(
         token,
         process.env.SECRETS_121_SERVICE_SECRET,
