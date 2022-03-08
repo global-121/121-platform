@@ -6,6 +6,7 @@ import {
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import InterfaceName from '../enums/interface-names.enum';
 import { User } from '../models/user.model';
 
 @Injectable({
@@ -24,6 +25,7 @@ export class ApiService {
     let headers = new HttpHeaders({
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      'X-121-Interface': InterfaceName.portal,
     });
 
     if (isUpload) {

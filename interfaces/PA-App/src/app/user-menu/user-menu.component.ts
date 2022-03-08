@@ -40,8 +40,8 @@ export class UserMenuComponent {
     this.modalController.dismiss();
   }
 
-  logout() {
-    this.paData.logout();
+  async logout() {
+    await this.paData.logout();
     this.close();
     this.logger.logEvent(LoggingEventCategory.ui, LoggingEvent.logout);
     window.location.reload();
