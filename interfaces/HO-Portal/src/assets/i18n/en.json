@@ -458,11 +458,6 @@
         "confirm": "Add aidworker",
         "create-password": "Enter a password of at least {{minimalLength}} characters:",
         "succes-create": "Succesfully created user with email: '<strong>{{email}}</strong>' and password '<strong>{{password}}</strong>'. Please inform them now of their new account by sending an e-mail."
-      },
-      "test-payment": {
-        "do-payment": "Verify M-PESA phonenumbers",
-        "confirm": "This will test if the provided phonenumbers have a valid M-PESA account. No Person Affected will notice this test.",
-        "result": "Provided phonenumbers have been tested for valid M-PESA accounts. The result can be seen by exporting the Inclusion List."
       }
     },
     "help": {
