@@ -37,9 +37,12 @@ export class PermissionsGuard implements CanActivate {
 
     if (
       request.cookies &&
-      (request.cookies[CookieNames.portal] ||
-        request.cookies[CookieNames.awApp] ||
-        request.cookies[CookieNames.paApp]) &&
+      ((originInterface === InterfaceNames.portal &&
+        request.cookies[CookieNames.portal]) ||
+        (originInterface === InterfaceNames.awApp &&
+          request.cookies[CookieNames.awApp]) ||
+        (originInterface === InterfaceNames.paApp &&
+          request.cookies[CookieNames.paApp])) &&
       endpointPermissions
     ) {
       let token;
