@@ -10,7 +10,7 @@ import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
 import { UserService } from './user/user.service';
 import { InterfaceNames } from './shared/enum/interface-names.enum';
-import { CookieNames } from './shared/enum/cookie-names.enums';
+import { CookieErrors, CookieNames } from './shared/enum/cookie.enums';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -80,7 +80,7 @@ export class PermissionsGuard implements CanActivate {
         request.cookies['access_token'] ||
         Object.keys(request.cookies).length === 0
       ) {
-        throw new HttpException('Force logout.', HttpStatus.UNAUTHORIZED);
+        throw new HttpException(CookieErrors.oldOrNo, HttpStatus.UNAUTHORIZED);
       } else {
         throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
       }

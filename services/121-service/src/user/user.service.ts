@@ -22,7 +22,7 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { InterfaceNames } from './../shared/enum/interface-names.enum';
-import { CookieNames } from './../shared/enum/cookie-names.enums';
+import { CookieNames } from './../shared/enum/cookie.enums';
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {

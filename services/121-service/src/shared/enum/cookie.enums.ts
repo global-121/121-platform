@@ -3,3 +3,7 @@ export enum CookieNames {
   awApp = 'access_token_aw',
   paApp = 'access_token_pa',
 }
+
+export enum CookieErrors {
+  oldOrNo = 'Old or no cookie',
+}
