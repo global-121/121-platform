@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@angular/service-worker/config/schema.json",
-  "index": "/index.html",
+  "index": "index.html",
   "dataGroups": [],
   "assetGroups": [
     {
@@ -8,7 +8,7 @@
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": ["/index.html", "/manifest.webmanifest", "/*.css", "/*.js"]
+        "files": ["/index.html", "/**.css", "/**.js", "/manifest.webmanifest"]
       }
     },
     {
