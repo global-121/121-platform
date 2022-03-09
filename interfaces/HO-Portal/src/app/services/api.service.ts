@@ -4,7 +4,7 @@ import {
   HttpHeaders,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import InterfaceName from '../enums/interface-names.enum';
 import { User } from '../models/user.model';
@@ -95,12 +95,16 @@ export class ApiService {
 
   handleError(error: HttpErrorResponse, anonymous: boolean) {
     if (anonymous === true) {
-      throwError(error);
+      return of(error);
     }
     if (error.status === 401) {
+      if (error.error.message === 'Force logout.') {
+        localStorage.removeItem(this.userKey);
+        window.location.reload();
+      }
       const rawUser = localStorage.getItem(this.userKey);
       if (!rawUser) {
-        throwError(error);
+        return of(error);
       }
 
       const user: User = JSON.parse(rawUser);
@@ -110,6 +114,8 @@ export class ApiService {
         window.location.reload();
         return of('Token expired');
       }
+      return of('Not authorized');
     }
+    return of(error);
   }
 }

@@ -76,7 +76,11 @@ export class PermissionsGuard implements CanActivate {
     if (hasAccess === false) {
       // Add this to stay consitent with the old auth middeleware which returns 401
       // If you remove this an unautherized request return 403 will be sent
-      throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
+      if (request.cookies['access_token']) {
+        throw new HttpException('Force logout.', HttpStatus.UNAUTHORIZED);
+      } else {
+        throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
+      }
     }
     return hasAccess;
   }
