@@ -20,6 +20,9 @@ export abstract class PersonalDirective
   @Input()
   data: any;
 
+  @Input()
+  mode: string;
+
   @ViewChildren(DialogueTurnComponent)
   private turns: QueryList<DialogueTurnComponent>;
 

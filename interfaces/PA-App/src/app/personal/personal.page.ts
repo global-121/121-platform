@@ -5,9 +5,14 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
+import {
+  PaRegistrationModes,
+  RouteParameters,
+} from '../models/route-parameters';
 import { AutoSignupComponent } from '../personal-components/auto-signup/auto-signup.component';
 import { ConsentQuestionComponent } from '../personal-components/consent-question/consent-question.component';
 import { ContactDetailsComponent } from '../personal-components/contact-details/contact-details.component';
@@ -15,6 +20,7 @@ import { CreateAccountComponent } from '../personal-components/create-account/cr
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { LoginAccountComponent } from '../personal-components/login-account/login-account.component';
 import { MonitoringQuestionComponent } from '../personal-components/monitoring-question/monitoring-question.component';
+import { NextPaComponent } from '../personal-components/next-pa/next-pa.component';
 import { PersonalDirective } from '../personal-components/personal-component.class';
 import {
   PersonalComponents,
@@ -31,6 +37,7 @@ import {
   ConversationSection,
   ConversationService,
 } from '../services/conversation.service';
+import { PaDataService } from '../services/padata.service';
 import { InclusionStatusComponent } from './../personal-components/inclusion-status/inclusion-status.component';
 
 @Component({
@@ -52,6 +59,10 @@ export class PersonalPage implements OnInit {
 
   private scrollSpeed = environment.useAnimation ? 600 : 0;
 
+  public mode: string;
+
+  public paBatch: [];
+
   private availableSections = {
     [PersonalComponents.consentQuestion]: ConsentQuestionComponent,
     [PersonalComponents.contactDetails]: ContactDetailsComponent,
@@ -68,6 +79,7 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.setNotificationNumber]: SetNotificationNumberComponent,
     [PersonalComponents.signupSignin]: SignupSigninComponent,
     [PersonalComponents.autoSignup]: AutoSignupComponent,
+    [PersonalComponents.nextPa]: NextPaComponent,
   };
   public debugSections = Object.keys(this.availableSections);
 
@@ -75,6 +87,8 @@ export class PersonalPage implements OnInit {
     public conversationService: ConversationService,
     private resolver: ComponentFactoryResolver,
     public translate: TranslateService,
+    private route: ActivatedRoute,
+    private paDataServices: PaDataService,
   ) {
     // Listen for completed sections, to continue with next steps
     this.conversationService.updateConversation$.subscribe(
@@ -101,6 +115,16 @@ export class PersonalPage implements OnInit {
       }
 
       this.ionContent.scrollToPoint(0, toY, this.scrollSpeed);
+    });
+
+    this.route.queryParams.subscribe((queryParams) => {
+      this.mode =
+        queryParams[RouteParameters.mode] &&
+        queryParams[RouteParameters.mode] === PaRegistrationModes.batch
+          ? PaRegistrationModes.batch
+          : PaRegistrationModes.singlePa;
+
+      this.paBatch = this.paDataServices.getPaBatch();
     });
   }
 
@@ -166,6 +190,7 @@ export class PersonalPage implements OnInit {
     componentInstance.moment = moment;
     componentInstance.data = data;
     componentInstance.animate = options.animate;
+    componentInstance.mode = this.mode;
   }
 
   public scrollDown() {

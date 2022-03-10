@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="dark">
     <ion-title>
-      {{ 'tabs.you'|translate }}
+      {{ mode === 'batch' ? paBatch.length + ' PAs queued' : 'tabs.you'|translate }}
     </ion-title>
     <ion-buttons slot="end" *ngIf="isDebug">
       <ion-button
