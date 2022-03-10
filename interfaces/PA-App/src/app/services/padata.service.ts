@@ -11,6 +11,7 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 export class PaDataService {
   public type = PaDataTypes;
   private sessionKey = 'logged-in-user-PA';
+  private paBatchKey = 'pa-batch';
 
   private hasAccount = false;
 
@@ -194,5 +195,20 @@ export class PaDataService {
         (error) => reject(error),
       );
     });
+  }
+
+  public getPaBatch(): [] {
+    const batchObj = window.localStorage.getItem(this.paBatchKey);
+    return batchObj ? JSON.parse(batchObj) : [];
+  }
+
+  public savePaToBatch() {
+    const batchObj = window.localStorage.getItem(this.paBatchKey);
+    let paBatch = batchObj ? JSON.parse(batchObj) : [];
+    paBatch.push({
+      type: this.type.myAnswers,
+      data: JSON.stringify(this.myAnswers),
+    });
+    localStorage.setItem(this.paBatchKey, JSON.stringify(paBatch));
   }
 }

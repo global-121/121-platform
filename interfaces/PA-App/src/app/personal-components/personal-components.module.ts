@@ -13,6 +13,7 @@ import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.
 import { InclusionStatusComponent } from './inclusion-status/inclusion-status.component';
 import { LoginAccountComponent } from './login-account/login-account.component';
 import { MonitoringQuestionComponent } from './monitoring-question/monitoring-question.component';
+import { NextPaComponent } from './next-pa/next-pa.component';
 import { PreprintedQrcodeComponent } from './preprinted-qrcode/preprinted-qrcode.component';
 import { RegistrationSummaryComponent } from './registration-summary/registration-summary.component';
 import { SelectFspComponent } from './select-fsp/select-fsp.component';
@@ -39,6 +40,7 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     SignupSigninComponent,
     InfoPopupComponent,
     AutoSignupComponent,
+    NextPaComponent,
   ],
   imports: [CommonModule, SharedModule, FormsModule, QRCodeModule],
   exports: [
@@ -57,6 +59,7 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     SetNotificationNumberComponent,
     SignupSigninComponent,
     AutoSignupComponent,
+    NextPaComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [ConversationService],

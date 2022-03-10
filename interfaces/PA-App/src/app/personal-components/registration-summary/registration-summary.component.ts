@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Program } from 'src/app/models/program.model';
+import { PaRegistrationModes } from 'src/app/models/route-parameters';
 import { Timeslot } from 'src/app/models/timeslot.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -135,7 +136,9 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   }
 
   getNextSection() {
-    return PersonalComponents.monitoringQuestion;
+    return this.mode === PaRegistrationModes.batch
+      ? PersonalComponents.nextPa
+      : PersonalComponents.monitoringQuestion;
   }
 
   complete() {
