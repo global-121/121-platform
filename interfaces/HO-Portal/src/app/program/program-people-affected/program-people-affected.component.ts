@@ -72,6 +72,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
   public visiblePeopleAffected: PersonRow[] = [];
+  private initialVisiblePeopleAffected: PersonRow[] = [];
   public filterRowsVisibleQuery: string;
 
   public headerChecked = false;
@@ -698,6 +699,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.visiblePeopleAffected = this.allPeopleAffected.filter((pa) =>
       paStatusesToShow.includes(pa.status),
     );
+
+    this.initialVisiblePeopleAffected = [...this.visiblePeopleAffected];
   }
 
   private createTableData(source: Person[]): PersonRow[] {
@@ -1194,23 +1197,25 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public filterRowsVisible(value: string) {
     const filterVal = value.toLowerCase().trim();
-    const rowsVisible = this.visiblePeopleAffected.filter((row: PersonRow) => {
-      // Loop over all columns
-      for (const key of Object.keys(row)) {
-        try {
-          const columnValue = row[key].toLowerCase();
-          const includeRow =
-            columnValue.indexOf(filterVal) !== -1 || // check literal values
-            columnValue.replace(/\s/g, '').indexOf(filterVal) !== -1 || // check also with spaces removed
-            !filterVal;
-          if (includeRow) {
-            return includeRow;
+    const rowsVisible = this.initialVisiblePeopleAffected.filter(
+      (row: PersonRow) => {
+        // Loop over all columns
+        for (const key of Object.keys(row)) {
+          try {
+            const columnValue = row[key].toLowerCase();
+            const includeRow =
+              columnValue.indexOf(filterVal) !== -1 || // check literal values
+              columnValue.replace(/\s/g, '').indexOf(filterVal) !== -1 || // check also with spaces removed
+              !filterVal;
+            if (includeRow) {
+              return includeRow;
+            }
+          } catch {
+            // Do not filter on unfilterable column types
           }
-        } catch {
-          // Do not filter on unfilterable column types
         }
-      }
-    });
+      },
+    );
 
     this.visiblePeopleAffected = rowsVisible;
   }
