@@ -6,7 +6,11 @@ Feature: View and manage people affected (generic features)
 
   Scenario: View people affected connected to a program
     When the user views a page with the "manage people affected" component
-    Then a table with all "people connected to a program" is shown
+    Then a table with "people connected to a program" is shown
+    And depending on the "selected phase" only current people affected with given "PA statuses" are shown
+      - "registration": imported, invited, created, selected for validation, no longer eligible, registered while no longer eligible
+      - "inclusion": validated, registered, selected for validation, rejected, inclusion ended
+      - "payment": included
     And for each person the "Select" column is empty
     And for each person a "PA identifier" is shown
     And it has a clickable "i" button in front of it, which opens a popup
@@ -23,8 +27,8 @@ Feature: View and manage people affected (generic features)
     And depending on which "page" several "status change date" columns are shown
     And "transfer value" column is shown
     And "inclusion score" column is shown (if "validation" is configured for the program)
-    And "financial service provider" column is shown (in "reviewInclusion" and "payment" pages only)
-    And "Payment History" column is shown (in "payment" page only)
+    And "financial service provider" column is shown
+    And "payment columns" are shown (in "payment" page only)
 
   Scenario: View columns of table WITH access to personal data
     Given the logged-in user also has "RegistrationPersonalREAD" permission

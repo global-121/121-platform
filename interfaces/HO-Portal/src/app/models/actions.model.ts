@@ -3,7 +3,6 @@ export enum ActionType {
   importRegistrations = 'import-registrations',
   paymentFinished = 'payment-finished',
   paymentStarted = 'payment-started',
-  testMpesaPayment = 'test-mpesa-payment',
   exportFspInstructions = 'export-fsp-instructions',
 }
 

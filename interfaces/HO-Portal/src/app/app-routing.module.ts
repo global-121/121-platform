@@ -109,24 +109,10 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: ProgramPhase.reviewInclusion,
-        loadChildren: () =>
-          import('./pages/review-inclusion/review-inclusion.module').then(
-            (m) => m.ReviewInclusionPageModule,
-          ),
-        canActivate: [AuthGuard],
-      },
-      {
         // Fallback for change in url, from old to new syntax:
         path: 'registration-validation',
         pathMatch: 'full',
         redirectTo: ProgramPhase.registrationValidation,
-      },
-      {
-        // Fallback for change in url, from old to new syntax:
-        path: 'review-inclusion',
-        pathMatch: 'full',
-        redirectTo: ProgramPhase.reviewInclusion,
       },
     ],
   },

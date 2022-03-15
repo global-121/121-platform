@@ -8,7 +8,6 @@
     "design": "Design",
     "registration-validation": "Registration & Validation",
     "inclusion": "Inclusion",
-    "review-inclusion": "Review Inclusion",
     "payment": "Payment",
     "evaluation": "Evaluation"
   },
@@ -72,10 +71,6 @@
         },
         "inclusion": {
           "label": "Inclusion",
-          "btnText": "Move to: Review inclusion"
-        },
-        "reviewInclusion": {
-          "label": "Review Inclusion",
           "btnText": "Move to: Payment"
         },
         "payment": {
@@ -385,6 +380,8 @@
             "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
         },
+        "status-changed": "You successfully changed the status to <strong>{{pastatus}}</strong> for <strong>{{panumber}}</strong> People Affected.",
+        "pa-moved-phase": "These People Affected might be visible in another phase after this status change.",
         "payment-history-popup": {
           "title": "Payment history"
         }
@@ -461,11 +458,6 @@
         "confirm": "Add aidworker",
         "create-password": "Enter a password of at least {{minimalLength}} characters:",
         "succes-create": "Succesfully created user with email: '<strong>{{email}}</strong>' and password '<strong>{{password}}</strong>'. Please inform them now of their new account by sending an e-mail."
-      },
-      "test-payment": {
-        "do-payment": "Verify M-PESA phonenumbers",
-        "confirm": "This will test if the provided phonenumbers have a valid M-PESA account. No Person Affected will notice this test.",
-        "result": "Provided phonenumbers have been tested for valid M-PESA accounts. The result can be seen by exporting the Inclusion List."
       }
     },
     "help": {
