@@ -4,6 +4,12 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import InterfaceName from '../enums/interface-names.enum';
 
+export enum ApiPath {
+  fsp = 'registrations/fsp',
+  personAffected = 'user/person-affected',
+  programAnswers = 'registrations/program-answers',
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -48,7 +54,7 @@ export class ApiService {
 
   post(
     endpoint: string,
-    path: string,
+    path: ApiPath | string,
     body: object,
     anonymous: boolean = false,
   ): Observable<any> {

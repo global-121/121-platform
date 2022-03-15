@@ -31,6 +31,7 @@ import {
   ConversationSection,
   ConversationService,
 } from '../services/conversation.service';
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { InclusionStatusComponent } from './../personal-components/inclusion-status/inclusion-status.component';
 
 @Component({
@@ -75,6 +76,7 @@ export class PersonalPage implements OnInit {
     public conversationService: ConversationService,
     private resolver: ComponentFactoryResolver,
     public translate: TranslateService,
+    private programsServiceApiService: ProgramsServiceApiService,
   ) {
     // Listen for completed sections, to continue with next steps
     this.conversationService.updateConversation$.subscribe(
@@ -109,7 +111,7 @@ export class PersonalPage implements OnInit {
     if (this.isDebug && this.showDebug) {
       return;
     }
-
+    await this.loadEndpoints();
     await this.loadComponents();
     this.scrollToLastWhenReady();
   }
@@ -123,6 +125,14 @@ export class PersonalPage implements OnInit {
         !PersonalComponentsRemoved.includes(section.name)
       );
     });
+  }
+
+  private async loadEndpoints() {
+    await this.programsServiceApiService.getInstanceInformation();
+    const programs = await this.programsServiceApiService.getAllPrograms();
+    for (const program of programs) {
+      await this.programsServiceApiService.getProgramById(program.id);
+    }
   }
 
   private async loadComponents() {

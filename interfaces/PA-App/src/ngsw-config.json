@@ -1,14 +1,17 @@
 {
-  "$schema": "../node_modules/@angular/service-worker/config/schema.json",
   "index": "index.html",
-  "dataGroups": [],
   "assetGroups": [
     {
       "name": "app",
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": ["/index.html", "/**.css", "/**.js", "/manifest.webmanifest"]
+        "files": [
+          "/index.html",
+          "/**.css",
+          "/**.js",
+          "/manifest.webmanifest"
+        ]
       }
     },
     {
@@ -16,7 +19,24 @@
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": ["/assets/**", "/svg/**"]
+        "files": [
+          "/assets/**",
+          "/svg/**"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-performance",
+      "urls": [
+        "/instance",
+        "/programs/**"
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 100,
+        "maxAge": "3d"
       }
     }
   ]
