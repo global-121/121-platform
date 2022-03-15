@@ -124,16 +124,12 @@ export class SyncService implements OnDestroy {
     );
 
     syncTasks.forEach((task: SyncTask) => {
-      const params = new HttpParams({
-        fromString: task.params,
-      });
-      const request$ = this.apiService.post(task.url, task.body, params).pipe(
+      console.log(task);
+      // const params = new HttpParams({
+      //   fromString: task.params,
+      // });
+      const request$ = this.apiService.post(task.url, '', task.body).pipe(
         map((response) => {
-          // if (task.url === ApiPath.answers) {
-          //   this.pubSub.publish(PubSubEvent.didSaveAnswerToServer, {
-          //     timestamp: response.updated,
-          //   });
-          // }
           return response;
         }),
         map((_) => task),

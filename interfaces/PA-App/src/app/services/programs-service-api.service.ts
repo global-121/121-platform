@@ -44,23 +44,9 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  // createAccountPA(username: string, password: string): Promise<User | null> {
-  //   return this.apiService
-  //     .post(
-  //       environment.url_121_service_api,
-  //       '/user/person-affected',
-  //       {
-  //         username,
-  //         password,
-  //       },
-  //       true,
-  //     )
-  //     .toPromise();
-  // }
-
   createAccountPA(username: string, password: string): Promise<User | null> {
     return this.syncService
-      .tryPost(`${environment.url_121_service_api}/`, ApiPath.personAffected, {
+      .tryPost(environment.url_121_service_api, ApiPath.personAffected, {
         username,
         password,
       })
@@ -94,16 +80,11 @@ export class ProgramsServiceApiService {
   }
 
   store(type: string, data: string): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/people-affected/data-storage',
-        {
-          type,
-          data,
-        },
-        false,
-      )
+    return this.syncService
+      .tryPost(environment.url_121_service_api, ApiPath.dataStorage, {
+        type,
+        data,
+      })
       .toPromise();
   }
 
@@ -144,22 +125,17 @@ export class ProgramsServiceApiService {
   }
 
   createRegistration(referenceId: string, programId: number): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations',
-        {
-          referenceId,
-          programId,
-        },
-        false,
-      )
+    return this.syncService
+      .tryPost(environment.url_121_service_api, ApiPath.registrations, {
+        referenceId,
+        programId,
+      })
       .toPromise();
   }
 
   postProgramAnswers(referenceId: string, programAnswers: any): Promise<any> {
     return this.syncService
-      .tryPost(`${environment.url_121_service_api}/`, ApiPath.programAnswers, {
+      .tryPost(environment.url_121_service_api, ApiPath.programAnswers, {
         referenceId,
         programAnswers,
       })
@@ -202,17 +178,12 @@ export class ProgramsServiceApiService {
     key: string,
     value: string,
   ): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations/custom-data',
-        {
-          referenceId,
-          key,
-          value,
-        },
-        false,
-      )
+    return this.syncService
+      .tryPost(environment.url_121_service_api, ApiPath.customData, {
+        referenceId,
+        key,
+        value,
+      })
       .toPromise();
   }
 
@@ -235,18 +206,13 @@ export class ProgramsServiceApiService {
     language: string,
     useForInvitationMatching?: boolean,
   ): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations/phone',
-        {
-          referenceId,
-          phonenumber: phoneNumber,
-          language,
-          useForInvitationMatching,
-        },
-        false,
-      )
+    return this.syncService
+      .tryPost(`${environment.url_121_service_api}/`, '/registrations/phone', {
+        referenceId,
+        phonenumber: phoneNumber,
+        language,
+        useForInvitationMatching,
+      })
       .toPromise();
   }
 

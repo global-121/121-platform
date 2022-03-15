@@ -1,4 +1,5 @@
 {
+  "$schema": "../node_modules/@angular/service-worker/config/schema.json",
   "index": "index.html",
   "assetGroups": [
     {
@@ -30,12 +31,13 @@
     {
       "name": "api-performance",
       "urls": [
-        "/instance",
-        "/programs/**"
+        "**/instance",
+        "**/programs/published/all",
+        "**/programs/*"
       ],
       "cacheConfig": {
         "strategy": "performance",
-        "maxSize": 100,
+        "maxSize": 200,
         "maxAge": "3d"
       }
     }
