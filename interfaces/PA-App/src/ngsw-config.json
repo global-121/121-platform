@@ -7,12 +7,7 @@
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": [
-          "/index.html",
-          "/**.css",
-          "/**.js",
-          "/manifest.webmanifest"
-        ]
+        "files": ["/index.html", "/**.css", "/**.js", "/manifest.json"]
       }
     },
     {
@@ -20,10 +15,7 @@
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": [
-          "/assets/**",
-          "/svg/**"
-        ]
+        "files": ["/assets/*", "/assets/(**|!i18n)/*", "/svg/**"]
       }
     }
   ],
