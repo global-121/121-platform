@@ -22,7 +22,7 @@ export class NextPaComponent extends PersonalDirective {
   public monitoringChoice: string;
   public monitoringSubmitted: boolean;
 
-  public paQueued: boolean = false;
+  public paQueued = false;
 
   constructor(
     public conversationService: ConversationService,

@@ -204,7 +204,7 @@ export class PaDataService {
 
   public savePaToBatch() {
     const batchObj = window.localStorage.getItem(this.paBatchKey);
-    let paBatch = batchObj ? JSON.parse(batchObj) : [];
+    const paBatch = batchObj ? JSON.parse(batchObj) : [];
     paBatch.push({
       type: this.type.myAnswers,
       data: JSON.stringify(this.myAnswers),
