@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { MonitoringInfo } from 'src/app/models/instance.model';
 import {
   LoggingEvent,
   LoggingEventCategory,
@@ -17,11 +16,6 @@ import { PersonalComponents } from '../personal-components.enum';
 })
 export class NextPaComponent extends PersonalDirective {
   public isCanceled = false;
-  public monitoringQuestion: MonitoringInfo;
-
-  public monitoringChoice: string;
-  public monitoringSubmitted: boolean;
-
   public paQueued = false;
 
   constructor(
@@ -33,8 +27,6 @@ export class NextPaComponent extends PersonalDirective {
   }
 
   ngOnInit() {
-    console.log('== LOG nextpa');
-
     if (this.data) {
       this.initHistory();
       return;
@@ -51,13 +43,23 @@ export class NextPaComponent extends PersonalDirective {
     if (this.isCanceled) {
       return;
     }
-    this.monitoringChoice = this.data.monitoringChoice;
-    this.monitoringSubmitted = !!this.data.monitoringChoice;
+    this.paQueued = this.data.paQueued;
     this.conversationService.stopLoading();
   }
 
   getNextSection() {
     return '';
+  }
+
+  savePaToQueue() {
+    this.paData.savePaToBatch();
+    this.paQueued = true;
+  }
+
+  async addNewPa() {
+    await this.paData.logout();
+    this.logger.logEvent(LoggingEventCategory.ui, LoggingEvent.batchModeNewPa);
+    window.location.reload();
   }
 
   cancel() {
@@ -73,19 +75,10 @@ export class NextPaComponent extends PersonalDirective {
   complete() {
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.nextPa,
-      data: {},
+      data: {
+        paQueued: this.paQueued,
+      },
       next: this.getNextSection(),
     });
-  }
-
-  savePaToQueue() {
-    this.paData.savePaToBatch();
-    this.paQueued = true;
-  }
-
-  async addNewPa() {
-    await this.paData.logout();
-    this.logger.logEvent(LoggingEventCategory.ui, LoggingEvent.logout);
-    window.location.reload();
   }
 }

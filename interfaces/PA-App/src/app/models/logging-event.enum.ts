@@ -28,4 +28,5 @@ export enum LoggingEvent {
   requestRetryQuestion = 'request-retry-question',
   sectionCompleted = 'section-completed',
   usernameNotUnique = 'username-not-unique',
+  batchModeNewPa = 'batch-mode-new-pa',
 }

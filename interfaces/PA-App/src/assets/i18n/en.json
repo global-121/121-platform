@@ -135,6 +135,10 @@
       "create-id": "Create account",
       "introduction": "To apply for this aid program, you need to have an account. Please create your account or use your existing account.",
       "login-id": "Use my account"
+    },
+    "next-pa": {
+      "new-pa": "Add another person affected",
+      "save-pa": "Save this person affected"
     }
   },
   "q-and-a-set": {
