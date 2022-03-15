@@ -1,7 +1,8 @@
 <ion-header>
   <ion-toolbar color="dark">
     <ion-title>
-      {{ mode === 'batch' ? paBatch.length + ' PAs queued' : 'tabs.you'|translate }}
+      <ion-button *ngIf="mode === 'batch'" fill="outline" color="light" (click)="onBatchButtonClick()" enabled="!showBatchMenu">{{ 'personal.batch.toolbar-queue-button'|translate:{nrRegistrations: paBatch.length} }}</ion-button>
+      <ion-label *ngIf="mode !== 'batch'">{{ 'tabs.you'|translate }} </ion-label>
     </ion-title>
     <ion-buttons slot="end" *ngIf="isDebug">
       <ion-button
@@ -15,6 +16,30 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
+<ion-menu side="start" menuId="batchMenu" contentId="batchMenuContent">
+  <ion-content color="dark" class="ion-padding">
+    <ion-item color="dark" lines="none" class="ion-margin-vertical ion-no-padding">
+      <ion-text>
+        <h3>
+          {{ "personal.batch.menu-title" | translate }}
+        </h3>
+        <p>
+          {{ 'personal.batch.menu-text'|translate }}
+        </p>
+      </ion-text>
+    </ion-item>
+    <ion-item *ngFor="let registration of paBatch" lines="none" class="ion-margin-bottom" style="--background: #20336c; color: #fff;">
+      {{ registration.nameFirst.label + " " + registration.nameLast.label }}
+    </ion-item>
+
+    <ion-button class="ion-margin-top batch-menu-buttons" color="light" (click)="uploadBatchRegistrations()" disabled="!isOnline">{{ 'personal.batch.menu-upload-button'|translate}}</ion-button>
+    <ion-button class="ion-margin-top batch-menu-buttons" color="light" fill="outline" (click)="exportBatchRegistrations()">{{ 'personal.batch.menu-export-button'|translate}}</ion-button>
+
+  </ion-content>
+</ion-menu>
+
+<ion-router-outlet id="batchMenuContent"></ion-router-outlet>
 
 <div
   *ngIf="isDebug"

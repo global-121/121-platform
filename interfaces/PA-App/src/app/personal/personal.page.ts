@@ -1,12 +1,13 @@
 import {
   Component,
   ComponentFactoryResolver,
+  OnDestroy,
   OnInit,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IonContent } from '@ionic/angular';
+import { AlertController, IonContent, MenuController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
 import {
@@ -45,7 +46,7 @@ import { InclusionStatusComponent } from './../personal-components/inclusion-sta
   templateUrl: 'personal.page.html',
   styleUrls: ['personal.page.scss'],
 })
-export class PersonalPage implements OnInit {
+export class PersonalPage implements OnInit, OnDestroy {
   @ViewChild(IonContent)
   public ionContent: IonContent;
 
@@ -61,7 +62,9 @@ export class PersonalPage implements OnInit {
 
   public mode: string;
 
-  public paBatch: [];
+  public paBatch = [];
+
+  public isOnline = true;
 
   private availableSections = {
     [PersonalComponents.consentQuestion]: ConsentQuestionComponent,
@@ -89,6 +92,8 @@ export class PersonalPage implements OnInit {
     public translate: TranslateService,
     private route: ActivatedRoute,
     private paDataServices: PaDataService,
+    private menu: MenuController,
+    public alertController: AlertController,
   ) {
     // Listen for completed sections, to continue with next steps
     this.conversationService.updateConversation$.subscribe(
@@ -124,7 +129,15 @@ export class PersonalPage implements OnInit {
           ? PaRegistrationModes.batch
           : PaRegistrationModes.singlePa;
 
-      this.paBatch = this.paDataServices.getPaBatch();
+      this.paDataServices.getPaBatch().forEach((registration) => {
+        const data = JSON.parse(registration['data']);
+        this.paBatch.push(data['1']);
+      });
+    });
+
+    window.addEventListener('online', () => this.goOnline(), { passive: true });
+    window.addEventListener('offline', () => this.goOffline(), {
+      passive: true,
     });
   }
 
@@ -136,6 +149,36 @@ export class PersonalPage implements OnInit {
 
     await this.loadComponents();
     this.scrollToLastWhenReady();
+
+    if (this.isOnline) {
+      this.autoBatchUpload();
+    }
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('online', () => this.goOnline());
+    window.removeEventListener('offline', () => this.goOffline());
+  }
+
+  private goOnline() {
+    this.isOnline = true;
+    if (this.paBatch.length > 0) {
+      this.autoBatchUpload();
+    }
+  }
+
+  private goOffline() {
+    this.isOnline = false;
+  }
+
+  private async autoBatchUpload() {
+    const alert = await this.alertController.create({
+      message: this.translate.instant('personal.batch.upload-alert-message', {
+        nrRegistrations: this.paBatch.length,
+      }),
+    });
+
+    await alert.present();
   }
 
   private filterOutRemovedSections(
@@ -234,4 +277,16 @@ export class PersonalPage implements OnInit {
     this.showDebug = !this.showDebug;
     window.sessionStorage.setItem('showDebug', this.showDebug ? '1' : '');
   }
+
+  public onBatchButtonClick() {
+    if (this.mode !== 'batch') {
+      return;
+    }
+    this.menu.enable(true, 'batchMenu');
+    this.menu.open('batchMenu');
+  }
+
+  public uploadBatchRegistrations() {}
+
+  public exportBatchRegistrations() {}
 }
