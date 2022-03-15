@@ -7,7 +7,6 @@ export const enum PubSubEvent {
   didCompleteSyncQueue = 'didCompleteSyncQueue',
   didConnectionOffline = 'didConnectionOffline',
   didConnectionOnline = 'didConnectionOnline',
-  didSaveAnswerToServer = 'didSaveAnswerToServer',
 }
 
 @Injectable({
@@ -19,7 +18,7 @@ export class PubSubService implements OnDestroy {
   constructor() {}
 
   public ngOnDestroy() {
-    this.eventMap.forEach((_value, key) => {
+    this.eventMap.forEach((_VALUE, key) => {
       this.completeObservableAndDestroyMapping(key);
     });
   }

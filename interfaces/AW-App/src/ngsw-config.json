@@ -8,7 +8,13 @@
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": ["/index.html", "/**.css", "/**.js", "/manifest.webmanifest"]
+        "files": [
+          "/index.html",
+          "/manifest.json",
+          "/*.css",
+          "/*.js",
+          "!/*-es5*.js"
+        ]
       }
     },
     {

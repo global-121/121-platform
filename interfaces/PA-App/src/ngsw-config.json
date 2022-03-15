@@ -7,7 +7,13 @@
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": ["/index.html", "/**.css", "/**.js", "/manifest.json"]
+        "files": [
+          "/index.html",
+          "/manifest.json",
+          "/**.css",
+          "/**.js",
+          "!/*-es5*.js"
+        ]
       }
     },
     {
@@ -16,21 +22,6 @@
       "updateMode": "prefetch",
       "resources": {
         "files": ["/assets/*", "/assets/(**|!i18n)/*", "/svg/**"]
-      }
-    }
-  ],
-  "dataGroups": [
-    {
-      "name": "api-performance",
-      "urls": [
-        "**/instance",
-        "**/programs/published/all",
-        "**/programs/*"
-      ],
-      "cacheConfig": {
-        "strategy": "performance",
-        "maxSize": 200,
-        "maxAge": "3d"
       }
     }
   ]

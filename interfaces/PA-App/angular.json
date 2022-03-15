@@ -61,7 +61,7 @@
                   "output": "assets"
                 },
                 {
-                  "glob": "**/{alert,arrow-back-sharp,arrow-down-circle-outline,arrow-redo,camera-reverse,caret-back-sharp,chatbox,chevron-back,close,construct,create,flash-off,flash,nuclear,person,refresh,resize,trash,warning}.svg",
+                  "glob": "**/{alert,arrow-back-sharp,arrow-down-circle-outline,arrow-undo,camera-reverse,caret-back-sharp,chatbubbles,chevron-back,close,cloud-download,color-fill,construct,create,download,eye-off,eye,flash-off,flash,hourglass,nuclear,people,person,qr-code,refresh,resize,trash}.svg",
                   "input": "node_modules/ionicons/dist/ionicons/svg",
                   "output": "./svg"
                 },

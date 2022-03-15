@@ -6,8 +6,8 @@
   "background_color": "#fafafa",
   "display": "standalone",
   "orientation": "portrait",
-  "scope": "/",
-  "start_url": "./",
+  "scope": "./",
+  "start_url": "./?standalone",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
