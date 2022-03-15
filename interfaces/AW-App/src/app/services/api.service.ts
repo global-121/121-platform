@@ -4,8 +4,10 @@ import {
   HttpHeaders,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import CookieError from '../enums/cookie-error.enum';
+import InterfaceName from '../enums/interface-names.enum';
 import { User } from '../models/user.model';
 
 @Injectable({
@@ -24,6 +26,7 @@ export class ApiService {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json',
+      'X-121-Interface': InterfaceName.awApp,
     });
 
     return headers;
@@ -87,12 +90,16 @@ export class ApiService {
 
   handleError(error: HttpErrorResponse, anonymous: boolean) {
     if (anonymous === true) {
-      throwError(error);
+      return of(error);
     }
     if (error.status === 401) {
+      if (error.error.message === CookieError.oldOrNo) {
+        localStorage.removeItem(this.userKey);
+        window.location.reload();
+      }
       const rawUser = localStorage.getItem(this.userKey);
       if (!rawUser) {
-        throwError(error);
+        return of(error);
       }
 
       const user: User = JSON.parse(rawUser);

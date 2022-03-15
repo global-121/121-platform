@@ -120,7 +120,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         value: this.person.customAttributes[ca.name].value,
       };
     });
-    this.customAttributes = this.customAttributes.filter(
+    this.customAttributes = this.customAttributes?.filter(
       (attribute: ProgramCustomAttribute) => {
         return attribute.type !== 'boolean';
       },

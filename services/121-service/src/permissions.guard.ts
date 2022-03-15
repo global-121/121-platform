@@ -1,5 +1,4 @@
 import { PermissionEnum } from './user/permission.enum';
-import { UserEntity } from './user/user.entity';
 import {
   Injectable,
   CanActivate,
@@ -10,7 +9,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
 import { UserService } from './user/user.service';
-import { UserType } from './user/user-type-enum';
+import { InterfaceNames } from './shared/enum/interface-names.enum';
+import { CookieErrors, CookieNames } from './shared/enum/cookie.enums';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -21,6 +21,7 @@ export class PermissionsGuard implements CanActivate {
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     let hasAccess: boolean;
+    const headerKey = 'x-121-interface';
 
     const endpointPermissions = this.reflector.get<PermissionEnum[]>(
       'permissions',
@@ -32,22 +33,45 @@ export class PermissionsGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
+    const originInterface = request.headers[headerKey];
 
     if (
       request.cookies &&
-      request.cookies['access_token'] &&
+      ((originInterface === InterfaceNames.portal &&
+        request.cookies[CookieNames.portal]) ||
+        (originInterface === InterfaceNames.awApp &&
+          request.cookies[CookieNames.awApp]) ||
+        (originInterface === InterfaceNames.paApp &&
+          request.cookies[CookieNames.paApp])) &&
       endpointPermissions
     ) {
-      const token = request.cookies['access_token'];
-      const decoded: any = jwt.verify(
-        token,
-        process.env.SECRETS_121_SERVICE_SECRET,
-      );
-      if (decoded.permissions) {
-        hasAccess = await this.aidworkerCanActivate(
-          decoded.permissions,
-          endpointPermissions,
+      let token;
+      switch (originInterface) {
+        case InterfaceNames.portal:
+          token = request.cookies[CookieNames.portal];
+          break;
+        case InterfaceNames.awApp:
+          token = request.cookies[CookieNames.awApp];
+          break;
+        case InterfaceNames.paApp:
+          token = request.cookies[CookieNames.paApp];
+          // Or AW login: token = request.cookies['access_token_pa_aw'];
+          break;
+
+        default:
+          break;
+      }
+      if (token) {
+        const decoded: any = jwt.verify(
+          token,
+          process.env.SECRETS_121_SERVICE_SECRET,
         );
+        if (decoded.permissions) {
+          hasAccess = await this.aidworkerCanActivate(
+            decoded.permissions,
+            endpointPermissions,
+          );
+        }
       }
     } else {
       hasAccess = false;
@@ -55,7 +79,14 @@ export class PermissionsGuard implements CanActivate {
     if (hasAccess === false) {
       // Add this to stay consitent with the old auth middeleware which returns 401
       // If you remove this an unautherized request return 403 will be sent
-      throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
+      if (
+        request.cookies['access_token'] ||
+        Object.keys(request.cookies).length === 0
+      ) {
+        throw new HttpException(CookieErrors.oldOrNo, HttpStatus.UNAUTHORIZED);
+      } else {
+        throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
+      }
     }
     return hasAccess;
   }
