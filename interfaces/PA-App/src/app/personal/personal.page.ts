@@ -130,8 +130,9 @@ export class PersonalPage implements OnInit, OnDestroy {
           : PaRegistrationModes.singlePa;
 
       this.paDataServices.getPaBatch().forEach((registration) => {
-        const data = JSON.parse(registration['data']);
-        this.paBatch.push(data['1']);
+        const dataKey = 'data';
+        const data = JSON.parse(registration[dataKey]);
+        this.paBatch.push(data[1]);
       });
     });
 
