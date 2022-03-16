@@ -75,7 +75,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private initialVisiblePeopleAffected: PersonRow[] = [];
   public visiblePeopleAffected: PersonRow[] = [];
   public filterRowsVisibleQuery: string;
-  public filterAllState = false;
+  public showAllStatusState = false;
   private filterVal: string;
 
   public headerChecked = false;
@@ -1229,7 +1229,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public toggleFilterAllState() {
-    const newState = !this.filterAllState;
+    const newState = !this.showAllStatusState;
     if (newState) {
       this.initialVisiblePeopleAffected = [...this.allPeopleAffected];
     } else {
