@@ -126,7 +126,7 @@
       "label": {
         "ar": "الرجاء مشاركة رقم هاتف يمكننا إرسال رسالة نصية إليه. سوف نستخدم هذا الرقم لإعلامك عن برنامج المعونات. <br><br> مثال على الرقم: <code>+31600000000</code>",
         "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>",
-        "nl": "Geef het telefoonnummer waarop je een SMS op kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+31 6 00 00 00 00</code>"
+        "nl": "Geef het telefoonnummer waarop je een SMS kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+31 6 00 00 00 00</code>"
       },
       "placeholder": {
         "ar": "31600000000+",
