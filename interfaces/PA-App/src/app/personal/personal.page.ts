@@ -152,7 +152,9 @@ export class PersonalPage implements OnInit, OnDestroy {
     this.scrollToLastWhenReady();
 
     if (this.isOnline) {
-      this.autoBatchUpload();
+      if (this.paBatch.length > 0) {
+        this.autoBatchUpload();
+      }
     }
   }
 
