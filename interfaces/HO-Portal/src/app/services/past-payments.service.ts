@@ -17,7 +17,7 @@ export class PastPaymentsService {
     if (!pastPayments) {
       pastPayments = await this.programsService.getPastPayments(programId);
     }
-    if (pastPayments.length === 0) {
+    if (!pastPayments || pastPayments.length === 0) {
       return 0;
     }
     return pastPayments[pastPayments.length - 1].id;
