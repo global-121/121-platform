@@ -1,14 +1,14 @@
 <section>
-  <dialogue-turn actor="self">
+  <dialogue-turn actor="self" *ngIf="showSavePa">
     <ion-button type="button" (click)="savePaToQueue()">{{
       'personal.next-pa.save-pa' | translate
     }}</ion-button>
   </dialogue-turn>
   <dialogue-turn
-    [isSpoken]="paQueued"
+    [isSpoken]="showAddAnotherPa"
     isConnected="true"
     actor="self"
-    *ngIf="paQueued"
+    *ngIf="showAddAnotherPa"
   >
     <ion-button type="button" (click)="addNewPa()">
       {{ 'personal.next-pa.new-pa' | translate }}

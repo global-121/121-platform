@@ -16,7 +16,9 @@ import { PersonalComponents } from '../personal-components.enum';
 })
 export class NextPaComponent extends PersonalDirective {
   public isCanceled = false;
-  public paQueued = false;
+  public showSavePa = true;
+  public showAddAnotherPa = false;
+  private paQueued = true;
 
   constructor(
     public conversationService: ConversationService,
@@ -32,6 +34,11 @@ export class NextPaComponent extends PersonalDirective {
       return;
     }
     this.initNew();
+
+    if (this.isOnline) {
+      this.showSavePa = false;
+      this.showAddAnotherPa = true;
+    }
   }
 
   async initNew() {
@@ -54,6 +61,7 @@ export class NextPaComponent extends PersonalDirective {
   savePaToQueue() {
     this.paData.savePaToBatch();
     this.paQueued = true;
+    this.showAddAnotherPa = true;
   }
 
   async addNewPa() {

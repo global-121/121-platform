@@ -103,22 +103,28 @@ export class SelectFspComponent extends PersonalDirective {
   public async submitFsp() {
     this.fspSubmitted = true;
 
-    this.programsService.postFsp(this.referenceId, this.fspChoice).then(
-      async () => {
-        // Update FSPs with more details:
-        this.chosenFsp = await this.programsService.getFspById(this.fspChoice);
-        this.chosenFsp.fspDisplayName = this.translatableString.get(
-          this.chosenFsp.fspDisplayName,
-        );
+    if (this.isOnline) {
+      this.programsService.postFsp(this.referenceId, this.fspChoice).then(
+        async () => {
+          // Update FSPs with more details:
+          this.chosenFsp = await this.programsService.getFspById(
+            this.fspChoice,
+          );
+          this.chosenFsp.fspDisplayName = this.translatableString.get(
+            this.chosenFsp.fspDisplayName,
+          );
 
-        if (!this.chosenFsp.attributes.length) {
-          return this.complete();
-        }
+          if (!this.chosenFsp.attributes.length) {
+            return this.complete();
+          }
 
-        this.questions = this.buildQuestions(this.chosenFsp.attributes);
-      },
-      (error) => console.log('error', error),
-    );
+          this.questions = this.buildQuestions(this.chosenFsp.attributes);
+        },
+        (error) => console.log('error', error),
+      );
+    } else {
+      // TODO saveFspLocally()
+    }
   }
 
   private buildQuestions(fspAttributes: FspAttribute[]) {
@@ -163,35 +169,39 @@ export class SelectFspComponent extends PersonalDirective {
     // Treat phoneNumber as a special case, to enable reuse later:
     await this.storePhoneNumber();
 
-    this.processInOrder(
-      Object.values(this.customAttributeAnswers),
-      (answer: Answer) =>
-        this.programsService.postRegistrationCustomAttribute(
-          this.referenceId,
-          answer.code,
-          answer.value,
-        ),
-    )
-      .then(
-        () => {
-          // in case of success:
-          this.isSubmitted = true;
-          this.isEditing = false;
-          this.showResultSuccess = true;
-          this.showResultError = false;
-          this.complete();
-        },
-        () => {
-          // in case of error:
-          this.isSubmitted = false;
-          this.isEditing = true;
-          this.showResultSuccess = false;
-          this.showResultError = true;
-        },
+    if (this.isOnline) {
+      this.processInOrder(
+        Object.values(this.customAttributeAnswers),
+        (answer: Answer) =>
+          this.programsService.postRegistrationCustomAttribute(
+            this.referenceId,
+            answer.code,
+            answer.value,
+          ),
       )
-      .finally(() => {
-        this.conversationService.stopLoading();
-      });
+        .then(
+          () => {
+            // in case of success:
+            this.isSubmitted = true;
+            this.isEditing = false;
+            this.showResultSuccess = true;
+            this.showResultError = false;
+            this.complete();
+          },
+          () => {
+            // in case of error:
+            this.isSubmitted = false;
+            this.isEditing = true;
+            this.showResultSuccess = false;
+            this.showResultError = true;
+          },
+        )
+        .finally(() => {
+          this.conversationService.stopLoading();
+        });
+    } else {
+      // TODO postRegistrationCustomAttributesLocally()
+    }
   }
 
   private async storePhoneNumber() {

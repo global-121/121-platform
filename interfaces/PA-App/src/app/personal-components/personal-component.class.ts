@@ -20,8 +20,17 @@ export abstract class PersonalDirective
   @Input()
   data: any;
 
+  /**
+   * From URL. If mode === 'batch' you can add a new PA at end of flow
+   */
   @Input()
   mode: string;
+
+  /**
+   * If online, upload PA, otherwise keep in local storage
+   */
+  @Input()
+  isOnline: boolean;
 
   @ViewChildren(DialogueTurnComponent)
   private turns: QueryList<DialogueTurnComponent>;

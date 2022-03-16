@@ -150,12 +150,6 @@ export class PersonalPage implements OnInit, OnDestroy {
 
     await this.loadComponents();
     this.scrollToLastWhenReady();
-
-    if (this.isOnline) {
-      if (this.paBatch.length > 0) {
-        this.autoBatchUpload();
-      }
-    }
   }
 
   ngOnDestroy() {
@@ -237,6 +231,7 @@ export class PersonalPage implements OnInit, OnDestroy {
     componentInstance.data = data;
     componentInstance.animate = options.animate;
     componentInstance.mode = this.mode;
+    componentInstance.isOnline = this.isOnline;
   }
 
   public scrollDown() {

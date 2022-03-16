@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MonitoringInfo } from 'src/app/models/instance.model';
+import { PaRegistrationModes } from 'src/app/models/route-parameters';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -91,7 +92,9 @@ export class MonitoringQuestionComponent extends PersonalDirective {
   }
 
   getNextSection() {
-    return PersonalComponents.inclusionStatus;
+    return this.mode === PaRegistrationModes.batch
+      ? PersonalComponents.nextPa
+      : PersonalComponents.inclusionStatus;
   }
 
   cancel() {

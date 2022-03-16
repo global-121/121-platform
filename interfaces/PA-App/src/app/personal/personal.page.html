@@ -33,7 +33,7 @@
       {{ registration.nameFirst.label + " " + registration.nameLast.label }}
     </ion-item>
 
-    <ion-button class="ion-margin-top batch-menu-buttons" color="light" (click)="uploadBatchRegistrations()" disabled="!isOnline">{{ 'personal.batch.menu-upload-button'|translate}}</ion-button>
+    <ion-button class="ion-margin-top batch-menu-buttons" color="light" (click)="uploadBatchRegistrations()" [disabled]="!isOnline">{{ 'personal.batch.menu-upload-button'|translate}}</ion-button>
     <ion-button class="ion-margin-top batch-menu-buttons" color="light" fill="outline" (click)="exportBatchRegistrations()">{{ 'personal.batch.menu-export-button'|translate}}</ion-button>
 
   </ion-content>

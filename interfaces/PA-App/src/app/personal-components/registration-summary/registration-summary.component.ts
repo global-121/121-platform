@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { Program } from 'src/app/models/program.model';
-import { PaRegistrationModes } from 'src/app/models/route-parameters';
 import { Timeslot } from 'src/app/models/timeslot.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -62,9 +61,13 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     await this.getReferenceId();
     await this.getProgram();
 
-    this.registrationStatus = await this.programsService.postRegistration(
-      this.referenceId,
-    );
+    if (this.isOnline) {
+      this.registrationStatus = await this.programsService.postRegistration(
+        this.referenceId,
+      );
+    } else {
+      // TODO postRegistrationLocally()
+    }
 
     if (this.validation && this.validationByQr) {
       await this.shouldShowQrCode();
@@ -136,9 +139,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   }
 
   getNextSection() {
-    return this.mode === PaRegistrationModes.batch
-      ? PersonalComponents.nextPa
-      : PersonalComponents.monitoringQuestion;
+    return PersonalComponents.monitoringQuestion;
   }
 
   complete() {
