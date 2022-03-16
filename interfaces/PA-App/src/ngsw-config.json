@@ -21,7 +21,20 @@
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": ["/assets/*", "/assets/(**|!i18n)/*", "/svg/**"]
+        "files": [
+          "/assets/*",
+          "/assets/**",
+          "!/assets/i18n/*/*.(mp3|webm)",
+          "/svg/**"
+        ]
+      }
+    },
+    {
+      "name": "assets-audio",
+      "installMode": "lazy",
+      "updateMode": "lazy",
+      "resources": {
+        "files": ["/assets/i18n/*/*.webm"]
       }
     }
   ]
