@@ -54,33 +54,39 @@
     </ion-row>
   </div>
   <div>
-    <ion-input
-      [placeholder]="
-        'page.program.program-people-affected.filter-placeholder' | translate
-      "
-      [attr.title]="
-        'page.program.program-people-affected.filter-placeholder' | translate
-      "
-      [attr.aria-label]="
-        'page.program.program-people-affected.filter-placeholder' | translate
-      "
-      (ionChange)="filterRowsVisible($event.target.value)"
-      (debounce)="(1000)"
-      [value]="filterRowsVisibleQuery"
-      [clearInput]="true"
-      class="filter-input"
-    >
-      <ion-icon
-        name="funnel"
+    <ion-row *ngIf="program" class="ion-align-items-center">
+      <ion-input
+        [placeholder]="
+          'page.program.program-people-affected.filter-placeholder' | translate
+        "
         [attr.title]="
           'page.program.program-people-affected.filter-placeholder' | translate
         "
-        aria-hidden="true"
-        size="small"
-        slot="start"
-        style="padding-inline-start: var(--padding-start)"
-      ></ion-icon>
-    </ion-input>
+        [attr.aria-label]="
+          'page.program.program-people-affected.filter-placeholder' | translate
+        "
+        (ionChange)="filterRowsVisible($event.target.value)"
+        (debounce)="(1000)"
+        [value]="filterRowsVisibleQuery"
+        [clearInput]="true"
+        class="filter-input"
+      >
+        <ion-icon
+          name="funnel"
+          [attr.title]="
+            'page.program.program-people-affected.filter-placeholder' | translate
+          "
+          aria-hidden="true"
+          size="small"
+          slot="start"
+          style="padding-inline-start: var(--padding-start)"
+        ></ion-icon>
+      </ion-input>
+      
+      <ion-toggle  [(ngModel)]=filterAllState (click)="toggleFilterAllState()"></ion-toggle>
+      <ion-label>{{ 'page.program.program-people-affected.filter-toggle'|translate }} </ion-label>
+      <tooltip style="margin-left:3px;margin-bottom:1px" [value]="'page.program.program-people-affected.filter-tooltip'|translate"></tooltip>
+    </ion-row>
   </div>
 </ion-row>
 <div

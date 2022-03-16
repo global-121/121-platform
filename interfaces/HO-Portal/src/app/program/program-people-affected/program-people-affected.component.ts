@@ -71,9 +71,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private allPeopleData: Person[];
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
-  public visiblePeopleAffected: PersonRow[] = [];
+  private phaseSpecificPeopleAffected: PersonRow[] = [];
   private initialVisiblePeopleAffected: PersonRow[] = [];
+  public visiblePeopleAffected: PersonRow[] = [];
   public filterRowsVisibleQuery: string;
+  public filterAllState = false;
+  private filterVal: string;
 
   public headerChecked = false;
   public headerSelectAllVisible = false;
@@ -704,7 +707,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       paStatusesToShow.includes(pa.status),
     );
 
-    this.initialVisiblePeopleAffected = [...this.visiblePeopleAffected];
+    this.phaseSpecificPeopleAffected = [...this.visiblePeopleAffected];
   }
 
   private createTableData(source: Person[]): PersonRow[] {
@@ -1200,6 +1203,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public filterRowsVisible(value: string) {
+    this.filterVal = value;
     const filterVal = value.toLowerCase().trim();
     const rowsVisible = this.initialVisiblePeopleAffected.filter(
       (row: PersonRow) => {
@@ -1222,6 +1226,17 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     );
 
     this.visiblePeopleAffected = rowsVisible;
+  }
+
+  public toggleFilterAllState() {
+    const newState = !this.filterAllState;
+    if (newState) {
+      this.initialVisiblePeopleAffected = [...this.allPeopleAffected];
+    } else {
+      this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
+    }
+    this.visiblePeopleAffected = [...this.initialVisiblePeopleAffected];
+    this.filterRowsVisible(this.filterVal);
   }
 
   public paComparator(a: string, b: string) {
