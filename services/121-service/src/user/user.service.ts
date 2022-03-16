@@ -314,19 +314,18 @@ export class UserService {
   public getInterfaceKeyByHeader(): string {
     const headerKey = 'x-121-interface';
     const originInterface = this.request.headers[headerKey];
-    if (originInterface) {
-      switch (originInterface) {
-        case InterfaceNames.portal:
-          return CookieNames.portal;
-        case InterfaceNames.awApp:
-          return CookieNames.awApp;
-        case InterfaceNames.paApp:
-          return CookieNames.paApp;
-
-        default:
-          break;
-      }
+    switch (originInterface) {
+      case InterfaceNames.portal:
+        return CookieNames.portal;
+      case InterfaceNames.awApp:
+        return CookieNames.awApp;
+      case InterfaceNames.paApp:
+        return CookieNames.paApp;
+      default:
+        return CookieNames.general;
+        break;
     }
+
   }
 
   private buildUserRO(user: UserEntity): UserRO {

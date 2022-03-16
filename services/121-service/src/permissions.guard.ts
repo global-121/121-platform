@@ -42,7 +42,9 @@ export class PermissionsGuard implements CanActivate {
         (originInterface === InterfaceNames.awApp &&
           request.cookies[CookieNames.awApp]) ||
         (originInterface === InterfaceNames.paApp &&
-          request.cookies[CookieNames.paApp])) &&
+          request.cookies[CookieNames.paApp]) ||
+        ( !originInterface &&
+          request.cookies[CookieNames.general])) &&
       endpointPermissions
     ) {
       let token;
@@ -59,6 +61,7 @@ export class PermissionsGuard implements CanActivate {
           break;
 
         default:
+          token = request.cookies[CookieNames.general]
           break;
       }
       if (token) {
