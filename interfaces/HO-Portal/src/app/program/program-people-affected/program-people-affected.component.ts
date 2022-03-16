@@ -1228,7 +1228,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.visiblePeopleAffected = rowsVisible;
   }
 
-  public toggleFilterAllState() {
+  public toggleShowAllStatusState() {
     const newState = !this.showAllStatusState;
     if (newState) {
       this.initialVisiblePeopleAffected = [...this.allPeopleAffected];
