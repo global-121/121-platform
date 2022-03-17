@@ -703,11 +703,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         break;
     }
 
-    this.visiblePeopleAffected = this.allPeopleAffected.filter((pa) =>
+    this.phaseSpecificPeopleAffected = this.allPeopleAffected.filter((pa) =>
       paStatusesToShow.includes(pa.status),
     );
-
-    this.phaseSpecificPeopleAffected = [...this.visiblePeopleAffected];
+    this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
+    this.visiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
   }
 
   private createTableData(source: Person[]): PersonRow[] {
@@ -1214,7 +1214,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public filterRowsVisible(value: string) {
     this.filterVal = value;
-    const filterVal = value.toLowerCase().trim();
+    const filterVal = value?.toLowerCase().trim();
     const rowsVisible = this.initialVisiblePeopleAffected.filter(
       (row: PersonRow) => {
         // Loop over all columns
