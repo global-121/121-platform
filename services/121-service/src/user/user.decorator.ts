@@ -29,6 +29,8 @@ export const User = createParamDecorator((data, req) => {
       req.cookies[CookieNames.paApp]
     ) {
       token = req.cookies[CookieNames.paApp];
+    } else if (!originInterface && req.cookies[CookieNames.general]) {
+      token = req.cookies[CookieNames.general];
     } else {
       token = null;
     }

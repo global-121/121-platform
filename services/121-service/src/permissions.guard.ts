@@ -8,16 +8,12 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
-import { UserService } from './user/user.service';
 import { InterfaceNames } from './shared/enum/interface-names.enum';
 import { CookieErrors, CookieNames } from './shared/enum/cookie.enums';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-  public constructor(
-    private readonly reflector: Reflector,
-    private readonly userService: UserService,
-  ) {}
+  public constructor(private readonly reflector: Reflector) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     let hasAccess: boolean;
@@ -43,8 +39,7 @@ export class PermissionsGuard implements CanActivate {
           request.cookies[CookieNames.awApp]) ||
         (originInterface === InterfaceNames.paApp &&
           request.cookies[CookieNames.paApp]) ||
-        ( !originInterface &&
-          request.cookies[CookieNames.general])) &&
+        (!originInterface && request.cookies[CookieNames.general])) &&
       endpointPermissions
     ) {
       let token;
@@ -57,11 +52,10 @@ export class PermissionsGuard implements CanActivate {
           break;
         case InterfaceNames.paApp:
           token = request.cookies[CookieNames.paApp];
-          // Or AW login: token = request.cookies['access_token_pa_aw'];
           break;
 
         default:
-          token = request.cookies[CookieNames.general]
+          token = request.cookies[CookieNames.general];
           break;
       }
       if (token) {
@@ -83,7 +77,7 @@ export class PermissionsGuard implements CanActivate {
       // Add this to stay consitent with the old auth middeleware which returns 401
       // If you remove this an unautherized request return 403 will be sent
       if (
-        request.cookies['access_token'] ||
+        request.cookies[CookieNames.old] ||
         Object.keys(request.cookies).length === 0
       ) {
         throw new HttpException(CookieErrors.oldOrNo, HttpStatus.UNAUTHORIZED);
