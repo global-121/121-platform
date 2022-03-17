@@ -1,6 +1,6 @@
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, In } from 'typeorm';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
@@ -17,8 +17,14 @@ import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.
 import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
 import { PermissionEntity } from './permissions.entity';
+import { CookieSettingsDto } from './dto/cookie-settings.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
+import { InterfaceNames } from './../shared/enum/interface-names.enum';
+import { CookieNames } from './../shared/enum/cookie.enums';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class UserService {
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
@@ -33,9 +39,9 @@ export class UserService {
     ProgramAidworkerAssignmentEntity
   >;
 
-  public constructor() {}
+  public constructor(@Inject(REQUEST) private readonly request: Request) {}
 
-  public async login(loginUserDto: LoginUserDto): Promise<UserRO> {
+  public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
     const findOneOptions = {
       username: loginUserDto.username,
       password: crypto
@@ -55,16 +61,18 @@ export class UserService {
     }
 
     const username = userEntity.username;
+    const token = this.generateJWT(userEntity);
     const permissions = this.buildPermissionArray(userEntity);
-    const token = await this.generateJWT(userEntity);
-
-    const user = {
-      username,
-      token,
-      permissions,
+    const user: UserRO = {
+      user: {
+        username,
+        token,
+        permissions,
+      },
     };
 
-    return { user };
+    const cookieSettings = this.buildCookieByRequest(token);
+    return { userRo: user, cookieSettings: cookieSettings };
   }
 
   public async createPersonAffected(
@@ -303,6 +311,21 @@ export class UserService {
     return result;
   }
 
+  public getInterfaceKeyByHeader(): string {
+    const headerKey = 'x-121-interface';
+    const originInterface = this.request.headers[headerKey];
+    switch (originInterface) {
+      case InterfaceNames.portal:
+        return CookieNames.portal;
+      case InterfaceNames.awApp:
+        return CookieNames.awApp;
+      case InterfaceNames.paApp:
+        return CookieNames.paApp;
+      default:
+        return CookieNames.general;
+    }
+  }
+
   private buildUserRO(user: UserEntity): UserRO {
     let permissions = this.buildPermissionArray(user);
 
@@ -327,5 +350,22 @@ export class UserService {
       }
     }
     return permissions;
+  }
+
+  private buildCookieByRequest(token: string): CookieSettingsDto {
+    let domain: string;
+    let path: string;
+    let tokenKey: string = this.getInterfaceKeyByHeader();
+
+    return {
+      tokenKey,
+      tokenValue: token,
+      domain,
+      path,
+      sameSite: 'Lax',
+      secure: process.env.NODE_ENV === 'production',
+      expires: new Date(Date.now() + 60 * 24 * 3600000),
+      httpOnly: true,
+    };
   }
 }

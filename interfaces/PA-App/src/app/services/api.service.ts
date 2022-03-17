@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import InterfaceName from '../enums/interface-names.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,7 @@ export class ApiService {
     return new HttpHeaders({
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      'X-121-Interface': InterfaceName.paApp,
     });
   }
 

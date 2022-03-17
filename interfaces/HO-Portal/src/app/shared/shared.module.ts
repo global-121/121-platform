@@ -23,7 +23,6 @@ import { ExportListComponent } from '../program/export-list/export-list.componen
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
-import { TestPaymentComponent } from '../program/test-payment/test-payment.component';
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
 import { FilePickerPromptComponent } from './file-picker-prompt/file-picker-prompt.component';
 import { InputPromptComponent } from './input-prompt/input-prompt.component';
@@ -51,7 +50,6 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     ProgramPeopleAffectedComponent,
     RefreshDataComponent,
     SystemNotificationComponent,
-    TestPaymentComponent,
     TooltipComponent,
     UpdateFspComponent,
     UpdatePropertyItemComponent,
@@ -89,7 +87,6 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     RefreshDataComponent,
     RouterModule,
     SystemNotificationComponent,
-    TestPaymentComponent,
     TooltipComponent,
     TranslateModule,
     UpdateFspComponent,
