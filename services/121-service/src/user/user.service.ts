@@ -323,9 +323,7 @@ export class UserService {
         return CookieNames.paApp;
       default:
         return CookieNames.general;
-        break;
     }
-
   }
 
   private buildUserRO(user: UserEntity): UserRO {
