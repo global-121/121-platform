@@ -233,6 +233,8 @@
         "no-actions": "No actions available",
         "apply-action": "Apply action",
         "filter-placeholder": "Type to filter on any column...",
+        "filter-toggle": "Show all",
+        "filter-tooltip": "Show all People Affected or only the People Affected relevant to this program phase",
         "column": {
           "select": "Select",
           "person": "Person Affected",

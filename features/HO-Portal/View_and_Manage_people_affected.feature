@@ -10,7 +10,7 @@ Feature: View and manage people affected (generic features)
     And depending on the "selected phase" only current people affected with given "PA statuses" are shown
       - "registration": imported, invited, created, selected for validation, no longer eligible, registered while no longer eligible
       - "inclusion": validated, registered, selected for validation, rejected, inclusion ended
-      - "payment": included
+      - "payment": included, rejected, inclusion ended
     And for each person the "Select" column is empty
     And for each person a "PA identifier" is shown
     And it has a clickable "i" button in front of it, which opens a popup
@@ -49,11 +49,21 @@ Feature: View and manage people affected (generic features)
     And the updated value is reflected in the PA-table
 
   Scenario: Filter rows of PA-table
-    Given the table with all "people connected to a program" is shown
+    Given the table with all "people affected" relevant to the selected program phase is shown
     When the user enters any free text "abc" in the "filter field"
     Then the table immediately updates to show only rows where at least one case of "abc" is found as substring in any of the columns
     When the user removes the text again or presses the "X" close option
     Then the table shows all rows again
+  
+  Scenario: Show People Affected of all phases
+    Given the table with all "people affected" relevant to the selected program phase is shown
+    Given the 'show all' toggle is toggled off
+    When the user toggles it on
+    Then the table will now show all "people affected", also those from other phases
+    And - if done while the filter field contains text - then the filtered text keeps being applied
+    When the user toggles it off again
+    Then the table returns to only the "people affected" relevant to the selected program phase
+    And - if done while the filter field contains text - then the filtered text keeps being applied
 
   Scenario: View available actions
     When the user opens up the "choose action" dropdown
