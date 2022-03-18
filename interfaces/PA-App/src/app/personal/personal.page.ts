@@ -31,7 +31,7 @@ import {
   ConversationSection,
   ConversationService,
 } from '../services/conversation.service';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { PaDataService } from '../services/padata.service';
 import { InclusionStatusComponent } from './../personal-components/inclusion-status/inclusion-status.component';
 
 @Component({
@@ -76,7 +76,7 @@ export class PersonalPage implements OnInit {
     public conversationService: ConversationService,
     private resolver: ComponentFactoryResolver,
     public translate: TranslateService,
-    private programsServiceApiService: ProgramsServiceApiService,
+    private paDataService: PaDataService,
   ) {
     // Listen for completed sections, to continue with next steps
     this.conversationService.updateConversation$.subscribe(
@@ -128,10 +128,13 @@ export class PersonalPage implements OnInit {
   }
 
   private async loadEndpoints() {
-    await this.programsServiceApiService.getInstanceInformation();
-    const programs = await this.programsServiceApiService.getAllPrograms();
+    await this.paDataService.getInstance();
+    const programs = await this.paDataService.getAllPrograms();
     for (const program of programs) {
-      await this.programsServiceApiService.getProgramById(program.id);
+      const detailedProgram = await this.paDataService.getProgram(program.id);
+      for (const fsp of detailedProgram.financialServiceProviders) {
+        await this.paDataService.getFspById(fsp.id);
+      }
     }
   }
 

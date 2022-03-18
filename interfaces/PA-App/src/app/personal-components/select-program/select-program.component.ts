@@ -66,7 +66,7 @@ export class SelectProgramComponent extends PersonalDirective {
   private async getPrograms() {
     this.conversationService.startLoading();
 
-    this.programs = await this.programsService.getAllPrograms();
+    this.programs = await this.paData.getAllPrograms();
     this.programs = this.translateProgramProperties(this.programs);
 
     this.conversationService.stopLoading();

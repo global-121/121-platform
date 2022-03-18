@@ -37,6 +37,9 @@ export class SyncService implements OnDestroy {
   public goOnline() {
     console.log('SyncService: Going on-line.');
     this.pubSub.publish(PubSubEvent.didConnectionOnline);
+    this.forceOffline = false;
+
+    // Don't do this immediately, let the user choose (?)
     this.processQueue();
   }
 

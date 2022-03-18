@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Fsp } from '../models/fsp.model';
+import { InstanceData } from '../models/instance.model';
 import { Program } from '../models/program.model';
 import { User } from '../models/user.model';
 import { PaDataTypes } from './padata-types.enum';
 import { ProgramsServiceApiService } from './programs-service-api.service';
+import { PubSubEvent, PubSubService } from './pub-sub.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,18 +14,31 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 export class PaDataService {
   public type = PaDataTypes;
   private sessionKey = 'logged-in-user-PA';
+  private allProgramsKey = 'allPrograms';
+  private instanceKey = 'instance';
+  private detailProgramKeyPrefix = 'program';
+  private detailFspKeyPrefix = 'fsp';
+  private currentProgramId: number;
 
   private hasAccount = false;
 
-  private currentProgramId: number;
-  private myPrograms: Program[] = [];
   public myAnswers: any = {};
 
   private authenticationStateSource = new BehaviorSubject<User | null>(null);
   public authenticationState$ = this.authenticationStateSource.asObservable();
+  public isOffline: boolean = false;
 
-  constructor(private programService: ProgramsServiceApiService) {
+  constructor(
+    private programService: ProgramsServiceApiService,
+    private pubSubService: PubSubService,
+  ) {
     this.checkAuthenticationState();
+    this.pubSubService.subscribe(PubSubEvent.didConnectionOnline, () => {
+      this.isOffline = false;
+    });
+    this.pubSubService.subscribe(PubSubEvent.didConnectionOffline, () => {
+      this.isOffline = true;
+    });
   }
 
   public async setCurrentProgramId(programId: number): Promise<any> {
@@ -30,15 +46,60 @@ export class PaDataService {
     return await this.store(this.type.programId, programId);
   }
 
-  private async getProgram(programId: number): Promise<Program> {
-    // If not already available, fall back to get it from the server
-    if (!this.myPrograms[programId]) {
-      this.myPrograms[programId] = await this.programService.getProgramById(
-        programId,
-      );
+  public async getInstance(): Promise<InstanceData> {
+    if (!this.isOffline) {
+      const instanceData = await this.programService.getInstanceInformation();
+      localStorage.setItem(this.instanceKey, JSON.stringify(instanceData));
+      return instanceData;
     }
 
-    return this.myPrograms[programId];
+    const instance: InstanceData = this.findInLocalStorage(this.instanceKey);
+    if (instance) {
+      return instance;
+    }
+  }
+
+  public async getAllPrograms(): Promise<Program[]> {
+    if (!this.isOffline) {
+      const allPrograms = await this.programService.getAllPrograms();
+      localStorage.setItem(this.allProgramsKey, JSON.stringify(allPrograms));
+      return allPrograms;
+    }
+
+    const programs: Program[] = this.findInLocalStorage(this.allProgramsKey);
+    if (programs) {
+      return programs;
+    }
+  }
+
+  public async getProgram(programId: number): Promise<Program> {
+    const programKey = this.detailProgramKeyPrefix + programId;
+    if (!this.isOffline) {
+      const detailedProgram = await this.programService.getProgramById(
+        programId,
+      );
+      localStorage.setItem(programKey, JSON.stringify(detailedProgram));
+      return detailedProgram;
+    }
+
+    const program: Program = this.findInLocalStorage(programKey);
+    if (program) {
+      return program;
+    }
+  }
+
+  public async getFspById(fspId: number) {
+    const fspKey = this.detailFspKeyPrefix + fspId;
+    if (!this.isOffline) {
+      const detailedFsp = await this.programService.getFspById(fspId);
+      localStorage.setItem(fspKey, JSON.stringify(detailedFsp));
+      return detailedFsp;
+    }
+
+    const fsp: Fsp = this.findInLocalStorage(fspKey);
+    if (fsp) {
+      return fsp;
+    }
   }
 
   public async getCurrentProgram(): Promise<Program> {
@@ -60,6 +121,11 @@ export class PaDataService {
   public async saveAnswers(programId: number, answers: any): Promise<any> {
     this.myAnswers[programId] = answers;
     return this.store(this.type.myAnswers, this.myAnswers);
+  }
+
+  private findInLocalStorage<T>(key: string): T {
+    const result: T = JSON.parse(localStorage.getItem(key));
+    return result;
   }
 
   /////////////////////////////////////////////////////////////////////////////
