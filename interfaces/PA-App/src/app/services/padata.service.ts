@@ -18,6 +18,7 @@ export class PaDataService {
   private instanceKey = 'instance';
   private detailProgramKeyPrefix = 'program';
   private detailFspKeyPrefix = 'fsp';
+  private dataStorageKey = 'data-storage';
   private currentProgramId: number;
 
   private hasAccount = false;
@@ -137,7 +138,19 @@ export class PaDataService {
       return;
     }
 
-    return this.programService.store(type, JSON.stringify(data));
+    const typeKey = `${this.dataStorageKey + '-' + type}`;
+    if (!this.isOffline) {
+      const storeResult = await this.programService.store(
+        type,
+        JSON.stringify(data),
+      );
+      localStorage.setItem(typeKey, JSON.stringify(data));
+      return storeResult;
+    }
+    if (this.isOffline) {
+      localStorage.setItem(typeKey, JSON.stringify(data));
+      // return this.findInLocalStorage<any>(typeKey);
+    }
   }
 
   async retrieve(type: string): Promise<any> {
@@ -145,8 +158,28 @@ export class PaDataService {
       return;
     }
 
-    return await this.programService.retrieve(type);
+    const typeKey = `${this.dataStorageKey + '-' + type}`;
+    if (!this.isOffline) {
+      const storeResult = await this.programService.retrieve(type);
+      localStorage.setItem(typeKey, JSON.stringify(storeResult));
+      return storeResult;
+    }
+    if (this.isOffline) {
+      return this.findInLocalStorage<any>(typeKey);
+    }
   }
+
+  // private getExistingDatastorage(type: string): { type: string; data: any }[] {
+  //   const typeKey = `${this.dataStorageKey + '-' + type}`;
+  //   const dataFromDatastorage: { type: string; data: any }[] =
+  //     this.findInLocalStorage(typeKey);
+
+  //   if (dataFromDatastorage) {
+  //     return dataFromDatastorage;
+  //   } else {
+  //     return [];
+  //   }
+  // }
 
   async createAccount(username: string, password: string): Promise<any> {
     // 'Sanitize' username:
@@ -155,13 +188,21 @@ export class PaDataService {
     return this.programService
       .createAccountPA(username, password)
       .then((user) => {
-        if (!user) {
-          return;
+        if (this.isOffline) {
+          // Pretend to receive User
+          console.log('PaData: Offline account created.');
+          const offlineUser: User = { username };
+          this.saveUserInStorage(offlineUser);
+          this.setLoggedIn(offlineUser);
+        } else {
+          if (!user) {
+            return;
+          }
+          console.log('PaData: Account created.');
+          this.saveUserInStorage(user);
+          this.setLoggedIn(user);
+          return user;
         }
-        console.log('PaData: Account created.');
-        this.saveUserInStorage(user);
-        this.setLoggedIn(user);
-        return user;
       });
   }
 

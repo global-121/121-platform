@@ -159,15 +159,10 @@ export class ProgramsServiceApiService {
   }
 
   async postRegistration(referenceId: string): Promise<boolean> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations/register',
-        {
-          referenceId,
-        },
-        false,
-      )
+    return this.syncService
+      .tryPost(environment.url_121_service_api, '/registrations/register', {
+        referenceId,
+      })
       .toPromise()
       .then(() => true)
       .catch(() => false);
@@ -207,7 +202,7 @@ export class ProgramsServiceApiService {
     useForInvitationMatching?: boolean,
   ): Promise<any> {
     return this.syncService
-      .tryPost(`${environment.url_121_service_api}/`, '/registrations/phone', {
+      .tryPost(`${environment.url_121_service_api}`, '/registrations/phone', {
         referenceId,
         phonenumber: phoneNumber,
         language,
@@ -218,7 +213,7 @@ export class ProgramsServiceApiService {
 
   postFsp(referenceId: string, fspId: number): Promise<any> {
     return this.syncService
-      .tryPost(`${environment.url_121_service_api}/`, ApiPath.fsp, {
+      .tryPost(`${environment.url_121_service_api}`, ApiPath.fsp, {
         referenceId,
         fspId,
       })
