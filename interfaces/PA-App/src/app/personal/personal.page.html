@@ -1,11 +1,19 @@
 <ion-header>
   <ion-toolbar color="dark">
     <ion-title>
-      <ion-button *ngIf="mode === 'batch'" fill="outline" color="light" (click)="onBatchButtonClick()" enabled="!showBatchMenu">{{ 'personal.batch.toolbar-queue-button'|translate:{nrRegistrations: paBatch.length} }}</ion-button>
-      <ion-label *ngIf="mode !== 'batch'">{{ 'tabs.you'|translate }} </ion-label>
+      <ion-label>{{ 'tabs.you'|translate }} </ion-label>
     </ion-title>
-    <ion-buttons slot="end" *ngIf="isDebug">
+    <ion-buttons slot="end">
       <ion-button
+        *ngIf="mode === 'batch'"
+        fill="outline"
+        color="light"
+        (click)="onBatchButtonClick()"
+      >
+        {{ 'personal.batch.toolbar-queue-button'|translate:{ nrRegistrations: paBatch?.length } }}
+      </ion-button>
+      <ion-button
+        *ngIf="isDebug"
         (click)="debugToggleShowDebug()"
         [color]="showDebug ? 'warning' : ''"
         fill="clear"

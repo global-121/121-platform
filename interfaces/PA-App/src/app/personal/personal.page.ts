@@ -161,9 +161,7 @@ export class PersonalPage implements OnInit, OnDestroy {
 
   private goOnline() {
     this.isOnline = true;
-    if (this.paBatch.length > 0) {
-      this.autoBatchUpload();
-    }
+    this.autoBatchUpload();
   }
 
   private goOffline() {
@@ -171,6 +169,9 @@ export class PersonalPage implements OnInit, OnDestroy {
   }
 
   private async autoBatchUpload() {
+    if (!this.paBatch.length) {
+      return;
+    }
     const alert = await this.alertController.create({
       message: this.translate.instant('personal.batch.upload-alert-message', {
         nrRegistrations: this.paBatch.length,
