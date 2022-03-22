@@ -91,7 +91,7 @@ export class PersonalPage implements OnInit, OnDestroy {
     private resolver: ComponentFactoryResolver,
     public translate: TranslateService,
     private route: ActivatedRoute,
-    private paDataServices: PaDataService,
+    private paDataService: PaDataService,
     private menu: MenuController,
     public alertController: AlertController,
   ) {
@@ -129,7 +129,7 @@ export class PersonalPage implements OnInit, OnDestroy {
           ? PaRegistrationModes.batch
           : PaRegistrationModes.singlePa;
 
-      this.paDataServices.getPaBatch().forEach((registration) => {
+      this.paDataService.getPaBatch().forEach((registration) => {
         const dataKey = 'data';
         const data = JSON.parse(registration[dataKey]);
         this.paBatch.push(data[1]);
@@ -147,7 +147,7 @@ export class PersonalPage implements OnInit, OnDestroy {
     if (this.isDebug && this.showDebug) {
       return;
     }
-
+    await this.loadEndpoints();
     await this.loadComponents();
     this.scrollToLastWhenReady();
   }
@@ -187,6 +187,17 @@ export class PersonalPage implements OnInit, OnDestroy {
         !PersonalComponentsRemoved.includes(section.name)
       );
     });
+  }
+
+  private async loadEndpoints() {
+    await this.paDataService.getInstance();
+    const programs = await this.paDataService.getAllPrograms();
+    for (const program of programs) {
+      const detailedProgram = await this.paDataService.getProgram(program.id);
+      for (const fsp of detailedProgram.financialServiceProviders) {
+        await this.paDataService.getFspById(fsp.id);
+      }
+    }
   }
 
   private async loadComponents() {

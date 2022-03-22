@@ -46,6 +46,7 @@ function check_shared_code() {
   compare_code "_set-env-variables.js" "$repo_pa" "$repo_aw"
   compare_code "_set-env-variables.js" "$repo_pa" "$repo_ho"
   compare_code "_convert-styles-to-async.js" "$repo_pa" "$repo_aw"
+  compare_code "_check-icons-in-use.js" "$repo_pa" "$repo_aw"
   compare_code "ngx-translate-lint.config.json" "$repo_pa" "$repo_aw"
 
   compare_code "src/app/shared/dialogue-turn/" "$repo_pa" "$repo_aw"
@@ -63,6 +64,7 @@ function check_shared_code() {
 
   compare_code "src/app/services/api.service.ts" "$repo_pa" "$repo_aw"
   compare_code "src/app/services/api.service.ts" "$repo_pa" "$repo_ho"
+  compare_code "src/app/services/pub-sub.service.ts" "$repo_pa" "$repo_ho"
   compare_code "src/app/services/translatable-string.service.ts" "$repo_pa" "$repo_aw"
   compare_code "src/app/services/translatable-string.service.spec.ts" "$repo_pa" "$repo_aw"
   compare_code "src/app/services/translatable-string.service.ts" "$repo_pa" "$repo_ho"

@@ -3,7 +3,7 @@ Feature: Export duplicate phone-numbers list
 
   Background:
     Given a logged-in user with "RegistrationPersonalEXPORT" permission
-    Given the "selected phase" is the "review inclusion" phase
+    Given the "selected phase" is the "registration" phase
 
   Scenario: Export duplicate phone-numbers list
     When the user clicks the "export duplicate phone-numbers list" and confirms the confirm prompt
@@ -15,5 +15,5 @@ Feature: Export duplicate phone-numbers list
 
   Scenario: Viewing the export options without permission
     Given a logged-in does not have the "RegistrationPersonalEXPORT" permission
-    When the user views the "review inclusion" page
+    When the user views the "registration" page
     Then the export list button is not visible

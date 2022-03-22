@@ -10,7 +10,7 @@ export const environment = {
   showDebug: false, // Controls debugging features
   useAnimation: false, // Use animations and delays in the interface
   alwaysShowTextPlayer: true, // Also show text-player for missing audio-files
-
+  useServiceWorker: true, // Enable 'offline' support
   envName: '', // To highlight the environment used
   locales: 'en,am_ET,ar,fr,nl,pt_BR,saq_KE,ti,tl,tuv_KE,in,es', // Comma-separated string of enabled locales, i.e: 'en,es,nl_BE'
 

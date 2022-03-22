@@ -114,7 +114,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
   }
 
   private fillPaymentRows() {
-    const nrOfPayments = this.program.distributionDuration;
+    const nrOfPayments = this.program?.distributionDuration;
     const lastPaymentToShow = Math.min(this.lastPaymentId, nrOfPayments);
 
     for (
@@ -142,7 +142,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
           transaction,
           hasMessageIcon: this.enableMessageSentIcon(transaction),
           hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
-          amount: `${transaction.amount} ${this.program.currency}`,
+          amount: `${transaction.amount} ${this.program?.currency}`,
           fsp: this.person.fsp,
         };
         paymentRowValue.text = formatDate(
