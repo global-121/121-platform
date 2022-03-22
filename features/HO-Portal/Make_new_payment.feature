@@ -8,7 +8,7 @@ Feature: Make a new payment
   Scenario: Show total amount
     Given a new payment is possible on the program
     Given the number of "PA included" is more then "0"
-    Given the generic "select bulk action" scenario (see Manage_people_affected.feature)
+    Given the generic "select bulk action" scenario (see View_and_Manage_people_affected.feature)
     When the user selects the "Do payment" action
     Then a "row checkbox" appears in the "select" column for eligible rows
     When the user selects 1 or more PA's

@@ -9,20 +9,20 @@ export const environment = {
   showDebug: ${process.env.NG_SHOW_DEBUG || 'false'},
   useAnimation: ${process.env.NG_USE_ANIMATION || 'true'},
   alwaysShowTextPlayer: ${process.env.NG_ALWAYS_SHOW_TEXT_PLAYER || 'false'},
+  useServiceWorker: ${process.env.NG_USE_SERVICE_WORKER || 'false'},
 
   envName: '${process.env.NG_ENV_NAME || ''}',
   locales: '${process.env.NG_LOCALES || 'en'}',
 
   // APIs:
   url_121_service_api: '${process.env.NG_URL_121_SERVICE_API}',
-  url_pa_account_service_api: '${process.env.NG_URL_PA_ACCOUNT_SERVICE_API}',
 
   // Third-party tokens:
-  ai_ikey: '${process.env.NG_AI_IKEY}',
-  ai_endpoint: '${process.env.NG_AI_ENDPOINT}',
+  ai_ikey: '${process.env.NG_AI_IKEY || ''}',
+  ai_endpoint: '${process.env.NG_AI_ENDPOINT || ''}',
 
-  matomo_id: '${process.env.NG_MATOMO_ID}',
-  matomo_endpoint_api: '${process.env.NG_MATOMO_ENDPOINT_API}',
-  matomo_endpoint_js: '${process.env.NG_MATOMO_ENDPOINT_JS}',
+  matomo_id: '${process.env.NG_MATOMO_ID || ''}',
+  matomo_endpoint_api: '${process.env.NG_MATOMO_ENDPOINT_API || ''}',
+  matomo_endpoint_js: '${process.env.NG_MATOMO_ENDPOINT_JS || ''}',
 };
 `;

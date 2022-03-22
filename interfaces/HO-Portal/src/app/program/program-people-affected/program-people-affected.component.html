@@ -54,33 +54,39 @@
     </ion-row>
   </div>
   <div>
-    <ion-input
-      [placeholder]="
-        'page.program.program-people-affected.filter-placeholder' | translate
-      "
-      [attr.title]="
-        'page.program.program-people-affected.filter-placeholder' | translate
-      "
-      [attr.aria-label]="
-        'page.program.program-people-affected.filter-placeholder' | translate
-      "
-      (ionChange)="filterRowsVisible($event.target.value)"
-      (debounce)="(1000)"
-      [value]="filterRowsVisibleQuery"
-      [clearInput]="true"
-      class="filter-input"
-    >
-      <ion-icon
-        name="funnel"
+    <ion-row *ngIf="program" class="ion-align-items-center">
+      <ion-input
+        [placeholder]="
+          'page.program.program-people-affected.filter-placeholder' | translate
+        "
         [attr.title]="
           'page.program.program-people-affected.filter-placeholder' | translate
         "
-        aria-hidden="true"
-        size="small"
-        slot="start"
-        style="padding-inline-start: var(--padding-start)"
-      ></ion-icon>
-    </ion-input>
+        [attr.aria-label]="
+          'page.program.program-people-affected.filter-placeholder' | translate
+        "
+        (ionChange)="filterRowsVisible($event.target.value)"
+        (debounce)="(1000)"
+        [value]="filterRowsVisibleQuery"
+        [clearInput]="true"
+        class="filter-input"
+      >
+        <ion-icon
+          name="funnel"
+          [attr.title]="
+            'page.program.program-people-affected.filter-placeholder' | translate
+          "
+          aria-hidden="true"
+          size="small"
+          slot="start"
+          style="padding-inline-start: var(--padding-start)"
+        ></ion-icon>
+      </ion-input>
+      
+      <ion-toggle  [(ngModel)]=showAllStatusState (click)="toggleShowAllStatusState()"></ion-toggle>
+      <ion-label>{{ 'page.program.program-people-affected.filter-toggle'|translate }} </ion-label>
+      <tooltip style="margin-left:3px;margin-bottom:1px" [value]="'page.program.program-people-affected.filter-tooltip'|translate"></tooltip>
+    </ion-row>
   </div>
 </ion-row>
 <div
@@ -241,11 +247,9 @@
   <ngx-datatable-column
     *ngIf="
       showInclusionScore() &&
-      [
-        phaseEnum.registrationValidation,
-        phaseEnum.inclusion,
-        phaseEnum.reviewInclusion
-      ].includes(thisPhase)
+      [phaseEnum.registrationValidation, phaseEnum.inclusion].includes(
+        thisPhase
+      )
     "
     prop="inclusionScore"
     [name]="
@@ -263,7 +267,6 @@
       [
         phaseEnum.registrationValidation,
         phaseEnum.inclusion,
-        phaseEnum.reviewInclusion,
         phaseEnum.payment
       ].includes(thisPhase) &&
       canViewPersonalData
@@ -282,7 +285,7 @@
   <ngx-datatable-column
     *ngIf="
       showVnumber() &&
-      [phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) &&
+      [phaseEnum.payment].includes(thisPhase) &&
       canViewPersonalData
     "
     prop="vnumber"
@@ -336,18 +339,18 @@
 
   <ngx-datatable-column
     *ngIf="thisPhase === phaseEnum.payment"
-    [prop]="paymentHistoryColumn?.prop"
+    prop="paymentHistoryButton"
     [name]="paymentHistoryColumn?.name"
     minWidth="300"
     [draggable]="false"
     [resizeable]="false"
-    [sortable]="false"
+    [sortable]="true"
     [headerClass]="columnDefaults.headerClass"
   >
     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-      <ng-container>
+      <ng-container *ngIf="value">
         <button
-          *ngIf="value?.paymentIndex"
+          *ngIf="row.paymentHistory?.paymentIndex"
           type="button"
           [attr.title]="
             'page.program.program-people-affected.transaction.show-status'
@@ -363,15 +366,10 @@
             'ion-no-padding popup-button status-pop-up payment-history-button': true
           }"
         >
-          <div *ngIf="value.paymentIndex" style="margin-bottom: 4px">
-            {{
-              'page.program.program-people-affected.transaction.payment-number'
-                | translate
-            }}{{ value.paymentIndex }}{{ ' ' + value.text }}
-          </div>
+          {{ value }}
         </button>
-        <span *ngIf="!value?.paymentIndex">
-          {{ value.text }}
+        <span *ngIf="!row.paymentHistory?.paymentIndex">
+          {{ value }}
         </span>
       </ng-container>
     </ng-template>

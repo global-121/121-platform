@@ -92,6 +92,8 @@ export class UserController {
       const user = await this.userService.createPersonAffected(userData);
       const exp = new Date(Date.now() + 60 * 24 * 3600000);
       res.cookie('access_token_pa', user.user.token, {
+        // sameSite: 'None',
+        // secure: true,
         sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
         secure: process.env.NODE_ENV === 'production',
         expires: exp,

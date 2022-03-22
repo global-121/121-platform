@@ -5,15 +5,19 @@ import { Fsp } from 'src/app/models/fsp.model';
 import { InstanceData } from 'src/app/models/instance.model';
 import { PaInclusionStates } from 'src/app/models/pa-statuses.enum';
 import { Program } from 'src/app/models/program.model';
-import { ApiService } from 'src/app/services/api.service';
+import { ApiPath, ApiService } from 'src/app/services/api.service';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/user.model';
+import { SyncService } from './sync.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProgramsServiceApiService {
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private syncService: SyncService,
+  ) {}
 
   getInstanceInformation(): Promise<InstanceData> {
     return this.apiService
@@ -41,16 +45,11 @@ export class ProgramsServiceApiService {
   }
 
   createAccountPA(username: string, password: string): Promise<User | null> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/user/person-affected',
-        {
-          username,
-          password,
-        },
-        true,
-      )
+    return this.syncService
+      .tryPost(environment.url_121_service_api, ApiPath.personAffected, {
+        username,
+        password,
+      })
       .toPromise();
   }
 
@@ -81,16 +80,11 @@ export class ProgramsServiceApiService {
   }
 
   store(type: string, data: string): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/people-affected/data-storage',
-        {
-          type,
-          data,
-        },
-        false,
-      )
+    return this.syncService
+      .tryPost(environment.url_121_service_api, ApiPath.dataStorage, {
+        type,
+        data,
+      })
       .toPromise();
   }
 
@@ -131,30 +125,20 @@ export class ProgramsServiceApiService {
   }
 
   createRegistration(referenceId: string, programId: number): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations',
-        {
-          referenceId,
-          programId,
-        },
-        false,
-      )
+    return this.syncService
+      .tryPost(environment.url_121_service_api, ApiPath.registrations, {
+        referenceId,
+        programId,
+      })
       .toPromise();
   }
 
   postProgramAnswers(referenceId: string, programAnswers: any): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations/program-answers',
-        {
-          referenceId,
-          programAnswers,
-        },
-        false,
-      )
+    return this.syncService
+      .tryPost(environment.url_121_service_api, ApiPath.programAnswers, {
+        referenceId,
+        programAnswers,
+      })
       .toPromise();
   }
 
@@ -175,15 +159,10 @@ export class ProgramsServiceApiService {
   }
 
   async postRegistration(referenceId: string): Promise<boolean> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations/register',
-        {
-          referenceId,
-        },
-        false,
-      )
+    return this.syncService
+      .tryPost(environment.url_121_service_api, '/registrations/register', {
+        referenceId,
+      })
       .toPromise()
       .then(() => true)
       .catch(() => false);
@@ -194,17 +173,12 @@ export class ProgramsServiceApiService {
     key: string,
     value: string,
   ): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations/custom-data',
-        {
-          referenceId,
-          key,
-          value,
-        },
-        false,
-      )
+    return this.syncService
+      .tryPost(environment.url_121_service_api, ApiPath.customData, {
+        referenceId,
+        key,
+        value,
+      })
       .toPromise();
   }
 
@@ -227,32 +201,22 @@ export class ProgramsServiceApiService {
     language: string,
     useForInvitationMatching?: boolean,
   ): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations/phone',
-        {
-          referenceId,
-          phonenumber: phoneNumber,
-          language,
-          useForInvitationMatching,
-        },
-        false,
-      )
+    return this.syncService
+      .tryPost(`${environment.url_121_service_api}`, '/registrations/phone', {
+        referenceId,
+        phonenumber: phoneNumber,
+        language,
+        useForInvitationMatching,
+      })
       .toPromise();
   }
 
   postFsp(referenceId: string, fspId: number): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations/fsp',
-        {
-          referenceId,
-          fspId,
-        },
-        false,
-      )
+    return this.syncService
+      .tryPost(`${environment.url_121_service_api}`, ApiPath.fsp, {
+        referenceId,
+        fspId,
+      })
       .toPromise();
   }
 

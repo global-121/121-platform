@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ReplaySubject } from 'rxjs';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import {
   InstanceData,
@@ -9,6 +8,7 @@ import {
   MonitoringData,
   MonitoringInfo,
 } from '../models/instance.model';
+import { PaDataService } from './padata.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,9 +20,9 @@ export class InstanceService {
   public instanceInformation = this.instanceInformationSource.asObservable();
 
   constructor(
-    private programsService: ProgramsServiceApiService,
     private translatableString: TranslatableStringService,
     private translate: TranslateService,
+    private paDataService: PaDataService,
   ) {
     this.getInstanceData();
 
@@ -36,7 +36,7 @@ export class InstanceService {
   }
 
   private async getInstanceData() {
-    this.instanceData = await this.programsService.getInstanceInformation();
+    this.instanceData = await this.paDataService.getInstance();
 
     this.updateInstanceInformation();
   }

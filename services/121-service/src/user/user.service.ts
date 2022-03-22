@@ -22,7 +22,7 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { InterfaceNames } from './../shared/enum/interface-names.enum';
-import { CookieNames } from './../shared/enum/cookie-names.enums';
+import { CookieNames } from './../shared/enum/cookie.enums';
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
@@ -314,18 +314,15 @@ export class UserService {
   public getInterfaceKeyByHeader(): string {
     const headerKey = 'x-121-interface';
     const originInterface = this.request.headers[headerKey];
-    if (originInterface) {
-      switch (originInterface) {
-        case InterfaceNames.portal:
-          return CookieNames.portal;
-        case InterfaceNames.awApp:
-          return CookieNames.awApp;
-        case InterfaceNames.paApp:
-          return CookieNames.paApp;
-
-        default:
-          break;
-      }
+    switch (originInterface) {
+      case InterfaceNames.portal:
+        return CookieNames.portal;
+      case InterfaceNames.awApp:
+        return CookieNames.awApp;
+      case InterfaceNames.paApp:
+        return CookieNames.paApp;
+      default:
+        return CookieNames.general;
     }
   }
 

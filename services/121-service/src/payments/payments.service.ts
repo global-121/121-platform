@@ -97,9 +97,7 @@ export class PaymentsService {
     await this.actionService.saveAction(
       userId,
       programId,
-      payment === -1
-        ? AdditionalActionType.testMpesaPayment
-        : AdditionalActionType.paymentStarted,
+      AdditionalActionType.paymentStarted,
     );
 
     const paymentTransactionResult = await this.payout(

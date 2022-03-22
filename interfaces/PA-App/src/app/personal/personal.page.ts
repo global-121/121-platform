@@ -85,6 +85,7 @@ export class PersonalPage implements OnInit, OnDestroy {
     private resolver: ComponentFactoryResolver,
     public translate: TranslateService,
     private paDataServices: PaDataService,
+    private paDataService: PaDataService,
     private menu: MenuController,
     public alertController: AlertController,
     public registrationMode: RegistrationModeService,
@@ -133,7 +134,7 @@ export class PersonalPage implements OnInit, OnDestroy {
     if (this.isDebug && this.showDebug) {
       return;
     }
-
+    await this.loadEndpoints();
     await this.loadComponents();
     this.scrollToLastWhenReady();
   }
@@ -145,9 +146,7 @@ export class PersonalPage implements OnInit, OnDestroy {
 
   private goOnline() {
     this.isOnline = true;
-    if (this.paBatch.length > 0) {
-      this.autoBatchUpload();
-    }
+    this.autoBatchUpload();
   }
 
   private goOffline() {
@@ -155,6 +154,9 @@ export class PersonalPage implements OnInit, OnDestroy {
   }
 
   private async autoBatchUpload() {
+    if (!this.paBatch.length) {
+      return;
+    }
     const alert = await this.alertController.create({
       message: this.translate.instant('personal.batch.upload-alert-message', {
         nrRegistrations: this.paBatch.length,
@@ -173,6 +175,17 @@ export class PersonalPage implements OnInit, OnDestroy {
         !PersonalComponentsRemoved.includes(section.name)
       );
     });
+  }
+
+  private async loadEndpoints() {
+    await this.paDataService.getInstance();
+    const programs = await this.paDataService.getAllPrograms();
+    for (const program of programs) {
+      const detailedProgram = await this.paDataService.getProgram(program.id);
+      for (const fsp of detailedProgram.financialServiceProviders) {
+        await this.paDataService.getFspById(fsp.id);
+      }
+    }
   }
 
   private async loadComponents() {

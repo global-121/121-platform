@@ -6,6 +6,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 const fs = require('fs');
+const pathLib = require('path');
 const { execSync } = require('child_process');
 
 // Load environment-variables from .env file (if available)
@@ -28,7 +29,7 @@ function getFfmpegPath() {
     console.warn(`ffmpeg not found.`);
     return process.exit(1);
   }
-  return result.ffmpeg.path;
+  return pathLib.resolve(result.ffmpeg.path);
 }
 
 /**
@@ -100,7 +101,7 @@ function convertToMp3(locale, sourceType) {
     console.log(`Converting to: ${path}${outputFile}`);
 
     execSync(
-      `${ffmpegPath} -loglevel warning -y -i ${path}${file} -map_metadata -1 -codec:a libmp3lame -q:a 8 ${path}${outputFile}`,
+      `"${ffmpegPath}" -loglevel warning -y -i ${path}${file} -map_metadata -1 -codec:a libmp3lame -q:a 8 ${path}${outputFile}`,
       logOutput,
     );
   });
@@ -132,7 +133,7 @@ function generateAssetsAudio(locale) {
     console.log(`Generating: ${path}${outputFile}`);
 
     execSync(
-      `${ffmpegPath} -loglevel warning -y -i ${path}${file} -map_metadata -1  -b:a 64K  -dash 1 ${path}${outputFile}`,
+      `"${ffmpegPath}" -loglevel warning -y -i ${path}${file} -map_metadata -1  -b:a 64K  -dash 1 ${path}${outputFile}`,
       logOutput,
     );
   });

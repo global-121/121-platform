@@ -1,7 +1,6 @@
 {
   "$schema": "../node_modules/@angular/service-worker/config/schema.json",
   "index": "index.html",
-  "dataGroups": [],
   "assetGroups": [
     {
       "name": "app",
@@ -11,8 +10,8 @@
         "files": [
           "/index.html",
           "/manifest.json",
-          "/*.css",
-          "/*.js",
+          "/**.css",
+          "/**.js",
           "!/*-es5*.js"
         ]
       }
@@ -22,7 +21,20 @@
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": ["/assets/**", "/svg/**"]
+        "files": [
+          "/assets/*",
+          "/assets/**",
+          "!/assets/i18n/*/*.(mp3|webm)",
+          "/svg/**"
+        ]
+      }
+    },
+    {
+      "name": "assets-audio",
+      "installMode": "lazy",
+      "updateMode": "lazy",
+      "resources": {
+        "files": ["/assets/i18n/*/*.webm"]
       }
     }
   ]

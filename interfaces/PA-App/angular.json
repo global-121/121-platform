@@ -30,7 +30,8 @@
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
-              }
+              },
+              "src/manifest.json"
             ],
             "styles": [
               {
@@ -53,6 +54,19 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "src/assets",
+                  "output": "assets"
+                },
+                {
+                  "glob": "**/{alert,arrow-back-sharp,arrow-down-circle-outline,arrow-undo,camera-reverse,caret-back-sharp,chatbubbles,chevron-back,close,cloud-download,color-fill,construct,create,download,eye-off,eye,flash-off,flash,hourglass,nuclear,people,person,qr-code,refresh,resize,trash}.svg",
+                  "input": "node_modules/ionicons/dist/ionicons/svg",
+                  "output": "./svg"
+                },
+                "src/manifest.json"
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -72,7 +86,9 @@
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb"
                 }
-              ]
+              ],
+              "serviceWorker": true,
+              "ngswConfigPath": "src/ngsw-config.json"
             },
             "ci": {
               "budgets": [
@@ -115,7 +131,8 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "/assets"
-              }
+              },
+              "src/manifest.json"
             ]
           },
           "configurations": {
@@ -136,7 +153,8 @@
     }
   },
   "cli": {
-    "defaultCollection": "@ionic/angular-toolkit"
+    "defaultCollection": "@ionic/angular-toolkit",
+    "analytics": false
   },
   "schematics": {
     "@ionic/angular-toolkit:component": {

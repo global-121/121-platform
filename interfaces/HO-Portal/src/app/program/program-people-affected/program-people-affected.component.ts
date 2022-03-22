@@ -71,8 +71,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private allPeopleData: Person[];
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
+  private phaseSpecificPeopleAffected: PersonRow[] = [];
+  private initialVisiblePeopleAffected: PersonRow[] = [];
   public visiblePeopleAffected: PersonRow[] = [];
   public filterRowsVisibleQuery: string;
+  public showAllStatusState = false;
+  private filterVal: string;
 
   public headerChecked = false;
   public headerSelectAllVisible = false;
@@ -129,7 +133,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       showIfNoValidation: false,
     },
     {
-      id: BulkActionId.includeRunProgramRole,
+      id: BulkActionId.include,
       enabled: false,
       label: this.translate.instant(
         'page.program.program-people-affected.actions.include',
@@ -150,37 +154,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       },
     },
     {
-      id: BulkActionId.includePersonalDataRole,
-      enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.include',
-      ),
-      permissions: [
-        Permission.RegistrationStatusIncludedUPDATE,
-        Permission.RegistrationPersonalREAD,
-      ],
-      phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-      showIfNoValidation: true,
-      confirmConditions: {
-        checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-checkbox',
-        ),
-        checkboxChecked: false,
-        inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.message-explanation',
-        ),
-        minLength: 20,
-      },
-    },
-    {
       id: BulkActionId.reject,
       enabled: false,
       label: this.translate.instant(
         'page.program.program-people-affected.actions.reject',
       ),
       permissions: [Permission.RegistrationStatusRejectedUPDATE],
-      phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+      phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         checkbox: this.translate.instant(
@@ -203,7 +183,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         'page.program.program-people-affected.actions.end-inclusion',
       ),
       permissions: [Permission.RegistrationStatusInclusionEndedUPDATE],
-      phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+      phases: [ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         checkbox: this.translate.instant(
@@ -228,7 +208,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ProgramPhase.registrationValidation,
         ProgramPhase.inclusion,
         ProgramPhase.payment,
-        ProgramPhase.reviewInclusion,
       ],
       showIfNoValidation: true,
       confirmConditions: {
@@ -309,7 +288,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       phases: [
         ProgramPhase.registrationValidation,
         ProgramPhase.inclusion,
-        ProgramPhase.reviewInclusion,
         ProgramPhase.payment,
       ],
       permissions: [Permission.RegistrationREAD],
@@ -328,7 +306,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...this.columnDefaults,
         frozenLeft: this.platform.width() > 768,
-        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         permissions: [Permission.RegistrationPersonalREAD],
       },
       {
@@ -338,12 +315,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...this.columnDefaults,
         frozenLeft: this.platform.width() > 1280,
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.reviewInclusion,
-          ProgramPhase.payment,
-        ],
         permissions: [Permission.RegistrationPersonalREAD],
         minWidth: columnPhoneNumberWidth,
       },
@@ -353,12 +324,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.preferredLanguage',
         ),
         ...this.columnDefaults,
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.reviewInclusion,
-          ProgramPhase.payment,
-        ],
         permissions: [Permission.RegistrationPersonalREAD],
       },
       {
@@ -421,7 +386,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.selected-for-validation',
         ),
         ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation],
+        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
         showIfNoValidation: false,
         width: columnDateTimeWidth,
       },
@@ -441,11 +406,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.included',
         ),
         ...this.columnDefaults,
-        phases: [
-          ProgramPhase.inclusion,
-          ProgramPhase.reviewInclusion,
-          ProgramPhase.payment,
-        ],
+        phases: [ProgramPhase.inclusion, ProgramPhase.payment],
         width: columnDateTimeWidth,
       },
       {
@@ -454,7 +415,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.rejected',
         ),
         ...this.columnDefaults,
-        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+        phases: [ProgramPhase.inclusion, ProgramPhase.payment],
         width: columnDateTimeWidth,
       },
       {
@@ -463,7 +424,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.inclusion-ended',
         ),
         ...this.columnDefaults,
-        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+        phases: [ProgramPhase.inclusion, ProgramPhase.payment],
         width: columnDateTimeWidth,
       },
       {
@@ -472,12 +433,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.paymentAmountMultiplier',
         ),
         ...this.columnDefaults,
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.reviewInclusion,
-          ProgramPhase.payment,
-        ],
         width: columnScoreWidth,
       },
       {
@@ -486,7 +441,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.fsp',
         ),
         ...this.columnDefaults,
-        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         width: 150,
       },
     ];
@@ -506,7 +460,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       name: '',
       customAttributeIndex: 0,
       ...this.columnDefaults,
-      phases: [ProgramPhase.inclusion, ProgramPhase.reviewInclusion],
+      phases: [ProgramPhase.inclusion],
       width: columnDateTimeWidth,
     };
   }
@@ -714,7 +668,46 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       );
     }
     this.allPeopleAffected = this.createTableData(this.allPeopleData);
-    this.visiblePeopleAffected = [...this.allPeopleAffected];
+    this.filterPeopleAffectedByPhase();
+  }
+
+  private filterPeopleAffectedByPhase() {
+    let paStatusesToShow: PaStatus[];
+    switch (this.thisPhase) {
+      case ProgramPhase.registrationValidation:
+        paStatusesToShow = [
+          PaStatus.imported,
+          PaStatus.invited,
+          PaStatus.startedRegistration,
+          PaStatus.selectedForValidation,
+          PaStatus.registered,
+          PaStatus.noLongerEligible,
+          PaStatus.registeredWhileNoLongerEligible,
+        ];
+        break;
+      case ProgramPhase.inclusion:
+        paStatusesToShow = [
+          PaStatus.validated,
+          PaStatus.registered,
+          PaStatus.selectedForValidation,
+          PaStatus.rejected,
+          PaStatus.inclusionEnded,
+        ];
+        break;
+      case ProgramPhase.payment:
+        paStatusesToShow = [
+          PaStatus.included,
+          PaStatus.rejected,
+          PaStatus.inclusionEnded,
+        ];
+        break;
+    }
+
+    this.phaseSpecificPeopleAffected = this.allPeopleAffected.filter((pa) =>
+      paStatusesToShow.includes(pa.status),
+    );
+    this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
+    this.visiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
   }
 
   private createTableData(source: Person[]): PersonRow[] {
@@ -866,10 +859,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     let paymentColumnValue = new PaymentColumnDetail();
     paymentColumnValue.payments = [];
 
+    const paymentHistoryButtonKey = 'paymentHistoryButton';
+
     if (!lastPayment) {
       paymentColumnValue.text = this.translate.instant(
         'page.program.program-people-affected.transaction.no-payment-yet',
       );
+      personRow[paymentHistoryButtonKey] = paymentColumnValue.text;
     } else {
       paymentColumnValue = {
         text: '',
@@ -896,6 +892,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.transaction.failed',
         );
       }
+      personRow[paymentHistoryButtonKey] =
+        this.translate.instant(
+          'page.program.program-people-affected.transaction.payment-number',
+        ) +
+        paymentColumnValue.paymentIndex +
+        ' ' +
+        paymentColumnValue.text;
     }
 
     personRow.paymentHistory = paymentColumnValue;
@@ -1161,6 +1164,36 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       this.selectedPeople,
       { message: confirmInput },
     );
+
+    const actionStatus = {
+      [BulkActionId.invite]: PaStatus.invited,
+      [BulkActionId.selectForValidation]: PaStatus.selectedForValidation,
+      [BulkActionId.include]: PaStatus.included,
+      [BulkActionId.endInclusion]: PaStatus.inclusionEnded,
+      [BulkActionId.reject]: PaStatus.rejected,
+      [BulkActionId.markNoLongerEligible]: PaStatus.noLongerEligible,
+    };
+
+    if (actionStatus[this.action]) {
+      this.actionResult(
+        `<p>${this.translate.instant(
+          'page.program.program-people-affected.status-changed',
+          {
+            pastatus: this.translate
+              .instant(
+                'page.program.program-people-affected.status.' +
+                  actionStatus[this.action],
+              )
+              .toLowerCase(),
+            panumber: this.selectedPeople.length,
+          },
+        )}
+          <p>${this.translate.instant(
+            'page.program.program-people-affected.pa-moved-phase',
+          )}</p>`,
+      );
+    }
+
     this.isInProgress = false;
 
     this.resetBulkAction();
@@ -1180,26 +1213,40 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public filterRowsVisible(value: string) {
-    const filterVal = value.toLowerCase().trim();
-    const rowsVisible = this.allPeopleAffected.filter((row: PersonRow) => {
-      // Loop over all columns
-      for (const key of Object.keys(row)) {
-        try {
-          const columnValue = row[key].toLowerCase();
-          const includeRow =
-            columnValue.indexOf(filterVal) !== -1 || // check literal values
-            columnValue.replace(/\s/g, '').indexOf(filterVal) !== -1 || // check also with spaces removed
-            !filterVal;
-          if (includeRow) {
-            return includeRow;
+    this.filterVal = value;
+    const filterVal = value?.toLowerCase().trim();
+    const rowsVisible = this.initialVisiblePeopleAffected.filter(
+      (row: PersonRow) => {
+        // Loop over all columns
+        for (const key of Object.keys(row)) {
+          try {
+            const columnValue = row[key].toLowerCase();
+            const includeRow =
+              columnValue.indexOf(filterVal) !== -1 || // check literal values
+              columnValue.replace(/\s/g, '').indexOf(filterVal) !== -1 || // check also with spaces removed
+              !filterVal;
+            if (includeRow) {
+              return includeRow;
+            }
+          } catch {
+            // Do not filter on unfilterable column types
           }
-        } catch {
-          // Do not filter on unfilterable column types
         }
-      }
-    });
+      },
+    );
 
     this.visiblePeopleAffected = rowsVisible;
+  }
+
+  public toggleShowAllStatusState() {
+    const newState = !this.showAllStatusState;
+    if (newState) {
+      this.initialVisiblePeopleAffected = [...this.allPeopleAffected];
+    } else {
+      this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
+    }
+    this.visiblePeopleAffected = [...this.initialVisiblePeopleAffected];
+    this.filterRowsVisible(this.filterVal);
   }
 
   public paComparator(a: string, b: string) {

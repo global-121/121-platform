@@ -11,7 +11,7 @@ import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
 import { UserService } from './user/user.service';
 import { UserType } from './user/user-type-enum';
-import { CookieNames } from './shared/enum/cookie-names.enums';
+import { CookieNames } from './shared/enum/cookie.enums';
 
 @Injectable()
 export class PersonAffectedAuthGuard implements CanActivate {

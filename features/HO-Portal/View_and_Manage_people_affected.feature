@@ -6,7 +6,11 @@ Feature: View and manage people affected (generic features)
 
   Scenario: View people affected connected to a program
     When the user views a page with the "manage people affected" component
-    Then a table with all "people connected to a program" is shown
+    Then a table with "people connected to a program" is shown
+    And depending on the "selected phase" only current people affected with given "PA statuses" are shown
+      - "registration": imported, invited, created, selected for validation, no longer eligible, registered while no longer eligible
+      - "inclusion": validated, registered, selected for validation, rejected, inclusion ended
+      - "payment": included, rejected, inclusion ended
     And for each person the "Select" column is empty
     And for each person a "PA identifier" is shown
     And it has a clickable "i" button in front of it, which opens a popup
@@ -23,8 +27,8 @@ Feature: View and manage people affected (generic features)
     And depending on which "page" several "status change date" columns are shown
     And "transfer value" column is shown
     And "inclusion score" column is shown (if "validation" is configured for the program)
-    And "financial service provider" column is shown (in "reviewInclusion" and "payment" pages only)
-    And "Payment History" column is shown (in "payment" page only)
+    And "financial service provider" column is shown
+    And "payment columns" are shown (in "payment" page only)
 
   Scenario: View columns of table WITH access to personal data
     Given the logged-in user also has "RegistrationPersonalREAD" permission
@@ -45,11 +49,21 @@ Feature: View and manage people affected (generic features)
     And the updated value is reflected in the PA-table
 
   Scenario: Filter rows of PA-table
-    Given the table with all "people connected to a program" is shown
+    Given the table with all "people affected" relevant to the selected program phase is shown
     When the user enters any free text "abc" in the "filter field"
     Then the table immediately updates to show only rows where at least one case of "abc" is found as substring in any of the columns
     When the user removes the text again or presses the "X" close option
     Then the table shows all rows again
+  
+  Scenario: Show People Affected of all phases
+    Given the table with all "people affected" relevant to the selected program phase is shown
+    Given the 'show all' toggle is toggled off
+    When the user toggles it on
+    Then the table will now show all "people affected", also those from other phases
+    And - if done while the filter field contains text - then the filtered text keeps being applied
+    When the user toggles it off again
+    Then the table returns to only the "people affected" relevant to the selected program phase
+    And - if done while the filter field contains text - then the filtered text keeps being applied
 
   Scenario: View available actions
     When the user opens up the "choose action" dropdown
