@@ -14,7 +14,7 @@
     "lint:code": "eslint \"src/**/*.ts\"",
     "fix:code": "npm run lint:code -- --fix",
     "lint:seed-data": "prettier --check \"seed-data/**/*.json\"",
-    "lint:syntax": "prettier --check \"**/*.{md,js,yml}\"",
+    "lint:syntax": "prettier --check \"**/*.{md,ts,js,json,yml}\"",
     "fix:syntax": "npm run lint:code -- --fix && npm run lint:syntax -- --write && npm run lint:seed-data -- --write",
     "prestart": "npm run migration:run && ts-node src/scripts seed-prod",
     "start": "node index.js",
