@@ -149,7 +149,7 @@ export class PaDataService {
     }
     if (this.isOffline) {
       localStorage.setItem(typeKey, JSON.stringify(data));
-      // return this.findInLocalStorage<any>(typeKey);
+      return this.findInLocalStorage<any>(typeKey);
     }
   }
 
@@ -168,18 +168,6 @@ export class PaDataService {
       return this.findInLocalStorage<any>(typeKey);
     }
   }
-
-  // private getExistingDatastorage(type: string): { type: string; data: any }[] {
-  //   const typeKey = `${this.dataStorageKey + '-' + type}`;
-  //   const dataFromDatastorage: { type: string; data: any }[] =
-  //     this.findInLocalStorage(typeKey);
-
-  //   if (dataFromDatastorage) {
-  //     return dataFromDatastorage;
-  //   } else {
-  //     return [];
-  //   }
-  // }
 
   async createAccount(username: string, password: string): Promise<any> {
     // 'Sanitize' username:
