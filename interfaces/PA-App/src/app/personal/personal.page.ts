@@ -99,7 +99,9 @@ export class PersonalPage implements OnInit, OnDestroy {
     this.conversationService.updateConversation$.subscribe(
       async (nextAction: string) => {
         if (
-          nextAction === this.conversationService.conversationActions.afterLogin
+          nextAction ===
+            this.conversationService.conversationActions.afterLogin ||
+          this.conversationService.conversationActions.afterBatchSubmit
         ) {
           await this.loadComponents();
           this.scrollToLastWhenReady();

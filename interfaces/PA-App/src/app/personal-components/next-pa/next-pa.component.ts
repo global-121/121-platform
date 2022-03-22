@@ -67,7 +67,7 @@ export class NextPaComponent extends PersonalDirective {
   async addNewPa() {
     await this.paData.logout();
     this.logger.logEvent(LoggingEventCategory.ui, LoggingEvent.batchModeNewPa);
-    window.location.reload();
+    this.conversationService.startNextPaConversation();
   }
 
   cancel() {

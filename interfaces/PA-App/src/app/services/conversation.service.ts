@@ -146,6 +146,13 @@ export class ConversationService {
     this.updateConversationSource.next(this.conversationActions.afterLogin);
   }
 
+  public startNextPaConversation() {
+    this.startNewConversation();
+    this.updateConversationSource.next(
+      this.conversationActions.afterBatchSubmit,
+    );
+  }
+
   public debugUndoLastStep() {
     this.history.pop();
   }
@@ -174,4 +181,5 @@ export class ConversationSection {
 
 export enum ConversationActions {
   afterLogin = 'after-login',
+  afterBatchSubmit = 'after-batch-submit',
 }
