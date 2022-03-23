@@ -33,6 +33,7 @@
           {{ "personal.batch.menu-title" | translate }}
         </h3>
         <p>
+          <span *ngIf="!isOnline">{{ "personal.batch.menu-text-offline" | translate }}</span><br>
           {{ 'personal.batch.menu-text'|translate }}
         </p>
       </ion-text>

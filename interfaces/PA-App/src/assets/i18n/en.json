@@ -146,7 +146,8 @@
     "batch": {
       "toolbar-queue-button": "{{nrRegistrations}} registrations",
       "menu-title": "Registrations",
-      "menu-text": "At the moment you are offline. Registrations are stored inside your browser until they have been uploaded automatically every 5 minutes, when the webpage is open and you are online again.",
+      "menu-text-offline": "At the moment you are offline.",
+      "menu-text": "Registrations are stored inside your browser. When the webpage is open and you are online, they will be uploaded automatically.",
       "menu-upload-button": "Upload",
       "menu-export-button": "Export",
       "upload-alert-header": "Uploading registrations.",
