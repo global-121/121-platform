@@ -41,7 +41,7 @@ export class UserMenuComponent {
   }
 
   async logout() {
-    await this.paData.logout();
+    await this.paData.logout(false);
     this.close();
     this.logger.logEvent(LoggingEventCategory.ui, LoggingEvent.logout);
     window.location.reload();
