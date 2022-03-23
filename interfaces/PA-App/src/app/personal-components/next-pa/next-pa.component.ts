@@ -19,6 +19,7 @@ export class NextPaComponent extends PersonalDirective {
   public showSavePa = true;
   public showAddAnotherPa = false;
   private paQueued = true;
+  private isLoggedIn = true;
 
   constructor(
     public conversationService: ConversationService,
@@ -26,6 +27,10 @@ export class NextPaComponent extends PersonalDirective {
     private logger: LoggingService,
   ) {
     super();
+
+    this.paData.authenticationState$.subscribe((user) => {
+      this.isLoggedIn = !!user;
+    });
   }
 
   ngOnInit() {
@@ -65,6 +70,9 @@ export class NextPaComponent extends PersonalDirective {
   }
 
   async addNewPa() {
+    if (this.isLoggedIn) {
+      await this.paData.logout(true);
+    }
     this.logger.logEvent(LoggingEventCategory.ui, LoggingEvent.batchModeNewPa);
     this.conversationService.startNextPaConversation();
   }
