@@ -7,7 +7,7 @@ import {
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of, throwError } from 'rxjs';
-import { concatMap, delay, retryWhen } from 'rxjs/operators';
+import { concatMap, delay, retryWhen, timeout } from 'rxjs/operators';
 import {
   LoggingEvent,
   LoggingEventCategory,
@@ -18,6 +18,7 @@ import { LoggingService } from '../services/logging.service';
 export class RetryInterceptor implements HttpInterceptor {
   private retryTimeOut = 2000;
   private retryConfirmLabel: string;
+  private offlineLookupTimeout = 3000;
 
   constructor(
     private translate: TranslateService,
@@ -40,6 +41,16 @@ export class RetryInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
+
+    const resLookup = ['/notifications/lookup'];
+    // Let lookup timeout fast, so in case there is not internet this
+    for (const re of resLookup) {
+      if (request.url.search(re) !== -1) {
+        console.log('Exception lookup retry-interceptor');
+        return next.handle(request).pipe(timeout(this.offlineLookupTimeout));
+      }
+    }
+
     return next.handle(request).pipe(
       retryWhen((errors) => {
         return errors.pipe(
