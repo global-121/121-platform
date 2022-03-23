@@ -5,8 +5,7 @@
     "logout": "Log out"
   },
   "multiple-registration-mode": {
-    "toggle": "Multiple registrations mode",
-    "logout": "Log out"
+    "toggle": "Multiple registrations mode"
   },
   "connection": {
     "error-retry": "Something went wrong, do you want to try again?"
