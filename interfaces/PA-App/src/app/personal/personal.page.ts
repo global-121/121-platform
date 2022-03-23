@@ -101,7 +101,8 @@ export class PersonalPage implements OnInit, OnDestroy {
         if (
           nextAction ===
             this.conversationService.conversationActions.afterLogin ||
-          this.conversationService.conversationActions.afterBatchSubmit
+          nextAction ===
+            this.conversationService.conversationActions.afterBatchSubmit
         ) {
           await this.loadComponents();
           this.scrollToLastWhenReady();
