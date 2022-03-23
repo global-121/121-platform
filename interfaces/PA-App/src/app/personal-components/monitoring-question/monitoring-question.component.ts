@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { MonitoringInfo } from 'src/app/models/instance.model';
-import { PaRegistrationModes } from 'src/app/models/route-parameters';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { RegistrationModeService } from '../../services/registration-mode.service';
 import { PersonalDirective } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
@@ -25,6 +25,7 @@ export class MonitoringQuestionComponent extends PersonalDirective {
     private instanceService: InstanceService,
     private paData: PaDataService,
     private programsService: ProgramsServiceApiService,
+    private registrationMode: RegistrationModeService,
   ) {
     super();
   }
@@ -92,7 +93,7 @@ export class MonitoringQuestionComponent extends PersonalDirective {
   }
 
   getNextSection() {
-    return this.mode === PaRegistrationModes.batch
+    return this.registrationMode.multiple
       ? PersonalComponents.nextPa
       : PersonalComponents.inclusionStatus;
   }

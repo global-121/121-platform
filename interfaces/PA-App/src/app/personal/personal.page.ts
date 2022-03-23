@@ -6,14 +6,9 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { AlertController, IonContent, MenuController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
-import {
-  PaRegistrationModes,
-  RouteParameters,
-} from '../models/route-parameters';
 import { AutoSignupComponent } from '../personal-components/auto-signup/auto-signup.component';
 import { ConsentQuestionComponent } from '../personal-components/consent-question/consent-question.component';
 import { ContactDetailsComponent } from '../personal-components/contact-details/contact-details.component';
@@ -39,6 +34,7 @@ import {
   ConversationService,
 } from '../services/conversation.service';
 import { PaDataService } from '../services/padata.service';
+import { RegistrationModeService } from '../services/registration-mode.service';
 import { InclusionStatusComponent } from './../personal-components/inclusion-status/inclusion-status.component';
 
 @Component({
@@ -59,8 +55,6 @@ export class PersonalPage implements OnInit, OnDestroy {
     : false;
 
   private scrollSpeed = environment.useAnimation ? 600 : 0;
-
-  public mode: string;
 
   public paBatch = [];
 
@@ -90,10 +84,11 @@ export class PersonalPage implements OnInit, OnDestroy {
     public conversationService: ConversationService,
     private resolver: ComponentFactoryResolver,
     public translate: TranslateService,
-    private route: ActivatedRoute,
+    private paDataServices: PaDataService,
     private paDataService: PaDataService,
     private menu: MenuController,
     public alertController: AlertController,
+    public registrationMode: RegistrationModeService,
   ) {
     // Listen for completed sections, to continue with next steps
     this.conversationService.updateConversation$.subscribe(
@@ -125,18 +120,10 @@ export class PersonalPage implements OnInit, OnDestroy {
       this.ionContent.scrollToPoint(0, toY, this.scrollSpeed);
     });
 
-    this.route.queryParams.subscribe((queryParams) => {
-      this.mode =
-        queryParams[RouteParameters.mode] &&
-        queryParams[RouteParameters.mode] === PaRegistrationModes.batch
-          ? PaRegistrationModes.batch
-          : PaRegistrationModes.singlePa;
-
-      this.paDataService.getPaBatch().forEach((registration) => {
-        const dataKey = 'data';
-        const data = JSON.parse(registration[dataKey]);
-        this.paBatch.push(data[1]);
-      });
+    this.paDataServices.getPaBatch().forEach((registration) => {
+      const dataKey = 'data';
+      const data = JSON.parse(registration[dataKey]);
+      this.paBatch.push(data[1]);
     });
 
     window.addEventListener('online', () => this.goOnline(), { passive: true });
@@ -235,8 +222,6 @@ export class PersonalPage implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('PersonalPage insertSection(): ', name);
-
     const componentRef = this.container.createComponent(
       this.getComponentFactory(name),
     );
@@ -245,7 +230,6 @@ export class PersonalPage implements OnInit, OnDestroy {
     componentInstance.moment = moment;
     componentInstance.data = data;
     componentInstance.animate = options.animate;
-    componentInstance.mode = this.mode;
     componentInstance.isOnline = this.isOnline;
   }
 
@@ -292,7 +276,7 @@ export class PersonalPage implements OnInit, OnDestroy {
   }
 
   public onBatchButtonClick() {
-    if (this.mode !== 'batch') {
+    if (!this.registrationMode.multiple) {
       return;
     }
     this.menu.enable(true, 'batchMenu');

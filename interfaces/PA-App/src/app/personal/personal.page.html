@@ -5,7 +5,7 @@
     </ion-title>
     <ion-buttons slot="end">
       <ion-button
-        *ngIf="mode === 'batch'"
+        *ngIf="registrationMode.multiple"
         fill="outline"
         color="light"
         (click)="onBatchButtonClick()"

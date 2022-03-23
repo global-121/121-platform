@@ -4,6 +4,10 @@
     "delete-data": "Delete my data",
     "logout": "Log out"
   },
+  "multiple-registration-mode": {
+    "toggle": "Multiple registrations mode",
+    "logout": "Log out"
+  },
   "connection": {
     "error-retry": "Something went wrong, do you want to try again?"
   },
