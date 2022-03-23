@@ -1,8 +1,9 @@
 @pa-app
 Feature: New registration
+  Background:
+    Given a program has been published
 
   Scenario: Program with validation
-    Given a program has been published
     Given the program has "validation" enabled
     Given the program has at least 1 "program question" defined
     Given the program has at least 1 "Financial Service Provider" defined
@@ -40,3 +41,35 @@ Feature: New registration
     Then the "inclusion status"-step is shown
     When the PA is included in the HO-portal
     Then an inclusion-message appears in the PA-app
+
+  Scenario: Offline registration by PA
+    Given the PA has an active internet connection
+    And the PA opens the PA-App
+    When the PA-app loads
+    Then the PA-app caches all instance, program, FSP information
+    When the PA loses internet connection
+    Then the PA-app should cache all answers
+    And the PA should be able to continue to registration as usual
+    When the PA has an active internet connection again
+    Then the PA-app should sync the registration to the back-end
+
+  Scenario: Multiple registrations online by AW (batch mode)
+    Given the AW has an active internet connection
+    And the AW opens the PA-app
+    And the AW enables batch mode
+    When the AW finishes a registration
+    Then the PA-app gives a choice between 'Save PA' and 'Register another person affected'
+    When the button 'Save PA' is clicked
+    Then the PA-app registers the PA normally
+    When the button 'Register another person affected' is clicked
+    Then the registration process is restarted 
+
+  Scenario: Multiple registrations offline by AW (batch mode)
+    Given the AW has an active internet connection
+    And the AW opens the PA-app
+    And the AW enables batch mode
+    And the PA-app loses internet connection
+    When the AW finishes a registration
+    Then the PA-app presents the user with a button 'Register another person affected'
+    When the button 'Register another person affected' is clicked
+    Then the registration process is restarted 
