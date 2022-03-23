@@ -87,15 +87,26 @@ export class UserController {
   public async createPA(
     @Body() userData: CreateUserPersonAffectedDto,
     @Res() res,
+    @Req() req,
   ): Promise<UserRO> {
+    let sameSite;
+    let secure;
+    if (process.env.NODE_ENV === 'production') {
+      sameSite = 'None';
+      secure = 'Lax';
+    } else {
+      const origin = req.get('origin');
+      const serviceWorkerDebug = origin.includes('8088');
+      sameSite = serviceWorkerDebug ? 'None' : 'Lax';
+      secure = serviceWorkerDebug;
+    }
+
     try {
       const user = await this.userService.createPersonAffected(userData);
       const exp = new Date(Date.now() + 60 * 24 * 3600000);
       res.cookie('access_token_pa', user.user.token, {
-        // sameSite: 'None',
-        // secure: true,
-        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
-        secure: process.env.NODE_ENV === 'production',
+        sameSite: sameSite,
+        secure: secure,
         expires: exp,
         httpOnly: true,
       });
