@@ -149,7 +149,8 @@
       "menu-text": "At the moment you are offline. Registrations are stored inside your browser until they have been uploaded automatically every 5 minutes, when the webpage is open and you are online again.",
       "menu-upload-button": "Upload",
       "menu-export-button": "Export",
-      "upload-alert-message": "Uploading {{nrRegistrations}} registrations."
+      "upload-alert-header": "Uploading registrations.",
+      "upload-alert-message": "You are now online. Uploading {{nrRegistrations}} registrations."
     }
   },
   "q-and-a-set": {

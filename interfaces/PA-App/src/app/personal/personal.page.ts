@@ -161,7 +161,9 @@ export class PersonalPage implements OnInit, OnDestroy {
     if (this.batchCount === 0) {
       return;
     }
+
     this.batchProgressAlert = await this.alertController.create({
+      header: this.translate.instant('personal.batch.upload-alert-header'),
       message: this.translate.instant('personal.batch.upload-alert-message', {
         nrRegistrations: this.batchCount,
       }),
@@ -174,6 +176,10 @@ export class PersonalPage implements OnInit, OnDestroy {
           nrRegistrations: count,
         },
       );
+
+      if (count === 0) {
+        this.batchProgressAlert.dismiss();
+      }
     });
 
     await this.batchProgressAlert.present();
