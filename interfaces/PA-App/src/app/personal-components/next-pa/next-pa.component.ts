@@ -58,14 +58,13 @@ export class NextPaComponent extends PersonalDirective {
     return '';
   }
 
-  savePaToQueue() {
-    this.paData.savePaToBatch();
+  async savePaToQueue() {
+    await this.paData.logout();
     this.paQueued = true;
     this.showAddAnotherPa = true;
   }
 
   async addNewPa() {
-    await this.paData.logout();
     this.logger.logEvent(LoggingEventCategory.ui, LoggingEvent.batchModeNewPa);
     this.conversationService.startNextPaConversation();
   }
