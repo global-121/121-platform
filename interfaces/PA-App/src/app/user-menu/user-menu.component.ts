@@ -22,6 +22,8 @@ export class UserMenuComponent {
   public username: string;
   private loadingDelete: HTMLIonLoadingElement;
 
+  public isOnline = window.navigator.onLine;
+
   constructor(
     private modalController: ModalController,
     private paData: PaDataService,
@@ -33,6 +35,11 @@ export class UserMenuComponent {
     this.paData.authenticationState$.subscribe((user) => {
       this.isLoggedIn = !!user;
       this.username = user && user.username ? user.username : '';
+    });
+
+    window.addEventListener('online', () => this.goOnline(), { passive: true });
+    window.addEventListener('offline', () => this.goOffline(), {
+      passive: true,
     });
   }
 
@@ -76,5 +83,18 @@ export class UserMenuComponent {
     }
 
     await alert.present();
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('online', () => this.goOnline());
+    window.removeEventListener('offline', () => this.goOffline());
+  }
+
+  private goOnline() {
+    this.isOnline = true;
+  }
+
+  private goOffline() {
+    this.isOnline = false;
   }
 }
