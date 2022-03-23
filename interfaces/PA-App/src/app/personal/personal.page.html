@@ -37,12 +37,29 @@
         </p>
       </ion-text>
     </ion-item>
-    <ion-item *ngFor="let registration of paBatch" lines="none" class="ion-margin-bottom" style="--background: #20336c; color: #fff;">
-      {{ registration.nameFirst.label + " " + registration.nameLast.label }}
+    <ion-item
+      *ngFor="let registration of paBatch"
+      lines="none"
+      class="ion-margin-bottom"
+      style="--background: #20336c; color: #fff;"
+    >
+      {{ registration.nameFirst?.label + " " + registration.nameLast?.label }}
     </ion-item>
 
-    <ion-button class="ion-margin-top batch-menu-buttons" color="light" (click)="uploadBatchRegistrations()" [disabled]="!isOnline">{{ 'personal.batch.menu-upload-button'|translate}}</ion-button>
-    <ion-button class="ion-margin-top batch-menu-buttons" color="light" fill="outline" (click)="exportBatchRegistrations()">{{ 'personal.batch.menu-export-button'|translate}}</ion-button>
+    <ion-button
+      [disabled]="!isOnline"
+      (click)="uploadBatchRegistrations()"
+      color="light"
+      expand="block"
+      class="ion-margin-vertical"
+    >{{ 'personal.batch.menu-upload-button'|translate }}</ion-button>
+    <ion-button
+      (click)="exportBatchRegistrations()"
+      color="light"
+      fill="outline"
+      expand="block"
+      class="ion-margin-vertical"
+    >{{ 'personal.batch.menu-export-button'|translate }}</ion-button>
 
   </ion-content>
 </ion-menu>
