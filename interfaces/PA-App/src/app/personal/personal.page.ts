@@ -35,6 +35,7 @@ import {
 } from '../services/conversation.service';
 import { PaDataService } from '../services/padata.service';
 import { RegistrationModeService } from '../services/registration-mode.service';
+import { SyncService } from '../services/sync.service';
 import { InclusionStatusComponent } from './../personal-components/inclusion-status/inclusion-status.component';
 
 @Component({
@@ -56,9 +57,11 @@ export class PersonalPage implements OnInit, OnDestroy {
 
   private scrollSpeed = environment.useAnimation ? 600 : 0;
 
-  public paBatch = [];
-
   public isOnline = true;
+
+  public batchCount: number;
+
+  private batchProgressAlert: HTMLIonAlertElement;
 
   private availableSections = {
     [PersonalComponents.consentQuestion]: ConsentQuestionComponent,
@@ -84,11 +87,11 @@ export class PersonalPage implements OnInit, OnDestroy {
     public conversationService: ConversationService,
     private resolver: ComponentFactoryResolver,
     public translate: TranslateService,
-    private paDataServices: PaDataService,
     private paDataService: PaDataService,
     private menu: MenuController,
     public alertController: AlertController,
     public registrationMode: RegistrationModeService,
+    public syncService: SyncService,
   ) {
     // Listen for completed sections, to continue with next steps
     this.conversationService.updateConversation$.subscribe(
@@ -120,15 +123,13 @@ export class PersonalPage implements OnInit, OnDestroy {
       this.ionContent.scrollToPoint(0, toY, this.scrollSpeed);
     });
 
-    this.paDataServices.getPaBatch().forEach((registration) => {
-      const dataKey = 'data';
-      const data = JSON.parse(registration[dataKey]);
-      this.paBatch.push(data[1]);
-    });
-
     window.addEventListener('online', () => this.goOnline(), { passive: true });
     window.addEventListener('offline', () => this.goOffline(), {
       passive: true,
+    });
+
+    this.syncService.getBatchCount().subscribe((batchCount) => {
+      this.batchCount = batchCount;
     });
   }
 
@@ -157,16 +158,25 @@ export class PersonalPage implements OnInit, OnDestroy {
   }
 
   private async autoBatchUpload() {
-    if (!this.paBatch.length) {
+    if (this.batchCount === 0) {
       return;
     }
-    const alert = await this.alertController.create({
+    this.batchProgressAlert = await this.alertController.create({
       message: this.translate.instant('personal.batch.upload-alert-message', {
-        nrRegistrations: this.paBatch.length,
+        nrRegistrations: this.batchCount,
       }),
     });
 
-    await alert.present();
+    this.syncService.getBatchCount().subscribe((count) => {
+      this.batchProgressAlert.message = this.translate.instant(
+        'personal.batch.upload-alert-message',
+        {
+          nrRegistrations: count,
+        },
+      );
+    });
+
+    await this.batchProgressAlert.present();
   }
 
   private filterOutRemovedSections(

@@ -10,7 +10,7 @@
         color="light"
         (click)="onBatchButtonClick()"
       >
-        {{ 'personal.batch.toolbar-queue-button'|translate:{ nrRegistrations: paBatch?.length } }}
+        {{ 'personal.batch.toolbar-queue-button'|translate:{ nrRegistrations: batchCount } }}
       </ion-button>
       <ion-button
         *ngIf="isDebug"
@@ -36,9 +36,6 @@
           {{ 'personal.batch.menu-text'|translate }}
         </p>
       </ion-text>
-    </ion-item>
-    <ion-item *ngFor="let registration of paBatch" lines="none" class="ion-margin-bottom" style="--background: #20336c; color: #fff;">
-      {{ registration.nameFirst.label + " " + registration.nameLast.label }}
     </ion-item>
 
     <ion-button class="ion-margin-top batch-menu-buttons" color="light" (click)="uploadBatchRegistrations()" [disabled]="!isOnline">{{ 'personal.batch.menu-upload-button'|translate}}</ion-button>

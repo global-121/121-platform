@@ -1,6 +1,13 @@
 import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
-import { concat, EMPTY, Observable, throwError, TimeoutError } from 'rxjs';
+import {
+  BehaviorSubject,
+  concat,
+  EMPTY,
+  Observable,
+  throwError,
+  TimeoutError,
+} from 'rxjs';
 import { catchError, map, retry, share, timeout } from 'rxjs/operators';
 import { SyncTask } from '../models/sync-task.model';
 import { ApiPath, ApiService } from './api.service';
@@ -15,6 +22,8 @@ const STORAGE_KEY = 'syncTasks';
 })
 export class SyncService implements OnDestroy {
   public forceOffline = false;
+
+  private batchCountSubject = new BehaviorSubject<number>(0);
 
   constructor(private pubSub: PubSubService, private apiService: ApiService) {
     window.addEventListener('online', () => this.goOnline(), { passive: true });
@@ -106,6 +115,7 @@ export class SyncService implements OnDestroy {
 
     tasks.push(syncTask);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    this.setBatchCountSubject(tasks);
     console.log(
       `SyncService: Task added to queue. Tasks pending: ${tasks.length}`,
     );
@@ -134,7 +144,6 @@ export class SyncService implements OnDestroy {
         }),
         map((_) => task),
       );
-
       requests.push(request$);
     });
 
@@ -144,6 +153,7 @@ export class SyncService implements OnDestroy {
       const index = syncTasks.findIndex((t) => t === task);
       syncTasks.splice(index, 1);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(syncTasks));
+      this.setBatchCountSubject(syncTasks);
 
       // Let the last request signal that "we're done for now"
       if (syncTasks.length === 0) {
@@ -153,4 +163,23 @@ export class SyncService implements OnDestroy {
 
     return allRequests$;
   }
+
+  private setBatchCountSubject = (tasks) => {
+    this.batchCountSubject.next(
+      tasks ? this.getCompleteRegistrations(tasks) : 0,
+    );
+  };
+
+  private getCompleteRegistrations = (list): number => {
+    return list.filter((task) => {
+      return (
+        task.url === 'http://localhost:3000/api/user/logout' &&
+        task.body.completedRegistration
+      );
+    }).length;
+  };
+
+  public getBatchCount = (): Observable<number> => {
+    return this.batchCountSubject.asObservable();
+  };
 }
