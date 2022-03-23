@@ -1,6 +1,6 @@
 <section>
   <dialogue-turn actor="self" *ngIf="showSavePa">
-    <ion-button type="button" (click)="savePaToQueue()">{{
+    <ion-button type="button" (click)="savePaToQueue()" [disabled]="disableSavePa">{{
       'personal.next-pa.save-pa' | translate
     }}</ion-button>
   </dialogue-turn>

@@ -17,6 +17,7 @@ import { PersonalComponents } from '../personal-components.enum';
 export class NextPaComponent extends PersonalDirective {
   public isCanceled = false;
   public showSavePa = true;
+  public disableSavePa = false;
   public showAddAnotherPa = false;
   private paQueued = true;
   private isLoggedIn = true;
@@ -66,6 +67,7 @@ export class NextPaComponent extends PersonalDirective {
   async savePaToQueue() {
     await this.paData.logout(true);
     this.paQueued = true;
+    this.disableSavePa = true;
     this.showAddAnotherPa = true;
   }
 
