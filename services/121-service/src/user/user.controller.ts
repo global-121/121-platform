@@ -25,6 +25,7 @@ import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
 import { UserRoleEntity } from './user-role.entity';
 import { Permissions } from '../permissions.decorator';
 import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
+import { CookieNames } from '../shared/enum/cookie.enums';
 
 @UseGuards(PermissionsGuard)
 @ApiUseTags('user')
@@ -104,7 +105,7 @@ export class UserController {
     try {
       const user = await this.userService.createPersonAffected(userData);
       const exp = new Date(Date.now() + 60 * 24 * 3600000);
-      res.cookie('access_token_pa', user.user.token, {
+      res.cookie(CookieNames.paApp, user.user.token, {
         sameSite: sameSite,
         secure: secure,
         expires: exp,
@@ -125,15 +126,23 @@ export class UserController {
   public async login(
     @Body() loginUserDto: LoginUserDto,
     @Res() res,
+    @Req() req,
   ): Promise<UserRO> {
     try {
       const loginResponse = await this.userService.login(loginUserDto);
+      const origin = req.get('origin');
+      const serviceWorkerDebug = origin.includes('8088');
+
       res.cookie(
         loginResponse.cookieSettings.tokenKey,
         loginResponse.cookieSettings.tokenValue,
         {
-          sameSite: loginResponse.cookieSettings.sameSite,
-          secure: loginResponse.cookieSettings.secure,
+          sameSite: serviceWorkerDebug
+            ? 'None'
+            : loginResponse.cookieSettings.sameSite,
+          secure: serviceWorkerDebug
+            ? true
+            : loginResponse.cookieSettings.secure,
           expires: loginResponse.cookieSettings.expires,
           httpOnly: loginResponse.cookieSettings.httpOnly,
         },
