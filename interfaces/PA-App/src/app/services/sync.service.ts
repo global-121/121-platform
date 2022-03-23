@@ -9,6 +9,7 @@ import {
   TimeoutError,
 } from 'rxjs';
 import { catchError, map, retry, share, timeout } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { SyncTask } from '../models/sync-task.model';
 import { ApiPath, ApiService } from './api.service';
 import { PubSubEvent, PubSubService } from './pub-sub.service';
@@ -164,22 +165,22 @@ export class SyncService implements OnDestroy {
     return allRequests$;
   }
 
-  private setBatchCountSubject = (tasks) => {
+  private setBatchCountSubject(tasks: SyncTask[]) {
     this.batchCountSubject.next(
       tasks ? this.getCompleteRegistrations(tasks) : 0,
     );
-  };
+  }
 
-  private getCompleteRegistrations = (list): number => {
-    return list.filter((task) => {
+  private getCompleteRegistrations(tasks: SyncTask[]): number {
+    return tasks.filter((task) => {
       return (
-        task.url === 'http://localhost:3000/api/user/logout' &&
+        task.url === `${environment.url_121_service_api}/user/logout` &&
         task.body.completedRegistration
       );
     }).length;
-  };
+  }
 
-  public getBatchCount = (): Observable<number> => {
+  public getBatchCount(): Observable<number> {
     return this.batchCountSubject.asObservable();
-  };
+  }
 }
