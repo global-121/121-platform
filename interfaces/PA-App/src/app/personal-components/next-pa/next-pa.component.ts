@@ -59,7 +59,7 @@ export class NextPaComponent extends PersonalDirective {
   }
 
   async savePaToQueue() {
-    await this.paData.logout();
+    await this.paData.logout(true);
     this.paQueued = true;
     this.showAddAnotherPa = true;
   }

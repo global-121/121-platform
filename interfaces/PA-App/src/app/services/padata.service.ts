@@ -269,10 +269,10 @@ export class PaDataService {
     window.sessionStorage.setItem(this.sessionKey, JSON.stringify(user));
   }
 
-  public async logout() {
+  public async logout(completedRegistration: boolean) {
     console.log('PaData: logout()');
     window.sessionStorage.removeItem(this.sessionKey);
-    await this.programService.logout();
+    await this.programService.logout(completedRegistration);
     this.setLoggedOut();
   }
 
