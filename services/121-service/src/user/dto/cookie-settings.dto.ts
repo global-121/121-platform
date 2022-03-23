@@ -1,8 +1,9 @@
 import { IsBoolean, IsDate, IsNotEmpty, IsString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
+import { CookieNames } from '../../shared/enum/cookie.enums';
 
 export class CookieSettingsDto {
-  @ApiModelProperty({ example: 'access_token_portal' })
+  @ApiModelProperty({ example: CookieNames.portal })
   @IsNotEmpty()
   @IsString()
   public readonly tokenKey: string;
