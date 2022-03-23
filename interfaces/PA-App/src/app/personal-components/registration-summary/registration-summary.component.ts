@@ -61,13 +61,9 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     await this.getReferenceId();
     await this.getProgram();
 
-    if (this.isOnline) {
-      this.registrationStatus = await this.programsService.postRegistration(
-        this.referenceId,
-      );
-    } else {
-      // TODO postRegistrationLocally()
-    }
+    this.registrationStatus = await this.programsService.postRegistration(
+      this.referenceId,
+    );
 
     if (this.validation && this.validationByQr) {
       await this.shouldShowQrCode();

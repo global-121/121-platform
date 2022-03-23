@@ -156,11 +156,7 @@ export class EnrollInProgramComponent extends PersonalDirective {
 
     this.hasAnswered = true;
     this.hasChangedAnswers = false;
-    if (this.isOnline) {
-      this.paData.saveAnswers(this.programId, this.answers);
-    } else {
-      // TODO saveAnswersLocally()
-    }
+    this.paData.saveAnswers(this.programId, this.answers);
   }
 
   public doSubmitAction() {
@@ -194,14 +190,10 @@ export class EnrollInProgramComponent extends PersonalDirective {
       this.paData.type.referenceId,
     );
 
-    if (this.isOnline) {
-      await this.programsService.postProgramAnswers(
-        referenceId,
-        this.createAttributes(Object.values(this.answers)),
-      );
-    } else {
-      // TODO postProgramAnswersLocally()
-    }
+    await this.programsService.postProgramAnswers(
+      referenceId,
+      this.createAttributes(Object.values(this.answers)),
+    );
   }
 
   private createAttributes(answers: Answer[]): ProgramAttribute[] {

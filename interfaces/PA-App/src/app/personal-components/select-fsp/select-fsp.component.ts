@@ -163,39 +163,35 @@ export class SelectFspComponent extends PersonalDirective {
     // Treat phoneNumber as a special case, to enable reuse later:
     await this.storePhoneNumber();
 
-    if (this.isOnline) {
-      this.processInOrder(
-        Object.values(this.customAttributeAnswers),
-        (answer: Answer) =>
-          this.programsService.postRegistrationCustomAttribute(
-            this.referenceId,
-            answer.code,
-            answer.value,
-          ),
+    this.processInOrder(
+      Object.values(this.customAttributeAnswers),
+      (answer: Answer) =>
+        this.programsService.postRegistrationCustomAttribute(
+          this.referenceId,
+          answer.code,
+          answer.value,
+        ),
+    )
+      .then(
+        () => {
+          // in case of success:
+          this.isSubmitted = true;
+          this.isEditing = false;
+          this.showResultSuccess = true;
+          this.showResultError = false;
+          this.complete();
+        },
+        () => {
+          // in case of error:
+          this.isSubmitted = false;
+          this.isEditing = true;
+          this.showResultSuccess = false;
+          this.showResultError = true;
+        },
       )
-        .then(
-          () => {
-            // in case of success:
-            this.isSubmitted = true;
-            this.isEditing = false;
-            this.showResultSuccess = true;
-            this.showResultError = false;
-            this.complete();
-          },
-          () => {
-            // in case of error:
-            this.isSubmitted = false;
-            this.isEditing = true;
-            this.showResultSuccess = false;
-            this.showResultError = true;
-          },
-        )
-        .finally(() => {
-          this.conversationService.stopLoading();
-        });
-    } else {
-      // TODO postRegistrationCustomAttributesLocally()
-    }
+      .finally(() => {
+        this.conversationService.stopLoading();
+      });
   }
 
   private async storePhoneNumber() {
