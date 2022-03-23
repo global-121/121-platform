@@ -87,6 +87,7 @@ export class CronjobService {
       .andWhere('barcode.created < :sixteenHoursAgo', {
         sixteenHoursAgo: sixteenHoursAgo,
       })
+      .andWhere('"whatsappPhoneNumber" is not NULL')
       .getRawMany();
 
     unsentIntersolveBarcodes.forEach(async unsentIntersolveBarcode => {
