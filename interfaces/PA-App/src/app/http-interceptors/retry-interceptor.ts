@@ -41,7 +41,6 @@ export class RetryInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
-
     const resLookup = ['/notifications/lookup'];
     // Let lookup timeout fast, so in case there is not internet this
     for (const re of resLookup) {
