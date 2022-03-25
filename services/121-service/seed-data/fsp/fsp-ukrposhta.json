@@ -1,0 +1,47 @@
+{
+  "fsp": "UkrPoshta",
+  "fspDisplayName": {
+    "en": "UkrPoshta"
+  },
+  "integrationType": "csv",
+  "attributes": [
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "If you are included in the program, which phone number do you want to receive your BoB Finance information on? (With country-code. It should look like: <strong>+961 00 000 000</strong>)",
+        "uk": "",
+        "ru": ""
+      },
+      "placeholder": {
+        "en": "+961 000 000 000",
+        "uk": "",
+        "ru": ""
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "tel",
+      "options": null
+    },
+    {
+      "name": "nameFirst",
+      "label": {
+        "en": "If you are included in the program, what is the <strong>first name</strong> on the ID that will be used to pick up the payment at BoB Finance?",
+        "uk": "",
+        "ru": ""
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "nameLast",
+      "label": {
+        "en": "If you are included in the program, what is the <strong>last name</strong> on the ID that will be used to pick up the payment at BoB Finance?",
+        "uk": "",
+        "ru": ""
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "options": null
+    }
+  ]
+}

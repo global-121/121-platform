@@ -1,0 +1,64 @@
+{
+  "name": "Dorcas Ukraine",
+  "displayName": {
+    "en": "Dorcas Ukraine",
+    "uk": "",
+    "ru": ""
+  },
+  "logoUrl": {
+    "en": "data:image/jpeg;base64,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"
+  },
+  "dataPolicy": {
+    "en": "We, Dorcas-Tabitha, need to ask you the information below to decide if you can participate in our program and receive cash aid.<br><br>We will ask you:  <br> &bull; Personal information, such as name, address, phone and Social Registry number  <br> &bull; Questions to understand the situation of your household This information will be stored securely on a computer of Dorcas-Tabitha&rsquo; partner The Netherlands Red Cross.<br><br>If Dorcas decides that you will receive cash aid, information will be shared with BoB finance, only to ensure you can receive cash aid.<br><br>Twilio will receive your phone number to send: <br> &bull; SMS's to inform you on the aid program <br>Dorcas-Tabitha will save and safely store information necessary to know if your household received cash in this program. We will delete other personal information at the end of the project. You have the right to leave the aid program and request Dorcas to delete your personal information at any time.<br><br>If you have any questions, feedback or a complaint please contact us via telephone or WhatsApp on one of the following phone numbers: <br> &bull; Achrafieh: +961 81 232 710  <br> &bull; Batroun: +961 70 169 265",
+    "uk": "",
+    "ru": ""
+  },
+  "aboutProgram": {
+    "en": "This Dorcas-Tabitha cash aid program was created to support people living in Achrafieh and Batroun that experience difficulties in meeting their basic needs.<br><br>After registering for this project and answering questions, we may call you to make an appoint for a home visit to check your situation. After the home visit, we will send you an SMS to let you know if you are selected or not.<br><br>IF YOU ARE SELECTED the Dorcas-Tabitha cash aid program aims to help you:  <br> &bull; Until the Dorcas-Tabitha cash aid program ends, May 31, 2021.<br><br>IF YOU ARE SELECTED the Dorcas-Tabitha cash aid program will support you with the following:<br> &bull; A monthly cash grant of $50. You will receive an SMS from BoB finance. You can use this SMS and your ID card to pick up the cash grant at a BoB finance branch. <br><br>If you have any questions, feedback or a complaint please contact us via telephone or WhatsApp on one of the following phone numbers:  <br> &bull; Achrafieh: +961 81 232 710  <br> &bull; Batroun: +961 70 169 265  <br><br>You can also check our website:<br> &bull; www.tabithalb.org",
+    "uk": "",
+    "ru": ""
+  },
+  "contactDetails": {
+    "en": "If you have any questions you can contact:<br>Achrafieh: +961 81 232 710<br>Batroun: +961 70 169 265",
+    "uk": "",
+    "ru": ""
+  },
+  "monitoringQuestion": {
+    "intro": {
+      "en": "To improve this digital registration process, please answer this last question:   <br><br>   I did this registration...",
+      "uk": "",
+      "ru": ""
+    },
+    "options": [
+      {
+        "option": "no-help",
+        "label": {
+          "en": "without help",
+          "uk": "",
+          "ru": ""
+        }
+      },
+      {
+        "option": "some-help",
+        "label": {
+          "en": "with a little bit of help",
+          "uk": "",
+          "ru": ""
+        }
+      },
+      {
+        "option": "lot-of-help",
+        "label": {
+          "en": "with a lot of help",
+          "uk": "",
+          "ru": ""
+        }
+      }
+    ],
+    "conclusion": {
+      "en": "Thank you for the feedback.",
+      "uk": "",
+      "ru": ""
+    }
+  }
+}
