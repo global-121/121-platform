@@ -6,14 +6,75 @@
   "integrationType": "csv",
   "attributes": [
     {
-      "name": "phoneNumber",
+      "name": "address",
       "label": {
-        "en": "If you are included in the program, which phone number do you want to receive your BoB Finance information on? (With country-code. It should look like: <strong>+961 00 000 000</strong>)",
+        "en": "Oblast, Rayon, city, street, house, postal index",
         "uk": "",
         "ru": ""
       },
-      "placeholder": {
-        "en": "+961 000 000 000",
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "name",
+      "label": {
+        "en": "Name / last name / fathers name",
+        "uk": "",
+        "ru": ""
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "amount",
+      "label": {
+        "en": "Amount",
+        "uk": "",
+        "ru": ""
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "numeric",
+      "options": null
+    },
+    {
+      "name": "taxId",
+      "label": {
+        "en": "Tax ID number",
+        "uk": "",
+        "ru": ""
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "transferCosts",
+      "label": {
+        "en": "Transfer costs",
+        "uk": "",
+        "ru": ""
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "transferTrackNumber",
+      "label": {
+        "en": "Transfer track no (Dorcas database no)",
+        "uk": "",
+        "ru": ""
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "telephone",
+      "label": {
+        "en": "Telephone",
         "uk": "",
         "ru": ""
       },
@@ -22,25 +83,14 @@
       "options": null
     },
     {
-      "name": "nameFirst",
+      "name": "householdCount",
       "label": {
-        "en": "If you are included in the program, what is the <strong>first name</strong> on the ID that will be used to pick up the payment at BoB Finance?",
+        "en": "Dorcas No of people in the household, relevant for tax office, not required for Ukrposhta",
         "uk": "",
         "ru": ""
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "answerType": "text",
-      "options": null
-    },
-    {
-      "name": "nameLast",
-      "label": {
-        "en": "If you are included in the program, what is the <strong>last name</strong> on the ID that will be used to pick up the payment at BoB Finance?",
-        "uk": "",
-        "ru": ""
-      },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "answerType": "text",
+      "answerType": "numeric",
       "options": null
     }
   ]
