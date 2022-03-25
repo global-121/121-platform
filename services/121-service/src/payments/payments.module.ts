@@ -14,6 +14,7 @@ import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsModule } from './transactions/transactions.module';
+import { UkrPoshtaModule } from './fsp-integration/ukrposhta/ukrposhta.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     BelcashModule,
     TransactionsModule,
     BobFinanceModule,
+    UkrPoshtaModule,
   ],
   providers: [PaymentsService],
   controllers: [PaymentsController],
