@@ -563,6 +563,2782 @@
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
+    },
+    {
+      "name": "firstNameHM1",
+      "label": {
+        "en": "HM1 - What is your first name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "lastNameHM1",
+      "label": {
+        "en": "HM1 - What is your last name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "patronymicNameHM1",
+      "label": {
+        "en": "HM1 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "genderHM1",
+      "label": {
+        "en": "HM1 - What is your gender?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherGender",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "dateOfBirthHM1",
+      "label": {
+        "en": "HM1 - What is your date of birth?"
+      },
+      "answerType": "date",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "typeOfIdentificationDocumentHM1",
+      "label": {
+        "en": "HM1 - What type of document do you have as identification?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "temporaryResidencePermit",
+          "label": {
+            "en": "Temporary residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "permanentResidencePermit",
+          "label": {
+            "en": "Permanent residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "childrensTravelDocument",
+          "label": {
+            "en": "Children's travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "travelDocument",
+          "label": {
+            "en": "Travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "birthCertificate",
+          "label": {
+            "en": "Birth certificate",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "passport",
+          "label": {
+            "en": "Passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "diplomaticPassport",
+          "label": {
+            "en": "Diplomatic passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "servicePassport",
+          "label": {
+            "en": "Service passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "certificateStateless",
+          "label": {
+            "en": "Certificate for stateless persons",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "refugeeTravelDocument",
+          "label": {
+            "en": "Refugee travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "seaFarerIdentityCard",
+          "label": {
+            "en": "Seafarer's identity card",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "missingDocumentation",
+          "label": {
+            "en": "Missing documentation",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherIdDocumentation",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "otherDocumentationHM1",
+      "label": {
+        "en": "HM1 - If you selected 'Other', please let us know what kind of document do you have. (Otherwise you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "documentNumberHM1",
+      "label": {
+        "en": "HM1 - Please, indicate your document number (If you selected 'Missing documentation', you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "taxNumberHM1",
+      "label": {
+        "en": "HM1 - Please, indicate your tax number (INN) (if you don't have it, write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "chronicIllnessHM1",
+      "label": {
+        "en": "HM1 - Have you any chronic illness or serious medical condition?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "disabilityHM1",
+      "label": {
+        "en": "HM1 - Have you any physical or mental disability?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "pregnantHM1",
+      "label": {
+        "en": "HM1 - If you are a woman, are you pregnant or lactating?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "firstNameHM2",
+      "label": {
+        "en": "HM2 - What is your first name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "lastNameHM2",
+      "label": {
+        "en": "HM2 - What is your last name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "patronymicNameHM2",
+      "label": {
+        "en": "HM2 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "genderHM2",
+      "label": {
+        "en": "HM2 - What is your gender?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherGender",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "dateOfBirthHM2",
+      "label": {
+        "en": "HM2 - What is your date of birth?"
+      },
+      "answerType": "date",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "typeOfIdentificationDocumentHM2",
+      "label": {
+        "en": "HM2 - What type of document do you have as identification?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "temporaryResidencePermit",
+          "label": {
+            "en": "Temporary residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "permanentResidencePermit",
+          "label": {
+            "en": "Permanent residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "childrensTravelDocument",
+          "label": {
+            "en": "Children's travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "travelDocument",
+          "label": {
+            "en": "Travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "birthCertificate",
+          "label": {
+            "en": "Birth certificate",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "passport",
+          "label": {
+            "en": "Passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "diplomaticPassport",
+          "label": {
+            "en": "Diplomatic passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "servicePassport",
+          "label": {
+            "en": "Service passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "certificateStateless",
+          "label": {
+            "en": "Certificate for stateless persons",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "refugeeTravelDocument",
+          "label": {
+            "en": "Refugee travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "seaFarerIdentityCard",
+          "label": {
+            "en": "Seafarer's identity card",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "missingDocumentation",
+          "label": {
+            "en": "Missing documentation",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherIdDocumentation",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "otherDocumentationHM2",
+      "label": {
+        "en": "HM2 - If you selected 'Other', please let us know what kind of document do you have. (Otherwise you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "documentNumberHM2",
+      "label": {
+        "en": "HM2 - Please, indicate your document number (If you selected 'Missing documentation', you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "taxNumberHM2",
+      "label": {
+        "en": "HM2 - Please, indicate your tax number (INN) (if you don't have it, write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "chronicIllnessHM2",
+      "label": {
+        "en": "HM2 - Have you any chronic illness or serious medical condition?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "disabilityHM2",
+      "label": {
+        "en": "HM2 - Have you any physical or mental disability?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "pregnantHM2",
+      "label": {
+        "en": "HM2 - If you are a woman, are you pregnant or lactating?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "firstNameHM3",
+      "label": {
+        "en": "HM3 - What is your first name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "lastNameHM3",
+      "label": {
+        "en": "HM3 - What is your last name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "patronymicNameHM3",
+      "label": {
+        "en": "HM3 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "genderHM3",
+      "label": {
+        "en": "HM3 - What is your gender?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherGender",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "dateOfBirthHM3",
+      "label": {
+        "en": "HM3 - What is your date of birth?"
+      },
+      "answerType": "date",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "typeOfIdentificationDocumentHM3",
+      "label": {
+        "en": "HM3 - What type of document do you have as identification?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "temporaryResidencePermit",
+          "label": {
+            "en": "Temporary residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "permanentResidencePermit",
+          "label": {
+            "en": "Permanent residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "childrensTravelDocument",
+          "label": {
+            "en": "Children's travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "travelDocument",
+          "label": {
+            "en": "Travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "birthCertificate",
+          "label": {
+            "en": "Birth certificate",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "passport",
+          "label": {
+            "en": "Passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "diplomaticPassport",
+          "label": {
+            "en": "Diplomatic passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "servicePassport",
+          "label": {
+            "en": "Service passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "certificateStateless",
+          "label": {
+            "en": "Certificate for stateless persons",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "refugeeTravelDocument",
+          "label": {
+            "en": "Refugee travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "seaFarerIdentityCard",
+          "label": {
+            "en": "Seafarer's identity card",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "missingDocumentation",
+          "label": {
+            "en": "Missing documentation",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherIdDocumentation",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "otherDocumentationHM3",
+      "label": {
+        "en": "HM3 - If you selected 'Other', please let us know what kind of document do you have. (Otherwise you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "documentNumberHM3",
+      "label": {
+        "en": "HM3 - Please, indicate your document number (If you selected 'Missing documentation', you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "taxNumberHM3",
+      "label": {
+        "en": "HM3 - Please, indicate your tax number (INN) (if you don't have it, write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "chronicIllnessHM3",
+      "label": {
+        "en": "HM3 - Have you any chronic illness or serious medical condition?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "disabilityHM3",
+      "label": {
+        "en": "HM3 - Have you any physical or mental disability?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "pregnantHM3",
+      "label": {
+        "en": "HM3 - If you are a woman, are you pregnant or lactating?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "firstNameHM4",
+      "label": {
+        "en": "HM4 - What is your first name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "lastNameHM4",
+      "label": {
+        "en": "HM4 - What is your last name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "patronymicNameHM4",
+      "label": {
+        "en": "HM4 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "genderHM4",
+      "label": {
+        "en": "HM4 - What is your gender?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherGender",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "dateOfBirthHM4",
+      "label": {
+        "en": "HM4 - What is your date of birth?"
+      },
+      "answerType": "date",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "typeOfIdentificationDocumentHM4",
+      "label": {
+        "en": "HM4 - What type of document do you have as identification?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "temporaryResidencePermit",
+          "label": {
+            "en": "Temporary residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "permanentResidencePermit",
+          "label": {
+            "en": "Permanent residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "childrensTravelDocument",
+          "label": {
+            "en": "Children's travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "travelDocument",
+          "label": {
+            "en": "Travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "birthCertificate",
+          "label": {
+            "en": "Birth certificate",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "passport",
+          "label": {
+            "en": "Passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "diplomaticPassport",
+          "label": {
+            "en": "Diplomatic passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "servicePassport",
+          "label": {
+            "en": "Service passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "certificateStateless",
+          "label": {
+            "en": "Certificate for stateless persons",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "refugeeTravelDocument",
+          "label": {
+            "en": "Refugee travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "seaFarerIdentityCard",
+          "label": {
+            "en": "Seafarer's identity card",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "missingDocumentation",
+          "label": {
+            "en": "Missing documentation",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherIdDocumentation",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "otherDocumentationHM4",
+      "label": {
+        "en": "HM4 - If you selected 'Other', please let us know what kind of document do you have. (Otherwise you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "documentNumberHM4",
+      "label": {
+        "en": "HM4 - Please, indicate your document number (If you selected 'Missing documentation', you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "taxNumberHM4",
+      "label": {
+        "en": "HM4 - Please, indicate your tax number (INN) (if you don't have it, write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "chronicIllnessHM4",
+      "label": {
+        "en": "HM4 - Have you any chronic illness or serious medical condition?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "disabilityHM4",
+      "label": {
+        "en": "HM4 - Have you any physical or mental disability?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "pregnantHM4",
+      "label": {
+        "en": "HM4 - If you are a woman, are you pregnant or lactating?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "firstNameHM5",
+      "label": {
+        "en": "HM5 - What is your first name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "lastNameHM5",
+      "label": {
+        "en": "HM5 - What is your last name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "patronymicNameHM5",
+      "label": {
+        "en": "HM5 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "genderHM5",
+      "label": {
+        "en": "HM5 - What is your gender?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherGender",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "dateOfBirthHM5",
+      "label": {
+        "en": "HM5 - What is your date of birth?"
+      },
+      "answerType": "date",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "typeOfIdentificationDocumentHM5",
+      "label": {
+        "en": "HM5 - What type of document do you have as identification?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "temporaryResidencePermit",
+          "label": {
+            "en": "Temporary residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "permanentResidencePermit",
+          "label": {
+            "en": "Permanent residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "childrensTravelDocument",
+          "label": {
+            "en": "Children's travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "travelDocument",
+          "label": {
+            "en": "Travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "birthCertificate",
+          "label": {
+            "en": "Birth certificate",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "passport",
+          "label": {
+            "en": "Passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "diplomaticPassport",
+          "label": {
+            "en": "Diplomatic passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "servicePassport",
+          "label": {
+            "en": "Service passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "certificateStateless",
+          "label": {
+            "en": "Certificate for stateless persons",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "refugeeTravelDocument",
+          "label": {
+            "en": "Refugee travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "seaFarerIdentityCard",
+          "label": {
+            "en": "Seafarer's identity card",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "missingDocumentation",
+          "label": {
+            "en": "Missing documentation",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherIdDocumentation",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "otherDocumentationHM5",
+      "label": {
+        "en": "HM5 - If you selected 'Other', please let us know what kind of document do you have. (Otherwise you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "documentNumberHM5",
+      "label": {
+        "en": "HM5 - Please, indicate your document number (If you selected 'Missing documentation', you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "taxNumberHM5",
+      "label": {
+        "en": "HM5 - Please, indicate your tax number (INN) (if you don't have it, write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "chronicIllnessHM5",
+      "label": {
+        "en": "HM5 - Have you any chronic illness or serious medical condition?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "disabilityHM5",
+      "label": {
+        "en": "HM5 - Have you any physical or mental disability?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "pregnantHM5",
+      "label": {
+        "en": "HM5 - If you are a woman, are you pregnant or lactating?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "firstNameHM6",
+      "label": {
+        "en": "HM6 - What is your first name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "lastNameHM6",
+      "label": {
+        "en": "HM6 - What is your last name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "patronymicNameHM6",
+      "label": {
+        "en": "HM6 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "genderHM6",
+      "label": {
+        "en": "HM6 - What is your gender?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherGender",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "dateOfBirthHM6",
+      "label": {
+        "en": "HM6 - What is your date of birth?"
+      },
+      "answerType": "date",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "typeOfIdentificationDocumentHM6",
+      "label": {
+        "en": "HM6 - What type of document do you have as identification?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "temporaryResidencePermit",
+          "label": {
+            "en": "Temporary residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "permanentResidencePermit",
+          "label": {
+            "en": "Permanent residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "childrensTravelDocument",
+          "label": {
+            "en": "Children's travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "travelDocument",
+          "label": {
+            "en": "Travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "birthCertificate",
+          "label": {
+            "en": "Birth certificate",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "passport",
+          "label": {
+            "en": "Passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "diplomaticPassport",
+          "label": {
+            "en": "Diplomatic passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "servicePassport",
+          "label": {
+            "en": "Service passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "certificateStateless",
+          "label": {
+            "en": "Certificate for stateless persons",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "refugeeTravelDocument",
+          "label": {
+            "en": "Refugee travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "seaFarerIdentityCard",
+          "label": {
+            "en": "Seafarer's identity card",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "missingDocumentation",
+          "label": {
+            "en": "Missing documentation",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherIdDocumentation",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "otherDocumentationHM6",
+      "label": {
+        "en": "HM6 - If you selected 'Other', please let us know what kind of document do you have. (Otherwise you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "documentNumberHM6",
+      "label": {
+        "en": "HM6 - Please, indicate your document number (If you selected 'Missing documentation', you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "taxNumberHM6",
+      "label": {
+        "en": "HM6 - Please, indicate your tax number (INN) (if you don't have it, write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "chronicIllnessHM6",
+      "label": {
+        "en": "HM6 - Have you any chronic illness or serious medical condition?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "disabilityHM6",
+      "label": {
+        "en": "HM6 - Have you any physical or mental disability?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "pregnantHM6",
+      "label": {
+        "en": "HM6 - If you are a woman, are you pregnant or lactating?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "firstNameHM7",
+      "label": {
+        "en": "HM7 - What is your first name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "lastNameHM7",
+      "label": {
+        "en": "HM7 - What is your last name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "patronymicNameHM7",
+      "label": {
+        "en": "HM7 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "genderHM7",
+      "label": {
+        "en": "HM7 - What is your gender?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherGender",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "dateOfBirthHM7",
+      "label": {
+        "en": "HM7 - What is your date of birth?"
+      },
+      "answerType": "date",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "typeOfIdentificationDocumentHM7",
+      "label": {
+        "en": "HM7 - What type of document do you have as identification?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "temporaryResidencePermit",
+          "label": {
+            "en": "Temporary residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "permanentResidencePermit",
+          "label": {
+            "en": "Permanent residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "childrensTravelDocument",
+          "label": {
+            "en": "Children's travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "travelDocument",
+          "label": {
+            "en": "Travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "birthCertificate",
+          "label": {
+            "en": "Birth certificate",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "passport",
+          "label": {
+            "en": "Passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "diplomaticPassport",
+          "label": {
+            "en": "Diplomatic passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "servicePassport",
+          "label": {
+            "en": "Service passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "certificateStateless",
+          "label": {
+            "en": "Certificate for stateless persons",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "refugeeTravelDocument",
+          "label": {
+            "en": "Refugee travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "seaFarerIdentityCard",
+          "label": {
+            "en": "Seafarer's identity card",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "missingDocumentation",
+          "label": {
+            "en": "Missing documentation",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherIdDocumentation",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "otherDocumentationHM7",
+      "label": {
+        "en": "HM7 - If you selected 'Other', please let us know what kind of document do you have. (Otherwise you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "documentNumberHM7",
+      "label": {
+        "en": "HM7 - Please, indicate your document number (If you selected 'Missing documentation', you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "taxNumberHM7",
+      "label": {
+        "en": "HM7 - Please, indicate your tax number (INN) (if you don't have it, write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "chronicIllnessHM7",
+      "label": {
+        "en": "HM7 - Have you any chronic illness or serious medical condition?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "disabilityHM7",
+      "label": {
+        "en": "HM7 - Have you any physical or mental disability?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "pregnantHM7",
+      "label": {
+        "en": "HM7 - If you are a woman, are you pregnant or lactating?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "firstNameHM8",
+      "label": {
+        "en": "HM8 - What is your first name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "lastNameHM8",
+      "label": {
+        "en": "HM8 - What is your last name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "patronymicNameHM8",
+      "label": {
+        "en": "HM8 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "genderHM8",
+      "label": {
+        "en": "HM8 - What is your gender?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherGender",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "dateOfBirthHM8",
+      "label": {
+        "en": "HM8 - What is your date of birth?"
+      },
+      "answerType": "date",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "typeOfIdentificationDocumentHM8",
+      "label": {
+        "en": "HM8 - What type of document do you have as identification?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "temporaryResidencePermit",
+          "label": {
+            "en": "Temporary residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "permanentResidencePermit",
+          "label": {
+            "en": "Permanent residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "childrensTravelDocument",
+          "label": {
+            "en": "Children's travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "travelDocument",
+          "label": {
+            "en": "Travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "birthCertificate",
+          "label": {
+            "en": "Birth certificate",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "passport",
+          "label": {
+            "en": "Passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "diplomaticPassport",
+          "label": {
+            "en": "Diplomatic passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "servicePassport",
+          "label": {
+            "en": "Service passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "certificateStateless",
+          "label": {
+            "en": "Certificate for stateless persons",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "refugeeTravelDocument",
+          "label": {
+            "en": "Refugee travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "seaFarerIdentityCard",
+          "label": {
+            "en": "Seafarer's identity card",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "missingDocumentation",
+          "label": {
+            "en": "Missing documentation",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherIdDocumentation",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "otherDocumentationHM8",
+      "label": {
+        "en": "HM8 - If you selected 'Other', please let us know what kind of document do you have. (Otherwise you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "documentNumberHM8",
+      "label": {
+        "en": "HM8 - Please, indicate your document number (If you selected 'Missing documentation', you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "taxNumberHM8",
+      "label": {
+        "en": "HM8 - Please, indicate your tax number (INN) (if you don't have it, write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "chronicIllnessHM8",
+      "label": {
+        "en": "HM8 - Have you any chronic illness or serious medical condition?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "disabilityHM8",
+      "label": {
+        "en": "HM8 - Have you any physical or mental disability?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "pregnantHM8",
+      "label": {
+        "en": "HM8 - If you are a woman, are you pregnant or lactating?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
     }
   ]
 }
