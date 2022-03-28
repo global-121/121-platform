@@ -54,7 +54,7 @@ export class UkrPoshtaService {
     const ukrPoshtaFspInstructions = new UkrPoshtaFspInstructions();
 
     ukrPoshtaFspInstructions[
-      'Oblast, Rayon, city, street, house, postal index'
+      'Oblast / Rayon / city / street / house / postal index'
     ] = registration.customData[CustomDataAttributes.address];
     ukrPoshtaFspInstructions['Name / last name / fathers name'] =
       registration.customData[CustomDataAttributes.name];
@@ -69,7 +69,7 @@ export class UkrPoshtaService {
       registration.customData[CustomDataAttributes.phoneNumber],
     );
     ukrPoshtaFspInstructions[
-      'Dorcas No of people in the household, relevant for tax office, not required for Ukrposhta'
+      'Dorcas No of people in the household relevant for tax office not required for Ukrposhta'
     ] = registration.customData[CustomDataAttributes.householdCount];
 
     return ukrPoshtaFspInstructions;
