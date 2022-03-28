@@ -57,9 +57,72 @@
   "programCustomAttributes": [],
   "programQuestions": [
     {
-      "name": "name",
+      "name": "householdSituation",
       "label": {
-        "en": "What is your name? (First name, Father's name, Last name)",
+        "en": "Please, select the option which better describes the current situation of your household",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "residingConflictedArea",
+          "label": {
+            "en": "We are currently residing in a conflict affected area",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "displacedAndSettled",
+          "label": {
+            "en": "We have been displaced by the current conflict and we settled somewhere else in the same country",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "displacedAndMoving",
+          "label": {
+            "en": "We have been displaced by the current conflict and we are on the move",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "displacedPreviousConflict",
+          "label": {
+            "en": "We were displaced by a previous conflict, not the current one",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "hostingDisplaced",
+          "label": {
+            "en": "We are hosting someone who was displaced by the current conflict",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherHouseholdSituation",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "oblast",
+      "label": {
+        "en": "What oblast is your home location in?",
         "uk": "",
         "ru": ""
       },
@@ -71,13 +134,111 @@
       "scoring": {}
     },
     {
-      "name": "age",
+      "name": "raion",
       "label": {
-        "en": "How old are you?",
+        "en": "What raion is your home location in?",
         "uk": "",
         "ru": ""
       },
-      "answerType": "numeric",
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "householdResidingNow",
+      "label": {
+        "en": "Where your household is residing now?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "home",
+          "label": {
+            "en": "In my home location",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "onTheMove",
+          "label": {
+            "en": "We are on the move",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "displacedAnotherLocation",
+          "label": {
+            "en": "We are displaced in another location",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "scoring": {}
+    },
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Please, can you give us your phone number?",
+        "uk": "",
+        "ru": ""
+      },
+      "placeholder": {
+        "en": "+380 000 000 000",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "tel",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [],
+      "scoring": {}
+    },
+    {
+      "name": "firstName",
+      "label": {
+        "en": "What is your first name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "lastName",
+      "label": {
+        "en": "What is your last name?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "patronymicName",
+      "label": {
+        "en": "What is your patronymic name? (i.e. the part of your name based on your father's name)",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -109,6 +270,14 @@
             "uk": "",
             "ru": ""
           }
+        },
+        {
+          "option": "otherGender",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
         }
       ],
       "persistence": true,
@@ -116,22 +285,283 @@
       "scoring": {}
     },
     {
-      "name": "phoneNumber",
+      "name": "dateOfBirth",
       "label": {
-        "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>",
-        "uk": "",
-        "ru": ""
+        "en": "What is your date of birth?"
       },
-      "placeholder": {
-        "en": "+31 6 00 00 00 00",
-        "uk": "",
-        "ru": ""
-      },
-      "answerType": "tel",
+      "answerType": "date",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "typeOfIdentificationDocument",
+      "label": {
+        "en": "What type of document do you have as identification?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "temporaryResidencePermit",
+          "label": {
+            "en": "Temporary residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "permanentResidencePermit",
+          "label": {
+            "en": "Permanent residence permit",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "childrensTravelDocument",
+          "label": {
+            "en": "Children's travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "travelDocument",
+          "label": {
+            "en": "Travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "birthCertificate",
+          "label": {
+            "en": "Birth certificate",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "passport",
+          "label": {
+            "en": "Passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "diplomaticPassport",
+          "label": {
+            "en": "Diplomatic passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "servicePassport",
+          "label": {
+            "en": "Service passport",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "certificateStateless",
+          "label": {
+            "en": "Certificate for stateless persons",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "refugeeTravelDocument",
+          "label": {
+            "en": "Refugee travel document",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "seaFarerIdentityCard",
+          "label": {
+            "en": "Seafarer's identity card",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "missingDocumentation",
+          "label": {
+            "en": "Missing documentation",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "otherIdDocumentation",
+          "label": {
+            "en": "Other",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "otherDocumentation",
+      "label": {
+        "en": "If you selected 'Other', please let us know what kind of document do you have. (Otherwise you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "documentNumber",
+      "label": {
+        "en": "Please, indicate your document number (If you selected 'Missing documentation', you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "taxNumber",
+      "label": {
+        "en": "Please, indicate your tax number (INN) (if you don't have it, write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "chronicIllness",
+      "label": {
+        "en": "Have you any chronic illness or serious medical condition?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "disability",
+      "label": {
+        "en": "Have you any physical or mental disability?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "pregnant",
+      "label": {
+        "en": "If you are a woman, are you pregnant or lactating?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "bankNumber",
+      "label": {
+        "en": "If you have a bank card number, please indicate it. (Otherwise you can just write 'NA')",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     }
   ]
