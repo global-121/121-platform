@@ -12,7 +12,9 @@ export function arrayToCsv(array: any[], filename: string): string {
   rows.unshift(columns.join(',')); // Add header row
 
   saveAs(
-    new Blob([rows.join('\r\n')], { type: 'text/csv' }),
+    new Blob([new Uint8Array([0xef, 0xbb, 0xbf]), rows.join('\r\n')], {
+      type: 'text/csv;charset=utf-8',
+    }),
     `${filename}-${new Date().toISOString().substr(0, 10)}.csv`,
   );
 }
