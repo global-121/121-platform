@@ -88,10 +88,12 @@
         "ny_MW": "Chonde sankhani chiyankhulo chanu.",
         "om_ET": "Maaloo qooqa keessan filadhaa.",
         "pt_BR": "Por favor, selecione seu idioma.",
+        "ru": " Пожалуйста, выберите ваш язык.",
         "saq_KE": "Enjere tegelu ng'ituk ino.",
         "ti": "",
         "tl": "Pumili ng iyong wika.",
         "tuv_KE": "Aarimatoi, tetheu akituk kon.",
+        "uk": "Будь ласка, виберіть свою мову.",
         "in": "Pilih bahasa anda."
       },
       "result": "Thank you, you have selected {{language}}.",
@@ -105,10 +107,12 @@
         "ny_MW": "Chichewa",
         "om_ET": "Afaan Oromoo",
         "pt_BR": "Portuguese",
+        "ru": "Русский",
         "saq_KE": "Samburu",
         "ti": "ትግርኛ",
         "tl": "Tagalog",
         "tuv_KE": "Ng'aturkana",
+        "uk": "Українська",
         "in": "Bahasa Indonesia"
       }
     },

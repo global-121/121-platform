@@ -20,10 +20,12 @@
       "personal.select-language.introduction.ny_MW",
       "personal.select-language.introduction.om_ET",
       "personal.select-language.introduction.pt_BR",
+      "personal.select-language.introduction.ru",
       "personal.select-language.introduction.saq_KE",
       "personal.select-language.introduction.ti",
       "personal.select-language.introduction.tl",
       "personal.select-language.introduction.tuv_KE",
+      "personal.select-language.introduction.uk",
       "personal.select-language.language.am_ET",
       "personal.select-language.language.ar",
       "personal.select-language.language.en",
@@ -34,10 +36,12 @@
       "personal.select-language.language.ny_MW",
       "personal.select-language.language.om_ET",
       "personal.select-language.language.pt_BR",
+      "personal.select-language.language.ru",
       "personal.select-language.language.saq_KE",
       "personal.select-language.language.ti",
       "personal.select-language.language.tl",
-      "personal.select-language.language.tuv_KE"
+      "personal.select-language.language.tuv_KE",
+      "personal.select-language.language.uk"
     ],
     "ignoredMisprintKeys": [],
     "ast": {
