@@ -28,7 +28,7 @@
   "currency": "EUR",
   "distributionFrequency": "once",
   "distributionDuration": 1,
-  "fixedTransferValue": 50,
+  "fixedTransferValue": 68,
   "financialServiceProviders": [
     {
       "id": 1
