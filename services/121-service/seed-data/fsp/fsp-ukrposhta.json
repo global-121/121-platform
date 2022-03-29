@@ -61,7 +61,7 @@
       "options": null
     },
     {
-      "name": "transferTrackNumber",
+      "name": "transferTrackNr",
       "label": {
         "en": "Transfer track no (Dorcas database no)",
         "uk": "",

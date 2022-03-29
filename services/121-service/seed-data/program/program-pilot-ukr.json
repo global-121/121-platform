@@ -126,9 +126,18 @@
         "uk": "",
         "ru": ""
       },
-      "answerType": "text",
+      "answerType": "dropdown",
       "questionType": "standard",
-      "options": null,
+      "options": [
+        {
+          "option": "zakarpatska",
+          "label": {
+            "en": "Zakarpatska",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
@@ -140,9 +149,34 @@
         "uk": "",
         "ru": ""
       },
-      "answerType": "text",
+      "answerType": "dropdown",
       "questionType": "standard",
-      "options": null,
+      "options": [
+        {
+          "option": "berekivskyi",
+          "label": {
+            "en": "Berekivskyi",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "mukachivskyi ",
+          "label": {
+            "en": "Mukachivskyi",
+            "uk": "",
+            "ru": ""
+          }
+        },
+        {
+          "option": "uzhorodskyi",
+          "label": {
+            "en": "Uzhorodskyi",
+            "uk": "",
+            "ru": ""
+          }
+        }
+      ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
@@ -460,7 +494,7 @@
     {
       "name": "chronicIllness",
       "label": {
-        "en": "Have you any chronic illness or serious medical condition?",
+        "en": "Do you have any chronic illness or serious medical condition?",
         "uk": "",
         "ru": ""
       },
@@ -491,7 +525,7 @@
     {
       "name": "disability",
       "label": {
-        "en": "Have you any physical or mental disability?",
+        "en": "Do you have any physical or mental disability?",
         "uk": "",
         "ru": ""
       },
@@ -821,7 +855,7 @@
     {
       "name": "chronicIllnessHM1",
       "label": {
-        "en": "HM1 - Have you any chronic illness or serious medical condition?",
+        "en": "HM1 - Do you have any chronic illness or serious medical condition?",
         "uk": "",
         "ru": ""
       },
@@ -852,7 +886,7 @@
     {
       "name": "disabilityHM1",
       "label": {
-        "en": "HM1 - Have you any physical or mental disability?",
+        "en": "HM1 - Do you have any physical or mental disability?",
         "uk": "",
         "ru": ""
       },
@@ -1168,7 +1202,7 @@
     {
       "name": "chronicIllnessHM2",
       "label": {
-        "en": "HM2 - Have you any chronic illness or serious medical condition?",
+        "en": "HM2 - Do you have any chronic illness or serious medical condition?",
         "uk": "",
         "ru": ""
       },
@@ -1199,7 +1233,7 @@
     {
       "name": "disabilityHM2",
       "label": {
-        "en": "HM2 - Have you any physical or mental disability?",
+        "en": "HM2 - Do you have any physical or mental disability?",
         "uk": "",
         "ru": ""
       },
@@ -1515,7 +1549,7 @@
     {
       "name": "chronicIllnessHM3",
       "label": {
-        "en": "HM3 - Have you any chronic illness or serious medical condition?",
+        "en": "HM3 - Do you have any chronic illness or serious medical condition?",
         "uk": "",
         "ru": ""
       },
@@ -1546,7 +1580,7 @@
     {
       "name": "disabilityHM3",
       "label": {
-        "en": "HM3 - Have you any physical or mental disability?",
+        "en": "HM3 - Do you have any physical or mental disability?",
         "uk": "",
         "ru": ""
       },
@@ -1862,7 +1896,7 @@
     {
       "name": "chronicIllnessHM4",
       "label": {
-        "en": "HM4 - Have you any chronic illness or serious medical condition?",
+        "en": "HM4 - Do you have any chronic illness or serious medical condition?",
         "uk": "",
         "ru": ""
       },
@@ -1893,7 +1927,7 @@
     {
       "name": "disabilityHM4",
       "label": {
-        "en": "HM4 - Have you any physical or mental disability?",
+        "en": "HM4 - Do you have any physical or mental disability?",
         "uk": "",
         "ru": ""
       },
@@ -2209,7 +2243,7 @@
     {
       "name": "chronicIllnessHM5",
       "label": {
-        "en": "HM5 - Have you any chronic illness or serious medical condition?",
+        "en": "HM5 - Do you have any chronic illness or serious medical condition?",
         "uk": "",
         "ru": ""
       },
@@ -2240,7 +2274,7 @@
     {
       "name": "disabilityHM5",
       "label": {
-        "en": "HM5 - Have you any physical or mental disability?",
+        "en": "HM5 - Do you have any physical or mental disability?",
         "uk": "",
         "ru": ""
       },
@@ -2556,7 +2590,7 @@
     {
       "name": "chronicIllnessHM6",
       "label": {
-        "en": "HM6 - Have you any chronic illness or serious medical condition?",
+        "en": "HM6 - Do you have any chronic illness or serious medical condition?",
         "uk": "",
         "ru": ""
       },
@@ -2587,7 +2621,7 @@
     {
       "name": "disabilityHM6",
       "label": {
-        "en": "HM6 - Have you any physical or mental disability?",
+        "en": "HM6 - Do you have any physical or mental disability?",
         "uk": "",
         "ru": ""
       },
@@ -2903,7 +2937,7 @@
     {
       "name": "chronicIllnessHM7",
       "label": {
-        "en": "HM7 - Have you any chronic illness or serious medical condition?",
+        "en": "HM7 - Do you have any chronic illness or serious medical condition?",
         "uk": "",
         "ru": ""
       },
@@ -2934,7 +2968,7 @@
     {
       "name": "disabilityHM7",
       "label": {
-        "en": "HM7 - Have you any physical or mental disability?",
+        "en": "HM7 - Do you have any physical or mental disability?",
         "uk": "",
         "ru": ""
       },
@@ -3250,7 +3284,7 @@
     {
       "name": "chronicIllnessHM8",
       "label": {
-        "en": "HM8 - Have you any chronic illness or serious medical condition?",
+        "en": "HM8 - Do you have any chronic illness or serious medical condition?",
         "uk": "",
         "ru": ""
       },
@@ -3281,7 +3315,7 @@
     {
       "name": "disabilityHM8",
       "label": {
-        "en": "HM8 - Have you any physical or mental disability?",
+        "en": "HM8 - Do you have any physical or mental disability?",
         "uk": "",
         "ru": ""
       },
