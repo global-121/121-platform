@@ -28,42 +28,9 @@
       "options": null
     },
     {
-      "name": "amount",
-      "label": {
-        "en": "Amount",
-        "uk": "",
-        "ru": ""
-      },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "answerType": "numeric",
-      "options": null
-    },
-    {
       "name": "taxId",
       "label": {
         "en": "Tax ID number",
-        "uk": "",
-        "ru": ""
-      },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "answerType": "text",
-      "options": null
-    },
-    {
-      "name": "transferCosts",
-      "label": {
-        "en": "Transfer costs",
-        "uk": "",
-        "ru": ""
-      },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "answerType": "text",
-      "options": null
-    },
-    {
-      "name": "transferTrackNr",
-      "label": {
-        "en": "Transfer track no (Dorcas database no)",
         "uk": "",
         "ru": ""
       },
