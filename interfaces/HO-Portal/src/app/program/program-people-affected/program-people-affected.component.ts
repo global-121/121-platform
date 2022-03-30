@@ -868,8 +868,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       personRow[paymentHistoryButtonKey] = paymentColumnValue.text;
     } else {
       const transactionsForPa = this.pastTransactions.filter(
-        (transaction) =>
-          transaction.referenceId === personRow.referenceId,
+        (transaction) => transaction.referenceId === personRow.referenceId,
       );
 
       paymentColumnValue = {
