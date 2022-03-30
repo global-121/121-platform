@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { QRCodeModule } from 'angularx-qrcode';
-import { ConversationService } from '../services/conversation.service';
 import { InfoPopupComponent } from '../shared/info-popup/info-popup.component';
 import { SharedModule } from '../shared/shared.module';
 import { AutoSignupComponent } from './auto-signup/auto-signup.component';
@@ -62,6 +61,6 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     NextPaComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [ConversationService],
+  providers: [],
 })
 export class PersonalComponentsModule {}
