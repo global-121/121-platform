@@ -94,17 +94,10 @@ export class PersonalPage implements OnInit, OnDestroy {
     public syncService: SyncService,
   ) {
     // Listen for completed sections, to continue with next steps
-    const reloadNeeded = (action) =>
-      [
-        this.conversationService.conversationActions.afterLogin,
-        this.conversationService.conversationActions.afterBatchSubmit,
-        this.conversationService.conversationActions.afterDisagree,
-        this.conversationService.conversationActions.afterLogout,
-      ].includes(action);
 
     this.conversationService.updateConversation$.subscribe(
       async (nextAction: string) => {
-        if (reloadNeeded(nextAction)) {
+        if (this.reloadNeeded(nextAction)) {
           await this.loadComponents();
           this.scrollToLastWhenReady();
           return;
@@ -306,4 +299,12 @@ export class PersonalPage implements OnInit, OnDestroy {
   public uploadBatchRegistrations() {}
 
   public exportBatchRegistrations() {}
+
+  private reloadNeeded = (action) =>
+    [
+      this.conversationService.conversationActions.afterLogin,
+      this.conversationService.conversationActions.afterBatchSubmit,
+      this.conversationService.conversationActions.afterDisagree,
+      this.conversationService.conversationActions.afterLogout,
+    ].includes(action);
 }
