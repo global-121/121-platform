@@ -4,17 +4,17 @@ This readme includes additional information / instructions on use of this FSP, t
 
 ## Relevant links / documentation
 
-1. [BoB Portal](https://services.bob-finance.com/Intra/desktop/login/loginController.soft)
+1. [UkrPoshta](TODO: Add link to UkrPoshta portal)
 
-## Upload FSP instructions into BoB Portal
+## Upload FSP instructions into UkrPoshta
 
 - This is not the responsibility of the 121-platform, but is documented here nonetheless
 - Follow the instructions from the 121-portal to get out the instructions and save as XLSX
-- Go to the [BoB Portal](https://services.bob-finance.com/Intra/desktop/login/loginController.soft) and log in
-- Under 'E-Cash Upload File' (top right) click 'Upload' (bottom right) and upload the file
+- Go to the [UkrPoshta](TODO: Add link to UkrPoshta portal) and log in
+- TODO: Add steps to upload file into UkrPoshta portal
 
-## Access reconciliation data in BoB Portal
+## Access reconciliation data in UkrPoshta
 
 - This is not the responsibility of the 121-platform, but is documented here nonetheless
-- Go to the [BoB Portal](https://services.bob-finance.com/Intra/desktop/login/loginController.soft) and log in
-- Under 'Dashboard' (top right) click 'Search'
+- Go to the [UkrPoshta](TODO: Add link to UkrPoshta portal) and log in
+- TODO: Add steps to search in UkrPoshta portal
