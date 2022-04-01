@@ -1,7 +1,9 @@
 {
   "fsp": "UkrPoshta",
   "fspDisplayName": {
-    "en": "UkrPoshta"
+    "en": "UkrPoshta",
+    "uk": "Укрпошта",
+    "ru": "УкрПочта"
   },
   "integrationType": "csv",
   "attributes": [
@@ -9,8 +11,8 @@
       "name": "address",
       "label": {
         "en": "Oblast, Rayon, city, street, house, postal index",
-        "uk": "",
-        "ru": ""
+        "uk": "Область, Район, місто, вулиця, будинок, поштовий індекс",
+        "ru": "Область, Район, город, улица, дом, почтовый индекс"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
@@ -20,8 +22,8 @@
       "name": "name",
       "label": {
         "en": "Name / last name / fathers name",
-        "uk": "",
-        "ru": ""
+        "uk": "Імʼя / Прізвище / По батькові",
+        "ru": "Имя / фамилия / отчество"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
@@ -31,8 +33,8 @@
       "name": "taxId",
       "label": {
         "en": "Tax ID number",
-        "uk": "",
-        "ru": ""
+        "uk": "Податковий номер",
+        "ru": "Идентификационный номер налогоплательщика"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
@@ -42,8 +44,8 @@
       "name": "telephone",
       "label": {
         "en": "Telephone",
-        "uk": "",
-        "ru": ""
+        "uk": "Телефон",
+        "ru": "Телефон"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "tel",

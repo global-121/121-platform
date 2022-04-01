@@ -7,21 +7,23 @@
   "ngo": "Dorcas Ukraine",
   "titlePortal": {
     "en": "Dorcas Ukraine cash aid program",
-    "uk": "",
-    "ru": ""
+    "uk": "Програма грошової допомоги Dorcas Ukraine",
+    "ru": "Программа денежной помощи Доркас Украина"
   },
   "titlePaApp": {
     "en": "Dorcas Ukraine cash aid program",
-    "uk": "",
-    "ru": ""
+    "uk": "Програма грошової допомоги Dorcas Ukraine",
+    "ru": "Программа денежной помощи Доркас Украина"
   },
   "description": {
-    "en": ""
+    "en": "",
+    "uk": "",
+    "ru": ""
   },
   "descCashType": {
     "en": "Unconditional multi-purpose",
-    "uk": "",
-    "ru": ""
+    "uk": "Безумовна багатоцільова",
+    "ru": "Безусловная многофункциональность"
   },
   "startDate": "2022-04-01T12:00:00Z",
   "endDate": "2022-06-30T12:00:00Z",
@@ -39,18 +41,18 @@
   "highestScoresX": 340,
   "meetingDocuments": {
     "en": "N/A",
-    "uk": "",
-    "ru": ""
+    "uk": "Н/Д",
+    "ru": "Н/Д"
   },
   "notifications": {
     "en": {
       "registered": "This is a message from Dorcas Ukraine.\n\nWe have received your application for support. You will be informed if you're included in the program"
     },
     "uk": {
-      "registered": ""
+      "registered": "Це повідомлення від Dorcas Ukraine.\n\nМи отримали вашу заявку на підтримку. Ви отримаєте повідомлення після того як вас буде внесено до програми"
     },
     "ru": {
-      "registered": ""
+      "registered": "Это сообщение от Доркас Украина.\n\nМы получили вашу заявку на поддержку. Вы будете проинформированы, если вы включены в программу"
     }
   },
   "phoneNumberPlaceholder": "+380 000 000 000",
@@ -60,8 +62,8 @@
       "name": "householdSituation",
       "label": {
         "en": "Please, select the option which better describes the current situation of your household",
-        "uk": "",
-        "ru": ""
+        "uk": "Будь ласка, виберіть варіант, який краще описує поточну ситуацію з вашою родиною.",
+        "ru": "Пожалуйста, выберите вариант, который лучше описывает текущую ситуацию в вашем домохозяйстве"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -70,48 +72,48 @@
           "option": "residingConflictedArea",
           "label": {
             "en": "We are currently residing in a conflict affected area",
-            "uk": "",
-            "ru": ""
+            "uk": "Зараз ми проживаємо в зоні, яка постраждала від конфлікту/війни",
+            "ru": "В настоящее время мы проживаем в зоне конфликта"
           }
         },
         {
           "option": "displacedAndSettled",
           "label": {
             "en": "We have been displaced by the current conflict and we settled somewhere else in the same country",
-            "uk": "",
-            "ru": ""
+            "uk": "Ми стали внутрішньо переміщеними особами в результаті конфлікту/війни",
+            "ru": "Мы были перемещены из-за нынешнего конфликта, и мы поселились в другом месте в той же стране."
           }
         },
         {
           "option": "displacedAndMoving",
           "label": {
             "en": "We have been displaced by the current conflict and we are on the move",
-            "uk": "",
-            "ru": ""
+            "uk": "Ми стали переміщеними особами в результаті конфлікту/війни і поки рухаємось подалі",
+            "ru": "Мы были перемещены текущим конфликтом, и мы в пути"
           }
         },
         {
           "option": "displacedPreviousConflict",
           "label": {
             "en": "We were displaced by a previous conflict, not the current one",
-            "uk": "",
-            "ru": ""
+            "uk": "Ми стали переміщеними особами в результаті попереднього конфлікту/війни",
+            "ru": "Нас вытеснил предыдущий конфликт, а не текущий"
           }
         },
         {
           "option": "hostingDisplaced",
           "label": {
             "en": "We are hosting someone who was displaced by the current conflict",
-            "uk": "",
-            "ru": ""
+            "uk": "Ми приймаємо когось, хто був переміщений через поточний етап конфлікту/війни",
+            "ru": "Мы принимаем кого-то, кто был перемещен в результате текущего конфликта"
           }
         },
         {
           "option": "otherHouseholdSituation",
           "label": {
             "en": "Other",
-            "uk": "",
-            "ru": ""
+            "uk": "Інші",
+            "ru": "Другое"
           }
         }
       ],
@@ -123,8 +125,8 @@
       "name": "oblast",
       "label": {
         "en": "What oblast is your home location in?",
-        "uk": "",
-        "ru": ""
+        "uk": "В якій області знаходиться ваш дім?",
+        "ru": "В какой области находится ваш дом?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -133,8 +135,8 @@
           "option": "zakarpatska",
           "label": {
             "en": "Zakarpatska",
-            "uk": "",
-            "ru": ""
+            "uk": "Закарпатська",
+            "ru": "Закарпатская"
           }
         }
       ],
@@ -146,8 +148,8 @@
       "name": "raion",
       "label": {
         "en": "What raion is your home location in?",
-        "uk": "",
-        "ru": ""
+        "uk": "В якому районі знаходиться ваш дім?",
+        "ru": "В каком районе находится ваш дом?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -156,24 +158,24 @@
           "option": "berekivskyi",
           "label": {
             "en": "Berekivskyi",
-            "uk": "",
-            "ru": ""
+            "uk": "Береківський",
+            "ru": "Берековский"
           }
         },
         {
           "option": "mukachivskyi ",
           "label": {
             "en": "Mukachivskyi",
-            "uk": "",
-            "ru": ""
+            "uk": "Мукачівський",
+            "ru": "Мукачевский"
           }
         },
         {
           "option": "uzhorodskyi",
           "label": {
             "en": "Uzhorodskyi",
-            "uk": "",
-            "ru": ""
+            "uk": "Ужгородський",
+            "ru": "Ужгородский"
           }
         }
       ],
@@ -185,8 +187,8 @@
       "name": "householdResidingNow",
       "label": {
         "en": "Where is your household residing now?",
-        "uk": "",
-        "ru": ""
+        "uk": "Де зараз проживає ваша родина?",
+        "ru": "Где сейчас проживает ваша семья?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -195,24 +197,24 @@
           "option": "home",
           "label": {
             "en": "In my home location",
-            "uk": "",
-            "ru": ""
+            "uk": "У моєму домі",
+            "ru": "В моем домашнем местоположении"
           }
         },
         {
           "option": "onTheMove",
           "label": {
             "en": "We are on the move",
-            "uk": "",
-            "ru": ""
+            "uk": "Ми в дорозі",
+            "ru": "Мы в пути"
           }
         },
         {
           "option": "displacedAnotherLocation",
           "label": {
             "en": "We are displaced in another location",
-            "uk": "",
-            "ru": ""
+            "uk": "Ми переміщені в інше місце",
+            "ru": "Мы перемещены в другое место"
           }
         }
       ],
@@ -222,13 +224,13 @@
       "name": "phoneNumber",
       "label": {
         "en": "Please, can you give us your phone number?",
-        "uk": "",
-        "ru": ""
+        "uk": "Вкажіть ваш телефонний номер",
+        "ru": "Пожалуйста, не могли бы вы дать нам свой номер телефона?"
       },
       "placeholder": {
         "en": "+380 000 000 000",
-        "uk": "",
-        "ru": ""
+        "uk": "+380 000 000 000",
+        "ru": "+380 000 000 000"
       },
       "answerType": "tel",
       "questionType": "standard",
@@ -241,8 +243,8 @@
       "name": "gender",
       "label": {
         "en": "What is your gender?",
-        "uk": "",
-        "ru": ""
+        "uk": "Стать",
+        "ru": "Какого Вы пола?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -251,24 +253,24 @@
           "option": "male",
           "label": {
             "en": "Male",
-            "uk": "",
-            "ru": ""
+            "uk": "Чол.",
+            "ru": "Мужчина"
           }
         },
         {
           "option": "female",
           "label": {
             "en": "Female",
-            "uk": "",
-            "ru": ""
+            "uk": "Жін.",
+            "ru": "Женщина"
           }
         },
         {
           "option": "otherGender",
           "label": {
             "en": "Other",
-            "uk": "",
-            "ru": ""
+            "uk": "Інший",
+            "ru": "Другое"
           }
         }
       ],
@@ -279,7 +281,9 @@
     {
       "name": "dateOfBirth",
       "label": {
-        "en": "What is your date of birth?"
+        "en": "What is your date of birth?",
+        "uk": "Дата народження",
+        "ru": "Какая у вас дата рождения?"
       },
       "answerType": "date",
       "questionType": "standard",
@@ -292,8 +296,8 @@
       "name": "firstNameHM1",
       "label": {
         "en": "Adult HM1 - What is your first name?",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM1 - Вкажіть ваше імʼя.",
+        "ru": "Взрослый HM1 - Как ваше имя?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -306,8 +310,8 @@
       "name": "lastNameHM1",
       "label": {
         "en": "Adult HM1 - What is your last name?",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM1 - Вкажіть ваше прізвище.",
+        "ru": "Взрослый HM1 - Как ваша фамилия?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -320,8 +324,8 @@
       "name": "patronymicNameHM1",
       "label": {
         "en": "Adult HM1 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM1 - Вкажіть ваше імʼя по батькові",
+        "ru": "Взрослый HM1 - Как ваше отчество? (т.е. часть вашего имени, основанная на имени вашего отца)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -334,8 +338,8 @@
       "name": "genderHM1",
       "label": {
         "en": "Adult HM1 - What is your gender?",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM1 - Вкажіть вашу стать.",
+        "ru": "Взрослый HM1 - Какой у вас пол?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -344,24 +348,24 @@
           "option": "male",
           "label": {
             "en": "Male",
-            "uk": "",
-            "ru": ""
+            "uk": "Чол.",
+            "ru": "Мужчина"
           }
         },
         {
           "option": "female",
           "label": {
             "en": "Female",
-            "uk": "",
-            "ru": ""
+            "uk": "Жін.",
+            "ru": "Женщина"
           }
         },
         {
           "option": "otherGender",
           "label": {
             "en": "Other",
-            "uk": "",
-            "ru": ""
+            "uk": "Інший",
+            "ru": "Другое"
           }
         }
       ],
@@ -372,7 +376,9 @@
     {
       "name": "dateOfBirthHM1",
       "label": {
-        "en": "Adult HM1 - What is your date of birth?"
+        "en": "Adult HM1 - What is your date of birth?",
+        "uk": "Дорослий HM1 - Вкажіть вашу дату народження.",
+        "ru": "Взрослый HM1 - Какая у вас дата рождения?"
       },
       "answerType": "date",
       "questionType": "standard",
@@ -385,8 +391,8 @@
       "name": "taxNumberHM1",
       "label": {
         "en": "Adult HM1 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM1 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-'",
+        "ru": "Взрослый HM1 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -399,8 +405,8 @@
       "name": "firstNameHM2",
       "label": {
         "en": "Adult HM2 - What is your first name?",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM2 - Вкажіть ваше імʼя.",
+        "ru": "Взрослый HM2 - Как ваше имя?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -413,8 +419,8 @@
       "name": "lastNameHM2",
       "label": {
         "en": "Adult HM2 - What is your last name?",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM2 - Вкажіть ваше прізвище.",
+        "ru": "Взрослый HM2 - Как ваша фамилия?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -427,8 +433,8 @@
       "name": "patronymicNameHM2",
       "label": {
         "en": "Adult HM2 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM2 - Вкажіть ваше імʼя по батькові",
+        "ru": "Взрослый HM2 - Как ваше отчество? (т.е. часть вашего имени, основанная на имени вашего отца)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -441,8 +447,8 @@
       "name": "genderHM2",
       "label": {
         "en": "Adult HM2 - What is your gender?",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM2 - Вкажіть вашу стать.",
+        "ru": "Взрослый HM2 - Какой у вас пол?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -451,24 +457,24 @@
           "option": "male",
           "label": {
             "en": "Male",
-            "uk": "",
-            "ru": ""
+            "uk": "Чол.",
+            "ru": "Мужчина"
           }
         },
         {
           "option": "female",
           "label": {
             "en": "Female",
-            "uk": "",
-            "ru": ""
+            "uk": "Жін.",
+            "ru": "Женщина"
           }
         },
         {
           "option": "otherGender",
           "label": {
             "en": "Other",
-            "uk": "",
-            "ru": ""
+            "uk": "Інший",
+            "ru": "Другое"
           }
         }
       ],
@@ -479,7 +485,9 @@
     {
       "name": "dateOfBirthHM2",
       "label": {
-        "en": "Adult HM2 - What is your date of birth?"
+        "en": "Adult HM2 - What is your date of birth?",
+        "uk": "Дорослий HM2 - Вкажіть вашу дату народження.",
+        "ru": "Взрослый HM2 - Какая у вас дата рождения?"
       },
       "answerType": "date",
       "questionType": "standard",
@@ -492,8 +500,8 @@
       "name": "taxNumberHM2",
       "label": {
         "en": "Adult HM2 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM2 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-'",
+        "ru": "Взрослый HM2 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -506,8 +514,8 @@
       "name": "firstNameHM3",
       "label": {
         "en": "Adult HM3 - What is your first name?",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM3 - Вкажіть ваше імʼя.",
+        "ru": "Взрослый HM3 - Как ваше имя?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -520,8 +528,8 @@
       "name": "lastNameHM3",
       "label": {
         "en": "Adult HM3 - What is your last name?",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM3 - Вкажіть ваше прізвище.",
+        "ru": "Взрослый HM3 - Как ваша фамилия?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -534,8 +542,8 @@
       "name": "patronymicNameHM3",
       "label": {
         "en": "Adult HM3 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM3 - Вкажіть ваше імʼя по батькові",
+        "ru": "Взрослый HM3 - Как ваше отчество? (т.е. часть вашего имени, основанная на имени вашего отца)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -548,8 +556,8 @@
       "name": "genderHM3",
       "label": {
         "en": "Adult HM3 - What is your gender?",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM3 - Вкажіть вашу стать.",
+        "ru": "Взрослый HM3 - Какой у вас пол?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -558,24 +566,24 @@
           "option": "male",
           "label": {
             "en": "Male",
-            "uk": "",
-            "ru": ""
+            "uk": "Чол.",
+            "ru": "Мужчина"
           }
         },
         {
           "option": "female",
           "label": {
             "en": "Female",
-            "uk": "",
-            "ru": ""
+            "uk": "Жін.",
+            "ru": "Женщина"
           }
         },
         {
           "option": "otherGender",
           "label": {
             "en": "Other",
-            "uk": "",
-            "ru": ""
+            "uk": "Інший",
+            "ru": "Другое"
           }
         }
       ],
@@ -586,7 +594,9 @@
     {
       "name": "dateOfBirthHM3",
       "label": {
-        "en": "Adult HM3 - What is your date of birth?"
+        "en": "Adult HM3 - What is your date of birth?",
+        "uk": "Дорослий HM3 - Вкажіть вашу дату народження.",
+        "ru": "Взрослый HM3 - Какая у вас дата рождения?"
       },
       "answerType": "date",
       "questionType": "standard",
@@ -599,8 +609,8 @@
       "name": "taxNumberHM3",
       "label": {
         "en": "Adult HM3 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM3 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-'",
+        "ru": "Взрослый HM3 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -613,8 +623,8 @@
       "name": "firstNameHM4",
       "label": {
         "en": "Adult HM4 - What is your first name?",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM4 - Вкажіть ваше імʼя.",
+        "ru": "Взрослый HM4 - Как ваше имя?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -627,8 +637,8 @@
       "name": "lastNameHM4",
       "label": {
         "en": "Adult HM4 - What is your last name?",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM4 - Вкажіть ваше прізвище.",
+        "ru": "Взрослый HM4 - Как ваша фамилия?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -641,8 +651,8 @@
       "name": "patronymicNameHM4",
       "label": {
         "en": "Adult HM4 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM4 - Вкажіть ваше імʼя по батькові",
+        "ru": "Взрослый HM4 - Как ваше отчество? (т.е. часть вашего имени, основанная на имени вашего отца)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -655,8 +665,8 @@
       "name": "genderHM4",
       "label": {
         "en": "Adult HM4 - What is your gender?",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM4 - Вкажіть вашу стать.",
+        "ru": "Взрослый HM4 - Какой у вас пол?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -665,24 +675,24 @@
           "option": "male",
           "label": {
             "en": "Male",
-            "uk": "",
-            "ru": ""
+            "uk": "Чол.",
+            "ru": "Мужчина"
           }
         },
         {
           "option": "female",
           "label": {
             "en": "Female",
-            "uk": "",
-            "ru": ""
+            "uk": "Жін.",
+            "ru": "Женщина"
           }
         },
         {
           "option": "otherGender",
           "label": {
             "en": "Other",
-            "uk": "",
-            "ru": ""
+            "uk": "Інший",
+            "ru": "Другое"
           }
         }
       ],
@@ -693,7 +703,9 @@
     {
       "name": "dateOfBirthHM4",
       "label": {
-        "en": "Adult HM4 - What is your date of birth?"
+        "en": "Adult HM4 - What is your date of birth?",
+        "uk": "Дорослий HM4 - Вкажіть вашу дату народження.",
+        "ru": "Взрослый HM4 - Какая у вас дата рождения?"
       },
       "answerType": "date",
       "questionType": "standard",
@@ -706,8 +718,8 @@
       "name": "taxNumberHM4",
       "label": {
         "en": "Adult HM4 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
-        "uk": "",
-        "ru": ""
+        "uk": "Дорослий HM4 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-' ",
+        "ru": "Взрослый HM4 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -720,8 +732,8 @@
       "name": "nrOfIllnessInHousehold",
       "label": {
         "en": "How many household members have any chronic illness or serious medical condition?",
-        "uk": "",
-        "ru": ""
+        "uk": "Скільки членів сім’ї мають хронічні або важкі захворювання? ",
+        "ru": "Сколько членов семьи имеют какое-либо хроническое заболевание или серьезное заболевание?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -734,8 +746,8 @@
       "name": "nrOfDisabilitiesInHousehold",
       "label": {
         "en": "How many household members have any physical or mental disability?",
-        "uk": "",
-        "ru": ""
+        "uk": "Скільки членів сімʼї мають фізичну або розумову інвалідність?",
+        "ru": "Сколько членов семьи имеют какую-либо физическую или умственную инвалидность?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -748,8 +760,8 @@
       "name": "nrOfPregnantInHousehold",
       "label": {
         "en": "How many household members are pregnant or lactating?",
-        "uk": "",
-        "ru": ""
+        "uk": "Скільки членів сім’ї вагітні або годують груддю?",
+        "ru": "Сколько членов семьи беременны или кормят грудью?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -762,8 +774,8 @@
       "name": "nrOfGirls",
       "label": {
         "en": "How many girls in your household are under 18?",
-        "uk": "",
-        "ru": ""
+        "uk": "Скільки дівчат у вашій родині молодше 18 років?",
+        "ru": "Сколько девочек в вашей семье моложе 18 лет?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -776,8 +788,8 @@
       "name": "nrOfBoys",
       "label": {
         "en": "How many boys in your household are under 18?",
-        "uk": "",
-        "ru": ""
+        "uk": "Скільки хлопців у вашій родині молодше 18 років? ",
+        "ru": "Сколько мальчиков в вашей семье моложе 18 лет?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -790,8 +802,8 @@
       "name": "nrOfHouseholdMembers",
       "label": {
         "en": "No of people in the household, relevant for tax office, not required for Ukrposhta",
-        "uk": "",
-        "ru": ""
+        "uk": "Кількість людей у сімʼї у системі, актуальна для податкової, не обвʼязково для Укрпошти ",
+        "ru": "Количество лиц в домохозяйстве, релевантных для налоговой инспекции, не требуется для Укрпочты"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -804,8 +816,8 @@
       "name": "commentsFromEnumarator",
       "label": {
         "en": "Comments from the enumarator: ",
-        "uk": "",
-        "ru": ""
+        "uk": "Коментарі переписувача: ",
+        "ru": "Комментарии от счетчика:"
       },
       "answerType": "text",
       "questionType": "standard",
