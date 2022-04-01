@@ -48,17 +48,6 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "tel",
       "options": null
-    },
-    {
-      "name": "householdCount",
-      "label": {
-        "en": "Dorcas No of people in the household, relevant for tax office, not required for Ukrposhta",
-        "uk": "",
-        "ru": ""
-      },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "answerType": "numeric",
-      "options": null
     }
   ]
 }

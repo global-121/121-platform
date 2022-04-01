@@ -6,5 +6,4 @@ export class UkrPoshtaFspInstructions {
   public 'Transfer costs': string;
   public 'Transfer track no (Dorcas database no)': string;
   public 'Telephone': number;
-  public 'Dorcas No of people in the household relevant for tax office not required for Ukrposhta': string;
 }

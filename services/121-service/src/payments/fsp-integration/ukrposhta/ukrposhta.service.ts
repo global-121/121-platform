@@ -61,16 +61,11 @@ export class UkrPoshtaService {
     ukrPoshtaFspInstructions.Amount = transaction.amount;
     ukrPoshtaFspInstructions['Tax ID number'] =
       registration.customData[CustomDataAttributes.taxId];
-    ukrPoshtaFspInstructions['Transfer costs'] =
-      registration.customData[CustomDataAttributes.transferCosts];
-    ukrPoshtaFspInstructions['Transfer track no (Dorcas database no)'] =
-      registration.customData[CustomDataAttributes.transferTrackNr];
+    ukrPoshtaFspInstructions['Transfer costs'] = null;
+    ukrPoshtaFspInstructions['Transfer track no (Dorcas database no)'] = null;
     ukrPoshtaFspInstructions['Telephone'] = await this.formatToLocalNumber(
       registration.customData[CustomDataAttributes.phoneNumber],
     );
-    ukrPoshtaFspInstructions[
-      'Dorcas No of people in the household relevant for tax office not required for Ukrposhta'
-    ] = registration.customData[CustomDataAttributes.householdCount];
 
     return ukrPoshtaFspInstructions;
   }

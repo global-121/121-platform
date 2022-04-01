@@ -238,48 +238,6 @@
       "scoring": {}
     },
     {
-      "name": "firstName",
-      "label": {
-        "en": "What is your first name?",
-        "uk": "",
-        "ru": ""
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "lastName",
-      "label": {
-        "en": "What is your last name?",
-        "uk": "",
-        "ru": ""
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "patronymicName",
-      "label": {
-        "en": "What is your patronymic name? (i.e. the part of your name based on your father's name)",
-        "uk": "",
-        "ru": ""
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
       "name": "gender",
       "label": {
         "en": "What is your gender?",
@@ -324,189 +282,6 @@
         "en": "What is your date of birth?"
       },
       "answerType": "date",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "typeOfIdentificationDocument",
-      "label": {
-        "en": "What type of document do you have as identification?",
-        "uk": "",
-        "ru": ""
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "passport",
-          "label": {
-            "en": "Passport",
-            "uk": "",
-            "ru": ""
-          }
-        },
-        {
-          "option": "driversLicense",
-          "label": {
-            "en": "Driver's License",
-            "uk": "",
-            "ru": ""
-          }
-        },
-        {
-          "option": "temporaryResidencePermit",
-          "label": {
-            "en": "Temporary residence permit",
-            "uk": "",
-            "ru": ""
-          }
-        },
-        {
-          "option": "permanentResidencePermit",
-          "label": {
-            "en": "Permanent residence permit",
-            "uk": "",
-            "ru": ""
-          }
-        },
-        {
-          "option": "childrensTravelDocument",
-          "label": {
-            "en": "Children's travel document",
-            "uk": "",
-            "ru": ""
-          }
-        },
-        {
-          "option": "travelDocument",
-          "label": {
-            "en": "Travel document",
-            "uk": "",
-            "ru": ""
-          }
-        },
-        {
-          "option": "birthCertificate",
-          "label": {
-            "en": "Birth certificate",
-            "uk": "",
-            "ru": ""
-          }
-        },
-        {
-          "option": "diplomaticPassport",
-          "label": {
-            "en": "Diplomatic passport",
-            "uk": "",
-            "ru": ""
-          }
-        },
-        {
-          "option": "servicePassport",
-          "label": {
-            "en": "Service passport",
-            "uk": "",
-            "ru": ""
-          }
-        },
-        {
-          "option": "certificateStateless",
-          "label": {
-            "en": "Certificate for stateless persons",
-            "uk": "",
-            "ru": ""
-          }
-        },
-        {
-          "option": "refugeeTravelDocument",
-          "label": {
-            "en": "Refugee travel document",
-            "uk": "",
-            "ru": ""
-          }
-        },
-        {
-          "option": "seaFarerIdentityCard",
-          "label": {
-            "en": "Seafarer's identity card",
-            "uk": "",
-            "ru": ""
-          }
-        },
-        {
-          "option": "missingDocumentation",
-          "label": {
-            "en": "Missing documentation",
-            "uk": "",
-            "ru": ""
-          }
-        },
-        {
-          "option": "otherIdDocumentation",
-          "label": {
-            "en": "Other",
-            "uk": "",
-            "ru": ""
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "otherDocumentation",
-      "label": {
-        "en": "If you selected 'Other', please let us know what kind of document you have. (Otherwise you can just write '-')",
-        "uk": "",
-        "ru": ""
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "documentNumber",
-      "label": {
-        "en": "Please, indicate your document number. If you selected 'Missing documentation', you can just write '-'",
-        "uk": "",
-        "ru": ""
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "taxNumber",
-      "label": {
-        "en": "Please, indicate your tax number (INN). If you don't have it, write '-'",
-        "uk": "",
-        "ru": ""
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "bankNumber",
-      "label": {
-        "en": "If you have a bank card number, please indicate it. (Otherwise you can just write '-')",
-        "uk": "",
-        "ru": ""
-      },
-      "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -1001,6 +776,20 @@
       "name": "nrOfBoys",
       "label": {
         "en": "How many boys in your household are under 18?",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "nrOfHouseholdMembers",
+      "label": {
+        "en": "No of people in the household, relevant for tax office, not required for Ukrposhta",
         "uk": "",
         "ru": ""
       },
