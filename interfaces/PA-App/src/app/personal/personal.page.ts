@@ -296,9 +296,9 @@ export class PersonalPage implements OnInit, OnDestroy {
     this.menu.open('batchMenu');
   }
 
-  public uploadBatchRegistrations() {}
-
-  public exportBatchRegistrations() {}
+  public uploadBatchRegistrations() {
+    this.autoBatchUpload();
+  }
 
   private reloadNeeded = (action) =>
     [

@@ -40,19 +40,14 @@
     </ion-item>
 
     <ion-button
-      [disabled]="!isOnline"
+      [disabled]="!isOnline || !batchCount"
       (click)="uploadBatchRegistrations()"
       color="light"
       expand="block"
       class="ion-margin-vertical"
-    >{{ 'personal.batch.menu-upload-button'|translate }}</ion-button>
-    <ion-button
-      (click)="exportBatchRegistrations()"
-      color="light"
-      fill="outline"
-      expand="block"
-      class="ion-margin-vertical"
-    >{{ 'personal.batch.menu-export-button'|translate }}</ion-button>
+    >
+      {{ 'personal.batch.menu-upload-button'|translate }}
+    </ion-button>
 
   </ion-content>
 </ion-menu>
