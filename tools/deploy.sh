@@ -17,7 +17,7 @@ function deploy() {
   local repo_ho=$repo_interfaces/HO-Portal
   local repo_aw=$repo_interfaces/AW-App
 
-  ${GLOBAL_121_STATUS_URL:=http://localhost:3000/docs/}
+  ${GLOBAL_121_STATUS_URL:="http://localhost:3000/docs/"}
   local services_status_url=$GLOBAL_121_STATUS_URL
 
   local web_root=$GLOBAL_121_WEB_ROOT
