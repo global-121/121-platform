@@ -12,6 +12,11 @@ export enum CustomDataAttributes {
   completedTraining = 'completedTraining',
   milestone1 = 'milestone1',
   milestone2 = 'milestone2',
+  address = 'address',
+  taxId = 'taxId',
+  transferCosts = 'transferCosts',
+  transferTrackNr = 'transferTrackNr',
+  householdCount = 'householdCount',
 }
 
 export enum GenericAttributes {

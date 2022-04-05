@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.37.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.38.0...master)
 
 ---
+## [1.38.0](https://github.com/global-121/121-platform/compare/v1.37.1...1.38.0) - 2022-04-05
+
+## [1.37.1](https://github.com/global-121/121-platform/compare/v1.37.0...1.37.1) - 2022-03-30
 
 ## [1.37.0](https://github.com/global-121/121-platform/compare/v1.36.1...1.37.0) - 2022-03-22
 
@@ -40,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - 2022-02-01: From Role-based access to Permission-based access
 
-  All access-checks on back-end endpoints and visibility of interface-features is now handled via specific [Permissions](services/121-service/src/user/permission.enum.ts).  
+  All access-checks on back-end endpoints and visibility of interface-features is now handled via specific [Permissions](services/121-service/src/user/permission.enum.ts).
   `Permission`s are assigned to `User`s per `Program`.
   Sets of `Permission`s (`Role`s) can be defined per `Program`, to be assigned to `User`s.
 
@@ -62,9 +65,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- 2021-12-23: Conditional Maintenance-mode with status-check for deploy-script  
+- 2021-12-23: Conditional Maintenance-mode with status-check for deploy-script
   Make sure to define `GLOBAL_121_STATUS_URL` in `./tools/.env` when using a custom hostname/port-number for the 121-service
-- 2021-12-22: Add configuration flags for `webhook.js`-script:  
+- 2021-12-22: Add configuration flags for `webhook.js`-script:
   `DEPLOY_PRE_RELEASE` and `DEPLOY_RELEASE` to enable auto-deployment of these type of (pre-)release payloads.
 - 2021-12-28: Added 'manual deployment' via the `webhook.js`-script. See [tools/README](./tools/README.md#webhook-script).
 - 2021-12-29: Added `whatsappGenericMessage` to the NL program notifications.

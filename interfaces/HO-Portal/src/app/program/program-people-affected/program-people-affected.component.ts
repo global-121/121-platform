@@ -867,10 +867,14 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       );
       personRow[paymentHistoryButtonKey] = paymentColumnValue.text;
     } else {
+      const pastTransactionsOfPa = this.pastTransactions.filter(
+        (transaction) => transaction.referenceId === personRow.referenceId,
+      );
+
       paymentColumnValue = {
         text: '',
         paymentIndex: lastPayment.payment,
-        payments: this.pastTransactions.map((t) => t.payment),
+        payments: pastTransactionsOfPa.map((t) => t.payment),
         amount: `${this.program.currency} ${lastPayment.amount}`,
         hasMessageIcon: this.enableMessageSentIcon(lastPayment),
         hasMoneyIconTable: this.enableMoneySentIconTable(lastPayment),

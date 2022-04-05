@@ -20,6 +20,7 @@ import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
 import { IntersolveRequestEntity } from './fsp-integration/intersolve/intersolve-request.entity';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
+import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service';
 
 @Injectable()
 export class PaymentsService {
@@ -38,6 +39,7 @@ export class PaymentsService {
     private readonly africasTalkingService: AfricasTalkingService,
     private readonly belcashService: BelcashService,
     private readonly bobFinanceService: BobFinanceService,
+    private readonly ukrPoshtaService: UkrPoshtaService,
   ) {}
 
   public async getPayments(
@@ -138,6 +140,7 @@ export class PaymentsService {
     const africasTalkingPaPayment = [];
     const belcashPaPayment = [];
     const bobFinancePaPayment = [];
+    const ukrPoshtaPaPayment = [];
     for (let paPaymentData of paPaymentDataList) {
       if (paPaymentData.fspName === FspName.intersolve) {
         intersolvePaPayment.push(paPaymentData);
@@ -149,6 +152,8 @@ export class PaymentsService {
         belcashPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.bobFinance) {
         bobFinancePaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === FspName.ukrPoshta) {
+        ukrPoshtaPaPayment.push(paPaymentData);
       } else {
         console.log('fsp does not exist: paPaymentData: ', paPaymentData);
         throw new HttpException('fsp does not exist.', HttpStatus.NOT_FOUND);
@@ -160,6 +165,7 @@ export class PaymentsService {
       africasTalkingPaPayment,
       belcashPaPayment,
       bobFinancePaPayment,
+      ukrPoshtaPaPayment,
     };
   }
 
@@ -207,6 +213,15 @@ export class PaymentsService {
     if (paLists.bobFinancePaPayment.length) {
       await this.bobFinanceService.sendPayment(
         paLists.bobFinancePaPayment,
+        programId,
+        payment,
+        amount,
+      );
+    }
+
+    if (paLists.ukrPoshtaPaPayment.length) {
+      await this.ukrPoshtaService.sendPayment(
+        paLists.ukrPoshtaPaPayment,
         programId,
         payment,
         amount,
@@ -276,6 +291,10 @@ export class PaymentsService {
         const paymentAddressColumn = attribute.name;
         return includedRegistration.customData[paymentAddressColumn];
       }
+      if (attribute.name === CustomDataAttributes.address) {
+        const paymentAddressColumn = attribute.name;
+        return includedRegistration.customData[paymentAddressColumn];
+      }
     }
     return null;
   }
@@ -319,6 +338,13 @@ export class PaymentsService {
       });
       if (registration.fsp.fsp === FspName.bobFinance) {
         const instruction = await this.bobFinanceService.getFspInstructions(
+          registration,
+          transaction,
+        );
+        instructions.push(instruction);
+      }
+      if (registration.fsp.fsp === FspName.ukrPoshta) {
+        const instruction = await this.ukrPoshtaService.getFspInstructions(
           registration,
           transaction,
         );
