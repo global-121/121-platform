@@ -14,6 +14,7 @@ import { PubSubEvent, PubSubService } from './pub-sub.service';
 export class PaDataService {
   public type = PaDataTypes;
   private sessionKey = 'logged-in-user-PA';
+  private paBatchKey = 'pa-batch';
   private allProgramsKey = 'allPrograms';
   private instanceKey = 'instance';
   private detailProgramKeyPrefix = 'program';
@@ -268,10 +269,10 @@ export class PaDataService {
     window.sessionStorage.setItem(this.sessionKey, JSON.stringify(user));
   }
 
-  public async logout() {
+  public async logout(completedRegistration: boolean) {
     console.log('PaData: logout()');
     window.sessionStorage.removeItem(this.sessionKey);
-    await this.programService.logout();
+    await this.programService.logout(completedRegistration);
     this.setLoggedOut();
   }
 
@@ -289,5 +290,20 @@ export class PaDataService {
         (error) => reject(error),
       );
     });
+  }
+
+  public getPaBatch(): [] {
+    const batchObj = window.localStorage.getItem(this.paBatchKey);
+    return batchObj ? JSON.parse(batchObj) : [];
+  }
+
+  public savePaToBatch() {
+    const batchObj = window.localStorage.getItem(this.paBatchKey);
+    const paBatch = batchObj ? JSON.parse(batchObj) : [];
+    paBatch.push({
+      type: this.type.myAnswers,
+      data: JSON.stringify(this.myAnswers),
+    });
+    localStorage.setItem(this.paBatchKey, JSON.stringify(paBatch));
   }
 }
