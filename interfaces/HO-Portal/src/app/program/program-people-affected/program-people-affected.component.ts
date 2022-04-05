@@ -636,6 +636,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     let paymentId = nextPaymentId || this.program.distributionDuration;
 
     // Add bulk-action for 1st upcoming payment & past 5 payments
+    // Note, the number 5 is the same as allowed for the single payment as set in payment-history-popup.component
     while (paymentId > nextPaymentId - 6 && paymentId > 0) {
       const paymentBulkAction = {
         id: BulkActionId.doPayment,

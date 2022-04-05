@@ -184,7 +184,8 @@ export class PaymentHistoryPopupComponent implements OnInit {
     const included = personRow.status === PaStatus.included;
     const noPaymentDone = !paymentRow.transaction;
     const noFuturePayment = paymentRow.paymentIndex <= this.lastPaymentId;
-    const onlyLast3Payments = paymentRow.paymentIndex > this.lastPaymentId - 3;
+    // Note, the number 5 is the same as allowed for the bulk payment as set in program-people-affected.component
+    const onlyLast5Payments = paymentRow.paymentIndex > this.lastPaymentId - 5;
     const noPaymentInProgress = !this.paymentInProgress;
 
     return (
@@ -192,7 +193,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
       included &&
       noPaymentDone &&
       noFuturePayment &&
-      onlyLast3Payments &&
+      onlyLast5Payments &&
       noPaymentInProgress
     );
   }
