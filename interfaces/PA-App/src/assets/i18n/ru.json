@@ -1,5 +1,4 @@
 {
-  "_dir": "ltr",
   "account": {
     "delete-data": "Удалить мои данные",
     "logout": "Выйти"
@@ -78,43 +77,7 @@
       "introduction": "Пожалуйста, выберите способ получения помощи, если вы участвуете в программе."
     },
     "select-language": {
-      "introduction": {
-        "en": "Please select your language.",
-        "es": "Por favor seleccione su idioma",
-        "am_ET": "እባኮትን ቋንቋ ይምረጡ።",
-        "ar": "الرجاء اختيار لغتك",
-        "fr": "Choisissez votre langue, s'il vous plaît.",
-        "nl": "Kies jouw taal.",
-        "ny_MW": "Chonde sankhani chiyankhulo chanu.",
-        "om_ET": "Maaloo qooqa keessan filadhaa.",
-        "pt_BR": "Por favor, selecione seu idioma.",
-        "ru": "Пожалуйста, выберите ваш язык.",
-        "saq_KE": "Enjere tegelu ng'ituk ino.",
-        "ti": "",
-        "tl": "Pumili ng iyong wika.",
-        "tuv_KE": "Aarimatoi, tetheu akituk kon.",
-        "uk": "Будь ласка, виберіть свою мову.",
-        "in": "Pilih bahasa anda."
-      },
-      "result": "Спасибо, вы выбрали {{language}}.",
-      "language": {
-        "en": "English",
-        "es": "Español",
-        "am_ET": "አማርኛ",
-        "ar": "عربى",
-        "fr": "Français",
-        "nl": "Nederlands",
-        "ny_MW": "Chichewa",
-        "om_ET": "Afaan Oromoo",
-        "pt_BR": "Portuguese",
-        "ru": "",
-        "saq_KE": "Samburu",
-        "ti": "ትግርኛ",
-        "tl": "Tagalog",
-        "tuv_KE": "Ng'aturkana",
-        "uk": "",
-        "in": "Bahasa Indonesia"
-      }
+      "result": "Спасибо, вы выбрали {{language}}."
     },
     "select-program": {
       "introduction": "Вы можете использовать это приложение, чтобы подать заявку на программу помощи. Пожалуйста, выберите ниже.",
