@@ -300,11 +300,12 @@ export class PersonalPage implements OnInit, OnDestroy {
     this.autoBatchUpload();
   }
 
-  private reloadNeeded = (action) =>
-    [
+  private reloadNeeded(action) {
+    return [
       this.conversationService.conversationActions.afterLogin,
       this.conversationService.conversationActions.afterBatchSubmit,
       this.conversationService.conversationActions.afterDisagree,
       this.conversationService.conversationActions.afterLogout,
     ].includes(action);
+  }
 }
