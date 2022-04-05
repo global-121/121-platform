@@ -40,7 +40,7 @@ function check_shared_code() {
 
     log "Comparing shared file: $path..."
 
-    diff --recursive --unified $from/$path $to/$path | diff-so-fancy
+    diff --recursive --unified "$from"/"$path" "$to"/"$path" | diff-so-fancy
   }
 
   compare_code "_set-env-variables.js" "$repo_pa" "$repo_aw"
