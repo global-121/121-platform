@@ -41,4 +41,5 @@ export enum FspName {
   africasTalking = 'Africas-talking',
   belcash = 'BelCash',
   bobFinance = 'BoB-finance',
+  ukrPoshta = 'UkrPoshta',
 }
