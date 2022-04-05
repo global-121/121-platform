@@ -26,3 +26,9 @@ Feature: Claim digital vouchers
   Scenario: Send anything else besides 'yes'
     When the PA sends anything else then 'yes'
     Then the same scenarios as above are followed, as it does not matter what text is exactly sent
+
+  Scenario: PA does not send anything to initial WhatsApp-message
+    When the PA does not send anything
+    Then a reminder is send out the next day at noon
+    And the same scenarios as above are followed
+    And a PA without whatsapp should not get a reminder
