@@ -20,5 +20,10 @@
     "strict": false,
     "target": "es2015",
     "typeRoots": ["node_modules/@types"]
+  },
+  "angularCompilerOptions": {
+    "strictTemplates": false,
+    "strictDomEventTypes": false,
+    "strictInjectionParameters": true
   }
 }
