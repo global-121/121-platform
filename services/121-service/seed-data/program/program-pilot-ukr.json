@@ -25,12 +25,12 @@
     "uk": "Безумовна багатоцільова",
     "ru": "Безусловная многофункциональность"
   },
-  "startDate": "2022-04-01T12:00:00Z",
+  "startDate": "2022-04-15T12:00:00Z",
   "endDate": "2022-06-30T12:00:00Z",
-  "currency": "EUR",
+  "currency": "UAH",
   "distributionFrequency": "once",
-  "distributionDuration": 1,
-  "fixedTransferValue": 68,
+  "distributionDuration": 10,
+  "fixedTransferValue": 6600,
   "financialServiceProviders": [
     {
       "id": 1
@@ -58,6 +58,20 @@
   "phoneNumberPlaceholder": "+380 000 000 000",
   "programCustomAttributes": [],
   "programQuestions": [
+    {
+      "name": "enumeratorName",
+      "label": {
+        "en": "Enumerator name:",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
     {
       "name": "nrOfMaleAdults",
       "label": {
@@ -315,7 +329,7 @@
     {
       "name": "gender",
       "label": {
-        "en": "Head of household - What is your gender?",
+        "en": "Applicant - What is your gender?",
         "uk": "Стать",
         "ru": "Какого Вы пола?"
       },
