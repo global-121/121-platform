@@ -348,7 +348,9 @@ export class PaymentsService {
           registration,
           transaction,
         );
-        instructions.push(instruction);
+        if (instruction) {
+          instructions.push(instruction);
+        }
       }
     }
     return instructions;
