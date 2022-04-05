@@ -150,7 +150,7 @@ This workflow explains how to get out a list of 'to cancel' vouchers.
 1. Go to <https://www.twilio.com/console/sms/whatsapp/templates>
 2. Find `notifications_whatsapp_payment` or `notifications_whatsapp_payment_multiple` and click '_Add translations_'.
 3. Select the new language.
-4. Copy-paste the `notifications[languageCOde].whatsappPayment` (or `whatsappPaymentMultiple`) property from the appropriate `program-<program>.json` in `services/121-service/seed-data/`
+4. Copy-paste the `notifications[languageCOde].whatsappPayment` property from the appropriate `program-<program>.json` in `services/121-service/seed-data/`
 5. Change any coded newlines (`\n`) to actual new lines using Enter.
 6. Remove any escape characters, e.g. '`..reply \"yes\" to..`' becomes '`..reply "yes" to..`'
 7. Fix any other code-problems there might be.
