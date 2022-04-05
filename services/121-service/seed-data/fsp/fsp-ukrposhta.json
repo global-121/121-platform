@@ -10,7 +10,7 @@
     {
       "name": "address",
       "label": {
-        "en": "Oblast, Rayon, city, street, house, postal index",
+        "en": "Please provide your current residency address (Oblast, Rayon, city, street, house, postal index)",
         "uk": "Область, Район, місто, вулиця, будинок, поштовий індекс",
         "ru": "Область, Район, город, улица, дом, почтовый индекс"
       },
@@ -21,7 +21,7 @@
     {
       "name": "name",
       "label": {
-        "en": "Name / last name / fathers name",
+        "en": "Please provide the contact name (Last name / First name / Fathers name) that will be receiving the payment of UkrPoshta",
         "uk": "Імʼя / Прізвище / По батькові",
         "ru": "Имя / фамилия / отчество"
       },
