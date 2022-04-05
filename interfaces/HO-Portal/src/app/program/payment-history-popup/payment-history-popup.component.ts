@@ -160,7 +160,12 @@ export class PaymentHistoryPopupComponent implements OnInit {
           paymentRowValue.errorMessage = transaction.error;
         }
       }
-      this.paymentRows.push(paymentRowValue);
+      if (
+        paymentRowValue.transaction ||
+        this.enableSinglePayment(this.personRow, paymentRowValue)
+      ) {
+        this.paymentRows.push(paymentRowValue);
+      }
     }
   }
   public hasWaiting(paymentRow: PaymentRowDetail): boolean {
