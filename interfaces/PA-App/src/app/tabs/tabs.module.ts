@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserMenuComponent } from '../user-menu/user-menu.component';
-import { MultipleRegistrationsMenuComponent } from './../multiple-registrations-menu/multiple-registrations-menu.component';
 import { TabsPage } from './tabs.page';
 import { TabsPageRoutingModule } from './tabs.router.module';
 
@@ -16,10 +15,6 @@ import { TabsPageRoutingModule } from './tabs.router.module';
     TabsPageRoutingModule,
     TranslateModule.forChild(),
   ],
-  declarations: [
-    TabsPage,
-    UserMenuComponent,
-    MultipleRegistrationsMenuComponent,
-  ],
+  declarations: [TabsPage, UserMenuComponent],
 })
 export class TabsPageModule {}

@@ -1,7 +1,7 @@
 <section>
   <dialogue-turn
-    *ngIf="hasValidation"
-    [isSpoken]="hasValidation"
+    *ngIf="currentProgram?.validation"
+    [isSpoken]="currentProgram?.validation"
   >
     <p *ngIf="hasNotificationNumberSet">
       <play-text-audio key="personal.inclusion-status.notify" class="ion-float-start ion-margin-end"></play-text-audio>

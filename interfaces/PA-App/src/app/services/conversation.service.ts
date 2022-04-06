@@ -146,11 +146,6 @@ export class ConversationService {
     this.updateConversationSource.next(this.conversationActions.afterLogin);
   }
 
-  public restartConversation(conversationAction: string) {
-    this.startNewConversation();
-    this.updateConversationSource.next(conversationAction);
-  }
-
   public debugUndoLastStep() {
     this.history.pop();
   }
@@ -179,7 +174,4 @@ export class ConversationSection {
 
 export enum ConversationActions {
   afterLogin = 'after-login',
-  afterBatchSubmit = 'after-batch-submit',
-  afterDisagree = 'after-disagree',
-  afterLogout = 'after-logout',
 }

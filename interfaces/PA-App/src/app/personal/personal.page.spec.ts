@@ -1,9 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
 import { MockConversationService } from '../mocks/conversation.service.mock';
 import { MockLoggingService } from '../mocks/logging.service.mock';
 import { ConversationService } from '../services/conversation.service';
@@ -27,18 +25,6 @@ describe('PersonalPage', () => {
         {
           provide: LoggingService,
           useValue: MockLoggingService,
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            queryParams: new Observable((observer) => {
-              const urlParams = {
-                mode: 'batch',
-              };
-              observer.next(urlParams);
-              observer.complete();
-            }),
-          },
         },
       ],
     }).compileComponents();

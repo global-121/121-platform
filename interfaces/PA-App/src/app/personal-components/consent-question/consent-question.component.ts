@@ -60,9 +60,7 @@ export class ConsentQuestionComponent extends PersonalDirective {
 
   public submitConsent() {
     if (!this.userConsent) {
-      this.conversationService.restartConversation(
-        this.conversationService.conversationActions.afterDisagree,
-      );
+      window.location.reload();
       return;
     }
     this.complete();
