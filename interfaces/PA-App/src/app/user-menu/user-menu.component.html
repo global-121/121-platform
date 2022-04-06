@@ -16,7 +16,7 @@
     </ion-item>
     <ion-item
       button="true"
-      [disabled]="!isLoggedIn"
+      [disabled]="!isLoggedIn || !isOnline"
       (click)="deleteData()"
       detail="true"
       detail-icon="trash"

@@ -1,57 +1,49 @@
-import { APP_BASE_HREF } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { MockConversationService } from 'src/app/mocks/conversation.service.mock';
+import { MockInstanceService } from 'src/app/mocks/instance.service.mock';
+import { MockLoggingService } from 'src/app/mocks/logging.service.mock';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
-import { PaInclusionStates } from 'src/app/models/pa-statuses.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { InstanceService } from 'src/app/services/instance.service';
+import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { InclusionStatusComponent } from './inclusion-status.component';
+import { NextPaComponent } from './next-pa.component';
 
-describe('InclusionStatusComponent', () => {
-  let component: InclusionStatusComponent;
-  let fixture: ComponentFixture<InclusionStatusComponent>;
-
-  const mockProgramsApi: jasmine.SpyObj<any> = jasmine.createSpyObj(
-    'ProgramsServiceApiService',
-    {
-      checkInclusionStatus: new Promise((r) => r(PaInclusionStates.included)),
-    },
-  );
+describe('NextPaComponent', () => {
+  let component: NextPaComponent;
+  let fixture: ComponentFixture<NextPaComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [InclusionStatusComponent],
+      declarations: [NextPaComponent],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        TranslateModule.forRoot(),
-        RouterModule.forRoot([]),
-        HttpClientTestingModule,
-      ],
       providers: [
         {
           provide: ConversationService,
           useValue: MockConversationService,
         },
         {
+          provide: InstanceService,
+          useValue: MockInstanceService,
+        },
+        {
           provide: PaDataService,
           useValue: MockPaDataService,
         },
         {
-          provide: ProgramsServiceApiService,
-          useValue: mockProgramsApi,
+          provide: LoggingService,
+          useValue: MockLoggingService,
         },
-        { provide: APP_BASE_HREF, useValue: '/' },
       ],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(InclusionStatusComponent);
+    fixture = TestBed.createComponent(NextPaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

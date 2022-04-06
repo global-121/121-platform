@@ -1,11 +1,12 @@
 import {
   Component,
   ComponentFactoryResolver,
+  OnDestroy,
   OnInit,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { IonContent } from '@ionic/angular';
+import { AlertController, IonContent, MenuController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
 import { AutoSignupComponent } from '../personal-components/auto-signup/auto-signup.component';
@@ -15,6 +16,7 @@ import { CreateAccountComponent } from '../personal-components/create-account/cr
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { LoginAccountComponent } from '../personal-components/login-account/login-account.component';
 import { MonitoringQuestionComponent } from '../personal-components/monitoring-question/monitoring-question.component';
+import { NextPaComponent } from '../personal-components/next-pa/next-pa.component';
 import { PersonalDirective } from '../personal-components/personal-component.class';
 import {
   PersonalComponents,
@@ -32,6 +34,8 @@ import {
   ConversationService,
 } from '../services/conversation.service';
 import { PaDataService } from '../services/padata.service';
+import { RegistrationModeService } from '../services/registration-mode.service';
+import { SyncService } from '../services/sync.service';
 import { InclusionStatusComponent } from './../personal-components/inclusion-status/inclusion-status.component';
 
 @Component({
@@ -39,7 +43,7 @@ import { InclusionStatusComponent } from './../personal-components/inclusion-sta
   templateUrl: 'personal.page.html',
   styleUrls: ['personal.page.scss'],
 })
-export class PersonalPage implements OnInit {
+export class PersonalPage implements OnInit, OnDestroy {
   @ViewChild(IonContent)
   public ionContent: IonContent;
 
@@ -52,6 +56,12 @@ export class PersonalPage implements OnInit {
     : false;
 
   private scrollSpeed = environment.useAnimation ? 600 : 0;
+
+  public isOnline = true;
+
+  public batchCount: number;
+
+  private batchProgressAlert: HTMLIonAlertElement;
 
   private availableSections = {
     [PersonalComponents.consentQuestion]: ConsentQuestionComponent,
@@ -69,6 +79,7 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.setNotificationNumber]: SetNotificationNumberComponent,
     [PersonalComponents.signupSignin]: SignupSigninComponent,
     [PersonalComponents.autoSignup]: AutoSignupComponent,
+    [PersonalComponents.nextPa]: NextPaComponent,
   };
   public debugSections = Object.keys(this.availableSections);
 
@@ -77,13 +88,16 @@ export class PersonalPage implements OnInit {
     private resolver: ComponentFactoryResolver,
     public translate: TranslateService,
     private paDataService: PaDataService,
+    private menu: MenuController,
+    public alertController: AlertController,
+    public registrationMode: RegistrationModeService,
+    public syncService: SyncService,
   ) {
     // Listen for completed sections, to continue with next steps
+
     this.conversationService.updateConversation$.subscribe(
       async (nextAction: string) => {
-        if (
-          nextAction === this.conversationService.conversationActions.afterLogin
-        ) {
+        if (this.reloadNeeded(nextAction)) {
           await this.loadComponents();
           this.scrollToLastWhenReady();
           return;
@@ -104,6 +118,15 @@ export class PersonalPage implements OnInit {
 
       this.ionContent.scrollToPoint(0, toY, this.scrollSpeed);
     });
+
+    window.addEventListener('online', () => this.goOnline(), { passive: true });
+    window.addEventListener('offline', () => this.goOffline(), {
+      passive: true,
+    });
+
+    this.syncService.getBatchCount().subscribe((batchCount) => {
+      this.batchCount = batchCount;
+    });
   }
 
   async ngOnInit() {
@@ -114,6 +137,49 @@ export class PersonalPage implements OnInit {
     await this.loadEndpoints();
     await this.loadComponents();
     this.scrollToLastWhenReady();
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('online', () => this.goOnline());
+    window.removeEventListener('offline', () => this.goOffline());
+  }
+
+  private goOnline() {
+    this.isOnline = true;
+    this.autoBatchUpload();
+  }
+
+  private goOffline() {
+    this.isOnline = false;
+    this.batchProgressAlert.dismiss();
+  }
+
+  private async autoBatchUpload() {
+    if (this.batchCount === 0) {
+      return;
+    }
+
+    this.batchProgressAlert = await this.alertController.create({
+      header: this.translate.instant('personal.batch.upload-alert-header'),
+      message: this.translate.instant('personal.batch.upload-alert-message', {
+        nrRegistrations: this.batchCount,
+      }),
+    });
+
+    this.syncService.getBatchCount().subscribe((count) => {
+      this.batchProgressAlert.message = this.translate.instant(
+        'personal.batch.upload-alert-message',
+        {
+          nrRegistrations: count,
+        },
+      );
+
+      if (count === 0) {
+        this.batchProgressAlert.dismiss();
+      }
+    });
+
+    await this.batchProgressAlert.present();
   }
 
   private filterOutRemovedSections(
@@ -169,8 +235,6 @@ export class PersonalPage implements OnInit {
       return;
     }
 
-    console.log('PersonalPage insertSection(): ', name);
-
     const componentRef = this.container.createComponent(
       this.getComponentFactory(name),
     );
@@ -179,6 +243,7 @@ export class PersonalPage implements OnInit {
     componentInstance.moment = moment;
     componentInstance.data = data;
     componentInstance.animate = options.animate;
+    componentInstance.isOnline = this.isOnline;
   }
 
   public scrollDown() {
@@ -221,5 +286,26 @@ export class PersonalPage implements OnInit {
   public debugToggleShowDebug() {
     this.showDebug = !this.showDebug;
     window.sessionStorage.setItem('showDebug', this.showDebug ? '1' : '');
+  }
+
+  public onBatchButtonClick() {
+    if (!this.registrationMode.multiple) {
+      return;
+    }
+    this.menu.enable(true, 'batchMenu');
+    this.menu.open('batchMenu');
+  }
+
+  public uploadBatchRegistrations() {
+    this.autoBatchUpload();
+  }
+
+  private reloadNeeded(action) {
+    return [
+      this.conversationService.conversationActions.afterLogin,
+      this.conversationService.conversationActions.afterBatchSubmit,
+      this.conversationService.conversationActions.afterDisagree,
+      this.conversationService.conversationActions.afterLogout,
+    ].includes(action);
   }
 }
