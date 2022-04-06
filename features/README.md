@@ -25,6 +25,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [View PA-status metrics](HO-Portal/View_PA-status_metrics.feature)
 - [Manage aidworkers](HO-Portal/Manage_aidworkers.feature)
 - [View and Manage people affected](HO-Portal/View_and_Manage_people_affected.feature)
+- [View payment history popup](HO-Portal/View_payment_history_popup.feature)
 - [Edit information of Person Affected](HO-Portal/Edit_Info_Person_Affected.feature)
 - [Import people affected](HO-Portal/Import_people_affected.feature)
 - [Invite people affected](HO-Portal/Invite_people_affected.feature)
