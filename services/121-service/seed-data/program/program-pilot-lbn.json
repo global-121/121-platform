@@ -47,6 +47,7 @@
     }
   },
   "phoneNumberPlaceholder": "+251 000 000 000",
+  "programCustomAttributes": [],
   "programQuestions": [
     {
       "name": "invited-by-dorcas",

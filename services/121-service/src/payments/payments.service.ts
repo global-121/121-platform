@@ -1,3 +1,4 @@
+import { FspInstructions, ExportFileType } from './dto/fsp-instructions.dto';
 import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -322,7 +323,10 @@ export class PaymentsService {
     return this.intersolveService.getToCancelVouchers();
   }
 
-  public async getFspInstructions(programId, payment): Promise<any> {
+  public async getFspInstructions(
+    programId,
+    payment,
+  ): Promise<FspInstructions> {
     const transactions = await this.transactionService.getTransactions(
       programId,
       false,
@@ -331,6 +335,8 @@ export class PaymentsService {
       transaction => transaction.payment === payment,
     );
     const instructions = [];
+    let fileType: ExportFileType;
+
     for await (const transaction of paymentTransactions) {
       const registration = await this.registrationRepository.findOne({
         where: { referenceId: transaction.referenceId },
@@ -342,15 +348,27 @@ export class PaymentsService {
           transaction,
         );
         instructions.push(instruction);
+        if (!fileType) {
+          fileType = ExportFileType.csv;
+        }
       }
       if (registration.fsp.fsp === FspName.ukrPoshta) {
         const instruction = await this.ukrPoshtaService.getFspInstructions(
           registration,
           transaction,
         );
-        instructions.push(instruction);
+        if (!fileType) {
+          fileType = ExportFileType.excel;
+        }
+        if (instruction) {
+          instructions.push(instruction);
+        }
       }
     }
-    return instructions;
+
+    return {
+      data: instructions,
+      fileType: fileType,
+    };
   }
 }

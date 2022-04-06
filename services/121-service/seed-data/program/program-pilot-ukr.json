@@ -25,12 +25,12 @@
     "uk": "Безумовна багатоцільова",
     "ru": "Безусловная многофункциональность"
   },
-  "startDate": "2022-04-01T12:00:00Z",
+  "startDate": "2022-04-15T12:00:00Z",
   "endDate": "2022-06-30T12:00:00Z",
-  "currency": "EUR",
+  "currency": "UAH",
   "distributionFrequency": "once",
-  "distributionDuration": 1,
-  "fixedTransferValue": 68,
+  "distributionDuration": 10,
+  "fixedTransferValue": 6600,
   "financialServiceProviders": [
     {
       "id": 1
@@ -59,245 +59,11 @@
   "programCustomAttributes": [],
   "programQuestions": [
     {
-      "name": "householdSituation",
+      "name": "enumeratorName",
       "label": {
-        "en": "Please, select the option which better describes the current situation of your household",
-        "uk": "Будь ласка, виберіть варіант, який краще описує поточну ситуацію з вашою родиною.",
-        "ru": "Пожалуйста, выберите вариант, который лучше описывает текущую ситуацию в вашем домохозяйстве"
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "residingConflictedArea",
-          "label": {
-            "en": "We are currently residing in a conflict affected area",
-            "uk": "Зараз ми проживаємо в зоні, яка постраждала від конфлікту/війни",
-            "ru": "В настоящее время мы проживаем в зоне конфликта"
-          }
-        },
-        {
-          "option": "displacedAndSettled",
-          "label": {
-            "en": "We have been displaced by the current conflict and we settled somewhere else in the same country",
-            "uk": "Ми стали внутрішньо переміщеними особами в результаті конфлікту/війни",
-            "ru": "Мы были перемещены из-за нынешнего конфликта, и мы поселились в другом месте в той же стране."
-          }
-        },
-        {
-          "option": "displacedAndMoving",
-          "label": {
-            "en": "We have been displaced by the current conflict and we are on the move",
-            "uk": "Ми стали переміщеними особами в результаті конфлікту/війни і поки рухаємось подалі",
-            "ru": "Мы были перемещены текущим конфликтом, и мы в пути"
-          }
-        },
-        {
-          "option": "displacedPreviousConflict",
-          "label": {
-            "en": "We were displaced by a previous conflict, not the current one",
-            "uk": "Ми стали переміщеними особами в результаті попереднього конфлікту/війни",
-            "ru": "Нас вытеснил предыдущий конфликт, а не текущий"
-          }
-        },
-        {
-          "option": "hostingDisplaced",
-          "label": {
-            "en": "We are hosting someone who was displaced by the current conflict",
-            "uk": "Ми приймаємо когось, хто був переміщений через поточний етап конфлікту/війни",
-            "ru": "Мы принимаем кого-то, кто был перемещен в результате текущего конфликта"
-          }
-        },
-        {
-          "option": "otherHouseholdSituation",
-          "label": {
-            "en": "Other",
-            "uk": "Інші",
-            "ru": "Другое"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "oblast",
-      "label": {
-        "en": "What oblast is your home location in?",
-        "uk": "В якій області знаходиться ваш дім?",
-        "ru": "В какой области находится ваш дом?"
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "zakarpatska",
-          "label": {
-            "en": "Zakarpatska",
-            "uk": "Закарпатська",
-            "ru": "Закарпатская"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "raion",
-      "label": {
-        "en": "What raion is your home location in?",
-        "uk": "В якому районі знаходиться ваш дім?",
-        "ru": "В каком районе находится ваш дом?"
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "berekivskyi",
-          "label": {
-            "en": "Berekivskyi",
-            "uk": "Береківський",
-            "ru": "Берековский"
-          }
-        },
-        {
-          "option": "mukachivskyi ",
-          "label": {
-            "en": "Mukachivskyi",
-            "uk": "Мукачівський",
-            "ru": "Мукачевский"
-          }
-        },
-        {
-          "option": "uzhorodskyi",
-          "label": {
-            "en": "Uzhorodskyi",
-            "uk": "Ужгородський",
-            "ru": "Ужгородский"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "householdResidingNow",
-      "label": {
-        "en": "Where is your household residing now?",
-        "uk": "Де зараз проживає ваша родина?",
-        "ru": "Где сейчас проживает ваша семья?"
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "home",
-          "label": {
-            "en": "In my home location",
-            "uk": "У моєму домі",
-            "ru": "В моем домашнем местоположении"
-          }
-        },
-        {
-          "option": "onTheMove",
-          "label": {
-            "en": "We are on the move",
-            "uk": "Ми в дорозі",
-            "ru": "Мы в пути"
-          }
-        },
-        {
-          "option": "displacedAnotherLocation",
-          "label": {
-            "en": "We are displaced in another location",
-            "uk": "Ми переміщені в інше місце",
-            "ru": "Мы перемещены в другое место"
-          }
-        }
-      ],
-      "scoring": {}
-    },
-    {
-      "name": "phoneNumber",
-      "label": {
-        "en": "Please, can you give us your phone number?",
-        "uk": "Вкажіть ваш телефонний номер",
-        "ru": "Пожалуйста, не могли бы вы дать нам свой номер телефона?"
-      },
-      "placeholder": {
-        "en": "+380 000 000 000",
-        "uk": "+380 000 000 000",
-        "ru": "+380 000 000 000"
-      },
-      "answerType": "tel",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": [],
-      "scoring": {}
-    },
-    {
-      "name": "gender",
-      "label": {
-        "en": "What is your gender?",
-        "uk": "Стать",
-        "ru": "Какого Вы пола?"
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "male",
-          "label": {
-            "en": "Male",
-            "uk": "Чол.",
-            "ru": "Мужчина"
-          }
-        },
-        {
-          "option": "female",
-          "label": {
-            "en": "Female",
-            "uk": "Жін.",
-            "ru": "Женщина"
-          }
-        },
-        {
-          "option": "otherGender",
-          "label": {
-            "en": "Other",
-            "uk": "Інший",
-            "ru": "Другое"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "dateOfBirth",
-      "label": {
-        "en": "What is your date of birth?",
-        "uk": "Дата народження",
-        "ru": "Какая у вас дата рождения?"
-      },
-      "answerType": "date",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "firstNameHM1",
-      "label": {
-        "en": "Adult HM1 - What is your first name?",
-        "uk": "Дорослий HM1 - Вкажіть ваше імʼя.",
-        "ru": "Взрослый HM1 - Как ваше имя?"
+        "en": "Enumerator name:",
+        "uk": "",
+        "ru": ""
       },
       "answerType": "text",
       "questionType": "standard",
@@ -307,13 +73,13 @@
       "scoring": {}
     },
     {
-      "name": "lastNameHM1",
+      "name": "nrOfMaleAdults",
       "label": {
-        "en": "Adult HM1 - What is your last name?",
-        "uk": "Дорослий HM1 - Вкажіть ваше прізвище.",
-        "ru": "Взрослый HM1 - Как ваша фамилия?"
+        "en": "How many men in your household are between 18 and 65?",
+        "uk": "",
+        "ru": ""
       },
-      "answerType": "text",
+      "answerType": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -321,13 +87,13 @@
       "scoring": {}
     },
     {
-      "name": "patronymicNameHM1",
+      "name": "nrOFemaleAdults",
       "label": {
-        "en": "Adult HM1 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
-        "uk": "Дорослий HM1 - Вкажіть ваше імʼя по батькові",
-        "ru": "Взрослый HM1 - Как ваше отчество? (т.е. часть вашего имени, основанная на имени вашего отца)"
+        "en": "How many women in your household are between 18 and 65?",
+        "uk": "",
+        "ru": ""
       },
-      "answerType": "text",
+      "answerType": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -335,52 +101,13 @@
       "scoring": {}
     },
     {
-      "name": "genderHM1",
+      "name": "nrOfMaleElderly",
       "label": {
-        "en": "Adult HM1 - What is your gender?",
-        "uk": "Дорослий HM1 - Вкажіть вашу стать.",
-        "ru": "Взрослый HM1 - Какой у вас пол?"
+        "en": "How many men in your household are over 65?",
+        "uk": "",
+        "ru": ""
       },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "male",
-          "label": {
-            "en": "Male",
-            "uk": "Чол.",
-            "ru": "Мужчина"
-          }
-        },
-        {
-          "option": "female",
-          "label": {
-            "en": "Female",
-            "uk": "Жін.",
-            "ru": "Женщина"
-          }
-        },
-        {
-          "option": "otherGender",
-          "label": {
-            "en": "Other",
-            "uk": "Інший",
-            "ru": "Другое"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "dateOfBirthHM1",
-      "label": {
-        "en": "Adult HM1 - What is your date of birth?",
-        "uk": "Дорослий HM1 - Вкажіть вашу дату народження.",
-        "ru": "Взрослый HM1 - Какая у вас дата рождения?"
-      },
-      "answerType": "date",
+      "answerType": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -388,13 +115,13 @@
       "scoring": {}
     },
     {
-      "name": "taxNumberHM1",
+      "name": "nrOFemaleElderly",
       "label": {
-        "en": "Adult HM1 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
-        "uk": "Дорослий HM1 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-'",
-        "ru": "Взрослый HM1 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
+        "en": "How many women in your household are over 65?",
+        "uk": "",
+        "ru": ""
       },
-      "answerType": "text",
+      "answerType": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -402,13 +129,13 @@
       "scoring": {}
     },
     {
-      "name": "firstNameHM2",
+      "name": "nrOfBoys",
       "label": {
-        "en": "Adult HM2 - What is your first name?",
-        "uk": "Дорослий HM2 - Вкажіть ваше імʼя.",
-        "ru": "Взрослый HM2 - Как ваше имя?"
+        "en": "How many boys in your household are under 18?",
+        "uk": "Скільки хлопців у вашій родині молодше 18 років? ",
+        "ru": "Сколько мальчиков в вашей семье моложе 18 лет?"
       },
-      "answerType": "text",
+      "answerType": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -416,312 +143,13 @@
       "scoring": {}
     },
     {
-      "name": "lastNameHM2",
+      "name": "nrOfGirls",
       "label": {
-        "en": "Adult HM2 - What is your last name?",
-        "uk": "Дорослий HM2 - Вкажіть ваше прізвище.",
-        "ru": "Взрослый HM2 - Как ваша фамилия?"
+        "en": "How many girls in your household are under 18?",
+        "uk": "Скільки дівчат у вашій родині молодше 18 років?",
+        "ru": "Сколько девочек в вашей семье моложе 18 лет?"
       },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "patronymicNameHM2",
-      "label": {
-        "en": "Adult HM2 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
-        "uk": "Дорослий HM2 - Вкажіть ваше імʼя по батькові",
-        "ru": "Взрослый HM2 - Как ваше отчество? (т.е. часть вашего имени, основанная на имени вашего отца)"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "genderHM2",
-      "label": {
-        "en": "Adult HM2 - What is your gender?",
-        "uk": "Дорослий HM2 - Вкажіть вашу стать.",
-        "ru": "Взрослый HM2 - Какой у вас пол?"
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "male",
-          "label": {
-            "en": "Male",
-            "uk": "Чол.",
-            "ru": "Мужчина"
-          }
-        },
-        {
-          "option": "female",
-          "label": {
-            "en": "Female",
-            "uk": "Жін.",
-            "ru": "Женщина"
-          }
-        },
-        {
-          "option": "otherGender",
-          "label": {
-            "en": "Other",
-            "uk": "Інший",
-            "ru": "Другое"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "dateOfBirthHM2",
-      "label": {
-        "en": "Adult HM2 - What is your date of birth?",
-        "uk": "Дорослий HM2 - Вкажіть вашу дату народження.",
-        "ru": "Взрослый HM2 - Какая у вас дата рождения?"
-      },
-      "answerType": "date",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "taxNumberHM2",
-      "label": {
-        "en": "Adult HM2 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
-        "uk": "Дорослий HM2 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-'",
-        "ru": "Взрослый HM2 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "firstNameHM3",
-      "label": {
-        "en": "Adult HM3 - What is your first name?",
-        "uk": "Дорослий HM3 - Вкажіть ваше імʼя.",
-        "ru": "Взрослый HM3 - Как ваше имя?"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "lastNameHM3",
-      "label": {
-        "en": "Adult HM3 - What is your last name?",
-        "uk": "Дорослий HM3 - Вкажіть ваше прізвище.",
-        "ru": "Взрослый HM3 - Как ваша фамилия?"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "patronymicNameHM3",
-      "label": {
-        "en": "Adult HM3 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
-        "uk": "Дорослий HM3 - Вкажіть ваше імʼя по батькові",
-        "ru": "Взрослый HM3 - Как ваше отчество? (т.е. часть вашего имени, основанная на имени вашего отца)"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "genderHM3",
-      "label": {
-        "en": "Adult HM3 - What is your gender?",
-        "uk": "Дорослий HM3 - Вкажіть вашу стать.",
-        "ru": "Взрослый HM3 - Какой у вас пол?"
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "male",
-          "label": {
-            "en": "Male",
-            "uk": "Чол.",
-            "ru": "Мужчина"
-          }
-        },
-        {
-          "option": "female",
-          "label": {
-            "en": "Female",
-            "uk": "Жін.",
-            "ru": "Женщина"
-          }
-        },
-        {
-          "option": "otherGender",
-          "label": {
-            "en": "Other",
-            "uk": "Інший",
-            "ru": "Другое"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "dateOfBirthHM3",
-      "label": {
-        "en": "Adult HM3 - What is your date of birth?",
-        "uk": "Дорослий HM3 - Вкажіть вашу дату народження.",
-        "ru": "Взрослый HM3 - Какая у вас дата рождения?"
-      },
-      "answerType": "date",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "taxNumberHM3",
-      "label": {
-        "en": "Adult HM3 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
-        "uk": "Дорослий HM3 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-'",
-        "ru": "Взрослый HM3 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "firstNameHM4",
-      "label": {
-        "en": "Adult HM4 - What is your first name?",
-        "uk": "Дорослий HM4 - Вкажіть ваше імʼя.",
-        "ru": "Взрослый HM4 - Как ваше имя?"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "lastNameHM4",
-      "label": {
-        "en": "Adult HM4 - What is your last name?",
-        "uk": "Дорослий HM4 - Вкажіть ваше прізвище.",
-        "ru": "Взрослый HM4 - Как ваша фамилия?"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "patronymicNameHM4",
-      "label": {
-        "en": "Adult HM4 - What is your patronymic name? (i.e. the part of your name based on your father's name)",
-        "uk": "Дорослий HM4 - Вкажіть ваше імʼя по батькові",
-        "ru": "Взрослый HM4 - Как ваше отчество? (т.е. часть вашего имени, основанная на имени вашего отца)"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "genderHM4",
-      "label": {
-        "en": "Adult HM4 - What is your gender?",
-        "uk": "Дорослий HM4 - Вкажіть вашу стать.",
-        "ru": "Взрослый HM4 - Какой у вас пол?"
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "male",
-          "label": {
-            "en": "Male",
-            "uk": "Чол.",
-            "ru": "Мужчина"
-          }
-        },
-        {
-          "option": "female",
-          "label": {
-            "en": "Female",
-            "uk": "Жін.",
-            "ru": "Женщина"
-          }
-        },
-        {
-          "option": "otherGender",
-          "label": {
-            "en": "Other",
-            "uk": "Інший",
-            "ru": "Другое"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "dateOfBirthHM4",
-      "label": {
-        "en": "Adult HM4 - What is your date of birth?",
-        "uk": "Дорослий HM4 - Вкажіть вашу дату народження.",
-        "ru": "Взрослый HM4 - Какая у вас дата рождения?"
-      },
-      "answerType": "date",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "taxNumberHM4",
-      "label": {
-        "en": "Adult HM4 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
-        "uk": "Дорослий HM4 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-' ",
-        "ru": "Взрослый HM4 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
-      },
-      "answerType": "text",
+      "answerType": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -771,13 +199,180 @@
       "scoring": {}
     },
     {
-      "name": "nrOfGirls",
+      "name": "householdSituation",
       "label": {
-        "en": "How many girls in your household are under 18?",
-        "uk": "Скільки дівчат у вашій родині молодше 18 років?",
-        "ru": "Сколько девочек в вашей семье моложе 18 лет?"
+        "en": "Please, select the option which better describes the current situation of your household",
+        "uk": "Будь ласка, виберіть варіант, який краще описує поточну ситуацію з вашою родиною.",
+        "ru": "Пожалуйста, выберите вариант, который лучше описывает текущую ситуацию в вашем домохозяйстве"
       },
-      "answerType": "numeric",
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "residingConflictedArea",
+          "label": {
+            "en": "We are currently residing in a conflict affected area",
+            "uk": "Зараз ми проживаємо в зоні, яка постраждала від конфлікту/війни",
+            "ru": "В настоящее время мы проживаем в зоне конфликта"
+          }
+        },
+        {
+          "option": "displacedAndSettled",
+          "label": {
+            "en": "We have been displaced by the current conflict and we settled somewhere else in the same country",
+            "uk": "Ми стали внутрішньо переміщеними особами в результаті конфлікту/війни",
+            "ru": "Мы были перемещены из-за нынешнего конфликта, и мы поселились в другом месте в той же стране."
+          }
+        },
+        {
+          "option": "displacedAndMoving",
+          "label": {
+            "en": "We have been displaced by the current conflict and we are on the move",
+            "uk": "Ми стали переміщеними особами в результаті конфлікту/війни і поки рухаємось подалі",
+            "ru": "Мы были перемещены текущим конфликтом, и мы в пути"
+          }
+        },
+        {
+          "option": "hostingDisplaced",
+          "label": {
+            "en": "We are hosting someone who was displaced by the current conflict",
+            "uk": "Ми приймаємо когось, хто був переміщений через поточний етап конфлікту/війни",
+            "ru": "Мы принимаем кого-то, кто был перемещен в результате текущего конфликта"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "oblast",
+      "label": {
+        "en": "What oblast is your current location in?",
+        "uk": "В якій області знаходиться ваш дім?",
+        "ru": "В какой области находится ваш дом?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "zakarpatska",
+          "label": {
+            "en": "Zakarpatska",
+            "uk": "Закарпатська",
+            "ru": "Закарпатская"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "raion",
+      "label": {
+        "en": "What raion is your current location in?",
+        "uk": "В якому районі знаходиться ваш дім?",
+        "ru": "В каком районе находится ваш дом?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "berekivskyi",
+          "label": {
+            "en": "Berekivskyi",
+            "uk": "Береківський",
+            "ru": "Берековский"
+          }
+        },
+        {
+          "option": "mukachivskyi ",
+          "label": {
+            "en": "Mukachivskyi",
+            "uk": "Мукачівський",
+            "ru": "Мукачевский"
+          }
+        },
+        {
+          "option": "uzhorodskyi",
+          "label": {
+            "en": "Uzhorodskyi",
+            "uk": "Ужгородський",
+            "ru": "Ужгородский"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Please, can you give us your phone number?",
+        "uk": "Вкажіть ваш телефонний номер",
+        "ru": "Пожалуйста, не могли бы вы дать нам свой номер телефона?"
+      },
+      "placeholder": {
+        "en": "+380 000 000 000",
+        "uk": "+380 000 000 000",
+        "ru": "+380 000 000 000"
+      },
+      "answerType": "tel",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [],
+      "scoring": {}
+    },
+    {
+      "name": "gender",
+      "label": {
+        "en": "Applicant - What is your gender?",
+        "uk": "Стать",
+        "ru": "Какого Вы пола?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male",
+            "uk": "Чол.",
+            "ru": "Мужчина"
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female",
+            "uk": "Жін.",
+            "ru": "Женщина"
+          }
+        },
+        {
+          "option": "otherGender",
+          "label": {
+            "en": "Other",
+            "uk": "Інший",
+            "ru": "Другое"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "dateOfBirth",
+      "label": {
+        "en": "Applicant - What is your date of birth?",
+        "uk": "Дата народження",
+        "ru": "Какая у вас дата рождения?"
+      },
+      "answerType": "date",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -785,13 +380,13 @@
       "scoring": {}
     },
     {
-      "name": "nrOfBoys",
+      "name": "taxNumberAdult1",
       "label": {
-        "en": "How many boys in your household are under 18?",
-        "uk": "Скільки хлопців у вашій родині молодше 18 років? ",
-        "ru": "Сколько мальчиков в вашей семье моложе 18 лет?"
+        "en": "Adult 1 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
+        "uk": "Дорослий 1 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-'",
+        "ru": "Взрослый 1 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
       },
-      "answerType": "numeric",
+      "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -799,13 +394,13 @@
       "scoring": {}
     },
     {
-      "name": "nrOfHouseholdMembers",
+      "name": "taxNumberAdult2",
       "label": {
-        "en": "No of people in the household, relevant for tax office, not required for Ukrposhta",
-        "uk": "Кількість людей у сімʼї у системі, актуальна для податкової, не обвʼязково для Укрпошти ",
-        "ru": "Количество лиц в домохозяйстве, релевантных для налоговой инспекции, не требуется для Укрпочты"
+        "en": "Adult 2 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
+        "uk": "Дорослий 2 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-'",
+        "ru": "Взрослый 2 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
       },
-      "answerType": "numeric",
+      "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -813,9 +408,37 @@
       "scoring": {}
     },
     {
-      "name": "commentsFromEnumarator",
+      "name": "taxNumberAdult3",
       "label": {
-        "en": "Comments from the enumarator: ",
+        "en": "Adult 3 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
+        "uk": "Дорослий 3 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-'",
+        "ru": "Взрослый 3 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "taxNumberAdult4",
+      "label": {
+        "en": "Adult 4 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
+        "uk": "Дорослий 4 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-' ",
+        "ru": "Взрослый 4 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "commentsFromEnumerator",
+      "label": {
+        "en": "Comments from the enumerator: ",
         "uk": "Коментарі переписувача: ",
         "ru": "Комментарии от счетчика:"
       },

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { FspName } from '../../../fsp/financial-service-provider.entity';
 import { LookupService } from '../../../notifications/lookup/lookup.service';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
+import { RegistrationStatusEnum } from '../../../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
@@ -56,21 +57,16 @@ export class UkrPoshtaService {
     ukrPoshtaFspInstructions[
       'Oblast / Rayon / city / street / house / postal index'
     ] = registration.customData[CustomDataAttributes.address];
-    ukrPoshtaFspInstructions['Name / last name / fathers name'] =
+    ukrPoshtaFspInstructions['Last name / First name / Fathers name'] =
       registration.customData[CustomDataAttributes.name];
     ukrPoshtaFspInstructions.Amount = transaction.amount;
     ukrPoshtaFspInstructions['Tax ID number'] =
       registration.customData[CustomDataAttributes.taxId];
     ukrPoshtaFspInstructions['Transfer costs'] = null;
     ukrPoshtaFspInstructions['Transfer track no (Dorcas database no)'] = null;
-    ukrPoshtaFspInstructions['Telephone'] = await this.formatToLocalNumber(
-      registration.customData[CustomDataAttributes.phoneNumber],
-    );
+    ukrPoshtaFspInstructions['Telephone'] =
+      registration.customData[CustomDataAttributes.phoneNumber];
 
     return ukrPoshtaFspInstructions;
-  }
-
-  private async formatToLocalNumber(phonenumber: string): Promise<number> {
-    return await this.lookupService.getLocalNumber(`+${phonenumber}`);
   }
 }
