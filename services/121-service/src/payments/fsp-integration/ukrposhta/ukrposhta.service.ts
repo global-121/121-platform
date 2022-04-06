@@ -52,25 +52,23 @@ export class UkrPoshtaService {
     registration: RegistrationEntity,
     transaction: TransactionEntity,
   ): Promise<UkrPoshtaFspInstructions> {
-    if (registration.registrationStatus === RegistrationStatusEnum.included) {
-      const ukrPoshtaFspInstructions = new UkrPoshtaFspInstructions();
+    const ukrPoshtaFspInstructions = new UkrPoshtaFspInstructions();
 
-      ukrPoshtaFspInstructions[
-        'Oblast / Rayon / city / street / house / postal index'
-      ] = registration.customData[CustomDataAttributes.address];
-      ukrPoshtaFspInstructions['Last name / First name / Fathers name'] =
-        registration.customData[CustomDataAttributes.name];
-      ukrPoshtaFspInstructions.Amount = transaction.amount;
-      ukrPoshtaFspInstructions['Tax ID number'] =
-        registration.customData[CustomDataAttributes.taxId];
-      ukrPoshtaFspInstructions['Transfer costs'] = null;
-      ukrPoshtaFspInstructions['Transfer track no (Dorcas database no)'] = null;
-      ukrPoshtaFspInstructions['Telephone'] = await this.formatToLocalNumber(
-        registration.customData[CustomDataAttributes.phoneNumber],
-      );
+    ukrPoshtaFspInstructions[
+      'Oblast / Rayon / city / street / house / postal index'
+    ] = registration.customData[CustomDataAttributes.address];
+    ukrPoshtaFspInstructions['Last name / First name / Fathers name'] =
+      registration.customData[CustomDataAttributes.name];
+    ukrPoshtaFspInstructions.Amount = transaction.amount;
+    ukrPoshtaFspInstructions['Tax ID number'] =
+      registration.customData[CustomDataAttributes.taxId];
+    ukrPoshtaFspInstructions['Transfer costs'] = null;
+    ukrPoshtaFspInstructions['Transfer track no (Dorcas database no)'] = null;
+    ukrPoshtaFspInstructions['Telephone'] = await this.formatToLocalNumber(
+      registration.customData[CustomDataAttributes.phoneNumber],
+    );
 
-      return ukrPoshtaFspInstructions;
-    }
+    return ukrPoshtaFspInstructions;
   }
 
   private async formatToLocalNumber(phonenumber: string): Promise<number> {
