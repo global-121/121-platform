@@ -368,7 +368,7 @@
     {
       "name": "dateOfBirth",
       "label": {
-        "en": "Head of household - What is your date of birth?",
+        "en": "Applicant - What is your date of birth?",
         "uk": "Дата народження",
         "ru": "Какая у вас дата рождения?"
       },
