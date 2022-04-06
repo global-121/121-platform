@@ -12,6 +12,7 @@ import { CreatePaymentDto } from './dto/create-payment.dto';
 import { PermissionsGuard } from '../permissions.guard';
 import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
+import { FspInstructions } from './dto/fsp-instructions.dto';
 
 @UseGuards(PermissionsGuard)
 @ApiUseTags('payments')
@@ -64,7 +65,7 @@ export class PaymentsController {
       'Get payments instructions for past payment to post in Financial Service Provider Portal',
   })
   @Get('programs/:programId/payments/:payment/fsp-instructions')
-  public async getFspInstructions(@Param() params): Promise<any> {
+  public async getFspInstructions(@Param() params): Promise<FspInstructions> {
     return await this.paymentsService.getFspInstructions(
       Number(params.programId),
       Number(params.payment),
