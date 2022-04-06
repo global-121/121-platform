@@ -64,14 +64,9 @@ export class UkrPoshtaService {
       registration.customData[CustomDataAttributes.taxId];
     ukrPoshtaFspInstructions['Transfer costs'] = null;
     ukrPoshtaFspInstructions['Transfer track no (Dorcas database no)'] = null;
-    ukrPoshtaFspInstructions['Telephone'] = await this.formatToLocalNumber(
-      registration.customData[CustomDataAttributes.phoneNumber],
-    );
+    ukrPoshtaFspInstructions['Telephone'] =
+      registration.customData[CustomDataAttributes.phoneNumber];
 
     return ukrPoshtaFspInstructions;
-  }
-
-  private async formatToLocalNumber(phonenumber: string): Promise<number> {
-    return await this.lookupService.getLocalNumber(`+${phonenumber}`);
   }
 }
