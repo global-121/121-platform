@@ -32,13 +32,18 @@ To use it locally:
 
 - Run: `npm run start:debug-production` instead of `npm start` (in each interfaces' specific folder).
 - This part is needed extra for the cookies to be correctly set and processed:
-  - In Chrome
+  - In 121-service's `user.controller` set 
+    - `sameSite: 'None'` and `secure: true`
+    - do this in `@Post('user/login')` for the AW-app to work correctly 
+    - and in `@Post('user/person-affected')` for the PA-app to work correctly
+    - change the values back to normal before deploying anything or when switching to the normal local mode again
+    - NOTE: this process can obviously be improved by using some env-variable that is set differently when starting the apps in debug-production mode. 
+  - In Chrome (unfortunately no alternative for the below in other browsers have been identified at the moment)
     - go to chrome://flags/#unsafely-treat-insecure-origin-as-secure
     - enable it
     - add http://127.0.0.1
     - relaunch
     - change the values back to normal when switching to the normal local mode again
-  -  Unfortunately no alternative for the below in other browsers have been identified at the moment
 - The interface will be available at: <http://localhost:8088/>.
 - Check the service-worker's status via: `Developer Tools > Application > Service Workers`.
 

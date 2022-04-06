@@ -4,9 +4,6 @@
     "delete-data": "Delete my data",
     "logout": "Log out"
   },
-  "multiple-registration-mode": {
-    "toggle": "Multiple registrations mode"
-  },
   "connection": {
     "error-retry": "Something went wrong, do you want to try again?"
   },
@@ -142,19 +139,6 @@
       "create-id": "Create account",
       "introduction": "To apply for this aid program, you need to have an account. Please create your account or use your existing account.",
       "login-id": "Use my account"
-    },
-    "next-pa": {
-      "new-pa": "Add another person affected",
-      "save-pa": "Save this person affected"
-    },
-    "batch": {
-      "toolbar-queue-button": "{{nrRegistrations}} registrations",
-      "menu-title": "Registrations",
-      "menu-text-offline": "At the moment you are offline.",
-      "menu-text": "Registrations are stored inside your browser. When the webpage is open and you are online, they will be uploaded automatically.",
-      "menu-upload-button": "Upload manually",
-      "upload-alert-header": "Uploading registrations.",
-      "upload-alert-message": "You are now online. Uploading {{nrRegistrations}} registrations."
     }
   },
   "q-and-a-set": {

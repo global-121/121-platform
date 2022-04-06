@@ -1,19 +1,10 @@
 <ion-header>
   <ion-toolbar color="dark">
     <ion-title>
-      <ion-label>{{ 'tabs.you'|translate }} </ion-label>
+      {{ 'tabs.you'|translate }}
     </ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" *ngIf="isDebug">
       <ion-button
-        *ngIf="registrationMode.multiple"
-        fill="outline"
-        color="light"
-        (click)="onBatchButtonClick()"
-      >
-        {{ 'personal.batch.toolbar-queue-button'|translate:{ nrRegistrations: batchCount } }}
-      </ion-button>
-      <ion-button
-        *ngIf="isDebug"
         (click)="debugToggleShowDebug()"
         [color]="showDebug ? 'warning' : ''"
         fill="clear"
@@ -24,35 +15,6 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
-<ion-menu side="start" menuId="batchMenu" contentId="batchMenuContent">
-  <ion-content color="dark" class="ion-padding">
-    <ion-item color="dark" lines="none" class="ion-margin-vertical ion-no-padding">
-      <ion-text>
-        <h3>
-          {{ "personal.batch.menu-title" | translate }}
-        </h3>
-        <p>
-          <span *ngIf="!isOnline">{{ "personal.batch.menu-text-offline" | translate }}</span><br>
-          {{ 'personal.batch.menu-text'|translate }}
-        </p>
-      </ion-text>
-    </ion-item>
-
-    <ion-button
-      [disabled]="!isOnline || !batchCount"
-      (click)="uploadBatchRegistrations()"
-      color="light"
-      expand="block"
-      class="ion-margin-vertical"
-    >
-      {{ 'personal.batch.menu-upload-button'|translate }}
-    </ion-button>
-
-  </ion-content>
-</ion-menu>
-
-<ion-router-outlet id="batchMenuContent"></ion-router-outlet>
 
 <div
   *ngIf="isDebug"

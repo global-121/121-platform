@@ -84,12 +84,6 @@ ion-modal.user-menu-modal {
   --border-radius: 0.25em;
 }
 
-ion-modal.multiple-registrations-menu-modal {
-  --max-width: 20em;
-  --max-height: calc(2 * 3.6em); // Height of 2 menu-items
-  --border-radius: 0.25em;
-}
-
 // Make long text fit on buttons
 // This is scoped to inside dialogue-turns ONLY, to limit the side-effects on other ion-button elements
 dialogue-turn ion-button {

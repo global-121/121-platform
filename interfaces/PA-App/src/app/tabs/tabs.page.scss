@@ -7,10 +7,24 @@ ion-tab-bar {
 }
 
 ion-tab-button {
+  &.tab-disabled {
+    opacity: 0.6;
+  }
+
   &#tab-button-personal {
     --color: var(--ion-color-dark-contrast);
     --color-selected: var(--ion-color-dark-contrast);
     --background: var(--ion-color-dark);
+  }
+
+  &#tab-button-tab1 {
+    --color: var(--ion-color-dark-contrast);
+    --color-selected: var(--ion-color-dark-contrast);
+    --background: var(--ion-color-warning);
+  }
+
+  &#tab-button-tab2 {
+    --background: #b5d0c4;
   }
 }
 
