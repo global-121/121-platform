@@ -83,7 +83,7 @@
     {
       "name": "nrOfHouseHoldMembers",
       "label": {
-        "en": "How many people are in your household?",
+        "en": "What is the total number of people in your household?",
         "uk": "",
         "ru": ""
       },
