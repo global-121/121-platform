@@ -56,12 +56,34 @@
     }
   },
   "phoneNumberPlaceholder": "+380 000 000 000",
-  "programCustomAttributes": [],
+  "programCustomAttributes": [
+    {
+      "label": {
+        "en": "Nr of householdmembers"
+      },
+      "name": "nrOfHouseHoldMembers",
+      "type": "string"
+    }
+  ],
   "programQuestions": [
     {
       "name": "enumeratorName",
       "label": {
         "en": "Enumerator name:",
+        "uk": "",
+        "ru": ""
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
+      "name": "nrOfHouseHoldMembers",
+      "label": {
+        "en": "How many people are in your household?",
         "uk": "",
         "ru": ""
       },
