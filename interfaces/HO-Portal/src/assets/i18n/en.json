@@ -208,7 +208,7 @@
         "total-amount": "Total amount: {{totalCost}}",
         "result": {
           "api": "Successfully sent payment request for {{nrPa}} PA(s).<br><br>The payments can take some time to process. Inspect the PA-table below for the up-to-date status of the payment(s).<br><br>You can close this popup.",
-          "csv": "Successfully prepared payment data for {{nrPa}} PA(s).<br><br>Next, please:<ol><li>select the payment in the <strong>Choose payment...</strong> dropdown</li><li>use the <strong>Export payment instructions</strong> button</li><li>save the resulting file in the XLSX format required by the Financial Service Provider/li><li>upload the result in the portal of the Financial Service Provider.</li></ol>"
+          "csv": "Successfully prepared payment data for {{nrPa}} PA(s).<br><br>Next, please:<ol><li>select the payment in the <strong>Choose payment...</strong> dropdown</li><li>use the <strong>Export payment instructions</strong> button</li><li>save the resulting file in the XLSX format required by the Financial Service Provider</li><li>upload the result in the portal of the Financial Service Provider.</li></ol>"
         },
         "in-progress": "Payment in progress",
         "make-export": "Export payment data",
