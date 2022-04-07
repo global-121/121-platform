@@ -70,8 +70,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     }),
     ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.useServiceWorker && environment.production,
-      registrationStrategy: 'registerWhenStable:1000',
+      enabled: false,
     }),
   ],
   exports: [TranslateModule],

@@ -67,9 +67,11 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  logout(): Promise<null> {
-    return this.apiService
-      .post(environment.url_121_service_api, '/user/logout', {}, true)
+  logout(completedRegistration: boolean): Promise<null> {
+    return this.syncService
+      .tryPost(environment.url_121_service_api, '/user/logout', {
+        completedRegistration,
+      })
       .toPromise();
   }
 

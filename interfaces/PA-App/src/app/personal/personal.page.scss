@@ -1,0 +1,5 @@
+// Prevent the side-menu from overlapping the page (when not visible)
+// So that native form-elements (from the debug-toolbar) are still clickable
+ion-router-outlet {
+  pointer-events: none;
+}

@@ -11,6 +11,7 @@ import {
 } from 'src/app/models/logging-event.enum';
 import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
+import { ConversationService } from '../services/conversation.service';
 
 @Component({
   selector: 'app-user-menu',
@@ -22,6 +23,8 @@ export class UserMenuComponent {
   public username: string;
   private loadingDelete: HTMLIonLoadingElement;
 
+  public isOnline = window.navigator.onLine;
+
   constructor(
     private modalController: ModalController,
     private paData: PaDataService,
@@ -29,10 +32,16 @@ export class UserMenuComponent {
     private alertController: AlertController,
     private loadingController: LoadingController,
     private logger: LoggingService,
+    private conversationService: ConversationService,
   ) {
     this.paData.authenticationState$.subscribe((user) => {
       this.isLoggedIn = !!user;
       this.username = user && user.username ? user.username : '';
+    });
+
+    window.addEventListener('online', () => this.goOnline(), { passive: true });
+    window.addEventListener('offline', () => this.goOffline(), {
+      passive: true,
     });
   }
 
@@ -41,10 +50,13 @@ export class UserMenuComponent {
   }
 
   async logout() {
-    await this.paData.logout();
+    await this.paData.logout(false);
     this.close();
     this.logger.logEvent(LoggingEventCategory.ui, LoggingEvent.logout);
-    window.location.reload();
+    this.conversationService.restartConversation(
+      this.conversationService.conversationActions.afterLogout,
+    );
+    // window.location.reload();
   }
 
   async deleteData() {
@@ -76,5 +88,18 @@ export class UserMenuComponent {
     }
 
     await alert.present();
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('online', () => this.goOnline());
+    window.removeEventListener('offline', () => this.goOffline());
+  }
+
+  private goOnline() {
+    this.isOnline = true;
+  }
+
+  private goOffline() {
+    this.isOnline = false;
   }
 }
