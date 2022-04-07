@@ -7,12 +7,12 @@
   "ngo": "Dorcas Ukraine",
   "titlePortal": {
     "en": "Dorcas Ukraine cash aid program",
-    "uk": "Програма грошової допомоги Dorcas Ukraine",
+    "uk": "Програма грошової допомоги Доркас Україна",
     "ru": "Программа денежной помощи Доркас Украина"
   },
   "titlePaApp": {
     "en": "Dorcas Ukraine cash aid program",
-    "uk": "Програма грошової допомоги Dorcas Ukraine",
+    "uk": "Програма грошової допомоги Доркас Україна",
     "ru": "Программа денежной помощи Доркас Украина"
   },
   "description": {
@@ -23,7 +23,7 @@
   "descCashType": {
     "en": "Unconditional multi-purpose",
     "uk": "Безумовна багатоцільова",
-    "ru": "Безусловная многофункциональность"
+    "ru": "Многофункциональная денежная помощь"
   },
   "startDate": "2022-04-15T12:00:00Z",
   "endDate": "2022-06-30T12:00:00Z",
@@ -41,18 +41,18 @@
   "highestScoresX": 340,
   "meetingDocuments": {
     "en": "N/A",
-    "uk": "Н/Д",
-    "ru": "Н/Д"
+    "uk": "Не відноситься",
+    "ru": "Не относится"
   },
   "notifications": {
     "en": {
       "registered": "This is a message from Dorcas Ukraine.\n\nWe have received your application for support. You will be informed if you're included in the program"
     },
     "uk": {
-      "registered": "Це повідомлення від Dorcas Ukraine.\n\nМи отримали вашу заявку на підтримку. Ви отримаєте повідомлення після того як вас буде внесено до програми"
+      "registered": "Це повідомлення від Доркас Україна.\n\nМи отримали Вашу заявку на отримання грошової допомоги. Ви отримаєте повідомлення про те, чи отримаєте Ви виплату. "
     },
     "ru": {
-      "registered": "Это сообщение от Доркас Украина.\n\nМы получили вашу заявку на поддержку. Вы будете проинформированы, если вы включены в программу"
+      "registered": "Это сообщение от Доркас Украина.\n\nМы получили вашу заявку на получение денежной помощи. Мы сообщим вам в случае, если вам одобрят выплату"
     }
   },
   "phoneNumberPlaceholder": "+380 000 000 000",
@@ -70,8 +70,8 @@
       "name": "enumeratorName",
       "label": {
         "en": "Enumerator name:",
-        "uk": "",
-        "ru": ""
+        "uk": "Ім'я соціального працівника:",
+        "ru": "Имя интервьюера:"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -84,8 +84,8 @@
       "name": "nrOfHouseHoldMembers",
       "label": {
         "en": "What is the total number of people in your household?",
-        "uk": "",
-        "ru": ""
+        "uk": "Вкажішь кількість людей у вашій родині (всі ваші родичі, що в даний момент проживають разом з вами)",
+        "ru": "Укажите количество людей в вашей семье (все ваши родственники, которые в данный момент проживают вместе с вами)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -98,8 +98,8 @@
       "name": "nrOfMaleAdults",
       "label": {
         "en": "How many men in your household are between 18 and 65?",
-        "uk": "",
-        "ru": ""
+        "uk": "Скільки у вашій родині чоловіків віком від 18 до 65?",
+        "ru": "Сколько в вашей семье мужчин в возрасте от 18 до 65?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -112,8 +112,8 @@
       "name": "nrOFemaleAdults",
       "label": {
         "en": "How many women in your household are between 18 and 65?",
-        "uk": "",
-        "ru": ""
+        "uk": "Скільки у вашій родині жінок віком від 18 до 65?",
+        "ru": "Сколько в вашей семье женщин в возрасте от 18 до 65?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -126,8 +126,8 @@
       "name": "nrOfMaleElderly",
       "label": {
         "en": "How many men in your household are over 65?",
-        "uk": "",
-        "ru": ""
+        "uk": "Скільки у вашій родині чоловіків віком 65 років і старше?",
+        "ru": "Сколько в вашей семье мужчин в возрасте 65 и старше?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -140,8 +140,8 @@
       "name": "nrOFemaleElderly",
       "label": {
         "en": "How many women in your household are over 65?",
-        "uk": "",
-        "ru": ""
+        "uk": "Скільки у вашій родині жінок віком 65 років і старше?",
+        "ru": "Сколько в вашей семье женщин в возрасте 65 и старше?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -154,8 +154,8 @@
       "name": "nrOfBoys",
       "label": {
         "en": "How many boys in your household are under 18?",
-        "uk": "Скільки хлопців у вашій родині молодше 18 років? ",
-        "ru": "Сколько мальчиков в вашей семье моложе 18 лет?"
+        "uk": "Скільки у вашій родині хлопчиків молодше 18 років?",
+        "ru": "Сколько в вашей семье мальчиков до 18 лет?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -168,8 +168,8 @@
       "name": "nrOfGirls",
       "label": {
         "en": "How many girls in your household are under 18?",
-        "uk": "Скільки дівчат у вашій родині молодше 18 років?",
-        "ru": "Сколько девочек в вашей семье моложе 18 лет?"
+        "uk": "Скільки у вашій родині дівчат молодше 18 років?",
+        "ru": "Сколько в вашей семье девочек до 18 лет?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -182,8 +182,8 @@
       "name": "nrOfIllnessInHousehold",
       "label": {
         "en": "How many household members have any chronic illness or serious medical condition?",
-        "uk": "Скільки членів сім’ї мають хронічні або важкі захворювання? ",
-        "ru": "Сколько членов семьи имеют какое-либо хроническое заболевание или серьезное заболевание?"
+        "uk": "Скільки членів родини мають хронічні або важкі захворювання?",
+        "ru": "У скольких членов вашей семьи есть тяжелые либо хронические заболевания?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -196,8 +196,8 @@
       "name": "nrOfDisabilitiesInHousehold",
       "label": {
         "en": "How many household members have any physical or mental disability?",
-        "uk": "Скільки членів сімʼї мають фізичну або розумову інвалідність?",
-        "ru": "Сколько членов семьи имеют какую-либо физическую или умственную инвалидность?"
+        "uk": "Скільки членів родини мають фізичну або розумову інвалідність?",
+        "ru": "У скольких членов вашей семьи есть физическая либо уственная инвалидность?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -210,8 +210,8 @@
       "name": "nrOfPregnantInHousehold",
       "label": {
         "en": "How many household members are pregnant or lactating?",
-        "uk": "Скільки членів сім’ї вагітні або годують груддю?",
-        "ru": "Сколько членов семьи беременны или кормят грудью?"
+        "uk": "Чи є вагітні члени родини, або ті, що годують груддю?",
+        "ru": "Есть ли беременные или кормящие грудью члены семьи?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -224,8 +224,8 @@
       "name": "householdSituation",
       "label": {
         "en": "Please, select the option which better describes the current situation of your household",
-        "uk": "Будь ласка, виберіть варіант, який краще описує поточну ситуацію з вашою родиною.",
-        "ru": "Пожалуйста, выберите вариант, который лучше описывает текущую ситуацию в вашем домохозяйстве"
+        "uk": "Будь ласка, оберіть варіант, який краще описує поточну ситуацію вашої  родини:",
+        "ru": "Пожалуйста, выберите вариант, который наиболее точно описывает текущую ситуацию вашей семьи:"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -234,32 +234,32 @@
           "option": "residingConflictedArea",
           "label": {
             "en": "We are currently residing in a conflict affected area",
-            "uk": "Зараз ми проживаємо в зоні, яка постраждала від конфлікту/війни",
-            "ru": "В настоящее время мы проживаем в зоне конфликта"
+            "uk": "Зараз ми проживаємо в області, де ведуться бойові дії",
+            "ru": "В данный момент мы проживаем в области, где ведутся боевые действия"
           }
         },
         {
           "option": "displacedAndSettled",
           "label": {
             "en": "We have been displaced by the current conflict and we settled somewhere else in the same country",
-            "uk": "Ми стали внутрішньо переміщеними особами в результаті конфлікту/війни",
-            "ru": "Мы были перемещены из-за нынешнего конфликта, и мы поселились в другом месте в той же стране."
+            "uk": "Ми стали внутрішньо переміщеними особами в результаті конфлікту/війни у межах України",
+            "ru": "Из-за войны мы стали переселенцами в пределах Украины."
           }
         },
         {
           "option": "displacedAndMoving",
           "label": {
             "en": "We have been displaced by the current conflict and we are on the move",
-            "uk": "Ми стали переміщеними особами в результаті конфлікту/війни і поки рухаємось подалі",
-            "ru": "Мы были перемещены текущим конфликтом, и мы в пути"
+            "uk": "Ми стали внутрішньо переміщеними особами в результаті війни і зараз у процесі переїзду",
+            "ru": "Мы стали переселенцами в результате войны и сейчас в процессе переезда."
           }
         },
         {
           "option": "hostingDisplaced",
           "label": {
             "en": "We are hosting someone who was displaced by the current conflict",
-            "uk": "Ми приймаємо когось, хто був переміщений через поточний етап конфлікту/війни",
-            "ru": "Мы принимаем кого-то, кто был перемещен в результате текущего конфликта"
+            "uk": "Ми місцева родина, у якої проживають внутрішньо переміщені особи",
+            "ru": "Мы - местная семья, у которой проживают переселенцы"
           }
         }
       ],
@@ -271,8 +271,8 @@
       "name": "oblast",
       "label": {
         "en": "What oblast is your current location in?",
-        "uk": "В якій області знаходиться ваш дім?",
-        "ru": "В какой области находится ваш дом?"
+        "uk": "У якій області ви зараз проживаєте?",
+        "ru": "В какой области вы сейчас проживаете?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -294,8 +294,8 @@
       "name": "raion",
       "label": {
         "en": "What raion is your current location in?",
-        "uk": "В якому районі знаходиться ваш дім?",
-        "ru": "В каком районе находится ваш дом?"
+        "uk": "У якому районі ви зараз проживаєте?",
+        "ru": "В каком районе вы сейчас проживаете?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -304,8 +304,8 @@
           "option": "berekivskyi",
           "label": {
             "en": "Berekivskyi",
-            "uk": "Береківський",
-            "ru": "Берековский"
+            "uk": "Берегівський",
+            "ru": "Береговской"
           }
         },
         {
@@ -333,8 +333,8 @@
       "name": "phoneNumber",
       "label": {
         "en": "Please, can you give us your phone number?",
-        "uk": "Вкажіть ваш телефонний номер",
-        "ru": "Пожалуйста, не могли бы вы дать нам свой номер телефона?"
+        "uk": "Ваш номер телефону",
+        "ru": "Продиктуйте ваш номер телефона"
       },
       "placeholder": {
         "en": "+380 000 000 000",
@@ -352,8 +352,8 @@
       "name": "gender",
       "label": {
         "en": "Applicant - What is your gender?",
-        "uk": "Стать",
-        "ru": "Какого Вы пола?"
+        "uk": "Ваша стать (стать заявника)",
+        "ru": "Ваш (заявителя) пол"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -377,9 +377,9 @@
         {
           "option": "otherGender",
           "label": {
-            "en": "Other",
-            "uk": "Інший",
-            "ru": "Другое"
+            "en": "-",
+            "uk": "-",
+            "ru": "-"
           }
         }
       ],
@@ -391,8 +391,8 @@
       "name": "dateOfBirth",
       "label": {
         "en": "Applicant - What is your date of birth?",
-        "uk": "Дата народження",
-        "ru": "Какая у вас дата рождения?"
+        "uk": "Ваша (заявника) дата народження",
+        "ru": "Ваша (заявителя) дата рождения"
       },
       "answerType": "date",
       "questionType": "standard",
@@ -405,8 +405,8 @@
       "name": "taxNumberAdult1",
       "label": {
         "en": "Adult 1 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
-        "uk": "Дорослий 1 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-'",
-        "ru": "Взрослый 1 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
+        "uk": "Дорослий 1 - Вкажіть будь ласка ваш податковий номер (КПП). Якщо у вас його немає, введіть '-'",
+        "ru": "Взрослый 1 - Укажите, пожалуйста, свой налоговый номер (ИНН). Если у вас его нет, напишите '-'"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -419,8 +419,8 @@
       "name": "taxNumberAdult2",
       "label": {
         "en": "Adult 2 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
-        "uk": "Дорослий 2 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-'",
-        "ru": "Взрослый 2 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
+        "uk": "Дорослий 2 - Вкажіть будь ласка податковий номер (КПП), членів родини, яким більше 18 років. В іншому випадку введіть '-'",
+        "ru": "Взрослый 2 - Пожалуйста, укажите налоговый номер членов семьи старше 18. В противном случае отметьте '-'"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -433,8 +433,8 @@
       "name": "taxNumberAdult3",
       "label": {
         "en": "Adult 3 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
-        "uk": "Дорослий 3 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-'",
-        "ru": "Взрослый 3 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
+        "uk": "Дорослий 3 - Вкажіть будь ласка податковий номер (КПП), членів родини, яким більше 18 років. В іншому випадку введіть '-'",
+        "ru": "Взрослый 3 - Пожалуйста, укажите налоговый номер членов семьи старше 18. В противном случае отметьте '-'"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -447,8 +447,8 @@
       "name": "taxNumberAdult4",
       "label": {
         "en": "Adult 4 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'",
-        "uk": "Дорослий 4 - Вкажіть будь ласка ваш податковий номер (INN), якщо вам більше 18 років. Якщо у вас його немає, введіть '-' ",
-        "ru": "Взрослый 4 - Пожалуйста, укажите свой налоговый номер (IN), если вам 18+ лет. Если у вас его нет, напишите '-'"
+        "uk": "Дорослий 4 - Вкажіть будь ласка податковий номер (КПП), членів родини, яким більше 18 років. В іншому випадку введіть '-'",
+        "ru": "Взрослый 4 - Пожалуйста, укажите налоговый номер членов семьи старше 18. В противном случае отметьте '-'"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -461,8 +461,8 @@
       "name": "commentsFromEnumerator",
       "label": {
         "en": "Comments from the enumerator: ",
-        "uk": "Коментарі переписувача: ",
-        "ru": "Комментарии от счетчика:"
+        "uk": "Коментар переписувача:",
+        "ru": "Комментарии интервьюера:"
       },
       "answerType": "text",
       "questionType": "standard",
