@@ -151,7 +151,9 @@ export class PersonalPage implements OnInit, OnDestroy {
 
   private goOffline() {
     this.isOnline = false;
-    this.batchProgressAlert.dismiss();
+    if (this.batchProgressAlert) {
+      this.batchProgressAlert.dismiss();
+    }
   }
 
   private async autoBatchUpload() {

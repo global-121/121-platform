@@ -9,8 +9,10 @@
         fill="outline"
         color="light"
         (click)="onBatchButtonClick()"
+        [disabled]="isOnline"
       >
-        {{ 'personal.batch.toolbar-queue-button'|translate:{ nrRegistrations: batchCount } }}
+        <span *ngIf="isOnline"> {{ 'personal.batch.toolbar-online-button' | translate }} </span>
+        <span *ngIf="!isOnline"> {{ 'personal.batch.toolbar-queue-button'|translate:{ nrRegistrations: batchCount} }} </span>
       </ion-button>
       <ion-button
         *ngIf="isDebug"

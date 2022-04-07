@@ -148,7 +148,8 @@
       "save-pa": "Save this person affected"
     },
     "batch": {
-      "toolbar-queue-button": "{{nrRegistrations}} registrations",
+      "toolbar-queue-button": "{{nrRegistrations}} registrations queued",
+      "toolbar-online-button": "Multiple registrations mode",
       "menu-title": "Registrations",
       "menu-text-offline": "At the moment you are offline.",
       "menu-text": "Registrations are stored inside your browser. When the webpage is open and you are online, they will be uploaded automatically.",
