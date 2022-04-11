@@ -1,9 +1,7 @@
 <ion-tabs>
-
   <ion-tab-bar slot="top">
     <ion-tab-button
       tab="personal"
-      color="dark"
       layout="label-hide"
       [title]="'tabs.you'|translate"
     >
@@ -11,28 +9,27 @@
         name="chatbubbles"
         size="large"
         aria-hidden="true"
+        [color]="'dark'"
       ></ion-icon>
       <ion-label>{{ 'tabs.you'|translate }}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button
+      tab="multipleRegistration"
       (click)="openMultipleRegistrationsMenu()"
       layout="label-hide"
       [title]="'tabs.community'|translate"
-      >
+    >
       <ion-icon
         name="people"
         size="large"
         aria-hidden="true"
-        [color]="multipleRegistrationMenuOpen ? 'primary' : ''"
+        [color]="multipleRegistrationMenuOpen ? 'dark' : ''"
       ></ion-icon>
       <ion-label>{{ 'tabs.community'|translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button
-      disabled
-      layout="label-hide"
-    >
+    <ion-tab-button disabled layout="label-hide">
       <ion-label></ion-label>
     </ion-tab-button>
 

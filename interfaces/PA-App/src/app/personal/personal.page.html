@@ -1,18 +1,22 @@
 <ion-header>
   <ion-toolbar color="dark">
     <ion-title>
-      <ion-label>{{ 'tabs.you'|translate }} </ion-label>
+      <ion-label *ngIf="registrationMode.multiple"
+        >{{ 'personal.batch.menu-title'|translate }}
+      </ion-label>
     </ion-title>
     <ion-buttons slot="end">
       <ion-button
-        *ngIf="registrationMode.multiple"
+        *ngIf="registrationMode.multiple && !isOnline"
         fill="outline"
         color="light"
         (click)="onBatchButtonClick()"
         [disabled]="isOnline"
       >
-        <span *ngIf="isOnline"> {{ 'personal.batch.toolbar-online-button' | translate }} </span>
-        <span *ngIf="!isOnline"> {{ 'personal.batch.toolbar-queue-button'|translate:{ nrRegistrations: batchCount} }} </span>
+        <span>
+          {{ 'personal.batch.toolbar-queue-button'|translate:{ nrRegistrations:
+          batchCount} }}
+        </span>
       </ion-button>
       <ion-button
         *ngIf="isDebug"
@@ -29,13 +33,17 @@
 
 <ion-menu side="start" menuId="batchMenu" contentId="batchMenuContent">
   <ion-content color="dark" class="ion-padding">
-    <ion-item color="dark" lines="none" class="ion-margin-vertical ion-no-padding">
+    <ion-item
+      color="dark"
+      lines="none"
+      class="ion-margin-vertical ion-no-padding"
+    >
       <ion-text>
-        <h3>
-          {{ "personal.batch.menu-title" | translate }}
-        </h3>
+        <h3>{{ "personal.batch.menu-title" | translate }}</h3>
         <p>
-          <span *ngIf="!isOnline">{{ "personal.batch.menu-text-offline" | translate }}</span><br>
+          <span *ngIf="!isOnline"
+            >{{ "personal.batch.menu-text-offline" | translate }}</span
+          ><br />
           {{ 'personal.batch.menu-text'|translate }}
         </p>
       </ion-text>
@@ -50,7 +58,6 @@
     >
       {{ 'personal.batch.menu-upload-button'|translate }}
     </ion-button>
-
   </ion-content>
 </ion-menu>
 
@@ -62,97 +69,124 @@
   class="ion-padding"
   style="background: #fff"
 >
-<ion-row class="ion-align-items-center">
-    <select name="debugSections"
-            title="Add section"
-            (change)="insertSection($event.target.value); $event.target.value='';"
-            class="ion-margin-end"
+  <ion-row class="ion-align-items-center">
+    <select
+      name="debugSections"
+      title="Add section"
+      (change)="insertSection($event.target.value); $event.target.value='';"
+      class="ion-margin-end"
     >
       <option value="">Add section...</option>
       <option *ngFor="let section of debugSections;">{{ section }}</option>
     </select>
 
-    <select name="debugLocales"
-            title="Change locale"
-            (change)="translate.use($event.target.value); $event.target.value='';"
-            class="ion-margin-start"
+    <select
+      name="debugLocales"
+      title="Change locale"
+      (change)="translate.use($event.target.value); $event.target.value='';"
+      class="ion-margin-start"
     >
-      <option value=""> 💱 </option>
+      <option value="">💱</option>
       <option *ngFor="let lang of translate.getLangs();">{{ lang }}</option>
     </select>
 
-    <ion-button color="danger" size="small" fill="outline"
-                title="Clear storage"
-                (click)="debugClearAllStorage()"
-                class="ion-margin-end"
+    <ion-button
+      color="danger"
+      size="small"
+      fill="outline"
+      title="Clear storage"
+      (click)="debugClearAllStorage()"
+      class="ion-margin-end"
     >
       <ion-icon name="nuclear" size="small" slot="icon-only"></ion-icon>
     </ion-button>
 
-    <ion-button color="danger" size="small" fill="clear"
-                title="Step back in Conversation History"
-                (click)="conversationService.debugUndoLastStep()"
+    <ion-button
+      color="danger"
+      size="small"
+      fill="clear"
+      title="Step back in Conversation History"
+      (click)="conversationService.debugUndoLastStep()"
     >
       <ion-icon name="arrow-undo" size="small" slot="icon-only"></ion-icon>
     </ion-button>
 
-    <ion-button color="danger" size="small" fill="clear"
-                title="Fix history"
-                (click)="conversationService.debugFillHistory()"
+    <ion-button
+      color="danger"
+      size="small"
+      fill="clear"
+      title="Fix history"
+      (click)="conversationService.debugFillHistory()"
     >
       <ion-icon name="color-fill" size="small" slot="icon-only"></ion-icon>
     </ion-button>
 
-    <ion-button color="tertiary" size="small" fill="clear"
-                title="Toggle state: loading"
-                (click)="conversationService.state.isLoading=!conversationService.state.isLoading;"
+    <ion-button
+      color="tertiary"
+      size="small"
+      fill="clear"
+      title="Toggle state: loading"
+      (click)="conversationService.state.isLoading=!conversationService.state.isLoading;"
     >
-        <ion-icon size="small" slot="icon-only" name="hourglass"></ion-icon>
+      <ion-icon size="small" slot="icon-only" name="hourglass"></ion-icon>
     </ion-button>
 
-    <ion-button color="tertiary" size="small" fill="clear"
-                title="Scroll to bottom"
-                (click)="scrollDown()"
+    <ion-button
+      color="tertiary"
+      size="small"
+      fill="clear"
+      title="Scroll to bottom"
+      (click)="scrollDown()"
     >
-      <ion-icon name="arrow-down-circle-outline" size="small" slot="icon-only"></ion-icon>
+      <ion-icon
+        name="arrow-down-circle-outline"
+        size="small"
+        slot="icon-only"
+      ></ion-icon>
     </ion-button>
 
-    <ion-button color="tertiary" size="small" fill="clear"
-                title="Scroll to last section"
-                (click)="scrollToLastSection()"
+    <ion-button
+      color="tertiary"
+      size="small"
+      fill="clear"
+      title="Scroll to last section"
+      (click)="scrollToLastSection()"
     >
       <ion-icon name="download" size="small" slot="icon-only"></ion-icon>
     </ion-button>
 
-    <ion-button color="tertiary" size="small" fill="clear"
-                title="Clear conversation"
-                (click)="this.container.clear()"
+    <ion-button
+      color="tertiary"
+      size="small"
+      fill="clear"
+      title="Clear conversation"
+      (click)="this.container.clear()"
     >
       <ion-icon name="trash" size="small" slot="icon-only"></ion-icon>
     </ion-button>
 
-    <ion-button color="tertiary" size="small" fill="clear"
-                title="Start from history"
-                (click)="debugStartFromHistory()"
+    <ion-button
+      color="tertiary"
+      size="small"
+      fill="clear"
+      title="Start from history"
+      (click)="debugStartFromHistory()"
     >
       <ion-icon name="cloud-download" size="small" slot="icon-only"></ion-icon>
     </ion-button>
-
   </ion-row>
 </div>
 
-
 <ion-content color="medium" class="ion-padding-vertical">
-
   <ng-container #conversationContainer></ng-container>
 
   <div class="loading-indicator">
-    <ion-spinner name="dots"
-                 [hidden]="!conversationService.state.isLoading"
-                 class="loading-indicator--spinner"
+    <ion-spinner
+      name="dots"
+      [hidden]="!conversationService.state.isLoading"
+      class="loading-indicator--spinner"
     ></ion-spinner>
   </div>
 
   <div class="scroll-spacing"></div>
-
 </ion-content>

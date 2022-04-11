@@ -4,13 +4,9 @@
 
 ion-tab-bar {
   border-bottom: none;
-}
 
-ion-tab-button {
-  &#tab-button-personal {
-    --color: var(--ion-color-dark-contrast);
+  &#tab-button-multipleRegistration {
     --color-selected: var(--ion-color-dark-contrast);
-    --background: var(--ion-color-dark);
   }
 }
 
