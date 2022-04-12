@@ -97,7 +97,7 @@ export class UserController {
       secure = 'Lax';
     } else {
       const origin = req.get('origin');
-      const serviceWorkerDebug = origin.includes('8088');
+      const serviceWorkerDebug = origin?.includes('8088');
       sameSite = serviceWorkerDebug ? 'None' : 'Lax';
       secure = serviceWorkerDebug;
     }
@@ -131,7 +131,7 @@ export class UserController {
     try {
       const loginResponse = await this.userService.login(loginUserDto);
       const origin = req.get('origin');
-      const serviceWorkerDebug = origin.includes('8088');
+      const serviceWorkerDebug = origin?.includes('8088');
 
       res.cookie(
         loginResponse.cookieSettings.tokenKey,

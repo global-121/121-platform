@@ -275,7 +275,9 @@
           "in": "Indonesian",
           "nl": "Dutch",
           "es": "Spanish",
-          "fr": "French"
+          "fr": "French",
+          "ru": "Russian",
+          "uk": "Ukrainian"
         },
         "status": {
           "imported": "Imported",
