@@ -5,9 +5,7 @@
 ion-tab-bar {
   border-bottom: none;
 
-  &#tab-button-multipleRegistration {
-    --color-selected: var(--ion-color-dark-contrast);
-  }
+  --color-selected: var(--ion-color-dark);
 }
 
 .tab-button-person-icon {

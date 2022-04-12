@@ -4,12 +4,12 @@
       tab="personal"
       layout="label-hide"
       [title]="'tabs.you'|translate"
+      [selected]="!multipleRegistrationMenuOpen"
     >
       <ion-icon
         name="chatbubbles"
         size="large"
         aria-hidden="true"
-        [color]="'dark'"
       ></ion-icon>
       <ion-label>{{ 'tabs.you'|translate }}</ion-label>
     </ion-tab-button>
@@ -19,12 +19,12 @@
       (click)="openMultipleRegistrationsMenu()"
       layout="label-hide"
       [title]="'tabs.community'|translate"
+      [selected]="multipleRegistrationMenuOpen"
     >
       <ion-icon
         name="people"
         size="large"
         aria-hidden="true"
-        [color]="multipleRegistrationMenuOpen ? 'dark' : ''"
       ></ion-icon>
       <ion-label>{{ 'tabs.community'|translate }}</ion-label>
     </ion-tab-button>
