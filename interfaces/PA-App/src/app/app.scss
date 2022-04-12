@@ -118,3 +118,13 @@ dialogue-turn ion-card-content p {
 ion-radio-group ion-item:first-of-type:not(:last-of-type) {
   --border-width: 1px 0;
 }
+
+.system-notification {
+  --max-width: 100%;
+  --width: 100%;
+  --box-shadow: none;
+  --border-radius: none;
+  --start: 0;
+  --end: 0;
+  --ion-safe-area-top: 104px; // override .toast-wrapper.toast-top inline style top rule
+}

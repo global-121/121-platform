@@ -6,7 +6,12 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { AlertController, IonContent, MenuController } from '@ionic/angular';
+import {
+  AlertController,
+  IonContent,
+  MenuController,
+  ToastController,
+} from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
 import { AutoSignupComponent } from '../personal-components/auto-signup/auto-signup.component';
@@ -82,6 +87,7 @@ export class PersonalPage implements OnInit, OnDestroy {
     [PersonalComponents.nextPa]: NextPaComponent,
   };
   public debugSections = Object.keys(this.availableSections);
+  private toast: HTMLIonToastElement;
 
   constructor(
     public conversationService: ConversationService,
@@ -92,6 +98,7 @@ export class PersonalPage implements OnInit, OnDestroy {
     public alertController: AlertController,
     public registrationMode: RegistrationModeService,
     public syncService: SyncService,
+    public toastController: ToastController,
   ) {
     // Listen for completed sections, to continue with next steps
 
@@ -154,6 +161,27 @@ export class PersonalPage implements OnInit, OnDestroy {
     if (this.batchProgressAlert) {
       this.batchProgressAlert.dismiss();
     }
+  }
+
+  async presentReadyForOfflineToast() {
+    this.toast = await this.toastController.create({
+      message: this.translate.instant('personal.batch.ready-for-offline-use'),
+      cssClass: 'system-notification ion-text-center',
+      position: 'top',
+      color: 'tertiary',
+      buttons: [
+        {
+          side: 'end',
+          icon: 'close',
+          role: 'cancel',
+        },
+      ],
+    });
+    await this.toast.present();
+  }
+
+  public closeReadyForOfflineToast() {
+    this.toast.dismiss();
   }
 
   private async autoBatchUpload() {
