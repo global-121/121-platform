@@ -60,6 +60,9 @@ export class UserMenuComponent {
   }
 
   async deleteData() {
+    if (!window.confirm('Are you sure?')) {
+      return;
+    }
     this.paData.deleteData().then(() => {
       this.logout();
     });

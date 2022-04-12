@@ -5,9 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.39.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.41.1...master)
 
 ---
+## [1.41.1](https://github.com/global-121/121-platform/compare/v1.41.0...1.41.1) - 2022-04-12
+
+## [1.41.0](https://github.com/global-121/121-platform/compare/v1.40.0...1.41.0) - 2022-04-10
+
+## [1.40.0](https://github.com/global-121/121-platform/compare/v1.39.0...1.40.0) - 2022-04-07
+
 ## [1.39.0](https://github.com/global-121/121-platform/compare/v1.38.0...1.39.0) - 2022-04-06
 
 ## [1.38.0](https://github.com/global-121/121-platform/compare/v1.37.1...1.38.0) - 2022-04-05
