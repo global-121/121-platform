@@ -50,7 +50,7 @@
     "@swimlane/ngx-datatable": "^19.0.0",
     "core-js": "2.6.8",
     "file-saver": "^2.0.2",
-    "ngx-popperjs": "^9.0.7",
+    "ngx-popperjs": "^11.0.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "xlsx": "^0.18.2",
