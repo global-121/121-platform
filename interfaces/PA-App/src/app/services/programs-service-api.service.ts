@@ -19,13 +19,27 @@ export class ProgramsServiceApiService {
     private syncService: SyncService,
   ) {}
 
+  private localStoragePromise(key): Promise<any> {
+    return Promise.resolve().then(() => {
+      return JSON.parse(localStorage.getItem(key));
+    });
+  }
+
   getInstanceInformation(): Promise<InstanceData> {
+    if (!navigator.onLine) {
+      return this.localStoragePromise('instance');
+    }
+
     return this.apiService
       .get(environment.url_121_service_api, '/instance')
       .toPromise();
   }
 
   getAllPrograms(): Promise<Program[]> {
+    if (!navigator.onLine) {
+      return this.localStoragePromise('allPrograms');
+    }
+
     return this.apiService
       .get(environment.url_121_service_api, '/programs/published/all')
       .pipe(map((response) => response.programs))
@@ -33,12 +47,20 @@ export class ProgramsServiceApiService {
   }
 
   getProgramById(programId: number): Promise<Program> {
+    if (!navigator.onLine) {
+      return this.localStoragePromise(`program${programId}`);
+    }
+
     return this.apiService
       .get(environment.url_121_service_api, '/programs/' + programId)
       .toPromise();
   }
 
   getFspById(fspId: number): Promise<Fsp> {
+    if (!navigator.onLine) {
+      return this.localStoragePromise(`fsp${fspId}`);
+    }
+
     return this.apiService
       .get(environment.url_121_service_api, '/fsp/' + fspId)
       .toPromise();
@@ -91,6 +113,10 @@ export class ProgramsServiceApiService {
   }
 
   retrieve(type: string): Promise<undefined | string | number | object> {
+    if (!navigator.onLine) {
+      return this.localStoragePromise(`data-storage-${type}`);
+    }
+
     return this.apiService
       .get(
         environment.url_121_service_api,
