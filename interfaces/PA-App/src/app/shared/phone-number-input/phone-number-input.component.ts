@@ -70,6 +70,10 @@ export class PhoneNumberInputComponent {
   }
 
   private async checkValidityOnline() {
+    if (!navigator.onLine) {
+      return true;
+    }
+
     const phoneNumber = this.telInput.value;
     let isValid: boolean;
 

@@ -55,6 +55,10 @@ export class InclusionStatusComponent extends PersonalDirective {
   }
 
   private async checkInclusionStatus() {
+    if (!navigator.onLine) {
+      return;
+    }
+
     this.programId = await this.paData.getCurrentProgramId();
     this.referenceId = await this.paData.retrieve(this.paData.type.referenceId);
 
