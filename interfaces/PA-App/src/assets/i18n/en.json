@@ -149,7 +149,6 @@
     },
     "batch": {
       "toolbar-queue-button": "{{nrRegistrations}} registrations",
-      "toolbar-online-button": "Multiple registrations mode",
       "menu-title": "Multiple registrations",
       "menu-text-offline": "At the moment you are offline.",
       "menu-text": "Registrations are stored inside your browser. When the webpage is open and you are online, they will be uploaded automatically.",
