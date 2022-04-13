@@ -269,10 +269,20 @@ export class PaDataService {
     window.sessionStorage.setItem(this.sessionKey, JSON.stringify(user));
   }
 
+  private clearDataStorage() {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key.includes('data-storage-')) {
+        localStorage.removeItem(key);
+      }
+    }
+  }
+
   public async logout(completedRegistration: boolean) {
     console.log('PaData: logout()');
     window.sessionStorage.removeItem(this.sessionKey);
     await this.programService.logout(completedRegistration);
+    this.clearDataStorage();
     this.setLoggedOut();
   }
 
