@@ -59,7 +59,7 @@ export class SyncService implements OnDestroy {
     body: any,
     params?: HttpParams,
   ): Observable<any> {
-    if (this.forceOffline) {
+    if (!navigator.onLine) {
       this.addOrUpdateSyncTask(`${endpoint}${path}`, body, params);
       return EMPTY;
     }
