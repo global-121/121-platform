@@ -62,7 +62,7 @@ export class PersonalPage implements OnInit, OnDestroy {
 
   private scrollSpeed = environment.useAnimation ? 600 : 0;
 
-  public isOnline = true;
+  public isOnline = navigator.onLine;
 
   public batchCount: number;
 
@@ -152,12 +152,10 @@ export class PersonalPage implements OnInit, OnDestroy {
   }
 
   private goOnline() {
-    this.isOnline = true;
     this.autoBatchUpload();
   }
 
   private goOffline() {
-    this.isOnline = false;
     if (this.batchProgressAlert) {
       this.batchProgressAlert.dismiss();
     }

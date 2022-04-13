@@ -38,11 +38,6 @@ export class UserMenuComponent {
       this.isLoggedIn = !!user;
       this.username = user && user.username ? user.username : '';
     });
-
-    window.addEventListener('online', () => this.goOnline(), { passive: true });
-    window.addEventListener('offline', () => this.goOffline(), {
-      passive: true,
-    });
   }
 
   close() {
@@ -91,18 +86,5 @@ export class UserMenuComponent {
     }
 
     await alert.present();
-  }
-
-  ngOnDestroy() {
-    window.removeEventListener('online', () => this.goOnline());
-    window.removeEventListener('offline', () => this.goOffline());
-  }
-
-  private goOnline() {
-    this.isOnline = true;
-  }
-
-  private goOffline() {
-    this.isOnline = false;
   }
 }
