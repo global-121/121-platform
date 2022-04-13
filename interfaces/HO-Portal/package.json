@@ -32,7 +32,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^11.2.14",
-    "@angular/cdk": "^10.2.7",
+    "@angular/cdk": "^11.2.13",
     "@angular/common": "^11.2.14",
     "@angular/core": "^11.2.14",
     "@angular/forms": "^11.2.14",
@@ -46,6 +46,8 @@
     "@ngx-translate/core": "^12.1.2",
     "@ngx-translate/http-loader": "^5.0.0",
     "@popperjs/core": "~2.4.4",
+    "@swimlane/ngx-charts": "^17.0.1",
+    "@swimlane/ngx-datatable": "^19.0.0",
     "core-js": "2.6.8",
     "file-saver": "^2.0.2",
     "ngx-popperjs": "^11.0.0",
