@@ -270,12 +270,9 @@ export class PaDataService {
   }
 
   private clearDataStorage() {
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key.includes('data-storage-')) {
-        localStorage.removeItem(key);
-      }
-    }
+    Object.keys(localStorage).forEach((key) => {
+      if (key.includes('data-storage-')) delete localStorage[key];
+    });
   }
 
   public async logout(completedRegistration: boolean) {
