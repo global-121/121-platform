@@ -1,9 +1,6 @@
 <ion-header>
   <ion-toolbar color="dark">
     <ion-title>
-      <ion-label *ngIf="!registrationMode?.multiple">
-        {{ 'tabs.you'|translate }}
-      </ion-label>
       <ion-label *ngIf="registrationMode?.multiple">
         {{ 'personal.batch.menu-title'|translate }}
       </ion-label>
