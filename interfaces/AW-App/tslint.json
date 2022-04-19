@@ -4,17 +4,32 @@
     "codelyzer"
   ],
   "rules": {
+    "align": {
+      "options": [
+        "parameters",
+        "statements"
+      ]
+    },
     "array-type": false,
     "arrow-parens": false,
+    "arrow-return-shorthand": true,
     "deprecation": {
       "severity": "warn"
     },
+    "curly": true,
     "import-blacklist": [
       true,
       "rxjs/Rx"
     ],
     "interface-name": false,
+    "eofline": true,
     "max-classes-per-file": false,
+    "import-spacing": true,
+    "indent": {
+      "options": [
+        "spaces"
+      ]
+    },
     "max-line-length": [
       true,
       140
@@ -66,11 +81,60 @@
     "no-output-rename": true,
     "use-pipe-transform-interface": true,
     "one-variable-per-declaration": false,
+    "semicolon": {
+      "options": [
+        "always"
+      ]
+    },
+    "space-before-function-paren": {
+      "options": {
+        "anonymous": "never",
+        "asyncArrow": "always",
+        "constructor": "never",
+        "method": "never",
+        "named": "never"
+      }
+    },
     "component-class-suffix": [
       true,
       "Page",
       "Component"
     ],
-    "directive-class-suffix": true
+    "typedef-whitespace": {
+      "options": [
+        {
+          "call-signature": "nospace",
+          "index-signature": "nospace",
+          "parameter": "nospace",
+          "property-declaration": "nospace",
+          "variable-declaration": "nospace"
+        },
+        {
+          "call-signature": "onespace",
+          "index-signature": "onespace",
+          "parameter": "onespace",
+          "property-declaration": "onespace",
+          "variable-declaration": "onespace"
+        }
+      ]
+    },
+    "directive-class-suffix": true,
+    "variable-name": {
+      "options": [
+        "ban-keywords",
+        "check-format",
+        "allow-pascal-case"
+      ]
+    },
+    "whitespace": {
+      "options": [
+        "check-branch",
+        "check-decl",
+        "check-operator",
+        "check-separator",
+        "check-type",
+        "check-typecast"
+      ]
+    }
   }
 }
