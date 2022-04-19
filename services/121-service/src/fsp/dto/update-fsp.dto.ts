@@ -1,7 +1,7 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 
-export class UpdateFspAttributeDto {
+export class FspAttributeDto {
   @ApiModelProperty()
   @IsString()
   @IsNotEmpty()
