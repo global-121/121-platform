@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AngularDelegate, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { MockPaDataService } from '../mocks/padata.service.mock';
@@ -10,25 +10,27 @@ describe('TabsPage', () => {
   let component: TabsPage;
   let fixture: ComponentFixture<TabsPage>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [TabsPage],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [TranslateModule.forRoot()],
-      providers: [
-        {
-          provide: ModalController,
-        },
-        {
-          provide: AngularDelegate,
-        },
-        {
-          provide: PaDataService,
-          useValue: MockPaDataService,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TabsPage],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [TranslateModule.forRoot()],
+        providers: [
+          {
+            provide: ModalController,
+          },
+          {
+            provide: AngularDelegate,
+          },
+          {
+            provide: PaDataService,
+            useValue: MockPaDataService,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TabsPage);

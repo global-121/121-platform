@@ -1,14 +1,16 @@
-import { async } from '@angular/core/testing';
+import { waitForAsync } from '@angular/core/testing';
 import { OnlyAllowedInputDirective } from './only-allowed-input.directive';
 
 describe('OnlyAllowedInputDirective', () => {
   let testElement;
   let directive;
 
-  beforeEach(async(() => {
-    testElement = document.createElement('input');
-    directive = new OnlyAllowedInputDirective();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      testElement = document.createElement('input');
+      directive = new OnlyAllowedInputDirective();
+    }),
+  );
 
   it('should create an instance', () => {
     expect(directive).toBeTruthy();

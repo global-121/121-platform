@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { MockConversationService } from 'src/app/mocks/conversation.service.mock';
 import { MockLoggingService } from 'src/app/mocks/logging.service.mock';
@@ -14,27 +14,29 @@ describe('CreateAccountComponent', () => {
   let component: CreateAccountComponent;
   let fixture: ComponentFixture<CreateAccountComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [CreateAccountComponent],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: ConversationService,
-          useValue: MockConversationService,
-        },
-        {
-          provide: PaDataService,
-          useValue: MockPaDataService,
-        },
-        {
-          provide: LoggingService,
-          useValue: MockLoggingService,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [CreateAccountComponent],
+        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: ConversationService,
+            useValue: MockConversationService,
+          },
+          {
+            provide: PaDataService,
+            useValue: MockPaDataService,
+          },
+          {
+            provide: LoggingService,
+            useValue: MockLoggingService,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CreateAccountComponent);

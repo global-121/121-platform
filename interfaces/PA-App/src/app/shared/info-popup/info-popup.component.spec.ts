@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AngularDelegate, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { InfoPopupComponent } from './info-popup.component';
@@ -8,21 +8,23 @@ describe('InfoPopupComponent', () => {
   let component: InfoPopupComponent;
   let fixture: ComponentFixture<InfoPopupComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [InfoPopupComponent],
-      imports: [TranslateModule.forRoot()],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: ModalController,
-        },
-        {
-          provide: AngularDelegate,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [InfoPopupComponent],
+        imports: [TranslateModule.forRoot()],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: ModalController,
+          },
+          {
+            provide: AngularDelegate,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InfoPopupComponent);

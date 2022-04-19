@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
   AlertController,
   AngularDelegate,
@@ -17,35 +17,37 @@ describe('UserMenuComponent', () => {
   let component: UserMenuComponent;
   let fixture: ComponentFixture<UserMenuComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserMenuComponent],
-      imports: [TranslateModule.forRoot()],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: ModalController,
-        },
-        {
-          provide: AngularDelegate,
-        },
-        {
-          provide: PaDataService,
-          useValue: MockPaDataService,
-        },
-        {
-          provide: AlertController,
-        },
-        {
-          provide: LoadingController,
-        },
-        {
-          provide: LoggingService,
-          useValue: MockLoggingService,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UserMenuComponent],
+        imports: [TranslateModule.forRoot()],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: ModalController,
+          },
+          {
+            provide: AngularDelegate,
+          },
+          {
+            provide: PaDataService,
+            useValue: MockPaDataService,
+          },
+          {
+            provide: AlertController,
+          },
+          {
+            provide: LoadingController,
+          },
+          {
+            provide: LoggingService,
+            useValue: MockLoggingService,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserMenuComponent);
