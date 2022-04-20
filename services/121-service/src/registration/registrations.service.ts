@@ -671,6 +671,16 @@ export class RegistrationsService {
   public getName(customData): string {
     if (customData[CustomDataAttributes.name]) {
       return customData[CustomDataAttributes.name];
+    } else if (customData[CustomDataAttributes.fathersName]) {
+      return (
+        customData[CustomDataAttributes.firstName] +
+        (customData[CustomDataAttributes.lastName]
+          ? ' ' + customData[CustomDataAttributes.lastName]
+          : '') +
+        (customData[CustomDataAttributes.fathersName]
+          ? ' ' + customData[CustomDataAttributes.fathersName]
+          : '')
+      );
     } else if (customData[CustomDataAttributes.firstName]) {
       return (
         customData[CustomDataAttributes.firstName] +
