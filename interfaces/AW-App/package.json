@@ -46,6 +46,8 @@
     "@microsoft/applicationinsights-web": "^2.7.0",
     "@ngx-translate/core": "^12.1.2",
     "@ngx-translate/http-loader": "^5.0.0",
+    "@zxing/browser": "^0.0.5",
+    "@zxing/library": "^0.19.1",
     "@zxing/ngx-scanner": "3.2.x",
     "core-js": "2.6.8",
     "rxjs": "^6.6.2",
