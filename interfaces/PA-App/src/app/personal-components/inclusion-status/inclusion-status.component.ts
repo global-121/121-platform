@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { PaInclusionStates } from 'src/app/models/pa-statuses.enum';
-import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -16,7 +15,7 @@ export class InclusionStatusComponent extends PersonalDirective {
   @Input()
   public data: any;
 
-  public currentProgram: Program;
+  public hasValidation: boolean;
   private programId: number;
   private referenceId: string;
 
@@ -33,12 +32,11 @@ export class InclusionStatusComponent extends PersonalDirective {
     public programService: ProgramsServiceApiService,
   ) {
     super();
-
-    this.conversationService.startLoading();
   }
 
   async ngOnInit() {
-    this.currentProgram = await this.paData.getCurrentProgram();
+    const currentProgram = await this.paData.getCurrentProgram();
+    this.hasValidation = currentProgram && currentProgram.validation;
 
     // No initHistory, because this is last section and latest inclusionStatus is always retrieved
     await this.initNew();
@@ -48,27 +46,23 @@ export class InclusionStatusComponent extends PersonalDirective {
     this.hasNotificationNumberSet = !!(await this.paData.retrieve(
       this.paData.type.phoneNumber,
     ));
+
+    if (!this.isOnline) {
+      return;
+    }
+
     this.checkInclusionStatus();
   }
 
   private async checkInclusionStatus() {
-    await this.gatherData();
+    this.programId = await this.paData.getCurrentProgramId();
+    this.referenceId = await this.paData.retrieve(this.paData.type.referenceId);
 
-    if (!this.currentProgram) {
-      return;
-    }
-
-    this.conversationService.stopLoading();
     this.updateService
       .checkInclusionStatus(this.programId, this.referenceId)
       .then(() => {
         this.handleInclusionStatus(this.referenceId, this.programId);
       });
-  }
-
-  private async gatherData() {
-    this.programId = await this.paData.getCurrentProgramId();
-    this.referenceId = await this.paData.retrieve(this.paData.type.referenceId);
   }
 
   private async processStatus(inclusionStatus: string) {
@@ -87,7 +81,6 @@ export class InclusionStatusComponent extends PersonalDirective {
       .checkInclusionStatus(referenceId, programId)
       .toPromise();
     this.processStatus(this.inclusionStatus);
-    this.conversationService.stopLoading();
   }
 
   getNextSection() {

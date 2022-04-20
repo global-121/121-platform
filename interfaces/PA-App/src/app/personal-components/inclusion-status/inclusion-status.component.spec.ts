@@ -1,3 +1,4 @@
+import { APP_BASE_HREF } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
@@ -24,31 +25,31 @@ describe('InclusionStatusComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [InclusionStatusComponent],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        imports: [
-          TranslateModule.forRoot(),
-          RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
-          HttpClientTestingModule,
-        ],
-        providers: [
-          {
-            provide: ConversationService,
-            useValue: MockConversationService,
-          },
-          {
-            provide: PaDataService,
-            useValue: MockPaDataService,
-          },
-          {
-            provide: ProgramsServiceApiService,
-            useValue: mockProgramsApi,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+    TestBed.configureTestingModule({
+      declarations: [InclusionStatusComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        TranslateModule.forRoot(),
+        RouterModule.forRoot([]),
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {
+          provide: ConversationService,
+          useValue: MockConversationService,
+        },
+        {
+          provide: PaDataService,
+          useValue: MockPaDataService,
+        },
+        {
+          provide: ProgramsServiceApiService,
+          useValue: mockProgramsApi,
+        },
+        { provide: APP_BASE_HREF, useValue: '/' },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InclusionStatusComponent);

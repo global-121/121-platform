@@ -1,7 +1,9 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { Observable } from 'rxjs/internal/Observable';
 import { MockConversationService } from '../mocks/conversation.service.mock';
 import { MockLoggingService } from '../mocks/logging.service.mock';
 import { ConversationService } from '../services/conversation.service';
@@ -14,23 +16,34 @@ describe('PersonalPage', () => {
 
   beforeEach(
     waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [PersonalPage],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-        providers: [
-          {
-            provide: ConversationService,
-            useValue: MockConversationService,
+    TestBed.configureTestingModule({
+      declarations: [PersonalPage],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      providers: [
+        {
+          provide: ConversationService,
+          useValue: MockConversationService,
+        },
+        {
+          provide: LoggingService,
+          useValue: MockLoggingService,
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            queryParams: new Observable((observer) => {
+              const urlParams = {
+                mode: 'batch',
+              };
+              observer.next(urlParams);
+              observer.complete();
+            }),
           },
-          {
-            provide: LoggingService,
-            useValue: MockLoggingService,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+        },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(async () => {
     fixture = await TestBed.createComponent(PersonalPage);

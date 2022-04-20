@@ -54,11 +54,35 @@ export class UkrPoshtaService {
   ): Promise<UkrPoshtaFspInstructions> {
     const ukrPoshtaFspInstructions = new UkrPoshtaFspInstructions();
 
-    ukrPoshtaFspInstructions[
-      'Oblast / Rayon / city / street / house / postal index'
-    ] = registration.customData[CustomDataAttributes.address];
-    ukrPoshtaFspInstructions['Last name / First name / Fathers name'] =
-      registration.customData[CustomDataAttributes.name];
+    // These conditional statements are in here because we needed to change FSP questions during an in progress program.
+    if (registration.customData[CustomDataAttributes.postalIndex]) {
+      ukrPoshtaFspInstructions['Oblast / Rayon / city / street / house'] =
+        registration.customData[CustomDataAttributes.addressNoPostalIndex];
+      ukrPoshtaFspInstructions['Postal index'] =
+        registration.customData[CustomDataAttributes.postalIndex];
+    } else {
+      ukrPoshtaFspInstructions[
+        'Oblast / Rayon / city / street / house / postal index'
+      ] = registration.customData[CustomDataAttributes.address];
+      ukrPoshtaFspInstructions['Oblast / Rayon / city / street / house'] = null;
+      ukrPoshtaFspInstructions['Postal index'] = null;
+    }
+
+    if (registration.customData[CustomDataAttributes.name]) {
+      ukrPoshtaFspInstructions['Name / last name / fathers name'] =
+        registration.customData[CustomDataAttributes.name];
+      ukrPoshtaFspInstructions['Name'] = null;
+      ukrPoshtaFspInstructions['Last name'] = null;
+      ukrPoshtaFspInstructions['Fathers name'] = null;
+    } else {
+      ukrPoshtaFspInstructions['Name'] =
+        registration.customData[CustomDataAttributes.firstName];
+      ukrPoshtaFspInstructions['Last name'] =
+        registration.customData[CustomDataAttributes.lastName];
+      ukrPoshtaFspInstructions['Fathers name'] =
+        registration.customData[CustomDataAttributes.fathersName];
+    }
+
     ukrPoshtaFspInstructions.Amount = transaction.amount;
     ukrPoshtaFspInstructions['Tax ID number'] =
       registration.customData[CustomDataAttributes.taxId];

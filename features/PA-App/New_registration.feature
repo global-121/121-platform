@@ -1,8 +1,10 @@
 @pa-app
 Feature: New registration
-
-  Scenario: Program with validation
+  Background:
     Given a program has been published
+
+  Scenario: Register for program with validation
+    Given the PA-app is not in batch-mode
     Given the program has "validation" enabled
     Given the program has at least 1 "program question" defined
     Given the program has at least 1 "Financial Service Provider" defined
@@ -40,3 +42,77 @@ Feature: New registration
     Then the "inclusion status"-step is shown
     When the PA is included in the HO-portal
     Then an inclusion-message appears in the PA-app
+
+  Scenario: Offline registration by PA
+    Given the PA has an active internet connection
+    Given the PA-app is not in batch-mode
+    When the PA opens the PA-App
+    Then the PA-app immediately caches all instance, program, FSP information
+    
+    When the PA loses internet connection at any moment after that
+    Then the PA-app caches all answers
+    And the PA can continue the registration as usual
+    And the listening for inclusion-status at the end is disabled
+    
+    When the PA has an active internet connection again
+    Then the PA-app syncs the registration to the back-end
+    And the listening for inclusion-status is enabled again
+  
+  Scenario: Switch to batch-mode
+    Given the Aidworker has opened the PA-app
+    When the Aidworker clicks on the second tab with the 'people' icon
+    Then a popup opens with a 'Multiple registrations mode' 
+    And it is set to false
+
+    When the Aidworker sets the toggle to true and closes the popup
+    Then a '0 registrations' button appears on the top right
+
+  Scenario: Open registrations batch tab
+    Given the PA-app is in batch-mode
+    When the Aidworker clicks on the 'X registrations' button
+    Then a registrations batch tab opens on the left
+    And it mentions your are offline if you are offline
+    And it explains that registrations are stored inside your browser and automatically uploaded when online
+    And it contains an 'Upload' button
+    And it is disabled if offline or if there are 0 registrations to upload
+
+  Scenario: Manually upload registrations
+    Given the PA-app is in batch-mode
+    Given there is a queue of at least 1 saved PA'saved during offline mode
+    Given the PA-app is now online
+    Given the automatic upload at the moment of going online failed for some registration
+    When the users clicks the 'Upload manually' button
+    Then the queue is uploaded
+    And this is exactly the same process as the one started automatically at the moment of going online
+
+  Scenario: Multiple registrations online by Aidworker (batch mode)
+    Given the Aidworker has an active internet connection
+    Given the PA-app is in batch-mode
+    When the Aidworker finishes a registration
+    Then the registration is uploaded automatically and not added to the queue
+    And the PA-app gives a button to 'Add another person affected'
+    
+    When the button 'Add another person affected' is clicked
+    Then the registration process is restarted 
+
+  Scenario: Multiple registrations offline by AW (batch mode)
+    Given the Aidworker has an active internet connection
+    Given the PA-app is in batch mode
+    Given the PA-app is opened with internet connection
+    Given the PA-app loses internet connection afterwards
+    When the AW finishes a registration
+    Then a button 'Save this Person Affected' appears
+
+    When the Aidworker clicks the button
+    Then the information is saved
+    And the counter in 'X registrations' in the top right increments with 1
+    And a button 'Add another person affected' appears
+    
+    When the Aidworker clicks the button
+    Then the registration process is restarted 
+
+    When the PA-app regains internet connection
+    Then the queue is automatically uploaded
+    And a popup appears that mentions that X PA's are being uploaded
+    And the popup automatically closes when finished
+    And the counter in 'X registrations' in the top right decreases to 0

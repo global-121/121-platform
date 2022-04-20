@@ -32,18 +32,13 @@ To use it locally:
 
 - Run: `npm run start:debug-production` instead of `npm start` (in each interfaces' specific folder).
 - This part is needed extra for the cookies to be correctly set and processed:
-  - In 121-service's `user.controller` set 
-    - `sameSite: 'None'` and `secure: true`
-    - do this in `@Post('user/login')` for the AW-app to work correctly 
-    - and in `@Post('user/person-affected')` for the PA-app to work correctly
-    - change the values back to normal before deploying anything or when switching to the normal local mode again
-    - NOTE: this process can obviously be improved by using some env-variable that is set differently when starting the apps in debug-production mode. 
-  - In Chrome (unfortunately no alternative for the below in other browsers have been identified at the moment)
+  - In Chrome
     - go to chrome://flags/#unsafely-treat-insecure-origin-as-secure
     - enable it
     - add http://127.0.0.1
     - relaunch
     - change the values back to normal when switching to the normal local mode again
+  -  Unfortunately no alternative for the below in other browsers have been identified at the moment
 - The interface will be available at: <http://localhost:8088/>.
 - Check the service-worker's status via: `Developer Tools > Application > Service Workers`.
 
@@ -69,10 +64,10 @@ All interfaces use a common set of dependencies/frameworks/libraries.
   - CSS Utilities: <https://ionicframework.com/docs/layout/css-utilities>
   - Icons: <https://ionicons.com/>
 
-- [Angular v9](https://v9.angular.io/docs)  
+- [Angular v10](https://v10.angular.io/docs)  
   This front-end framework gives us a structure to create components that can be connected, combined, share data and can be delivered as a web-app.
 
-  - API Documentation: <https://v9.angular.io/api>
+  - API Documentation: <https://v10.angular.io/api>
   - Used by Angular, RxJS: <https://v6.rxjs.dev/api>
 
 - [`ngx-translate` v12](https://www.npmjs.com/package/@ngx-translate/core/v/12.1.2)  

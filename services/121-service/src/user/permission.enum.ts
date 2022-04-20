@@ -34,6 +34,8 @@ export enum PermissionEnum {
   // FSP(s)
   FspUPDATE = 'fsp.update',
   FspAttributeUPDATE = 'fsp:attribute.update',
+  FspAttributeCREATE = 'fsp:attribute.create',
+  FspAttributeDELETE = 'fsp:attribute.delete',
 
   // Payment(s)
   PaymentREAD = 'payment.read',
