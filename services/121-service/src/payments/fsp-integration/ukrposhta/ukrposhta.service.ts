@@ -60,9 +60,6 @@ export class UkrPoshtaService {
         registration.customData[CustomDataAttributes.addressNoPostalIndex];
       ukrPoshtaFspInstructions['Postal index'] =
         registration.customData[CustomDataAttributes.postalIndex];
-      ukrPoshtaFspInstructions[
-        'Oblast / Rayon / city / street / house / postal index'
-      ] = null;
     } else {
       ukrPoshtaFspInstructions[
         'Oblast / Rayon / city / street / house / postal index'
@@ -78,7 +75,6 @@ export class UkrPoshtaService {
       ukrPoshtaFspInstructions['Last name'] = null;
       ukrPoshtaFspInstructions['Fathers name'] = null;
     } else {
-      ukrPoshtaFspInstructions['Name / last name / fathers name'] = null;
       ukrPoshtaFspInstructions['Name'] =
         registration.customData[CustomDataAttributes.firstName];
       ukrPoshtaFspInstructions['Last name'] =
