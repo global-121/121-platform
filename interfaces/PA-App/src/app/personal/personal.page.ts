@@ -6,10 +6,12 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
+import { SwUpdate } from '@angular/service-worker';
 import {
   AlertController,
   IonContent,
   MenuController,
+  ToastButton,
   ToastController,
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -87,7 +89,6 @@ export class PersonalPage implements OnInit, OnDestroy {
     [PersonalComponents.nextPa]: NextPaComponent,
   };
   public debugSections = Object.keys(this.availableSections);
-  private toast: HTMLIonToastElement;
 
   constructor(
     public conversationService: ConversationService,
@@ -99,6 +100,7 @@ export class PersonalPage implements OnInit, OnDestroy {
     public registrationMode: RegistrationModeService,
     public syncService: SyncService,
     public toastController: ToastController,
+    public swUpdates: SwUpdate,
   ) {
     // Listen for completed sections, to continue with next steps
 
@@ -134,6 +136,22 @@ export class PersonalPage implements OnInit, OnDestroy {
     this.syncService.getBatchCount().subscribe((batchCount) => {
       this.batchCount = batchCount;
     });
+
+    this.swUpdates.activated.subscribe((event) => {
+      this.notifyOfflineAvailable();
+    });
+
+    this.swUpdates.available.subscribe((event) => {
+      this.swUpdates.activateUpdate().then(
+        () => {
+          this.notifyUpdateAvailable();
+        },
+        (error) => {
+          console.error('ServiceWorker activation error:', error);
+          this.notifySwError();
+        },
+      );
+    });
   }
 
   async ngOnInit() {
@@ -141,8 +159,10 @@ export class PersonalPage implements OnInit, OnDestroy {
     if (this.isDebug && this.showDebug) {
       return;
     }
+    this.conversationService.startLoading();
     await this.loadEndpoints();
     await this.loadComponents();
+    this.conversationService.stopLoading();
     this.scrollToLastWhenReady();
   }
 
@@ -163,25 +183,49 @@ export class PersonalPage implements OnInit, OnDestroy {
     }
   }
 
-  async presentReadyForOfflineToast() {
-    this.toast = await this.toastController.create({
-      message: this.translate.instant('personal.batch.ready-for-offline-use'),
+  private async notifyOfflineAvailable() {
+    this.notify(this.translate.instant('notification.offline-available'), [
+      {
+        side: 'end',
+        icon: 'close',
+        role: 'cancel',
+      },
+    ]);
+  }
+
+  private async notifyUpdateAvailable() {
+    this.notify(this.translate.instant('notification.update-available'), [
+      {
+        side: 'end',
+        icon: 'refresh',
+        handler: () => {
+          document.location.reload();
+        },
+      },
+    ]);
+  }
+
+  private async notifySwError() {
+    this.notify(this.translate.instant('notification.error-reload'), [
+      {
+        side: 'end',
+        icon: 'refresh',
+        handler: () => {
+          document.location.reload();
+        },
+      },
+    ]);
+  }
+
+  private async notify(message: string, buttons: ToastButton[] = []) {
+    const toast = await this.toastController.create({
+      message,
       cssClass: 'system-notification ion-text-center',
       position: 'top',
       color: 'tertiary',
-      buttons: [
-        {
-          side: 'end',
-          icon: 'close',
-          role: 'cancel',
-        },
-      ],
+      buttons,
     });
-    await this.toast.present();
-  }
-
-  public closeReadyForOfflineToast() {
-    this.toast.dismiss();
+    await toast.present();
   }
 
   private async autoBatchUpload() {
