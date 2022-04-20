@@ -64,7 +64,7 @@ export class PersonalPage implements OnInit, OnDestroy {
 
   private scrollSpeed = environment.useAnimation ? 600 : 0;
 
-  public isOnline = navigator.onLine;
+  public isOnline = window.navigator.onLine;
 
   public batchCount: number;
 

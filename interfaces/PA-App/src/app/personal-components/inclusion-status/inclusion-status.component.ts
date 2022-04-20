@@ -55,7 +55,7 @@ export class InclusionStatusComponent extends PersonalDirective {
   }
 
   private async checkInclusionStatus() {
-    if (!navigator.onLine) {
+    if (!window.navigator.onLine) {
       return;
     }
 

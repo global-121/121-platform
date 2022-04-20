@@ -19,7 +19,7 @@ export class PaDataService {
   private instanceKey = 'instance';
   private detailProgramKeyPrefix = 'program';
   private detailFspKeyPrefix = 'fsp';
-  private dataStorageKeyPrefix = 'data-storage-';
+  public paDataKeyPrefix = 'paData-';
   private currentProgramId: number;
 
   private hasAccount = false;
@@ -139,7 +139,7 @@ export class PaDataService {
       return;
     }
 
-    const typeKey = `${this.dataStorageKeyPrefix + type}`;
+    const typeKey = `${this.paDataKeyPrefix + type}`;
     if (!this.isOffline) {
       const storeResult = await this.programService.store(
         type,
@@ -159,7 +159,7 @@ export class PaDataService {
       return;
     }
 
-    const typeKey = `${this.dataStorageKeyPrefix + type}`;
+    const typeKey = `${this.paDataKeyPrefix + type}`;
     if (!this.isOffline) {
       const storeResult = await this.programService.retrieve(type);
       localStorage.setItem(typeKey, JSON.stringify(storeResult));
@@ -271,7 +271,7 @@ export class PaDataService {
 
   private clearDataStorage() {
     Object.keys(localStorage).forEach((key) => {
-      if (key.startsWith(this.dataStorageKeyPrefix)) {
+      if (key.startsWith(this.paDataKeyPrefix)) {
         delete localStorage[key];
       }
     });
