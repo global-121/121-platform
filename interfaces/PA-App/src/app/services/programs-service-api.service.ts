@@ -8,7 +8,6 @@ import { Program } from 'src/app/models/program.model';
 import { ApiPath, ApiService } from 'src/app/services/api.service';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/user.model';
-import { PaDataService } from './padata.service';
 import { SyncService } from './sync.service';
 
 @Injectable({
@@ -18,30 +17,16 @@ export class ProgramsServiceApiService {
   constructor(
     private apiService: ApiService,
     private syncService: SyncService,
-    private paData: PaDataService,
   ) {}
 
-  private async offlineLocalData(key: string): Promise<any> {
-    return Promise.resolve().then(() => {
-      return JSON.parse(localStorage.getItem(key));
-    });
-  }
-
   getInstanceInformation(): Promise<InstanceData> {
-    if (!window.navigator.onLine) {
-      return this.offlineLocalData('instance');
-    }
-
+    console.log('getInstanceInformation() called... ');
     return this.apiService
       .get(environment.url_121_service_api, '/instance')
       .toPromise();
   }
 
   getAllPrograms(): Promise<Program[]> {
-    if (!window.navigator.onLine) {
-      return this.offlineLocalData('allPrograms');
-    }
-
     return this.apiService
       .get(environment.url_121_service_api, '/programs/published/all')
       .pipe(map((response) => response.programs))
@@ -49,20 +34,12 @@ export class ProgramsServiceApiService {
   }
 
   getProgramById(programId: number): Promise<Program> {
-    if (!window.navigator.onLine) {
-      return this.offlineLocalData(`program${programId}`);
-    }
-
     return this.apiService
       .get(environment.url_121_service_api, '/programs/' + programId)
       .toPromise();
   }
 
   getFspById(fspId: number): Promise<Fsp> {
-    if (!window.navigator.onLine) {
-      return this.offlineLocalData(`fsp${fspId}`);
-    }
-
     return this.apiService
       .get(environment.url_121_service_api, '/fsp/' + fspId)
       .toPromise();
@@ -115,10 +92,6 @@ export class ProgramsServiceApiService {
   }
 
   retrieve(type: string): Promise<undefined | string | number | object> {
-    if (!window.navigator.onLine) {
-      return this.offlineLocalData(`${this.paData.paDataKeyPrefix}${type}`);
-    }
-
     return this.apiService
       .get(
         environment.url_121_service_api,
