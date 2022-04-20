@@ -8,7 +8,7 @@
   "integrationType": "csv",
   "attributes": [
     {
-      "name": "address",
+      "name": "addressNoPostalIndex",
       "label": {
         "en": "Please provide your current residency address (Oblast, Rayon, city, street, house)",
         "uk": "",

@@ -57,7 +57,7 @@ export class UkrPoshtaService {
     // These conditional statements are in here because we needed to change FSP questions during an in progress program.
     if (registration.customData[CustomDataAttributes.postalIndex]) {
       ukrPoshtaFspInstructions['Oblast / Rayon / city / street / house'] =
-        registration.customData[CustomDataAttributes.address];
+        registration.customData[CustomDataAttributes.addressNoPostalIndex];
       ukrPoshtaFspInstructions['Postal index'] =
         registration.customData[CustomDataAttributes.postalIndex];
       ukrPoshtaFspInstructions[
@@ -77,12 +77,7 @@ export class UkrPoshtaService {
       ukrPoshtaFspInstructions['Name'] = null;
       ukrPoshtaFspInstructions['Last name'] = null;
       ukrPoshtaFspInstructions['Fathers name'] = null;
-    }
-    if (
-      registration.customData[CustomDataAttributes.firstName] &&
-      registration.customData[CustomDataAttributes.lastName] &&
-      registration.customData[CustomDataAttributes.fathersName]
-    ) {
+    } else {
       ukrPoshtaFspInstructions['Name / last name / fathers name'] = null;
       ukrPoshtaFspInstructions['Name'] =
         registration.customData[CustomDataAttributes.firstName];

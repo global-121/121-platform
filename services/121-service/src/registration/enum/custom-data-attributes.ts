@@ -15,6 +15,7 @@ export enum CustomDataAttributes {
   milestone1 = 'milestone1',
   milestone2 = 'milestone2',
   address = 'address',
+  addressNoPostalIndex = 'addressNoPostalIndex',
   postalIndex = 'postalIndex',
   taxId = 'taxId',
   transferCosts = 'transferCosts',
