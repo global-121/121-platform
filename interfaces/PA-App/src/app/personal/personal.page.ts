@@ -137,11 +137,13 @@ export class PersonalPage implements OnInit, OnDestroy {
       this.batchCount = batchCount;
     });
 
-    this.swUpdates.activated.subscribe((event) => {
+    this.swUpdates.activated.subscribe(() => {
+      console.log('PersonalPage: Service-worker Activated!');
       this.notifyOfflineAvailable();
     });
 
-    this.swUpdates.available.subscribe((event) => {
+    this.swUpdates.available.subscribe(() => {
+      console.log('PersonalPage: Service-worker Update available!');
       this.swUpdates.activateUpdate().then(
         () => {
           this.notifyUpdateAvailable();
