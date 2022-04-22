@@ -25,31 +25,32 @@ describe('InclusionStatusComponent', () => {
 
   beforeEach(
     waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [InclusionStatusComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        TranslateModule.forRoot(),
-        RouterModule.forRoot([]),
-        HttpClientTestingModule,
-      ],
-      providers: [
-        {
-          provide: ConversationService,
-          useValue: MockConversationService,
-        },
-        {
-          provide: PaDataService,
-          useValue: MockPaDataService,
-        },
-        {
-          provide: ProgramsServiceApiService,
-          useValue: mockProgramsApi,
-        },
-        { provide: APP_BASE_HREF, useValue: '/' },
-      ],
-    }).compileComponents();
-  }));
+      TestBed.configureTestingModule({
+        declarations: [InclusionStatusComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [
+          TranslateModule.forRoot(),
+          RouterModule.forRoot([]),
+          HttpClientTestingModule,
+        ],
+        providers: [
+          {
+            provide: ConversationService,
+            useValue: MockConversationService,
+          },
+          {
+            provide: PaDataService,
+            useValue: MockPaDataService,
+          },
+          {
+            provide: ProgramsServiceApiService,
+            useValue: mockProgramsApi,
+          },
+          { provide: APP_BASE_HREF, useValue: '/' },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InclusionStatusComponent);

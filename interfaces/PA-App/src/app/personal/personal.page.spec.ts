@@ -16,34 +16,35 @@ describe('PersonalPage', () => {
 
   beforeEach(
     waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [PersonalPage],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-      providers: [
-        {
-          provide: ConversationService,
-          useValue: MockConversationService,
-        },
-        {
-          provide: LoggingService,
-          useValue: MockLoggingService,
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            queryParams: new Observable((observer) => {
-              const urlParams = {
-                mode: 'batch',
-              };
-              observer.next(urlParams);
-              observer.complete();
-            }),
+      TestBed.configureTestingModule({
+        declarations: [PersonalPage],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+        providers: [
+          {
+            provide: ConversationService,
+            useValue: MockConversationService,
           },
-        },
-      ],
-    }).compileComponents();
-  }));
+          {
+            provide: LoggingService,
+            useValue: MockLoggingService,
+          },
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              queryParams: new Observable((observer) => {
+                const urlParams = {
+                  mode: 'batch',
+                };
+                observer.next(urlParams);
+                observer.complete();
+              }),
+            },
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(async () => {
     fixture = await TestBed.createComponent(PersonalPage);
