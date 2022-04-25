@@ -28,7 +28,7 @@ export class PaDataService {
 
   private authenticationStateSource = new BehaviorSubject<User | null>(null);
   public authenticationState$ = this.authenticationStateSource.asObservable();
-  public isOffline = window.navigator.onLine;
+  public isOffline = !window.navigator.onLine;
 
   constructor(
     private programService: ProgramsServiceApiService,
