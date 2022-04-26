@@ -54,7 +54,6 @@ export class UkrPoshtaService {
   ): Promise<UkrPoshtaFspInstructions> {
     const ukrPoshtaFspInstructions = new UkrPoshtaFspInstructions();
 
-    console.log('registration: ', registration);
     // These conditional statements are in here because we needed to change FSP questions during an in progress program.
     ukrPoshtaFspInstructions.Amount = transaction.amount;
     ukrPoshtaFspInstructions['Transfer costs'] = null;
@@ -72,11 +71,8 @@ export class UkrPoshtaService {
         registration.customData[CustomDataAttributes.fathersName];
     }
     ukrPoshtaFspInstructions['Country'] = 'Україна';
-    console.log(
-      'registration.customData[CustomDataAttributes.address]: ',
-      registration.customData[CustomDataAttributes.address],
-    );
     if (registration.customData[CustomDataAttributes.address]) {
+      // PA of first iteration, only has 1 address field
       ukrPoshtaFspInstructions['Postal index'] = null;
       ukrPoshtaFspInstructions['Oblast'] =
         registration.customData[CustomDataAttributes.oblast];
@@ -88,6 +84,7 @@ export class UkrPoshtaService {
       ukrPoshtaFspInstructions['Apartment/Office'] = null;
     }
     if (registration.customData[CustomDataAttributes.addressNoPostalIndex]) {
+      // PA of second iteration, only has an address field (no postal index) & postal index field
       ukrPoshtaFspInstructions['Postal index'] =
         registration.customData[CustomDataAttributes.postalIndex];
       ukrPoshtaFspInstructions['Oblast'] =
@@ -98,7 +95,9 @@ export class UkrPoshtaService {
         registration.customData[CustomDataAttributes.addressNoPostalIndex];
       ukrPoshtaFspInstructions['Street'] = null;
       ukrPoshtaFspInstructions['Apartment/Office'] = null;
-    } else {
+    }
+    if (registration.customData[CustomDataAttributes.city]) {
+      // PA of third iteration, has all address information in seperate fields
       ukrPoshtaFspInstructions['Postal index'] =
         registration.customData[CustomDataAttributes.postalIndex];
       ukrPoshtaFspInstructions['Oblast'] =
@@ -125,9 +124,10 @@ export class UkrPoshtaService {
 
   private formatPhoneNumber(phoneNumber: string): string {
     const countryCodePart = phoneNumber.slice(0, 2);
-    console.log('countryCodePart: ', countryCodePart);
-    const parenthesisPart = phoneNumber.slice(3, 5);
-    console.log('parenthesisPart: ', parenthesisPart);
-    return phoneNumber;
+    const parenthesisPart = phoneNumber.slice(2, 5);
+    const trailingPart1 = phoneNumber.slice(5, 8);
+    const trailingPart2 = phoneNumber.slice(8, 10);
+    const trailingPart3 = phoneNumber.slice(10, 12);
+    return `+${countryCodePart}(${parenthesisPart})${trailingPart1}-${trailingPart2}-${trailingPart3}`;
   }
 }
