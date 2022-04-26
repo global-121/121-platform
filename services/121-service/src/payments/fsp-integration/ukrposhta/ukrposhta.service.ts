@@ -54,43 +54,76 @@ export class UkrPoshtaService {
   ): Promise<UkrPoshtaFspInstructions> {
     const ukrPoshtaFspInstructions = new UkrPoshtaFspInstructions();
 
+    console.log('registration: ', registration);
     // These conditional statements are in here because we needed to change FSP questions during an in progress program.
-    if (registration.customData[CustomDataAttributes.postalIndex]) {
-      ukrPoshtaFspInstructions['Oblast / Rayon / city / street / house'] =
-        registration.customData[CustomDataAttributes.addressNoPostalIndex];
-      ukrPoshtaFspInstructions['Postal index'] =
-        registration.customData[CustomDataAttributes.postalIndex];
-    } else {
-      ukrPoshtaFspInstructions[
-        'Oblast / Rayon / city / street / house / postal index'
-      ] = registration.customData[CustomDataAttributes.address];
-      ukrPoshtaFspInstructions['Oblast / Rayon / city / street / house'] = null;
-      ukrPoshtaFspInstructions['Postal index'] = null;
-    }
-
+    ukrPoshtaFspInstructions.Amount = transaction.amount;
+    ukrPoshtaFspInstructions['Transfer costs'] = null;
     if (registration.customData[CustomDataAttributes.name]) {
-      ukrPoshtaFspInstructions['Name / last name / fathers name'] =
+      ukrPoshtaFspInstructions['Last name'] =
         registration.customData[CustomDataAttributes.name];
-      ukrPoshtaFspInstructions['Name'] = null;
-      ukrPoshtaFspInstructions['Last name'] = null;
-      ukrPoshtaFspInstructions['Fathers name'] = null;
+      ukrPoshtaFspInstructions['First name'] = null;
+      ukrPoshtaFspInstructions['Middle name'] = null;
     } else {
-      ukrPoshtaFspInstructions['Name'] =
-        registration.customData[CustomDataAttributes.firstName];
       ukrPoshtaFspInstructions['Last name'] =
         registration.customData[CustomDataAttributes.lastName];
-      ukrPoshtaFspInstructions['Fathers name'] =
+      ukrPoshtaFspInstructions['First name'] =
+        registration.customData[CustomDataAttributes.firstName];
+      ukrPoshtaFspInstructions['Middle name'] =
         registration.customData[CustomDataAttributes.fathersName];
     }
-
-    ukrPoshtaFspInstructions.Amount = transaction.amount;
+    ukrPoshtaFspInstructions['Country'] = 'Україна';
+    if (registration.customData[CustomDataAttributes.address]) {
+      ukrPoshtaFspInstructions['Postal index'] = null;
+      ukrPoshtaFspInstructions['Oblast'] =
+        registration.customData[CustomDataAttributes.oblast];
+      ukrPoshtaFspInstructions['Rayon'] =
+        registration.customData[CustomDataAttributes.raion];
+      ukrPoshtaFspInstructions['City'] =
+        registration.customData[CustomDataAttributes.address];
+      ukrPoshtaFspInstructions['Street'] = null;
+      ukrPoshtaFspInstructions['Apartment/Office'] = null;
+    }
+    if (
+      registration.customData[CustomDataAttributes.postalIndex] &&
+      !registration.customData[CustomDataAttributes.city]
+    ) {
+      ukrPoshtaFspInstructions['Postal index'] =
+        registration.customData[CustomDataAttributes.postalIndex];
+      ukrPoshtaFspInstructions['Oblast'] =
+        registration.customData[CustomDataAttributes.oblast];
+      ukrPoshtaFspInstructions['Rayon'] =
+        registration.customData[CustomDataAttributes.raion];
+      ukrPoshtaFspInstructions['City'] =
+        registration.customData[CustomDataAttributes.addressNoPostalIndex];
+      ukrPoshtaFspInstructions['Street'] = null;
+      ukrPoshtaFspInstructions['Apartment/Office'] = null;
+    } else {
+      ukrPoshtaFspInstructions['Postal index'] =
+        registration.customData[CustomDataAttributes.postalIndex];
+      ukrPoshtaFspInstructions['Oblast'] =
+        registration.customData[CustomDataAttributes.oblast];
+      ukrPoshtaFspInstructions['Rayon'] =
+        registration.customData[CustomDataAttributes.raion];
+      ukrPoshtaFspInstructions['City'] =
+        registration.customData[CustomDataAttributes.city];
+      ukrPoshtaFspInstructions['Street'] =
+        registration.customData[CustomDataAttributes.street];
+      ukrPoshtaFspInstructions['Apartment/Office'] =
+        registration.customData[CustomDataAttributes.appartmentOrOffice];
+    }
+    ukrPoshtaFspInstructions['Special notes'] = 'без повідомлення';
+    ukrPoshtaFspInstructions['Email'] = null;
+    ukrPoshtaFspInstructions['Telephone'] = this.formatPhoneNumber(
+      registration.customData[CustomDataAttributes.phoneNumber],
+    );
     ukrPoshtaFspInstructions['Tax ID number'] =
       registration.customData[CustomDataAttributes.taxId];
-    ukrPoshtaFspInstructions['Transfer costs'] = null;
-    ukrPoshtaFspInstructions['Transfer track no (Dorcas database no)'] = null;
-    ukrPoshtaFspInstructions['Telephone'] =
-      registration.customData[CustomDataAttributes.phoneNumber];
 
     return ukrPoshtaFspInstructions;
+  }
+
+  private formatPhoneNumber(phoneNumber: string): string {
+    console.log('phoneNumber: ', phoneNumber);
+    return phoneNumber;
   }
 }
