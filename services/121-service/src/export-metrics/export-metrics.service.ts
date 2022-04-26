@@ -317,6 +317,7 @@ export class ExportMetricsService {
   private async getAllPeopleAffectedList(programId: number): Promise<FileDto> {
     const registrations = await this.registrationRepository.find({
       relations: ['fsp'],
+      order: { id: 'ASC' },
     });
     const questions = await this.getAllQuestionsForExport();
     const payments = (await this.paymentsService.getPayments(programId))
@@ -369,6 +370,7 @@ export class ExportMetricsService {
         program: { id: programId },
         registrationStatus: RegistrationStatusEnum.included,
       },
+      order: { id: 'ASC' },
       relations: ['fsp'],
     });
     const questions = await this.getAllQuestionsForExport();
@@ -426,7 +428,10 @@ export class ExportMetricsService {
     programId: number,
   ): Promise<FileDto> {
     const selectedRegistrations = (
-      await this.registrationRepository.find({ relations: ['fsp'] })
+      await this.registrationRepository.find({
+        relations: ['fsp'],
+        order: { id: 'ASC' },
+      })
     ).filter(
       registration =>
         registration.registrationStatus ===
@@ -471,6 +476,7 @@ export class ExportMetricsService {
         program: { id: programId },
         customData: Not(IsNull()),
       },
+      order: { id: 'ASC' },
     });
 
     const duplicates = allRegistrations.filter(registration => {
@@ -945,6 +951,7 @@ export class ExportMetricsService {
         where: {
           referenceId: In(referenceIdsDto.referenceIds),
         },
+        order: { id: 'ASC' },
       });
     } else {
       registrations = await this.registrationRepository.find({
@@ -953,6 +960,7 @@ export class ExportMetricsService {
           registrationStatus: RegistrationStatusEnum.included,
         },
         relations: ['fsp'],
+        order: { id: 'ASC' },
       });
     }
     const sum = registrations.reduce(function(a, b) {
