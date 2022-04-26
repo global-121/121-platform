@@ -76,7 +76,7 @@ export class UkrPoshtaService {
       ukrPoshtaFspInstructions['Postal index'] = null;
       ukrPoshtaFspInstructions['Oblast'] =
         registration.customData[CustomDataAttributes.oblast];
-      ukrPoshtaFspInstructions['Rayon'] =
+      ukrPoshtaFspInstructions['Raion'] =
         registration.customData[CustomDataAttributes.raion];
       ukrPoshtaFspInstructions['City'] =
         registration.customData[CustomDataAttributes.address];
@@ -89,7 +89,7 @@ export class UkrPoshtaService {
         registration.customData[CustomDataAttributes.postalIndex];
       ukrPoshtaFspInstructions['Oblast'] =
         registration.customData[CustomDataAttributes.oblast];
-      ukrPoshtaFspInstructions['Rayon'] =
+      ukrPoshtaFspInstructions['Raion'] =
         registration.customData[CustomDataAttributes.raion];
       ukrPoshtaFspInstructions['City'] =
         registration.customData[CustomDataAttributes.addressNoPostalIndex];
@@ -102,7 +102,7 @@ export class UkrPoshtaService {
         registration.customData[CustomDataAttributes.postalIndex];
       ukrPoshtaFspInstructions['Oblast'] =
         registration.customData[CustomDataAttributes.oblast];
-      ukrPoshtaFspInstructions['Rayon'] =
+      ukrPoshtaFspInstructions['Raion'] =
         registration.customData[CustomDataAttributes.raion];
       ukrPoshtaFspInstructions['City'] =
         registration.customData[CustomDataAttributes.city];
