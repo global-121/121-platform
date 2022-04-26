@@ -72,6 +72,10 @@ export class UkrPoshtaService {
         registration.customData[CustomDataAttributes.fathersName];
     }
     ukrPoshtaFspInstructions['Country'] = 'Україна';
+    console.log(
+      'registration.customData[CustomDataAttributes.address]: ',
+      registration.customData[CustomDataAttributes.address],
+    );
     if (registration.customData[CustomDataAttributes.address]) {
       ukrPoshtaFspInstructions['Postal index'] = null;
       ukrPoshtaFspInstructions['Oblast'] =
@@ -83,10 +87,7 @@ export class UkrPoshtaService {
       ukrPoshtaFspInstructions['Street'] = null;
       ukrPoshtaFspInstructions['Apartment/Office'] = null;
     }
-    if (
-      registration.customData[CustomDataAttributes.postalIndex] &&
-      !registration.customData[CustomDataAttributes.city]
-    ) {
+    if (registration.customData[CustomDataAttributes.addressNoPostalIndex]) {
       ukrPoshtaFspInstructions['Postal index'] =
         registration.customData[CustomDataAttributes.postalIndex];
       ukrPoshtaFspInstructions['Oblast'] =
@@ -109,7 +110,7 @@ export class UkrPoshtaService {
       ukrPoshtaFspInstructions['Street'] =
         registration.customData[CustomDataAttributes.street];
       ukrPoshtaFspInstructions['Apartment/Office'] =
-        registration.customData[CustomDataAttributes.appartmentOrOffice];
+        registration.customData[CustomDataAttributes.apartmentOrOffice];
     }
     ukrPoshtaFspInstructions['Special notes'] = 'без повідомлення';
     ukrPoshtaFspInstructions['Email'] = null;
@@ -123,7 +124,10 @@ export class UkrPoshtaService {
   }
 
   private formatPhoneNumber(phoneNumber: string): string {
-    console.log('phoneNumber: ', phoneNumber);
+    const countryCodePart = phoneNumber.slice(0, 2);
+    console.log('countryCodePart: ', countryCodePart);
+    const parenthesisPart = phoneNumber.slice(3, 5);
+    console.log('parenthesisPart: ', parenthesisPart);
     return phoneNumber;
   }
 }
