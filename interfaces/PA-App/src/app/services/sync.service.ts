@@ -31,6 +31,8 @@ export class SyncService implements OnDestroy {
     window.addEventListener('offline', () => this.goOffline(), {
       passive: true,
     });
+
+    this.setBatchCountSubject(this.getExistingSyncTasks());
   }
 
   ngOnDestroy() {
