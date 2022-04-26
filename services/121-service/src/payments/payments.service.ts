@@ -292,10 +292,6 @@ export class PaymentsService {
         const paymentAddressColumn = attribute.name;
         return includedRegistration.customData[paymentAddressColumn];
       }
-      if (attribute.name === CustomDataAttributes.address) {
-        const paymentAddressColumn = attribute.name;
-        return includedRegistration.customData[paymentAddressColumn];
-      }
     }
     return null;
   }

@@ -1,10 +1,10 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import { TranslateModule } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
 import { MockConversationService } from '../mocks/conversation.service.mock';
 import { MockLoggingService } from '../mocks/logging.service.mock';
 import { SwUpdateMock } from '../mocks/swupdate.mock';
@@ -16,36 +16,38 @@ describe('PersonalPage', () => {
   let component: PersonalPage;
   let fixture: ComponentFixture<PersonalPage>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [PersonalPage],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-      providers: [
-        {
-          provide: ConversationService,
-          useValue: MockConversationService,
-        },
-        {
-          provide: LoggingService,
-          useValue: MockLoggingService,
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            queryParams: new Observable((observer) => {
-              const urlParams = {
-                mode: 'batch',
-              };
-              observer.next(urlParams);
-              observer.complete();
-            }),
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [PersonalPage],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+        providers: [
+          {
+            provide: ConversationService,
+            useValue: MockConversationService,
           },
-        },
-        { provide: SwUpdate, useClass: SwUpdateMock },
-      ],
-    }).compileComponents();
-  }));
+          {
+            provide: LoggingService,
+            useValue: MockLoggingService,
+          },
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              queryParams: new Observable((observer) => {
+                const urlParams = {
+                  mode: 'batch',
+                };
+                observer.next(urlParams);
+                observer.complete();
+              }),
+            },
+          },
+          { provide: SwUpdate, useClass: SwUpdateMock },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(async () => {
     fixture = await TestBed.createComponent(PersonalPage);

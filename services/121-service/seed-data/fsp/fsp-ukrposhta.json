@@ -8,22 +8,55 @@
   "integrationType": "csv",
   "attributes": [
     {
-      "name": "address",
+      "name": "addressNoPostalIndex",
       "label": {
-        "en": "Please provide your current residency address (Oblast, Rayon, city, street, house, postal index)",
-        "uk": "Вкажіть, де ви проживаєте в даний момент (Область, район, місто, вулиця, дім, поштовий індекс)",
-        "ru": "Укажите, где вы проживаете в данный момент (Область, район, город, улица, дом, индекс)"
+        "en": "Please provide your current residency address (Oblast, Rayon, city, street, house)",
+        "uk": "Вкажіть адресу, за якою Ви проживаєте в даний момент (Область, район, місто, вулиця, дім)",
+        "ru": "Укажите, пожалуйста, адрес, где вы проживаете в данный момент (Область, район, город, дом)"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
       "options": null
     },
     {
-      "name": "name",
+      "name": "postalIndex",
       "label": {
-        "en": "Please provide the contact name (Last name / First name / Fathers name) that will be receiving the payment of UkrPoshta",
-        "uk": "Фамілія, Ім'я, По батькові заявника (того, хто зможе отримати переказ на Укр Пошті)",
-        "ru": "Фамилия, Имя, Отчество заявителя (того, кто сможет получить перевод на Укр Почте)"
+        "en": "Please provide your postal index",
+        "uk": "Ваш поштовий індекс",
+        "ru": "Укажите, пожалуйста, ваш почтовый индекс"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "lastName",
+      "label": {
+        "en": "Please provide the Last name of the person that will be receiving the payment of UkrPoshta",
+        "uk": "Прізвище заявителя/людини, яка буде отримувати переказ від Укр Пошти",
+        "ru": "Фамилия заявителя/человека, который будет получать перевод от укр. Почты"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "firstName",
+      "label": {
+        "en": "Please provide the First name of the person that will be receiving the payment of UkrPoshta",
+        "uk": "Ім'я заявителя",
+        "ru": "Имя заявителя"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "fathersName",
+      "label": {
+        "en": "Please provide the Fathers name of the person that will be receiving the payment of UkrPoshta",
+        "uk": "По-батькові заявителя",
+        "ru": "Отчество заявителя"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",

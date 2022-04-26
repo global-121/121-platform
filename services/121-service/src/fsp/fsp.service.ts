@@ -3,7 +3,7 @@ import { FinancialServiceProviderEntity } from './financial-service-provider.ent
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
-import { UpdateFspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
+import { FspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
 import { FspAttributeEntity } from './fsp-attribute.entity';
 
 @Injectable()
@@ -46,28 +46,75 @@ export class FspService {
   }
 
   public async updateFspAttribute(
-    updateFspAttributeDto: UpdateFspAttributeDto,
+    fspAttributeDto: FspAttributeDto,
   ): Promise<FspAttributeEntity> {
     const fspAttributes = await this.fspAttributeRepository.find({
-      where: { name: updateFspAttributeDto.name },
+      where: { name: fspAttributeDto.name },
       relations: ['fsp'],
     });
     // Filter out the right fsp, if fsp-attribute name occurs across multiple fsp's
     const fspAttribute = fspAttributes.filter(
-      a => a.fsp.fsp === updateFspAttributeDto.fsp,
+      a => a.fsp.fsp === fspAttributeDto.fsp,
     )[0];
     if (!fspAttribute) {
-      const errors = `No fspAttribute found with name ${updateFspAttributeDto.name} in fsp with name ${updateFspAttributeDto.fsp}`;
+      const errors = `No fspAttribute found with name ${fspAttributeDto.name} in fsp with name ${fspAttributeDto.fsp}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    for (let key in updateFspAttributeDto) {
+    for (let key in fspAttributeDto) {
       if (key !== 'name' && key !== 'fsp') {
-        fspAttribute[key] = updateFspAttributeDto[key];
+        fspAttribute[key] = fspAttributeDto[key];
       }
     }
 
     await this.fspAttributeRepository.save(fspAttribute);
     return fspAttribute;
+  }
+
+  public async createFspAttribute(
+    fspAttributeDto: FspAttributeDto,
+  ): Promise<FspAttributeEntity> {
+    const fspAttributes = await this.fspAttributeRepository.find({
+      where: { name: fspAttributeDto.name },
+      relations: ['fsp'],
+    });
+
+    const fsp = await this.financialServiceProviderRepository.findOne({
+      where: { fsp: fspAttributeDto.fsp },
+    });
+    if (!fsp) {
+      const errors = `Fsp with name: '${fspAttributeDto.name}' not found.'`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    // Filter out the right fsp, if fsp-attribute name occurs across multiple fsp's
+    const oldFspAttribute = fspAttributes.filter(
+      a => a.fsp.fsp === fspAttributeDto.fsp,
+    )[0];
+    if (oldFspAttribute) {
+      const errors = `FspAttribute already found! Attribute exists with name ${fspAttributeDto.name} in fsp with name ${fspAttributeDto.fsp}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    const fspAttribute = new FspAttributeEntity();
+    for (let key in fspAttributeDto) {
+      if (key !== 'fsp') {
+        fspAttribute[key] = fspAttributeDto[key];
+      }
+    }
+    fspAttribute.fsp = fsp;
+    await this.fspAttributeRepository.save(fspAttribute);
+    return fspAttribute;
+  }
+
+  public async deleteFspAttribute(
+    fspAttributeId: number,
+  ): Promise<FspAttributeEntity> {
+    const fspAttribute = await this.fspAttributeRepository.findOne({
+      where: { id: Number(fspAttributeId) },
+    });
+    if (!fspAttribute) {
+      const errors = `Fsp with id: '${fspAttributeId}' not found.'`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    return await this.fspAttributeRepository.remove(fspAttribute);
   }
 }
