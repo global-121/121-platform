@@ -45,6 +45,12 @@ import { RegistrationModeService } from '../services/registration-mode.service';
 import { SyncService } from '../services/sync.service';
 import { InclusionStatusComponent } from './../personal-components/inclusion-status/inclusion-status.component';
 
+enum ToastType {
+  toastWaitToGoOffline = 'toastWaitToGoOffline',
+  toastSwUpdate = 'toastSwUpdate',
+  toastSwError = 'toastSwError',
+}
+
 @Component({
   selector: 'app-personal',
   templateUrl: 'personal.page.html',
@@ -67,7 +73,9 @@ export class PersonalPage implements OnInit, OnDestroy {
   public isOnline = window.navigator.onLine;
   public batchCount: number;
   private batchProgressAlert: HTMLIonAlertElement;
-  toast: HTMLIonToastElement;
+  [ToastType.toastWaitToGoOffline]: HTMLIonToastElement;
+  [ToastType.toastSwUpdate]: HTMLIonToastElement;
+  [ToastType.toastSwError]: HTMLIonToastElement;
 
   private availableSections = {
     [PersonalComponents.consentQuestion]: ConsentQuestionComponent,
@@ -191,6 +199,7 @@ export class PersonalPage implements OnInit, OnDestroy {
 
   private async notifyWaitToGoOffline() {
     this.notify(
+      ToastType.toastWaitToGoOffline,
       this.translate.instant('notification.wait-to-go-offline'),
       [
         {
@@ -204,39 +213,48 @@ export class PersonalPage implements OnInit, OnDestroy {
   }
 
   private async notifyUpdateAvailable() {
-    this.notify(this.translate.instant('notification.update-available'), [
-      {
-        side: 'end',
-        icon: 'refresh',
-        handler: () => {
-          document.location.reload();
+    this.notify(
+      ToastType.toastSwUpdate,
+      this.translate.instant('notification.update-available'),
+      [
+        {
+          side: 'end',
+          icon: 'refresh',
+          handler: () => {
+            document.location.reload();
+          },
         },
-      },
-    ]);
+      ],
+    );
   }
 
   private async notifySwError() {
-    this.notify(this.translate.instant('notification.error-reload'), [
-      {
-        side: 'end',
-        icon: 'refresh',
-        handler: () => {
-          document.location.reload();
+    this.notify(
+      ToastType.toastSwError,
+      this.translate.instant('notification.error-reload'),
+      [
+        {
+          side: 'end',
+          icon: 'refresh',
+          handler: () => {
+            document.location.reload();
+          },
         },
-      },
-    ]);
+      ],
+    );
   }
 
   private async notify(
+    toastType: ToastType,
     message: string,
     buttons: ToastButton[] = [],
     duration?: number,
   ) {
     try {
-      this.toast.dismiss();
+      this[toastType].dismiss();
     } catch (e) {}
 
-    this.toast = await this.toastController.create({
+    this[toastType] = await this.toastController.create({
       message,
       cssClass: 'system-notification ion-text-center',
       position: 'top',
@@ -244,7 +262,7 @@ export class PersonalPage implements OnInit, OnDestroy {
       color: 'tertiary',
       buttons,
     });
-    await this.toast.present();
+    await this[toastType].present();
   }
 
   private async autoBatchUpload() {
