@@ -131,17 +131,22 @@ export class ProgramService {
     programId: number,
     updateProgramDto: UpdateProgramDto,
   ): Promise<ProgramEntity> {
-    const program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = `No program found with id ${programId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    const program = await this.findProgramOrThrow(programId);
 
     for (let attribute in updateProgramDto) {
       program[attribute] = updateProgramDto[attribute];
     }
 
     await this.programRepository.save(program);
+    return program;
+  }
+
+  public async findProgramOrThrow(programId): Promise<ProgramEntity> {
+    const program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = `No program found with id ${programId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
     return program;
   }
 
@@ -202,6 +207,22 @@ export class ProgramService {
 
     await this.programQuestionRepository.save(programQuestion);
     return programQuestion;
+  }
+
+  public async deleteProgramQuestion(
+    programId: number,
+    programQuestionId: number,
+  ): Promise<ProgramQuestionEntity> {
+    const program = await this.findProgramOrThrow(programId);
+
+    const programQuestion = await this.programQuestionRepository.findOne({
+      where: { id: Number(programQuestionId) },
+    });
+    if (!programQuestion) {
+      const errors = `Program question with id: '${programQuestion}' not found.'`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    return await this.programQuestionRepository.remove(programQuestion);
   }
 
   public async changePhase(

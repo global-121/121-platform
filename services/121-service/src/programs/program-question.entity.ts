@@ -1,3 +1,4 @@
+import { CascadeDeleteEntity } from './../base.entity';
 import {
   Entity,
   Column,
@@ -5,6 +6,7 @@ import {
   BeforeUpdate,
   Index,
   OneToMany,
+  BeforeRemove,
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ProgramAnswerEntity } from '../registration/program-answer.entity';
@@ -12,7 +14,7 @@ import { Base121Entity } from '../base.entity';
 import { ExportType } from '../export-metrics/dto/export-details';
 
 @Entity('program_question')
-export class ProgramQuestionEntity extends Base121Entity {
+export class ProgramQuestionEntity extends CascadeDeleteEntity {
   @Column()
   @Index({ unique: true })
   public name: string;
@@ -69,4 +71,14 @@ export class ProgramQuestionEntity extends Base121Entity {
     programAnswer => programAnswer.programQuestion,
   )
   public programAnswers: ProgramAnswerEntity[];
+
+  @BeforeRemove()
+  public async cascadeDelete(): Promise<void> {
+    await this.deleteAllOneToMany([
+      {
+        entityClass: ProgramAnswerEntity,
+        columnName: 'programQuestion',
+      },
+    ]);
+  }
 }
