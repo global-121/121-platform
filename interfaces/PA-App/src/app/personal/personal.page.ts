@@ -65,10 +65,9 @@ export class PersonalPage implements OnInit, OnDestroy {
   private scrollSpeed = environment.useAnimation ? 600 : 0;
 
   public isOnline = window.navigator.onLine;
-
   public batchCount: number;
-
   private batchProgressAlert: HTMLIonAlertElement;
+  toast: HTMLIonToastElement;
 
   private availableSections = {
     [PersonalComponents.consentQuestion]: ConsentQuestionComponent,
@@ -137,9 +136,10 @@ export class PersonalPage implements OnInit, OnDestroy {
       this.batchCount = batchCount;
     });
 
-    this.swUpdates.activated.subscribe(() => {
-      console.log('PersonalPage: Service-worker Activated!');
-      this.notifyOfflineAvailable();
+    this.registrationMode.getBatchMode().subscribe((batchMode) => {
+      if (batchMode && this.isOnline) {
+        this.notifyWaitToGoOffline();
+      }
     });
 
     this.swUpdates.available.subscribe(() => {
@@ -166,6 +166,10 @@ export class PersonalPage implements OnInit, OnDestroy {
     await this.loadComponents();
     this.conversationService.stopLoading();
     this.scrollToLastWhenReady();
+
+    if (this.isOnline && this.registrationMode.multiple) {
+      this.notifyWaitToGoOffline();
+    }
   }
 
   ngOnDestroy() {
@@ -185,14 +189,18 @@ export class PersonalPage implements OnInit, OnDestroy {
     }
   }
 
-  private async notifyOfflineAvailable() {
-    this.notify(this.translate.instant('notification.offline-available'), [
-      {
-        side: 'end',
-        icon: 'close',
-        role: 'cancel',
-      },
-    ]);
+  private async notifyWaitToGoOffline() {
+    this.notify(
+      this.translate.instant('notification.wait-to-go-offline'),
+      [
+        {
+          side: 'end',
+          icon: 'close',
+          role: 'cancel',
+        },
+      ],
+      30000,
+    );
   }
 
   private async notifyUpdateAvailable() {
@@ -219,15 +227,24 @@ export class PersonalPage implements OnInit, OnDestroy {
     ]);
   }
 
-  private async notify(message: string, buttons: ToastButton[] = []) {
-    const toast = await this.toastController.create({
+  private async notify(
+    message: string,
+    buttons: ToastButton[] = [],
+    duration?: number,
+  ) {
+    try {
+      this.toast.dismiss();
+    } catch (e) {}
+
+    this.toast = await this.toastController.create({
       message,
       cssClass: 'system-notification ion-text-center',
       position: 'top',
+      duration: duration,
       color: 'tertiary',
       buttons,
     });
-    await toast.present();
+    await this.toast.present();
   }
 
   private async autoBatchUpload() {
