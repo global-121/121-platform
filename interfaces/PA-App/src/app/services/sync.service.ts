@@ -22,7 +22,7 @@ const STORAGE_KEY = 'syncTasks';
   providedIn: 'root',
 })
 export class SyncService implements OnDestroy {
-  public forceOffline = window.navigator.onLine;
+  public forceOffline = !window.navigator.onLine;
 
   private batchCountSubject = new BehaviorSubject<number>(0);
 
