@@ -147,6 +147,10 @@ export class PersonalPage implements OnInit, OnDestroy {
     this.registrationMode.getBatchMode().subscribe((batchMode) => {
       if (batchMode && this.isOnline) {
         this.notifyWaitToGoOffline();
+      } else {
+        try {
+          this[ToastType.toastWaitToGoOffline].dismiss();
+        } catch (e) {}
       }
     });
 
