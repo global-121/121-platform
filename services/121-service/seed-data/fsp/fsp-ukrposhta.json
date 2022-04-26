@@ -8,15 +8,84 @@
   "integrationType": "csv",
   "attributes": [
     {
-      "name": "addressNoPostalIndex",
+      "name": "oblast",
       "label": {
-        "en": "Please provide your current residency address (Oblast, Rayon, city, street, house)",
-        "uk": "Вкажіть адресу, за якою Ви проживаєте в даний момент (Область, район, місто, вулиця, дім)",
-        "ru": "Укажите, пожалуйста, адрес, где вы проживаете в данный момент (Область, район, город, дом)"
+        "en": "What oblast is your current location in?",
+        "uk": "У якій області ви зараз проживаєте?",
+        "ru": "В какой области вы сейчас проживаете?"
       },
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "dropdown",
+      "options": [
+        {
+          "option": "zakarpatska",
+          "label": {
+            "en": "Zakarpatska",
+            "uk": "Закарпатська",
+            "ru": "Закарпатская"
+          }
+        }
+      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"]
+    },
+    {
+      "name": "raion",
+      "label": {
+        "en": "What raion is your current location in?",
+        "uk": "У якому районі ви зараз проживаєте?",
+        "ru": "В каком районе вы сейчас проживаете?"
+      },
+      "answerType": "dropdown",
+      "options": [
+        {
+          "option": "berekivskyi",
+          "label": {
+            "en": "Berekivskyi",
+            "uk": "Берегівський",
+            "ru": "Береговской"
+          }
+        },
+        {
+          "option": "mukachivskyi ",
+          "label": {
+            "en": "Mukachivskyi",
+            "uk": "Мукачівський",
+            "ru": "Мукачевский"
+          }
+        },
+        {
+          "option": "uzhorodskyi",
+          "label": {
+            "en": "Uzhorodskyi",
+            "uk": "Ужгородський",
+            "ru": "Ужгородский"
+          }
+        }
+      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"]
+    },
+    {
+      "name": "street",
+      "label": {
+        "en": "What is the streetname of your current residency location?"
+      },
       "answerType": "text",
-      "options": null
+      "export": ["all-people-affected", "included", "selected-for-validation"]
+    },
+    {
+      "name": "house",
+      "label": {
+        "en": "What is the housenumber of your current residency location?"
+      },
+      "answerType": "text",
+      "export": ["all-people-affected", "included", "selected-for-validation"]
+    },
+    {
+      "name": "apartmentOrOffice",
+      "label": {
+        "en": "Are you currently located in an apartment or an office?"
+      },
+      "answerType": "text",
+      "export": ["all-people-affected", "included", "selected-for-validation"]
     },
     {
       "name": "postalIndex",
@@ -28,6 +97,14 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
       "options": null
+    },
+    {
+      "name": "city",
+      "label": {
+        "en": "What city is your current residency location in?"
+      },
+      "answerType": "text",
+      "export": ["all-people-affected", "included", "selected-for-validation"]
     },
     {
       "name": "lastName",
@@ -54,7 +131,7 @@
     {
       "name": "fathersName",
       "label": {
-        "en": "Please provide the Fathers name of the person that will be receiving the payment of UkrPoshta",
+        "en": "Please provide the Middle name of the person that will be receiving the payment of UkrPoshta",
         "uk": "По-батькові заявителя",
         "ru": "Отчество заявителя"
       },
