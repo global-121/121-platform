@@ -334,6 +334,8 @@ export class ExportMetricsService {
       programId,
     );
 
+    const program = await this.programRepository.findOne(programId);
+
     for await (let registration of registrations) {
       let row = {};
       row = await this.addGenericFieldsToExport(row, registration);
@@ -353,6 +355,11 @@ export class ExportMetricsService {
         row,
         registration.customData,
         programCustomAttrs,
+      );
+      row = this.registrationsService.addDeprecatedCustomDataKeysToRow(
+        row,
+        registration.customData,
+        JSON.parse(JSON.stringify(program.deprecatedCustomDataKeys)),
       );
       registrationDetails.push(row);
     }
@@ -377,6 +384,7 @@ export class ExportMetricsService {
     const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
       programId,
     );
+    const program = await this.programRepository.findOne(programId);
     const inclusionDetails = [];
     for await (let registration of includedRegistrations) {
       let row = {};
@@ -393,6 +401,11 @@ export class ExportMetricsService {
         programCustomAttrs,
       );
       inclusionDetails.push(row);
+      row = this.registrationsService.addDeprecatedCustomDataKeysToRow(
+        row,
+        registration.customData,
+        JSON.parse(JSON.stringify(program.deprecatedCustomDataKeys)),
+      );
     }
     const filteredColumnDetails = this.filterUnusedColumn(inclusionDetails);
     const response = {
@@ -443,6 +456,7 @@ export class ExportMetricsService {
       programId,
     );
     const columnDetails = [];
+    const program = await this.programRepository.findOne(programId);
     for await (let registration of selectedRegistrations) {
       let row = {};
       row = await this.addGenericFieldsToExport(row, registration);
@@ -456,6 +470,11 @@ export class ExportMetricsService {
         row,
         registration.customData,
         programCustomAttrs,
+      );
+      row = this.registrationsService.addDeprecatedCustomDataKeysToRow(
+        row,
+        registration.customData,
+        JSON.parse(JSON.stringify(program.deprecatedCustomDataKeys)),
       );
       columnDetails.push(row);
     }

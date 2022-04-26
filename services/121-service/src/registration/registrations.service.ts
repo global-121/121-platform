@@ -1303,4 +1303,15 @@ export class RegistrationsService {
     }
     return row;
   }
+
+  public addDeprecatedCustomDataKeysToRow(
+    row: object,
+    customData: object,
+    deprecatedCustomDataKeys: string[],
+  ): object {
+    for (const key of deprecatedCustomDataKeys) {
+      row[key] = customData[key];
+    }
+    return row;
+  }
 }
