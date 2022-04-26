@@ -219,7 +219,7 @@ export class ProgramService {
       where: { id: Number(programQuestionId) },
     });
     if (!programQuestion) {
-      const errors = `Program question with id: '${programQuestion}' not found.'`;
+      const errors = `Program question with id: '${programQuestionId}' not found.'`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return await this.programQuestionRepository.remove(programQuestion);
