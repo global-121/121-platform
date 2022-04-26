@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { QRCodeModule } from 'angularx-qrcode';
 import { MockConversationService } from 'src/app/mocks/conversation.service.mock';
@@ -13,27 +13,29 @@ describe('RegistrationSummaryComponent', () => {
   let component: RegistrationSummaryComponent;
   let fixture: ComponentFixture<RegistrationSummaryComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [RegistrationSummaryComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule,
-        QRCodeModule,
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: ConversationService,
-          useValue: MockConversationService,
-        },
-        {
-          provide: PaDataService,
-          useValue: MockPaDataService,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [RegistrationSummaryComponent],
+        imports: [
+          TranslateModule.forRoot(),
+          HttpClientTestingModule,
+          QRCodeModule,
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: ConversationService,
+            useValue: MockConversationService,
+          },
+          {
+            provide: PaDataService,
+            useValue: MockPaDataService,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RegistrationSummaryComponent);

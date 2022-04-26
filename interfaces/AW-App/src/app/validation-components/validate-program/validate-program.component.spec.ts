@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IonContent, IonicModule } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
@@ -15,56 +15,58 @@ describe('ValidateProgramComponent', () => {
   let component: ValidateProgramComponent;
   let fixture: ComponentFixture<ValidateProgramComponent>;
 
-  beforeEach(async(() => {
-    const programsServiceApiServiceMock = jasmine.createSpyObj(
-      'ProgramsServiceApiService',
-      {
-        getProgramById: () => of(mockProgram).toPromise(),
-        getPrefilledAnswers: () => of({}).toPromise(),
-      },
-    );
-
-    const ionContentMock = jasmine.createSpyObj('IonContent', [
-      'scrollToBottom',
-    ]);
-
-    const ionicStorageMock = {
-      get: (type: IonicStorageTypes) =>
-        new Promise<any>((resolve) => {
-          switch (type) {
-            case IonicStorageTypes.myPrograms:
-              return resolve([mockProgram]);
-            default:
-              return resolve('1');
-          }
-        }),
-    };
-
-    TestBed.configureTestingModule({
-      declarations: [ValidateProgramComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        IonicModule.forRoot(),
-        HttpClientTestingModule,
-        RouterTestingModule.withRoutes([]),
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
+  beforeEach(
+    waitForAsync(() => {
+      const programsServiceApiServiceMock = jasmine.createSpyObj(
+        'ProgramsServiceApiService',
         {
-          provide: ProgramsServiceApiService,
-          useValue: programsServiceApiServiceMock,
+          getProgramById: () => of(mockProgram).toPromise(),
+          getPrefilledAnswers: () => of({}).toPromise(),
         },
-        {
-          provide: IonContent,
-          useValue: ionContentMock,
-        },
-        {
-          provide: Storage,
-          useValue: ionicStorageMock,
-        },
-      ],
-    }).compileComponents();
-  }));
+      );
+
+      const ionContentMock = jasmine.createSpyObj('IonContent', [
+        'scrollToBottom',
+      ]);
+
+      const ionicStorageMock = {
+        get: (type: IonicStorageTypes) =>
+          new Promise<any>((resolve) => {
+            switch (type) {
+              case IonicStorageTypes.myPrograms:
+                return resolve([mockProgram]);
+              default:
+                return resolve('1');
+            }
+          }),
+      };
+
+      TestBed.configureTestingModule({
+        declarations: [ValidateProgramComponent],
+        imports: [
+          TranslateModule.forRoot(),
+          IonicModule.forRoot(),
+          HttpClientTestingModule,
+          RouterTestingModule.withRoutes([]),
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: ProgramsServiceApiService,
+            useValue: programsServiceApiServiceMock,
+          },
+          {
+            provide: IonContent,
+            useValue: ionContentMock,
+          },
+          {
+            provide: Storage,
+            useValue: ionicStorageMock,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ValidateProgramComponent);

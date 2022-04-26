@@ -1,7 +1,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { MockConversationService } from 'src/app/mocks/conversation.service.mock';
@@ -23,32 +23,34 @@ describe('InclusionStatusComponent', () => {
     },
   );
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [InclusionStatusComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        TranslateModule.forRoot(),
-        RouterModule.forRoot([]),
-        HttpClientTestingModule,
-      ],
-      providers: [
-        {
-          provide: ConversationService,
-          useValue: MockConversationService,
-        },
-        {
-          provide: PaDataService,
-          useValue: MockPaDataService,
-        },
-        {
-          provide: ProgramsServiceApiService,
-          useValue: mockProgramsApi,
-        },
-        { provide: APP_BASE_HREF, useValue: '/' },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [InclusionStatusComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [
+          TranslateModule.forRoot(),
+          RouterModule.forRoot([]),
+          HttpClientTestingModule,
+        ],
+        providers: [
+          {
+            provide: ConversationService,
+            useValue: MockConversationService,
+          },
+          {
+            provide: PaDataService,
+            useValue: MockPaDataService,
+          },
+          {
+            provide: ProgramsServiceApiService,
+            useValue: mockProgramsApi,
+          },
+          { provide: APP_BASE_HREF, useValue: '/' },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InclusionStatusComponent);

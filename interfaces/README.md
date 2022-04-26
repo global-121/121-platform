@@ -26,7 +26,7 @@ See the [/features/](../features/)-directory in this repository.
 ### Offline features
 
 For some 'offline' features it is required to run them in a specific way (i.e. to enable their service-worker) locally.  
-See the related Angular-documentation: <https://v9.angular.io/guide/service-worker-getting-started#serving-with-http-server>
+See the related Angular-documentation: <https://v11.angular.io/guide/service-worker-getting-started#serving-with-http-server>
 
 To use it locally:
 
@@ -64,10 +64,10 @@ All interfaces use a common set of dependencies/frameworks/libraries.
   - CSS Utilities: <https://ionicframework.com/docs/layout/css-utilities>
   - Icons: <https://ionicons.com/>
 
-- [Angular v10](https://v10.angular.io/docs)  
+- [Angular v11](https://v11.angular.io/docs)  
   This front-end framework gives us a structure to create components that can be connected, combined, share data and can be delivered as a web-app.
 
-  - API Documentation: <https://v10.angular.io/api>
+  - API Documentation: <https://v11.angular.io/api>
   - Used by Angular, RxJS: <https://v6.rxjs.dev/api>
 
 - [`ngx-translate` v12](https://www.npmjs.com/package/@ngx-translate/core/v/12.1.2)  

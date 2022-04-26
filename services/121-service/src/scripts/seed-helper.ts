@@ -110,11 +110,13 @@ export class SeedHelper {
     // Remove original program custom attributes and add it to a separate variable
     const programCustomAttributes = program.programCustomAttributes;
     program.programCustomAttributes = [];
-    for (let attribute of programCustomAttributes) {
-      let attributeReturn = await programCustomAttributeRepository.save(
-        attribute,
-      );
-      program.programCustomAttributes.push(attributeReturn);
+    if (programCustomAttributes) {
+      for (let attribute of programCustomAttributes) {
+        let attributeReturn = await programCustomAttributeRepository.save(
+          attribute,
+        );
+        program.programCustomAttributes.push(attributeReturn);
+      }
     }
 
     // Remove original program questions and add it to a separate variable
