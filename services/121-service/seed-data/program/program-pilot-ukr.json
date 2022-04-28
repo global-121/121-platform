@@ -275,68 +275,6 @@
       "scoring": {}
     },
     {
-      "name": "oblast",
-      "label": {
-        "en": "What oblast is your current location in?",
-        "uk": "У якій області ви зараз проживаєте?",
-        "ru": "В какой области вы сейчас проживаете?"
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "zakarpatska",
-          "label": {
-            "en": "Zakarpatska",
-            "uk": "Закарпатська",
-            "ru": "Закарпатская"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
-      "name": "raion",
-      "label": {
-        "en": "What raion is your current location in?",
-        "uk": "У якому районі ви зараз проживаєте?",
-        "ru": "В каком районе вы сейчас проживаете?"
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "berekivskyi",
-          "label": {
-            "en": "Berekivskyi",
-            "uk": "Берегівський",
-            "ru": "Береговской"
-          }
-        },
-        {
-          "option": "mukachivskyi ",
-          "label": {
-            "en": "Mukachivskyi",
-            "uk": "Мукачівський",
-            "ru": "Мукачевский"
-          }
-        },
-        {
-          "option": "uzhorodskyi",
-          "label": {
-            "en": "Uzhorodskyi",
-            "uk": "Ужгородський",
-            "ru": "Ужгородский"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
-    },
-    {
       "name": "phoneNumber",
       "label": {
         "en": "Please, can you give us your phone number?",
