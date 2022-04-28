@@ -262,7 +262,7 @@ export class PersonalPage implements OnInit, OnDestroy {
       message,
       cssClass: 'system-notification ion-text-center',
       position: 'top',
-      duration: duration,
+      duration,
       color: 'tertiary',
       buttons,
     });
