@@ -66,7 +66,9 @@
     {
       "name": "street",
       "label": {
-        "en": "What is the streetname of your current residency location?"
+        "en": "What is the streetname of your current residency location?",
+        "uk": "Вулиця, де ви зараз проживаєте",
+        "ru": "Улица, где вы проживаете в данный момент"
       },
       "answerType": "text",
       "export": ["all-people-affected", "included", "selected-for-validation"]
@@ -74,7 +76,9 @@
     {
       "name": "house",
       "label": {
-        "en": "What is the housenumber of your current residency location?"
+        "en": "What is the housenumber of your current residency location?",
+        "uk": "Номер будинку",
+        "ru": "Номер дома"
       },
       "answerType": "text",
       "export": ["all-people-affected", "included", "selected-for-validation"]
@@ -82,7 +86,9 @@
     {
       "name": "apartmentOrOffice",
       "label": {
-        "en": "Are you currently located in an apartment or an office?"
+        "en": "Are you currently located in an apartment or an office?",
+        "uk": "Номер квартири",
+        "ru": "Номер квартиры"
       },
       "answerType": "text",
       "export": ["all-people-affected", "included", "selected-for-validation"]
@@ -101,7 +107,9 @@
     {
       "name": "city",
       "label": {
-        "en": "What city is your current residency location in?"
+        "en": "What city is your current residency location in?",
+        "uk": "Місто, де Ви зараз проживаєте",
+        "ru": "Населённый пункт, где вы сейчас проживаете"
       },
       "answerType": "text",
       "export": ["all-people-affected", "included", "selected-for-validation"]
@@ -131,7 +139,7 @@
     {
       "name": "fathersName",
       "label": {
-        "en": "Please provide the Middle name of the person that will be receiving the payment of UkrPoshta",
+        "en": "Please provide the Middle name (fathers name) of the person that will be receiving the payment of UkrPoshta",
         "uk": "По-батькові заявителя",
         "ru": "Отчество заявителя"
       },
