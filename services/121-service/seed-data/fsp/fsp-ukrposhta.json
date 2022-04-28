@@ -86,7 +86,7 @@
     {
       "name": "apartmentOrOffice",
       "label": {
-        "en": "Are you currently located in an apartment or an office?",
+        "en": "What is the apartment or office number of your current residency location? If it is not applicable, write '-'",
         "uk": "Номер квартири",
         "ru": "Номер квартиры"
       },
@@ -96,7 +96,7 @@
     {
       "name": "postalIndex",
       "label": {
-        "en": "Please provide your postal index",
+        "en": "What is the postal index of your current residency location?",
         "uk": "Ваш поштовий індекс",
         "ru": "Укажите, пожалуйста, ваш почтовый индекс"
       },
@@ -139,7 +139,7 @@
     {
       "name": "fathersName",
       "label": {
-        "en": "Please provide the Middle name (fathers name) of the person that will be receiving the payment of UkrPoshta",
+        "en": "Please provide the Middle name (Father's name) of the person that will be receiving the payment of UkrPoshta",
         "uk": "По-батькові заявителя",
         "ru": "Отчество заявителя"
       },

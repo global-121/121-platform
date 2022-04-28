@@ -81,6 +81,7 @@ export class UkrPoshtaService {
       ukrPoshtaFspInstructions['City'] =
         registration.customData[CustomDataAttributes.address];
       ukrPoshtaFspInstructions['Street'] = null;
+      ukrPoshtaFspInstructions['House number'] = null;
       ukrPoshtaFspInstructions['Apartment/Office'] = null;
     }
     if (registration.customData[CustomDataAttributes.addressNoPostalIndex]) {
@@ -94,6 +95,7 @@ export class UkrPoshtaService {
       ukrPoshtaFspInstructions['City'] =
         registration.customData[CustomDataAttributes.addressNoPostalIndex];
       ukrPoshtaFspInstructions['Street'] = null;
+      ukrPoshtaFspInstructions['House number'] = null;
       ukrPoshtaFspInstructions['Apartment/Office'] = null;
     }
     if (registration.customData[CustomDataAttributes.city]) {
@@ -108,6 +110,8 @@ export class UkrPoshtaService {
         registration.customData[CustomDataAttributes.city];
       ukrPoshtaFspInstructions['Street'] =
         registration.customData[CustomDataAttributes.street];
+      ukrPoshtaFspInstructions['House number'] =
+        registration.customData[CustomDataAttributes.house];
       ukrPoshtaFspInstructions['Apartment/Office'] =
         registration.customData[CustomDataAttributes.apartmentOrOffice];
     }

@@ -21,6 +21,7 @@ export enum CustomDataAttributes {
   postalIndex = 'postalIndex',
   city = 'city',
   street = 'street',
+  house = 'house',
   apartmentOrOffice = 'apartmentOrOffice',
   taxId = 'taxId',
   transferCosts = 'transferCosts',
