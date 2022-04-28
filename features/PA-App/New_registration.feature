@@ -3,9 +3,8 @@ Feature: New registration
   Background:
     Given a program has been published
 
-  Scenario: Register for program with validation
+  Scenario: Register for program
     Given the PA-app is not in batch-mode
-    Given the program has "validation" enabled
     Given the program has at least 1 "program question" defined
     Given the program has at least 1 "Financial Service Provider" defined
     Given that "FSP" has at least 1 "FSP question" defined
@@ -21,10 +20,6 @@ Feature: New registration
     When the PA selects a "program" from the list
     Then the "consent question"-step is shown
     When the PA gives "consent"
-    Then the "sign-up/sign-in"-step is shown
-    When the PA selects "create account" from the list
-    Then the "create account"-step is shown
-    When the PA completes this step
     Then a new row in the "PA-table" in the HO-portal is created with status "created"
     And the "enroll in a program"-step is shown
     When the PA completes this step (See "Answer_program_questions.feature")
@@ -34,13 +29,13 @@ Feature: New registration
     When the PA completes this step (See "Link-preprinted-QR-code.feature")
     Then the PA receives an SMS confirming registration
     And the PA's status in the PA-table in the HO-portal is updated to "registered"
-    And the PA's details are visible in the PA-table in the HO-portal
+    And the PA's details are visible in the PA-table in the 121-portal
     And the inclusion score is calculated correctly
     And the "registration summary"-step is shown
     And the "monitoring question"-step is shown
     When the PA completes this step
     Then the "inclusion status"-step is shown
-    When the PA is included in the HO-portal
+    When the PA is included in the 121-portal
     Then an inclusion-message appears in the PA-app
 
   Scenario: Offline registration by PA
