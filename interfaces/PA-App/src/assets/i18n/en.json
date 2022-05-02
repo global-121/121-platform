@@ -152,7 +152,6 @@
       "menu-title": "Registrations",
       "menu-text-offline": "At the moment you are offline.",
       "menu-text": "Registrations are stored inside your browser. When the webpage is open and you are online, they will be uploaded automatically.",
-      "menu-upload-button": "Upload manually",
       "upload-alert-header": "Uploading registrations.",
       "upload-alert-message": "You are now online. Uploading {{nrRegistrations}} registrations."
     }

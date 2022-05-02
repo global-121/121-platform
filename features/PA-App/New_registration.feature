@@ -20,15 +20,12 @@ Feature: New registration
     When the PA selects a "program" from the list
     Then the "consent question"-step is shown
     When the PA gives "consent"
-    Then a new row in the "PA-table" in the HO-portal is created with status "created"
+    Then a new row in the "PA-table" in the 121-portal is created with status "created"
     And the "enroll in a program"-step is shown
     When the PA completes this step (See "Answer_program_questions.feature")
     Then the "select financial service provider"-step is shown
     When the PA completes this step (See "Fill_payment_details.feature")
-    Then the "preprinted qr-code"-step is shown
-    When the PA completes this step (See "Link-preprinted-QR-code.feature")
-    Then the PA receives an SMS confirming registration
-    And the PA's status in the PA-table in the HO-portal is updated to "registered"
+    And the PA's status in the PA-table in the 121-portal is updated to "registered"
     And the PA's details are visible in the PA-table in the 121-portal
     And the inclusion score is calculated correctly
     And the "registration summary"-step is shown
@@ -60,7 +57,8 @@ Feature: New registration
     And it is set to false
 
     When the Aidworker sets the toggle to true and closes the popup
-    Then a '0 registrations' button appears on the top right
+    Then a 'Multiple registrations' title appears on the top left
+    And a toast is shown to wait some time for the app to be downloaded
 
   Scenario: Online multiple registrations by AidWorker
     Given the Aidworker has an active internet connection
@@ -100,15 +98,3 @@ Feature: New registration
     Then a registrations batch tab opens on the left
     And it mentions your are offline if you are offline
     And it explains that registrations are stored inside your browser and automatically uploaded when online
-    And it contains an 'Upload' button
-    And it is disabled if offline or if there are 0 registrations to upload
-
-  Scenario: Manually upload multiple registrations
-    Given the PA-app is in batch-mode
-    Given there is a queue of at least 1 saved PA'saved during offline mode
-    Given the PA-app is now online
-    Given the automatic upload at the moment of going online failed for some registration
-    When the users clicks the 'Upload manually' button
-    Then the queue is uploaded
-    And this is exactly the same process as the one started automatically at the moment of going online
-
