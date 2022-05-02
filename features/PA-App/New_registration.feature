@@ -48,6 +48,7 @@ Feature: New registration
 
     When the PA has an active internet connection again
     Then the PA-app syncs the registration to the back-end
+    And the PA details are visible in the PA-table in the 121-portal
     And the listening for inclusion-status is enabled again
 
   Scenario: Switch to multiple registrations mode
@@ -66,6 +67,7 @@ Feature: New registration
     When the Aidworker finishes a registration
     Then the registration is uploaded automatically and not added to the queue
     And the PA-app gives a button to 'Add another person affected'
+    And the PA details are visible in the PA-table in the 121-portal
 
     When the button 'Add another person affected' is clicked
     Then the registration process is restarted
@@ -91,6 +93,7 @@ Feature: New registration
     And a popup appears that mentions that X PA's are being uploaded
     And the popup automatically closes when finished
     And the counter in 'X registrations' in the top right decreases to 0
+    And the PA details are visible in the PA-table in the 121-portal
 
   Scenario: Open multiple registrations side menu
     Given the PA-app is in batch-mode
