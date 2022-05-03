@@ -17,7 +17,7 @@
     "set-env-variables": "node ./_set-env-variables.js",
     "prebuild": "npm run set-env-variables && npm run check-assets-translations && npm run generate-assets-audio",
     "build": "ng build",
-    "build:prod": "npm run build -- --prod",
+    "build:prod": "npm run build -- --configuration production",
     "postbuild:prod": "npm run check:icons-in-use && npm run convert:styles-to-async && npm run compress:gzip && npm run compress:brotli",
     "compress:gzip": "gzipper compress --exclude mp3,webm --skip-compressed --remove-larger --level 9 ./www/",
     "compress:brotli": "gzipper compress --exclude mp3,webm --skip-compressed --remove-larger --brotli ./www/",
