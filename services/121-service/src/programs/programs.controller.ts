@@ -1,5 +1,13 @@
 import { ProgramQuestionEntity } from './program-question.entity';
-import { Get, Post, Body, Param, Controller, UseGuards } from '@nestjs/common';
+import {
+  Get,
+  Post,
+  Body,
+  Param,
+  Controller,
+  UseGuards,
+  Delete,
+} from '@nestjs/common';
 import { ProgramService } from './programs.service';
 import { CreateProgramDto } from './dto/create-program.dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
@@ -104,6 +112,24 @@ export class ProgramController {
   ): Promise<ProgramQuestionEntity> {
     return await this.programService.updateProgramQuestion(
       updateProgramQuestionDto,
+    );
+  }
+
+  @Permissions(PermissionEnum.ProgramQuestionDELETE)
+  @ApiOperation({ title: 'Delete program question AND related answers' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiImplicitParam({
+    name: 'programQuestionId',
+    required: true,
+    type: 'integer',
+  })
+  @Delete(':programId/program-questions/:programQuestionId')
+  public async deleteProgramQuestion(
+    @Param() params: any,
+  ): Promise<ProgramQuestionEntity> {
+    return await this.programService.deleteProgramQuestion(
+      params.programId,
+      params.programQuestionId,
     );
   }
 

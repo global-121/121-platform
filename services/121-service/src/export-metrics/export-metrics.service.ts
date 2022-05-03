@@ -317,6 +317,7 @@ export class ExportMetricsService {
   private async getAllPeopleAffectedList(programId: number): Promise<FileDto> {
     const registrations = await this.registrationRepository.find({
       relations: ['fsp'],
+      order: { id: 'ASC' },
     });
     const questions = await this.getAllQuestionsForExport();
     const payments = (await this.paymentsService.getPayments(programId))
@@ -332,6 +333,8 @@ export class ExportMetricsService {
     const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
       programId,
     );
+
+    const program = await this.programRepository.findOne(programId);
 
     for await (let registration of registrations) {
       let row = {};
@@ -353,6 +356,11 @@ export class ExportMetricsService {
         registration.customData,
         programCustomAttrs,
       );
+      row = this.registrationsService.addDeprecatedCustomDataKeysToRow(
+        row,
+        registration.customData,
+        JSON.parse(JSON.stringify(program.deprecatedCustomDataKeys)),
+      );
       registrationDetails.push(row);
     }
     const response = {
@@ -369,12 +377,14 @@ export class ExportMetricsService {
         program: { id: programId },
         registrationStatus: RegistrationStatusEnum.included,
       },
+      order: { id: 'ASC' },
       relations: ['fsp'],
     });
     const questions = await this.getAllQuestionsForExport();
     const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
       programId,
     );
+    const program = await this.programRepository.findOne(programId);
     const inclusionDetails = [];
     for await (let registration of includedRegistrations) {
       let row = {};
@@ -391,6 +401,11 @@ export class ExportMetricsService {
         programCustomAttrs,
       );
       inclusionDetails.push(row);
+      row = this.registrationsService.addDeprecatedCustomDataKeysToRow(
+        row,
+        registration.customData,
+        JSON.parse(JSON.stringify(program.deprecatedCustomDataKeys)),
+      );
     }
     const filteredColumnDetails = this.filterUnusedColumn(inclusionDetails);
     const response = {
@@ -426,7 +441,10 @@ export class ExportMetricsService {
     programId: number,
   ): Promise<FileDto> {
     const selectedRegistrations = (
-      await this.registrationRepository.find({ relations: ['fsp'] })
+      await this.registrationRepository.find({
+        relations: ['fsp'],
+        order: { id: 'ASC' },
+      })
     ).filter(
       registration =>
         registration.registrationStatus ===
@@ -438,6 +456,7 @@ export class ExportMetricsService {
       programId,
     );
     const columnDetails = [];
+    const program = await this.programRepository.findOne(programId);
     for await (let registration of selectedRegistrations) {
       let row = {};
       row = await this.addGenericFieldsToExport(row, registration);
@@ -451,6 +470,11 @@ export class ExportMetricsService {
         row,
         registration.customData,
         programCustomAttrs,
+      );
+      row = this.registrationsService.addDeprecatedCustomDataKeysToRow(
+        row,
+        registration.customData,
+        JSON.parse(JSON.stringify(program.deprecatedCustomDataKeys)),
       );
       columnDetails.push(row);
     }
@@ -471,6 +495,7 @@ export class ExportMetricsService {
         program: { id: programId },
         customData: Not(IsNull()),
       },
+      order: { id: 'ASC' },
     });
 
     const duplicates = allRegistrations.filter(registration => {
@@ -945,6 +970,7 @@ export class ExportMetricsService {
         where: {
           referenceId: In(referenceIdsDto.referenceIds),
         },
+        order: { id: 'ASC' },
       });
     } else {
       registrations = await this.registrationRepository.find({
@@ -953,6 +979,7 @@ export class ExportMetricsService {
           registrationStatus: RegistrationStatusEnum.included,
         },
         relations: ['fsp'],
+        order: { id: 'ASC' },
       });
     }
     const sum = registrations.reduce(function(a, b) {

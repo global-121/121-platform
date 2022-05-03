@@ -19,7 +19,7 @@ export class PaDataService {
   private instanceKey = 'instance';
   private detailProgramKeyPrefix = 'program';
   private detailFspKeyPrefix = 'fsp';
-  private dataStorageKey = 'data-storage';
+  public paDataKeyPrefix = 'paData-';
   private currentProgramId: number;
 
   private hasAccount = false;
@@ -28,7 +28,7 @@ export class PaDataService {
 
   private authenticationStateSource = new BehaviorSubject<User | null>(null);
   public authenticationState$ = this.authenticationStateSource.asObservable();
-  public isOffline = false;
+  public isOffline = !window.navigator.onLine;
 
   constructor(
     private programService: ProgramsServiceApiService,
@@ -139,7 +139,7 @@ export class PaDataService {
       return;
     }
 
-    const typeKey = `${this.dataStorageKey + '-' + type}`;
+    const typeKey = `${this.paDataKeyPrefix + type}`;
     if (!this.isOffline) {
       const storeResult = await this.programService.store(
         type,
@@ -159,7 +159,7 @@ export class PaDataService {
       return;
     }
 
-    const typeKey = `${this.dataStorageKey + '-' + type}`;
+    const typeKey = `${this.paDataKeyPrefix + type}`;
     if (!this.isOffline) {
       const storeResult = await this.programService.retrieve(type);
       localStorage.setItem(typeKey, JSON.stringify(storeResult));
@@ -269,10 +269,19 @@ export class PaDataService {
     window.sessionStorage.setItem(this.sessionKey, JSON.stringify(user));
   }
 
+  private clearDataStorage() {
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith(this.paDataKeyPrefix)) {
+        delete localStorage[key];
+      }
+    });
+  }
+
   public async logout(completedRegistration: boolean) {
     console.log('PaData: logout()');
     window.sessionStorage.removeItem(this.sessionKey);
     await this.programService.logout(completedRegistration);
+    this.clearDataStorage();
     this.setLoggedOut();
   }
 

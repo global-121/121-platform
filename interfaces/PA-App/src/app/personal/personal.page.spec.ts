@@ -2,10 +2,12 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { SwUpdate } from '@angular/service-worker';
 import { TranslateModule } from '@ngx-translate/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { MockConversationService } from '../mocks/conversation.service.mock';
 import { MockLoggingService } from '../mocks/logging.service.mock';
+import { SwUpdateMock } from '../mocks/swupdate.mock';
 import { ConversationService } from '../services/conversation.service';
 import { LoggingService } from '../services/logging.service';
 import { PersonalPage } from './personal.page';
@@ -41,6 +43,7 @@ describe('PersonalPage', () => {
               }),
             },
           },
+          { provide: SwUpdate, useClass: SwUpdateMock },
         ],
       }).compileComponents();
     }),

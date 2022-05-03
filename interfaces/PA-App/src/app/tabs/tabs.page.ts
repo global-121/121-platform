@@ -12,6 +12,8 @@ import { UserMenuComponent } from '../user-menu/user-menu.component';
 export class TabsPage {
   public isLoggedIn = false;
 
+  public multipleRegistrationMenuOpen = false;
+
   constructor(
     private modalController: ModalController,
     private paData: PaDataService,
@@ -31,10 +33,16 @@ export class TabsPage {
   }
 
   async openMultipleRegistrationsMenu() {
+    this.multipleRegistrationMenuOpen = true;
+
     const popover = await this.modalController.create({
       component: MultipleRegistrationsMenuComponent,
       cssClass: 'multiple-registrations-menu-modal',
     });
+
+    popover
+      .onDidDismiss()
+      .then(() => (this.multipleRegistrationMenuOpen = false));
 
     return await popover.present();
   }

@@ -1,14 +1,19 @@
 export class UkrPoshtaFspInstructions {
-  public 'Oblast / Rayon / city / street / house / postal index': string;
-  public 'Oblast / Rayon / city / street / house': string;
-  public 'Postal index': string;
-  public 'Name / last name / fathers name': string;
-  public 'Name': string;
-  public 'Last name': string;
-  public 'Fathers name': string;
   public 'Amount': number;
-  public 'Tax ID number': string;
   public 'Transfer costs': string;
-  public 'Transfer track no (Dorcas database no)': string;
-  public 'Telephone': number;
+  public 'Last name': string;
+  public 'First name': string;
+  public 'Middle name': string;
+  public 'Country': string;
+  public 'Postal Index': string;
+  public 'Oblast': string;
+  public 'Raion': string;
+  public 'City': string;
+  public 'Street': string;
+  public 'House': string;
+  public 'Apartment/office': string;
+  public 'Special notes': string;
+  public 'Email': string;
+  public 'Telephone': string;
+  public 'Tax ID number': string;
 }

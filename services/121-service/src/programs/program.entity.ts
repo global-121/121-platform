@@ -135,4 +135,10 @@ export class ProgramEntity extends CascadeDeleteEntity {
     registrations => registrations.program,
   )
   public registrations: RegistrationEntity[];
+
+  // Can be used to add deprecated custom attributes to an export if
+  @Column('json', {
+    default: [],
+  })
+  public deprecatedCustomDataKeys: JSON;
 }

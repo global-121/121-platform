@@ -11,7 +11,10 @@
     "error-retry": "Something went wrong, do you want to try again?"
   },
   "notification": {
-    "inclusion": "Inclusion status received"
+    "inclusion": "Inclusion status received",
+    "error-reload": "Something went wrong, please reload the app.",
+    "wait-to-go-offline": "Please wait 30 seconds before using the app offline, so all app content is downloaded.",
+    "update-available": "Update available, please reload the app."
   },
   "password-toggle": {
     "hide": "Hide password",
@@ -149,7 +152,7 @@
     },
     "batch": {
       "toolbar-queue-button": "{{nrRegistrations}} registrations",
-      "menu-title": "Registrations",
+      "menu-title": "Multiple registrations",
       "menu-text-offline": "At the moment you are offline.",
       "menu-text": "Registrations are stored inside your browser. When the webpage is open and you are online, they will be uploaded automatically.",
       "upload-alert-header": "Uploading registrations.",

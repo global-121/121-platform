@@ -22,7 +22,7 @@ const STORAGE_KEY = 'syncTasks';
   providedIn: 'root',
 })
 export class SyncService implements OnDestroy {
-  public forceOffline = false;
+  public forceOffline = !window.navigator.onLine;
 
   private batchCountSubject = new BehaviorSubject<number>(0);
 
@@ -31,6 +31,8 @@ export class SyncService implements OnDestroy {
     window.addEventListener('offline', () => this.goOffline(), {
       passive: true,
     });
+
+    this.setBatchCountSubject(this.getExistingSyncTasks());
   }
 
   ngOnDestroy() {
@@ -49,7 +51,6 @@ export class SyncService implements OnDestroy {
     this.pubSub.publish(PubSubEvent.didConnectionOnline);
     this.forceOffline = false;
 
-    // Don't do this immediately, let the user choose (?)
     this.processQueue();
   }
 

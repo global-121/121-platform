@@ -6,7 +6,14 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { AlertController, IonContent, MenuController } from '@ionic/angular';
+import { SwUpdate } from '@angular/service-worker';
+import {
+  AlertController,
+  IonContent,
+  MenuController,
+  ToastButton,
+  ToastController,
+} from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
 import { AutoSignupComponent } from '../personal-components/auto-signup/auto-signup.component';
@@ -38,6 +45,12 @@ import { RegistrationModeService } from '../services/registration-mode.service';
 import { SyncService } from '../services/sync.service';
 import { InclusionStatusComponent } from './../personal-components/inclusion-status/inclusion-status.component';
 
+enum ToastType {
+  toastWaitToGoOffline = 'toastWaitToGoOffline',
+  toastSwUpdate = 'toastSwUpdate',
+  toastSwError = 'toastSwError',
+}
+
 @Component({
   selector: 'app-personal',
   templateUrl: 'personal.page.html',
@@ -57,11 +70,12 @@ export class PersonalPage implements OnInit, OnDestroy {
 
   private scrollSpeed = environment.useAnimation ? 600 : 0;
 
-  public isOnline = true;
-
+  public isOnline = window.navigator.onLine;
   public batchCount: number;
-
   private batchProgressAlert: HTMLIonAlertElement;
+  [ToastType.toastWaitToGoOffline]: HTMLIonToastElement;
+  [ToastType.toastSwUpdate]: HTMLIonToastElement;
+  [ToastType.toastSwError]: HTMLIonToastElement;
 
   private availableSections = {
     [PersonalComponents.consentQuestion]: ConsentQuestionComponent,
@@ -92,6 +106,8 @@ export class PersonalPage implements OnInit, OnDestroy {
     public alertController: AlertController,
     public registrationMode: RegistrationModeService,
     public syncService: SyncService,
+    public toastController: ToastController,
+    public swUpdates: SwUpdate,
   ) {
     // Listen for completed sections, to continue with next steps
 
@@ -127,6 +143,29 @@ export class PersonalPage implements OnInit, OnDestroy {
     this.syncService.getBatchCount().subscribe((batchCount) => {
       this.batchCount = batchCount;
     });
+
+    this.registrationMode.getBatchMode().subscribe((batchMode) => {
+      if (batchMode && this.isOnline) {
+        this.notifyWaitToGoOffline();
+      } else {
+        try {
+          this[ToastType.toastWaitToGoOffline].dismiss();
+        } catch (e) {}
+      }
+    });
+
+    this.swUpdates.available.subscribe(() => {
+      console.log('PersonalPage: Service-worker Update available!');
+      this.swUpdates.activateUpdate().then(
+        () => {
+          this.notifyUpdateAvailable();
+        },
+        (error) => {
+          console.error('ServiceWorker activation error:', error);
+          this.notifySwError();
+        },
+      );
+    });
   }
 
   async ngOnInit() {
@@ -134,9 +173,15 @@ export class PersonalPage implements OnInit, OnDestroy {
     if (this.isDebug && this.showDebug) {
       return;
     }
+    this.conversationService.startLoading();
     await this.loadEndpoints();
     await this.loadComponents();
+    this.conversationService.stopLoading();
     this.scrollToLastWhenReady();
+
+    if (this.isOnline && this.registrationMode.multiple) {
+      this.notifyWaitToGoOffline();
+    }
   }
 
   ngOnDestroy() {
@@ -151,7 +196,77 @@ export class PersonalPage implements OnInit, OnDestroy {
 
   private goOffline() {
     this.isOnline = false;
-    this.batchProgressAlert.dismiss();
+    if (this.batchProgressAlert) {
+      this.batchProgressAlert.dismiss();
+    }
+  }
+
+  private async notifyWaitToGoOffline() {
+    this.notify(
+      ToastType.toastWaitToGoOffline,
+      this.translate.instant('notification.wait-to-go-offline'),
+      [
+        {
+          side: 'end',
+          icon: 'close',
+          role: 'cancel',
+        },
+      ],
+      30000,
+    );
+  }
+
+  private async notifyUpdateAvailable() {
+    this.notify(
+      ToastType.toastSwUpdate,
+      this.translate.instant('notification.update-available'),
+      [
+        {
+          side: 'end',
+          icon: 'refresh',
+          handler: () => {
+            document.location.reload();
+          },
+        },
+      ],
+    );
+  }
+
+  private async notifySwError() {
+    this.notify(
+      ToastType.toastSwError,
+      this.translate.instant('notification.error-reload'),
+      [
+        {
+          side: 'end',
+          icon: 'refresh',
+          handler: () => {
+            document.location.reload();
+          },
+        },
+      ],
+    );
+  }
+
+  private async notify(
+    toastType: ToastType,
+    message: string,
+    buttons: ToastButton[] = [],
+    duration?: number,
+  ) {
+    try {
+      this[toastType].dismiss();
+    } catch (e) {}
+
+    this[toastType] = await this.toastController.create({
+      message,
+      cssClass: 'system-notification ion-text-center',
+      position: 'top',
+      duration,
+      color: 'tertiary',
+      buttons,
+    });
+    await this[toastType].present();
   }
 
   private async autoBatchUpload() {

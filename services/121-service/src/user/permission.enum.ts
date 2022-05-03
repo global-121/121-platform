@@ -28,6 +28,7 @@ export enum PermissionEnum {
   ProgramAllREAD = 'program:all.read',
   ProgramPhaseUPDATE = 'program:phase.update',
   ProgramQuestionUPDATE = 'program:question.update',
+  ProgramQuestionDELETE = 'program:question.delete',
   ProgramCustomAttributeUPDATE = 'program:custom-attribute.update',
   ProgramMetricsREAD = 'program:metrics.read',
 
