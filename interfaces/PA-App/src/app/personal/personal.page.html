@@ -48,16 +48,6 @@
         </p>
       </ion-text>
     </ion-item>
-
-    <ion-button
-      [disabled]="!isOnline || !batchCount"
-      (click)="uploadBatchRegistrations()"
-      color="light"
-      expand="block"
-      class="ion-margin-vertical"
-    >
-      {{ 'personal.batch.menu-upload-button'|translate }}
-    </ion-button>
   </ion-content>
 </ion-menu>
 
