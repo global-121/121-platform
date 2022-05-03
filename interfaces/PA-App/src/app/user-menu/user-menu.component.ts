@@ -56,7 +56,6 @@ export class UserMenuComponent {
     this.conversationService.restartConversation(
       this.conversationService.conversationActions.afterLogout,
     );
-    // window.location.reload();
   }
 
   async deleteData() {

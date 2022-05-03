@@ -20,6 +20,7 @@ export class ProgramsServiceApiService {
   ) {}
 
   getInstanceInformation(): Promise<InstanceData> {
+    console.log('getInstanceInformation() called... ');
     return this.apiService
       .get(environment.url_121_service_api, '/instance')
       .toPromise();

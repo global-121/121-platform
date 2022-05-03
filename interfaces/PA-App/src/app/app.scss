@@ -49,7 +49,7 @@ ion-button.button-block.button-solid:not([disabled]) {
     transform: translateY(-50%);
     background: transparent center center no-repeat;
     background-size: 100% auto;
-    background-image: url('/assets/icons/hand-tap-white.svg');
+    background-image: url('~src/assets/icons/hand-tap-white.svg');
 
     [dir='rtl'] & {
       left: 8px;
@@ -117,4 +117,14 @@ dialogue-turn ion-card-content p {
 // Add top-border to sets of radio-buttons:
 ion-radio-group ion-item:first-of-type:not(:last-of-type) {
   --border-width: 1px 0;
+}
+
+.system-notification {
+  --max-width: 100%;
+  --width: 100%;
+  --box-shadow: none;
+  --border-radius: none;
+  --start: 0;
+  --end: 0;
+  --ion-safe-area-top: 104px; // override .toast-wrapper.toast-top inline style top rule
 }

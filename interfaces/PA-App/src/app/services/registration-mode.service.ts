@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -6,6 +7,7 @@ import { Injectable } from '@angular/core';
 export class RegistrationModeService {
   public multiple = false;
   public storageKey = 'multipleMode';
+  private batchModeSubject = new BehaviorSubject<boolean>(false);
 
   constructor() {
     this.multiple = this.getStoredMode();
@@ -13,6 +15,11 @@ export class RegistrationModeService {
 
   public storeMode() {
     localStorage.setItem(this.storageKey, JSON.stringify(this.multiple));
+    this.batchModeSubject.next(this.multiple);
+  }
+
+  public getBatchMode(): Observable<boolean> {
+    return this.batchModeSubject.asObservable();
   }
 
   public getStoredMode() {

@@ -2,35 +2,35 @@
   <ion-tab-bar slot="top">
     <ion-tab-button
       tab="personal"
-      color="dark"
       layout="label-hide"
       [title]="'tabs.you'|translate"
+      [selected]="!multipleRegistrationMenuOpen"
     >
       <ion-icon
         name="chatbubbles"
         size="large"
         aria-hidden="true"
+        [attr.title]="' '"
       ></ion-icon>
       <ion-label>{{ 'tabs.you'|translate }}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button
-      disabled
+      (click)="openMultipleRegistrationsMenu()"
       layout="label-hide"
       [title]="'tabs.community'|translate"
+      [selected]="multipleRegistrationMenuOpen"
     >
       <ion-icon
         name="people"
         size="large"
         aria-hidden="true"
+        [attr.title]="' '"
       ></ion-icon>
       <ion-label>{{ 'tabs.community'|translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button
-      disabled
-      layout="label-hide"
-    >
+    <ion-tab-button disabled layout="label-hide">
       <ion-label></ion-label>
     </ion-tab-button>
 
@@ -45,6 +45,7 @@
         size="large"
         class="tab-button-person-icon"
         aria-hidden="true"
+        [attr.title]="' '"
       ></ion-icon>
       <ion-label>{{ 'tabs.account'|translate }}</ion-label>
     </ion-tab-button>

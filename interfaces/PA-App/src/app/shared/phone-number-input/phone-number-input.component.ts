@@ -70,12 +70,16 @@ export class PhoneNumberInputComponent {
   }
 
   private async checkValidityOnline() {
+    if (!window.navigator.onLine) {
+      return this.defaultValidity;
+    }
+
     const phoneNumber = this.telInput.value;
     let isValid: boolean;
 
     await this.programService.lookupPhoneNumber(phoneNumber).then(
       (result) => {
-        // Onlyu if there is a valid result, use that:
+        // Only if there is a valid result, use that:
         if (typeof result.result !== 'undefined') {
           isValid = result.result;
           return;
