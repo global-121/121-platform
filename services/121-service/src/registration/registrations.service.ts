@@ -673,9 +673,9 @@ export class RegistrationsService {
       return customData[CustomDataAttributes.name];
     } else if (customData[CustomDataAttributes.fathersName]) {
       return (
-        customData[CustomDataAttributes.firstName] +
-        (customData[CustomDataAttributes.lastName]
-          ? ' ' + customData[CustomDataAttributes.lastName]
+        customData[CustomDataAttributes.lastName] +
+        (customData[CustomDataAttributes.firstName]
+          ? ' ' + customData[CustomDataAttributes.firstName]
           : '') +
         (customData[CustomDataAttributes.fathersName]
           ? ' ' + customData[CustomDataAttributes.fathersName]
