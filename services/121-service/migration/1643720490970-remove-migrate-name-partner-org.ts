@@ -50,9 +50,14 @@ export class removeMigrateNamePartnerOrg1643720490970
       await registrationRepository.save(r);
     }
 
-    const programs = await programRepository.find({
-      relations: ['programCustomAttributes'],
-    });
+    const programs = await getRepository(ProgramEntity)
+      .createQueryBuilder('program')
+      .leftJoinAndSelect(
+        'program.programCustomAttributes',
+        'programCustomAttributes',
+      )
+      .select(['program.id'])
+      .getMany();
     for (const program of programs) {
       // Then namePartnerOrganization is part of this programCustomAttributes
       if (regsWithPartnerOrg.length > 0) {
