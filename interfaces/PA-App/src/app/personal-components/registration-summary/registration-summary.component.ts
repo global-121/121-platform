@@ -1,9 +1,13 @@
 import { Component, Input } from '@angular/core';
+import { AlertController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Program } from 'src/app/models/program.model';
 import { Timeslot } from 'src/app/models/timeslot.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { RegistrationModeService } from 'src/app/services/registration-mode.service';
+import { SyncService } from 'src/app/services/sync.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { PersonalDirective } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
@@ -41,6 +45,10 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     public programsService: ProgramsServiceApiService,
     public translatableString: TranslatableStringService,
     public paData: PaDataService,
+    private syncService: SyncService,
+    private alertController: AlertController,
+    private registrationMode: RegistrationModeService,
+    private translate: TranslateService,
   ) {
     super();
   }
@@ -143,6 +151,11 @@ export class RegistrationSummaryComponent extends PersonalDirective {
       return;
     }
 
+    if (!this.registrationMode.multiple && this.syncService.areTasksQueued()) {
+      this.openOfflineNotification();
+      return;
+    }
+
     this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.registrationSummary,
@@ -154,5 +167,24 @@ export class RegistrationSummaryComponent extends PersonalDirective {
       },
       next: this.getNextSection(),
     });
+  }
+
+  async openOfflineNotification() {
+    const popover = await this.alertController.create({
+      message: this.translate.instant(
+        'personal.registration-summary.offline-warning',
+      ),
+      buttons: [
+        {
+          text: this.translate.instant('shared.retry'),
+          role: 'cancel',
+          handler: () => {
+            this.complete();
+          },
+        },
+      ],
+    });
+
+    return await popover.present();
   }
 }
