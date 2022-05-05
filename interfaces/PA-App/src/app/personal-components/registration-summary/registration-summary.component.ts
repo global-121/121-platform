@@ -1,9 +1,12 @@
 import { Component, Input } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 import { Program } from 'src/app/models/program.model';
 import { Timeslot } from 'src/app/models/timeslot.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { RegistrationModeService } from 'src/app/services/registration-mode.service';
+import { SyncService } from 'src/app/services/sync.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { PersonalDirective } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
@@ -41,6 +44,9 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     public programsService: ProgramsServiceApiService,
     public translatableString: TranslatableStringService,
     public paData: PaDataService,
+    private syncService: SyncService,
+    private alertController: AlertController,
+    private registrationMode: RegistrationModeService,
   ) {
     super();
   }
@@ -143,6 +149,10 @@ export class RegistrationSummaryComponent extends PersonalDirective {
       return;
     }
 
+    if (!this.registrationMode.multiple && this.syncService.areTasksQueued()) {
+      this.openOfflineNotification();
+    }
+
     this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.registrationSummary,
@@ -154,5 +164,27 @@ export class RegistrationSummaryComponent extends PersonalDirective {
       },
       next: this.getNextSection(),
     });
+  }
+
+  async openOfflineNotification() {
+    // The behavior we were aiming for is:
+    // Popup opens at the end of registration summary if there is no connection and we're in single mode.
+    // There's a retry button that closes the popup, calls complete() again, and if there is still no connection the popup repoens again.
+
+    const popover = await this.alertController.create({
+      message:
+        'You are currently offline. Your registration cannot be uploaded.', // TODO: find a better message and move it in en.json
+      buttons: [
+        {
+          text: 'Retry', // TODO: move to en.json
+          role: 'cancel',
+          handler: () => {
+            this.complete(); // TODO: it seems that this is not called
+          },
+        },
+      ],
+    });
+
+    return await popover.present();
   }
 }

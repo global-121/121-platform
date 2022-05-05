@@ -184,4 +184,8 @@ export class SyncService implements OnDestroy {
   public getBatchCount(): Observable<number> {
     return this.batchCountSubject.asObservable();
   }
+
+  public areTasksQueued(): boolean {
+    return this.getExistingSyncTasks().length > 0;
+  }
 }
