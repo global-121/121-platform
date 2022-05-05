@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Program } from 'src/app/models/program.model';
 import { Timeslot } from 'src/app/models/timeslot.model';
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -47,6 +48,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     private syncService: SyncService,
     private alertController: AlertController,
     private registrationMode: RegistrationModeService,
+    private translate: TranslateService,
   ) {
     super();
   }
@@ -151,6 +153,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
 
     if (!this.registrationMode.multiple && this.syncService.areTasksQueued()) {
       this.openOfflineNotification();
+      return;
     }
 
     this.isDisabled = true;
@@ -167,19 +170,16 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   }
 
   async openOfflineNotification() {
-    // The behavior we were aiming for is:
-    // Popup opens at the end of registration summary if there is no connection and we're in single mode.
-    // There's a retry button that closes the popup, calls complete() again, and if there is still no connection the popup repoens again.
-
     const popover = await this.alertController.create({
-      message:
-        'You are currently offline. Your registration cannot be uploaded.', // TODO: find a better message and move it in en.json
+      message: this.translate.instant(
+        'personal.registration-summary.offline-warning',
+      ),
       buttons: [
         {
-          text: 'Retry', // TODO: move to en.json
+          text: this.translate.instant('shared.retry'),
           role: 'cancel',
           handler: () => {
-            this.complete(); // TODO: it seems that this is not called
+            this.complete();
           },
         },
       ],
