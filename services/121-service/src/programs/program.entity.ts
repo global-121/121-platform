@@ -141,4 +141,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
     default: [],
   })
   public deprecatedCustomDataKeys: JSON;
+
+  @Column({ default: false })
+  public tryWhatsAppFirst: boolean;
 }
