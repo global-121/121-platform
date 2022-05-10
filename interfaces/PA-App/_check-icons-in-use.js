@@ -57,9 +57,16 @@ console.log('Checking icons in use...');
 fromDir('www', /\.(js|css|html)$/, checkIfUsed);
 
 const iconsUsed = iconList.filter((icon) => icon.used === true);
+
+// Always include some icons that are not picked up by the search:
+iconsUsed.push({ iconName: 'share-alt' }); // Used in 'toast'/'notification'-component
+iconsUsed.push({ iconName: 'log-out' }); // Used in 'list-item-detail'-component/detail-icon-property
+
 console.log(`\nFound ${iconsUsed.length} icons in use.\n`);
 
-const iconFileNames = iconsUsed.map((icon) => icon.iconName);
+const iconFileNames = iconsUsed
+  .map((icon) => icon.iconName)
+  .sort((a, b) => (a > b ? 1 : a < b ? -1 : 0));
 const globLine = `"glob": "**/{${iconFileNames.join(',')}}.svg",`;
 
 // Check if angular.json-glob line is as it should be...
