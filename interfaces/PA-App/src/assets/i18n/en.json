@@ -73,7 +73,7 @@
       "no-validation-conclusion": "Thank you. Your registration is now complete.   <br><br>   You should receive an SMS/WhatsApp on the provided phone number shortly that confirms your registration.   <br><br>   You will be informed if your application has been successful within 7 days.   <br><br>   This is the final message for now.",
       "qr-code": "Please show this QR-code to the aidworker when asked.",
       "validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS/WhatsApp on the phone number you provided. This SMS/WhatsApp confirms your registration.<br><br>In the following weeks, an Aid Worker from the organisation might reach out to you to organise a meeting to validate the information you provided. The Aid Worker will come to you for this meeting.",
-      "offline-warning": "You are currently offline. Your registration cannot be stored. Please get online with your device, for example by connecting to Wifi, and try again by clicking Try again."
+      "offline-warning": "You are currently offline. Your registration cannot be stored. Please get online with your device, for example by connecting to Wifi, and click 'Try again'."
     },
     "select-fsp": {
       "attributes": {
