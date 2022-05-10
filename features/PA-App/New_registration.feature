@@ -44,7 +44,7 @@ Feature: New registration
     When the PA loses internet connection at any moment after that
     Then the PA-app caches all answers
     And the PA can continue the registration as usual
-    And the listening for inclusion-status at the end is disabled
+    And at the end of registration - if not back online yet - a popup appears explaining to get online to finish the registration.
 
     When the PA has an active internet connection again
     Then the PA-app syncs the registration to the back-end
