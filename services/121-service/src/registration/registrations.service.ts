@@ -801,7 +801,7 @@ export class RegistrationsService {
     phoneNumbers: string,
     message?: string,
   ): Promise<void> {
-    await this.findProgramOrThrow(programId);
+    const program = await this.findProgramOrThrow(programId); // TODO: Find out what this line of code does.
 
     for (let phoneNumber of JSON.parse(phoneNumbers['phoneNumbers'])) {
       const sanitizedPhoneNr = await this.lookupService.lookupAndCorrect(
@@ -818,7 +818,13 @@ export class RegistrationsService {
       );
 
       if (message) {
-        this.sendTextMessage(registration, programId, message);
+        this.sendTextMessage(
+          registration,
+          programId,
+          message,
+          null,
+          program.tryWhatsAppFirst,
+        );
       }
     }
   }
@@ -828,6 +834,7 @@ export class RegistrationsService {
     programId: number,
     message?: string,
     key?: string,
+    tryWhatsApp: boolean = false,
   ): Promise<void> {
     if (!message && !key) {
       throw new HttpException(
@@ -854,7 +861,32 @@ export class RegistrationsService {
           key,
           programId,
         );
-
+    if (tryWhatsApp) {
+      whatsappNumber = registration.phoneNumber;
+      this.whatsappService
+        .queueMessageSendTemplate(
+          messageText,
+          whatsappNumber,
+          null,
+          null,
+          registration.id,
+          registration.preferredLanguage,
+        )
+        .then(result => {
+          console.log('tryWhatsApp then: ', result);
+          // Success, should update customData with whatsappNumber
+        })
+        .catch(error => {
+          console.log('tryWhatsApp catch: ', error);
+          // Check for specific statuscodes (48030 & 50415)
+          this.smsService.sendSms(
+            messageText,
+            registration.phoneNumber,
+            registration.id,
+          );
+        });
+      return;
+    }
     if (whatsappNumber) {
       this.whatsappService.queueMessageSendTemplate(
         messageText,

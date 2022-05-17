@@ -90,7 +90,7 @@ export class WhatsappService {
     mediaUrl: null | string,
     registrationId?: number,
     preferedLanguage?: string,
-  ): Promise<void> {
+  ): Promise<any> {
     const pendingMesssage = new WhatsappPendingMessageEntity();
     pendingMesssage.body = message;
     pendingMesssage.to = recipientPhoneNr;
@@ -111,7 +111,7 @@ export class WhatsappService {
       language,
       registration.program,
     );
-    this.sendWhatsapp(
+    return this.sendWhatsapp(
       whatsappGenericMessage,
       recipientPhoneNr,
       messageType,
