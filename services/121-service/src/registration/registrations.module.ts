@@ -1,3 +1,4 @@
+import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module, HttpModule } from '@nestjs/common';
 import { ActionEntity } from '../actions/action.entity';
@@ -38,6 +39,7 @@ import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribu
       RegistrationStatusChangeEntity,
       TransactionEntity,
       ProgramCustomAttributeEntity,
+      TryWhatsappEntity,
     ]),
     UserModule,
     HttpModule,

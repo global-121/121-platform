@@ -1,3 +1,4 @@
+import { SmsService } from './../sms/sms.service';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import {
   Injectable,
@@ -24,6 +25,9 @@ import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { IntersolvePayoutStatus } from '../../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
 import { IntersolveService } from '../../payments/fsp-integration/intersolve/intersolve.service';
+import { Message } from 'twilio/lib/twiml/MessagingResponse';
+import { TryWhatsappEntity } from './try-whatsapp.entity';
+import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
 
 @Injectable()
 export class WhatsappService {
@@ -41,6 +45,12 @@ export class WhatsappService {
   public pendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
+  @InjectRepository(TryWhatsappEntity)
+  private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
+  @InjectRepository(WhatsappPendingMessageEntity)
+  private readonly whatsappPendingMessageRepo: Repository<
+    WhatsappPendingMessageEntity
+  >;
 
   private readonly programId = 1;
   private readonly fallbackLanguage = 'en';
@@ -49,6 +59,7 @@ export class WhatsappService {
     private readonly imageCodeService: ImageCodeService,
     @Inject(forwardRef(() => IntersolveService))
     private readonly intersolveService: IntersolveService,
+    private readonly smsService: SmsService,
   ) {}
 
   public async sendWhatsapp(
@@ -166,6 +177,21 @@ export class WhatsappService {
   public async statusCallback(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
+    console.log('callbackData: ', callbackData);
+    if (
+      callbackData.MessageStatus === TwilioStatus.delivered ||
+      callbackData.MessageStatus === TwilioStatus.failed
+    ) {
+      const tryWhatsapp = await this.tryWhatsappRepository.findOne({
+        where: { sid: callbackData.SmsSid },
+        relations: ['registration'],
+      });
+      console.log('tryWhatsapp: ', tryWhatsapp);
+      if (tryWhatsapp) {
+        await this.handleWhatsappTestResult(callbackData, tryWhatsapp);
+      }
+    }
+
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
       { status: callbackData.MessageStatus },
@@ -179,6 +205,43 @@ export class WhatsappService {
     ];
     if (statuses.includes(callbackData.MessageStatus)) {
       await this.intersolveService.processStatus(callbackData);
+    }
+  }
+
+  private async handleWhatsappTestResult(
+    callbackData: TwilioStatusCallbackDto,
+    tryWhatsapp: TryWhatsappEntity,
+  ): Promise<void> {
+    if (
+      callbackData.MessageStatus === TwilioStatus.failed &&
+      callbackData.ErrorCode === '63003'
+    ) {
+      // PA does not have whatsapp
+      // Send pending message via sms
+      const whatsapPendingMessages = await this.whatsappPendingMessageRepo.find(
+        {
+          where: { to: tryWhatsapp.registration.phoneNumber },
+          relations: ['registration'],
+        },
+      );
+      for (const w of whatsapPendingMessages) {
+        await this.smsService.sendSms(
+          w.body,
+          w.registration.phoneNumber,
+          w.registration.id,
+        );
+        await this.whatsappPendingMessageRepo.remove(w);
+      }
+      await this.tryWhatsappRepository.remove(tryWhatsapp);
+    }
+    if (callbackData.MessageStatus === TwilioStatus.delivered) {
+      // PA does have whatsapp
+      // Store PA phone number as whatsappPhonenumber
+      tryWhatsapp.registration.customData[
+        CustomDataAttributes.whatsappPhoneNumber
+      ] = tryWhatsapp.registration.phoneNumber;
+      this.registrationRepository.save(tryWhatsapp.registration);
+      this.tryWhatsappRepository.delete(tryWhatsapp);
     }
   }
 

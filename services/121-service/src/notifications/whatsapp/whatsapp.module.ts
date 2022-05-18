@@ -1,3 +1,4 @@
+import { SmsService } from './../sms/sms.service';
 import { InstanceEntity } from './../../instance/instance.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { RegistrationEntity } from './../../registration/registration.entity';
@@ -19,6 +20,7 @@ import { ImageCodeModule } from '../../payments/imagecode/image-code.module';
 import { API_PATHS } from '../../config';
 import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
 import { IntersolveModule } from '../../payments/fsp-integration/intersolve/intersolve.module';
+import { TryWhatsappEntity } from './try-whatsapp.entity';
 
 @Module({
   imports: [
@@ -30,11 +32,13 @@ import { IntersolveModule } from '../../payments/fsp-integration/intersolve/inte
       RegistrationEntity,
       TransactionEntity,
       WhatsappPendingMessageEntity,
+      TryWhatsappEntity,
+      WhatsappPendingMessageEntity,
     ]),
     ImageCodeModule,
     forwardRef(() => IntersolveModule),
   ],
-  providers: [WhatsappService],
+  providers: [WhatsappService, SmsService],
   controllers: [WhatsappController],
   exports: [WhatsappService],
 })

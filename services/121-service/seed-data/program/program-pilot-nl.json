@@ -35,6 +35,7 @@
   "inclusionCalculationType": "highestScoresX",
   "minimumScore": 0,
   "highestScoresX": 250,
+  "tryWhatsAppFirst": true,
   "meetingDocuments": {
     "en": ""
   },
