@@ -69,7 +69,7 @@
       "whatsappGenericMessage": "Ceci est un message de la Croix-Rouge.\n\nUn message vous attend. Veuillez répondre \"oui\" à ce message pour le recevoir.",
       "whatsappPayment": "Ceci est un message de la Croix-Rouge.\n\nVotre bon de €{{1}} chez les supermarchés Albert Heijn est prêt à être envoyé.\n\nVeuillez répondre \"oui\" à ce message afin de recevoir :\n1. Le bon de cette semaine.\n2. Tous les bons précédents que vous n'avez pas encore reçus.\n\n",
       "whatsappPaymentMultiple": "Ceci est un message de la Croix-Rouge.\n\nVotre bon  de €{{1}} chez les supermarchés  Albert Heijn est prêt à être envoyé.\n\nVeuillez répondre \"oui\" à ce message afin de recevoir :\n1. Le bon de cette semaine.\n2. Tous les bons précédents que vous n'avez pas encore reçus.\n3. Le bon d'un ami ou d'un membre de famille qui est enregistré avec le même numéro de téléphone.\nCela ne se produit que lorsqu'il/elle est également enregistré(e) dans la liste de l'organisation partenaire pour recevoir le bon.\n",
-      "whatsappVoucher": "Ceci est un message de la Croix-Rouge.\n\nAvec ce message, vous recevrez:\n1. Un bon de supermarché Albert Heijn (cadeaukaart) - c'est la photo avec le code-barres.\n2. Une explication sur la façon d'utiliser le bon à Albert Heijn.\n\nSi vous avez reçu plusieurs bons, c'est parce que: \n1. Vous n'aviez pas encore reçu de bons des semaines précédentes.\n2. Un membre de la famille ou un ami est enregistré avec le même numéro de téléphone.\n\nLa valeur de chaque bon est de {{1}} €.\nVous pouvez utiliser les bons dans n'importe quel supermarché Albert Heijn aux Pays-Bas.\n\nCe n'est pas necessaire de tout dépenser d'un coup. Conservez donc les bons et réutilisez-les jusqu'à ce que les {{1}} € sur chaque bon soient épuisés.\n\nVous recevrez votre bon Albert Heijn de {{1}} € chaque semaine le mardi jusqu'au :\n1. Vous ne faites plus partie de la liste de nos organisations partenaires.\n2. La fin du projet le 30 semptembre 2022.\n\nAvez-vous des questions? Envoyez-nous un message sur WhatsApp:\nhttps://wa.me/31614458781",
+      "whatsappVoucher": "Ceci est un message de la Croix-Rouge.\n\nAvec ce message, vous recevrez:\n1. Un bon de supermarché Albert Heijn (cadeaukaart) - c'est la photo avec le code-barres.\n2. Une explication sur la façon d'utiliser le bon à Albert Heijn.\n\nSi vous avez reçu plusieurs bons, c'est parce que: \n1. Vous n'aviez pas encore reçu de bons des semaines précédentes.\n2. Un membre de la famille ou un ami est enregistré avec le même numéro de téléphone.\n\nLa valeur de chaque bon est de {{1}} €.\nVous pouvez utiliser les bons dans n'importe quel supermarché Albert Heijn aux Pays-Bas.\n\nCe n'est pas necessaire de tout dépenser d'un coup. Conservez donc les bons et réutilisez-les jusqu'à ce que les {{1}} € sur chaque bon soient épuisés.\n\nVous recevrez votre bon Albert Heijn de {{1}} € chaque semaine le mardi jusqu'au :\n1. Vous ne faites plus partie de la liste de nos organisations partenaires.\n2. La fin du projet le 30 septembre 2022.\n\nAvez-vous des questions? Envoyez-nous un message sur WhatsApp:\nhttps://wa.me/31614458781",
       "whatsappVoucherMultiple": "Ceci est un message de la Croix-Rouge.\n\nAvec ce message, vous recevrez:\n1. Un bon de supermarché Albert Heijn (cadeaukaart) - c'est la photo avec le code-barres.\n2. Une explication sur la façon d'utiliser le bon à Albert Heijn.\n\nSi vous avez reçu plusieurs bons, c'est parce que: \n1. Vous n'aviez pas encore reçu de bons des semaines précédentes.\n2. Un membre de la famille ou un ami est enregistré avec le même numéro de téléphone.\n\nLa valeur de chaque bon est de {{1}} €.\nVous pouvez utiliser les bons dans n'importe quel supermarché Albert Heijn aux Pays-Bas.\n\nCe n'est pas necessaire de tout dépenser d'un coup. Conservez donc les bons et réutilisez-les jusqu'à ce que les {{1}} € sur chaque bon soient épuisés.\n\nVous recevrez votre bon Albert Heijn de {{1}} € chaque semaine le mardi jusqu'au :\n1. Vous ne faites plus partie de la liste de nos organisations partenaires.\n2. La fin du projet le 30 mai 2022.\n\nAvez-vous des questions? Envoyez-nous un message sur WhatsApp:\nhttps://wa.me/31614458781",
       "whatsappReply": "Ceci est un message automatisé, pour toutes questions, s'il vous plaît, veuillez contacter le Guiche d'information de la Croix-Rouge sur WhatsApp: +31614458781"
     }
@@ -97,7 +97,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -112,7 +116,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -130,7 +138,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "pattern": "^\\d{10}$"
     },
