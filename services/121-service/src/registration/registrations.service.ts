@@ -839,8 +839,6 @@ export class RegistrationsService {
     key?: string,
     tryWhatsApp: boolean = false,
   ): Promise<void> {
-    console.log('tryWhatsApp boolean: ', tryWhatsApp);
-    console.log('message: ', message);
     if (!message && !key) {
       throw new HttpException(
         'A message or a key should be supplied.',
@@ -850,7 +848,6 @@ export class RegistrationsService {
 
     let whatsappNumber;
 
-    console.log('registration.customData: ', registration.customData);
     if (registration.customData) {
       whatsappNumber =
         registration.customData[CustomDataAttributes.whatsappPhoneNumber];

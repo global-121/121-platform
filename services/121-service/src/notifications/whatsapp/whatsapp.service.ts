@@ -177,7 +177,6 @@ export class WhatsappService {
   public async statusCallback(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    console.log('callbackData: ', callbackData);
     if (
       callbackData.MessageStatus === TwilioStatus.delivered ||
       callbackData.MessageStatus === TwilioStatus.failed
@@ -186,7 +185,6 @@ export class WhatsappService {
         where: { sid: callbackData.SmsSid },
         relations: ['registration'],
       });
-      console.log('tryWhatsapp: ', tryWhatsapp);
       if (tryWhatsapp) {
         await this.handleWhatsappTestResult(callbackData, tryWhatsapp);
       }
