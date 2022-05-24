@@ -1,3 +1,4 @@
+import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './../notifications/whatsapp/whatsapp.service';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { SmsService } from './../notifications/sms/sms.service';
@@ -65,6 +66,8 @@ export class RegistrationsService {
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspAttributeEntity)
   private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
+  @InjectRepository(TryWhatsappEntity)
+  private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -801,7 +804,7 @@ export class RegistrationsService {
     phoneNumbers: string,
     message?: string,
   ): Promise<void> {
-    await this.findProgramOrThrow(programId);
+    const program = await this.findProgramOrThrow(programId);
 
     for (let phoneNumber of JSON.parse(phoneNumbers['phoneNumbers'])) {
       const sanitizedPhoneNr = await this.lookupService.lookupAndCorrect(
@@ -818,7 +821,13 @@ export class RegistrationsService {
       );
 
       if (message) {
-        this.sendTextMessage(registration, programId, message);
+        this.sendTextMessage(
+          registration,
+          programId,
+          message,
+          null,
+          program.tryWhatsAppFirst,
+        );
       }
     }
   }
@@ -828,6 +837,7 @@ export class RegistrationsService {
     programId: number,
     message?: string,
     key?: string,
+    tryWhatsApp: boolean = false,
   ): Promise<void> {
     if (!message && !key) {
       throw new HttpException(
@@ -837,15 +847,10 @@ export class RegistrationsService {
     }
 
     let whatsappNumber;
+
     if (registration.customData) {
       whatsappNumber =
         registration.customData[CustomDataAttributes.whatsappPhoneNumber];
-    }
-    if (!registration.phoneNumber && !whatsappNumber) {
-      throw new HttpException(
-        'A recipientPhoneNr should be supplied.',
-        HttpStatus.BAD_REQUEST,
-      );
     }
     const messageText = message
       ? message
@@ -854,7 +859,6 @@ export class RegistrationsService {
           key,
           programId,
         );
-
     if (whatsappNumber) {
       this.whatsappService.queueMessageSendTemplate(
         messageText,
@@ -864,13 +868,43 @@ export class RegistrationsService {
         registration.id,
         registration.preferredLanguage,
       );
+    } else if (tryWhatsApp && registration.phoneNumber) {
+      this.tryWhatsapp(registration, messageText);
     } else if (registration.phoneNumber) {
       this.smsService.sendSms(
         messageText,
         registration.phoneNumber,
         registration.id,
       );
+    } else {
+      throw new HttpException(
+        'A recipientPhoneNr should be supplied.',
+        HttpStatus.BAD_REQUEST,
+      );
     }
+  }
+
+  private async tryWhatsapp(
+    registration: RegistrationEntity,
+    messageText,
+  ): Promise<void> {
+    this.whatsappService
+      .queueMessageSendTemplate(
+        messageText,
+        registration.phoneNumber,
+        null,
+        null,
+        registration.id,
+        registration.preferredLanguage,
+      )
+      .then(result => {
+        // Store the sid of a whatsapp message of which we do not know if the receiver registered on whatsapp
+        const tryWhatsapp = {
+          sid: result,
+          registration,
+        };
+        this.tryWhatsappRepository.save(tryWhatsapp);
+      });
   }
 
   public async getNotificationText(
