@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -13,7 +13,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './export-list.component.html',
   styleUrls: ['./export-list.component.scss'],
 })
-export class ExportListComponent {
+export class ExportListComponent implements OnChanges {
   @Input()
   public programId: number;
 
@@ -47,7 +47,7 @@ export class ExportListComponent {
     this.locale = environment.defaultLocale;
   }
 
-  ngOnInit() {
+  ngOnChanges() {
     this.btnText = this.translate.instant(
       'page.program.export-list.' + this.exportType + '.btn-text',
     );
