@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Permission from 'src/app/auth/permission.enum';
-import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramPhase } from 'src/app/models/program.model';
 
 @Component({
@@ -15,8 +14,6 @@ export class InclusionPage implements OnInit {
   public programId = this.route.snapshot.params.id;
   public thisPhase = ProgramPhase.inclusion;
   public isReady: boolean;
-
-  public enumExportType = ExportType;
 
   constructor(private route: ActivatedRoute) {}
 

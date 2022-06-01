@@ -4,13 +4,25 @@
 <app-program-navigation></app-program-navigation>
 
 <ion-content class="ion-padding">
-
-  <app-phase-next
-    *appIfPermissions="[Permission.ProgramPhaseUPDATE]"
-    [programId]="programId"
-    [thisPhaseName]="thisPhase"
-    [phaseReady]="isReady"
-  ></app-phase-next>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <app-export-list
+          *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
+          [programId]="programId"
+          [exportType]="enumExportType.included"
+        ></app-export-list>
+      </ion-col>
+      <ion-col>
+        <app-phase-next
+          *appIfPermissions="[Permission.ProgramPhaseUPDATE]"
+          [programId]="programId"
+          [thisPhaseName]="thisPhase"
+          [phaseReady]="isReady"
+        ></app-phase-next>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
   <app-program-payout
     *appIfPermissions="[Permission.PaymentREAD]"
