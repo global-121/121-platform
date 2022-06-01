@@ -62,14 +62,26 @@
         "en": "Nr of householdmembers"
       },
       "name": "nrOfHouseHoldMembers",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "Comments from enumerator"
       },
       "name": "commentsFromEnumerator",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     }
   ],
   "programQuestions": [
