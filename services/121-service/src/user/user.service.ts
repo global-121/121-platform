@@ -24,6 +24,8 @@ import { Request } from 'express';
 import { InterfaceNames } from './../shared/enum/interface-names.enum';
 import { CookieNames } from './../shared/enum/cookie.enums';
 
+export const tokenExpirationTime = 14 * 24 * 3600000;
+
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
   @InjectRepository(UserEntity)
@@ -38,6 +40,7 @@ export class UserService {
   private readonly assignmentRepository: Repository<
     ProgramAidworkerAssignmentEntity
   >;
+
 
   public constructor(@Inject(REQUEST) private readonly request: Request) {}
 
@@ -364,7 +367,7 @@ export class UserService {
       path,
       sameSite: 'Lax',
       secure: process.env.NODE_ENV === 'production',
-      expires: new Date(Date.now() + 14 * 24 * 3600000),
+      expires: new Date(Date.now() + tokenExpirationTime),
       httpOnly: true,
     };
   }
