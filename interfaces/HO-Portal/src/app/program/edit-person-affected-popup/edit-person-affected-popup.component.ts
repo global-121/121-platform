@@ -118,6 +118,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         type: ca.type,
         label: ca.label[this.translate.getDefaultLang()],
         value: this.person.customAttributes[ca.name].value,
+        options: this.program.programQuestions.find(
+          (question) => question.name === ca.name,
+        ).options,
       };
     });
     this.customAttributes = this.customAttributes?.filter(

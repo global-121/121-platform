@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
+import { ProgramQuestionOption } from 'src/app/models/program.model';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-update-property-item',
@@ -31,6 +33,9 @@ export class UpdatePropertyItemComponent implements OnInit {
   @Input()
   public showSubmit = true;
 
+  @Input()
+  public options: ProgramQuestionOption[] = null;
+
   @Output()
   updated: EventEmitter<string | boolean> = new EventEmitter<
     string | boolean
@@ -38,13 +43,23 @@ export class UpdatePropertyItemComponent implements OnInit {
 
   public propertyModel: any | NgModel;
 
-  constructor() {}
+  constructor(private translate: TranslatableStringService) {}
 
   ngOnInit() {
     this.propertyModel = this.value;
+    console.log('=== options: ', this.options);
   }
 
   public doUpdate() {
     this.updated.emit(this.propertyModel);
   }
+
+  public translatedOptions = () => {
+    return this.options.map(({ option, label }) => {
+      return {
+        option,
+        label: this.translate.get(label),
+      };
+    });
+  };
 }
