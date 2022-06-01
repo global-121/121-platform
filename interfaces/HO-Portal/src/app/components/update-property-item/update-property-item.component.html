@@ -43,22 +43,24 @@
               ></ion-input>
             </ng-container>
             <ng-container *ngSwitchCase="'dropdown'">
-              <ion-select
-                style="max-width: 100%;"
-                ngDefaultControl
-                name="propertyInput"
-                [(ngModel)]="propertyModel"
-                [value]="value"
-                [placeholder]="placeholder"
-                interface="popover"
-                class="ion-margin-top"
-              >
-                <ion-select-option
-                  *ngFor="let option of translatedOptions()"
-                  value="{{ option.option }}">
-                    {{ option.label }}
-                </ion-select-option>
-              </ion-select>
+              <ion-item class="ion-margin-bottom">
+                <ion-select
+                  style="max-width: 100%;"
+                  ngDefaultControl
+                  name="propertyInput"
+                  [(ngModel)]="propertyModel"
+                  [value]="value"
+                  [placeholder]="placeholder"
+                  interface="popover"
+                  class="ion-margin-top"
+                >
+                  <ion-select-option
+                    *ngFor="let option of translatedOptions()"
+                    value="{{ option.option }}">
+                      {{ option.label }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
             </ng-container>
             <ng-container *ngSwitchCase="'boolean'">
               <ion-checkbox
