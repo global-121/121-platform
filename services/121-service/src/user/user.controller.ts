@@ -15,7 +15,7 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { tokenExpirationTime, UserService } from './user.service';
+import { tokenExpirationDays, UserService } from './user.service';
 import { UserRO } from './user.interface';
 import { LoginUserDto, UpdateUserDto } from './dto';
 import { User } from './user.decorator';
@@ -104,7 +104,7 @@ export class UserController {
 
     try {
       const user = await this.userService.createPersonAffected(userData);
-      const exp = new Date(Date.now() + tokenExpirationTime);
+      const exp = new Date(Date.now() + tokenExpirationDays * 24 * 3600000);
       res.cookie(CookieNames.paApp, user.user.token, {
         sameSite: sameSite,
         secure: secure,
