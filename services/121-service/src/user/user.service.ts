@@ -364,7 +364,7 @@ export class UserService {
       path,
       sameSite: 'Lax',
       secure: process.env.NODE_ENV === 'production',
-      expires: new Date(Date.now() + 60 * 24 * 3600000),
+      expires: new Date(Date.now() + 14 * 24 * 3600000),
       httpOnly: true,
     };
   }
