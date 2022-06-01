@@ -59,14 +59,140 @@
   "programCustomAttributes": [
     {
       "label": {
-        "en": "Nr of householdmembers"
+        "en": "Enumerator name:"
+      },
+      "name": "enumeratorName",
+      "type": "string"
+    },
+    {
+      "label": {
+        "en": "What is the total number of people in your household?"
       },
       "name": "nrOfHouseHoldMembers",
       "type": "string"
     },
     {
       "label": {
-        "en": "Comments from enumerator"
+        "en": "How many men in your household are between 18 and 65?"
+      },
+      "name": "nrOfMaleAdults",
+      "type": "number"
+    },
+    {
+      "label": {
+        "en": "How many women in your household are between 18 and 65?"
+      },
+      "name": "nrOFemaleAdults",
+      "type": "number"
+    },
+    {
+      "label": {
+        "en": "How many men in your household are over 65?"
+      },
+      "name": "nrOfMaleElderly",
+      "type": "number"
+    },
+    {
+      "label": {
+        "en": "How many women in your household are over 65?"
+      },
+      "name": "nrOFemaleElderly",
+      "type": "number"
+    },
+    {
+      "label": {
+        "en": "How many boys in your household are under 18?"
+      },
+      "name": "nrOfBoys",
+      "type": "number"
+    },
+    {
+      "label": {
+        "en": "How many girls in your household are under 18?"
+      },
+      "name": "nrOfGirls",
+      "type": "number"
+    },
+    {
+      "label": {
+        "en": "How many household members have any chronic illness or serious medical condition?"
+      },
+      "name": "nrOfIllnessInHousehold",
+      "type": "number"
+    },
+    {
+      "label": {
+        "en": "How many household members have any physical or mental disability?"
+      },
+      "name": "nrOfDisabilitiesInHousehold",
+      "type": "number"
+    },
+    {
+      "label": {
+        "en": "How many household members are pregnant or lactating?"
+      },
+      "name": "nrOfPregnantInHousehold",
+      "type": "number"
+    },
+    {
+      "label": {
+        "en": "Please, select the option which better describes the current situation of your household"
+      },
+      "name": "householdSituation",
+      "type": "dropdown"
+    },
+    {
+      "label": {
+        "en": "Please, can you give us your phone number?"
+      },
+      "name": "phoneNumber",
+      "type": "tel"
+    },
+    {
+      "label": {
+        "en": "Applicant - What is your gender?"
+      },
+      "name": "gender",
+      "type": "dropdown"
+    },
+    {
+      "label": {
+        "en": "Applicant - What is your date of birth?"
+      },
+      "name": "dateOfBirth",
+      "type": "date"
+    },
+    {
+      "label": {
+        "en": "Adult 1 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'"
+      },
+      "name": "taxNumberAdult1",
+      "type": "string"
+    },
+    {
+      "label": {
+        "en": "Adult 2 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'"
+      },
+      "name": "taxNumberAdult2",
+      "type": "string"
+    },
+    {
+      "label": {
+        "en": "Adult 3 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'"
+      },
+      "name": "taxNumberAdult3",
+      "type": "string"
+    },
+    {
+      "label": {
+        "en": "Adult 4 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'"
+      },
+      "name": "taxNumberAdult4",
+      "type": "string"
+    },
+    {
+      "label": {
+        "en": "Comments from the enumerator: "
       },
       "name": "commentsFromEnumerator",
       "type": "string"
@@ -84,7 +210,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -98,7 +228,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -112,7 +246,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -126,7 +264,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -140,7 +282,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -154,7 +300,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -168,7 +318,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -182,7 +336,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -196,7 +354,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -210,7 +372,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -224,7 +390,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -271,7 +441,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -329,7 +503,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -343,7 +521,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -357,7 +539,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -371,7 +557,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -385,7 +575,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -399,7 +593,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {
@@ -413,7 +611,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     }
   ]
