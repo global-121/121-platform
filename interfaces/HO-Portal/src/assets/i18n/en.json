@@ -426,7 +426,7 @@
           "confirm-message": "This will download an Excel-file with all People Affected."
         },
         "included": {
-          "btn-text": "Export inclusion list",
+          "btn-text": "Export included People Affected",
           "confirm-message": "This will download an Excel-file with all included People Affected, to be used for a Community Review."
         },
         "selected-for-validation": {
