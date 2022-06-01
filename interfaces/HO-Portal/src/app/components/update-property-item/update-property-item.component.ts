@@ -53,12 +53,12 @@ export class UpdatePropertyItemComponent implements OnInit {
     this.updated.emit(this.propertyModel);
   }
 
-  public translatedOptions = () => {
+  public translatedOptions() {
     return this.options.map(({ option, label }) => {
       return {
         option,
         label: this.translate.get(label),
       };
     });
-  };
+  }
 }
