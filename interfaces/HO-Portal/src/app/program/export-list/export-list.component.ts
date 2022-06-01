@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -47,11 +47,17 @@ export class ExportListComponent implements OnChanges {
     this.locale = environment.defaultLocale;
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.exportType && typeof changes.exportType === 'object') {
+      this.updateBtnText();
+      this.updateSubHeader();
+    }
+  }
+
+  private updateBtnText() {
     this.btnText = this.translate.instant(
       'page.program.export-list.' + this.exportType + '.btn-text',
     );
-    this.updateSubHeader();
   }
 
   private async updateSubHeader() {
