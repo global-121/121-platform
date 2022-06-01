@@ -377,7 +377,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.vulnerability-assessment-completed',
         ),
         ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation],
+        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
         width: columnDateTimeWidth,
       },
       {
