@@ -696,11 +696,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ];
         break;
       case ProgramPhase.payment:
-        paStatusesToShow = [
-          PaStatus.included,
-          PaStatus.rejected,
-          PaStatus.inclusionEnded,
-        ];
+        paStatusesToShow = [PaStatus.included];
         break;
     }
 
