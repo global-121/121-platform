@@ -10,6 +10,7 @@ import {
   BASE_PATH,
   PORT,
   SCHEME,
+  DEBUG,
 } from './config';
 import * as bodyParser from 'body-parser';
 import appInsights = require('applicationinsights');
@@ -24,11 +25,13 @@ async function bootstrap(): Promise<void> {
     .getInstance()
     .disable('x-powered-by');
 
-  app.enableCors({
-    origin: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
-  });
+  if (DEBUG) {
+    app.enableCors({
+      origin: true,
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      credentials: true,
+    });
+  }
 
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
