@@ -47,7 +47,6 @@ export class UpdatePropertyItemComponent implements OnInit {
 
   ngOnInit() {
     this.propertyModel = this.value;
-    console.log('=== options: ', this.options);
   }
 
   public doUpdate() {
