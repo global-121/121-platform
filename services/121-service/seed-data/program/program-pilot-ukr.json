@@ -69,7 +69,7 @@
         "en": "What is the total number of people in your household?"
       },
       "name": "nrOfHouseHoldMembers",
-      "type": "string"
+      "type": "number"
     },
     {
       "label": {
@@ -220,7 +220,7 @@
         "uk": "Вкажішь кількість людей у вашій родині (всі ваші родичі, що в даний момент проживають разом з вами)",
         "ru": "Укажите количество людей в вашей семье (все ваши родственники, которые в данный момент проживают вместе с вами)"
       },
-      "answerType": "text",
+      "answerType": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
