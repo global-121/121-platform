@@ -69,7 +69,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public async updatePaAttribute(
     attribute: string,
     value: string,
+    isCustomAttribute: boolean,
   ): Promise<void> {
+    if (isCustomAttribute) {
+      value = String(value);
+    }
     this.inProgress[attribute] = true;
     this.programsService
       .updatePaAttribute(this.person.referenceId, attribute, value)
