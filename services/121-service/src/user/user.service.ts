@@ -24,6 +24,8 @@ import { Request } from 'express';
 import { InterfaceNames } from './../shared/enum/interface-names.enum';
 import { CookieNames } from './../shared/enum/cookie.enums';
 
+export const tokenExpirationDays = 14;
+
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
   @InjectRepository(UserEntity)
@@ -285,7 +287,7 @@ export class UserService {
   public generateJWT(user: UserEntity): string {
     let today = new Date();
     let exp = new Date(today);
-    exp.setDate(today.getDate() + 60);
+    exp.setDate(today.getDate() + tokenExpirationDays);
 
     let roles = [];
     let permissions = [];
@@ -364,7 +366,7 @@ export class UserService {
       path,
       sameSite: 'Lax',
       secure: process.env.NODE_ENV === 'production',
-      expires: new Date(Date.now() + 60 * 24 * 3600000),
+      expires: new Date(Date.now() + tokenExpirationDays * 24 * 3600000),
       httpOnly: true,
     };
   }
