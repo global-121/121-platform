@@ -426,8 +426,8 @@
           "confirm-message": "This will download an Excel-file with all People Affected."
         },
         "included": {
-          "btn-text": "Export inclusion list",
-          "confirm-message": "This will download an Excel-file with all included People Affected, to be used for a Community Review."
+          "btn-text": "Export included People Affected",
+          "confirm-message": "This will download an Excel-file with all included People Affected."
         },
         "selected-for-validation": {
           "btn-text": "Export list: selected for validation",
@@ -435,7 +435,7 @@
         },
         "payment": {
           "btn-text": "Export Report",
-          "confirm-message": "This will download an Excel-file with all People Affected included in this payment, to be shared with institutions requiring this data."
+          "confirm-message": "This will download an Excel-file with all People Affected included in this payment."
         },
         "unused-vouchers": {
           "btn-text": "Export list of unused vouchers",

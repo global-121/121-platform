@@ -10,7 +10,7 @@ Feature: View and manage people affected (generic features)
     And depending on the "selected phase" only current people affected with given "PA statuses" are shown
       - "registration": imported, invited, created, selected for validation, no longer eligible, registered while no longer eligible
       - "inclusion": validated, registered, selected for validation, rejected, inclusion ended
-      - "payment": included, rejected, inclusion ended
+      - "payment": included
     And for each person the "Select" column is empty
     And for each person a "PA identifier" is shown
     And it has a clickable "i" button in front of it, which opens a popup

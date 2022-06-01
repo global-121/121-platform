@@ -35,6 +35,7 @@ export class ProgramPayoutComponent implements OnInit {
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public enumExportType = ExportType;
+  public exportType: ExportType = ExportType.payment;
 
   public program: Program;
   public payments: Payment[];
@@ -253,6 +254,7 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   public changeExportPayment() {
+    this.updateExportType();
     if (Number(this.exportPaymentId) === 0) {
       this.exportPaymentAvailable = false;
       return;
@@ -265,6 +267,14 @@ export class ProgramPayoutComponent implements OnInit {
     } else if (this.exportPaymentId > 0) {
       this.minPayment = this.exportPaymentId;
       this.maxPayment = this.exportPaymentId;
+    }
+  }
+
+  private updateExportType() {
+    if (Number(this.exportPaymentId) === this.nextPaymentId) {
+      this.exportType = ExportType.included;
+    } else {
+      this.exportType = ExportType.payment;
     }
   }
 

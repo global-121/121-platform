@@ -3,7 +3,7 @@ Feature: Export inclusion list
 
   Background:
     Given a logged-in user with "RegistrationPersonalEXPORT" permission
-    And the "selected phase" is the "inclusion" phase
+    And the "selected phase" is the "payment" phase
 
   Scenario: Export inclusion list
     When the user clicks the "export inclusion list" and confirms the confirm prompt
