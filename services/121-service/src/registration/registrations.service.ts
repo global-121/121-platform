@@ -757,6 +757,13 @@ export class RegistrationsService {
     if (errors.length > 0) {
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
+
+    // Also change (potential) corresponding program-question answer (if not the case, then the below does nothing)
+    const programAnswers: ProgramAnswer[] = [
+      { programQuestionName: attribute, programAnswer: String(value) },
+    ];
+    this.storeProgramAnswers(referenceId, programAnswers);
+
     return await this.registrationRepository.save(registration);
   }
 
