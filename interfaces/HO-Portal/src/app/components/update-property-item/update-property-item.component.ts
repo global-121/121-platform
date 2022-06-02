@@ -50,6 +50,17 @@ export class UpdatePropertyItemComponent implements OnInit {
   }
 
   public doUpdate() {
+    if (this.type === 'date') {
+      if (!this.isValidDate()) {
+        alert(
+          this.translate.get(
+            'page.program.program-people-affected.edit-person-affected-popup.error-alert.invalid-date',
+          ),
+        );
+        return;
+      }
+    }
+
     this.updated.emit(this.propertyModel);
   }
 
@@ -61,4 +72,27 @@ export class UpdatePropertyItemComponent implements OnInit {
       };
     });
   }
+
+  private isValidDate = (): boolean => {
+    const dateInput = this.propertyModel;
+
+    const regex = /^\d{2}-\d{2}-\d{4}$/;
+
+    if (dateInput.match(regex) === null) {
+      return false;
+    }
+    const [day, month, year] = dateInput.split('-');
+
+    const isoFormattedStr = `${year}-${month}-${day}`;
+
+    const date = new Date(isoFormattedStr);
+
+    const timestamp = date.getTime();
+
+    if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) {
+      return false;
+    }
+
+    return date.toISOString().startsWith(isoFormattedStr);
+  };
 }
