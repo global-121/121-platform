@@ -181,3 +181,11 @@ ion-icon {
 .ml-auto {
   margin-left: auto;
 }
+
+.popover-content {
+  --width: fit-content;
+
+  ion-label {
+    padding-right: 8px;
+  }
+}
