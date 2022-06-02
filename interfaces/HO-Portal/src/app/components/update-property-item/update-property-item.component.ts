@@ -73,7 +73,7 @@ export class UpdatePropertyItemComponent implements OnInit {
     });
   }
 
-  private isValidDate = (): boolean => {
+  private isValidDate(): boolean {
     const dateInput = this.propertyModel;
 
     const regex = /^\d{2}-\d{2}-\d{4}$/;
@@ -94,5 +94,5 @@ export class UpdatePropertyItemComponent implements OnInit {
     }
 
     return date.toISOString().startsWith(isoFormattedStr);
-  };
+  }
 }
