@@ -75,27 +75,26 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       value = String(value);
     }
     this.inProgress[attribute] = true;
+
     this.programsService
       .updatePaAttribute(this.person.referenceId, attribute, value)
-      .then(
-        () => {
-          this.inProgress[attribute] = false;
-          this.actionResult(
-            this.translate.instant('common.update-success'),
-            true,
-          );
-        },
-        (error) => {
-          this.inProgress[attribute] = false;
-          console.log('error: ', error);
-          if (error && error.error) {
-            const errorMessage = this.translate.instant('common.update-error', {
-              error: this.formatErrors(error.error, attribute),
-            });
-            this.actionResult(errorMessage);
-          }
-        },
-      );
+      .then(() => {
+        this.inProgress[attribute] = false;
+        this.actionResult(
+          this.translate.instant('common.update-success'),
+          true,
+        );
+      })
+      .catch((error) => {
+        this.inProgress[attribute] = false;
+        console.log('error: ', error);
+        if (error && error.error) {
+          const errorMessage = this.translate.instant('common.update-error', {
+            error: this.formatErrors(error.error, attribute),
+          });
+          this.actionResult(errorMessage);
+        }
+      });
   }
 
   private formatErrors(error, attribute: string): string {
