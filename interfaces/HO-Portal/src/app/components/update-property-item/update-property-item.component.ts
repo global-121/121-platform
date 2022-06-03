@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { ProgramQuestionOption } from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
@@ -43,7 +44,10 @@ export class UpdatePropertyItemComponent implements OnInit {
 
   public propertyModel: any | NgModel;
 
-  constructor(private translate: TranslatableStringService) {}
+  constructor(
+    private translate: TranslatableStringService,
+    private translateService: TranslateService,
+  ) {}
 
   ngOnInit() {
     this.propertyModel = this.value;
@@ -53,7 +57,7 @@ export class UpdatePropertyItemComponent implements OnInit {
     if (this.type === 'date') {
       if (!this.isValidDate()) {
         alert(
-          this.translate.get(
+          this.translateService.instant(
             'page.program.program-people-affected.edit-person-affected-popup.error-alert.invalid-date',
           ),
         );
