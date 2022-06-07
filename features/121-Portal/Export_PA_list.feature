@@ -12,6 +12,8 @@ Feature: Export People Affected list
     And it shows the "name" and other dynamic program-attributes, that are also in the PA-table
     And it shows "id" and other generic attributes, that are also in the PA-table
     And it does not show any attributes that are not directly visible in the PA-table, such as "note"
+    And it shows all program questions which have "all-people-affected" as "export" attribute
+    And it shows all program custom attributes which have "all-people-affected" as "export" attribute
     And it does not show any payment-information
     And any columns that only contain null-values are automatically filtered out
 

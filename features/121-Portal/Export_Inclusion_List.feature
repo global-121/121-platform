@@ -11,6 +11,8 @@ Feature: Export inclusion list
     And it shows a list of the registrations that are "included"
     And it shows the "name" and other program-attributes to be able to identify people
     And it shows the dates at which the person reached each status, to be able to assess the trajectory towards inclusion
+    And it shows all program questions which have "included" as "export" attribute
+    And it shows all program custom attributes which have "included" as "export" attribute
     And the "export inclusion list" button remains enabled, so the action can be repeated infinitely
     And if no "included" registrations then an alert is shown that "no data can be downloaded"
 

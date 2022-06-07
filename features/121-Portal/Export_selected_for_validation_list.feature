@@ -11,6 +11,9 @@ Feature: Export selected for validation list
     Then an Excel-file is downloaded
     And it shows a list of the registrations that are "selected for validation"
     And it shows the "name" and "phonenumber" to be able to identify people
+    And it shows all program questions which have "selected-for-validation" as "export" attribute
+    And it shows all program custom attributes which have "selected-for-validation as "export" attribute
+    And it shows all deprecated program custom attributes
     And it shows the dates at which the person reached each status, to be able to assess the trajectory towards "selected for validation"
     And the "export list" button remains enabled, so the action can be repeated infinitely
     And if no "selected for validation" registrations then an alert is shown that "no data can be downloaded"
