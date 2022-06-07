@@ -1091,6 +1091,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.headerChecked = false;
     this.selectedPeople = [];
     this.resetFilterRowsVisible();
+    this.showAllStatusState = false;
   }
 
   private toggleHeaderCheckbox() {
