@@ -176,18 +176,31 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  updatePaAttribute(
+  async updatePaAttribute(
     referenceId: string,
     attribute: string,
     value: string | number,
-  ): Promise<Person> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/registrations/attribute`, {
-        referenceId,
-        attribute,
-        value,
-      })
-      .toPromise();
+  ): Promise<Person | Error> {
+    return new Promise<Person>((resolve, reject) => {
+      this.apiService
+        .post(environment.url_121_service_api, `/registrations/attribute`, {
+          referenceId,
+          attribute,
+          value,
+        })
+        .toPromise()
+        .then((response) => {
+          if (response.error) {
+            throw response;
+          }
+          if (response) {
+            return resolve(response);
+          }
+        })
+        .catch((err) => {
+          return reject(err);
+        });
+    });
   }
 
   updateNote(referenceId: string, note: string): Promise<Note> {

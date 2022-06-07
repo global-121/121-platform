@@ -82,7 +82,13 @@
         "en": "Partner Organization"
       },
       "name": "namePartnerOrganization",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     }
   ],
   "programQuestions": [

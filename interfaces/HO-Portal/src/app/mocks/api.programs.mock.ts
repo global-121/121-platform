@@ -37,6 +37,17 @@ const programsArray: Program[] = [
         },
       },
     ],
+    programQuestions: [
+      {
+        id: 1,
+        name: 'phoneNumber',
+        answerType: 'tel',
+        label: {
+          en: 'Phone Number',
+        },
+        options: null,
+      },
+    ],
   },
 ];
 // Copy 2:

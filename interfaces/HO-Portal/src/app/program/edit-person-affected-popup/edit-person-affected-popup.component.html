@@ -42,8 +42,8 @@
           'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.label'
             | translate
         "
-        [value]="person?.paymentAmountMultiplier"
-        (updated)="updatePaAttribute('paymentAmountMultiplier', $event)"
+        [value]="attributeValues?.paymentAmountMultiplier"
+        (updated)="updatePaAttribute('paymentAmountMultiplier', $event, false)"
         [inProgress]="inProgress?.paymentAmountMultiplier || false"
         [isDisabled]="readOnly"
         [showSubmit]="!readOnly"
@@ -61,8 +61,8 @@
           'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.explanation'
             | translate
         "
-        [value]="person?.phoneNumber"
-        (updated)="updatePaAttribute('phoneNumber', $event)"
+        [value]="attributeValues?.phoneNumber"
+        (updated)="updatePaAttribute('phoneNumber', $event, false)"
         [inProgress]="inProgress?.phoneNumber || false"
         [isDisabled]="!canUpdatePersonalData"
         [showSubmit]="canUpdatePersonalData"
@@ -80,8 +80,8 @@
           'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.explanation'
             | translate
         "
-        [value]="person?.whatsappPhoneNumber"
-        (updated)="updatePaAttribute('whatsappPhoneNumber', $event)"
+        [value]="attributeValues?.whatsappPhoneNumber"
+        (updated)="updatePaAttribute('whatsappPhoneNumber', $event, false)"
         [inProgress]="inProgress?.whatsappPhoneNumber || false"
         [isDisabled]="!canUpdatePersonalData"
         [showSubmit]="canUpdatePersonalData"
@@ -114,8 +114,9 @@
           *ngFor="let ca of customAttributes"
           [type]="ca.type"
           [label]="ca.label"
-          [value]="ca.value"
-          (updated)="updatePaAttribute(ca.name, $event)"
+          [value]="attributeValues[ca.name]"
+          [options]="ca.options"
+          (updated)="updatePaAttribute(ca.name, $event, true)"
           class="ion-margin-vertical"
         ></app-update-property-item>
       </ng-container>

@@ -31,6 +31,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   private program: Program;
 
   public inProgress: any = {};
+  public attributeValues: any = {};
 
   public noteModel: string;
   public noteLastUpdate: string;
@@ -57,6 +58,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
 
+    this.attributeValues.paymentAmountMultiplier =
+      this.person?.paymentAmountMultiplier;
+    this.attributeValues.phoneNumber = this.person?.phoneNumber;
+    this.attributeValues.whatsappPhoneNumber = this.person?.whatsappPhoneNumber;
+
     this.fillCustomAttributes();
     this.getFspList();
 
@@ -69,29 +75,33 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public async updatePaAttribute(
     attribute: string,
     value: string,
+    isCustomAttribute: boolean,
   ): Promise<void> {
+    if (isCustomAttribute) {
+      value = String(value);
+    }
     this.inProgress[attribute] = true;
+
     this.programsService
       .updatePaAttribute(this.person.referenceId, attribute, value)
-      .then(
-        () => {
-          this.inProgress[attribute] = false;
-          this.actionResult(
-            this.translate.instant('common.update-success'),
-            true,
-          );
-        },
-        (error) => {
-          this.inProgress[attribute] = false;
-          console.log('error: ', error);
-          if (error && error.error) {
-            const errorMessage = this.translate.instant('common.update-error', {
-              error: this.formatErrors(error.error, attribute),
-            });
-            this.actionResult(errorMessage);
-          }
-        },
-      );
+      .then(() => {
+        this.inProgress[attribute] = false;
+        this.attributeValues[attribute] = value;
+        this.actionResult(
+          this.translate.instant('common.update-success'),
+          true,
+        );
+      })
+      .catch((error) => {
+        this.inProgress[attribute] = false;
+        console.log('error: ', error);
+        if (error && error.error) {
+          const errorMessage = this.translate.instant('common.update-error', {
+            error: this.formatErrors(error.error, attribute),
+          });
+          this.actionResult(errorMessage);
+        }
+      });
   }
 
   private formatErrors(error, attribute: string): string {
@@ -113,11 +123,16 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   private fillCustomAttributes() {
     this.customAttributes = this.program?.programCustomAttributes.map((ca) => {
+      this.attributeValues[ca.name] =
+        this.person.customAttributes[ca.name].value;
       return {
         name: ca.name,
         type: ca.type,
         label: ca.label[this.translate.getDefaultLang()],
         value: this.person.customAttributes[ca.name].value,
+        options: this.program.programQuestions.find(
+          (question) => question.name === ca.name,
+        ).options,
       };
     });
     this.customAttributes = this.customAttributes?.filter(

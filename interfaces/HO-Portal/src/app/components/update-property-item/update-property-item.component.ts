@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { ProgramQuestionOption } from 'src/app/models/program.model';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-update-property-item',
@@ -31,6 +34,9 @@ export class UpdatePropertyItemComponent implements OnInit {
   @Input()
   public showSubmit = true;
 
+  @Input()
+  public options: ProgramQuestionOption[] = null;
+
   @Output()
   updated: EventEmitter<string | boolean> = new EventEmitter<
     string | boolean
@@ -38,13 +44,59 @@ export class UpdatePropertyItemComponent implements OnInit {
 
   public propertyModel: any | NgModel;
 
-  constructor() {}
+  constructor(
+    private translate: TranslatableStringService,
+    private translateService: TranslateService,
+  ) {}
 
   ngOnInit() {
     this.propertyModel = this.value;
   }
 
   public doUpdate() {
+    if (this.type === 'date') {
+      if (!this.isValidDate()) {
+        alert(
+          this.translateService.instant(
+            'page.program.program-people-affected.edit-person-affected-popup.error-alert.invalid-date',
+          ),
+        );
+        return;
+      }
+    }
+
     this.updated.emit(this.propertyModel);
+  }
+
+  public translatedOptions() {
+    return this.options.map(({ option, label }) => {
+      return {
+        option,
+        label: this.translate.get(label),
+      };
+    });
+  }
+
+  private isValidDate(): boolean {
+    const dateInput = this.propertyModel;
+
+    const regex = /^\d{2}-\d{2}-\d{4}$/;
+
+    if (dateInput.match(regex) === null) {
+      return false;
+    }
+    const [day, month, year] = dateInput.split('-');
+
+    const isoFormattedStr = `${year}-${month}-${day}`;
+
+    const date = new Date(isoFormattedStr);
+
+    const timestamp = date.getTime();
+
+    if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) {
+      return false;
+    }
+
+    return date.toISOString().startsWith(isoFormattedStr);
   }
 }
