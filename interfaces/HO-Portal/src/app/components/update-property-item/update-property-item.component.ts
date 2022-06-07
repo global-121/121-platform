@@ -99,4 +99,8 @@ export class UpdatePropertyItemComponent implements OnInit {
 
     return date.toISOString().startsWith(isoFormattedStr);
   }
+
+  public disableSaveButton(): boolean {
+    return String(this.propertyModel) === String(this.value);
+  }
 }

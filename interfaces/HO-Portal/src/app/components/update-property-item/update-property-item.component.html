@@ -101,7 +101,7 @@
             type="submit"
             class="ion-margin-start ion-float-right text-bold ion-text-uppercase"
             fill=clear
-            [disabled]="propertyModel === value"
+            [disabled]="disableSaveButton()"
           >
           {{ 'common.save'|translate }}
         </ion-button>
