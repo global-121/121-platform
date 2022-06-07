@@ -45,8 +45,8 @@
         [value]="person?.paymentAmountMultiplier"
         (updated)="updatePaAttribute('paymentAmountMultiplier', $event)"
         [inProgress]="inProgress?.paymentAmountMultiplier || false"
-        [isDisabled]="readOnly || program.paymentAmountMultiplierFormula"
-        [showSubmit]="!readOnly && !program.paymentAmountMultiplierFormula"
+        [isDisabled]="readOnly || program?.paymentAmountMultiplierFormula"
+        [showSubmit]="!readOnly && !program?.paymentAmountMultiplierFormula"
         class="ion-margin-vertical"
       ></app-update-property-item>
 
