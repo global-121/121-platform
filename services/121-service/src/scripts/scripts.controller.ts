@@ -7,13 +7,11 @@ import { SeedProgramValidation } from './seed-program-validation';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
-import SeedProgramEth from './seed-program-eth';
 import SeedProgramUkr from './seed-program-ukr';
 
 enum SeedScript {
   pilotNL = 'pilot-nl',
   pilotNLPV = 'pilot-nl-pv',
-  pilotETH = 'pilot-eth',
   pilotLBN = 'pilot-lbn',
   pilotUKR = 'pilot-ukr',
   demo = 'demo',
@@ -49,8 +47,6 @@ export class ScriptsController {
       seed = new SeedPilotNLProgram(this.connection);
     } else if (body.script == SeedScript.pilotNLPV) {
       seed = new SeedPilotNL2Program(this.connection);
-    } else if (body.script == SeedScript.pilotETH) {
-      seed = new SeedProgramEth(this.connection);
     } else if (body.script == SeedScript.pilotLBN) {
       seed = new SeedProgramLbn(this.connection);
     } else if (body.script == SeedScript.pilotUKR) {
