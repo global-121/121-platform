@@ -250,6 +250,10 @@ export class BulkImportService {
       await this.inclusionScoreService.calculateInclusionScore(
         registration.referenceId,
       );
+      await this.inclusionScoreService.calculatePaymentAmountMultiplier(
+        program.id,
+        registration.referenceId,
+      );
 
       countImported += 1;
     }
