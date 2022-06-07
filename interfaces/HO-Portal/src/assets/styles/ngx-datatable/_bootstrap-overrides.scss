@@ -91,3 +91,12 @@
     }
   }
 }
+
+.header-overflow-ellipsis {
+  .datatable-header-cell-label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+  }
+ }

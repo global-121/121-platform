@@ -462,6 +462,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       ...this.columnDefaults,
       phases: [ProgramPhase.inclusion],
       width: columnDateTimeWidth,
+      headerClass: 'ion-align-self-end header-overflow-ellipsis',
     };
   }
 
