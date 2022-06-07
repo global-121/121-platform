@@ -181,11 +181,11 @@ export class ExportMetricsService {
     registration: RegistrationEntity,
   ): Promise<object> {
     const genericFields = [
-      'id',
+      GenericAttributes.id,
       GenericAttributes.phoneNumber,
       GenericAttributes.paymentAmountMultiplier,
       GenericAttributes.preferredLanguage,
-      'note',
+      GenericAttributes.note,
     ];
     genericFields.forEach(field => {
       row[field] = registration[field];

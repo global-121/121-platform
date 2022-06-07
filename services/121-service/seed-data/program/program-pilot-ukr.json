@@ -62,7 +62,8 @@
         "en": "Enumerator name:"
       },
       "name": "enumeratorName",
-      "type": "string"
+      "type": "string",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
@@ -70,6 +71,94 @@
       },
       "name": "nrOfHouseHoldMembers",
       "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
+    },
+    {
+      "label": {
+        "en": "How many men in your household are between 18 and 65?"
+      },
+      "name": "nrOfMaleAdults",
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
+    },
+    {
+      "label": {
+        "en": "How many women in your household are between 18 and 65?"
+      },
+      "name": "nrOFemaleAdults",
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
+    },
+    {
+      "label": {
+        "en": "How many men in your household are over 65?"
+      },
+      "name": "nrOfMaleElderly",
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
+    },
+    {
+      "label": {
+        "en": "How many women in your household are over 65?"
+      },
+      "name": "nrOFemaleElderly",
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
+    },
+    {
+      "label": {
+        "en": "How many boys in your household are under 18?"
+      },
+      "name": "nrOfBoys",
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
+    },
+    {
+      "label": {
+        "en": "How many girls in your household are under 18?"
+      },
+      "name": "nrOfGirls",
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
+    },
+    {
+      "label": {
+        "en": "How many household members have any chronic illness or serious medical condition?"
+      },
+      "name": "nrOfIllnessInHousehold",
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
+    },
+    {
+      "label": {
+        "en": "How many household members have any physical or mental disability?"
+      },
+      "name": "nrOfDisabilitiesInHousehold",
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
+    },
+    {
+      "label": {
+        "en": "How many household members are pregnant or lactating?"
+      },
+      "name": "nrOfPregnantInHousehold",
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
+    },
+    {
+      "label": {
+        "en": "Please, select the option which better describes the current situation of your household"
+      },
+      "name": "householdSituation",
+      "type": "dropdown",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
+    },
+    {
+      "label": {
+        "en": "Please, can you give us your phone number?"
+      },
+      "name": "phoneNumber",
+      "type": "tel",
       "export": [
         "all-people-affected",
         "included",
@@ -79,94 +168,19 @@
     },
     {
       "label": {
-        "en": "How many men in your household are between 18 and 65?"
-      },
-      "name": "nrOfMaleAdults",
-      "type": "number"
-    },
-    {
-      "label": {
-        "en": "How many women in your household are between 18 and 65?"
-      },
-      "name": "nrOFemaleAdults",
-      "type": "number"
-    },
-    {
-      "label": {
-        "en": "How many men in your household are over 65?"
-      },
-      "name": "nrOfMaleElderly",
-      "type": "number"
-    },
-    {
-      "label": {
-        "en": "How many women in your household are over 65?"
-      },
-      "name": "nrOFemaleElderly",
-      "type": "number"
-    },
-    {
-      "label": {
-        "en": "How many boys in your household are under 18?"
-      },
-      "name": "nrOfBoys",
-      "type": "number"
-    },
-    {
-      "label": {
-        "en": "How many girls in your household are under 18?"
-      },
-      "name": "nrOfGirls",
-      "type": "number"
-    },
-    {
-      "label": {
-        "en": "How many household members have any chronic illness or serious medical condition?"
-      },
-      "name": "nrOfIllnessInHousehold",
-      "type": "number"
-    },
-    {
-      "label": {
-        "en": "How many household members have any physical or mental disability?"
-      },
-      "name": "nrOfDisabilitiesInHousehold",
-      "type": "number"
-    },
-    {
-      "label": {
-        "en": "How many household members are pregnant or lactating?"
-      },
-      "name": "nrOfPregnantInHousehold",
-      "type": "number"
-    },
-    {
-      "label": {
-        "en": "Please, select the option which better describes the current situation of your household"
-      },
-      "name": "householdSituation",
-      "type": "dropdown"
-    },
-    {
-      "label": {
-        "en": "Please, can you give us your phone number?"
-      },
-      "name": "phoneNumber",
-      "type": "tel"
-    },
-    {
-      "label": {
         "en": "Applicant - What is your gender?"
       },
       "name": "gender",
-      "type": "dropdown"
+      "type": "dropdown",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "Applicant - What is your date of birth?"
       },
       "name": "dateOfBirth",
-      "type": "date"
+      "type": "date",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
@@ -368,14 +382,26 @@
         "en": "Tax ID number"
       },
       "name": "taxId",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "Telephone"
       },
       "name": "telephone",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     }
   ],
   "programQuestions": [
@@ -390,7 +416,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -404,7 +430,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -418,7 +444,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -432,7 +458,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -446,7 +472,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -460,7 +486,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -474,7 +500,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -488,7 +514,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -502,7 +528,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -516,7 +542,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -530,7 +556,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -577,7 +603,7 @@
         }
       ],
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -596,7 +622,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -635,7 +661,7 @@
         }
       ],
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -649,7 +675,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
