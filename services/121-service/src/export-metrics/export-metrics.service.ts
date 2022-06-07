@@ -97,7 +97,7 @@ export class ExportMetricsService {
 
     if (pastPaymentDetails.length === 0) {
       return {
-        fileName: `details-future-payment-${minPaymentId}`,
+        fileName: `details-included-people-affected-${minPaymentId}`,
         data: (await this.getInclusionList(programId)).data,
       };
     }
