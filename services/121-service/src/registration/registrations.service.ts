@@ -148,21 +148,23 @@ export class RegistrationsService {
       const programQuestion = await this.programQuestionRepository.findOne({
         where: { name: answer.programQuestionName },
       });
-      const oldAnswer = await this.programAnswerRepository.findOne({
-        where: {
-          registration: { id: registration.id },
-          programQuestion: { id: programQuestion.id },
-        },
-      });
-      if (oldAnswer) {
-        oldAnswer.programAnswer = answer.programAnswer;
-        await this.programAnswerRepository.save(oldAnswer);
-      } else {
-        let newAnswer = new ProgramAnswerEntity();
-        newAnswer.registration = registration;
-        newAnswer.programQuestion = programQuestion;
-        newAnswer.programAnswer = answer.programAnswer;
-        await this.programAnswerRepository.save(newAnswer);
+      if (programQuestion) {
+        const oldAnswer = await this.programAnswerRepository.findOne({
+          where: {
+            registration: { id: registration.id },
+            programQuestion: { id: programQuestion.id },
+          },
+        });
+        if (oldAnswer) {
+          oldAnswer.programAnswer = answer.programAnswer;
+          await this.programAnswerRepository.save(oldAnswer);
+        } else {
+          let newAnswer = new ProgramAnswerEntity();
+          newAnswer.registration = registration;
+          newAnswer.programQuestion = programQuestion;
+          newAnswer.programAnswer = answer.programAnswer;
+          await this.programAnswerRepository.save(newAnswer);
+        }
       }
     }
     await this.storePersistentAnswers(programAnswers, referenceId);
