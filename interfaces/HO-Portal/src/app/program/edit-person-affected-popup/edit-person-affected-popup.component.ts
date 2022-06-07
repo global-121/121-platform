@@ -57,6 +57,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
+    for (const fsp of this.program.financialServiceProviders) {
+      this.fspList.push(await this.programsService.getFspById(fsp.id));
+    }
 
     this.attributeValues.paymentAmountMultiplier =
       this.person?.paymentAmountMultiplier;
@@ -64,7 +67,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.attributeValues.whatsappPhoneNumber = this.person?.whatsappPhoneNumber;
 
     this.fillCustomAttributes();
-    this.getFspList();
 
     if (this.canViewPersonalData) {
       this.getNote();
@@ -122,15 +124,31 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   }
 
   private fillCustomAttributes() {
+    this.programFspLength = this.fspList.length;
+    for (const fspItem of this.fspList) {
+      if (fspItem.fsp === this.person.fsp) {
+        this.personFsp = fspItem;
+      }
+    }
+
     this.customAttributes = this.program?.programCustomAttributes.map((ca) => {
       this.attributeValues[ca.name] =
         this.person.customAttributes[ca.name].value;
 
+      const isFspAttribute = this.personFsp.attributes.find(
+        (attr) => attr.name === ca.name,
+      )
+        ? true
+        : false;
+
       const options =
         ca.type === 'dropdown'
-          ? this.program.programQuestions.find(
-              (question) => question.name === ca.name,
-            ).options
+          ? isFspAttribute
+            ? this.personFsp.attributes.find((attr) => attr.name === ca.name)
+                .options
+            : this.program.programQuestions.find(
+                (question) => question.name === ca.name,
+              ).options
           : null;
 
       return {
@@ -218,29 +236,5 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public closeModal() {
     this.modalController.dismiss();
-  }
-
-  private getFspList() {
-    if (!this.programId) {
-      return;
-    }
-
-    this.fspList = [];
-
-    this.programsService.getProgramById(this.programId).then((program) => {
-      if (!program || !program.financialServiceProviders) {
-        return;
-      }
-
-      this.programFspLength = program.financialServiceProviders.length;
-      program.financialServiceProviders.forEach((fsp) => {
-        this.programsService.getFspById(fsp.id).then((fspItem) => {
-          if (fspItem.fsp === this.person.fsp) {
-            this.personFsp = fspItem;
-          }
-          this.fspList.push(fspItem);
-        });
-      });
-    });
   }
 }

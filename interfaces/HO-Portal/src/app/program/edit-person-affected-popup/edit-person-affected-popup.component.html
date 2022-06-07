@@ -118,6 +118,7 @@
           [options]="ca.options"
           (updated)="updatePaAttribute(ca.name, $event, true)"
           class="ion-margin-vertical"
+          [isFspAttribute]="ca.isFspAttribute"
         ></app-update-property-item>
       </ng-container>
     </div>
