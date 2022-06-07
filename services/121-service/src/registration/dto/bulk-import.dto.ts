@@ -66,4 +66,10 @@ export class ImportRegistrationsDto {
   })
   @IsIn(fspArray)
   public fspName: FspName;
+
+  @ApiModelProperty()
+  @IsNumber()
+  @IsInt()
+  @Min(1)
+  public paymentAmountMultiplier: number;
 }

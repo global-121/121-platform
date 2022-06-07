@@ -53,6 +53,8 @@ export class BulkImportService {
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspAttributeEntity)
   private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -111,7 +113,10 @@ export class BulkImportService {
       newRegistration.referenceId = uuid();
       newRegistration.phoneNumber = phoneNumberResult;
       newRegistration.preferredLanguage = LanguageEnum.en;
-      newRegistration.paymentAmountMultiplier = record.paymentAmountMultiplier;
+      if (!program.paymentAmountMultiplierFormula) {
+        newRegistration.paymentAmountMultiplier =
+          record.paymentAmountMultiplier;
+      }
       newRegistration.program = program;
       newRegistration.customData = JSON.parse(JSON.stringify({}));
       programCustomAttributes.forEach(att => {
@@ -189,6 +194,17 @@ export class BulkImportService {
       ).map(d => d.attribute);
     }
 
+    // If paymentAmountMultiplier automatic, then drop from template
+    const program = await this.programRepository.findOne(programId);
+    if (!!program.paymentAmountMultiplierFormula) {
+      const index = genericAttributes.indexOf(
+        GenericAttributes.paymentAmountMultiplier,
+      );
+      if (index > -1) {
+        genericAttributes.splice(index, 1);
+      }
+    }
+
     const attributes = genericAttributes.concat(dynamicAttributes);
     return [...new Set(attributes)]; // Deduplicates attributes
   }
@@ -211,6 +227,9 @@ export class BulkImportService {
       registration.referenceId = uuid();
       registration.phoneNumber = record.phoneNumber;
       registration.preferredLanguage = record.preferredLanguage;
+      if (!program.paymentAmountMultiplierFormula) {
+        registration.paymentAmountMultiplier = record.paymentAmountMultiplier;
+      }
       registration.program = program;
 
       registration.customData = JSON.parse(JSON.stringify({}));
