@@ -79,17 +79,17 @@ export class Note {
 }
 
 export enum LanguageEnum {
-  en = 'en',
-  amET = 'am_ET',
   ar = 'ar',
-  ti = 'ti',
-  tl = 'tl',
-  ptBR = 'pt_BR',
-  tuvKE = 'tuv_KE',
-  saqKE = 'saq_KE',
+  en = 'en',
+  es = 'es',
+  fr = 'fr',
   in = 'in',
   nl = 'nl',
-  es = 'es',
+  ptBR = 'pt_BR',
+  ru = 'ru',
+  ti = 'ti',
+  tl = 'tl',
+  uk = 'uk',
 }
 
 export class PersonCustomAttribute {
