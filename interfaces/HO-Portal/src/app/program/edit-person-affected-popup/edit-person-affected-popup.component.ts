@@ -31,6 +31,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   private program: Program;
 
   public inProgress: any = {};
+  public attributeValues: any = {};
 
   public noteModel: string;
   public noteLastUpdate: string;
@@ -57,6 +58,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
 
+    this.attributeValues.paymentAmountMultiplier =
+      this.person?.paymentAmountMultiplier;
+    this.attributeValues.phoneNumber = this.person?.phoneNumber;
+    this.attributeValues.whatsappPhoneNumber = this.person?.whatsappPhoneNumber;
+
     this.fillCustomAttributes();
     this.getFspList();
 
@@ -80,6 +86,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       .updatePaAttribute(this.person.referenceId, attribute, value)
       .then(() => {
         this.inProgress[attribute] = false;
+        this.attributeValues[attribute] = value;
         this.actionResult(
           this.translate.instant('common.update-success'),
           true,
@@ -116,6 +123,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   private fillCustomAttributes() {
     this.customAttributes = this.program?.programCustomAttributes.map((ca) => {
+      this.attributeValues[ca.name] =
+        this.person.customAttributes[ca.name].value;
       return {
         name: ca.name,
         type: ca.type,
