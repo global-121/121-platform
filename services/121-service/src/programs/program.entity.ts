@@ -52,6 +52,9 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ nullable: true })
   public fixedTransferValue: number;
 
+  @Column({ nullable: true })
+  public paymentAmountMultiplierFormula: string;
+
   @ManyToMany(
     () => FinancialServiceProviderEntity,
     financialServiceProviders => financialServiceProviders.program,

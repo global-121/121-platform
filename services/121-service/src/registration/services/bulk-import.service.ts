@@ -53,6 +53,8 @@ export class BulkImportService {
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspAttributeEntity)
   private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -111,7 +113,10 @@ export class BulkImportService {
       newRegistration.referenceId = uuid();
       newRegistration.phoneNumber = phoneNumberResult;
       newRegistration.preferredLanguage = LanguageEnum.en;
-      newRegistration.paymentAmountMultiplier = record.paymentAmountMultiplier;
+      if (!program.paymentAmountMultiplierFormula) {
+        newRegistration.paymentAmountMultiplier =
+          record.paymentAmountMultiplier;
+      }
       newRegistration.program = program;
       newRegistration.customData = JSON.parse(JSON.stringify({}));
       programCustomAttributes.forEach(att => {
@@ -189,6 +194,17 @@ export class BulkImportService {
       ).map(d => d.attribute);
     }
 
+    // If paymentAmountMultiplier automatic, then drop from template
+    const program = await this.programRepository.findOne(programId);
+    if (!!program.paymentAmountMultiplierFormula) {
+      const index = genericAttributes.indexOf(
+        GenericAttributes.paymentAmountMultiplier,
+      );
+      if (index > -1) {
+        genericAttributes.splice(index, 1);
+      }
+    }
+
     const attributes = genericAttributes.concat(dynamicAttributes);
     return [...new Set(attributes)]; // Deduplicates attributes
   }
@@ -211,6 +227,9 @@ export class BulkImportService {
       registration.referenceId = uuid();
       registration.phoneNumber = record.phoneNumber;
       registration.preferredLanguage = record.preferredLanguage;
+      if (!program.paymentAmountMultiplierFormula) {
+        registration.paymentAmountMultiplier = record.paymentAmountMultiplier;
+      }
       registration.program = program;
 
       registration.customData = JSON.parse(JSON.stringify({}));
@@ -248,6 +267,10 @@ export class BulkImportService {
         registration.customData,
       );
       await this.inclusionScoreService.calculateInclusionScore(
+        registration.referenceId,
+      );
+      await this.inclusionScoreService.calculatePaymentAmountMultiplier(
+        program.id,
         registration.referenceId,
       );
 
@@ -345,14 +368,25 @@ export class BulkImportService {
     const programCustomAttributes = await this.getProgramCustomAttributes(
       programId,
     );
+    const program = await this.programRepository.findOne(programId);
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
       }
       let importRecord = new BulkImportDto();
       importRecord.phoneNumber = row.phoneNumber;
-      importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
+      if (!program.paymentAmountMultiplierFormula) {
+        importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
+      }
       for await (const att of programCustomAttributes) {
+        if (att.type === 'number' && isNaN(Number(row[att.attribute]))) {
+          const errorObj = {
+            lineNumber: i + 1,
+            column: att.attribute,
+            value: row[att.attribute],
+          };
+          errors.push(errorObj);
+        }
         importRecord[att.attribute] = row[att.attribute];
       }
 
@@ -364,6 +398,8 @@ export class BulkImportService {
           value: result[0].value,
         };
         errors.push(errorObj);
+      }
+      if (errors.length > 0) {
         throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
       validatatedArray.push(importRecord);
@@ -426,6 +462,7 @@ export class BulkImportService {
     const errors = [];
     const validatatedArray = [];
     const dynamicAttributes = await this.getDynamicAttributes(programId);
+    const program = await this.programRepository.findOne(programId);
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
@@ -434,6 +471,9 @@ export class BulkImportService {
       importRecord.preferredLanguage = row.preferredLanguage;
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;
+      if (!program.paymentAmountMultiplierFormula) {
+        importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
+      }
       for await (const att of dynamicAttributes) {
         if (att.type === AnswerTypes.tel && row[att.attribute]) {
           const sanitized = await this.lookupService.lookupAndCorrect(
@@ -447,9 +487,15 @@ export class BulkImportService {
               value: row[att.attribute],
             };
             errors.push(errorObj);
-            throw new HttpException(errors, HttpStatus.BAD_REQUEST);
           }
           row[att.attribute] = sanitized;
+        } else if (att.type === 'number' && isNaN(Number(row[att.attribute]))) {
+          const errorObj = {
+            lineNumber: i + 1,
+            column: att.attribute,
+            value: row[att.attribute],
+          };
+          errors.push(errorObj);
         }
         importRecord[att.attribute] = row[att.attribute];
       }
@@ -462,6 +508,8 @@ export class BulkImportService {
           value: result[0].value,
         };
         errors.push(errorObj);
+      }
+      if (errors.length > 0) {
         throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
       validatatedArray.push(importRecord);

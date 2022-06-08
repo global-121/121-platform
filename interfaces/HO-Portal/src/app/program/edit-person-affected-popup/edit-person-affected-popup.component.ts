@@ -38,7 +38,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   @Input()
   public canUpdatePersonalData = false;
 
-  private program: Program;
+  public program: Program;
 
   public inProgress: any = {};
   public attributeValues: any = {};

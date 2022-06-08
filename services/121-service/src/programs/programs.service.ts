@@ -85,6 +85,8 @@ export class ProgramService {
     program.distributionFrequency = programData.distributionFrequency;
     program.distributionDuration = programData.distributionDuration;
     program.fixedTransferValue = programData.fixedTransferValue;
+    program.paymentAmountMultiplierFormula =
+      programData.paymentAmountMultiplierFormula;
     program.inclusionCalculationType = programData.inclusionCalculationType;
     program.minimumScore = programData.minimumScore;
     program.highestScoresX = programData.highestScoresX;

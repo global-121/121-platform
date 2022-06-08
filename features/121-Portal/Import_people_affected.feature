@@ -111,6 +111,7 @@ Feature: Import registrations
     And the PA-table in the HO-portal shows "X" new rows of PAs
     And they have status "Registered"
     And all other columns are filled as if a real registration was done
+    And - if configured for the program - the "paymentAmountMultiplier" is calculated based on formula 
     And no SMS is sent to the PA unlike a real registration
     And in the AW-app the validation data for these PAs can be downloaded
 

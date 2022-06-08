@@ -10,6 +10,7 @@ import {
   IsNumber,
   ValidateNested,
   IsDefined,
+  IsOptional,
 } from 'class-validator';
 import { CreateProgramQuestionDto } from './create-program-question.dto';
 import { Type } from 'class-transformer';
@@ -66,6 +67,11 @@ export class CreateProgramDto {
 
   @ApiModelProperty({ example: 500 })
   public readonly fixedTransferValue: number;
+
+  @ApiModelProperty({ example: '0 + 1 * nrOfHouseHoldMembers' })
+  @IsOptional()
+  @IsString()
+  public readonly paymentAmountMultiplierFormula: string;
 
   @ApiModelProperty({
     example: [

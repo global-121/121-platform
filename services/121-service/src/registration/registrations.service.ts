@@ -169,6 +169,10 @@ export class RegistrationsService {
     }
     await this.storePersistentAnswers(programAnswers, referenceId);
     await this.inclusionScoreService.calculateInclusionScore(referenceId);
+    await this.inclusionScoreService.calculatePaymentAmountMultiplier(
+      registration.program.id,
+      referenceId,
+    );
   }
 
   public async cleanAnswers(
@@ -426,6 +430,7 @@ export class RegistrationsService {
       RegistrationStatusEnum.registered,
     );
     this.inclusionScoreService.calculateInclusionScore(referenceId);
+
     this.sendTextMessage(
       registration,
       registration.program.id,
@@ -742,7 +747,10 @@ export class RegistrationsService {
     attribute: Attributes | string,
     value: string | number,
   ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
+    const registration = await this.getRegistrationFromReferenceId(
+      referenceId,
+      ['program'],
+    );
 
     if (typeof registration[attribute] !== 'undefined') {
       registration[attribute] = await this.cleanCustomDataIfPhoneNr(
@@ -766,7 +774,14 @@ export class RegistrationsService {
     ];
     this.storeProgramAnswers(referenceId, programAnswers);
 
-    return await this.registrationRepository.save(registration);
+    const savedRegistration = await this.registrationRepository.save(
+      registration,
+    );
+    await this.inclusionScoreService.calculatePaymentAmountMultiplier(
+      registration.program.id,
+      referenceId,
+    );
+    return savedRegistration;
   }
 
   public async updateNote(referenceId: string, note: string): Promise<NoteDto> {

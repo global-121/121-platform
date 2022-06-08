@@ -14,6 +14,32 @@ export class InlusionScoreService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
   public constructor() {}
 
+  public async calculatePaymentAmountMultiplier(
+    programId: number,
+    referenceId: string,
+  ): Promise<void> {
+    const program = await this.programRepository.findOne(programId);
+    if (!program.paymentAmountMultiplierFormula) {
+      return;
+    }
+    const registration = await this.registrationRepository.findOne({
+      where: { referenceId: referenceId },
+    });
+    const formulaParts = program.paymentAmountMultiplierFormula
+      .replace(/\s/g, '')
+      .split('+');
+    const constant = Number(formulaParts[0]);
+    formulaParts.shift(); // remove 'constant' from array
+    let paymentAmountMultiplier = constant;
+    for await (const factor of formulaParts) {
+      const factorElements = factor.replace(/\s/g, '').split('*');
+      const factorValue = registration.customData[factorElements[1]];
+      paymentAmountMultiplier += Number(factorElements[0]) * factorValue;
+    }
+    registration.paymentAmountMultiplier = paymentAmountMultiplier;
+    await this.registrationRepository.save(registration);
+  }
+
   public async calculateInclusionScore(referenceId: string): Promise<void> {
     let registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },

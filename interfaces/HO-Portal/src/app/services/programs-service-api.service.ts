@@ -304,9 +304,29 @@ export class ProgramsServiceApiService {
       path = `/registrations/import-registrations/${programId}`;
     }
 
-    return this.apiService
-      .post(environment.url_121_service_api, path, formData, false, false, true)
-      .toPromise();
+    return new Promise<ImportResult>((resolve, reject) => {
+      this.apiService
+        .post(
+          environment.url_121_service_api,
+          path,
+          formData,
+          false,
+          false,
+          true,
+        )
+        .toPromise()
+        .then((response) => {
+          if (response.error) {
+            throw response;
+          }
+          if (response) {
+            return resolve(response);
+          }
+        })
+        .catch((err) => {
+          return reject(err);
+        });
+    });
   }
 
   exportFspInstructions(programId: number, payment: number) {

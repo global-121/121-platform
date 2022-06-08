@@ -14,6 +14,7 @@ export class Program {
   descCashType?: string | TranslatableString;
   currency: string;
   fixedTransferValue: number;
+  paymentAmountMultiplierFormula?: string;
   inclusionCalculationType: InclusionCalculationType;
   highestScoresX?: number;
   minimumScore?: number;
