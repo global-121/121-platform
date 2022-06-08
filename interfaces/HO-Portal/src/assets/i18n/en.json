@@ -330,7 +330,8 @@
           "popup-title": "{{pa}} detailed info",
           "properties": {
             "paymentAmountMultiplier": {
-              "label": "× Transfer value"
+              "label": "Transfer value multiplier",
+              "explanation": "The transfer value will be multiplied by this number for this Person Affected"
             },
             "phoneNumber": {
               "label": "Phone number",
