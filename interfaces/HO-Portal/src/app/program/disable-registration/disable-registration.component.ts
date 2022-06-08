@@ -39,31 +39,45 @@ export class DisableRegistrationComponent implements OnInit {
   }
 
   public async updateRegistrationStatus() {
-    const dataObj = { published: !this.publishedStatus };
-    this.programsService.updateProgram(this.programId, dataObj).then(
-      (updatedProgram) => {
-        if (updatedProgram.published) {
+    this.programsService
+      .updateProgram(this.programId, {
+        published: !this.publishedStatus,
+      })
+      .then(
+        (updatedProgram) => {
+          if (updatedProgram.published) {
+            this.actionResult(
+              this.translate.instant(
+                'page.program.phases.registrationValidation.actionText-enabled-registrations',
+              ),
+            );
+          }
+          if (!updatedProgram.published) {
+            this.actionResult(
+              this.translate.instant(
+                'page.program.phases.registrationValidation.actionText-disabled-registrations',
+              ),
+            );
+          }
+          this.program = updatedProgram;
+          this.publishedStatus = updatedProgram.published;
+        },
+        (error) => {
+          let errorMessage = 'unknown';
+
+          if (error && error.error && error.error.message) {
+            errorMessage = error.error.message;
+          }
+
           this.actionResult(
-            this.translate.instant(
-              'page.program.phases.registrationValidation.actionText-enabled-registrations',
-            ),
+            this.translate.instant('common.update-error', {
+              error: errorMessage,
+            }),
           );
-        }
-        if (!updatedProgram.published) {
-          this.actionResult(
-            this.translate.instant(
-              'page.program.phases.registrationValidation.actionText-disabled-registrations',
-            ),
-          );
-        }
-        this.publishedStatus = updatedProgram.published;
-      },
-      (error) => {
-        if (error && error.error) {
-          this.actionResult(error.error.message);
-        }
-      },
-    );
+          // Reset the toggle to its unchanged-state:
+          this.publishedStatus = this.program.published;
+        },
+      );
   }
   private async actionResult(resultMessage: string) {
     const alert = await this.alertController.create({
