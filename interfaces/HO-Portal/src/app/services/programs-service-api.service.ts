@@ -36,47 +36,53 @@ export class ProgramsServiceApiService {
         },
         true,
       )
-      .pipe(
-        map((response) => {
-          if (response) {
-            return {
-              username: response.username,
-              permissions: response.permissions,
-              expires: response.expires,
-            };
-          }
-          return null;
-        }),
-      )
-      .toPromise();
+      .then((response) => {
+        if (response) {
+          return {
+            username: response.username,
+            permissions: response.permissions,
+            expires: response.expires,
+          };
+        }
+        return null;
+      });
   }
 
   logout(): Promise<null> {
-    return this.apiService
-      .post(environment.url_121_service_api, '/user/logout', {}, true)
-      .toPromise();
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/user/logout',
+      {},
+      true,
+    );
   }
 
   changePassword(newPassword: string): Promise<null> {
-    return this.apiService
-      .post(environment.url_121_service_api, '/user/change-password', {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/user/change-password',
+      {
         password: newPassword,
-      })
-      .toPromise();
+      },
+    );
   }
 
   deleteUser(userId: string): Promise<any> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/user/delete/${userId}`, {})
-      .toPromise();
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/user/delete/${userId}`,
+      {},
+    );
   }
 
   deleteRegistrations(referenceIds: string[]): Promise<any> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/registrations/delete`, {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/registrations/delete`,
+      {
         referenceIds,
-      })
-      .toPromise();
+      },
+    );
   }
 
   getAllPrograms(): Promise<Program[]> {
@@ -97,15 +103,13 @@ export class ProgramsServiceApiService {
   }
 
   advancePhase(programId: number, newPhase: string): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        `/programs/change-phase/${programId}`,
-        {
-          newPhase,
-        },
-      )
-      .toPromise();
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs/change-phase/${programId}`,
+      {
+        newPhase,
+      },
+    );
   }
 
   getMetricsById(programId: number | string): Promise<ProgramMetrics> {
@@ -133,13 +137,11 @@ export class ProgramsServiceApiService {
     programId: number | string,
     referenceIds?: string[],
   ): Promise<TotalTransferAmounts> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        `/export-metrics/total-transfer-amounts/${programId}`,
-        { referenceIds },
-      )
-      .toPromise();
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/export-metrics/total-transfer-amounts/${programId}`,
+      { referenceIds },
+    );
   }
 
   getPastPayments(programId: number | string): Promise<PaymentData[]> {
@@ -181,35 +183,26 @@ export class ProgramsServiceApiService {
     attribute: string,
     value: string | number,
   ): Promise<Person | Error> {
-    return new Promise<Person>((resolve, reject) => {
-      this.apiService
-        .post(environment.url_121_service_api, `/registrations/attribute`, {
-          referenceId,
-          attribute,
-          value,
-        })
-        .toPromise()
-        .then((response) => {
-          if (response.error) {
-            throw response;
-          }
-          if (response) {
-            return resolve(response);
-          }
-        })
-        .catch((err) => {
-          return reject(err);
-        });
-    });
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/registrations/attribute`,
+      {
+        referenceId,
+        attribute,
+        value,
+      },
+    );
   }
 
   updateNote(referenceId: string, note: string): Promise<Note> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/registrations/note`, {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/registrations/note`,
+      {
         referenceId,
         note,
-      })
-      .toPromise();
+      },
+    );
   }
 
   retrieveNote(referenceId: string): Promise<Note> {
@@ -236,18 +229,16 @@ export class ProgramsServiceApiService {
     customDataKey: string,
     customDataValue: string,
   ): Promise<any | Transaction> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        `/programs/${programId}/payments/transactions/one`,
-        {
-          referenceId,
-          payment: Number(payment),
-          customDataKey,
-          customDataValue,
-        },
-      )
-      .toPromise();
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs/${programId}/payments/transactions/one`,
+      {
+        referenceId,
+        payment: Number(payment),
+        customDataKey,
+        customDataValue,
+      },
+    );
   }
 
   submitPayout(
@@ -256,17 +247,15 @@ export class ProgramsServiceApiService {
     amount: number,
     referenceIds?: string[],
   ): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        `/programs/${programId}/payments`,
-        {
-          payment: Number(payment),
-          amount: Number(amount),
-          referenceIds: referenceIds ? { referenceIds } : null,
-        },
-      )
-      .toPromise();
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs/${programId}/payments`,
+      {
+        payment: Number(payment),
+        amount: Number(amount),
+        referenceIds: referenceIds ? { referenceIds } : null,
+      },
+    );
   }
 
   async downloadImportTemplate(
@@ -314,7 +303,6 @@ export class ProgramsServiceApiService {
           false,
           true,
         )
-        .toPromise()
         .then((response) => {
           if (response.error) {
             throw response;
@@ -351,39 +339,36 @@ export class ProgramsServiceApiService {
         ...(minPayment && { minPayment }),
         ...(maxPayment && { maxPayment }),
       })
-      .pipe(
-        map((response) => {
-          if (response.data) {
-            arrayToXlsx(response.data, response.fileName);
-          }
-          return response;
-        }),
-      )
-      .toPromise();
+      .then((response) => {
+        if (response.data) {
+          arrayToXlsx(response.data, response.fileName);
+        }
+        return response;
+      });
   }
 
   exportVoucher(referenceId: string, payment: number): Promise<Blob> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        `/payments/intersolve/export-voucher`,
-        {
-          referenceId,
-          payment,
-        },
-        false,
-        true,
-      )
-      .toPromise();
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/payments/intersolve/export-voucher`,
+      {
+        referenceId,
+        payment,
+      },
+      false,
+      true,
+    );
   }
 
   getBalance(referenceId: string, payment: number): Promise<number> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/payments/intersolve/balance`, {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/payments/intersolve/balance`,
+      {
         referenceId,
         payment,
-      })
-      .toPromise();
+      },
+    );
   }
 
   getPeopleAffected(programId: number | string): Promise<Person[]> {
@@ -407,16 +392,14 @@ export class ProgramsServiceApiService {
     referenceIds: string[],
     message?: string,
   ): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        `/registrations/${action}/${programId}`,
-        {
-          referenceIds,
-          message,
-        },
-      )
-      .toPromise();
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/registrations/${action}/${programId}`,
+      {
+        referenceIds,
+        message,
+      },
+    );
   }
 
   selectForValidation(
@@ -438,16 +421,14 @@ export class ProgramsServiceApiService {
     phoneNumbers: string[],
     message: string,
   ): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        `/registrations/invite/${programId}`,
-        {
-          phoneNumbers: JSON.stringify(phoneNumbers),
-          message,
-        },
-      )
-      .toPromise();
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/registrations/invite/${programId}`,
+      {
+        phoneNumbers: JSON.stringify(phoneNumbers),
+        message,
+      },
+    );
   }
 
   include(
@@ -475,42 +456,50 @@ export class ProgramsServiceApiService {
   }
 
   sendMessage(referenceIds: string[], message: string): Promise<any> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/registrations/text-message`, {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/registrations/text-message`,
+      {
         referenceIds,
         message,
-      })
-      .toPromise();
+      },
+    );
   }
 
   saveAction(actionType: ActionType, programId: number | string): Promise<any> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/actions/save`, {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/actions/save`,
+      {
         actionType,
         programId,
-      })
-      .toPromise();
+      },
+    );
   }
 
   retrieveLatestActions(
     actionType: ExportType | ActionType,
     programId: number | string,
   ): Promise<LatestAction> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/actions/retrieve-latest`, {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/actions/retrieve-latest`,
+      {
         actionType,
         programId: Number(programId),
-      })
-      .toPromise();
+      },
+    );
   }
 
   addUser(email: string, password: string): Promise<any> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/user/aidworker`, {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/user/aidworker`,
+      {
         email,
         password,
-      })
-      .toPromise();
+      },
+    );
   }
 
   assignAidworker(
@@ -518,13 +507,15 @@ export class ProgramsServiceApiService {
     userId: number,
     roles: UserRole[] | string[],
   ): Promise<Program> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/user/assign-to-program`, {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/user/assign-to-program`,
+      {
         programId,
         userId,
         roles,
-      })
-      .toPromise();
+      },
+    );
   }
 
   getPaymentsWithStateSums(programId: number | string): Promise<any> {
@@ -547,22 +538,18 @@ export class ProgramsServiceApiService {
     newFspName: string,
     newFspAttributes?: object,
   ): Promise<Fsp> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations/update-chosen-fsp',
-        { referenceId, newFspName, newFspAttributes },
-      )
-      .toPromise();
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/registrations/update-chosen-fsp',
+      { referenceId, newFspName, newFspAttributes },
+    );
   }
 
   updateProgram(programId: number, updateBody: object): Promise<Program> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        `/programs/${programId}/update`,
-        updateBody,
-      )
-      .toPromise();
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs/${programId}/update`,
+      updateBody,
+    );
   }
 }
