@@ -155,7 +155,8 @@
       "options": null,
       "persistence": true,
       "export": [],
-      "scoring": {}
+      "scoring": {},
+      "duplicateCheck": true
     }
   ]
 }

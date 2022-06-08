@@ -24,6 +24,9 @@ export class FspAttributeEntity extends Base121Entity {
   @Column()
   public answerType: string;
 
+  @Column({ default: false })
+  public duplicateCheck: boolean;
+  
   @ManyToOne(
     _type => FinancialServiceProviderEntity,
     fsp => fsp.attributes,

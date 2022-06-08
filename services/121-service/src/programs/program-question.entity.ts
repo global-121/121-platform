@@ -66,6 +66,9 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
   @Column({ nullable: true })
   public pattern: string;
 
+  @Column({ default: false })
+  public duplicateCheck: boolean;
+
   @OneToMany(
     () => ProgramAnswerEntity,
     programAnswer => programAnswer.programQuestion,
