@@ -42,11 +42,15 @@
           'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.label'
             | translate
         "
+        [explanation]="
+          'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.explanation'
+            | translate
+        "
         [value]="attributeValues?.paymentAmountMultiplier"
         (updated)="updatePaAttribute('paymentAmountMultiplier', $event, false)"
         [inProgress]="inProgress?.paymentAmountMultiplier || false"
-        [isDisabled]="readOnly"
-        [showSubmit]="!readOnly"
+        [isDisabled]="readOnly || program?.paymentAmountMultiplierFormula"
+        [showSubmit]="!readOnly && !program?.paymentAmountMultiplierFormula"
         class="ion-margin-vertical"
       ></app-update-property-item>
 

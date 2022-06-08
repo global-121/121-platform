@@ -1,6 +1,6 @@
 {
   "published": false,
-  "validation": false,
+  "validation": true,
   "validationByQr": false,
   "phase": "design",
   "location": "Ukraine",
@@ -31,6 +31,7 @@
   "distributionFrequency": "once",
   "distributionDuration": 10,
   "fixedTransferValue": 6600,
+  "paymentAmountMultiplierFormula": "0 + 1 * nrOfHouseHoldMembers",
   "financialServiceProviders": [
     {
       "id": 1

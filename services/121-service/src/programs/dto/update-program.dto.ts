@@ -70,6 +70,11 @@ export class UpdateProgramDto {
   @IsOptional()
   public readonly fixedTransferValue: number;
 
+  @ApiModelProperty({ example: '0 + 1 * nrOfHouseHoldMembers' })
+  @IsOptional()
+  @IsString()
+  public readonly paymentAmountMultiplierFormula: string;
+
   @ApiModelProperty({
     example: [
       {
