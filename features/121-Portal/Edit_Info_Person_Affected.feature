@@ -22,7 +22,7 @@ Feature: Edit information on Person Affected
     Then a popup opens
     And in the title the ID-number of the Person Affected is mentioned
     And an input-field for the "paymentAmountMultiplier" and "phoneNumber" is shown
-    And an input-field for each Custom Attribute with type 'string' (such as "namePartnerOrganization") is shown
+    And an input-field for each Custom Attribute with type 'string', 'phoneNumer', 'dropdown' and 'date' (such as "namePartnerOrganization") is shown
     And an input-field for each FSP-attribute (such as "whatsappPhoneNumber") is shown
     And all input-fields have an accompanying "update" button which is enabled
     And the pop-up shows a dropdown-list for the current FSP is shown
@@ -76,8 +76,39 @@ Feature: Edit information on Person Affected
     And a feedback message with the specific requirements of the value is shown
     And the progress indicator changes into the update-button again
 
-  Scenario: Update other attributes
-  Similar to updating 'paymentAmountMultiplier', possibly with other specific validation rules. TBC.
+  Scenario: Update custom attributes successfully
+    Given a logged-in user with "RegistrationPersonalREAD" permission
+    Given the user has opened the popup to edit information
+    Given an input-field for the  is shown
+    When the user changes the value to something invalid and presses the  update-button
+    Then the update-button changes into a progress indicator
+    And a feedback message with the specific requirements of the value is shown
+    And the progress indicator changes into the update-button again
+
+  Scenario: Update 'numeric' custom attributes with invalid value
+    Given a logged-in user with "RegistrationPersonalREAD" permission
+    Given the user has opened the popup to edit information
+    Given an input-field for the  is shown
+    When the user tries to enter a non-numberic number
+    Then nothing happens
+
+  Scenario: Update 'phonenumber' custom attributes with invalid value
+    Given a logged-in user with "RegistrationPersonalREAD" permission
+    Given the user has opened the popup to edit information
+    Given an input-field for the  is shown
+    When the user changes the phonenumber to a non-existent phonenumver and presses the update-button
+    Then the update-button changes into a progress indicator
+    And a feedback message saying the value is invalid appears
+    And the progress indicator changes into the update-button again
+
+  Scenario: Update 'date' custom attributes with invalid value
+    Given a logged-in user with "RegistrationPersonalREAD" permission
+    Given the user has opened the popup to edit information
+    Given an input-field for the  is shown
+    When the user changes the date to an invalid date and presses the update-button
+    Then the update-button changes into a progress indicator
+    And a feedback message with the specific requirements of the value is shown
+    And the progress indicator changes into the update-button again
 
   Scenario: Update chosen FSP
     Given a logged-in user with "RegistrationPersonalREAD" permission

@@ -1,11 +1,21 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Fsp } from 'src/app/models/fsp.model';
+import {
+  Fsp,
+  FspAttribute,
+  FspAttributeOption,
+} from 'src/app/models/fsp.model';
 import { Person } from 'src/app/models/person.model';
-import { Program, ProgramCustomAttribute } from 'src/app/models/program.model';
+import {
+  Program,
+  ProgramCustomAttribute,
+  ProgramQuestion,
+  ProgramQuestionOption,
+} from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-edit-person-affected-popup',
@@ -31,6 +41,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   private program: Program;
 
   public inProgress: any = {};
+  public attributeValues: any = {};
 
   public noteModel: string;
   public noteLastUpdate: string;
@@ -49,6 +60,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private translate: TranslateService,
+    private translatableString: TranslatableStringService,
     private programsService: ProgramsServiceApiService,
     private alertController: AlertController,
     private pubSub: PubSubService,
@@ -57,10 +69,19 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
 
-    this.fillCustomAttributes();
-    this.getFspList();
+    if (this.program && this.program.financialServiceProviders) {
+      for (const fsp of this.program.financialServiceProviders) {
+        this.fspList.push(await this.programsService.getFspById(fsp.id));
+      }
+    }
+
+    this.attributeValues.paymentAmountMultiplier =
+      this.person?.paymentAmountMultiplier;
+    this.attributeValues.phoneNumber = this.person?.phoneNumber;
+    this.attributeValues.whatsappPhoneNumber = this.person?.whatsappPhoneNumber;
 
     if (this.canViewPersonalData) {
+      this.fillCustomAttributes();
       this.getNote();
       this.getMessageHistory();
     }
@@ -69,29 +90,33 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public async updatePaAttribute(
     attribute: string,
     value: string,
+    isCustomAttribute: boolean,
   ): Promise<void> {
+    if (isCustomAttribute) {
+      value = String(value);
+    }
     this.inProgress[attribute] = true;
+
     this.programsService
       .updatePaAttribute(this.person.referenceId, attribute, value)
-      .then(
-        () => {
-          this.inProgress[attribute] = false;
-          this.actionResult(
-            this.translate.instant('common.update-success'),
-            true,
-          );
-        },
-        (error) => {
-          this.inProgress[attribute] = false;
-          console.log('error: ', error);
-          if (error && error.error) {
-            const errorMessage = this.translate.instant('common.update-error', {
-              error: this.formatErrors(error.error, attribute),
-            });
-            this.actionResult(errorMessage);
-          }
-        },
-      );
+      .then(() => {
+        this.inProgress[attribute] = false;
+        this.attributeValues[attribute] = value;
+        this.actionResult(
+          this.translate.instant('common.update-success'),
+          true,
+        );
+      })
+      .catch((error) => {
+        this.inProgress[attribute] = false;
+        console.log('error: ', error);
+        if (error && error.error) {
+          const errorMessage = this.translate.instant('common.update-error', {
+            error: this.formatErrors(error.error, attribute),
+          });
+          this.actionResult(errorMessage);
+        }
+      });
   }
 
   private formatErrors(error, attribute: string): string {
@@ -112,19 +137,51 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   }
 
   private fillCustomAttributes() {
+    this.programFspLength = this.fspList.length;
+    for (const fspItem of this.fspList) {
+      if (fspItem.fsp === this.person.fsp) {
+        this.personFsp = fspItem;
+      }
+    }
+
     this.customAttributes = this.program?.programCustomAttributes.map((ca) => {
+      this.attributeValues[ca.name] =
+        this.person.customAttributes[ca.name].value;
+
+      let options = null;
+      if (ca.type === 'dropdown') {
+        options = this.getDropdownOptions(ca);
+      }
+
       return {
         name: ca.name,
         type: ca.type,
-        label: ca.label[this.translate.getDefaultLang()],
+        label: this.translatableString.get(ca.label),
         value: this.person.customAttributes[ca.name].value,
+        options,
       };
     });
-    this.customAttributes = this.customAttributes?.filter(
-      (attribute: ProgramCustomAttribute) => {
-        return attribute.type !== 'boolean';
-      },
-    );
+  }
+
+  private isFspAttribute(ca: ProgramCustomAttribute): boolean {
+    if (!this.personFsp || !this.personFsp.attributes) {
+      return false;
+    }
+    return this.personFsp.attributes.some((attr) => attr.name === ca.name);
+  }
+
+  private getDropdownOptions(
+    ca: ProgramCustomAttribute,
+  ): FspAttributeOption[] | ProgramQuestionOption[] {
+    if (this.isFspAttribute(ca)) {
+      return this.personFsp.attributes.find(
+        (attr: FspAttribute) => attr.name === ca.name,
+      ).options;
+    }
+
+    return this.program.programQuestions.find(
+      (question: ProgramQuestion) => question.name === ca.name,
+    ).options;
   }
 
   private async getNote() {
@@ -202,29 +259,5 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public closeModal() {
     this.modalController.dismiss();
-  }
-
-  private getFspList() {
-    if (!this.programId) {
-      return;
-    }
-
-    this.fspList = [];
-
-    this.programsService.getProgramById(this.programId).then((program) => {
-      if (!program || !program.financialServiceProviders) {
-        return;
-      }
-
-      this.programFspLength = program.financialServiceProviders.length;
-      program.financialServiceProviders.forEach((fsp) => {
-        this.programsService.getFspById(fsp.id).then((fspItem) => {
-          if (fspItem.fsp === this.person.fsp) {
-            this.personFsp = fspItem;
-          }
-          this.fspList.push(fspItem);
-        });
-      });
-    });
   }
 }
