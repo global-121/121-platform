@@ -27,7 +27,7 @@ Feature: Export payment data
     And "transaction" information where the "amount" is the multiplication of the PA's "paymentAmountMultiplier" and the supplied "transfer value"
     And the "payment-number"
     And the known "phonenumber"
-    And all "persistent data"
+    And it shows all program custom attributes which have "payment" as "export" attribute
 
   Scenario: Export payment instructions
     Given the program is configured with an FSP with csv option

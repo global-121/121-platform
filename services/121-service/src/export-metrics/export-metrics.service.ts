@@ -97,12 +97,12 @@ export class ExportMetricsService {
 
     if (pastPaymentDetails.length === 0) {
       return {
-        fileName: `details-future-payment-${minPaymentId}`,
+        fileName: `details-included-people-affected-${minPaymentId}`,
         data: (await this.getInclusionList(programId)).data,
       };
     }
 
-    pastPaymentDetails = await this.filterAttributesToExport(
+    pastPaymentDetails = await this.filterPaymentAttributesToExport(
       pastPaymentDetails,
       programId,
     );
@@ -119,7 +119,7 @@ export class ExportMetricsService {
     return fileInput;
   }
 
-  private async filterAttributesToExport(
+  private async filterPaymentAttributesToExport(
     pastPaymentDetails,
     programId: number,
   ): Promise<any[]> {
@@ -127,7 +127,10 @@ export class ExportMetricsService {
       c => c.programQuestion,
     );
     const programCustomAttrs = (
-      await this.getAllProgramCustomAttributesForExport(programId)
+      await this.getAllProgramCustomAttributesForExport(
+        programId,
+        ExportType.payment,
+      )
     ).map(c => c.name);
 
     const registrationCustomDataOfInterest = programQuestions.concat(
@@ -178,11 +181,11 @@ export class ExportMetricsService {
     registration: RegistrationEntity,
   ): Promise<object> {
     const genericFields = [
-      'id',
+      GenericAttributes.id,
       GenericAttributes.phoneNumber,
       GenericAttributes.paymentAmountMultiplier,
       GenericAttributes.preferredLanguage,
-      'note',
+      GenericAttributes.note,
     ];
     genericFields.forEach(field => {
       row[field] = registration[field];
@@ -260,11 +263,14 @@ export class ExportMetricsService {
 
   private async getAllProgramCustomAttributesForExport(
     programId: number,
+    exportType: ExportType,
   ): Promise<ProgramCustomAttributeEntity[]> {
     const program = await this.programRepository.findOne(programId, {
       relations: ['programCustomAttributes'],
     });
-    return program.programCustomAttributes;
+    return program.programCustomAttributes.filter(attr =>
+      JSON.parse(JSON.stringify(attr.export)).includes(exportType),
+    );
   }
 
   private async addPaymentFieldsToExport(
@@ -332,6 +338,7 @@ export class ExportMetricsService {
 
     const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
       programId,
+      ExportType.allPeopleAffected,
     );
 
     const program = await this.programRepository.findOne(programId);
@@ -383,6 +390,7 @@ export class ExportMetricsService {
     const questions = await this.getAllQuestionsForExport();
     const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
       programId,
+      ExportType.included,
     );
     const program = await this.programRepository.findOne(programId);
     const inclusionDetails = [];
@@ -454,6 +462,7 @@ export class ExportMetricsService {
     const programQuestions = await this.getAllQuestionsForExport();
     const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
       programId,
+      ExportType.selectedForValidation,
     );
     const columnDetails = [];
     const program = await this.programRepository.findOne(programId);
@@ -526,6 +535,7 @@ export class ExportMetricsService {
     });
     const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
       programId,
+      ExportType.allPeopleAffected,
     );
 
     const result = sortBy(duplicates, 'id').map(registration => {

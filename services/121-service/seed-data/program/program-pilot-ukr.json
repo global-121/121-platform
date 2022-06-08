@@ -62,224 +62,346 @@
         "en": "Enumerator name:"
       },
       "name": "enumeratorName",
-      "type": "string"
+      "type": "string",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "What is the total number of people in your household?"
       },
       "name": "nrOfHouseHoldMembers",
-      "type": "number"
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "How many men in your household are between 18 and 65?"
       },
       "name": "nrOfMaleAdults",
-      "type": "number"
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "How many women in your household are between 18 and 65?"
       },
       "name": "nrOFemaleAdults",
-      "type": "number"
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "How many men in your household are over 65?"
       },
       "name": "nrOfMaleElderly",
-      "type": "number"
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "How many women in your household are over 65?"
       },
       "name": "nrOFemaleElderly",
-      "type": "number"
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "How many boys in your household are under 18?"
       },
       "name": "nrOfBoys",
-      "type": "number"
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "How many girls in your household are under 18?"
       },
       "name": "nrOfGirls",
-      "type": "number"
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "How many household members have any chronic illness or serious medical condition?"
       },
       "name": "nrOfIllnessInHousehold",
-      "type": "number"
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "How many household members have any physical or mental disability?"
       },
       "name": "nrOfDisabilitiesInHousehold",
-      "type": "number"
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "How many household members are pregnant or lactating?"
       },
       "name": "nrOfPregnantInHousehold",
-      "type": "number"
+      "type": "number",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "Please, select the option which better describes the current situation of your household"
       },
       "name": "householdSituation",
-      "type": "dropdown"
+      "type": "dropdown",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "Please, can you give us your phone number?"
       },
       "name": "phoneNumber",
-      "type": "tel"
+      "type": "tel",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "Applicant - What is your gender?"
       },
       "name": "gender",
-      "type": "dropdown"
+      "type": "dropdown",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "Applicant - What is your date of birth?"
       },
       "name": "dateOfBirth",
-      "type": "date"
+      "type": "date",
+      "export": ["all-people-affected", "selected-for-validation", "payment"]
     },
     {
       "label": {
         "en": "Adult 1 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'"
       },
       "name": "taxNumberAdult1",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "Adult 2 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'"
       },
       "name": "taxNumberAdult2",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "Adult 3 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'"
       },
       "name": "taxNumberAdult3",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "Adult 4 - Please, indicate your tax number (INN) if you are 18+ years old. If you don't have it, write '-'"
       },
       "name": "taxNumberAdult4",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "Comments from the enumerator: "
       },
       "name": "commentsFromEnumerator",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "What oblast is your current location in?"
       },
       "name": "oblast",
-      "type": "dropdown"
+      "type": "dropdown",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "What raion is your current location in?"
       },
       "name": "raion",
-      "type": "dropdown"
+      "type": "dropdown",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "What is the streetname of your current residency location?"
       },
       "name": "street",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "What is the housenumber of your current residency location?"
       },
       "name": "house",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "What is the apartment or office number of your current residency location? If it is not applicable, write '-'"
       },
       "name": "apartmentOrOffice",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "What is the postal index of your current residency location?"
       },
       "name": "postalIndex",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "What city is your current residency location in?"
       },
       "name": "city",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "Please provide the Last name of the person that will be receiving the payment of UkrPoshta"
       },
       "name": "lastName",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "Please provide the First name of the person that will be receiving the payment of UkrPoshta"
       },
       "name": "firstName",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "Please provide the Middle name (Father's name) of the person that will be receiving the payment of UkrPoshta"
       },
       "name": "fathersName",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "Tax ID number"
       },
       "name": "taxId",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     },
     {
       "label": {
         "en": "Telephone"
       },
       "name": "telephone",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ]
     }
   ],
   "programQuestions": [
@@ -294,7 +416,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -308,7 +430,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -322,7 +444,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -336,7 +458,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -350,7 +472,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -364,7 +486,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -378,7 +500,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -392,7 +514,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -406,7 +528,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -420,7 +542,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -434,7 +556,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -481,7 +603,7 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -500,7 +622,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -539,7 +661,7 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -553,7 +675,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
     {
