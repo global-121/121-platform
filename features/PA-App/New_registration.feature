@@ -28,6 +28,7 @@ Feature: New registration
     And the PA's status in the PA-table in the 121-portal is updated to "registered"
     And the PA's details are visible in the PA-table in the 121-portal
     And the inclusion score is calculated correctly
+    And - if configured for the program - the "paymentAmountMultiplier" is calculated based on formula 
     And the "registration summary"-step is shown
     And the "monitoring question"-step is shown
     When the PA completes this step
