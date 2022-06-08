@@ -57,7 +57,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
-    for (const fsp of this.program.financialServiceProviders) {
+    for (const fsp of this.program?.financialServiceProviders) {
       this.fspList.push(await this.programsService.getFspById(fsp.id));
     }
 
