@@ -428,10 +428,6 @@ export class RegistrationsService {
       RegistrationStatusEnum.registered,
     );
     this.inclusionScoreService.calculateInclusionScore(referenceId);
-    this.inclusionScoreService.calculatePaymentAmountMultiplier(
-      registration.program.id,
-      referenceId,
-    );
 
     this.sendTextMessage(
       registration,
