@@ -30,6 +30,11 @@
     "fix:syntax": "npm run lint:syntax -- --write"
   },
   "private": true,
+  "engines": {
+    "node": ">=12",
+    "npm": ">=7"
+  },
+  "engineStrict": true,
   "dependencies": {
     "@angular/animations": "^11.2.14",
     "@angular/cdk": "^11.2.13",
