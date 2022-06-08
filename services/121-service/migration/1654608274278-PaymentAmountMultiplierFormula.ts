@@ -41,6 +41,7 @@ export class PaymentAmountMultiplierFormula1654608274278
       .select('registration.id')
       .addSelect('registration.customData')
       .addSelect('registration.registrationStatus')
+      .addSelect('registration.paymentAmountMultiplier')
       .getMany();
     for (const r of registrations) {
       if (
@@ -48,7 +49,8 @@ export class PaymentAmountMultiplierFormula1654608274278
         !isNaN(r.customData['nrOfHouseHoldMembers']) &&
         ['registered', 'included', 'startedRegistration'].includes(
           r.registrationStatus,
-        )
+        ) &&
+        r.paymentAmountMultiplier == null
       ) {
         r['paymentAmountMultiplier'] = Number(
           r.customData['nrOfHouseHoldMembers'],
