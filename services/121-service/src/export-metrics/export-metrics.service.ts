@@ -127,10 +127,7 @@ export class ExportMetricsService {
       c => c.programQuestion,
     );
     const programCustomAttrs = (
-      await this.getAllProgramCustomAttributesForExport(
-        programId,
-        ExportType.payment,
-      )
+      await this.getAllProgramCustomAttributesForExport(programId)
     ).map(c => c.name);
 
     const registrationCustomDataOfInterest = programQuestions.concat(
@@ -263,7 +260,6 @@ export class ExportMetricsService {
 
   private async getAllProgramCustomAttributesForExport(
     programId: number,
-    exportType: ExportType,
   ): Promise<ProgramCustomAttributeEntity[]> {
     const program = await this.programRepository.findOne(programId, {
       relations: ['programCustomAttributes'],
@@ -336,7 +332,6 @@ export class ExportMetricsService {
 
     const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
       programId,
-      ExportType.allPeopleAffected,
     );
 
     const program = await this.programRepository.findOne(programId);
@@ -388,7 +383,6 @@ export class ExportMetricsService {
     const questions = await this.getAllQuestionsForExport();
     const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
       programId,
-      ExportType.included,
     );
     const program = await this.programRepository.findOne(programId);
     const inclusionDetails = [];
@@ -460,7 +454,6 @@ export class ExportMetricsService {
     const programQuestions = await this.getAllQuestionsForExport();
     const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
       programId,
-      ExportType.selectedForValidation,
     );
     const columnDetails = [];
     const program = await this.programRepository.findOne(programId);
@@ -533,7 +526,6 @@ export class ExportMetricsService {
     });
     const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
       programId,
-      ExportType.allPeopleAffected,
     );
 
     const result = sortBy(duplicates, 'id').map(registration => {

@@ -8,8 +8,8 @@ import {
 } from 'src/app/models/fsp.model';
 import { Person } from 'src/app/models/person.model';
 import {
+  PaTableAttribute,
   Program,
-  ProgramCustomAttribute,
   ProgramQuestion,
   ProgramQuestionOption,
 } from 'src/app/models/program.model';
@@ -39,6 +39,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public canUpdatePersonalData = false;
 
   public program: Program;
+  private paTableAttributesInput: PaTableAttribute[];
 
   public inProgress: any = {};
   public attributeValues: any = {};
@@ -51,7 +52,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public imageString = '(image)';
   public rowIndex: number;
 
-  public customAttributes: {}[] = [];
+  public paTableAttributes: {}[] = [];
 
   public fspList: Fsp[] = [];
   public programFspLength = 0;
@@ -68,6 +69,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
+    this.paTableAttributesInput =
+      await this.programsService.getPaTableAttributes(this.programId);
 
     if (this.program && this.program.financialServiceProviders) {
       for (const fsp of this.program.financialServiceProviders) {
@@ -81,7 +84,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.attributeValues.whatsappPhoneNumber = this.person?.whatsappPhoneNumber;
 
     if (this.canViewPersonalData) {
-      this.fillCustomAttributes();
+      this.fillPaTableAttributes();
       this.getNote();
       this.getMessageHistory();
     }
@@ -90,9 +93,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public async updatePaAttribute(
     attribute: string,
     value: string,
-    isCustomAttribute: boolean,
+    isPaTableAttribute: boolean,
   ): Promise<void> {
-    if (isCustomAttribute) {
+    if (isPaTableAttribute) {
       value = String(value);
     }
     this.inProgress[attribute] = true;
@@ -136,7 +139,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     return '<br><br>' + attributeConstraints.join('<br>');
   }
 
-  private fillCustomAttributes() {
+  private fillPaTableAttributes() {
     this.programFspLength = this.fspList.length;
     for (const fspItem of this.fspList) {
       if (fspItem.fsp === this.person.fsp) {
@@ -144,43 +147,47 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       }
     }
 
-    this.customAttributes = this.program?.programCustomAttributes.map((ca) => {
-      this.attributeValues[ca.name] =
-        this.person.customAttributes[ca.name].value;
+    this.paTableAttributes = this.paTableAttributesInput.map(
+      (paTableAttribute) => {
+        this.attributeValues[paTableAttribute.name] =
+          this.person.paTableAttributes[paTableAttribute.name].value;
 
-      let options = null;
-      if (ca.type === 'dropdown') {
-        options = this.getDropdownOptions(ca);
-      }
+        let options = null;
+        if (paTableAttribute.type === 'dropdown') {
+          options = this.getDropdownOptions(paTableAttribute);
+        }
 
-      return {
-        name: ca.name,
-        type: ca.type,
-        label: this.translatableString.get(ca.label),
-        value: this.person.customAttributes[ca.name].value,
-        options,
-      };
-    });
+        return {
+          name: paTableAttribute.name,
+          type: paTableAttribute.type,
+          label: this.translatableString.get(paTableAttribute.label),
+          value: this.person.paTableAttributes[paTableAttribute.name].value,
+          options,
+        };
+      },
+    );
   }
 
-  private isFspAttribute(ca: ProgramCustomAttribute): boolean {
+  private isFspAttribute(paTableAttribute: PaTableAttribute): boolean {
     if (!this.personFsp || !this.personFsp.attributes) {
       return false;
     }
-    return this.personFsp.attributes.some((attr) => attr.name === ca.name);
+    return this.personFsp.attributes.some(
+      (attr) => attr.name === paTableAttribute.name,
+    );
   }
 
   private getDropdownOptions(
-    ca: ProgramCustomAttribute,
+    paTableAttribute: PaTableAttribute,
   ): FspAttributeOption[] | ProgramQuestionOption[] {
-    if (this.isFspAttribute(ca)) {
+    if (this.isFspAttribute(paTableAttribute)) {
       return this.personFsp.attributes.find(
-        (attr: FspAttribute) => attr.name === ca.name,
+        (attr: FspAttribute) => attr.name === paTableAttribute.name,
       ).options;
     }
 
     return this.program.programQuestions.find(
-      (question: ProgramQuestion) => question.name === ca.name,
+      (question: ProgramQuestion) => question.name === paTableAttribute.name,
     ).options;
   }
 

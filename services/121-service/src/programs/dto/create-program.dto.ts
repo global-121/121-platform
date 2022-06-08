@@ -137,7 +137,7 @@ export class CreateProgramDto {
     example: [
       {
         name: 'nameParterOrganization',
-        type: CustomAttributeType.string,
+        type: CustomAttributeType.text,
       },
       {
         name: 'exampleBoolean',

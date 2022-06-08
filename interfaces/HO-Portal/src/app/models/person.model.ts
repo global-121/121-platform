@@ -26,7 +26,7 @@ export class Person {
   whatsappPhoneNumber?: string;
   paymentAmountMultiplier?: number;
   preferredLanguage?: LanguageEnum;
-  customAttributes?: object;
+  paTableAttributes?: object;
 }
 
 // Model for display (in table)
@@ -55,7 +55,7 @@ export class PersonRow {
   whatsappPhoneNumber?: string | null;
   paymentAmountMultiplier?: string | null;
   preferredLanguage?: string | null;
-  customAttributes?: object;
+  paTableAttributes?: object;
   paymentHistory?: PaymentColumnDetail;
 }
 

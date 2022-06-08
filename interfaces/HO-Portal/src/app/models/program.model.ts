@@ -64,6 +64,8 @@ export class ProgramCustomAttribute {
   label?: TranslatableString;
 }
 
+export class PaTableAttribute extends ProgramCustomAttribute {}
+
 export class ProgramQuestion {
   id: number;
   name: string;
@@ -72,6 +74,7 @@ export class ProgramQuestion {
   placeholder?: TranslatableString;
   pattern?: string; // Remember to escape the special characters in the string!
   options: null | ProgramQuestionOption[];
+  showInPaTable: boolean;
 }
 
 export class ProgramQuestionOption {

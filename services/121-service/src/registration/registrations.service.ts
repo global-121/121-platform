@@ -41,6 +41,7 @@ import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { CustomAttributeType } from '../programs/dto/create-program-custom-attribute.dto';
+import { ProgramService } from '../programs/programs.service';
 
 @Injectable()
 export class RegistrationsService {
@@ -77,6 +78,7 @@ export class RegistrationsService {
     private readonly whatsappService: WhatsappService,
     private readonly inclusionScoreService: InlusionScoreService,
     private readonly bulkImportService: BulkImportService,
+    private readonly programService: ProgramService,
   ) {}
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
@@ -478,21 +480,6 @@ export class RegistrationsService {
     return program;
   }
 
-  private async getProgramCustomAttributes(
-    programId: number,
-  ): Promise<Attribute[]> {
-    return (
-      await this.programCustomAttributeRepository.find({
-        where: { program: { id: programId } },
-      })
-    ).map(c => {
-      return {
-        attribute: c.name,
-        type: c.type,
-      };
-    });
-  }
-
   public async getRegistrationsForProgram(
     programId: number,
     includePersonalData: boolean,
@@ -630,7 +617,7 @@ export class RegistrationsService {
 
     const rows = await q.getRawMany();
     const responseRows = [];
-    const programCustomAttributes = await this.getProgramCustomAttributes(
+    const paTableAttributes = await this.programService.getPaTableAttributes(
       programId,
     );
     for (let row of rows) {
@@ -641,17 +628,17 @@ export class RegistrationsService {
       row['whatsappPhoneNumber'] =
         row.customData[CustomDataAttributes.whatsappPhoneNumber];
       row['vnumber'] = row.customData['vnumber'];
-      row['customAttributes'] = {};
-      for (let attribute of programCustomAttributes) {
+      row['paTableAttributes'] = {};
+      for (let attribute of paTableAttributes) {
         let value;
-        if (row.customData[attribute.attribute] != null) {
-          value = row.customData[attribute.attribute];
+        if (row.customData[attribute.name] != null) {
+          value = row.customData[attribute.name];
         } else if (attribute.type === CustomAttributeType.boolean) {
           value = false;
-        } else if (attribute.type === CustomAttributeType.string) {
+        } else if (attribute.type === CustomAttributeType.text) {
           value = '';
         }
-        row['customAttributes'][attribute.attribute] = {
+        row['paTableAttributes'][attribute.name] = {
           type: attribute.type,
           value: value,
         };

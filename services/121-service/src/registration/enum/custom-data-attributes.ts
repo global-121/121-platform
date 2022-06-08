@@ -39,8 +39,9 @@ export enum GenericAttributes {
 }
 
 export class Attribute {
-  public attribute: string;
+  public name: string;
   public type: string;
+  public label: object;
 }
 
 export enum AnswerTypes {

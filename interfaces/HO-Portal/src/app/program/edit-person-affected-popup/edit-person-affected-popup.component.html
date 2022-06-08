@@ -113,16 +113,16 @@
         class="ion-margin-vertical"
       ></app-update-fsp>
 
-      <ng-container *ngIf="canViewPersonalData && customAttributes">
+      <ng-container *ngIf="canViewPersonalData && paTableAttributes">
         <app-update-property-item
-          *ngFor="let ca of customAttributes"
-          [type]="ca.type"
-          [label]="ca.label"
-          [value]="attributeValues[ca.name]"
-          [options]="ca.options"
-          (updated)="updatePaAttribute(ca.name, $event, true)"
+          *ngFor="let paTableAttribute of paTableAttributes"
+          [type]="paTableAttribute.type"
+          [label]="paTableAttribute.label"
+          [value]="attributeValues[paTableAttribute.name]"
+          [options]="paTableAttribute.options"
+          (updated)="updatePaAttribute(paTableAttribute.name, $event, true)"
           class="ion-margin-vertical"
-          [isFspAttribute]="ca.isFspAttribute"
+          [isFspAttribute]="paTableAttribute.isFspAttribute"
         ></app-update-property-item>
       </ng-container>
     </div>

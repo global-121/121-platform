@@ -63,7 +63,7 @@ export class removeMigrateNamePartnerOrg1643720490970
       if (regsWithPartnerOrg.length > 0) {
         const attributeReturn = await programCustomAttributeRepository.save({
           name: 'namePartnerOrganization',
-          type: CustomAttributeType.string,
+          type: CustomAttributeType.text,
           label: JSON.parse(
             JSON.stringify({
               en: 'Partner Organization',

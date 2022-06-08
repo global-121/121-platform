@@ -14,6 +14,7 @@ import { UpdateProgramDto } from './dto/update-program.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
+import { Attribute } from '../registration/enum/custom-data-attributes';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -277,5 +278,44 @@ export class ProgramService {
     };
 
     return simpleProgramRO;
+  }
+
+  public async getPaTableAttributes(programId: number): Promise<Attribute[]> {
+    const customAttributes = (
+      await this.programCustomAttributeRepository.find({
+        where: { program: { id: programId } },
+      })
+    ).map(c => {
+      return {
+        name: c.name,
+        type: c.type,
+        label: c.label,
+      };
+    });
+    const programQuestions = (
+      await this.programQuestionRepository.find({
+        where: { program: { id: programId }, showInPaTable: true },
+      })
+    ).map(c => {
+      return {
+        name: c.name,
+        type: c.answerType,
+        label: c.label,
+      };
+    });
+
+    const fspQuestions = (
+      await this.fspAttributeRepository.find({
+        where: { showInPaTable: true },
+      })
+    ).map(c => {
+      return {
+        name: c.name,
+        type: c.answerType,
+        label: c.label,
+      };
+    });
+
+    return [...customAttributes, ...programQuestions, ...fspQuestions];
   }
 }

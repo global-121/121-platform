@@ -25,8 +25,8 @@ import {
   PersonTableColumn,
 } from 'src/app/models/person.model';
 import {
+  PaTableAttribute,
   Program,
-  ProgramCustomAttribute,
   ProgramPhase,
 } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
@@ -62,6 +62,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public phaseEnum = ProgramPhase;
 
   public program: Program;
+  private paTableAttributes: PaTableAttribute[];
   public activePhase: ProgramPhase;
 
   private locale: string;
@@ -74,8 +75,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private columnsAvailable: PersonTableColumn[] = [];
   private paymentColumnTemplate: PaymentColumn;
   public paymentHistoryColumn: PaymentColumn;
-  private customAttributeColumnTemplate: any = {};
-  public customAttributeColumns: any[] = [];
+  private paTableAttributeColumnTemplate: any = {};
+  public paTableAttributeColumns: any[] = [];
   private pastTransactions: Transaction[] = [];
   private lastPaymentId: number;
 
@@ -466,10 +467,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       width: columnDateTimeWidth,
       permissions: [Permission.PaymentTransactionREAD],
     };
-    this.customAttributeColumnTemplate = {
-      prop: 'customAttribute',
+    this.paTableAttributeColumnTemplate = {
+      prop: 'paTableAttribute',
       name: '',
-      customAttributeIndex: 0,
+      paTableAttributeIndex: 0,
       ...this.columnDefaults,
       phases: [ProgramPhase.inclusion],
       width: columnDateTimeWidth,
@@ -481,6 +482,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.isLoading = true;
 
     this.program = await this.programsService.getProgramById(this.programId);
+    this.paTableAttributes = await this.programsService.getPaTableAttributes(
+      this.programId,
+    );
     this.activePhase = this.program.phase;
 
     this.paymentInProgress =
@@ -527,9 +531,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     }
 
     // Custom attributes can be personal data or not personal data
-    // for now only users that view custom data can see it
+    // for now only users that can view custom data can see it
     if (this.canViewPersonalData) {
-      this.fillCustomAttributeColumns();
+      this.fillPaTableAttributeColumns();
     }
 
     await this.refreshData();
@@ -637,13 +641,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return column;
   }
 
-  private createCustomAttributeColumn(customAttribute: ProgramCustomAttribute) {
+  private createPaTableAttributeColumn(paTableAttribute: PaTableAttribute) {
     const column = JSON.parse(
-      JSON.stringify(this.customAttributeColumnTemplate),
+      JSON.stringify(this.paTableAttributeColumnTemplate),
     ); // Hack to clone without reference;
 
-    column.name = this.translatableStringService.get(customAttribute.label);
-    column.prop = customAttribute.name;
+    column.name = this.translatableStringService.get(paTableAttribute.label);
+    column.prop = paTableAttribute.name;
     return column;
   }
 
@@ -819,7 +823,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         : '',
       fsp: person.fsp,
       hasNote: !!person.hasNote,
-      customAttributes: person.customAttributes,
+      paTableAttributes: person.paTableAttributes,
     };
 
     if (this.canViewPaymentData) {
@@ -828,8 +832,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     // Custom attributes can be personal data or not personal data
     // for now only users that view custom data can see it
-    if (this.canViewPersonalData && personRow.customAttributes !== undefined) {
-      personRow = this.fillCustomAttributeRows(personRow);
+    if (this.canViewPersonalData && personRow.paTableAttributes !== undefined) {
+      personRow = this.fillPaTableAttributeRows(personRow);
     }
 
     return personRow;
@@ -846,18 +850,18 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     );
   }
 
-  private fillCustomAttributeColumns() {
-    for (const customAttribute of this.program.programCustomAttributes) {
-      this.customAttributeColumns.push(
-        this.createCustomAttributeColumn(customAttribute),
+  private fillPaTableAttributeColumns() {
+    for (const paTableAttribute of this.paTableAttributes) {
+      this.paTableAttributeColumns.push(
+        this.createPaTableAttributeColumn(paTableAttribute),
       );
     }
   }
 
-  private fillCustomAttributeRows(personRow: PersonRow): PersonRow {
-    for (const customAttribute of this.program.programCustomAttributes) {
-      personRow[customAttribute.name] =
-        personRow.customAttributes[customAttribute.name].value;
+  private fillPaTableAttributeRows(personRow: PersonRow): PersonRow {
+    for (const paTableAttribute of this.paTableAttributes) {
+      personRow[paTableAttribute.name] =
+        personRow.paTableAttributes[paTableAttribute.name].value;
     }
     return personRow;
   }
@@ -1304,7 +1308,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         () => {
           row[column.prop] = value;
           const valueKey = 'value';
-          row.customAttributes[column.prop][valueKey] = value;
+          row.paTableAttributes[column.prop][valueKey] = value;
           this.actionResult(this.translate.instant('common.update-success'));
         },
         (error) => {
