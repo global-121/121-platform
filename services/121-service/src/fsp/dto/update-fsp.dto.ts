@@ -42,6 +42,10 @@ export class FspAttributeDto {
   @ApiModelProperty()
   @IsOptional()
   public answerType: string;
+
+  @ApiModelProperty()
+  @IsOptional()
+  public readonly showInPaTable: boolean;
 }
 
 export class UpdateFspDto {

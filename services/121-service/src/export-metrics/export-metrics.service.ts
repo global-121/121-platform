@@ -268,9 +268,7 @@ export class ExportMetricsService {
     const program = await this.programRepository.findOne(programId, {
       relations: ['programCustomAttributes'],
     });
-    return program.programCustomAttributes.filter(attr =>
-      JSON.parse(JSON.stringify(attr.export)).includes(exportType),
-    );
+    return program.programCustomAttributes;
   }
 
   private async addPaymentFieldsToExport(

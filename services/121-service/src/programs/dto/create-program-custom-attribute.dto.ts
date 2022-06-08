@@ -20,10 +20,6 @@ export class CreateProgramCustomAttributeDto {
   @IsNotEmpty()
   @IsJSON()
   public label: JSON;
-  @ApiModelProperty()
-  @IsNotEmpty()
-  @IsJSON()
-  public export: JSON;
 }
 
 export class CreateProgramCustomAttributesDto {
@@ -33,12 +29,6 @@ export class CreateProgramCustomAttributesDto {
         name: 'mycustom',
         type: 'string',
         label: { en: 'MyCustom' },
-        export: [
-          'all-people-affected',
-          'included',
-          'selected-for-validation',
-          'payment',
-        ],
       },
     ],
   })

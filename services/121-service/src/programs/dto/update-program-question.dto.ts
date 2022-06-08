@@ -47,5 +47,8 @@ export class UpdateProgramQuestionDto {
   public readonly persistence: boolean;
   @ApiModelProperty()
   @IsOptional()
+  public readonly showInPaTable: boolean;
+  @ApiModelProperty()
+  @IsOptional()
   public pattern: string;
 }

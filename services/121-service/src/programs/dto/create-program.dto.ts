@@ -157,6 +157,7 @@ export class CreateProgramDto {
         questionType: 'standard',
         options: null,
         persistence: true,
+        showInPaTable: false,
         scoring: {},
       },
       {
@@ -173,6 +174,7 @@ export class CreateProgramDto {
           '19-65': 0,
           '65>': 6,
         },
+        showInPaTable: false,
       },
       {
         name: 'roof_type',

@@ -13,16 +13,6 @@ export class ProgramCustomAttributeEntity extends Base121Entity {
   @Column()
   public type: CustomAttributeType;
 
-  @Column('json', {
-    default: [
-      ExportType.allPeopleAffected,
-      ExportType.included,
-      ExportType.selectedForValidation,
-      ExportType.payment,
-    ],
-  })
-  public export: JSON;
-
   @Column('json')
   public label: JSON;
 

@@ -29,4 +29,7 @@ export class FspAttributeEntity extends Base121Entity {
     fsp => fsp.attributes,
   )
   public fsp: FinancialServiceProviderEntity;
+
+  @Column({ default: false })
+  public showInPaTable: boolean;
 }

@@ -167,7 +167,6 @@ export class ProgramService {
         // If existing: update ..
         oldAttribute.type = attribute.type;
         oldAttribute.label = attribute.label;
-        oldAttribute.export = attribute.export;
         const savedAttribute = await this.programCustomAttributeRepository.save(
           oldAttribute,
         );
