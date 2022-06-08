@@ -178,6 +178,7 @@
         "distributionFrequency": "Distribution frequency",
         "distributionDuration": "Distribution duration",
         "fixedTransferValue": "Transfer Value",
+        "paymentAmountMultiplierFormula": "Formula for transfer value multiplier",
         "inclusionCalculationType": "Inclusion calculation type",
         "minimumScore": "Minimum score needed",
         "highestScoresX": "Top X highest scores included",

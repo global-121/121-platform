@@ -58,6 +58,7 @@ Feature: Edit information on Person Affected
     And it gives the basic error type if possible, e.g. "Bad Request"
 
   Scenario: Update paymentAmountMultiplier successfully
+    Given no automatic calculation of paymentAmountMultiplier is configured for the program
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
     Given an input-field for the "paymentAmountMultiplier" is shown
@@ -68,6 +69,7 @@ Feature: Edit information on Person Affected
     And the page refreshes
 
   Scenario: Update paymentAmountMultiplier with invalid value
+    Given no automatic calculation of paymentAmountMultiplier is configured for the program
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
     Given an input-field for the "paymentAmountMultiplier" is shown
@@ -84,6 +86,7 @@ Feature: Edit information on Person Affected
     Then the update-button changes into a progress indicator
     And a feedback message with the specific requirements of the value is shown
     And the progress indicator changes into the update-button again
+    And - if configured for the program - the "paymentAmountMultiplier" is recalculated based on formula 
 
   Scenario: Update 'numeric' custom attributes with invalid value
     Given a logged-in user with "RegistrationPersonalREAD" permission
