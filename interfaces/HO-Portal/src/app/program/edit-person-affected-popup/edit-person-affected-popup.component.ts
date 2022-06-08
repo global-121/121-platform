@@ -1,11 +1,21 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Fsp } from 'src/app/models/fsp.model';
+import {
+  Fsp,
+  FspAttribute,
+  FspAttributeOption,
+} from 'src/app/models/fsp.model';
 import { Person } from 'src/app/models/person.model';
-import { Program } from 'src/app/models/program.model';
+import {
+  Program,
+  ProgramCustomAttribute,
+  ProgramQuestion,
+  ProgramQuestionOption,
+} from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-edit-person-affected-popup',
@@ -50,6 +60,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private translate: TranslateService,
+    private translatableString: TranslatableStringService,
     private programsService: ProgramsServiceApiService,
     private alertController: AlertController,
     private pubSub: PubSubService,
@@ -57,8 +68,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
-    for (const fsp of this.program?.financialServiceProviders) {
-      this.fspList.push(await this.programsService.getFspById(fsp.id));
+
+    if (this.program && this.program.financialServiceProviders) {
+      for (const fsp of this.program.financialServiceProviders) {
+        this.fspList.push(await this.programsService.getFspById(fsp.id));
+      }
     }
 
     this.attributeValues.paymentAmountMultiplier =
@@ -66,9 +80,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.attributeValues.phoneNumber = this.person?.phoneNumber;
     this.attributeValues.whatsappPhoneNumber = this.person?.whatsappPhoneNumber;
 
-    this.fillCustomAttributes();
-
     if (this.canViewPersonalData) {
+      this.fillCustomAttributes();
       this.getNote();
       this.getMessageHistory();
     }
@@ -135,30 +148,40 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       this.attributeValues[ca.name] =
         this.person.customAttributes[ca.name].value;
 
-      const isFspAttribute = this.personFsp.attributes.find(
-        (attr) => attr.name === ca.name,
-      )
-        ? true
-        : false;
-
-      const options =
-        ca.type === 'dropdown'
-          ? isFspAttribute
-            ? this.personFsp.attributes.find((attr) => attr.name === ca.name)
-                .options
-            : this.program.programQuestions.find(
-                (question) => question.name === ca.name,
-              ).options
-          : null;
+      let options = null;
+      if (ca.type === 'dropdown') {
+        options = this.getDropdownOptions(ca);
+      }
 
       return {
         name: ca.name,
         type: ca.type,
-        label: ca.label[this.translate.getDefaultLang()],
+        label: this.translatableString.get(ca.label),
         value: this.person.customAttributes[ca.name].value,
         options,
       };
     });
+  }
+
+  private isFspAttribute(ca: ProgramCustomAttribute): boolean {
+    if (!this.personFsp || !this.personFsp.attributes) {
+      return false;
+    }
+    return this.personFsp.attributes.some((attr) => attr.name === ca.name);
+  }
+
+  private getDropdownOptions(
+    ca: ProgramCustomAttribute,
+  ): FspAttributeOption[] | ProgramQuestionOption[] {
+    if (this.isFspAttribute(ca)) {
+      return this.personFsp.attributes.find(
+        (attr: FspAttribute) => attr.name === ca.name,
+      ).options;
+    }
+
+    return this.program.programQuestions.find(
+      (question: ProgramQuestion) => question.name === ca.name,
+    ).options;
   }
 
   private async getNote() {
