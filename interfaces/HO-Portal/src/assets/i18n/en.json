@@ -366,6 +366,9 @@
           },
           "messageHistory": {
             "section-title": "Message History"
+          },
+          "error-alert": {
+            "invalid-date": "The date format you inputted is not valid. A valid date format example is 31-12-1970 which follows day-month-year, DD-MM-YYYY"
           }
         },
         "payment-status-popup": {

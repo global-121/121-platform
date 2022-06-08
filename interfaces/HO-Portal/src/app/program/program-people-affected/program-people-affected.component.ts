@@ -1,5 +1,13 @@
 import { formatDate } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AlertController, ModalController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -41,6 +49,9 @@ import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-h
   styleUrls: ['./program-people-affected.component.scss'],
 })
 export class ProgramPeopleAffectedComponent implements OnInit {
+  @ViewChild('proxyScrollbar')
+  private proxyScrollbar: ElementRef;
+
   @Input()
   public programId: number;
   @Input()
@@ -462,6 +473,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       ...this.columnDefaults,
       phases: [ProgramPhase.inclusion],
       width: columnDateTimeWidth,
+      headerClass: 'ion-align-self-end header-overflow-ellipsis',
     };
   }
 
@@ -520,9 +532,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       this.fillCustomAttributeColumns();
     }
 
-    await this.loadData();
-
-    this.isLoading = false;
+    await this.refreshData();
 
     await this.updateBulkActions();
 
@@ -535,7 +545,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     // Timeout to make sure the datatable elements are rendered/generated:
     window.setTimeout(() => {
       this.setupProxyScrollbar();
-    }, 1000);
+    }, 0);
 
     // Listen for external signals to refresh data shown in table:
     this.pubSub.subscribe(PubSubEvent.dataRegistrationChanged, () => {
@@ -544,40 +554,60 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   private setupProxyScrollbar() {
-    const proxyScrollbar: HTMLElement =
-      document.querySelector('.proxy-scrollbar');
-    const proxyScrollbarContent: HTMLElement = proxyScrollbar.querySelector(
-      '.proxy-scrollbar--content',
-    );
+    const proxyScrollElement = this.proxyScrollbar.nativeElement;
+    const config = proxyScrollElement.dataset;
 
     if (
-      !proxyScrollbar.dataset.target ||
-      !proxyScrollbar.dataset.targetContent
+      !proxyScrollElement ||
+      !config ||
+      !config.targetScrollElementSelector ||
+      !config.targetWidthElementSelector
     ) {
       return;
     }
 
-    const targetScrollArea: HTMLElement = document.querySelector(
-      proxyScrollbar.dataset.target,
-    );
-    const targetScrollContent: HTMLElement = document.querySelector(
-      proxyScrollbar.dataset.targetContent,
+    const parentScope = this.proxyScrollbar.nativeElement.parentElement;
+
+    const targetScrollElement: HTMLElement = parentScope.querySelector(
+      config.targetScrollElementSelector,
     );
 
-    if (!targetScrollArea || !targetScrollContent) {
+    if (!targetScrollElement) {
       return;
     }
 
     // Link scroll-events of proxy and target-elements:
-    proxyScrollbar.addEventListener('scroll', () => {
-      targetScrollArea.scrollLeft = proxyScrollbar.scrollLeft;
+    proxyScrollElement.addEventListener('scroll', () => {
+      targetScrollElement.scrollLeft = proxyScrollElement.scrollLeft;
     });
-    targetScrollArea.addEventListener('scroll', () => {
-      proxyScrollbar.scrollLeft = targetScrollArea.scrollLeft;
+    targetScrollElement.addEventListener('scroll', () => {
+      proxyScrollElement.scrollLeft = targetScrollElement.scrollLeft;
     });
 
-    // Set size of proxy-content:
-    proxyScrollbarContent.style.width = targetScrollContent.style.width;
+    // Set initial size of proxy-content:
+    this.updateProxyScrollbarSize();
+  }
+
+  private updateProxyScrollbarSize() {
+    window.setTimeout(() => {
+      const proxyScrollElement = this.proxyScrollbar.nativeElement;
+      const proxyScrollbarWidthElement: HTMLElement =
+        proxyScrollElement.querySelector('.proxy-scrollbar--content');
+      if (!proxyScrollElement || !proxyScrollbarWidthElement) {
+        return;
+      }
+
+      let targetWidth = '';
+      const targetWidthElement: HTMLElement =
+        proxyScrollElement.parentElement.querySelector(
+          proxyScrollElement.dataset.targetWidthElementSelector,
+        );
+
+      if (targetWidthElement) {
+        targetWidth = targetWidthElement.style.width;
+      }
+      proxyScrollbarWidthElement.style.width = targetWidth;
+    }, 0);
   }
 
   private loadColumns() {
@@ -1057,6 +1087,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.headerChecked = false;
     this.selectedPeople = [];
     this.resetFilterRowsVisible();
+    this.showAllStatusState = false;
   }
 
   private toggleHeaderCheckbox() {
@@ -1237,6 +1268,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     );
 
     this.visiblePeopleAffected = rowsVisible;
+    this.updateProxyScrollbarSize();
   }
 
   public toggleShowAllStatusState() {
@@ -1261,6 +1293,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public async refreshData() {
     this.isLoading = true;
     await this.loadData();
+    this.updateProxyScrollbarSize();
     this.isLoading = false;
   }
 

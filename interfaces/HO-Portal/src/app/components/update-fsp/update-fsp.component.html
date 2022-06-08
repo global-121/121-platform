@@ -12,6 +12,7 @@
       <div>
         <ion-item class="ion-margin-bottom">
           <ion-select
+            *ngIf="fspList?.length > 0"
             style="max-width: 100%;"
             ngDefaultControl
             name="propertyInput"

@@ -82,7 +82,7 @@
           style="padding-inline-start: var(--padding-start)"
         ></ion-icon>
       </ion-input>
-      
+
       <ion-toggle  [(ngModel)]=showAllStatusState (click)="toggleShowAllStatusState()"></ion-toggle>
       <ion-label>{{ 'page.program.program-people-affected.filter-toggle'|translate }} </ion-label>
       <tooltip style="margin-left:3px;margin-bottom:1px" [value]="'page.program.program-people-affected.filter-tooltip'|translate"></tooltip>
@@ -90,9 +90,10 @@
   </div>
 </ion-row>
 <div
+  #proxyScrollbar
   class="proxy-scrollbar"
-  data-target="datatable-body"
-  data-target-content="datatable-scroller"
+  data-target-scroll-element-selector="datatable-body"
+  data-target-width-element-selector="datatable-scroller"
 >
   <div class="proxy-scrollbar--content"></div>
 </div>

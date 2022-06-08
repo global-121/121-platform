@@ -30,6 +30,7 @@ export class Program {
   validationByQr: boolean;
   published: boolean;
   programCustomAttributes: ProgramCustomAttribute[];
+  programQuestions: ProgramQuestion[];
 }
 
 export enum InclusionCalculationType {
@@ -61,4 +62,19 @@ export class ProgramCustomAttribute {
   name: string;
   type: string;
   label?: TranslatableString;
+}
+
+export class ProgramQuestion {
+  id: number;
+  name: string;
+  answerType: string;
+  label: TranslatableString;
+  placeholder?: TranslatableString;
+  pattern?: string; // Remember to escape the special characters in the string!
+  options: null | ProgramQuestionOption[];
+}
+
+export class ProgramQuestionOption {
+  option: string;
+  label: TranslatableString;
 }
