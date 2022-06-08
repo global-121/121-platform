@@ -49,7 +49,7 @@ export class AggregateImportResult {
 const fspArray = Object.values(FspName).map(item => String(item));
 const languageArray = Object.values(LanguageEnum).map(item => String(item));
 
-export class ImportRegistrationsDto {
+export class ImportRegistrationsDto extends BulkImportDto {
   @ApiModelProperty({
     enum: languageArray,
     example: languageArray.join(' | '),
@@ -57,22 +57,10 @@ export class ImportRegistrationsDto {
   @IsIn(languageArray)
   public preferredLanguage: LanguageEnum;
 
-  @ApiModelProperty()
-  @IsNotEmpty()
-  @IsString()
-  public phoneNumber: string;
-
   @ApiModelProperty({
     enum: fspArray,
     example: fspArray.join(' | '),
   })
   @IsIn(fspArray)
   public fspName: FspName;
-
-  @ApiModelProperty()
-  @IsNumber()
-  @IsInt()
-  @Min(1)
-  @IsOptional()
-  public paymentAmountMultiplier: number;
 }

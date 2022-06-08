@@ -379,6 +379,14 @@ export class BulkImportService {
         importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
       }
       for await (const att of programCustomAttributes) {
+        if (att.type === 'number' && isNaN(Number(row[att.attribute]))) {
+          const errorObj = {
+            lineNumber: i + 1,
+            column: att.attribute,
+            value: row[att.attribute],
+          };
+          errors.push(errorObj);
+        }
         importRecord[att.attribute] = row[att.attribute];
       }
 
@@ -390,6 +398,8 @@ export class BulkImportService {
           value: result[0].value,
         };
         errors.push(errorObj);
+      }
+      if (errors.length > 0) {
         throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
       validatatedArray.push(importRecord);
@@ -477,9 +487,15 @@ export class BulkImportService {
               value: row[att.attribute],
             };
             errors.push(errorObj);
-            throw new HttpException(errors, HttpStatus.BAD_REQUEST);
           }
           row[att.attribute] = sanitized;
+        } else if (att.type === 'number' && isNaN(Number(row[att.attribute]))) {
+          const errorObj = {
+            lineNumber: i + 1,
+            column: att.attribute,
+            value: row[att.attribute],
+          };
+          errors.push(errorObj);
         }
         importRecord[att.attribute] = row[att.attribute];
       }
@@ -492,6 +508,8 @@ export class BulkImportService {
           value: result[0].value,
         };
         errors.push(errorObj);
+      }
+      if (errors.length > 0) {
         throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
       validatatedArray.push(importRecord);

@@ -100,8 +100,9 @@ export class BulkImportComponent implements OnInit {
   public importPeopleAffected(event: { file: File }, destination: PaStatus) {
     this.isInProgress = true;
 
-    this.programsService.import(this.programId, event.file, destination).then(
-      (response) => {
+    this.programsService
+      .import(this.programId, event.file, destination)
+      .then((response) => {
         const aggregateResult = response.aggregateImportResult;
         this.isInProgress = false;
         let resultMessage =
@@ -144,26 +145,16 @@ export class BulkImportComponent implements OnInit {
         if (destination === PaStatus.imported) {
           this.exportCSV(response.importResult);
         }
-      },
-      (err) => {
+      })
+      .catch((err) => {
         this.isInProgress = false;
         console.log('err: ', err);
         this.actionResult(
-          this.translate.instant(
-            'page.program.bulk-import.import-error.generic',
-            {
-              specific: err.error[0] ? JSON.stringify(err.error[0]) : '-',
-              imported:
-                destination === PaStatus.imported
-                  ? this.translate.instant(
-                      'page.program.bulk-import.import-error.imported',
-                    )
-                  : '',
-            },
-          ),
+          this.translate.instant('page.program.bulk-import.import-error', {
+            specific: err.error[0] ? JSON.stringify(err.error[0]) : '-',
+          }),
         );
-      },
-    );
+      });
   }
 
   private async actionResult(resultMessage: string, refresh: boolean = false) {

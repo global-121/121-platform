@@ -397,10 +397,7 @@
         "pageTitle": "Program JSON"
       },
       "bulk-import": {
-        "import-error": {
-          "generic": "Something went wrong with the import. <ul><li>Check the required extension (.csv)</li><li>Check the format and column-names of the CSV-file</li><li><strong>Error message:</strong>{{specific}}</li>{{imported}}</ul>",
-          "imported": "<li>E.g. the 'paymentAmountMultiplier' column should contain only whole numbers >= 1</li>"
-        },
+        "import-error": "Something went wrong with the import. <ul><li>Check the required extension (.csv)</li><li>Check the format and column-names of the CSV-file</li><li><strong>Error message:</strong>{{specific}}</li></ul>",
         "import-result": {
           "ready": "Import ready.",
           "csv": "A CSV is automatically downloaded, which shows the import-status per row.",
