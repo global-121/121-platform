@@ -368,13 +368,16 @@ export class BulkImportService {
     const programCustomAttributes = await this.getProgramCustomAttributes(
       programId,
     );
+    const program = await this.programRepository.findOne(programId);
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
       }
       let importRecord = new BulkImportDto();
       importRecord.phoneNumber = row.phoneNumber;
-      importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
+      if (!program.paymentAmountMultiplierFormula) {
+        importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
+      }
       for await (const att of programCustomAttributes) {
         importRecord[att.attribute] = row[att.attribute];
       }
@@ -449,6 +452,7 @@ export class BulkImportService {
     const errors = [];
     const validatatedArray = [];
     const dynamicAttributes = await this.getDynamicAttributes(programId);
+    const program = await this.programRepository.findOne(programId);
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
@@ -457,6 +461,9 @@ export class BulkImportService {
       importRecord.preferredLanguage = row.preferredLanguage;
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;
+      if (!program.paymentAmountMultiplierFormula) {
+        importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
+      }
       for await (const att of dynamicAttributes) {
         if (att.type === AnswerTypes.tel && row[att.attribute]) {
           const sanitized = await this.lookupService.lookupAndCorrect(

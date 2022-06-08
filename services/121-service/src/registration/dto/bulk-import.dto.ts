@@ -3,6 +3,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Min,
 } from 'class-validator';
@@ -26,6 +27,7 @@ export class BulkImportDto {
   @IsNumber()
   @IsInt()
   @Min(1)
+  @IsOptional()
   public paymentAmountMultiplier: number;
 }
 
@@ -71,5 +73,6 @@ export class ImportRegistrationsDto {
   @IsNumber()
   @IsInt()
   @Min(1)
+  @IsOptional()
   public paymentAmountMultiplier: number;
 }
