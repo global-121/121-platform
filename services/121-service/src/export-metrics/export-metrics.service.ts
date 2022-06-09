@@ -81,6 +81,9 @@ export class ExportMetricsService {
       case ExportType.duplicatePhoneNumbers: {
         return this.getDuplicatePhoneNumbers(programId);
       }
+      case ExportType.duplicates: {
+        return this.getDuplicates(programId);
+      }
     }
   }
 
@@ -558,6 +561,93 @@ export class ExportMetricsService {
 
     return {
       fileName: ExportType.duplicatePhoneNumbers,
+      data: result,
+    };
+  }
+
+  private async getDuplicates(programId: number) {
+    // Find program questions and FSP attributes with duplicateCheck: true
+    const programQuestions = await this.programQuestionRepository.find({
+      where: {
+        program: { id: programId },
+        duplicateCheck: true,
+      },
+    });
+    const fspAttributes = await this.fspAttributeRepository.find({
+      relations: ['fsp'],
+      where: {
+        duplicateCheck: true,
+      },
+    });
+
+    // Get all registrations
+    const allRegistrations = await this.registrationRepository.find({
+      relations: ['fsp'],
+      where: {
+        program: { id: programId },
+        customData: Not(IsNull()),
+      },
+      order: { id: 'ASC' },
+    });
+
+    // Add all attributes to check to array
+    let attributesToCheck: CustomDataAttributes[] = [];
+    for (const question of programQuestions) {
+      attributesToCheck.push(CustomDataAttributes[question.name]);
+    }
+    for (const attribute of fspAttributes) {
+      attributesToCheck.push(CustomDataAttributes[attribute.name]);
+    }
+
+    // Loop through all registrations and filter duplicates
+    const duplicates = allRegistrations.filter(registration => {
+      const others = without(allRegistrations, registration);
+      let rawDataToCheck = [];
+      for (const attr of attributesToCheck) {
+        rawDataToCheck.push(registration.customData[attr]);
+      }
+
+      const dataToCheck = compact(rawDataToCheck);
+
+      for (const attrToCheck of attributesToCheck) {
+        const hasDuplicateValues = this.hasDuplicateCustomDataValues(
+          others,
+          attrToCheck,
+          dataToCheck,
+        );
+        if (hasDuplicateValues) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    });
+
+    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
+      programId,
+    );
+
+    // Return filtered list
+    const result = sortBy(duplicates, 'id').map(registration => {
+      let row: any = {
+        id: registration.id,
+        name: this.registrationsService.getName(registration.customData),
+        status: registration.registrationStatus,
+        fsp: registration.fsp ? registration.fsp.fsp : null,
+      };
+      for(const attri of attributesToCheck){
+        row[attri] = registration.customData[attri]
+      }
+      row = this.registrationsService.addProgramCustomAttributesToRow(
+        row,
+        registration.customData,
+        programCustomAttrs,
+      );
+      return row;
+    });
+
+    return {
+      fileName: ExportType.duplicates,
       data: result,
     };
   }
