@@ -781,7 +781,7 @@ export class RegistrationsService {
       registration.program.id,
       referenceId,
     );
-    if(calculatedRegistration){
+    if (calculatedRegistration) {
       return calculatedRegistration;
     }
     return savedRegistration;
