@@ -230,7 +230,32 @@
     [headerClass]="column.headerClass"
     [cellClass]="column.cellClass"
     [frozenLeft]="column.frozenLeft"
-  ></ngx-datatable-column>
+  >
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+      <ng-container *ngIf="value === true || value === false">
+        <span
+          [title]="
+            value
+              ? ('page.program.program-people-affected.column.custom-attribute-true'
+                | translate)
+              : ('page.program.program-people-affected.column.custom-attribute-false'
+                | translate)
+          "
+        >
+          <ion-checkbox
+            color="success"
+            mode="ios"
+            [disabled]="!canUpdatePaData"
+            [checked]="value"
+            (click)="onCheckboxChange(row, column, !value)"
+          ></ion-checkbox>
+        </span>
+      </ng-container>
+      <ng-container *ngIf="value !== true && value !== false && value">
+        {{ value }}
+      </ng-container>
+    </ng-template>
+  </ngx-datatable-column>
 
   <ngx-datatable-column
     name=""
@@ -262,7 +287,7 @@
     [sortable]="columnDefaults.sortable"
     [headerClass]="columnDefaults.headerClass"
   ></ngx-datatable-column>
-  <ngx-datatable-column
+  <!-- <ngx-datatable-column
     *ngIf="
       showWhatsappNumber() &&
       [
@@ -282,8 +307,8 @@
     [resizeable]="columnDefaults.resizeable"
     [sortable]="columnDefaults.sortable"
     [headerClass]="columnDefaults.headerClass"
-  ></ngx-datatable-column>
-  <ngx-datatable-column
+  ></ngx-datatable-column> -->
+  <!-- <ngx-datatable-column
     *ngIf="
       showVnumber() &&
       [phaseEnum.payment].includes(thisPhase) &&
@@ -296,9 +321,9 @@
     [resizeable]="columnDefaults.resizeable"
     [sortable]="columnDefaults.sortable"
     [headerClass]="columnDefaults.headerClass"
-  ></ngx-datatable-column>
+  ></ngx-datatable-column> -->
 
-  <ngx-datatable-column
+  <!-- <ngx-datatable-column
     *ngFor="let column of customAttributeColumns"
     [prop]="column.prop"
     [name]="column.name"
@@ -336,7 +361,7 @@
         {{ value }}
       </ng-container>
     </ng-template>
-  </ngx-datatable-column>
+  </ngx-datatable-column> -->
 
   <ngx-datatable-column
     *ngIf="thisPhase === phaseEnum.payment"
