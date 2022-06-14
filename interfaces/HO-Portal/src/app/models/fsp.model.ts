@@ -1,3 +1,4 @@
+import { ProgramPhase } from './program.model';
 import { TranslatableString } from './translatable-string.model';
 
 export class Fsp {
@@ -24,6 +25,7 @@ export class FspAttribute {
   label: TranslatableString;
   placeholder?: TranslatableString;
   options: FspAttributeOption[] | null;
+  phases: ProgramPhase[];
 }
 
 export class FspAttributeOption {
