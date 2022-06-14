@@ -24,11 +24,7 @@ import {
   PersonRow,
   PersonTableColumn,
 } from 'src/app/models/person.model';
-import {
-  Program,
-  ProgramCustomAttribute,
-  ProgramPhase,
-} from 'src/app/models/program.model';
+import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
@@ -71,10 +67,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public columnDefaults: any;
   public columns: PersonTableColumn[] = [];
-  private columnsAvailable: PersonTableColumn[] = [];
+  private standardColumns: PersonTableColumn[] = [];
   private paymentColumnTemplate: PaymentColumn;
   public paymentHistoryColumn: PaymentColumn;
-  private customAttributeColumnTemplate: any = {};
+  // private customAttributeColumnTemplate: any = {};
   public customAttributeColumns: any[] = [];
   private pastTransactions: Transaction[] = [];
   private lastPaymentId: number;
@@ -309,7 +305,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     const columnScoreWidth = 90;
     const columnPhoneNumberWidth = 130;
 
-    this.columnsAvailable = [
+    this.standardColumns = [
       {
         prop: 'name',
         name: this.translate.instant(
@@ -466,15 +462,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       width: columnDateTimeWidth,
       permissions: [Permission.PaymentTransactionREAD],
     };
-    this.customAttributeColumnTemplate = {
-      prop: 'customAttribute',
-      name: '',
-      customAttributeIndex: 0,
-      ...this.columnDefaults,
-      phases: [ProgramPhase.inclusion],
-      width: columnDateTimeWidth,
-      headerClass: 'ion-align-self-end header-overflow-ellipsis',
-    };
+    // this.customAttributeColumnTemplate = {
+    //   prop: 'customAttribute',
+    //   name: '',
+    //   customAttributeIndex: 0,
+    //   ...this.columnDefaults,
+    //   phases: [ProgramPhase.inclusion],
+    //   width: columnDateTimeWidth,
+    //   headerClass: 'ion-align-self-end header-overflow-ellipsis',
+    // };
   }
 
   async ngOnInit() {
@@ -529,7 +525,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     // Custom attributes can be personal data or not personal data
     // for now only users that view custom data can see it
     if (this.canViewPersonalData) {
-      this.fillCustomAttributeColumns();
+      // this.fillCustomAttributeColumns();
     }
 
     await this.refreshData();
@@ -612,13 +608,63 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private loadColumns() {
     this.columns = [];
-    for (const column of this.columnsAvailable) {
+    for (const column of this.standardColumns) {
       if (
         column.phases.includes(this.thisPhase) &&
         this.authService.hasAllPermissions(column.permissions) &&
         this.checkValidationColumnOrAction(column)
       ) {
         this.columns.push(column);
+      }
+    }
+    for (const ca of this.program.programCustomAttributes) {
+      if (ca.phases.includes(this.thisPhase)) {
+        console.log('ca: ', ca);
+        const addCa = {
+          prop: ca.name,
+          name: this.translatableStringService.get(ca.label),
+          ...this.columnDefaults,
+          permissions: [Permission.RegistrationPersonalREAD],
+          phases: ca.phases,
+          headerClass: 'ion-text-wrap ion-align-self-end',
+        };
+        this.columns.push(addCa);
+      }
+    }
+    for (const pq of this.program.programQuestions) {
+      if (pq.phases.includes(this.thisPhase)) {
+        console.log('pq: ', pq);
+        const addPq = {
+          prop: pq.name,
+          name: this.translate.instant(
+            `page.program.program-people-affected.column.${pq.name}`,
+          ),
+          ...this.columnDefaults,
+          phases: pq.phases,
+          permissions: [Permission.RegistrationREAD],
+          headerClass: 'ion-align-self-end header-overflow-ellipsis',
+        };
+        this.columns.push(addPq);
+      }
+    }
+    for (const fsp of this.program.financialServiceProviders) {
+      if (fsp.attributes) {
+        for (const attr of fsp.attributes) {
+          console.log('attr: ', attr);
+          if (attr.phases.includes(this.thisPhase)) {
+            const addAttr = {
+              prop: attr.name,
+              name: this.translate.instant(
+                `page.program.program-people-affected.column.${attr.name}`,
+              ),
+              ...this.columnDefaults,
+              phases: attr.phases,
+              permissions: [Permission.RegistrationREAD],
+              headerClass: 'ion-align-self-end header-overflow-ellipsis',
+            };
+            this.columns.push(addAttr);
+          }
+        }
       }
     }
   }
@@ -637,15 +683,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return column;
   }
 
-  private createCustomAttributeColumn(customAttribute: ProgramCustomAttribute) {
-    const column = JSON.parse(
-      JSON.stringify(this.customAttributeColumnTemplate),
-    ); // Hack to clone without reference;
+  // private createCustomAttributeColumn(customAttribute: ProgramCustomAttribute) {
+  //   const column = JSON.parse(
+  //     JSON.stringify(this.customAttributeColumnTemplate),
+  //   ); // Hack to clone without reference;
 
-    column.name = this.translatableStringService.get(customAttribute.label);
-    column.prop = customAttribute.name;
-    return column;
-  }
+  //   column.name = this.translatableStringService.get(customAttribute.label);
+  //   column.prop = customAttribute.name;
+  //   return column;
+  // }
 
   private async updateBulkActions() {
     await this.addPaymentBulkActions();
@@ -846,13 +892,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     );
   }
 
-  private fillCustomAttributeColumns() {
-    for (const customAttribute of this.program.programCustomAttributes) {
-      this.customAttributeColumns.push(
-        this.createCustomAttributeColumn(customAttribute),
-      );
-    }
-  }
+  // private fillCustomAttributeColumns() {
+  //   for (const customAttribute of this.program.programCustomAttributes) {
+  //     this.customAttributeColumns.push(
+  //       this.createCustomAttributeColumn(customAttribute),
+  //     );
+  //   }
+  // }
 
   private fillCustomAttributeRows(personRow: PersonRow): PersonRow {
     for (const customAttribute of this.program.programCustomAttributes) {
