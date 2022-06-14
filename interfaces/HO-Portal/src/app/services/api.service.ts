@@ -40,26 +40,38 @@ export class ApiService {
     endpoint: string,
     path: string,
     anonymous: boolean = false,
-  ): Observable<any> {
+  ): Promise<any> {
     const security = this.showSecurity(anonymous);
 
-    return this.http
-      .get(endpoint + path, {
-        headers: this.createHeaders(anonymous),
-        withCredentials: true,
-      })
-      .pipe(
-        tap((response) =>
-          console.log(
-            `ApiService GET: ${security} ${endpoint}${path}`,
-            `\nResponse:`,
-            response,
+    return new Promise((resolve, reject) =>
+      this.http
+        .get(endpoint + path, {
+          headers: this.createHeaders(anonymous),
+          withCredentials: true,
+        })
+        .pipe(
+          tap((response) =>
+            console.log(
+              `ApiService GET: ${security} ${endpoint}${path}`,
+              `\nResponse:`,
+              response,
+            ),
           ),
-        ),
-        catchError((error: HttpErrorResponse): Observable<any> => {
-          return this.handleError(error, anonymous);
+          catchError((error: HttpErrorResponse): Observable<any> => {
+            return this.handleError(error, anonymous);
+          }),
+        )
+        .toPromise()
+        .then((response) => {
+          if (response && response.error) {
+            throw response;
+          }
+          return resolve(response);
+        })
+        .catch((err) => {
+          return reject(err);
         }),
-      );
+    );
   }
 
   post(
@@ -69,29 +81,41 @@ export class ApiService {
     anonymous: boolean = false,
     responseAsBlob: boolean = false,
     isUpload: boolean = false,
-  ): Observable<any> {
+  ): Promise<any> {
     const security = this.showSecurity(anonymous);
     console.log(`ApiService POST: ${security} ${endpoint}${path}`, body);
 
-    return this.http
-      .post(endpoint + path, body, {
-        headers: this.createHeaders(isUpload),
-        responseType: responseAsBlob ? 'blob' : null,
-        withCredentials: true,
-      })
-      .pipe(
-        tap((response) =>
-          console.log(
-            `ApiService POST: ${security} ${endpoint}${path}:`,
-            body,
-            `\nResponse:`,
-            response,
+    return new Promise((resolve, reject) =>
+      this.http
+        .post(endpoint + path, body, {
+          headers: this.createHeaders(isUpload),
+          responseType: responseAsBlob ? 'blob' : null,
+          withCredentials: true,
+        })
+        .pipe(
+          tap((response) =>
+            console.log(
+              `ApiService POST: ${security} ${endpoint}${path}:`,
+              body,
+              `\nResponse:`,
+              response,
+            ),
           ),
-        ),
-        catchError((error: HttpErrorResponse): Observable<any> => {
-          return this.handleError(error, anonymous);
+          catchError((error: HttpErrorResponse): Observable<any> => {
+            return this.handleError(error, anonymous);
+          }),
+        )
+        .toPromise()
+        .then((response) => {
+          if (response && response.error) {
+            throw response;
+          }
+          return resolve(response);
+        })
+        .catch((err) => {
+          return reject(err);
         }),
-      );
+    );
   }
 
   handleError(error: HttpErrorResponse, anonymous: boolean) {
