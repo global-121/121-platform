@@ -777,10 +777,13 @@ export class RegistrationsService {
     const savedRegistration = await this.registrationRepository.save(
       registration,
     );
-    await this.inclusionScoreService.calculatePaymentAmountMultiplier(
+    const calculatedRegistration = await this.inclusionScoreService.calculatePaymentAmountMultiplier(
       registration.program.id,
       referenceId,
     );
+    if (calculatedRegistration) {
+      return calculatedRegistration;
+    }
     return savedRegistration;
   }
 
