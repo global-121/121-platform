@@ -72,7 +72,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public columnDefaults: any;
   public columns: PersonTableColumn[] = [];
-  private columnsAvailable: PersonTableColumn[] = [];
+  private standardColumns: PersonTableColumn[] = [];
   private paymentColumnTemplate: PaymentColumn;
   public paymentHistoryColumn: PaymentColumn;
   private paTableAttributeColumnTemplate: any = {};
@@ -310,7 +310,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     const columnScoreWidth = 90;
     const columnPhoneNumberWidth = 130;
 
-    this.columnsAvailable = [
+    this.standardColumns = [
       {
         prop: 'name',
         name: this.translate.instant(
@@ -616,13 +616,63 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private loadColumns() {
     this.columns = [];
-    for (const column of this.columnsAvailable) {
+    for (const column of this.standardColumns) {
       if (
         column.phases.includes(this.thisPhase) &&
         this.authService.hasAllPermissions(column.permissions) &&
         this.checkValidationColumnOrAction(column)
       ) {
         this.columns.push(column);
+      }
+    }
+    for (const ca of this.program.programCustomAttributes) {
+      if (ca.phases.includes(this.thisPhase)) {
+        console.log('ca: ', ca);
+        const addCa = {
+          prop: ca.name,
+          name: this.translatableStringService.get(ca.label),
+          ...this.columnDefaults,
+          permissions: [Permission.RegistrationPersonalREAD],
+          phases: ca.phases,
+          headerClass: 'ion-text-wrap ion-align-self-end',
+        };
+        this.columns.push(addCa);
+      }
+    }
+    for (const pq of this.program.programQuestions) {
+      if (pq.phases.includes(this.thisPhase)) {
+        console.log('pq: ', pq);
+        const addPq = {
+          prop: pq.name,
+          name: this.translate.instant(
+            `page.program.program-people-affected.column.${pq.name}`,
+          ),
+          ...this.columnDefaults,
+          phases: pq.phases,
+          permissions: [Permission.RegistrationREAD],
+          headerClass: 'ion-align-self-end header-overflow-ellipsis',
+        };
+        this.columns.push(addPq);
+      }
+    }
+    for (const fsp of this.program.financialServiceProviders) {
+      if (fsp.attributes) {
+        for (const attr of fsp.attributes) {
+          console.log('attr: ', attr);
+          if (attr.phases.includes(this.thisPhase)) {
+            const addAttr = {
+              prop: attr.name,
+              name: this.translate.instant(
+                `page.program.program-people-affected.column.${attr.name}`,
+              ),
+              ...this.columnDefaults,
+              phases: attr.phases,
+              permissions: [Permission.RegistrationREAD],
+              headerClass: 'ion-align-self-end header-overflow-ellipsis',
+            };
+            this.columns.push(addAttr);
+          }
+        }
       }
     }
   }

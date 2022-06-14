@@ -79,7 +79,14 @@
         "en": "Partner Organization"
       },
       "name": "namePartnerOrganization",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ],
+      "phases": ["registrationValidation", "inclusion", "payment"]
     }
   ],
   "programQuestions": [
@@ -130,7 +137,8 @@
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
-      "pattern": "^\\d{10}$"
+      "pattern": "^\\d{10}$",
+      "phases": ["payment"]
     },
     {
       "name": "phoneNumber",

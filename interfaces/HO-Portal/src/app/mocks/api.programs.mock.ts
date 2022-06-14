@@ -32,6 +32,7 @@ const programsArray: Program[] = [
         name: 'namePartnerOrganization',
         type: 'string',
         programId: 1,
+        phases: [],
         label: {
           en: 'Partner Organization',
         },
@@ -46,7 +47,7 @@ const programsArray: Program[] = [
           en: 'Phone Number',
         },
         options: null,
-        showInPaTable: false,
+        phases: []
       },
     ],
   },

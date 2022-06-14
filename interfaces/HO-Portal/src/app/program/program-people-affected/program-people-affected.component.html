@@ -74,7 +74,8 @@
         <ion-icon
           name="funnel"
           [attr.title]="
-            'page.program.program-people-affected.filter-placeholder' | translate
+            'page.program.program-people-affected.filter-placeholder'
+              | translate
           "
           aria-hidden="true"
           size="small"
@@ -83,9 +84,19 @@
         ></ion-icon>
       </ion-input>
 
-      <ion-toggle  [(ngModel)]=showAllStatusState (click)="toggleShowAllStatusState()"></ion-toggle>
-      <ion-label>{{ 'page.program.program-people-affected.filter-toggle'|translate }} </ion-label>
-      <tooltip style="margin-left:3px;margin-bottom:1px" [value]="'page.program.program-people-affected.filter-tooltip'|translate"></tooltip>
+      <ion-toggle
+        [(ngModel)]="showAllStatusState"
+        (click)="toggleShowAllStatusState()"
+      ></ion-toggle>
+      <ion-label
+        >{{ 'page.program.program-people-affected.filter-toggle' | translate }}
+      </ion-label>
+      <tooltip
+        style="margin-left: 3px; margin-bottom: 1px"
+        [value]="
+          'page.program.program-people-affected.filter-tooltip' | translate
+        "
+      ></tooltip>
     </ion-row>
   </div>
 </ion-row>
@@ -230,7 +241,32 @@
     [headerClass]="column.headerClass"
     [cellClass]="column.cellClass"
     [frozenLeft]="column.frozenLeft"
-  ></ngx-datatable-column>
+  >
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+      <ng-container *ngIf="value === true || value === false">
+        <span
+          [title]="
+            value
+              ? ('page.program.program-people-affected.column.custom-attribute-true'
+                | translate)
+              : ('page.program.program-people-affected.column.custom-attribute-false'
+                | translate)
+          "
+        >
+          <ion-checkbox
+            color="success"
+            mode="ios"
+            [disabled]="!canUpdatePaData"
+            [checked]="value"
+            (click)="onCheckboxChange(row, column, !value)"
+          ></ion-checkbox>
+        </span>
+      </ng-container>
+      <ng-container *ngIf="value !== true && value !== false && value">
+        {{ value }}
+      </ng-container>
+    </ng-template>
+  </ngx-datatable-column>
 
   <ngx-datatable-column
     name=""
@@ -257,41 +293,6 @@
       'page.program.program-people-affected.column.inclusion-score' | translate
     "
     minWidth="80"
-    [draggable]="columnDefaults.draggable"
-    [resizeable]="columnDefaults.resizeable"
-    [sortable]="columnDefaults.sortable"
-    [headerClass]="columnDefaults.headerClass"
-  ></ngx-datatable-column>
-  <ngx-datatable-column
-    *ngIf="
-      showWhatsappNumber() &&
-      [
-        phaseEnum.registrationValidation,
-        phaseEnum.inclusion,
-        phaseEnum.payment
-      ].includes(thisPhase) &&
-      canViewPersonalData
-    "
-    prop="whatsappPhoneNumber"
-    [name]="
-      'page.program.program-people-affected.column.whatsappPhoneNumber'
-        | translate
-    "
-    minWidth="130"
-    [draggable]="columnDefaults.draggable"
-    [resizeable]="columnDefaults.resizeable"
-    [sortable]="columnDefaults.sortable"
-    [headerClass]="columnDefaults.headerClass"
-  ></ngx-datatable-column>
-  <ngx-datatable-column
-    *ngIf="
-      showVnumber() &&
-      [phaseEnum.payment].includes(thisPhase) &&
-      canViewPersonalData
-    "
-    prop="vnumber"
-    [name]="'page.program.program-people-affected.column.vnumber' | translate"
-    minWidth="100"
     [draggable]="columnDefaults.draggable"
     [resizeable]="columnDefaults.resizeable"
     [sortable]="columnDefaults.sortable"
@@ -337,6 +338,7 @@
       </ng-container>
     </ng-template>
   </ngx-datatable-column>
+  -->
 
   <ngx-datatable-column
     *ngIf="thisPhase === phaseEnum.payment"
