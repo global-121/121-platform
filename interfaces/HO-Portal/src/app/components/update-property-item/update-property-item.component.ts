@@ -50,6 +50,9 @@ export class UpdatePropertyItemComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    if (this.type === 'boolean') {
+      this.propertyModel = Boolean(this.value);
+    }
     this.propertyModel = this.value;
   }
 

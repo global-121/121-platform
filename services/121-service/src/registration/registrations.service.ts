@@ -149,22 +149,21 @@ export class RegistrationsService {
         where: { name: answer.programQuestionName },
       });
       if (programQuestion) {
-        const oldAnswer = await this.programAnswerRepository.findOne({
+        let storedAnswer = await this.programAnswerRepository.findOne({
           where: {
             registration: { id: registration.id },
             programQuestion: { id: programQuestion.id },
           },
         });
-        if (oldAnswer) {
-          oldAnswer.programAnswer = answer.programAnswer;
-          await this.programAnswerRepository.save(oldAnswer);
-        } else {
-          let newAnswer = new ProgramAnswerEntity();
-          newAnswer.registration = registration;
-          newAnswer.programQuestion = programQuestion;
-          newAnswer.programAnswer = answer.programAnswer;
-          await this.programAnswerRepository.save(newAnswer);
+        if (!storedAnswer) {
+          storedAnswer = new ProgramAnswerEntity();
+          storedAnswer.registration = registration;
+          storedAnswer.programQuestion = programQuestion;
         }
+
+        storedAnswer.programAnswer = answer.programAnswer;
+
+        await this.programAnswerRepository.save(storedAnswer);
       }
     }
     await this.storePersistentAnswers(programAnswers, referenceId);
@@ -220,22 +219,31 @@ export class RegistrationsService {
     const program = await this.programRepository.findOne(programId, {
       relations: ['programQuestions'],
     });
+
     const persistentQuestions = [];
     for (let question of program.programQuestions) {
       if (question.persistence) {
         persistentQuestions.push(question.name);
       }
     }
-
     let customDataToStore;
     if (!registration.customData) {
       customDataToStore = {};
     } else {
       customDataToStore = registration.customData;
     }
+    const programCustomAttributes = await this.getProgramCustomAttributes(
+      programId,
+    );
+    const customAttributesNames = programCustomAttributes.map(
+      attr => attr.attribute,
+    );
 
     for (let answer of cleanedAnswers) {
-      if (persistentQuestions.includes(answer.programQuestionName)) {
+      if (
+        persistentQuestions.includes(answer.programQuestionName) ||
+        customAttributesNames.includes(answer.programQuestionName)
+      ) {
         customDataToStore[answer.programQuestionName] = answer.programAnswer;
       }
       if (answer.programQuestionName === CustomDataAttributes.phoneNumber) {
