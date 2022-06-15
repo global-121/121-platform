@@ -565,14 +565,23 @@ export class ExportMetricsService {
     };
   }
 
-  private async getDuplicates(programId: number) {
-    // Find program questions and FSP attributes with duplicateCheck: true
+  private async getDuplicateCheckAttributes(
+    programId: number,
+  ): Promise<CustomDataAttributes[]> {
+    let attributesToCheck: CustomDataAttributes[] = [];
+
     const programQuestions = await this.programQuestionRepository.find({
       where: {
-        program: { id: programId },
+        program: {
+          id: programId,
+        },
         duplicateCheck: true,
       },
     });
+    for (const question of programQuestions) {
+      attributesToCheck.push(CustomDataAttributes[question.name]);
+    }
+
     const fspAttributes = await this.fspAttributeRepository.find({
       relations: ['fsp'],
       where: {
@@ -580,7 +589,21 @@ export class ExportMetricsService {
       },
     });
 
-    // Get all registrations
+    for (const attribute of fspAttributes) {
+      attributesToCheck.push(CustomDataAttributes[attribute.name]);
+    }
+
+    return attributesToCheck;
+  }
+
+  private async getDuplicates(
+    programId: number,
+  ): Promise<{
+    fileName: ExportType;
+    data: any[];
+  }> {
+    const attributesToCheck = await this.getDuplicateCheckAttributes(programId);
+
     const allRegistrations = await this.registrationRepository.find({
       relations: ['fsp'],
       where: {
@@ -590,18 +613,10 @@ export class ExportMetricsService {
       order: { id: 'ASC' },
     });
 
-    // Add all attributes to check to array
-    let attributesToCheck: CustomDataAttributes[] = [];
-    for (const question of programQuestions) {
-      attributesToCheck.push(CustomDataAttributes[question.name]);
-    }
-    for (const attribute of fspAttributes) {
-      attributesToCheck.push(CustomDataAttributes[attribute.name]);
-    }
-
     // Loop through all registrations and filter duplicates
     const duplicates = allRegistrations.filter(registration => {
       const others = without(allRegistrations, registration);
+
       let rawDataToCheck = [];
       for (const attr of attributesToCheck) {
         rawDataToCheck.push(registration.customData[attr]);
@@ -625,6 +640,7 @@ export class ExportMetricsService {
 
     const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
       programId,
+      ExportType.allPeopleAffected,
     );
 
     // Return filtered list
@@ -635,8 +651,8 @@ export class ExportMetricsService {
         status: registration.registrationStatus,
         fsp: registration.fsp ? registration.fsp.fsp : null,
       };
-      for(const attri of attributesToCheck){
-        row[attri] = registration.customData[attri]
+      for (const attri of attributesToCheck) {
+        row[attri] = registration.customData[attri];
       }
       row = this.registrationsService.addProgramCustomAttributesToRow(
         row,
