@@ -759,7 +759,7 @@ export class RegistrationsService {
     const programAnswers: ProgramAnswer[] = [
       { programQuestionName: attribute, programAnswer: String(value) },
     ];
-    this.storeProgramAnswers(referenceId, programAnswers);
+    await this.storeProgramAnswers(referenceId, programAnswers);
 
     const savedRegistration = await this.registrationRepository.save(
       registration,
