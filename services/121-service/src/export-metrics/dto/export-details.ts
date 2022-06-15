@@ -10,7 +10,7 @@ export enum ExportType {
   selectedForValidation = 'selected-for-validation',
   unusedVouchers = 'unused-vouchers',
   toCancelVouchers = 'to-cancel-vouchers',
-  duplicates = 'duplicates'
+  duplicates = 'duplicates',
 }
 
 export class ExportDetails {
