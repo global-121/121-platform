@@ -28,5 +28,4 @@ export class RegistrationResponse {
   public name?: string;
   public age?: string;
   public location?: string;
-  public vnumber?: string;
 }

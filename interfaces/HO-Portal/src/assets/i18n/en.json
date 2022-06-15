@@ -338,6 +338,9 @@
               "label": "WhatsApp number",
               "explanation": "This value is required for a 'WhatsApp-enabled' FSP only."
             },
+            "vnumber": {
+              "label": "V-number"
+            },
             "accountId": {
               "label": "Account ID"
             },

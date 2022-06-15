@@ -22,8 +22,6 @@ export class Person {
   status: PaStatus;
   hasNote?: boolean;
   fsp?: string;
-  vnumber?: string;
-  whatsappPhoneNumber?: string;
   paymentAmountMultiplier?: number;
   preferredLanguage?: LanguageEnum;
   paTableAttributes?: object;
@@ -51,8 +49,6 @@ export class PersonRow {
   name?: string | null;
   phoneNumber?: string | null;
   fsp?: string | null;
-  vnumber?: string | null;
-  whatsappPhoneNumber?: string | null;
   paymentAmountMultiplier?: string | null;
   preferredLanguage?: string | null;
   paTableAttributes?: object;

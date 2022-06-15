@@ -80,7 +80,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.attributeValues.paymentAmountMultiplier =
       this.person?.paymentAmountMultiplier;
     this.attributeValues.phoneNumber = this.person?.phoneNumber;
-    this.attributeValues.whatsappPhoneNumber = this.person?.whatsappPhoneNumber;
 
     if (this.canViewPersonalData) {
       this.fillPaTableAttributes();
@@ -155,13 +154,18 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         if (paTableAttribute.type === 'dropdown') {
           options = this.getDropdownOptions(paTableAttribute);
         }
-
+        const translationKey = `page.program.program-people-affected.edit-person-affected-popup.properties.${paTableAttribute.name}`;
+        let label = this.translate.instant(translationKey).label;
+        if (!label) {
+          label = this.translatableString.get(paTableAttribute.label);
+        }
         return {
           name: paTableAttribute.name,
           type: paTableAttribute.type,
-          label: this.translatableString.get(paTableAttribute.label),
+          label,
           value: this.person.paTableAttributes[paTableAttribute.name].value,
           options,
+          explanation: this.translate.instant(translationKey).explanation
         };
       },
     );

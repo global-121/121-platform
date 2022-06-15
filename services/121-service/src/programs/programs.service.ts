@@ -383,7 +383,7 @@ export class ProgramService {
 
     const fspQuestions = (
       await this.fspAttributeRepository.find({
-        where: { editableInPortal: true, fsp: In(fspIds) },
+        where: { fsp: In(fspIds) },
       })
     ).map(c => {
       return {
