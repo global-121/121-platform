@@ -151,22 +151,20 @@ export class RegistrationsService {
         where: { name: answer.programQuestionName },
       });
       if (programQuestion) {
-        const oldAnswer = await this.programAnswerRepository.findOne({
+        let storedAnswer = await this.programAnswerRepository.findOne({
           where: {
             registration: { id: registration.id },
             programQuestion: { id: programQuestion.id },
           },
         });
-        if (oldAnswer) {
-          oldAnswer.programAnswer = answer.programAnswer;
-          await this.programAnswerRepository.save(oldAnswer);
-        } else {
-          let newAnswer = new ProgramAnswerEntity();
-          newAnswer.registration = registration;
-          newAnswer.programQuestion = programQuestion;
-          newAnswer.programAnswer = answer.programAnswer;
-          await this.programAnswerRepository.save(newAnswer);
+        if (!storedAnswer) {
+          storedAnswer = new ProgramAnswerEntity();
+          storedAnswer.registration = registration;
+          storedAnswer.programQuestion = programQuestion;
         }
+        storedAnswer.programAnswer = answer.programAnswer;
+
+        await this.programAnswerRepository.save(storedAnswer);
       }
     }
     await this.storePersistentAnswers(programAnswers, referenceId);
@@ -632,7 +630,11 @@ export class RegistrationsService {
       for (let attribute of paTableAttributes) {
         let value;
         if (row.customData[attribute.name] != null) {
-          value = row.customData[attribute.name];
+          if (attribute.type === CustomAttributeType.boolean) {
+            value = JSON.parse(row.customData[attribute.name]);
+          } else {
+            value = row.customData[attribute.name];
+          }
         } else if (attribute.type === CustomAttributeType.boolean) {
           value = false;
         } else if (attribute.type === CustomAttributeType.text) {
