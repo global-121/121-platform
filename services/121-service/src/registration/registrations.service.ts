@@ -1353,14 +1353,14 @@ export class RegistrationsService {
     customData: object,
     programCustomAttributes: ProgramCustomAttributeEntity[],
   ): object {
-    for (const programCustomAttribute of programCustomAttributes) {
-      if (programCustomAttribute.type === CustomAttributeType.boolean) {
-        row[programCustomAttribute.name] =
-          customData[programCustomAttribute.name] || false;
-      } else {
-        row[programCustomAttribute.name] =
-          customData[programCustomAttribute.name];
+    for (const attribute of programCustomAttributes) {
+      let value = customData[attribute.name];
+
+      if (attribute.type === CustomAttributeType.boolean && !value) {
+        value = false;
       }
+
+      row[attribute.name] = value;
     }
     return row;
   }

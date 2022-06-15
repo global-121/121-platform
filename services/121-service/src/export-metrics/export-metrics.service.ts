@@ -18,7 +18,7 @@ import { ActionService } from '../actions/action.service';
 import { ExportType } from './dto/export-details';
 import { FileDto } from './dto/file.dto';
 import { ProgramQuestionForExport } from '../programs/dto/program-question-for-export.dto';
-import { without, compact, sortBy } from 'lodash';
+import { without, compact, sortBy, uniq } from 'lodash';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
@@ -612,8 +612,15 @@ export class ExportMetricsService {
       },
       order: { id: 'ASC' },
     });
+    const duplicatesMap: { [referenceId: string]: number[] } = {};
+    const addToDuplicatesMap = (referenceId: string, ids: number[]): void => {
+      if (duplicatesMap[referenceId]) {
+        duplicatesMap[referenceId] = duplicatesMap[referenceId].concat(ids);
+      } else {
+        duplicatesMap[referenceId] = ids;
+      }
+    };
 
-    // Loop through all registrations and filter duplicates
     const duplicates = allRegistrations.filter(registration => {
       const others = without(allRegistrations, registration);
 
@@ -621,24 +628,31 @@ export class ExportMetricsService {
       for (const attr of attributesToCheck) {
         rawDataToCheck.push(registration.customData[attr]);
       }
-
       const dataToCheck = compact(rawDataToCheck);
 
       for (const attrToCheck of attributesToCheck) {
-        const hasDuplicateValues = this.hasDuplicateCustomDataValues(
+        const duplicateIds = this.findDuplicateRegistrationIds(
           others,
           attrToCheck,
           dataToCheck,
         );
-        if (hasDuplicateValues) {
-          return false;
-        } else {
-          return true;
+
+        if (!duplicateIds) {
+          continue;
         }
+
+        addToDuplicatesMap(registration.referenceId, duplicateIds);
       }
+
+      // Only return registration WITH duplicates
+      if (!duplicatesMap[registration.referenceId].length) {
+        return false;
+      }
+
+      return registration;
     });
 
-    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
+    const allCustomAttributesForExport = await this.getAllProgramCustomAttributesForExport(
       programId,
       ExportType.allPeopleAffected,
     );
@@ -651,14 +665,21 @@ export class ExportMetricsService {
         status: registration.registrationStatus,
         fsp: registration.fsp ? registration.fsp.fsp : null,
       };
+
       for (const attri of attributesToCheck) {
         row[attri] = registration.customData[attri];
       }
+
       row = this.registrationsService.addProgramCustomAttributesToRow(
         row,
         registration.customData,
-        programCustomAttrs,
+        allCustomAttributesForExport,
       );
+
+      row['duplicateWithIds'] = uniq(
+        duplicatesMap[registration.referenceId],
+      ).join(',');
+
       return row;
     });
 
@@ -679,6 +700,23 @@ export class ExportMetricsService {
       }
       return values.includes(otherRegistration.customData[type]);
     });
+  }
+
+  private findDuplicateRegistrationIds(
+    others: RegistrationEntity[],
+    type: CustomDataAttributes,
+    values: any[],
+  ): RegistrationEntity['id'][] {
+    const duplicateIds = [];
+    for (let registration of others) {
+      if (!registration.customData[type]) {
+        return;
+      }
+      if (values.includes(registration.customData[type])) {
+        duplicateIds.push(registration.id);
+      }
+    }
+    return duplicateIds;
   }
 
   private async getPaymentDetailsPayment(
