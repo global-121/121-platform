@@ -1,3 +1,4 @@
+import { Attribute } from './attribute.model';
 import { Fsp } from './fsp.model';
 import { TranslatableString } from './translatable-string.model';
 
@@ -31,6 +32,7 @@ export class Program {
   published: boolean;
   programCustomAttributes: ProgramCustomAttribute[];
   programQuestions: ProgramQuestion[];
+  editableAttributes?: Attribute[];
 }
 
 export enum InclusionCalculationType {

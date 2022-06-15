@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../base.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 
@@ -26,6 +26,9 @@ export class FspAttributeEntity extends Base121Entity {
 
   @Column('json', { default: [] })
   public phases: JSON;
+
+  @Column({ default: false })
+  public editableInPortal: boolean;
 
   @ManyToOne(
     _type => FinancialServiceProviderEntity,

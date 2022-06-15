@@ -47,7 +47,7 @@ const programsArray: Program[] = [
           en: 'Phone Number',
         },
         options: null,
-        phases: []
+        phases: [],
       },
     ],
   },

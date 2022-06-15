@@ -46,10 +46,10 @@ export class ProgramService {
         'aidworkerAssignments.user',
         'aidworkerAssignments.roles',
         'financialServiceProviders',
-        'financialServiceProviders.attributes',
         'programCustomAttributes',
       ],
     });
+    program.editableAttributes = await this.getPaEditableAttributes(program.id);
     return program;
   }
 
@@ -349,6 +349,7 @@ export class ProgramService {
 
     return [...customAttributes, ...programQuestions, ...fspAttributes];
   }
+
   public async getPaEditableAttributes(
     programId: number,
   ): Promise<Attribute[]> {

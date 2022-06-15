@@ -8,7 +8,6 @@ import {
 } from 'src/app/models/fsp.model';
 import { Person } from 'src/app/models/person.model';
 import {
-  PaTableAttribute,
   Program,
   ProgramQuestion,
   ProgramQuestionOption,
@@ -16,6 +15,7 @@ import {
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { Attribute } from '../../models/attribute.model';
 
 @Component({
   selector: 'app-edit-person-affected-popup',
@@ -39,7 +39,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public canUpdatePersonalData = false;
 
   public program: Program;
-  private paTableAttributesInput: PaTableAttribute[];
+  private paTableAttributesInput: Attribute[];
 
   public inProgress: any = {};
   public attributeValues: any = {};
@@ -69,8 +69,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
-    this.paTableAttributesInput =
-      await this.programsService.getPaTableAttributes(this.programId);
+    this.paTableAttributesInput = this.program.editableAttributes;
 
     if (this.program && this.program.financialServiceProviders) {
       for (const fsp of this.program.financialServiceProviders) {
@@ -168,7 +167,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     );
   }
 
-  private isFspAttribute(paTableAttribute: PaTableAttribute): boolean {
+  private isFspAttribute(paTableAttribute: Attribute): boolean {
     if (!this.personFsp || !this.personFsp.attributes) {
       return false;
     }
@@ -178,7 +177,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   }
 
   private getDropdownOptions(
-    paTableAttribute: PaTableAttribute,
+    paTableAttribute: Attribute,
   ): FspAttributeOption[] | ProgramQuestionOption[] {
     if (this.isFspAttribute(paTableAttribute)) {
       return this.personFsp.attributes.find(

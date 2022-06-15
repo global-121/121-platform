@@ -75,6 +75,9 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
   )
   public programAnswers: ProgramAnswerEntity[];
 
+  @Column({ default: false })
+  public editableInPortal: boolean;
+
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     await this.deleteAllOneToMany([

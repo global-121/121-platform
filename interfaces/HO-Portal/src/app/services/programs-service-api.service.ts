@@ -10,7 +10,11 @@ import { ImportType } from '../models/import-type.enum';
 import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
 import { Note, PaStatus, Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
-import { PaTableAttribute, Program } from '../models/program.model';
+import {
+  PaTableAttribute,
+  Program,
+  ProgramPhase,
+} from '../models/program.model';
 import { Transaction } from '../models/transaction.model';
 import { User } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
@@ -98,11 +102,21 @@ export class ProgramsServiceApiService {
 
   getPaTableAttributes(
     programId: number | string,
+    phase: ProgramPhase,
   ): Promise<PaTableAttribute[]> {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/programs/${programId}/pa-table-attributes`,
+        `/programs/${programId}/pa-table-attributes/${phase}`,
+      )
+      .toPromise();
+  }
+
+  getPaEditAttributes(programId: number | string): Promise<PaTableAttribute[]> {
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        `/programs/${programId}/pa-edit-attributes`,
       )
       .toPromise();
   }
