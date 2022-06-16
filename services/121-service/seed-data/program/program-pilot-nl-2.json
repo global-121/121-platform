@@ -105,7 +105,14 @@
         "en": "Partner Organization"
       },
       "name": "namePartnerOrganization",
-      "type": "string"
+      "type": "string",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ],
+      "phases": ["registrationValidation", "inclusion", "payment"]
     }
   ],
   "programQuestions": [
@@ -125,7 +132,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": false
     },
     {
       "name": "nameLast",
@@ -143,7 +152,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": false
     },
     {
       "name": "phoneNumber",
@@ -164,7 +175,9 @@
       "options": null,
       "persistence": true,
       "export": [],
-      "scoring": {}
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": false
     }
   ]
 }

@@ -103,7 +103,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": false
     },
     {
       "name": "nameLast",
@@ -118,7 +120,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": false
     },
     {
       "name": "vnumber",
@@ -158,7 +162,9 @@
       "options": null,
       "persistence": true,
       "export": [],
-      "scoring": {}
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": false
     }
   ]
 }
