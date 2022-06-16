@@ -51,3 +51,11 @@ export enum AnswerTypes {
   text = 'text',
   date = 'date',
 }
+
+export enum CustomAttributeType {
+  boolean = 'boolean',
+  text = 'text'
+}
+
+export type AttributeType = AnswerTypes | CustomAttributeType;
+export const AttributeType = {...AnswerTypes, ...CustomAttributeType};

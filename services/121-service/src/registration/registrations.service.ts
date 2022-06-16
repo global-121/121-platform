@@ -18,6 +18,7 @@ import { ProgramAnswerEntity } from './program-answer.entity';
 import {
   AnswerTypes,
   Attribute,
+  AttributeType,
   CustomDataAttributes,
 } from './enum/custom-data-attributes';
 import { LookupService } from '../notifications/lookup/lookup.service';
@@ -628,21 +629,11 @@ export class RegistrationsService {
       row['vnumber'] = row.customData['vnumber'];
       row['paTableAttributes'] = {};
       for (let attribute of paTableAttributes) {
-        let value;
-        if (row.customData[attribute.name] != null) {
-          if (attribute.type === CustomAttributeType.boolean) {
-            value = JSON.parse(row.customData[attribute.name]);
-          } else {
-            value = row.customData[attribute.name];
-          }
-        } else if (attribute.type === CustomAttributeType.boolean) {
-          value = false;
-        } else if (attribute.type === CustomAttributeType.text) {
-          value = '';
-        }
+        const value = this.mapAttributeByType(attribute, row.customData);
+        
         row['paTableAttributes'][attribute.name] = {
           type: attribute.type,
-          value: value,
+          value,
         };
       }
       delete row.customData;
@@ -1361,4 +1352,20 @@ export class RegistrationsService {
     }
     return row;
   }
+
+  public mapAttributeByType(
+    attribute: Attribute,
+    customData: any
+  ): string | number | boolean {
+    const value = customData[attribute.name];
+    switch (attribute.type) {
+      case AttributeType.numeric:
+        return Number(value) || 0;
+      case AttributeType.boolean:
+        return value ? JSON.parse(value) : false; 
+      default:
+        return value || '';
+    }
+  }
+
 }
