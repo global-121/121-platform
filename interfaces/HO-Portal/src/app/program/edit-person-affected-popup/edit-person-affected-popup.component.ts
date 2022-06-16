@@ -69,7 +69,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
-    this.paTableAttributesInput = this.program.editableAttributes;
 
     if (this.program && this.program.financialServiceProviders) {
       for (const fsp of this.program.financialServiceProviders) {
@@ -80,6 +79,12 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.attributeValues.paymentAmountMultiplier =
       this.person?.paymentAmountMultiplier;
     this.attributeValues.phoneNumber = this.person?.phoneNumber;
+
+    this.paTableAttributesInput = this.program.editableAttributes;
+    const fspObject = this.fspList.find((f) => (f.fsp === this.person?.fsp))
+    if (fspObject && fspObject.editableAttributes) {
+      this.paTableAttributesInput = fspObject.editableAttributes.concat(this.paTableAttributesInput)
+    }
 
     if (this.canViewPersonalData) {
       this.fillPaTableAttributes();
