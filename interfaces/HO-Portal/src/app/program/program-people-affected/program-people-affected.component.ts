@@ -4,6 +4,7 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
@@ -11,6 +12,7 @@ import {
 import { NavigationEnd, Router } from '@angular/router';
 import { AlertController, ModalController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
@@ -48,7 +50,7 @@ import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-h
   templateUrl: './program-people-affected.component.html',
   styleUrls: ['./program-people-affected.component.scss'],
 })
-export class ProgramPeopleAffectedComponent implements OnInit {
+export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   @ViewChild('proxyScrollbar')
   private proxyScrollbar: ElementRef;
 
@@ -263,6 +265,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private canViewPaymentData: boolean;
   private canViewVouchers: boolean;
   private canDoSinglePayment: boolean;
+  private routerSubscription: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -278,9 +281,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     private translatableStringService: TranslatableStringService,
   ) {
     this.locale = environment.defaultLocale;
-    this.router.events.subscribe((event) => {
+    this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.refreshData();
+        if (event.url.includes(this.thisPhase)) {
+          this.refreshData();
+        }
       }
     });
 
@@ -476,6 +481,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       width: columnDateTimeWidth,
       headerClass: 'ion-align-self-end header-overflow-ellipsis',
     };
+  }
+  ngOnDestroy(): void {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 
   async ngOnInit() {
