@@ -24,8 +24,5 @@ export class RegistrationResponse {
   public paymentAmountMultiplier?: number;
   public phoneNumber?: string;
   public whatsappPhoneNumber?: string;
-  public phonenumberTestResult?: string;
   public name?: string;
-  public age?: string;
-  public location?: string;
 }
