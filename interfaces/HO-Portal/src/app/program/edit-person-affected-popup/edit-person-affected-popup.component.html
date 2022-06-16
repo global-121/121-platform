@@ -73,25 +73,6 @@
         class="ion-margin-vertical"
       ></app-update-property-item>
 
-      <app-update-property-item
-        *ngIf="canViewPersonalData && person.whatsappPhoneNumber"
-        type="tel"
-        [label]="
-          'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.label'
-            | translate
-        "
-        [explanation]="
-          'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.explanation'
-            | translate
-        "
-        [value]="attributeValues?.whatsappPhoneNumber"
-        (updated)="updatePaAttribute('whatsappPhoneNumber', $event, false)"
-        [inProgress]="inProgress?.whatsappPhoneNumber || false"
-        [isDisabled]="!canUpdatePersonalData"
-        [showSubmit]="canUpdatePersonalData"
-        class="ion-margin-vertical"
-      ></app-update-property-item>
-
       <div
         *ngIf="readOnly && fspList.length === programFspLength && person?.fsp"
         class="ion-margin-vertical"
@@ -123,6 +104,7 @@
           (updated)="updatePaAttribute(paTableAttribute.name, $event, true)"
           class="ion-margin-vertical"
           [isFspAttribute]="paTableAttribute.isFspAttribute"
+          [explanation]="paTableAttribute.explanation"
         ></app-update-property-item>
       </ng-container>
     </div>

@@ -27,9 +27,6 @@ export class FspAttributeEntity extends Base121Entity {
   @Column('json', { default: [] })
   public phases: JSON;
 
-  @Column({ default: false })
-  public editableInPortal: boolean;
-
   @ManyToOne(
     _type => FinancialServiceProviderEntity,
     fsp => fsp.attributes,

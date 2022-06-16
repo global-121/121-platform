@@ -848,8 +848,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           )
         : '',
       phoneNumber: formatPhoneNumber(person.phoneNumber),
-      whatsappPhoneNumber: formatPhoneNumber(person.whatsappPhoneNumber),
-      vnumber: person.vnumber,
       paymentAmountMultiplier: person.paymentAmountMultiplier
         ? `${person.paymentAmountMultiplier}&times;`
         : '',
@@ -1011,17 +1009,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     let show = false;
     for (const pa of this.allPeopleAffected) {
       show = this.hasVoucherSupport(pa.fsp);
-      if (show) {
-        break;
-      }
-    }
-    return show;
-  }
-
-  public showVnumber(): boolean {
-    let show = false;
-    for (const pa of this.allPeopleAffected) {
-      show = !!pa.vnumber;
       if (show) {
         break;
       }

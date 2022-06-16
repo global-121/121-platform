@@ -624,9 +624,6 @@ export class RegistrationsService {
       row['hasNote'] = !!row.note;
       row['phoneNumber'] =
         row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber];
-      row['whatsappPhoneNumber'] =
-        row.customData[CustomDataAttributes.whatsappPhoneNumber];
-      row['vnumber'] = row.customData['vnumber'];
       row['paTableAttributes'] = {};
       for (let attribute of paTableAttributes) {
         const value = this.mapAttributeByType(attribute, row.customData);

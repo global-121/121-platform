@@ -350,7 +350,7 @@ export class ProgramService {
     return [...customAttributes, ...programQuestions, ...fspAttributes];
   }
 
-  public async getPaEditableAttributes(
+  private async getPaEditableAttributes(
     programId: number,
   ): Promise<Attribute[]> {
     const customAttributes = (
@@ -381,18 +381,6 @@ export class ProgramService {
     });
     const fspIds = program.financialServiceProviders.map(f => f.id);
 
-    const fspQuestions = (
-      await this.fspAttributeRepository.find({
-        where: { editableInPortal: true, fsp: In(fspIds) },
-      })
-    ).map(c => {
-      return {
-        name: c.name,
-        type: c.answerType,
-        label: c.label,
-      };
-    });
-
-    return [...customAttributes, ...programQuestions, ...fspQuestions];
+    return [...customAttributes, ...programQuestions];
   }
 }

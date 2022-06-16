@@ -69,7 +69,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
-    this.paTableAttributesInput = this.program.editableAttributes;
 
     if (this.program && this.program.financialServiceProviders) {
       for (const fsp of this.program.financialServiceProviders) {
@@ -80,7 +79,12 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.attributeValues.paymentAmountMultiplier =
       this.person?.paymentAmountMultiplier;
     this.attributeValues.phoneNumber = this.person?.phoneNumber;
-    this.attributeValues.whatsappPhoneNumber = this.person?.whatsappPhoneNumber;
+
+    this.paTableAttributesInput = this.program.editableAttributes;
+    const fspObject = this.fspList.find((f) => (f.fsp === this.person?.fsp))
+    if (fspObject && fspObject.editableAttributes) {
+      this.paTableAttributesInput = fspObject.editableAttributes.concat(this.paTableAttributesInput)
+    }
 
     if (this.canViewPersonalData) {
       this.fillPaTableAttributes();
@@ -155,13 +159,18 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         if (paTableAttribute.type === 'dropdown') {
           options = this.getDropdownOptions(paTableAttribute);
         }
-
+        const translationKey = `page.program.program-people-affected.edit-person-affected-popup.properties.${paTableAttribute.name}`;
+        let label = this.translate.instant(translationKey).label;
+        if (!label) {
+          label = this.translatableString.get(paTableAttribute.label);
+        }
         return {
           name: paTableAttribute.name,
           type: paTableAttribute.type,
-          label: this.translatableString.get(paTableAttribute.label),
+          label,
           value: this.person.paTableAttributes[paTableAttribute.name].value,
           options,
+          explanation: this.translate.instant(translationKey).explanation
         };
       },
     );
