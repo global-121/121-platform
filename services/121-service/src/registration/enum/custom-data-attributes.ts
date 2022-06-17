@@ -54,8 +54,8 @@ export enum AnswerTypes {
 
 export enum CustomAttributeType {
   boolean = 'boolean',
-  text = 'text'
+  text = 'text',
 }
 
 export type AttributeType = AnswerTypes | CustomAttributeType;
-export const AttributeType = {...AnswerTypes, ...CustomAttributeType};
+export const AttributeType = { ...AnswerTypes, ...CustomAttributeType };
