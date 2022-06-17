@@ -3,6 +3,7 @@ import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
 import { ProgramEntity } from '../src/programs/program.entity';
 import fs from 'fs';
 import { FspAttributeEntity } from '../src/fsp/fsp-attribute.entity';
+import { ProgramCustomAttributeEntity } from '../src/programs/program-custom-attribute.entity';
 
 export class PhasesAndEditableProperties1654693178991
   implements MigrationInterface {
@@ -70,9 +71,13 @@ export class PhasesAndEditableProperties1654693178991
       const programQuestionsRepo = connection.getRepository(
         ProgramQuestionEntity,
       );
+      const customAttributesRepo = connection.getRepository(
+        ProgramCustomAttributeEntity,
+      );
       const program = await programRepo
         .createQueryBuilder('program')
         .leftJoin('program.programQuestions', 'programQuestion')
+        .leftJoin('program.programCustomAttributes', 'programCustomAttribute')
         .select('program.id')
         .addSelect('program.titlePortal')
         .addSelect('program.ngo')
@@ -80,6 +85,9 @@ export class PhasesAndEditableProperties1654693178991
         .addSelect('programQuestion.name')
         .addSelect('programQuestion.phases')
         .addSelect('programQuestion.editableInPortal')
+        .addSelect('programCustomAttribute.id')
+        .addSelect('programCustomAttribute.name')
+        .addSelect('programCustomAttribute.phases')
         .where(`ngo = 'NLRC'`)
         .getOne();
 
@@ -99,6 +107,13 @@ export class PhasesAndEditableProperties1654693178991
           q.editableInPortal = qJson.editableInPortal;
           await programQuestionsRepo.save(q);
         }
+        for (const ca of program.programCustomAttributes) {
+          const caJson = programJson.programCustomAttributes.find(
+            caJson => caJson.name === ca.name,
+          );
+          ca.phases = caJson.phases;
+          await customAttributesRepo.save(ca);
+        }
       }
 
       const fspAttributeRepo = connection.getRepository(FspAttributeEntity);
@@ -109,7 +124,6 @@ export class PhasesAndEditableProperties1654693178991
         .addSelect('fspAttribute.name')
         .addSelect('fspAttribute.phases')
         .getMany();
-
       for (const fspAttribute of fspAttributes) {
         if (fspAttribute.name === fspIntersolve.attributes[0].name) {
           fspAttribute.phases = fspIntersolve.attributes[0].phases;
