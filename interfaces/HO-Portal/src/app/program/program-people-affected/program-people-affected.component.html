@@ -299,46 +299,6 @@
     [headerClass]="columnDefaults.headerClass"
   ></ngx-datatable-column>
 
-  <!-- <ngx-datatable-column
-    *ngFor="let column of paTableAttributeColumns"
-    [prop]="column.prop"
-    [name]="column.name"
-    [width]="column.width"
-    [minWidth]="column.minWidth"
-    [maxWidth]="column.maxWidth"
-    [draggable]="column.draggable"
-    [resizeable]="column.resizable"
-    [sortable]="column.sortable"
-    [canAutoResize]="column.canAutoResize"
-    [headerClass]="column.headerClass"
-    [cellClass]="column.cellClass"
-  >
-    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-      <ng-container *ngIf="value === true || value === false">
-        <span
-          [title]="
-            value
-              ? ('page.program.program-people-affected.column.custom-attribute-true'
-                | translate)
-              : ('page.program.program-people-affected.column.custom-attribute-false'
-                | translate)
-          "
-        >
-          <ion-checkbox
-            color="success"
-            mode="ios"
-            [disabled]="!canUpdatePaData"
-            [checked]="value"
-            (click)="onCheckboxChange(row, column, !value)"
-          ></ion-checkbox>
-        </span>
-      </ng-container>
-      <ng-container *ngIf="value !== true && value !== false && value">
-        {{ value }}
-      </ng-container>
-    </ng-template>
-  </ngx-datatable-column> -->
-
   <ngx-datatable-column
     *ngIf="thisPhase === phaseEnum.payment"
     prop="paymentHistoryButton"

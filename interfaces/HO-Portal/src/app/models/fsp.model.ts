@@ -1,6 +1,6 @@
+import { Attribute } from './attribute.model';
 import { ProgramPhase } from './program.model';
 import { TranslatableString } from './translatable-string.model';
-import { Attribute } from './attribute.model';
 export class Fsp {
   id: number;
   fsp: string;

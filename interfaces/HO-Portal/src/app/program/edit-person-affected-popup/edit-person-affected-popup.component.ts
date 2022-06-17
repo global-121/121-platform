@@ -81,9 +81,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.attributeValues.phoneNumber = this.person?.phoneNumber;
 
     this.paTableAttributesInput = this.program.editableAttributes;
-    const fspObject = this.fspList.find((f) => (f.fsp === this.person?.fsp))
+    const fspObject = this.fspList.find((f) => f.fsp === this.person?.fsp);
     if (fspObject && fspObject.editableAttributes) {
-      this.paTableAttributesInput = fspObject.editableAttributes.concat(this.paTableAttributesInput)
+      this.paTableAttributesInput = fspObject.editableAttributes.concat(
+        this.paTableAttributesInput,
+      );
     }
 
     if (this.canViewPersonalData) {
@@ -170,7 +172,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
           label,
           value: this.person.paTableAttributes[paTableAttribute.name].value,
           options,
-          explanation: this.translate.instant(translationKey).explanation
+          explanation: this.translate.instant(translationKey).explanation,
         };
       },
     );
