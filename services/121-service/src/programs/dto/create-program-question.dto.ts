@@ -10,6 +10,7 @@ import {
 import { CreateOptionsDto } from './create-options.dto';
 import { Type } from 'class-transformer';
 import { AnswerTypes } from '../../registration/enum/custom-data-attributes';
+import { ProgramPhase } from '../../shared/enum/program-phase.model';
 
 export class CreateProgramQuestionDto {
   @ApiModelProperty()
@@ -47,8 +48,17 @@ export class CreateProgramQuestionDto {
   public readonly persistence: boolean;
   @ApiModelProperty()
   @IsNotEmpty()
-  public readonly showInPaTable: boolean;
+  public readonly pattern: string;
+  @ApiModelProperty({
+    example: [
+      ProgramPhase.registrationValidation,
+      ProgramPhase.inclusion,
+      ProgramPhase.payment,
+    ],
+  })
+  @IsNotEmpty()
+  public phases: JSON;
   @ApiModelProperty()
   @IsNotEmpty()
-  public readonly pattern: string;
+  public readonly editableInPortal: boolean;
 }

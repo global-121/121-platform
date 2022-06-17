@@ -1,5 +1,6 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsIn, IsJSON } from 'class-validator';
+import { ProgramPhase } from '../../shared/enum/program-phase.model';
 
 export enum CustomAttributeType {
   text = 'text',
@@ -20,6 +21,15 @@ export class CreateProgramCustomAttributeDto {
   @IsNotEmpty()
   @IsJSON()
   public label: JSON;
+  @ApiModelProperty({
+    example: [
+      ProgramPhase.registrationValidation,
+      ProgramPhase.inclusion,
+      ProgramPhase.payment,
+    ],
+  })
+  @IsNotEmpty()
+  public phases: JSON;
 }
 
 export class CreateProgramCustomAttributesDto {
@@ -29,6 +39,11 @@ export class CreateProgramCustomAttributesDto {
         name: 'mycustom',
         type: 'string',
         label: { en: 'MyCustom' },
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.payment,
+        ],
       },
     ],
   })

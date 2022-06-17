@@ -627,7 +627,7 @@ export class RegistrationsService {
       row['paTableAttributes'] = {};
       for (let attribute of paTableAttributes) {
         const value = this.mapAttributeByType(attribute, row.customData);
-        
+
         row['paTableAttributes'][attribute.name] = {
           type: attribute.type,
           value,
@@ -1352,17 +1352,16 @@ export class RegistrationsService {
 
   public mapAttributeByType(
     attribute: Attribute,
-    customData: any
+    customData: any,
   ): string | number | boolean {
     const value = customData[attribute.name];
     switch (attribute.type) {
       case AttributeType.numeric:
         return Number(value) || 0;
       case AttributeType.boolean:
-        return value ? JSON.parse(value) : false; 
+        return value ? JSON.parse(value) : false;
       default:
         return value || '';
     }
   }
-
 }

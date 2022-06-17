@@ -1,5 +1,7 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { ExportType } from '../../export-metrics/dto/export-details';
+import { ProgramPhase } from '../../shared/enum/program-phase.model';
 
 export class FspAttributeDto {
   @ApiModelProperty()
@@ -39,13 +41,29 @@ export class FspAttributeDto {
   @IsOptional()
   public options: JSON;
 
+  @ApiModelProperty({
+    example: [
+      ExportType.allPeopleAffected,
+      ExportType.included,
+      ExportType.selectedForValidation,
+    ],
+  })
+  @IsOptional()
+  public export: JSON;
+
   @ApiModelProperty()
   @IsOptional()
   public answerType: string;
 
-  @ApiModelProperty()
+  @ApiModelProperty({
+    example: [
+      ProgramPhase.registrationValidation,
+      ProgramPhase.inclusion,
+      ProgramPhase.payment,
+    ],
+  })
   @IsOptional()
-  public readonly showInPaTable: boolean;
+  public phases: JSON;
 }
 
 export class UpdateFspDto {

@@ -163,7 +163,8 @@ export class CreateProgramDto {
         questionType: 'standard',
         options: null,
         persistence: true,
-        showInPaTable: false,
+        editableInPortal: false,
+        phases: [],
         scoring: {},
       },
       {
@@ -180,7 +181,8 @@ export class CreateProgramDto {
           '19-65': 0,
           '65>': 6,
         },
-        showInPaTable: false,
+        phases: [],
+        editableInPortal: false,
       },
       {
         name: 'roof_type',

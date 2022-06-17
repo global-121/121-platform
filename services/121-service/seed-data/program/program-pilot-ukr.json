@@ -70,7 +70,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -85,7 +84,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -100,7 +98,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -115,7 +112,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -130,7 +126,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -145,7 +140,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -160,7 +154,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -175,7 +168,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -190,7 +182,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -205,7 +196,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -220,7 +210,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -268,7 +257,6 @@
         }
       ],
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -288,7 +276,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
@@ -328,7 +315,6 @@
         }
       ],
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -343,7 +329,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "selected-for-validation"],
       "scoring": {}
     },
@@ -358,7 +343,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
@@ -373,7 +357,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
@@ -388,7 +371,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
@@ -403,7 +385,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
@@ -418,7 +399,6 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "showInPaTable": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     }

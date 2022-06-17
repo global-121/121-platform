@@ -25,8 +25,7 @@
           }
         }
       ],
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "showInPaTable": true
+      "export": ["all-people-affected", "included", "selected-for-validation"]
     },
     {
       "name": "raion",
@@ -62,8 +61,7 @@
           }
         }
       ],
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "showInPaTable": true
+      "export": ["all-people-affected", "included", "selected-for-validation"]
     },
     {
       "name": "street",
@@ -73,8 +71,7 @@
         "ru": "Улица, где вы проживаете в данный момент"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "showInPaTable": true
+      "export": ["all-people-affected", "included", "selected-for-validation"]
     },
     {
       "name": "house",
@@ -84,8 +81,7 @@
         "ru": "Номер дома"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "showInPaTable": true
+      "export": ["all-people-affected", "included", "selected-for-validation"]
     },
     {
       "name": "apartmentOrOffice",
@@ -95,8 +91,7 @@
         "ru": "Номер квартиры"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "showInPaTable": true
+      "export": ["all-people-affected", "included", "selected-for-validation"]
     },
     {
       "name": "postalIndex",
@@ -107,8 +102,7 @@
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
-      "options": null,
-      "showInPaTable": true
+      "options": null
     },
     {
       "name": "city",
@@ -118,8 +112,7 @@
         "ru": "Населённый пункт, где вы сейчас проживаете"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "showInPaTable": true
+      "export": ["all-people-affected", "included", "selected-for-validation"]
     },
     {
       "name": "lastName",
@@ -130,8 +123,7 @@
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
-      "options": null,
-      "showInPaTable": true
+      "options": null
     },
     {
       "name": "firstName",
@@ -142,8 +134,7 @@
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
-      "options": null,
-      "showInPaTable": true
+      "options": null
     },
     {
       "name": "fathersName",
@@ -154,8 +145,7 @@
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
-      "options": null,
-      "showInPaTable": true
+      "options": null
     },
     {
       "name": "taxId",
@@ -166,8 +156,7 @@
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
-      "options": null,
-      "showInPaTable": true
+      "options": null
     },
     {
       "name": "telephone",
@@ -178,8 +167,7 @@
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "tel",
-      "options": null,
-      "showInPaTable": true
+      "options": null
     }
   ]
 }

@@ -77,8 +77,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private standardColumns: PersonTableColumn[] = [];
   private paymentColumnTemplate: PaymentColumn;
   public paymentHistoryColumn: PaymentColumn;
-  private paTableAttributeColumnTemplate: any = {};
-  public paTableAttributeColumns: any[] = [];
   private pastTransactions: Transaction[] = [];
   private lastPaymentId: number;
 
@@ -472,15 +470,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       width: columnDateTimeWidth,
       permissions: [Permission.PaymentTransactionREAD],
     };
-    this.paTableAttributeColumnTemplate = {
-      prop: 'paTableAttribute',
-      name: '',
-      paTableAttributeIndex: 0,
-      ...this.columnDefaults,
-      phases: [ProgramPhase.inclusion],
-      width: columnDateTimeWidth,
-      headerClass: 'ion-align-self-end header-overflow-ellipsis',
-    };
   }
   ngOnDestroy(): void {
     if (this.routerSubscription) {
@@ -539,12 +528,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         );
         this.paymentHistoryColumn = this.createPaymentHistoryColumn();
       }
-    }
-
-    // Custom attributes can be personal data or not personal data
-    // for now only users that can view custom data can see it
-    if (this.canViewPersonalData) {
-      this.fillPaTableAttributeColumns();
     }
 
     await this.refreshData();
@@ -670,16 +653,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     const column = Object.assign({}, this.paymentColumnTemplate);
     column.name = 'Payment History';
     column.prop = 'paymentHistory';
-    return column;
-  }
-
-  private createPaTableAttributeColumn(paTableAttribute: PaTableAttribute) {
-    const column = JSON.parse(
-      JSON.stringify(this.paTableAttributeColumnTemplate),
-    ); // Hack to clone without reference;
-
-    column.name = this.translatableStringService.get(paTableAttribute.label);
-    column.prop = paTableAttribute.name;
     return column;
   }
 
@@ -878,14 +851,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         transaction.payment === paymentIndex &&
         transaction.referenceId === referenceId,
     );
-  }
-
-  private fillPaTableAttributeColumns() {
-    for (const paTableAttribute of this.paTableAttributes) {
-      this.paTableAttributeColumns.push(
-        this.createPaTableAttributeColumn(paTableAttribute),
-      );
-    }
   }
 
   private fillPaTableAttributeRows(personRow: PersonRow): PersonRow {
