@@ -110,21 +110,17 @@ export class ProgramsServiceApiService {
     programId: number | string,
     phase: ProgramPhase,
   ): Promise<PaTableAttribute[]> {
-    return this.apiService
-      .get(
-        environment.url_121_service_api,
-        `/programs/${programId}/pa-table-attributes/${phase}`,
-      )
-      .toPromise();
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/pa-table-attributes/${phase}`,
+    );
   }
 
   getPaEditAttributes(programId: number | string): Promise<PaTableAttribute[]> {
-    return this.apiService
-      .get(
-        environment.url_121_service_api,
-        `/programs/${programId}/pa-edit-attributes`,
-      )
-      .toPromise();
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/pa-edit-attributes`,
+    );
   }
 
   advancePhase(programId: number, newPhase: string): Promise<any> {
