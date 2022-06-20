@@ -80,12 +80,14 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       this.person?.paymentAmountMultiplier;
     this.attributeValues.phoneNumber = this.person?.phoneNumber;
 
-    this.paTableAttributesInput = this.program.editableAttributes;
-    const fspObject = this.fspList.find((f) => f.fsp === this.person?.fsp);
-    if (fspObject && fspObject.editableAttributes) {
-      this.paTableAttributesInput = fspObject.editableAttributes.concat(
-        this.paTableAttributesInput,
-      );
+    if (this.program && this.program.editableAttributes) {
+      this.paTableAttributesInput = this.program.editableAttributes;
+      const fspObject = this.fspList.find((f) => f.fsp === this.person?.fsp);
+      if (fspObject && fspObject.editableAttributes) {
+        this.paTableAttributesInput = fspObject.editableAttributes.concat(
+          this.paTableAttributesInput,
+        );
+      }
     }
 
     if (this.canViewPersonalData) {
