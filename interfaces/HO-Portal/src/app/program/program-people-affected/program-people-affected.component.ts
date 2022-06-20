@@ -16,10 +16,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
-import {
-  PaymentColumn,
-  PaymentColumnDetail,
-} from 'src/app/models/payment.model';
+import { PaymentColumnDetail } from 'src/app/models/payment.model';
 import {
   PaStatus,
   Person,
@@ -76,7 +73,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   public columnDefaults: any;
   public columns: PersonTableColumn[] = [];
   private standardColumns: PersonTableColumn[] = [];
-  public paymentHistoryColumn: PaymentColumn;
+  public paymentHistoryColumn: PersonTableColumn;
   private pastTransactions: Transaction[] = [];
   private lastPaymentId: number;
 
@@ -655,7 +652,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     return name;
   }
 
-  private createPaymentHistoryColumn(): PaymentColumn {
+  private createPaymentHistoryColumn(): PersonTableColumn {
     return {
       prop: 'paymentHistory',
       name: this.translate.instant(

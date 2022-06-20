@@ -1,4 +1,5 @@
 import Permission from '../auth/permission.enum';
+import { Attribute } from './attribute.model';
 import { PaymentColumnDetail } from './payment.model';
 import { ProgramPhase } from './program.model';
 
@@ -24,7 +25,7 @@ export class Person {
   fsp?: string;
   paymentAmountMultiplier?: number;
   preferredLanguage?: LanguageEnum;
-  paTableAttributes?: object;
+  paTableAttributes?: Attribute[];
 }
 
 // Model for display (in table)
@@ -51,7 +52,7 @@ export class PersonRow {
   fsp?: string | null;
   paymentAmountMultiplier?: string | null;
   preferredLanguage?: string | null;
-  paTableAttributes?: object;
+  paTableAttributes?: Person['paTableAttributes'];
   paymentHistory?: PaymentColumnDetail;
 }
 
@@ -86,11 +87,6 @@ export enum LanguageEnum {
   ti = 'ti',
   tl = 'tl',
   uk = 'uk',
-}
-
-export class PersonCustomAttribute {
-  type: string;
-  value: string | boolean;
 }
 
 export class PersonTableColumn {

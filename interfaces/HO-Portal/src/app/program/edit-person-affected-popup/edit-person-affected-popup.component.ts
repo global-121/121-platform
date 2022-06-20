@@ -39,7 +39,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public canUpdatePersonalData = false;
 
   public program: Program;
-  private paTableAttributesInput: Attribute[];
+  private paTableAttributesInput: Program['editableAttributes'];
 
   public inProgress: any = {};
   public attributeValues: any = {};
