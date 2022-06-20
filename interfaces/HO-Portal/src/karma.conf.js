@@ -26,7 +26,7 @@ module.exports = function (config) {
     port: 9876,
     colors: true,
     captureConsole: true,
-    logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_INFO,
     autoWatch: true,
     restartOnFileChange: true,
     browsers: ['Chrome'],
