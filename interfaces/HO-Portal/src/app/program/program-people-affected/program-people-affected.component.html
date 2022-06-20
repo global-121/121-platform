@@ -263,7 +263,9 @@
         </span>
       </ng-container>
       <ng-container *ngIf="value !== true && value !== false && value">
-        {{ value }}
+        <span [title]="value">
+          {{ value }}
+        </span>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>
