@@ -76,7 +76,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   public columnDefaults: any;
   public columns: PersonTableColumn[] = [];
   private standardColumns: PersonTableColumn[] = [];
-  private paymentColumnTemplate: PaymentColumn;
   public paymentHistoryColumn: PaymentColumn;
   private pastTransactions: Transaction[] = [];
   private lastPaymentId: number;
@@ -461,17 +460,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         width: 150,
       },
     ];
-    this.paymentColumnTemplate = {
-      prop: 'payment',
-      name: this.translate.instant(
-        'page.program.program-people-affected.column.payment',
-      ),
-      paymentIndex: 0,
-      ...this.columnDefaults,
-      phases: [ProgramPhase.payment],
-      width: columnDateTimeWidth,
-      permissions: [Permission.PaymentTransactionREAD],
-    };
   }
   ngOnDestroy(): void {
     if (this.routerSubscription) {
@@ -668,10 +656,13 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private createPaymentHistoryColumn(): PaymentColumn {
-    const column = Object.assign({}, this.paymentColumnTemplate);
-    column.name = 'Payment History';
-    column.prop = 'paymentHistory';
-    return column;
+    return {
+      prop: 'paymentHistory',
+      name: this.translate.instant(
+        'page.program.program-people-affected.column.payment-history',
+      ),
+      ...this.columnDefaults,
+    };
   }
 
   private async updateBulkActions() {

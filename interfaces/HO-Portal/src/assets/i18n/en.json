@@ -254,7 +254,6 @@
           "name": "Name",
           "dob": "Date of birth",
           "phone-number": "Phonenumber",
-          "payment": "Payment #",
           "vnumber": "V-number",
           "whatsappPhoneNumber": "WhatsApp nr.",
           "preferredLanguage": "Preferred language",
