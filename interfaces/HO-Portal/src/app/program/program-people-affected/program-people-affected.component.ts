@@ -1270,8 +1270,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   public toggleShowAllStatusState() {
-    const newState = !this.showAllStatusState;
-    if (newState) {
+    if (this.showAllStatusState) {
       this.initialVisiblePeopleAffected = [...this.allPeopleAffected];
     } else {
       this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];

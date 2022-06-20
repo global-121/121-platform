@@ -86,10 +86,12 @@
 
       <ion-toggle
         [(ngModel)]="showAllStatusState"
-        (click)="toggleShowAllStatusState()"
+        (ionChange)="toggleShowAllStatusState()"
       ></ion-toggle>
       <ion-label
-        >{{ 'page.program.program-people-affected.filter-toggle' | translate }}
+        (click)="showAllStatusState=!showAllStatusState"
+      >
+        {{ 'page.program.program-people-affected.filter-toggle' | translate }}
       </ion-label>
       <tooltip
         style="margin-left: 3px; margin-bottom: 1px"
