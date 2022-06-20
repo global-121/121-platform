@@ -143,7 +143,7 @@
       "scoring": {},
       "pattern": "^\\d{10}$",
       "phases": ["payment"],
-      "editableInPortal": true
+      "editableInPortal": false
     },
     {
       "name": "phoneNumber",
