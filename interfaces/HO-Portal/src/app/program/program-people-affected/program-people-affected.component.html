@@ -303,13 +303,11 @@
 
   <ngx-datatable-column
     *ngIf="thisPhase === phaseEnum.payment"
-    prop="paymentHistoryButton"
-    [name]="paymentHistoryColumn?.name"
-    minWidth="300"
-    [draggable]="false"
-    [resizeable]="false"
-    [sortable]="true"
-    [headerClass]="columnDefaults.headerClass"
+    prop="paymentHistoryColumn"
+    [name]="paymentHistoryColumn?.name || ''"
+    [minWidth]="paymentHistoryColumn?.minWidth"
+    [sortable]="paymentHistoryColumn?.sortable"
+    [headerClass]="paymentHistoryColumn?.headerClass"
   >
     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
       <ng-container *ngIf="value">

@@ -305,7 +305,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       permissions: [Permission.RegistrationREAD],
       showIfNoValidation: true,
       headerClass: 'ion-text-wrap ion-align-self-end',
-      minWidth: 100,
     };
     const columnDateTimeWidth = 142;
     const columnScoreWidth = 90;
@@ -625,6 +624,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         permissions: [Permission.RegistrationPersonalREAD],
         phases: colPerPhase.phases,
         headerClass: 'ion-text-wrap ion-align-self-end',
+        minWidth: 100,
+        maxWidth: 200,
       };
       this.columns.push(addCol);
     }
@@ -659,6 +660,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         'page.program.program-people-affected.column.payment-history',
       ),
       ...this.columnDefaults,
+      phases: [ProgramPhase.payment],
+      permissions: [Permission.RegistrationPersonalREAD],
+      minWidth: 300,
     };
   }
 
@@ -891,13 +895,13 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     let paymentColumnValue = new PaymentColumnDetail();
     paymentColumnValue.payments = [];
 
-    const paymentHistoryButtonKey = 'paymentHistoryButton';
+    const columnKey = 'paymentHistoryColumn';
 
     if (!lastPayment) {
       paymentColumnValue.text = this.translate.instant(
         'page.program.program-people-affected.transaction.no-payment-yet',
       );
-      personRow[paymentHistoryButtonKey] = paymentColumnValue.text;
+      personRow[columnKey] = paymentColumnValue.text;
     } else {
       const pastTransactionsOfPa = this.pastTransactions.filter(
         (transaction) => transaction.referenceId === personRow.referenceId,
@@ -928,7 +932,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           'page.program.program-people-affected.transaction.failed',
         );
       }
-      personRow[paymentHistoryButtonKey] =
+      personRow[columnKey] =
         this.translate.instant(
           'page.program.program-people-affected.transaction.payment-number',
         ) +
