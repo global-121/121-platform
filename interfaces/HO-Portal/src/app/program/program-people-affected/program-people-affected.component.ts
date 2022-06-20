@@ -308,6 +308,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       permissions: [Permission.RegistrationREAD],
       showIfNoValidation: true,
       headerClass: 'ion-text-wrap ion-align-self-end',
+      minWidth: 100,
     };
     const columnDateTimeWidth = 142;
     const columnScoreWidth = 90;
@@ -609,6 +610,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private async loadColumns() {
+    const columnsPerPhase = await this.programsService.getPaTableAttributes(
+      this.programId,
+      this.thisPhase,
+    );
     this.columns = [];
 
     for (const column of this.standardColumns) {
@@ -620,11 +625,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         this.columns.push(column);
       }
     }
-
-    const columnsPerPhase = await this.programsService.getPaTableAttributes(
-      this.programId,
-      this.thisPhase,
-    );
 
     if (!columnsPerPhase) {
       return;
