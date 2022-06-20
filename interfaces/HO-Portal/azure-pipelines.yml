@@ -45,6 +45,10 @@ steps:
     displayName: Linting
     workingDirectory: $(workingDir)
 
+  - script: node --version && npm --version && npm ls typescript && npx tsc --showConfig
+    displayName: Debug Info
+    workingDirectory: $(workingDir)
+
   - script: npm test
     displayName: Tests
     workingDirectory: $(workingDir)
