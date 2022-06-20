@@ -1,4 +1,4 @@
-import * as saveAs from 'file-saver';
+import { saveAs } from 'file-saver';
 
 export function arrayToCsv(array: any[], filename: string): string {
   if (array.length === 0) {
