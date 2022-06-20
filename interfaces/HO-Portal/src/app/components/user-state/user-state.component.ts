@@ -26,8 +26,8 @@ export class UserStateComponent implements OnInit {
     });
   }
 
-  public doLogout() {
-    this.authService.logout();
+  public async doLogout() {
+    await this.authService.logout();
     window.location.reload();
   }
 

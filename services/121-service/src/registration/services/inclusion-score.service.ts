@@ -17,7 +17,7 @@ export class InlusionScoreService {
   public async calculatePaymentAmountMultiplier(
     programId: number,
     referenceId: string,
-  ): Promise<void> {
+  ): Promise<RegistrationEntity> {
     const program = await this.programRepository.findOne(programId);
     if (!program.paymentAmountMultiplierFormula) {
       return;
@@ -37,7 +37,7 @@ export class InlusionScoreService {
       paymentAmountMultiplier += Number(factorElements[0]) * factorValue;
     }
     registration.paymentAmountMultiplier = paymentAmountMultiplier;
-    await this.registrationRepository.save(registration);
+    return await this.registrationRepository.save(registration);
   }
 
   public async calculateInclusionScore(referenceId: string): Promise<void> {

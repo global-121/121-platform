@@ -109,9 +109,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
     this.programsService
       .updatePaAttribute(this.person.referenceId, attribute, value)
-      .then(() => {
+      .then((response: Person) => {
         this.inProgress[attribute] = false;
         this.attributeValues[attribute] = value;
+        this.attributeValues.paymentAmountMultiplier =
+          response.paymentAmountMultiplier;
         this.actionResult(
           this.translate.instant('common.update-success'),
           true,
