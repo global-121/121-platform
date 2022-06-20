@@ -828,7 +828,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         : '',
       phoneNumber: formatPhoneNumber(person.phoneNumber),
       paymentAmountMultiplier: person.paymentAmountMultiplier
-        ? `${person.paymentAmountMultiplier}&times;`
+        ? `${person.paymentAmountMultiplier}×`
         : '',
       fsp: person.fsp,
       hasNote: !!person.hasNote,
