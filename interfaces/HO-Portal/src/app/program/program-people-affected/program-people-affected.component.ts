@@ -34,6 +34,7 @@ import {
 import { StatusEnum } from 'src/app/models/status.enum';
 import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
+import { TranslatableString } from 'src/app/models/translatable-string.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
@@ -610,10 +611,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private async loadColumns() {
-    const columnsPerPhase = await this.programsService.getPaTableAttributes(
-      this.programId,
-      this.thisPhase,
-    );
     this.columns = [];
 
     for (const column of this.standardColumns) {
@@ -626,19 +623,19 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       }
     }
 
+    const columnsPerPhase = await this.programsService.getPaTableAttributes(
+      this.programId,
+      this.thisPhase,
+    );
+
     if (!columnsPerPhase) {
       return;
     }
 
     for (const colPerPhase of columnsPerPhase) {
-      const translationKey = `page.program.program-people-affected.column.${colPerPhase.name}`;
-      let name = this.translate.instant(translationKey);
-      if (name === translationKey) {
-        name = this.translatableStringService.get(colPerPhase.label);
-      }
       const addCol = {
         prop: colPerPhase.name,
-        name,
+        name: this.createColumnNameLabel(colPerPhase.name, colPerPhase.label),
         ...this.columnDefaults,
         permissions: [Permission.RegistrationPersonalREAD],
         phases: colPerPhase.phases,
@@ -653,6 +650,21 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       (columnOrAction.showIfNoValidation && !this.program.validation) ||
       this.program.validation
     );
+  }
+
+  private createColumnNameLabel(
+    columnName: string,
+    columnLabel?: TranslatableString,
+  ): string {
+    const translationKey = `page.program.program-people-affected.column.${columnName}`;
+
+    // If no generic translaton is available, the output will be the same as the input
+    let name = this.translate.instant(translationKey);
+
+    if (name === translationKey && columnLabel) {
+      name = this.translatableStringService.get(columnLabel);
+    }
+    return name;
   }
 
   private createPaymentHistoryColumn(): PaymentColumn {
