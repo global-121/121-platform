@@ -305,6 +305,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       permissions: [Permission.RegistrationREAD],
       showIfNoValidation: true,
       headerClass: 'ion-text-wrap ion-align-self-end',
+      width: 100,
     };
     const columnDateTimeWidth = 142;
     const columnScoreWidth = 90;
@@ -624,8 +625,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         permissions: [Permission.RegistrationPersonalREAD],
         phases: colPerPhase.phases,
         headerClass: 'ion-text-wrap ion-align-self-end',
-        minWidth: 100,
-        maxWidth: 200,
       };
       this.columns.push(addCol);
     }
