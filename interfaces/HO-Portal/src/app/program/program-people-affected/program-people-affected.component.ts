@@ -609,10 +609,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private async loadColumns() {
-    const columnsPerPhase = await this.programsService.getPaTableAttributes(
-      this.programId,
-      this.thisPhase,
-    );
     this.columns = [];
 
     for (const column of this.standardColumns) {
@@ -624,6 +620,16 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         this.columns.push(column);
       }
     }
+
+    const columnsPerPhase = await this.programsService.getPaTableAttributes(
+      this.programId,
+      this.thisPhase,
+    );
+
+    if (!columnsPerPhase) {
+      return;
+    }
+
     for (const colPerPhase of columnsPerPhase) {
       const translationKey = `page.program.program-people-affected.column.${colPerPhase.name}`;
       let name = this.translate.instant(translationKey);
