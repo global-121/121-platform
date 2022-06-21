@@ -325,7 +325,7 @@ export class BulkImportService {
       csvFile.originalname.length - indexLastPoint,
     );
     if (extension !== '.csv') {
-      const errors = `Wrong file extension. It should be .csv`;
+      const errors = [`Wrong file extension. It should be .csv`];
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
 
