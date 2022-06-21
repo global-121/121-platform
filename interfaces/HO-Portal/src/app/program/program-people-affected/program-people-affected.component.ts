@@ -626,7 +626,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         phases: colPerPhase.phases,
         headerClass: 'ion-text-wrap ion-align-self-end',
       };
-      this.columns.push(addCol);
+      if (this.authService.hasAllPermissions(addCol.permissions)) {
+        this.columns.push(addCol);
+      }
     }
   }
 
