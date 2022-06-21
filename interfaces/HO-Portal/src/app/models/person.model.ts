@@ -22,6 +22,7 @@ export class Person {
   rejectionDate?: string;
   status: PaStatus;
   hasNote?: boolean;
+  hasPhoneNumber?: boolean;
   fsp?: string;
   paymentAmountMultiplier?: number;
   preferredLanguage?: LanguageEnum;
@@ -36,6 +37,7 @@ export class PersonRow {
   status: PaStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
   statusLabel: string;
   hasNote: boolean;
+  hasPhoneNumber?: boolean;
   digitalIdCreated?: string;
   vulnerabilityAssessmentCompleted?: string | null;
   selectedForValidation?: string | null;
