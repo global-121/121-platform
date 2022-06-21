@@ -552,6 +552,8 @@ export class RegistrationsService {
         `${RegistrationStatusEnum.rejected}.created`,
         RegistrationStatusTimestampField.rejectionDate,
       )
+      .addSelect('registration.phoneNumber', 'phoneNumber')
+      .addSelect('registration.customData', 'customData')
       .addOrderBy(`${RegistrationStatusEnum.rejected}.created`, 'DESC')
       .leftJoin('registration.fsp', 'fsp')
       .leftJoin(
@@ -607,12 +609,20 @@ export class RegistrationsService {
       .where('registration.program.id = :programId', { programId: programId });
 
     if (!includePersonalData) {
-      return await q.getRawMany();
+      const rows = await q.getRawMany();
+      const responseRows = [];
+      for (let row of rows) {
+        row['hasPhoneNumber'] = !!(
+          row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber]
+        );
+        delete row.customData;
+        delete row.phoneNumber;
+        responseRows.push(row);
+      }
+      return responseRows;
     }
 
-    q = q.addSelect('registration.phoneNumber', 'phoneNumber');
     q = q.addSelect('registration.note', 'note');
-    q = q.addSelect('registration.customData', 'customData');
 
     const rows = await q.getRawMany();
     const responseRows = [];
@@ -622,6 +632,9 @@ export class RegistrationsService {
     for (let row of rows) {
       row['name'] = this.getName(row.customData);
       row['hasNote'] = !!row.note;
+      row['hasPhoneNumber'] = !!(
+        row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber]
+      );
       row['phoneNumber'] =
         row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber];
       row['paTableAttributes'] = {};

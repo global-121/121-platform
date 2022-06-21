@@ -837,6 +837,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         : '',
       fsp: person.fsp,
       hasNote: !!person.hasNote,
+      hasPhoneNumber: !!person.hasPhoneNumber,
       paTableAttributes: person.paTableAttributes,
     };
 
