@@ -276,9 +276,11 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     private translatableStringService: TranslatableStringService,
   ) {
     this.locale = environment.defaultLocale;
-    this.routerSubscription = this.router.events.subscribe((event) => {
+    this.routerSubscription = this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
         if (event.url.includes(this.thisPhase)) {
+          await this.loadProgram();
+          await this.loadPermissions();
           this.refreshData();
         }
       }
@@ -467,13 +469,59 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.isLoading = true;
 
+    await this.loadProgram();
+    await this.loadPaTableAttributes();
+    await this.loadPermissions();
+    this.activePhase = this.program.phase;
+
+    await this.loadColumns();
+
+    if (this.canViewPaymentData) {
+      this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
+        this.programId,
+      );
+      const firstPaymentToShow = 1;
+
+      if (this.thisPhase === ProgramPhase.payment) {
+        this.pastTransactions = await this.programsService.getTransactions(
+          this.programId,
+          firstPaymentToShow,
+        );
+        this.paymentHistoryColumn = this.createPaymentHistoryColumn();
+      }
+    }
+
+    await this.updateBulkActions();
+
+    this.submitPaymentProps = {
+      programId: this.programId,
+      payment: null,
+      referenceIds: [],
+    };
+
+    // Timeout to make sure the datatable elements are rendered/generated:
+    window.setTimeout(() => {
+      this.setupProxyScrollbar();
+    }, 0);
+
+    // Listen for external signals to refresh data shown in table:
+    this.pubSub.subscribe(PubSubEvent.dataRegistrationChanged, () => {
+      this.refreshData();
+    });
+  }
+
+  private async loadProgram() {
     this.program = await this.programsService.getProgramById(this.programId);
+  }
+
+  private async loadPaTableAttributes() {
     this.paTableAttributes = await this.programsService.getPaTableAttributes(
       this.programId,
       this.thisPhase,
     );
-    this.activePhase = this.program.phase;
+  }
 
+  private async loadPermissions() {
     this.paymentInProgress =
       await this.pastPaymentsService.checkPaymentInProgress(this.program.id);
 
@@ -499,43 +547,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       Permission.PaymentREAD,
       Permission.PaymentTransactionREAD,
     ]);
-
-    await this.loadColumns();
-
-    if (this.canViewPaymentData) {
-      this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
-        this.programId,
-      );
-      const firstPaymentToShow = 1;
-
-      if (this.thisPhase === ProgramPhase.payment) {
-        this.pastTransactions = await this.programsService.getTransactions(
-          this.programId,
-          firstPaymentToShow,
-        );
-        this.paymentHistoryColumn = this.createPaymentHistoryColumn();
-      }
-    }
-
-    await this.refreshData();
-
-    await this.updateBulkActions();
-
-    this.submitPaymentProps = {
-      programId: this.programId,
-      payment: null,
-      referenceIds: [],
-    };
-
-    // Timeout to make sure the datatable elements are rendered/generated:
-    window.setTimeout(() => {
-      this.setupProxyScrollbar();
-    }, 0);
-
-    // Listen for external signals to refresh data shown in table:
-    this.pubSub.subscribe(PubSubEvent.dataRegistrationChanged, () => {
-      this.refreshData();
-    });
   }
 
   private setupProxyScrollbar() {
