@@ -470,8 +470,17 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.isLoading = true;
 
     await this.loadProgram();
-    await this.loadPaTableAttributes();
+
+    this.paTableAttributes = await this.programsService.getPaTableAttributes(
+      this.programId,
+      this.thisPhase,
+    );
+
+    this.paymentInProgress =
+      await this.pastPaymentsService.checkPaymentInProgress(this.program.id);
+
     await this.loadPermissions();
+
     this.activePhase = this.program.phase;
 
     await this.loadColumns();
@@ -513,18 +522,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private async loadProgram() {
     this.program = await this.programsService.getProgramById(this.programId);
   }
-
-  private async loadPaTableAttributes() {
-    this.paTableAttributes = await this.programsService.getPaTableAttributes(
-      this.programId,
-      this.thisPhase,
-    );
-  }
-
   private async loadPermissions() {
-    this.paymentInProgress =
-      await this.pastPaymentsService.checkPaymentInProgress(this.program.id);
-
     this.canUpdatePaData = this.authService.hasAllPermissions([
       Permission.RegistrationAttributeUPDATE,
     ]);
