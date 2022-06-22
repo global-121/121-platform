@@ -9,13 +9,13 @@ import {
 import { Person } from 'src/app/models/person.model';
 import {
   Program,
-  ProgramCustomAttribute,
   ProgramQuestion,
   ProgramQuestionOption,
 } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { Attribute } from '../../models/attribute.model';
 
 @Component({
   selector: 'app-edit-person-affected-popup',
@@ -39,6 +39,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public canUpdatePersonalData = false;
 
   public program: Program;
+  private paTableAttributesInput: Program['editableAttributes'];
 
   public inProgress: any = {};
   public attributeValues: any = {};
@@ -51,7 +52,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public imageString = '(image)';
   public rowIndex: number;
 
-  public customAttributes: {}[] = [];
+  public paTableAttributes: {}[] = [];
 
   public fspList: Fsp[] = [];
   public programFspLength = 0;
@@ -78,10 +79,19 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.attributeValues.paymentAmountMultiplier =
       this.person?.paymentAmountMultiplier;
     this.attributeValues.phoneNumber = this.person?.phoneNumber;
-    this.attributeValues.whatsappPhoneNumber = this.person?.whatsappPhoneNumber;
+
+    if (this.program && this.program.editableAttributes) {
+      this.paTableAttributesInput = this.program.editableAttributes;
+      const fspObject = this.fspList.find((f) => f.fsp === this.person?.fsp);
+      if (fspObject && fspObject.editableAttributes) {
+        this.paTableAttributesInput = fspObject.editableAttributes.concat(
+          this.paTableAttributesInput,
+        );
+      }
+    }
 
     if (this.canViewPersonalData) {
-      this.fillCustomAttributes();
+      this.fillPaTableAttributes();
       this.getNote();
       this.getMessageHistory();
     }
@@ -90,9 +100,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public async updatePaAttribute(
     attribute: string,
     value: string,
-    isCustomAttribute: boolean,
+    isPaTableAttribute: boolean,
   ): Promise<void> {
-    if (isCustomAttribute) {
+    if (isPaTableAttribute) {
       value = String(value);
     }
     this.inProgress[attribute] = true;
@@ -138,7 +148,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     return '<br><br>' + attributeConstraints.join('<br>');
   }
 
-  private fillCustomAttributes() {
+  private fillPaTableAttributes() {
     this.programFspLength = this.fspList.length;
     for (const fspItem of this.fspList) {
       if (fspItem.fsp === this.person.fsp) {
@@ -146,43 +156,52 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       }
     }
 
-    this.customAttributes = this.program?.programCustomAttributes.map((ca) => {
-      this.attributeValues[ca.name] =
-        this.person.customAttributes[ca.name].value;
+    this.paTableAttributes = this.paTableAttributesInput.map(
+      (paTableAttribute) => {
+        this.attributeValues[paTableAttribute.name] =
+          this.person.paTableAttributes[paTableAttribute.name].value;
 
-      let options = null;
-      if (ca.type === 'dropdown') {
-        options = this.getDropdownOptions(ca);
-      }
-
-      return {
-        name: ca.name,
-        type: ca.type,
-        label: this.translatableString.get(ca.label),
-        value: this.person.customAttributes[ca.name].value,
-        options,
-      };
-    });
+        let options = null;
+        if (paTableAttribute.type === 'dropdown') {
+          options = this.getDropdownOptions(paTableAttribute);
+        }
+        const translationKey = `page.program.program-people-affected.edit-person-affected-popup.properties.${paTableAttribute.name}`;
+        let label = this.translate.instant(translationKey).label;
+        if (!label) {
+          label = this.translatableString.get(paTableAttribute.label);
+        }
+        return {
+          name: paTableAttribute.name,
+          type: paTableAttribute.type,
+          label,
+          value: this.person.paTableAttributes[paTableAttribute.name].value,
+          options,
+          explanation: this.translate.instant(translationKey).explanation,
+        };
+      },
+    );
   }
 
-  private isFspAttribute(ca: ProgramCustomAttribute): boolean {
+  private isFspAttribute(paTableAttribute: Attribute): boolean {
     if (!this.personFsp || !this.personFsp.attributes) {
       return false;
     }
-    return this.personFsp.attributes.some((attr) => attr.name === ca.name);
+    return this.personFsp.attributes.some(
+      (attr) => attr.name === paTableAttribute.name,
+    );
   }
 
   private getDropdownOptions(
-    ca: ProgramCustomAttribute,
+    paTableAttribute: Attribute,
   ): FspAttributeOption[] | ProgramQuestionOption[] {
-    if (this.isFspAttribute(ca)) {
+    if (this.isFspAttribute(paTableAttribute)) {
       return this.personFsp.attributes.find(
-        (attr: FspAttribute) => attr.name === ca.name,
+        (attr: FspAttribute) => attr.name === paTableAttribute.name,
       ).options;
     }
 
     return this.program.programQuestions.find(
-      (question: ProgramQuestion) => question.name === ca.name,
+      (question: ProgramQuestion) => question.name === paTableAttribute.name,
     ).options;
   }
 

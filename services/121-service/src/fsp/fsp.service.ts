@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
 import { FspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
 import { FspAttributeEntity } from './fsp-attribute.entity';
+import { Attribute } from '../registration/enum/custom-data-attributes';
 
 @Injectable()
 export class FspService {
@@ -21,7 +22,22 @@ export class FspService {
     const fsp = await this.financialServiceProviderRepository.findOne(id, {
       relations: ['attributes'],
     });
+    fsp.editableAttributes = await this.getPaEditableAttributesFsp(fsp.id);
     return fsp;
+  }
+
+  private async getPaEditableAttributesFsp(fspId): Promise<Attribute[]> {
+    return (
+      await this.fspAttributeRepository.find({
+        where: { fsp: fspId },
+      })
+    ).map(c => {
+      return {
+        name: c.name,
+        type: c.answerType,
+        label: c.label,
+      };
+    });
   }
 
   public async updateFsp(

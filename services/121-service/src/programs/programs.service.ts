@@ -2,7 +2,7 @@ import { ProgramQuestionEntity } from './program-question.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository } from 'typeorm';
+import { Repository, getRepository, In } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { CreateProgramDto } from './dto/create-program.dto';
@@ -14,6 +14,7 @@ import { UpdateProgramDto } from './dto/update-program.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
+import { Attribute } from '../registration/enum/custom-data-attributes';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -48,6 +49,7 @@ export class ProgramService {
         'programCustomAttributes',
       ],
     });
+    program.editableAttributes = await this.getPaEditableAttributes(program.id);
     return program;
   }
 
@@ -169,7 +171,6 @@ export class ProgramService {
         // If existing: update ..
         oldAttribute.type = attribute.type;
         oldAttribute.label = attribute.label;
-        oldAttribute.export = attribute.export;
         const savedAttribute = await this.programCustomAttributeRepository.save(
           oldAttribute,
         );
@@ -278,5 +279,108 @@ export class ProgramService {
     };
 
     return simpleProgramRO;
+  }
+
+  public async getPaTableAttributes(
+    programId: number,
+    phase?: ProgramPhase,
+  ): Promise<Attribute[]> {
+    let queryCustomAttr = getRepository(ProgramCustomAttributeEntity)
+      .createQueryBuilder('programCustomAttribute')
+      .where({ program: { id: programId } });
+
+    if (phase) {
+      queryCustomAttr = queryCustomAttr.andWhere(
+        'programCustomAttribute.phases ::jsonb ?| :phases',
+        { phases: [phase] },
+      );
+    }
+    const rawCustomAttributes = await queryCustomAttr.getMany();
+    const customAttributes = rawCustomAttributes.map(c => {
+      return {
+        name: c.name,
+        type: c.type,
+        label: c.label,
+      };
+    });
+
+    let queryProgramQuestions = getRepository(ProgramQuestionEntity)
+      .createQueryBuilder('programQuestion')
+      .where({ program: { id: programId } });
+
+    if (phase) {
+      queryProgramQuestions = queryProgramQuestions.andWhere(
+        'programQuestion.phases ::jsonb ?| :phases',
+        { phases: [phase] },
+      );
+    }
+    const rawProgramQuestions = await queryProgramQuestions.getMany();
+    const programQuestions = rawProgramQuestions.map(c => {
+      return {
+        name: c.name,
+        type: c.answerType,
+        label: c.label,
+      };
+    });
+
+    const program = await this.programRepository.findOne(programId, {
+      relations: ['financialServiceProviders'],
+    });
+    const fspIds = program.financialServiceProviders.map(f => f.id);
+
+    let queryFspAttributes = getRepository(FspAttributeEntity)
+      .createQueryBuilder('fspAttribute')
+      .where({ fsp: In(fspIds) });
+
+    if (phase) {
+      queryFspAttributes = queryFspAttributes.andWhere(
+        'fspAttribute.phases ::jsonb ?| :phases',
+        { phases: [phase] },
+      );
+    }
+    const rawFspAttributes = await queryFspAttributes.getMany();
+    const fspAttributes = rawFspAttributes.map(c => {
+      return {
+        name: c.name,
+        type: c.answerType,
+        label: c.label,
+      };
+    });
+
+    return [...customAttributes, ...programQuestions, ...fspAttributes];
+  }
+
+  private async getPaEditableAttributes(
+    programId: number,
+  ): Promise<Attribute[]> {
+    const customAttributes = (
+      await this.programCustomAttributeRepository.find({
+        where: { program: { id: programId } },
+      })
+    ).map(c => {
+      return {
+        name: c.name,
+        type: c.type,
+        label: c.label,
+      };
+    });
+    const programQuestions = (
+      await this.programQuestionRepository.find({
+        where: { program: { id: programId }, editableInPortal: true },
+      })
+    ).map(c => {
+      return {
+        name: c.name,
+        type: c.answerType,
+        label: c.label,
+      };
+    });
+
+    const program = await this.programRepository.findOne(programId, {
+      relations: ['financialServiceProviders'],
+    });
+    const fspIds = program.financialServiceProviders.map(f => f.id);
+
+    return [...customAttributes, ...programQuestions];
   }
 }

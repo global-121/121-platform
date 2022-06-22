@@ -1,4 +1,5 @@
 import Permission from '../auth/permission.enum';
+import { Attribute } from './attribute.model';
 import { PaymentColumnDetail } from './payment.model';
 import { ProgramPhase } from './program.model';
 
@@ -21,12 +22,11 @@ export class Person {
   rejectionDate?: string;
   status: PaStatus;
   hasNote?: boolean;
+  hasPhoneNumber?: boolean;
   fsp?: string;
-  vnumber?: string;
-  whatsappPhoneNumber?: string;
   paymentAmountMultiplier?: number;
   preferredLanguage?: LanguageEnum;
-  customAttributes?: object;
+  paTableAttributes?: Attribute[];
 }
 
 // Model for display (in table)
@@ -37,6 +37,7 @@ export class PersonRow {
   status: PaStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
   statusLabel: string;
   hasNote: boolean;
+  hasPhoneNumber?: boolean;
   digitalIdCreated?: string;
   vulnerabilityAssessmentCompleted?: string | null;
   selectedForValidation?: string | null;
@@ -51,11 +52,9 @@ export class PersonRow {
   name?: string | null;
   phoneNumber?: string | null;
   fsp?: string | null;
-  vnumber?: string | null;
-  whatsappPhoneNumber?: string | null;
   paymentAmountMultiplier?: string | null;
   preferredLanguage?: string | null;
-  customAttributes?: object;
+  paTableAttributes?: Person['paTableAttributes'];
   paymentHistory?: PaymentColumnDetail;
 }
 
@@ -90,11 +89,6 @@ export enum LanguageEnum {
   ti = 'ti',
   tl = 'tl',
   uk = 'uk',
-}
-
-export class PersonCustomAttribute {
-  type: string;
-  value: string | boolean;
 }
 
 export class PersonTableColumn {

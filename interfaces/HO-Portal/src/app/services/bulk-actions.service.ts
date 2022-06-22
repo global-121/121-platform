@@ -71,7 +71,7 @@ export class BulkActionsService {
         ]);
         break;
       case BulkActionId.sendMessage:
-        personData.checkboxVisible = !!personData.phoneNumber;
+        personData.checkboxVisible = personData.hasPhoneNumber;
         break;
       case BulkActionId.deletePa:
         personData.checkboxVisible = this.hasStatus(personData, [

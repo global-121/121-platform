@@ -137,7 +137,7 @@ export class CreateProgramDto {
     example: [
       {
         name: 'nameParterOrganization',
-        type: CustomAttributeType.string,
+        type: CustomAttributeType.text,
       },
       {
         name: 'exampleBoolean',
@@ -163,6 +163,8 @@ export class CreateProgramDto {
         questionType: 'standard',
         options: null,
         persistence: true,
+        editableInPortal: false,
+        phases: [],
         scoring: {},
       },
       {
@@ -179,6 +181,8 @@ export class CreateProgramDto {
           '19-65': 0,
           '65>': 6,
         },
+        phases: [],
+        editableInPortal: false,
       },
       {
         name: 'roof_type',

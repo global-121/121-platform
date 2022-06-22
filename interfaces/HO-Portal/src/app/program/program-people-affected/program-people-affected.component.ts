@@ -4,6 +4,7 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
@@ -11,13 +12,11 @@ import {
 import { NavigationEnd, Router } from '@angular/router';
 import { AlertController, ModalController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
-import {
-  PaymentColumn,
-  PaymentColumnDetail,
-} from 'src/app/models/payment.model';
+import { PaymentColumnDetail } from 'src/app/models/payment.model';
 import {
   PaStatus,
   Person,
@@ -25,13 +24,14 @@ import {
   PersonTableColumn,
 } from 'src/app/models/person.model';
 import {
+  PaTableAttribute,
   Program,
-  ProgramCustomAttribute,
   ProgramPhase,
 } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
+import { TranslatableString } from 'src/app/models/translatable-string.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
@@ -48,7 +48,7 @@ import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-h
   templateUrl: './program-people-affected.component.html',
   styleUrls: ['./program-people-affected.component.scss'],
 })
-export class ProgramPeopleAffectedComponent implements OnInit {
+export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   @ViewChild('proxyScrollbar')
   private proxyScrollbar: ElementRef;
 
@@ -62,6 +62,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public phaseEnum = ProgramPhase;
 
   public program: Program;
+  private paTableAttributes: PaTableAttribute[];
   public activePhase: ProgramPhase;
 
   private locale: string;
@@ -71,11 +72,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public columnDefaults: any;
   public columns: PersonTableColumn[] = [];
-  private columnsAvailable: PersonTableColumn[] = [];
-  private paymentColumnTemplate: PaymentColumn;
-  public paymentHistoryColumn: PaymentColumn;
-  private customAttributeColumnTemplate: any = {};
-  public customAttributeColumns: any[] = [];
+  private standardColumns: PersonTableColumn[] = [];
+  public paymentHistoryColumn: PersonTableColumn;
   private pastTransactions: Transaction[] = [];
   private lastPaymentId: number;
 
@@ -262,6 +260,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private canViewPaymentData: boolean;
   private canViewVouchers: boolean;
   private canDoSinglePayment: boolean;
+  private routerSubscription: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -277,9 +276,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     private translatableStringService: TranslatableStringService,
   ) {
     this.locale = environment.defaultLocale;
-    this.router.events.subscribe((event) => {
+    this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.refreshData();
+        if (event.url.includes(this.thisPhase)) {
+          this.refreshData();
+        }
       }
     });
 
@@ -304,12 +305,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       permissions: [Permission.RegistrationREAD],
       showIfNoValidation: true,
       headerClass: 'ion-text-wrap ion-align-self-end',
+      width: 100,
     };
     const columnDateTimeWidth = 142;
     const columnScoreWidth = 90;
     const columnPhoneNumberWidth = 130;
 
-    this.columnsAvailable = [
+    this.standardColumns = [
       {
         prop: 'name',
         name: this.translate.instant(
@@ -455,32 +457,21 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         width: 150,
       },
     ];
-    this.paymentColumnTemplate = {
-      prop: 'payment',
-      name: this.translate.instant(
-        'page.program.program-people-affected.column.payment',
-      ),
-      paymentIndex: 0,
-      ...this.columnDefaults,
-      phases: [ProgramPhase.payment],
-      width: columnDateTimeWidth,
-      permissions: [Permission.PaymentTransactionREAD],
-    };
-    this.customAttributeColumnTemplate = {
-      prop: 'customAttribute',
-      name: '',
-      customAttributeIndex: 0,
-      ...this.columnDefaults,
-      phases: [ProgramPhase.inclusion],
-      width: columnDateTimeWidth,
-      headerClass: 'ion-align-self-end header-overflow-ellipsis',
-    };
+  }
+  ngOnDestroy(): void {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 
   async ngOnInit() {
     this.isLoading = true;
 
     this.program = await this.programsService.getProgramById(this.programId);
+    this.paTableAttributes = await this.programsService.getPaTableAttributes(
+      this.programId,
+      this.thisPhase,
+    );
     this.activePhase = this.program.phase;
 
     this.paymentInProgress =
@@ -509,7 +500,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       Permission.PaymentTransactionREAD,
     ]);
 
-    this.loadColumns();
+    await this.loadColumns();
 
     if (this.canViewPaymentData) {
       this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
@@ -524,12 +515,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         );
         this.paymentHistoryColumn = this.createPaymentHistoryColumn();
       }
-    }
-
-    // Custom attributes can be personal data or not personal data
-    // for now only users that view custom data can see it
-    if (this.canViewPersonalData) {
-      this.fillCustomAttributeColumns();
     }
 
     await this.refreshData();
@@ -610,15 +595,39 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     }, 0);
   }
 
-  private loadColumns() {
+  private async loadColumns() {
     this.columns = [];
-    for (const column of this.columnsAvailable) {
+
+    for (const column of this.standardColumns) {
       if (
         column.phases.includes(this.thisPhase) &&
         this.authService.hasAllPermissions(column.permissions) &&
         this.checkValidationColumnOrAction(column)
       ) {
         this.columns.push(column);
+      }
+    }
+
+    const columnsPerPhase = await this.programsService.getPaTableAttributes(
+      this.programId,
+      this.thisPhase,
+    );
+
+    if (!columnsPerPhase) {
+      return;
+    }
+
+    for (const colPerPhase of columnsPerPhase) {
+      const addCol = {
+        prop: colPerPhase.name,
+        name: this.createColumnNameLabel(colPerPhase.name, colPerPhase.label),
+        ...this.columnDefaults,
+        permissions: [Permission.RegistrationPersonalREAD],
+        phases: colPerPhase.phases,
+        headerClass: 'ion-text-wrap ion-align-self-end',
+      };
+      if (this.authService.hasAllPermissions(addCol.permissions)) {
+        this.columns.push(addCol);
       }
     }
   }
@@ -630,21 +639,32 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     );
   }
 
-  private createPaymentHistoryColumn(): PaymentColumn {
-    const column = Object.assign({}, this.paymentColumnTemplate);
-    column.name = 'Payment History';
-    column.prop = 'paymentHistory';
-    return column;
+  private createColumnNameLabel(
+    columnName: string,
+    columnLabel?: TranslatableString,
+  ): string {
+    const translationKey = `page.program.program-people-affected.column.${columnName}`;
+
+    // If no generic translaton is available, the output will be the same as the input
+    let name = this.translate.instant(translationKey);
+
+    if (name === translationKey && columnLabel) {
+      name = this.translatableStringService.get(columnLabel);
+    }
+    return name;
   }
 
-  private createCustomAttributeColumn(customAttribute: ProgramCustomAttribute) {
-    const column = JSON.parse(
-      JSON.stringify(this.customAttributeColumnTemplate),
-    ); // Hack to clone without reference;
-
-    column.name = this.translatableStringService.get(customAttribute.label);
-    column.prop = customAttribute.name;
-    return column;
+  private createPaymentHistoryColumn(): PersonTableColumn {
+    return {
+      prop: 'paymentHistory',
+      name: this.translate.instant(
+        'page.program.program-people-affected.column.payment-history',
+      ),
+      ...this.columnDefaults,
+      phases: [ProgramPhase.payment],
+      permissions: [Permission.RegistrationPersonalREAD],
+      minWidth: 300,
+    };
   }
 
   private async updateBulkActions() {
@@ -812,14 +832,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           )
         : '',
       phoneNumber: formatPhoneNumber(person.phoneNumber),
-      whatsappPhoneNumber: formatPhoneNumber(person.whatsappPhoneNumber),
-      vnumber: person.vnumber,
       paymentAmountMultiplier: person.paymentAmountMultiplier
-        ? `${person.paymentAmountMultiplier}&times;`
+        ? `${person.paymentAmountMultiplier}×`
         : '',
       fsp: person.fsp,
       hasNote: !!person.hasNote,
-      customAttributes: person.customAttributes,
+      hasPhoneNumber: !!person.hasPhoneNumber,
+      paTableAttributes: person.paTableAttributes,
     };
 
     if (this.canViewPaymentData) {
@@ -828,8 +847,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     // Custom attributes can be personal data or not personal data
     // for now only users that view custom data can see it
-    if (this.canViewPersonalData && personRow.customAttributes !== undefined) {
-      personRow = this.fillCustomAttributeRows(personRow);
+    if (this.canViewPersonalData && personRow.paTableAttributes !== undefined) {
+      personRow = this.fillPaTableAttributeRows(personRow);
     }
 
     return personRow;
@@ -846,18 +865,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     );
   }
 
-  private fillCustomAttributeColumns() {
-    for (const customAttribute of this.program.programCustomAttributes) {
-      this.customAttributeColumns.push(
-        this.createCustomAttributeColumn(customAttribute),
-      );
-    }
-  }
-
-  private fillCustomAttributeRows(personRow: PersonRow): PersonRow {
-    for (const customAttribute of this.program.programCustomAttributes) {
-      personRow[customAttribute.name] =
-        personRow.customAttributes[customAttribute.name].value;
+  private fillPaTableAttributeRows(personRow: PersonRow): PersonRow {
+    for (const paTableAttribute of this.paTableAttributes) {
+      personRow[paTableAttribute.name] =
+        personRow.paTableAttributes[paTableAttribute.name].value;
     }
     return personRow;
   }
@@ -886,13 +897,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     let paymentColumnValue = new PaymentColumnDetail();
     paymentColumnValue.payments = [];
 
-    const paymentHistoryButtonKey = 'paymentHistoryButton';
+    const columnKey = 'paymentHistoryColumn';
 
     if (!lastPayment) {
       paymentColumnValue.text = this.translate.instant(
         'page.program.program-people-affected.transaction.no-payment-yet',
       );
-      personRow[paymentHistoryButtonKey] = paymentColumnValue.text;
+      personRow[columnKey] = paymentColumnValue.text;
     } else {
       const pastTransactionsOfPa = this.pastTransactions.filter(
         (transaction) => transaction.referenceId === personRow.referenceId,
@@ -923,7 +934,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.transaction.failed',
         );
       }
-      personRow[paymentHistoryButtonKey] =
+      personRow[columnKey] =
         this.translate.instant(
           'page.program.program-people-affected.transaction.payment-number',
         ) +
@@ -975,17 +986,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     let show = false;
     for (const pa of this.allPeopleAffected) {
       show = this.hasVoucherSupport(pa.fsp);
-      if (show) {
-        break;
-      }
-    }
-    return show;
-  }
-
-  public showVnumber(): boolean {
-    let show = false;
-    for (const pa of this.allPeopleAffected) {
-      show = !!pa.vnumber;
       if (show) {
         break;
       }
@@ -1272,8 +1272,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public toggleShowAllStatusState() {
-    const newState = !this.showAllStatusState;
-    if (newState) {
+    if (this.showAllStatusState) {
       this.initialVisiblePeopleAffected = [...this.allPeopleAffected];
     } else {
       this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
@@ -1304,7 +1303,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         () => {
           row[column.prop] = value;
           const valueKey = 'value';
-          row.customAttributes[column.prop][valueKey] = value;
+          row.paTableAttributes[column.prop][valueKey] = value;
           this.actionResult(this.translate.instant('common.update-success'));
         },
         (error) => {

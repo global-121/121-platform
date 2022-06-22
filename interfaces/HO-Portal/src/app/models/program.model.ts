@@ -1,3 +1,4 @@
+import { Attribute } from './attribute.model';
 import { Fsp } from './fsp.model';
 import { TranslatableString } from './translatable-string.model';
 
@@ -31,6 +32,7 @@ export class Program {
   published: boolean;
   programCustomAttributes: ProgramCustomAttribute[];
   programQuestions: ProgramQuestion[];
+  editableAttributes?: Attribute[];
 }
 
 export enum InclusionCalculationType {
@@ -62,7 +64,10 @@ export class ProgramCustomAttribute {
   name: string;
   type: string;
   label?: TranslatableString;
+  phases: ProgramPhase[];
 }
+
+export class PaTableAttribute extends ProgramCustomAttribute {}
 
 export class ProgramQuestion {
   id: number;
@@ -72,6 +77,7 @@ export class ProgramQuestion {
   placeholder?: TranslatableString;
   pattern?: string; // Remember to escape the special characters in the string!
   options: null | ProgramQuestionOption[];
+  phases: ProgramPhase[];
 }
 
 export class ProgramQuestionOption {

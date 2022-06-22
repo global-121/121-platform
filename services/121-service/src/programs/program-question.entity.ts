@@ -66,11 +66,17 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
   @Column({ nullable: true })
   public pattern: string;
 
+  @Column('json', { default: [] })
+  public phases: JSON;
+
   @OneToMany(
     () => ProgramAnswerEntity,
     programAnswer => programAnswer.programQuestion,
   )
   public programAnswers: ProgramAnswerEntity[];
+
+  @Column({ default: false })
+  public editableInPortal: boolean;
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {

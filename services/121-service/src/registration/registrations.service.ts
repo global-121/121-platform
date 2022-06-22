@@ -18,6 +18,7 @@ import { ProgramAnswerEntity } from './program-answer.entity';
 import {
   AnswerTypes,
   Attribute,
+  AttributeType,
   CustomDataAttributes,
 } from './enum/custom-data-attributes';
 import { LookupService } from '../notifications/lookup/lookup.service';
@@ -41,6 +42,7 @@ import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { CustomAttributeType } from '../programs/dto/create-program-custom-attribute.dto';
+import { ProgramService } from '../programs/programs.service';
 
 @Injectable()
 export class RegistrationsService {
@@ -77,6 +79,7 @@ export class RegistrationsService {
     private readonly whatsappService: WhatsappService,
     private readonly inclusionScoreService: InlusionScoreService,
     private readonly bulkImportService: BulkImportService,
+    private readonly programService: ProgramService,
   ) {}
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
@@ -149,22 +152,20 @@ export class RegistrationsService {
         where: { name: answer.programQuestionName },
       });
       if (programQuestion) {
-        const oldAnswer = await this.programAnswerRepository.findOne({
+        let storedAnswer = await this.programAnswerRepository.findOne({
           where: {
             registration: { id: registration.id },
             programQuestion: { id: programQuestion.id },
           },
         });
-        if (oldAnswer) {
-          oldAnswer.programAnswer = answer.programAnswer;
-          await this.programAnswerRepository.save(oldAnswer);
-        } else {
-          let newAnswer = new ProgramAnswerEntity();
-          newAnswer.registration = registration;
-          newAnswer.programQuestion = programQuestion;
-          newAnswer.programAnswer = answer.programAnswer;
-          await this.programAnswerRepository.save(newAnswer);
+        if (!storedAnswer) {
+          storedAnswer = new ProgramAnswerEntity();
+          storedAnswer.registration = registration;
+          storedAnswer.programQuestion = programQuestion;
         }
+        storedAnswer.programAnswer = answer.programAnswer;
+
+        await this.programAnswerRepository.save(storedAnswer);
       }
     }
     await this.storePersistentAnswers(programAnswers, referenceId);
@@ -478,21 +479,6 @@ export class RegistrationsService {
     return program;
   }
 
-  private async getProgramCustomAttributes(
-    programId: number,
-  ): Promise<Attribute[]> {
-    return (
-      await this.programCustomAttributeRepository.find({
-        where: { program: { id: programId } },
-      })
-    ).map(c => {
-      return {
-        attribute: c.name,
-        type: c.type,
-      };
-    });
-  }
-
   public async getRegistrationsForProgram(
     programId: number,
     includePersonalData: boolean,
@@ -566,6 +552,8 @@ export class RegistrationsService {
         `${RegistrationStatusEnum.rejected}.created`,
         RegistrationStatusTimestampField.rejectionDate,
       )
+      .addSelect('registration.phoneNumber', 'phoneNumber')
+      .addSelect('registration.customData', 'customData')
       .addOrderBy(`${RegistrationStatusEnum.rejected}.created`, 'DESC')
       .leftJoin('registration.fsp', 'fsp')
       .leftJoin(
@@ -621,39 +609,41 @@ export class RegistrationsService {
       .where('registration.program.id = :programId', { programId: programId });
 
     if (!includePersonalData) {
-      return await q.getRawMany();
+      const rows = await q.getRawMany();
+      const responseRows = [];
+      for (let row of rows) {
+        row['hasPhoneNumber'] = !!(
+          row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber]
+        );
+        delete row.customData;
+        delete row.phoneNumber;
+        responseRows.push(row);
+      }
+      return responseRows;
     }
 
-    q = q.addSelect('registration.phoneNumber', 'phoneNumber');
     q = q.addSelect('registration.note', 'note');
-    q = q.addSelect('registration.customData', 'customData');
 
     const rows = await q.getRawMany();
     const responseRows = [];
-    const programCustomAttributes = await this.getProgramCustomAttributes(
+    const paTableAttributes = await this.programService.getPaTableAttributes(
       programId,
     );
     for (let row of rows) {
       row['name'] = this.getName(row.customData);
       row['hasNote'] = !!row.note;
+      row['hasPhoneNumber'] = !!(
+        row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber]
+      );
       row['phoneNumber'] =
         row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber];
-      row['whatsappPhoneNumber'] =
-        row.customData[CustomDataAttributes.whatsappPhoneNumber];
-      row['vnumber'] = row.customData['vnumber'];
-      row['customAttributes'] = {};
-      for (let attribute of programCustomAttributes) {
-        let value;
-        if (row.customData[attribute.attribute] != null) {
-          value = row.customData[attribute.attribute];
-        } else if (attribute.type === CustomAttributeType.boolean) {
-          value = false;
-        } else if (attribute.type === CustomAttributeType.string) {
-          value = '';
-        }
-        row['customAttributes'][attribute.attribute] = {
+      row['paTableAttributes'] = {};
+      for (let attribute of paTableAttributes) {
+        const value = this.mapAttributeByType(attribute, row.customData);
+
+        row['paTableAttributes'][attribute.name] = {
           type: attribute.type,
-          value: value,
+          value,
         };
       }
       delete row.customData;
@@ -772,7 +762,7 @@ export class RegistrationsService {
     const programAnswers: ProgramAnswer[] = [
       { programQuestionName: attribute, programAnswer: String(value) },
     ];
-    this.storeProgramAnswers(referenceId, programAnswers);
+    await this.storeProgramAnswers(referenceId, programAnswers);
 
     const savedRegistration = await this.registrationRepository.save(
       registration,
@@ -1374,5 +1364,20 @@ export class RegistrationsService {
       row[key] = customData[key];
     }
     return row;
+  }
+
+  public mapAttributeByType(
+    attribute: Attribute,
+    customData: any,
+  ): string | number | boolean {
+    const value = customData[attribute.name];
+    switch (attribute.type) {
+      case AttributeType.numeric:
+        return Number(value) || 0;
+      case AttributeType.boolean:
+        return value ? JSON.parse(value) : false;
+      default:
+        return value || '';
+    }
   }
 }

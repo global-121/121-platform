@@ -121,12 +121,12 @@ export class BulkImportService {
       newRegistration.customData = JSON.parse(JSON.stringify({}));
       programCustomAttributes.forEach(att => {
         if (att.type === CustomAttributeType.boolean) {
-          newRegistration.customData[att.attribute] = this.stringToBoolean(
-            record[att.attribute],
+          newRegistration.customData[att.name] = this.stringToBoolean(
+            record[att.name],
             false,
           );
         } else {
-          newRegistration.customData[att.attribute] = record[att.attribute];
+          newRegistration.customData[att.name] = record[att.name];
         }
       });
 
@@ -182,7 +182,7 @@ export class BulkImportService {
         String(item),
       );
       dynamicAttributes = (await this.getDynamicAttributes(programId)).map(
-        d => d.attribute,
+        d => d.name,
       );
     } else if (type === ImportType.imported) {
       genericAttributes = [
@@ -191,7 +191,7 @@ export class BulkImportService {
       ].map(item => String(item));
       dynamicAttributes = (
         await this.getProgramCustomAttributes(programId)
-      ).map(d => d.attribute);
+      ).map(d => d.name);
     }
 
     // If paymentAmountMultiplier automatic, then drop from template
@@ -235,12 +235,12 @@ export class BulkImportService {
       registration.customData = JSON.parse(JSON.stringify({}));
       dynamicAttributes.forEach(att => {
         if (att.type === CustomAttributeType.boolean) {
-          registration.customData[att.attribute] = this.stringToBoolean(
-            record[att.attribute],
+          registration.customData[att.name] = this.stringToBoolean(
+            record[att.name],
             false,
           );
         } else {
-          registration.customData[att.attribute] = record[att.attribute];
+          registration.customData[att.name] = record[att.name];
         }
       });
 
@@ -289,13 +289,13 @@ export class BulkImportService {
     let programAnswers: ProgramAnswerEntity[] = [];
     for await (let attribute of dynamicAttributes) {
       const programQuestion = await this.programQuestionRepository.findOne({
-        where: { name: attribute.attribute },
+        where: { name: attribute.name },
       });
       if (programQuestion) {
         let programAnswer = new ProgramAnswerEntity();
         programAnswer.registration = registration;
         programAnswer.programQuestion = programQuestion;
-        programAnswer.programAnswer = customData[attribute.attribute];
+        programAnswer.programAnswer = customData[attribute.name];
         programAnswers.push(programAnswer);
       }
     }
@@ -325,7 +325,7 @@ export class BulkImportService {
       csvFile.originalname.length - indexLastPoint,
     );
     if (extension !== '.csv') {
-      const errors = `Wrong file extension. It should be .csv`;
+      const errors = [`Wrong file extension. It should be .csv`];
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
 
@@ -379,15 +379,15 @@ export class BulkImportService {
         importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
       }
       for await (const att of programCustomAttributes) {
-        if (att.type === 'number' && isNaN(Number(row[att.attribute]))) {
+        if (att.type === 'number' && isNaN(Number(row[att.name]))) {
           const errorObj = {
             lineNumber: i + 1,
-            column: att.attribute,
-            value: row[att.attribute],
+            column: att.name,
+            value: row[att.name],
           };
           errors.push(errorObj);
         }
-        importRecord[att.attribute] = row[att.attribute];
+        importRecord[att.name] = row[att.name];
       }
 
       const result = await validate(importRecord);
@@ -416,8 +416,9 @@ export class BulkImportService {
       })
     ).map(c => {
       return {
-        attribute: c.name,
+        name: c.name,
         type: c.type,
+        label: c.label,
       };
     });
   }
@@ -435,7 +436,7 @@ export class BulkImportService {
       })
     ).map(c => {
       return {
-        attribute: c.name,
+        name: c.name,
         type: c.answerType,
       };
     });
@@ -448,7 +449,7 @@ export class BulkImportService {
       .filter(a => a.fsp.program.map(p => p.id).includes(programId))
       .map(c => {
         return {
-          attribute: c.name,
+          name: c.name,
           type: c.answerType,
         };
       });
@@ -475,29 +476,29 @@ export class BulkImportService {
         importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
       }
       for await (const att of dynamicAttributes) {
-        if (att.type === AnswerTypes.tel && row[att.attribute]) {
+        if (att.type === AnswerTypes.tel && row[att.name]) {
           const sanitized = await this.lookupService.lookupAndCorrect(
-            row[att.attribute],
+            row[att.name],
             true,
           );
-          if (!sanitized && !!row[att.attribute]) {
+          if (!sanitized && !!row[att.name]) {
             const errorObj = {
               lineNumber: i + 1,
-              column: att.attribute,
-              value: row[att.attribute],
+              column: att.name,
+              value: row[att.name],
             };
             errors.push(errorObj);
           }
-          row[att.attribute] = sanitized;
-        } else if (att.type === 'number' && isNaN(Number(row[att.attribute]))) {
+          row[att.name] = sanitized;
+        } else if (att.type === 'number' && isNaN(Number(row[att.name]))) {
           const errorObj = {
             lineNumber: i + 1,
-            column: att.attribute,
-            value: row[att.attribute],
+            column: att.name,
+            value: row[att.name],
           };
           errors.push(errorObj);
         }
-        importRecord[att.attribute] = row[att.attribute];
+        importRecord[att.name] = row[att.name];
       }
 
       const result = await validate(importRecord);

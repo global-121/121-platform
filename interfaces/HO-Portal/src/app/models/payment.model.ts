@@ -1,4 +1,3 @@
-import { PersonTableColumn } from './person.model';
 import { Transaction } from './transaction.model';
 
 export class PaymentData {
@@ -10,10 +9,6 @@ export class PaymentData {
 export class Payment extends PaymentData {
   statusOpen?: boolean;
   isExportAvailable?: boolean;
-}
-
-export class PaymentColumn extends PersonTableColumn {
-  paymentIndex?: number;
 }
 
 export class PaymentColumnDetail {

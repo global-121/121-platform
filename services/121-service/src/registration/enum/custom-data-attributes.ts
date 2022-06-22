@@ -39,8 +39,9 @@ export enum GenericAttributes {
 }
 
 export class Attribute {
-  public attribute: string;
+  public name: string;
   public type: string;
+  public label: object;
 }
 
 export enum AnswerTypes {
@@ -50,3 +51,11 @@ export enum AnswerTypes {
   text = 'text',
   date = 'date',
 }
+
+export enum CustomAttributeType {
+  boolean = 'boolean',
+  text = 'text',
+}
+
+export type AttributeType = AnswerTypes | CustomAttributeType;
+export const AttributeType = { ...AnswerTypes, ...CustomAttributeType };
