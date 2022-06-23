@@ -78,9 +78,6 @@ export class ExportMetricsService {
       case ExportType.toCancelVouchers: {
         return this.getToCancelVouchers();
       }
-      case ExportType.duplicatePhoneNumbers: {
-        return this.getDuplicatePhoneNumbers(programId);
-      }
       case ExportType.duplicates: {
         return this.getDuplicates(programId);
       }
@@ -498,71 +495,6 @@ export class ExportMetricsService {
     };
 
     return response;
-  }
-
-  private async getDuplicatePhoneNumbers(programId: number): Promise<FileDto> {
-    const allRegistrations = await this.registrationRepository.find({
-      relations: ['fsp'],
-      where: {
-        program: { id: programId },
-        customData: Not(IsNull()),
-      },
-      order: { id: 'ASC' },
-    });
-
-    const duplicates = allRegistrations.filter(registration => {
-      const others = without(allRegistrations, registration);
-      const currentPaNumbers = compact([
-        registration.customData[CustomDataAttributes.phoneNumber],
-        registration.customData[CustomDataAttributes.whatsappPhoneNumber],
-      ]);
-
-      const hasDuplicateProgramNr = this.hasDuplicateCustomDataValues(
-        others,
-        CustomDataAttributes.phoneNumber,
-        currentPaNumbers,
-      );
-
-      if (hasDuplicateProgramNr) {
-        // No need to look for other matches
-        return true;
-      }
-
-      const hasDuplicateWhatsAppNr = this.hasDuplicateCustomDataValues(
-        others,
-        CustomDataAttributes.whatsappPhoneNumber,
-        currentPaNumbers,
-      );
-
-      return hasDuplicateWhatsAppNr;
-    });
-    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
-      programId,
-      ExportType.allPeopleAffected,
-    );
-
-    const result = sortBy(duplicates, 'id').map(registration => {
-      let row: any = {
-        id: registration.id,
-        name: this.registrationsService.getName(registration.customData),
-        status: registration.registrationStatus,
-        fsp: registration.fsp ? registration.fsp.fsp : null,
-        phoneNumber: registration.customData[CustomDataAttributes.phoneNumber],
-        whatsappPhoneNumber:
-          registration.customData[CustomDataAttributes.whatsappPhoneNumber],
-      };
-      row = this.registrationsService.addProgramCustomAttributesToRow(
-        row,
-        registration.customData,
-        programCustomAttrs,
-      );
-      return row;
-    });
-
-    return {
-      fileName: ExportType.duplicatePhoneNumbers,
-      data: result,
-    };
   }
 
   private async getDuplicateCheckAttributes(
