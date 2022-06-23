@@ -84,25 +84,30 @@ export class BulkImportService {
     for await (const record of validatedImportRecords) {
       const importResponseRecord = record as BulkImportResult;
       const throwNoException = true;
-      const phoneNumberResult = await this.lookupService.lookupAndCorrect(
-        record.phoneNumber,
-        throwNoException,
-      );
-      if (!phoneNumberResult) {
-        importResponseRecord.importStatus = ImportStatus.invalidPhoneNumber;
-        importResponseRecords.push(importResponseRecord);
-        countInvalidPhoneNr += 1;
-        continue;
-      }
+      let phoneNumberResult;
+      if (process.env.NODE_ENV === 'development') {
+        phoneNumberResult = record.phoneNumber;
+      } else {
+        phoneNumberResult = await this.lookupService.lookupAndCorrect(
+          record.phoneNumber,
+          throwNoException,
+        );
+        if (!phoneNumberResult) {
+          importResponseRecord.importStatus = ImportStatus.invalidPhoneNumber;
+          importResponseRecords.push(importResponseRecord);
+          countInvalidPhoneNr += 1;
+          continue;
+        }
 
-      let existingRegistrations = await this.registrationRepository.findOne({
-        where: { phoneNumber: phoneNumberResult },
-      });
-      if (existingRegistrations) {
-        importResponseRecord.importStatus = ImportStatus.existingPhoneNumber;
-        importResponseRecords.push(importResponseRecord);
-        countExistingPhoneNr += 1;
-        continue;
+        let existingRegistrations = await this.registrationRepository.findOne({
+          where: { phoneNumber: phoneNumberResult },
+        });
+        if (existingRegistrations) {
+          importResponseRecord.importStatus = ImportStatus.existingPhoneNumber;
+          importResponseRecords.push(importResponseRecord);
+          countExistingPhoneNr += 1;
+          continue;
+        }
       }
 
       importResponseRecord.importStatus = ImportStatus.imported;
@@ -476,10 +481,15 @@ export class BulkImportService {
       }
       for await (const att of dynamicAttributes) {
         if (att.type === AnswerTypes.tel && row[att.attribute]) {
-          const sanitized = await this.lookupService.lookupAndCorrect(
-            row[att.attribute],
-            true,
-          );
+          let sanitized;
+          if (process.env.NODE_ENV === 'development') {
+            sanitized = row[att.attribute];
+          } else {
+            sanitized = await this.lookupService.lookupAndCorrect(
+              row[att.attribute],
+              true,
+            );
+          }
           if (!sanitized && !!row[att.attribute]) {
             const errorObj = {
               lineNumber: i + 1,
