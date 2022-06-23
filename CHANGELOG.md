@@ -5,10 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.46.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.47.0...master)
 
 ---
-## [1.45.0](https://github.com/global-121/121-platform/compare/v1.45.0...v1.46.0) - 2022-06-07
+## [1.47.0](https://github.com/global-121/121-platform/compare/v1.46.0...v1.47.0) - 2022-06-23
+
+### Changed
+
+- 2022-06-23: Customize which program questions/ fsp attributes/ program custom data attributes are vissible in which phase in the PA-table in the Portal
+- 2022-06-23: Customize which program question are editable in the pop-up in the PA table
+- 2022-06-23: Fixed fields in PA pop-up not updating after edit
+
+## [1.46.0](https://github.com/global-121/121-platform/compare/v1.45.0...v1.46.0) - 2022-06-07
 
 ### Changed
 
