@@ -29,18 +29,6 @@ export class RegistrationValidationPage implements OnInit {
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
-    for (const attr of this.program.programQuestions) {
-      if (attr.duplicateCheck) {
-        this.duplicateCheckAttributeNames += `${attr.name}, `;
-      }
-    }
-    for (const fsp of this.program.financialServiceProviders) {
-      for (const attr of fsp.attributes) {
-        if (attr.duplicateCheck) {
-          this.duplicateCheckAttributeNames += `${attr.name}, `;
-        }
-      }
-    }
   }
 
   public onReady(state: boolean) {

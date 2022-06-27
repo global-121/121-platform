@@ -63,7 +63,6 @@ export class ExportListComponent implements OnChanges, AfterViewInit {
   async ngOnChanges(changes: SimpleChanges) {
     if (changes.exportType && typeof changes.exportType === 'object') {
       this.updateBtnText();
-      // await this.updateHeaderAndMessage();
     }
   }
 
@@ -75,12 +74,8 @@ export class ExportListComponent implements OnChanges, AfterViewInit {
 
   private async updateDisplayMessage(): Promise<string> {
     let resultMessage = '';
-    const spacingHtml = '<br /> <br />';
-    if (this.message) {
-      resultMessage +=
-        this.translate.instant('page.program.export-list.duplicates.basedOn', {
-          duplicateAttributes: this.message,
-        }) + spacingHtml;
+    if (this.exportType === ExportType.duplicates) {
+      resultMessage = await this.createDuplicateAttributesMessage()
     }
     if (this.authService.hasPermission(Permission.ActionREAD)) {
       const actionTimestamp = await this.getLatestActionTime();
@@ -90,13 +85,52 @@ export class ExportListComponent implements OnChanges, AfterViewInit {
           })
         : '';
     }
-    resultMessage +=
-      spacingHtml +
-      this.translate.instant(
-        'page.program.export-list.duplicates.canTakeFewMinutes',
-      );
-    console.log('=== resultMessage: ', resultMessage);
     return resultMessage;
+  }
+
+  private async createDuplicateAttributesMessage(): Promise<string> {
+    console.log('createDuplicateAttributesMessage: ');
+    const duplicateAttributesConcactString = await this.getDuplicateAttributes();
+    let duplicateAttributesMessage = '';
+    const spacingHtml = '<br /> <br />';
+    duplicateAttributesMessage +=
+      this.translate.instant('page.program.export-list.duplicates.basedOn', {
+        duplicateAttributes: duplicateAttributesConcactString
+      }) + spacingHtml + this.translate.instant(
+        'page.program.export-list.duplicates.canTakeFewMinutes',
+      ) + spacingHtml;
+    return duplicateAttributesMessage;
+  }
+
+  private async getDuplicateAttributes(): Promise<string> {
+    const program = await this.programsService.getProgramById(this.programId)
+    const duplicateCheckAttributeNames = [];
+    for (const attr of program.programQuestions) {
+      if (attr.duplicateCheck) {
+        duplicateCheckAttributeNames.push(attr.name);
+      }
+    }
+    for (const fsp of program.financialServiceProviders) {
+      for (const attr of fsp.attributes) {
+        if (attr.duplicateCheck) {
+          duplicateCheckAttributeNames.push(attr.name);
+        }
+      }
+    }
+    let duplicateAttributesConcactString = '';
+    if (duplicateCheckAttributeNames.length === 0) {
+      return duplicateAttributesConcactString;
+    } else {
+      for (const [i, name] of duplicateCheckAttributeNames.entries()) {
+        // last iteration
+        if (i === duplicateCheckAttributeNames.length - 1) {
+          duplicateAttributesConcactString += `${name}.`;
+        } else {
+          duplicateAttributesConcactString = `${name}, `;
+        }
+      }
+    }
+    return duplicateAttributesConcactString;
   }
 
   private async updateHeaderAndMessage() {
