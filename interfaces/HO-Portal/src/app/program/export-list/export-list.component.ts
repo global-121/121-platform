@@ -76,7 +76,12 @@ export class ExportListComponent implements OnChanges, AfterViewInit {
   private async updateDisplayMessage(): Promise<string> {
     let resultMessage = '';
     const spacingHtml = '<br /> <br />';
-    resultMessage = this.message ? this.message + spacingHtml : '';
+    if (this.message) {
+      resultMessage +=
+        this.translate.instant('page.program.export-list.duplicates.basedOn', {
+          duplicateAttributes: this.message,
+        }) + spacingHtml;
+    }
     if (this.authService.hasPermission(Permission.ActionREAD)) {
       const actionTimestamp = await this.getLatestActionTime();
       resultMessage += actionTimestamp
@@ -85,6 +90,12 @@ export class ExportListComponent implements OnChanges, AfterViewInit {
           })
         : '';
     }
+    resultMessage +=
+      spacingHtml +
+      this.translate.instant(
+        'page.program.export-list.duplicates.canTakeFewMinutes',
+      );
+    console.log('=== resultMessage: ', resultMessage);
     return resultMessage;
   }
 
