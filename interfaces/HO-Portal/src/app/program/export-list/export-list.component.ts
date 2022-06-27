@@ -1,5 +1,11 @@
 import { formatDate } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -13,7 +19,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './export-list.component.html',
   styleUrls: ['./export-list.component.scss'],
 })
-export class ExportListComponent implements OnChanges {
+export class ExportListComponent implements OnChanges, AfterViewInit {
   @Input()
   public programId: number;
 
@@ -29,11 +35,14 @@ export class ExportListComponent implements OnChanges {
   @Input()
   public disabled: boolean;
 
+  @Input()
+  public message: string;
+
   public isInProgress = false;
 
   public btnText: string;
   public subHeader: string;
-  public message: string;
+  public displayMessage: string;
 
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, HH:mm';
@@ -46,11 +55,15 @@ export class ExportListComponent implements OnChanges {
   ) {
     this.locale = environment.defaultLocale;
   }
+  async ngAfterViewInit(): Promise<void> {
+    this.updateBtnText();
+    await this.updateHeaderAndMessage();
+  }
 
-  ngOnChanges(changes: SimpleChanges) {
+  async ngOnChanges(changes: SimpleChanges) {
     if (changes.exportType && typeof changes.exportType === 'object') {
       this.updateBtnText();
-      this.updateSubHeader();
+      // await this.updateHeaderAndMessage();
     }
   }
 
@@ -60,20 +73,27 @@ export class ExportListComponent implements OnChanges {
     );
   }
 
-  private async updateSubHeader() {
-    this.subHeader = this.translate.instant(
-      'page.program.export-list.' + this.exportType + '.confirm-message',
-    );
-    this.message = '';
-
+  private async updateDisplayMessage(): Promise<string> {
+    let resultMessage = '';
+    const spacingHtml = '<br /> <br />';
+    resultMessage = this.message ? this.message + spacingHtml : '';
     if (this.authService.hasPermission(Permission.ActionREAD)) {
       const actionTimestamp = await this.getLatestActionTime();
-      this.message = actionTimestamp
+      resultMessage += actionTimestamp
         ? this.translate.instant('page.program.export-list.timestamp', {
             dateTime: actionTimestamp,
           })
         : '';
     }
+    return resultMessage;
+  }
+
+  private async updateHeaderAndMessage() {
+    this.subHeader = this.translate.instant(
+      'page.program.export-list.' + this.exportType + '.confirm-message',
+    );
+
+    this.displayMessage = await this.updateDisplayMessage();
   }
 
   public async getExportList() {
@@ -94,7 +114,7 @@ export class ExportListComponent implements OnChanges {
             );
             return;
           }
-          this.updateSubHeader();
+          this.updateHeaderAndMessage();
         },
         (err) => {
           this.isInProgress = false;

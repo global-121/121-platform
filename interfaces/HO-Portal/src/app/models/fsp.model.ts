@@ -24,6 +24,7 @@ export class FspAttribute {
   label: TranslatableString;
   placeholder?: TranslatableString;
   options: FspAttributeOption[] | null;
+  duplicateCheck: boolean;
 }
 
 export class FspAttributeOption {
