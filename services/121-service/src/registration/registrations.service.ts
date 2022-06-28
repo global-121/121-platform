@@ -257,7 +257,7 @@ export class RegistrationsService {
     const registration = await this.getRegistrationFromReferenceId(referenceId);
     const fsp = await this.fspRepository.findOne({
       where: { id: fspId },
-      relations: ['attributes'],
+      relations: ['questions'],
     });
     registration.fsp = fsp;
     return await this.registrationRepository.save(registration);
@@ -988,7 +988,7 @@ export class RegistrationsService {
     //Identify new FSP
     const newFsp = await this.fspRepository.findOne({
       where: { fsp: newFspName },
-      relations: ['attributes'],
+      relations: ['questions'],
     });
     if (!newFsp) {
       const errors = `FSP with this name not found`;

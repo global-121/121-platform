@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class registrationData1656410775152 implements MigrationInterface {
-  name = 'registrationData1656410775152';
+export class registrationData1656412499569 implements MigrationInterface {
+  name = 'registrationData1656412499569';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -11,7 +11,7 @@ export class registrationData1656410775152 implements MigrationInterface {
       `CREATE INDEX "IDX_80cd1fc99c776e1893c667b4b2" ON "121-service"."monitoring_question" ("created") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "121-service"."registration_data" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "programQuestionId" integer NOT NULL, "fspQuestionId" integer NOT NULL, "programCustomAttributeId" integer NOT NULL, "monitoringQuestionId" integer NOT NULL, "value" character varying NOT NULL, "registrationId" integer, CONSTRAINT "PK_ab77c4514c4e6be63475361e6ae" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "121-service"."registration_data" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "registrationId" integer NOT NULL, "programQuestionId" integer, "fspQuestionId" integer, "programCustomAttributeId" integer, "monitoringQuestionId" integer, "value" character varying NOT NULL, CONSTRAINT "PK_ab77c4514c4e6be63475361e6ae" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_f07a1f50a3d185ac010a45b47e" ON "121-service"."registration_data" ("created") `,

@@ -20,7 +20,7 @@ export class FspService {
 
   public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {
     const fsp = await this.financialServiceProviderRepository.findOne(id, {
-      relations: ['attributes'],
+      relations: ['questions'],
     });
     fsp.editableAttributes = await this.getPaEditableAttributesFsp(fsp.id);
     return fsp;

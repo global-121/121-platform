@@ -12,8 +12,9 @@ export class RegistrationDataEntity extends Base121Entity {
     _type => RegistrationEntity,
     registration => registration.data,
   )
-  public registration: RegistrationEntity;
   @JoinColumn({ name: 'registrationId' })
+  public registration: RegistrationEntity;
+  @Column()
   public registrationId: number;
 
   @ManyToOne(
@@ -25,7 +26,7 @@ export class RegistrationDataEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'programQuestionId' })
   public programQuestion: ProgramQuestionEntity;
-  @Column()
+  @Column({ nullable: true })
   public programQuestionId: number;
 
   @ManyToOne(
@@ -37,7 +38,7 @@ export class RegistrationDataEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'fspQuestionId' })
   public fspQuestion: FspQuestionEntity;
-  @Column()
+  @Column({ nullable: true })
   public fspQuestionId: number;
 
   @ManyToOne(
@@ -49,7 +50,7 @@ export class RegistrationDataEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'programCustomAttributeId' })
   public programCustomAttribute: ProgramCustomAttributeEntity;
-  @Column()
+  @Column({ nullable: true })
   public programCustomAttributeId: number;
 
   @ManyToOne(
@@ -61,7 +62,7 @@ export class RegistrationDataEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'monitoringQuestionId' })
   public monitoringQuestion: MonitoringQuestionEntity;
-  @Column()
+  @Column({ nullable: true })
   public monitoringQuestionId: number;
 
   @Column()

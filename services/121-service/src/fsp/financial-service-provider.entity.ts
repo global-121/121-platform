@@ -19,7 +19,7 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
 
   @OneToMany(
     _type => FspQuestionEntity,
-    attributes => attributes.fsp,
+    questions => questions.fsp,
   )
   public questions: FspQuestionEntity[];
 
