@@ -65,8 +65,7 @@ export class ExportListComponent implements OnChanges {
     );
   }
 
-  private async updateDisplayMessage(): Promise<string> {
-    let resultMessage = '';
+  private async updateDisplayMessage(): Promise<void> {
     let actionTimestamp;
     if (this.authService.hasPermission(Permission.ActionREAD)) {
       actionTimestamp = await this.getLatestActionTime();
@@ -82,7 +81,6 @@ export class ExportListComponent implements OnChanges {
         timestamp: actionTimestamp,
       };
     }
-    return resultMessage;
   }
 
   private async getDuplicateAttributesString(): Promise<string> {
