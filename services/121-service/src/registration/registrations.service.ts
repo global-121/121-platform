@@ -1,3 +1,4 @@
+import { RegistrationDataEntity } from './registration-data.entity';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './../notifications/whatsapp/whatsapp.service';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
@@ -14,7 +15,6 @@ import {
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
 import { ProgramAnswer } from './dto/store-program-answers.dto';
-import { ProgramAnswerEntity } from './program-answer.entity';
 import {
   AnswerTypes,
   Attribute,
@@ -23,7 +23,7 @@ import {
 } from './enum/custom-data-attributes';
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspName } from '../fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
@@ -56,8 +56,10 @@ export class RegistrationsService {
   private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramAnswerEntity)
-  private readonly programAnswerRepository: Repository<ProgramAnswerEntity>;
+  @InjectRepository(RegistrationDataEntity)
+  private readonly registrationDataRepository: Repository<
+    RegistrationDataEntity
+  >;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(ProgramCustomAttributeEntity)
@@ -66,8 +68,8 @@ export class RegistrationsService {
   >;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
-  @InjectRepository(FspAttributeEntity)
-  private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
+  @InjectRepository(FspQuestionEntity)
+  private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
 
@@ -152,20 +154,20 @@ export class RegistrationsService {
         where: { name: answer.programQuestionName },
       });
       if (programQuestion) {
-        let storedAnswer = await this.programAnswerRepository.findOne({
+        let storedAnswer = await this.registrationDataRepository.findOne({
           where: {
             registration: { id: registration.id },
             programQuestion: { id: programQuestion.id },
           },
         });
         if (!storedAnswer) {
-          storedAnswer = new ProgramAnswerEntity();
+          storedAnswer = new RegistrationDataEntity();
           storedAnswer.registration = registration;
           storedAnswer.programQuestion = programQuestion;
         }
-        storedAnswer.programAnswer = answer.programAnswer;
+        storedAnswer.value = answer.programAnswer;
 
-        await this.programAnswerRepository.save(storedAnswer);
+        await this.registrationDataRepository.save(storedAnswer);
       }
     }
     await this.storePersistentAnswers(programAnswers, referenceId);
@@ -471,7 +473,9 @@ export class RegistrationsService {
   }
 
   private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOne(programId, {
+      relations: ['programCustomAttributes'],
+    });
     if (!program) {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -993,14 +997,12 @@ export class RegistrationsService {
 
     // Check if required attributes are present
 
-    newFsp.attributes.forEach(requiredAttribute => {
+    newFsp.questions.forEach(requiredAttribute => {
       if (
         !newFspAttributesRaw ||
         !Object.keys(newFspAttributesRaw).includes(requiredAttribute.name)
       ) {
-        const requiredAttributes = newFsp.attributes
-          .map(a => a.name)
-          .join(', ');
+        const requiredAttributes = newFsp.questions.map(a => a.name).join(', ');
         const errors = `Not all required FSP attributes provided correctly: ${requiredAttributes}`;
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
@@ -1024,7 +1026,7 @@ export class RegistrationsService {
 
     // Remove old attributes
     const oldFsp = registration.fsp;
-    oldFsp?.attributes.forEach(attribute => {
+    oldFsp?.questions.forEach(attribute => {
       Object.keys(registration.customData).forEach(key => {
         if (attribute.name === key) {
           delete registration.customData[key];
@@ -1038,7 +1040,7 @@ export class RegistrationsService {
 
     // Add new attributes
 
-    for (const attribute of updatedRegistration.fsp.attributes) {
+    for (const attribute of updatedRegistration.fsp.questions) {
       await this.addCustomData(
         referenceId,
         attribute.name,
@@ -1110,8 +1112,8 @@ export class RegistrationsService {
       .createQueryBuilder('registration')
       .addSelect('"referenceId"')
       .leftJoinAndSelect('registration.program', 'program')
-      .leftJoinAndSelect('registration.programAnswers', 'programAnswers')
-      .leftJoinAndSelect('programAnswers.programQuestion', 'programQuestion')
+      .leftJoinAndSelect('registration.data', 'data')
+      .leftJoinAndSelect('data.programQuestion', 'programQuestion')
       .andWhere('registration.program.id IN (:...programIds)', {
         programIds: programIds,
       })
@@ -1121,15 +1123,18 @@ export class RegistrationsService {
           RegistrationStatusEnum.selectedForValidation,
         ],
       })
+      .andWhere('data.programQuestionId is not null', {
+        programIds: programIds,
+      })
       .getMany();
 
     let answers = [];
     for (const r of registrationsToValidate) {
-      for (const a of r.programAnswers) {
+      for (const a of r.data) {
         a['referenceId'] = r.referenceId;
         a['programId'] = r.program.id;
       }
-      answers = [...answers, ...r.programAnswers];
+      answers = [...answers, ...r.data];
     }
     return answers;
   }
@@ -1157,11 +1162,11 @@ export class RegistrationsService {
     const fspDataPerRegistration = [];
     for (const registration of regsitrations) {
       const answers = this.getFspAnswers(
-        registration.fsp.attributes,
+        registration.fsp.questions,
         registration.customData,
       );
       const fspData = {
-        attributes: registration.fsp.attributes,
+        attributes: registration.fsp.questions,
         answers: answers,
         referenceId: registration.referenceId,
       };
@@ -1171,7 +1176,7 @@ export class RegistrationsService {
   }
 
   public getFspAnswers(
-    fspAttributes: FspAttributeEntity[],
+    fspAttributes: FspQuestionEntity[],
     customData: JSON,
   ): AnswerSet {
     const fspAttributeNames = [];
@@ -1228,11 +1233,11 @@ export class RegistrationsService {
       });
     const registration = await qb.getOne();
     const fspAnswers = this.getFspAnswers(
-      registration.fsp.attributes,
+      registration.fsp.questions,
       registration.customData,
     );
     return {
-      attributes: registration.fsp.attributes,
+      attributes: registration.fsp.questions,
       answers: fspAnswers,
       referenceId: referenceId,
     };
@@ -1340,16 +1345,18 @@ export class RegistrationsService {
 
   public addProgramCustomAttributesToRow(
     row: object,
-    customData: object,
+    registrationData: RegistrationDataEntity[],
     programCustomAttributes: ProgramCustomAttributeEntity[],
   ): object {
     for (const programCustomAttribute of programCustomAttributes) {
+      const regisrationDataEntry = registrationData.find(
+        d => d.programCustomAttributeId === programCustomAttribute.id,
+      );
+
       if (programCustomAttribute.type === CustomAttributeType.boolean) {
-        row[programCustomAttribute.name] =
-          customData[programCustomAttribute.name] || false;
+        row[programCustomAttribute.name] = regisrationDataEntry.value || false;
       } else {
-        row[programCustomAttribute.name] =
-          customData[programCustomAttribute.name];
+        row[programCustomAttribute.name] = regisrationDataEntry.value;
       }
     }
     return row;
@@ -1360,6 +1367,7 @@ export class RegistrationsService {
     customData: object,
     deprecatedCustomDataKeys: string[],
   ): object {
+    /// TODO refeactor this code
     for (const key of deprecatedCustomDataKeys) {
       row[key] = customData[key];
     }

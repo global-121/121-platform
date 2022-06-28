@@ -1,10 +1,10 @@
+import { RegistrationDataEntity } from './../registration-data.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
-import { ProgramAnswerEntity } from '../program-answer.entity';
 import {
   AnswerTypes,
   Attribute,
@@ -12,7 +12,7 @@ import {
 } from '../enum/custom-data-attributes';
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { ProgramQuestionEntity } from '../../programs/program-question.entity';
-import { FspAttributeEntity } from '../../fsp/fsp-attribute.entity';
+import { FspQuestionEntity } from '../../fsp/fsp-question.entity';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { LanguageEnum } from '../enum/language.enum';
 import {
@@ -41,8 +41,10 @@ export enum ImportType {
 export class BulkImportService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(ProgramAnswerEntity)
-  private readonly programAnswerRepository: Repository<ProgramAnswerEntity>;
+  @InjectRepository(RegistrationDataEntity)
+  private readonly registrationDataRepository: Repository<
+    RegistrationDataEntity
+  >;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(ProgramCustomAttributeEntity)
@@ -51,8 +53,8 @@ export class BulkImportService {
   >;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
-  @InjectRepository(FspAttributeEntity)
-  private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
+  @InjectRepository(FspQuestionEntity)
+  private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
@@ -76,9 +78,7 @@ export class BulkImportService {
     let countExistingPhoneNr = 0;
     let countInvalidPhoneNr = 0;
 
-    const programCustomAttributes = await this.getProgramCustomAttributes(
-      program.id,
-    );
+    const programCustomAttributes = program.programCustomAttributes;
 
     const importResponseRecords = [];
     for await (const record of validatedImportRecords) {
@@ -118,16 +118,11 @@ export class BulkImportService {
           record.paymentAmountMultiplier;
       }
       newRegistration.program = program;
-      newRegistration.customData = JSON.parse(JSON.stringify({}));
       programCustomAttributes.forEach(att => {
-        if (att.type === CustomAttributeType.boolean) {
-          newRegistration.customData[att.name] = this.stringToBoolean(
-            record[att.name],
-            false,
-          );
-        } else {
-          newRegistration.customData[att.name] = record[att.name];
-        }
+        const data = new RegistrationDataEntity();
+        data.value = record[att.name];
+        data.programCustomAttribute = att;
+        this.registrationDataRepository.save(data);
       });
 
       const savedRegistration = await this.registrationRepository.save(
@@ -232,7 +227,6 @@ export class BulkImportService {
       }
       registration.program = program;
 
-      registration.customData = JSON.parse(JSON.stringify({}));
       dynamicAttributes.forEach(att => {
         if (att.type === CustomAttributeType.boolean) {
           registration.customData[att.name] = this.stringToBoolean(
@@ -286,20 +280,20 @@ export class BulkImportService {
     customData: any,
   ): Promise<void> {
     const dynamicAttributes = await this.getDynamicAttributes(programId);
-    let programAnswers: ProgramAnswerEntity[] = [];
+    let programAnswers: RegistrationDataEntity[] = [];
     for await (let attribute of dynamicAttributes) {
       const programQuestion = await this.programQuestionRepository.findOne({
         where: { name: attribute.name },
       });
       if (programQuestion) {
-        let programAnswer = new ProgramAnswerEntity();
+        let programAnswer = new RegistrationDataEntity();
         programAnswer.registration = registration;
         programAnswer.programQuestion = programQuestion;
-        programAnswer.programAnswer = customData[attribute.name];
+        programAnswer.value = customData[attribute.name];
         programAnswers.push(programAnswer);
       }
     }
-    await this.programAnswerRepository.save(programAnswers);
+    await this.registrationRepository.save(programAnswers);
   }
 
   private async csvToValidatedBulkImport(

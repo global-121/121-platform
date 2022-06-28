@@ -1,9 +1,10 @@
-import { Entity, Column, ManyToOne } from 'typeorm';
+import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Base121Entity } from '../base.entity';
+import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 
 @Entity('fsp_attribute')
-export class FspAttributeEntity extends Base121Entity {
+export class FspQuestionEntity extends Base121Entity {
   @Column()
   public name: string;
 
@@ -29,7 +30,13 @@ export class FspAttributeEntity extends Base121Entity {
 
   @ManyToOne(
     _type => FinancialServiceProviderEntity,
-    fsp => fsp.attributes,
+    fsp => fsp.questions,
   )
   public fsp: FinancialServiceProviderEntity;
+
+  @OneToMany(
+    () => RegistrationDataEntity,
+    registrationData => registrationData.fspQuestion,
+  )
+  public registrationData: RegistrationDataEntity[];
 }

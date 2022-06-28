@@ -168,16 +168,15 @@ export class SeedInit implements InterfaceScript {
 
   public async dropAll(): Promise<void> {
     const entities = this.connection.entityMetadatas;
-    try {
-      for (const entity of entities) {
-        const repository = await this.connection.getRepository(entity.name);
-        if (repository.metadata.schema === '121-service') {
-          const q = `DROP TABLE \"${repository.metadata.schema}\".\"${entity.tableName}\" CASCADE;`;
-          await repository.query(q);
-        }
+    const dropTableQueries = await this.connection.manager
+      .query(`select 'drop table if exists "121-service"."' || tablename || '" cascade;'
+        from pg_tables
+        where schemaname = '121-service'
+        and tablename not in ('custom_migration_table');`);
+    for (const q of dropTableQueries) {
+      for (const key in q) {
+        await this.connection.manager.query(q[key]);
       }
-    } catch (error) {
-      throw new Error(`ERROR: Cleaning test db: ${error}`);
     }
   }
 

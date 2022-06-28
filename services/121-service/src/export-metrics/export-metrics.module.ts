@@ -10,7 +10,7 @@ import { ProgramModule } from '../programs/programs.module';
 import { UserModule } from '../user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PaymentsModule } from '../payments/payments.module';
@@ -21,7 +21,7 @@ import { TransactionsModule } from '../payments/transactions/transactions.module
     TypeOrmModule.forFeature([
       ProgramQuestionEntity,
       FinancialServiceProviderEntity,
-      FspAttributeEntity,
+      FspQuestionEntity,
       RegistrationEntity,
       TransactionEntity,
       UserEntity,

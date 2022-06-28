@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { FspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
-import { FspAttributeEntity } from './fsp-attribute.entity';
+import { FspQuestionEntity } from './fsp-question.entity';
 import { PermissionsGuard } from '../permissions.guard';
 import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
@@ -55,7 +55,7 @@ export class FspController {
   @Post('update/fsp-attribute')
   public async updateFspAttribute(
     @Body() updateFspAttributeDto: FspAttributeDto,
-  ): Promise<FspAttributeEntity> {
+  ): Promise<FspQuestionEntity> {
     return await this.fspService.updateFspAttribute(updateFspAttributeDto);
   }
 
@@ -64,7 +64,7 @@ export class FspController {
   @Post('fsp-attribute')
   public async createFspAttribute(
     @Body() updateFspAttributeDto: FspAttributeDto,
-  ): Promise<FspAttributeEntity> {
+  ): Promise<FspQuestionEntity> {
     return await this.fspService.createFspAttribute(updateFspAttributeDto);
   }
 
@@ -74,7 +74,7 @@ export class FspController {
   @Delete('fsp-attribute/:fspAttributeId')
   public async deleteFspAttribute(
     @Param() params: any,
-  ): Promise<FspAttributeEntity> {
+  ): Promise<FspQuestionEntity> {
     return await this.fspService.deleteFspAttribute(params.fspAttributeId);
   }
 }

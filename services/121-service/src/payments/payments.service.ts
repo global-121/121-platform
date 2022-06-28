@@ -6,7 +6,7 @@ import { Repository, In } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionService } from '../actions/action.service';
 import { FspName } from '../fsp/financial-service-provider.entity';
-import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
@@ -269,7 +269,7 @@ export class PaymentsService {
       paPaymentData.fspName = fsp.fsp as FspName;
       paPaymentData.paymentAddress = await this.getPaymentAddress(
         includedRegistration,
-        fsp.attributes,
+        fsp.questions,
       );
       paPaymentData.paymentAmountMultiplier =
         includedRegistration.paymentAmountMultiplier;
@@ -281,7 +281,7 @@ export class PaymentsService {
 
   private async getPaymentAddress(
     includedRegistration: RegistrationEntity,
-    fspAttributes: FspAttributeEntity[],
+    fspAttributes: FspQuestionEntity[],
   ): Promise<null | string> {
     for (let attribute of fspAttributes) {
       // NOTE: this is still not ideal, as it is hard-coded. No other quick solution was found.

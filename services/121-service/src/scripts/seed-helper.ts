@@ -4,7 +4,7 @@ import { Connection, In } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { UserEntity } from '../user/user.entity';
-import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { InstanceEntity } from '../instance/instance.entity';
 import crypto from 'crypto';
 import { UserRoleEntity } from '../user/user-role.entity';
@@ -162,7 +162,7 @@ export class SeedHelper {
     );
 
     const fspAttributesRepository = this.connection.getRepository(
-      FspAttributeEntity,
+      FspQuestionEntity,
     );
 
     // Remove original custom criteria and add it to a separate variable

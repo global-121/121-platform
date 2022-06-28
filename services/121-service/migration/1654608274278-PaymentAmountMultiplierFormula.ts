@@ -11,7 +11,8 @@ export class PaymentAmountMultiplierFormula1654608274278
       `ALTER TABLE "121-service"."program" ADD "paymentAmountMultiplierFormula" character varying`,
     );
     await queryRunner.commitTransaction();
-    await this.migrateData(queryRunner.connection);
+    // This is commented out as it was giving errors and we are not supporting Dorcas Ukraine anymore
+    // await this.migrateData(queryRunner.connection);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
   }

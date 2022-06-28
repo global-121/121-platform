@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
 import { FspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
-import { FspAttributeEntity } from './fsp-attribute.entity';
+import { FspQuestionEntity } from './fsp-question.entity';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 
 @Injectable()
@@ -13,8 +13,8 @@ export class FspService {
   private financialServiceProviderRepository: Repository<
     FinancialServiceProviderEntity
   >;
-  @InjectRepository(FspAttributeEntity)
-  public fspAttributeRepository: Repository<FspAttributeEntity>;
+  @InjectRepository(FspQuestionEntity)
+  public fspAttributeRepository: Repository<FspQuestionEntity>;
 
   public constructor() {}
 
@@ -63,7 +63,7 @@ export class FspService {
 
   public async updateFspAttribute(
     fspAttributeDto: FspAttributeDto,
-  ): Promise<FspAttributeEntity> {
+  ): Promise<FspQuestionEntity> {
     const fspAttributes = await this.fspAttributeRepository.find({
       where: { name: fspAttributeDto.name },
       relations: ['fsp'],
@@ -89,7 +89,7 @@ export class FspService {
 
   public async createFspAttribute(
     fspAttributeDto: FspAttributeDto,
-  ): Promise<FspAttributeEntity> {
+  ): Promise<FspQuestionEntity> {
     const fspAttributes = await this.fspAttributeRepository.find({
       where: { name: fspAttributeDto.name },
       relations: ['fsp'],
@@ -110,7 +110,7 @@ export class FspService {
       const errors = `FspAttribute already found! Attribute exists with name ${fspAttributeDto.name} in fsp with name ${fspAttributeDto.fsp}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const fspAttribute = new FspAttributeEntity();
+    const fspAttribute = new FspQuestionEntity();
     for (let key in fspAttributeDto) {
       if (key !== 'fsp') {
         fspAttribute[key] = fspAttributeDto[key];
@@ -123,7 +123,7 @@ export class FspService {
 
   public async deleteFspAttribute(
     fspAttributeId: number,
-  ): Promise<FspAttributeEntity> {
+  ): Promise<FspQuestionEntity> {
     const fspAttribute = await this.fspAttributeRepository.findOne({
       where: { id: Number(fspAttributeId) },
     });

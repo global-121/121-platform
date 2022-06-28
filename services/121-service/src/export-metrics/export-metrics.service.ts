@@ -13,7 +13,7 @@ import {
   GenericAttributes,
 } from '../registration/enum/custom-data-attributes';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ActionService } from '../actions/action.service';
 import { ExportType } from './dto/export-details';
 import { FileDto } from './dto/file.dto';
@@ -39,8 +39,8 @@ export class ExportMetricsService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
-  @InjectRepository(FspAttributeEntity)
-  private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
+  @InjectRepository(FspQuestionEntity)
+  private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
 
@@ -217,7 +217,9 @@ export class ExportMetricsService {
     programQuestions.forEach(question => {
       if (question.export && question.export.includes(exportType)) {
         const key = question.programQuestion;
-        let value = registration.customData[question.programQuestion];
+        let value = registration.data.find(
+          d => d.programQuestionId === question.id,
+        ).value;
         if (question.answerType === AnswerTypes.dropdown) {
           const rawValue = question.options.find(
             option => option.option === value,
@@ -244,6 +246,7 @@ export class ExportMetricsService {
           answerType: question.answerType as AnswerTypes,
           options: JSON.parse(JSON.stringify(question.options)),
           export: JSON.parse(JSON.stringify(question.export)),
+          id: question.id,
         };
       })
       .concat(
@@ -253,6 +256,7 @@ export class ExportMetricsService {
             answerType: question.answerType as AnswerTypes,
             options: JSON.parse(JSON.stringify(question.options)),
             export: JSON.parse(JSON.stringify(question.export)),
+            id: question.id,
           };
         }),
       );
@@ -316,7 +320,7 @@ export class ExportMetricsService {
 
   private async getAllPeopleAffectedList(programId: number): Promise<FileDto> {
     const registrations = await this.registrationRepository.find({
-      relations: ['fsp'],
+      relations: ['fsp', 'data'],
       order: { id: 'ASC' },
     });
     const questions = await this.getAllQuestionsForExport();
@@ -353,12 +357,12 @@ export class ExportMetricsService {
       );
       row = this.registrationsService.addProgramCustomAttributesToRow(
         row,
-        registration.customData,
+        registration.data,
         programCustomAttrs,
       );
       row = this.registrationsService.addDeprecatedCustomDataKeysToRow(
         row,
-        registration.customData,
+        registration.data,
         JSON.parse(JSON.stringify(program.deprecatedCustomDataKeys)),
       );
       registrationDetails.push(row);
@@ -397,13 +401,13 @@ export class ExportMetricsService {
       );
       row = this.registrationsService.addProgramCustomAttributesToRow(
         row,
-        registration.customData,
+        registration.data,
         programCustomAttrs,
       );
       inclusionDetails.push(row);
       row = this.registrationsService.addDeprecatedCustomDataKeysToRow(
         row,
-        registration.customData,
+        registration.data,
         JSON.parse(JSON.stringify(program.deprecatedCustomDataKeys)),
       );
     }
@@ -468,12 +472,12 @@ export class ExportMetricsService {
       );
       row = this.registrationsService.addProgramCustomAttributesToRow(
         row,
-        registration.customData,
+        registration.data,
         programCustomAttrs,
       );
       row = this.registrationsService.addDeprecatedCustomDataKeysToRow(
         row,
-        registration.customData,
+        registration.data,
         JSON.parse(JSON.stringify(program.deprecatedCustomDataKeys)),
       );
       columnDetails.push(row);

@@ -1,3 +1,4 @@
+import { ProgramQuestionEntity } from './../programs/program-question.entity';
 import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsapp-pending-message.entity';
 import { CascadeDeleteEntity } from './../base.entity';
 import { UserEntity } from '../user/user.entity';
@@ -9,10 +10,10 @@ import {
   Column,
   OneToMany,
   BeforeRemove,
+  getConnection,
 } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
-import { ProgramAnswerEntity } from './program-answer.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
@@ -20,6 +21,7 @@ import { IsInt, IsPositive, IsOptional } from 'class-validator';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
+import { RegistrationDataEntity } from './registration-data.entity';
 
 @Entity('registration')
 export class RegistrationEntity extends CascadeDeleteEntity {
@@ -28,6 +30,8 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     program => program.registrations,
   )
   public program: ProgramEntity;
+  @JoinColumn({ name: 'programId' })
+  public programId: number;
 
   @ManyToOne(() => UserEntity)
   public user: UserEntity;
@@ -51,15 +55,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public referenceId: string;
 
   @OneToMany(
-    () => ProgramAnswerEntity,
-    programAnswer => programAnswer.registration,
+    () => RegistrationDataEntity,
+    data => data.registration,
   )
-  public programAnswers: ProgramAnswerEntity[];
-
-  @Column('json', {
-    default: {},
-  })
-  public customData: JSON;
+  public data: RegistrationDataEntity[];
 
   @Column({ nullable: true })
   public phoneNumber: string;
@@ -110,6 +109,8 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   )
   public whatsappPendingMessages: WhatsappPendingMessageEntity[];
 
+  // public customData: any;
+
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     await this.deleteAllOneToMany([
@@ -122,7 +123,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         columnName: 'registration',
       },
       {
-        entityClass: ProgramAnswerEntity,
+        entityClass: RegistrationDataEntity,
         columnName: 'registration',
       },
       {
@@ -138,5 +139,72 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         columnName: 'registration',
       },
     ]);
+  }
+
+  public customData: any;
+
+  public async getRegistrationDataByName(name: string): Promise<string> {
+    const repo = getConnection().getRepository(RegistrationDataEntity);
+    const result = await repo
+      .createQueryBuilder('registrationData')
+      .leftJoin('registrationData.registration', 'registration')
+      .leftJoin('registrationData.programQuestion', 'programQuestion')
+      .leftJoin('registrationData.fspQuestion', 'fspQuestion')
+      .leftJoin('registrationData.monitoringQuestion', 'monitoringQuestionId')
+      .leftJoin(
+        'registrationData.programCustomAttribute',
+        'programCustomAttribute',
+      )
+      .where('registration.id = :id', { id: this.id })
+      .andWhere(`programQuestion.name = :name`, { name: name })
+      .andWhere(`fspQuestion.name = :name`, { name: name })
+      .andWhere(`monitoringQuestion.name = :name`, { name: name })
+      .andWhere(`programCustomAttribute.name = :name`, { name: name })
+      .select(
+        `CASE
+          WHEN ("programQuestion"."name" is not NULL) THEN "programQuestion"."name"
+          WHEN ("fspQuestion"."name" is not NULL) THEN "fspQuestion"."name"
+          WHEN ("monitoringQuestion"."name" is not NULL) THEN "monitoringQuestion"."name"
+          WHEN ("programCustomAttribute"."name" is not NULL) THEN "programCustomAttribute"."name"
+          ELSE "The quantity is under 30"
+        END`,
+        'name',
+      )
+      .getRawOne();
+    console.log('result: ', result);
+    return result.name;
+  }
+
+  public async createUpdateProgramQuestionData(
+    name: string,
+    value: string,
+  ): Promise<void> {
+    const repoRegistrationData = getConnection().getRepository(
+      RegistrationDataEntity,
+    );
+    const existingEntry = await repoRegistrationData
+      .createQueryBuilder('registrationData')
+      .where('registrationId = :id', { id: this.id })
+      .leftJoin('registrationData.programQuestion', 'programQuestion')
+      .andWhere('programQuestion.name = :name', { name: name })
+      .getOne();
+    console.log('existingEntry: ', existingEntry);
+    if (existingEntry) {
+      existingEntry.value = value;
+      await repoRegistrationData.save(existingEntry);
+    } else {
+      const newRegistrationData = new RegistrationDataEntity();
+      newRegistrationData.value = value;
+      newRegistrationData.programQuestion = await getConnection()
+        .getRepository(ProgramQuestionEntity)
+        .createQueryBuilder('programQuestion')
+        .leftJoin('programQuestion.program', 'program')
+        .where('programQuestion = :name', { name: name })
+        .andWhere('program.id = :programId', { programId: this.programId })
+        .getOne();
+      console.log('newRegistrationData: ', newRegistrationData);
+      this.data.push(newRegistrationData);
+      await repoRegistrationData.save(existingEntry);
+    }
   }
 }
