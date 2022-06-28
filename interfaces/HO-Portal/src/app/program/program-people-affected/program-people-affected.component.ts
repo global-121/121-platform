@@ -261,6 +261,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private canViewVouchers: boolean;
   private canDoSinglePayment: boolean;
   private routerSubscription: Subscription;
+  private pubSubSubscription: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -279,9 +280,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.routerSubscription = this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
         if (event.url.includes(this.thisPhase)) {
-          await this.loadProgram();
-          await this.loadPermissions();
-          this.refreshData();
+          this.initComponent();
         }
       }
     });
@@ -464,12 +463,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
+    if (this.pubSubSubscription) {
+      this.pubSubSubscription.unsubscribe();
+    }
   }
 
-  async ngOnInit() {
-    this.isLoading = true;
+  async ngOnInit() {}
 
-    await this.loadProgram();
+  async initComponent() {
+    this.isLoading = true;
 
     this.paTableAttributes = await this.programsService.getPaTableAttributes(
       this.programId,
@@ -477,9 +479,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     );
 
     this.paymentInProgress =
-      await this.pastPaymentsService.checkPaymentInProgress(this.program.id);
+      await this.pastPaymentsService.checkPaymentInProgress(this.programId);
 
-    await this.loadPermissions();
+    await this.refreshData();
 
     this.activePhase = this.program.phase;
 
@@ -514,9 +516,25 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     }, 0);
 
     // Listen for external signals to refresh data shown in table:
-    this.pubSub.subscribe(PubSubEvent.dataRegistrationChanged, () => {
-      this.refreshData();
-    });
+    if (!this.pubSubSubscription) {
+      this.pubSubSubscription = this.pubSub.subscribe(
+        PubSubEvent.dataRegistrationChanged,
+        () => {
+          if (this.router.url.includes(this.thisPhase)) {
+            this.refreshData();
+          }
+        },
+      );
+    }
+  }
+
+  private async refreshData() {
+    this.isLoading = true;
+    await this.loadProgram();
+    await this.loadPermissions();
+    await this.loadData();
+    this.updateProxyScrollbarSize();
+    this.isLoading = false;
   }
 
   private async loadProgram() {
@@ -1296,13 +1314,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       numeric: true,
       sensitivity: 'base',
     });
-  }
-
-  public async refreshData() {
-    this.isLoading = true;
-    await this.loadData();
-    this.updateProxyScrollbarSize();
-    this.isLoading = false;
   }
 
   public onCheckboxChange(row: PersonRow, column: any, value: string) {
