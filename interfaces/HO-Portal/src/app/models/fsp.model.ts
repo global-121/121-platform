@@ -1,11 +1,13 @@
+import { Attribute } from './attribute.model';
+import { ProgramPhase } from './program.model';
 import { TranslatableString } from './translatable-string.model';
-
 export class Fsp {
   id: number;
   fsp: string;
   fspDisplayName: TranslatableString | string;
   integrationType: FspIntegrationType;
   attributes?: FspAttribute[];
+  editableAttributes?: Attribute[];
 }
 
 export enum AnswerType {
@@ -25,6 +27,7 @@ export class FspAttribute {
   placeholder?: TranslatableString;
   options: FspAttributeOption[] | null;
   duplicateCheck: boolean;
+  phases: ProgramPhase[];
 }
 
 export class FspAttributeOption {

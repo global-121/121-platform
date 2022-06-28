@@ -1,3 +1,4 @@
+import { Attribute } from './../registration/enum/custom-data-attributes';
 import { CascadeDeleteEntity } from '../base.entity';
 import { Entity, Column, ManyToMany, OneToMany } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
@@ -33,6 +34,8 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
     transactions => transactions.financialServiceProvider,
   )
   public transactions: TransactionEntity[];
+
+  public editableAttributes?: Attribute[];
 }
 
 export enum FspName {

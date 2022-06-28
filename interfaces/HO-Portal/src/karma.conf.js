@@ -31,5 +31,7 @@ module.exports = function (config) {
     restartOnFileChange: true,
     browsers: ['Chrome'],
     singleRun: false,
+    stopOnSpecFailure: true,
+    stopSpecOnExpectationFailure: true,
   });
 };

@@ -85,7 +85,8 @@
         "included",
         "selected-for-validation",
         "payment"
-      ]
+      ],
+      "phases": ["registrationValidation", "inclusion", "payment"]
     }
   ],
   "programQuestions": [
@@ -102,7 +103,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": false
     },
     {
       "name": "nameLast",
@@ -117,7 +120,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": false
     },
     {
       "name": "vnumber",
@@ -136,7 +141,9 @@
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
-      "pattern": "^\\d{10}$"
+      "pattern": "^\\d{10}$",
+      "phases": ["payment"],
+      "editableInPortal": false
     },
     {
       "name": "phoneNumber",
@@ -156,7 +163,9 @@
       "persistence": true,
       "export": [],
       "scoring": {},
-      "duplicateCheck": true
+      "duplicateCheck": true,
+      "phases": [],
+      "editableInPortal": false
     }
   ]
 }

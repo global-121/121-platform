@@ -74,7 +74,8 @@
         <ion-icon
           name="funnel"
           [attr.title]="
-            'page.program.program-people-affected.filter-placeholder' | translate
+            'page.program.program-people-affected.filter-placeholder'
+              | translate
           "
           aria-hidden="true"
           size="small"
@@ -83,9 +84,21 @@
         ></ion-icon>
       </ion-input>
 
-      <ion-toggle  [(ngModel)]=showAllStatusState (click)="toggleShowAllStatusState()"></ion-toggle>
-      <ion-label>{{ 'page.program.program-people-affected.filter-toggle'|translate }} </ion-label>
-      <tooltip style="margin-left:3px;margin-bottom:1px" [value]="'page.program.program-people-affected.filter-tooltip'|translate"></tooltip>
+      <ion-toggle
+        [(ngModel)]="showAllStatusState"
+        (ionChange)="toggleShowAllStatusState()"
+      ></ion-toggle>
+      <ion-label
+        (click)="showAllStatusState=!showAllStatusState"
+      >
+        {{ 'page.program.program-people-affected.filter-toggle' | translate }}
+      </ion-label>
+      <tooltip
+        style="margin-left: 3px; margin-bottom: 1px"
+        [value]="
+          'page.program.program-people-affected.filter-tooltip' | translate
+        "
+      ></tooltip>
     </ion-row>
   </div>
 </ion-row>
@@ -230,7 +243,34 @@
     [headerClass]="column.headerClass"
     [cellClass]="column.cellClass"
     [frozenLeft]="column.frozenLeft"
-  ></ngx-datatable-column>
+  >
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+      <ng-container *ngIf="value === true || value === false">
+        <span
+          [title]="
+            value
+              ? ('page.program.program-people-affected.column.custom-attribute-true'
+                | translate)
+              : ('page.program.program-people-affected.column.custom-attribute-false'
+                | translate)
+          "
+        >
+          <ion-checkbox
+            color="success"
+            mode="ios"
+            [disabled]="!canUpdatePaData"
+            [checked]="value"
+            (click)="onCheckboxChange(row, column, !value)"
+          ></ion-checkbox>
+        </span>
+      </ng-container>
+      <ng-container *ngIf="value !== true && value !== false && value">
+        <span [attr.title]="value">
+          {{ value }}
+        </span>
+      </ng-container>
+    </ng-template>
+  </ngx-datatable-column>
 
   <ngx-datatable-column
     name=""
@@ -262,91 +302,14 @@
     [sortable]="columnDefaults.sortable"
     [headerClass]="columnDefaults.headerClass"
   ></ngx-datatable-column>
-  <ngx-datatable-column
-    *ngIf="
-      showWhatsappNumber() &&
-      [
-        phaseEnum.registrationValidation,
-        phaseEnum.inclusion,
-        phaseEnum.payment
-      ].includes(thisPhase) &&
-      canViewPersonalData
-    "
-    prop="whatsappPhoneNumber"
-    [name]="
-      'page.program.program-people-affected.column.whatsappPhoneNumber'
-        | translate
-    "
-    minWidth="130"
-    [draggable]="columnDefaults.draggable"
-    [resizeable]="columnDefaults.resizeable"
-    [sortable]="columnDefaults.sortable"
-    [headerClass]="columnDefaults.headerClass"
-  ></ngx-datatable-column>
-  <ngx-datatable-column
-    *ngIf="
-      showVnumber() &&
-      [phaseEnum.payment].includes(thisPhase) &&
-      canViewPersonalData
-    "
-    prop="vnumber"
-    [name]="'page.program.program-people-affected.column.vnumber' | translate"
-    minWidth="100"
-    [draggable]="columnDefaults.draggable"
-    [resizeable]="columnDefaults.resizeable"
-    [sortable]="columnDefaults.sortable"
-    [headerClass]="columnDefaults.headerClass"
-  ></ngx-datatable-column>
-
-  <ngx-datatable-column
-    *ngFor="let column of customAttributeColumns"
-    [prop]="column.prop"
-    [name]="column.name"
-    [width]="column.width"
-    [minWidth]="column.minWidth"
-    [maxWidth]="column.maxWidth"
-    [draggable]="column.draggable"
-    [resizeable]="column.resizable"
-    [sortable]="column.sortable"
-    [canAutoResize]="column.canAutoResize"
-    [headerClass]="column.headerClass"
-    [cellClass]="column.cellClass"
-  >
-    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-      <ng-container *ngIf="value === true || value === false">
-        <span
-          [title]="
-            value
-              ? ('page.program.program-people-affected.column.custom-attribute-true'
-                | translate)
-              : ('page.program.program-people-affected.column.custom-attribute-false'
-                | translate)
-          "
-        >
-          <ion-checkbox
-            color="success"
-            mode="ios"
-            [disabled]="!canUpdatePaData"
-            [checked]="value"
-            (click)="onCheckboxChange(row, column, !value)"
-          ></ion-checkbox>
-        </span>
-      </ng-container>
-      <ng-container *ngIf="value !== true && value !== false && value">
-        {{ value }}
-      </ng-container>
-    </ng-template>
-  </ngx-datatable-column>
 
   <ngx-datatable-column
     *ngIf="thisPhase === phaseEnum.payment"
-    prop="paymentHistoryButton"
-    [name]="paymentHistoryColumn?.name"
-    minWidth="300"
-    [draggable]="false"
-    [resizeable]="false"
-    [sortable]="true"
-    [headerClass]="columnDefaults.headerClass"
+    prop="paymentHistoryColumn"
+    [name]="paymentHistoryColumn?.name || ''"
+    [minWidth]="paymentHistoryColumn?.minWidth"
+    [sortable]="paymentHistoryColumn?.sortable"
+    [headerClass]="paymentHistoryColumn?.headerClass"
   >
     <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
       <ng-container *ngIf="value">

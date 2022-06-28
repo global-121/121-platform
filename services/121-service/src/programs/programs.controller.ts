@@ -28,6 +28,7 @@ import { PermissionsGuard } from '../permissions.guard';
 import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
+import { Attribute } from '../registration/enum/custom-data-attributes';
 
 @UseGuards(PermissionsGuard)
 @ApiUseTags('programs')
@@ -144,6 +145,21 @@ export class ProgramController {
     return await this.programService.updateProgramCustomAttributes(
       Number(params.programId),
       updateProgramCustomAttributes,
+    );
+  }
+
+  @ApiOperation({ title: 'Get PA-table attributes for given program' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiImplicitParam({ name: 'phase', required: false, type: 'string' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return PA-table attributes by program-id.',
+  })
+  @Get(':programId/pa-table-attributes/:phase')
+  public async getPaTableAttributes(@Param() params): Promise<Attribute[]> {
+    return await this.programService.getPaTableAttributes(
+      Number(params.programId),
+      params.phase,
     );
   }
 }

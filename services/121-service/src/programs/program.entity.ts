@@ -16,6 +16,7 @@ import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramAidworkerAssignmentEntity } from './program-aidworker.entity';
 import { CascadeDeleteEntity } from '../base.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
+import { Attribute } from '../registration/enum/custom-data-attributes';
 
 @Entity('program')
 export class ProgramEntity extends CascadeDeleteEntity {
@@ -97,6 +98,8 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public updated: Date;
+
+  public editableAttributes?: Attribute[];
 
   @BeforeUpdate()
   public updateTimestamp(): void {

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHandler } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -15,14 +15,12 @@ describe('UpdateFspComponent', () => {
     TestBed.configureTestingModule({
       declarations: [UpdateFspComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [FormsModule, TranslateModule.forRoot()],
-      providers: [
-        ProgramsServiceApiService,
-        AlertController,
-        TranslateService,
-        HttpClient,
-        HttpHandler,
+      imports: [
+        FormsModule,
+        HttpClientTestingModule,
+        TranslateModule.forRoot(),
       ],
+      providers: [ProgramsServiceApiService, AlertController, TranslateService],
     }).compileComponents();
   }));
 
