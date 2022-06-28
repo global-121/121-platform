@@ -19,8 +19,7 @@ export class RegistrationValidationPage implements OnInit {
   public isReady: boolean;
 
   public enumExportType = ExportType;
-
-  public duplicateCheckAttributeNames: string = '';
+  public hasDuplicateAttributes: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,6 +28,10 @@ export class RegistrationValidationPage implements OnInit {
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
+    this.hasDuplicateAttributes =
+      (await this.programsService.getDuplicateAttributesString(
+        this.programId,
+      )) !== '';
   }
 
   public onReady(state: boolean) {

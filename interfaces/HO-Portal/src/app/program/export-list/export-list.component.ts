@@ -1,11 +1,5 @@
 import { formatDate } from '@angular/common';
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -13,13 +7,14 @@ import Permission from 'src/app/auth/permission.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
+import { DuplicateAttributesProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 
 @Component({
   selector: 'app-export-list',
   templateUrl: './export-list.component.html',
   styleUrls: ['./export-list.component.scss'],
 })
-export class ExportListComponent implements OnChanges, AfterViewInit {
+export class ExportListComponent implements OnChanges {
   @Input()
   public programId: number;
 
@@ -42,10 +37,11 @@ export class ExportListComponent implements OnChanges, AfterViewInit {
 
   public btnText: string;
   public subHeader: string;
-  public displayMessage: string;
 
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, HH:mm';
+
+  public duplicateAttributesProps: DuplicateAttributesProps;
 
   constructor(
     private authService: AuthService,
@@ -55,14 +51,11 @@ export class ExportListComponent implements OnChanges, AfterViewInit {
   ) {
     this.locale = environment.defaultLocale;
   }
-  async ngAfterViewInit(): Promise<void> {
-    this.updateBtnText();
-    await this.updateHeaderAndMessage();
-  }
 
   async ngOnChanges(changes: SimpleChanges) {
     if (changes.exportType && typeof changes.exportType === 'object') {
       this.updateBtnText();
+      await this.updateHeaderAndMessage();
     }
   }
 
@@ -74,63 +67,28 @@ export class ExportListComponent implements OnChanges, AfterViewInit {
 
   private async updateDisplayMessage(): Promise<string> {
     let resultMessage = '';
-    if (this.exportType === ExportType.duplicates) {
-      resultMessage = await this.createDuplicateAttributesMessage()
-    }
+    let actionTimestamp;
     if (this.authService.hasPermission(Permission.ActionREAD)) {
-      const actionTimestamp = await this.getLatestActionTime();
-      resultMessage += actionTimestamp
+      actionTimestamp = await this.getLatestActionTime();
+      this.message = actionTimestamp
         ? this.translate.instant('page.program.export-list.timestamp', {
             dateTime: actionTimestamp,
           })
         : '';
     }
+    if (this.exportType === ExportType.duplicates) {
+      this.duplicateAttributesProps = {
+        attributesString: await this.getDuplicateAttributesString(),
+        timestamp: actionTimestamp,
+      };
+    }
     return resultMessage;
   }
 
-  private async createDuplicateAttributesMessage(): Promise<string> {
-    console.log('createDuplicateAttributesMessage: ');
-    const duplicateAttributesConcactString = await this.getDuplicateAttributes();
-    let duplicateAttributesMessage = '';
-    const spacingHtml = '<br /> <br />';
-    duplicateAttributesMessage +=
-      this.translate.instant('page.program.export-list.duplicates.basedOn', {
-        duplicateAttributes: duplicateAttributesConcactString
-      }) + spacingHtml + this.translate.instant(
-        'page.program.export-list.duplicates.canTakeFewMinutes',
-      ) + spacingHtml;
-    return duplicateAttributesMessage;
-  }
-
-  private async getDuplicateAttributes(): Promise<string> {
-    const program = await this.programsService.getProgramById(this.programId)
-    const duplicateCheckAttributeNames = [];
-    for (const attr of program.programQuestions) {
-      if (attr.duplicateCheck) {
-        duplicateCheckAttributeNames.push(attr.name);
-      }
-    }
-    for (const fsp of program.financialServiceProviders) {
-      for (const attr of fsp.attributes) {
-        if (attr.duplicateCheck) {
-          duplicateCheckAttributeNames.push(attr.name);
-        }
-      }
-    }
-    let duplicateAttributesConcactString = '';
-    if (duplicateCheckAttributeNames.length === 0) {
-      return duplicateAttributesConcactString;
-    } else {
-      for (const [i, name] of duplicateCheckAttributeNames.entries()) {
-        // last iteration
-        if (i === duplicateCheckAttributeNames.length - 1) {
-          duplicateAttributesConcactString += `${name}.`;
-        } else {
-          duplicateAttributesConcactString = `${name}, `;
-        }
-      }
-    }
-    return duplicateAttributesConcactString;
+  private async getDuplicateAttributesString(): Promise<string> {
+    return await this.programsService.getDuplicateAttributesString(
+      this.programId,
+    );
   }
 
   private async updateHeaderAndMessage() {
@@ -138,7 +96,7 @@ export class ExportListComponent implements OnChanges, AfterViewInit {
       'page.program.export-list.' + this.exportType + '.confirm-message',
     );
 
-    this.displayMessage = await this.updateDisplayMessage();
+    await this.updateDisplayMessage();
   }
 
   public async getExportList() {

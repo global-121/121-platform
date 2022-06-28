@@ -1,0 +1,40 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-title>{{ 'common.confirm'|translate }}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="closeModal()" [attr.title]="'common.cancel'|translate"
+          [attr.aria-label]="'common.cancel'|translate">
+          <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content class="ion-padding">
+    <h2>{{'page.program.export-list.duplicates.confirm-message'|translate}}</h2>
+    <p>{{'page.program.export-list.duplicates.basedOn'|translate: ({duplicateAttributes: duplicateAttributesProps.attributesString})}}</p>
+    <p>{{'page.program.export-list.timestamp'|translate: ({dateTime: duplicateAttributesProps.timestamp})}}</p>
+    <p>{{'page.program.export-list.duplicates.canTakeFewMinutes'|translate}}</p>
+  </ion-content>
+
+  <ion-footer>
+    <ion-toolbar>
+      <ion-buttons slot="primary">
+        <ion-button
+          fill="clear"
+          color="danger"
+          (click)="closeModal()"
+        >
+          {{ 'common.cancel'|translate }}
+        </ion-button>
+        <ion-button
+          fill="solid"
+          color="primary"
+          (click)="submitConfirm()"
+        >
+          {{ 'common.ok'|translate }}
+        </ion-button>
+      </ion-buttons>
+  
+    </ion-toolbar>
+  </ion-footer>

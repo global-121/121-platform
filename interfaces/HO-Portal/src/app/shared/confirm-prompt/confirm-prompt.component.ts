@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { BulkActionId } from '../../models/bulk-actions.models';
+import { ExportDuplicatesPopupComponent } from '../../program/export-duplicates-popup/export-duplicates-popup.component';
 import { SubmitPaymentPopupComponent } from '../../program/submit-payment-popup/submit-payment-popup.component';
 import {
   FilePickerPromptComponent,
@@ -16,6 +17,11 @@ export interface SubmitPaymentProps {
   programId: number;
   payment: number;
   referenceIds: string[];
+}
+
+export interface DuplicateAttributesProps {
+  attributesString: string;
+  timestamp: string;
 }
 
 @Component({
@@ -50,6 +56,9 @@ export class ConfirmPromptComponent {
 
   @Input()
   public submitPaymentProps: SubmitPaymentProps;
+
+  @Input()
+  public duplicateAttributesProps?: string;
 
   @Input()
   public action: BulkActionId;
@@ -88,6 +97,15 @@ export class ConfirmPromptComponent {
           subHeader: this.subHeader,
           message: this.message,
           submitPaymentProps: this.submitPaymentProps,
+        },
+      });
+    } else if (this.duplicateAttributesProps) {
+      modal = await this.modalController.create({
+        component: ExportDuplicatesPopupComponent,
+        componentProps: {
+          subHeader: this.subHeader,
+          message: this.message,
+          duplicateAttributesProps: this.duplicateAttributesProps,
         },
       });
     } else {
