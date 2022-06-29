@@ -170,7 +170,7 @@ export class RegistrationsService {
         await this.registrationDataRepository.save(storedAnswer);
       }
     }
-    await this.storePersistentAnswers(programAnswers, referenceId);
+    await this.storePhoneNumberInRegistration(programAnswers, referenceId);
     await this.inclusionScoreService.calculateInclusionScore(referenceId);
     await this.inclusionScoreService.calculatePaymentAmountMultiplier(
       registration.program.id,
@@ -191,12 +191,6 @@ export class RegistrationsService {
         phonenumberTypedAnswers.push(programQuestion.name);
       }
     }
-    // const fspTelAttributes = await this.fspAttributeRepository.find({
-    //   where: { answerType: AnswerTypes.tel },
-    // });
-    // for (let fspAttr of fspTelAttributes) {
-    //   phonenumberTypedAnswers.push(fspAttr.name);
-    // }
 
     const cleanedAnswers = [];
     for (let programAnswer of programAnswers) {
@@ -210,7 +204,7 @@ export class RegistrationsService {
     return cleanedAnswers;
   }
 
-  public async storePersistentAnswers(
+  public async storePhoneNumberInRegistration(
     programAnswers: ProgramAnswer[],
     referenceId: string,
   ): Promise<void> {
@@ -218,36 +212,17 @@ export class RegistrationsService {
       referenceId,
       ['program'],
     );
-    const programId = registration.program.id;
-    const cleanedAnswers = await this.cleanAnswers(programAnswers, programId);
-    const program = await this.programRepository.findOne(programId, {
-      relations: ['programQuestions'],
-    });
-    const persistentQuestions = [];
-    for (let question of program.programQuestions) {
-      if (question.persistence) {
-        persistentQuestions.push(question.name);
-      }
-    }
+    const phoneAnswer = programAnswers.find(
+      answer => answer.programQuestionName === CustomDataAttributes.phoneNumber,
+    );
+    if (phoneAnswer) {
+      const programId = registration.program.id;
+      const cleanedAnswers = await this.cleanAnswers([phoneAnswer], programId);
 
-    let customDataToStore;
-    if (!registration.customData) {
-      customDataToStore = {};
-    } else {
-      customDataToStore = registration.customData;
-    }
+      registration.phoneNumber = cleanedAnswers[0].programAnswer;
 
-    for (let answer of cleanedAnswers) {
-      if (persistentQuestions.includes(answer.programQuestionName)) {
-        customDataToStore[answer.programQuestionName] = answer.programAnswer;
-      }
-      if (answer.programQuestionName === CustomDataAttributes.phoneNumber) {
-        registration.phoneNumber = answer.programAnswer;
-      }
+      await this.registrationRepository.save(registration);
     }
-    registration.customData = JSON.parse(JSON.stringify(customDataToStore));
-
-    await this.registrationRepository.save(registration);
   }
 
   public async addFsp(
@@ -273,10 +248,7 @@ export class RegistrationsService {
       customDataKey,
       customDataValueRaw,
     );
-    if (!(customDataKey in registration.customData)) {
-      registration.customData[customDataKey] = customDataValue;
-    }
-    return await this.registrationRepository.save(registration);
+    return registration.saveData(customDataValue, { name: customDataKey });
   }
 
   public async cleanCustomDataIfPhoneNr(
@@ -557,8 +529,11 @@ export class RegistrationsService {
         RegistrationStatusTimestampField.rejectionDate,
       )
       .addSelect('registration.phoneNumber', 'phoneNumber')
-      .addSelect('registration.customData', 'customData')
+      // .addSelect('registration.customData', 'customData')
+      .addSelect('data.value', 'data')
       .addOrderBy(`${RegistrationStatusEnum.rejected}.created`, 'DESC')
+      .leftJoin('registration.data', 'data')
+      .leftJoin('data.programQuestion', 'programQuestion')
       .leftJoin('registration.fsp', 'fsp')
       .leftJoin(
         RegistrationStatusChangeEntity,

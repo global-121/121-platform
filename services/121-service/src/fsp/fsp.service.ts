@@ -22,7 +22,10 @@ export class FspService {
     const fsp = await this.financialServiceProviderRepository.findOne(id, {
       relations: ['questions'],
     });
-    fsp.editableAttributes = await this.getPaEditableAttributesFsp(fsp.id);
+    console.log('fsp: ', fsp);
+    if (fsp) {
+      fsp.editableAttributes = await this.getPaEditableAttributesFsp(fsp.id);
+    }
     return fsp;
   }
 

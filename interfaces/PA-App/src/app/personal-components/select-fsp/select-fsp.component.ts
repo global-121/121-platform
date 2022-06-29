@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import {
   Fsp,
-  FspAttribute,
-  FspAttributeOption,
+  FspQuestion,
+  FspQuestionOption,
 } from 'src/app/models/fsp.model';
 import { Program } from 'src/app/models/program.model';
 import {
@@ -79,7 +79,7 @@ export class SelectFspComponent extends PersonalDirective {
     this.chosenFsp = this.data.fsp;
     this.fspChoice = this.data.fsp.id;
     this.fsps = [this.data.fsp];
-    this.questions = this.buildQuestions(this.chosenFsp.attributes);
+    this.questions = this.buildQuestions(this.chosenFsp.questions);
     this.customAttributeAnswers = this.data.customAttributeAnswers;
     this.isSubmitted = true;
   }
@@ -111,17 +111,17 @@ export class SelectFspComponent extends PersonalDirective {
           this.chosenFsp.fspDisplayName,
         );
 
-        if (!this.chosenFsp.attributes.length) {
+        if (!this.chosenFsp.questions.length) {
           return this.complete();
         }
 
-        this.questions = this.buildQuestions(this.chosenFsp.attributes);
+        this.questions = this.buildQuestions(this.chosenFsp.questions);
       },
       (error) => console.log('error', error),
     );
   }
 
-  private buildQuestions(fspAttributes: FspAttribute[]) {
+  private buildQuestions(fspAttributes: FspQuestion[]) {
     return fspAttributes
       .sort((a, b) => (a.id > b.id ? 1 : -1))
       .map((attribute): Question => {
@@ -137,7 +137,7 @@ export class SelectFspComponent extends PersonalDirective {
       });
   }
 
-  private buildOptions(optionSet: FspAttributeOption[]): QuestionOption[] {
+  private buildOptions(optionSet: FspQuestionOption[]): QuestionOption[] {
     return optionSet.map((option): QuestionOption => {
       return {
         value: option.option,

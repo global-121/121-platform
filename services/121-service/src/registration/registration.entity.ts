@@ -1,3 +1,4 @@
+import { InstanceEntity } from './../instance/instance.entity';
 import { ProgramQuestionEntity } from './../programs/program-question.entity';
 import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsapp-pending-message.entity';
 import { CascadeDeleteEntity } from './../base.entity';
@@ -22,6 +23,11 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
+import {
+  RegistrationDataOptions,
+  RegistrationDataRelation,
+} from './dto/registration-data-relation.model';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 @Entity('registration')
 export class RegistrationEntity extends CascadeDeleteEntity {
@@ -29,8 +35,9 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     type => ProgramEntity,
     program => program.registrations,
   )
-  public program: ProgramEntity;
   @JoinColumn({ name: 'programId' })
+  public program: ProgramEntity;
+  @Column()
   public programId: number;
 
   @ManyToOne(() => UserEntity)
@@ -171,40 +178,200 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         'name',
       )
       .getRawOne();
-    console.log('result: ', result);
     return result.name;
   }
 
-  public async createUpdateProgramQuestionData(
-    name: string,
+  // To save registration data you need either a relation or a name
+  public async saveData(
+    value: string | number,
+    options: RegistrationDataOptions,
+  ): Promise<RegistrationEntity> {
+    let relation = options.relation;
+    if (!options.relation && !options.name) {
+      const errors = `Cannot save registration data, need either a dataRelation or a name`;
+      throw new Error(errors);
+    }
+    if (!options.relation) {
+      relation = await this.getRelationForName(options.name);
+    }
+    value = String(value);
+    if (relation.programQuestionId) {
+      await this.saveProgramQuestionData(value, relation.programQuestionId);
+    }
+    if (relation.fspQuestionId) {
+      await this.saveFspQuestionData(value, relation.fspQuestionId);
+    }
+    if (relation.programCustomAttributeId) {
+      await this.saveProgramCustomAttributeData(
+        value,
+        relation.programCustomAttributeId,
+      );
+    }
+    if (relation.monitoringQuestionId) {
+      await this.saveMonitoringQuestionData(
+        value,
+        relation.monitoringQuestionId,
+      );
+    }
+
+    // Fetches updated registration from database and return it
+    return await getConnection()
+      .getRepository(RegistrationEntity)
+      .findOne(this.id, { relations: ['data'] });
+  }
+
+  private async saveProgramQuestionData(
     value: string,
+    id: number,
   ): Promise<void> {
     const repoRegistrationData = getConnection().getRepository(
       RegistrationDataEntity,
     );
     const existingEntry = await repoRegistrationData
       .createQueryBuilder('registrationData')
-      .where('registrationId = :id', { id: this.id })
+      .where('"registrationId" = :id', { id: this.id })
       .leftJoin('registrationData.programQuestion', 'programQuestion')
-      .andWhere('programQuestion.name = :name', { name: name })
+      .andWhere('programQuestion.id = :id', { id: id })
       .getOne();
-    console.log('existingEntry: ', existingEntry);
     if (existingEntry) {
       existingEntry.value = value;
       await repoRegistrationData.save(existingEntry);
     } else {
       const newRegistrationData = new RegistrationDataEntity();
+      newRegistrationData.registration = this;
       newRegistrationData.value = value;
-      newRegistrationData.programQuestion = await getConnection()
-        .getRepository(ProgramQuestionEntity)
-        .createQueryBuilder('programQuestion')
-        .leftJoin('programQuestion.program', 'program')
-        .where('programQuestion = :name', { name: name })
-        .andWhere('program.id = :programId', { programId: this.programId })
-        .getOne();
-      console.log('newRegistrationData: ', newRegistrationData);
-      this.data.push(newRegistrationData);
-      await repoRegistrationData.save(existingEntry);
+      newRegistrationData.programQuestionId = id;
+      await repoRegistrationData.save(newRegistrationData);
     }
+  }
+
+  private async saveFspQuestionData(value: string, id: number): Promise<void> {
+    console.log('saveFspQuestionData: ', value, id);
+    const repoRegistrationData = getConnection().getRepository(
+      RegistrationDataEntity,
+    );
+    const existingEntry = await repoRegistrationData
+      .createQueryBuilder('registrationData')
+      .where('"registrationId" = :id', { id: this.id })
+      .leftJoin('registrationData.fspQuestion', 'fspQuestion')
+      .andWhere('fspQuestion.id = :id', { id: id })
+      .getOne();
+    if (existingEntry) {
+      existingEntry.value = value;
+      await repoRegistrationData.save(existingEntry);
+    } else {
+      const newRegistrationData = new RegistrationDataEntity();
+      newRegistrationData.registration = this;
+      newRegistrationData.value = value;
+      newRegistrationData.fspQuestionId = id;
+      await repoRegistrationData.save(newRegistrationData);
+    }
+  }
+
+  private async saveProgramCustomAttributeData(
+    value: string,
+    id: number,
+  ): Promise<void> {
+    const repoRegistrationData = getConnection().getRepository(
+      RegistrationDataEntity,
+    );
+    const existingEntry = await repoRegistrationData
+      .createQueryBuilder('registrationData')
+      .where('"registrationId" = :id', { id: this.id })
+      .leftJoin(
+        'registrationData.programCustomAttribute',
+        'programCustomAttribute',
+      )
+      .andWhere('programCustomAttribute.id = :id', { id: id })
+      .getOne();
+    if (existingEntry) {
+      existingEntry.value = value;
+      await repoRegistrationData.save(existingEntry);
+    } else {
+      const newRegistrationData = new RegistrationDataEntity();
+      newRegistrationData.registration = this;
+      newRegistrationData.value = value;
+      newRegistrationData.programCustomAttributeId = id;
+      await repoRegistrationData.save(newRegistrationData);
+    }
+  }
+
+  private async saveMonitoringQuestionData(
+    value: string,
+    id: number,
+  ): Promise<void> {
+    const repoRegistrationData = getConnection().getRepository(
+      RegistrationDataEntity,
+    );
+    const existingEntry = await repoRegistrationData
+      .createQueryBuilder('registrationData')
+      .where('"registrationId" = :id', { id: this.id })
+      .leftJoin('registrationData.monitoringQuestion', 'monitoringQuestion')
+      .andWhere('monitoringQuestion.id = :id', { id: id })
+      .getOne();
+    if (existingEntry) {
+      existingEntry.value = value;
+      await repoRegistrationData.save(existingEntry);
+    } else {
+      const newRegistrationData = new RegistrationDataEntity();
+      newRegistrationData.registration = this;
+      newRegistrationData.value = value;
+      newRegistrationData.monitoringQuestionId = id;
+      await repoRegistrationData.save(newRegistrationData);
+    }
+  }
+
+  public async getRelationForName(
+    name: string,
+  ): Promise<RegistrationDataRelation> {
+    const result = new RegistrationDataRelation();
+    const repo = getConnection().getRepository(ProgramEntity);
+    const resultProgramQuestion = await repo
+      .createQueryBuilder('program')
+      .leftJoin('program.programQuestions', 'programQuestion')
+      .where('program.id = :programId', { programId: this.programId })
+      .andWhere('programQuestion.name = :name', { name: name })
+      .select('"programQuestion".id', 'id')
+      .getRawOne();
+    if (resultProgramQuestion) {
+      result.programQuestionId = resultProgramQuestion.id;
+      return result;
+    }
+    const resultFspQuestion = await repo
+      .createQueryBuilder('program')
+      .leftJoin('program.financialServiceProviders', 'fsp')
+      .leftJoin('fsp.questions', 'question')
+      .where('program.id = :programId', { programId: this.programId })
+      .andWhere('question.name = :name', { name: name })
+      .select('"question".id', 'id')
+      .getRawOne();
+    if (resultFspQuestion) {
+      result.fspQuestionId = resultFspQuestion.id;
+      return result;
+    }
+    const resultProgramCustomAttribute = await repo
+      .createQueryBuilder('program')
+      .leftJoin('program.programCustomAttributes', 'programCustomAttribute')
+      .where('program.id = :programId', { programId: this.programId })
+      .andWhere('programCustomAttribute.name = :name', { name: name })
+      .select('"programCustomAttribute".id', 'id')
+      .getRawOne();
+    if (resultProgramCustomAttribute) {
+      result.programCustomAttributeId = resultProgramCustomAttribute.id;
+      return result;
+    }
+    const repoInstance = getConnection().getRepository(InstanceEntity);
+    const resultMonitoringQuestion = await repoInstance
+      .createQueryBuilder('instance')
+      .leftJoin('instance.monitoringQuestions', 'question')
+      .andWhere('question.name = :name', { name: name })
+      .select('"question".id', 'id')
+      .getRawOne();
+    if (resultMonitoringQuestion) {
+      result.monitoringQuestionId = resultMonitoringQuestion.id;
+      return result;
+    }
+    const errors = `Cannot save registration data, name '${name}' not not found (In program questios, fsp questions, monitoring questions and program custom attributes)`;
+    throw new Error(errors);
   }
 }

@@ -1,3 +1,4 @@
+import { MonitoringQuestionEntity } from './../instance/monitoring-question.entity';
 import { HttpException } from '@nestjs/common';
 import { Connection, In } from 'typeorm';
 
@@ -84,11 +85,21 @@ export class SeedHelper {
     exampleInstance: Record<string, any>,
   ): Promise<void> {
     const instanceRepository = this.connection.getRepository(InstanceEntity);
-
     const instanceDump = JSON.stringify(exampleInstance);
     const instance = JSON.parse(instanceDump);
-
-    await instanceRepository.save(instance);
+    const savedInstanceEntity = await instanceRepository.save(instance);
+    if (instance.monitoringQuestion) {
+      const mqEntity = new MonitoringQuestionEntity();
+      mqEntity.conclusion = instance.monitoringQuestion.conclusion;
+      mqEntity.options = instance.monitoringQuestion.options;
+      mqEntity.intro = instance.monitoringQuestion.intro;
+      mqEntity.name = 'monitoringAnswer';
+      mqEntity.instance = savedInstanceEntity;
+      const monitoringRepository = this.connection.getRepository(
+        MonitoringQuestionEntity,
+      );
+      monitoringRepository.save(mqEntity);
+    }
   }
 
   public async addProgram(programExample: any): Promise<ProgramEntity> {
@@ -161,17 +172,17 @@ export class SeedHelper {
       FinancialServiceProviderEntity,
     );
 
-    const fspAttributesRepository = this.connection.getRepository(
+    const fspQuestionRepository = this.connection.getRepository(
       FspQuestionEntity,
     );
 
     // Remove original custom criteria and add it to a separate variable
-    const attributes = fsp.attributes;
-    fsp.attributes = [];
+    const questions = fsp.questions;
+    fsp.questions = [];
 
-    for (let attribute of attributes) {
-      let customReturn = await fspAttributesRepository.save(attribute);
-      fsp.attributes.push(customReturn);
+    for (let question of questions) {
+      let customReturn = await fspQuestionRepository.save(question);
+      fsp.questions.push(customReturn);
     }
 
     await fspRepository.save(fsp);

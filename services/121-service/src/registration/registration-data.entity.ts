@@ -20,9 +20,6 @@ export class RegistrationDataEntity extends Base121Entity {
   @ManyToOne(
     _type => ProgramQuestionEntity,
     programQuestion => programQuestion.registrationData,
-    {
-      eager: true,
-    },
   )
   @JoinColumn({ name: 'programQuestionId' })
   public programQuestion: ProgramQuestionEntity;
@@ -32,9 +29,6 @@ export class RegistrationDataEntity extends Base121Entity {
   @ManyToOne(
     _type => FspQuestionEntity,
     fspQuestion => fspQuestion.registrationData,
-    {
-      eager: true,
-    },
   )
   @JoinColumn({ name: 'fspQuestionId' })
   public fspQuestion: FspQuestionEntity;
@@ -44,9 +38,6 @@ export class RegistrationDataEntity extends Base121Entity {
   @ManyToOne(
     _type => ProgramCustomAttributeEntity,
     programCustomAttribute => programCustomAttribute.registrationData,
-    {
-      eager: true,
-    },
   )
   @JoinColumn({ name: 'programCustomAttributeId' })
   public programCustomAttribute: ProgramCustomAttributeEntity;
@@ -56,9 +47,6 @@ export class RegistrationDataEntity extends Base121Entity {
   @ManyToOne(
     _type => MonitoringQuestionEntity,
     monitoringQuestion => monitoringQuestion.registrationData,
-    {
-      eager: true,
-    },
   )
   @JoinColumn({ name: 'monitoringQuestionId' })
   public monitoringQuestion: MonitoringQuestionEntity;

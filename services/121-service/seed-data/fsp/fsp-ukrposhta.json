@@ -6,7 +6,7 @@
     "ru": "Укр Почта"
   },
   "integrationType": "csv",
-  "attributes": [
+  "questions": [
     {
       "name": "oblast",
       "label": {

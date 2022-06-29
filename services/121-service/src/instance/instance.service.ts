@@ -12,7 +12,13 @@ export class InstanceService {
   public constructor() {}
 
   public async getInstance(): Promise<InstanceEntity> {
-    return await this.instanceRepository.findOne();
+    const instance = await this.instanceRepository.findOne({
+      relations: ['monitoringQuestions'],
+    });
+    if (instance.monitoringQuestions) {
+      instance['monitoringQuestion'] = instance.monitoringQuestions[0];
+    }
+    return instance;
   }
 
   public async updateInstance(

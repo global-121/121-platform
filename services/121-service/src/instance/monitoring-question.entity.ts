@@ -13,6 +13,9 @@ import {
 
 @Entity('monitoring_question')
 export class MonitoringQuestionEntity extends CascadeDeleteEntity {
+  @Column()
+  public name: string;
+
   @Column('json')
   public intro: JSON;
 
