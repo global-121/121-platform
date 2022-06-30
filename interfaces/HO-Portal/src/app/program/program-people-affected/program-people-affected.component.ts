@@ -85,7 +85,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   public visiblePeopleAffected: PersonRow[] = [];
   public filterRowsVisibleQuery: string;
   public showAllStatusState = false;
-  private filterVal: string;
 
   public headerChecked = false;
   public headerSelectAllVisible = false;
@@ -1245,7 +1244,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   public filterRowsVisible(value: string) {
-    this.filterVal = value;
     const filterVal = value?.toLowerCase().trim();
     const rowsVisible = this.initialVisiblePeopleAffected.filter(
       (row: PersonRow) => {
@@ -1269,16 +1267,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
     this.visiblePeopleAffected = rowsVisible;
     this.updateProxyScrollbarSize();
-  }
-
-  public toggleShowAllStatusState() {
-    if (this.showAllStatusState) {
-      this.initialVisiblePeopleAffected = [...this.allPeopleAffected];
-    } else {
-      this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
-    }
-    this.visiblePeopleAffected = [...this.initialVisiblePeopleAffected];
-    this.filterRowsVisible(this.filterVal);
   }
 
   public paComparator(a: string, b: string) {

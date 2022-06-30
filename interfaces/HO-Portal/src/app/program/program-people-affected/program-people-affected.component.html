@@ -83,22 +83,6 @@
           style="padding-inline-start: var(--padding-start)"
         ></ion-icon>
       </ion-input>
-
-      <ion-toggle
-        [(ngModel)]="showAllStatusState"
-        (ionChange)="toggleShowAllStatusState()"
-      ></ion-toggle>
-      <ion-label
-        (click)="showAllStatusState=!showAllStatusState"
-      >
-        {{ 'page.program.program-people-affected.filter-toggle' | translate }}
-      </ion-label>
-      <tooltip
-        style="margin-left: 3px; margin-bottom: 1px"
-        [value]="
-          'page.program.program-people-affected.filter-tooltip' | translate
-        "
-      ></tooltip>
     </ion-row>
   </div>
 </ion-row>
