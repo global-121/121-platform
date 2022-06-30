@@ -77,6 +77,7 @@ export class ProgramQuestion {
   placeholder?: TranslatableString;
   pattern?: string; // Remember to escape the special characters in the string!
   options: null | ProgramQuestionOption[];
+  duplicateCheck: boolean;
   phases: ProgramPhase[];
 }
 

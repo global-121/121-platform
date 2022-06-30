@@ -7,6 +7,7 @@ import Permission from 'src/app/auth/permission.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
+import { DuplicateAttributesProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 
 @Component({
   selector: 'app-export-list',
@@ -29,14 +30,18 @@ export class ExportListComponent implements OnChanges {
   @Input()
   public disabled: boolean;
 
+  @Input()
+  public message: string;
+
   public isInProgress = false;
 
   public btnText: string;
   public subHeader: string;
-  public message: string;
 
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, HH:mm';
+
+  public duplicateAttributesProps: DuplicateAttributesProps;
 
   constructor(
     private authService: AuthService,
@@ -47,10 +52,10 @@ export class ExportListComponent implements OnChanges {
     this.locale = environment.defaultLocale;
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  async ngOnChanges(changes: SimpleChanges) {
     if (changes.exportType && typeof changes.exportType === 'object') {
       this.updateBtnText();
-      this.updateSubHeader();
+      await this.updateHeaderAndMessage();
     }
   }
 
@@ -60,20 +65,32 @@ export class ExportListComponent implements OnChanges {
     );
   }
 
-  private async updateSubHeader() {
-    this.subHeader = this.translate.instant(
-      'page.program.export-list.' + this.exportType + '.confirm-message',
-    );
-    this.message = '';
-
+  private async updateDisplayMessage(): Promise<void> {
+    let actionTimestamp;
     if (this.authService.hasPermission(Permission.ActionREAD)) {
-      const actionTimestamp = await this.getLatestActionTime();
+      actionTimestamp = await this.getLatestActionTime();
       this.message = actionTimestamp
         ? this.translate.instant('page.program.export-list.timestamp', {
             dateTime: actionTimestamp,
           })
         : '';
     }
+    if (this.exportType === ExportType.duplicates) {
+      this.duplicateAttributesProps = {
+        attributes: await this.programsService.getDuplicateCheckAttributes(
+          this.programId,
+        ),
+        timestamp: actionTimestamp,
+      };
+    }
+  }
+
+  private async updateHeaderAndMessage() {
+    this.subHeader = this.translate.instant(
+      'page.program.export-list.' + this.exportType + '.confirm-message',
+    );
+
+    await this.updateDisplayMessage();
   }
 
   public async getExportList() {
@@ -94,7 +111,7 @@ export class ExportListComponent implements OnChanges {
             );
             return;
           }
-          this.updateSubHeader();
+          this.updateHeaderAndMessage();
         },
         (err) => {
           this.isInProgress = false;

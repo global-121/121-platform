@@ -424,27 +424,29 @@
         "no-data": "There are currently no People Affected to download",
         "all-people-affected": {
           "btn-text": "Export People Affected",
-          "confirm-message": "This will download an Excel-file with all People Affected."
+          "confirm-message": "This will download an Excel file with all People Affected."
         },
         "included": {
           "btn-text": "Export included People Affected",
-          "confirm-message": "This will download an Excel-file with all included People Affected."
+          "confirm-message": "This will download an Excel file with all included People Affected."
         },
         "selected-for-validation": {
           "btn-text": "Export list: selected for validation",
-          "confirm-message": "This will download an Excel-file with all People Affected selected for validation, to be used for Validation visits."
+          "confirm-message": "This will download an Excel file with all People Affected selected for validation, to be used for Validation visits."
         },
         "payment": {
           "btn-text": "Export Report",
-          "confirm-message": "This will download an Excel-file with all People Affected included in this payment."
+          "confirm-message": "This will download an Excel file with all People Affected included in this payment."
         },
         "unused-vouchers": {
           "btn-text": "Export list of unused vouchers",
-          "confirm-message": "This will download an Excel-file with all unused voucher(s).<br /><br />Note that this action can take a while to complete. Do not leave this page in the meantime."
+          "confirm-message": "This will download an Excel file with all unused voucher(s).<br /><br />Note that this action can take a while to complete. Do not leave this page in the meantime."
         },
-        "duplicate-phone-numbers": {
-          "btn-text": "Export list of duplicate phone-numbers",
-          "confirm-message": "This will download an Excel-file with all PA that share any phone-number."
+        "duplicates": {
+          "btn-text": "Export duplicate People Affected",
+          "confirm-message": "This will download an Excel file with all People Affected that are duplicate.",
+          "basedOn": "Checking duplicates is based on: {{duplicateAttributes}}",
+          "canTakeFewMinutes": "This can take up to a few minutes."
         }
       },
       "export-fsp-intructions": {

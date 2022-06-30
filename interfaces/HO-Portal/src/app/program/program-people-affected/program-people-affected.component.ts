@@ -624,7 +624,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ...this.columnDefaults,
         permissions: [Permission.RegistrationPersonalREAD],
         phases: colPerPhase.phases,
-        headerClass: 'ion-text-wrap ion-align-self-end',
+        headerClass: 'ion-align-self-end header-overflow-ellipsis',
       };
       if (this.authService.hasAllPermissions(addCol.permissions)) {
         this.columns.push(addCol);

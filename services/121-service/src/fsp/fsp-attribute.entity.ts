@@ -24,6 +24,9 @@ export class FspAttributeEntity extends Base121Entity {
   @Column()
   public answerType: string;
 
+  @Column({ default: false })
+  public duplicateCheck: boolean;
+
   @Column('json', { default: [] })
   public phases: JSON;
 

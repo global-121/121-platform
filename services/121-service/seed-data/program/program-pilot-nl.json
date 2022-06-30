@@ -163,6 +163,7 @@
       "persistence": true,
       "export": [],
       "scoring": {},
+      "duplicateCheck": true,
       "phases": [],
       "editableInPortal": false
     }
