@@ -9,12 +9,18 @@
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
-  
+
   <ion-content class="ion-padding">
-    <h2>{{'page.program.export-list.duplicates.confirm-message'|translate}}</h2>
-    <p>{{'page.program.export-list.duplicates.basedOn'|translate: ({duplicateAttributes: duplicateAttributesProps.attributesString})}}</p>
-    <p *ngIf="duplicateAttributesProps.timestamp">{{'page.program.export-list.timestamp'|translate: ({dateTime: duplicateAttributesProps.timestamp})}}</p>
-    <p>{{'page.program.export-list.duplicates.canTakeFewMinutes'|translate}}</p>
+    <h2>{{ 'page.program.export-list.duplicates.confirm-message'|translate }}</h2>
+    <p *ngIf="!!duplicateAttributesProps.attributes">
+      {{ 'page.program.export-list.duplicates.basedOn'|translate:{
+           duplicateAttributes: duplicateAttributesProps.attributes.join(', ') + '.'
+         } }}
+    </p>
+    <p *ngIf="duplicateAttributesProps.timestamp">
+      {{ 'page.program.export-list.timestamp'|translate:{ dateTime: duplicateAttributesProps.timestamp } }}
+    </p>
+    <p>{{ 'page.program.export-list.duplicates.canTakeFewMinutes'|translate }}</p>
   </ion-content>
 
   <ion-footer>
@@ -35,6 +41,6 @@
           {{ 'common.ok'|translate }}
         </ion-button>
       </ion-buttons>
-  
+
     </ion-toolbar>
   </ion-footer>

@@ -77,16 +77,12 @@ export class ExportListComponent implements OnChanges {
     }
     if (this.exportType === ExportType.duplicates) {
       this.duplicateAttributesProps = {
-        attributesString: await this.getDuplicateAttributesString(),
+        attributes: await this.programsService.getDuplicateCheckAttributes(
+          this.programId,
+        ),
         timestamp: actionTimestamp,
       };
     }
-  }
-
-  private async getDuplicateAttributesString(): Promise<string> {
-    return await this.programsService.getDuplicateAttributesString(
-      this.programId,
-    );
   }
 
   private async updateHeaderAndMessage() {

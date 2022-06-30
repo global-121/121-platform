@@ -555,34 +555,18 @@ export class ProgramsServiceApiService {
     );
   }
 
-  async getDuplicateAttributesString(programId: number): Promise<string> {
+  async getDuplicateCheckAttributes(programId: number): Promise<string[]> {
     const program = await this.getProgramById(programId);
-    const duplicateCheckAttributeNames = [];
-    for (const attr of program.programQuestions) {
-      if (attr.duplicateCheck) {
-        duplicateCheckAttributeNames.push(attr.name);
-      }
-    }
-    for (const fsp of program.financialServiceProviders) {
-      for (const attr of fsp.attributes) {
-        if (attr.duplicateCheck) {
-          duplicateCheckAttributeNames.push(attr.name);
-        }
-      }
-    }
-    let duplicateAttributesConcactString = '';
-    if (duplicateCheckAttributeNames.length === 0) {
-      return duplicateAttributesConcactString;
-    } else {
-      for (const [i, name] of duplicateCheckAttributeNames.entries()) {
-        // last iteration
-        if (i === duplicateCheckAttributeNames.length - 1) {
-          duplicateAttributesConcactString += `${name}.`;
-        } else {
-          duplicateAttributesConcactString = `${name}, `;
-        }
-      }
-    }
-    return duplicateAttributesConcactString;
+    const fspAttributes = program.financialServiceProviders
+      .filter((fsp) => !!fsp.attributes)
+      .map((fsp) => fsp.attributes)
+      .flat();
+
+    const attributeNames: string[] = []
+      .concat(program.programQuestions, fspAttributes)
+      .filter((attribute) => attribute.duplicateCheck === true)
+      .map((attribute) => attribute.name);
+
+    return attributeNames;
   }
 }

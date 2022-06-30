@@ -20,7 +20,7 @@ export interface SubmitPaymentProps {
 }
 
 export interface DuplicateAttributesProps {
-  attributesString: string;
+  attributes: string[];
   timestamp: string;
 }
 

@@ -28,10 +28,9 @@ export class RegistrationValidationPage implements OnInit {
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
-    this.hasDuplicateAttributes =
-      (await this.programsService.getDuplicateAttributesString(
-        this.programId,
-      )) !== '';
+    this.hasDuplicateAttributes = !!(
+      await this.programsService.getDuplicateCheckAttributes(this.programId)
+    ).length;
   }
 
   public onReady(state: boolean) {
