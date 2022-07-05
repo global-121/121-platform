@@ -10,7 +10,12 @@ import {
   ViewChild,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { AlertController, ModalController, Platform } from '@ionic/angular';
+import {
+  AlertController,
+  ModalController,
+  Platform,
+  PopoverController,
+} from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -29,6 +34,10 @@ import {
   ProgramPhase,
 } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
+import {
+  TableFilterMultipleChoiceOption,
+  TableFilterType,
+} from 'src/app/models/table-filter.model';
 import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
 import { TranslatableString } from 'src/app/models/translatable-string.model';
@@ -253,6 +262,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   public applyBtnDisabled = true;
   public submitWarning: any;
 
+  public tableFilterType = TableFilterType;
+
   public canViewPersonalData: boolean;
   private canUpdatePaData: boolean;
   private canUpdatePersonalData: boolean;
@@ -260,6 +271,14 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private canViewVouchers: boolean;
   private canDoSinglePayment: boolean;
   private routerSubscription: Subscription;
+
+  public allPaStatuses = PaStatus;
+  public paStatusesToShow: PaStatus[];
+  public defaultPaStatusesToShow: PaStatus[];
+  public isStatusFilterPopoverOpen = false;
+  public paStatusFilterPopoverOptions = {
+    header: 'Select PS status',
+  };
 
   constructor(
     private authService: AuthService,
@@ -269,6 +288,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     private pastPaymentsService: PastPaymentsService,
     private alertController: AlertController,
     public modalController: ModalController,
+    public popoverController: PopoverController,
     public platform: Platform,
     private pubSub: PubSubService,
     private router: Router,
@@ -722,10 +742,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private filterPeopleAffectedByPhase() {
-    let paStatusesToShow: PaStatus[];
     switch (this.thisPhase) {
       case ProgramPhase.registrationValidation:
-        paStatusesToShow = [
+        this.paStatusesToShow = [
           PaStatus.imported,
           PaStatus.invited,
           PaStatus.startedRegistration,
@@ -736,7 +755,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ];
         break;
       case ProgramPhase.inclusion:
-        paStatusesToShow = [
+        this.paStatusesToShow = [
           PaStatus.validated,
           PaStatus.registered,
           PaStatus.selectedForValidation,
@@ -745,12 +764,14 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ];
         break;
       case ProgramPhase.payment:
-        paStatusesToShow = [PaStatus.included];
+        this.paStatusesToShow = [PaStatus.included];
         break;
     }
 
+    this.defaultPaStatusesToShow = [...this.paStatusesToShow];
+
     this.phaseSpecificPeopleAffected = this.allPeopleAffected.filter((pa) =>
-      paStatusesToShow.includes(pa.status),
+      this.defaultPaStatusesToShow.includes(pa.status),
     );
     this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
     this.visiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
@@ -1321,5 +1342,37 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     );
     const attributeConstraints = Object.values(attributeError.constraints);
     return '<br><br>' + attributeConstraints.join('<br>');
+  }
+
+  public getPaStatusesFilterOptions(): TableFilterMultipleChoiceOption[] {
+    return Object.values(this.allPaStatuses).map((paStatus: string) => {
+      const option: TableFilterMultipleChoiceOption = {
+        name: paStatus,
+        label: this.translate.instant(
+          'page.program.program-people-affected.status.' + paStatus,
+        ),
+        count: this.getPaStatusCount(paStatus),
+      };
+      return option;
+    });
+  }
+
+  private getPaStatusCount(paStatus): number {
+    return this.allPeopleAffected.filter((pa) => pa.status === paStatus).length;
+  }
+
+  // public filterPaStatus(selectedPaStatuses: PaStatus[]) {
+  public filterPaStatus({ data }) {
+    console.log('=== data: ', data.data);
+    const filter = data.data;
+
+    if (!filter || this.paStatusesToShow === filter) {
+      return;
+    }
+    this.paStatusesToShow = filter;
+    const filteredPeopleAffected = this.allPeopleAffected.filter((pa) =>
+      this.paStatusesToShow.includes(pa.status),
+    );
+    this.visiblePeopleAffected = [...filteredPeopleAffected];
   }
 }

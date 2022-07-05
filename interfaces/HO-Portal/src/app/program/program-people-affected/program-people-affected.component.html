@@ -83,6 +83,19 @@
           style="padding-inline-start: var(--padding-start)"
         ></ion-icon>
       </ion-input>
+
+      <app-table-filter
+        buttonLabel="Status"
+        [type]="tableFilterType.multipleChoice"
+        [optionsList]="getPaStatusesFilterOptions()"
+        [optionsSelectedByDefault]="defaultPaStatusesToShow"
+        (filter)="filterPaStatus($event)"
+        [filterProps]="{
+          allOptions: getPaStatusesFilterOptions(),
+          currentSelection: paStatusesToShow
+        }"
+      ></app-table-filter>
+
     </ion-row>
   </div>
 </ion-row>
