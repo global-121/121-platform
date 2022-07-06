@@ -38,6 +38,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   @Input()
   public canUpdatePersonalData = false;
 
+  @Input()
+  public canViewMessageHistory = false;
+
   public program: Program;
   private paTableAttributesInput: Program['editableAttributes'];
 
@@ -93,6 +96,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     if (this.canViewPersonalData) {
       this.fillPaTableAttributes();
       this.getNote();
+    }
+    if (this.canViewMessageHistory) {
       this.getMessageHistory();
     }
   }

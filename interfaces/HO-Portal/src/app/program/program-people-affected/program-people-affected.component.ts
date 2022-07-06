@@ -255,6 +255,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   public submitWarning: any;
 
   public canViewPersonalData: boolean;
+  private canViewMessageHistory: boolean;
   private canUpdatePaData: boolean;
   private canUpdatePersonalData: boolean;
   private canViewPaymentData: boolean;
@@ -485,6 +486,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     ]);
     this.canUpdatePersonalData = this.authService.hasAllPermissions([
       Permission.RegistrationPersonalUPDATE,
+    ]);
+    this.canViewMessageHistory = this.authService.hasAllPermissions([
+      Permission.RegistrationNotificationREAD,
     ]);
     this.canViewPaymentData = this.authService.hasAllPermissions([
       Permission.PaymentREAD,
@@ -1009,6 +1013,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         readOnly: !this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,
+        canViewMessageHistory: this.canViewMessageHistory,
       },
     });
 
