@@ -4,7 +4,7 @@ export enum TableFilterType {
 
 export class TableFilterMultipleChoiceProps {
   allOptions: TableFilterMultipleChoiceOption[];
-  currentSelection: string[];
+  currentSelection: TableFilterMultipleChoiceOutput;
 }
 
 export class TableFilterMultipleChoiceOption {
@@ -12,3 +12,10 @@ export class TableFilterMultipleChoiceOption {
   label: string;
   count?: number;
 }
+
+export class TableFilterMultipleChoiceState {
+  [key: string]: boolean;
+}
+
+export type TableFilterMultipleChoiceOutput =
+  TableFilterMultipleChoiceOption['name'][];

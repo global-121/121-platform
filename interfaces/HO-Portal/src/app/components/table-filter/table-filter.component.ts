@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
+import { TableFilterMultipleChoiceProps } from 'src/app/models/table-filter.model';
 import { TableFilterPopoverComponent } from './table-filter-popover/table-filter-popover.component';
 
 @Component({
@@ -15,10 +16,10 @@ export class TableFilterComponent implements OnInit {
   public type: string;
 
   @Input()
-  public filterProps: {};
+  public filterProps: TableFilterMultipleChoiceProps;
 
   @Output()
-  public filter: EventEmitter<any> = new EventEmitter<any>();
+  public filter: EventEmitter<string[]> = new EventEmitter<string[]>();
 
   constructor(public popoverController: PopoverController) {}
 
@@ -35,6 +36,11 @@ export class TableFilterComponent implements OnInit {
     });
     await popover.present();
 
-    popover.onDidDismiss().then((data) => this.filter.emit(data));
+    popover.onDidDismiss().then((payload) => {
+      if (!payload || payload.role === 'backdrop') {
+        return;
+      }
+      this.filter.emit(payload.data);
+    });
   }
 }

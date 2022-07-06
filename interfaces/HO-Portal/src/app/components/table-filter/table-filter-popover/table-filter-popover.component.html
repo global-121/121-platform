@@ -1,18 +1,17 @@
 <ng-container [ngSwitch]="type">
   <ng-container *ngSwitchCase="tableFilterType.multipleChoice">
-    <ion-item lines="none" style="width: 100%;">
-      <ion-checkbox [checked]="selectAll" (ionChange)="onSelectAll()"></ion-checkbox>
-      <ion-label class="ion-margin-start">All</ion-label>
+    <ion-item>
+      <ion-checkbox [(ngModel)]="selectAll" (ionChange)="onSelectAll()" slot="start"></ion-checkbox>
+      <ion-label>All</ion-label>
     </ion-item>
-    <ion-item *ngFor="let option of filterProps.allOptions" lines='none' style="width: 100%;">
-      <ion-checkbox [value]="option.name" [checked]="state[type][option.name]" (click)="onCheckboxClick(option.name)"></ion-checkbox>
-      <ion-label class="ion-margin-start">{{ option.label }}</ion-label>
+    <ion-item *ngFor="let option of filterProps.allOptions">
+      <ion-checkbox [(ngModel)]="state[type][option.name]" slot="start"></ion-checkbox>
+      <ion-label class="ion-text-wrap">{{ option.label }}</ion-label>
       <ion-label slot="end">{{ option.count }}</ion-label>
     </ion-item>
 </ng-container>
-<ion-item lines="none">
-  <div slot="end">
-    <ion-button (click)="cancel()">Cancel</ion-button>
-    <ion-button (click)="applyFilter()">Apply</ion-button>
-  </div>
-</ion-item>
+
+<div class="ion-text-end ion-padding-horizontal">
+  <ion-button (click)="cancel()">Cancel</ion-button>
+  <ion-button (click)="applyFilter()">Apply</ion-button>
+</div>

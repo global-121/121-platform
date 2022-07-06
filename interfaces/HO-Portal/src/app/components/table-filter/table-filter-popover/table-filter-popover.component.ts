@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import {
+  TableFilterMultipleChoiceOutput,
   TableFilterMultipleChoiceProps,
+  TableFilterMultipleChoiceState,
   TableFilterType,
 } from 'src/app/models/table-filter.model';
 
@@ -17,17 +19,25 @@ export class TableFilterPopoverComponent implements OnInit {
   @Input()
   public filterProps: TableFilterMultipleChoiceProps;
 
-  public state;
+  public state: { [filterType: string]: TableFilterMultipleChoiceState };
 
-  public selectAll: boolean = false;
+  public selectAll = false;
 
   public tableFilterType = TableFilterType;
+
+  private dataToReturn: {
+    [TableFilterType.multipleChoice]: TableFilterMultipleChoiceOutput;
+  };
 
   constructor(private popoverController: PopoverController) {}
 
   ngOnInit() {
     this.state = {
       [this.tableFilterType.multipleChoice]: this.getMultipleChoiceState(),
+    };
+
+    this.dataToReturn = {
+      [this.tableFilterType.multipleChoice]: this.filterProps.currentSelection,
     };
 
     if (
@@ -38,7 +48,7 @@ export class TableFilterPopoverComponent implements OnInit {
     }
   }
 
-  private getMultipleChoiceState() {
+  private getMultipleChoiceState(): TableFilterMultipleChoiceState {
     return this.filterProps.allOptions.reduce(
       (optionsObject, currentOption) => {
         return (optionsObject = {
@@ -52,40 +62,28 @@ export class TableFilterPopoverComponent implements OnInit {
     );
   }
 
-  public onCheckboxClick(optionName) {
-    this.state[this.tableFilterType.multipleChoice][optionName] =
-      !this.state[this.tableFilterType.multipleChoice][optionName];
-  }
-
   public applyFilter() {
-    const dataToReturn = {
-      [this.tableFilterType.multipleChoice]: Object.keys(
-        this.state[this.tableFilterType.multipleChoice],
-      ).filter(
-        (key) => this.state[this.tableFilterType.multipleChoice][key] === true,
-      ),
-    };
+    this.dataToReturn[this.tableFilterType.multipleChoice] = Object.keys(
+      this.state[this.tableFilterType.multipleChoice],
+    ).filter(
+      (key) => this.state[this.tableFilterType.multipleChoice][key] === true,
+    );
 
-    this.popoverController.dismiss({ data: dataToReturn[this.type] });
+    this.popoverController.dismiss(this.dataToReturn[this.type], 'apply');
   }
 
   public cancel() {
-    const dataToReturn = {
-      [this.tableFilterType.multipleChoice]: this.filterProps.currentSelection,
-    };
+    this.dataToReturn[this.tableFilterType.multipleChoice] =
+      this.filterProps.currentSelection;
 
-    this.popoverController.dismiss({ data: dataToReturn[this.type] });
+    this.popoverController.dismiss(this.dataToReturn[this.type], 'cancel');
   }
 
   public onSelectAll() {
-    this.selectAll = !this.selectAll;
-
     const stateObject = this.state[this.tableFilterType.multipleChoice];
 
     for (const key of Object.keys(stateObject)) {
-      if (stateObject[key] !== this.selectAll) {
-        this.onCheckboxClick(key);
-      }
+      stateObject[key] = this.selectAll;
     }
   }
 }

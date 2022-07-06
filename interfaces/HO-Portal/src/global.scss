@@ -49,27 +49,16 @@ ion-button {
 }
 
 .input-item {
-  // display: flex;
-  // flex-direction: column;
   background-color: white;
 
   &.divider-bottom {
     border-bottom: 1px solid var(--ion-color-light);
   }
 
-  .input-item--contents {
-    // display: flex;
-    // flex-direction: row;
-    // justify-content: space-between;
-    // align-items: center;
-    // flex: 1 1 auto;
-  }
-
   ion-input {
     border: 1px solid #b3bcd0;
     border-radius: 5px;
     margin-top: 8px;
-    // margin-bottom: 8px;
 
     input {
       --padding-start: 8px;
@@ -184,6 +173,7 @@ ion-icon {
 
 .popover-content {
   --width: fit-content;
+  --max-width: 100%;
 
   ion-label {
     padding-right: 8px;
