@@ -6,7 +6,7 @@ import { SmsService } from './../notifications/sms/sms.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, In, Repository } from 'typeorm';
+import { getRepository, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
 import { UserEntity } from '../user/user.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -134,6 +134,9 @@ export class RegistrationsService {
       const errors = 'This referenceId is not known.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+    registration['customData'] = await this.getCustomDataForReferenceId(
+      registration.referenceId,
+    );
     return registration;
   }
 
@@ -307,10 +310,10 @@ export class RegistrationsService {
 
     // If imported registration found ..
     // .. then transfer relevant attributes from imported registration to current registration
-    currentRegistration.customData = {
-      ...currentRegistration.customData,
-      ...importedRegistration.customData,
-    };
+    for (const d of importedRegistration.data) {
+      d.registrationId = currentRegistration.id;
+      this.registrationDataRepository.save(d);
+    }
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
 
@@ -455,6 +458,54 @@ export class RegistrationsService {
     return program;
   }
 
+  private customDataSubQuery(subQuery: SelectQueryBuilder<any>): any {
+    return subQuery
+      .where('rd."registrationId" = registration.id')
+      .from(RegistrationDataEntity, 'rd')
+      .leftJoin('rd.programQuestion', 'programQuestion')
+      .leftJoin('rd.fspQuestion', 'fspQuestion')
+      .leftJoin('rd.monitoringQuestion', 'monitoringQuestion')
+      .leftJoin('rd.programCustomAttribute', 'programCustomAttribute')
+      .addSelect(
+        `json_build_object(
+                'values', array_agg("rd"."value"),
+                'keys', array_agg( CASE
+          WHEN ("programQuestion"."name" is not NULL) THEN "programQuestion"."name"
+          WHEN ("fspQuestion"."name" is not NULL) THEN "fspQuestion"."name"
+          WHEN ("monitoringQuestion"."name" is not NULL) THEN "monitoringQuestion"."name"
+          WHEN ("programCustomAttribute"."name" is not NULL) THEN "programCustomAttribute"."name"
+          ELSE 'owww'
+        END ))`,
+        'name',
+      );
+  }
+
+  private buildCustomDataObject(input: {
+    values: string[];
+    keys: string[];
+  }): object {
+    const customData = {};
+    for (const i in input['keys']) {
+      customData[input['keys'][i]] = input['values'][i];
+    }
+    return customData;
+  }
+
+  private async getCustomDataForReferenceId(
+    referenceId: string,
+  ): Promise<object> {
+    const result = await this.registrationRepository
+      .createQueryBuilder('registration')
+      .select(subQuery => {
+        return this.customDataSubQuery(subQuery);
+      }, 'customData')
+      .where('registration."referenceId" = :referenceId', {
+        referenceId: referenceId,
+      })
+      .getRawOne();
+    return this.buildCustomDataObject(result['customData']);
+  }
+
   public async getRegistrationsForProgram(
     programId: number,
     includePersonalData: boolean,
@@ -485,6 +536,9 @@ export class RegistrationsService {
         `${RegistrationStatusEnum.imported}.created`,
         RegistrationStatusTimestampField.importedDate,
       )
+      .addSelect(subQuery => {
+        return this.customDataSubQuery(subQuery);
+      }, 'customData')
       .addOrderBy(`${RegistrationStatusEnum.imported}.created`, 'DESC')
       .addSelect(
         `${RegistrationStatusEnum.invited}.created`,
@@ -529,7 +583,6 @@ export class RegistrationsService {
         RegistrationStatusTimestampField.rejectionDate,
       )
       .addSelect('registration.phoneNumber', 'phoneNumber')
-      // .addSelect('registration.customData', 'customData')
       .addSelect('data.value', 'data')
       .addOrderBy(`${RegistrationStatusEnum.rejected}.created`, 'DESC')
       .leftJoin('registration.data', 'data')
@@ -591,6 +644,7 @@ export class RegistrationsService {
       const rows = await q.getRawMany();
       const responseRows = [];
       for (let row of rows) {
+        row['customData'] = this.buildCustomDataObject(row['customData']);
         row['hasPhoneNumber'] = !!(
           row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber]
         );
@@ -609,6 +663,7 @@ export class RegistrationsService {
       programId,
     );
     for (let row of rows) {
+      row['customData'] = this.buildCustomDataObject(row['customData']);
       row['name'] = this.getName(row.customData);
       row['hasNote'] = !!row.note;
       row['hasPhoneNumber'] = !!(
@@ -716,32 +771,22 @@ export class RegistrationsService {
     attribute: Attributes | string,
     value: string | number,
   ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationFromReferenceId(
-      referenceId,
-      ['program'],
-    );
+    let registration = await this.getRegistrationFromReferenceId(referenceId, [
+      'program',
+    ]);
+    value = await this.cleanCustomDataIfPhoneNr(attribute, value);
 
     if (typeof registration[attribute] !== 'undefined') {
-      registration[attribute] = await this.cleanCustomDataIfPhoneNr(
-        attribute,
-        value,
-      );
+      registration[attribute] = value;
     }
-    registration.customData[attribute] = await this.cleanCustomDataIfPhoneNr(
-      attribute,
-      value,
-    );
 
+    // This checks registration attributes (like paymentAmountMultiplier)
     const errors = await validate(registration);
     if (errors.length > 0) {
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
 
-    // Also change (potential) corresponding program-question answer (if not the case, then the below does nothing)
-    const programAnswers: ProgramAnswer[] = [
-      { programQuestionName: attribute, programAnswer: String(value) },
-    ];
-    await this.storeProgramAnswers(referenceId, programAnswers);
+    await registration.saveData(value, { name: attribute });
 
     const savedRegistration = await this.registrationRepository.save(
       registration,
@@ -751,9 +796,11 @@ export class RegistrationsService {
       referenceId,
     );
     if (calculatedRegistration) {
-      return calculatedRegistration;
+      return this.getRegistrationFromReferenceId(
+        calculatedRegistration.referenceId,
+      );
     }
-    return savedRegistration;
+    return this.getRegistrationFromReferenceId(savedRegistration.referenceId);
   }
 
   public async updateNote(referenceId: string, note: string): Promise<NoteDto> {
