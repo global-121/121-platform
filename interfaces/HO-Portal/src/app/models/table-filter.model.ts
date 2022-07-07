@@ -14,7 +14,9 @@ export class TableFilterMultipleChoiceOption {
 }
 
 export class TableFilterMultipleChoiceState {
-  [key: string]: boolean;
+  options: { [key: string]: boolean };
+  selectAll: boolean;
+  totalCount: number;
 }
 
 export type TableFilterMultipleChoiceOutput =

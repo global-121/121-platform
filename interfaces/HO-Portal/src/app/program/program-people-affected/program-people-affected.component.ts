@@ -1361,11 +1361,11 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     return this.allPeopleAffected.filter((pa) => pa.status === paStatus).length;
   }
 
-  public filterPaStatus($event: { data: PaStatus[] }) {
-    if (!$event || !$event.data) {
+  public filterPaStatus($event: PaStatus[]) {
+    if (!$event) {
       return;
     }
-    const filter = $event.data;
+    const filter = $event;
 
     if (this.paStatusesToShow === filter) {
       return;

@@ -21,8 +21,6 @@ export class TableFilterPopoverComponent implements OnInit {
 
   public state: { [filterType: string]: TableFilterMultipleChoiceState };
 
-  public selectAll = false;
-
   public tableFilterType = TableFilterType;
 
   private dataToReturn: {
@@ -39,34 +37,38 @@ export class TableFilterPopoverComponent implements OnInit {
     this.dataToReturn = {
       [this.tableFilterType.multipleChoice]: this.filterProps.currentSelection,
     };
-
-    if (
-      this.filterProps.currentSelection.length ===
-      this.filterProps.allOptions.length
-    ) {
-      this.selectAll = true;
-    }
   }
 
   private getMultipleChoiceState(): TableFilterMultipleChoiceState {
-    return this.filterProps.allOptions.reduce(
-      (optionsObject, currentOption) => {
-        return (optionsObject = {
-          ...optionsObject,
-          [currentOption.name]: this.filterProps.currentSelection.includes(
-            currentOption.name,
-          ),
-        });
-      },
-      {},
-    );
+    return {
+      options: this.filterProps.allOptions.reduce(
+        (optionsObject, currentOption) => {
+          return (optionsObject = {
+            ...optionsObject,
+            [currentOption.name]: this.filterProps.currentSelection.includes(
+              currentOption.name,
+            ),
+          });
+        },
+        {},
+      ),
+      selectAll:
+        this.filterProps.currentSelection.length ===
+        this.filterProps.allOptions.length
+          ? true
+          : false,
+      totalCount: this.filterProps.allOptions
+        .map((o) => o.count)
+        .reduce((sum, count) => sum + count, 0),
+    };
   }
 
   public applyFilter() {
     this.dataToReturn[this.tableFilterType.multipleChoice] = Object.keys(
-      this.state[this.tableFilterType.multipleChoice],
+      this.state[this.tableFilterType.multipleChoice].options,
     ).filter(
-      (key) => this.state[this.tableFilterType.multipleChoice][key] === true,
+      (key) =>
+        this.state[this.tableFilterType.multipleChoice].options[key] === true,
     );
 
     this.popoverController.dismiss(this.dataToReturn[this.type], 'apply');
@@ -80,10 +82,11 @@ export class TableFilterPopoverComponent implements OnInit {
   }
 
   public onSelectAll() {
-    const stateObject = this.state[this.tableFilterType.multipleChoice];
+    const options = this.state[this.tableFilterType.multipleChoice].options;
+    const selectAll = this.state[this.tableFilterType.multipleChoice].selectAll;
 
-    for (const key of Object.keys(stateObject)) {
-      stateObject[key] = this.selectAll;
+    for (const key of Object.keys(options)) {
+      options[key] = selectAll;
     }
   }
 }

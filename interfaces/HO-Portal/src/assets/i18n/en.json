@@ -236,6 +236,17 @@
         "filter-placeholder": "Type to filter on any column...",
         "filter-toggle": "Show all",
         "filter-tooltip": "Show all People Affected or only the People Affected relevant to this program phase",
+        "filter-btn": {
+          "common": {
+            "filter-by": "Filter by:",
+            "all-options": "All",
+            "cancel-btn": "Cancel",
+            "apply-btn": "Apply"
+          },
+          "btn-label": {
+            "status": "Status"
+          }
+        },
         "column": {
           "select": "Select",
           "person": "Person Affected",

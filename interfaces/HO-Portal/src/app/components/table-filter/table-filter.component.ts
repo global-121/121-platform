@@ -21,9 +21,13 @@ export class TableFilterComponent implements OnInit {
   @Output()
   public filter: EventEmitter<string[]> = new EventEmitter<string[]>();
 
+  public popoverOpen: boolean;
+
   constructor(public popoverController: PopoverController) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.popoverOpen = false;
+  }
 
   public async openPopover(e: any) {
     const popover = await this.popoverController.create({
@@ -33,13 +37,17 @@ export class TableFilterComponent implements OnInit {
         filterProps: this.filterProps,
       },
       event: e,
+      cssClass: 'table-filter-popover',
     });
     await popover.present();
+    this.popoverOpen = true;
 
     popover.onDidDismiss().then((payload) => {
+      this.popoverOpen = false;
       if (!payload || payload.role === 'backdrop') {
         return;
       }
+
       this.filter.emit(payload.data);
     });
   }

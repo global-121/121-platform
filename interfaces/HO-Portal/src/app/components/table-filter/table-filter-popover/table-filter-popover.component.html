@@ -1,17 +1,18 @@
 <ng-container [ngSwitch]="type">
   <ng-container *ngSwitchCase="tableFilterType.multipleChoice">
     <ion-item>
-      <ion-checkbox [(ngModel)]="selectAll" (ionChange)="onSelectAll()" slot="start"></ion-checkbox>
-      <ion-label>All</ion-label>
+      <ion-label class="ion-text-wrap">{{ 'page.program.program-people-affected.filter-btn.common.all-options' | translate }}</ion-label>
+      <ion-label slot="end" color="medium">{{ state[type].totalCount }}</ion-label>
+      <ion-checkbox [(ngModel)]="state[type].selectAll" (ionChange)="onSelectAll()" slot="end"></ion-checkbox>
     </ion-item>
     <ion-item *ngFor="let option of filterProps.allOptions">
-      <ion-checkbox [(ngModel)]="state[type][option.name]" slot="start"></ion-checkbox>
       <ion-label class="ion-text-wrap">{{ option.label }}</ion-label>
-      <ion-label slot="end">{{ option.count }}</ion-label>
+      <ion-label slot="end" color="medium">{{ option.count }}</ion-label>
+      <ion-checkbox [(ngModel)]="state[type].options[option.name]" slot="end"></ion-checkbox>
     </ion-item>
 </ng-container>
 
-<div class="ion-text-end ion-padding-horizontal">
-  <ion-button (click)="cancel()">Cancel</ion-button>
-  <ion-button (click)="applyFilter()">Apply</ion-button>
+<div class="ion-text-end ion-padding">
+  <ion-button (click)="cancel()" size="small">{{'page.program.program-people-affected.filter-btn.common.cancel-btn' | translate}}</ion-button>
+  <ion-button (click)="applyFilter()" size="small" class="ion-margin-start">{{'page.program.program-people-affected.filter-btn.common.apply-btn' | translate}}</ion-button>
 </div>

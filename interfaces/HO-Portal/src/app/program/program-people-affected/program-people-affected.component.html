@@ -84,8 +84,10 @@
         ></ion-icon>
       </ion-input>
 
+      <ion-label class="ion-margin-start">{{ 'page.program.program-people-affected.filter-btn.common.filter-by' | translate }}</ion-label>
+
       <app-table-filter
-        buttonLabel="Status"
+        [buttonLabel]="'page.program.program-people-affected.filter-btn.btn-label.status' | translate"
         [type]="tableFilterType.multipleChoice"
         [optionsList]="getPaStatusesFilterOptions()"
         [optionsSelectedByDefault]="defaultPaStatusesToShow"
