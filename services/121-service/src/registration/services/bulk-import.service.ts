@@ -73,7 +73,7 @@ export class BulkImportService {
       csvFile,
       program.id,
     );
-
+    console.log('validatedImportRecords: ', validatedImportRecords);
     let countImported = 0;
     let countExistingPhoneNr = 0;
     let countInvalidPhoneNr = 0;
@@ -98,6 +98,7 @@ export class BulkImportService {
       let existingRegistrations = await this.registrationRepository.findOne({
         where: { phoneNumber: phoneNumberResult },
       });
+      console.log('existingRegistrations: ', existingRegistrations);
       if (existingRegistrations) {
         importResponseRecord.importStatus = ImportStatus.existingPhoneNumber;
         importResponseRecords.push(importResponseRecord);
@@ -118,6 +119,7 @@ export class BulkImportService {
           record.paymentAmountMultiplier;
       }
       newRegistration.program = program;
+      console.log('newRegistration: ', newRegistration);
       programCustomAttributes.forEach(att => {
         const data = new RegistrationDataEntity();
         data.value = record[att.name];
