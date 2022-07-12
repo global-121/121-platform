@@ -101,7 +101,9 @@ export class TableFilterPopoverComponent implements OnInit {
   private async showEmptySelectionAlert() {
     const alert = await this.alertController.create({
       backdropDismiss: false,
-      message: 'Please select at least one option',
+      message: this.translate.instant(
+        'page.program.program-people-affected.filter-btn.empty-selection-alert-message',
+      ),
       buttons: [
         {
           text: this.translate.instant('common.ok'),

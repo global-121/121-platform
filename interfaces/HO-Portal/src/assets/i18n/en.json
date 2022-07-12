@@ -245,7 +245,8 @@
           },
           "btn-label": {
             "status": "Status"
-          }
+          },
+          "empty-selection-alert-message": "Please select at least one option"
         },
         "column": {
           "select": "Select",
