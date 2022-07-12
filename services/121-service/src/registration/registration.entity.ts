@@ -232,7 +232,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     );
     const existingEntry = await repoRegistrationData
       .createQueryBuilder('registrationData')
-      .where('"registrationId" = :id', { id: this.id })
+      .where('"registrationId" = :regId', { regId: this.id })
       .leftJoin('registrationData.programQuestion', 'programQuestion')
       .andWhere('programQuestion.id = :id', { id: id })
       .getOne();
@@ -255,7 +255,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     );
     const existingEntry = await repoRegistrationData
       .createQueryBuilder('registrationData')
-      .where('"registrationId" = :id', { id: this.id })
+      .where('"registrationId" = :regId', { regId: this.id })
       .leftJoin('registrationData.fspQuestion', 'fspQuestion')
       .andWhere('fspQuestion.id = :id', { id: id })
       .getOne();
@@ -280,7 +280,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     );
     const existingEntry = await repoRegistrationData
       .createQueryBuilder('registrationData')
-      .where('"registrationId" = :id', { id: this.id })
+      .where('"registrationId" = :regId', { regId: this.id })
       .leftJoin(
         'registrationData.programCustomAttribute',
         'programCustomAttribute',
@@ -308,7 +308,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     );
     const existingEntry = await repoRegistrationData
       .createQueryBuilder('registrationData')
-      .where('"registrationId" = :id', { id: this.id })
+      .where('"registrationId" = :regId', { regId: this.id })
       .leftJoin('registrationData.monitoringQuestion', 'monitoringQuestion')
       .andWhere('monitoringQuestion.id = :id', { id: id })
       .getOne();
