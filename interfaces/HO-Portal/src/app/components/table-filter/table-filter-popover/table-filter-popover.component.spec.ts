@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { TableFilterPopoverComponent } from './table-filter-popover.component';
 
 describe('TableFilterPopoverComponent', () => {
@@ -10,7 +11,7 @@ describe('TableFilterPopoverComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [TableFilterPopoverComponent],
-        imports: [IonicModule.forRoot()],
+        imports: [IonicModule.forRoot(), TranslateModule.forRoot()],
       }).compileComponents();
 
       fixture = TestBed.createComponent(TableFilterPopoverComponent);

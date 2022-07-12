@@ -35,17 +35,17 @@ export class TableFilterPopoverComponent implements OnInit {
     };
 
     this.dataToReturn = {
-      [this.tableFilterType.multipleChoice]: this.filterProps.currentSelection,
+      [this.tableFilterType.multipleChoice]: this.filterProps?.currentSelection,
     };
   }
 
   private getMultipleChoiceState(): TableFilterMultipleChoiceState {
     return {
-      options: this.filterProps.allOptions.reduce(
+      options: this.filterProps?.allOptions.reduce(
         (optionsObject, currentOption) => {
           return (optionsObject = {
             ...optionsObject,
-            [currentOption.name]: this.filterProps.currentSelection.includes(
+            [currentOption.name]: this.filterProps?.currentSelection.includes(
               currentOption.name,
             ),
           });
@@ -53,11 +53,11 @@ export class TableFilterPopoverComponent implements OnInit {
         {},
       ),
       selectAll:
-        this.filterProps.currentSelection.length ===
-        this.filterProps.allOptions.length
+        this.filterProps?.currentSelection.length ===
+        this.filterProps?.allOptions.length
           ? true
           : false,
-      totalCount: this.filterProps.allOptions
+      totalCount: this.filterProps?.allOptions
         .map((o) => o.count)
         .reduce((sum, count) => sum + count, 0),
     };
@@ -76,7 +76,7 @@ export class TableFilterPopoverComponent implements OnInit {
 
   public cancel() {
     this.dataToReturn[this.tableFilterType.multipleChoice] =
-      this.filterProps.currentSelection;
+      this.filterProps?.currentSelection;
 
     this.popoverController.dismiss(this.dataToReturn[this.type], 'cancel');
   }
