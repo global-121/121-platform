@@ -24,6 +24,7 @@ import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import { PaymentColumnDetail } from 'src/app/models/payment.model';
 import {
   PaStatus,
+  PA_STATUS_ORDER,
   Person,
   PersonRow,
   PersonTableColumn,
@@ -272,7 +273,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private canDoSinglePayment: boolean;
   private routerSubscription: Subscription;
 
-  public allPaStatuses = PaStatus;
+  // public allPaStatuses = PaStatus;
   public paStatusesToShow: PaStatus[];
   public defaultPaStatusesToShow: PaStatus[];
   public isStatusFilterPopoverOpen = false;
@@ -1342,18 +1343,16 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   public getPaStatusesFilterOptions(): TableFilterMultipleChoiceOption[] {
-    return Object.values(this.allPaStatuses)
-      .map((paStatus: string) => {
-        const option: TableFilterMultipleChoiceOption = {
-          name: paStatus,
-          label: this.translate.instant(
-            'page.program.program-people-affected.status.' + paStatus,
-          ),
-          count: this.getPaStatusCount(paStatus),
-        };
-        return option;
-      })
-      .filter((o) => o.count > 0);
+    return PA_STATUS_ORDER.map(({ name }) => {
+      const option: TableFilterMultipleChoiceOption = {
+        name,
+        label: this.translate.instant(
+          'page.program.program-people-affected.status.' + name,
+        ),
+        count: this.getPaStatusCount(name),
+      };
+      return option;
+    }).filter((o) => o.count > 0);
   }
 
   private getPaStatusCount(paStatus): number {

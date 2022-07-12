@@ -104,3 +104,17 @@ export class PersonTableColumn {
   showIfNoValidation: boolean;
   headerClass: string;
 }
+
+export const PA_STATUS_ORDER = [
+  { id: 1, name: PaStatus.startedRegistration },
+  { id: 2, name: PaStatus.imported },
+  { id: 3, name: PaStatus.invited },
+  { id: 4, name: PaStatus.registered },
+  { id: 5, name: PaStatus.selectedForValidation },
+  { id: 6, name: PaStatus.validated },
+  { id: 7, name: PaStatus.included },
+  { id: 8, name: PaStatus.inclusionEnded },
+  { id: 9, name: PaStatus.rejected },
+  { id: 10, name: PaStatus.noLongerEligible },
+  { id: 11, name: PaStatus.registeredWhileNoLongerEligible },
+];
