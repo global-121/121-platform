@@ -281,6 +281,10 @@ export class UserService {
         'programAssignments.roles.permissions',
       ],
     });
+    if (!user) {
+      const errors = `User not found'`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
     return this.buildUserRO(user);
   }
 
