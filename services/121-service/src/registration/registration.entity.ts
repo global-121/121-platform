@@ -148,6 +148,9 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     ]);
   }
 
+  @Column('json', {
+    default: {},
+  })
   public customData: any;
 
   public async getRegistrationDataByName(name: string): Promise<string> {
@@ -363,7 +366,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     const repoInstance = getConnection().getRepository(InstanceEntity);
     const resultMonitoringQuestion = await repoInstance
       .createQueryBuilder('instance')
-      .leftJoin('instance.monitoringQuestions', 'question')
+      .leftJoin('instance.monitoringQuestion', 'question')
       .andWhere('question.name = :name', { name: name })
       .select('"question".id', 'id')
       .getRawOne();

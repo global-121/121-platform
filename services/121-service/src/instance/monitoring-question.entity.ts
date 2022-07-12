@@ -9,6 +9,7 @@ import {
   Index,
   OneToMany,
   BeforeRemove,
+  OneToOne,
 } from 'typeorm';
 
 @Entity('monitoring_question')
@@ -25,9 +26,9 @@ export class MonitoringQuestionEntity extends CascadeDeleteEntity {
   @Column('json', { nullable: true })
   public options: JSON;
 
-  @ManyToOne(
-    _type => InstanceEntity,
-    instance => instance.monitoringQuestions,
+  @OneToOne(
+    () => InstanceEntity,
+    instance => instance.monitoringQuestion,
   )
   public instance: InstanceEntity;
 
