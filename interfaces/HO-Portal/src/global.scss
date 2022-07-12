@@ -178,6 +178,17 @@ ion-icon {
   ion-label {
     padding-right: 8px;
   }
+
+  .table-filter--multiple-choice {
+    max-height: 360px;
+    overflow-y: scroll;
+    .table-filter--multiple-choice--item {
+      width: 100%;
+      overflow: visible;
+      --inner-padding-top: 0;
+      --inner-padding-bottom: 0;
+    }
+  }
 }
 
 .table-filter-popover {
