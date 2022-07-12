@@ -276,9 +276,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   public paStatusesToShow: PaStatus[];
   public defaultPaStatusesToShow: PaStatus[];
   public isStatusFilterPopoverOpen = false;
-  public paStatusFilterPopoverOptions = {
-    header: 'Select PS status',
-  };
 
   constructor(
     private authService: AuthService,
@@ -1345,16 +1342,18 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   public getPaStatusesFilterOptions(): TableFilterMultipleChoiceOption[] {
-    return Object.values(this.allPaStatuses).map((paStatus: string) => {
-      const option: TableFilterMultipleChoiceOption = {
-        name: paStatus,
-        label: this.translate.instant(
-          'page.program.program-people-affected.status.' + paStatus,
-        ),
-        count: this.getPaStatusCount(paStatus),
-      };
-      return option;
-    });
+    return Object.values(this.allPaStatuses)
+      .map((paStatus: string) => {
+        const option: TableFilterMultipleChoiceOption = {
+          name: paStatus,
+          label: this.translate.instant(
+            'page.program.program-people-affected.status.' + paStatus,
+          ),
+          count: this.getPaStatusCount(paStatus),
+        };
+        return option;
+      })
+      .filter((o) => o.count > 0);
   }
 
   private getPaStatusCount(paStatus): number {

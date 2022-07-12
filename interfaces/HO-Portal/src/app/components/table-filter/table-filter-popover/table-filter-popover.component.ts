@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { PopoverController } from '@ionic/angular';
+import { AlertController, PopoverController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import {
   TableFilterMultipleChoiceOutput,
   TableFilterMultipleChoiceProps,
@@ -27,7 +28,11 @@ export class TableFilterPopoverComponent implements OnInit {
     [TableFilterType.multipleChoice]: TableFilterMultipleChoiceOutput;
   };
 
-  constructor(private popoverController: PopoverController) {}
+  constructor(
+    private popoverController: PopoverController,
+    private alertController: AlertController,
+    private translate: TranslateService,
+  ) {}
 
   ngOnInit() {
     this.state = {
@@ -70,7 +75,10 @@ export class TableFilterPopoverComponent implements OnInit {
       (key) =>
         this.state[this.tableFilterType.multipleChoice].options[key] === true,
     );
-
+    if (this.dataToReturn[this.type].length === 0) {
+      this.showEmptySelectionAlert();
+      return;
+    }
     this.popoverController.dismiss(this.dataToReturn[this.type], 'apply');
   }
 
@@ -88,5 +96,22 @@ export class TableFilterPopoverComponent implements OnInit {
     for (const key of Object.keys(options)) {
       options[key] = selectAll;
     }
+  }
+
+  private async showEmptySelectionAlert() {
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      message: 'Please select at least one option',
+      buttons: [
+        {
+          text: this.translate.instant('common.ok'),
+          handler: () => {
+            alert.dismiss();
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 }
