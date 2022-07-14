@@ -94,7 +94,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private initialVisiblePeopleAffected: PersonRow[] = [];
   public visiblePeopleAffected: PersonRow[] = [];
   public filterRowsVisibleQuery: string;
-  public showAllStatusState = false;
 
   public headerChecked = false;
   public headerSelectAllVisible = false;
@@ -274,9 +273,16 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private routerSubscription: Subscription;
 
   // public allPaStatuses = PaStatus;
-  public paStatusesToShow: PaStatus[];
-  public defaultPaStatusesToShow: PaStatus[];
+  // public defaultPaStatusesToShow: PaStatus[];
   public isStatusFilterPopoverOpen = false;
+
+  private tableFilter = {
+    text: '',
+    paStatus: {
+      default: [],
+      selected: [],
+    },
+  };
 
   constructor(
     private authService: AuthService,
@@ -742,7 +748,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private filterPeopleAffectedByPhase() {
     switch (this.thisPhase) {
       case ProgramPhase.registrationValidation:
-        this.paStatusesToShow = [
+        this.tableFilter.paStatus.selected = [
           PaStatus.imported,
           PaStatus.invited,
           PaStatus.startedRegistration,
@@ -753,7 +759,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ];
         break;
       case ProgramPhase.inclusion:
-        this.paStatusesToShow = [
+        this.tableFilter.paStatus.selected = [
           PaStatus.validated,
           PaStatus.registered,
           PaStatus.selectedForValidation,
@@ -762,14 +768,14 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ];
         break;
       case ProgramPhase.payment:
-        this.paStatusesToShow = [PaStatus.included];
+        this.tableFilter.paStatus.selected = [PaStatus.included];
         break;
     }
 
-    this.defaultPaStatusesToShow = [...this.paStatusesToShow];
+    this.tableFilter.paStatus.default = [...this.tableFilter.paStatus.selected];
 
     this.phaseSpecificPeopleAffected = this.allPeopleAffected.filter((pa) =>
-      this.defaultPaStatusesToShow.includes(pa.status),
+      this.tableFilter.paStatus.default.includes(pa.status),
     );
     this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
     this.visiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
@@ -1105,7 +1111,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.headerChecked = false;
     this.selectedPeople = [];
     this.resetFilterRowsVisible();
-    this.showAllStatusState = false;
   }
 
   private toggleHeaderCheckbox() {
@@ -1262,30 +1267,13 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.filterRowsVisibleQuery = '';
   }
 
-  public filterRowsVisible(value: string) {
-    const filterVal = value?.toLowerCase().trim();
-    const rowsVisible = this.initialVisiblePeopleAffected.filter(
-      (row: PersonRow) => {
-        // Loop over all columns
-        for (const key of Object.keys(row)) {
-          try {
-            const columnValue = row[key].toLowerCase();
-            const includeRow =
-              columnValue.indexOf(filterVal) !== -1 || // check literal values
-              columnValue.replace(/\s/g, '').indexOf(filterVal) !== -1 || // check also with spaces removed
-              !filterVal;
-            if (includeRow) {
-              return includeRow;
-            }
-          } catch {
-            // Do not filter on unfilterable column types
-          }
-        }
-      },
-    );
+  private setTextFieldFilter(value: string) {
+    this.tableFilter.text = value;
+  }
 
-    this.visiblePeopleAffected = rowsVisible;
-    this.updateProxyScrollbarSize();
+  public applyTextFieldFilter(value: string) {
+    this.setTextFieldFilter(value?.toLowerCase().trim());
+    this.updateVisiblePeopleAffectedByFilter();
   }
 
   public paComparator(a: string, b: string) {
@@ -1359,19 +1347,50 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     return this.allPeopleAffected.filter((pa) => pa.status === paStatus).length;
   }
 
-  public filterPaStatus($event: PaStatus[]) {
+  private setPaStatusFilter(filter: PaStatus[]) {
+    if (this.tableFilter.paStatus.selected === filter) {
+      return;
+    }
+    this.tableFilter.paStatus.selected = filter;
+  }
+
+  private updateVisiblePeopleAffectedByFilter() {
+    const filteredPeopleAffected = this.allPeopleAffected.filter((pa) =>
+      this.tableFilter.paStatus.selected.includes(pa.status),
+    );
+    this.initialVisiblePeopleAffected = [...filteredPeopleAffected];
+
+    const rowsVisible = this.initialVisiblePeopleAffected.filter(
+      (row: PersonRow) => {
+        // Loop over all columns
+        for (const key of Object.keys(row)) {
+          try {
+            const columnValue = row[key].toLowerCase();
+            const includeRow =
+              columnValue.indexOf(this.tableFilter.text) !== -1 || // check literal values
+              columnValue.replace(/\s/g, '').indexOf(this.tableFilter.text) !==
+                -1 || // check also with spaces removed
+              !this.tableFilter.text;
+            if (includeRow) {
+              return includeRow;
+            }
+          } catch {
+            // Do not filter on unfilterable column types
+          }
+        }
+      },
+    );
+
+    this.visiblePeopleAffected = rowsVisible;
+    this.updateProxyScrollbarSize();
+  }
+
+  public applyPaStatusFilter($event: PaStatus[]) {
     if (!$event) {
       return;
     }
-    const filter = $event;
 
-    if (this.paStatusesToShow === filter) {
-      return;
-    }
-    this.paStatusesToShow = filter;
-    const filteredPeopleAffected = this.allPeopleAffected.filter((pa) =>
-      this.paStatusesToShow.includes(pa.status),
-    );
-    this.visiblePeopleAffected = [...filteredPeopleAffected];
+    this.setPaStatusFilter($event);
+    this.updateVisiblePeopleAffectedByFilter();
   }
 }

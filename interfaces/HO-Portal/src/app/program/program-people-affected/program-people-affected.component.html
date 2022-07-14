@@ -65,7 +65,7 @@
         [attr.aria-label]="
           'page.program.program-people-affected.filter-placeholder' | translate
         "
-        (ionChange)="filterRowsVisible($event.target.value)"
+        (ionChange)="applyTextFieldFilter($event.target.value)"
         (debounce)="(1000)"
         [value]="filterRowsVisibleQuery"
         [clearInput]="true"
@@ -90,11 +90,11 @@
         [buttonLabel]="'page.program.program-people-affected.filter-btn.btn-label.status' | translate"
         [type]="tableFilterType.multipleChoice"
         [optionsList]="getPaStatusesFilterOptions()"
-        [optionsSelectedByDefault]="defaultPaStatusesToShow"
-        (filter)="filterPaStatus($event)"
+        [optionsSelectedByDefault]="tableFilter.paStatus.default"
+        (filter)="applyPaStatusFilter($event)"
         [filterProps]="{
           allOptions: getPaStatusesFilterOptions(),
-          currentSelection: paStatusesToShow
+          currentSelection: tableFilter.paStatus.selected
         }"
       ></app-table-filter>
 
