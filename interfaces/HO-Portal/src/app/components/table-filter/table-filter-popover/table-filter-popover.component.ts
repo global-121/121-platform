@@ -36,7 +36,7 @@ export class TableFilterPopoverComponent implements OnInit {
 
   ngOnInit() {
     this.state = {
-      [this.tableFilterType.multipleChoice]: this.getMultipleChoiceState(),
+      [this.tableFilterType.multipleChoice]: this.initMultipleChoiceState(),
     };
 
     this.dataToReturn = {
@@ -44,7 +44,7 @@ export class TableFilterPopoverComponent implements OnInit {
     };
   }
 
-  private getMultipleChoiceState(): TableFilterMultipleChoiceState {
+  private initMultipleChoiceState(): TableFilterMultipleChoiceState {
     return {
       options: this.filterProps?.allOptions.reduce(
         (optionsObject, currentOption) => {
@@ -57,15 +57,19 @@ export class TableFilterPopoverComponent implements OnInit {
         },
         {},
       ),
-      selectAll:
-        this.filterProps?.currentSelection.length ===
-        this.filterProps?.allOptions.length
-          ? true
-          : false,
+      selectAll: this.initSelectAll(),
       totalCount: this.filterProps?.allOptions
         .map((o) => o.count)
         .reduce((sum, count) => sum + count, 0),
     };
+  }
+
+  public initSelectAll(): boolean {
+    return (
+      this.filterProps?.allOptions?.filter((o) =>
+        this.filterProps?.currentSelection?.includes(o.name),
+      )?.length === 0
+    );
   }
 
   public applyFilter() {

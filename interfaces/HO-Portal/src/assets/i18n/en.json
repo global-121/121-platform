@@ -246,7 +246,8 @@
           "btn-label": {
             "status": "Status"
           },
-          "empty-selection-alert-message": "Please select at least one option"
+          "empty-selection-alert-message": "Please select at least one option",
+          "multiple-choice-hidden-options": "Options not available in the table are not shown in the list above."
         },
         "column": {
           "select": "Select",

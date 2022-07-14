@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
-import { TableFilterMultipleChoiceProps } from 'src/app/models/table-filter.model';
+import {
+  TableFilterMultipleChoiceProps,
+  TableFilterType,
+} from 'src/app/models/table-filter.model';
 import { TableFilterPopoverComponent } from './table-filter-popover/table-filter-popover.component';
 
 @Component({
@@ -30,6 +33,10 @@ export class TableFilterComponent implements OnInit {
   }
 
   public async openPopover(e: any) {
+    const cssTypeClass = {
+      [TableFilterType.multipleChoice]: 'table-filter-popover--multiple-choice',
+    };
+
     const popover = await this.popoverController.create({
       component: TableFilterPopoverComponent,
       componentProps: {
@@ -37,7 +44,7 @@ export class TableFilterComponent implements OnInit {
         filterProps: this.filterProps,
       },
       event: e,
-      cssClass: 'table-filter-popover',
+      cssClass: `table-filter-popover ${cssTypeClass[this.type]}`,
     });
     await popover.present();
     this.popoverOpen = true;

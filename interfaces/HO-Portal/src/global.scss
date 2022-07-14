@@ -170,26 +170,38 @@ ion-icon {
 .ml-auto {
   margin-left: auto;
 }
+.select-popover {
+  .popover-content {
+    --width: fit-content;
+    --max-width: 100%;
 
-.popover-content {
-  --width: fit-content;
-  --max-width: 100%;
-
-  ion-label {
-    padding-right: 8px;
-  }
-
-  .table-filter--multiple-choice {
-    max-height: 360px;
-    overflow-y: scroll;
-    .table-filter--multiple-choice--item {
-      width: 100%;
-      --inner-padding-top: 0;
-      --inner-padding-bottom: 0;
+    ion-label {
+      padding-right: 8px;
     }
   }
 }
 
 .table-filter-popover {
   --backdrop-opacity: 0%;
+
+  &.table-filter-popover--multiple-choice {
+    .popover-content {
+      --width: fit-content;
+      --max-width: 400px;
+
+      .table-filter-popover--multiple-choice--list {
+        max-height: 360px;
+        overflow-y: scroll;
+        .table-filter-popover--multiple-choice--item {
+          width: 100%;
+          --inner-padding-top: 0;
+          --inner-padding-bottom: 0;
+        }
+      }
+    }
+    .table-filter-popover--multiple-choice--note {
+      border-top: 1px solid var(--ion-color-light);
+      width: 250px;
+    }
+  }
 }
