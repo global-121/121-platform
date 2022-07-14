@@ -75,10 +75,10 @@ Feature: View and manage people affected (generic features)
     And an option to select "all" is on top of the list
     And the option is not checked
     When the user selects "all"
-    Then all the status are selected
+    Then all the statuses are selected
     When the user clicks on "apply"
     Then the table will now show all "people affected", also those from other phases
-    And - if done while the filter field contains text - then the filtered text keeps being applied
+    And - if done while the filter text field contains text - then the filtered text keeps being applied
     When the user deselect "all"
     Then the table will not show any "people affected"
 
