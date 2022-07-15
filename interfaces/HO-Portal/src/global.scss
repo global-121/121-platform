@@ -186,10 +186,12 @@ ion-icon {
 
   &.table-filter-popover--multiple-choice {
     .popover-content {
-      --width: fit-content;
+      --width: inherit;
+      --min-width: 260px;
       --max-width: 400px;
 
       .table-filter-popover--multiple-choice--list {
+        width: 100%;
         max-height: 360px;
         overflow-y: scroll;
         .table-filter-popover--multiple-choice--item {
@@ -201,7 +203,6 @@ ion-icon {
     }
     .table-filter-popover--multiple-choice--note {
       border-top: 1px solid var(--ion-color-light);
-      width: 250px;
     }
   }
 }

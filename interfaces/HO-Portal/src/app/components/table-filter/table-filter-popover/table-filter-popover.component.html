@@ -13,15 +13,15 @@
         </div>
       </ion-row>
       <ion-row *ngFor="let option of filterProps.allOptions" lines="none" class="ion-justify-content-between ion-align-items-center table-filter-popover--multiple-choice--item">
-        <div class="ion-margin-end">
+        <ion-col size="7" class="ion-no-padding">
           <ion-label class="ion-text-wrap">{{ option.label }}</ion-label>
-        </div>
-        <div class="ion-margin-start">
+        </ion-col>
+        <ion-col size="4" class="ion-no-padding">
           <ion-row class="ion-justify-content-end">
-            <ion-label color="medium">{{ option.count + " "}}</ion-label>
+            <ion-label color="medium">{{ option.count}}</ion-label>
             <ion-checkbox [(ngModel)]="state[type].options[option.name]" class="ion-margin-start"></ion-checkbox>
           </ion-row>
-        </div>
+        </ion-col>
       </ion-row>
     </ion-grid>
     <div class="ion-padding table-filter-popover--multiple-choice--note">
