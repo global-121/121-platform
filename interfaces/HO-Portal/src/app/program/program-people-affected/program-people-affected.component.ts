@@ -272,8 +272,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private canDoSinglePayment: boolean;
   private routerSubscription: Subscription;
 
-  // public allPaStatuses = PaStatus;
-  // public defaultPaStatusesToShow: PaStatus[];
   public isStatusFilterPopoverOpen = false;
 
   private tableFilter = {
