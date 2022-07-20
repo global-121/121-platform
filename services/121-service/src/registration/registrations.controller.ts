@@ -105,7 +105,7 @@ export class RegistrationsController {
   public async addCustomData(
     @Body() customData: CustomDataDto,
   ): Promise<RegistrationEntity> {
-    return await this.registrationsService.addCustomData(
+    return await this.registrationsService.addRegistrationData(
       customData.referenceId,
       customData.key,
       customData.value,

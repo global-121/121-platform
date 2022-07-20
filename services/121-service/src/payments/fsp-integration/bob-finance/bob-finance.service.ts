@@ -53,12 +53,22 @@ export class BobFinanceService {
   ): Promise<BobFinanceFspInstructions> {
     const bobFinanceFspInstructions = new BobFinanceFspInstructions();
 
-    bobFinanceFspInstructions['Receiver First name'] =
-      registration.customData[CustomDataAttributes.nameFirst];
-    bobFinanceFspInstructions['Receiver last name'] =
-      registration.customData[CustomDataAttributes.nameLast];
+    bobFinanceFspInstructions['Receiver First name'] = (
+      await registration.getRegistrationDataByName(
+        CustomDataAttributes.nameFirst,
+      )
+    ).value;
+    bobFinanceFspInstructions['Receiver last name'] = (
+      await registration.getRegistrationDataByName(
+        CustomDataAttributes.nameLast,
+      )
+    ).value;
     bobFinanceFspInstructions['Mobile Number'] = await this.formatToLocalNumber(
-      registration.customData[CustomDataAttributes.phoneNumber],
+      (
+        await registration.getRegistrationDataByName(
+          CustomDataAttributes.nameLast,
+        )
+      ).value,
     );
     bobFinanceFspInstructions.Email = null;
     bobFinanceFspInstructions.Amount = transaction.amount;

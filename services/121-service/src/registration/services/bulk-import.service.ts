@@ -231,12 +231,12 @@ export class BulkImportService {
 
       dynamicAttributes.forEach(att => {
         if (att.type === CustomAttributeType.boolean) {
-          registration.customData[att.name] = this.stringToBoolean(
+          registration.data[att.name] = this.stringToBoolean(
             record[att.name],
             false,
           );
         } else {
-          registration.customData[att.name] = record[att.name];
+          registration.data[att.name] = record[att.name];
         }
       });
 
@@ -260,7 +260,7 @@ export class BulkImportService {
       await this.storeProgramAnswersImportRegistrations(
         registration,
         program.id,
-        registration.customData,
+        // registration.customData,
       );
       await this.inclusionScoreService.calculateInclusionScore(
         registration.referenceId,
@@ -279,7 +279,7 @@ export class BulkImportService {
   private async storeProgramAnswersImportRegistrations(
     registration: RegistrationEntity,
     programId: number,
-    customData: any,
+    customData?: any,
   ): Promise<void> {
     const dynamicAttributes = await this.getDynamicAttributes(programId);
     let programAnswers: RegistrationDataEntity[] = [];
@@ -291,7 +291,7 @@ export class BulkImportService {
         let programAnswer = new RegistrationDataEntity();
         programAnswer.registration = registration;
         programAnswer.programQuestion = programQuestion;
-        programAnswer.value = customData[attribute.name];
+        // programAnswer.value = customData[attribute.name];
         programAnswers.push(programAnswer);
       }
     }

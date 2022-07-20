@@ -31,13 +31,13 @@ export class registrationData1656412499569 implements MigrationInterface {
     await queryRunner.query(
       `CREATE INDEX "IDX_f07a1f50a3d185ac010a45b47e" ON "121-service"."registration_data" ("created") `,
     );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" DROP COLUMN "customData"`,
-    // );
     await queryRunner.commitTransaction();
     await this.migrateData(queryRunner.connection);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
+    // await queryRunner.query(
+    //   `ALTER TABLE "121-service"."registration" DROP COLUMN "customData"`,
+    // );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -86,15 +86,14 @@ export class registrationData1656412499569 implements MigrationInterface {
         'NLRC programs not found. Not migrating phases and editable properties for NLRC program',
       );
     }
-    if(!instancePilotLVV || !instancePilotPV){
+    if (!instancePilotLVV || !instancePilotPV) {
       return;
     }
 
     const registrations = await registrationRepo
       .createQueryBuilder('registration')
-      .select('registration.id')
-      .addSelect('registration.customData')
-      .getMany();
+      .select('registration.*')
+      .getRawMany();
 
     if (registrations) {
       const fspAttributes = await fspAttributeRepo

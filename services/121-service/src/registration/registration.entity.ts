@@ -116,8 +116,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   )
   public whatsappPendingMessages: WhatsappPendingMessageEntity[];
 
-  // public customData: any;
-
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     await this.deleteAllOneToMany([
@@ -148,40 +146,41 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     ]);
   }
 
-  @Column('json', {
-    default: {},
-  })
-  public customData: any;
+  // @Column('json', {
+  //   default: {},
+  // })
+  // public customData: any;
 
-  public async getRegistrationDataByName(name: string): Promise<string> {
+  public async getRegistrationDataByName(
+    name: string,
+  ): Promise<RegistrationDataEntity> {
     const repo = getConnection().getRepository(RegistrationDataEntity);
     const result = await repo
       .createQueryBuilder('registrationData')
       .leftJoin('registrationData.registration', 'registration')
       .leftJoin('registrationData.programQuestion', 'programQuestion')
       .leftJoin('registrationData.fspQuestion', 'fspQuestion')
-      .leftJoin('registrationData.monitoringQuestion', 'monitoringQuestionId')
+      .leftJoin('registrationData.monitoringQuestion', 'monitoringQuestion')
       .leftJoin(
         'registrationData.programCustomAttribute',
         'programCustomAttribute',
       )
       .where('registration.id = :id', { id: this.id })
       .andWhere(`programQuestion.name = :name`, { name: name })
-      .andWhere(`fspQuestion.name = :name`, { name: name })
-      .andWhere(`monitoringQuestion.name = :name`, { name: name })
-      .andWhere(`programCustomAttribute.name = :name`, { name: name })
+      .orWhere(`fspQuestion.name = :name`, { name: name })
+      .orWhere(`monitoringQuestion.name = :name`, { name: name })
+      .orWhere(`programCustomAttribute.name = :name`, { name: name })
       .select(
         `CASE
           WHEN ("programQuestion"."name" is not NULL) THEN "programQuestion"."name"
           WHEN ("fspQuestion"."name" is not NULL) THEN "fspQuestion"."name"
           WHEN ("monitoringQuestion"."name" is not NULL) THEN "monitoringQuestion"."name"
           WHEN ("programCustomAttribute"."name" is not NULL) THEN "programCustomAttribute"."name"
-          ELSE "The quantity is under 30"
-        END`,
-        'name',
+        END as name,
+        value`,
       )
       .getRawOne();
-    return result.name;
+    return result;
   }
 
   // To save registration data you need either a relation or a name

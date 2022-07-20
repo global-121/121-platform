@@ -290,7 +290,7 @@ export class PaymentsService {
         attribute.name === CustomDataAttributes.whatsappPhoneNumber
       ) {
         const paymentAddressColumn = attribute.name;
-        return includedRegistration.customData[paymentAddressColumn];
+        return (await includedRegistration.getRegistrationDataByName(paymentAddressColumn)).value
       }
     }
     return null;

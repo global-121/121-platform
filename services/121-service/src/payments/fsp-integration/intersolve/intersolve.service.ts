@@ -530,7 +530,7 @@ export class IntersolveService {
           unusedVoucher.issueDate = voucher.created;
           unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
           unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
-          unusedVoucher.customData = voucher.image[0].registration.customData;
+          unusedVoucher.customData = voucher.image[0].registration.data;
 
           unusedVouchers.push(unusedVoucher);
         } else {

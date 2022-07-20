@@ -504,10 +504,11 @@ export class ExportMetricsService {
 
     const duplicates = allRegistrations.filter(registration => {
       const others = without(allRegistrations, registration);
-      const currentPaNumbers = compact([
-        registration.customData[CustomDataAttributes.phoneNumber],
-        registration.customData[CustomDataAttributes.whatsappPhoneNumber],
-      ]);
+      // const currentPaNumbers = compact([
+      //   registration.customData[CustomDataAttributes.phoneNumber],
+      //   registration.customData[CustomDataAttributes.whatsappPhoneNumber],
+      // ]);
+      const currentPaNumbers = [];
 
       const hasDuplicateProgramNr = this.hasDuplicateCustomDataValues(
         others,
@@ -535,16 +536,16 @@ export class ExportMetricsService {
     const result = sortBy(duplicates, 'id').map(registration => {
       let row: any = {
         id: registration.id,
-        name: this.registrationsService.getName(registration.customData),
+        name: this.registrationsService.getName(''),
         status: registration.registrationStatus,
         fsp: registration.fsp ? registration.fsp.fsp : null,
-        phoneNumber: registration.customData[CustomDataAttributes.phoneNumber],
-        whatsappPhoneNumber:
-          registration.customData[CustomDataAttributes.whatsappPhoneNumber],
+        // phoneNumber: registration.customData[CustomDataAttributes.phoneNumber],
+        // whatsappPhoneNumber:
+        //   registration.customData[CustomDataAttributes.whatsappPhoneNumber],
       };
       row = this.registrationsService.addProgramCustomAttributesToRow(
         row,
-        registration.customData,
+        registration.data,
         programCustomAttrs,
       );
       return row;
@@ -562,10 +563,10 @@ export class ExportMetricsService {
     values: any[],
   ): boolean {
     return others.some(otherRegistration => {
-      if (!otherRegistration.customData[type]) {
-        return false;
-      }
-      return values.includes(otherRegistration.customData[type]);
+      // if (!otherRegistration.customData[type]) {
+      //   return false;
+      // }
+      // return values.includes(otherRegistration.customData[type]);
     });
   }
 

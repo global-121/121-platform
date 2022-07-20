@@ -241,7 +241,7 @@ export class RegistrationsService {
     return await this.registrationRepository.save(registration);
   }
 
-  public async addCustomData(
+  public async addRegistrationData(
     referenceId: string,
     customDataKey: string,
     customDataValueRaw: string,
@@ -888,42 +888,45 @@ export class RegistrationsService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    try {
+      let whatsappNumber = (
+        await registration.getRegistrationDataByName(
+          CustomDataAttributes.whatsappPhoneNumber,
+        )
+      ).value;
 
-    let whatsappNumber;
-
-    if (registration.customData) {
-      whatsappNumber =
-        registration.customData[CustomDataAttributes.whatsappPhoneNumber];
-    }
-    const messageText = message
-      ? message
-      : await this.getNotificationText(
+      const messageText = message
+        ? message
+        : await this.getNotificationText(
+            registration.preferredLanguage,
+            key,
+            programId,
+          );
+      if (whatsappNumber) {
+        this.whatsappService.queueMessageSendTemplate(
+          messageText,
+          whatsappNumber,
+          null,
+          null,
+          registration.id,
           registration.preferredLanguage,
-          key,
-          programId,
         );
-    if (whatsappNumber) {
-      this.whatsappService.queueMessageSendTemplate(
-        messageText,
-        whatsappNumber,
-        null,
-        null,
-        registration.id,
-        registration.preferredLanguage,
-      );
-    } else if (tryWhatsApp && registration.phoneNumber) {
-      this.tryWhatsapp(registration, messageText);
-    } else if (registration.phoneNumber) {
-      this.smsService.sendSms(
-        messageText,
-        registration.phoneNumber,
-        registration.id,
-      );
-    } else {
-      throw new HttpException(
-        'A recipientPhoneNr should be supplied.',
-        HttpStatus.BAD_REQUEST,
-      );
+      } else if (tryWhatsApp && registration.phoneNumber) {
+        this.tryWhatsapp(registration, messageText);
+      } else if (registration.phoneNumber) {
+        this.smsService.sendSms(
+          messageText,
+          registration.phoneNumber,
+          registration.id,
+        );
+      } else {
+        throw new HttpException(
+          'A recipientPhoneNr should be supplied.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    } catch (error) {
+      console.log('error: ', error);
     }
   }
 
@@ -980,22 +983,57 @@ export class RegistrationsService {
     const registrations = await this.registrationRepository.find({
       relations: ['fsp'],
     });
-    return registrations.filter(registration => {
+
+    return registrations.filter(async registration => {
+      const registrationName = (
+        await registration.getRegistrationDataByName(CustomDataAttributes.name)
+      ).value;
+      const registrationNameFirst = (
+        await registration.getRegistrationDataByName(
+          CustomDataAttributes.nameFirst,
+        )
+      ).value;
+      const registrationNameLast = (
+        await registration.getRegistrationDataByName(
+          CustomDataAttributes.nameLast,
+        )
+      ).value;
+      const registrationFirstName = (
+        await registration.getRegistrationDataByName(
+          CustomDataAttributes.firstName,
+        )
+      ).value;
+      const registrationSecondName = (
+        await registration.getRegistrationDataByName(
+          CustomDataAttributes.secondName,
+        )
+      ).value;
+      const registrationThirdName = (
+        await registration.getRegistrationDataByName(
+          CustomDataAttributes.thirdName,
+        )
+      ).value;
+      const registrationPhoneNumber = (
+        await registration.getRegistrationDataByName(
+          CustomDataAttributes.phoneNumber,
+        )
+      ).value;
+      const registrationWhatsappPhoneNumber = (
+        await registration.getRegistrationDataByName(
+          CustomDataAttributes.whatsappPhoneNumber,
+        )
+      ).value;
       return (
         (name &&
-          (registration.customData[CustomDataAttributes.name] === name ||
-            registration.customData[CustomDataAttributes.nameFirst] === name ||
-            registration.customData[CustomDataAttributes.nameLast] === name ||
-            registration.customData[CustomDataAttributes.firstName] === name ||
-            registration.customData[CustomDataAttributes.secondName] === name ||
-            registration.customData[CustomDataAttributes.thirdName] ===
-              name)) ||
+          (registrationName === name ||
+            registrationNameFirst === name ||
+            registrationNameLast === name ||
+            registrationFirstName === name ||
+            registrationSecondName === name ||
+            registrationThirdName === name)) ||
         (phoneNumber &&
-          (registration.customData[CustomDataAttributes.phoneNumber] ===
-            phoneNumber ||
-            registration.customData[
-              CustomDataAttributes.whatsappPhoneNumber
-            ] === phoneNumber ||
+          (registrationPhoneNumber === phoneNumber ||
+            registrationWhatsappPhoneNumber === phoneNumber ||
             registration.phoneNumber === phoneNumber)) ||
         registration.id === id
       );
@@ -1045,17 +1083,14 @@ export class RegistrationsService {
       const errors = `New FSP is the same as existing FSP for this Person Affected.`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
-
     // Remove old attributes
     const oldFsp = registration.fsp;
-    oldFsp?.questions.forEach(attribute => {
-      Object.keys(registration.customData).forEach(key => {
-        if (attribute.name === key) {
-          delete registration.customData[key];
-        }
-      });
-    });
-    await this.registrationRepository.save(registration);
+    for (const attribute of oldFsp?.questions) {
+      const regData = await registration.getRegistrationDataByName(
+        attribute.name,
+      );
+      this.registrationDataRepository.delete(regData);
+    }
 
     // Update FSP
     const updatedRegistration = await this.addFsp(referenceId, newFsp.id);
@@ -1063,15 +1098,8 @@ export class RegistrationsService {
     // Add new attributes
 
     for (const attribute of updatedRegistration.fsp.questions) {
-      await this.addCustomData(
+      await this.addRegistrationData(
         referenceId,
-        attribute.name,
-        newFspAttributes[attribute.name],
-      );
-
-      updatedRegistration.customData[
-        attribute.name
-      ] = await this.cleanCustomDataIfPhoneNr(
         attribute.name,
         newFspAttributes[attribute.name],
       );
@@ -1128,7 +1156,9 @@ export class RegistrationsService {
     return data;
   }
 
-  public async getAllProgramAnswers(user: UserEntity): Promise<any[]> {
+  public async getAllProgramAnswers(
+    user: UserEntity,
+  ): Promise<RegistrationDataEntity[]> {
     const programIds = user.programAssignments.map(p => p.program.id);
     const registrationsToValidate = await getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
@@ -1164,10 +1194,10 @@ export class RegistrationsService {
   public async getAllFspAnswers(
     programIds: number[],
   ): Promise<FspAnswersAttrInterface[]> {
-    const regsitrations = await getRepository(RegistrationEntity)
+    const registrations = await getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .leftJoinAndSelect('registration.fsp', 'fsp')
-      .leftJoinAndSelect('fsp.attributes', ' fsp_attribute.fsp')
+      .leftJoinAndSelect('fsp.questions', ' fsp_question.fsp')
       .leftJoin('registration.program', 'program')
       .where('registration.fsp IS NOT NULL')
       .andWhere('registration.program.id IN (:...programIds)', {
@@ -1182,11 +1212,8 @@ export class RegistrationsService {
       .getMany();
 
     const fspDataPerRegistration = [];
-    for (const registration of regsitrations) {
-      const answers = this.getFspAnswers(
-        registration.fsp.questions,
-        registration.customData,
-      );
+    for (const registration of registrations) {
+      const answers = await this.getFspAnswers(registration);
       const fspData = {
         attributes: registration.fsp.questions,
         answers: answers,
@@ -1197,20 +1224,20 @@ export class RegistrationsService {
     return fspDataPerRegistration;
   }
 
-  public getFspAnswers(
-    fspAttributes: FspQuestionEntity[],
-    customData: JSON,
-  ): AnswerSet {
+  public async getFspAnswers(
+    registration: RegistrationEntity,
+  ): Promise<AnswerSet> {
     const fspAttributeNames = [];
-    for (const attribute of fspAttributes) {
+    for (const attribute of registration.fsp.questions) {
       fspAttributeNames.push(attribute.name);
     }
     const fspCustomData = {};
-    for (const key in customData) {
+    for (const key in registration.data) {
+      console.log('key: ', key);
       if (fspAttributeNames.includes(key)) {
         fspCustomData[key] = {
           name: key,
-          value: customData[key],
+          value: (await registration.getRegistrationDataByName(key)).value,
         };
       }
     }
@@ -1254,10 +1281,7 @@ export class RegistrationsService {
         referenceId: referenceId,
       });
     const registration = await qb.getOne();
-    const fspAnswers = this.getFspAnswers(
-      registration.fsp.questions,
-      registration.customData,
-    );
+    const fspAnswers = await this.getFspAnswers(registration);
     return {
       attributes: registration.fsp.questions,
       answers: fspAnswers,
