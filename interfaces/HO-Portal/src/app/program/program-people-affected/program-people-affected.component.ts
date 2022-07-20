@@ -265,6 +265,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   public tableFilterType = TableFilterType;
 
   public canViewPersonalData: boolean;
+  private canViewMessageHistory: boolean;
   private canUpdatePaData: boolean;
   private canUpdatePersonalData: boolean;
   private canViewPaymentData: boolean;
@@ -507,6 +508,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.canUpdatePersonalData = this.authService.hasAllPermissions([
       Permission.RegistrationPersonalUPDATE,
     ]);
+    this.canViewMessageHistory = this.authService.hasAllPermissions([
+      Permission.RegistrationNotificationREAD,
+    ]);
     this.canViewPaymentData = this.authService.hasAllPermissions([
       Permission.PaymentREAD,
       Permission.PaymentTransactionREAD,
@@ -645,7 +649,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ...this.columnDefaults,
         permissions: [Permission.RegistrationPersonalREAD],
         phases: colPerPhase.phases,
-        headerClass: 'ion-text-wrap ion-align-self-end',
+        headerClass: 'ion-align-self-end header-overflow-ellipsis',
       };
       if (this.authService.hasAllPermissions(addCol.permissions)) {
         this.columns.push(addCol);
@@ -1031,6 +1035,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         readOnly: !this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,
+        canViewMessageHistory: this.canViewMessageHistory,
       },
     });
 

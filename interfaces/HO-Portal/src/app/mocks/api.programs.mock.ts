@@ -48,6 +48,7 @@ const programsArray: Program[] = [
         },
         options: null,
         phases: [],
+        duplicateCheck: false,
       },
     ],
   },
