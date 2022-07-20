@@ -17,8 +17,8 @@ Feature: View and manage people affected (generic features)
     And depending on which "page" other columns are shown (see detailed scenarios below)
     And above the table a list of "bulk actions" is shown
     And next to it an "apply action" button is shown and it is "disabled"
-    And above the table a free text "filter field" is shown
-  
+    And above the table a free text "filter field" and a dropdown for "status filter" are shown
+
   Scenario: View columns of table WITHOUT access to personal data
     When the user views the PA-table
     Then the users sees the columns mentioned in the previous scenario
@@ -37,13 +37,13 @@ Feature: View and manage people affected (generic features)
     Given the logged-in user also has "RegistrationPersonalREAD" permission
     When the user views the PA-table
     Then the user sees all columns available in previous scenario
-    And the "i" button in front of the "PA identifier" contains a "note icon" if a note is saved for that PA 
+    And the "i" button in front of the "PA identifier" contains a "note icon" if a note is saved for that PA
     And for each person a "name" is shown
     And for each person a "phone number" is shown
     And all above columns are fixed when scrolling horizontally
     And "custom attribute" columns are shown
     And some other hard-coded columns such as "vnumber" and "whatsappPhoneNumber" are shown if available
-  
+
   Scenario: Edit boolean custom attributes in PA table
     Given the logged-in user also has "RegistrationAttributeUPDATE" permission
     Given the logged-in user is viewing the PA-table
@@ -51,22 +51,36 @@ Feature: View and manage people affected (generic features)
     Then the clicked "custom attribute" is updated
     And the updated value is reflected in the PA-table
 
-  Scenario: Filter rows of PA-table
+  Scenario: Filter rows of PA-table by string
     Given the table with all "people affected" relevant to the selected program phase is shown
     When the user enters any free text "abc" in the "filter field"
     Then the table immediately updates to show only rows where at least one case of "abc" is found as substring in any of the columns
     When the user removes the text again or presses the "X" close option
     Then the table shows all rows again
-  
+
+  Scenario: Filter rows of PA-table by People Affected status
+    Given the table with all "people affected" relevant to the selected program phase is shown
+    When the user clicks on the "status" button above the table
+    Then a dropdown with all the possible statuses appears
+    And only the statuses relevant to the current phase are selected
+    When the user makes a different selection of statuses
+    And the user clicks on "apply"
+    Then the table immediately updates to show only rows that match the status selection
+    When the user clicks on "cancel"
+    Then the table keeps the row that matched the previous status selection
+
   Scenario: Show People Affected of all phases
     Given the table with all "people affected" relevant to the selected program phase is shown
-    Given the 'show all' toggle is toggled off
-    When the user toggles it on
+    And the user has opened the "status" dropdown filter
+    And an option to select "all" is on top of the list
+    And the option is not checked
+    When the user selects "all"
+    Then all the statuses are selected
+    When the user clicks on "apply"
     Then the table will now show all "people affected", also those from other phases
-    And - if done while the filter field contains text - then the filtered text keeps being applied
-    When the user toggles it off again
-    Then the table returns to only the "people affected" relevant to the selected program phase
-    And - if done while the filter field contains text - then the filtered text keeps being applied
+    And - if done while the filter text field contains text - then the filtered text keeps being applied
+    When the user deselect "all"
+    Then the table will not show any "people affected"
 
   Scenario: View available actions
     When the user opens up the "choose action" dropdown
@@ -164,5 +178,5 @@ Feature: View and manage people affected (generic features)
     Given there are 2000 PAs in the system (see Admin-user/Import_test_registrations_NL.feature)
     When the user scrolls through the PA-table
     Then this goes quickly and without problem
-    When the user uses the filter function
+    When the user uses the text or status filter functions
     Then the PA-table updates to only filtered rows quickly and without problem

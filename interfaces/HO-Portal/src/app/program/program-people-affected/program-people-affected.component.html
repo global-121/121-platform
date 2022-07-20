@@ -65,7 +65,7 @@
         [attr.aria-label]="
           'page.program.program-people-affected.filter-placeholder' | translate
         "
-        (ionChange)="filterRowsVisible($event.target.value)"
+        (ionChange)="applyTextFieldFilter($event.target.value)"
         [debounce]="1000"
         [value]="filterRowsVisibleQuery"
         [clearInput]="true"
@@ -84,21 +84,20 @@
         ></ion-icon>
       </ion-input>
 
-      <ion-toggle
-        [(ngModel)]="showAllStatusState"
-        (ionChange)="toggleShowAllStatusState()"
-      ></ion-toggle>
-      <ion-label
-        (click)="showAllStatusState=!showAllStatusState"
-      >
-        {{ 'page.program.program-people-affected.filter-toggle' | translate }}
-      </ion-label>
-      <tooltip
-        style="margin-left: 3px; margin-bottom: 1px"
-        [value]="
-          'page.program.program-people-affected.filter-tooltip' | translate
-        "
-      ></tooltip>
+      <ion-label class="ion-margin-start">{{ 'page.program.program-people-affected.filter-btn.common.filter-by' | translate }}</ion-label>
+
+      <app-table-filter
+        [buttonLabel]="'page.program.program-people-affected.filter-btn.btn-label.status' | translate"
+        [type]="tableFilterType.multipleChoice"
+        [optionsList]="getPaStatusesFilterOptions()"
+        [optionsSelectedByDefault]="tableFilter.paStatus.default"
+        (filter)="applyPaStatusFilter($event)"
+        [filterProps]="{
+          allOptions: getPaStatusesFilterOptions(),
+          currentSelection: tableFilter.paStatus.selected
+        }"
+      ></app-table-filter>
+
     </ion-row>
   </div>
 </ion-row>

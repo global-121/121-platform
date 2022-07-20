@@ -1,0 +1,36 @@
+<ng-container [ngSwitch]="type">
+  <ng-container *ngSwitchCase="tableFilterType.multipleChoice">
+    <ion-grid class="ion-padding ion-no-margin table-filter-popover--multiple-choice--list">
+      <ion-row class="ion-justify-content-between ion-align-items-center table-filter-popover--multiple-choice--item">
+        <div class="ion-margin-end">
+          <ion-label class="ion-text-wrap">{{ 'page.program.program-people-affected.filter-btn.common.all-options' | translate }}</ion-label>
+        </div>
+        <div class="ion-margin-start">
+          <ion-row class="ion-justify-content-end">
+            <ion-label color="medium">{{ state[type].totalCount }}</ion-label>
+            <ion-checkbox [(ngModel)]="state[type].selectAll" (ionChange)="onSelectAll()" class="ion-margin-start"></ion-checkbox>
+          </ion-row>
+        </div>
+      </ion-row>
+      <ion-row *ngFor="let option of filterProps.allOptions" lines="none" class="ion-justify-content-between ion-align-items-center table-filter-popover--multiple-choice--item">
+        <ion-col size="7" class="ion-no-padding">
+          <ion-label class="ion-text-wrap">{{ option.label }}</ion-label>
+        </ion-col>
+        <ion-col size="4" class="ion-no-padding">
+          <ion-row class="ion-justify-content-end">
+            <ion-label color="medium">{{ option.count}}</ion-label>
+            <ion-checkbox [(ngModel)]="state[type].options[option.name]" class="ion-margin-start"></ion-checkbox>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <div class="ion-padding table-filter-popover--multiple-choice--note">
+      <ion-label color="medium" class="ion-text-wrap">
+        <small>{{ 'page.program.program-people-affected.filter-btn.multiple-choice-hidden-options' | translate }}</small>
+      </ion-label>
+    </div>
+</ng-container>
+<ion-footer class="ion-text-end ion-padding ion-no-margin">
+  <ion-button (click)="cancel()" fill="clear" color="danger" size="small">{{'page.program.program-people-affected.filter-btn.common.cancel-btn' | translate}}</ion-button>
+  <ion-button (click)="applyFilter()" size="small" class="ion-margin-start">{{'page.program.program-people-affected.filter-btn.common.apply-btn' | translate}}</ion-button>
+</ion-footer>
