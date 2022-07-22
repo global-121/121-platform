@@ -156,7 +156,8 @@
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
-      "options": null
+      "options": null,
+      "duplicateCheck": true
     },
     {
       "name": "telephone",

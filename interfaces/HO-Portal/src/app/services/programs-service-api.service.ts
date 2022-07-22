@@ -554,4 +554,19 @@ export class ProgramsServiceApiService {
       updateBody,
     );
   }
+
+  async getDuplicateCheckAttributes(programId: number): Promise<string[]> {
+    const program = await this.getProgramById(programId);
+    const fspAttributes = program.financialServiceProviders
+      .filter((fsp) => !!fsp.attributes)
+      .map((fsp) => fsp.attributes)
+      .flat();
+
+    const attributeNames: string[] = []
+      .concat(program.programQuestions, fspAttributes)
+      .filter((attribute) => attribute.duplicateCheck === true)
+      .map((attribute) => attribute.name);
+
+    return attributeNames;
+  }
 }

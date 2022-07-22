@@ -18,7 +18,7 @@ import { ActionService } from '../actions/action.service';
 import { ExportType } from './dto/export-details';
 import { FileDto } from './dto/file.dto';
 import { ProgramQuestionForExport } from '../programs/dto/program-question-for-export.dto';
-import { without, compact, sortBy } from 'lodash';
+import { without, compact, sortBy, uniq } from 'lodash';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
@@ -78,8 +78,8 @@ export class ExportMetricsService {
       case ExportType.toCancelVouchers: {
         return this.getToCancelVouchers();
       }
-      case ExportType.duplicatePhoneNumbers: {
-        return this.getDuplicatePhoneNumbers(programId);
+      case ExportType.duplicates: {
+        return this.getDuplicates(programId);
       }
     }
   }
@@ -492,7 +492,45 @@ export class ExportMetricsService {
     return response;
   }
 
-  private async getDuplicatePhoneNumbers(programId: number): Promise<FileDto> {
+  private async getDuplicateCheckAttributes(
+    programId: number,
+  ): Promise<CustomDataAttributes[]> {
+    let attributesToCheck: CustomDataAttributes[] = [];
+
+    const programQuestions = await this.programQuestionRepository.find({
+      where: {
+        program: {
+          id: programId,
+        },
+        duplicateCheck: true,
+      },
+    });
+    for (const question of programQuestions) {
+      attributesToCheck.push(CustomDataAttributes[question.name]);
+    }
+
+    const fspAttributes = await this.fspAttributeRepository.find({
+      relations: ['fsp'],
+      where: {
+        duplicateCheck: true,
+      },
+    });
+
+    for (const attribute of fspAttributes) {
+      attributesToCheck.push(CustomDataAttributes[attribute.name]);
+    }
+
+    return attributesToCheck;
+  }
+
+  private async getDuplicates(
+    programId: number,
+  ): Promise<{
+    fileName: ExportType;
+    data: any[];
+  }> {
+    const attributesToCheck = await this.getDuplicateCheckAttributes(programId);
+
     const allRegistrations = await this.registrationRepository.find({
       relations: ['fsp'],
       where: {
@@ -501,58 +539,81 @@ export class ExportMetricsService {
       },
       order: { id: 'ASC' },
     });
+    const duplicatesMap: { [referenceId: string]: number[] } = {};
+    const addToDuplicatesMap = (referenceId: string, ids: number[]): void => {
+      if (duplicatesMap[referenceId]) {
+        duplicatesMap[referenceId] = duplicatesMap[referenceId].concat(ids);
+      } else {
+        duplicatesMap[referenceId] = ids;
+      }
+    };
 
-    const duplicates = allRegistrations.filter(registration => {
+    const duplicates = allRegistrations.filter(async registration => {
       const others = without(allRegistrations, registration);
-      // const currentPaNumbers = compact([
-      //   registration.customData[CustomDataAttributes.phoneNumber],
-      //   registration.customData[CustomDataAttributes.whatsappPhoneNumber],
-      // ]);
-      const currentPaNumbers = [];
 
-      const hasDuplicateProgramNr = this.hasDuplicateCustomDataValues(
-        others,
-        CustomDataAttributes.phoneNumber,
-        currentPaNumbers,
-      );
+      let rawDataToCheck = [];
+      for (const attr of attributesToCheck) {
+        const data = (await registration.getRegistrationDataByName(attr)).value;
+        rawDataToCheck.push(data);
+      }
+      const dataToCheck = compact(rawDataToCheck);
 
-      if (hasDuplicateProgramNr) {
-        // No need to look for other matches
-        return true;
+      for (const attrToCheck of attributesToCheck) {
+        const duplicateIds = await this.findDuplicateRegistrationIds(
+          others,
+          attrToCheck,
+          dataToCheck,
+        );
+
+        if (!duplicateIds) {
+          continue;
+        }
+
+        addToDuplicatesMap(registration.referenceId, duplicateIds);
       }
 
-      const hasDuplicateWhatsAppNr = this.hasDuplicateCustomDataValues(
-        others,
-        CustomDataAttributes.whatsappPhoneNumber,
-        currentPaNumbers,
-      );
+      // Only return registration WITH duplicates
+      if (!duplicatesMap[registration.referenceId].length) {
+        return false;
+      }
 
-      return hasDuplicateWhatsAppNr;
+      return registration;
     });
-    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
+
+    const allCustomAttributesForExport = await this.getAllProgramCustomAttributesForExport(
       programId,
     );
 
-    const result = sortBy(duplicates, 'id').map(registration => {
+    // Return filtered list
+    const result = sortBy(duplicates, 'id').map(async registration => {
       let row: any = {
         id: registration.id,
         name: this.registrationsService.getName(''),
         status: registration.registrationStatus,
         fsp: registration.fsp ? registration.fsp.fsp : null,
-        // phoneNumber: registration.customData[CustomDataAttributes.phoneNumber],
-        // whatsappPhoneNumber:
-        //   registration.customData[CustomDataAttributes.whatsappPhoneNumber],
       };
+
+      for (const attri of attributesToCheck) {
+        const data = (await registration.getRegistrationDataByName(attri))
+          .value;
+        row[attri] = data;
+      }
+
       row = this.registrationsService.addProgramCustomAttributesToRow(
         row,
         registration.data,
-        programCustomAttrs,
+        allCustomAttributesForExport,
       );
+
+      row['duplicateWithIds'] = uniq(
+        duplicatesMap[registration.referenceId],
+      ).join(',');
+
       return row;
     });
 
     return {
-      fileName: ExportType.duplicatePhoneNumbers,
+      fileName: ExportType.duplicates,
       data: result,
     };
   }
@@ -568,6 +629,24 @@ export class ExportMetricsService {
       // }
       // return values.includes(otherRegistration.customData[type]);
     });
+  }
+
+  private async findDuplicateRegistrationIds(
+    others: RegistrationEntity[],
+    type: CustomDataAttributes,
+    values: any[],
+  ): Promise<RegistrationEntity['id'][]> {
+    const duplicateIds = [];
+    for (let registration of others) {
+      const data = (await registration.getRegistrationDataByName(type)).value;
+      if (!data) {
+        return;
+      }
+      if (values.includes(data)) {
+        duplicateIds.push(registration.id);
+      }
+    }
+    return duplicateIds;
   }
 
   private async getPaymentDetailsPayment(

@@ -31,6 +31,7 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "tel",
       "options": null,
+      "duplicateCheck": true,
       "phases": ["registrationValidation", "inclusion", "payment"]
     }
   ]
