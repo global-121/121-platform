@@ -235,7 +235,10 @@ export class WhatsappService {
     if (callbackData.MessageStatus === TwilioStatus.delivered) {
       // PA does have whatsapp
       // Store PA phone number as whatsappPhonenumber
-      await tryWhatsapp.registration.saveData(tryWhatsapp.registration.phoneNumber, {name: CustomDataAttributes.whatsappPhoneNumber})
+      await tryWhatsapp.registration.saveData(
+        tryWhatsapp.registration.phoneNumber,
+        { name: CustomDataAttributes.whatsappPhoneNumber },
+      );
       this.tryWhatsappRepository.delete(tryWhatsapp);
     }
   }
