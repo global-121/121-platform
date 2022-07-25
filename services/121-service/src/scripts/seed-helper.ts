@@ -87,19 +87,10 @@ export class SeedHelper {
     const instanceRepository = this.connection.getRepository(InstanceEntity);
     const instanceDump = JSON.stringify(exampleInstance);
     const instance = JSON.parse(instanceDump);
-    const savedInstanceEntity = await instanceRepository.save(instance);
     if (instance.monitoringQuestion) {
-      const mqEntity = new MonitoringQuestionEntity();
-      mqEntity.conclusion = instance.monitoringQuestion.conclusion;
-      mqEntity.options = instance.monitoringQuestion.options;
-      mqEntity.intro = instance.monitoringQuestion.intro;
-      mqEntity.name = 'monitoringAnswer';
-      mqEntity.instance = savedInstanceEntity;
-      const monitoringRepository = this.connection.getRepository(
-        MonitoringQuestionEntity,
-      );
-      monitoringRepository.save(mqEntity);
+      instance.monitoringQuestion.name = 'monitoringAnswer';
     }
+    await instanceRepository.save(instance);
   }
 
   public async addProgram(programExample: any): Promise<ProgramEntity> {

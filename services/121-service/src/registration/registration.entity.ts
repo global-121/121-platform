@@ -149,7 +149,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   // @Column('json', {
   //   default: {},
   // })
-  // public customData: any;
+  public customData: any;
 
   public async getRegistrationDataByName(
     name: string,
@@ -185,35 +185,39 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   // To save registration data you need either a relation or a name
   public async saveData(
-    value: string | number,
+    value: string | number | boolean,
     options: RegistrationDataOptions,
   ): Promise<RegistrationEntity> {
-    let relation = options.relation;
-    if (!options.relation && !options.name) {
-      const errors = `Cannot save registration data, need either a dataRelation or a name`;
-      throw new Error(errors);
-    }
-    if (!options.relation) {
-      relation = await this.getRelationForName(options.name);
-    }
-    value = String(value);
-    if (relation.programQuestionId) {
-      await this.saveProgramQuestionData(value, relation.programQuestionId);
-    }
-    if (relation.fspQuestionId) {
-      await this.saveFspQuestionData(value, relation.fspQuestionId);
-    }
-    if (relation.programCustomAttributeId) {
-      await this.saveProgramCustomAttributeData(
-        value,
-        relation.programCustomAttributeId,
-      );
-    }
-    if (relation.monitoringQuestionId) {
-      await this.saveMonitoringQuestionData(
-        value,
-        relation.monitoringQuestionId,
-      );
+    try {
+      let relation = options.relation;
+      if (!options.relation && !options.name) {
+        const errors = `Cannot save registration data, need either a dataRelation or a name`;
+        throw new Error(errors);
+      }
+      if (!options.relation) {
+        relation = await this.getRelationForName(options.name);
+      }
+      value = String(value);
+      if (relation.programQuestionId) {
+        await this.saveProgramQuestionData(value, relation.programQuestionId);
+      }
+      if (relation.fspQuestionId) {
+        await this.saveFspQuestionData(value, relation.fspQuestionId);
+      }
+      if (relation.programCustomAttributeId) {
+        await this.saveProgramCustomAttributeData(
+          value,
+          relation.programCustomAttributeId,
+        );
+      }
+      if (relation.monitoringQuestionId) {
+        await this.saveMonitoringQuestionData(
+          value,
+          relation.monitoringQuestionId,
+        );
+      }
+    } catch (error) {
+      console.log('error: ', error);
     }
 
     // Fetches updated registration from database and return it
@@ -328,13 +332,17 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   ): Promise<RegistrationDataRelation> {
     const result = new RegistrationDataRelation();
     const repo = getConnection().getRepository(ProgramEntity);
-    const resultProgramQuestion = await repo
+    const query = repo
       .createQueryBuilder('program')
       .leftJoin('program.programQuestions', 'programQuestion')
-      .where('program.id = :programId', { programId: this.programId })
+      .where('program.id = :programId', { programId: this.program.id })
       .andWhere('programQuestion.name = :name', { name: name })
-      .select('"programQuestion".id', 'id')
-      .getRawOne();
+      .select('"programQuestion".id', 'id');
+
+    const resultProgramQuestion = await query.getRawOne();
+
+    // console.log('query: ', query.getSql());
+
     if (resultProgramQuestion) {
       result.programQuestionId = resultProgramQuestion.id;
       return result;
@@ -343,7 +351,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       .createQueryBuilder('program')
       .leftJoin('program.financialServiceProviders', 'fsp')
       .leftJoin('fsp.questions', 'question')
-      .where('program.id = :programId', { programId: this.programId })
+      .where('program.id = :programId', { programId: this.program.id })
       .andWhere('question.name = :name', { name: name })
       .select('"question".id', 'id')
       .getRawOne();
@@ -354,7 +362,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     const resultProgramCustomAttribute = await repo
       .createQueryBuilder('program')
       .leftJoin('program.programCustomAttributes', 'programCustomAttribute')
-      .where('program.id = :programId', { programId: this.programId })
+      .where('program.id = :programId', { programId: this.program.id })
       .andWhere('programCustomAttribute.name = :name', { name: name })
       .select('"programCustomAttribute".id', 'id')
       .getRawOne();
@@ -373,7 +381,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       result.monitoringQuestionId = resultMonitoringQuestion.id;
       return result;
     }
-    const errors = `Cannot save registration data, name '${name}' not not found (In program questios, fsp questions, monitoring questions and program custom attributes)`;
+    const errors = `Cannot save registration data, name: '${name}' not found (In program questions, fsp questions, monitoring questions and program custom attributes)`;
     throw new Error(errors);
   }
 }

@@ -120,27 +120,35 @@ export class BulkImportService {
           record.paymentAmountMultiplier;
       }
       newRegistration.program = program;
-      console.log('newRegistration: ', newRegistration);
-      programCustomAttributes.forEach(att => {
-        const data = new RegistrationDataEntity();
-        data.value = record[att.name];
-        data.programCustomAttribute = att;
-        this.registrationDataRepository.save(data);
-      });
+      try {
+        const savedRegistration = await this.registrationRepository.save(
+          newRegistration,
+        );
+        programCustomAttributes.forEach(async att => {
+          const data = new RegistrationDataEntity();
+          data.value = record[att.name];
+          data.programCustomAttribute = att;
+          data.registrationId = savedRegistration.id;
+          await this.registrationDataRepository.save(data);
+        });
 
-      const savedRegistration = await this.registrationRepository.save(
-        newRegistration,
-      );
-      // Save already before status change, otherwise 'registration.subscriber' does not work
-      savedRegistration.registrationStatus = RegistrationStatusEnum.imported;
-      await this.registrationRepository.save(savedRegistration);
+        // Save already before status change, otherwise 'registration.subscriber' does not work
+        savedRegistration.registrationStatus = RegistrationStatusEnum.imported;
+        await this.registrationRepository.save(savedRegistration);
+      } catch (error) {
+        console.log('error: ', error);
+      }
     }
 
-    this.actionService.saveAction(
-      userId,
-      program.id,
-      AdditionalActionType.importPeopleAffected,
-    );
+    try {
+      this.actionService.saveAction(
+        userId,
+        program.id,
+        AdditionalActionType.importPeopleAffected,
+      );
+    } catch (error) {
+      console.log('error: ', error);
+    }
 
     return {
       importResult: importResponseRecords,
@@ -225,21 +233,24 @@ export class BulkImportService {
       registration.referenceId = uuid();
       registration.phoneNumber = record.phoneNumber;
       registration.preferredLanguage = record.preferredLanguage;
+      registration.program = program;
+      registration.customData = {};
       if (!program.paymentAmountMultiplierFormula) {
         registration.paymentAmountMultiplier = record.paymentAmountMultiplier;
       }
-      registration.program = program;
 
-      dynamicAttributes.forEach(att => {
+      for await (const att of dynamicAttributes) {
+        console.log('record[att.name]: ', record[att.name]);
         if (att.type === CustomAttributeType.boolean) {
-          registration.data[att.name] = this.stringToBoolean(
+          registration.customData[att.name] = this.stringToBoolean(
             record[att.name],
             false,
           );
         } else {
-          registration.data[att.name] = record[att.name];
+          registration.customData[att.name] = record[att.name];
         }
-      });
+        console.log('customData: ', registration.customData[att.name]);
+      }
 
       const fsp = await this.fspRepository.findOne({
         where: { fsp: record.fspName },
@@ -261,7 +272,6 @@ export class BulkImportService {
       await this.storeProgramAnswersImportRegistrations(
         registration,
         program.id,
-        // registration.customData,
       );
       await this.inclusionScoreService.calculateInclusionScore(
         registration.referenceId,
@@ -280,20 +290,29 @@ export class BulkImportService {
   private async storeProgramAnswersImportRegistrations(
     registration: RegistrationEntity,
     programId: number,
-    customData?: any,
   ): Promise<void> {
     const dynamicAttributes = await this.getDynamicAttributes(programId);
     let programAnswers: RegistrationDataEntity[] = [];
-    for await (let attribute of dynamicAttributes) {
-      const programQuestion = await this.programQuestionRepository.findOne({
-        where: { name: attribute.name },
-      });
-      if (programQuestion) {
-        let programAnswer = new RegistrationDataEntity();
-        programAnswer.registration = registration;
-        programAnswer.programQuestion = programQuestion;
-        // programAnswer.value = customData[attribute.name];
-        programAnswers.push(programAnswer);
+    for await (let att of dynamicAttributes) {
+      // const programQuestion = await this.programQuestionRepository.findOne({
+      //   where: { name: attribute.name },
+      // });
+      // if (programQuestion) {
+      //   let programAnswer = new RegistrationDataEntity();
+      //   programAnswer.registration = registration;
+      //   programAnswer.programQuestion = programQuestion;
+      //   programAnswer.value = registration['customData'][attribute.name];
+      //   programAnswers.push(programAnswer);
+      // }
+      if (att.type === CustomAttributeType.boolean) {
+        await registration.saveData(
+          this.stringToBoolean(registration.customData[att.name], false),
+          { name: att.name },
+        );
+      } else {
+        await registration.saveData(registration.customData[att.name], {
+          name: att.name,
+        });
       }
     }
     await this.registrationRepository.save(programAnswers);
@@ -413,6 +432,7 @@ export class BulkImportService {
       })
     ).map(c => {
       return {
+        id: c.id,
         name: c.name,
         type: c.type,
         label: c.label,
@@ -433,6 +453,7 @@ export class BulkImportService {
       })
     ).map(c => {
       return {
+        id: c.id,
         name: c.name,
         type: c.answerType,
       };
@@ -446,6 +467,7 @@ export class BulkImportService {
       .filter(a => a.fsp.program.map(p => p.id).includes(programId))
       .map(c => {
         return {
+          id: c.id,
           name: c.name,
           type: c.answerType,
         };

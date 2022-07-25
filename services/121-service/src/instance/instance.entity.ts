@@ -25,6 +25,9 @@ export class InstanceEntity extends Base121Entity {
   @OneToOne(
     () => MonitoringQuestionEntity,
     monitoringQuestion => monitoringQuestion.instance,
+    {
+      cascade: true,
+    },
   )
   @JoinColumn()
   public monitoringQuestion: MonitoringQuestionEntity;

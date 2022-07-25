@@ -39,6 +39,7 @@ To run this file locally, do:
 If you want to revert one migration you can run:
 
     docker exec -it 121-service npm run migration:revert
+
 ### Seed the database
 
 Upon application start, automatically a basic seed-script is run which adds 1 `admin`-user. It will only do so, if no existing users are found. The password and e-mail for this user can be customized in centralized [`services/.env`](../.env.example) file.
