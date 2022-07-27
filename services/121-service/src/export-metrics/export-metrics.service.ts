@@ -1,3 +1,4 @@
+import { RegistrationDataOptions } from './../registration/dto/registration-data-relation.model';
 import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
 import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
@@ -89,24 +90,22 @@ export class ExportMetricsService {
     minPaymentId: number,
     maxPaymentId: number,
   ): Promise<FileDto> {
+    const relationOptions = await this.getRelationOptionsForExport(
+      programId,
+      ExportType.included,
+    );
     let pastPaymentDetails = await this.getPaymentDetailsPayment(
       programId,
       minPaymentId,
       maxPaymentId,
+      relationOptions,
     );
-
     if (pastPaymentDetails.length === 0) {
       return {
         fileName: `details-included-people-affected-${minPaymentId}`,
         data: (await this.getInclusionList(programId)).data,
       };
     }
-
-    pastPaymentDetails = await this.filterPaymentAttributesToExport(
-      pastPaymentDetails,
-      programId,
-    );
-
     const fileInput = {
       fileName: `details-completed-payment-${
         minPaymentId === maxPaymentId
@@ -119,32 +118,52 @@ export class ExportMetricsService {
     return fileInput;
   }
 
-  private async filterPaymentAttributesToExport(
-    pastPaymentDetails,
+  private async getRelationOptionsForExport(
     programId: number,
-  ): Promise<any[]> {
-    const programQuestions = (await this.getAllQuestionsForExport()).map(
-      c => c.programQuestion,
-    );
-    const programCustomAttrs = (
-      await this.getAllProgramCustomAttributesForExport(programId)
-    ).map(c => c.name);
-
-    const registrationCustomDataOfInterest = programQuestions.concat(
-      programCustomAttrs,
-    );
-
-    const outputPaymentDetails = [];
-    pastPaymentDetails.forEach(transaction => {
-      Object.keys(transaction.customData).forEach(key => {
-        if (registrationCustomDataOfInterest.includes(key)) {
-          transaction[key] = transaction.customData[key];
-        }
-      });
-      delete transaction.customData;
-      outputPaymentDetails.push(transaction);
+    exportType: ExportType,
+  ): Promise<RegistrationDataOptions[]> {
+    const relationOptions = [];
+    const program = await this.programRepository.findOne(programId, {
+      relations: [
+        'programQuestions',
+        'financialServiceProviders',
+        'financialServiceProviders.questions',
+      ],
     });
-    return outputPaymentDetails;
+    for (const programQuestion of program.programQuestions) {
+      if (
+        JSON.parse(JSON.stringify(programQuestion.export)).includes(exportType)
+      ) {
+        const relationOption = new RegistrationDataOptions();
+        relationOption.name = programQuestion.name;
+        relationOption.relation = { programQuestionId: programQuestion.id };
+        relationOptions.push(relationOption);
+      }
+    }
+    let fspQuestions = [];
+    for (const fsp of program.financialServiceProviders) {
+      fspQuestions = fspQuestions.concat(fsp.questions);
+    }
+    for (const fspQuestion of fspQuestions) {
+      if (JSON.parse(JSON.stringify(fspQuestion.export)).includes(exportType)) {
+        const relationOption = new RegistrationDataOptions();
+        relationOption.name = fspQuestion.name;
+        relationOption.relation = { fspQuestionId: fspQuestion.id };
+        relationOptions.push(relationOption);
+      }
+    }
+    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
+      programId,
+    );
+    for (const programCustomAttr of programCustomAttrs) {
+      const relationOption = new RegistrationDataOptions();
+      relationOption.name = programCustomAttr.name;
+      relationOption.relation = {
+        programCustomAttributeId: programCustomAttr.id,
+      };
+      relationOptions.push(relationOption);
+    }
+    return relationOptions;
   }
 
   private async getUnusedVouchers(): Promise<FileDto> {
@@ -653,6 +672,7 @@ export class ExportMetricsService {
     programId: number,
     minPaymentId: number,
     maxPaymentId: number,
+    customDataRelations: RegistrationDataOptions[],
   ): Promise<any> {
     const latestTransactionPerPa = await this.transactionRepository
       .createQueryBuilder('transaction')
@@ -667,7 +687,7 @@ export class ExportMetricsService {
       .groupBy('transaction.registrationId')
       .addGroupBy('transaction.payment');
 
-    const transactions = await this.transactionRepository
+    const transactionQuery = this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
         'transaction.payment as "payment"',
@@ -675,7 +695,6 @@ export class ExportMetricsService {
         'transaction.amount as "amount"',
         'transaction.status as "status"',
         'transaction."errorMessage" as "errorMessage"',
-        'registration.customData as "customData"',
         'fsp.fsp AS financialServiceProvider',
       ])
       .innerJoin(
@@ -685,10 +704,17 @@ export class ExportMetricsService {
       )
       .setParameters(latestTransactionPerPa.getParameters())
       .leftJoin('transaction.registration', 'registration')
-      .leftJoin('registration.fsp', 'fsp')
-      .getRawMany();
+      .leftJoin('registration.fsp', 'fsp');
 
-    return transactions;
+    for (const r of customDataRelations) {
+      transactionQuery.select(subQuery => {
+        return this.registrationsService.customDataEntrySubQuery(
+          subQuery,
+          r.relation,
+        );
+      }, r.name);
+    }
+    return await transactionQuery.getRawMany();
   }
 
   public async getPaMetrics(
