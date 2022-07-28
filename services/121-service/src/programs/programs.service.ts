@@ -302,6 +302,7 @@ export class ProgramService {
         name: c.name,
         type: c.type,
         label: c.label,
+        shortLabel: c.label,
       };
     });
 
@@ -321,6 +322,7 @@ export class ProgramService {
         name: c.name,
         type: c.answerType,
         label: c.label,
+        shortLabel: c.shortLabel,
       };
     });
 
@@ -345,6 +347,7 @@ export class ProgramService {
         name: c.name,
         type: c.answerType,
         label: c.label,
+        shortLabel: c.shortLabel,
       };
     });
 
@@ -363,6 +366,7 @@ export class ProgramService {
         name: c.name,
         type: c.type,
         label: c.label,
+        shortLabel: c.label,
       };
     });
     const programQuestions = (
@@ -374,6 +378,7 @@ export class ProgramService {
         name: c.name,
         type: c.answerType,
         label: c.label,
+        shortLabel: c.shortLabel,
       };
     });
 
