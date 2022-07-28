@@ -201,7 +201,6 @@ export class ExportMetricsService {
         await this.addPaymentFieldsToExport(row, payments, transactions);
       }
       delete row['referenceId'];
-      console.log('row: ', row);
     }
     await this.replaceValueWithDropdownLabel(rows, relationOptions);
 
