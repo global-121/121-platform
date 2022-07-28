@@ -1,9 +1,5 @@
 import { Component, Input } from '@angular/core';
-import {
-  Fsp,
-  FspQuestion,
-  FspQuestionOption,
-} from 'src/app/models/fsp.model';
+import { Fsp, FspQuestion, FspQuestionOption } from 'src/app/models/fsp.model';
 import { Program } from 'src/app/models/program.model';
 import {
   Answer,
