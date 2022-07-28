@@ -15,6 +15,7 @@ import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PaymentsModule } from '../payments/payments.module';
 import { TransactionsModule } from '../payments/transactions/transactions.module';
+import { RegistrationDataEntity } from '../registration/registration-data.entity';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { TransactionsModule } from '../payments/transactions/transactions.module
       TransactionEntity,
       UserEntity,
       ProgramEntity,
+      RegistrationDataEntity,
     ]),
     ProgramModule,
     UserModule,

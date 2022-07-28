@@ -1,27 +1,16 @@
-import {
-  RegistrationDataOptions,
-  RegistrationDataRelation,
-} from './../registration/dto/registration-data-relation.model';
+import { RegistrationDataOptions } from './../registration/dto/registration-data-relation.model';
 import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
 import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
 import { RegistrationsService } from './../registration/registrations.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IsNull,
-  Not,
-  Repository,
-  getRepository,
-  In,
-  SelectQueryBuilder,
-  QueryRunner,
-} from 'typeorm';
+
+import { Repository, getRepository, In } from 'typeorm';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import {
   AnswerTypes,
-  CustomDataAttributes,
   GenericAttributes,
 } from '../registration/enum/custom-data-attributes';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
@@ -29,8 +18,7 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ActionService } from '../actions/action.service';
 import { ExportType } from './dto/export-details';
 import { FileDto } from './dto/file.dto';
-import { ProgramQuestionForExport } from '../programs/dto/program-question-for-export.dto';
-import { without, compact, sortBy, uniq } from 'lodash';
+import { without } from 'lodash';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
@@ -42,11 +30,16 @@ import { ProgramEntity } from '../programs/program.entity';
 import { TransactionsService } from '../payments/transactions/transactions.service';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
+import { RegistrationDataEntity } from '../registration/registration-data.entity';
 
 @Injectable()
 export class ExportMetricsService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
+  @InjectRepository(RegistrationDataEntity)
+  private readonly registrationDataRepository: Repository<
+    RegistrationDataEntity
+  >;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramQuestionEntity)
@@ -468,11 +461,12 @@ export class ExportMetricsService {
     return filteredColumns;
   }
 
-  private async getDuplicateCheckAttributes(
+  private async getDuplicates(
     programId: number,
-  ): Promise<CustomDataAttributes[]> {
-    let attributesToCheck: CustomDataAttributes[] = [];
-
+  ): Promise<{
+    fileName: ExportType;
+    data: any[];
+  }> {
     const programQuestions = await this.programQuestionRepository.find({
       where: {
         program: {
@@ -481,148 +475,69 @@ export class ExportMetricsService {
         duplicateCheck: true,
       },
     });
-    for (const question of programQuestions) {
-      attributesToCheck.push(CustomDataAttributes[question.name]);
-    }
-
+    const programQuestionIds = programQuestions.map(question => {
+      return question.id;
+    });
     const fspAttributes = await this.fspAttributeRepository.find({
       relations: ['fsp'],
       where: {
         duplicateCheck: true,
       },
     });
+    const fspQuestionIds = fspAttributes.map(fspQuestion => {
+      return fspQuestion.id;
+    });
 
-    for (const attribute of fspAttributes) {
-      attributesToCheck.push(CustomDataAttributes[attribute.name]);
+    const duplicatesMap: Map<number, number[]> = new Map();
+    const uniqueRegistrationIds: Set<number> = new Set();
+    const duplicates = await this.registrationDataRepository
+      .createQueryBuilder('registration_data')
+      .select(
+        `array_agg(DISTINCT registration_data."registrationId") AS "duplicateRegistrationIds"`,
+      )
+      .where('registration_data."fspQuestionId" IN (:...fspQuestionIds)', {
+        fspQuestionIds: fspQuestionIds,
+      })
+      .orWhere(
+        'registration_data."programQuestionId" IN (:...programQuestionIds)',
+        {
+          programQuestionIds: programQuestionIds,
+        },
+      )
+      .having('COUNT(registration_data.value) > 1')
+      .andHaving('COUNT(DISTINCT "registrationId") > 1')
+      .groupBy('registration_data.value')
+      .getRawMany();
+    for (const duplicateEntry of duplicates) {
+      const {
+        duplicateRegistrationIds,
+      }: { duplicateRegistrationIds: number[] } = duplicateEntry;
+
+      for (const registrationId of duplicateRegistrationIds) {
+        uniqueRegistrationIds.add(registrationId);
+        const others = without(duplicateRegistrationIds, registrationId);
+        if (duplicatesMap.has(registrationId)) {
+          const duplicateMapEntry = duplicatesMap.get(registrationId);
+          duplicatesMap.set(registrationId, duplicateMapEntry.concat(others));
+        } else {
+          duplicatesMap.set(registrationId, others);
+        }
+      }
     }
 
-    return attributesToCheck;
-  }
+    // TODO: Create export with duplicatesMap
+    const registrations = await this.registrationRepository
+      .createQueryBuilder('registration')
+      .where('registration.id IN (:...registrationIds)', {
+        registrationIds: Array.from(uniqueRegistrationIds),
+      })
+      .getMany();
 
-  private async getDuplicates(
-    programId: number,
-  ): Promise<{
-    fileName: ExportType;
-    data: any[];
-  }> {
-    const attributesToCheck = await this.getDuplicateCheckAttributes(programId);
-
-    const allRegistrations = await this.registrationRepository.find({
-      relations: ['fsp'],
-      where: {
-        program: { id: programId },
-        customData: Not(IsNull()),
-      },
-      order: { id: 'ASC' },
-    });
-    const duplicatesMap: { [referenceId: string]: number[] } = {};
-    const addToDuplicatesMap = (referenceId: string, ids: number[]): void => {
-      if (duplicatesMap[referenceId]) {
-        duplicatesMap[referenceId] = duplicatesMap[referenceId].concat(ids);
-      } else {
-        duplicatesMap[referenceId] = ids;
-      }
-    };
-
-    const duplicates = allRegistrations.filter(async registration => {
-      const others = without(allRegistrations, registration);
-
-      let rawDataToCheck = [];
-      for (const attr of attributesToCheck) {
-        const data = (await registration.getRegistrationDataByName(attr)).value;
-        rawDataToCheck.push(data);
-      }
-      const dataToCheck = compact(rawDataToCheck);
-
-      for (const attrToCheck of attributesToCheck) {
-        const duplicateIds = await this.findDuplicateRegistrationIds(
-          others,
-          attrToCheck,
-          dataToCheck,
-        );
-
-        if (!duplicateIds) {
-          continue;
-        }
-
-        addToDuplicatesMap(registration.referenceId, duplicateIds);
-      }
-
-      // Only return registration WITH duplicates
-      if (!duplicatesMap[registration.referenceId].length) {
-        return false;
-      }
-
-      return registration;
-    });
-
-    const allCustomAttributesForExport = await this.getAllProgramCustomAttributesForExport(
-      programId,
-    );
-
-    // Return filtered list
-    const result = sortBy(duplicates, 'id').map(async registration => {
-      let row: any = {
-        id: registration.id,
-        name: this.registrationsService.getName(''),
-        status: registration.registrationStatus,
-        fsp: registration.fsp ? registration.fsp.fsp : null,
-      };
-
-      for (const attri of attributesToCheck) {
-        const data = (await registration.getRegistrationDataByName(attri))
-          .value;
-        row[attri] = data;
-      }
-
-      row = this.registrationsService.addProgramCustomAttributesToRow(
-        row,
-        registration.data,
-        allCustomAttributesForExport,
-      );
-
-      row['duplicateWithIds'] = uniq(
-        duplicatesMap[registration.referenceId],
-      ).join(',');
-
-      return row;
-    });
-
+    const result = [];
     return {
       fileName: ExportType.duplicates,
       data: result,
     };
-  }
-
-  private hasDuplicateCustomDataValues(
-    others: RegistrationEntity[],
-    type: CustomDataAttributes,
-    values: any[],
-  ): boolean {
-    return others.some(otherRegistration => {
-      // if (!otherRegistration.customData[type]) {
-      //   return false;
-      // }
-      // return values.includes(otherRegistration.customData[type]);
-    });
-  }
-
-  private async findDuplicateRegistrationIds(
-    others: RegistrationEntity[],
-    type: CustomDataAttributes,
-    values: any[],
-  ): Promise<RegistrationEntity['id'][]> {
-    const duplicateIds = [];
-    for (let registration of others) {
-      const data = (await registration.getRegistrationDataByName(type)).value;
-      if (!data) {
-        return;
-      }
-      if (values.includes(data)) {
-        duplicateIds.push(registration.id);
-      }
-    }
-    return duplicateIds;
   }
 
   private async getPaymentDetailsPayment(
