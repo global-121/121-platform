@@ -43,6 +43,8 @@ import { MessageHistoryDto } from './dto/message-history.dto';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { CustomAttributeType } from '../programs/dto/create-program-custom-attribute.dto';
 import { ProgramService } from '../programs/programs.service';
+import { RegistrationDataRelation } from './dto/registration-data-relation.model';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class RegistrationsService {
@@ -458,6 +460,37 @@ export class RegistrationsService {
     return program;
   }
 
+  public customDataEntrySubQuery(
+    subQuery: SelectQueryBuilder<any>,
+    relation: RegistrationDataRelation,
+  ): SelectQueryBuilder<any> {
+    const uniqueSubQueryId = uuid()
+      .replace(/-/g, '')
+      .toLowerCase();
+    subQuery = subQuery
+      .where(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
+      .from(RegistrationDataEntity, uniqueSubQueryId);
+    if (relation.programQuestionId) {
+      subQuery = subQuery.andWhere(
+        `"${uniqueSubQueryId}"."programQuestionId" = ${relation.programQuestionId}`,
+      );
+    } else if (relation.monitoringQuestionId) {
+      subQuery = subQuery.andWhere(
+        `"${uniqueSubQueryId}"."monitoringQuestionId" = ${relation.monitoringQuestionId}`,
+      );
+    } else if (relation.programCustomAttributeId) {
+      subQuery = subQuery.andWhere(
+        `"${uniqueSubQueryId}"."programCustomAttributeId" = ${relation.programCustomAttributeId}`,
+      );
+    } else if (relation.fspQuestionId) {
+      subQuery = subQuery.andWhere(
+        `"${uniqueSubQueryId}"."fspQuestionId" = ${relation.fspQuestionId}`,
+      );
+    }
+    subQuery.addSelect(`"${uniqueSubQueryId}".value`);
+    return subQuery;
+  }
+
   private customDataSubQuery(subQuery: SelectQueryBuilder<any>): any {
     return subQuery
       .where('rd."registrationId" = registration.id')
@@ -474,7 +507,7 @@ export class RegistrationsService {
           WHEN ("fspQuestion"."name" is not NULL) THEN "fspQuestion"."name"
           WHEN ("monitoringQuestion"."name" is not NULL) THEN "monitoringQuestion"."name"
           WHEN ("programCustomAttribute"."name" is not NULL) THEN "programCustomAttribute"."name"
-          ELSE 'owww'
+          ELSE ''
         END ))`,
         'name',
       );
@@ -687,13 +720,13 @@ export class RegistrationsService {
   }
 
   public async getLatestDateForRegistrationStatus(
-    registration: RegistrationEntity,
+    registrationId: number,
     status: RegistrationStatusEnum,
   ): Promise<Date> {
     const registrationStatusChange = await this.registrationStatusChangeRepository.findOne(
       {
         where: {
-          registration: { id: registration.id },
+          registration: { id: registrationId },
           registrationStatus: status,
         },
         order: { created: 'DESC' },

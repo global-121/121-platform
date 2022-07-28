@@ -252,7 +252,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   }
 
   private async saveFspQuestionData(value: string, id: number): Promise<void> {
-    console.log('saveFspQuestionData: ', value, id);
     const repoRegistrationData = getConnection().getRepository(
       RegistrationDataEntity,
     );
@@ -335,13 +334,11 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     const query = repo
       .createQueryBuilder('program')
       .leftJoin('program.programQuestions', 'programQuestion')
-      .where('program.id = :programId', { programId: this.program.id })
+      .where('program.id = :programId', { programId: this.programId })
       .andWhere('programQuestion.name = :name', { name: name })
       .select('"programQuestion".id', 'id');
 
     const resultProgramQuestion = await query.getRawOne();
-
-    // console.log('query: ', query.getSql());
 
     if (resultProgramQuestion) {
       result.programQuestionId = resultProgramQuestion.id;
@@ -351,7 +348,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       .createQueryBuilder('program')
       .leftJoin('program.financialServiceProviders', 'fsp')
       .leftJoin('fsp.questions', 'question')
-      .where('program.id = :programId', { programId: this.program.id })
+      .where('program.id = :programId', { programId: this.programId })
       .andWhere('question.name = :name', { name: name })
       .select('"question".id', 'id')
       .getRawOne();
@@ -362,7 +359,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     const resultProgramCustomAttribute = await repo
       .createQueryBuilder('program')
       .leftJoin('program.programCustomAttributes', 'programCustomAttribute')
-      .where('program.id = :programId', { programId: this.program.id })
+      .where('program.id = :programId', { programId: this.programId })
       .andWhere('programCustomAttribute.name = :name', { name: name })
       .select('"programCustomAttribute".id', 'id')
       .getRawOne();

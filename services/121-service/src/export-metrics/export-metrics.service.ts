@@ -1,15 +1,16 @@
+import { RegistrationDataOptions } from './../registration/dto/registration-data-relation.model';
 import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
 import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
 import { RegistrationsService } from './../registration/registrations.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { Repository, getRepository, In } from 'typeorm';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import {
   AnswerTypes,
-  CustomDataAttributes,
   GenericAttributes,
 } from '../registration/enum/custom-data-attributes';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
@@ -17,8 +18,7 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ActionService } from '../actions/action.service';
 import { ExportType } from './dto/export-details';
 import { FileDto } from './dto/file.dto';
-import { ProgramQuestionForExport } from '../programs/dto/program-question-for-export.dto';
-import { without, compact, sortBy, uniq } from 'lodash';
+import { without } from 'lodash';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
@@ -89,29 +89,71 @@ export class ExportMetricsService {
     }
   }
 
+  private async getAllPeopleAffectedList(programId: number): Promise<FileDto> {
+    const data = await this.getRegistrationsList(
+      programId,
+      ExportType.allPeopleAffected,
+      null,
+      true,
+    );
+    const response = {
+      fileName: ExportType.allPeopleAffected,
+      data: data,
+    };
+    return response;
+  }
+
+  private async getInclusionList(programId: number): Promise<FileDto> {
+    const data = await this.getRegistrationsList(
+      programId,
+      ExportType.included,
+      RegistrationStatusEnum.included,
+      false,
+    );
+    const response = {
+      fileName: 'inclusion-list',
+      data: data,
+    };
+    return response;
+  }
+
+  private async getSelectedForValidationList(
+    programId: number,
+  ): Promise<FileDto> {
+    const data = await this.getRegistrationsList(
+      programId,
+      ExportType.selectedForValidation,
+      RegistrationStatusEnum.selectedForValidation,
+      false,
+    );
+    const response = {
+      fileName: ExportType.selectedForValidation,
+      data: data,
+    };
+    return response;
+  }
+
   private async getPaymentDetails(
     programId: number,
     minPaymentId: number,
     maxPaymentId: number,
   ): Promise<FileDto> {
+    const relationOptions = await this.getRelationOptionsForExport(
+      programId,
+      ExportType.included,
+    );
     let pastPaymentDetails = await this.getPaymentDetailsPayment(
       programId,
       minPaymentId,
       maxPaymentId,
+      relationOptions,
     );
-
     if (pastPaymentDetails.length === 0) {
       return {
         fileName: `details-included-people-affected-${minPaymentId}`,
         data: (await this.getInclusionList(programId)).data,
       };
     }
-
-    pastPaymentDetails = await this.filterPaymentAttributesToExport(
-      pastPaymentDetails,
-      programId,
-    );
-
     const fileInput = {
       fileName: `details-completed-payment-${
         minPaymentId === maxPaymentId
@@ -124,32 +166,92 @@ export class ExportMetricsService {
     return fileInput;
   }
 
-  private async filterPaymentAttributesToExport(
-    pastPaymentDetails,
+  private async getRegistrationsList(
     programId: number,
-  ): Promise<any[]> {
-    const programQuestions = (await this.getAllQuestionsForExport()).map(
-      c => c.programQuestion,
+    exportType: ExportType,
+    registrationStatus?: RegistrationStatusEnum,
+    addPaymentColumns?: boolean,
+  ): Promise<object[]> {
+    const relationOptions = await this.getRelationOptionsForExport(
+      programId,
+      exportType,
     );
-    const programCustomAttrs = (
-      await this.getAllProgramCustomAttributesForExport(programId)
-    ).map(c => c.name);
-
-    const registrationCustomDataOfInterest = programQuestions.concat(
-      programCustomAttrs,
+    const rows = await this.getRegistrationsGenericFields(
+      programId,
+      relationOptions,
+      registrationStatus,
     );
 
-    const outputPaymentDetails = [];
-    pastPaymentDetails.forEach(transaction => {
-      Object.keys(transaction.customData).forEach(key => {
-        if (registrationCustomDataOfInterest.includes(key)) {
-          transaction[key] = transaction.customData[key];
-        }
-      });
-      delete transaction.customData;
-      outputPaymentDetails.push(transaction);
+    if (addPaymentColumns) {
+      const payments = (await this.paymentsService.getPayments(programId))
+        .map(i => i.payment)
+        .sort((a, b) => (a > b ? 1 : -1));
+
+      const transactions = await this.transactionsService.getTransactions(
+        programId,
+        true,
+      );
+
+      for await (let row of rows) {
+        await this.addPaymentFieldsToExport(row, payments, transactions);
+      }
+    }
+
+    for await (let row of rows) {
+      await this.addRegistrationStatussesToExport(row);
+      delete row['referenceId'];
+    }
+    await this.replaceValueWithDropdownLabel(rows, relationOptions);
+
+    return this.filterUnusedColumn(rows);
+  }
+
+  private async getRelationOptionsForExport(
+    programId: number,
+    exportType: ExportType,
+  ): Promise<RegistrationDataOptions[]> {
+    const relationOptions = [];
+    const program = await this.programRepository.findOne(programId, {
+      relations: [
+        'programQuestions',
+        'financialServiceProviders',
+        'financialServiceProviders.questions',
+      ],
     });
-    return outputPaymentDetails;
+    for (const programQuestion of program.programQuestions) {
+      if (
+        JSON.parse(JSON.stringify(programQuestion.export)).includes(exportType)
+      ) {
+        const relationOption = new RegistrationDataOptions();
+        relationOption.name = programQuestion.name;
+        relationOption.relation = { programQuestionId: programQuestion.id };
+        relationOptions.push(relationOption);
+      }
+    }
+    let fspQuestions = [];
+    for (const fsp of program.financialServiceProviders) {
+      fspQuestions = fspQuestions.concat(fsp.questions);
+    }
+    for (const fspQuestion of fspQuestions) {
+      if (JSON.parse(JSON.stringify(fspQuestion.export)).includes(exportType)) {
+        const relationOption = new RegistrationDataOptions();
+        relationOption.name = fspQuestion.name;
+        relationOption.relation = { fspQuestionId: fspQuestion.id };
+        relationOptions.push(relationOption);
+      }
+    }
+    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
+      programId,
+    );
+    for (const programCustomAttr of programCustomAttrs) {
+      const relationOption = new RegistrationDataOptions();
+      relationOption.name = programCustomAttr.name;
+      relationOption.relation = {
+        programCustomAttributeId: programCustomAttr.id,
+      };
+      relationOptions.push(relationOption);
+    }
+    return relationOptions;
   }
 
   private async getUnusedVouchers(): Promise<FileDto> {
@@ -178,24 +280,7 @@ export class ExportMetricsService {
     return response;
   }
 
-  private async addGenericFieldsToExport(
-    row: object,
-    registration: RegistrationEntity,
-  ): Promise<object> {
-    const genericFields = [
-      GenericAttributes.id,
-      GenericAttributes.phoneNumber,
-      GenericAttributes.paymentAmountMultiplier,
-      GenericAttributes.preferredLanguage,
-      GenericAttributes.note,
-    ];
-    genericFields.forEach(field => {
-      row[field] = registration[field];
-    });
-
-    row['status'] = registration.registrationStatus;
-    row['financialServiceProvider'] = registration.fsp?.fsp;
-
+  private async addRegistrationStatussesToExport(row: object): Promise<object> {
     const registrationStatuses = Object.values(
       RegistrationStatusEnum,
     ).map(item => String(item));
@@ -206,65 +291,11 @@ export class ExportMetricsService {
       row[
         dateField
       ] = await this.registrationsService.getLatestDateForRegistrationStatus(
-        registration,
+        row['id'],
         RegistrationStatusEnum[status],
       );
     }
     return row;
-  }
-
-  private addProgramQuestionsToExport(
-    row: object,
-    programQuestions: ProgramQuestionForExport[],
-    registration: RegistrationEntity,
-    exportType: ExportType,
-  ): object {
-    programQuestions.forEach(question => {
-      if (question.export && question.export.includes(exportType)) {
-        const key = question.programQuestion;
-        let value = registration.data.find(
-          d => d.programQuestionId === question.id,
-        ).value;
-        if (question.answerType === AnswerTypes.dropdown) {
-          const rawValue = question.options.find(
-            option => option.option === value,
-          );
-          if (rawValue && rawValue.label && rawValue.label['en']) {
-            value = rawValue.label['en'];
-          } else {
-            value = '';
-          }
-        }
-        row[key] = value;
-      }
-    });
-    return row;
-  }
-
-  private async getAllQuestionsForExport(): Promise<
-    ProgramQuestionForExport[]
-  > {
-    return (await this.programQuestionRepository.find())
-      .map(question => {
-        return {
-          programQuestion: question.name,
-          answerType: question.answerType as AnswerTypes,
-          options: JSON.parse(JSON.stringify(question.options)),
-          export: JSON.parse(JSON.stringify(question.export)),
-          id: question.id,
-        };
-      })
-      .concat(
-        (await this.fspAttributeRepository.find()).map(question => {
-          return {
-            programQuestion: question.name,
-            answerType: question.answerType as AnswerTypes,
-            options: JSON.parse(JSON.stringify(question.options)),
-            export: JSON.parse(JSON.stringify(question.export)),
-            id: question.id,
-          };
-        }),
-      );
   }
 
   private async getAllProgramCustomAttributesForExport(
@@ -278,7 +309,6 @@ export class ExportMetricsService {
 
   private async addPaymentFieldsToExport(
     row: object,
-    registration: RegistrationEntity,
     payments: number[],
     transactions: any[],
   ): Promise<object> {
@@ -292,7 +322,7 @@ export class ExportMetricsService {
         transaction[voucherStatus] = transactions.find(
           t =>
             t.payment === payment &&
-            t.referenceId === registration.referenceId &&
+            t.referenceId === row['referenceId'] &&
             t.customData['IntersolvePayoutStatus'] === voucherStatus,
         );
       }
@@ -304,7 +334,7 @@ export class ExportMetricsService {
         creationTransaction = transactions.find(
           t =>
             t.payment === payment &&
-            t.referenceId === registration.referenceId &&
+            t.referenceId === row['referenceId'] &&
             !t.customData['IntersolvePayoutStatus'],
         );
       }
@@ -323,106 +353,90 @@ export class ExportMetricsService {
     return row;
   }
 
-  private async getAllPeopleAffectedList(programId: number): Promise<FileDto> {
-    const registrations = await this.registrationRepository.find({
-      relations: ['fsp', 'data'],
-      order: { id: 'ASC' },
-    });
-    const questions = await this.getAllQuestionsForExport();
-    const payments = (await this.paymentsService.getPayments(programId))
-      .map(i => i.payment)
-      .sort((a, b) => (a > b ? 1 : -1));
-    const registrationDetails = [];
-
-    const transactions = await this.transactionsService.getTransactions(
-      programId,
-      true,
-    );
-
-    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
-      programId,
-    );
-
-    const program = await this.programRepository.findOne(programId);
-
-    for await (let registration of registrations) {
-      let row = {};
-      row = await this.addGenericFieldsToExport(row, registration);
-      row = this.addProgramQuestionsToExport(
-        row,
-        questions,
-        registration,
-        ExportType.allPeopleAffected,
-      );
-      row = await this.addPaymentFieldsToExport(
-        row,
-        registration,
-        payments,
-        transactions,
-      );
-      row = this.registrationsService.addProgramCustomAttributesToRow(
-        row,
-        registration.data,
-        programCustomAttrs,
-      );
-      row = this.registrationsService.addDeprecatedCustomDataKeysToRow(
-        row,
-        registration.data,
-        JSON.parse(JSON.stringify(program.deprecatedCustomDataKeys)),
-      );
-      registrationDetails.push(row);
+  private async getRegistrationsGenericFields(
+    programId: number,
+    relationOptions: RegistrationDataOptions[],
+    status?: RegistrationStatusEnum,
+  ): Promise<object[]> {
+    let query = this.registrationRepository
+      .createQueryBuilder('registration')
+      .leftJoin('registration.fsp', 'fsp')
+      .select([
+        `registration."${GenericAttributes.id}"`,
+        `registration."${GenericAttributes.phoneNumber}"`,
+        `registration."${GenericAttributes.paymentAmountMultiplier}"`,
+        `registration."${GenericAttributes.preferredLanguage}"`,
+        `registration."${GenericAttributes.note}"`,
+        `registration."registrationStatus" as status`,
+        `registration."referenceId" as "referenceId"`,
+        `fsp.fsp as financialServiceProvider`,
+      ])
+      .andWhere({ programId: programId })
+      .orderBy('"registration"."id"', 'ASC');
+    if (status) {
+      query = query.andWhere({ registrationStatus: status });
     }
-    const response = {
-      fileName: ExportType.allPeopleAffected,
-      data: registrationDetails,
-    };
-
-    return response;
+    for (const r of relationOptions) {
+      query.select(subQuery => {
+        return this.registrationsService.customDataEntrySubQuery(
+          subQuery,
+          r.relation,
+        );
+      }, r.name);
+    }
+    return await query.getRawMany();
   }
 
-  private async getInclusionList(programId: number): Promise<FileDto> {
-    const includedRegistrations = await this.registrationRepository.find({
-      where: {
-        program: { id: programId },
-        registrationStatus: RegistrationStatusEnum.included,
-      },
-      order: { id: 'ASC' },
-      relations: ['fsp'],
-    });
-    const questions = await this.getAllQuestionsForExport();
-    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
-      programId,
-    );
-    const program = await this.programRepository.findOne(programId);
-    const inclusionDetails = [];
-    for await (let registration of includedRegistrations) {
-      let row = {};
-      row = await this.addGenericFieldsToExport(row, registration);
-      row = this.addProgramQuestionsToExport(
-        row,
-        questions,
-        registration,
-        ExportType.included,
-      );
-      row = this.registrationsService.addProgramCustomAttributesToRow(
-        row,
-        registration.data,
-        programCustomAttrs,
-      );
-      inclusionDetails.push(row);
-      row = this.registrationsService.addDeprecatedCustomDataKeysToRow(
-        row,
-        registration.data,
-        JSON.parse(JSON.stringify(program.deprecatedCustomDataKeys)),
-      );
+  private async replaceValueWithDropdownLabel(
+    rows: object[],
+    relationOptions: RegistrationDataOptions[],
+  ): Promise<void> {
+    // Creates mapping list of questions with a dropdown
+    const valueOptionMappings = [];
+    for (const option of relationOptions) {
+      if (option.relation.programQuestionId) {
+        const dropdownProgramQuestion = await this.programQuestionRepository.findOne(
+          {
+            where: {
+              id: option.relation.programQuestionId,
+              answerType: AnswerTypes.dropdown,
+            },
+          },
+        );
+        if (dropdownProgramQuestion) {
+          valueOptionMappings.push({
+            questionName: dropdownProgramQuestion.name,
+            options: dropdownProgramQuestion.options,
+          });
+        }
+      }
+      if (option.relation.fspQuestionId) {
+        const dropdownFspQuestion = await this.fspAttributeRepository.findOne({
+          where: {
+            id: option.relation.fspQuestionId,
+            answerType: AnswerTypes.dropdown,
+          },
+        });
+        if (dropdownFspQuestion) {
+          valueOptionMappings.push({
+            questionName: dropdownFspQuestion.name,
+            options: dropdownFspQuestion.options,
+          });
+        }
+      }
     }
-    const filteredColumnDetails = this.filterUnusedColumn(inclusionDetails);
-    const response = {
-      fileName: 'inclusion-list',
-      data: filteredColumnDetails,
-    };
 
-    return response;
+    // Converts values of dropdown questions to the labels of the list of registrations
+    for (const mapping of valueOptionMappings) {
+      for (const r of rows) {
+        const selectedOption = mapping.options.find(
+          o => o.option === r[mapping.questionName],
+        );
+        if (selectedOption && selectedOption['label']['en']) {
+          r[mapping.questionName] = selectedOption['label']['en'];
+        }
+      }
+    }
   }
 
   private filterUnusedColumn(columnDetails): object[] {
@@ -444,57 +458,6 @@ export class ExportMetricsService {
       filteredColumns.push(row);
     }
     return filteredColumns;
-  }
-
-  private async getSelectedForValidationList(
-    programId: number,
-  ): Promise<FileDto> {
-    const selectedRegistrations = (
-      await this.registrationRepository.find({
-        relations: ['fsp'],
-        order: { id: 'ASC' },
-      })
-    ).filter(
-      registration =>
-        registration.registrationStatus ===
-        RegistrationStatusEnum.selectedForValidation,
-    );
-
-    const programQuestions = await this.getAllQuestionsForExport();
-    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
-      programId,
-    );
-    const columnDetails = [];
-    const program = await this.programRepository.findOne(programId);
-    for await (let registration of selectedRegistrations) {
-      let row = {};
-      row = await this.addGenericFieldsToExport(row, registration);
-      row = this.addProgramQuestionsToExport(
-        row,
-        programQuestions,
-        registration,
-        ExportType.selectedForValidation,
-      );
-      row = this.registrationsService.addProgramCustomAttributesToRow(
-        row,
-        registration.data,
-        programCustomAttrs,
-      );
-      row = this.registrationsService.addDeprecatedCustomDataKeysToRow(
-        row,
-        registration.data,
-        JSON.parse(JSON.stringify(program.deprecatedCustomDataKeys)),
-      );
-      columnDetails.push(row);
-    }
-
-    const filteredColumnDetails = this.filterUnusedColumn(columnDetails);
-    const response = {
-      fileName: ExportType.selectedForValidation,
-      data: filteredColumnDetails,
-    };
-
-    return response;
   }
 
   private async getDuplicates(
@@ -580,6 +543,7 @@ export class ExportMetricsService {
     programId: number,
     minPaymentId: number,
     maxPaymentId: number,
+    registrationDataOptions: RegistrationDataOptions[],
   ): Promise<any> {
     const latestTransactionPerPa = await this.transactionRepository
       .createQueryBuilder('transaction')
@@ -594,7 +558,7 @@ export class ExportMetricsService {
       .groupBy('transaction.registrationId')
       .addGroupBy('transaction.payment');
 
-    const transactions = await this.transactionRepository
+    const transactionQuery = this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
         'transaction.payment as "payment"',
@@ -602,7 +566,6 @@ export class ExportMetricsService {
         'transaction.amount as "amount"',
         'transaction.status as "status"',
         'transaction."errorMessage" as "errorMessage"',
-        'registration.customData as "customData"',
         'fsp.fsp AS financialServiceProvider',
       ])
       .innerJoin(
@@ -612,10 +575,17 @@ export class ExportMetricsService {
       )
       .setParameters(latestTransactionPerPa.getParameters())
       .leftJoin('transaction.registration', 'registration')
-      .leftJoin('registration.fsp', 'fsp')
-      .getRawMany();
+      .leftJoin('registration.fsp', 'fsp');
 
-    return transactions;
+    for (const r of registrationDataOptions) {
+      transactionQuery.select(subQuery => {
+        return this.registrationsService.customDataEntrySubQuery(
+          subQuery,
+          r.relation,
+        );
+      }, r.name);
+    }
+    return await transactionQuery.getRawMany();
   }
 
   public async getPaMetrics(
