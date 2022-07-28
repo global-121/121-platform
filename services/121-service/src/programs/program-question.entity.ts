@@ -90,4 +90,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
       },
     ]);
   }
+
+  @Column('json', { nullable: true })
+  public shortLabel: JSON;
 }

@@ -35,4 +35,7 @@ export class FspAttributeEntity extends Base121Entity {
     fsp => fsp.attributes,
   )
   public fsp: FinancialServiceProviderEntity;
+
+  @Column('json', { nullable: true })
+  public shortLabel: JSON;
 }
