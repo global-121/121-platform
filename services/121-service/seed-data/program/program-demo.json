@@ -64,8 +64,15 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {},
+      "shortLabel": {
+        "en": "Full Name"
+      }
     },
     {
       "name": "dob",
@@ -76,8 +83,15 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {},
+      "shortLabel": {
+        "en": "Date of Birth"
+      }
     },
     {
       "name": "house",
@@ -110,6 +124,9 @@
         "lannister": 3,
         "stark": 6,
         "greyjoy": 9
+      },
+      "shortLabel": {
+        "en": "House"
       }
     },
     {
@@ -122,6 +139,9 @@
       "options": null,
       "scoring": {
         "multiplier": 2
+      },
+      "shortLabel": {
+        "en": "Dragon Nr."
       }
     }
   ]
