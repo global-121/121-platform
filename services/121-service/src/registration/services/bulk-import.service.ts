@@ -292,16 +292,6 @@ export class BulkImportService {
     const dynamicAttributes = await this.getDynamicAttributes(programId);
     let programAnswers: RegistrationDataEntity[] = [];
     for await (let att of dynamicAttributes) {
-      // const programQuestion = await this.programQuestionRepository.findOne({
-      //   where: { name: attribute.name },
-      // });
-      // if (programQuestion) {
-      //   let programAnswer = new RegistrationDataEntity();
-      //   programAnswer.registration = registration;
-      //   programAnswer.programQuestion = programQuestion;
-      //   programAnswer.value = registration['customData'][attribute.name];
-      //   programAnswers.push(programAnswer);
-      // }
       if (att.type === CustomAttributeType.boolean) {
         await registration.saveData(
           this.stringToBoolean(registration.customData[att.name], false),
