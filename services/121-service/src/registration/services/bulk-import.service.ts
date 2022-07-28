@@ -240,7 +240,6 @@ export class BulkImportService {
       }
 
       for await (const att of dynamicAttributes) {
-        console.log('record[att.name]: ', record[att.name]);
         if (att.type === CustomAttributeType.boolean) {
           registration.customData[att.name] = this.stringToBoolean(
             record[att.name],
@@ -249,7 +248,6 @@ export class BulkImportService {
         } else {
           registration.customData[att.name] = record[att.name];
         }
-        console.log('customData: ', registration.customData[att.name]);
       }
 
       const fsp = await this.fspRepository.findOne({
@@ -267,7 +265,7 @@ export class BulkImportService {
     );
     await this.registrationRepository.save(savedRegistrations);
 
-    for await (let registration of registrations) {
+    for await (let registration of savedRegistrations) {
       registration.registrationStatus = RegistrationStatusEnum.registered;
       await this.storeProgramAnswersImportRegistrations(
         registration,

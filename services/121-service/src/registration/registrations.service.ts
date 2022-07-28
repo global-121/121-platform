@@ -464,7 +464,6 @@ export class RegistrationsService {
     subQuery: SelectQueryBuilder<any>,
     relation: RegistrationDataRelation,
   ): SelectQueryBuilder<any> {
-    console.log('relation: ', relation);
     const uniqueSubQueryId = uuid()
       .replace(/-/g, '')
       .toLowerCase();
@@ -721,13 +720,13 @@ export class RegistrationsService {
   }
 
   public async getLatestDateForRegistrationStatus(
-    registration: RegistrationEntity,
+    registrationId: number,
     status: RegistrationStatusEnum,
   ): Promise<Date> {
     const registrationStatusChange = await this.registrationStatusChangeRepository.findOne(
       {
         where: {
-          registration: { id: registration.id },
+          registration: { id: registrationId },
           registrationStatus: status,
         },
         order: { created: 'DESC' },
