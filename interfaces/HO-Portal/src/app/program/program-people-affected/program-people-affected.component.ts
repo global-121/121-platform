@@ -624,7 +624,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     for (const colPerPhase of columnsPerPhase) {
       const addCol = {
         prop: colPerPhase.name,
-        name: this.createColumnNameLabel(colPerPhase.name, colPerPhase.label),
+        name: this.createColumnNameLabel(
+          colPerPhase.name,
+          colPerPhase.shortLabel,
+        ),
         ...this.columnDefaults,
         permissions: [Permission.RegistrationPersonalREAD],
         phases: colPerPhase.phases,
@@ -645,15 +648,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   private createColumnNameLabel(
     columnName: string,
-    columnLabel?: TranslatableString,
+    columnShorlLabel?: TranslatableString,
   ): string {
     const translationKey = `page.program.program-people-affected.column.${columnName}`;
 
     // If no generic translaton is available, the output will be the same as the input
     let name = this.translate.instant(translationKey);
 
-    if (name === translationKey && columnLabel) {
-      name = this.translatableStringService.get(columnLabel);
+    if (name === translationKey && columnShorlLabel) {
+      name = this.translatableStringService.get(columnShorlLabel);
     }
     return name;
   }

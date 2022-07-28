@@ -171,9 +171,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
           options = this.getDropdownOptions(paTableAttribute);
         }
         const translationKey = `page.program.program-people-affected.edit-person-affected-popup.properties.${paTableAttribute.name}`;
-        let label = this.translate.instant(translationKey).label;
+        let label = this.translate.instant(translationKey).shortLabel;
         if (!label) {
-          label = this.translatableString.get(paTableAttribute.label);
+          label = this.translatableString.get(paTableAttribute.shortLabel);
         }
         return {
           name: paTableAttribute.name,
