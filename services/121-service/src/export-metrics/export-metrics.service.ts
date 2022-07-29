@@ -188,23 +188,24 @@ export class ExportMetricsService {
       registrationStatus,
     );
 
+    let payments;
+    let transactions;
     if (addPaymentColumns) {
-      const payments = (await this.paymentsService.getPayments(programId))
+      payments = (await this.paymentsService.getPayments(programId))
         .map(i => i.payment)
         .sort((a, b) => (a > b ? 1 : -1));
 
-      const transactions = await this.transactionsService.getTransactions(
+      transactions = await this.transactionsService.getTransactions(
         programId,
         true,
       );
-
-      for await (let row of rows) {
-        await this.addPaymentFieldsToExport(row, payments, transactions);
-      }
     }
 
     for await (let row of rows) {
       await this.addRegistrationStatussesToExport(row);
+      if (addPaymentColumns) {
+        await this.addPaymentFieldsToExport(row, payments, transactions);
+      }
       delete row['referenceId'];
     }
     await this.replaceValueWithDropdownLabel(rows, relationOptions);
@@ -338,7 +339,7 @@ export class ExportMetricsService {
     row: object,
     payments: number[],
     transactions: any[],
-  ): Promise<object> {
+  ): Promise<void> {
     const voucherStatuses = [
       IntersolvePayoutStatus.InitialMessage,
       IntersolvePayoutStatus.VoucherSent,
@@ -377,7 +378,6 @@ export class ExportMetricsService {
           ? transaction[IntersolvePayoutStatus.VoucherSent]?.paymentDate
           : null;
     }
-    return row;
   }
 
   private async getRegistrationsGenericFields(
