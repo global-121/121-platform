@@ -167,5 +167,6 @@
       "phases": [],
       "editableInPortal": false
     }
-  ]
+  ],
+  "fullnameNameConvention": ["nameFirst", "nameLast"]
 }

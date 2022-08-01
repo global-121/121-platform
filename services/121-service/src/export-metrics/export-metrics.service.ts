@@ -517,6 +517,31 @@ export class ExportMetricsService {
     return filteredColumns;
   }
 
+  private async getNameRelationsByProgram(
+    programId: number,
+  ): Promise<RegistrationDataOptions[]> {
+    const program = await this.programRepository.findOne({
+      relations: ['programQuestions'],
+      where: {
+        id: programId,
+      },
+    });
+    const relationOptions: RegistrationDataOptions[] = [];
+    for (const programQuestion of program.programQuestions) {
+      if (
+        JSON.parse(JSON.stringify(program.fullnameNamingConvention)).includes(
+          programQuestion.name,
+        )
+      ) {
+        const relationOption = new RegistrationDataOptions();
+        relationOption.name = programQuestion.name;
+        relationOption.relation = { programQuestionId: programQuestion.id };
+        relationOptions.push(relationOption);
+      }
+    }
+    return relationOptions;
+  }
+
   private async getDuplicates(
     programId: number,
   ): Promise<{
@@ -546,11 +571,14 @@ export class ExportMetricsService {
     const fspQuestionIds = fspQuestions.map(fspQuestion => {
       return fspQuestion.id;
     });
-
-    const relationOptions = this.getRelationOptionsForDuplicates(
+    const program = await this.programRepository.findOne(programId);
+    const nameRelations = await this.getNameRelationsByProgram(programId);
+    const duplicateRelationOptions = this.getRelationOptionsForDuplicates(
       programQuestions,
       fspQuestions,
     );
+    const relationOptions = [...nameRelations, ...duplicateRelationOptions];
+
     const duplicates = await this.registrationDataRepository
       .createQueryBuilder('registration_data')
       .select(
@@ -590,9 +618,12 @@ export class ExportMetricsService {
       relationOptions,
       Array.from(uniqueRegistrationIds),
     );
-    // TODO: Add name
 
     const result = registrations.map(registration => {
+      registration = this.registrationsService.getTransformedNameByNamingConvention(
+        JSON.parse(JSON.stringify(program.fullnameNamingConvention)),
+        registration,
+      );
       return {
         ...registration,
         duplicateWithIds: uniq(duplicatesMap.get(registration['id'])).join(','),

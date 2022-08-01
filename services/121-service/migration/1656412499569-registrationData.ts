@@ -32,6 +32,9 @@ export class registrationData1656412499569 implements MigrationInterface {
       `CREATE INDEX "IDX_f07a1f50a3d185ac010a45b47e" ON "121-service"."registration_data" ("registrationId", "programQuestionId", "fspQuestionId", "programCustomAttributeId", "monitoringQuestionId") `,
     );
     await queryRunner.query(
+      `ALTER TABLE "121-service"."program" ADD "fullnameNamingConvention" json`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "121-service"."registration_data" ADD CONSTRAINT "FK_65982d6021412781740a70c8957" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -46,6 +49,7 @@ export class registrationData1656412499569 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration_data" ADD CONSTRAINT "FK_bce69bd7a9b0e0a3aecf5e97c92" FOREIGN KEY ("monitoringQuestionId") REFERENCES "121-service"."monitoring_question"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
+
     await queryRunner.commitTransaction();
     await this.migrateData(queryRunner.connection);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
@@ -94,6 +98,9 @@ export class registrationData1656412499569 implements MigrationInterface {
       `DROP INDEX "121-service"."IDX_80cd1fc99c776e1893c667b4b2"`,
     );
     await queryRunner.query(`DROP TABLE "121-service"."monitoring_question"`);
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program" DROP COLUMN "fullnameNamingConvention"`,
+    );
   }
 
   private async migrateData(connection: Connection): Promise<void> {
@@ -159,6 +166,10 @@ export class registrationData1656412499569 implements MigrationInterface {
         const titleString = programTitle['en'];
         const monitoringQuestion = new MonitoringQuestionEntity();
         monitoringQuestion.name = 'monitoringAnswer';
+        program.fullnameNamingConvention = JSON.parse(
+          JSON.stringify(['nameFirst', 'nameLast']),
+        );
+        await programRepo.save(program);
         if (titleString === 'NLRC Direct Digital Aid (LVV)') {
           // Use LVV monitoring question
           const monQuestion = instancePilotLVV['monitoringQuestion'];
