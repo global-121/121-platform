@@ -620,7 +620,7 @@ export class ExportMetricsService {
     );
 
     const result = registrations.map(registration => {
-      registration = this.registrationsService.getTransformedNameByNamingConvention(
+      registration = this.registrationsService.transformRegistrationByNamingConvention(
         JSON.parse(JSON.stringify(program.fullnameNamingConvention)),
         registration,
       );
