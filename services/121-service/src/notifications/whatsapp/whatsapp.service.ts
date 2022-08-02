@@ -249,15 +249,14 @@ export class WhatsappService {
     const registrationsWithPhoneNumber = await getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .select('registration.id')
-      .where('registration.customData ::jsonb @> :customData', {
-        customData: {
-          whatsappPhoneNumber: phoneNumber,
-        },
-      })
+      .leftJoin('registration.data', 'registration_data')
       .leftJoinAndSelect(
         'registration.whatsappPendingMessages',
         'whatsappPendingMessages',
       )
+      .where('registration_data.value = :phoneNumber', {
+        phoneNumber: phoneNumber,
+      })
       .orderBy('whatsappPendingMessages.created', 'ASC')
       .getMany();
 

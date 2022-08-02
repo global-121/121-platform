@@ -150,4 +150,8 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @Column({ default: false })
   public tryWhatsAppFirst: boolean;
+
+  // This is an array of ProgramQuestionEntity names that build up the full name of a PA.
+  @Column('json', { nullable: true })
+  public fullnameNamingConvention: JSON;
 }

@@ -6,11 +6,17 @@ import { RegistrationsService } from './../registration/registrations.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository, getRepository, In } from 'typeorm';
+import {
+  Repository,
+  getRepository,
+  In,
+  ConnectionIsNotSetError,
+} from 'typeorm';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import {
   AnswerTypes,
+  Attribute,
   GenericAttributes,
 } from '../registration/enum/custom-data-attributes';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
@@ -18,7 +24,7 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ActionService } from '../actions/action.service';
 import { ExportType } from './dto/export-details';
 import { FileDto } from './dto/file.dto';
-import { without } from 'lodash';
+import { uniq, without, zipWith } from 'lodash';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
@@ -45,7 +51,7 @@ export class ExportMetricsService {
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(FspQuestionEntity)
-  private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
+  private readonly fspQuestionRepository: Repository<FspQuestionEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
 
@@ -255,6 +261,27 @@ export class ExportMetricsService {
     return relationOptions;
   }
 
+  private getRelationOptionsForDuplicates(
+    programQuestions: ProgramQuestionEntity[],
+    fspQuestions: FspQuestionEntity[],
+  ): RegistrationDataOptions[] {
+    const relationOptions = [];
+    for (const programQuestion of programQuestions) {
+      const relationOption = new RegistrationDataOptions();
+      relationOption.name = programQuestion.name;
+      relationOption.relation = { programQuestionId: programQuestion.id };
+      relationOptions.push(relationOption);
+    }
+
+    for (const fspQuestion of fspQuestions) {
+      const relationOption = new RegistrationDataOptions();
+      relationOption.name = fspQuestion.name;
+      relationOption.relation = { fspQuestionId: fspQuestion.id };
+      relationOptions.push(relationOption);
+    }
+    return relationOptions;
+  }
+
   private async getUnusedVouchers(): Promise<FileDto> {
     const unusedVouchers = await this.paymentsService.getUnusedVouchers();
     unusedVouchers.forEach(v => {
@@ -387,6 +414,36 @@ export class ExportMetricsService {
     return await query.getRawMany();
   }
 
+  private async getRegistrationsFieldsForDuplicates(
+    programId: number,
+    relationOptions: RegistrationDataOptions[],
+    registrationIds: number[],
+  ): Promise<object[]> {
+    let query = this.registrationRepository
+      .createQueryBuilder('registration')
+      .leftJoin('registration.fsp', 'fsp')
+      .select([
+        `registration."${GenericAttributes.id}"`,
+        `registration."registrationStatus" AS status`,
+        `fsp.fsp AS fsp`,
+        `registration."${GenericAttributes.phoneNumber}"`,
+      ])
+      .andWhere({ programId: programId })
+      .andWhere('registration.id IN (:...registrationIds)', {
+        registrationIds: registrationIds,
+      })
+      .orderBy('"registration"."id"', 'ASC');
+    for (const r of relationOptions) {
+      query.select(subQuery => {
+        return this.registrationsService.customDataEntrySubQuery(
+          subQuery,
+          r.relation,
+        );
+      }, r.name);
+    }
+    return await query.getRawMany();
+  }
+
   private async replaceValueWithDropdownLabel(
     rows: object[],
     relationOptions: RegistrationDataOptions[],
@@ -411,7 +468,7 @@ export class ExportMetricsService {
         }
       }
       if (option.relation.fspQuestionId) {
-        const dropdownFspQuestion = await this.fspAttributeRepository.findOne({
+        const dropdownFspQuestion = await this.fspQuestionRepository.findOne({
           where: {
             id: option.relation.fspQuestionId,
             answerType: AnswerTypes.dropdown,
@@ -460,12 +517,40 @@ export class ExportMetricsService {
     return filteredColumns;
   }
 
+  private async getNameRelationsByProgram(
+    programId: number,
+  ): Promise<RegistrationDataOptions[]> {
+    const program = await this.programRepository.findOne({
+      relations: ['programQuestions'],
+      where: {
+        id: programId,
+      },
+    });
+    const relationOptions: RegistrationDataOptions[] = [];
+    for (const programQuestion of program.programQuestions) {
+      if (
+        JSON.parse(JSON.stringify(program.fullnameNamingConvention)).includes(
+          programQuestion.name,
+        )
+      ) {
+        const relationOption = new RegistrationDataOptions();
+        relationOption.name = programQuestion.name;
+        relationOption.relation = { programQuestionId: programQuestion.id };
+        relationOptions.push(relationOption);
+      }
+    }
+    return relationOptions;
+  }
+
   private async getDuplicates(
     programId: number,
   ): Promise<{
     fileName: ExportType;
     data: any[];
   }> {
+    const duplicatesMap: Map<number, number[]> = new Map();
+    const uniqueRegistrationIds: Set<number> = new Set();
+
     const programQuestions = await this.programQuestionRepository.find({
       where: {
         program: {
@@ -477,18 +562,23 @@ export class ExportMetricsService {
     const programQuestionIds = programQuestions.map(question => {
       return question.id;
     });
-    const fspAttributes = await this.fspAttributeRepository.find({
+    const fspQuestions = await this.fspQuestionRepository.find({
       relations: ['fsp'],
       where: {
         duplicateCheck: true,
       },
     });
-    const fspQuestionIds = fspAttributes.map(fspQuestion => {
+    const fspQuestionIds = fspQuestions.map(fspQuestion => {
       return fspQuestion.id;
     });
+    const program = await this.programRepository.findOne(programId);
+    const nameRelations = await this.getNameRelationsByProgram(programId);
+    const duplicateRelationOptions = this.getRelationOptionsForDuplicates(
+      programQuestions,
+      fspQuestions,
+    );
+    const relationOptions = [...nameRelations, ...duplicateRelationOptions];
 
-    const duplicatesMap: Map<number, number[]> = new Map();
-    const uniqueRegistrationIds: Set<number> = new Set();
     const duplicates = await this.registrationDataRepository
       .createQueryBuilder('registration_data')
       .select(
@@ -511,7 +601,6 @@ export class ExportMetricsService {
       const {
         duplicateRegistrationIds,
       }: { duplicateRegistrationIds: number[] } = duplicateEntry;
-
       for (const registrationId of duplicateRegistrationIds) {
         uniqueRegistrationIds.add(registrationId);
         const others = without(duplicateRegistrationIds, registrationId);
@@ -524,15 +613,23 @@ export class ExportMetricsService {
       }
     }
 
-    // TODO: Create export with duplicatesMap
-    const registrations = await this.registrationRepository
-      .createQueryBuilder('registration')
-      .where('registration.id IN (:...registrationIds)', {
-        registrationIds: Array.from(uniqueRegistrationIds),
-      })
-      .getMany();
+    const registrations = await this.getRegistrationsFieldsForDuplicates(
+      programId,
+      relationOptions,
+      Array.from(uniqueRegistrationIds),
+    );
 
-    const result = [];
+    const result = registrations.map(registration => {
+      registration = this.registrationsService.transformRegistrationByNamingConvention(
+        JSON.parse(JSON.stringify(program.fullnameNamingConvention)),
+        registration,
+      );
+      return {
+        ...registration,
+        duplicateWithIds: uniq(duplicatesMap.get(registration['id'])).join(','),
+      };
+    });
+
     return {
       fileName: ExportType.duplicates,
       data: result,

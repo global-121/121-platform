@@ -770,6 +770,19 @@ export class RegistrationsService {
     }
   }
 
+  public transformRegistrationByNamingConvention(
+    nameColumns: string[],
+    registrationObject: object,
+  ): object {
+    const fullnameConcat = [];
+    for (const nameColumn of nameColumns) {
+      fullnameConcat.push(registrationObject[nameColumn]);
+      delete registrationObject[nameColumn];
+    }
+    registrationObject['name'] = fullnameConcat.join(' ');
+    return registrationObject;
+  }
+
   public getDateColumPerStatus(
     filterStatus: RegistrationStatusEnum,
   ): RegistrationStatusTimestampField {
