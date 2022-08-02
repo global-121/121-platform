@@ -72,6 +72,18 @@
       "scoring": {}
     },
     {
+      "name": "testAnswer",
+      "label": {
+        "en": "Please enter your non-persistant middle name:"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": false,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {}
+    },
+    {
       "name": "phoneNumber",
       "label": {
         "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>"

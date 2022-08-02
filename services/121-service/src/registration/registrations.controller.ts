@@ -447,7 +447,9 @@ export class RegistrationsController {
   })
   @Get('get/:referenceId')
   public async getRegistration(@Param() params): Promise<RegistrationEntity> {
-    return await this.registrationsService.get(params.referenceId);
+    return await this.registrationsService.getRegistrationToValidate(
+      params.referenceId,
+    );
   }
 
   @Permissions(PermissionEnum.RegistrationFspREAD)

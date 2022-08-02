@@ -1,7 +1,7 @@
 import { Program, ProgramAttribute } from './program.model';
 
 export class PaProgramAnswer {
-  programAnswer: string;
+  value: string;
   name: string;
   attributeId: number;
   referenceId: string;

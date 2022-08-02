@@ -1009,68 +1009,85 @@ export class RegistrationsService {
     name?: string,
     id?: number,
   ): Promise<RegistrationEntity[]> {
-    const phoneNumber = await this.lookupService.lookupAndCorrect(
-      rawPhoneNumber,
-    );
+    const registrations = [];
+    if (rawPhoneNumber) {
+      const customAttributesPhoneNumberNames = [
+        CustomDataAttributes.phoneNumber as string,
+        CustomDataAttributes.whatsappPhoneNumber as string,
+      ];
 
-    const registrations = await this.registrationRepository.find({
-      relations: ['fsp'],
-    });
-
-    return registrations.filter(async registration => {
-      const registrationName = (
-        await registration.getRegistrationDataByName(CustomDataAttributes.name)
-      ).value;
-      const registrationNameFirst = (
-        await registration.getRegistrationDataByName(
-          CustomDataAttributes.nameFirst,
-        )
-      ).value;
-      const registrationNameLast = (
-        await registration.getRegistrationDataByName(
-          CustomDataAttributes.nameLast,
-        )
-      ).value;
-      const registrationFirstName = (
-        await registration.getRegistrationDataByName(
-          CustomDataAttributes.firstName,
-        )
-      ).value;
-      const registrationSecondName = (
-        await registration.getRegistrationDataByName(
-          CustomDataAttributes.secondName,
-        )
-      ).value;
-      const registrationThirdName = (
-        await registration.getRegistrationDataByName(
-          CustomDataAttributes.thirdName,
-        )
-      ).value;
-      const registrationPhoneNumber = (
-        await registration.getRegistrationDataByName(
-          CustomDataAttributes.phoneNumber,
-        )
-      ).value;
-      const registrationWhatsappPhoneNumber = (
-        await registration.getRegistrationDataByName(
-          CustomDataAttributes.whatsappPhoneNumber,
-        )
-      ).value;
-      return (
-        (name &&
-          (registrationName === name ||
-            registrationNameFirst === name ||
-            registrationNameLast === name ||
-            registrationFirstName === name ||
-            registrationSecondName === name ||
-            registrationThirdName === name)) ||
-        (phoneNumber &&
-          (registrationPhoneNumber === phoneNumber ||
-            registrationWhatsappPhoneNumber === phoneNumber ||
-            registration.phoneNumber === phoneNumber)) ||
-        registration.id === id
+      const phoneNumber = await this.lookupService.lookupAndCorrect(
+        rawPhoneNumber,
       );
-    });
+
+      const matchingRegistrationData = await this.registrationDataRepository.find(
+        {
+          where: { value: phoneNumber },
+          relations: ['registration'],
+        },
+      );
+      for (const d of matchingRegistrationData) {
+        const dataName = await d.getDataName();
+        if (customAttributesPhoneNumberNames.includes(dataName)) {
+          const registration = await this.getRegistrationFromReferenceId(
+            d.registration.referenceId,
+          );
+          registrations.push(registration);
+        }
+      }
+    }
+    if (name) {
+      const customAttributesNameNames = [
+        CustomDataAttributes.nameFirst as string,
+        CustomDataAttributes.nameLast as string,
+        CustomDataAttributes.firstName as string,
+        CustomDataAttributes.secondName as string,
+        CustomDataAttributes.thirdName as string,
+      ];
+
+      const matchingRegistrationData = await this.registrationDataRepository.find(
+        {
+          where: { value: name },
+          relations: ['registration'],
+        },
+      );
+      for (const d of matchingRegistrationData) {
+        const dataName = await d.getDataName();
+        if (customAttributesNameNames.includes(dataName)) {
+          const registration = await this.getRegistrationFromReferenceId(
+            d.registration.referenceId,
+          );
+          registrations.push(registration);
+        }
+      }
+    }
+    return registrations;
+  }
+
+  // AW: get answers to attributes for a given PA (identified first through referenceId/QR)
+  public async getRegistrationToValidate(
+    referenceId: string,
+  ): Promise<RegistrationEntity> {
+    const registration = await this.getRegistrationFromReferenceId(
+      referenceId,
+      [
+        'program',
+        'program.programQuestions',
+        'data',
+        'data.programQuestion',
+        'data.fspQuestion',
+      ],
+    );
+    const programAnswers = [];
+    for (const d of registration.data) {
+      if (d.programQuestionId) {
+        d['name'] = await d.getDataName();
+        programAnswers.push(d);
+      }
+    }
+    registration['data'] = null;
+    registration['programAnswers'] = programAnswers;
+    return registration;
   }
 
   public async updateChosenFsp(
@@ -1110,7 +1127,7 @@ export class RegistrationsService {
     // Get registration by referenceId
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
-      relations: ['fsp', 'fsp.attributes'],
+      relations: ['fsp', 'fsp.questions'],
     });
     if (registration.fsp?.id === newFsp.id) {
       const errors = `New FSP is the same as existing FSP for this Person Affected.`;
@@ -1246,7 +1263,7 @@ export class RegistrationsService {
 
     const fspDataPerRegistration = [];
     for (const registration of registrations) {
-      const answers = await this.getFspAnswers(registration);
+      const answers = await this.getFspAnswers(registration.referenceId);
       const fspData = {
         attributes: registration.fsp.questions,
         answers: answers,
@@ -1257,24 +1274,30 @@ export class RegistrationsService {
     return fspDataPerRegistration;
   }
 
-  public async getFspAnswers(
-    registration: RegistrationEntity,
-  ): Promise<AnswerSet> {
-    const fspAttributeNames = [];
-    for (const attribute of registration.fsp.questions) {
-      fspAttributeNames.push(attribute.name);
-    }
-    const fspCustomData = {};
-    for (const key in registration.data) {
-      console.log('key: ', key);
-      if (fspAttributeNames.includes(key)) {
-        fspCustomData[key] = {
-          name: key,
-          value: (await registration.getRegistrationDataByName(key)).value,
+  public async getFspAnswers(referenceId: string): Promise<AnswerSet> {
+    const registration = await this.getRegistrationFromReferenceId(
+      referenceId,
+      [
+        'program',
+        'program.programQuestions',
+        'data',
+        'data.programQuestion',
+        'data.fspQuestion',
+      ],
+    );
+    const fspAnswers = {};
+    for (const d of registration.data) {
+      if (d.fspQuestionId) {
+        const code = await d.getDataName();
+        const answer = {
+          code: code,
+          value: d.value,
+          lavel: d.fspQuestion.label['en'],
         };
+        fspAnswers[code] = answer;
       }
     }
-    return fspCustomData;
+    return fspAnswers;
   }
 
   public async getQrRegistrationMapping(
@@ -1295,26 +1318,18 @@ export class RegistrationsService {
       .getMany();
   }
 
-  // AW: get answers to attributes for a given PA (identified first through referenceId/QR)
-  public async get(referenceId: string): Promise<RegistrationEntity> {
-    return await this.registrationRepository.findOne({
-      where: { referenceId: referenceId },
-      relations: ['program', 'programAnswers', 'program.programQuestions'],
-    });
-  }
-
   public async getFspAnswersAttributes(
     referenceId: string,
   ): Promise<FspAnswersAttrInterface> {
     const qb = await getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .leftJoinAndSelect('registration.fsp', 'fsp')
-      .leftJoinAndSelect('fsp.attributes', ' fsp_attribute.fsp')
+      .leftJoinAndSelect('fsp.questions', ' fsp_attribute.fsp')
       .where('registration.referenceId = :referenceId', {
         referenceId: referenceId,
       });
     const registration = await qb.getOne();
-    const fspAnswers = await this.getFspAnswers(registration);
+    const fspAnswers = await this.getFspAnswers(registration.referenceId);
     return {
       attributes: registration.fsp.questions,
       answers: fspAnswers,
@@ -1329,6 +1344,19 @@ export class RegistrationsService {
       payload.referenceId,
       RegistrationStatusEnum.validated,
     );
+    await this.removeNonPersistentProgramAnswers(payload.referenceId);
+  }
+
+  private async removeNonPersistentProgramAnswers(referenceId): Promise<void> {
+    const registration = await this.getRegistrationFromReferenceId(
+      referenceId,
+      ['data', 'data.programQuestion'],
+    );
+    for (const data of registration.data) {
+      if (data.programQuestion && data.programQuestion.persistence === false) {
+        this.registrationDataRepository.remove(data);
+      }
+    }
   }
 
   public async findReferenceIdWithQrIdentifier(

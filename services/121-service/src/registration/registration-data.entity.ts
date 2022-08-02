@@ -1,7 +1,14 @@
 import { FspQuestionEntity } from './../fsp/fsp-question.entity';
 import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
 import { RegistrationEntity } from './registration.entity';
-import { Entity, Column, JoinColumn, ManyToOne, AfterLoad } from 'typeorm';
+import {
+  Entity,
+  Column,
+  JoinColumn,
+  ManyToOne,
+  AfterLoad,
+  getConnection,
+} from 'typeorm';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { Base121Entity } from '../base.entity';
 import { MonitoringQuestionEntity } from '../instance/monitoring-question.entity';
@@ -56,13 +63,27 @@ export class RegistrationDataEntity extends Base121Entity {
   @Column()
   public value: string;
 
-  // public name: string;
-  // @AfterLoad()
-  // public setName(): void {
-  //   if (this.programQuestion) {
-  //     this.name = this.programQuestion.name;
-  //   } else if (this.fspQuestion) {
-  //     this.name = this.fspQuestion.name;
-  //   } else if
-  // }
+  public async getDataName(): Promise<string> {
+    const repo = getConnection().getRepository(RegistrationDataEntity);
+    const dataWithRelations = await repo.findOne(this.id, {
+      relations: [
+        'programQuestion',
+        'fspQuestion',
+        'programCustomAttribute',
+        'monitoringQuestion',
+      ],
+    });
+    if (dataWithRelations.programQuestion) {
+      return dataWithRelations.programQuestion.name;
+    }
+    if (dataWithRelations.fspQuestion) {
+      return dataWithRelations.fspQuestion.name;
+    }
+    if (dataWithRelations.programCustomAttribute) {
+      return dataWithRelations.programCustomAttribute.name;
+    }
+    if (dataWithRelations.monitoringQuestion) {
+      return dataWithRelations.monitoringQuestion.name;
+    }
+  }
 }
