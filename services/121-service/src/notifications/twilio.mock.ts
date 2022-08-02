@@ -16,11 +16,12 @@ class PhoneNumbers {
     this.phoneNumber = phoneNumber;
   }
   public async fetch(_: any): Promise<any> {
-    const twillioLookup = require('twilio')(
-      process.env.TWILIO_SID,
-      process.env.TWILIO_AUTHTOKEN,
-    );
-    return twillioLookup.lookups.phoneNumbers(this.phoneNumber).fetch();
+    // const twillioLookup = require('twilio')(
+    //   process.env.TWILIO_SID,
+    //   process.env.TWILIO_AUTHTOKEN,
+    // );
+    return { phoneNumber: this.phoneNumber };
+    // return twillioLookup.lookups.phoneNumbers(this.phoneNumber).fetch();
   }
 }
 
