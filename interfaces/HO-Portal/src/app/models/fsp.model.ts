@@ -18,6 +18,8 @@ export enum AnswerType {
   Enum = 'dropdown',
   phoneNumber = 'tel',
   email = 'email',
+  boolean = 'boolean',
+  string = 'string',
 }
 export class FspAttribute {
   id: number;
