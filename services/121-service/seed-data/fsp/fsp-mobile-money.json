@@ -13,11 +13,7 @@
       "placeholder": {
         "en": "+000 000 00 00"
       },
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "tel",
       "options": null,
       "shortLabel": {

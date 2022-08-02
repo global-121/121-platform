@@ -86,11 +86,7 @@
         "selected-for-validation",
         "payment"
       ],
-      "phases": [
-        "registrationValidation",
-        "inclusion",
-        "payment"
-      ]
+      "phases": ["registrationValidation", "inclusion", "payment"]
     }
   ],
   "programQuestions": [
@@ -106,11 +102,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": false,
@@ -130,11 +122,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": false,
@@ -157,16 +145,10 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "pattern": "^\\d{10}$",
-      "phases": [
-        "payment"
-      ],
+      "phases": ["payment"],
       "editableInPortal": false,
       "shortLabel": {
         "en": "V-Number"
