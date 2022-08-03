@@ -1246,6 +1246,7 @@ export class RegistrationsService {
       for (const a of r.data) {
         a['referenceId'] = r.referenceId;
         a['programId'] = r.program.id;
+        a['name'] = await a.getDataName();
       }
       answers = [...answers, ...r.data];
     }
