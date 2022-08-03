@@ -16,7 +16,11 @@ class PhoneNumbers {
     this.phoneNumber = phoneNumber;
   }
   public async fetch(_: any): Promise<any> {
-    return { phoneNumber: this.phoneNumber };
+    if (!this.phoneNumber) {
+      this.phoneNumber = '+31600000000';
+    }
+
+    return { phoneNumber: this.phoneNumber, nationalFormat: this.phoneNumber };
   }
 }
 
