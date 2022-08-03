@@ -25,6 +25,6 @@ export class GetTransactionOutputDto {
   public readonly referenceId: string;
   public readonly status: StatusEnum;
   public readonly amount: number;
-  public readonly error: string;
+  public readonly errorMessage: string;
   public readonly customData: object;
 }
