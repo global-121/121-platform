@@ -935,11 +935,9 @@ export class RegistrationsService {
       );
     }
     try {
-      let whatsappNumber = (
-        await registration.getRegistrationDataByName(
-          CustomDataAttributes.whatsappPhoneNumber,
-        )
-      ).value;
+      let whatsappNumber = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.whatsappPhoneNumber,
+      );
 
       const messageText = message
         ? message
