@@ -272,6 +272,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private canViewVouchers: boolean;
   private canDoSinglePayment: boolean;
   private routerSubscription: Subscription;
+  private pubSubSubscription: Subscription;
 
   public isStatusFilterPopoverOpen = false;
 
@@ -298,10 +299,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     private translatableStringService: TranslatableStringService,
   ) {
     this.locale = environment.defaultLocale;
-    this.routerSubscription = this.router.events.subscribe((event) => {
+    this.routerSubscription = this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
         if (event.url.includes(this.thisPhase)) {
-          this.refreshData();
+          this.initComponent();
         }
       }
     });
@@ -484,21 +485,84 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
+    if (this.pubSubSubscription) {
+      this.pubSubSubscription.unsubscribe();
+    }
   }
 
-  async ngOnInit() {
+  async ngOnInit() {}
+
+  async initComponent() {
     this.isLoading = true;
 
-    this.program = await this.programsService.getProgramById(this.programId);
     this.paTableAttributes = await this.programsService.getPaTableAttributes(
       this.programId,
       this.thisPhase,
     );
-    this.activePhase = this.program.phase;
 
     this.paymentInProgress =
-      await this.pastPaymentsService.checkPaymentInProgress(this.program.id);
+      await this.pastPaymentsService.checkPaymentInProgress(this.programId);
 
+    await this.refreshData();
+
+    this.activePhase = this.program.phase;
+
+    await this.loadColumns();
+
+    if (this.canViewPaymentData) {
+      this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
+        this.programId,
+      );
+      const firstPaymentToShow = 1;
+
+      if (this.thisPhase === ProgramPhase.payment) {
+        this.pastTransactions = await this.programsService.getTransactions(
+          this.programId,
+          firstPaymentToShow,
+        );
+        this.paymentHistoryColumn = this.createPaymentHistoryColumn();
+      }
+    }
+
+    await this.updateBulkActions();
+
+    this.submitPaymentProps = {
+      programId: this.programId,
+      payment: null,
+      referenceIds: [],
+    };
+
+    // Timeout to make sure the datatable elements are rendered/generated:
+    window.setTimeout(() => {
+      this.setupProxyScrollbar();
+    }, 0);
+
+    // Listen for external signals to refresh data shown in table:
+    if (!this.pubSubSubscription) {
+      this.pubSubSubscription = this.pubSub.subscribe(
+        PubSubEvent.dataRegistrationChanged,
+        () => {
+          if (this.router.url.includes(this.thisPhase)) {
+            this.refreshData();
+          }
+        },
+      );
+    }
+  }
+
+  private async refreshData() {
+    this.isLoading = true;
+    await this.loadProgram();
+    await this.loadPermissions();
+    await this.loadData();
+    this.updateProxyScrollbarSize();
+    this.isLoading = false;
+  }
+
+  private async loadProgram() {
+    this.program = await this.programsService.getProgramById(this.programId);
+  }
+  private async loadPermissions() {
     this.canUpdatePaData = this.authService.hasAllPermissions([
       Permission.RegistrationAttributeUPDATE,
     ]);
@@ -524,43 +588,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       Permission.PaymentREAD,
       Permission.PaymentTransactionREAD,
     ]);
-
-    await this.loadColumns();
-
-    if (this.canViewPaymentData) {
-      this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
-        this.programId,
-      );
-      const firstPaymentToShow = 1;
-
-      if (this.thisPhase === ProgramPhase.payment) {
-        this.pastTransactions = await this.programsService.getTransactions(
-          this.programId,
-          firstPaymentToShow,
-        );
-        this.paymentHistoryColumn = this.createPaymentHistoryColumn();
-      }
-    }
-
-    await this.refreshData();
-
-    await this.updateBulkActions();
-
-    this.submitPaymentProps = {
-      programId: this.programId,
-      payment: null,
-      referenceIds: [],
-    };
-
-    // Timeout to make sure the datatable elements are rendered/generated:
-    window.setTimeout(() => {
-      this.setupProxyScrollbar();
-    }, 0);
-
-    // Listen for external signals to refresh data shown in table:
-    this.pubSub.subscribe(PubSubEvent.dataRegistrationChanged, () => {
-      this.refreshData();
-    });
   }
 
   private setupProxyScrollbar() {
@@ -1285,13 +1312,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       numeric: true,
       sensitivity: 'base',
     });
-  }
-
-  public async refreshData() {
-    this.isLoading = true;
-    await this.loadData();
-    this.updateProxyScrollbarSize();
-    this.isLoading = false;
   }
 
   public onCheckboxChange(row: PersonRow, column: any, value: string) {
