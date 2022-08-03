@@ -50,7 +50,7 @@
     "@microsoft/applicationinsights-web": "^2.7.0",
     "@ngx-translate/core": "^12.1.2",
     "@ngx-translate/http-loader": "^5.0.0",
-    "@popperjs/core": "~2.4.4",
+    "@popperjs/core": "~2.11.5",
     "@swimlane/ngx-charts": "^17.0.1",
     "@swimlane/ngx-datatable": "^19.0.0",
     "core-js": "2.6.8",
