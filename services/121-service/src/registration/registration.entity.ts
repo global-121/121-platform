@@ -151,6 +151,15 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   // })
   public customData: any;
 
+  public async getRegistrationDataValueByName(name: string): Promise<string> {
+    const result = await this.getRegistrationDataByName(name);
+    if (!result || !result.value) {
+      return null;
+    } else {
+      return result.value;
+    }
+  }
+
   public async getRegistrationDataByName(
     name: string,
   ): Promise<RegistrationDataEntity> {
