@@ -157,7 +157,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
           );
           paymentRowValue.waiting = true;
         } else {
-          paymentRowValue.errorMessage = transaction.error;
+          paymentRowValue.errorMessage = transaction.errorMessage;
         }
       }
       if (

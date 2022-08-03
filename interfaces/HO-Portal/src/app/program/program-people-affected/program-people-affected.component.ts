@@ -900,7 +900,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private fillPaymentHistoryColumn(personRow: PersonRow): PersonRow {
-    let lastPayment = null;
+    let lastPayment: Transaction = null;
 
     for (
       let paymentIndex = this.lastPaymentId;
@@ -955,7 +955,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           'page.program.program-people-affected.transaction.waiting',
         );
       } else {
-        paymentColumnValue.errorMessage = lastPayment.error;
+        paymentColumnValue.errorMessage = lastPayment.errorMessage;
         paymentColumnValue.text = this.translate.instant(
           'page.program.program-people-affected.transaction.failed',
         );

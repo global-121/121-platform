@@ -134,7 +134,12 @@ export class PaymentStatusPopupComponent implements OnInit {
       customKey,
       customValue,
     );
-    if (transaction && transaction.status === StatusEnum.success) {
+
+    if (!transaction) {
+      return null;
+    }
+
+    if (transaction.status === StatusEnum.success) {
       return formatDate(transaction.paymentDate, this.dateFormat, this.locale);
     }
   }
