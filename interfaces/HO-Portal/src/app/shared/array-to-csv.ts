@@ -17,6 +17,6 @@ export function arrayToCsv(array: any[], filename: string): string {
     new Blob([new Uint8Array([0xef, 0xbb, 0xbf]), rows.join('\r\n')], {
       type: 'text/csv;charset=utf-8',
     }),
-    `${filename}-${new Date().toISOString().substr(0, 10)}.csv`,
+    `${filename}-${new Date().toISOString().substring(0, 10)}.csv`,
   );
 }
