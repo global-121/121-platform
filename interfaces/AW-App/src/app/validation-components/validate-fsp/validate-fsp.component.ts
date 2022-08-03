@@ -109,7 +109,7 @@ export class ValidateFspComponent implements ValidationComponent {
       IonicStorageTypes.validationFspData,
     );
     if (!offlineData || !offlineData.length) {
-      return offlineData;
+      return null;
     }
     for (const fspPaData of offlineData) {
       if (fspPaData.referenceId === referenceId) {
