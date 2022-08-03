@@ -370,7 +370,7 @@ export class RegistrationsService {
         phoneNumber: phoneNumber,
         registrationStatus: In(importStatuses),
       },
-      relations: ['fsp'],
+      relations: ['fsp', 'data'],
     });
   }
 
