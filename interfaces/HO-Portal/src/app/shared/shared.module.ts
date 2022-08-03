@@ -10,6 +10,8 @@ import { NgxPopperjsModule } from 'ngx-popperjs';
 import { HeaderComponent } from '../components/header/header.component';
 import { ProgramNavigationComponent } from '../components/program-navigation/program-navigation.component';
 import { SystemNotificationComponent } from '../components/system-notification/system-notification.component';
+import { TableFilterPopoverComponent } from '../components/table-filter/table-filter-popover/table-filter-popover.component';
+import { TableFilterComponent } from '../components/table-filter/table-filter.component';
 import { UpdateFspComponent } from '../components/update-fsp/update-fsp.component';
 import { UpdatePropertyItemComponent } from '../components/update-property-item/update-property-item.component';
 import { UserStateComponent } from '../components/user-state/user-state.component';
@@ -54,6 +56,8 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     UpdateFspComponent,
     UpdatePropertyItemComponent,
     UserStateComponent,
+    TableFilterComponent,
+    TableFilterPopoverComponent,
   ],
   imports: [
     CommonModule,
@@ -92,6 +96,8 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     UpdateFspComponent,
     UpdatePropertyItemComponent,
     UserStateComponent,
+    TableFilterComponent,
+    TableFilterPopoverComponent,
   ],
 })
 export class SharedModule {}

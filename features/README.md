@@ -38,7 +38,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Include people affected](HO-Portal/Include_people_affected.feature)
 - [Reject or End Inclusion of people affected](HO-Portal/Reject_or_End_inclusion_people_affected.feature)
 - [Export inclusion list](HO-Portal/Export_Inclusion_List.feature)
-- [Export duplicate phone-numbers list](HO-Portal/Export_duplicate_phone-numbers_List.feature)
+- [Export duplicate People Affected list](HO-Portal/Export_duplicate_people-affected_List.feature)
 - [Make a new payment](HO-Portal/Make_new_payment.feature)
 - [Export payment details](HO-Portal/Export_Payment_Details.feature)
 - Export all unused vouchers

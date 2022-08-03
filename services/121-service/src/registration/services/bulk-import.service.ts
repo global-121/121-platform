@@ -84,6 +84,7 @@ export class BulkImportService {
     for await (const record of validatedImportRecords) {
       const importResponseRecord = record as BulkImportResult;
       const throwNoException = true;
+
       const phoneNumberResult = await this.lookupService.lookupAndCorrect(
         record.phoneNumber,
         throwNoException,

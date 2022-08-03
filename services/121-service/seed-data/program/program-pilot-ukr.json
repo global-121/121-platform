@@ -344,7 +344,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "duplicateCheck": true
     },
     {
       "name": "taxNumberAdult2",
@@ -358,7 +359,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "duplicateCheck": true
     },
     {
       "name": "taxNumberAdult3",
@@ -372,7 +374,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "duplicateCheck": true
     },
     {
       "name": "taxNumberAdult4",
@@ -386,7 +389,8 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "duplicateCheck": true
     },
     {
       "name": "commentsFromEnumerator",

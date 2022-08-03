@@ -168,7 +168,7 @@
   </section>
 
   <section
-    *ngIf="canViewPersonalData && messageHistory"
+    *ngIf="canViewMessageHistory"
     class="ion-padding-top"
   >
     <h4 class="text-bold">
@@ -179,6 +179,9 @@
     </h4>
 
     <ion-list>
+      <ion-item *ngIf="!messageHistory || messageHistory?.length === 0">
+        -
+      </ion-item>
       <ion-item
         *ngFor="
           let message of messageHistory | slice: 0:historySize;
@@ -215,8 +218,8 @@
       </ion-item>
     </ion-list>
     <ion-button
-      *ngIf="messageHistory.length > historySize"
-      (click)="loadMore(messageHistory.length)"
+      *ngIf="messageHistory?.length > historySize"
+      (click)="loadMore(messageHistory?.length)"
     >
       {{ 'common.show-more' | translate }}
     </ion-button>

@@ -58,7 +58,7 @@ Feature: Import people affected
     and the row with status "Imported" is also still shown, because without the phone-number the system cannot know yet they belong together
     When the Person Affected finishes registrations with using the known "phoneNumber"
     Then the two rows are merged into one row with status "Registered"
-    And the "partner organization" is visible
+    And the "programCustomAttributes" (such as "partner organization") are visible
     And the "imported date" is visible
     And the "created digital ID" date is visible
     And the "completed vulnerability assessment" date is visible
@@ -111,7 +111,7 @@ Feature: Import registrations
     And the PA-table in the HO-portal shows "X" new rows of PAs
     And they have status "Registered"
     And all other columns are filled as if a real registration was done
-    And - if configured for the program - the "paymentAmountMultiplier" is calculated based on formula 
+    And - if configured for the program - the "paymentAmountMultiplier" is calculated based on formula
     And no SMS is sent to the PA unlike a real registration
     And in the AW-app the validation data for these PAs can be downloaded
 
