@@ -224,6 +224,7 @@ export class BulkImportService {
 
     let countImported = 0;
     let registrations: RegistrationEntity[] = [];
+    const customDataList = [];
 
     const dynamicAttributes = await this.getDynamicAttributes(program.id);
     for await (const record of validatedImportRecords) {
@@ -232,19 +233,16 @@ export class BulkImportService {
       registration.phoneNumber = record.phoneNumber;
       registration.preferredLanguage = record.preferredLanguage;
       registration.program = program;
-      registration.customData = {};
+      const customData = {};
       if (!program.paymentAmountMultiplierFormula) {
         registration.paymentAmountMultiplier = record.paymentAmountMultiplier;
       }
 
       for await (const att of dynamicAttributes) {
         if (att.type === CustomAttributeType.boolean) {
-          registration.customData[att.name] = this.stringToBoolean(
-            record[att.name],
-            false,
-          );
+          customData[att.name] = this.stringToBoolean(record[att.name], false);
         } else {
-          registration.customData[att.name] = record[att.name];
+          customData[att.name] = record[att.name];
         }
       }
 
@@ -253,6 +251,7 @@ export class BulkImportService {
       });
       registration.fsp = fsp;
       registrations.push(registration);
+      customDataList.push(customData);
     }
     const savedRegistrations = await this.registrationRepository.save(
       registrations,
@@ -263,11 +262,12 @@ export class BulkImportService {
     );
     await this.registrationRepository.save(savedRegistrations);
 
-    for await (let registration of savedRegistrations) {
+    for await (let [i, registration] of savedRegistrations.entries()) {
       registration.registrationStatus = RegistrationStatusEnum.registered;
       await this.storeProgramAnswersImportRegistrations(
         registration,
         program.id,
+        customDataList[i],
       );
       await this.inclusionScoreService.calculateInclusionScore(
         registration.referenceId,
@@ -286,17 +286,18 @@ export class BulkImportService {
   private async storeProgramAnswersImportRegistrations(
     registration: RegistrationEntity,
     programId: number,
+    customData: object,
   ): Promise<void> {
     const dynamicAttributes = await this.getDynamicAttributes(programId);
     let programAnswers: RegistrationDataEntity[] = [];
     for await (let att of dynamicAttributes) {
       if (att.type === CustomAttributeType.boolean) {
         await registration.saveData(
-          this.stringToBoolean(registration.customData[att.name], false),
+          this.stringToBoolean(customData[att.name], false),
           { name: att.name },
         );
       } else {
-        await registration.saveData(registration.customData[att.name], {
+        await registration.saveData(customData[att.name], {
           name: att.name,
         });
       }
