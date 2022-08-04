@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { FspName } from '../../../fsp/financial-service-provider.entity';
 import { LookupService } from '../../../notifications/lookup/lookup.service';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
-import { RegistrationStatusEnum } from '../../../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
@@ -57,71 +56,146 @@ export class UkrPoshtaService {
     // These conditional statements are in here because we needed to change FSP questions during an in progress program.
     ukrPoshtaFspInstructions.Amount = transaction.amount;
     ukrPoshtaFspInstructions['Transfer costs'] = null;
-    // if (registration.customData[CustomDataAttributes.name]) {
-    //   ukrPoshtaFspInstructions['Last name'] =
-    //     registration.customData[CustomDataAttributes.name];
-    //   ukrPoshtaFspInstructions['First name'] = null;
-    //   ukrPoshtaFspInstructions['Middle name'] = null;
-    // } else {
-    //   ukrPoshtaFspInstructions['Last name'] =
-    //     registration.customData[CustomDataAttributes.lastName];
-    //   ukrPoshtaFspInstructions['First name'] =
-    //     registration.customData[CustomDataAttributes.firstName];
-    //   ukrPoshtaFspInstructions['Middle name'] =
-    //     registration.customData[CustomDataAttributes.fathersName];
-    // }
-    // ukrPoshtaFspInstructions['Country'] = 'Україна';
-    // if (registration.customData[CustomDataAttributes.address]) {
-    //   // PA of first iteration, only has 1 address field
-    //   ukrPoshtaFspInstructions['Postal index'] = null;
-    //   ukrPoshtaFspInstructions['Oblast'] =
-    //     registration.customData[CustomDataAttributes.oblast];
-    //   ukrPoshtaFspInstructions['Raion'] =
-    //     registration.customData[CustomDataAttributes.raion];
-    //   ukrPoshtaFspInstructions['City'] =
-    //     registration.customData[CustomDataAttributes.address];
-    //   ukrPoshtaFspInstructions['Street'] = null;
-    //   ukrPoshtaFspInstructions['House number'] = null;
-    //   ukrPoshtaFspInstructions['Apartment/Office'] = null;
-    // }
-    // if (registration.customData[CustomDataAttributes.addressNoPostalIndex]) {
-    //   // PA of second iteration, only has an address field (no postal index) & postal index field
-    //   ukrPoshtaFspInstructions['Postal index'] =
-    //     registration.customData[CustomDataAttributes.postalIndex];
-    //   ukrPoshtaFspInstructions['Oblast'] =
-    //     registration.customData[CustomDataAttributes.oblast];
-    //   ukrPoshtaFspInstructions['Raion'] =
-    //     registration.customData[CustomDataAttributes.raion];
-    //   ukrPoshtaFspInstructions['City'] =
-    //     registration.customData[CustomDataAttributes.addressNoPostalIndex];
-    //   ukrPoshtaFspInstructions['Street'] = null;
-    //   ukrPoshtaFspInstructions['House number'] = null;
-    //   ukrPoshtaFspInstructions['Apartment/Office'] = null;
-    // }
-    // if (registration.customData[CustomDataAttributes.city]) {
-    //   // PA of third iteration, has all address information in seperate fields
-    //   ukrPoshtaFspInstructions['Postal index'] =
-    //     registration.customData[CustomDataAttributes.postalIndex];
-    //   ukrPoshtaFspInstructions['Oblast'] =
-    //     registration.customData[CustomDataAttributes.oblast];
-    //   ukrPoshtaFspInstructions['Raion'] =
-    //     registration.customData[CustomDataAttributes.raion];
-    //   ukrPoshtaFspInstructions['City'] =
-    //     registration.customData[CustomDataAttributes.city];
-    //   ukrPoshtaFspInstructions['Street'] =
-    //     registration.customData[CustomDataAttributes.street];
-    //   ukrPoshtaFspInstructions['House number'] =
-    //     registration.customData[CustomDataAttributes.house];
-    //   ukrPoshtaFspInstructions['Apartment/Office'] =
-    //     registration.customData[CustomDataAttributes.apartmentOrOffice];
-    // }
-    // ukrPoshtaFspInstructions['Special notes'] = 'без повідомлення';
-    // ukrPoshtaFspInstructions['Email'] = null;
-    // ukrPoshtaFspInstructions['Telephone'] = this.formatPhoneNumber(
-    //   registration.customData[CustomDataAttributes.phoneNumber],
-    // );
-    // ukrPoshtaFspInstructions['Tax ID number'] =
-    //   registration.customData[CustomDataAttributes.taxId];
+    if (
+      await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.name,
+      )
+    ) {
+      ukrPoshtaFspInstructions[
+        'Last name'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.name,
+      );
+      ukrPoshtaFspInstructions['First name'] = null;
+      ukrPoshtaFspInstructions['Middle name'] = null;
+    } else {
+      ukrPoshtaFspInstructions[
+        'Last name'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.lastName,
+      );
+      ukrPoshtaFspInstructions[
+        'First name'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.firstName,
+      );
+      ukrPoshtaFspInstructions[
+        'Middle name'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.fathersName,
+      );
+    }
+    ukrPoshtaFspInstructions['Country'] = 'Україна';
+    if (
+      await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.address,
+      )
+    ) {
+      // PA of first iteration, only has 1 address field
+      ukrPoshtaFspInstructions['Postal index'] = null;
+      ukrPoshtaFspInstructions[
+        'Oblast'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.oblast,
+      );
+      ukrPoshtaFspInstructions[
+        'Raion'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.raion,
+      );
+      ukrPoshtaFspInstructions[
+        'City'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.address,
+      );
+      ukrPoshtaFspInstructions['Street'] = null;
+      ukrPoshtaFspInstructions['House number'] = null;
+      ukrPoshtaFspInstructions['Apartment/Office'] = null;
+    }
+    if (
+      await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.addressNoPostalIndex,
+      )
+    ) {
+      // PA of second iteration, only has an address field (no postal index) & postal index field
+      ukrPoshtaFspInstructions[
+        'Postal index'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.postalIndex,
+      );
+      ukrPoshtaFspInstructions[
+        'Oblast'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.oblast,
+      );
+      ukrPoshtaFspInstructions[
+        'Raion'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.raion,
+      );
+      ukrPoshtaFspInstructions[
+        'City'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.addressNoPostalIndex,
+      );
+      ukrPoshtaFspInstructions['Street'] = null;
+      ukrPoshtaFspInstructions['House number'] = null;
+      ukrPoshtaFspInstructions['Apartment/Office'] = null;
+    }
+    if (
+      await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.city,
+      )
+    ) {
+      // PA of third iteration, has all address information in seperate fields
+      ukrPoshtaFspInstructions[
+        'Postal index'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.postalIndex,
+      );
+      ukrPoshtaFspInstructions[
+        'Oblast'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.oblast,
+      );
+      ukrPoshtaFspInstructions[
+        'Raion'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.raion,
+      );
+      ukrPoshtaFspInstructions[
+        'City'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.city,
+      );
+      ukrPoshtaFspInstructions[
+        'Street'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.street,
+      );
+      ukrPoshtaFspInstructions[
+        'House number'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.house,
+      );
+      ukrPoshtaFspInstructions[
+        'Apartment/Office'
+      ] = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.apartmentOrOffice,
+      );
+    }
+    ukrPoshtaFspInstructions['Special notes'] = 'без повідомлення';
+    ukrPoshtaFspInstructions['Email'] = null;
+    ukrPoshtaFspInstructions['Telephone'] = this.formatPhoneNumber(
+      await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.phoneNumber,
+      ),
+    );
+    ukrPoshtaFspInstructions[
+      'Tax ID number'
+    ] = await registration.getRegistrationDataValueByName(
+      CustomDataAttributes.taxId,
+    );
 
     return ukrPoshtaFspInstructions;
   }
