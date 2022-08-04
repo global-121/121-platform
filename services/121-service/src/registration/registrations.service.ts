@@ -124,7 +124,7 @@ export class RegistrationsService {
     return await this.registrationRepository.save(registrationToUpdate);
   }
 
-  private async getRegistrationFromReferenceId(
+  public async getRegistrationFromReferenceId(
     referenceId: string,
     relations: string[] = [],
   ): Promise<RegistrationEntity> {
@@ -781,6 +781,26 @@ export class RegistrationsService {
     }
     registrationObject['name'] = fullnameConcat.join(' ');
     return registrationObject;
+  }
+
+  public async getFullName(regisration: RegistrationEntity): Promise<string> {
+    let fullName = '';
+    const fullnameConcat = [];
+    const program = await this.programRepository.findOne(regisration.programId);
+    if (program && program.fullnameNamingConvention) {
+      for (const nameColumn of JSON.parse(
+        JSON.stringify(program.fullnameNamingConvention),
+      )) {
+        const singleName = await regisration.getRegistrationDataValueByName(
+          nameColumn,
+        );
+        if (singleName) {
+          fullnameConcat.push(singleName);
+        }
+      }
+      fullName = fullnameConcat.join(' ');
+    }
+    return fullName;
   }
 
   public getDateColumPerStatus(

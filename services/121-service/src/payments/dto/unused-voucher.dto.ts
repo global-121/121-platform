@@ -3,6 +3,6 @@ export class UnusedVoucherDto {
   public issueDate: Date;
   public whatsappPhoneNumber: string;
   public phoneNumber: string;
-  public customData?: any;
+  public referenceId?: string;
   public name?: string;
 }

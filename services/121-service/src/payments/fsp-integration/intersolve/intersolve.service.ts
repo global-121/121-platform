@@ -523,15 +523,13 @@ export class IntersolveService {
 
       for await (const voucher of previouslyUnusedVouchers) {
         const balance = await this.getBalance(voucher);
-
         if (balance === voucher.amount) {
           let unusedVoucher = new UnusedVoucherDto();
           unusedVoucher.payment = voucher.payment;
           unusedVoucher.issueDate = voucher.created;
           unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
           unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
-          unusedVoucher.customData = voucher.image[0].registration.data;
-
+          unusedVoucher.referenceId = voucher.image[0].registration.referenceId;
           unusedVouchers.push(unusedVoucher);
         } else {
           voucher.balanceUsed = true;

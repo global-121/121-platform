@@ -284,10 +284,13 @@ export class ExportMetricsService {
 
   private async getUnusedVouchers(): Promise<FileDto> {
     const unusedVouchers = await this.paymentsService.getUnusedVouchers();
-    unusedVouchers.forEach(v => {
-      v.name = this.registrationsService.getName(v.customData);
-      delete v.customData;
-    });
+    for (const v of unusedVouchers) {
+      const registration = await this.registrationsService.getRegistrationFromReferenceId(
+        v.referenceId,
+      );
+      v.name = await this.registrationsService.getFullName(registration);
+      delete v.referenceId;
+    }
 
     const response = {
       fileName: ExportType.unusedVouchers,
