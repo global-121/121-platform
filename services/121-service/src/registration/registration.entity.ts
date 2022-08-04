@@ -12,6 +12,7 @@ import {
   OneToMany,
   BeforeRemove,
   getConnection,
+  Brackets,
 } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
@@ -170,10 +171,14 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         'programCustomAttribute',
       )
       .where('registration.id = :id', { id: this.id })
-      .andWhere(`programQuestion.name = :name`, { name: name })
-      .orWhere(`fspQuestion.name = :name`, { name: name })
-      .orWhere(`monitoringQuestion.name = :name`, { name: name })
-      .orWhere(`programCustomAttribute.name = :name`, { name: name })
+      .andWhere(
+        new Brackets(qb => {
+          qb.where(`programQuestion.name = :name`, { name: name })
+            .orWhere(`fspQuestion.name = :name`, { name: name })
+            .orWhere(`monitoringQuestion.name = :name`, { name: name })
+            .orWhere(`programCustomAttribute.name = :name`, { name: name });
+        }),
+      )
       .select(
         `CASE
           WHEN ("programQuestion"."name" is not NULL) THEN "programQuestion"."name"
