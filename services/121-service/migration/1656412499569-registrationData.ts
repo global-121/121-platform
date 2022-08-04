@@ -54,15 +54,15 @@ export class registrationData1656412499569 implements MigrationInterface {
     await this.migrateData(queryRunner.connection);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" DROP COLUMN "customData"`,
-    // );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" DROP COLUMN "customData"`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" ADD "customData" json NOT NULL DEFAULT '{}'`,
-    // );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" ADD "customData" json NOT NULL DEFAULT '{}'`,
+    );
     await queryRunner.query(
       `ALTER TABLE "121-service"."instance" DROP CONSTRAINT "FK_08faaae1dc458def2084456b201"`,
     );
