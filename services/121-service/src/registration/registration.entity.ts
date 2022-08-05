@@ -1,3 +1,4 @@
+import { RegistrationDataByNameDto } from './dto/registration-data-by-name.dto';
 import { InstanceEntity } from './../instance/instance.entity';
 import { ProgramQuestionEntity } from './../programs/program-question.entity';
 import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsapp-pending-message.entity';
@@ -158,9 +159,9 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   public async getRegistrationDataByName(
     name: string,
-  ): Promise<RegistrationDataEntity> {
+  ): Promise<RegistrationDataByNameDto> {
     const repo = getConnection().getRepository(RegistrationDataEntity);
-    const result = await repo
+    const q = repo
       .createQueryBuilder('registrationData')
       .leftJoin('registrationData.registration', 'registration')
       .leftJoin('registrationData.programQuestion', 'programQuestion')
@@ -186,9 +187,11 @@ export class RegistrationEntity extends CascadeDeleteEntity {
           WHEN ("monitoringQuestion"."name" is not NULL) THEN "monitoringQuestion"."name"
           WHEN ("programCustomAttribute"."name" is not NULL) THEN "programCustomAttribute"."name"
         END as name,
-        value`,
-      )
-      .getRawOne();
+        value, "registrationData".id`,
+      );
+    const sql = q.getSql();
+    console.log('sql: ', sql);
+    const result = q.getRawOne();
     return result;
   }
 

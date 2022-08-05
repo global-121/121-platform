@@ -1170,7 +1170,7 @@ export class RegistrationsService {
       const regData = await registration.getRegistrationDataByName(
         attribute.name,
       );
-      this.registrationDataRepository.delete(regData);
+      await this.registrationDataRepository.delete({ id: regData.id });
     }
 
     // Update FSP
