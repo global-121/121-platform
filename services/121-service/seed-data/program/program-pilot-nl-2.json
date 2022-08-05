@@ -181,5 +181,5 @@
       "editableInPortal": false
     }
   ],
-  "fullnameNameConvention": ["nameFirst", "nameLast"]
+  "fullnameNamingConvention": ["nameFirst", "nameLast"]
 }
