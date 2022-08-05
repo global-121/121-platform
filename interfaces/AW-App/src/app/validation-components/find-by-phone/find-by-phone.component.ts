@@ -131,10 +131,7 @@ export class FindByPhoneComponent implements ValidationComponent {
     }
     const matchingReferenceIds = [];
     for (const element of validationData) {
-      if (
-        element.name === 'phoneNumber' &&
-        phoneNumber === element.value
-      ) {
+      if (element.name === 'phoneNumber' && phoneNumber === element.value) {
         matchingReferenceIds.push(element.referenceId);
       }
     }
