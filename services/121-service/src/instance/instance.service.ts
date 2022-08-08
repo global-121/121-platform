@@ -15,9 +15,6 @@ export class InstanceService {
     const instance = await this.instanceRepository.findOne({
       relations: ['monitoringQuestion'],
     });
-    if (instance.monitoringQuestion) {
-      instance['monitoringQuestion'] = instance.monitoringQuestion;
-    }
     return instance;
   }
 

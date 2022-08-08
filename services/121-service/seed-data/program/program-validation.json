@@ -72,9 +72,9 @@
       "scoring": {}
     },
     {
-      "name": "testAnswer",
+      "name": "nameMiddle",
       "label": {
-        "en": "Please enter your non-persistant middle name:"
+        "en": "Please enter your middle name:"
       },
       "answerType": "text",
       "questionType": "standard",

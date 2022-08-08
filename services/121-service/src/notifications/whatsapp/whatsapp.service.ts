@@ -254,8 +254,8 @@ export class WhatsappService {
         'registration.whatsappPendingMessages',
         'whatsappPendingMessages',
       )
-      .where('registration_data.value = :phoneNumber', {
-        phoneNumber: phoneNumber,
+      .where('registration_data.value = :whatsappPhoneNumber', {
+        whatsappPhoneNumber: phoneNumber,
       })
       .orderBy('whatsappPendingMessages.created', 'ASC')
       .getMany();
