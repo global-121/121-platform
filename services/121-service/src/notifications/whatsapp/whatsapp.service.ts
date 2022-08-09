@@ -254,8 +254,12 @@ export class WhatsappService {
         'registration.whatsappPendingMessages',
         'whatsappPendingMessages',
       )
+      .leftJoin('registration_data.fspQuestion', 'fspQuestion')
       .where('registration_data.value = :whatsappPhoneNumber', {
         whatsappPhoneNumber: phoneNumber,
+      })
+      .andWhere('fspQuestion.name = :name', {
+        name: 'whatsappPhoneNumber',
       })
       .orderBy('whatsappPendingMessages.created', 'ASC')
       .getMany();

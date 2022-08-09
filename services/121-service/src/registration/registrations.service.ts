@@ -786,7 +786,9 @@ export class RegistrationsService {
   public async getFullName(registration: RegistrationEntity): Promise<string> {
     let fullName = '';
     const fullnameConcat = [];
-    const program = await this.programRepository.findOne(registration.programId);
+    const program = await this.programRepository.findOne(
+      registration.programId,
+    );
     if (program && program.fullnameNamingConvention) {
       for (const nameColumn of JSON.parse(
         JSON.stringify(program.fullnameNamingConvention),
