@@ -1,9 +1,8 @@
 import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
 import fs from 'fs';
 import { ProgramQuestionEntity } from '../src/programs/program-question.entity';
-import { ProgramCustomAttributeEntity } from '../src/programs/program-custom-attribute.entity';
 import { ProgramEntity } from '../src/programs/program.entity';
-import { FspAttributeEntity } from '../src/fsp/fsp-attribute.entity';
+import { FspQuestionEntity } from '../src/fsp/fsp-question.entity';
 
 export class addShortLabel1658218507582 implements MigrationInterface {
   name = 'addShortLabel1658218507582';
@@ -79,7 +78,7 @@ export class addShortLabel1658218507582 implements MigrationInterface {
           await programQuestionsRepo.save(q);
         }
 
-        const fspAttributeRepo = connection.getRepository(FspAttributeEntity);
+        const fspAttributeRepo = connection.getRepository(FspQuestionEntity);
 
         const fspAttributes = await fspAttributeRepo
           .createQueryBuilder('fspAttribute')
