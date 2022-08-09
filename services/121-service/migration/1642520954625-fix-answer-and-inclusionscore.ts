@@ -1,6 +1,6 @@
 import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
 import { ProgramQuestionEntity } from '../src/programs/program-question.entity';
-import { ProgramAnswerEntity } from '../src/registration/program-answer.entity';
+// import { ProgramAnswerEntity } from '../src/registration/program-answer.entity';
 import { RegistrationEntity } from '../src/registration/registration.entity';
 
 export class fixAnswerAndInclusionscore1642520954625
@@ -24,31 +24,35 @@ export class fixAnswerAndInclusionscore1642520954625
     const programQuestionRepository = connection.getRepository(
       ProgramQuestionEntity,
     );
-    const programAnswerRepository = connection.getRepository(
-      ProgramAnswerEntity,
-    );
 
-    const registrations = await registrationRepository.find();
-    for (const registration of registrations) {
-      const customDataObject = Object.assign(registration.customData);
+    // COMMENTED OUT THIS PART
+    // Because we removed answer entity, the 121-service will not compile with this part
+    // And we will nexver need this part of the migration again
 
-      for await (const key of Object.keys(customDataObject)) {
-        const programQuestion = await programQuestionRepository.findOne({
-          where: { name: key },
-        });
-        if (programQuestion) {
-          const oldAnswer = await programAnswerRepository.findOne({
-            where: {
-              registration: { id: registration.id },
-              programQuestion: { id: programQuestion.id },
-            },
-          });
-          if (oldAnswer) {
-            oldAnswer.programAnswer = customDataObject[key];
-            await programAnswerRepository.save(oldAnswer);
-          }
-        }
-      }
-    }
+    // const programAnswerRepository = connection.getRepository(
+    //   ProgramAnswerEntity,
+    // );
+    // const registrations = await registrationRepository.find();
+    // for (const registration of registrations) {
+    //   const customDataObject = Object.assign(registration.customData);
+
+    //   for await (const key of Object.keys(customDataObject)) {
+    //     const programQuestion = await programQuestionRepository.findOne({
+    //       where: { name: key },
+    //     });
+    //     if (programQuestion) {
+    //       const oldAnswer = await programAnswerRepository.findOne({
+    //         where: {
+    //           registration: { id: registration.id },
+    //           programQuestion: { id: programQuestion.id },
+    //         },
+    //       });
+    //       if (oldAnswer) {
+    //         oldAnswer.programAnswer = customDataObject[key];
+    //         await programAnswerRepository.save(oldAnswer);
+    //       }
+    //     }
+    //   }
+    // }
   }
 }

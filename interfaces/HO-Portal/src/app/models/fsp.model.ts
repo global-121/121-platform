@@ -6,7 +6,7 @@ export class Fsp {
   fsp: string;
   fspDisplayName: TranslatableString | string;
   integrationType: FspIntegrationType;
-  attributes?: FspAttribute[];
+  questions?: FspQuestion[];
   editableAttributes?: Attribute[];
 }
 
@@ -21,7 +21,7 @@ export enum AnswerType {
   boolean = 'boolean',
   string = 'string',
 }
-export class FspAttribute {
+export class FspQuestion {
   id: number;
   name: string;
   answerType: AnswerType;

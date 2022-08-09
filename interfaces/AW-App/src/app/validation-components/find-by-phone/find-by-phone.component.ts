@@ -122,7 +122,7 @@ export class FindByPhoneComponent implements ValidationComponent {
         if (registrationElement.answers.phoneNumber) {
           const appendItem = {
             referenceId: registrationElement.referenceId,
-            programAnswer: registrationElement.answers.phoneNumber.value,
+            value: registrationElement.answers.phoneNumber.value,
             name: 'phoneNumber',
           };
           validationData.push(appendItem);
@@ -131,10 +131,7 @@ export class FindByPhoneComponent implements ValidationComponent {
     }
     const matchingReferenceIds = [];
     for (const element of validationData) {
-      if (
-        element.name === 'phoneNumber' &&
-        phoneNumber === element.programAnswer
-      ) {
+      if (element.name === 'phoneNumber' && phoneNumber === element.value) {
         matchingReferenceIds.push(element.referenceId);
       }
     }
@@ -166,7 +163,7 @@ export class FindByPhoneComponent implements ValidationComponent {
         (o) =>
           o.referenceId === referenceId &&
           Object.values(CustomDataNameAttributes).includes(o.name),
-      ).programAnswer;
+      ).name;
       paToValidateOption.referenceId = referenceId;
       paToValidateOption.phoneNumber = phoneNumber;
       paToValidateOptions.push(paToValidateOption);

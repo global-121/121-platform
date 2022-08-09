@@ -16,11 +16,11 @@ class PhoneNumbers {
     this.phoneNumber = phoneNumber;
   }
   public async fetch(_: any): Promise<any> {
-    const twillioLookup = require('twilio')(
-      process.env.TWILIO_SID,
-      process.env.TWILIO_AUTHTOKEN,
-    );
-    return twillioLookup.lookups.phoneNumbers(this.phoneNumber).fetch();
+    if (!this.phoneNumber) {
+      this.phoneNumber = '+31600000000';
+    }
+
+    return { phoneNumber: this.phoneNumber, nationalFormat: this.phoneNumber };
   }
 }
 

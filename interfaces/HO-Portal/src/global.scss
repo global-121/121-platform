@@ -49,27 +49,16 @@ ion-button {
 }
 
 .input-item {
-  // display: flex;
-  // flex-direction: column;
   background-color: white;
 
   &.divider-bottom {
     border-bottom: 1px solid var(--ion-color-light);
   }
 
-  .input-item--contents {
-    // display: flex;
-    // flex-direction: row;
-    // justify-content: space-between;
-    // align-items: center;
-    // flex: 1 1 auto;
-  }
-
   ion-input {
     border: 1px solid #b3bcd0;
     border-radius: 5px;
     margin-top: 8px;
-    // margin-bottom: 8px;
 
     input {
       --padding-start: 8px;
@@ -181,11 +170,39 @@ ion-icon {
 .ml-auto {
   margin-left: auto;
 }
+.select-popover {
+  .popover-content {
+    --width: fit-content;
+    --max-width: 100%;
 
-.popover-content {
-  --width: fit-content;
+    ion-label {
+      padding-right: 8px;
+    }
+  }
+}
 
-  ion-label {
-    padding-right: 8px;
+.table-filter-popover {
+  --backdrop-opacity: 0%;
+
+  &.table-filter-popover--multiple-choice {
+    .popover-content {
+      --width: inherit;
+      --min-width: 260px;
+      --max-width: 400px;
+
+      .table-filter-popover--multiple-choice--list {
+        width: 100%;
+        max-height: 360px;
+        overflow-y: scroll;
+        .table-filter-popover--multiple-choice--item {
+          width: 100%;
+          --inner-padding-top: 0;
+          --inner-padding-bottom: 0;
+        }
+      }
+    }
+    .table-filter-popover--multiple-choice--note {
+      border-top: 1px solid var(--ion-color-light);
+    }
   }
 }

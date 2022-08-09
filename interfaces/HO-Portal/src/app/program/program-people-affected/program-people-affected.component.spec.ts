@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
@@ -14,6 +14,12 @@ const modalSpy = jasmine.createSpyObj('Modal', ['present']);
 const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
 modalCtrlSpy.create.and.callFake(() => {
   return modalSpy;
+});
+
+const popoverSpy = jasmine.createSpyObj('Popover', ['present']);
+const popoverCtrlSpy = jasmine.createSpyObj('PopoverController', ['create']);
+popoverCtrlSpy.create.and.callFake(() => {
+  return popoverSpy;
 });
 
 describe('ProgramPeopleAffectedComponent', () => {
@@ -33,6 +39,10 @@ describe('ProgramPeopleAffectedComponent', () => {
         {
           provide: ModalController,
           useValue: modalCtrlSpy,
+        },
+        {
+          provide: PopoverController,
+          useValue: popoverCtrlSpy,
         },
       ],
     }).compileComponents();

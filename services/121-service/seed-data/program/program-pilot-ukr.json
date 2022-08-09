@@ -406,5 +406,6 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     }
-  ]
+  ],
+  "fullnameNamingConvention": ["lastName", "firstName", "fathersName"]
 }

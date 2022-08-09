@@ -4,7 +4,7 @@
   "fspDisplayName": {
     "en": "FSP - all attributes"
   },
-  "attributes": [
+  "questions": [
     {
       "name": "phoneNumber",
       "label": {

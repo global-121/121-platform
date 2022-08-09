@@ -558,8 +558,8 @@ export class ProgramsServiceApiService {
   async getDuplicateCheckAttributes(programId: number): Promise<string[]> {
     const program = await this.getProgramById(programId);
     const fspAttributes = program.financialServiceProviders
-      .filter((fsp) => !!fsp.attributes)
-      .map((fsp) => fsp.attributes)
+      .filter((fsp) => !!fsp.questions)
+      .map((fsp) => fsp.questions)
       .flat();
 
     const attributeNames: string[] = []

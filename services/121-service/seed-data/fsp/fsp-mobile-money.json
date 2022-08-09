@@ -4,7 +4,7 @@
   "fspDisplayName": {
     "en": "Mobile Money Provider B"
   },
-  "attributes": [
+  "questions": [
     {
       "name": "phoneNumber",
       "label": {

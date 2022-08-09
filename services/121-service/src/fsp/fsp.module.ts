@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
-import { FspAttributeEntity } from './fsp-attribute.entity';
+import { FspQuestionEntity } from './fsp-question.entity';
 import { FspController } from './fsp.controller';
 import { FspService } from './fsp.service';
 
@@ -13,7 +13,7 @@ import { FspService } from './fsp.service';
     UserModule,
     TypeOrmModule.forFeature([
       FinancialServiceProviderEntity,
-      FspAttributeEntity,
+      FspQuestionEntity,
       UserEntity,
     ]),
   ],

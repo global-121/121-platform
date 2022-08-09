@@ -4,7 +4,7 @@
     "en": "BoB Finance"
   },
   "integrationType": "csv",
-  "attributes": [
+  "questions": [
     {
       "name": "phoneNumber",
       "label": {

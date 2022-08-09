@@ -12,7 +12,6 @@ import {
   Get,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiUseTags,
   ApiOperation,
   ApiResponse,
@@ -106,7 +105,7 @@ export class RegistrationsController {
   public async addCustomData(
     @Body() customData: CustomDataDto,
   ): Promise<RegistrationEntity> {
-    return await this.registrationsService.addCustomData(
+    return await this.registrationsService.addRegistrationData(
       customData.referenceId,
       customData.key,
       customData.value,
@@ -399,7 +398,6 @@ export class RegistrationsController {
     return await this.registrationsService.searchRegistration(
       searchRegistrationDto.phoneNumber,
       searchRegistrationDto.name,
-      searchRegistrationDto.id,
     );
   }
 
@@ -448,7 +446,9 @@ export class RegistrationsController {
   })
   @Get('get/:referenceId')
   public async getRegistration(@Param() params): Promise<RegistrationEntity> {
-    return await this.registrationsService.get(params.referenceId);
+    return await this.registrationsService.getRegistrationToValidate(
+      params.referenceId,
+    );
   }
 
   @Permissions(PermissionEnum.RegistrationFspREAD)

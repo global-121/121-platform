@@ -5,7 +5,7 @@
     "en": "HelloCash",
     "am_ET": "HelloCash"
   },
-  "attributes": [
+  "questions": [
     {
       "name": "phoneNumber",
       "label": {

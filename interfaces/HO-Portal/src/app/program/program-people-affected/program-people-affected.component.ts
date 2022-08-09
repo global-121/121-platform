@@ -10,7 +10,12 @@ import {
   ViewChild,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { AlertController, ModalController, Platform } from '@ionic/angular';
+import {
+  AlertController,
+  ModalController,
+  Platform,
+  PopoverController,
+} from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -20,6 +25,7 @@ import { AnswerType } from 'src/app/models/fsp.model';
 import { PaymentColumnDetail } from 'src/app/models/payment.model';
 import {
   PaStatus,
+  PA_STATUS_ORDER,
   Person,
   PersonRow,
   PersonTableColumn,
@@ -30,6 +36,10 @@ import {
   ProgramPhase,
 } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
+import {
+  TableFilterMultipleChoiceOption,
+  TableFilterType,
+} from 'src/app/models/table-filter.model';
 import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
 import { TranslatableString } from 'src/app/models/translatable-string.model';
@@ -95,8 +105,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private initialVisiblePeopleAffected: PersonRow[] = [];
   public visiblePeopleAffected: PersonRow[] = [];
   public filterRowsVisibleQuery: string;
-  public showAllStatusState = false;
-  private filterVal: string;
 
   public headerChecked = false;
   public headerSelectAllVisible = false;
@@ -265,6 +273,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   public applyBtnDisabled = true;
   public submitWarning: any;
 
+  public tableFilterType = TableFilterType;
+
   public canViewPersonalData: boolean;
   private canViewMessageHistory: boolean;
   private canUpdatePaData: boolean;
@@ -273,6 +283,17 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private canViewVouchers: boolean;
   private canDoSinglePayment: boolean;
   private routerSubscription: Subscription;
+  private pubSubSubscription: Subscription;
+
+  public isStatusFilterPopoverOpen = false;
+
+  private tableFilter = {
+    text: '',
+    paStatus: {
+      default: [],
+      selected: [],
+    },
+  };
 
   constructor(
     private authService: AuthService,
@@ -282,16 +303,17 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     private pastPaymentsService: PastPaymentsService,
     private alertController: AlertController,
     public modalController: ModalController,
+    public popoverController: PopoverController,
     public platform: Platform,
     private pubSub: PubSubService,
     private router: Router,
     private translatableStringService: TranslatableStringService,
   ) {
     this.locale = environment.defaultLocale;
-    this.routerSubscription = this.router.events.subscribe((event) => {
+    this.routerSubscription = this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
         if (event.url.includes(this.thisPhase)) {
-          this.refreshData();
+          this.initComponent();
         }
       }
     });
@@ -488,21 +510,84 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
+    if (this.pubSubSubscription) {
+      this.pubSubSubscription.unsubscribe();
+    }
   }
 
-  async ngOnInit() {
+  async ngOnInit() {}
+
+  async initComponent() {
     this.isLoading = true;
 
-    this.program = await this.programsService.getProgramById(this.programId);
     this.paTableAttributes = await this.programsService.getPaTableAttributes(
       this.programId,
       this.thisPhase,
     );
-    this.activePhase = this.program.phase;
 
     this.paymentInProgress =
-      await this.pastPaymentsService.checkPaymentInProgress(this.program.id);
+      await this.pastPaymentsService.checkPaymentInProgress(this.programId);
 
+    await this.refreshData();
+
+    this.activePhase = this.program.phase;
+
+    await this.loadColumns();
+
+    if (this.canViewPaymentData) {
+      this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
+        this.programId,
+      );
+      const firstPaymentToShow = 1;
+
+      if (this.thisPhase === ProgramPhase.payment) {
+        this.pastTransactions = await this.programsService.getTransactions(
+          this.programId,
+          firstPaymentToShow,
+        );
+        this.paymentHistoryColumn = this.createPaymentHistoryColumn();
+      }
+    }
+
+    await this.updateBulkActions();
+
+    this.submitPaymentProps = {
+      programId: this.programId,
+      payment: null,
+      referenceIds: [],
+    };
+
+    // Timeout to make sure the datatable elements are rendered/generated:
+    window.setTimeout(() => {
+      this.setupProxyScrollbar();
+    }, 0);
+
+    // Listen for external signals to refresh data shown in table:
+    if (!this.pubSubSubscription) {
+      this.pubSubSubscription = this.pubSub.subscribe(
+        PubSubEvent.dataRegistrationChanged,
+        () => {
+          if (this.router.url.includes(this.thisPhase)) {
+            this.refreshData();
+          }
+        },
+      );
+    }
+  }
+
+  private async refreshData() {
+    this.isLoading = true;
+    await this.loadProgram();
+    await this.loadPermissions();
+    await this.loadData();
+    this.updateProxyScrollbarSize();
+    this.isLoading = false;
+  }
+
+  private async loadProgram() {
+    this.program = await this.programsService.getProgramById(this.programId);
+  }
+  private async loadPermissions() {
     this.canUpdatePaData = this.authService.hasAllPermissions([
       Permission.RegistrationAttributeUPDATE,
     ]);
@@ -528,43 +613,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       Permission.PaymentREAD,
       Permission.PaymentTransactionREAD,
     ]);
-
-    await this.loadColumns();
-
-    if (this.canViewPaymentData) {
-      this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
-        this.programId,
-      );
-      const firstPaymentToShow = 1;
-
-      if (this.thisPhase === ProgramPhase.payment) {
-        this.pastTransactions = await this.programsService.getTransactions(
-          this.programId,
-          firstPaymentToShow,
-        );
-        this.paymentHistoryColumn = this.createPaymentHistoryColumn();
-      }
-    }
-
-    await this.refreshData();
-
-    await this.updateBulkActions();
-
-    this.submitPaymentProps = {
-      programId: this.programId,
-      payment: null,
-      referenceIds: [],
-    };
-
-    // Timeout to make sure the datatable elements are rendered/generated:
-    window.setTimeout(() => {
-      this.setupProxyScrollbar();
-    }, 0);
-
-    // Listen for external signals to refresh data shown in table:
-    this.pubSub.subscribe(PubSubEvent.dataRegistrationChanged, () => {
-      this.refreshData();
-    });
   }
 
   private setupProxyScrollbar() {
@@ -758,10 +806,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private filterPeopleAffectedByPhase() {
-    let paStatusesToShow: PaStatus[];
     switch (this.thisPhase) {
       case ProgramPhase.registrationValidation:
-        paStatusesToShow = [
+        this.tableFilter.paStatus.selected = [
           PaStatus.imported,
           PaStatus.invited,
           PaStatus.startedRegistration,
@@ -772,7 +819,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ];
         break;
       case ProgramPhase.inclusion:
-        paStatusesToShow = [
+        this.tableFilter.paStatus.selected = [
           PaStatus.validated,
           PaStatus.registered,
           PaStatus.selectedForValidation,
@@ -781,12 +828,14 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ];
         break;
       case ProgramPhase.payment:
-        paStatusesToShow = [PaStatus.included];
+        this.tableFilter.paStatus.selected = [PaStatus.included];
         break;
     }
 
+    this.tableFilter.paStatus.default = [...this.tableFilter.paStatus.selected];
+
     this.phaseSpecificPeopleAffected = this.allPeopleAffected.filter((pa) =>
-      paStatusesToShow.includes(pa.status),
+      this.tableFilter.paStatus.default.includes(pa.status),
     );
     this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
     this.visiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
@@ -1123,7 +1172,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.headerChecked = false;
     this.selectedPeople = [];
     this.resetFilterRowsVisible();
-    this.showAllStatusState = false;
   }
 
   private toggleHeaderCheckbox() {
@@ -1280,41 +1328,13 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.filterRowsVisibleQuery = '';
   }
 
-  public filterRowsVisible(value: string) {
-    this.filterVal = value;
-    const filterVal = value?.toLowerCase().trim();
-    const rowsVisible = this.initialVisiblePeopleAffected.filter(
-      (row: PersonRow) => {
-        // Loop over all columns
-        for (const key of Object.keys(row)) {
-          try {
-            const columnValue = row[key].toLowerCase();
-            const includeRow =
-              columnValue.indexOf(filterVal) !== -1 || // check literal values
-              columnValue.replace(/\s/g, '').indexOf(filterVal) !== -1 || // check also with spaces removed
-              !filterVal;
-            if (includeRow) {
-              return includeRow;
-            }
-          } catch {
-            // Do not filter on unfilterable column types
-          }
-        }
-      },
-    );
-
-    this.visiblePeopleAffected = rowsVisible;
-    this.updateProxyScrollbarSize();
+  private setTextFieldFilter(value: string) {
+    this.tableFilter.text = value;
   }
 
-  public toggleShowAllStatusState() {
-    if (this.showAllStatusState) {
-      this.initialVisiblePeopleAffected = [...this.allPeopleAffected];
-    } else {
-      this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
-    }
-    this.visiblePeopleAffected = [...this.initialVisiblePeopleAffected];
-    this.filterRowsVisible(this.filterVal);
+  public applyTextFieldFilter(value: string) {
+    this.setTextFieldFilter(value?.toLowerCase().trim());
+    this.updateVisiblePeopleAffectedByFilter();
   }
 
   public paComparator(a: string, b: string) {
@@ -1323,13 +1343,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       numeric: true,
       sensitivity: 'base',
     });
-  }
-
-  public async refreshData() {
-    this.isLoading = true;
-    await this.loadData();
-    this.updateProxyScrollbarSize();
-    this.isLoading = false;
   }
 
   public onCheckboxChange(row: PersonRow, column: any, value: string) {
@@ -1369,5 +1382,69 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     );
     const attributeConstraints = Object.values(attributeError.constraints);
     return '<br><br>' + attributeConstraints.join('<br>');
+  }
+
+  public getPaStatusesFilterOptions(): TableFilterMultipleChoiceOption[] {
+    return PA_STATUS_ORDER.map(({ name }) => {
+      const option: TableFilterMultipleChoiceOption = {
+        name,
+        label: this.translate.instant(
+          'page.program.program-people-affected.status.' + name,
+        ),
+        count: this.getPaStatusCount(name),
+      };
+      return option;
+    }).filter((o) => o.count > 0);
+  }
+
+  private getPaStatusCount(paStatus): number {
+    return this.allPeopleAffected.filter((pa) => pa.status === paStatus).length;
+  }
+
+  private setPaStatusFilter(filter: PaStatus[]) {
+    if (this.tableFilter.paStatus.selected === filter) {
+      return;
+    }
+    this.tableFilter.paStatus.selected = filter;
+  }
+
+  private updateVisiblePeopleAffectedByFilter() {
+    const filteredPeopleAffected = this.allPeopleAffected.filter((pa) =>
+      this.tableFilter.paStatus.selected.includes(pa.status),
+    );
+    this.initialVisiblePeopleAffected = [...filteredPeopleAffected];
+
+    const rowsVisible = this.initialVisiblePeopleAffected.filter(
+      (row: PersonRow) => {
+        // Loop over all columns
+        for (const key of Object.keys(row)) {
+          try {
+            const columnValue = row[key].toLowerCase();
+            const includeRow =
+              columnValue.indexOf(this.tableFilter.text) !== -1 || // check literal values
+              columnValue.replace(/\s/g, '').indexOf(this.tableFilter.text) !==
+                -1 || // check also with spaces removed
+              !this.tableFilter.text;
+            if (includeRow) {
+              return includeRow;
+            }
+          } catch {
+            // Do not filter on unfilterable column types
+          }
+        }
+      },
+    );
+
+    this.visiblePeopleAffected = rowsVisible;
+    this.updateProxyScrollbarSize();
+  }
+
+  public applyPaStatusFilter($event: PaStatus[]) {
+    if (!$event) {
+      return;
+    }
+
+    this.setPaStatusFilter($event);
+    this.updateVisiblePeopleAffectedByFilter();
   }
 }

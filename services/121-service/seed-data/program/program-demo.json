@@ -23,6 +23,7 @@
   "distributionFrequency": "month",
   "distributionDuration": 8,
   "fixedTransferValue": 10,
+  "paymentAmountMultiplierFormula": "0 + 1 * dragon",
   "financialServiceProviders": [
     {
       "id": 1

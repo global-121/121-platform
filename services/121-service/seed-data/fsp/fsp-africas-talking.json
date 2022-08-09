@@ -6,7 +6,7 @@
     "tuv_KE": "M-PESA",
     "en": "M-Pesa"
   },
-  "attributes": [
+  "questions": [
     {
       "name": "phoneNumber",
       "label": {

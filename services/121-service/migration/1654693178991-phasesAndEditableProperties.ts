@@ -1,8 +1,8 @@
+import { FspQuestionEntity } from './../src/fsp/fsp-question.entity';
 import { ProgramQuestionEntity } from './../src/programs/program-question.entity';
 import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
 import { ProgramEntity } from '../src/programs/program.entity';
 import fs from 'fs';
-import { FspAttributeEntity } from '../src/fsp/fsp-attribute.entity';
 import { ProgramCustomAttributeEntity } from '../src/programs/program-custom-attribute.entity';
 
 export class PhasesAndEditableProperties1654693178991
@@ -11,7 +11,7 @@ export class PhasesAndEditableProperties1654693178991
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "121-service"."program_custom_attribute" DROP COLUMN "export"`,
+      `ALTER TABLE "121-service"."program_custom_attribute" DROP COLUMN if exists "export"`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_question" ADD "editableInPortal" boolean NOT NULL DEFAULT false`,
@@ -116,7 +116,7 @@ export class PhasesAndEditableProperties1654693178991
         }
       }
 
-      const fspAttributeRepo = connection.getRepository(FspAttributeEntity);
+      const fspAttributeRepo = connection.getRepository(FspQuestionEntity);
 
       const fspAttributes = await fspAttributeRepo
         .createQueryBuilder('fspAttribute')
