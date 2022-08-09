@@ -87,7 +87,7 @@ export class addShortLabel1658218507582 implements MigrationInterface {
           .getMany();
 
         for (const fspAttribute of fspAttributes) {
-          const jsonAttribute = fspIntersolve.attributes.find(
+          const jsonAttribute = fspIntersolve.questions.find(
             a => a.name === fspAttribute.name,
           );
           if (jsonAttribute) {
