@@ -189,8 +189,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         END as name,
         value, "registrationData".id`,
       );
-    const sql = q.getSql();
-    console.log('sql: ', sql);
     const result = q.getRawOne();
     return result;
   }
