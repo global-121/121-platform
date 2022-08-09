@@ -57,7 +57,10 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "shortLabel": {
+        "en": "First Name"
+      }
     },
     {
       "name": "nameLast",
@@ -69,7 +72,10 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "shortLabel": {
+        "en": "Last Name"
+      }
     },
     {
       "name": "nameMiddle",
@@ -96,7 +102,10 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "shortLabel": {
+        "en": "Phone Nr."
+      }
     }
   ]
 }

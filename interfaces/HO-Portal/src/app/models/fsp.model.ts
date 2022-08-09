@@ -18,12 +18,15 @@ export enum AnswerType {
   Enum = 'dropdown',
   phoneNumber = 'tel',
   email = 'email',
+  boolean = 'boolean',
+  string = 'string',
 }
 export class FspQuestion {
   id: number;
   name: string;
   answerType: AnswerType;
   label: TranslatableString;
+  shortLabel: TranslatableString;
   placeholder?: TranslatableString;
   options: FspAttributeOption[] | null;
   duplicateCheck: boolean;

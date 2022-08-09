@@ -14,7 +14,10 @@
         "en": "+000 000 00 00"
       },
       "answerType": "tel",
-      "options": null
+      "options": null,
+      "shortLabel": {
+        "en": "Phone Number"
+      }
     },
     {
       "name": "accountId",
@@ -22,7 +25,10 @@
         "en": "Your account number"
       },
       "answerType": "numeric",
-      "options": null
+      "options": null,
+      "shortLabel": {
+        "en": "Account Nr"
+      }
     },
     {
       "name": "date",
@@ -30,7 +36,10 @@
         "en": "Your date"
       },
       "answerType": "date",
-      "options": null
+      "options": null,
+      "shortLabel": {
+        "en": "Date"
+      }
     },
     {
       "name": "openAnswer",
@@ -38,7 +47,10 @@
         "en": "Your answer"
       },
       "answerType": "text",
-      "options": null
+      "options": null,
+      "shortLabel": {
+        "en": "Open Answer"
+      }
     },
     {
       "name": "fixedChoice",
@@ -59,7 +71,10 @@
             "en": "No"
           }
         }
-      ]
+      ],
+      "shortLabel": {
+        "en": "Choice"
+      }
     }
   ]
 }

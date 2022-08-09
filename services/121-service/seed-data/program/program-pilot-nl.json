@@ -105,7 +105,10 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "First Name"
+      }
     },
     {
       "name": "nameLast",
@@ -122,7 +125,10 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Last Name"
+      }
     },
     {
       "name": "vnumber",
@@ -143,7 +149,10 @@
       "scoring": {},
       "pattern": "^\\d{10}$",
       "phases": ["payment"],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "V-Number"
+      }
     },
     {
       "name": "phoneNumber",
@@ -165,7 +174,10 @@
       "scoring": {},
       "duplicateCheck": true,
       "phases": [],
-      "editableInPortal": false
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Phone Number"
+      }
     }
   ],
   "fullnameNamingConvention": ["nameFirst", "nameLast"]

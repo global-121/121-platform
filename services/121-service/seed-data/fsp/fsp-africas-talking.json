@@ -21,7 +21,10 @@
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "tel",
-      "options": null
+      "options": null,
+      "shortLabel": {
+        "en": "Phone Number"
+      }
     }
   ]
 }

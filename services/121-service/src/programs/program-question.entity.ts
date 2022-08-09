@@ -80,4 +80,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @Column({ default: false })
   public editableInPortal: boolean;
+
+  @Column('json', { nullable: true })
+  public shortLabel: JSON;
 }

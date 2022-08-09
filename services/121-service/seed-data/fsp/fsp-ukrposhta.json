@@ -25,7 +25,10 @@
           }
         }
       ],
-      "export": ["all-people-affected", "included", "selected-for-validation"]
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Oblast"
+      }
     },
     {
       "name": "raion",
@@ -61,7 +64,10 @@
           }
         }
       ],
-      "export": ["all-people-affected", "included", "selected-for-validation"]
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Raion"
+      }
     },
     {
       "name": "street",
@@ -71,7 +77,10 @@
         "ru": "Улица, где вы проживаете в данный момент"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included", "selected-for-validation"]
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Street"
+      }
     },
     {
       "name": "house",
@@ -81,7 +90,10 @@
         "ru": "Номер дома"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included", "selected-for-validation"]
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "House"
+      }
     },
     {
       "name": "apartmentOrOffice",
@@ -91,7 +103,10 @@
         "ru": "Номер квартиры"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included", "selected-for-validation"]
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Apt / Office"
+      }
     },
     {
       "name": "postalIndex",
@@ -102,7 +117,10 @@
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
-      "options": null
+      "options": null,
+      "shortLabel": {
+        "en": "Postal Index"
+      }
     },
     {
       "name": "city",
@@ -112,7 +130,10 @@
         "ru": "Населённый пункт, где вы сейчас проживаете"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included", "selected-for-validation"]
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "City"
+      }
     },
     {
       "name": "lastName",
@@ -123,7 +144,10 @@
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
-      "options": null
+      "options": null,
+      "shortLabel": {
+        "en": "Last Name"
+      }
     },
     {
       "name": "firstName",
@@ -134,7 +158,10 @@
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
-      "options": null
+      "options": null,
+      "shortLabel": {
+        "en": "First Name"
+      }
     },
     {
       "name": "fathersName",
@@ -145,7 +172,10 @@
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
-      "options": null
+      "options": null,
+      "shortLabel": {
+        "en": "Father's Name"
+      }
     },
     {
       "name": "taxId",
@@ -157,7 +187,10 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
       "options": null,
-      "duplicateCheck": true
+      "duplicateCheck": true,
+      "shortLabel": {
+        "en": "Tax ID"
+      }
     },
     {
       "name": "telephone",
@@ -168,7 +201,10 @@
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "tel",
-      "options": null
+      "options": null,
+      "shortLabel": {
+        "en": "Telephone"
+      }
     }
   ]
 }

@@ -21,6 +21,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
+import { AnswerType } from 'src/app/models/fsp.model';
 import { PaymentColumnDetail } from 'src/app/models/payment.model';
 import {
   PaStatus,
@@ -80,6 +81,16 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   public isLoading: boolean;
 
+  private columnWidthPerType = {
+    [AnswerType.Number]: 90,
+    [AnswerType.Date]: 142,
+    [AnswerType.phoneNumber]: 130,
+    [AnswerType.Text]: 150,
+    [AnswerType.Enum]: 160,
+    [AnswerType.email]: 180,
+    [AnswerType.boolean]: 90,
+    [AnswerType.string]: 150,
+  };
   public columnDefaults: any;
   public columns: PersonTableColumn[] = [];
   private standardColumns: PersonTableColumn[] = [];
@@ -328,11 +339,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       permissions: [Permission.RegistrationREAD],
       showIfNoValidation: true,
       headerClass: 'ion-text-wrap ion-align-self-end',
-      width: 100,
     };
-    const columnDateTimeWidth = 142;
-    const columnScoreWidth = 90;
-    const columnPhoneNumberWidth = 130;
 
     this.standardColumns = [
       {
@@ -343,6 +350,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ...this.columnDefaults,
         frozenLeft: this.platform.width() > 768,
         permissions: [Permission.RegistrationPersonalREAD],
+        minWidth: this.columnWidthPerType[AnswerType.Text],
+        width: this.columnWidthPerType[AnswerType.Text],
       },
       {
         prop: 'phoneNumber',
@@ -352,7 +361,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ...this.columnDefaults,
         frozenLeft: this.platform.width() > 1280,
         permissions: [Permission.RegistrationPersonalREAD],
-        minWidth: columnPhoneNumberWidth,
+        minWidth: this.columnWidthPerType[AnswerType.phoneNumber],
+        width: this.columnWidthPerType[AnswerType.phoneNumber],
       },
       {
         prop: 'preferredLanguage',
@@ -361,6 +371,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ),
         ...this.columnDefaults,
         permissions: [Permission.RegistrationPersonalREAD],
+        minWidth: this.columnWidthPerType[AnswerType.Text],
+        width: this.columnWidthPerType[AnswerType.Text],
       },
       {
         prop: 'statusLabel',
@@ -368,6 +380,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           'page.program.program-people-affected.column.status',
         ),
         ...this.columnDefaults,
+        minWidth: 135,
         width: 135,
         frozenLeft: this.platform.width() > 1280,
       },
@@ -378,7 +391,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation],
-        width: columnDateTimeWidth,
+        minWidth: this.columnWidthPerType[AnswerType.Date],
+        width: this.columnWidthPerType[AnswerType.Date],
       },
       {
         prop: 'invited',
@@ -387,7 +401,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation],
-        width: columnDateTimeWidth,
+        minWidth: this.columnWidthPerType[AnswerType.Date],
+        width: this.columnWidthPerType[AnswerType.Date],
       },
       {
         prop: 'markedNoLongerEligible',
@@ -396,7 +411,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation],
-        width: columnDateTimeWidth,
+        minWidth: this.columnWidthPerType[AnswerType.Date],
+        width: this.columnWidthPerType[AnswerType.Date],
       },
       {
         prop: 'digitalIdCreated',
@@ -405,7 +421,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation],
-        width: columnDateTimeWidth,
+        minWidth: this.columnWidthPerType[AnswerType.Date],
+        width: this.columnWidthPerType[AnswerType.Date],
       },
       {
         prop: 'vulnerabilityAssessmentCompleted',
@@ -414,7 +431,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
-        width: columnDateTimeWidth,
+        minWidth: this.columnWidthPerType[AnswerType.Date],
+        width: this.columnWidthPerType[AnswerType.Date],
       },
       {
         prop: 'selectedForValidation',
@@ -424,7 +442,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
         showIfNoValidation: false,
-        width: columnDateTimeWidth,
+        minWidth: this.columnWidthPerType[AnswerType.Date],
+        width: this.columnWidthPerType[AnswerType.Date],
       },
       {
         prop: 'vulnerabilityAssessmentValidated',
@@ -434,7 +453,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation],
         showIfNoValidation: false,
-        width: columnDateTimeWidth,
+        minWidth: this.columnWidthPerType[AnswerType.Date],
+        width: this.columnWidthPerType[AnswerType.Date],
       },
       {
         prop: 'included',
@@ -443,7 +463,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.inclusion, ProgramPhase.payment],
-        width: columnDateTimeWidth,
+        minWidth: this.columnWidthPerType[AnswerType.Date],
+        width: this.columnWidthPerType[AnswerType.Date],
       },
       {
         prop: 'rejected',
@@ -452,7 +473,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.inclusion, ProgramPhase.payment],
-        width: columnDateTimeWidth,
+        minWidth: this.columnWidthPerType[AnswerType.Date],
+        width: this.columnWidthPerType[AnswerType.Date],
       },
       {
         prop: 'inclusionEnded',
@@ -461,7 +483,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.inclusion, ProgramPhase.payment],
-        width: columnDateTimeWidth,
+        minWidth: this.columnWidthPerType[AnswerType.Date],
+        width: this.columnWidthPerType[AnswerType.Date],
       },
       {
         prop: 'paymentAmountMultiplier',
@@ -469,7 +492,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           'page.program.program-people-affected.column.paymentAmountMultiplier',
         ),
         ...this.columnDefaults,
-        width: columnScoreWidth,
+        minWidth: this.columnWidthPerType[AnswerType.Number],
+        width: this.columnWidthPerType[AnswerType.Number],
       },
       {
         prop: 'fsp',
@@ -477,6 +501,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           'page.program.program-people-affected.column.fsp',
         ),
         ...this.columnDefaults,
+        minWidth: 150,
         width: 150,
       },
     ];
@@ -672,12 +697,19 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     for (const colPerPhase of columnsPerPhase) {
       const addCol = {
         prop: colPerPhase.name,
-        name: this.createColumnNameLabel(colPerPhase.name, colPerPhase.label),
+        name: this.createColumnNameLabel(
+          colPerPhase.name,
+          colPerPhase.shortLabel,
+        ),
         ...this.columnDefaults,
         permissions: [Permission.RegistrationPersonalREAD],
         phases: colPerPhase.phases,
-        headerClass: 'ion-align-self-end header-overflow-ellipsis',
+        headerClass: `ion-align-self-end header-overflow-ellipsis`,
       };
+      if (!!this.columnWidthPerType[colPerPhase.type]) {
+        addCol.minWidth = this.columnWidthPerType[colPerPhase.type];
+        addCol.width = this.columnWidthPerType[colPerPhase.type];
+      }
       if (this.authService.hasAllPermissions(addCol.permissions)) {
         this.columns.push(addCol);
       }
@@ -693,17 +725,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   private createColumnNameLabel(
     columnName: string,
-    columnLabel?: TranslatableString,
+    columnShortlLabel?: TranslatableString,
   ): string {
-    const translationKey = `page.program.program-people-affected.column.${columnName}`;
-
-    // If no generic translaton is available, the output will be the same as the input
-    let name = this.translate.instant(translationKey);
-
-    if (name === translationKey && columnLabel) {
-      name = this.translatableStringService.get(columnLabel);
+    if (columnShortlLabel) {
+      return this.translatableStringService.get(columnShortlLabel);
     }
-    return name;
+
+    this.translate.instant(
+      `page.program.program-people-affected.column.${columnName}`,
+    );
   }
 
   private createPaymentHistoryColumn(): PersonTableColumn {
@@ -716,6 +746,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       phases: [ProgramPhase.payment],
       permissions: [Permission.RegistrationPersonalREAD],
       minWidth: 300,
+      width: 300,
     };
   }
 

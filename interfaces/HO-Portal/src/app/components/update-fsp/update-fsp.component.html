@@ -49,7 +49,7 @@
         >
           <app-update-property-item
             [type]="attribute.answerType"
-            [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.' + attribute.name + '.label' | translate "
+            [label]="attribute.shortLabel | translate "
             [explanation]="explanation | translate"
             [placeholder]="attribute.placeholder?.en"
             class="ion-margin-vertical"

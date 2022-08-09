@@ -32,7 +32,10 @@
       "answerType": "tel",
       "options": null,
       "duplicateCheck": true,
-      "phases": ["registrationValidation", "inclusion", "payment"]
+      "phases": ["registrationValidation", "inclusion", "payment"],
+      "shortLabel": {
+        "en": "WhatsApp Nr."
+      }
     }
   ]
 }
