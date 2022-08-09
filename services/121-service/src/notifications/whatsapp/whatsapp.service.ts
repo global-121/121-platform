@@ -259,7 +259,7 @@ export class WhatsappService {
         whatsappPhoneNumber: phoneNumber,
       })
       .andWhere('fspQuestion.name = :name', {
-        name: 'whatsappPhoneNumber',
+        name: CustomDataAttributes.whatsappPhoneNumber,
       })
       .orderBy('whatsappPendingMessages.created', 'ASC')
       .getMany();
