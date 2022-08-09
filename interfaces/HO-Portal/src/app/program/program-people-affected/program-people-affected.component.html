@@ -133,6 +133,7 @@
 >
   <ngx-datatable-column
     prop="selected"
+    [minWidth]="75"
     [width]="75"
     [frozenLeft]="true"
     headerClass="ion-align-self-end"
@@ -174,7 +175,8 @@
   <ngx-datatable-column
     prop="pa"
     [name]="'page.program.program-people-affected.column.person' | translate"
-    width="130"
+    [minWidth]="130"
+    [width]="130"
     frozenLeft="true"
     [comparator]="paComparator"
     [draggable]="columnDefaults.draggable"
