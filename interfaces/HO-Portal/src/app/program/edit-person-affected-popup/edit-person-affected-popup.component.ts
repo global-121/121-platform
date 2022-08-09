@@ -1,11 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  Fsp,
-  FspAttribute,
-  FspAttributeOption,
-} from 'src/app/models/fsp.model';
+import { Fsp, FspAttributeOption, FspQuestion } from 'src/app/models/fsp.model';
 import { Person } from 'src/app/models/person.model';
 import {
   Program,
@@ -188,10 +184,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   }
 
   private isFspAttribute(paTableAttribute: Attribute): boolean {
-    if (!this.personFsp || !this.personFsp.attributes) {
+    if (!this.personFsp || !this.personFsp.questions) {
       return false;
     }
-    return this.personFsp.attributes.some(
+    return this.personFsp.questions.some(
       (attr) => attr.name === paTableAttribute.name,
     );
   }
@@ -200,8 +196,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     paTableAttribute: Attribute,
   ): FspAttributeOption[] | ProgramQuestionOption[] {
     if (this.isFspAttribute(paTableAttribute)) {
-      return this.personFsp.attributes.find(
-        (attr: FspAttribute) => attr.name === paTableAttribute.name,
+      return this.personFsp.questions.find(
+        (attr: FspQuestion) => attr.name === paTableAttribute.name,
       ).options;
     }
 

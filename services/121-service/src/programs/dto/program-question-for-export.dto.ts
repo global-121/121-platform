@@ -5,4 +5,5 @@ export class ProgramQuestionForExport {
   public answerType: AnswerTypes;
   public options: any[];
   public export: string[];
+  public id: number;
 }

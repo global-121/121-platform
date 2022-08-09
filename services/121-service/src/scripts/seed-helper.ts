@@ -1,10 +1,11 @@
+import { MonitoringQuestionEntity } from './../instance/monitoring-question.entity';
 import { HttpException } from '@nestjs/common';
 import { Connection, In } from 'typeorm';
 
 import { ProgramEntity } from '../programs/program.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { UserEntity } from '../user/user.entity';
-import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { InstanceEntity } from '../instance/instance.entity';
 import crypto from 'crypto';
 import { UserRoleEntity } from '../user/user-role.entity';
@@ -84,10 +85,11 @@ export class SeedHelper {
     exampleInstance: Record<string, any>,
   ): Promise<void> {
     const instanceRepository = this.connection.getRepository(InstanceEntity);
-
     const instanceDump = JSON.stringify(exampleInstance);
     const instance = JSON.parse(instanceDump);
-
+    if (instance.monitoringQuestion) {
+      instance.monitoringQuestion.name = 'monitoringAnswer';
+    }
     await instanceRepository.save(instance);
   }
 
@@ -161,17 +163,17 @@ export class SeedHelper {
       FinancialServiceProviderEntity,
     );
 
-    const fspAttributesRepository = this.connection.getRepository(
-      FspAttributeEntity,
+    const fspQuestionRepository = this.connection.getRepository(
+      FspQuestionEntity,
     );
 
     // Remove original custom criteria and add it to a separate variable
-    const attributes = fsp.attributes;
-    fsp.attributes = [];
+    const questions = fsp.questions;
+    fsp.questions = [];
 
-    for (let attribute of attributes) {
-      let customReturn = await fspAttributesRepository.save(attribute);
-      fsp.attributes.push(customReturn);
+    for (let question of questions) {
+      let customReturn = await fspQuestionRepository.save(question);
+      fsp.questions.push(customReturn);
     }
 
     await fspRepository.save(fsp);

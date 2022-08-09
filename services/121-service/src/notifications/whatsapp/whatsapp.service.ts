@@ -235,10 +235,10 @@ export class WhatsappService {
     if (callbackData.MessageStatus === TwilioStatus.delivered) {
       // PA does have whatsapp
       // Store PA phone number as whatsappPhonenumber
-      tryWhatsapp.registration.customData[
-        CustomDataAttributes.whatsappPhoneNumber
-      ] = tryWhatsapp.registration.phoneNumber;
-      this.registrationRepository.save(tryWhatsapp.registration);
+      await tryWhatsapp.registration.saveData(
+        tryWhatsapp.registration.phoneNumber,
+        { name: CustomDataAttributes.whatsappPhoneNumber },
+      );
       this.tryWhatsappRepository.delete(tryWhatsapp);
     }
   }
@@ -249,15 +249,18 @@ export class WhatsappService {
     const registrationsWithPhoneNumber = await getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .select('registration.id')
-      .where('registration.customData ::jsonb @> :customData', {
-        customData: {
-          whatsappPhoneNumber: phoneNumber,
-        },
-      })
+      .leftJoin('registration.data', 'registration_data')
       .leftJoinAndSelect(
         'registration.whatsappPendingMessages',
         'whatsappPendingMessages',
       )
+      .leftJoin('registration_data.fspQuestion', 'fspQuestion')
+      .where('registration_data.value = :whatsappPhoneNumber', {
+        whatsappPhoneNumber: phoneNumber,
+      })
+      .andWhere('fspQuestion.name = :name', {
+        name: CustomDataAttributes.whatsappPhoneNumber,
+      })
       .orderBy('whatsappPendingMessages.created', 'ASC')
       .getMany();
 

@@ -1,8 +1,9 @@
-import { Entity, Column, ManyToOne, Index } from 'typeorm';
+import { Entity, Column, ManyToOne, Index, OneToMany } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { Base121Entity } from '../base.entity';
 import { CustomAttributeType } from './dto/create-program-custom-attribute.dto';
 import { ExportType } from '../export-metrics/dto/export-details';
+import { RegistrationDataEntity } from '../registration/registration-data.entity';
 
 @Entity('program_custom_attribute')
 export class ProgramCustomAttributeEntity extends Base121Entity {
@@ -24,4 +25,10 @@ export class ProgramCustomAttributeEntity extends Base121Entity {
     program => program.programCustomAttributes,
   )
   public program: ProgramEntity;
+
+  @OneToMany(
+    () => RegistrationDataEntity,
+    registrationData => registrationData.programQuestion,
+  )
+  public registrationData: RegistrationDataEntity[];
 }

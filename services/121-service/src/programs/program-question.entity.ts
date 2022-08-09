@@ -1,3 +1,4 @@
+import { RegistrationDataEntity } from './../registration/registration-data.entity';
 import { CascadeDeleteEntity } from './../base.entity';
 import {
   Entity,
@@ -9,7 +10,6 @@ import {
   BeforeRemove,
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
-import { ProgramAnswerEntity } from '../registration/program-answer.entity';
 import { Base121Entity } from '../base.entity';
 import { ExportType } from '../export-metrics/dto/export-details';
 
@@ -73,21 +73,11 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
   public phases: JSON;
 
   @OneToMany(
-    () => ProgramAnswerEntity,
-    programAnswer => programAnswer.programQuestion,
+    () => RegistrationDataEntity,
+    registrationData => registrationData.programQuestion,
   )
-  public programAnswers: ProgramAnswerEntity[];
+  public registrationData: RegistrationDataEntity[];
 
   @Column({ default: false })
   public editableInPortal: boolean;
-
-  @BeforeRemove()
-  public async cascadeDelete(): Promise<void> {
-    await this.deleteAllOneToMany([
-      {
-        entityClass: ProgramAnswerEntity,
-        columnName: 'programQuestion',
-      },
-    ]);
-  }
 }

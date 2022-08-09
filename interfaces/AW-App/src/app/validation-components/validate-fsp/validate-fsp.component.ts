@@ -76,8 +76,8 @@ export class ValidateFspComponent implements ValidationComponent {
   private getAnswersByCode(answers) {
     const codeAnswers = {};
     Object.values(answers).forEach((item: any): any => {
-      codeAnswers[item.name] = {
-        code: item.name,
+      codeAnswers[item.code] = {
+        code: item.code,
         value: item.value,
       };
     });
@@ -109,7 +109,7 @@ export class ValidateFspComponent implements ValidationComponent {
       IonicStorageTypes.validationFspData,
     );
     if (!offlineData || !offlineData.length) {
-      return offlineData;
+      return null;
     }
     for (const fspPaData of offlineData) {
       if (fspPaData.referenceId === referenceId) {

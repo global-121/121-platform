@@ -11,7 +11,7 @@
     "in": "Kirim voucher supermarket ke WhatsApp",
     "fr": "Envoyez-moi le bon de supermarché à mon numéro WhatsApp"
   },
-  "attributes": [
+  "questions": [
     {
       "name": "whatsappPhoneNumber",
       "label": {

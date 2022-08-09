@@ -14,7 +14,7 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { ActionEntity } from '../actions/action.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ActionModule } from '../actions/action.module';
-import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { LookupModule } from '../notifications/lookup/lookup.module';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 
@@ -26,7 +26,7 @@ import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity'
       FinancialServiceProviderEntity,
       ActionEntity,
       TransactionEntity,
-      FspAttributeEntity,
+      FspQuestionEntity,
       RegistrationEntity,
       ProgramQuestionEntity,
       ProgramCustomAttributeEntity,

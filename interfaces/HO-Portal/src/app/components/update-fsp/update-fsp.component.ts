@@ -107,7 +107,7 @@ export class UpdateFspComponent implements OnInit {
       );
 
       if (selectedFsp) {
-        this.selectedFspAttributes = selectedFsp.attributes;
+        this.selectedFspAttributes = selectedFsp.editableAttributes;
       }
 
       this.attributeDifference = this.startingAttributes.filter(

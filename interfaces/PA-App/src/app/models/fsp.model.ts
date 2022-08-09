@@ -5,19 +5,19 @@ export class Fsp {
   id: number;
   fsp: string;
   fspDisplayName: TranslatableString | string;
-  attributes?: FspAttribute[];
+  questions?: FspQuestion[];
 }
 
-export class FspAttribute {
+export class FspQuestion {
   id: number;
   name: string;
   answerType: AnswerType;
   label: TranslatableString;
   placeholder?: TranslatableString;
-  options: FspAttributeOption[] | null;
+  options: FspQuestionOption[] | null;
 }
 
-export class FspAttributeOption {
+export class FspQuestionOption {
   option: string;
   label: TranslatableString;
 }

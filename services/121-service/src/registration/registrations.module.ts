@@ -1,3 +1,4 @@
+import { RegistrationDataEntity } from './registration-data.entity';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module, HttpModule } from '@nestjs/common';
@@ -8,11 +9,10 @@ import { UserModule } from '../user/user.module';
 import { RegistrationsController } from './registrations.controller';
 import { RegistrationsService } from './registrations.service';
 import { RegistrationEntity } from './registration.entity';
-import { ProgramAnswerEntity } from './program-answer.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { LookupModule } from '../notifications/lookup/lookup.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { SmsModule } from '../notifications/sms/sms.module';
 import { InlusionScoreService } from './services/inclusion-score.service';
@@ -21,7 +21,6 @@ import { ActionModule } from '../actions/action.module';
 import { ProgramModule } from '../programs/programs.module';
 import { FspModule } from '../fsp/fsp.module';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { RegistrationAnswersService } from './services/registration-answers.service';
 import { WhatsappModule } from '../notifications/whatsapp/whatsapp.module';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 
@@ -32,10 +31,10 @@ import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribu
       UserEntity,
       ActionEntity,
       RegistrationEntity,
-      ProgramAnswerEntity,
+      RegistrationDataEntity,
       ProgramQuestionEntity,
       FinancialServiceProviderEntity,
-      FspAttributeEntity,
+      FspQuestionEntity,
       RegistrationStatusChangeEntity,
       TransactionEntity,
       ProgramCustomAttributeEntity,
@@ -50,12 +49,7 @@ import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribu
     FspModule,
     WhatsappModule,
   ],
-  providers: [
-    RegistrationsService,
-    BulkImportService,
-    InlusionScoreService,
-    RegistrationAnswersService,
-  ],
+  providers: [RegistrationsService, BulkImportService, InlusionScoreService],
   controllers: [RegistrationsController],
   exports: [RegistrationsService],
 })

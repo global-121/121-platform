@@ -11,7 +11,7 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { ActionEntity } from '../actions/action.entity';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
-import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { Attribute } from '../registration/enum/custom-data-attributes';
@@ -25,8 +25,8 @@ export class ProgramService {
   public programCustomAttributeRepository: Repository<
     ProgramCustomAttributeEntity
   >;
-  @InjectRepository(FspAttributeEntity)
-  public fspAttributeRepository: Repository<FspAttributeEntity>;
+  @InjectRepository(FspQuestionEntity)
+  public fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   public financialServiceProviderRepository: Repository<
     FinancialServiceProviderEntity
@@ -46,11 +46,15 @@ export class ProgramService {
         'aidworkerAssignments.user',
         'aidworkerAssignments.roles',
         'financialServiceProviders',
-        'financialServiceProviders.attributes',
+        'financialServiceProviders.questions',
         'programCustomAttributes',
       ],
     });
-    program.editableAttributes = await this.getPaEditableAttributes(program.id);
+    if (program) {
+      program.editableAttributes = await this.getPaEditableAttributes(
+        program.id,
+      );
+    }
     return program;
   }
 
@@ -329,7 +333,7 @@ export class ProgramService {
     });
     const fspIds = program.financialServiceProviders.map(f => f.id);
 
-    let queryFspAttributes = getRepository(FspAttributeEntity)
+    let queryFspAttributes = getRepository(FspQuestionEntity)
       .createQueryBuilder('fspAttribute')
       .where({ fsp: In(fspIds) });
 

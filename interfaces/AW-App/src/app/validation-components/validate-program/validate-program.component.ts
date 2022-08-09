@@ -163,7 +163,7 @@ export class ValidateProgramComponent implements ValidationComponent {
 
   public initialAnswers(paData: Registration) {
     for (const answerItem of paData.programAnswers) {
-      this.buildAnswer(answerItem.name, answerItem.programAnswer);
+      this.buildAnswer(answerItem.name, answerItem.value);
     }
   }
 

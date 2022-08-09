@@ -1,10 +1,10 @@
+import { RegistrationDataEntity } from './../registration-data.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
-import { ProgramAnswerEntity } from '../program-answer.entity';
 import {
   AnswerTypes,
   Attribute,
@@ -12,7 +12,7 @@ import {
 } from '../enum/custom-data-attributes';
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { ProgramQuestionEntity } from '../../programs/program-question.entity';
-import { FspAttributeEntity } from '../../fsp/fsp-attribute.entity';
+import { FspQuestionEntity } from '../../fsp/fsp-question.entity';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { LanguageEnum } from '../enum/language.enum';
 import {
@@ -41,8 +41,10 @@ export enum ImportType {
 export class BulkImportService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(ProgramAnswerEntity)
-  private readonly programAnswerRepository: Repository<ProgramAnswerEntity>;
+  @InjectRepository(RegistrationDataEntity)
+  private readonly registrationDataRepository: Repository<
+    RegistrationDataEntity
+  >;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(ProgramCustomAttributeEntity)
@@ -51,8 +53,8 @@ export class BulkImportService {
   >;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
-  @InjectRepository(FspAttributeEntity)
-  private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
+  @InjectRepository(FspQuestionEntity)
+  private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
@@ -71,14 +73,11 @@ export class BulkImportService {
       csvFile,
       program.id,
     );
-
     let countImported = 0;
     let countExistingPhoneNr = 0;
     let countInvalidPhoneNr = 0;
 
-    const programCustomAttributes = await this.getProgramCustomAttributes(
-      program.id,
-    );
+    const programCustomAttributes = program.programCustomAttributes;
 
     const importResponseRecords = [];
     for await (const record of validatedImportRecords) {
@@ -119,26 +118,22 @@ export class BulkImportService {
           record.paymentAmountMultiplier;
       }
       newRegistration.program = program;
-      newRegistration.customData = JSON.parse(JSON.stringify({}));
-      programCustomAttributes.forEach(att => {
-        if (att.type === CustomAttributeType.boolean) {
-          newRegistration.customData[att.name] = this.stringToBoolean(
-            record[att.name],
-            false,
-          );
-        } else {
-          newRegistration.customData[att.name] = record[att.name];
-        }
-      });
 
       const savedRegistration = await this.registrationRepository.save(
         newRegistration,
       );
+      programCustomAttributes.forEach(async att => {
+        const data = new RegistrationDataEntity();
+        data.value = record[att.name];
+        data.programCustomAttribute = att;
+        data.registrationId = savedRegistration.id;
+        await this.registrationDataRepository.save(data);
+      });
+
       // Save already before status change, otherwise 'registration.subscriber' does not work
       savedRegistration.registrationStatus = RegistrationStatusEnum.imported;
       await this.registrationRepository.save(savedRegistration);
     }
-
     this.actionService.saveAction(
       userId,
       program.id,
@@ -221,6 +216,7 @@ export class BulkImportService {
 
     let countImported = 0;
     let registrations: RegistrationEntity[] = [];
+    const customDataList = [];
 
     const dynamicAttributes = await this.getDynamicAttributes(program.id);
     for await (const record of validatedImportRecords) {
@@ -228,28 +224,26 @@ export class BulkImportService {
       registration.referenceId = uuid();
       registration.phoneNumber = record.phoneNumber;
       registration.preferredLanguage = record.preferredLanguage;
+      registration.program = program;
+      const customData = {};
       if (!program.paymentAmountMultiplierFormula) {
         registration.paymentAmountMultiplier = record.paymentAmountMultiplier;
       }
-      registration.program = program;
 
-      registration.customData = JSON.parse(JSON.stringify({}));
-      dynamicAttributes.forEach(att => {
+      for await (const att of dynamicAttributes) {
         if (att.type === CustomAttributeType.boolean) {
-          registration.customData[att.name] = this.stringToBoolean(
-            record[att.name],
-            false,
-          );
+          customData[att.name] = this.stringToBoolean(record[att.name], false);
         } else {
-          registration.customData[att.name] = record[att.name];
+          customData[att.name] = record[att.name];
         }
-      });
+      }
 
       const fsp = await this.fspRepository.findOne({
         where: { fsp: record.fspName },
       });
       registration.fsp = fsp;
       registrations.push(registration);
+      customDataList.push(customData);
     }
     const savedRegistrations = await this.registrationRepository.save(
       registrations,
@@ -260,12 +254,12 @@ export class BulkImportService {
     );
     await this.registrationRepository.save(savedRegistrations);
 
-    for await (let registration of registrations) {
+    for await (let [i, registration] of savedRegistrations.entries()) {
       registration.registrationStatus = RegistrationStatusEnum.registered;
       await this.storeProgramAnswersImportRegistrations(
         registration,
         program.id,
-        registration.customData,
+        customDataList[i],
       );
       await this.inclusionScoreService.calculateInclusionScore(
         registration.referenceId,
@@ -284,23 +278,21 @@ export class BulkImportService {
   private async storeProgramAnswersImportRegistrations(
     registration: RegistrationEntity,
     programId: number,
-    customData: any,
+    customData: object,
   ): Promise<void> {
     const dynamicAttributes = await this.getDynamicAttributes(programId);
-    let programAnswers: ProgramAnswerEntity[] = [];
-    for await (let attribute of dynamicAttributes) {
-      const programQuestion = await this.programQuestionRepository.findOne({
-        where: { name: attribute.name },
-      });
-      if (programQuestion) {
-        let programAnswer = new ProgramAnswerEntity();
-        programAnswer.registration = registration;
-        programAnswer.programQuestion = programQuestion;
-        programAnswer.programAnswer = customData[attribute.name];
-        programAnswers.push(programAnswer);
+    for await (let att of dynamicAttributes) {
+      if (att.type === CustomAttributeType.boolean) {
+        await registration.saveData(
+          this.stringToBoolean(customData[att.name], false),
+          { name: att.name },
+        );
+      } else {
+        await registration.saveData(customData[att.name], {
+          name: att.name,
+        });
       }
     }
-    await this.programAnswerRepository.save(programAnswers);
   }
 
   private async csvToValidatedBulkImport(
@@ -417,6 +409,7 @@ export class BulkImportService {
       })
     ).map(c => {
       return {
+        id: c.id,
         name: c.name,
         type: c.type,
         label: c.label,
@@ -437,6 +430,7 @@ export class BulkImportService {
       })
     ).map(c => {
       return {
+        id: c.id,
         name: c.name,
         type: c.answerType,
       };
@@ -450,6 +444,7 @@ export class BulkImportService {
       .filter(a => a.fsp.program.map(p => p.id).includes(programId))
       .map(c => {
         return {
+          id: c.id,
           name: c.name,
           type: c.answerType,
         };

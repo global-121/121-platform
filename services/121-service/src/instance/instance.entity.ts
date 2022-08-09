@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { MonitoringQuestionEntity } from './monitoring-question.entity';
+import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
 import { Base121Entity } from '../base.entity';
 
 @Entity('instance')
@@ -21,6 +22,13 @@ export class InstanceEntity extends Base121Entity {
   @Column('json', { nullable: true, default: null })
   public contactDetails: JSON;
 
-  @Column('json', { nullable: true, default: null })
-  public monitoringQuestion: JSON;
+  @OneToOne(
+    () => MonitoringQuestionEntity,
+    monitoringQuestion => monitoringQuestion.instance,
+    {
+      cascade: true,
+    },
+  )
+  @JoinColumn()
+  public monitoringQuestion: MonitoringQuestionEntity;
 }

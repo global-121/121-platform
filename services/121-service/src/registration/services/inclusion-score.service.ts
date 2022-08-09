@@ -24,6 +24,7 @@ export class InlusionScoreService {
     }
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
+      relations: ['data'],
     });
     const formulaParts = program.paymentAmountMultiplierFormula
       .replace(/\s/g, '')
@@ -33,8 +34,11 @@ export class InlusionScoreService {
     let paymentAmountMultiplier = constant;
     for await (const factor of formulaParts) {
       const factorElements = factor.replace(/\s/g, '').split('*');
-      const factorValue = registration.customData[factorElements[1]];
-      paymentAmountMultiplier += Number(factorElements[0]) * factorValue;
+      const factorValue = await registration.getRegistrationDataValueByName(
+        factorElements[1],
+      );
+      paymentAmountMultiplier +=
+        Number(factorElements[0]) * Number(factorValue);
     }
     registration.paymentAmountMultiplier = paymentAmountMultiplier;
     return await this.registrationRepository.save(registration);
@@ -69,13 +73,15 @@ export class InlusionScoreService {
   ): Promise<object> {
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
-      relations: ['programAnswers', 'programAnswers.programQuestion'],
+      relations: ['data', 'data.programQuestion'],
     });
     const scoreList = {};
-    for (let prefilledAnswer of registration.programAnswers) {
-      let attrValue = prefilledAnswer.programAnswer;
-      let newKeyName = prefilledAnswer.programQuestion.name;
-      scoreList[newKeyName] = attrValue;
+    for (let entry of registration.data) {
+      if (entry.programQuestion) {
+        let attrValue = entry.value;
+        let newKeyName = entry.programQuestion.name;
+        scoreList[newKeyName] = attrValue;
+      }
     }
     return scoreList;
   }

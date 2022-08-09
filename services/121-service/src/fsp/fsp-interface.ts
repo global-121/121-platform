@@ -1,7 +1,7 @@
-import { FspAttributeEntity } from './fsp-attribute.entity';
+import { FspQuestionEntity } from './fsp-question.entity';
 
 export interface FspAnswersAttrInterface {
-  attributes: FspAttributeEntity[];
+  attributes: FspQuestionEntity[];
   answers: AnswerSet;
   referenceId: string;
 }

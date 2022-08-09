@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class SearchRegistrationDto {
@@ -10,8 +10,4 @@ export class SearchRegistrationDto {
   @IsString()
   @IsOptional()
   public readonly name: string;
-  @ApiModelProperty({ example: 1 })
-  @IsNumber()
-  @IsOptional()
-  public readonly id: number;
 }
