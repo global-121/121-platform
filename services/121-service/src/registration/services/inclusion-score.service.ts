@@ -34,9 +34,11 @@ export class InlusionScoreService {
     let paymentAmountMultiplier = constant;
     for await (const factor of formulaParts) {
       const factorElements = factor.replace(/\s/g, '').split('*');
-      const factorValue =
-        registration.getRegistrationDataByName[factorElements[1]];
-      paymentAmountMultiplier += Number(factorElements[0]) * factorValue;
+      const factorValue = await registration.getRegistrationDataValueByName(
+        factorElements[1],
+      );
+      paymentAmountMultiplier +=
+        Number(factorElements[0]) * Number(factorValue);
     }
     registration.paymentAmountMultiplier = paymentAmountMultiplier;
     return await this.registrationRepository.save(registration);

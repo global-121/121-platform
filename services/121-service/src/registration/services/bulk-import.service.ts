@@ -118,35 +118,27 @@ export class BulkImportService {
           record.paymentAmountMultiplier;
       }
       newRegistration.program = program;
-      try {
-        const savedRegistration = await this.registrationRepository.save(
-          newRegistration,
-        );
-        programCustomAttributes.forEach(async att => {
-          const data = new RegistrationDataEntity();
-          data.value = record[att.name];
-          data.programCustomAttribute = att;
-          data.registrationId = savedRegistration.id;
-          await this.registrationDataRepository.save(data);
-        });
 
-        // Save already before status change, otherwise 'registration.subscriber' does not work
-        savedRegistration.registrationStatus = RegistrationStatusEnum.imported;
-        await this.registrationRepository.save(savedRegistration);
-      } catch (error) {
-        console.log('error: ', error);
-      }
-    }
-
-    try {
-      this.actionService.saveAction(
-        userId,
-        program.id,
-        AdditionalActionType.importPeopleAffected,
+      const savedRegistration = await this.registrationRepository.save(
+        newRegistration,
       );
-    } catch (error) {
-      console.log('error: ', error);
+      programCustomAttributes.forEach(async att => {
+        const data = new RegistrationDataEntity();
+        data.value = record[att.name];
+        data.programCustomAttribute = att;
+        data.registrationId = savedRegistration.id;
+        await this.registrationDataRepository.save(data);
+      });
+
+      // Save already before status change, otherwise 'registration.subscriber' does not work
+      savedRegistration.registrationStatus = RegistrationStatusEnum.imported;
+      await this.registrationRepository.save(savedRegistration);
     }
+    this.actionService.saveAction(
+      userId,
+      program.id,
+      AdditionalActionType.importPeopleAffected,
+    );
 
     return {
       importResult: importResponseRecords,
@@ -289,7 +281,6 @@ export class BulkImportService {
     customData: object,
   ): Promise<void> {
     const dynamicAttributes = await this.getDynamicAttributes(programId);
-    let programAnswers: RegistrationDataEntity[] = [];
     for await (let att of dynamicAttributes) {
       if (att.type === CustomAttributeType.boolean) {
         await registration.saveData(
@@ -302,7 +293,6 @@ export class BulkImportService {
         });
       }
     }
-    await this.registrationRepository.save(programAnswers);
   }
 
   private async csvToValidatedBulkImport(

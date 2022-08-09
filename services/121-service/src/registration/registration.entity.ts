@@ -228,6 +228,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       }
     } catch (error) {
       console.log('error: ', error);
+      throw error;
     }
 
     // Fetches updated registration from database and return it

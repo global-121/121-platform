@@ -221,11 +221,7 @@ export class RegistrationsService {
       answer => answer.programQuestionName === CustomDataAttributes.phoneNumber,
     );
     if (phoneAnswer) {
-      const programId = registration.program.id;
-      const cleanedAnswers = await this.cleanAnswers([phoneAnswer], programId);
-
-      registration.phoneNumber = cleanedAnswers[0].programAnswer;
-
+      registration.phoneNumber = phoneAnswer.programAnswer;
       await this.registrationRepository.save(registration);
     }
   }
@@ -507,7 +503,6 @@ export class RegistrationsService {
           WHEN ("fspQuestion"."name" is not NULL) THEN "fspQuestion"."name"
           WHEN ("monitoringQuestion"."name" is not NULL) THEN "monitoringQuestion"."name"
           WHEN ("programCustomAttribute"."name" is not NULL) THEN "programCustomAttribute"."name"
-          ELSE ''
         END ))`,
         'name',
       );
@@ -993,6 +988,7 @@ export class RegistrationsService {
       }
     } catch (error) {
       console.log('error: ', error);
+      throw error;
     }
   }
 
@@ -1040,7 +1036,6 @@ export class RegistrationsService {
   public async searchRegistration(
     rawPhoneNumber?: string,
     name?: string,
-    id?: number,
   ): Promise<RegistrationEntity[]> {
     const registrations = [];
     if (rawPhoneNumber) {
@@ -1378,6 +1373,7 @@ export class RegistrationsService {
       payload.referenceId,
       RegistrationStatusEnum.validated,
     );
+    // Removing non-persistent answers is done after storing the answers because storing the answers also calculate the inclusion store
     await this.removeNonPersistentProgramAnswers(payload.referenceId);
   }
 
@@ -1482,37 +1478,6 @@ export class RegistrationsService {
       return [];
     }
     return messageHistoryArray;
-  }
-
-  public addProgramCustomAttributesToRow(
-    row: object,
-    registrationData: RegistrationDataEntity[],
-    programCustomAttributes: ProgramCustomAttributeEntity[],
-  ): object {
-    for (const programCustomAttribute of programCustomAttributes) {
-      const regisrationDataEntry = registrationData.find(
-        d => d.programCustomAttributeId === programCustomAttribute.id,
-      );
-
-      if (programCustomAttribute.type === CustomAttributeType.boolean) {
-        row[programCustomAttribute.name] = regisrationDataEntry.value || false;
-      } else {
-        row[programCustomAttribute.name] = regisrationDataEntry.value;
-      }
-    }
-    return row;
-  }
-
-  public addDeprecatedCustomDataKeysToRow(
-    row: object,
-    customData: object,
-    deprecatedCustomDataKeys: string[],
-  ): object {
-    /// TODO refeactor this code
-    for (const key of deprecatedCustomDataKeys) {
-      row[key] = customData[key];
-    }
-    return row;
   }
 
   public mapAttributeByType(
