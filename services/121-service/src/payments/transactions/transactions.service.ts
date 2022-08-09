@@ -56,7 +56,7 @@ export class TransactionsService {
         '"referenceId"',
         'status',
         'amount',
-        'transaction.errorMessage as error',
+        'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
       ])
       .leftJoin(
@@ -90,7 +90,7 @@ export class TransactionsService {
         '"referenceId"',
         'status',
         'amount',
-        'transaction.errorMessage as error',
+        'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
       ])
       .leftJoin('transaction.registration', 'c')

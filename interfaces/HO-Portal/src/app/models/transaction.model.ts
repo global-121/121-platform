@@ -9,7 +9,7 @@ export class Transaction {
   amount: number;
   status: StatusEnum;
   paymentDate: Date;
-  error: string;
+  errorMessage: string;
   customData?:
     | {
         IntersolvePayoutStatus: IntersolvePayoutStatus;
