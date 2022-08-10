@@ -92,7 +92,7 @@ export class addShortLabel1658218507582 implements MigrationInterface {
           );
           if (jsonAttribute) {
             fspAttribute.shortLabel = jsonAttribute.shortLabel;
-            fspAttributeRepo.save(fspAttribute);
+            await fspAttributeRepo.save(fspAttribute);
           }
         }
       }
