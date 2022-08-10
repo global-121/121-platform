@@ -538,6 +538,7 @@ export class RegistrationsService {
     programId: number,
     includePersonalData: boolean,
   ): Promise<RegistrationResponse[]> {
+    const program = await this.programService.findProgramOrThrow(programId);
     let q = await this.registrationRepository
       .createQueryBuilder('registration')
       .select('registration.id', 'id')
@@ -692,7 +693,7 @@ export class RegistrationsService {
     );
     for (let row of rows) {
       row['customData'] = this.buildCustomDataObject(row['customData']);
-      row['name'] = this.getName(row.customData);
+      row['name'] = this.getName(row.customData, program);
       row['hasNote'] = !!row.note;
       row['hasPhoneNumber'] = !!(
         row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber]
@@ -730,39 +731,15 @@ export class RegistrationsService {
     return registrationStatusChange ? registrationStatusChange.created : null;
   }
 
-  public getName(customData): string {
-    if (customData[CustomDataAttributes.name]) {
-      return customData[CustomDataAttributes.name];
-    } else if (customData[CustomDataAttributes.fathersName]) {
-      return (
-        customData[CustomDataAttributes.lastName] +
-        (customData[CustomDataAttributes.firstName]
-          ? ' ' + customData[CustomDataAttributes.firstName]
-          : '') +
-        (customData[CustomDataAttributes.fathersName]
-          ? ' ' + customData[CustomDataAttributes.fathersName]
-          : '')
-      );
-    } else if (customData[CustomDataAttributes.firstName]) {
-      return (
-        customData[CustomDataAttributes.firstName] +
-        (customData[CustomDataAttributes.secondName]
-          ? ' ' + customData[CustomDataAttributes.secondName]
-          : '') +
-        (customData[CustomDataAttributes.thirdName]
-          ? ' ' + customData[CustomDataAttributes.thirdName]
-          : '')
-      );
-    } else if (customData[CustomDataAttributes.nameFirst]) {
-      return (
-        customData[CustomDataAttributes.nameFirst] +
-        (customData[CustomDataAttributes.nameLast]
-          ? ' ' + customData[CustomDataAttributes.nameLast]
-          : '')
-      );
-    } else {
-      return '';
+  public getName(customData: object, program: ProgramEntity): string {
+    const fullnameConcat = [];
+    const nameColumns = JSON.parse(
+      JSON.stringify(program.fullnameNamingConvention),
+    );
+    for (const nameColumn of nameColumns) {
+      fullnameConcat.push(customData[nameColumn]);
     }
+    return fullnameConcat.join(' ');
   }
 
   public transformRegistrationByNamingConvention(
