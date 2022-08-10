@@ -5,9 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.47.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.48.0...master)
 
 ---
+## [1.48.0](https://github.com/global-121/121-platform/compare/v1.47.0...v1.48.0) - 2022-08-10
+
+### Changed
+
+- 2022-08-10: Refactored `RegistrationEntity.customData` to `RegistrationDataEntity` as a related table of `RegistrationEntity` to enable querying on that data.
+- 2022-08-10: Renamed `FspAttributeEntity` to `FspQuestionEntity`.
+- 2022-08-10: Added a `shortLabel` property to `ProgramQuestionEntity` and `FspQuestionEntity` to give these properties a different label in the 121-portal than in the PA-app.
+- 2022-08-10: Fixed downloading vouchers of failed payments where the creation of the voucher was succesful but the sending via Whatsapp failed.
+
 ## [1.47.0](https://github.com/global-121/121-platform/compare/v1.46.0...v1.47.0) - 2022-06-23
 
 ### Changed
