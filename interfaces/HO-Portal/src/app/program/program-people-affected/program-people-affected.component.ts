@@ -546,6 +546,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           firstPaymentToShow,
         );
         this.paymentHistoryColumn = this.createPaymentHistoryColumn();
+        await this.refreshData();
       }
     }
 
