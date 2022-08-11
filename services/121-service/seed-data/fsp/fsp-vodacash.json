@@ -1,0 +1,25 @@
+{
+  "fsp": "VodaCash",
+  "integrationType": "api",
+  "fspDisplayName": {
+    "en": "Vodacash",
+    "am_ET": "VodaCash"
+  },
+  "questions": [
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Which phone number do you want to receive your mobile money transfer from VodaCash on? (With country-code. It should look like: <strong>+243 000 000 000</strong>)"
+      },
+      "placeholder": {
+        "en": "+243 000 000 000"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "tel",
+      "options": null,
+      "shortLabel": {
+        "en": "Phone Number"
+      }
+    }
+  ]
+}

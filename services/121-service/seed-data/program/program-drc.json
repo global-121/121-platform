@@ -1,0 +1,88 @@
+{
+  "published": false,
+  "validation": false,
+  "validationByQr": false,
+  "phase": "design",
+  "location": "Democratic Republic of the Congo",
+  "ngo": "Help a Child",
+  "titlePortal": {
+    "en": "Help a Child Digital Aid DRC"
+  },
+  "titlePaApp": {
+    "en": "Help a Child DRC Cash Support"
+  },
+  "description": {
+    "en": ""
+  },
+  "descCashType": {
+    "en": "Unconditional multi-purpose"
+  },
+  "startDate": "2020-09-01T12:00:00Z",
+  "endDate": "2022-10-01T12:00:00Z",
+  "currency": "CDF",
+  "distributionFrequency": "monthly",
+  "distributionDuration": 1,
+  "fixedTransferValue": 35,
+  "financialServiceProviders": [
+    {
+      "id": 1
+    }
+  ],
+  "inclusionCalculationType": "highestScoresX",
+  "minimumScore": 0,
+  "highestScoresX": 870,
+  "tryWhatsAppFirst": false,
+  "meetingDocuments": {
+    "en": ""
+  },
+  "notifications": {
+    "en": {
+      "registered": "This is a message from Help a Child.\n\nWe have received your application for support.\n\nYou will receive another SMS with more information within 1 week."
+    }
+  },
+  "phoneNumberPlaceholder": "+24 300 00 00 00",
+  "programCustomAttributes": [],
+  "programQuestions": [
+    {
+      "name": "nameFirst",
+      "label": {
+        "ar": "الرجاء إدخال اسمك الأول:",
+        "en": "Please enter your first name:",
+        "nl": "Vul je voornaam in:",
+        "fr": "Remplissez votre prénom, s'il vous plaît:"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "First Name"
+      }
+    },
+    {
+      "name": "nameLast",
+      "label": {
+        "ar": "الرجاء إدخال اسم العائلة:",
+        "en": "Please enter your last name:",
+        "nl": "Vul je achternaam in:",
+        "fr": "Remplissez votre nom, s'il vous plaît:"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Last Name"
+      }
+    }
+  ],
+  "fullnameNamingConvention": ["nameFirst", "nameLast"]
+}
