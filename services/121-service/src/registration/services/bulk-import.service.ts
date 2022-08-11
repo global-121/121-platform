@@ -90,6 +90,7 @@ export class BulkImportService {
       );
       if (!phoneNumberResult) {
         importResponseRecord.importStatus = ImportStatus.invalidPhoneNumber;
+        importResponseRecord.registrationStatus = '';
         importResponseRecords.push(importResponseRecord);
         countInvalidPhoneNr += 1;
         continue;
@@ -100,12 +101,15 @@ export class BulkImportService {
       });
       if (existingRegistrations) {
         importResponseRecord.importStatus = ImportStatus.existingPhoneNumber;
+        importResponseRecord.registrationStatus =
+          existingRegistrations.registrationStatus;
         importResponseRecords.push(importResponseRecord);
         countExistingPhoneNr += 1;
         continue;
       }
 
       importResponseRecord.importStatus = ImportStatus.imported;
+      importResponseRecord.registrationStatus = RegistrationStatusEnum.imported;
       importResponseRecords.push(importResponseRecord);
       countImported += 1;
 
