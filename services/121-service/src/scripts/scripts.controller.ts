@@ -1,3 +1,4 @@
+import { SeedProgramDrc } from './seed-program-drc';
 import { SeedProgramLbn } from './seed-program-lbn';
 import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
 import { ApiOperation, ApiModelProperty } from '@nestjs/swagger';
@@ -14,6 +15,7 @@ enum SeedScript {
   pilotNLPV = 'pilot-nl-pv',
   pilotLBN = 'pilot-lbn',
   pilotUKR = 'pilot-ukr',
+  DRC = 'drc',
   demo = 'demo',
   validation = 'validation',
 }
@@ -51,6 +53,8 @@ export class ScriptsController {
       seed = new SeedProgramLbn(this.connection);
     } else if (body.script == SeedScript.pilotUKR) {
       seed = new SeedProgramUkr(this.connection);
+    } else if (body.script == SeedScript.DRC) {
+      seed = new SeedProgramDrc(this.connection);
     } else {
       seed = new SeedProgramValidation(this.connection);
     }
