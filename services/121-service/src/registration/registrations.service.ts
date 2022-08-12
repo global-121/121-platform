@@ -826,7 +826,9 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
 
-    await registration.saveData(value, { name: attribute });
+    if (attribute !== Attributes.paymentAmountMultiplier) {
+      await registration.saveData(value, { name: attribute });
+    }
 
     const savedRegistration = await this.registrationRepository.save(
       registration,
