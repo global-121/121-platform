@@ -10,6 +10,7 @@ import {
 import { ApiModelProperty } from '@nestjs/swagger';
 import { FspName } from '../../fsp/financial-service-provider.entity';
 import { LanguageEnum } from '../enum/language.enum';
+import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 
 export enum ImportStatus {
   imported = 'imported',
@@ -33,6 +34,7 @@ export class BulkImportDto {
 
 export class BulkImportResult extends BulkImportDto {
   public importStatus: ImportStatus;
+  public registrationStatus: RegistrationStatusEnum | string;
 }
 
 export class ImportResult {
