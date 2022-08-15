@@ -34,6 +34,7 @@ Feature: Import people affected
     And it shows an "OK" button
     And it mentions that a CSV is automatically downloaded with the import-result per row.
     And a download window for this CSV is appearing
+    And the CSV contains the following columns "phoneNumber", "paymentAmountMultiplier", a column per custom attribute in the program, "importStatus", "registrationStatus"
 
     When the users clicks "OK" on the popup
     Then The popup disappears
