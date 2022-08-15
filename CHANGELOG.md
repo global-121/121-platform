@@ -5,9 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.48.3...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.48.4...master)
 
 ---
+## [1.48.4](https://github.com/global-121/121-platform/compare/v1.48.3...v1.48.4) - 2022-08-15
+
+### Fixed
+- 2022-08-15: Fixed bug in export all People Affected 500 error because of duplicate stored whatsappnumbers.
+
 ## [1.48.3](https://github.com/global-121/121-platform/compare/v1.48.2...v1.48.3) - 2022-08-15
 
 ### Fixed
