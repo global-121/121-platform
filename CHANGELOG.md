@@ -5,9 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.48.2...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.48.3...master)
 
 ---
+## [1.48.3](https://github.com/global-121/121-platform/compare/v1.48.2...v1.48.3) - 2022-08-15
+
+### Fixed
+- 2022-08-15: Fixed bug in export all People Affected phonenumber of imported not shown.
+- 2022-08-15: Fixed bug unable to edit PA transfer value in portal.
+
 ## [1.48.2](https://github.com/global-121/121-platform/compare/v1.48.1...v1.48.2) - 2022-08-10
 
 ### Fixed

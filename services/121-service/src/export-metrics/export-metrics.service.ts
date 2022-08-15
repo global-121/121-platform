@@ -1,3 +1,4 @@
+import { CustomDataAttributes } from './../registration/enum/custom-data-attributes';
 import { RegistrationDataOptions } from './../registration/dto/registration-data-relation.model';
 import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
 import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
@@ -227,7 +228,10 @@ export class ExportMetricsService {
     });
     for (const programQuestion of program.programQuestions) {
       if (
-        JSON.parse(JSON.stringify(programQuestion.export)).includes(exportType)
+        JSON.parse(JSON.stringify(programQuestion.export)).includes(
+          exportType,
+        ) &&
+        programQuestion.name !== CustomDataAttributes.phoneNumber // Phonenumber is exclude because it is already a registration entity attribute
       ) {
         const relationOption = new RegistrationDataOptions();
         relationOption.name = programQuestion.name;
@@ -240,7 +244,10 @@ export class ExportMetricsService {
       fspQuestions = fspQuestions.concat(fsp.questions);
     }
     for (const fspQuestion of fspQuestions) {
-      if (JSON.parse(JSON.stringify(fspQuestion.export)).includes(exportType)) {
+      if (
+        JSON.parse(JSON.stringify(fspQuestion.export)).includes(exportType) &&
+        fspQuestion.name !== CustomDataAttributes.phoneNumber // Phonenumber is exclude because it is already a registration entity attribute
+      ) {
         const relationOption = new RegistrationDataOptions();
         relationOption.name = fspQuestion.name;
         relationOption.relation = { fspQuestionId: fspQuestion.id };
