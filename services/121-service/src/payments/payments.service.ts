@@ -1,3 +1,4 @@
+import { VodacashService } from './fsp-integration/vodacash/vodacash.service';
 import { FspInstructions, ExportFileType } from './dto/fsp-instructions.dto';
 import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
@@ -22,6 +23,7 @@ import { TransactionsService } from './transactions/transactions.service';
 import { IntersolveRequestEntity } from './fsp-integration/intersolve/intersolve-request.entity';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service';
+import { SplitPaymentListDto } from './dto/split-payment-lists.dto';
 
 @Injectable()
 export class PaymentsService {
@@ -41,6 +43,7 @@ export class PaymentsService {
     private readonly belcashService: BelcashService,
     private readonly bobFinanceService: BobFinanceService,
     private readonly ukrPoshtaService: UkrPoshtaService,
+    private readonly vodacashService: VodacashService,
   ) {}
 
   public async getPayments(
@@ -135,13 +138,16 @@ export class PaymentsService {
     return paPaymentDataList.length;
   }
 
-  private splitPaListByFsp(paPaymentDataList: PaPaymentDataDto[]): any {
+  private splitPaListByFsp(
+    paPaymentDataList: PaPaymentDataDto[],
+  ): SplitPaymentListDto {
     const intersolvePaPayment = [];
     const intersolveNoWhatsappPaPayment = [];
     const africasTalkingPaPayment = [];
     const belcashPaPayment = [];
     const bobFinancePaPayment = [];
     const ukrPoshtaPaPayment = [];
+    const vodacashPaPayment = [];
     for (let paPaymentData of paPaymentDataList) {
       if (paPaymentData.fspName === FspName.intersolve) {
         intersolvePaPayment.push(paPaymentData);
@@ -155,6 +161,8 @@ export class PaymentsService {
         bobFinancePaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.ukrPoshta) {
         ukrPoshtaPaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === FspName.vodacash) {
+        vodacashPaPayment.push(paPaymentData);
       } else {
         console.log('fsp does not exist: paPaymentData: ', paPaymentData);
         throw new HttpException('fsp does not exist.', HttpStatus.NOT_FOUND);
@@ -167,6 +175,7 @@ export class PaymentsService {
       belcashPaPayment,
       bobFinancePaPayment,
       ukrPoshtaPaPayment,
+      vodacashPaPayment,
     };
   }
 
@@ -223,6 +232,15 @@ export class PaymentsService {
     if (paLists.ukrPoshtaPaPayment.length) {
       await this.ukrPoshtaService.sendPayment(
         paLists.ukrPoshtaPaPayment,
+        programId,
+        payment,
+        amount,
+      );
+    }
+
+    if (paLists.vodacashPaPayment.length) {
+      await this.vodacashService.sendPayment(
+        paLists.vodacashPaPayment,
         programId,
         payment,
         amount,

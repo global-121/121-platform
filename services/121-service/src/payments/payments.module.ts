@@ -1,3 +1,4 @@
+import { VodacashModule } from './fsp-integration/vodacash/vodacash.module';
 import { BobFinanceModule } from './fsp-integration/bob-finance/bob-finance.module';
 import { UserEntity } from './../user/user.entity';
 import { Module, HttpModule } from '@nestjs/common';
@@ -34,6 +35,7 @@ import { UkrPoshtaModule } from './fsp-integration/ukrposhta/ukrposhta.module';
     TransactionsModule,
     BobFinanceModule,
     UkrPoshtaModule,
+    VodacashModule,
   ],
   providers: [PaymentsService],
   controllers: [PaymentsController],
