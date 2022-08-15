@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.48.3...master)
 
 ---
-## [1.48.3](https://github.com/global-121/121-platform/compare/v1.48.1...v1.48.2) - 2022-08-15
+## [1.48.3](https://github.com/global-121/121-platform/compare/v1.48.2...v1.48.3) - 2022-08-15
 
 ### Fixed
 - 2022-08-15: Fixed bug in export all People Affected phonenumber of imported not shown.
