@@ -249,7 +249,9 @@ export class RegistrationsService {
       customDataKey,
       customDataValueRaw,
     );
-    return registration.saveData(customDataValue, { name: customDataKey });
+    return await registration.saveData(customDataValue, {
+      name: customDataKey,
+    });
   }
 
   public async cleanCustomDataIfPhoneNr(
@@ -309,8 +311,13 @@ export class RegistrationsService {
     // If imported registration found ..
     // .. then transfer relevant attributes from imported registration to current registration
     for (const d of importedRegistration.data) {
-      d.registrationId = currentRegistration.id;
-      this.registrationDataRepository.save(d);
+      const relation = new RegistrationDataRelation();
+      relation.fspQuestionId = d.fspQuestionId;
+      relation.programQuestionId = d.programQuestionId;
+      relation.monitoringQuestionId = d.monitoringQuestionId;
+      relation.programCustomAttributeId = d.programCustomAttributeId;
+      await currentRegistration.saveData(d.value, { relation });
+      await this.registrationDataRepository.remove(d);
     }
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
