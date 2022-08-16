@@ -5,9 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.48.4...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.49.0...master)
 
 ---
+## [1.49.0](https://github.com/global-121/121-platform/compare/v1.48.4...v1.49.0) - 2022-08-16
+
+### Changed
+
+- 2022-08-16: Added 'registrationStatus' to the result CSV of 'Import People Affected'.
+- 2022-08-16: Added mock API for VodaCash.
+
 ## [1.48.4](https://github.com/global-121/121-platform/compare/v1.48.3...v1.48.4) - 2022-08-15
 
 ### Fixed
