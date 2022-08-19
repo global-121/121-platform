@@ -533,6 +533,7 @@ export class IntersolveService {
           unusedVouchers.push(unusedVoucher);
         } else {
           voucher.balanceUsed = true;
+          voucher.send = true;
           this.intersolveBarcodeRepository.save(voucher);
         }
       }
