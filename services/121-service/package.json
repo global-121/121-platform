@@ -27,7 +27,7 @@
     "seed:program-validation": "ts-node src/scripts seed-program-validation",
     "seed:program-pilot-nl": "ts-node src/scripts seed-program-pilot-nl",
     "seed:program-pilot-nl2": "ts-node src/scripts seed-program-pilot-nl-2",
-    "seed:program-pilot-ukr": "ts-node src/scripts seed-program-ukr",
+    "seed:program-pilot-eth": "ts-node src/scripts seed-program-eth",
     "seed:program-pilot-lbn": "ts-node src/scripts seed-program-lbn",
     "pretest": "npm run lint",
     "test": "jest --config=jest.json --passWithNoTests",
