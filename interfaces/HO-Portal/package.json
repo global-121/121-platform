@@ -37,7 +37,7 @@
   "engineStrict": true,
   "dependencies": {
     "@angular/animations": "^12.2.16",
-    "@angular/cdk": "^11.2.13",
+    "@angular/cdk": "^12.2.13",
     "@angular/common": "^12.2.16",
     "@angular/core": "^12.2.16",
     "@angular/forms": "^12.2.16",
@@ -51,6 +51,7 @@
     "@ngx-translate/core": "^12.1.2",
     "@ngx-translate/http-loader": "^5.0.0",
     "@popperjs/core": "~2.11.5",
+    "@schematics/angular": "^12.2.18",
     "@swimlane/ngx-charts": "^17.0.1",
     "@swimlane/ngx-datatable": "^19.0.0",
     "core-js": "2.6.8",
