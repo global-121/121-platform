@@ -155,6 +155,9 @@ export class BulkImportService {
   }
 
   private stringToBoolean(string: string, defaultValue: boolean): boolean {
+    if (typeof string === 'boolean') {
+      return string;
+    }
     switch (string.toLowerCase().trim()) {
       case 'true':
       case 'yes':
