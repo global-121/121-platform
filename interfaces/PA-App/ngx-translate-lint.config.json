@@ -10,6 +10,7 @@
     "misprintCoefficient": "0.9",
     "ignoredKeys": [
       "_dir",
+      "personal.select-language.introduction.am_ET",
       "personal.select-language.introduction.ar",
       "personal.select-language.introduction.en",
       "personal.select-language.introduction.es",
@@ -21,6 +22,7 @@
       "personal.select-language.introduction.ti",
       "personal.select-language.introduction.tl",
       "personal.select-language.introduction.uk",
+      "personal.select-language.language.am_ET",
       "personal.select-language.language.ar",
       "personal.select-language.language.en",
       "personal.select-language.language.es",

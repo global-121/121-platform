@@ -12,7 +12,7 @@ export const environment = {
   alwaysShowTextPlayer: true, // Also show text-player for missing audio-files
   useServiceWorker: true, // Enable 'offline' support
   envName: '', // To highlight the environment used
-  locales: 'en,ar,fr,nl,pt_BR,ti,tl,in,es,uk,ru', // Comma-separated string of enabled locales, i.e: 'en,es,nl_BE'
+  locales: 'en,am_ET,ar,fr,nl,pt_BR,ti,tl,in,es,uk,ru', // Comma-separated string of enabled locales, i.e: 'en,es,nl_BE'
 
   // APIs:
   url_121_service_api: 'http://localhost:3000/api',

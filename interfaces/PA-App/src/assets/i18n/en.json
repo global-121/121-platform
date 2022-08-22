@@ -88,6 +88,7 @@
       "introduction": {
         "en": "Please select your language.",
         "es": "Por favor seleccione su idioma",
+        "am_ET": "እባኮትን ቋንቋ ይምረጡ።",
         "ar": "الرجاء اختيار لغتك",
         "fr": "Choisissez votre langue, s'il vous plaît.",
         "nl": "Kies jouw taal.",
@@ -102,6 +103,7 @@
       "language": {
         "en": "English",
         "es": "Español",
+        "am_ET": "አማርኛ",
         "ar": "عربى",
         "fr": "Français",
         "nl": "Nederlands",

@@ -78,6 +78,7 @@ export class Note {
 }
 
 export enum LanguageEnum {
+  amET = 'am_ET',
   ar = 'ar',
   en = 'en',
   es = 'es',
