@@ -9,6 +9,7 @@ import { SeedProgramValidation } from './seed-program-validation';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
 import { SeedDemoProgram } from './seed-program-demo';
+import SeedProgramEth from './seed-program-eth';
 import SeedProgramLbn from './seed-program-lbn';
 
 @Module({
@@ -26,6 +27,7 @@ import SeedProgramLbn from './seed-program-lbn';
     SeedProgramValidation,
     SeedPilotNLProgram,
     SeedPilotNL2Program,
+    SeedProgramEth,
     SeedProgramLbn,
     SeedDemoProgram,
   ],
