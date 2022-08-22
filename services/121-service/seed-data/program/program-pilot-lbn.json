@@ -68,7 +68,8 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "editableInPortal": false
     },
     {
       "name": "name",
@@ -81,7 +82,11 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Name"
+      }
     },
     {
       "name": "age",
@@ -94,7 +99,11 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Age"
+      }
     },
     {
       "name": "gender",
@@ -122,7 +131,11 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Gender"
+      }
     },
     {
       "name": "nationality",
@@ -157,7 +170,11 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Nationality"
+      }
     },
     {
       "name": "address-city",
@@ -183,7 +200,11 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "City"
+      }
     },
     {
       "name": "address-building",
@@ -196,7 +217,11 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Building"
+      }
     },
     {
       "name": "address-floor",
@@ -209,7 +234,11 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Floor"
+      }
     },
     {
       "name": "social-registry",
@@ -222,7 +251,11 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Social registry number"
+      }
     },
     {
       "name": "family-status",
@@ -269,6 +302,10 @@
         "single-no-children": 1,
         "single-parent": 3,
         "child-headed": 6
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Family status"
       }
     },
     {
@@ -284,6 +321,10 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "multiplier": 3
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Men 60+"
       }
     },
     {
@@ -299,6 +340,10 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "multiplier": 3
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Women 60+"
       }
     },
     {
@@ -314,6 +359,10 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "multiplier": 1
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Men 18-59"
       }
     },
     {
@@ -329,6 +378,10 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "multiplier": 1
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Women 18-59"
       }
     },
     {
@@ -344,6 +397,10 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "multiplier": 2
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Men 0-18"
       }
     },
     {
@@ -359,6 +416,10 @@
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {
         "multiplier": 2
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Women 0-18"
       }
     },
     {
@@ -390,6 +451,10 @@
       "scoring": {
         "yes": 2,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Women pregnant"
       }
     },
     {
@@ -421,6 +486,10 @@
       "scoring": {
         "yes": 2,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Children"
       }
     },
     {
@@ -452,6 +521,10 @@
       "scoring": {
         "yes": 2,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Beirut blast"
       }
     },
     {
@@ -483,6 +556,10 @@
       "scoring": {
         "yes": 2,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Forced moved"
       }
     },
     {
@@ -514,6 +591,10 @@
       "scoring": {
         "yes": 2,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Foster family"
       }
     },
     {
@@ -545,6 +626,10 @@
       "scoring": {
         "yes": 4,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Children hospital"
       }
     },
     {
@@ -576,6 +661,10 @@
       "scoring": {
         "yes": 2,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Adult hospital"
       }
     },
     {
@@ -623,6 +712,10 @@
         "yes-some": 2,
         "yes-lot": 4,
         "yes-completely": 6
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Disability seeing"
       }
     },
     {
@@ -670,6 +763,10 @@
         "yes-some": 2,
         "yes-lot": 4,
         "yes-completely": 6
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Disability hearing"
       }
     },
     {
@@ -717,6 +814,10 @@
         "yes-some": 2,
         "yes-lot": 4,
         "yes-completely": 6
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Disability walking"
       }
     },
     {
@@ -764,6 +865,10 @@
         "yes-some": 2,
         "yes-lot": 4,
         "yes-completely": 6
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Disability remembering"
       }
     },
     {
@@ -811,6 +916,10 @@
         "yes-some": 2,
         "yes-lot": 4,
         "yes-completely": 6
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Disability self-care"
       }
     },
     {
@@ -858,6 +967,10 @@
         "yes-some": 2,
         "yes-lot": 4,
         "yes-completely": 6
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Disability communicating"
       }
     },
     {
@@ -889,6 +1002,10 @@
       "scoring": {
         "yes": 4,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Children chronic disease"
       }
     },
     {
@@ -920,6 +1037,10 @@
       "scoring": {
         "yes": 2,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Adult chronic disease"
       }
     },
     {
@@ -959,6 +1080,10 @@
         "below-500000": 0,
         "500000-1000000": 1,
         "above-1000000": 2
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Health expenses"
       }
     },
     {
@@ -1006,6 +1131,10 @@
         "1000000-3000000": 4,
         "3000000-5000000": 6,
         "above-5000000": 8
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Shelter expenses"
       }
     },
     {
@@ -1053,6 +1182,10 @@
         "1000000-3000000": 4,
         "3000000-5000000": 6,
         "above-5000000": 8
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Food expenses"
       }
     },
     {
@@ -1084,6 +1217,10 @@
       "scoring": {
         "yes": 1,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Sold household goods"
       }
     },
     {
@@ -1115,6 +1252,10 @@
       "scoring": {
         "yes": 1,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Spend savings"
       }
     },
     {
@@ -1146,6 +1287,10 @@
       "scoring": {
         "yes": 1,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Borrowed money"
       }
     },
     {
@@ -1177,6 +1322,10 @@
       "scoring": {
         "yes": 1,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Reduced expenses"
       }
     },
     {
@@ -1208,6 +1357,10 @@
       "scoring": {
         "yes": 1,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Withdraw food"
       }
     },
     {
@@ -1239,6 +1392,10 @@
       "scoring": {
         "yes": 1,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Child labor"
       }
     },
     {
@@ -1270,6 +1427,10 @@
       "scoring": {
         "yes": 1,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Household migrated"
       }
     },
     {
@@ -1301,6 +1462,10 @@
       "scoring": {
         "yes": 1,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Sold real estate"
       }
     },
     {
@@ -1356,6 +1521,10 @@
         "yes-3-4": 2,
         "yes-5-6": 3,
         "yes-7": 4
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Eating less"
       }
     },
     {
@@ -1411,6 +1580,10 @@
         "yes-3-4": 2,
         "yes-5-6": 3,
         "yes-7": 4
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Borrowed food"
       }
     },
     {
@@ -1466,6 +1639,10 @@
         "yes-3-4": 2,
         "yes-5-6": 3,
         "yes-7": 4
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Reduced portions"
       }
     },
     {
@@ -1521,6 +1698,10 @@
         "yes-3-4": 2,
         "yes-5-6": 3,
         "yes-7": 4
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Reduced intake adults"
       }
     },
     {
@@ -1576,6 +1757,10 @@
         "yes-3-4": 2,
         "yes-5-6": 3,
         "yes-7": 4
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Reduced meals"
       }
     },
     {
@@ -1623,6 +1808,10 @@
         "1000000-3000000": 3,
         "3000000-5000000": 2,
         "above-5000000": 1
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Household income"
       }
     },
     {
@@ -1702,6 +1891,10 @@
         "remittances": 1,
         "pension": 2,
         "humanitarian-assistance": 4
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Income source"
       }
     },
     {
@@ -1757,6 +1950,10 @@
         "3000000-5000000": 3,
         "above-5000000": 4,
         "no": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Debt"
       }
     },
     {
@@ -1788,6 +1985,10 @@
       "scoring": {
         "no": 4,
         "yes": 0
+      },
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Other help"
       }
     },
     {
@@ -1816,7 +2017,11 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Where registered"
+      }
     },
     {
       "name": "name-social-worker",
@@ -1829,7 +2034,12 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {}
+      "scoring": {},
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "Social worker"
+      }
     }
-  ]
+  ],
+  "fullnameNamingConvention": ["nameFirst", "nameLast"]
 }
