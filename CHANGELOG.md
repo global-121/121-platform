@@ -5,9 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.49.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.50.0...master)
 
 ---
+
+## [1.50.0](https://github.com/global-121/121-platform/compare/v1.49.0...v1.50.0) - 2022-08-23
+
+### Changed
+
+- 2022-08-23: Upgrade Node.js to v14 LTS for the interface build-steps + webhook-service on VMs
+
 ## [1.49.0](https://github.com/global-121/121-platform/compare/v1.48.4...v1.49.0) - 2022-08-16
 
 ### Changed
