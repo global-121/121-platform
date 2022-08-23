@@ -83,7 +83,7 @@ Our current set-up is:
 
 2.  Install Node.js:  
     See: <https://github.com/nodesource/distributions#installation-instructions> for instructions for Ubuntu.  
-    Make sure to install a version higher then `v10`; Preferably a LTS-release.  
+    Make sure to install a version equal or higher then `v14`; Preferably a LTS-release.  
     Verify that the user set-up to run the webhook, has access to this correct version of Node/NPM.
 
 3.  Enable the webhook service:
