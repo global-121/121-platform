@@ -1,5 +1,5 @@
+import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 import { SmsService } from './../sms/sms.service';
-import { InstanceEntity } from './../../instance/instance.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { RegistrationEntity } from './../../registration/registration.entity';
 import { ProgramEntity } from './../../programs/program.entity';
@@ -34,6 +34,7 @@ import { TryWhatsappEntity } from './try-whatsapp.entity';
       WhatsappPendingMessageEntity,
       TryWhatsappEntity,
       WhatsappPendingMessageEntity,
+      WhatsappTemplateTestEntity,
     ]),
     ImageCodeModule,
     forwardRef(() => IntersolveModule),

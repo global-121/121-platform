@@ -38,6 +38,7 @@ export const API_PATHS = {
   voiceStatus: 'notifications/voice/status',
   whatsAppStatus: 'notifications/whatsapp/status',
   whatsAppIncoming: 'notifications/whatsapp/incoming',
+  whatsAppStatusTemplateTest: 'notifications/whatsapp/templates',
   voiceXml: 'notifications/voice/xml/',
   voiceMp3: 'notifications/voice/mp3/',
   imageCode: 'notifications/imageCode/',
@@ -48,9 +49,14 @@ export const EXTERNAL_API = {
   smsStatus: baseApiUrl + API_PATHS.smsStatus,
   voiceStatus: baseApiUrl + API_PATHS.voiceStatus,
   whatsAppStatus: baseApiUrl + API_PATHS.whatsAppStatus,
+  whatsAppStatusTemplateTest: baseApiUrl + API_PATHS.whatsAppStatusTemplateTest,
   whatsAppIncoming: baseApiUrl + API_PATHS.whatsAppIncoming,
   voiceXmlUrl: baseApiUrl + API_PATHS.voiceXml,
   voiceMp3Url: baseApiUrl + API_PATHS.voiceMp3,
   imageCodeUrl: baseApiUrl + API_PATHS.imageCode,
   voucherInstructionsUrl: baseApiUrl + API_PATHS.voucherInstructions,
 };
+
+// Configure Public Twilio Setttings:
+// ---------------------------------------------------------------------------
+export const TWILIO_SANDBOX_WHATSAPP_NUMBER = '+14155238886';
