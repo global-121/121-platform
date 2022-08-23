@@ -29,7 +29,7 @@ updates:
       - dependency-name: '@swimlane/ngx-datatable'
         versions: ['>= 18.0.0']
       - dependency-name: '@types/node'
-        versions: ['>= 13.0.0']
+        update-types: ['version-update:semver-major']
       - dependency-name: codelyzer
         versions: ['>= 6.0.0']
       - dependency-name: core-js
@@ -69,7 +69,7 @@ updates:
       - dependency-name: '@ngx-translate/http-loader'
         versions: ['>= 6.0.0']
       - dependency-name: '@types/node'
-        versions: ['>= 13.0.0']
+        update-types: ['version-update:semver-major']
       - dependency-name: codelyzer
         versions: ['>= 6.0.0']
       - dependency-name: core-js
@@ -107,7 +107,7 @@ updates:
       - dependency-name: '@ngx-translate/http-loader'
         versions: ['>= 6.0.0']
       - dependency-name: '@types/node'
-        versions: ['>= 13.0.0']
+        update-types: ['version-update:semver-major']
       - dependency-name: codelyzer
         versions: ['>= 6.0.0']
       - dependency-name: core-js

@@ -38,8 +38,8 @@
   },
   "private": true,
   "engines": {
-    "node": ">=12",
-    "npm": ">=7"
+    "node": ">=14",
+    "npm": "^6"
   },
   "engineStrict": true,
   "dependencies": {
@@ -53,8 +53,8 @@
     "@ionic/angular": "^5.8.4",
     "@ionic/cli": "^6.11.8",
     "@microsoft/applicationinsights-web": "^2.7.0",
-    "@ngx-translate/core": "^13.x",
-    "@ngx-translate/http-loader": "^6.x",
+    "@ngx-translate/core": "^13.0.0",
+    "@ngx-translate/http-loader": "^6.0.0",
     "@zxing/browser": "^0.0.5",
     "@zxing/library": "^0.18.3",
     "@zxing/ngx-scanner": "3.2.0",
@@ -75,7 +75,7 @@
     "@angular/compiler-cli": "^11.2.14",
     "@angular/language-service": "^11.2.14",
     "@types/jasmine": "^4.0.2",
-    "@types/node": "^12.x",
+    "@types/node": "^14.x",
     "codelyzer": "^6.0.0",
     "dotenv": "^16.0.0",
     "ffbinaries": "^1.1.4",
