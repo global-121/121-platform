@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
@@ -25,17 +25,19 @@ describe('PhaseNavigationComponent', () => {
     active: true,
   };
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [PhaseNavigationComponent],
-      imports: [TranslateModule.forRoot(), RouterTestingModule],
-      providers: [
-        provideMagicalMock(ProgramsServiceApiService),
-        provideMagicalMock(ProgramPhaseService),
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [PhaseNavigationComponent],
+        imports: [TranslateModule.forRoot(), RouterTestingModule],
+        providers: [
+          provideMagicalMock(ProgramsServiceApiService),
+          provideMagicalMock(ProgramPhaseService),
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
+    }),
+  );
 
   let mockProgramsApi: jasmine.SpyObj<any>;
   let mockProgramPhaseService: jasmine.SpyObj<any>;

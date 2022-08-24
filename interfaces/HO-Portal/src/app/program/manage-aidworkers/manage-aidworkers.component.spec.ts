@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
@@ -13,14 +13,16 @@ describe('ManageAidworkersComponent', () => {
 
   const mockProgramId = 1;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ManageAidworkersComponent],
-      imports: [TranslateModule.forRoot()],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(ProgramsServiceApiService)],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ManageAidworkersComponent],
+        imports: [TranslateModule.forRoot()],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [provideMagicalMock(ProgramsServiceApiService)],
+      }).compileComponents();
+    }),
+  );
 
   let mockProgramsApi: jasmine.SpyObj<any>;
 

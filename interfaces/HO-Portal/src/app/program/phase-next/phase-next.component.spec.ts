@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
@@ -25,17 +25,19 @@ describe('PhaseNextComponent', () => {
     active: true,
   };
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [PhaseNextComponent],
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMagicalMock(ProgramsServiceApiService),
-        provideMagicalMock(ProgramPhaseService),
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [PhaseNextComponent],
+        imports: [HttpClientTestingModule, RouterTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          provideMagicalMock(ProgramsServiceApiService),
+          provideMagicalMock(ProgramPhaseService),
+        ],
+      }).compileComponents();
+    }),
+  );
 
   let mockProgramsApi: jasmine.SpyObj<any>;
   let mockProgramPhaseService: jasmine.SpyObj<any>;

@@ -1,5 +1,5 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { Program } from 'src/app/models/program.model';
@@ -17,14 +17,16 @@ describe('MetricsComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let testHost: TestHostComponent;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [MetricsComponent, TestHostComponent],
-      imports: [TranslateModule.forRoot()],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(TranslatableStringService)],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [MetricsComponent, TestHostComponent],
+        imports: [TranslateModule.forRoot()],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [provideMagicalMock(TranslatableStringService)],
+      }).compileComponents();
+    }),
+  );
 
   let mockTranslatableStringService: jasmine.SpyObj<any>;
 

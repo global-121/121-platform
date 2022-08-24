@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
@@ -10,17 +10,19 @@ describe('BulkImportComponent', () => {
   let component: BulkImportComponent;
   let fixture: ComponentFixture<BulkImportComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [BulkImportComponent],
-      imports: [TranslateModule.forRoot()],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMagicalMock(AuthService),
-        provideMagicalMock(ProgramsServiceApiService),
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [BulkImportComponent],
+        imports: [TranslateModule.forRoot()],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          provideMagicalMock(AuthService),
+          provideMagicalMock(ProgramsServiceApiService),
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(BulkImportComponent);

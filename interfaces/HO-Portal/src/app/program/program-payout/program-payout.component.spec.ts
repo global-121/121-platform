@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -16,21 +16,23 @@ describe('ProgramPayoutComponent', () => {
 
   const mockProgramId = 1;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProgramPayoutComponent],
-      imports: [TranslateModule.forRoot(), FormsModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMagicalMock(AuthService),
-        provideMagicalMock(ProgramsServiceApiService),
-        provideMagicalMock(PastPaymentsService),
-        {
-          provide: AlertController,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProgramPayoutComponent],
+        imports: [TranslateModule.forRoot(), FormsModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          provideMagicalMock(AuthService),
+          provideMagicalMock(ProgramsServiceApiService),
+          provideMagicalMock(PastPaymentsService),
+          {
+            provide: AlertController,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   let mockAuthService: jasmine.SpyObj<any>;
   let mockProgramsApi: jasmine.SpyObj<any>;
