@@ -171,7 +171,7 @@ ion-icon {
   margin-left: auto;
 }
 .select-popover {
-  .popover-content {
+  &::part(content) {
     --width: fit-content;
     --max-width: 100%;
 
@@ -185,7 +185,7 @@ ion-icon {
   --backdrop-opacity: 0%;
 
   &.table-filter-popover--multiple-choice {
-    .popover-content {
+    &::part(content) {
       --width: inherit;
       --min-width: 260px;
       --max-width: 400px;
