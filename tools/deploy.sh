@@ -17,7 +17,6 @@ function deploy() {
   local repo_ho=$repo_interfaces/HO-Portal
   local repo_aw=$repo_interfaces/AW-App
 
-  ${GLOBAL_121_STATUS_URL:="http://localhost:3000/docs/"}
   local services_status_url=$GLOBAL_121_STATUS_URL
 
   local web_root=$GLOBAL_121_WEB_ROOT
@@ -49,7 +48,9 @@ function deploy() {
 
 * Full deploy of target branch "release/v2":    $0 release/v2
 
-* Only deploy a specific interface:             $0 --only pa
+* Only deploy the back-end service(s):          $0 --only-services
+
+* Only deploy a specific interface:             $0 --only-interface pa
 
 * See this help:                                $0 --help
 
@@ -95,7 +96,7 @@ END
     then
       log "Checking out: $target"
 
-      git checkout -b "$target" --track upstream/"$target"
+      git checkout -B "$target" --track upstream/"$target"
     else
       log "Pulling latest changes"
 
@@ -144,6 +145,13 @@ END
 
     cd "$repo_services" || return
     docker image prune --filter "until=168h" --force
+  }
+
+  function do_services() {
+    enable_maintenance_mode
+    build_services
+    disable_maintenance_mode_when_done
+    cleanup_services
   }
 
   function build_interface() {
@@ -224,20 +232,17 @@ END
     log "Deployed: $GLOBAL_121_VERSION"
   }
 
-  function full_deployment() {
+  function do_deployment() {
     local target=$1
 
-    log "Doing full deployment with target: $target"
+    log "Doing a deployment with target: $target"
     setup_log_file
 
     clear_version
     update_code "$target"
     set_version
 
-    enable_maintenance_mode
-    build_services
-    disable_maintenance_mode_when_done
-    cleanup_services
+    do_services
 
     do_interface "pa"
     do_interface "aw"
@@ -248,6 +253,9 @@ END
     publish_version
 
     log "Done."
+
+    # Return to start:
+    cd "$repo" || return
 
     # Restart as the final step because it will kill the process running this script
     restart_webhook_service
@@ -262,10 +270,15 @@ END
         get_help
         exit 0
         ;;
-      -o | --only )
+      --only-interface )
         shift;
-        local only=$1
-        do_interface "$only"
+        local onlyInterface=$1
+        do_interface "$onlyInterface"
+        exit 0
+        ;;
+      --only-services )
+        shift;
+        do_services
         exit 0
         ;;
     esac;
@@ -277,11 +290,9 @@ END
   fi
 
   # If no options provided, do a full deployment:
-  full_deployment "$target"
+  do_deployment "$target"
+  exit 0
 
-
-  # Return to start:
-  cd "$repo" || return
 }
 
 deploy "$@"
