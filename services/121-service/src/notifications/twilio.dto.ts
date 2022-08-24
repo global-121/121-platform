@@ -1,4 +1,4 @@
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 
@@ -10,33 +10,33 @@ export enum TwilioStatus {
 }
 
 export class TwilioMessagesCreateDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   public readonly body: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   public readonly messagingServiceSid: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   @IsOptional()
   public readonly from: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   public readonly statusCallback: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   public readonly to: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   @IsOptional()
   public readonly mediaUrl: string;
 
-  @ApiModelProperty({ example: IntersolvePayoutStatus.InitialMessage })
+  @ApiProperty({ example: IntersolvePayoutStatus.InitialMessage })
   @IsString()
   @IsOptional()
   public readonly messageType: string;
@@ -47,43 +47,43 @@ class AccountSidObject {
 }
 
 export class TwilioValidateRequestDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   public readonly authToken: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   public readonly signature: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   public readonly callbackUrl: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   public readonly body: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   @IsOptional()
   public readonly accountSidObject: AccountSidObject;
 }
 
 export class TwilioStatusCallbackDto {
-  @ApiModelProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
+  @ApiProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
   @IsString()
   public MessageSid: string;
 
-  @ApiModelProperty({ example: TwilioStatus.delivered })
+  @ApiProperty({ example: TwilioStatus.delivered })
   @IsString()
   public MessageStatus: TwilioStatus;
 
-  @ApiModelProperty({ example: 'Twilio Error: []' })
+  @ApiProperty({ example: 'Twilio Error: []' })
   @IsString()
   @IsOptional()
   public ErrorMessage: string;
 
-  @ApiModelProperty({ example: '63015' })
+  @ApiProperty({ example: '63015' })
   @IsString()
   @IsOptional()
   public ErrorCode: string;
@@ -94,28 +94,28 @@ export class TwilioStatusCallbackDto {
 }
 
 export class TwilioIncomingCallbackDto {
-  @ApiModelProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
+  @ApiProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
   @IsString()
   @IsOptional()
   public MessageSid: string;
 
-  @ApiModelProperty({ example: 'whatsapp:+31600000000' })
+  @ApiProperty({ example: 'whatsapp:+31600000000' })
   @IsString()
   public From: string;
 
-  @ApiModelProperty({ example: '31600000000' })
+  @ApiProperty({ example: '31600000000' })
   @IsString()
   @IsOptional()
   public WaId: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
   })
   @IsString()
   @IsOptional()
   public To: string;
 
-  @ApiModelProperty({ example: 'Yes' })
+  @ApiProperty({ example: 'Yes' })
   @IsString()
   @IsOptional()
   public Body: string;

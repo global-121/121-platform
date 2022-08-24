@@ -1,4 +1,4 @@
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsString,
@@ -21,35 +21,35 @@ import {
 } from './create-program-custom-attribute.dto';
 
 export class CreateProgramDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   public readonly location: string;
 
-  @ApiModelProperty({ example: { en: 'title' } })
+  @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
   public readonly titlePortal: JSON;
 
-  @ApiModelProperty({ example: { en: 'title' } })
+  @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
   public readonly titlePaApp: JSON;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   public readonly ngo: string;
 
-  @ApiModelProperty({ example: '2020-05-23T18:25:43.511Z' })
+  @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
   @IsDateString()
   public readonly startDate: Date;
 
-  @ApiModelProperty({ example: '2020-05-23T18:25:43.511Z' })
+  @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
   @IsDateString()
   public readonly endDate: Date;
 
-  @ApiModelProperty({ example: 'MWK' })
+  @ApiProperty({ example: 'MWK' })
   @IsNotEmpty()
   @IsString()
   @Length(3, 3, {
@@ -57,23 +57,23 @@ export class CreateProgramDto {
   })
   public readonly currency: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   public readonly distributionFrequency: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNumber()
   public readonly distributionDuration: number;
 
-  @ApiModelProperty({ example: 500 })
+  @ApiProperty({ example: 500 })
   public readonly fixedTransferValue: number;
 
-  @ApiModelProperty({ example: '0 + 1 * nrOfHouseHoldMembers' })
+  @ApiProperty({ example: '0 + 1 * nrOfHouseHoldMembers' })
   @IsOptional()
   @IsString()
   public readonly paymentAmountMultiplierFormula: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: [
       {
         id: 1,
@@ -89,32 +89,32 @@ export class CreateProgramDto {
   @Type(() => FinancialServiceProviderEntity)
   public readonly financialServiceProviders: FinancialServiceProviderEntity[];
 
-  @ApiModelProperty({ example: 'minimumScore' })
+  @ApiProperty({ example: 'minimumScore' })
   @IsIn(['minimumScore', 'highestScoresX'])
   public readonly inclusionCalculationType: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNumber()
   public readonly minimumScore: number;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNumber()
   public readonly highestScoresX: number;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsBoolean()
   public readonly validation: boolean;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsBoolean()
   public readonly validationByQr: boolean;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: { en: 'Identity card;Health Insurance;Proof of children' },
   })
   public readonly meetingDocuments: JSON;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: {
       en: {
         included: 'You have been included in this program.',
@@ -129,11 +129,11 @@ export class CreateProgramDto {
   })
   public readonly notifications: JSON;
 
-  @ApiModelProperty({ example: '+000 000 00 00' })
+  @ApiProperty({ example: '+000 000 00 00' })
   @IsString()
   public readonly phoneNumberPlaceholder: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: [
       {
         name: 'nameParterOrganization',
@@ -151,7 +151,7 @@ export class CreateProgramDto {
   @Type(() => CreateProgramCustomAttributeDto)
   public readonly programCustomAttributes: CreateProgramCustomAttributeDto[];
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: [
       {
         name: 'id_number',
@@ -225,9 +225,9 @@ export class CreateProgramDto {
   @Type(() => CreateProgramQuestionDto)
   public readonly programQuestions: CreateProgramQuestionDto[];
 
-  @ApiModelProperty({ example: { en: 'description' } })
+  @ApiProperty({ example: { en: 'description' } })
   public readonly description: JSON;
 
-  @ApiModelProperty({ example: { en: 'descCashType' } })
+  @ApiProperty({ example: { en: 'descCashType' } })
   public readonly descCashType: JSON;
 }

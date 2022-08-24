@@ -7,7 +7,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { FspName } from '../../fsp/financial-service-provider.entity';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
@@ -19,12 +19,12 @@ export enum ImportStatus {
 }
 
 export class BulkImportDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   public phoneNumber: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNumber()
   @IsInt()
   @Min(1)
@@ -52,14 +52,14 @@ const fspArray = Object.values(FspName).map(item => String(item));
 const languageArray = Object.values(LanguageEnum).map(item => String(item));
 
 export class ImportRegistrationsDto extends BulkImportDto {
-  @ApiModelProperty({
+  @ApiProperty({
     enum: languageArray,
     example: languageArray.join(' | '),
   })
   @IsIn(languageArray)
   public preferredLanguage: LanguageEnum;
 
-  @ApiModelProperty({
+  @ApiProperty({
     enum: fspArray,
     example: fspArray.join(' | '),
   })

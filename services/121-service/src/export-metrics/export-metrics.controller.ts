@@ -1,10 +1,10 @@
 import {
   ApiBearerAuth,
-  ApiUseTags,
+  ApiTags,
   ApiOperation,
   ApiResponse,
-  ApiImplicitParam,
-  ApiImplicitQuery,
+  ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import {
   UseGuards,
@@ -27,7 +27,7 @@ import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 
 @UseGuards(PermissionsGuard)
-@ApiUseTags('export-metrics')
+@ApiTags('export-metrics')
 @Controller('export-metrics')
 export class ExportMetricsController {
   private readonly exportMetricsService: ExportMetricsService;
@@ -36,7 +36,7 @@ export class ExportMetricsController {
   }
   @Permissions(PermissionEnum.RegistrationPersonalEXPORT)
   @ApiOperation({
-    title: 'Get an exported list of people',
+    summary: 'Get an exported list of people',
   })
   @ApiResponse({
     status: 200,
@@ -57,28 +57,28 @@ export class ExportMetricsController {
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ title: 'Get metrics by program-id' })
-  @ApiImplicitParam({
+  @ApiOperation({ summary: 'Get metrics by program-id' })
+  @ApiParam({
     name: 'programId',
     required: true,
     type: 'integer',
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'payment',
     required: false,
     type: 'integer',
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'month',
     required: false,
     type: 'integer',
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'year',
     required: false,
     type: 'integer',
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'fromStart',
     required: false,
     type: 'integer',
@@ -105,8 +105,8 @@ export class ExportMetricsController {
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ title: 'Get payments with state sums by program-id' })
-  @ApiImplicitParam({
+  @ApiOperation({ summary: 'Get payments with state sums by program-id' })
+  @ApiParam({
     name: 'programId',
     required: true,
     type: 'integer',
@@ -124,9 +124,9 @@ export class ExportMetricsController {
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ title: 'Get monitoring data' })
+  @ApiOperation({ summary: 'Get monitoring data' })
   @ApiResponse({ status: 200, description: 'All monitoring data of a program' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Get('/monitoring/:programId')
   public async getMonitoringData(@Param() params): Promise<any[]> {
     return await this.exportMetricsService.getMonitoringData(
@@ -135,8 +135,8 @@ export class ExportMetricsController {
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ title: 'Get total transfer amounts of people to pay out' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Get total transfer amounts of people to pay out' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description: 'Total number of included per program',

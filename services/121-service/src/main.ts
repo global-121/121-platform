@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import {
   APP_TITLE,
   APP_VERSION,
@@ -37,7 +37,7 @@ async function bootstrap(): Promise<void> {
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
     .setBasePath(BASE_PATH)
-    .setSchemes(SCHEME)
+    .addServer(SCHEME)
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/docs', app, document, {
@@ -50,7 +50,11 @@ async function bootstrap(): Promise<void> {
       operationsSorter: 'alpha',
     },
   });
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      exceptionFactory: errors => new BadRequestException(errors),
+    }),
+  );
   app.use(bodyParser.json({ limit: '5mb' }));
   app.use(
     bodyParser.urlencoded({

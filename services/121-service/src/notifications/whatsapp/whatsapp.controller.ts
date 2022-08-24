@@ -1,12 +1,12 @@
 import { WhatsappService } from './whatsapp.service';
 import { Controller, Post, Body } from '@nestjs/common';
-import { ApiUseTags, ApiConsumes } from '@nestjs/swagger';
+import { ApiTags, ApiConsumes } from '@nestjs/swagger';
 import {
   TwilioStatusCallbackDto,
   TwilioIncomingCallbackDto,
 } from '../twilio.dto';
 
-@ApiUseTags('notifications')
+@ApiTags('notifications')
 @Controller('notifications/whatsapp')
 export class WhatsappController {
   private readonly whatsappService: WhatsappService;

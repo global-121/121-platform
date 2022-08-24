@@ -1,4 +1,4 @@
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsOptional,
   IsString,
@@ -15,40 +15,40 @@ import { Type } from 'class-transformer';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 
 export class UpdateProgramDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsBoolean()
   public readonly published: boolean;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsString()
   public readonly location: string;
 
-  @ApiModelProperty({ example: { en: 'title' } })
+  @ApiProperty({ example: { en: 'title' } })
   @IsOptional()
   public readonly titlePortal: JSON;
 
-  @ApiModelProperty({ example: { en: 'title' } })
+  @ApiProperty({ example: { en: 'title' } })
   @IsOptional()
   public readonly titlePaApp: JSON;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsString()
   public readonly ngo: string;
 
-  @ApiModelProperty({ example: '2020-05-23T18:25:43.511Z' })
+  @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsOptional()
   @IsDateString()
   public readonly startDate: Date;
 
-  @ApiModelProperty({ example: '2020-05-23T18:25:43.511Z' })
+  @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsOptional()
   @IsDateString()
   public readonly endDate: Date;
 
-  @ApiModelProperty({ example: 'MWK' })
+  @ApiProperty({ example: 'MWK' })
   @IsOptional()
   @IsString()
   @Length(3, 3, {
@@ -56,26 +56,26 @@ export class UpdateProgramDto {
   })
   public readonly currency: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsString()
   public readonly distributionFrequency: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsNumber()
   public readonly distributionDuration: number;
 
-  @ApiModelProperty({ example: 500 })
+  @ApiProperty({ example: 500 })
   @IsOptional()
   public readonly fixedTransferValue: number;
 
-  @ApiModelProperty({ example: '0 + 1 * nrOfHouseHoldMembers' })
+  @ApiProperty({ example: '0 + 1 * nrOfHouseHoldMembers' })
   @IsOptional()
   @IsString()
   public readonly paymentAmountMultiplierFormula: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: [
       {
         id: 1,
@@ -92,38 +92,38 @@ export class UpdateProgramDto {
   @Type(() => FinancialServiceProviderEntity)
   public readonly financialServiceProviders: FinancialServiceProviderEntity[];
 
-  @ApiModelProperty({ example: 'minimumScore' })
+  @ApiProperty({ example: 'minimumScore' })
   @IsOptional()
   @IsIn(['minimumScore', 'highestScoresX'])
   public readonly inclusionCalculationType: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsNumber()
   public readonly minimumScore: number;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsNumber()
   public readonly highestScoresX: number;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsBoolean()
   public readonly validation: boolean;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsBoolean()
   public readonly validationByQr: boolean;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: { en: 'Identity card;Health Insurance;Proof of children' },
   })
   @IsOptional()
   public readonly meetingDocuments: JSON;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: {
       en: {
         included: 'You have been included in this program.',
@@ -139,16 +139,16 @@ export class UpdateProgramDto {
   @IsOptional()
   public readonly notifications: JSON;
 
-  @ApiModelProperty({ example: '+000 000 00 00' })
+  @ApiProperty({ example: '+000 000 00 00' })
   @IsString()
   @IsOptional()
   public readonly phoneNumberPlaceholder: string;
 
-  @ApiModelProperty({ example: { en: 'description' } })
+  @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
   public readonly description: JSON;
 
-  @ApiModelProperty({ example: { en: 'descCashType' } })
+  @ApiProperty({ example: { en: 'descCashType' } })
   @IsOptional()
   public readonly descCashType: JSON;
 }

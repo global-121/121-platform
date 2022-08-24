@@ -5,29 +5,29 @@ import {
   IsNumber,
   IsArray,
 } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { ProgramAnswer } from './store-program-answers.dto';
 
 export class AttributeDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   public readonly attributeId: number;
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   public readonly attribute: string;
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
   public readonly answer: string;
 }
 
 export class ValidationIssueDataDto {
-  @ApiModelProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
+  @ApiProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
   @Length(29, 36)
   public readonly referenceId: string;
-  @ApiModelProperty({
+  @ApiProperty({
     example: [
       {
         attributeId: 1,

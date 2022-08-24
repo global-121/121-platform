@@ -1,3 +1,4 @@
+import { IMAGE_UPLOAD_API_FORMAT } from './../../../shared/file-upload-api-format';
 import {
   Post,
   Body,
@@ -11,11 +12,11 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
-  ApiUseTags,
+  ApiTags,
   ApiResponse,
   ApiOperation,
-  ApiImplicitFile,
-  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
 } from '@nestjs/swagger';
 import { IntersolveService } from './intersolve.service';
 import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
@@ -26,14 +27,14 @@ import { Permissions } from '../../../permissions.decorator';
 import { PermissionEnum } from '../../../user/permission.enum';
 
 @UseGuards(PermissionsGuard)
-@ApiUseTags('payments/intersolve')
+@ApiTags('payments/intersolve')
 @Controller('payments/intersolve')
 export class IntersolveController {
   public constructor(private intersolveService: IntersolveService) {}
 
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
-    title: 'Export Intersolve vouchers',
+    summary: 'Export Intersolve vouchers',
   })
   @ApiResponse({ status: 200, description: 'Vouchers exported' })
   @Post('export-voucher')
@@ -55,7 +56,7 @@ export class IntersolveController {
 
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
-    title: 'Get Intersolve voucher balance',
+    summary: 'Get Intersolve voucher balance',
   })
   @ApiResponse({ status: 200, description: 'Vouchers balance retrieved' })
   @Post('balance')
@@ -69,7 +70,7 @@ export class IntersolveController {
   }
 
   @ApiOperation({
-    title: 'Get intersolve instructions',
+    summary: 'Get intersolve instructions',
   })
   @ApiResponse({ status: 200, description: 'Get intersolve instructions' })
   @Get('instruction')
@@ -87,13 +88,10 @@ export class IntersolveController {
 
   @Permissions(PermissionEnum.PaymentVoucherInstructionUPDATE)
   @ApiOperation({
-    title: 'Post intersolve instructions',
+    summary: 'Post intersolve instructions',
   })
-  @ApiImplicitFile({
-    name: 'image',
-    required: true,
-    description: 'Upload image with voucher instructions (PNG format only',
-  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody(IMAGE_UPLOAD_API_FORMAT)
   @ApiResponse({ status: 200, description: 'Post intersolve instructions' })
   @Post('instruction')
   @UseInterceptors(FileInterceptor('image'))

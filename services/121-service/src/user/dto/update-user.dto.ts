@@ -1,8 +1,8 @@
 import { IsNotEmpty } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   public readonly password: string;
 }

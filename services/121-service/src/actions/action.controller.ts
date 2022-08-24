@@ -2,7 +2,7 @@ import { Post, Body, Controller, UseGuards } from '@nestjs/common';
 import { ActionService } from './action.service';
 import { User } from '../user/user.decorator';
 import {
-  ApiUseTags,
+  ApiTags,
   ApiBearerAuth,
   ApiResponse,
   ApiOperation,
@@ -14,7 +14,7 @@ import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 
 @UseGuards(PermissionsGuard)
-@ApiUseTags('actions')
+@ApiTags('actions')
 @Controller('actions')
 export class ActionController {
   private readonly actionService: ActionService;
@@ -23,7 +23,7 @@ export class ActionController {
   }
 
   @Permissions(PermissionEnum.ActionREAD)
-  @ApiOperation({ title: 'Get latest action of type ' })
+  @ApiOperation({ summary: 'Get latest action of type ' })
   @ApiResponse({
     status: 200,
     description: 'Returned latest action for given program-id and action-type.',
@@ -39,7 +39,7 @@ export class ActionController {
   }
 
   @Permissions(PermissionEnum.ActionCREATE)
-  @ApiOperation({ title: 'Save action by id' })
+  @ApiOperation({ summary: 'Save action by id' })
   @ApiResponse({ status: 200, description: 'Action saved' })
   @Post('save')
   public async saveAction(

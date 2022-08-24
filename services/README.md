@@ -32,10 +32,6 @@ Run (from `/services` folder):
 
     docker-compose -f  docker-compose.yml -f  docker-compose.development.yml up -d --build
 
-To follow the logs of the respective services run:
-
-    docker-compose logs --follow  121-service  PA-accounts-service
-
 Or other relevant commands (see README's in their subfolders).
 
 ### Re-use `node_modules` in your local IDE

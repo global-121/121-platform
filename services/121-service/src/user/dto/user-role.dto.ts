@@ -1,17 +1,17 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { PermissionEnum } from '../permission.enum';
 
 export class CreateUserRoleDto {
-  @ApiModelProperty({ example: 'new_user_role' })
+  @ApiProperty({ example: 'new_user_role' })
   @IsNotEmpty()
   @IsString()
   public readonly role: string;
-  @ApiModelProperty({ example: 'New user role label' })
+  @ApiProperty({ example: 'New user role label' })
   @IsString()
   public readonly label: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     enum: PermissionEnum,
     example: Object.values(PermissionEnum),
   })
@@ -19,11 +19,11 @@ export class CreateUserRoleDto {
 }
 
 export class UpdateUserRoleDto {
-  @ApiModelProperty({ example: 'Updated user role label' })
+  @ApiProperty({ example: 'Updated user role label' })
   @IsString()
   public readonly label: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     enum: PermissionEnum,
     example: Object.values(PermissionEnum),
   })

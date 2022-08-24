@@ -1,12 +1,12 @@
 import { IsNotEmpty, MinLength } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserPersonAffectedDto {
-  @ApiModelProperty({ example: 'test-pa' })
+  @ApiProperty({ example: 'test-pa' })
   @IsNotEmpty()
   public readonly username: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   @MinLength(4)
   public readonly password: string;

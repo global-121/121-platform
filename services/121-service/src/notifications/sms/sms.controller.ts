@@ -1,8 +1,8 @@
 import { SmsService } from './sms.service';
 import { Controller, Post, Body } from '@nestjs/common';
-import { ApiUseTags, ApiConsumes } from '@nestjs/swagger';
+import { ApiTags, ApiConsumes } from '@nestjs/swagger';
 
-@ApiUseTags('notifications')
+@ApiTags('notifications')
 @Controller('notifications/sms')
 export class SmsController {
   private readonly smsService: SmsService;

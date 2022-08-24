@@ -1,7 +1,7 @@
 import { SeedProgramDrc } from './seed-program-drc';
 import { SeedProgramLbn } from './seed-program-lbn';
 import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
-import { ApiOperation, ApiModelProperty } from '@nestjs/swagger';
+import { ApiOperation, ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Connection } from 'typeorm';
 import { SeedProgramValidation } from './seed-program-validation';
@@ -23,11 +23,11 @@ enum SeedScript {
 }
 
 class ResetDto {
-  @ApiModelProperty({ example: 'fill_in_secret' })
+  @ApiProperty({ example: 'fill_in_secret' })
   @IsNotEmpty()
   @IsString()
   public readonly secret: string;
-  @ApiModelProperty({
+  @ApiProperty({
     enum: SeedScript,
     example: Object.values(SeedScript).join(' | '),
   })
@@ -38,7 +38,7 @@ class ResetDto {
 export class ScriptsController {
   public constructor(private connection: Connection) {}
 
-  @ApiOperation({ title: 'Reset database' })
+  @ApiOperation({ summary: 'Reset database' })
   @Post('/reset')
   public async resetDb(@Body() body: ResetDto, @Res() res): Promise<string> {
     if (body.secret !== process.env.RESET_SECRET) {

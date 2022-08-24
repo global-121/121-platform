@@ -13,11 +13,11 @@ import { CreateProgramDto } from './dto/create-program.dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
 
 import {
-  ApiUseTags,
+  ApiTags,
   ApiBearerAuth,
   ApiResponse,
   ApiOperation,
-  ApiImplicitParam,
+  ApiParam,
 } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
@@ -31,7 +31,7 @@ import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-at
 import { Attribute } from '../registration/enum/custom-data-attributes';
 
 @UseGuards(PermissionsGuard)
-@ApiUseTags('programs')
+@ApiTags('programs')
 @Controller('programs')
 export class ProgramController {
   private readonly programService: ProgramService;
@@ -39,8 +39,8 @@ export class ProgramController {
     this.programService = programService;
   }
 
-  @ApiOperation({ title: 'Get program by id' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Get program by id' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({ status: 200, description: 'Return program by id.' })
   @Get(':programId')
   public async findOne(@Param() params): Promise<ProgramEntity> {
@@ -48,14 +48,14 @@ export class ProgramController {
   }
 
   @Permissions(PermissionEnum.ProgramAllREAD)
-  @ApiOperation({ title: 'Get all programs' })
+  @ApiOperation({ summary: 'Get all programs' })
   @ApiResponse({ status: 200, description: 'Return all programs.' })
   @Get()
   public async findAll(): Promise<ProgramsRO> {
     return await this.programService.findAll();
   }
 
-  @ApiOperation({ title: 'Get published programs' })
+  @ApiOperation({ summary: 'Get published programs' })
   @ApiResponse({ status: 200, description: 'Return all published programs.' })
   @Get('published/all')
   public async getPublishedPrograms(): Promise<ProgramsRO> {
@@ -63,7 +63,7 @@ export class ProgramController {
   }
 
   @Permissions(PermissionEnum.ProgramCREATE)
-  @ApiOperation({ title: 'Create program' })
+  @ApiOperation({ summary: 'Create program' })
   @ApiResponse({
     status: 201,
     description: 'The program has been successfully created.',
@@ -78,7 +78,7 @@ export class ProgramController {
 
   @Permissions(PermissionEnum.ProgramPhaseUPDATE)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('change-phase/:programId')
   public async changePhase(
     @Param() params,
@@ -91,8 +91,8 @@ export class ProgramController {
   }
 
   @Permissions(PermissionEnum.ProgramUPDATE)
-  @ApiOperation({ title: 'Update program' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Update program' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/update')
   public async updateProgram(
     @Param() params,
@@ -105,8 +105,8 @@ export class ProgramController {
   }
 
   @Permissions(PermissionEnum.ProgramQuestionUPDATE)
-  @ApiOperation({ title: 'Update program question' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Update program question' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/update/program-question')
   public async updateProgramQuestion(
     @Body() updateProgramQuestionDto: UpdateProgramQuestionDto,
@@ -117,9 +117,9 @@ export class ProgramController {
   }
 
   @Permissions(PermissionEnum.ProgramQuestionDELETE)
-  @ApiOperation({ title: 'Delete program question AND related answers' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiImplicitParam({
+  @ApiOperation({ summary: 'Delete program question AND related answers' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({
     name: 'programQuestionId',
     required: true,
     type: 'integer',
@@ -135,8 +135,8 @@ export class ProgramController {
   }
 
   @Permissions(PermissionEnum.ProgramCustomAttributeUPDATE)
-  @ApiOperation({ title: 'Update program custom attributes' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Update program custom attributes' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post(':programId/update/program-custom-attributes')
   public async updateProgramCustomAttributes(
     @Param() params,
@@ -148,9 +148,9 @@ export class ProgramController {
     );
   }
 
-  @ApiOperation({ title: 'Get PA-table attributes for given program' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiImplicitParam({ name: 'phase', required: false, type: 'string' })
+  @ApiOperation({ summary: 'Get PA-table attributes for given program' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'phase', required: false, type: 'string' })
   @ApiResponse({
     status: 200,
     description: 'Return PA-table attributes by program-id.',
