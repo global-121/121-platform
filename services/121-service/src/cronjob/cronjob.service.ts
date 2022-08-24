@@ -9,6 +9,7 @@ import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/
 import { IntersolveRequestEntity } from '../payments/fsp-integration/intersolve/intersolve-request.entity';
 import { IntersolveService } from '../payments/fsp-integration/intersolve/intersolve.service';
 import { ProgramEntity } from '../programs/program.entity';
+import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../registration/registration.entity';
 
 @Injectable()
@@ -91,8 +92,13 @@ export class CronjobService {
       .getRawMany();
 
     unsentIntersolveBarcodes.forEach(async unsentIntersolveBarcode => {
-      const fromNumber = unsentIntersolveBarcode.whatsappPhoneNumber;
       const referenceId = unsentIntersolveBarcode.referenceId;
+      const registration = await this.registrationRepository.findOne({
+        where: { referenceId: referenceId },
+      });
+      const fromNumber = await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.whatsappPhoneNumber,
+      );
       const language = await this.getLanguageForRegistration(referenceId);
       let whatsappPayment = this.getNotificationText(
         program,
@@ -102,10 +108,6 @@ export class CronjobService {
       whatsappPayment = whatsappPayment
         .split('{{1}}')
         .join(unsentIntersolveBarcode.amount);
-
-      const registration = await this.registrationRepository.findOne({
-        where: { referenceId: referenceId },
-      });
 
       await this.whatsappService.sendWhatsapp(
         whatsappPayment,
