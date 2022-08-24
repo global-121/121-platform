@@ -92,7 +92,7 @@
             ngDefaultControl
             [(ngModel)]="theFormModels[question.code]"
             type="text"
-            [placeholder]="question.placeholder"
+            [placeholder]="question.placeholder || undefined"
             [pattern]="question.pattern ? question.pattern : '.*\\S+.*'"
             [required]="true"
             [name]="question.code"

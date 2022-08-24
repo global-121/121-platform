@@ -14,7 +14,7 @@ export interface InputProps {
   checkboxChecked: boolean;
   inputRequired: boolean;
   explanation?: string;
-  placeholder?: string;
+  placeholder?: string | undefined;
   defaultValue?: string;
   minLength: number;
 }
