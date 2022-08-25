@@ -1,28 +1,28 @@
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 import { ExportType } from '../../export-metrics/dto/export-details';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 
 export class FspAttributeDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   public readonly fsp: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   public readonly name: string;
 
-  @ApiModelProperty({ example: { en: 'FSP display name' } })
+  @ApiProperty({ example: { en: 'FSP display name' } })
   @IsOptional()
   public label: JSON;
 
-  @ApiModelProperty({ example: { en: 'FSP display name' } })
+  @ApiProperty({ example: { en: 'FSP display name' } })
   @IsOptional()
   public placeholder: JSON;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: [
       {
         option: 'true',
@@ -41,7 +41,7 @@ export class FspAttributeDto {
   @IsOptional()
   public options: JSON;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: [
       ExportType.allPeopleAffected,
       ExportType.included,
@@ -51,11 +51,11 @@ export class FspAttributeDto {
   @IsOptional()
   public export: JSON;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   public answerType: string;
 
-  @ApiModelProperty({
+  @ApiProperty({
     example: [
       ProgramPhase.registrationValidation,
       ProgramPhase.inclusion,
@@ -67,12 +67,12 @@ export class FspAttributeDto {
 }
 
 export class UpdateFspDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   public readonly fsp: string;
 
-  @ApiModelProperty({ example: { en: 'FSP display name' } })
+  @ApiProperty({ example: { en: 'FSP display name' } })
   @IsOptional()
   public readonly fspDisplayName: JSON;
 }

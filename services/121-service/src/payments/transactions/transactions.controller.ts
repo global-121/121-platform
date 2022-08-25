@@ -9,11 +9,11 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiImplicitParam,
-  ApiImplicitQuery,
+  ApiParam,
+  ApiQuery,
   ApiOperation,
   ApiResponse,
-  ApiUseTags,
+  ApiTags,
 } from '@nestjs/swagger';
 import {
   GetTransactionDto,
@@ -25,7 +25,7 @@ import { Permissions } from '../../permissions.decorator';
 import { PermissionEnum } from '../../user/permission.enum';
 
 @UseGuards(PermissionsGuard)
-@ApiUseTags('payments/transactions')
+@ApiTags('payments/transactions')
 @Controller()
 export class TransactionsController {
   public constructor(
@@ -33,9 +33,9 @@ export class TransactionsController {
   ) {}
 
   @Permissions(PermissionEnum.PaymentTransactionREAD)
-  @ApiOperation({ title: 'Get all transactions' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiImplicitQuery({
+  @ApiOperation({ summary: 'Get all transactions' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiQuery({
     name: 'minPayment',
     required: false,
     type: 'integer',
@@ -56,8 +56,8 @@ export class TransactionsController {
   }
 
   @Permissions(PermissionEnum.PaymentTransactionREAD)
-  @ApiOperation({ title: 'Get a single transaction' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Get a single transaction' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
   })

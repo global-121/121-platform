@@ -1,87 +1,87 @@
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional, IsIn } from 'class-validator';
 
 export class AfricasTalkingNotificationDto {
-  @ApiModelProperty({ example: 'ATPid_1cbe5df027aca34ff15b885be975bfcd' })
+  @ApiProperty({ example: 'ATPid_1cbe5df027aca34ff15b885be975bfcd' })
   @IsString()
   public readonly transactionId: string;
 
-  @ApiModelProperty({ example: 'MobileB2C' })
+  @ApiProperty({ example: 'MobileB2C' })
   @IsString()
   @IsIn(['MobileB2C'])
   public readonly category: string;
 
-  @ApiModelProperty({ example: 'Athena' })
+  @ApiProperty({ example: 'Athena' })
   @IsString()
   @IsIn(['Mpesa', 'Athena', 'Admin'])
   public readonly provider: string;
 
-  @ApiModelProperty({ example: 'example' })
+  @ApiProperty({ example: 'example' })
   @IsOptional()
   @IsString()
   public readonly providerRefId: string;
 
-  @ApiModelProperty({ example: 'example' })
+  @ApiProperty({ example: 'example' })
   @IsString()
   public readonly providerChannel: string;
 
-  @ApiModelProperty({ example: 'example' })
+  @ApiProperty({ example: 'example' })
   @IsOptional()
   @IsString()
   public readonly clientAccount: string;
 
-  @ApiModelProperty({ example: 'test-product' })
+  @ApiProperty({ example: 'test-product' })
   @IsString()
   public readonly productName: string;
 
-  @ApiModelProperty({ example: 'Wallet' })
+  @ApiProperty({ example: 'Wallet' })
   @IsString()
   @IsIn(['PhoneNumber', 'BankAccount', 'Card', 'Wallet'])
   public readonly sourceType: string;
 
-  @ApiModelProperty({ example: 'PaymentWallet' })
+  @ApiProperty({ example: 'PaymentWallet' })
   @IsString()
   public readonly source: string;
 
-  @ApiModelProperty({ example: 'PhoneNumber' })
+  @ApiProperty({ example: 'PhoneNumber' })
   @IsString()
   @IsIn(['PhoneNumber', 'BankAccount', 'Card', 'Wallet'])
   public readonly destinationType: string;
 
-  @ApiModelProperty({ example: '+254711123467' })
+  @ApiProperty({ example: '+254711123467' })
   @IsString()
   public readonly destination: string;
 
-  @ApiModelProperty({ example: 'KES 10.00' })
+  @ApiProperty({ example: 'KES 10.00' })
   @IsString()
   public readonly value: string;
 
-  @ApiModelProperty({ example: 'KES 0.10' })
+  @ApiProperty({ example: 'KES 0.10' })
   @IsOptional()
   @IsString()
   public readonly transactionFee: string;
 
-  @ApiModelProperty({ example: 'KES 0.10' })
+  @ApiProperty({ example: 'KES 0.10' })
   @IsOptional()
   @IsString()
   public readonly providerFee: string;
 
-  @ApiModelProperty({ example: 'Success' })
+  @ApiProperty({ example: 'Success' })
   @IsIn(['Success', 'Failed'])
   @IsString()
   public readonly status: string;
 
-  @ApiModelProperty({ example: 'description' })
+  @ApiProperty({ example: 'description' })
   @IsString()
   public readonly description: string;
 
-  @ApiModelProperty({ example: {} })
+  @ApiProperty({ example: {} })
   public readonly requestMetadata: JSON;
 
-  @ApiModelProperty({ example: {} })
+  @ApiProperty({ example: {} })
   public readonly providerMetadata: JSON;
 
-  @ApiModelProperty({ example: '2020-09-02' })
+  @ApiProperty({ example: '2020-09-02' })
   @IsOptional()
   @IsString()
   public readonly transactionDate: string;

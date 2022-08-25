@@ -1,6 +1,6 @@
 import { Post, Body, Controller, UseGuards } from '@nestjs/common';
 import {
-  ApiUseTags,
+  ApiTags,
   ApiResponse,
   ApiOperation,
   ApiBearerAuth,
@@ -9,13 +9,13 @@ import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dt
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { AfricasTalkingService } from './africas-talking.service';
 
-@ApiUseTags('payments/africas-talking')
+@ApiTags('payments/africas-talking')
 @Controller('payments/africas-talking')
 export class AfricasTalkingController {
   public constructor(private africasTalkingService: AfricasTalkingService) {}
 
   @ApiOperation({
-    title:
+    summary:
       'Validation callback used by Africas Talking to request validity of payment to us.',
   })
   @ApiResponse({ status: 200, description: 'Validated' })
@@ -29,7 +29,7 @@ export class AfricasTalkingController {
   }
 
   @ApiOperation({
-    title:
+    summary:
       'Notification callback used by Africas Talking to notify status of payment to us.',
   })
   @ApiResponse({ status: 200, description: 'Notified' })

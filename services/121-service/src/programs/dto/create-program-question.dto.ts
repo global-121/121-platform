@@ -1,4 +1,4 @@
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsString,
@@ -13,14 +13,14 @@ import { AnswerTypes } from '../../registration/enum/custom-data-attributes';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 
 export class CreateProgramQuestionDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   public readonly name: string;
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   public readonly label: JSON;
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   @IsIn([
@@ -31,25 +31,25 @@ export class CreateProgramQuestionDto {
     AnswerTypes.date,
   ])
   public readonly answerType: string;
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   public readonly questionType: string;
-  @ApiModelProperty()
+  @ApiProperty()
   @ValidateIf(o => o.answerType === AnswerTypes.dropdown)
   @ValidateNested()
   @IsDefined()
   @Type(() => CreateOptionsDto)
   public readonly options: JSON;
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   public readonly scoring: JSON;
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   public readonly persistence: boolean;
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   public readonly pattern: string;
-  @ApiModelProperty({
+  @ApiProperty({
     example: [
       ProgramPhase.registrationValidation,
       ProgramPhase.inclusion,
@@ -58,7 +58,7 @@ export class CreateProgramQuestionDto {
   })
   @IsNotEmpty()
   public phases: JSON;
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   public readonly editableInPortal: boolean;
 }

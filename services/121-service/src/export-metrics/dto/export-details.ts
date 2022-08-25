@@ -1,4 +1,4 @@
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { IsNumber } from 'class-validator';
 
@@ -13,19 +13,19 @@ export enum ExportType {
 }
 
 export class ExportDetails {
-  @ApiModelProperty({ example: 1 })
+  @ApiProperty({ example: 1 })
   @IsNumber()
   public readonly programId: number;
 
-  @ApiModelProperty({
+  @ApiProperty({
     enum: ExportType,
     example: Object.values(ExportType).join(' | '),
   })
   public readonly type: ExportType;
 
-  @ApiModelProperty()
+  @ApiProperty()
   public readonly minPayment: number | null;
 
-  @ApiModelProperty()
+  @ApiProperty()
   public readonly maxPayment: number | null;
 }

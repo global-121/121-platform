@@ -1,11 +1,6 @@
 import { WhatsappService } from './whatsapp.service';
 import { Controller, Post, Body, Get, Param } from '@nestjs/common';
-import {
-  ApiUseTags,
-  ApiConsumes,
-  ApiOperation,
-  ApiImplicitParam,
-} from '@nestjs/swagger';
+import { ApiTags, ApiConsumes, ApiOperation, ApiParam } from '@nestjs/swagger';
 import {
   TwilioStatusCallbackDto,
   TwilioIncomingCallbackDto,
@@ -13,7 +8,7 @@ import {
 import { PermissionEnum } from '../../user/permission.enum';
 import { Permissions } from '../../permissions.decorator';
 
-@ApiUseTags('notifications')
+@ApiTags('notifications')
 @Controller('notifications/whatsapp')
 export class WhatsappController {
   private readonly whatsappService: WhatsappService;
@@ -39,7 +34,7 @@ export class WhatsappController {
 
   @Permissions(PermissionEnum.Test)
   @ApiOperation({
-    title:
+    summary:
       'Tests all the templates of the platform. Copy paste the sessionId after this call to /notifications/whatsapp/templates/:sessionId to see the results',
   })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
@@ -49,7 +44,7 @@ export class WhatsappController {
   }
 
   @ApiOperation({
-    title:
+    summary:
       'Url for callbacks from Twilio triggered by a GET request to /notifications/whatsapp/templates',
   })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
@@ -62,10 +57,10 @@ export class WhatsappController {
 
   @Permissions(PermissionEnum.Test)
   @ApiOperation({
-    title:
+    summary:
       'Show results of tests the templates of the platform. Insert the sessionId you got from a GET request to /notifications/whatsapp/templates',
   })
-  @ApiImplicitParam({ name: 'sessionId', required: true, type: 'string' })
+  @ApiParam({ name: 'sessionId', required: true, type: 'string' })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Get('templates/:sessionId')
   public async getWhatsappTemplateResult(@Param() param): Promise<object> {

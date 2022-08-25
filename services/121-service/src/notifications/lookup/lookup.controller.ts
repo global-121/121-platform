@@ -1,9 +1,9 @@
 import { Controller, Post, Body } from '@nestjs/common';
-import { ApiUseTags, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { LookupService } from './lookup.service';
 import { PhoneNumberDto } from './dto/phone-number.dto';
 
-@ApiUseTags('notifications')
+@ApiTags('notifications')
 @Controller('notifications/lookup')
 export class LookupController {
   private readonly lookupService: LookupService;

@@ -1,12 +1,12 @@
 import { Length, IsNumber, IsIn, IsOptional } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { FspName } from '../../fsp/financial-service-provider.entity';
 
 export class SetFspDto {
-  @ApiModelProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
+  @ApiProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
   @Length(29, 36)
   public readonly referenceId: string;
-  @ApiModelProperty({ example: 1 })
+  @ApiProperty({ example: 1 })
   @IsNumber()
   public readonly fspId: number;
 }
@@ -14,16 +14,16 @@ export class SetFspDto {
 const fspArray = Object.values(FspName).map(item => String(item));
 
 export class UpdateChosenFspDto {
-  @ApiModelProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
+  @ApiProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
   @Length(29, 36)
   public readonly referenceId: string;
-  @ApiModelProperty({
+  @ApiProperty({
     enum: fspArray,
     example: fspArray.join(' | '),
   })
   @IsIn(fspArray)
   public readonly newFspName: FspName;
-  @ApiModelProperty({
+  @ApiProperty({
     example: {
       whatsappPhoneNumber: '31600000000',
     },

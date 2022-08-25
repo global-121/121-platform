@@ -1,4 +1,4 @@
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Length, IsString, IsIn } from 'class-validator';
 import { CustomDataAttributes } from '../enum/custom-data-attributes';
 
@@ -11,14 +11,14 @@ export type Attributes = AdditionalAttributes | CustomDataAttributes;
 const attributesArray = Object.values(Attributes).map(item => String(item));
 
 export class UpdateAttributeDto {
-  @ApiModelProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
+  @ApiProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
   @Length(29, 36)
   public readonly referenceId: string;
-  @ApiModelProperty({
+  @ApiProperty({
     enum: attributesArray,
     example: attributesArray.join(' | '),
   })
   public readonly attribute: Attributes | string;
-  @ApiModelProperty({ example: 'new value' })
+  @ApiProperty({ example: 'new value' })
   public readonly value: string | number;
 }

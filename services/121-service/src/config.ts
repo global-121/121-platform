@@ -4,7 +4,7 @@ export const DEBUG =
   ['production', 'test'].indexOf(process.env.NODE_ENV) === -1;
 export const PORT = process.env.PORT_121_SERVICE;
 export const BASE_PATH = process.env.SUBDOMAIN_121_SERVICE + '/api';
-export const SCHEME = process.env.SCHEME === 'http' ? 'http' : 'https';
+export const SCHEME = process.env.SCHEME === 'http' ? 'http://' : 'https://';
 
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------

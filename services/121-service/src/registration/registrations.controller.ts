@@ -12,12 +12,13 @@ import {
   Get,
 } from '@nestjs/common';
 import {
-  ApiUseTags,
+  ApiTags,
   ApiOperation,
   ApiResponse,
-  ApiImplicitParam,
+  ApiParam,
   ApiConsumes,
-  ApiImplicitFile,
+  ApiProperty,
+  ApiBody,
 } from '@nestjs/swagger';
 import { RegistrationsService } from './registrations.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
@@ -45,9 +46,14 @@ import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 import { PersonAffectedAuth } from '../person-affected-auth.decorator';
+import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 
+export class FileUploadDto {
+  @ApiProperty({ type: 'string', format: 'binary' })
+  public file: any;
+}
 @UseGuards(PermissionsGuard, PersonAffectedAuthGuard)
-@ApiUseTags('registrations')
+@ApiTags('registrations')
 @Controller('registrations')
 export class RegistrationsController {
   private readonly registrationsService: RegistrationsService;
@@ -55,7 +61,7 @@ export class RegistrationsController {
     this.registrationsService = registrationsService;
   }
 
-  @ApiOperation({ title: 'Create registration' })
+  @ApiOperation({ summary: 'Create registration' })
   @ApiResponse({ status: 200, description: 'Created registration' })
   @Post()
   public async create(
@@ -69,7 +75,7 @@ export class RegistrationsController {
   }
 
   @PersonAffectedAuth()
-  @ApiOperation({ title: 'Store program answers for registration' })
+  @ApiOperation({ summary: 'Store program answers for registration' })
   @ApiResponse({
     status: 200,
     description: 'Stored program answers for registration',
@@ -85,7 +91,7 @@ export class RegistrationsController {
   }
 
   @PersonAffectedAuth()
-  @ApiOperation({ title: 'Set Financial Service Provider (FSP)' })
+  @ApiOperation({ summary: 'Set Financial Service Provider (FSP)' })
   @ApiResponse({ status: 200 })
   @Post('/fsp')
   public async addFsp(@Body() setFsp: SetFspDto): Promise<RegistrationEntity> {
@@ -96,7 +102,7 @@ export class RegistrationsController {
   }
 
   @PersonAffectedAuth()
-  @ApiOperation({ title: 'Set custom data for registration' })
+  @ApiOperation({ summary: 'Set custom data for registration' })
   @ApiResponse({
     status: 200,
     description: 'Custom data  set for registration',
@@ -113,7 +119,7 @@ export class RegistrationsController {
   }
 
   @PersonAffectedAuth()
-  @ApiOperation({ title: 'Set phone number' })
+  @ApiOperation({ summary: 'Set phone number' })
   @ApiResponse({ status: 200, description: 'Phone set for registration' })
   @Post('/phone')
   public async addPhone(
@@ -128,7 +134,7 @@ export class RegistrationsController {
   }
 
   @PersonAffectedAuth()
-  @ApiOperation({ title: 'Set QR identifier for registration' })
+  @ApiOperation({ summary: 'Set QR identifier for registration' })
   @ApiResponse({
     status: 201,
     description: 'QR identifier set for registration',
@@ -145,7 +151,7 @@ export class RegistrationsController {
 
   @PersonAffectedAuth()
   @ApiOperation({
-    title:
+    summary:
       'Person Affected switches from started registration to registered for program',
   })
   @ApiResponse({
@@ -159,11 +165,11 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationCREATE)
-  @ApiOperation({ title: 'Import set of PAs to invite, based on CSV' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Import set of PAs to invite, based on CSV' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('import-bulk/:programId')
   @ApiConsumes('multipart/form-data')
-  @ApiImplicitFile({ name: 'file', required: true })
+  @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async importBulk(
     @UploadedFile() csvFile,
@@ -179,10 +185,10 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationImportTemplateREAD)
   @ApiOperation({
-    title: 'Get a CSV template for importing registrations',
+    summary: 'Get a CSV template for importing registrations',
   })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiImplicitParam({ name: 'type', required: true, type: 'string' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'type', required: true, type: 'string' })
   @Get('import-template/:programId/:type')
   public async getImportRegistrationsTemplate(
     @Param() params,
@@ -195,12 +201,12 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({
-    title: 'Import set of registered PAs, from CSV',
+    summary: 'Import set of registered PAs, from CSV',
   })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('import-registrations/:programId')
   @ApiConsumes('multipart/form-data')
-  @ApiImplicitFile({ name: 'file', required: true })
+  @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async importRegistrations(
     @UploadedFile() csvFile,
@@ -214,9 +220,9 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationREAD)
   @ApiOperation({
-    title: 'Get all People Affected for program EXCLUDING personal data',
+    summary: 'Get all People Affected for program EXCLUDING personal data',
   })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description: 'Got all People Affected for program EXCLUDING personal data',
@@ -231,9 +237,9 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationPersonalREAD)
   @ApiOperation({
-    title: 'Get all People Affected for program INCLUDING personal data',
+    summary: 'Get all People Affected for program INCLUDING personal data',
   })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description: 'Get all People Affected for program INCLUDING personal data',
@@ -249,7 +255,7 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
-  @ApiOperation({ title: 'Update attribute for registration' })
+  @ApiOperation({ summary: 'Update attribute for registration' })
   @ApiResponse({
     status: 200,
     description: 'Updated attribute for registration',
@@ -266,7 +272,7 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
-  @ApiOperation({ title: 'Update note for registration' })
+  @ApiOperation({ summary: 'Update note for registration' })
   @ApiResponse({ status: 200, description: 'Update note for registration' })
   @Post('/note')
   public async updateNote(@Body() updateNote: UpdateNoteDto): Promise<NoteDto> {
@@ -277,17 +283,17 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationPersonalREAD)
-  @ApiOperation({ title: 'Get note for registration' })
+  @ApiOperation({ summary: 'Get note for registration' })
   @ApiResponse({ status: 200, description: 'Get note for registration' })
-  @ApiImplicitParam({ name: 'referenceId', required: true })
+  @ApiParam({ name: 'referenceId', required: true })
   @Get('/note/:referenceId')
   public async retrieveNote(@Param() params): Promise<NoteDto> {
     return await this.registrationsService.retrieveNote(params.referenceId);
   }
 
   @Permissions(PermissionEnum.RegistrationStatusSelectedForValidationUPDATE)
-  @ApiOperation({ title: 'Mark set of PAs for validation' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Mark set of PAs for validation' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('select-validation/:programId')
   public async selectForValidation(
     @Param() params,
@@ -301,8 +307,8 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE)
-  @ApiOperation({ title: 'Mark set of PAs as no longer eligible' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Mark set of PAs as no longer eligible' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('no-longer-eligible/:programId')
   public async markNoLongerEligible(
     @Param() params,
@@ -316,8 +322,8 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationStatusIncludedUPDATE)
-  @ApiOperation({ title: 'Include set of PAs' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Include set of PAs' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('include/:programId')
   public async include(
     @Param() params,
@@ -333,8 +339,8 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationStatusInclusionEndedUPDATE)
-  @ApiOperation({ title: 'End inclusion of set of PAs' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'End inclusion of set of PAs' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('end/:programId')
   public async end(
     @Param() params,
@@ -350,8 +356,8 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationStatusRejectedUPDATE)
-  @ApiOperation({ title: 'Reject set of PAs' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Reject set of PAs' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('reject/:programId')
   public async reject(
     @Param() params,
@@ -367,8 +373,8 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationStatusInvitedUPDATE)
-  @ApiOperation({ title: 'Invite set of PAs for registration' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Invite set of PAs for registration' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('invite/:programId')
   public async invite(
     @Param() params,
@@ -384,7 +390,7 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationPersonalSEARCH)
   @ApiOperation({
-    title:
+    summary:
       'Find registration by name and/or phone number for PM and FieldValidation',
   })
   @ApiResponse({
@@ -403,7 +409,7 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationFspUPDATE)
   @ApiOperation({
-    title:
+    summary:
       'Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
   })
   @ApiResponse({
@@ -422,14 +428,14 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationDELETE)
-  @ApiOperation({ title: 'Delete set of registrations' })
+  @ApiOperation({ summary: 'Delete set of registrations' })
   @Post('delete')
   public async delete(@Body() data: ReferenceIdsDto): Promise<void> {
     await this.registrationsService.deleteBatch(data);
   }
 
   @Permissions(PermissionEnum.RegistrationPersonalForValidationREAD)
-  @ApiOperation({ title: 'Download all program answers (for validation)' })
+  @ApiOperation({ summary: 'Download all program answers (for validation)' })
   @ApiResponse({ status: 200, description: 'Program answers downloaded' })
   @Get('/download/validation-data')
   public async downloadValidationData(
@@ -439,9 +445,9 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationPersonalForValidationREAD)
-  @ApiOperation({ title: 'Get registration with prefilled answers (for AW)' })
+  @ApiOperation({ summary: 'Get registration with prefilled answers (for AW)' })
   @ApiResponse({ status: 200 })
-  @ApiImplicitParam({
+  @ApiParam({
     name: 'referenceId',
   })
   @Get('get/:referenceId')
@@ -452,7 +458,7 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationFspREAD)
-  @ApiOperation({ title: 'Find FSP and attributes' })
+  @ApiOperation({ summary: 'Find FSP and attributes' })
   @ApiResponse({
     status: 200,
     description: 'Found fsp and attributes',
@@ -467,7 +473,7 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
-  @ApiOperation({ title: 'Issue validationData (For AW)' })
+  @ApiOperation({ summary: 'Issue validationData (For AW)' })
   @ApiResponse({ status: 200, description: 'Validation Data issued' })
   @Post('/issue-validation')
   public async issue(
@@ -477,7 +483,7 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationReferenceIdSEARCH)
-  @ApiOperation({ title: 'Find reference id using qr identifier' })
+  @ApiOperation({ summary: 'Find reference id using qr identifier' })
   @ApiResponse({
     status: 200,
     description: 'Found reference id using qr',
@@ -492,8 +498,8 @@ export class RegistrationsController {
   }
 
   @PersonAffectedAuth()
-  @ApiOperation({ title: 'Get inclusion status (Used by PA)' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Get inclusion status (Used by PA)' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('inclusion-status/:programId')
   public async inclusionStatus(
     @Param() params,
@@ -507,7 +513,7 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationNotificationCREATE)
   @ApiOperation({
-    title:
+    summary:
       'Send custom text-message (whatsapp or sms) to array of registrations',
   })
   @Post('text-message')
@@ -521,7 +527,7 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationNotificationREAD)
-  @ApiOperation({ title: 'Get message history for one registration' })
+  @ApiOperation({ summary: 'Get message history for one registration' })
   @Get('message-history/:referenceId')
   public async getMessageHistoryRegistration(
     @Param() params: ReferenceIdDto,

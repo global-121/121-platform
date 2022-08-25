@@ -1,14 +1,14 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { PaDataTypes } from '../enum/padata-types.enum';
 
 export class StoreDataDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   public readonly type: PaDataTypes;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   public readonly data: string;

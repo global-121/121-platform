@@ -2,11 +2,11 @@ import { Post, Body, Controller, UseGuards, Get, Param } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { User } from '../user/user.decorator';
 import {
-  ApiUseTags,
+  ApiTags,
   ApiBearerAuth,
   ApiResponse,
   ApiOperation,
-  ApiImplicitParam,
+  ApiParam,
 } from '@nestjs/swagger';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { PermissionsGuard } from '../permissions.guard';
@@ -15,14 +15,14 @@ import { PermissionEnum } from '../user/permission.enum';
 import { FspInstructions } from './dto/fsp-instructions.dto';
 
 @UseGuards(PermissionsGuard)
-@ApiUseTags('payments')
+@ApiTags('payments')
 @Controller()
 export class PaymentsController {
   public constructor(private readonly paymentsService: PaymentsService) {}
 
   @Permissions(PermissionEnum.PaymentREAD)
-  @ApiOperation({ title: 'Get past payments for program' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiOperation({ summary: 'Get past payments for program' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description: 'Get past payments for program',
@@ -34,9 +34,9 @@ export class PaymentsController {
 
   @Permissions(PermissionEnum.PaymentCREATE)
   @ApiOperation({
-    title: 'Send payout instruction to financial service provider',
+    summary: 'Send payout instruction to financial service provider',
   })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/payments')
   public async createPayment(
     @Body() data: CreatePaymentDto,
@@ -54,11 +54,11 @@ export class PaymentsController {
 
   @Permissions(PermissionEnum.PaymentFspInstructionREAD)
   @ApiOperation({
-    title:
+    summary:
       'Get payments instructions for past payment to post in Financial Service Provider Portal',
   })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiImplicitParam({ name: 'payment', required: true, type: 'integer' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'payment', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description:

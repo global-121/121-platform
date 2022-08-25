@@ -13,9 +13,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiUseTags,
+  ApiTags,
   ApiResponse,
-  ApiImplicitParam,
+  ApiParam,
   ApiOperation,
   ApiConsumes,
 } from '@nestjs/swagger';
@@ -23,7 +23,7 @@ import { VoiceService } from './voice.service';
 import { Response } from 'express-serve-static-core';
 
 @UseGuards(PermissionsGuard)
-@ApiUseTags('notifications')
+@ApiTags('notifications')
 @Controller('notifications/voice')
 export class VoiceController {
   private readonly voiceService: VoiceService;
@@ -33,7 +33,7 @@ export class VoiceController {
 
   @Permissions(PermissionEnum.Test)
   @ApiResponse({ status: 200, description: 'Test voice call' })
-  @ApiImplicitParam({ name: 'number' })
+  @ApiParam({ name: 'number' })
   @Get(':number')
   public notifyByVoice(@Param() params): void {
     return this.voiceService.notifyByVoice(
@@ -46,9 +46,9 @@ export class VoiceController {
   }
 
   @ApiOperation({
-    title: 'Return xml that specifies the mp3 location to play in call',
+    summary: 'Return xml that specifies the mp3 location to play in call',
   })
-  @ApiImplicitParam({ name: 'mp3' })
+  @ApiParam({ name: 'mp3' })
   @ApiResponse({ status: 200, description: 'Returns xml' })
   @Get('/xml/:mp3')
   @Header('resonse-type', 'text/xml')
@@ -59,9 +59,9 @@ export class VoiceController {
   }
 
   @ApiOperation({
-    title: 'Returns mp3 to play in call',
+    summary: 'Returns mp3 to play in call',
   })
-  @ApiImplicitParam({ name: 'mp3', description: '1REPLACEenREPLACEincluded' })
+  @ApiParam({ name: 'mp3', description: '1REPLACEenREPLACEincluded' })
   @ApiResponse({ status: 200, description: 'Returns xml' })
   @Get('/mp3/:mp3')
   @Header('resonse-type', 'audio/mpeg')
