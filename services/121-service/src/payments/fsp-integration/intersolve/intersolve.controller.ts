@@ -88,7 +88,7 @@ export class IntersolveController {
 
   @Permissions(PermissionEnum.PaymentVoucherInstructionUPDATE)
   @ApiOperation({
-    summary: 'Post intersolve instructions',
+    summary: 'Post Intersolve instructions-image (Only .png-files supported)',
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody(IMAGE_UPLOAD_API_FORMAT)
