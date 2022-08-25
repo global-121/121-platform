@@ -80,7 +80,19 @@ Then install the required version of Node.js and `npm`:
 
 ## Setup Services
 
-Follow the "[Getting started / installation](services/README.md#getting-started--installation)"-section in the [services/README](services/README.md)-file.
+Clone the repository
+
+    git clone https://github.com/global-121/121-platform.git
+
+Switch to the repository folder
+
+    cd services/
+
+Copy the centralized .env file
+
+    cp .env.example .env
+
+Environment variables are explained in the comments of the .env.example, they should be set up prior to development
 
 ## Start Services
 
@@ -148,6 +160,14 @@ To start an individual interface/service in VS Code:
 
       npm run code:<package>
 
+### Re-use `node_modules` in your local IDE
+
+If you want your IDE to (re-)use the (dev-)dependencies and tools installed in the container, you can copy them via a command from the root:
+
+    npm run sync-dev-dependencies:121-service
+
+This is a one-time copy, so when there are updates in the container, you have to run the command again.
+
 ### Process for implementing data-model changes
 
 When making changes to the data-model of the `121-service` (creating/editing any `\*.entity.ts` files), you need to create a migration script to take these changes into affect.
@@ -178,6 +198,14 @@ NOTE: if you're making many data-model changes at once, or are doing a lot of tr
    - load your stashed changes again (git stash pop)
    - generate migration-script (see above)
    - restart 121-service (like above, to run the new migration-script)
+
+### Authentication
+
+All services use [JSON Web Token](https://jwt.io/) (JWT) to handle authentication. The token should be passed with each request by the browser via an `access_token` cookie. The JWT authentication middleware handles the validation and authentication of the token.
+
+### Adding third party API tokens
+
+All the tokens and access keys for third party APIs should be added on the .env file and subsequently imported using the environment variables within typescript files.
 
 ### Recommended code-editor/IDE tools/extensions
 
