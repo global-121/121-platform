@@ -26,7 +26,7 @@ See the [/features/](../features/)-directory in this repository.
 ### Offline features
 
 For some 'offline' features it is required to run them in a specific way (i.e. to enable their service-worker) locally.  
-See the related Angular-documentation: <https://v11.angular.io/guide/service-worker-getting-started#serving-with-http-server>
+See the related Angular-documentation: <https://v12.angular.io/guide/service-worker-getting-started#serving-with-http-server>
 
 To use it locally:
 
@@ -38,7 +38,7 @@ To use it locally:
     - add http://127.0.0.1
     - relaunch
     - change the values back to normal when switching to the normal local mode again
-  -  Unfortunately no alternative for the below in other browsers have been identified at the moment
+  - Unfortunately no alternative for the below in other browsers have been identified at the moment
 - The interface will be available at: <http://localhost:8088/>.
 - Check the service-worker's status via: `Developer Tools > Application > Service Workers`.
 
@@ -56,7 +56,7 @@ See the [/services/](../services/)-directory in this repository.
 
 All interfaces use a common set of dependencies/frameworks/libraries.
 
-- [Ionic v5](https://ionicframework.com/docs/)  
+- [Ionic v6](https://ionicframework.com/docs/)  
   This UI-kit or library gives us a foundation to quickly build interfaces cross-platform and cross-device-type(mobile/desktop).  
   We use the (default) framework of Angular with(in) Ionic.
 
@@ -64,13 +64,13 @@ All interfaces use a common set of dependencies/frameworks/libraries.
   - CSS Utilities: <https://ionicframework.com/docs/layout/css-utilities>
   - Icons: <https://ionicons.com/>
 
-- [Angular v11](https://v11.angular.io/docs)  
+- [Angular v12](https://v12.angular.io/docs)  
   This front-end framework gives us a structure to create components that can be connected, combined, share data and can be delivered as a web-app.
 
-  - API Documentation: <https://v11.angular.io/api>
+  - API Documentation: <https://v12.angular.io/api>
   - Used by Angular, RxJS: <https://v6.rxjs.dev/api>
 
-- [`ngx-translate` v12](https://www.npmjs.com/package/@ngx-translate/core/v/12.1.2)  
+- [`ngx-translate` v13](https://www.npmjs.com/package/@ngx-translate/core/v/13.0.0)  
   An Angular-service to handle internationalization(i18n) or translations.
 
   - Website: <http://www.ngx-translate.com/>
@@ -81,10 +81,10 @@ All interfaces use a common set of dependencies/frameworks/libraries.
 
   - GitHub: <https://github.com/svoboda-rabstvo/ngx-translate-lint/tree/v1.13.2#readme>
 
-- [`ngx-scanner` v3](https://www.npmjs.com/package/@zxing/ngx-scanner/v/3.0.1)
+- [`ngx-scanner` v3](https://www.npmjs.com/package/@zxing/ngx-scanner/v/3.2.0)
   An Angular-component to scan QR-codes with a browser.
 
-  - GitHub: <https://github.com/zxing-js/ngx-scanner/tree/v3.0.1#readme>
+  - GitHub: <https://github.com/zxing-js/ngx-scanner/tree/v3.2.0#readme>
 
 - [`gzipper`](https://www.npmjs.com/package/gzipper)
   To compress all assets of the interfaces after the build.
@@ -102,7 +102,7 @@ First, it has to be made sure that latest packages (including cypress) is instal
 
 Once that is done, we can start building the integration tests with cypress.
 
-- Before you launch the cypress test suite, make sure the cypress.json file located at `/Interfaces/**/cypress.json` is pointing towards the correct port and url for the corresponding angular application
+- Before you launch the cypress test suite, make sure the cypress.json file located at `/Interfaces/**/cypress.json` is pointing towards the correct port and URL for the corresponding angular application
 - Run `./node_modules/.bin/cypress open` from within the application under interfaces (eg. `/AW-app`)
 - You will see the test suite and details of all the test files that are written
 - The test files are under `interfaces/*/*/cypress/integration/src`
