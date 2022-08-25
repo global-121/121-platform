@@ -7,7 +7,6 @@ import {
   APP_VERSION,
   APP_FAVICON,
   SWAGGER_CUSTOM_CSS,
-  BASE_PATH,
   PORT,
   SCHEME,
   DEBUG,
@@ -36,7 +35,6 @@ async function bootstrap(): Promise<void> {
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
-    .setBasePath(BASE_PATH)
     .addServer(SCHEME)
     .build();
   const document = SwaggerModule.createDocument(app, options);
