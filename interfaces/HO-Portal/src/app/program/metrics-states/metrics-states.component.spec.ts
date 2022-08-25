@@ -1,5 +1,5 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
@@ -64,17 +64,19 @@ describe('MetricsStatesComponent', () => {
     },
   };
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [MetricsStatesComponent, TestHostComponent],
-      imports: [TranslateModule.forRoot(), FormsModule, SharedModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMagicalMock(ProgramsServiceApiService),
-        provideMagicalMock(PastPaymentsService),
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [MetricsStatesComponent, TestHostComponent],
+        imports: [TranslateModule.forRoot(), FormsModule, SharedModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          provideMagicalMock(ProgramsServiceApiService),
+          provideMagicalMock(PastPaymentsService),
+        ],
+      }).compileComponents();
+    }),
+  );
 
   let mockProgramsApi: jasmine.SpyObj<any>;
   let mockPastPaymentsService: jasmine.SpyObj<any>;

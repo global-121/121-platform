@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -10,13 +10,15 @@ describe('FilePickerPromptComponent', () => {
   let component: FilePickerPromptComponent;
   let fixture: ComponentFixture<FilePickerPromptComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [FilePickerPromptComponent],
-      imports: [TranslateModule.forRoot(), IonicModule, FormsModule],
-      providers: [provideMagicalMock(ProgramsServiceApiService)],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [FilePickerPromptComponent],
+        imports: [TranslateModule.forRoot(), IonicModule, FormsModule],
+        providers: [provideMagicalMock(ProgramsServiceApiService)],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FilePickerPromptComponent);
