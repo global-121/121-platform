@@ -507,14 +507,16 @@ export class WhatsappService {
   public async storeTemplateTestResult(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    const tryWhatsappTermplateEntity = await this.whatsappTemplateTestRepository.findOne(
+    const tryWhatsappTemplateEntity = await this.whatsappTemplateTestRepository.findOne(
       { where: { sid: callbackData.SmsSid } },
     );
-    if (tryWhatsappTermplateEntity) {
-      tryWhatsappTermplateEntity.callback = JSON.stringify(callbackData);
-      tryWhatsappTermplateEntity.succes =
-        callbackData.MessageStatus === 'delivered';
-      this.whatsappTemplateTestRepository.save(tryWhatsappTermplateEntity);
+    if (tryWhatsappTemplateEntity) {
+      if (!tryWhatsappTemplateEntity.succes) {
+        tryWhatsappTemplateEntity.callback = JSON.stringify(callbackData);
+        tryWhatsappTemplateEntity.succes =
+          callbackData.MessageStatus === 'delivered';
+        this.whatsappTemplateTestRepository.save(tryWhatsappTemplateEntity);
+      }
     } else {
       throw new HttpException('Message sid not found', HttpStatus.NOT_FOUND);
     }
