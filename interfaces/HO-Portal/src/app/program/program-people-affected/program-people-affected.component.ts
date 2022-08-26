@@ -117,8 +117,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   public action: BulkActionId = BulkActionId.chooseAction;
   public BulkActionEnum = BulkActionId;
-  public visibleBulkActions: BulkAction[] = [];
-  private bulkActions: BulkAction[] = [
+  public bulkActions: BulkAction[] = [
     {
       id: BulkActionId.invite,
       enabled: false,
@@ -753,20 +752,23 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private async updateBulkActions() {
-    this.visibleBulkActions = [];
+    await this.addPaymentBulkActions();
 
-    this.visibleBulkActions = this.bulkActions.map((action) => {
+    this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
         this.authService.hasAllPermissions(action.permissions) &&
         action.phases.includes(this.thisPhase) &&
         this.checkValidationColumnOrAction(action);
       return action;
     });
-
-    await this.addPaymentBulkActions();
   }
 
   private async addPaymentBulkActions() {
+    // filter out all dopayment actions to avoid duplication
+    this.bulkActions = this.bulkActions.filter(
+      (action) => action.id !== BulkActionId.doPayment,
+    );
+
     const nextPaymentId = await this.pastPaymentsService.getNextPaymentId(
       this.program,
     );
@@ -785,7 +787,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         phases: [ProgramPhase.payment],
         showIfNoValidation: true,
       };
-      this.visibleBulkActions.push(paymentBulkAction);
+      this.bulkActions.push(paymentBulkAction);
       paymentId--;
     }
   }

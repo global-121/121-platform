@@ -21,7 +21,7 @@
           }}</ng-container>
         </option>
 
-        <ng-container *ngFor="let action of visibleBulkActions">
+        <ng-container *ngFor="let action of bulkActions">
           <option
             *ngIf="action.enabled"
             [value]="action.id"
