@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 
 @Component({
@@ -47,6 +48,7 @@ export class UpdateFspComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private alertController: AlertController,
     private translate: TranslateService,
+    private translatableString: TranslatableStringService,
   ) {}
 
   public startingAttributes: any[] = [];
@@ -107,7 +109,14 @@ export class UpdateFspComponent implements OnInit {
       );
 
       if (selectedFsp) {
-        this.selectedFspAttributes = selectedFsp.editableAttributes;
+        this.selectedFspAttributes = selectedFsp.editableAttributes.map(
+          (attr) => {
+            return {
+              ...attr,
+              shortLabel: this.translatableString.get(attr.shortLabel),
+            };
+          },
+        );
       }
 
       this.attributeDifference = this.startingAttributes.filter(
