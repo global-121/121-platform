@@ -27,7 +27,7 @@ export class PhoneNumberInputComponent {
   public value: string;
 
   @Input()
-  public placeholder: string;
+  public placeholder: string | undefined;
 
   @Input()
   public disabled: boolean;

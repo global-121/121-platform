@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
@@ -21,19 +21,21 @@ describe('UserStateComponent', () => {
     authenticationState$: of(mockUser),
   };
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserStateComponent],
-      providers: [
-        {
-          provide: AuthService,
-          useValue: authServiceMock,
-        },
-      ],
-      imports: [TranslateModule.forRoot(), RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UserStateComponent],
+        providers: [
+          {
+            provide: AuthService,
+            useValue: authServiceMock,
+          },
+        ],
+        imports: [TranslateModule.forRoot(), RouterTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserStateComponent);

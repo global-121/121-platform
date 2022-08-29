@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
@@ -13,17 +13,19 @@ describe('ExportListComponent', () => {
 
   const mockProgramId = 1;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ExportListComponent],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMagicalMock(AuthService),
-        provideMagicalMock(ProgramsServiceApiService),
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ExportListComponent],
+        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          provideMagicalMock(AuthService),
+          provideMagicalMock(ProgramsServiceApiService),
+        ],
+      }).compileComponents();
+    }),
+  );
 
   let mockProgramsApi: jasmine.SpyObj<any>;
 

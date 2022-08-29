@@ -23,7 +23,7 @@ export class UpdatePropertyItemComponent implements OnInit {
   public value: string;
 
   @Input()
-  public placeholder: string;
+  public placeholder: string | undefined;
 
   @Input()
   public isDisabled: boolean;

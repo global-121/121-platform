@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -13,22 +13,24 @@ describe('RegistrationValidationPage', () => {
   let component: RegistrationValidationPage;
   let fixture: ComponentFixture<RegistrationValidationPage>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [RegistrationValidationPage],
-      imports: [
-        TranslateModule.forRoot(),
-        RouterTestingModule,
-        HttpClientTestingModule,
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMagicalMock(AuthService),
-        provideMagicalMock(ProgramsServiceApiService),
-        provideMagicalMock(ProgramPhaseService),
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [RegistrationValidationPage],
+        imports: [
+          TranslateModule.forRoot(),
+          RouterTestingModule,
+          HttpClientTestingModule,
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          provideMagicalMock(AuthService),
+          provideMagicalMock(ProgramsServiceApiService),
+          provideMagicalMock(ProgramPhaseService),
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RegistrationValidationPage);

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -8,12 +8,14 @@ describe('InputPromptComponent', () => {
   let component: InputPromptComponent;
   let fixture: ComponentFixture<InputPromptComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [InputPromptComponent],
-      imports: [TranslateModule.forRoot(), IonicModule, FormsModule],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [InputPromptComponent],
+        imports: [TranslateModule.forRoot(), IonicModule, FormsModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InputPromptComponent);

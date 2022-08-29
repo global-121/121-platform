@@ -32,7 +32,7 @@ export class NumericInputComponent {
   public autocomplete: string;
 
   @Input()
-  public placeholder: string;
+  public placeholder: string | undefined;
 
   @Input()
   public pattern: string;
