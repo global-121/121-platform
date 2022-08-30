@@ -8,11 +8,25 @@ import {
   ManyToOne,
   AfterLoad,
   getConnection,
+  Unique,
 } from 'typeorm';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { Base121Entity } from '../base.entity';
 import { MonitoringQuestionEntity } from '../instance/monitoring-question.entity';
 
+@Unique('registrationProgramQuestionUnique', [
+  'registrationId',
+  'programQuestionId',
+])
+@Unique('registrationFspQuestionUnique', ['registrationId', 'fspQuestionId'])
+@Unique('registrationProgramCustomAttributeUnique', [
+  'registrationId',
+  'programCustomAttributeId',
+])
+@Unique('registrationMonitoringQuestionUnique', [
+  'registrationId',
+  'monitoringQuestionId',
+])
 @Entity('registration_data')
 export class RegistrationDataEntity extends Base121Entity {
   @ManyToOne(
