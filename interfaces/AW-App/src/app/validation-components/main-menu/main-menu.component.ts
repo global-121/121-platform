@@ -19,6 +19,7 @@ export class MainMenuComponent implements ValidationComponent {
   public menuOptions: any;
   public optionChoice: string;
   public optionSelected: boolean;
+  public showQrOption: boolean;
 
   public noConnection = this.noConnectionService.noConnection$;
 
@@ -38,6 +39,8 @@ export class MainMenuComponent implements ValidationComponent {
 
   async ngOnInit() {
     const pendingUploadCount = await this.getPendingUploadCount();
+
+    this.checkValidationByQr();
 
     this.menuOptions = [
       {
@@ -100,6 +103,21 @@ export class MainMenuComponent implements ValidationComponent {
       IonicStorageTypes.validatedData,
     );
     return validatedData ? validatedData.length : 0;
+  }
+
+  private checkValidationByQr() {
+    this.storage
+      .get(IonicStorageTypes.myPrograms)
+      .then(
+        (programs) =>
+          (this.showQrOption = programs
+            .map((program) => program.validationByQr)
+            .includes(true)),
+      )
+      .catch((e) => {
+        console.log(e);
+        this.showQrOption = false;
+      });
   }
 
   public changeOption($event) {

@@ -10,6 +10,7 @@ export class Program {
   ngo: string;
   programQuestions: ProgramQuestion[];
   financialServiceProviders: any[];
+  validationByQr: boolean;
 }
 
 export class ProgramQuestion {

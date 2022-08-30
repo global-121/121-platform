@@ -6,21 +6,23 @@
                  [isSpoken]="true"
   >
     <ion-radio-group (ionChange)="changeOption($event)">
-      <ion-item *ngFor="let option of menuOptions"
-                color="light"
-                class="ion-no-padding"
-                [disabled]="option.disabled || (option.connectionRequired && noConnection|async) || optionSelected"
-      >
-        <ion-label class="ion-text-wrap ion-padding-end">
-          {{ option.option }}
-          &nbsp;
-          <ion-badge
-            *ngIf="option.counter"
-            style="vertical-align: text-bottom;"
-          >{{ option.counter }}</ion-badge>
-        </ion-label>
-        <ion-radio value="{{ option.id }}"></ion-radio>
-      </ion-item>
+      <ng-container *ngFor="let option of menuOptions">
+        <ion-item *ngIf="option.id !== 'scan-qr' || showQrOption"
+                  color="light"
+                  class="ion-no-padding"
+                  [disabled]="option.disabled || (option.connectionRequired && noConnection|async) || optionSelected"
+        >
+          <ion-label class="ion-text-wrap ion-padding-end">
+            {{ option.option }}
+            &nbsp;
+            <ion-badge
+              *ngIf="option.counter"
+              style="vertical-align: text-bottom;"
+            >{{ option.counter }}</ion-badge>
+          </ion-label>
+          <ion-radio value="{{ option.id }}"></ion-radio>
+        </ion-item>
+      </ng-container>
     </ion-radio-group>
     <ion-button *ngIf="optionChoice && !optionSelected"
                 expand="block"
