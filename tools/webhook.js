@@ -152,6 +152,7 @@ http
       if (
         payload.pull_request &&
         payload.pull_request.merged &&
+        !!payload.pull_request.title &&
         payload.pull_request.title.toUpperCase().includes('[SKIP CD]')
       ) {
         respond(`PR deployment skipped with [SKIP CD]`);
