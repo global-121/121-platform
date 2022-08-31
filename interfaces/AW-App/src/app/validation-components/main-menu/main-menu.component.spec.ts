@@ -16,31 +16,29 @@ describe('MainMenuComponent', () => {
   let component: MainMenuComponent;
   let fixture: ComponentFixture<MainMenuComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [MainMenuComponent],
-        imports: [
-          TranslateModule.forRoot(),
-          RouterTestingModule,
-          HttpClientTestingModule,
-        ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {
-            provide: Storage,
-            useValue: storageIonicMock,
-          },
-          {
-            provide: NoConnectionService,
-          },
-          {
-            provide: AuthService,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [MainMenuComponent],
+      imports: [
+        TranslateModule.forRoot(),
+        RouterTestingModule,
+        HttpClientTestingModule,
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: Storage,
+          useValue: storageIonicMock,
+        },
+        {
+          provide: NoConnectionService,
+        },
+        {
+          provide: AuthService,
+        },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MainMenuComponent);

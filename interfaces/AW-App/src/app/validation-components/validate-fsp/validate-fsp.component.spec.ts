@@ -15,63 +15,61 @@ describe('ValidateFspComponent', () => {
   let component: ValidateFspComponent;
   let fixture: ComponentFixture<ValidateFspComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      const programsServiceApiServiceMock = jasmine.createSpyObj(
-        'ProgramsServiceApiService',
+  beforeEach(waitForAsync(() => {
+    const programsServiceApiServiceMock = jasmine.createSpyObj(
+      'ProgramsServiceApiService',
+      {
+        getProgramById: () => of(mockProgram).toPromise(),
+        getPrefilledAnswers: () => of({}).toPromise(),
+        getFspAttributesAsnwers: () => of(fspData).toPromise(),
+      },
+    );
+
+    const ionContentMock = jasmine.createSpyObj('IonContent', [
+      'scrollToBottom',
+    ]);
+
+    const ionicStorageMock = {
+      get: (type: IonicStorageTypes) =>
+        new Promise<any>((resolve) => {
+          switch (type) {
+            case IonicStorageTypes.myPrograms:
+              return resolve([mockProgram]);
+            case IonicStorageTypes.validatedData:
+              return resolve([
+                { referenceId: '', programId: 1, attributes: [] },
+              ]);
+            default:
+              return resolve('1');
+          }
+        }),
+    };
+
+    TestBed.configureTestingModule({
+      declarations: [ValidateFspComponent],
+      imports: [
+        TranslateModule.forRoot(),
+        IonicModule.forRoot(),
+        RouterTestingModule.withRoutes([]),
+        HttpClientTestingModule,
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
         {
-          getProgramById: () => of(mockProgram).toPromise(),
-          getPrefilledAnswers: () => of({}).toPromise(),
-          getFspAttributesAsnwers: () => of(fspData).toPromise(),
+          provide: ProgramsServiceApiService,
+          useValue: programsServiceApiServiceMock,
         },
-      );
-
-      const ionContentMock = jasmine.createSpyObj('IonContent', [
-        'scrollToBottom',
-      ]);
-
-      const ionicStorageMock = {
-        get: (type: IonicStorageTypes) =>
-          new Promise<any>((resolve) => {
-            switch (type) {
-              case IonicStorageTypes.myPrograms:
-                return resolve([mockProgram]);
-              case IonicStorageTypes.validatedData:
-                return resolve([
-                  { referenceId: '', programId: 1, attributes: [] },
-                ]);
-              default:
-                return resolve('1');
-            }
-          }),
-      };
-
-      TestBed.configureTestingModule({
-        declarations: [ValidateFspComponent],
-        imports: [
-          TranslateModule.forRoot(),
-          IonicModule.forRoot(),
-          RouterTestingModule.withRoutes([]),
-          HttpClientTestingModule,
-        ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {
-            provide: ProgramsServiceApiService,
-            useValue: programsServiceApiServiceMock,
-          },
-          {
-            provide: IonContent,
-            useValue: ionContentMock,
-          },
-          {
-            provide: Storage,
-            useValue: ionicStorageMock,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+        {
+          provide: IonContent,
+          useValue: ionContentMock,
+        },
+        {
+          provide: Storage,
+          useValue: ionicStorageMock,
+        },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ValidateFspComponent);

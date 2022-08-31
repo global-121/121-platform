@@ -15,21 +15,19 @@ describe('UploadDataComponent', () => {
   let component: UploadDataComponent;
   let fixture: ComponentFixture<UploadDataComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [UploadDataComponent],
-        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {
-            provide: Storage,
-            useValue: storageIonicMock,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [UploadDataComponent],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: Storage,
+          useValue: storageIonicMock,
+        },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UploadDataComponent);

@@ -16,31 +16,29 @@ describe('FindByPhoneComponent', () => {
   let component: FindByPhoneComponent;
   let fixture: ComponentFixture<FindByPhoneComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [FindByPhoneComponent],
-        imports: [
-          TranslateModule.forRoot(),
-          HttpClientTestingModule,
-          FormsModule,
-        ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {
-            provide: ProgramsServiceApiService,
-          },
-          {
-            provide: ConversationService,
-          },
-          {
-            provide: Storage,
-            useValue: storageIonicMock,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [FindByPhoneComponent],
+      imports: [
+        TranslateModule.forRoot(),
+        HttpClientTestingModule,
+        FormsModule,
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: ProgramsServiceApiService,
+        },
+        {
+          provide: ConversationService,
+        },
+        {
+          provide: Storage,
+          useValue: storageIonicMock,
+        },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FindByPhoneComponent);

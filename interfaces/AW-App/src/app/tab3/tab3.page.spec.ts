@@ -6,14 +6,12 @@ describe('Tab3Page', () => {
   let component: Tab3Page;
   let fixture: ComponentFixture<Tab3Page>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [Tab3Page],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [Tab3Page],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(Tab3Page);

@@ -7,15 +7,13 @@ describe('ConnectionIndicatorComponent', () => {
   let component: ConnectionIndicatorComponent;
   let fixture: ComponentFixture<ConnectionIndicatorComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ConnectionIndicatorComponent],
-        imports: [TranslateModule.forRoot()],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [ConnectionIndicatorComponent],
+      imports: [TranslateModule.forRoot()],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ConnectionIndicatorComponent);

@@ -21,28 +21,26 @@ describe('ScanQrComponent', () => {
   let component: ScanQrComponent;
   let fixture: ComponentFixture<ScanQrComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ScanQrComponent],
-        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {
-            provide: Storage,
-            useValue: storageIonicMock,
-          },
-          {
-            provide: ModalController,
-            useValue: modalControllerMock,
-          },
-          {
-            provide: AngularDelegate,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [ScanQrComponent],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: Storage,
+          useValue: storageIonicMock,
+        },
+        {
+          provide: ModalController,
+          useValue: modalControllerMock,
+        },
+        {
+          provide: AngularDelegate,
+        },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ScanQrComponent);

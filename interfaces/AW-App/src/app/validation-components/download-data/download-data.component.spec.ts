@@ -13,21 +13,19 @@ describe('DownloadDataComponent', () => {
   let component: DownloadDataComponent;
   let fixture: ComponentFixture<DownloadDataComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [DownloadDataComponent],
-        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {
-            provide: Storage,
-            useValue: storageIonicMock,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [DownloadDataComponent],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: Storage,
+          useValue: storageIonicMock,
+        },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DownloadDataComponent);
