@@ -79,6 +79,11 @@ function sanitizeTarget(input) {
 //   Webhook Service:
 // ----------------------------------------------------------------------------
 
+if (!process.env.GLOBAL_121_REPO) {
+  console.warn(`ENV variable GLOBAL_121_REPO is not defined.`);
+  process.exit(1);
+}
+
 http
   .createServer((req, res) => {
     if (req.method === 'GET' && req.url.endsWith(MANUAL_DEPLOY_URL)) {
