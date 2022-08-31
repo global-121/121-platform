@@ -1,23 +1,37 @@
 <dialogue-turn>
   <p>
-    <play-text-audio key="personal.create-account.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-account.introduction'|translate }}
+    <play-text-audio
+      key="personal.create-account.introduction"
+      class="ion-float-start ion-margin-end"
+    ></play-text-audio>
+    {{ 'personal.create-account.introduction' | translate }}
   </p>
 </dialogue-turn>
 <dialogue-turn isConnected="true">
   <p>
-    <play-text-audio key="personal.create-account.username-password" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-account.username-password'|translate }}
+    <play-text-audio
+      key="personal.create-account.username-password"
+      class="ion-float-start ion-margin-end"
+    ></play-text-audio>
+    {{ 'personal.create-account.username-password' | translate }}
   </p>
 </dialogue-turn>
 <dialogue-turn actor="self">
-  <form (ngSubmit)="submitCredentials(username,create,confirm)">
-    <input type="submit" hidden /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
+  <form (ngSubmit)="submitCredentials(username, create, confirm)">
+    <input
+      type="submit"
+      hidden
+    /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
 
     <div>
       <p>
-        <play-text-audio key="personal.create-account.create-username" class="ion-margin-end"></play-text-audio>
-        <ion-label>{{ 'personal.create-account.create-username'|translate }}</ion-label>
+        <play-text-audio
+          key="personal.create-account.create-username"
+          class="ion-margin-end"
+        ></play-text-audio>
+        <ion-label>
+          {{ 'personal.create-account.create-username' | translate }}
+        </ion-label>
       </p>
       <ion-input
         type="text"
@@ -30,13 +44,18 @@
         *ngIf="username && !usernameSubmitted"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
+        <play-text-audio
+          key="shared.submit-button"
+          size="default"
+        ></play-text-audio>
         <ion-button
           [disabled]="usernameSubmitted || isDisabled"
           type="submit"
           expand="block"
-          style="flex-basis:100%"
-        >{{ 'shared.submit-button'|translate }}</ion-button>
+          style="flex-basis: 100%"
+        >
+          {{ 'shared.submit-button' | translate }}
+        </ion-button>
       </ion-row>
     </div>
     <div
@@ -44,8 +63,14 @@
       class="ion-margin-vertical"
     >
       <p>
-        <play-text-audio key="personal.create-account.create-password-explanation" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'personal.create-account.create-password-explanation'|translate:{ minimalLength: passwordMinLength } }}
+        <play-text-audio
+          key="personal.create-account.create-password-explanation"
+          class="ion-float-start ion-margin-end"
+        ></play-text-audio>
+        {{
+          'personal.create-account.create-password-explanation'
+            | translate: { minimalLength: passwordMinLength }
+        }}
       </p>
       <password-toggle-input
         name="create"
@@ -54,8 +79,8 @@
         [disabled]="isDisabled"
         autocomplete="new-password"
         [minLength]="passwordMinLength"
-        [labelShow]="'password-toggle.show'|translate"
-        [labelHide]="'password-toggle.hide'|translate"
+        [labelShow]="'password-toggle.show' | translate"
+        [labelHide]="'password-toggle.hide' | translate"
         [(isValid)]="createIsValid"
       ></password-toggle-input>
       <div
@@ -63,28 +88,44 @@
         class="ion-margin-vertical"
       >
         <p>
-          <play-text-audio key="personal.create-account.password-too-short" class="ion-float-start ion-margin-end"></play-text-audio>
-          {{ 'personal.create-account.password-too-short'|translate:{ minimalLength: passwordMinLength } }}
+          <play-text-audio
+            key="personal.create-account.password-too-short"
+            class="ion-float-start ion-margin-end"
+          ></play-text-audio>
+          {{
+            'personal.create-account.password-too-short'
+              | translate: { minimalLength: passwordMinLength }
+          }}
         </p>
       </div>
       <ion-row
         *ngIf="create && !initialInput"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
+        <play-text-audio
+          key="shared.submit-button"
+          size="default"
+        ></play-text-audio>
         <ion-button
           [disabled]="!createIsValid || initialInput || isDisabled"
           type="submit"
           expand="block"
-          style="flex-basis:100%"
-        >{{ 'shared.submit-button'|translate }}</ion-button>
+          style="flex-basis: 100%"
+        >
+          {{ 'shared.submit-button' | translate }}
+        </ion-button>
       </ion-row>
     </div>
 
     <div *ngIf="initialInput">
       <p>
-        <play-text-audio key="personal.create-account.confirm-password" class="ion-margin-end"></play-text-audio>
-        <ion-label>{{ 'personal.create-account.confirm-password'|translate }}</ion-label>
+        <play-text-audio
+          key="personal.create-account.confirm-password"
+          class="ion-margin-end"
+        ></play-text-audio>
+        <ion-label>
+          {{ 'personal.create-account.confirm-password' | translate }}
+        </ion-label>
       </p>
       <password-toggle-input
         name="confirm"
@@ -93,20 +134,25 @@
         [disabled]="isDisabled"
         autocomplete="new-password"
         [minLength]="passwordMinLength"
-        [labelShow]="'password-toggle.show'|translate"
-        [labelHide]="'password-toggle.hide'|translate"
+        [labelShow]="'password-toggle.show' | translate"
+        [labelHide]="'password-toggle.hide' | translate"
       ></password-toggle-input>
       <ion-row
         *ngIf="create && confirm && !isDisabled"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
+        <play-text-audio
+          key="shared.submit-button"
+          size="default"
+        ></play-text-audio>
         <ion-button
           [disabled]="isInProgress || isDisabled"
           type="submit"
           expand="block"
-          style="flex-basis:100%"
-        >{{ 'shared.submit-button'|translate }}</ion-button>
+          style="flex-basis: 100%"
+        >
+          {{ 'shared.submit-button' | translate }}
+        </ion-button>
       </ion-row>
     </div>
   </form>
@@ -116,8 +162,11 @@
   [isSpoken]="unequalPasswords"
 >
   <p>
-    <play-text-audio key="personal.create-account.unequal-passwords" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-account.unequal-passwords'|translate }}
+    <play-text-audio
+      key="personal.create-account.unequal-passwords"
+      class="ion-float-start ion-margin-end"
+    ></play-text-audio>
+    {{ 'personal.create-account.unequal-passwords' | translate }}
   </p>
 </dialogue-turn>
 <dialogue-turn
@@ -125,8 +174,11 @@
   [isSpoken]="usernameNotUnique"
 >
   <p>
-    <play-text-audio key="personal.create-account.username-not-unique" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-account.username-not-unique'|translate }}
+    <play-text-audio
+      key="personal.create-account.username-not-unique"
+      class="ion-float-start ion-margin-end"
+    ></play-text-audio>
+    {{ 'personal.create-account.username-not-unique' | translate }}
   </p>
 </dialogue-turn>
 <dialogue-turn
@@ -134,7 +186,10 @@
   [isSpoken]="isDisabled"
 >
   <p>
-    <play-text-audio key="personal.create-account.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-account.conclusion'|translate }}
+    <play-text-audio
+      key="personal.create-account.conclusion"
+      class="ion-float-start ion-margin-end"
+    ></play-text-audio>
+    {{ 'personal.create-account.conclusion' | translate }}
   </p>
 </dialogue-turn>

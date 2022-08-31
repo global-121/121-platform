@@ -1,17 +1,24 @@
 <section>
   <dialogue-turn>
     <p>
-      <play-text-audio key="personal.login-account.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.login-account.introduction'|translate }}
+      <play-text-audio
+        key="personal.login-account.introduction"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      {{ 'personal.login-account.introduction' | translate }}
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self">
-    <form (ngSubmit)="submitLoginCredentials(username,password)">
+    <form (ngSubmit)="submitLoginCredentials(username, password)">
       <div class="ion-margin-bottom">
         <p>
-          <play-text-audio key="personal.login-account.supply-username" class="ion-margin-end"></play-text-audio>
-          <ion-label>{{ 'personal.login-account.supply-username'|translate }}</ion-label>
-
+          <play-text-audio
+            key="personal.login-account.supply-username"
+            class="ion-margin-end"
+          ></play-text-audio>
+          <ion-label>
+            {{ 'personal.login-account.supply-username' | translate }}
+          </ion-label>
         </p>
         <ion-input
           type="text"
@@ -24,20 +31,33 @@
           *ngIf="username && !usernameSubmitted"
           class="ion-nowrap ion-align-items-center ion-margin-top"
         >
-          <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
+          <play-text-audio
+            key="shared.submit-button"
+            size="default"
+          ></play-text-audio>
           <ion-button
             [disabled]="isInProgress || isDisabled"
-            (click)="usernameSubmitted=true;"
+            (click)="usernameSubmitted = true"
             type="button"
             expand="block"
-            style="flex-basis:100%"
-          >{{ 'shared.submit-button'|translate }}</ion-button>
+            style="flex-basis: 100%"
+          >
+            {{ 'shared.submit-button' | translate }}
+          </ion-button>
         </ion-row>
       </div>
-      <div *ngIf="usernameSubmitted" class="ion-margin-vertical">
+      <div
+        *ngIf="usernameSubmitted"
+        class="ion-margin-vertical"
+      >
         <p>
-          <play-text-audio key="personal.login-account.supply-password" class="ion-margin-end"></play-text-audio>
-          <ion-label>{{ 'personal.login-account.supply-password'|translate }}</ion-label>
+          <play-text-audio
+            key="personal.login-account.supply-password"
+            class="ion-margin-end"
+          ></play-text-audio>
+          <ion-label>
+            {{ 'personal.login-account.supply-password' | translate }}
+          </ion-label>
         </p>
         <password-toggle-input
           name="password"
@@ -45,22 +65,27 @@
           ngDefaultControl
           [disabled]="isDisabled"
           autocomplete="current-password"
-          [labelShow]="'password-toggle.show'|translate"
-          [labelHide]="'password-toggle.hide'|translate"
+          [labelShow]="'password-toggle.show' | translate"
+          [labelHide]="'password-toggle.hide' | translate"
         ></password-toggle-input>
       </div>
       <ion-row
         *ngIf="password && !isDisabled"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
+        <play-text-audio
+          key="shared.submit-button"
+          size="default"
+        ></play-text-audio>
         <ion-button
           *ngIf="password && !isDisabled"
           [disabled]="isInProgress || isDisabled"
           type="submit"
           expand="block"
-          style="flex-basis:100%"
-        >{{ 'shared.submit-button'|translate }}</ion-button>
+          style="flex-basis: 100%"
+        >
+          {{ 'shared.submit-button' | translate }}
+        </ion-button>
       </ion-row>
     </form>
   </dialogue-turn>
@@ -69,8 +94,11 @@
     [isSpoken]="incorrectCredentials"
   >
     <p>
-      <play-text-audio key="personal.login-account.incorrect-credentials" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.login-account.incorrect-credentials'|translate }}
+      <play-text-audio
+        key="personal.login-account.incorrect-credentials"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      {{ 'personal.login-account.incorrect-credentials' | translate }}
     </p>
   </dialogue-turn>
 </section>

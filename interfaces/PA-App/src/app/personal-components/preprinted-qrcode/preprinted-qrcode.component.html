@@ -1,8 +1,11 @@
 <section *ngIf="isCanceled === false">
   <dialogue-turn [isSpoken]="isCanceled === false">
     <p>
-      <play-text-audio key="personal.preprinted-qrcode.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.preprinted-qrcode.introduction'|translate }}
+      <play-text-audio
+        key="personal.preprinted-qrcode.introduction"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      {{ 'personal.preprinted-qrcode.introduction' | translate }}
     </p>
     <more-info-button
       buttonKey="personal.preprinted-qrcode.more-info-qr"
@@ -15,9 +18,12 @@
     [isSpoken]="isCanceled === false"
   >
     <p>
-      <play-text-audio key="personal.preprinted-qrcode.introduction" class="ion-float-start ion-margin-end">
+      <play-text-audio
+        key="personal.preprinted-qrcode.introduction"
+        class="ion-float-start ion-margin-end"
+      >
       </play-text-audio>
-      {{ 'personal.preprinted-qrcode.question'|translate }}
+      {{ 'personal.preprinted-qrcode.question' | translate }}
     </p>
   </dialogue-turn>
 
@@ -25,85 +31,109 @@
     actor="self"
     [isSpoken]="isCanceled === false"
   >
-    <ion-row *ngIf="!isDisabled || hasPreprinted"
-             class="ion-nowrap ion-align-items-center"
+    <ion-row
+      *ngIf="!isDisabled || hasPreprinted"
+      class="ion-nowrap ion-align-items-center"
     >
-      <play-text-audio key="personal.preprinted-qrcode.yes"
-                       size="default"
+      <play-text-audio
+        key="personal.preprinted-qrcode.yes"
+        size="default"
       ></play-text-audio>
-      <ion-button type="button"
-                  (click)="addPreprinted()"
-                  [disabled]="isDisabled || hasPreprinted"
-                  expand="block"
-                  style="flex-basis:100%"
-      >{{ 'personal.preprinted-qrcode.yes'|translate }}</ion-button>
-    </ion-row>
-    <ion-row *ngIf="!isDisabled || !hasPreprinted"
-             class="ion-nowrap ion-align-items-center"
-    >
-      <play-text-audio key="personal.preprinted-qrcode.no"
-                       size="default"
-      ></play-text-audio>
-      <ion-button type="button"
-                  (click)="skipPreprinted()"
-                  [disabled]="isDisabled || hasPreprinted"
-                  fill="outline"
-                  expand="block"
-                  style="flex-basis:100%"
+      <ion-button
+        type="button"
+        (click)="addPreprinted()"
+        [disabled]="isDisabled || hasPreprinted"
+        expand="block"
+        style="flex-basis: 100%"
       >
-        {{ 'personal.preprinted-qrcode.no'|translate }}
+        {{ 'personal.preprinted-qrcode.yes' | translate }}
+      </ion-button>
+    </ion-row>
+    <ion-row
+      *ngIf="!isDisabled || !hasPreprinted"
+      class="ion-nowrap ion-align-items-center"
+    >
+      <play-text-audio
+        key="personal.preprinted-qrcode.no"
+        size="default"
+      ></play-text-audio>
+      <ion-button
+        type="button"
+        (click)="skipPreprinted()"
+        [disabled]="isDisabled || hasPreprinted"
+        fill="outline"
+        expand="block"
+        style="flex-basis: 100%"
+      >
+        {{ 'personal.preprinted-qrcode.no' | translate }}
       </ion-button>
     </ion-row>
   </dialogue-turn>
 
-  <dialogue-turn *ngIf="hasPreprinted && !isDisabled"
-                 [isSpoken]="hasPreprinted && !isDisabled"
-                 actor="self"
-                 isConnected="true"
+  <dialogue-turn
+    *ngIf="hasPreprinted && !isDisabled"
+    [isSpoken]="hasPreprinted && !isDisabled"
+    actor="self"
+    isConnected="true"
   >
     <ion-row class="ion-nowrap ion-align-items-center">
-      <play-text-audio key="personal.preprinted-qrcode.start-scanner"
-                       size="default"
+      <play-text-audio
+        key="personal.preprinted-qrcode.start-scanner"
+        size="default"
       ></play-text-audio>
-      <ion-button type="button"
-                  (click)="doScan()"
-                  expand="block"
-                  style="flex-basis:100%"
+      <ion-button
+        type="button"
+        (click)="doScan()"
+        expand="block"
+        style="flex-basis: 100%"
       >
-        <ion-icon name="qr-code" slot="start" size="small" aria-hidden="true"></ion-icon>
-        {{ 'personal.preprinted-qrcode.start-scanner'|translate }}
+        <ion-icon
+          name="qr-code"
+          slot="start"
+          size="small"
+          aria-hidden="true"
+        ></ion-icon>
+        {{ 'personal.preprinted-qrcode.start-scanner' | translate }}
       </ion-button>
     </ion-row>
   </dialogue-turn>
 
-  <dialogue-turn *ngIf="hasPreprinted && scanResult"
-                 [isSpoken]="hasPreprinted && scanResult"
+  <dialogue-turn
+    *ngIf="hasPreprinted && scanResult"
+    [isSpoken]="hasPreprinted && scanResult"
   >
     <div *ngIf="!scanResultError">
       <p>
-        <play-text-audio key="personal.preprinted-qrcode.result-ok" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'personal.preprinted-qrcode.result-ok'|translate }}
+        <play-text-audio
+          key="personal.preprinted-qrcode.result-ok"
+          class="ion-float-start ion-margin-end"
+        ></play-text-audio>
+        {{ 'personal.preprinted-qrcode.result-ok' | translate }}
       </p>
     </div>
     <div *ngIf="scanResultError">
       <p>
-        <play-text-audio key="personal.preprinted-qrcode.error" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'personal.preprinted-qrcode.error'|translate }}
+        <play-text-audio
+          key="personal.preprinted-qrcode.error"
+          class="ion-float-start ion-margin-end"
+        ></play-text-audio>
+        {{ 'personal.preprinted-qrcode.error' | translate }}
       </p>
 
       <ion-row class="ion-nowrap ion-align-items-center ion-margin-top">
-        <play-text-audio key="personal.preprinted-qrcode.try-again"
-                         size="default"
+        <play-text-audio
+          key="personal.preprinted-qrcode.try-again"
+          size="default"
         ></play-text-audio>
-        <ion-button type="button"
-                    (click)="resetScan();doScan()"
-                    expand="block"
-                    style="flex-basis:100%"
+        <ion-button
+          type="button"
+          (click)="resetScan(); doScan()"
+          expand="block"
+          style="flex-basis: 100%"
         >
-          {{ 'personal.preprinted-qrcode.try-again'|translate }}
+          {{ 'personal.preprinted-qrcode.try-again' | translate }}
         </ion-button>
       </ion-row>
     </div>
   </dialogue-turn>
-
 </section>

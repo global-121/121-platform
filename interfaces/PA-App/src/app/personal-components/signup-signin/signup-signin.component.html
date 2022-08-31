@@ -1,78 +1,86 @@
 <section #signupSignin>
   <dialogue-turn>
     <p>
-      <play-text-audio key="personal.signup-signin.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.signup-signin.introduction'|translate }}
+      <play-text-audio
+        key="personal.signup-signin.introduction"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      {{ 'personal.signup-signin.introduction' | translate }}
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self">
-      <ion-radio-group
-        (ionChange)="changeSignupSignin($event.detail.value)"
-        [value]="signupSigninChoice"
+    <ion-radio-group
+      (ionChange)="changeSignupSignin($event.detail.value)"
+      [value]="signupSigninChoice"
+    >
+      <ion-item
+        color="light"
+        lines="full"
+        class="ion-no-padding"
       >
+        <play-text-audio
+          key="personal.signup-signin.create-id"
+          slot="start"
+          class="ion-no-margin ion-margin-end"
+        ></play-text-audio>
         <ion-item
-          color="light"
-          lines="full"
-          class="ion-no-padding"
-        >
-          <play-text-audio
-            key="personal.signup-signin.create-id"
-            slot="start"
-            class="ion-no-margin ion-margin-end"
-          ></play-text-audio>
-          <ion-item
-            lines="none"
-            color="light"
-            class="ion-no-padding"
-            style="width: 100%;"
-          >
-            <ion-label class="ion-text-wrap ion-padding-end">
-              {{ 'personal.signup-signin.create-id'|translate }}
-            </ion-label>
-            <ion-radio
-              [value]="idChoices.create"
-              [disabled]="typeChosen"
-            ></ion-radio>
-          </ion-item>
-        </ion-item>
-        <ion-item
+          lines="none"
           color="light"
           class="ion-no-padding"
-          lines="full"
+          style="width: 100%"
         >
-          <play-text-audio
-            key="personal.signup-signin.login-id"
-            slot="start"
-            class="ion-no-margin ion-margin-end"
-          ></play-text-audio>
-          <ion-item
-            lines="none"
-            color="light"
-            class="ion-no-padding"
-            style="width: 100%;"
-          >
-            <ion-label class="ion-text-wrap ion-padding-end">
-              {{ 'personal.signup-signin.login-id'|translate }}
-            </ion-label>
-            <ion-radio
-              [value]="idChoices.login"
-              [disabled]="typeChosen"
-            ></ion-radio>
-          </ion-item>
+          <ion-label class="ion-text-wrap ion-padding-end">
+            {{ 'personal.signup-signin.create-id' | translate }}
+          </ion-label>
+          <ion-radio
+            [value]="idChoices.create"
+            [disabled]="typeChosen"
+          ></ion-radio>
         </ion-item>
-      </ion-radio-group>
-      <ion-row
-        *ngIf="signupSigninChoice && !typeChosen"
-        class="ion-nowrap ion-align-items-center ion-margin-top"
+      </ion-item>
+      <ion-item
+        color="light"
+        class="ion-no-padding"
+        lines="full"
       >
-        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
-        <ion-button
-          type="submit"
-          (click)="submitSignupSignin()"
-          [disabled]="typeChosen"
-          expand="block"
-          style="flex-basis:100%"
-        >{{ 'shared.submit-button'|translate }}</ion-button>
-      </ion-row>
+        <play-text-audio
+          key="personal.signup-signin.login-id"
+          slot="start"
+          class="ion-no-margin ion-margin-end"
+        ></play-text-audio>
+        <ion-item
+          lines="none"
+          color="light"
+          class="ion-no-padding"
+          style="width: 100%"
+        >
+          <ion-label class="ion-text-wrap ion-padding-end">
+            {{ 'personal.signup-signin.login-id' | translate }}
+          </ion-label>
+          <ion-radio
+            [value]="idChoices.login"
+            [disabled]="typeChosen"
+          ></ion-radio>
+        </ion-item>
+      </ion-item>
+    </ion-radio-group>
+    <ion-row
+      *ngIf="signupSigninChoice && !typeChosen"
+      class="ion-nowrap ion-align-items-center ion-margin-top"
+    >
+      <play-text-audio
+        key="shared.submit-button"
+        size="default"
+      ></play-text-audio>
+      <ion-button
+        type="submit"
+        (click)="submitSignupSignin()"
+        [disabled]="typeChosen"
+        expand="block"
+        style="flex-basis: 100%"
+      >
+        {{ 'shared.submit-button' | translate }}
+      </ion-button>
+    </ion-row>
   </dialogue-turn>
 </section>

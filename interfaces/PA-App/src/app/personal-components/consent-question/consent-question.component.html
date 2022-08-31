@@ -1,7 +1,18 @@
 <dialogue-turn>
   <p>
-    <play-text-audio key="personal.consent-question.question" class="ion-float-start ion-margin-end"></play-text-audio>
-    <span [innerHTML]="'personal.consent-question.question'|translate:{ ngo:'<strong>'+instanceInformation?.displayName+'</strong>' }"></span>
+    <play-text-audio
+      key="personal.consent-question.question"
+      class="ion-float-start ion-margin-end"
+    ></play-text-audio>
+    <span
+      [innerHTML]="
+        'personal.consent-question.question'
+          | translate
+            : {
+                ngo: '<strong>' + instanceInformation?.displayName + '</strong>'
+              }
+      "
+    ></span>
   </p>
 
   <more-info-button
@@ -13,12 +24,21 @@
 </dialogue-turn>
 <dialogue-turn actor="self">
   <p>
-    <play-text-audio key="personal.consent-question.answer" class="ion-float-start ion-margin-end"></play-text-audio>
-    <span [innerHTML]="'personal.consent-question.answer'|translate"></span>
+    <play-text-audio
+      key="personal.consent-question.answer"
+      class="ion-float-start ion-margin-end"
+    ></play-text-audio>
+    <span [innerHTML]="'personal.consent-question.answer' | translate"></span>
   </p>
   <ion-radio-group
     (ionChange)="changeConsent($event.detail.value)"
-    [value]="(userConsent === true) ? consentChoices.agree : (userConsent === false) ? consentChoices.disagree : ''"
+    [value]="
+      userConsent === true
+        ? consentChoices.agree
+        : userConsent === false
+        ? consentChoices.disagree
+        : ''
+    "
   >
     <ion-item
       color="light"
@@ -34,10 +54,10 @@
         lines="none"
         color="light"
         class="ion-no-padding"
-        style="width: 100%;"
+        style="width: 100%"
       >
         <ion-label class="ion-text-wrap ion-padding-end">
-          {{ 'personal.consent-question.agree'|translate }}
+          {{ 'personal.consent-question.agree' | translate }}
         </ion-label>
         <ion-radio
           [value]="consentChoices.agree"
@@ -59,10 +79,10 @@
         lines="none"
         color="light"
         class="ion-no-padding"
-        style="width: 100%;"
+        style="width: 100%"
       >
         <ion-label class="ion-text-wrap ion-padding-end">
-          {{ 'personal.consent-question.disagree'|translate }}
+          {{ 'personal.consent-question.disagree' | translate }}
         </ion-label>
         <ion-radio
           [value]="consentChoices.disagree"
@@ -75,14 +95,18 @@
     *ngIf="(consentChoice || userConsent) && !isDisabled"
     class="ion-nowrap ion-align-items-center ion-margin-top"
   >
-    <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
+    <play-text-audio
+      key="shared.submit-button"
+      size="default"
+    ></play-text-audio>
     <ion-button
       type="button"
       (click)="submitConsent()"
       [disabled]="isDisabled || !consentChoice"
       expand="block"
-      style="flex-basis:100%"
-    >{{ 'shared.submit-button'|translate }}</ion-button>
+      style="flex-basis: 100%"
+    >
+      {{ 'shared.submit-button' | translate }}
+    </ion-button>
   </ion-row>
-
 </dialogue-turn>

@@ -1,89 +1,142 @@
 <section *ngIf="isCanceled === false">
   <dialogue-turn>
     <p>
-      <play-text-audio key="personal.set-notification-number.introduction1" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.set-notification-number.introduction1'|translate }}
+      <play-text-audio
+        key="personal.set-notification-number.introduction1"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      {{ 'personal.set-notification-number.introduction1' | translate }}
     </p>
     <ul>
       <li>
-        <play-text-audio key="personal.set-notification-number.introduction2" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'personal.set-notification-number.introduction2'|translate }}
+        <play-text-audio
+          key="personal.set-notification-number.introduction2"
+          class="ion-float-start ion-margin-end"
+        ></play-text-audio>
+        {{ 'personal.set-notification-number.introduction2' | translate }}
       </li>
       <li>
-        <play-text-audio key="personal.set-notification-number.introduction3" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'personal.set-notification-number.introduction3'|translate }}
+        <play-text-audio
+          key="personal.set-notification-number.introduction3"
+          class="ion-float-start ion-margin-end"
+        ></play-text-audio>
+        {{ 'personal.set-notification-number.introduction3' | translate }}
       </li>
       <li>
-        <play-text-audio key="personal.set-notification-number.introduction4" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'personal.set-notification-number.introduction4'|translate }}
+        <play-text-audio
+          key="personal.set-notification-number.introduction4"
+          class="ion-float-start ion-margin-end"
+        ></play-text-audio>
+        {{ 'personal.set-notification-number.introduction4' | translate }}
       </li>
     </ul>
   </dialogue-turn>
   <dialogue-turn actor="self">
     <form (ngSubmit)="submitPhoneNumber(phone)">
       <p>
-        <play-text-audio key="personal.set-notification-number.input-label"></play-text-audio>
-        <ion-label [innerHTML]="'personal.set-notification-number.input-label'|translate:{ phoneNumberExample: '<strong class=\'ion-text-nowrap\'>' + placeholder + '</strong>' }"></ion-label>
+        <play-text-audio
+          key="personal.set-notification-number.input-label"
+        ></play-text-audio>
+        <ion-label
+          [innerHTML]="
+            'personal.set-notification-number.input-label'
+              | translate
+                : {
+                    phoneNumberExample:
+                      '<strong class=\'ion-text-nowrap\'>' +
+                      placeholder +
+                      '</strong>'
+                  }
+          "
+        ></ion-label>
       </p>
 
-      <phone-number-input name="phone"
-                          [(ngModel)]="phone"
-                          ngDefaultControl
-                          [placeholder]="placeholder"
-                          [disabled]="isDisabled"
-                          [(isValid)]="phoneNumberIsValid"
-                          (ionFocus)="hasValidationError=false;"
+      <phone-number-input
+        name="phone"
+        [(ngModel)]="phone"
+        ngDefaultControl
+        [placeholder]="placeholder"
+        [disabled]="isDisabled"
+        [(isValid)]="phoneNumberIsValid"
+        (ionFocus)="hasValidationError = false"
       ></phone-number-input>
 
-      <ion-row *ngIf="!isDisabled"
-               class="ion-nowrap ion-align-items-center ion-margin-top"
+      <ion-row
+        *ngIf="!isDisabled"
+        class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="personal.set-notification-number.submit"
-                         size="default"
+        <play-text-audio
+          key="personal.set-notification-number.submit"
+          size="default"
         ></play-text-audio>
-        <ion-button type="submit"
-                    [disabled]="isDisabled || !phone"
-                    expand="block"
-                    style="flex-basis:100%"
-        >{{ 'personal.set-notification-number.submit'|translate }}</ion-button>
-      </ion-row>
-      <ion-row *ngIf="!isDisabled"
-               class="ion-nowrap ion-align-items-center ion-margin-top"
-      >
-        <play-text-audio key="personal.set-notification-number.skip"
-                         size="default"
-        ></play-text-audio>
-        <ion-button type="reset"
-                    (click)="skipPhone()"
-                    [disabled]="isDisabled"
-                    fill="outline"
-                    expand="block"
-                    style="flex-basis:100%"
+        <ion-button
+          type="submit"
+          [disabled]="isDisabled || !phone"
+          expand="block"
+          style="flex-basis: 100%"
         >
-          {{ 'personal.set-notification-number.skip'|translate }}
+          {{ 'personal.set-notification-number.submit' | translate }}
+        </ion-button>
+      </ion-row>
+      <ion-row
+        *ngIf="!isDisabled"
+        class="ion-nowrap ion-align-items-center ion-margin-top"
+      >
+        <play-text-audio
+          key="personal.set-notification-number.skip"
+          size="default"
+        ></play-text-audio>
+        <ion-button
+          type="reset"
+          (click)="skipPhone()"
+          [disabled]="isDisabled"
+          fill="outline"
+          expand="block"
+          style="flex-basis: 100%"
+        >
+          {{ 'personal.set-notification-number.skip' | translate }}
         </ion-button>
       </ion-row>
     </form>
-
   </dialogue-turn>
-  <dialogue-turn *ngIf="hasValidationError"
-                 [isSpoken]="hasValidationError"
+  <dialogue-turn
+    *ngIf="hasValidationError"
+    [isSpoken]="hasValidationError"
   >
     <p>
-      <play-text-audio key="personal.set-notification-number.validation.phone-number" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.set-notification-number.validation.phone-number'|translate }}
+      <play-text-audio
+        key="personal.set-notification-number.validation.phone-number"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      {{
+        'personal.set-notification-number.validation.phone-number' | translate
+      }}
     </p>
   </dialogue-turn>
-  <dialogue-turn *ngIf="choiceMade"
-                 [isSpoken]="choiceMade"
+  <dialogue-turn
+    *ngIf="choiceMade"
+    [isSpoken]="choiceMade"
   >
     <p *ngIf="!phoneSkipped">
-      <play-text-audio key="personal.set-notification-number.conclusion-submitted" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span [innerHTML]="'personal.set-notification-number.conclusion-submitted'|translate:{ phone:'<strong>'+phoneNumber+'</strong>' }"></span>
+      <play-text-audio
+        key="personal.set-notification-number.conclusion-submitted"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      <span
+        [innerHTML]="
+          'personal.set-notification-number.conclusion-submitted'
+            | translate: { phone: '<strong>' + phoneNumber + '</strong>' }
+        "
+      ></span>
     </p>
     <p *ngIf="phoneSkipped">
-      <play-text-audio key="personal.set-notification-number.conclusion-skipped" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span>{{ 'personal.set-notification-number.conclusion-skipped'|translate }}</span>
+      <play-text-audio
+        key="personal.set-notification-number.conclusion-skipped"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      <span>
+        {{ 'personal.set-notification-number.conclusion-skipped' | translate }}
+      </span>
     </p>
   </dialogue-turn>
 </section>

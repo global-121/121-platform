@@ -1,20 +1,30 @@
 <ion-header>
   <ion-toolbar color="dark">
     <ion-buttons slot="start">
-      <play-text-audio [key]="(headingKey) ? headingKey : 'shared.more-info'"></play-text-audio>
+      <play-text-audio
+        [key]="headingKey ? headingKey : 'shared.more-info'"
+      ></play-text-audio>
     </ion-buttons>
     <ion-title>
-      <ng-container *ngIf="headingKey">{{ headingKey|translate }}</ng-container>
+      <ng-container *ngIf="headingKey">{{
+        headingKey | translate
+      }}</ng-container>
       <ng-container *ngIf="!headingKey && heading">{{ heading }}</ng-container>
-      <ng-container *ngIf="!headingKey && !heading">{{ 'shared.more-info'|translate }}</ng-container>
+      <ng-container *ngIf="!headingKey && !heading">{{
+        'shared.more-info' | translate
+      }}</ng-container>
     </ion-title>
     <ion-buttons slot="end">
       <ion-button
         (click)="close()"
-        [title]="'shared.close-button'|translate"
-        [attr.aria-label]="'shared.close-button'|translate"
+        [title]="'shared.close-button' | translate"
+        [attr.aria-label]="'shared.close-button' | translate"
       >
-        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -23,9 +33,18 @@
   fullscreen
   class="ion-padding"
 >
-  <div *ngIf="messageKey" class="ion-float-end ion-margin-start">
+  <div
+    *ngIf="messageKey"
+    class="ion-float-end ion-margin-start"
+  >
     <play-text-audio [key]="messageKey"></play-text-audio>
   </div>
-  <div *ngIf="messageKey" [innerHTML]="messageKey|translate"></div>
-  <div *ngIf="!messageKey && message" [innerHTML]="message"></div>
+  <div
+    *ngIf="messageKey"
+    [innerHTML]="messageKey | translate"
+  ></div>
+  <div
+    *ngIf="!messageKey && message"
+    [innerHTML]="message"
+  ></div>
 </ion-content>

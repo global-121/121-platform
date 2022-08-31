@@ -1,14 +1,14 @@
-
-<ion-button *ngIf="!isDisabled || alwaysVisible"
-            type="button"
-            color="primary"
-            shape="round"
-            fill="solid"
-            [size]="size ? size : 'small'"
-            [attr.title]="buttonLabel"
-            [attr.aria-label]="buttonLabel"
-            (click)="toggleState()"
-            class="play-text-audio"
+<ion-button
+  *ngIf="!isDisabled || alwaysVisible"
+  type="button"
+  color="primary"
+  shape="round"
+  fill="solid"
+  [size]="size ? size : 'small'"
+  [attr.title]="buttonLabel"
+  [attr.aria-label]="buttonLabel"
+  (click)="toggleState()"
+  class="play-text-audio"
 >
   <img
     *ngIf="iconName === 'play'"
@@ -17,11 +17,26 @@
     width="18"
     height="18"
     aria-hidden="true"
-  >
-  <ion-icon *ngIf="iconName !== 'play'"
-            [name]="iconName"
-            size="small"
-            slot="icon-only"
-            aria-hidden="true"
+  />
+  <ion-icon
+    *ngIf="iconName === 'pause'"
+    name="pause"
+    size="small"
+    slot="icon-only"
+    aria-hidden="true"
+  ></ion-icon>
+  <ion-icon
+    *ngIf="iconName === 'hourglass'"
+    name="hourglass"
+    size="small"
+    slot="icon-only"
+    aria-hidden="true"
+  ></ion-icon>
+  <ion-icon
+    *ngIf="iconName === 'alert'"
+    name="alert"
+    size="small"
+    slot="icon-only"
+    aria-hidden="true"
   ></ion-icon>
 </ion-button>

@@ -1,11 +1,15 @@
 <section #selectProgram>
-  <dialogue-turn *ngIf="programs?.length"
-                 [isSpoken]="programs?.length"
-                 isConnected="true"
+  <dialogue-turn
+    *ngIf="programs?.length"
+    [isSpoken]="programs?.length"
+    isConnected="true"
   >
     <p>
-      <play-text-audio key="personal.select-program.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.select-program.introduction'|translate }}
+      <play-text-audio
+        key="personal.select-program.introduction"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      {{ 'personal.select-program.introduction' | translate }}
     </p>
 
     <more-info-button
@@ -15,53 +19,65 @@
       headingKey="personal.select-program.more-info-programs"
     ></more-info-button>
   </dialogue-turn>
-  <dialogue-turn actor="self"
-                 *ngIf="programs?.length"
-                 [isSpoken]="programs?.length"
+  <dialogue-turn
+    actor="self"
+    *ngIf="programs?.length"
+    [isSpoken]="programs?.length"
   >
     <form (submit)="submitProgram()">
       <ion-radio-group
         (ionChange)="changeProgram($event)"
         [value]="programChoice"
       >
-        <ion-item *ngFor="let program of programs"
-                  color="light"
-                  lines="full"
-                  class="ion-no-padding"
+        <ion-item
+          *ngFor="let program of programs"
+          color="light"
+          lines="full"
+          class="ion-no-padding"
         >
           <ion-label class="ion-text-wrap ion-padding-end">
             {{ program.titlePaApp }}
             <ng-container *ngIf="program.description">
-              <br>
+              <br />
               <ion-note class="ion-text-wrap">
                 {{ program.description }}
               </ion-note>
             </ng-container>
           </ion-label>
-          <ion-radio [value]="program.id"
-                     [disabled]="isDisabled"
+          <ion-radio
+            [value]="program.id"
+            [disabled]="isDisabled"
           ></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <ion-row *ngIf="programChoice && !isDisabled"
-               class="ion-nowrap ion-align-items-center ion-margin-top"
+      <ion-row
+        *ngIf="programChoice && !isDisabled"
+        class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="shared.submit-button"
-                         size="default"
+        <play-text-audio
+          key="shared.submit-button"
+          size="default"
         ></play-text-audio>
-        <ion-button type="submit"
-                    expand="block"
-                    style="flex-basis:100%"
-        >{{ 'shared.submit-button'|translate }}</ion-button>
+        <ion-button
+          type="submit"
+          expand="block"
+          style="flex-basis: 100%"
+        >
+          {{ 'shared.submit-button' | translate }}
+        </ion-button>
       </ion-row>
     </form>
   </dialogue-turn>
-  <dialogue-turn *ngIf="!programs?.length"
-                 [isSpoken]="!programs?.length"
+  <dialogue-turn
+    *ngIf="!programs?.length"
+    [isSpoken]="!programs?.length"
   >
     <p>
-      <play-text-audio key="personal.select-program.no-published-programs" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.select-program.no-published-programs'|translate }}
+      <play-text-audio
+        key="personal.select-program.no-published-programs"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      {{ 'personal.select-program.no-published-programs' | translate }}
     </p>
   </dialogue-turn>
 </section>

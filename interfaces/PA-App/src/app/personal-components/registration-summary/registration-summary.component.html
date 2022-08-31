@@ -4,15 +4,18 @@
     [isSpoken]="registrationStatus === false"
   >
     <p>
-      <play-text-audio key="connection.error-retry" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span [innerHTML]="'connection.error-retry'|translate"></span>
+      <play-text-audio
+        key="connection.error-retry"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      <span [innerHTML]="'connection.error-retry' | translate"></span>
     </p>
     <p>
       <ion-button
         type="button"
         (click)="retry()"
       >
-        {{ 'shared.retry'|translate }}
+        {{ 'shared.retry' | translate }}
       </ion-button>
     </p>
   </dialogue-turn>
@@ -23,8 +26,15 @@
     [isSpoken]="validation"
   >
     <p>
-      <play-text-audio key="personal.registration-summary.validation-conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span [innerHTML]="'personal.registration-summary.validation-conclusion'|translate"></span>
+      <play-text-audio
+        key="personal.registration-summary.validation-conclusion"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      <span
+        [innerHTML]="
+          'personal.registration-summary.validation-conclusion' | translate
+        "
+      ></span>
     </p>
   </dialogue-turn>
   <dialogue-turn
@@ -33,9 +43,12 @@
     [isSpoken]="validation && meetingDocuments?.length"
   >
     <p>
-      <play-text-audio key="personal.registration-summary.documents" class="ion-float-start ion-margin-end">
+      <play-text-audio
+        key="personal.registration-summary.documents"
+        class="ion-float-start ion-margin-end"
+      >
       </play-text-audio>
-      {{ 'personal.registration-summary.documents'|translate }}
+      {{ 'personal.registration-summary.documents' | translate }}
     </p>
     <ul class="ion-no-padding ion-padding-start">
       <li *ngFor="let document of meetingDocuments">
@@ -49,12 +62,27 @@
     [isSpoken]="validation && showQrCode"
   >
     <p>
-      <play-text-audio key="personal.registration-summary.qr-code" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.registration-summary.qr-code'|translate }}
+      <play-text-audio
+        key="personal.registration-summary.qr-code"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      {{ 'personal.registration-summary.qr-code' | translate }}
     </p>
-    <div *ngIf="qrDataString" text-center margin-vertical
-      style="margin: 1em auto; max-width: 360px; padding: 1em; background: white;">
-      <qrcode [qrdata]="qrDataString" level="H"></qrcode>
+    <div
+      *ngIf="qrDataString"
+      text-center
+      margin-vertical
+      style="
+        margin: 1em auto;
+        max-width: 360px;
+        padding: 1em;
+        background: white;
+      "
+    >
+      <qrcode
+        [qrdata]="qrDataString"
+        level="H"
+      ></qrcode>
     </div>
   </dialogue-turn>
   <dialogue-turn
@@ -62,8 +90,15 @@
     [isSpoken]="!validation"
   >
     <p>
-      <play-text-audio key="personal.registration-summary.no-validation-conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span [innerHTML]="'personal.registration-summary.no-validation-conclusion'|translate"></span>
+      <play-text-audio
+        key="personal.registration-summary.no-validation-conclusion"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      <span
+        [innerHTML]="
+          'personal.registration-summary.no-validation-conclusion' | translate
+        "
+      ></span>
     </p>
-</dialogue-turn>
+  </dialogue-turn>
 </section>
