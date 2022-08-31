@@ -1,15 +1,19 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      {{ 'qr-scanner.title'|translate }}
+      {{ 'qr-scanner.title' | translate }}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button
         (click)="closeModal()"
-        [attr.title]="'qr-scanner.close'|translate"
-        [attr.aria-label]="'qr-scanner.close'|translate"
+        [attr.title]="'qr-scanner.close' | translate"
+        [attr.aria-label]="'qr-scanner.close' | translate"
       >
-        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -18,28 +22,36 @@
   fullscreen="true"
   class="qr-scanner"
 >
-
   <div
     *ngIf="showCompatibilityError || showPermissionError"
     class="ion-text-center ion-padding"
   >
-    <ion-icon name="alert" size="large" aria-hidden="true"></ion-icon>
+    <ion-icon
+      name="alert"
+      size="large"
+      aria-hidden="true"
+    ></ion-icon>
     <p *ngIf="showCompatibilityError">
-      {{ 'qr-scanner.error-not-compatible'|translate }}
+      {{ 'qr-scanner.error-not-compatible' | translate }}
     </p>
     <p *ngIf="showPermissionError">
-      {{ 'qr-scanner.error-no-permissions'|translate }}
+      {{ 'qr-scanner.error-no-permissions' | translate }}
     </p>
     <p *ngIf="showGenericError">
-      {{ 'qr-scanner.error-generic'|translate }}
+      {{ 'qr-scanner.error-generic' | translate }}
     </p>
     <p class="ion-margin-top ion-text-center">
       <ion-button
         type="button"
         (click)="tryAgain()"
       >
-        <ion-icon name="refresh" size="small" slot="start" aria-hidden="true"></ion-icon>
-        {{ 'qr-scanner.try-again'|translate }}
+        <ion-icon
+          name="refresh"
+          size="small"
+          slot="start"
+          aria-hidden="true"
+        ></ion-icon>
+        {{ 'qr-scanner.try-again' | translate }}
       </ion-button>
     </p>
   </div>
@@ -59,31 +71,48 @@
     class="qr-scanner--zxing-component"
   ></zxing-scanner>
 
-  <ion-spinner name="dots" class="qr-scanner--loading"></ion-spinner>
+  <ion-spinner
+    name="dots"
+    class="qr-scanner--loading"
+  ></ion-spinner>
 
-  <ion-fab vertical="top" horizontal="end" slot="fixed">
+  <ion-fab
+    vertical="top"
+    horizontal="end"
+    slot="fixed"
+  >
     <ion-fab-button
       *ngIf="torchAvailable"
-      [title]="'qr-scanner.toggle-flash'|translate"
-      [attr.aria-label]="'qr-scanner.toggle-flash'|translate"
-      (click)="torchEnabled=!torchEnabled"
+      [title]="'qr-scanner.toggle-flash' | translate"
+      [attr.aria-label]="'qr-scanner.toggle-flash' | translate"
+      (click)="torchEnabled = !torchEnabled"
       [color]="torchEnabled ? 'success' : 'light'"
       class="ion-margin-vertical"
     >
-      <ion-icon *ngIf="torchEnabled" name="flash" aria-hidden="true"></ion-icon>
-      <ion-icon *ngIf="!torchEnabled" name="flash-off" aria-hidden="true"></ion-icon>
+      <ion-icon
+        *ngIf="torchEnabled"
+        name="flash"
+        aria-hidden="true"
+      ></ion-icon>
+      <ion-icon
+        *ngIf="!torchEnabled"
+        name="flash-off"
+        aria-hidden="true"
+      ></ion-icon>
     </ion-fab-button>
     <ion-fab-button
       *ngIf="switchCamerasAvailable"
-      [title]="'qr-scanner.switch-camera'|translate"
+      [title]="'qr-scanner.switch-camera' | translate"
       (click)="switchCamera()"
       color="light"
       class="ion-margin-vertical"
     >
-      <ion-icon name="camera-reverse" aria-hidden="true"></ion-icon>
+      <ion-icon
+        name="camera-reverse"
+        aria-hidden="true"
+      ></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
 </ion-content>
 <ion-footer
   *ngIf="debugInput"
@@ -102,7 +131,11 @@
     class="ion-no-margin"
     (click)="onScanSuccess(scanData.value)"
   >
-    <ion-icon name="create" slot="start" aria-hidden="true"></ion-icon>
+    <ion-icon
+      name="create"
+      slot="start"
+      aria-hidden="true"
+    ></ion-icon>
     Use as scanned data
   </ion-button>
 </ion-footer>

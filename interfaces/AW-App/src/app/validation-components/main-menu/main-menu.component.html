@@ -1,35 +1,43 @@
 <section #mainMenu>
   <dialogue-turn [isSpoken]="true">
-    {{ 'validation.main-menu.introduction'|translate }}
+    {{ 'validation.main-menu.introduction' | translate }}
   </dialogue-turn>
-  <dialogue-turn actor="self"
-                 [isSpoken]="true"
+  <dialogue-turn
+    actor="self"
+    [isSpoken]="true"
   >
     <ion-radio-group (ionChange)="changeOption($event)">
       <ng-container *ngFor="let option of menuOptions">
-        <ion-item *ngIf="option.visible"
-                  color="light"
-                  class="ion-no-padding"
-                  [disabled]="option.disabled || (option.connectionRequired && noConnection|async) || optionSelected"
+        <ion-item
+          *ngIf="option.visible"
+          color="light"
+          class="ion-no-padding"
+          [disabled]="
+            option.disabled ||
+            (option.connectionRequired && noConnection | async) ||
+            optionSelected
+          "
         >
           <ion-label class="ion-text-wrap ion-padding-end">
             {{ option.option }}
             &nbsp;
             <ion-badge
               *ngIf="option.counter"
-              style="vertical-align: text-bottom;"
-            >{{ option.counter }}</ion-badge>
+              style="vertical-align: text-bottom"
+              >{{ option.counter }}</ion-badge
+            >
           </ion-label>
           <ion-radio value="{{ option.id }}"></ion-radio>
         </ion-item>
       </ng-container>
     </ion-radio-group>
-    <ion-button *ngIf="optionChoice && !optionSelected"
-                expand="block"
-                class="ion-margin-top"
-                (click)="submitOption()"
+    <ion-button
+      *ngIf="optionChoice && !optionSelected"
+      expand="block"
+      class="ion-margin-top"
+      (click)="submitOption()"
     >
-      {{ 'shared.submit-button'|translate }}
+      {{ 'shared.submit-button' | translate }}
     </ion-button>
   </dialogue-turn>
 </section>

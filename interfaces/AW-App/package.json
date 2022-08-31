@@ -27,7 +27,7 @@
     "start:debug-production": "npm run build:debug && npm run serve:static",
     "test": "ng test --no-watch --browsers=ChromeHeadless",
     "test:dev": "ng test",
-    "lint:syntax": "prettier --check \"**/*.{md,js,ts,scss}\"",
+    "lint:syntax": "prettier --check \"**/*.{md,js,ts,scss,html}\"",
     "lint": "npm run lint:syntax && ng lint",
     "fix:syntax": "npm run lint:syntax -- --write"
   },

@@ -1,27 +1,34 @@
 <ion-tabs>
-
   <ion-tab-bar slot="top">
-    <ion-tab-button tab="account"
-                    layout="label-hide"
+    <ion-tab-button
+      tab="account"
+      layout="label-hide"
     >
-      <ion-icon name="person" aria-hidden="true"></ion-icon>
+      <ion-icon
+        name="person"
+        aria-hidden="true"
+      ></ion-icon>
       <ion-label>{{ 'tabs.user'|translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="validation"
-                    color="primary"
-                    layout="label-hide"
+    <ion-tab-button
+      tab="validation"
+      color="primary"
+      layout="label-hide"
     >
-      <ion-icon name="chatbox" aria-hidden="true"></ion-icon>
+      <ion-icon
+        name="chatbox"
+        aria-hidden="true"
+      ></ion-icon>
       <ion-label>{{ 'tabs.actions'|translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="tab3"
-                    [disabled]="true"
-                    layout="label-hide"
+    <ion-tab-button
+      tab="tab3"
+      [disabled]="true"
+      layout="label-hide"
     >
       <ion-label></ion-label>
     </ion-tab-button>
   </ion-tab-bar>
-
 </ion-tabs>

@@ -1,8 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>
-      {{ 'tabs.actions'|translate }}
-    </ion-title>
+    <ion-title> {{ 'tabs.actions'|translate }} </ion-title>
     <ion-buttons slot="end">
       <connection-indicator></connection-indicator>
 
@@ -13,7 +11,11 @@
         fill="clear"
         title="Toggle Debug-tools"
       >
-        <ion-icon name="construct" slot="icon-only" aria-hidden="true"></ion-icon>
+        <ion-icon
+          name="construct"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -23,66 +25,105 @@
   *ngIf="isDebug"
   [hidden]="!showDebug"
   class="ion-padding"
-  style="background: #fff;"
+  style="background: #fff"
 >
   <ion-row class="ion-align-items-center ion-justify-content-between">
-    <ion-button color="danger" size="small"
-                title="Clear storage"
-                (click)="debugClearAllStorage()"
+    <ion-button
+      color="danger"
+      size="small"
+      title="Clear storage"
+      (click)="debugClearAllStorage()"
     >
-      <ion-icon name="nuclear" size="small" slot="icon-only" aria-hidden="true"></ion-icon>
+      <ion-icon
+        name="nuclear"
+        size="small"
+        slot="icon-only"
+        aria-hidden="true"
+      ></ion-icon>
     </ion-button>
 
-    <ion-button color="danger" size="small"
-                title="Clear conversation"
-                (click)="this.container.clear()"
+    <ion-button
+      color="danger"
+      size="small"
+      title="Clear conversation"
+      (click)="this.container.clear()"
     >
-      <ion-icon name="trash" size="small" slot="icon-only" aria-hidden="true"></ion-icon>
+      <ion-icon
+        name="trash"
+        size="small"
+        slot="icon-only"
+        aria-hidden="true"
+      ></ion-icon>
     </ion-button>
 
-    <select name="debugSections"
-            title="Add section"
-            (change)="insertSection($event.target.value); $event.target.value='';"
+    <select
+      name="debugSections"
+      title="Add section"
+      (change)="insertSection($event.target.value); $event.target.value='';"
     >
       <option value="">Add section...</option>
       <option *ngFor="let section of debugSections;">{{ section }}</option>
     </select>
   </ion-row>
   <ion-row>
-    <ion-button color="tertiary" size="small" fill="clear"
-                title="Toggle state: loading"
-                (click)="conversationService.state.isLoading=!conversationService.state.isLoading;"
+    <ion-button
+      color="tertiary"
+      size="small"
+      fill="clear"
+      title="Toggle state: loading"
+      (click)="conversationService.state.isLoading=!conversationService.state.isLoading;"
     >
-      <ion-icon size="small" slot="icon-only" aria-hidden="true"
-                [name]="conversationService.state.isLoading ? 'pause' : 'hourglass'"
+      <ion-icon
+        size="small"
+        slot="icon-only"
+        aria-hidden="true"
+        [name]="conversationService.state.isLoading ? 'pause' : 'hourglass'"
       ></ion-icon>
     </ion-button>
 
-    <ion-button color="tertiary" size="small" fill="clear"
-                title="Scroll to bottom"
-                (click)="scrollDown()"
+    <ion-button
+      color="tertiary"
+      size="small"
+      fill="clear"
+      title="Scroll to bottom"
+      (click)="scrollDown()"
     >
-      <ion-icon name="arrow-down-circle-outline" size="small" slot="icon-only" aria-hidden="true"></ion-icon>
+      <ion-icon
+        name="arrow-down-circle-outline"
+        size="small"
+        slot="icon-only"
+        aria-hidden="true"
+      ></ion-icon>
     </ion-button>
 
-    <ion-button color="tertiary" size="small" fill="clear"
-                title="Show all User Permissions"
-                (click)="debugShowPermissions()"
+    <ion-button
+      color="tertiary"
+      size="small"
+      fill="clear"
+      title="Show all User Permissions"
+      (click)="debugShowPermissions()"
     >
-      <ion-icon name="id-card" size="small" slot="icon-only" aria-hidden="true"></ion-icon>
+      <ion-icon
+        name="id-card"
+        size="small"
+        slot="icon-only"
+        aria-hidden="true"
+      ></ion-icon>
     </ion-button>
   </ion-row>
 </div>
 
-<ion-content color="medium" class="ion-padding-vertical">
-
+<ion-content
+  color="medium"
+  class="ion-padding-vertical"
+>
   <div #conversationContainer></div>
 
   <div class="loading-indicator">
-    <ion-spinner name="dots"
-                 [hidden]="!conversationService.state.isLoading"
-                 class="loading-indicator--spinner"
+    <ion-spinner
+      name="dots"
+      [hidden]="!conversationService.state.isLoading"
+      class="loading-indicator--spinner"
     ></ion-spinner>
   </div>
-
 </ion-content>

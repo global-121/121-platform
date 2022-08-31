@@ -1,25 +1,42 @@
 <section>
-  <dialogue-turn *ngIf="uploadDataStored && !uploadAborted && !uploadReady"
-                 [isSpoken]="uploadDataStored && !uploadAborted && !uploadReady"
+  <dialogue-turn
+    *ngIf="uploadDataStored && !uploadAborted && !uploadReady"
+    [isSpoken]="uploadDataStored && !uploadAborted && !uploadReady"
   >
     <div
-    [innerHTML]="'validation.upload-data.uploading'|translate:{ nrStored:'<strong>'+nrStored+'</strong>' }"
-    class="ion-margin-bottom">
-  </div>
+      [innerHTML]="
+        'validation.upload-data.uploading'
+          | translate: { nrStored: '<strong>' + nrStored + '</strong>' }
+      "
+      class="ion-margin-bottom"
+    ></div>
   </dialogue-turn>
-  <div class="loading-indicator" [hidden]="!uploadDataStored || uploadReady">
-    <ion-spinner name="dots" class="loading-indicator--spinner">
+  <div
+    class="loading-indicator"
+    [hidden]="!uploadDataStored || uploadReady"
+  >
+    <ion-spinner
+      name="dots"
+      class="loading-indicator--spinner"
+    >
     </ion-spinner>
   </div>
-  <dialogue-turn *ngIf="uploadReady && !uploadAborted"
-                 [isSpoken]="uploadReady && !uploadAborted"
+  <dialogue-turn
+    *ngIf="uploadReady && !uploadAborted"
+    [isSpoken]="uploadReady && !uploadAborted"
   >
-    {{ 'validation.upload-data.upload-result'|translate }}
+    {{ 'validation.upload-data.upload-result' | translate }}
   </dialogue-turn>
-  <dialogue-turn *ngIf="!uploadDataStored" [isSpoken]="!uploadDataStored">
-    {{ 'validation.upload-data.no-upload-data-stored'|translate }}
+  <dialogue-turn
+    *ngIf="!uploadDataStored"
+    [isSpoken]="!uploadDataStored"
+  >
+    {{ 'validation.upload-data.no-upload-data-stored' | translate }}
   </dialogue-turn>
-  <dialogue-turn *ngIf="uploadAborted" [isSpoken]="uploadAborted">
-    {{ 'validation.upload-data.upload-aborted'|translate }}
+  <dialogue-turn
+    *ngIf="uploadAborted"
+    [isSpoken]="uploadAborted"
+  >
+    {{ 'validation.upload-data.upload-aborted' | translate }}
   </dialogue-turn>
 </section>

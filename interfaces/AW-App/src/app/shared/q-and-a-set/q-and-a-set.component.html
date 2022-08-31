@@ -2,8 +2,9 @@
   #theForm="ngForm"
   (keydown.enter)="$event.preventDefault()"
 >
-
-  <ng-container *ngFor="let question of questions; let i=index; first as isFirst;">
+  <ng-container
+    *ngFor="let question of questions; let i = index; first as isFirst"
+  >
     <dialogue-turn
       actor="self"
       [isConnected]="!isFirst"
@@ -25,7 +26,9 @@
               lines="full"
               class="ion-no-padding"
             >
-              <ion-label class="ion-text-wrap ion-padding-end">{{ option.label }}</ion-label>
+              <ion-label class="ion-text-wrap ion-padding-end">
+                {{ option.label }}
+              </ion-label>
               <ion-radio
                 [value]="option.value"
                 [disabled]="isSubmitted"
@@ -43,7 +46,13 @@
             [placeholder]="question.placeholder"
             [pattern]="question.pattern"
             [disabled]="isSubmitted"
-            (isValidChange)="onChangeWithValidation(question.code, numInput.value, numInput.isValid)"
+            (isValidChange)="
+              onChangeWithValidation(
+                question.code,
+                numInput.value,
+                numInput.isValid
+              )
+            "
           ></numeric-input>
         </div>
         <div *ngSwitchCase="answerType.Date">
@@ -54,7 +63,13 @@
             [required]="true"
             [name]="question.code"
             [disabled]="isSubmitted"
-            (isValidChange)="onChangeWithValidation(question.code, dateInput.value, dateInput.isValid)"
+            (isValidChange)="
+              onChangeWithValidation(
+                question.code,
+                dateInput.value,
+                dateInput.isValid
+              )
+            "
           ></date-input>
         </div>
         <div *ngSwitchCase="answerType.phoneNumber">
@@ -66,7 +81,13 @@
             [placeholder]="question.placeholder"
             [name]="question.code"
             [disabled]="isSubmitted"
-            (isValidChange)="onChangeWithValidation(question.code, phoneNumberInput.value, phoneNumberInput.isValid)"
+            (isValidChange)="
+              onChangeWithValidation(
+                question.code,
+                phoneNumberInput.value,
+                phoneNumberInput.isValid
+              )
+            "
           ></phone-number-input>
         </div>
         <div *ngSwitchCase="answerType.email">
@@ -78,11 +99,18 @@
             inputmode="email"
             autocomplete="email"
             pattern="^[\w\-+]+(\.[\w\-+]+)*@(([\w\-]+\.)*[\w\-]+)\.[a-z]{2,}$"
-            [title]="'q-and-a-set.validation.email'|translate"
+            [title]="'q-and-a-set.validation.email' | translate"
             [required]="true"
             [name]="question.code"
             [disabled]="isSubmitted"
-            (ionChange)="onChangeWithValidation(question.code, emailInput.value, emailInput.valid && ((emailInput.dirty || emailInput.touched) || allQuestionsShown))"
+            (ionChange)="
+              onChangeWithValidation(
+                question.code,
+                emailInput.value,
+                emailInput.valid &&
+                  (emailInput.dirty || emailInput.touched || allQuestionsShown)
+              )
+            "
             [debounce]="300"
           ></ion-input>
         </div>
@@ -97,7 +125,16 @@
             [required]="true"
             [name]="question.code"
             [disabled]="isSubmitted"
-            (ionChange)="onChangeWithValidation(question.code, defaultInput.value, defaultInput.valid && ((defaultInput.dirty || defaultInput.touched) || allQuestionsShown))"
+            (ionChange)="
+              onChangeWithValidation(
+                question.code,
+                defaultInput.value,
+                defaultInput.valid &&
+                  (defaultInput.dirty ||
+                    defaultInput.touched ||
+                    allQuestionsShown)
+              )
+            "
             [debounce]="300"
           ></ion-input>
         </div>
@@ -108,31 +145,41 @@
       class="ion-margin-bottom ion-padding-bottom"
     >
       <dialogue-turn [isSpoken]="checkValidationError(question.code)">
-        <p *ngIf="(question.answerType === answerType.phoneNumber)">
-          {{ 'q-and-a-set.validation.phone-number'|translate }}
+        <p *ngIf="question.answerType === answerType.phoneNumber">
+          {{ 'q-and-a-set.validation.phone-number' | translate }}
         </p>
-        <p *ngIf="(question.answerType === answerType.Number)">
-          {{ 'q-and-a-set.validation.number'|translate }}
+        <p *ngIf="question.answerType === answerType.Number">
+          {{ 'q-and-a-set.validation.number' | translate }}
         </p>
-        <p *ngIf="(question.answerType === answerType.Date)">
-          {{ 'q-and-a-set.validation.date'|translate }}
+        <p *ngIf="question.answerType === answerType.Date">
+          {{ 'q-and-a-set.validation.date' | translate }}
         </p>
-        <p *ngIf="(question.answerType === answerType.email)">
-          {{ 'q-and-a-set.validation.email'|translate }}
+        <p *ngIf="question.answerType === answerType.email">
+          {{ 'q-and-a-set.validation.email' | translate }}
         </p>
-        <p *ngIf="(question.answerType === answerType.Text)">
-          {{ 'q-and-a-set.validation.required'|translate }}
+        <p *ngIf="question.answerType === answerType.Text">
+          {{ 'q-and-a-set.validation.required' | translate }}
         </p>
       </dialogue-turn>
     </div>
   </ng-container>
 
   <dialogue-turn
-    *ngIf="((theForm.invalid && (theForm.dirty || theForm.touched)) || checkValidationErrors()) && allQuestionsShown && !isSubmitted"
-    [isSpoken]="((theForm.invalid && (theForm.dirty || theForm.touched)) || checkValidationErrors()) && allQuestionsShown && !isSubmitted"
+    *ngIf="
+      ((theForm.invalid && (theForm.dirty || theForm.touched)) ||
+        checkValidationErrors()) &&
+      allQuestionsShown &&
+      !isSubmitted
+    "
+    [isSpoken]="
+      ((theForm.invalid && (theForm.dirty || theForm.touched)) ||
+        checkValidationErrors()) &&
+      allQuestionsShown &&
+      !isSubmitted
+    "
   >
     <p>
-      {{ 'q-and-a-set.validation.generic-error'|translate }}
+      {{ 'q-and-a-set.validation.generic-error' | translate }}
     </p>
   </dialogue-turn>
 
@@ -148,11 +195,10 @@
         (click)="doSubmit()"
         [disabled]="isSubmitted"
         expand="block"
-        style="flex-basis:100%;"
+        style="flex-basis: 100%"
       >
-        {{ submitLabel|translate }}
+        {{ submitLabel | translate }}
       </ion-button>
     </ion-row>
   </dialogue-turn>
-
 </form>
