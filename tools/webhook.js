@@ -4,6 +4,7 @@ const child_process = require('child_process');
 const fs = require('fs');
 
 const MANUAL_DEPLOY_URL = '?do=deploy';
+const TYPE_WARN = 'warn';
 
 // ----------------------------------------------------------------------------
 //   Functions/Methods/etc:
@@ -97,6 +98,20 @@ http
       body.push(chunk);
     });
     req.on('end', function () {
+      /**
+       * Respond with a message in the console AND via HTTP
+       * @param {string} message
+       * @param {'log' | 'warn'} type
+       */
+      function respond(message, type = 'log') {
+        if (type === TYPE_WARN) {
+          console.warn(message);
+        } else {
+          console.log(message);
+        }
+        res.end(message);
+      }
+
       let strBody = Buffer.concat(body).toString();
       let payload = {};
 
@@ -105,16 +120,16 @@ http
         payload = new URL('http://example.org/?' + strBody).searchParams;
 
         if (payload.get('secret') !== process.env.DEPLOY_SECRET) {
-          console.warn('Secret does not match.');
+          respond("Secret does not match.", TYPE_WARN);
           return;
         }
         let target = sanitizeTarget(payload.get('target'));
         if (!target) {
-          console.log(`No valid target.`);
+          respond(`No valid target.`, TYPE_WARN);
           return;
         }
-        console.log(`Manual deployment for: ${target} `);
         deploy(target);
+        respond(`Manual deployment for: ${target} `);
         return;
       }
 
@@ -127,7 +142,7 @@ http
             .digest('hex');
 
         if (req.headers['x-hub-signature'] !== sig) {
-          console.warn('Invalid GitHub signature!');
+          respond(`Invalid GitHub signature!`, TYPE_WARN);
           return;
         }
 
@@ -139,7 +154,7 @@ http
         payload.pull_request.merged &&
         payload.pull_request.title.toUpperCase().includes('[SKIP CD]')
       ) {
-        console.log('PR deployment skipped with [SKIP CD]');
+        respond(`PR deployment skipped with [SKIP CD]`);
         return;
       }
 
@@ -148,8 +163,8 @@ http
         payload.action === 'closed' &&
         payload.pull_request.merged
       ) {
-        console.log('PR deployment for test-environment.');
         deploy();
+        respond(`PR deployment for test-environment.`);
         return;
       }
 
@@ -161,10 +176,10 @@ http
         payload.release.prerelease === true &&
         payload.release.target_commitish
       ) {
-        console.log(
-          `Pre-release deployment for: ${payload.release.target_commitish}`,
-        );
         deploy(payload.release.target_commitish);
+        respond(
+          `Pre-release deployment for: ${payload.release.target_commitish}`
+        );
         return;
       }
 
@@ -178,14 +193,15 @@ http
           ? isPatchUpgrade(payload.release.target_commitish)
           : true)
       ) {
-        console.log(
-          `Release (hotfix) deployment for: ${payload.release.target_commitish}`,
-        );
         deploy(payload.release.target_commitish);
+        respond(
+          `Release (hotfix) deployment for: ${payload.release.target_commitish}`
+        );
         return;
       }
+
+      res.end();
     });
-    res.end();
   })
   .listen(process.env.NODE_PORT);
 
