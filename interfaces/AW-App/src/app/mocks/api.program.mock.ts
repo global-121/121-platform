@@ -20,6 +20,7 @@ export const mockProgram: Program = {
     },
   ],
   financialServiceProviders: [],
+  validationByQr: false,
 };
 
 export const fspData = {

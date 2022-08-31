@@ -39,24 +39,29 @@ export class MainMenuComponent implements ValidationComponent {
   async ngOnInit() {
     const pendingUploadCount = await this.getPendingUploadCount();
 
+    const showQrOption = await this.checkValidationByQr();
+
     this.menuOptions = [
       {
         id: ValidationComponents.downloadData,
         option: this.translate.instant('validation.main-menu.download-data'),
         disabled: !this.canDownloadData(),
         connectionRequired: true,
+        visible: true,
       },
       {
         id: ValidationComponents.scanQr,
         option: this.translate.instant('validation.main-menu.scan-qr'),
         disabled: !this.canScanQr(),
         connectionRequired: false,
+        visible: showQrOption,
       },
       {
         id: ValidationComponents.findByPhone,
         option: this.translate.instant('validation.main-menu.find-by-phone'),
         disabled: !this.canFindByPhone(),
         connectionRequired: false,
+        visible: true,
       },
       {
         id: ValidationComponents.uploadData,
@@ -64,6 +69,7 @@ export class MainMenuComponent implements ValidationComponent {
         counter: pendingUploadCount,
         disabled: !this.canUploadData() || !pendingUploadCount,
         connectionRequired: true,
+        visible: true,
       },
     ];
   }
@@ -100,6 +106,13 @@ export class MainMenuComponent implements ValidationComponent {
       IonicStorageTypes.validatedData,
     );
     return validatedData ? validatedData.length : 0;
+  }
+
+  private async checkValidationByQr(): Promise<boolean> {
+    return this.storage
+      .get(IonicStorageTypes.myPrograms)
+      .then((programs) => programs.some((program) => program.validationByQr))
+      .catch(() => false);
   }
 
   public changeOption($event) {
