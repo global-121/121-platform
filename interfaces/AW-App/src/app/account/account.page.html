@@ -1,119 +1,157 @@
 <ion-header>
   <ion-toolbar color="dark">
-    <ion-title>
-      {{ 'tabs.user'|translate }}
-    </ion-title>
+    <ion-title> {{ 'tabs.user'|translate }} </ion-title>
     <ion-buttons slot="end">
       <connection-indicator></connection-indicator>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="medium" class="ion-padding-vertical">
-  <dialogue-turn *ngIf="!isLoggedIn"
-                 [isSpoken]="!isLoggedIn"
+<ion-content
+  color="medium"
+  class="ion-padding-vertical"
+>
+  <dialogue-turn
+    *ngIf="!isLoggedIn"
+    [isSpoken]="!isLoggedIn"
   >
     {{ 'account.introduction'|translate }}
   </dialogue-turn>
-  <dialogue-turn *ngIf="isLoggedIn"
-                 [isSpoken]="isLoggedIn"
+  <dialogue-turn
+    *ngIf="isLoggedIn"
+    [isSpoken]="isLoggedIn"
   >
     {{ 'account.conclusion'|translate }}
   </dialogue-turn>
-  <dialogue-turn actor="self"
-                 [isSpoken]="true"
+  <dialogue-turn
+    actor="self"
+    [isSpoken]="true"
   >
-    <form method="POST" (submit)="doLogin($event)" *ngIf="!isLoggedIn">
-      <input type="submit" hidden /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
+    <form
+      method="POST"
+      (submit)="doLogin($event)"
+      *ngIf="!isLoggedIn"
+    >
+      <input
+        type="submit"
+        hidden
+      /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
       <ion-item color="light">
-        <ion-label position="stacked">{{ 'account.email-label'|translate }}</ion-label>
-        <ion-input #email type="email"
-                   name="email"
-                   inputmode="email"
-                   [attr.autocomplete]="'username email'"
-                   autocapitalize="off"
-                   [autofocus]="true"
-                   [clearInput]="true"
-                   [required]="true"
+        <ion-label position="stacked">
+          {{ 'account.email-label'|translate }}
+        </ion-label>
+        <ion-input
+          #email
+          type="email"
+          name="email"
+          inputmode="email"
+          [attr.autocomplete]="'username email'"
+          autocapitalize="off"
+          [autofocus]="true"
+          [clearInput]="true"
+          [required]="true"
         ></ion-input>
       </ion-item>
       <ion-item color="light">
-        <ion-label position="stacked">{{ 'account.password-label'|translate }}</ion-label>
-        <ion-input #password type="password"
-                   name="password"
-                   autocomplete="current-password"
-                   autocapitalize="off"
-                   [clearInput]="true"
-                   [clearOnEdit]="false"
-                   [required]="true"
+        <ion-label position="stacked">
+          {{ 'account.password-label'|translate }}
+        </ion-label>
+        <ion-input
+          #password
+          type="password"
+          name="password"
+          autocomplete="current-password"
+          autocapitalize="off"
+          [clearInput]="true"
+          [clearOnEdit]="false"
+          [required]="true"
         ></ion-input>
       </ion-item>
 
-      <ion-button type="submit"
-                  expand="block"
-                  class="ion-margin-top"
-                  [disabled]="!email.value || !password.value"
+      <ion-button
+        type="submit"
+        expand="block"
+        class="ion-margin-top"
+        [disabled]="!email.value || !password.value"
       >
         {{ 'account.login-button'|translate }}
       </ion-button>
     </form>
-    <ion-button expand="block" *ngIf="isLoggedIn" (click)="logout()">
+    <ion-button
+      expand="block"
+      *ngIf="isLoggedIn"
+      (click)="logout()"
+    >
       {{ 'account.logout-button'|translate }}
     </ion-button>
-    <ion-button expand="block"
-                *ngIf="isLoggedIn"
-                [disabled]="isLoggedIn && changePasswordForm"
-                (click)="openChangePassword()"
+    <ion-button
+      expand="block"
+      *ngIf="isLoggedIn"
+      [disabled]="isLoggedIn && changePasswordForm"
+      (click)="openChangePassword()"
     >
       {{ 'account.change-password'|translate }}
     </ion-button>
   </dialogue-turn>
-  <dialogue-turn actor="self"
-                 [isConnected]="true"
-                 *ngIf="changePasswordForm"
-                 [isSpoken]="changePasswordForm"
+  <dialogue-turn
+    actor="self"
+    [isConnected]="true"
+    *ngIf="changePasswordForm"
+    [isSpoken]="changePasswordForm"
   >
-    <h2 class="ion-text-uppercase">{{ 'account.change-password'|translate }}:</h2>
-    <form method="POST" (submit)="doChangePassword($event)">
+    <h2 class="ion-text-uppercase">
+      {{ 'account.change-password'|translate }}:
+    </h2>
+    <form
+      method="POST"
+      (submit)="doChangePassword($event)"
+    >
       <ion-item color="light">
-        <ion-label position="stacked">{{ 'account.create-label'|translate }}</ion-label>
-        <ion-input type="password"
-                   name="create"
-                   #create
-                   autocomplete="new-password"
-                   autocapitalize="off"
-                   [clearInput]="true"
-                   [clearOnEdit]="false"
-                   [required]="true"
+        <ion-label position="stacked">
+          {{ 'account.create-label'|translate }}
+        </ion-label>
+        <ion-input
+          type="password"
+          name="create"
+          #create
+          autocomplete="new-password"
+          autocapitalize="off"
+          [clearInput]="true"
+          [clearOnEdit]="false"
+          [required]="true"
         ></ion-input>
       </ion-item>
       <ion-item color="light">
-          <ion-label position="stacked">{{ 'account.confirm-label'|translate }}</ion-label>
-          <ion-input type="password"
-                     name="confirm"
-                     #confirm
-                     autocomplete="off"
-                     autocapitalize="off"
-                     [clearInput]="true"
-                     [clearOnEdit]="false"
-                     [required]="true"
+        <ion-label position="stacked">
+          {{ 'account.confirm-label'|translate }}
+        </ion-label>
+        <ion-input
+          type="password"
+          name="confirm"
+          #confirm
+          autocomplete="off"
+          autocapitalize="off"
+          [clearInput]="true"
+          [clearOnEdit]="false"
+          [required]="true"
         ></ion-input>
       </ion-item>
 
-      <ion-button type="submit"
-                  expand="block"
-                  [disabled]="!create.value || !confirm.value || (create.value !== confirm.value)"
-                  class="ion-margin-top"
+      <ion-button
+        type="submit"
+        expand="block"
+        [disabled]="!create.value || !confirm.value || (create.value !== confirm.value)"
+        class="ion-margin-top"
       >
         {{ 'account.change-password'|translate }}
       </ion-button>
-      <ion-button expand="block"
-                  fill="outline"
-                  (click)="closeChangePassword()"
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="closeChangePassword()"
       >
-          {{ 'account.close-change-password'|translate }}
+        {{ 'account.close-change-password'|translate }}
       </ion-button>
-
     </form>
   </dialogue-turn>
 </ion-content>

@@ -12,7 +12,7 @@ export const environment = {
   envName: '${process.env.NG_ENV_NAME || ''}',
 
   // APIs:
-  url_121_service_api: '${process.env.NG_URL_121_SERVICE_API}',
+  url_121_service_api: '${process.env.NG_URL_121_SERVICE_API || ''}',
 
   // Third party tokens
   ai_ikey: '${process.env.NG_AI_IKEY}',

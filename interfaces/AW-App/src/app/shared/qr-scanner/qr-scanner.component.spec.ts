@@ -8,23 +8,21 @@ describe('QrScannerComponent', () => {
   let component: QrScannerComponent;
   let fixture: ComponentFixture<QrScannerComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [QrScannerComponent],
-        imports: [TranslateModule.forRoot()],
-        providers: [
-          {
-            provide: ModalController,
-          },
-          {
-            provide: AngularDelegate,
-          },
-        ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [QrScannerComponent],
+      imports: [TranslateModule.forRoot()],
+      providers: [
+        {
+          provide: ModalController,
+        },
+        {
+          provide: AngularDelegate,
+        },
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(QrScannerComponent);

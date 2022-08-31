@@ -2,40 +2,44 @@
   <form *ngIf="questions?.length">
     <dialogue-turn [isSpoken]="true">
       <p>
-        {{ 'validation.validate-fsp.introduction'|translate }}
+        {{ 'validation.validate-fsp.introduction' | translate }}
       </p>
     </dialogue-turn>
 
-    <q-and-a-set [questions]="questions"
-                 [answers]="customAttributeAnswers"
-                 [(isSubmitted)]="isSubmitted"
-                 [(isEditing)]="isEditing"
-                 [allQuestionsShown]="true"
-                 (submit)="saveCustomAttributes($event)"
-                 submitLabel="validation.validate-fsp.submit"
+    <q-and-a-set
+      [questions]="questions"
+      [answers]="customAttributeAnswers"
+      [(isSubmitted)]="isSubmitted"
+      [(isEditing)]="isEditing"
+      [allQuestionsShown]="true"
+      (submit)="saveCustomAttributes($event)"
+      submitLabel="validation.validate-fsp.submit"
     ></q-and-a-set>
 
-    <dialogue-turn *ngIf="showResultSuccess"
-                   [isSpoken]="showResultSuccess"
+    <dialogue-turn
+      *ngIf="showResultSuccess"
+      [isSpoken]="showResultSuccess"
     >
       <p>
-        {{ 'validation.validate-fsp.conclusion'|translate }}
+        {{ 'validation.validate-fsp.conclusion' | translate }}
       </p>
     </dialogue-turn>
-    <dialogue-turn *ngIf="showResultError"
-                   [isSpoken]="showResultError"
+    <dialogue-turn
+      *ngIf="showResultError"
+      [isSpoken]="showResultError"
     >
       <p>
-        {{ 'validation.validate-fsp.generic-error'|translate }}
+        {{ 'validation.validate-fsp.generic-error' | translate }}
       </p>
     </dialogue-turn>
   </form>
 
-  <dialogue-turn  *ngIf="!fspQuestionAvailable"
-                  [isSpoken]="!fspQuestionAvailable"
-    >
+  <dialogue-turn
+    *ngIf="!fspQuestionAvailable"
+    [isSpoken]="!fspQuestionAvailable"
+  >
     <p>
-    {{ 'validation.validate-fsp.no-fsp'|translate }}
+      {{ 'validation.validate-fsp.no-fsp' | translate }}
     </p>
   </dialogue-turn>
   <dialogue-turn
@@ -43,13 +47,13 @@
     *ngIf="backToMainMenu"
     [isSpoken]="backToMainMenu"
   >
-    <ion-button (click)="complete()"
-                [disabled]="backToMainMenuClicked"
-                expand="block"
-                style="flex-basis:100%;"
+    <ion-button
+      (click)="complete()"
+      [disabled]="backToMainMenuClicked"
+      expand="block"
+      style="flex-basis: 100%"
     >
-      {{ 'validation.validate-fsp.back-menu'|translate }}
+      {{ 'validation.validate-fsp.back-menu' | translate }}
     </ion-button>
   </dialogue-turn>
-
 </section>

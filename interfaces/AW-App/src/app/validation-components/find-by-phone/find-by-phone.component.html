@@ -3,7 +3,10 @@
     {{ 'validation.find-by-phone.introduction' | translate }}
   </dialogue-turn>
 
-  <dialogue-turn actor="self" [isSpoken]="true">
+  <dialogue-turn
+    actor="self"
+    [isSpoken]="true"
+  >
     <p>{{ 'validation.find-by-phone.enter-phone' | translate }}</p>
     <phone-number-input
       #phoneNumberInput
@@ -12,15 +15,22 @@
       [required]="true"
       [placeholder]="phonenumberPlaceholder"
       [name]="questionName"
-      [disabled]="0 || paDataResult || returnMainMenu || peopleAffectedFound.length > 1"
+      [disabled]="
+        0 || paDataResult || returnMainMenu || peopleAffectedFound.length > 1
+      "
       (ionChange)="changePhoneNumber()"
     ></phone-number-input>
 
-    <br>
+    <br />
 
     <ion-button
       expand="block"
-      [disabled]="inputPhonenumber === '' || paDataResult || returnMainMenu || peopleAffectedFound.length > 1"
+      [disabled]="
+        inputPhonenumber === '' ||
+        paDataResult ||
+        returnMainMenu ||
+        peopleAffectedFound.length > 1
+      "
       (click)="findPaByPhone()"
     >
       {{ 'validation.find-by-phone.find-phone' | translate }}
@@ -41,13 +51,14 @@
     {{ 'validation.find-by-phone.error' | translate }}
   </dialogue-turn>
 
-  <ng-container
-    *ngIf="peopleAffectedFound.length"
-  >
+  <ng-container *ngIf="peopleAffectedFound.length">
     <dialogue-turn [isSpoken]="true">
       {{ 'validation.find-by-phone.multiple-found' | translate }}
     </dialogue-turn>
-    <dialogue-turn actor="self" [isSpoken]="true">
+    <dialogue-turn
+      actor="self"
+      [isSpoken]="true"
+    >
       <form (submit)="submitPaChoice()">
         <ion-radio-group
           (ionChange)="changePaChoice($event)"

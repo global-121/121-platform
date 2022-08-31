@@ -1,58 +1,63 @@
 <section #startMeeting>
-   <br>
+  <br />
   <dialogue-turn [isSpoken]="true">
-    {{ 'validation.validate-program.introduction'|translate }}
+    {{ 'validation.validate-program.introduction' | translate }}
   </dialogue-turn>
 
-  <q-and-a-set [questions]="questions"
-               [answers]="answers"
-               [(isSubmitted)]="hasAnswered"
-               [(isEditing)]="hasChangedAnswers"
-               [allQuestionsShown]="true"
-               (submit)="submit()"
-               submitLabel="validation.validate-program.submit"
+  <q-and-a-set
+    [questions]="questions"
+    [answers]="answers"
+    [(isSubmitted)]="hasAnswered"
+    [(isEditing)]="hasChangedAnswers"
+    [allQuestionsShown]="true"
+    (submit)="submit()"
+    submitLabel="validation.validate-program.submit"
   ></q-and-a-set>
 
-  <dialogue-turn *ngIf="hasAnswered || programAttributesValidated"
-                 [isSpoken]="hasAnswered || programAttributesValidated"
+  <dialogue-turn
+    *ngIf="hasAnswered || programAttributesValidated"
+    [isSpoken]="hasAnswered || programAttributesValidated"
   >
     <p>
-      {{ 'validation.validate-program.please-confirm'|translate }}
+      {{ 'validation.validate-program.please-confirm' | translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn actor="self"
-                 *ngIf="hasAnswered"
-                 [isSpoken]="hasAnswered"
+  <dialogue-turn
+    actor="self"
+    *ngIf="hasAnswered"
+    [isSpoken]="hasAnswered"
   >
     <ul>
       <li *ngFor="let question of questions">
-        <span [innerHTML]="question.label"></span><br>
+        <span [innerHTML]="question.label"></span><br />
         <strong>{{ answers[question.code]?.label }}</strong>
       </li>
     </ul>
 
     <p class="ion-margin-top">
-      <ion-button type="submit"
-                  (click)="validateAttributes()"
-                  expand="block"
-                  [disabled]="programAttributesValidated"
+      <ion-button
+        type="submit"
+        (click)="validateAttributes()"
+        expand="block"
+        [disabled]="programAttributesValidated"
       >
-        {{ 'validation.validate-program.confirm-button'|translate }}
+        {{ 'validation.validate-program.confirm-button' | translate }}
       </ion-button>
-      <ion-button type="button"
-                  (click)="change()"
-                  expand="block"
-                  fill="outline"
-                  *ngIf="!programAttributesValidated"
+      <ion-button
+        type="button"
+        (click)="change()"
+        expand="block"
+        fill="outline"
+        *ngIf="!programAttributesValidated"
       >
-        {{ 'validation.validate-program.change'|translate }}
+        {{ 'validation.validate-program.change' | translate }}
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn *ngIf="programAttributesValidated"
-                 [isSpoken]="programAttributesValidated"
+  <dialogue-turn
+    *ngIf="programAttributesValidated"
+    [isSpoken]="programAttributesValidated"
   >
-    {{ 'validation.validate-program.conclusion'|translate }}
+    {{ 'validation.validate-program.conclusion' | translate }}
   </dialogue-turn>
-
 </section>

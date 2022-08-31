@@ -1,26 +1,36 @@
 <section>
-  <dialogue-turn *ngIf="!downloadReady && !downloadAborted"
-                 [isSpoken]="!downloadReady && !downloadAborted"
+  <dialogue-turn
+    *ngIf="!downloadReady && !downloadAborted"
+    [isSpoken]="!downloadReady && !downloadAborted"
   >
-    {{ 'validation.download-data.downloading'|translate }}
+    {{ 'validation.download-data.downloading' | translate }}
   </dialogue-turn>
-  <div class="loading-indicator"
-       [hidden]="downloadReady || downloadAborted"
+  <div
+    class="loading-indicator"
+    [hidden]="downloadReady || downloadAborted"
   >
-    <ion-spinner name="dots"
-                 class="loading-indicator--spinner"
+    <ion-spinner
+      name="dots"
+      class="loading-indicator--spinner"
     >
     </ion-spinner>
   </div>
-  <dialogue-turn *ngIf="downloadReady"
-                 [isSpoken]="downloadReady"
+  <dialogue-turn
+    *ngIf="downloadReady"
+    [isSpoken]="downloadReady"
   >
     <div
-      [innerHTML]="'validation.download-data.download-result'|translate:{ nrDownloaded:'<strong>'+nrDownloaded+'</strong>' }"
-      class="ion-margin-bottom">
-    </div>
+      [innerHTML]="
+        'validation.download-data.download-result'
+          | translate: { nrDownloaded: '<strong>' + nrDownloaded + '</strong>' }
+      "
+      class="ion-margin-bottom"
+    ></div>
   </dialogue-turn>
-  <dialogue-turn *ngIf="downloadAborted" [isSpoken]="downloadAborted">
-    {{ 'validation.download-data.download-aborted'|translate }}
+  <dialogue-turn
+    *ngIf="downloadAborted"
+    [isSpoken]="downloadAborted"
+  >
+    {{ 'validation.download-data.download-aborted' | translate }}
   </dialogue-turn>
 </section>
