@@ -1,39 +1,44 @@
-<div class="dialogue-turn  ion-align-items-start"
-     [ngClass]="{
-       'is-connected': isConnected,
-       'is-other ion-justify-content-start': !isSelf,
-       'is-self ion-justify-content-end': isSelf,
-       'is-pending': animate && !isSpoken,
-       'is-spoken': animate && isSpoken
-     }"
+<div
+  class="dialogue-turn ion-align-items-start"
+  [ngClass]="{
+    'is-connected': isConnected,
+    'is-other ion-justify-content-start': !isSelf,
+    'is-self ion-justify-content-end': isSelf,
+    'is-pending': animate && !isSpoken,
+    'is-spoken': animate && isSpoken
+  }"
 >
   <div class="dialogue-turn--actor">
     <ng-container *ngIf="isSelf">
-      <ion-avatar style="background:#2f4bfd; display:flex;">
-        <ion-icon name="person" color="light" size="large" style="margin:auto;"></ion-icon>
+      <ion-avatar style="background: #2f4bfd; display: flex">
+        <ion-icon
+          name="person"
+          color="light"
+          size="large"
+          style="margin: auto"
+        ></ion-icon>
       </ion-avatar>
     </ng-container>
     <ng-container *ngIf="!isSelf">
-      <ion-avatar style="border-radius: 0 !important;">
+      <ion-avatar style="border-radius: 0 !important">
         <img
           *ngIf="avatarUrl"
           [alt]="actorName ? actorName : actor"
           [title]="actorName ? actorName : actor"
           [src]="avatarUrl"
-        >
+        />
         <img
           *ngIf="!avatarUrl"
           alt="121"
           title="121"
           src="./assets/avatar--121.svg"
-        >
+        />
       </ion-avatar>
     </ng-container>
   </div>
   <div class="dialogue-turn--content">
     <ion-card [color]="isSelf ? 'light' : 'dark'">
       <ion-card-content>
-
         <div>
           <ng-content></ng-content>
         </div>
@@ -42,7 +47,10 @@
           class="ion-float-end ion-text-end"
           [color]="isSelf ? '' : 'light'"
         >
-          <small>{{ moment|date:"EEEE, d LLL" }} - <strong>{{ moment|date:"HH:mm" }}</strong></small>
+          <small>
+            {{ moment | date: 'EEEE, d LLL' }} -
+            <strong>{{ moment | date: 'HH:mm' }}</strong>
+          </small>
         </ion-note>
       </ion-card-content>
     </ion-card>

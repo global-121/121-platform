@@ -3,39 +3,44 @@
     <p [innerHTML]="monitoringQuestion?.intro"></p>
   </dialogue-turn>
   <dialogue-turn actor="self">
-      <ion-radio-group
-        (ionChange)="changeMonitoringChoice($event.detail.value)"
-        [value]="monitoringChoice"
+    <ion-radio-group
+      (ionChange)="changeMonitoringChoice($event.detail.value)"
+      [value]="monitoringChoice"
+    >
+      <ion-item
+        *ngFor="let option of monitoringQuestion?.options"
+        color="light"
+        lines="full"
+        class="ion-no-padding"
       >
-        <ion-item
-          *ngFor="let option of monitoringQuestion?.options"
-          color="light"
-          lines="full"
-          class="ion-no-padding"
-        >
-          <ion-label
-            [innerHTML]="option.label"
-            class="ion-text-wrap ion-padding-end"
-          ></ion-label>
-          <ion-radio
-            [value]="option.option"
-            [disabled]="monitoringSubmitted"
-          ></ion-radio>
-        </ion-item>
-      </ion-radio-group>
-      <ion-row
-        *ngIf="monitoringChoice && !monitoringSubmitted"
-        class="ion-nowrap ion-align-items-center ion-margin-top"
-      >
-        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
-        <ion-button
-          type="button"
-          (click)="submitMonitoringAnswer()"
+        <ion-label
+          [innerHTML]="option.label"
+          class="ion-text-wrap ion-padding-end"
+        ></ion-label>
+        <ion-radio
+          [value]="option.option"
           [disabled]="monitoringSubmitted"
-          expand="block"
-          style="flex-basis:100%"
-        >{{ 'shared.submit-button'|translate }}</ion-button>
-      </ion-row>
+        ></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+    <ion-row
+      *ngIf="monitoringChoice && !monitoringSubmitted"
+      class="ion-nowrap ion-align-items-center ion-margin-top"
+    >
+      <play-text-audio
+        key="shared.submit-button"
+        size="default"
+      ></play-text-audio>
+      <ion-button
+        type="button"
+        (click)="submitMonitoringAnswer()"
+        [disabled]="monitoringSubmitted"
+        expand="block"
+        style="flex-basis: 100%"
+      >
+        {{ 'shared.submit-button' | translate }}
+      </ion-button>
+    </ion-row>
   </dialogue-turn>
   <dialogue-turn
     *ngIf="monitoringSubmitted"

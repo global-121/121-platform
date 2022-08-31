@@ -12,25 +12,23 @@ describe('AutoSignupComponent', () => {
   let component: AutoSignupComponent;
   let fixture: ComponentFixture<AutoSignupComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [AutoSignupComponent],
-        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {
-            provide: ConversationService,
-            useValue: MockConversationService,
-          },
-          {
-            provide: LoggingService,
-            useValue: MockLoggingService,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [AutoSignupComponent],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: ConversationService,
+          useValue: MockConversationService,
+        },
+        {
+          provide: LoggingService,
+          useValue: MockLoggingService,
+        },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AutoSignupComponent);

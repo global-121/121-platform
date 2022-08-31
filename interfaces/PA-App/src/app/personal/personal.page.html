@@ -25,14 +25,24 @@
         fill="clear"
         title="Toggle Debug-tools"
       >
-        <ion-icon name="construct" slot="icon-only"></ion-icon>
+        <ion-icon
+          name="construct"
+          slot="icon-only"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-menu side="start" menuId="batchMenu" contentId="batchMenuContent">
-  <ion-content color="dark" class="ion-padding">
+<ion-menu
+  side="start"
+  menuId="batchMenu"
+  contentId="batchMenuContent"
+>
+  <ion-content
+    color="dark"
+    class="ion-padding"
+  >
     <ion-item
       color="dark"
       lines="none"
@@ -88,7 +98,11 @@
       (click)="debugClearAllStorage()"
       class="ion-margin-end"
     >
-      <ion-icon name="nuclear" size="small" slot="icon-only"></ion-icon>
+      <ion-icon
+        name="nuclear"
+        size="small"
+        slot="icon-only"
+      ></ion-icon>
     </ion-button>
 
     <ion-button
@@ -98,7 +112,11 @@
       title="Step back in Conversation History"
       (click)="conversationService.debugUndoLastStep()"
     >
-      <ion-icon name="arrow-undo" size="small" slot="icon-only"></ion-icon>
+      <ion-icon
+        name="arrow-undo"
+        size="small"
+        slot="icon-only"
+      ></ion-icon>
     </ion-button>
 
     <ion-button
@@ -108,7 +126,11 @@
       title="Fix history"
       (click)="conversationService.debugFillHistory()"
     >
-      <ion-icon name="color-fill" size="small" slot="icon-only"></ion-icon>
+      <ion-icon
+        name="color-fill"
+        size="small"
+        slot="icon-only"
+      ></ion-icon>
     </ion-button>
 
     <ion-button
@@ -118,7 +140,11 @@
       title="Toggle state: loading"
       (click)="conversationService.state.isLoading=!conversationService.state.isLoading;"
     >
-      <ion-icon size="small" slot="icon-only" name="hourglass"></ion-icon>
+      <ion-icon
+        size="small"
+        slot="icon-only"
+        name="hourglass"
+      ></ion-icon>
     </ion-button>
 
     <ion-button
@@ -142,7 +168,11 @@
       title="Scroll to last section"
       (click)="scrollToLastSection()"
     >
-      <ion-icon name="download" size="small" slot="icon-only"></ion-icon>
+      <ion-icon
+        name="download"
+        size="small"
+        slot="icon-only"
+      ></ion-icon>
     </ion-button>
 
     <ion-button
@@ -152,7 +182,11 @@
       title="Clear conversation"
       (click)="this.container.clear()"
     >
-      <ion-icon name="trash" size="small" slot="icon-only"></ion-icon>
+      <ion-icon
+        name="trash"
+        size="small"
+        slot="icon-only"
+      ></ion-icon>
     </ion-button>
 
     <ion-button
@@ -162,12 +196,19 @@
       title="Start from history"
       (click)="debugStartFromHistory()"
     >
-      <ion-icon name="cloud-download" size="small" slot="icon-only"></ion-icon>
+      <ion-icon
+        name="cloud-download"
+        size="small"
+        slot="icon-only"
+      ></ion-icon>
     </ion-button>
   </ion-row>
 </div>
 
-<ion-content color="medium" class="ion-padding-vertical">
+<ion-content
+  color="medium"
+  class="ion-padding-vertical"
+>
   <ng-container #conversationContainer></ng-container>
 
   <div class="loading-indicator">

@@ -1,36 +1,54 @@
 <section>
   <dialogue-turn>
     <p>
-      <play-text-audio key="personal.enroll-in-program.introduction-information" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span [innerHTML]="'personal.enroll-in-program.introduction-information'|translate"></span>
+      <play-text-audio
+        key="personal.enroll-in-program.introduction-information"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      <span
+        [innerHTML]="
+          'personal.enroll-in-program.introduction-information' | translate
+        "
+      ></span>
     </p>
   </dialogue-turn>
 
-  <q-and-a-set [questions]="questions"
-               [answers]="answers"
-               [(isSubmitted)]="hasAnswered"
-               [(isEditing)]="hasChangedAnswers"
-               [allQuestionsShown]="allQuestionsShown"
-               (submit)="submit($event)"
-               submitLabel="shared.submit-button"
+  <q-and-a-set
+    [questions]="questions"
+    [answers]="answers"
+    [(isSubmitted)]="hasAnswered"
+    [(isEditing)]="hasChangedAnswers"
+    [allQuestionsShown]="allQuestionsShown"
+    (submit)="submit($event)"
+    submitLabel="shared.submit-button"
   ></q-and-a-set>
 
-  <dialogue-turn *ngIf="hasAnswered"
-                 [isSpoken]="hasAnswered"
+  <dialogue-turn
+    *ngIf="hasAnswered"
+    [isSpoken]="hasAnswered"
   >
     <p>
-      <play-text-audio key="personal.enroll-in-program.please-confirm" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.enroll-in-program.please-confirm'|translate }}
+      <play-text-audio
+        key="personal.enroll-in-program.please-confirm"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      {{ 'personal.enroll-in-program.please-confirm' | translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn actor="self"
-                 *ngIf="hasAnswered"
-                 [isSpoken]="hasAnswered"
+  <dialogue-turn
+    actor="self"
+    *ngIf="hasAnswered"
+    [isSpoken]="hasAnswered"
   >
     <ul class="ion-padding-start">
-      <li *ngFor="let question of questions" class="ion-margin-vertical">
-        <span [innerHTML]="question.label"></span><br>
-        <strong class="answer-emphasis">{{ answers[question.code]?.label }}</strong>
+      <li
+        *ngFor="let question of questions"
+        class="ion-margin-vertical"
+      >
+        <span [innerHTML]="question.label"></span><br />
+        <strong class="answer-emphasis">
+          {{ answers[question.code]?.label }}
+        </strong>
       </li>
     </ul>
 
@@ -53,10 +71,10 @@
             lines="none"
             color="light"
             class="ion-no-padding"
-            style="width: 100%;"
+            style="width: 100%"
           >
             <ion-label class="ion-text-wrap ion-padding-end">
-              {{ 'personal.enroll-in-program.submit-confirm'|translate }}
+              {{ 'personal.enroll-in-program.submit-confirm' | translate }}
             </ion-label>
             <ion-radio
               [value]="submitActions.confirm"
@@ -78,10 +96,10 @@
             lines="none"
             color="light"
             class="ion-no-padding"
-            style="width: 100%;"
+            style="width: 100%"
           >
             <ion-label class="ion-text-wrap ion-padding-end">
-              {{ 'personal.enroll-in-program.change'|translate }}
+              {{ 'personal.enroll-in-program.change' | translate }}
             </ion-label>
             <ion-radio
               [value]="submitActions.change"
@@ -94,14 +112,19 @@
         *ngIf="submitChoice && !isDisabled"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
+        <play-text-audio
+          key="shared.submit-button"
+          size="default"
+        ></play-text-audio>
         <ion-button
           type="button"
           (click)="doSubmitAction()"
           [disabled]="isDisabled || !submitChoice"
           expand="block"
-          style="flex-basis:100%"
-        >{{ 'shared.submit-button'|translate }}</ion-button>
+          style="flex-basis: 100%"
+        >
+          {{ 'shared.submit-button' | translate }}
+        </ion-button>
       </ion-row>
     </div>
   </dialogue-turn>

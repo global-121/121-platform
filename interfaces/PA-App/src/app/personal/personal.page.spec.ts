@@ -16,38 +16,36 @@ describe('PersonalPage', () => {
   let component: PersonalPage;
   let fixture: ComponentFixture<PersonalPage>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [PersonalPage],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-        providers: [
-          {
-            provide: ConversationService,
-            useValue: MockConversationService,
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [PersonalPage],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      providers: [
+        {
+          provide: ConversationService,
+          useValue: MockConversationService,
+        },
+        {
+          provide: LoggingService,
+          useValue: MockLoggingService,
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            queryParams: new Observable((observer) => {
+              const urlParams = {
+                mode: 'batch',
+              };
+              observer.next(urlParams);
+              observer.complete();
+            }),
           },
-          {
-            provide: LoggingService,
-            useValue: MockLoggingService,
-          },
-          {
-            provide: ActivatedRoute,
-            useValue: {
-              queryParams: new Observable((observer) => {
-                const urlParams = {
-                  mode: 'batch',
-                };
-                observer.next(urlParams);
-                observer.complete();
-              }),
-            },
-          },
-          { provide: SwUpdate, useClass: SwUpdateMock },
-        ],
-      }).compileComponents();
-    }),
-  );
+        },
+        { provide: SwUpdate, useClass: SwUpdateMock },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(async () => {
     fixture = await TestBed.createComponent(PersonalPage);

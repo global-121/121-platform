@@ -8,7 +8,11 @@
       {{ 'personal.select-fsp.introduction' | translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn actor="self" *ngIf="fsps" [isSpoken]="fsps">
+  <dialogue-turn
+    actor="self"
+    *ngIf="fsps"
+    [isSpoken]="fsps"
+  >
     <form (submit)="submitFsp()">
       <ion-radio-group
         name="fsps"
@@ -43,23 +47,36 @@
           [disabled]="fspSubmitted || isDisabled"
           expand="block"
           style="flex-basis: 100%"
-          >{{ 'shared.submit-button' | translate }}</ion-button
         >
+          {{ 'shared.submit-button' | translate }}
+        </ion-button>
       </ion-row>
     </form>
   </dialogue-turn>
-  <dialogue-turn *ngIf="fspSubmitted" [isSpoken]="fspSubmitted">
+  <dialogue-turn
+    *ngIf="fspSubmitted"
+    [isSpoken]="fspSubmitted"
+  >
     <p>
       <play-text-audio
         key="personal.select-fsp.conclusion"
         class="ion-float-start ion-margin-end"
       ></play-text-audio>
-      <span [innerHTML]="'personal.select-fsp.conclusion'|translate:{ name: '<strong>' + chosenFsp?.fspDisplayName + '</strong>' }"></span>
+      <span
+        [innerHTML]="
+          'personal.select-fsp.conclusion'
+            | translate
+              : { name: '<strong>' + chosenFsp?.fspDisplayName + '</strong>' }
+        "
+      ></span>
     </p>
   </dialogue-turn>
 
   <form *ngIf="questions?.length">
-    <dialogue-turn isConnected="true" isSpoken="true">
+    <dialogue-turn
+      isConnected="true"
+      isSpoken="true"
+    >
       <p>
         <play-text-audio
           key="personal.select-fsp.attributes.introduction"
@@ -78,7 +95,10 @@
       submitLabel="shared.submit-button"
     ></q-and-a-set>
 
-    <dialogue-turn *ngIf="showResultSuccess" [isSpoken]="showResultSuccess">
+    <dialogue-turn
+      *ngIf="showResultSuccess"
+      [isSpoken]="showResultSuccess"
+    >
       <p>
         <play-text-audio
           key="personal.select-fsp.attributes.success"
@@ -87,7 +107,10 @@
         {{ 'personal.select-fsp.attributes.success' | translate }}
       </p>
     </dialogue-turn>
-    <dialogue-turn *ngIf="showResultError" [isSpoken]="showResultError">
+    <dialogue-turn
+      *ngIf="showResultError"
+      [isSpoken]="showResultError"
+    >
       <p>
         <play-text-audio
           key="personal.select-fsp.attributes.error"

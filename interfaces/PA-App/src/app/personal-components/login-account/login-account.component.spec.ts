@@ -14,29 +14,27 @@ describe('LoginAccountComponent', () => {
   let component: LoginAccountComponent;
   let fixture: ComponentFixture<LoginAccountComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [LoginAccountComponent],
-        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {
-            provide: ConversationService,
-            useValue: MockConversationService,
-          },
-          {
-            provide: PaDataService,
-            useValue: MockPaDataService,
-          },
-          {
-            provide: LoggingService,
-            useValue: MockLoggingService,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [LoginAccountComponent],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: ConversationService,
+          useValue: MockConversationService,
+        },
+        {
+          provide: PaDataService,
+          useValue: MockPaDataService,
+        },
+        {
+          provide: LoggingService,
+          useValue: MockLoggingService,
+        },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoginAccountComponent);

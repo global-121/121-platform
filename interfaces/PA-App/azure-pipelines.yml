@@ -49,7 +49,7 @@ steps:
     displayName: Tests
     workingDirectory: $(workingDir)
 
-  - script: npm run build -- --configuration production
+  - script: npm run build:prod
     displayName: Build Production-mode
     workingDirectory: $(workingDir)
     env:
