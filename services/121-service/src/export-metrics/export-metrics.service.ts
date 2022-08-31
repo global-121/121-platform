@@ -607,6 +607,14 @@ export class ExportMetricsService {
       .andHaving('COUNT(DISTINCT "registrationId") > 1')
       .groupBy('registration_data.value')
       .getRawMany();
+
+    if (!duplicates || duplicates.length === 0) {
+      return {
+        fileName: ExportType.duplicates,
+        data: [],
+      };
+    }
+
     for (const duplicateEntry of duplicates) {
       const {
         duplicateRegistrationIds,
