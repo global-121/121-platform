@@ -7,7 +7,7 @@
   >
     <ion-radio-group (ionChange)="changeOption($event)">
       <ng-container *ngFor="let option of menuOptions">
-        <ion-item *ngIf="option.id !== 'scan-qr' || showQrOption"
+        <ion-item *ngIf="option.visible"
                   color="light"
                   class="ion-no-padding"
                   [disabled]="option.disabled || (option.connectionRequired && noConnection|async) || optionSelected"
