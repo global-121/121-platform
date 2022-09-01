@@ -10,16 +10,14 @@ describe('InclusionPage', () => {
   let component: InclusionPage;
   let fixture: ComponentFixture<InclusionPage>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [InclusionPage],
-        imports: [TranslateModule.forRoot(), RouterTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [provideMagicalMock(AuthService)],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [InclusionPage],
+      imports: [TranslateModule.forRoot(), RouterTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [provideMagicalMock(AuthService)],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InclusionPage);

@@ -64,19 +64,17 @@ describe('MetricsStatesComponent', () => {
     },
   };
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [MetricsStatesComponent, TestHostComponent],
-        imports: [TranslateModule.forRoot(), FormsModule, SharedModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          provideMagicalMock(ProgramsServiceApiService),
-          provideMagicalMock(PastPaymentsService),
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [MetricsStatesComponent, TestHostComponent],
+      imports: [TranslateModule.forRoot(), FormsModule, SharedModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        provideMagicalMock(ProgramsServiceApiService),
+        provideMagicalMock(PastPaymentsService),
+      ],
+    }).compileComponents();
+  }));
 
   let mockProgramsApi: jasmine.SpyObj<any>;
   let mockPastPaymentsService: jasmine.SpyObj<any>;

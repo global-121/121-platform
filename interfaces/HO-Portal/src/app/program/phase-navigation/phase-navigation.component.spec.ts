@@ -25,19 +25,17 @@ describe('PhaseNavigationComponent', () => {
     active: true,
   };
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [PhaseNavigationComponent],
-        imports: [TranslateModule.forRoot(), RouterTestingModule],
-        providers: [
-          provideMagicalMock(ProgramsServiceApiService),
-          provideMagicalMock(ProgramPhaseService),
-        ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [PhaseNavigationComponent],
+      imports: [TranslateModule.forRoot(), RouterTestingModule],
+      providers: [
+        provideMagicalMock(ProgramsServiceApiService),
+        provideMagicalMock(ProgramPhaseService),
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
   let mockProgramsApi: jasmine.SpyObj<any>;
   let mockProgramPhaseService: jasmine.SpyObj<any>;

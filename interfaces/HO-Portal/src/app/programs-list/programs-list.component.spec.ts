@@ -10,16 +10,14 @@ describe('ProgramListComponent', () => {
   let component: ProgramsListComponent;
   let fixture: ComponentFixture<ProgramsListComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [ProgramsListComponent],
-        imports: [TranslateModule.forRoot()],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [provideMagicalMock(ProgramsServiceApiService)],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [ProgramsListComponent],
+      imports: [TranslateModule.forRoot()],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [provideMagicalMock(ProgramsServiceApiService)],
+    }).compileComponents();
+  }));
 
   let mockProgramsApi: jasmine.SpyObj<any>;
 
