@@ -1,5 +1,6 @@
 <app-header
-  [title]="'page.program.phases.payment.label'|translate" [showHome]="true"
+  [title]="'page.program.phases.payment.label'|translate"
+  [showHome]="true"
 ></app-header>
 <app-program-navigation></app-program-navigation>
 
@@ -23,5 +24,4 @@
     [thisPhase]="thisPhase"
     (isCompleted)="onReady($event)"
   ></app-program-people-affected>
-
 </ion-content>

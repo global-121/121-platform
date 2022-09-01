@@ -1,25 +1,27 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ 'common.confirm'|translate }}</ion-title>
+    <ion-title>{{ 'common.confirm' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
         (click)="closeModal()"
-        [attr.title]="'common.cancel'|translate"
-        [attr.aria-label]="'common.cancel'|translate"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
       >
-        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content
-  class="ion-padding"
->
+<ion-content class="ion-padding">
   <h2
     *ngIf="subHeader"
-    [innerHTML]="subHeader">
-  </h2>
+    [innerHTML]="subHeader"
+  ></h2>
   <div
     *ngIf="message"
     [innerHTML]="message"
@@ -30,15 +32,12 @@
     *ngIf="inputProps"
     class="ion-margin-vertical"
   >
-
     <ion-item
       *ngIf="inputProps.checkbox"
       lines="none"
-      style="--background:none"
+      style="--background: none"
     >
-      <ion-label
-        [innerHTML]="inputProps.checkbox"
-      ></ion-label>
+      <ion-label [innerHTML]="inputProps.checkbox"></ion-label>
       <ion-checkbox
         slot="start"
         [checked]="checked"
@@ -54,9 +53,12 @@
       ></div>
 
       <ion-label>
-        {{ 'common.confirm-message-label'|translate:{
-            minLength: inputProps.minLength
-          }
+        {{
+          'common.confirm-message-label'
+            | translate
+              : {
+                  minLength: inputProps.minLength
+                }
         }}
       </ion-label>
       <ion-textarea
@@ -71,13 +73,17 @@
         [minlength]="inputProps.minLength"
         [value]="inputProps.defaultValue"
         [placeholder]="inputProps.placeholder"
-        style="font-family: monospace; border: 1px solid currentColor; height:66px"
+        style="
+          font-family: monospace;
+          border: 1px solid currentColor;
+          height: 66px;
+        "
       ></ion-textarea>
       <ion-note>
-        {{ input?.value ? input?.value?.length : 0 }} (≥ {{ inputProps.minLength }})
+        {{ input?.value ? input?.value?.length : 0 }} (≥
+        {{ inputProps.minLength }})
       </ion-note>
     </div>
-
   </div>
 </ion-content>
 
@@ -89,7 +95,7 @@
         color="danger"
         (click)="closeModal()"
       >
-        {{ 'common.cancel'|translate }}
+        {{ 'common.cancel' | translate }}
       </ion-button>
       <ion-button
         fill="solid"
@@ -97,9 +103,8 @@
         (click)="submitConfirm()"
         [disabled]="checkOkDisabled()"
       >
-        {{ 'common.ok'|translate }}
+        {{ 'common.ok' | translate }}
       </ion-button>
     </ion-buttons>
-
   </ion-toolbar>
 </ion-footer>

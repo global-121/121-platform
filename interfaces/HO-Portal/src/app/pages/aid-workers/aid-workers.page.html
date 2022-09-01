@@ -1,12 +1,9 @@
 <app-header
-  [title]="'page.aid-workers.pageTitle'|translate" [showHome]="true"
+  [title]="'page.aid-workers.pageTitle'|translate"
+  [showHome]="true"
 ></app-header>
 <app-program-navigation></app-program-navigation>
 
 <ion-content class="ion-padding">
-
-  <app-manage-aidworkers
-    [programId]="programId"
-  ></app-manage-aidworkers>
-
+  <app-manage-aidworkers [programId]="programId"></app-manage-aidworkers>
 </ion-content>
