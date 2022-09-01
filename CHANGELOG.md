@@ -5,11 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.51.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.52.0...master)
 
-- Upgraded node version of the 121-service to node 14
 
 ---
+
+## [1.51.0](https://github.com/global-121/121-platform/compare/v1.51.0...v1.52.0) - 2022-08-24
+
+### Changed
+
+- 2022-09-01: Upgraded node version of the 121-service to node 14
+- 2022-09-01: Upgraded nest version of the 121-service to 7
+- 2022-09-01: Hide QR code in PA-app if disabled
+- 2022-09-01: Endpoint to verify templated messages
+- 2022-09-01: Script to parse program questions from .csv format
+- 2022-09-01: Updated program json for drc
 
 ## [1.51.0](https://github.com/global-121/121-platform/compare/v1.50.0...v1.51.0) - 2022-08-24
 
