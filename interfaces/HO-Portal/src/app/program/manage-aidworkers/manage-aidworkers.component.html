@@ -1,5 +1,5 @@
-<h2>{{ 'page.program.manage-aidworkers.section-title'|translate }}</h2>
-<h4>{{ 'page.program.manage-aidworkers.view-aidworkers'|translate }}</h4>
+<h2>{{ 'page.program.manage-aidworkers.section-title' | translate }}</h2>
+<h4>{{ 'page.program.manage-aidworkers.view-aidworkers' | translate }}</h4>
 
 <ngx-datatable
   class="bootstrap"
@@ -15,7 +15,7 @@
   [rows]="aidworkers"
 >
   <ngx-datatable-column
-    *ngFor="let column of columns; let i = index;"
+    *ngFor="let column of columns; let i = index"
     [name]="column.name"
     [prop]="column.prop"
     [sortable]="column.sortable"
@@ -30,12 +30,16 @@
       <ng-container *ngIf="column.prop === 'delete'; else elseBlock">
         <confirm-prompt
           (confirm)="deleteAidworker(row)"
-          [message]="'page.program.manage-aidworkers.column-delete'|translate"
+          [message]="'page.program.manage-aidworkers.column-delete' | translate"
           [disabled]="disableDelete(row)"
           size="small"
           fill="outline"
         >
-          <ion-icon size="small" slot="icon-only" name="trash"></ion-icon>
+          <ion-icon
+            size="small"
+            slot="icon-only"
+            name="trash"
+          ></ion-icon>
         </confirm-prompt>
       </ng-container>
       <ng-template #elseBlock>
@@ -45,14 +49,17 @@
   </ngx-datatable-column>
 </ngx-datatable>
 
-<h4>{{ 'page.program.manage-aidworkers.create-aidworker'|translate }}</h4>
+<h4>{{ 'page.program.manage-aidworkers.create-aidworker' | translate }}</h4>
 
 <form (ngSubmit)="addAidworker()">
-  <input type="submit" hidden /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
+  <input
+    type="submit"
+    hidden
+  /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
   <ion-row class="ion-align-items-center">
     <ion-item>
       <ion-label position="stacked">
-        {{ 'page.program.manage-aidworkers.email'|translate }}
+        {{ 'page.program.manage-aidworkers.email' | translate }}
       </ion-label>
       <ion-input
         type="email"
@@ -69,13 +76,20 @@
       ngDefaultControl
       autocomplete="new-password"
       [minLength]="passwordMinLength"
-      [labelShow]="'password-toggle.show'|translate"
-      [labelHide]="'password-toggle.hide'|translate"
-      [label]="'page.program.manage-aidworkers.create-password'|translate:{ minimalLength: passwordMinLength }"
+      [labelShow]="'password-toggle.show' | translate"
+      [labelHide]="'password-toggle.hide' | translate"
+      [label]="
+        'page.program.manage-aidworkers.create-password'
+          | translate: { minimalLength: passwordMinLength }
+      "
     ></password-toggle-input>
     <ion-button type="submit">
-      <ion-icon name="person-add" size="small" slot="start"></ion-icon>
-      {{ 'page.program.manage-aidworkers.confirm'|translate }}
+      <ion-icon
+        name="person-add"
+        size="small"
+        slot="start"
+      ></ion-icon>
+      {{ 'page.program.manage-aidworkers.confirm' | translate }}
     </ion-button>
   </ion-row>
 </form>

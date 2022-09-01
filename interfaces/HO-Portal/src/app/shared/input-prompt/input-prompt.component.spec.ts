@@ -8,14 +8,12 @@ describe('InputPromptComponent', () => {
   let component: InputPromptComponent;
   let fixture: ComponentFixture<InputPromptComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [InputPromptComponent],
-        imports: [TranslateModule.forRoot(), IonicModule, FormsModule],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [InputPromptComponent],
+      imports: [TranslateModule.forRoot(), IonicModule, FormsModule],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InputPromptComponent);

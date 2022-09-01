@@ -1,13 +1,17 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ 'common.confirm'|translate }}</ion-title>
+    <ion-title>{{ 'common.confirm' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
         (click)="closeModal()"
-        [attr.title]="'common.cancel'|translate"
-        [attr.aria-label]="'common.cancel'|translate"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
       >
-        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -19,8 +23,8 @@
 >
   <h2
     *ngIf="subHeader"
-    [innerHTML]="subHeader">
-  </h2>
+    [innerHTML]="subHeader"
+  ></h2>
   <div
     *ngIf="message"
     [innerHTML]="message"
@@ -31,7 +35,6 @@
     *ngIf="filePickerProps"
     class="ion-margin-vertical"
   >
-
     <div
       *ngIf="filePickerProps.explanation"
       [innerHTML]="filePickerProps.explanation"
@@ -44,12 +47,21 @@
       class="ion-margin-vertical"
     >
       <ion-button
-        (click)="downloadTemplate(filePickerProps.programId, filePickerProps.downloadTemplate)"
+        (click)="
+          downloadTemplate(
+            filePickerProps.programId,
+            filePickerProps.downloadTemplate
+          )
+        "
         color="primary"
         fill="outline"
       >
-        <ion-icon name="download" slot="start" aria-hidden="true"></ion-icon>
-        {{ 'file-picker.download-template-button'|translate }}
+        <ion-icon
+          name="download"
+          slot="start"
+          aria-hidden="true"
+        ></ion-icon>
+        {{ 'file-picker.download-template-button' | translate }}
       </ion-button>
     </div>
 
@@ -63,12 +75,11 @@
         'is-file-selected': !!fileInput?.value,
         'file-picker-prompt--input': true
       }"
-      (dragover)="isDraggedOver=true;"
-      (dragleave)="isDraggedOver=false;"
-      [title]="'file-picker.label'|translate"
-      [attr.aria-label]="'file-picker.label'|translate"
+      (dragover)="isDraggedOver = true"
+      (dragleave)="isDraggedOver = false"
+      [title]="'file-picker.label' | translate"
+      [attr.aria-label]="'file-picker.label' | translate"
     ></ion-input>
-
   </div>
 </ion-content>
 
@@ -80,7 +91,7 @@
         color="danger"
         (click)="closeModal()"
       >
-        {{ 'common.cancel'|translate }}
+        {{ 'common.cancel' | translate }}
       </ion-button>
       <ion-button
         fill="solid"
@@ -88,9 +99,8 @@
         (click)="submitConfirm()"
         [disabled]="checkOkDisabled()"
       >
-        {{ 'common.ok'|translate }}
+        {{ 'common.ok' | translate }}
       </ion-button>
     </ion-buttons>
-
   </ion-toolbar>
 </ion-footer>

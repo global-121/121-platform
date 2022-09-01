@@ -54,7 +54,10 @@
     </ion-row>
   </div>
   <div>
-    <ion-row *ngIf="program" class="ion-align-items-center">
+    <ion-row
+      *ngIf="program"
+      class="ion-align-items-center"
+    >
       <ion-input
         [placeholder]="
           'page.program.program-people-affected.filter-placeholder' | translate
@@ -84,10 +87,18 @@
         ></ion-icon>
       </ion-input>
 
-      <ion-label class="ion-margin-start">{{ 'page.program.program-people-affected.filter-btn.common.filter-by' | translate }}</ion-label>
+      <ion-label class="ion-margin-start">
+        {{
+          'page.program.program-people-affected.filter-btn.common.filter-by'
+            | translate
+        }}
+      </ion-label>
 
       <app-table-filter
-        [buttonLabel]="'page.program.program-people-affected.filter-btn.btn-label.status' | translate"
+        [buttonLabel]="
+          'page.program.program-people-affected.filter-btn.btn-label.status'
+            | translate
+        "
         [type]="tableFilterType.multipleChoice"
         [optionsList]="getPaStatusesFilterOptions()"
         [optionsSelectedByDefault]="tableFilter.paStatus.default"
@@ -97,7 +108,6 @@
           currentSelection: tableFilter.paStatus.selected
         }"
       ></app-table-filter>
-
     </ion-row>
   </div>
 </ion-row>
@@ -183,8 +193,15 @@
     [sortable]="columnDefaults.sortable"
     [headerClass]="columnDefaults.headerClass"
   >
-    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-      <div class="ion-align-items-center" style="display: flex">
+    <ng-template
+      ngx-datatable-cell-template
+      let-value="value"
+      let-row="row"
+    >
+      <div
+        class="ion-align-items-center"
+        style="display: flex"
+      >
         <button
           *ngIf="canViewPersonalData"
           id="edit-button"
@@ -245,7 +262,11 @@
     [cellClass]="column.cellClass"
     [frozenLeft]="column.frozenLeft"
   >
-    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+    <ng-template
+      ngx-datatable-cell-template
+      let-value="value"
+      let-row="row"
+    >
       <ng-container *ngIf="value === true || value === false">
         <span
           [title]="
@@ -312,7 +333,11 @@
     [sortable]="paymentHistoryColumn?.sortable"
     [headerClass]="paymentHistoryColumn?.headerClass"
   >
-    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+    <ng-template
+      ngx-datatable-cell-template
+      let-value="value"
+      let-row="row"
+    >
       <ng-container *ngIf="value">
         <button
           *ngIf="row.paymentHistory?.paymentIndex"

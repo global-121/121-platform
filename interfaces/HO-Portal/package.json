@@ -25,7 +25,7 @@
     "start:debug-production": "npm run build:debug && npm run serve:static",
     "test": "ng test --no-watch --browsers=ChromeHeadless",
     "test:dev": "ng test",
-    "lint:syntax": "prettier --check \"**/*.{md,js,ts,scss}\"",
+    "lint:syntax": "prettier --check \"**/*.{md,js,ts,scss,html}\"",
     "lint": "npm run lint:syntax && ng lint",
     "fix:syntax": "npm run lint:syntax -- --write"
   },
@@ -85,7 +85,7 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
-    "prettier": "2.5.0",
+    "prettier": "2.7.1",
     "prettier-plugin-organize-imports": "^3.0.3",
     "shx": "^0.3.3",
     "tslint": "~6.1.0",

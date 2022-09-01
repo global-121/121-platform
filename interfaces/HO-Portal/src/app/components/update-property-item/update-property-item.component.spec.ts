@@ -8,15 +8,13 @@ describe('UpdatePropertyItemComponent', () => {
   let component: UpdatePropertyItemComponent;
   let fixture: ComponentFixture<UpdatePropertyItemComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [UpdatePropertyItemComponent],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        imports: [FormsModule, TranslateModule.forRoot()],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [UpdatePropertyItemComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [FormsModule, TranslateModule.forRoot()],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UpdatePropertyItemComponent);

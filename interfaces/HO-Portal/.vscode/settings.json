@@ -1,17 +1,8 @@
 {
   "i18n-ally.keystyle": "nested",
   "i18n-ally.dirStructure": "file",
-  "i18n-ally.localesPaths": [
-    "src/assets/i18n/",
-  ],
-  "i18n-ally.enabledFrameworks": [
-    "ngx-translate"
-  ],
-  "[html]": {
-    "editor.formatOnSave": false,
-    "editor.formatOnPaste": false,
-    "editor.formatOnType": false,
-    "editor.defaultFormatter": "vscode.html-language-features"
-  },
+  "i18n-ally.localesPaths": ["src/assets/i18n/"],
+  "i18n-ally.enabledFrameworks": ["ngx-translate"],
   "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

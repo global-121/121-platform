@@ -11,19 +11,17 @@ describe('DisableRegistrationComponent', () => {
   let component: DisableRegistrationComponent;
   let fixture: ComponentFixture<DisableRegistrationComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [DisableRegistrationComponent],
-        imports: [TranslateModule.forRoot(), RouterTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          provideMagicalMock(AuthService),
-          provideMagicalMock(ProgramsServiceApiService),
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [DisableRegistrationComponent],
+      imports: [TranslateModule.forRoot(), RouterTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        provideMagicalMock(AuthService),
+        provideMagicalMock(ProgramsServiceApiService),
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DisableRegistrationComponent);
