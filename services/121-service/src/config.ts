@@ -45,7 +45,12 @@ export const API_PATHS = {
   voucherInstructions: 'payments/intersolve/instruction/',
 };
 const baseApiUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
+const rootUrl = DEBUG
+  ? `http://localhost:${PORT}/`
+  : process.env.EXTERNAL_121_SERVICE_URL;
 export const EXTERNAL_API = {
+  root: rootUrl,
+  rootApi: `${rootUrl}/api`,
   smsStatus: baseApiUrl + API_PATHS.smsStatus,
   voiceStatus: baseApiUrl + API_PATHS.voiceStatus,
   whatsAppStatus: baseApiUrl + API_PATHS.whatsAppStatus,
