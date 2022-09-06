@@ -1,9 +1,9 @@
 <section>
   <h2>
-    {{ 'page.programs-list.pageTitle'|translate }}
+    {{ 'page.programs-list.pageTitle' | translate }}
   </h2>
   <ion-note *ngIf="!items">
-    {{ 'page.programs-list.not-available'|translate }}
+    {{ 'page.programs-list.not-available' | translate }}
   </ion-note>
   <ion-list *ngIf="items">
     <ion-item
@@ -12,12 +12,12 @@
       [routerLink]="['/program', program.id, 'dashboard']"
     >
       <ion-label>
-        {{ program.titlePortal }}<br>
+        {{ program.titlePortal }}<br />
         <ion-note>
           {{ program.description }}
         </ion-note>
         <ion-note class="ion-float-end ion-padding-end">
-          {{ program.updated|date:"yyyy-MM-dd, HH:mm" }}
+          {{ program.updated | date: 'yyyy-MM-dd, HH:mm' }}
         </ion-note>
       </ion-label>
     </ion-item>

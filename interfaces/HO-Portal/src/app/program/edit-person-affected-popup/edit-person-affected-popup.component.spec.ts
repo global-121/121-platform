@@ -18,22 +18,20 @@ describe('EditPersonAffectedPopupComponent', () => {
   let component: EditPersonAffectedPopupComponent;
   let fixture: ComponentFixture<EditPersonAffectedPopupComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [EditPersonAffectedPopupComponent],
-        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {
-            provide: ModalController,
-            useValue: modalCtrlSpy,
-          },
-          provideMagicalMock(ProgramsServiceApiService),
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [EditPersonAffectedPopupComponent],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: ModalController,
+          useValue: modalCtrlSpy,
+        },
+        provideMagicalMock(ProgramsServiceApiService),
+      ],
+    }).compileComponents();
+  }));
 
   let mockProgramsApi: jasmine.SpyObj<any>;
 

@@ -1,14 +1,22 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{'page.program.program-modal.pageTitle' | translate}}</ion-title>
+    <ion-title>
+      {{ 'page.program.program-modal.pageTitle' | translate }}
+    </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="closeModal()" [attr.title]="'common.cancel'|translate">
-        <ion-icon name="close" slot="icon-only"></ion-icon>
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel' | translate"
+      >
+        <ion-icon
+          name="close"
+          slot="icon-only"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content color="light">
-  <pre>{{program | json}}</pre>
+  <pre>{{ program | json }}</pre>
 </ion-content>

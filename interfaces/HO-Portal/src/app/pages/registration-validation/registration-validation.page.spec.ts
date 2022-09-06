@@ -13,24 +13,22 @@ describe('RegistrationValidationPage', () => {
   let component: RegistrationValidationPage;
   let fixture: ComponentFixture<RegistrationValidationPage>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [RegistrationValidationPage],
-        imports: [
-          TranslateModule.forRoot(),
-          RouterTestingModule,
-          HttpClientTestingModule,
-        ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          provideMagicalMock(AuthService),
-          provideMagicalMock(ProgramsServiceApiService),
-          provideMagicalMock(ProgramPhaseService),
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [RegistrationValidationPage],
+      imports: [
+        TranslateModule.forRoot(),
+        RouterTestingModule,
+        HttpClientTestingModule,
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        provideMagicalMock(AuthService),
+        provideMagicalMock(ProgramsServiceApiService),
+        provideMagicalMock(ProgramPhaseService),
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RegistrationValidationPage);

@@ -17,26 +17,24 @@ describe('PaymentHistoryPopupComponent', () => {
   let component: PaymentHistoryPopupComponent;
   let fixture: ComponentFixture<PaymentHistoryPopupComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [PaymentHistoryPopupComponent],
-        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {
-            provide: ModalController,
-            useValue: modalCtrlSpy,
-          },
-          provideMagicalMock(ProgramsServiceApiService),
-          {
-            provide: ModalController,
-            useValue: modalCtrlSpy,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [PaymentHistoryPopupComponent],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: ModalController,
+          useValue: modalCtrlSpy,
+        },
+        provideMagicalMock(ProgramsServiceApiService),
+        {
+          provide: ModalController,
+          useValue: modalCtrlSpy,
+        },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PaymentHistoryPopupComponent);

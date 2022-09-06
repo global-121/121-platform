@@ -8,15 +8,13 @@ describe('EvaluationPage', () => {
   let component: EvaluationPage;
   let fixture: ComponentFixture<EvaluationPage>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [EvaluationPage],
-        imports: [TranslateModule.forRoot(), RouterTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [EvaluationPage],
+      imports: [TranslateModule.forRoot(), RouterTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(EvaluationPage);
