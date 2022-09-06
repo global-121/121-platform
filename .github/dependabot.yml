@@ -12,7 +12,7 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 3
-    versioning-strategy: increase-if-necessary
+    versioning-strategy: increase
     ignore:
       - dependency-name: '@angular/*'
         versions: ['>= 10.0.0', '>= 0.1000.0']
@@ -54,7 +54,7 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 3
-    versioning-strategy: increase-if-necessary
+    versioning-strategy: increase
     ignore:
       - dependency-name: '@angular/*'
         versions: ['>= 10.0.0', '>= 0.1000.0']
@@ -94,7 +94,7 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 3
-    versioning-strategy: increase-if-necessary
+    versioning-strategy: increase
     ignore:
       - dependency-name: '@angular/*'
         versions: ['>= 10.0.0', '>= 0.1000.0']
