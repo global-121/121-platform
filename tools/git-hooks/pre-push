@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#
+# git hook to run a command before actually pushing when running `git push`:
+#
+
+check_if_need_to_test() {
+  if git diff --cached --name-only | grep --quiet "$1*"
+  then
+    cd "$(git rev-parse --show-toplevel)" || exit
+    npm test --prefix "$1"
+  fi
+}
+
+# Include all packages/applications that support an `npm test` task:
+check_if_need_to_test "interfaces/PA-App/"
+check_if_need_to_test "interfaces/AW-App/"
+check_if_need_to_test "interfaces/HO-Portal/"
+check_if_need_to_test "services/121-service/"

@@ -12,7 +12,7 @@ import {
   styleUrls: ['./password-toggle-input.component.scss'],
 })
 export class PasswordToggleInputComponent {
-  @ViewChild('passwordInput', { static: true })
+  @ViewChild('passwordInput')
   public passwordInput: any;
 
   @Input()

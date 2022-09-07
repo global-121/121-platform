@@ -14,7 +14,7 @@
     ></more-info-button>
   </dialogue-turn>
   <dialogue-turn
-    isConnected="true"
+    [isConnected]="true"
     [isSpoken]="isCanceled === false"
   >
     <p>
@@ -74,7 +74,7 @@
     *ngIf="hasPreprinted && !isDisabled"
     [isSpoken]="hasPreprinted && !isDisabled"
     actor="self"
-    isConnected="true"
+    [isConnected]="true"
   >
     <ion-row class="ion-nowrap ion-align-items-center">
       <play-text-audio
@@ -99,8 +99,8 @@
   </dialogue-turn>
 
   <dialogue-turn
-    *ngIf="hasPreprinted && scanResult"
-    [isSpoken]="hasPreprinted && scanResult"
+    *ngIf="hasPreprinted && !!scanResult"
+    [isSpoken]="hasPreprinted && !!scanResult"
   >
     <div *ngIf="!scanResultError">
       <p>
