@@ -71,6 +71,8 @@ function check_shared_code() {
 
   compare_code ".editorconfig" "$repo_pa" "$repo_aw"
   compare_code ".editorconfig" "$repo_pa" "$repo_ho"
+  compare_code ".node-version" "$repo_pa" "$repo_aw"
+  compare_code ".node-version" "$repo_pa" "$repo_ho"
   compare_code ".prettierignore" "$repo_pa" "$repo_aw"
   compare_code ".prettierignore" "$repo_pa" "$repo_ho"
   compare_code ".prettierrc.yml" "$repo_pa" "$repo_aw"
