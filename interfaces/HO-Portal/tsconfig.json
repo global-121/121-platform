@@ -28,8 +28,8 @@
     "typeRoots": ["node_modules/@types"]
   },
   "angularCompilerOptions": {
-    "strictTemplates": false,
     "strictDomEventTypes": false,
+    "strictTemplates": false,
     "strictInjectionParameters": true
   }
 }
