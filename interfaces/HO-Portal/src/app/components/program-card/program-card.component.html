@@ -1,0 +1,152 @@
+<ion-card *ngIf="program">
+  <ion-card-header>
+    <ion-row class="ion-padding-horizontal">
+      <ion-col size="10">
+        <ion-card-title color="primary">
+          <strong
+            [routerLink]="['/program', program.id, 'dashboard']"
+            class="program-title"
+            >{{ program.titlePortal }}</strong
+          >
+        </ion-card-title>
+        <ion-card-subtitle color="medium">
+          <small>
+            <strong>
+              {{ 'page.programs-list.card.updated' | translate }}
+              {{ program.updated | date: 'yyyy-MM-dd, HH:mm' }}
+            </strong>
+          </small>
+        </ion-card-subtitle>
+      </ion-col>
+      <ion-col size="2" class="ion-no-padding ion-text-end">
+        <ion-button fill="clear" color="dark" size="small">
+          <ion-icon name="ellipsis-horizontal"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-card-header>
+  <ion-card-content class="porgram-card--central-content">
+    <div>
+      <ion-grid class="ion-no-padding">
+        <ion-row class="border-bottom">
+          <ion-col class="border-right">
+            <div class="ion-padding">
+              <ion-col>
+                <ion-text color="dark">
+                  <h1>
+                    <strong>
+                      {{
+                        programStats?.targetedPeople ||
+                        programStats?.targetedPeople > 0
+                          ? programStats?.targetedPeople
+                          : '-'
+                      }}
+                    </strong>
+                  </h1>
+                </ion-text>
+                <ion-text>
+                  <small>
+                    <strong>
+                      {{ 'page.programs-list.card.targeted' | translate }}
+                    </strong>
+                  </small>
+                </ion-text>
+              </ion-col>
+            </div>
+          </ion-col>
+          <ion-col>
+            <div class="ion-padding">
+              <ion-col>
+                <ion-text color="dark">
+                  <h1>
+                    <strong>
+                      {{
+                        programStats?.includedPeople ||
+                        programStats?.includedPeople > 0
+                          ? programStats?.includedPeople
+                          : '-'
+                      }}
+                    </strong>
+                  </h1>
+                </ion-text>
+                <ion-text>
+                  <small>
+                    <strong>
+                      {{ 'page.programs-list.card.included' | translate }}
+                    </strong>
+                  </small>
+                </ion-text>
+              </ion-col>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="border-right">
+            <div class="ion-padding">
+              <ion-col>
+                <ion-text color="dark">
+                  <h1>
+                    <strong>
+                      {{
+                        programStats?.totalBudget ||
+                        programStats?.totalBudget > 0
+                          ? (programStats?.totalBudget | number: '1.0-0')
+                          : '-'
+                      }}
+                    </strong>
+                  </h1>
+                </ion-text>
+                <ion-text>
+                  <small>
+                    <strong>
+                      {{ 'page.programs-list.card.budget' | translate }} ({{
+                        program.currency
+                      }})
+                    </strong>
+                  </small>
+                </ion-text>
+              </ion-col>
+            </div>
+          </ion-col>
+          <ion-col>
+            <div class="ion-padding">
+              <ion-col>
+                <ion-text color="dark">
+                  <h1>
+                    <strong>
+                      {{
+                        programStats?.spentMoney || programStats?.spentMoney > 0
+                          ? (programStats?.spentMoney | number: '1.0-0')
+                          : ('-' | number: '1.2-2')
+                      }}
+                    </strong>
+                  </h1>
+                </ion-text>
+                <ion-text>
+                  <small>
+                    <strong>
+                      {{ 'page.programs-list.card.spent' | translate }}
+                    </strong>
+                  </small>
+                </ion-text>
+              </ion-col>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </ion-card-content>
+  <ion-card-content>
+    <div class="ion-margin-top ion-padding-horizontal">
+      <ion-progress-bar [value]="progress"></ion-progress-bar>
+      <ion-text>
+        <small>
+          <strong>
+            {{ 'page.programs-list.card.status' | translate }}
+            {{ 'page.program.phases.' + program.phase + '.label' | translate }}
+          </strong>
+        </small>
+      </ion-text>
+    </div>
+  </ion-card-content>
+</ion-card>

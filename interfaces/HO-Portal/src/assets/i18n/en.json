@@ -52,7 +52,15 @@
     },
     "programs-list": {
       "pageTitle": "All Programs",
-      "not-available": "No programs available."
+      "not-available": "No programs available.",
+      "card": {
+        "updated": "Last updated: ",
+        "targeted": "Targeted People",
+        "included": "Included People",
+        "budget": "Total project budget ",
+        "spent": "Spent money",
+        "status": "Program status: "
+      }
     },
     "program": {
       "phases": {
