@@ -1,4 +1,4 @@
-import { API_PATHS, BASE_PATH, EXTERNAL_API, PORT } from './../config';
+import { API_PATHS, EXTERNAL_API } from './../config';
 /* eslint-disable @typescript-eslint/camelcase */
 import { HttpService, Injectable, Post } from '@nestjs/common';
 import {

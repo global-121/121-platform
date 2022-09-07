@@ -45,9 +45,10 @@ export const API_PATHS = {
   voucherInstructions: 'payments/intersolve/instruction/',
 };
 const baseApiUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
-const rootUrl = DEBUG
-  ? `http://localhost:${PORT}/`
-  : process.env.EXTERNAL_121_SERVICE_URL;
+const rootUrl =
+  process.env.NODE_ENV === 'development'
+    ? `http://localhost:${PORT}/`
+    : process.env.EXTERNAL_121_SERVICE_URL;
 export const EXTERNAL_API = {
   root: rootUrl,
   rootApi: `${rootUrl}/api`,
