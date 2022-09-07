@@ -35,6 +35,14 @@ export class Program {
   editableAttributes?: Attribute[];
 }
 
+export class ProgramStats {
+  programId: string;
+  targetedPeople: number;
+  includedPeople: number;
+  totalBudget: number;
+  spentMoney: number;
+}
+
 export enum InclusionCalculationType {
   highestScoresX = 'highestScoresX',
   minimumScore = 'minimumScore',

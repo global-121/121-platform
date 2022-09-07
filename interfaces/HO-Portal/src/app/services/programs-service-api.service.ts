@@ -13,6 +13,7 @@ import {
   PaTableAttribute,
   Program,
   ProgramPhase,
+  ProgramStats,
 } from '../models/program.model';
 import { Transaction } from '../models/transaction.model';
 import { User } from '../models/user.model';
@@ -97,6 +98,21 @@ export class ProgramsServiceApiService {
         }
         return null;
       });
+  }
+
+  getAllProgramsStats(): Promise<ProgramStats[]> {
+    // MOCK DATA
+    return new Promise((resolve) =>
+      resolve([
+        {
+          programId: '1',
+          targetedPeople: 6754,
+          includedPeople: 34,
+          totalBudget: 5425000,
+          spentMoney: 2324000,
+        },
+      ]),
+    );
   }
 
   getProgramById(programId: number | string): Promise<Program> {
