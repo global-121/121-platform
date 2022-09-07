@@ -45,7 +45,6 @@ function check_shared_code() {
 
   compare_code "_set-env-variables.js" "$repo_pa" "$repo_aw"
   compare_code "_set-env-variables.js" "$repo_pa" "$repo_ho"
-  compare_code "_convert-styles-to-async.js" "$repo_pa" "$repo_aw"
   compare_code "_check-icons-in-use.js" "$repo_pa" "$repo_aw"
   compare_code "ngx-translate-lint.config.json" "$repo_pa" "$repo_aw"
 
