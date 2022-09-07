@@ -31,7 +31,6 @@ async function bootstrap(): Promise<void> {
       credentials: true,
     });
   }
-  console.log('EXTERNAL_API.root: ', EXTERNAL_API.root);
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
