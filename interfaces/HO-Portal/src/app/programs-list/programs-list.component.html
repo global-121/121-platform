@@ -5,21 +5,19 @@
   <ion-note *ngIf="!items">
     {{ 'page.programs-list.not-available' | translate }}
   </ion-note>
-  <ion-list *ngIf="items">
-    <ion-item
+  <ion-row style="width: 100%">
+    <ion-col
       *ngFor="let program of items"
-      button="true"
-      [routerLink]="['/program', program.id, 'dashboard']"
+      size-xs="12"
+      size-sm="6"
+      size-md="6"
+      size-lg="4"
+      size-xl="4"
     >
-      <ion-label>
-        {{ program.titlePortal }}<br />
-        <ion-note>
-          {{ program.description }}
-        </ion-note>
-        <ion-note class="ion-float-end ion-padding-end">
-          {{ program.updated | date: 'yyyy-MM-dd, HH:mm' }}
-        </ion-note>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+      <app-program-card
+        [program]="program"
+        [programStats]="getProgramStatsById(program.id)"
+      ></app-program-card>
+    </ion-col>
+  </ion-row>
 </section>
