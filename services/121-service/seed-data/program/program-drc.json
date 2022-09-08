@@ -53,17 +53,17 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "1. Masisi     ",
+          "option": " 1. Masisi       ",
           "label": {
-            "en": "1. Masisi     ",
-            "fr": "1. Masisi     "
+            "en": " 1. Masisi       ",
+            "fr": " 1. Masisi       "
           }
         },
         {
-          "option": "2. Fizi   ",
+          "option": "2. Fizi  ",
           "label": {
-            "en": "2. Fizi   ",
-            "fr": "2. Fizi   "
+            "en": "2. Fizi  ",
+            "fr": "2. Fizi  "
           }
         }
       ],
@@ -104,17 +104,17 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "Yes",
+          "option": "Non",
           "label": {
-            "en": "Yes",
-            "fr": "Yes"
+            "en": "Non",
+            "fr": "Non"
           }
         },
         {
-          "option": "No",
+          "option": "Oui",
           "label": {
-            "en": "No",
-            "fr": "No"
+            "en": "Oui",
+            "fr": "Oui"
           }
         }
       ],
@@ -191,17 +191,17 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "Male",
+          "option": "Féminin",
           "label": {
-            "en": "Male",
-            "fr": "Male"
+            "en": "Féminin",
+            "fr": "Féminin"
           }
         },
         {
-          "option": "Female",
+          "option": "Masculin ",
           "label": {
-            "en": "Female",
-            "fr": "Female"
+            "en": "Masculin ",
+            "fr": "Masculin "
           }
         }
       ],
@@ -238,7 +238,7 @@
         "en": "What is your voter card number? (- of none)",
         "fr": "B. 6. Quel est votre numéro de la carte d’électeur, s’il en possède ? Ou autre document d’identification. "
       },
-      "answerType": "numeric",
+      "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -314,17 +314,24 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "Male",
+          "option": "NA",
           "label": {
-            "en": "Male",
-            "fr": "Male"
+            "en": "NA",
+            "fr": "NA"
           }
         },
         {
-          "option": "Female",
+          "option": "Féminin",
           "label": {
-            "en": "Female",
-            "fr": "Female"
+            "en": "Féminin",
+            "fr": "Féminin"
+          }
+        },
+        {
+          "option": "Masculin ",
+          "label": {
+            "en": "Masculin ",
+            "fr": "Masculin "
           }
         }
       ],
@@ -491,31 +498,31 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "Displaced",
+          "option": " 2. Retourné     ",
           "label": {
-            "en": "Displaced",
-            "fr": "Displaced"
+            "en": " 2. Retourné     ",
+            "fr": " 2. Retourné     "
           }
         },
         {
-          "option": "Returnee",
+          "option": "1. Déplacé      ",
           "label": {
-            "en": "Returnee",
-            "fr": "Returnee"
+            "en": "1. Déplacé      ",
+            "fr": "1. Déplacé      "
           }
         },
         {
-          "option": "Autochtone (private residency)",
+          "option": "3. Autochtone (simple résident) ",
           "label": {
-            "en": "Autochtone (private residency)",
-            "fr": "Autochtone (private residency)"
+            "en": "3. Autochtone (simple résident) ",
+            "fr": "3. Autochtone (simple résident) "
           }
         },
         {
-          "option": "Autochtone (host family)",
+          "option": "4. Autochtone (famille d’accueil)",
           "label": {
-            "en": "Autochtone (host family)",
-            "fr": "Autochtone (host family)"
+            "en": "4. Autochtone (famille d’accueil)",
+            "fr": "4. Autochtone (famille d’accueil)"
           }
         }
       ],
@@ -556,38 +563,38 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "Less than 3 months",
+          "option": "NA",
           "label": {
-            "en": "Less than 3 months",
-            "fr": "Less than 3 months"
+            "en": "NA",
+            "fr": "NA"
           }
         },
         {
-          "option": "Between 3 and 6 months",
+          "option": "1. Moins de 3 mois              ",
           "label": {
-            "en": "Between 3 and 6 months",
-            "fr": "Between 3 and 6 months"
+            "en": "1. Moins de 3 mois              ",
+            "fr": "1. Moins de 3 mois              "
           }
         },
         {
-          "option": "Between 6 and 12 months",
+          "option": "2. Entre 3 et 6 mois           ",
           "label": {
-            "en": "Between 6 and 12 months",
-            "fr": "Between 6 and 12 months"
+            "en": "2. Entre 3 et 6 mois           ",
+            "fr": "2. Entre 3 et 6 mois           "
           }
         },
         {
-          "option": "Over 12 months",
+          "option": "3. Entre 6 et 12 mois            ",
           "label": {
-            "en": "Over 12 months",
-            "fr": "Over 12 months"
+            "en": "3. Entre 6 et 12 mois            ",
+            "fr": "3. Entre 6 et 12 mois            "
           }
         },
         {
-          "option": "Not displaced or returnee",
+          "option": "4.  Plus de 12 mois      ",
           "label": {
-            "en": "Not displaced or returnee",
-            "fr": "Not displaced or returnee"
+            "en": "4.  Plus de 12 mois      ",
+            "fr": "4.  Plus de 12 mois      "
           }
         }
       ],
@@ -610,24 +617,31 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "Yes",
+          "option": "NA",
           "label": {
-            "en": "Yes",
-            "fr": "Yes"
+            "en": "NA",
+            "fr": "NA"
           }
         },
         {
-          "option": "No",
+          "option": "1. Oui                ",
           "label": {
-            "en": "No",
-            "fr": "No"
+            "en": "1. Oui                ",
+            "fr": "1. Oui                "
           }
         },
         {
-          "option": "Not displaced or returnee",
+          "option": "2. Non              ",
           "label": {
-            "en": "Not displaced or returnee",
-            "fr": "Not displaced or returnee"
+            "en": "2. Non              ",
+            "fr": "2. Non              "
+          }
+        },
+        {
+          "option": "3. Ne sais pas",
+          "label": {
+            "en": "3. Ne sais pas",
+            "fr": "3. Ne sais pas"
           }
         }
       ],
@@ -650,45 +664,45 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "Widowed",
+          "option": "1. Veuf/Veuve ?                           ",
           "label": {
-            "en": "Widowed",
-            "fr": "Widowed"
+            "en": "1. Veuf/Veuve ?                           ",
+            "fr": "1. Veuf/Veuve ?                           "
           }
         },
         {
-          "option": "Married",
+          "option": "2. Marié(e) ?                                ",
           "label": {
-            "en": "Married",
-            "fr": "Married"
+            "en": "2. Marié(e) ?                                ",
+            "fr": "2. Marié(e) ?                                "
           }
         },
         {
-          "option": "Abandoned",
+          "option": "3. Abandonné(e)?                                  ",
           "label": {
-            "en": "Abandoned",
-            "fr": "Abandoned"
+            "en": "3. Abandonné(e)?                                  ",
+            "fr": "3. Abandonné(e)?                                  "
           }
         },
         {
-          "option": "Seperated",
+          "option": "4. Séparé(e)?                                             ",
           "label": {
-            "en": "Seperated",
-            "fr": "Seperated"
+            "en": "4. Séparé(e)?                                             ",
+            "fr": "4. Séparé(e)?                                             "
           }
         },
         {
-          "option": "Divorced",
+          "option": "5. Divorcé (e)?                               ",
           "label": {
-            "en": "Divorced",
-            "fr": "Divorced"
+            "en": "5. Divorcé (e)?                               ",
+            "fr": "5. Divorcé (e)?                               "
           }
         },
         {
-          "option": "Child/adolescent household",
+          "option": "6. Enfant/adolescent ménage?",
           "label": {
-            "en": "Child/adolescent household",
-            "fr": "Child/adolescent household"
+            "en": "6. Enfant/adolescent ménage?",
+            "fr": "6. Enfant/adolescent ménage?"
           }
         }
       ],
@@ -707,59 +721,9 @@
         "en": "What are special characteristics of the head of your household (if any)?",
         "fr": "3. 2. Autres caractéristiques du chef de ménage ?"
       },
-      "answerType": "dropdown",
+      "answerType": "text",
       "questionType": "standard",
-      "options": [
-        {
-          "option": "Older person living alone",
-          "label": {
-            "en": "Older person living alone",
-            "fr": "Older person living alone"
-          }
-        },
-        {
-          "option": "Elderly person in charge of a household",
-          "label": {
-            "en": "Elderly person in charge of a household",
-            "fr": "Elderly person in charge of a household"
-          }
-        },
-        {
-          "option": "Pregnant/breastfeeding woman",
-          "label": {
-            "en": "Pregnant/breastfeeding woman",
-            "fr": "Pregnant/breastfeeding woman"
-          }
-        },
-        {
-          "option": "Woman in charge of a household",
-          "label": {
-            "en": "Woman in charge of a household",
-            "fr": "Woman in charge of a household"
-          }
-        },
-        {
-          "option": "Child/adolescent in charge of a household",
-          "label": {
-            "en": "Child/adolescent in charge of a household",
-            "fr": "Child/adolescent in charge of a household"
-          }
-        },
-        {
-          "option": "Girl/adolescent < 18 pregnant or mother",
-          "label": {
-            "en": "Girl/adolescent < 18 pregnant or mother",
-            "fr": "Girl/adolescent < 18 pregnant or mother"
-          }
-        },
-        {
-          "option": "None",
-          "label": {
-            "en": "None",
-            "fr": "None"
-          }
-        }
-      ],
+      "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
@@ -883,38 +847,9 @@
         "en": "If there are disabilities in your household, what types are they?",
         "fr": "3.4.1.5. Si « Oui », de quels types de handicap s’agit-il ? "
       },
-      "answerType": "dropdown",
+      "answerType": "text",
       "questionType": "standard",
-      "options": [
-        {
-          "option": "Sensory disability",
-          "label": {
-            "en": "Sensory disability",
-            "fr": "Sensory disability"
-          }
-        },
-        {
-          "option": "Physical disability",
-          "label": {
-            "en": "Physical disability",
-            "fr": "Physical disability"
-          }
-        },
-        {
-          "option": "Psychological handicap",
-          "label": {
-            "en": "Psychological handicap",
-            "fr": "Psychological handicap"
-          }
-        },
-        {
-          "option": "Other",
-          "label": {
-            "en": "Other",
-            "fr": "Other"
-          }
-        }
-      ],
+      "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
@@ -934,17 +869,24 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "Yes",
+          "option": "1. Oui",
           "label": {
-            "en": "Yes",
-            "fr": "Yes"
+            "en": "1. Oui",
+            "fr": "1. Oui"
           }
         },
         {
-          "option": "No",
+          "option": "2. Non",
           "label": {
-            "en": "No",
-            "fr": "No"
+            "en": "2. Non",
+            "fr": "2. Non"
+          }
+        },
+        {
+          "option": "3. Je ne sais pas",
+          "label": {
+            "en": "3. Je ne sais pas",
+            "fr": "3. Je ne sais pas"
           }
         }
       ],
@@ -1003,24 +945,24 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "Yes",
+          "option": "NA",
           "label": {
-            "en": "Yes",
-            "fr": "Yes"
+            "en": "NA",
+            "fr": "NA"
           }
         },
         {
-          "option": "No",
+          "option": "1. Oui",
           "label": {
-            "en": "No",
-            "fr": "No"
+            "en": "1. Oui",
+            "fr": "1. Oui"
           }
         },
         {
-          "option": "No malnourished children",
+          "option": "2. Non",
           "label": {
-            "en": "No malnourished children",
-            "fr": "No malnourished children"
+            "en": "2. Non",
+            "fr": "2. Non"
           }
         }
       ],
@@ -1043,17 +985,31 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "Yes",
+          "option": "NA",
           "label": {
-            "en": "Yes",
-            "fr": "Yes"
+            "en": "NA",
+            "fr": "NA"
           }
         },
         {
-          "option": "No",
+          "option": "Je ne sais pas",
           "label": {
-            "en": "No",
-            "fr": "No"
+            "en": "Je ne sais pas",
+            "fr": "Je ne sais pas"
+          }
+        },
+        {
+          "option": "Non",
+          "label": {
+            "en": "Non",
+            "fr": "Non"
+          }
+        },
+        {
+          "option": "Oui",
+          "label": {
+            "en": "Oui",
+            "fr": "Oui"
           }
         }
       ],
@@ -1076,17 +1032,24 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "Yes",
+          "option": "Non",
           "label": {
-            "en": "Yes",
-            "fr": "Yes"
+            "en": "Non",
+            "fr": "Non"
           }
         },
         {
-          "option": "No",
+          "option": "Oui",
           "label": {
-            "en": "No",
-            "fr": "No"
+            "en": "Oui",
+            "fr": "Oui"
+          }
+        },
+        {
+          "option": "Pas d'idée",
+          "label": {
+            "en": "Pas d'idée",
+            "fr": "Pas d'idée"
           }
         }
       ],
@@ -1105,66 +1068,9 @@
         "en": "If you are not comfortable with mobile money transfer, why is that?",
         "fr": "3.12.1. Si non, pourquoi ? "
       },
-      "answerType": "dropdown",
+      "answerType": "text",
       "questionType": "standard",
-      "options": [
-        {
-          "option": "I do not have a telephone",
-          "label": {
-            "en": "I do not have a telephone",
-            "fr": "I do not have a telephone"
-          }
-        },
-        {
-          "option": "I have never used the mobile money service",
-          "label": {
-            "en": "I have never used the mobile money service",
-            "fr": "I have never used the mobile money service"
-          }
-        },
-        {
-          "option": "I fear that my money will be lost",
-          "label": {
-            "en": "I fear that my money will be lost",
-            "fr": "I fear that my money will be lost"
-          }
-        },
-        {
-          "option": "Disruption of the connection of telecommunication networks",
-          "label": {
-            "en": "Disruption of the connection of telecommunication networks",
-            "fr": "Disruption of the connection of telecommunication networks"
-          }
-        },
-        {
-          "option": "Absence of telecommunication network in my village",
-          "label": {
-            "en": "Absence of telecommunication network in my village",
-            "fr": "Absence of telecommunication network in my village"
-          }
-        },
-        {
-          "option": "We do not have the ability to charge phones",
-          "label": {
-            "en": "We do not have the ability to charge phones",
-            "fr": "We do not have the ability to charge phones"
-          }
-        },
-        {
-          "option": "I can neither read nor write",
-          "label": {
-            "en": "I can neither read nor write",
-            "fr": "I can neither read nor write"
-          }
-        },
-        {
-          "option": "I am comfortable with mobile money",
-          "label": {
-            "en": "I am comfortable with mobile money",
-            "fr": "I am comfortable with mobile money"
-          }
-        }
-      ],
+      "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
