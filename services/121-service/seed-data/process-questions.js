@@ -44,7 +44,7 @@ function getOptions(answerType, row) {
         const optionString = row[key];
         const option = {
           option: stringToLetterString(optionString),
-          option: optionString,
+          option: optionString === '' ? 'NA' : optionString,
           label: {
             en: optionString,
             fr: optionString,
@@ -65,7 +65,6 @@ function rowToQuestion(row) {
     ? row['Key']
     : stringToLetterString(row['Question text']);
   const question = {
-    // name: name,
     name: row['French (original text)'],
     label: {
       en: row['Question text'],

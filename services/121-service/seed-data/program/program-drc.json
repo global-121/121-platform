@@ -314,6 +314,13 @@
       "questionType": "standard",
       "options": [
         {
+          "option": "NA",
+          "label": {
+            "en": "NA",
+            "fr": "NA"
+          }
+        },
+        {
           "option": "Féminin",
           "label": {
             "en": "Féminin",
@@ -556,6 +563,13 @@
       "questionType": "standard",
       "options": [
         {
+          "option": "NA",
+          "label": {
+            "en": "NA",
+            "fr": "NA"
+          }
+        },
+        {
           "option": "1. Moins de 3 mois              ",
           "label": {
             "en": "1. Moins de 3 mois              ",
@@ -602,6 +616,13 @@
       "answerType": "dropdown",
       "questionType": "standard",
       "options": [
+        {
+          "option": "NA",
+          "label": {
+            "en": "NA",
+            "fr": "NA"
+          }
+        },
         {
           "option": "1. Oui                ",
           "label": {
@@ -924,6 +945,13 @@
       "questionType": "standard",
       "options": [
         {
+          "option": "NA",
+          "label": {
+            "en": "NA",
+            "fr": "NA"
+          }
+        },
+        {
           "option": "1. Oui",
           "label": {
             "en": "1. Oui",
@@ -956,6 +984,13 @@
       "answerType": "dropdown",
       "questionType": "standard",
       "options": [
+        {
+          "option": "NA",
+          "label": {
+            "en": "NA",
+            "fr": "NA"
+          }
+        },
         {
           "option": "Je ne sais pas",
           "label": {
