@@ -68,7 +68,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -86,7 +90,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -119,7 +127,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -137,7 +149,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -155,7 +171,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -173,7 +193,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -206,7 +230,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -224,7 +252,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -242,12 +274,20 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
-      "phases": [],
+      "phases": [
+        "registrationValidation",
+        "inclusion",
+        "payment"
+      ],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "What is your voter card number? (- of none)"
+        "en": "Voter card nr."
       }
     },
     {
@@ -260,7 +300,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -278,7 +322,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -296,7 +344,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -336,7 +388,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -354,7 +410,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -372,7 +432,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -390,7 +454,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -408,7 +476,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -426,7 +498,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -444,7 +520,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -462,7 +542,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -480,7 +564,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -527,7 +615,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -545,7 +637,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -599,7 +695,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -646,7 +746,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -707,7 +811,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -725,7 +833,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -743,7 +855,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -761,7 +877,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -779,7 +899,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -797,7 +921,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -815,7 +943,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -833,7 +965,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -851,7 +987,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -891,7 +1031,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -909,7 +1053,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -927,7 +1075,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -967,7 +1119,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -1014,7 +1170,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -1054,7 +1214,11 @@
         }
       ],
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -1072,7 +1236,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
