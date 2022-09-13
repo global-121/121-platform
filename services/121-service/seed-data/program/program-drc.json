@@ -690,7 +690,7 @@
       "label": {
         "en": "3.15.1 What is the latitude of your household?"
       },
-      "answerType": "numeric",
+      "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -699,7 +699,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "3.15.1 What is the latitude of your household?"
+        "en": "3.15.1 Latitude"
       }
     },
     {
@@ -707,7 +707,7 @@
       "label": {
         "en": "3.15.2 What is the longitude of your household?"
       },
-      "answerType": "numeric",
+      "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -716,7 +716,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "3.15.2 What is the longitude of your household?"
+        "en": "3.15.2 Longitude"
       }
     },
     {
@@ -724,7 +724,7 @@
       "label": {
         "en": "3.15.3 What is the altitude of your household?"
       },
-      "answerType": "numeric",
+      "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -733,7 +733,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "3.15.3 What is the altitude of your household?"
+        "en": "3.15.3 Altitude"
       }
     },
     {
@@ -741,7 +741,7 @@
       "label": {
         "en": "3.15.3 What is the GPS precision?"
       },
-      "answerType": "numeric",
+      "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -750,7 +750,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "3.15.3 What is the GPS precision?"
+        "en": "3.15.3 Precision"
       }
     }
   ],
