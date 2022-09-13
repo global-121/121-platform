@@ -23,7 +23,7 @@
   "personal": {
     "consent-question": {
       "agree": "I agree",
-      "answer": "I have read/listened to how my personal information will be stored securely. I understand that it is required to send my personal information to receive a digital voucher.   <br><br>   I understand who sees my personal information.   <br><br>   By tapping &quot;<b>I agree</b>&quot; I choose to participate in the aid program.   <br><br>   By tapping &quot;<b>I disagree</b>&quot; I choose not to participate in the aid program.",
+      "answer": "I have read/listened to how my personal information will be stored securely. I understand that it is required to send my personal information to receive aid.   <br><br>   I understand who sees my personal information.   <br><br>   By tapping &quot;<b>I agree</b>&quot; I choose to participate in the aid program.   <br><br>   By tapping &quot;<b>I disagree</b>&quot; I choose not to participate in the aid program.",
       "disagree": "I disagree",
       "more-info-personal-information": "About personal information",
       "question": "To apply for this aid program you need to agree to <strong>how we secure your personal information.</strong><br /><br /> Please read or listen to how we secure your personal information."
