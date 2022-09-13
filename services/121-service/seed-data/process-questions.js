@@ -61,11 +61,11 @@ function getOptions(answerType, row) {
 
 function rowToQuestion(row) {
   const answerType = row['Question type'].toLowerCase();
-  const name = row['Key']
-    ? row['Key']
-    : stringToLetterString(row['Question text']);
+  // const name = row['Key']
+  //   ? row['Key']
+  //   : stringToLetterString(row['Question text']);
   const question = {
-    name: row['French (original text)'],
+    name: row['Question text'],
     label: {
       en: row['Question text'],
       fr: row['French (original text)'],
