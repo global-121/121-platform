@@ -11,14 +11,20 @@
       <span [innerHTML]="'connection.error-retry' | translate"></span>
     </p>
     <p>
-      <ion-button type="button" (click)="retry()">
+      <ion-button
+        type="button"
+        (click)="retry()"
+      >
         {{ 'shared.retry' | translate }}
       </ion-button>
     </p>
   </dialogue-turn>
 </section>
 <section *ngIf="registrationStatus">
-  <dialogue-turn *ngIf="validation" [isSpoken]="validation">
+  <dialogue-turn
+    *ngIf="validation"
+    [isSpoken]="validation"
+  >
     <p>
       <play-text-audio
         key="personal.registration-summary.validation-conclusion"
@@ -73,10 +79,16 @@
         background: white;
       "
     >
-      <qrcode [qrdata]="qrDataString" level="H"></qrcode>
+      <qrcode
+        [qrdata]="qrDataString"
+        level="H"
+      ></qrcode>
     </div>
   </dialogue-turn>
-  <dialogue-turn *ngIf="!validation" [isSpoken]="!validation">
+  <dialogue-turn
+    *ngIf="!validation"
+    [isSpoken]="!validation"
+  >
     <p>
       <play-text-audio
         key="personal.registration-summary.no-validation-conclusion"

@@ -14,29 +14,27 @@ describe('EnrollInProgramComponent', () => {
   let component: EnrollInProgramComponent;
   let fixture: ComponentFixture<EnrollInProgramComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [EnrollInProgramComponent],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-        providers: [
-          {
-            provide: PaDataService,
-            useValue: MockPaDataService,
-          },
-          {
-            provide: ConversationService,
-            useValue: MockConversationService,
-          },
-          {
-            provide: InstanceService,
-            useValue: MockInstanceService,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [EnrollInProgramComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      providers: [
+        {
+          provide: PaDataService,
+          useValue: MockPaDataService,
+        },
+        {
+          provide: ConversationService,
+          useValue: MockConversationService,
+        },
+        {
+          provide: InstanceService,
+          useValue: MockInstanceService,
+        },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(EnrollInProgramComponent);

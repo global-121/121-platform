@@ -13,7 +13,10 @@
       headingKey="personal.preprinted-qrcode.more-info-qr"
     ></more-info-button>
   </dialogue-turn>
-  <dialogue-turn [isConnected]="true" [isSpoken]="isCanceled === false">
+  <dialogue-turn
+    [isConnected]="true"
+    [isSpoken]="isCanceled === false"
+  >
     <p>
       <play-text-audio
         key="personal.preprinted-qrcode.introduction"
@@ -24,7 +27,10 @@
     </p>
   </dialogue-turn>
 
-  <dialogue-turn actor="self" [isSpoken]="isCanceled === false">
+  <dialogue-turn
+    actor="self"
+    [isSpoken]="isCanceled === false"
+  >
     <ion-row
       *ngIf="!isDisabled || hasPreprinted"
       class="ion-nowrap ion-align-items-center"

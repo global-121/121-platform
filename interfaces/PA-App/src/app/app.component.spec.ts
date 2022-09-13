@@ -5,16 +5,14 @@ import { AppComponent } from './app.component';
 import { LoggingService } from './services/logging.service';
 
 describe('AppComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [AppComponent],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [LoggingService],
-        imports: [TranslateModule.forRoot()],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [AppComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [LoggingService],
+      imports: [TranslateModule.forRoot()],
+    }).compileComponents();
+  }));
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);

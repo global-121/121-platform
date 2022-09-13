@@ -44,7 +44,10 @@
               </ion-note>
             </ng-container>
           </ion-label>
-          <ion-radio [value]="program.id" [disabled]="isDisabled"></ion-radio>
+          <ion-radio
+            [value]="program.id"
+            [disabled]="isDisabled"
+          ></ion-radio>
         </ion-item>
       </ion-radio-group>
       <ion-row
@@ -55,13 +58,20 @@
           key="shared.submit-button"
           size="default"
         ></play-text-audio>
-        <ion-button type="submit" expand="block" style="flex-basis: 100%">
+        <ion-button
+          type="submit"
+          expand="block"
+          style="flex-basis: 100%"
+        >
           {{ 'shared.submit-button' | translate }}
         </ion-button>
       </ion-row>
     </form>
   </dialogue-turn>
-  <dialogue-turn *ngIf="!programs?.length" [isSpoken]="!programs?.length">
+  <dialogue-turn
+    *ngIf="!programs?.length"
+    [isSpoken]="!programs?.length"
+  >
     <p>
       <play-text-audio
         key="personal.select-program.no-published-programs"

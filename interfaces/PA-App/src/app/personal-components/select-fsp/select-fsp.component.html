@@ -8,7 +8,11 @@
       {{ 'personal.select-fsp.introduction' | translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn actor="self" *ngIf="!!fsps" [isSpoken]="!!fsps">
+  <dialogue-turn
+    actor="self"
+    *ngIf="!!fsps"
+    [isSpoken]="!!fsps"
+  >
     <form (submit)="submitFsp()">
       <ion-radio-group
         name="fsps"
@@ -24,7 +28,10 @@
           <ion-label class="ion-text-wrap ion-padding-end">
             {{ fsp.fspDisplayName }}
           </ion-label>
-          <ion-radio [value]="fsp.id" [disabled]="fspSubmitted"></ion-radio>
+          <ion-radio
+            [value]="fsp.id"
+            [disabled]="fspSubmitted"
+          ></ion-radio>
         </ion-item>
       </ion-radio-group>
       <ion-row
@@ -46,7 +53,10 @@
       </ion-row>
     </form>
   </dialogue-turn>
-  <dialogue-turn *ngIf="fspSubmitted" [isSpoken]="fspSubmitted">
+  <dialogue-turn
+    *ngIf="fspSubmitted"
+    [isSpoken]="fspSubmitted"
+  >
     <p>
       <play-text-audio
         key="personal.select-fsp.conclusion"
@@ -63,7 +73,10 @@
   </dialogue-turn>
 
   <form *ngIf="questions?.length">
-    <dialogue-turn [isConnected]="true" [isSpoken]="true">
+    <dialogue-turn
+      [isConnected]="true"
+      [isSpoken]="true"
+    >
       <p>
         <play-text-audio
           key="personal.select-fsp.attributes.introduction"
@@ -82,7 +95,10 @@
       submitLabel="shared.submit-button"
     ></q-and-a-set>
 
-    <dialogue-turn *ngIf="showResultSuccess" [isSpoken]="showResultSuccess">
+    <dialogue-turn
+      *ngIf="showResultSuccess"
+      [isSpoken]="showResultSuccess"
+    >
       <p>
         <play-text-audio
           key="personal.select-fsp.attributes.success"
@@ -91,7 +107,10 @@
         {{ 'personal.select-fsp.attributes.success' | translate }}
       </p>
     </dialogue-turn>
-    <dialogue-turn *ngIf="showResultError" [isSpoken]="showResultError">
+    <dialogue-turn
+      *ngIf="showResultError"
+      [isSpoken]="showResultError"
+    >
       <p>
         <play-text-audio
           key="personal.select-fsp.attributes.error"

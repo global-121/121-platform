@@ -12,25 +12,23 @@ describe('SelectFspComponent', () => {
   let component: SelectFspComponent;
   let fixture: ComponentFixture<SelectFspComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [SelectFspComponent],
-        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {
-            provide: ConversationService,
-            useValue: MockConversationService,
-          },
-          {
-            provide: PaDataService,
-            useValue: MockPaDataService,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [SelectFspComponent],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: ConversationService,
+          useValue: MockConversationService,
+        },
+        {
+          provide: PaDataService,
+          useValue: MockPaDataService,
+        },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectFspComponent);

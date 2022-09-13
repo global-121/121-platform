@@ -46,7 +46,10 @@
           </ion-button>
         </ion-row>
       </div>
-      <div *ngIf="usernameSubmitted" class="ion-margin-vertical">
+      <div
+        *ngIf="usernameSubmitted"
+        class="ion-margin-vertical"
+      >
         <p>
           <play-text-audio
             key="personal.login-account.supply-password"
@@ -86,7 +89,10 @@
       </ion-row>
     </form>
   </dialogue-turn>
-  <dialogue-turn *ngIf="incorrectCredentials" [isSpoken]="incorrectCredentials">
+  <dialogue-turn
+    *ngIf="incorrectCredentials"
+    [isSpoken]="incorrectCredentials"
+  >
     <p>
       <play-text-audio
         key="personal.login-account.incorrect-credentials"

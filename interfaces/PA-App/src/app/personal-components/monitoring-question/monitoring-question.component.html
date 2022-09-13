@@ -42,7 +42,10 @@
       </ion-button>
     </ion-row>
   </dialogue-turn>
-  <dialogue-turn *ngIf="monitoringSubmitted" [isSpoken]="monitoringSubmitted">
+  <dialogue-turn
+    *ngIf="monitoringSubmitted"
+    [isSpoken]="monitoringSubmitted"
+  >
     <p [innerHTML]="monitoringQuestion?.conclusion"></p>
   </dialogue-turn>
 </section>

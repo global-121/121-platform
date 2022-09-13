@@ -16,33 +16,31 @@ describe('NextPaComponent', () => {
   let component: NextPaComponent;
   let fixture: ComponentFixture<NextPaComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [NextPaComponent],
-        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {
-            provide: ConversationService,
-            useValue: MockConversationService,
-          },
-          {
-            provide: InstanceService,
-            useValue: MockInstanceService,
-          },
-          {
-            provide: PaDataService,
-            useValue: MockPaDataService,
-          },
-          {
-            provide: LoggingService,
-            useValue: MockLoggingService,
-          },
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [NextPaComponent],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: ConversationService,
+          useValue: MockConversationService,
+        },
+        {
+          provide: InstanceService,
+          useValue: MockInstanceService,
+        },
+        {
+          provide: PaDataService,
+          useValue: MockPaDataService,
+        },
+        {
+          provide: LoggingService,
+          useValue: MockLoggingService,
+        },
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NextPaComponent);

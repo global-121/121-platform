@@ -20,15 +20,31 @@
         [title]="'shared.close-button' | translate"
         [attr.aria-label]="'shared.close-button' | translate"
       >
-        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content fullscreen class="ion-padding">
-  <div *ngIf="messageKey" class="ion-float-end ion-margin-start">
+<ion-content
+  fullscreen
+  class="ion-padding"
+>
+  <div
+    *ngIf="messageKey"
+    class="ion-float-end ion-margin-start"
+  >
     <play-text-audio [key]="messageKey"></play-text-audio>
   </div>
-  <div *ngIf="messageKey" [innerHTML]="messageKey | translate"></div>
-  <div *ngIf="!messageKey && message" [innerHTML]="message"></div>
+  <div
+    *ngIf="messageKey"
+    [innerHTML]="messageKey | translate"
+  ></div>
+  <div
+    *ngIf="!messageKey && message"
+    [innerHTML]="message"
+  ></div>
 </ion-content>
