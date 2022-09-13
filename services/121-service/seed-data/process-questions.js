@@ -47,7 +47,7 @@ function getOptions(answerType, row) {
           option: optionString === '' ? 'NA' : optionString,
           label: {
             en: optionString,
-            fr: optionString,
+            // fr: optionString,
           },
         };
         options.push(option);
@@ -68,7 +68,7 @@ function rowToQuestion(row) {
     name: row['Question text'],
     label: {
       en: row['Question text'],
-      fr: row['French (original text)'],
+      // fr: row['French (original text)'],
     },
     answerType: answerType,
     questionType: 'standard',
