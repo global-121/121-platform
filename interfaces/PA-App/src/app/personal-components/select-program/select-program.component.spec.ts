@@ -14,27 +14,29 @@ describe('SelectProgramComponent', () => {
   let component: SelectProgramComponent;
   let fixture: ComponentFixture<SelectProgramComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [SelectProgramComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-      providers: [
-        {
-          provide: PaDataService,
-          useValue: MockPaDataService,
-        },
-        {
-          provide: ConversationService,
-          useValue: MockConversationService,
-        },
-        {
-          provide: InstanceService,
-          useValue: MockInstanceService,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [SelectProgramComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+        providers: [
+          {
+            provide: PaDataService,
+            useValue: MockPaDataService,
+          },
+          {
+            provide: ConversationService,
+            useValue: MockConversationService,
+          },
+          {
+            provide: InstanceService,
+            useValue: MockInstanceService,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectProgramComponent);

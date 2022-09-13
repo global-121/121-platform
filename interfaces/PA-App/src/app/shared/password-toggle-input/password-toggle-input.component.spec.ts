@@ -8,18 +8,20 @@ describe('PasswordToggleInputComponent', () => {
   let component: PasswordToggleInputComponent;
   let fixture: ComponentFixture<PasswordToggleInputComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [PasswordToggleInputComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: LoggingService,
-          useValue: MockLoggingService,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [PasswordToggleInputComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: LoggingService,
+            useValue: MockLoggingService,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PasswordToggleInputComponent);

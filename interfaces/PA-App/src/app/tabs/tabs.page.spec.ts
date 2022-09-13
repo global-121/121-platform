@@ -10,25 +10,27 @@ describe('TabsPage', () => {
   let component: TabsPage;
   let fixture: ComponentFixture<TabsPage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [TabsPage],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [TranslateModule.forRoot()],
-      providers: [
-        {
-          provide: ModalController,
-        },
-        {
-          provide: AngularDelegate,
-        },
-        {
-          provide: PaDataService,
-          useValue: MockPaDataService,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TabsPage],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [TranslateModule.forRoot()],
+        providers: [
+          {
+            provide: ModalController,
+          },
+          {
+            provide: AngularDelegate,
+          },
+          {
+            provide: PaDataService,
+            useValue: MockPaDataService,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TabsPage);

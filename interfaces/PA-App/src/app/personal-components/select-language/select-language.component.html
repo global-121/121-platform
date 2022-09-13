@@ -50,20 +50,13 @@
           key="shared.submit-button"
           size="default"
         ></play-text-audio>
-        <ion-button
-          type="submit"
-          expand="block"
-          style="flex-basis: 100%"
-        >
+        <ion-button type="submit" expand="block" style="flex-basis: 100%">
           {{ 'shared.submit-button' | translate }}
         </ion-button>
       </ion-row>
     </form>
   </dialogue-turn>
-  <dialogue-turn
-    *ngIf="isDisabled"
-    [isSpoken]="isDisabled"
-  >
+  <dialogue-turn *ngIf="isDisabled" [isSpoken]="isDisabled">
     <p>
       <play-text-audio
         key="personal.select-language.result"

@@ -23,10 +23,7 @@
     submitLabel="shared.submit-button"
   ></q-and-a-set>
 
-  <dialogue-turn
-    *ngIf="hasAnswered"
-    [isSpoken]="hasAnswered"
-  >
+  <dialogue-turn *ngIf="hasAnswered" [isSpoken]="hasAnswered">
     <p>
       <play-text-audio
         key="personal.enroll-in-program.please-confirm"
@@ -35,16 +32,9 @@
       {{ 'personal.enroll-in-program.please-confirm' | translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn
-    actor="self"
-    *ngIf="hasAnswered"
-    [isSpoken]="hasAnswered"
-  >
+  <dialogue-turn actor="self" *ngIf="hasAnswered" [isSpoken]="hasAnswered">
     <ul class="ion-padding-start">
-      <li
-        *ngFor="let question of questions"
-        class="ion-margin-vertical"
-      >
+      <li *ngFor="let question of questions" class="ion-margin-vertical">
         <span [innerHTML]="question.label"></span><br />
         <strong class="answer-emphasis">
           {{ answers[question.code]?.label }}
@@ -57,11 +47,7 @@
         (ionChange)="submitChoice = $event.detail.value"
         [value]="isDisabled ? submitChoice : ''"
       >
-        <ion-item
-          color="light"
-          lines="full"
-          class="ion-no-padding"
-        >
+        <ion-item color="light" lines="full" class="ion-no-padding">
           <play-text-audio
             key="personal.enroll-in-program.submit-confirm"
             slot="start"
@@ -82,11 +68,7 @@
             ></ion-radio>
           </ion-item>
         </ion-item>
-        <ion-item
-          color="light"
-          class="ion-no-padding"
-          lines="full"
-        >
+        <ion-item color="light" class="ion-no-padding" lines="full">
           <play-text-audio
             key="personal.enroll-in-program.change"
             slot="start"

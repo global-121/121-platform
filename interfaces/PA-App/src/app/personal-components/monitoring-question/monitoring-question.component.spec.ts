@@ -14,27 +14,29 @@ describe('MonitoringQuestionComponent', () => {
   let component: MonitoringQuestionComponent;
   let fixture: ComponentFixture<MonitoringQuestionComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [MonitoringQuestionComponent],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: ConversationService,
-          useValue: MockConversationService,
-        },
-        {
-          provide: InstanceService,
-          useValue: MockInstanceService,
-        },
-        {
-          provide: PaDataService,
-          useValue: MockPaDataService,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [MonitoringQuestionComponent],
+        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: ConversationService,
+            useValue: MockConversationService,
+          },
+          {
+            provide: InstanceService,
+            useValue: MockInstanceService,
+          },
+          {
+            provide: PaDataService,
+            useValue: MockPaDataService,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MonitoringQuestionComponent);

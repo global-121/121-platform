@@ -10,25 +10,27 @@ describe('MoreInfoButtonComponent', () => {
   let component: MoreInfoButtonComponent;
   let fixture: ComponentFixture<MoreInfoButtonComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [MoreInfoButtonComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [TranslateModule.forRoot()],
-      providers: [
-        {
-          provide: ModalController,
-        },
-        {
-          provide: AngularDelegate,
-        },
-        {
-          provide: LoggingService,
-          useValue: MockLoggingService,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [MoreInfoButtonComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [TranslateModule.forRoot()],
+        providers: [
+          {
+            provide: ModalController,
+          },
+          {
+            provide: AngularDelegate,
+          },
+          {
+            provide: LoggingService,
+            useValue: MockLoggingService,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MoreInfoButtonComponent);

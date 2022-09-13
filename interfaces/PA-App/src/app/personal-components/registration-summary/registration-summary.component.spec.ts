@@ -13,27 +13,29 @@ describe('RegistrationSummaryComponent', () => {
   let component: RegistrationSummaryComponent;
   let fixture: ComponentFixture<RegistrationSummaryComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [RegistrationSummaryComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule,
-        QRCodeModule,
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: ConversationService,
-          useValue: MockConversationService,
-        },
-        {
-          provide: PaDataService,
-          useValue: MockPaDataService,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [RegistrationSummaryComponent],
+        imports: [
+          TranslateModule.forRoot(),
+          HttpClientTestingModule,
+          QRCodeModule,
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: ConversationService,
+            useValue: MockConversationService,
+          },
+          {
+            provide: PaDataService,
+            useValue: MockPaDataService,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RegistrationSummaryComponent);

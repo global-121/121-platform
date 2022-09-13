@@ -9,28 +9,17 @@
         [attr.title]="'qr-scanner.close' | translate"
         [attr.aria-label]="'qr-scanner.close' | translate"
       >
-        <ion-icon
-          name="close"
-          slot="icon-only"
-          aria-hidden="true"
-        ></ion-icon>
+        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content
-  fullscreen="true"
-  class="qr-scanner"
->
+<ion-content fullscreen="true" class="qr-scanner">
   <div
     *ngIf="showCompatibilityError || showPermissionError"
     class="ion-text-center ion-padding"
   >
-    <ion-icon
-      name="alert"
-      size="large"
-      aria-hidden="true"
-    ></ion-icon>
+    <ion-icon name="alert" size="large" aria-hidden="true"></ion-icon>
     <p *ngIf="showCompatibilityError">
       {{ 'qr-scanner.error-not-compatible' | translate }}
     </p>
@@ -41,10 +30,7 @@
       {{ 'qr-scanner.error-generic' | translate }}
     </p>
     <p class="ion-margin-top ion-text-center">
-      <ion-button
-        type="button"
-        (click)="tryAgain()"
-      >
+      <ion-button type="button" (click)="tryAgain()">
         <ion-icon
           name="refresh"
           size="small"
@@ -71,16 +57,9 @@
     class="qr-scanner--zxing-component"
   ></zxing-scanner>
 
-  <ion-spinner
-    name="dots"
-    class="qr-scanner--loading"
-  ></ion-spinner>
+  <ion-spinner name="dots" class="qr-scanner--loading"></ion-spinner>
 
-  <ion-fab
-    vertical="top"
-    horizontal="end"
-    slot="fixed"
-  >
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
     <ion-fab-button
       *ngIf="torchAvailable"
       [title]="'qr-scanner.toggle-flash' | translate"
@@ -89,11 +68,7 @@
       [color]="torchEnabled ? 'success' : 'light'"
       class="ion-margin-vertical"
     >
-      <ion-icon
-        *ngIf="torchEnabled"
-        name="flash"
-        aria-hidden="true"
-      ></ion-icon>
+      <ion-icon *ngIf="torchEnabled" name="flash" aria-hidden="true"></ion-icon>
       <ion-icon
         *ngIf="!torchEnabled"
         name="flash-off"
@@ -107,10 +82,7 @@
       color="light"
       class="ion-margin-vertical"
     >
-      <ion-icon
-        name="camera-reverse"
-        aria-hidden="true"
-      ></ion-icon>
+      <ion-icon name="camera-reverse" aria-hidden="true"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
@@ -131,11 +103,7 @@
     class="ion-no-margin"
     (click)="onScanSuccess(scanData.value)"
   >
-    <ion-icon
-      name="create"
-      slot="start"
-      aria-hidden="true"
-    ></ion-icon>
+    <ion-icon name="create" slot="start" aria-hidden="true"></ion-icon>
     Use as scanned data
   </ion-button>
 </ion-footer>

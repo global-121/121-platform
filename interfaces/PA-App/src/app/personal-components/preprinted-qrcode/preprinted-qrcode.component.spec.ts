@@ -13,29 +13,31 @@ describe('PreprintedQrcodeComponent', () => {
   let component: PreprintedQrcodeComponent;
   let fixture: ComponentFixture<PreprintedQrcodeComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [PreprintedQrcodeComponent],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: ConversationService,
-          useValue: MockConversationService,
-        },
-        {
-          provide: PaDataService,
-          useValue: MockPaDataService,
-        },
-        {
-          provide: ModalController,
-        },
-        {
-          provide: AngularDelegate,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [PreprintedQrcodeComponent],
+        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: ConversationService,
+            useValue: MockConversationService,
+          },
+          {
+            provide: PaDataService,
+            useValue: MockPaDataService,
+          },
+          {
+            provide: ModalController,
+          },
+          {
+            provide: AngularDelegate,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PreprintedQrcodeComponent);

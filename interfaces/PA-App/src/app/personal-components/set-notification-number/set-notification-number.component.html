@@ -99,10 +99,7 @@
       </ion-row>
     </form>
   </dialogue-turn>
-  <dialogue-turn
-    *ngIf="hasValidationError"
-    [isSpoken]="hasValidationError"
-  >
+  <dialogue-turn *ngIf="hasValidationError" [isSpoken]="hasValidationError">
     <p>
       <play-text-audio
         key="personal.set-notification-number.validation.phone-number"
@@ -113,10 +110,7 @@
       }}
     </p>
   </dialogue-turn>
-  <dialogue-turn
-    *ngIf="choiceMade"
-    [isSpoken]="choiceMade"
-  >
+  <dialogue-turn *ngIf="choiceMade" [isSpoken]="choiceMade">
     <p *ngIf="!phoneSkipped">
       <play-text-audio
         key="personal.set-notification-number.conclusion-submitted"

@@ -1,7 +1,4 @@
-<form
-  #theForm="ngForm"
-  (keydown.enter)="$event.preventDefault()"
->
+<form #theForm="ngForm" (keydown.enter)="$event.preventDefault()">
   <ng-container
     *ngFor="let question of questions; let i = index; first as isFirst"
   >
@@ -214,10 +211,7 @@
     [isSpoken]="theForm.valid && !checkValidationErrors() && allQuestionsShown"
   >
     <ion-row class="ion-nowrap ion-align-items-center">
-      <play-text-audio
-        [key]="submitLabel"
-        size="default"
-      ></play-text-audio>
+      <play-text-audio [key]="submitLabel" size="default"></play-text-audio>
       <ion-button
         type="button"
         (click)="doSubmit()"

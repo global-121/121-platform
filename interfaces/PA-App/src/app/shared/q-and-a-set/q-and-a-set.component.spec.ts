@@ -10,19 +10,21 @@ describe('QAndASetComponent', () => {
   let component: QAndASetComponent;
   let fixture: ComponentFixture<QAndASetComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [QAndASetComponent],
-      imports: [TranslateModule.forRoot(), FormsModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: LoggingService,
-          useValue: MockLoggingService,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [QAndASetComponent],
+        imports: [TranslateModule.forRoot(), FormsModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: LoggingService,
+            useValue: MockLoggingService,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(QAndASetComponent);

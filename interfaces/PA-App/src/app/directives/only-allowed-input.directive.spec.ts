@@ -5,10 +5,12 @@ describe('OnlyAllowedInputDirective', () => {
   let testElement;
   let directive;
 
-  beforeEach(waitForAsync(() => {
-    testElement = document.createElement('input');
-    directive = new OnlyAllowedInputDirective();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      testElement = document.createElement('input');
+      directive = new OnlyAllowedInputDirective();
+    }),
+  );
 
   it('should create an instance', () => {
     expect(directive).toBeTruthy();

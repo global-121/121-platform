@@ -1,8 +1,5 @@
 <ion-content>
-  <ion-list
-    lines="full"
-    class="ion-no-padding"
-  >
+  <ion-list lines="full" class="ion-no-padding">
     <ion-item
       button="true"
       [disabled]="!isLoggedIn"
@@ -24,11 +21,7 @@
     >
       {{ 'account.delete-data' | translate }}
     </ion-item>
-    <ion-button
-      type="button"
-      (click)="close()"
-      expand="block"
-    >
+    <ion-button type="button" (click)="close()" expand="block">
       <ion-icon
         name="close"
         size="small"

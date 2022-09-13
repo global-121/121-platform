@@ -58,10 +58,7 @@
         </ion-button>
       </ion-row>
     </div>
-    <div
-      *ngIf="usernameSubmitted"
-      class="ion-margin-vertical"
-    >
+    <div *ngIf="usernameSubmitted" class="ion-margin-vertical">
       <p>
         <play-text-audio
           key="personal.create-account.create-password-explanation"
@@ -83,10 +80,7 @@
         [labelHide]="'password-toggle.hide' | translate"
         [(isValid)]="createIsValid"
       ></password-toggle-input>
-      <div
-        *ngIf="createIsValid === false"
-        class="ion-margin-vertical"
-      >
+      <div *ngIf="createIsValid === false" class="ion-margin-vertical">
         <p>
           <play-text-audio
             key="personal.create-account.password-too-short"
@@ -157,10 +151,7 @@
     </div>
   </form>
 </dialogue-turn>
-<dialogue-turn
-  *ngIf="unequalPasswords"
-  [isSpoken]="unequalPasswords"
->
+<dialogue-turn *ngIf="unequalPasswords" [isSpoken]="unequalPasswords">
   <p>
     <play-text-audio
       key="personal.create-account.unequal-passwords"
@@ -169,10 +160,7 @@
     {{ 'personal.create-account.unequal-passwords' | translate }}
   </p>
 </dialogue-turn>
-<dialogue-turn
-  *ngIf="usernameNotUnique"
-  [isSpoken]="usernameNotUnique"
->
+<dialogue-turn *ngIf="usernameNotUnique" [isSpoken]="usernameNotUnique">
   <p>
     <play-text-audio
       key="personal.create-account.username-not-unique"
@@ -181,10 +169,7 @@
     {{ 'personal.create-account.username-not-unique' | translate }}
   </p>
 </dialogue-turn>
-<dialogue-turn
-  *ngIf="isDisabled"
-  [isSpoken]="isDisabled"
->
+<dialogue-turn *ngIf="isDisabled" [isSpoken]="isDisabled">
   <p>
     <play-text-audio
       key="personal.create-account.conclusion"

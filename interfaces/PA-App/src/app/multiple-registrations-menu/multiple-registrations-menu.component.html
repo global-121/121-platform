@@ -1,8 +1,5 @@
 <ion-content>
-  <ion-list
-    lines="full"
-    class="ion-no-padding"
-  >
+  <ion-list lines="full" class="ion-no-padding">
     <ion-item>
       <ion-label
         >{{ 'multiple-registration-mode.toggle' | translate }}
@@ -12,11 +9,7 @@
         (ngModelChange)="storeMode()"
       ></ion-toggle>
     </ion-item>
-    <ion-button
-      type="button"
-      (click)="close()"
-      expand="block"
-    >
+    <ion-button type="button" (click)="close()" expand="block">
       <ion-icon
         name="close"
         size="small"

@@ -12,23 +12,25 @@ describe('SetNotificationNumberComponent', () => {
   let component: SetNotificationNumberComponent;
   let fixture: ComponentFixture<SetNotificationNumberComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [SetNotificationNumberComponent],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: PaDataService,
-          useValue: MockPaDataService,
-        },
-        {
-          provide: ConversationService,
-          useValue: MockConversationService,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [SetNotificationNumberComponent],
+        imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: PaDataService,
+            useValue: MockPaDataService,
+          },
+          {
+            provide: ConversationService,
+            useValue: MockConversationService,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SetNotificationNumberComponent);
