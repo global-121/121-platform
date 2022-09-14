@@ -2,9 +2,9 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { arrayToCsv } from '../../shared/array-to-csv';
-import { arrayToXlsx } from '../../shared/array-to-xlsx';
-import { stringToXml } from '../../shared/string-to-xml';
+import { downloadAsCsv } from '../../shared/array-to-csv';
+import { arrayToXlsx as downloadAsXlsx } from '../../shared/array-to-xlsx';
+import { downloadAsXml } from '../../shared/string-to-xml';
 import { ExportFileType } from './../../../../../../services/121-service/src/payments/dto/fsp-instructions.dto';
 
 @Component({
@@ -72,15 +72,18 @@ export class ExportFspInstructionsComponent implements OnChanges {
             );
             return;
           }
+          const exportFileName = `payment#${this.payment}-fsp-instructions`;
+
           if (res.fileType === ExportFileType.csv) {
-            arrayToCsv(res.data, `payment#${this.payment}-fsp-instructions`);
+            downloadAsCsv(res.data, exportFileName);
           }
           if (res.fileType === ExportFileType.excel) {
-            arrayToXlsx(res.data, `payment#${this.payment}-fsp-instructions`);
+            downloadAsXlsx(res.data, exportFileName);
           }
           if (res.fileType === ExportFileType.xml) {
-            stringToXml(res.data, `payment#${this.payment}-fsp-instructions`);
+            downloadAsXml(res.data, exportFileName);
           }
+
           this.updateSubHeader();
         },
         (err) => {

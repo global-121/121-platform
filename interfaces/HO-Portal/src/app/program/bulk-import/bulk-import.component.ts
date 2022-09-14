@@ -8,7 +8,7 @@ import { PaStatus } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { FilePickerProps } from 'src/app/shared/file-picker-prompt/file-picker-prompt.component';
 import { environment } from 'src/environments/environment';
-import { arrayToCsv } from '../../shared/array-to-csv';
+import { downloadAsCsv } from '../../shared/array-to-csv';
 
 export class AggregateImportResult {
   countImported: number;
@@ -94,7 +94,7 @@ export class BulkImportComponent implements OnInit {
 
   public exportCSV(importResponse: any[]) {
     const filename = 'import-people-affected-response';
-    arrayToCsv(importResponse, filename);
+    downloadAsCsv(importResponse, filename);
   }
 
   public importPeopleAffected(event: { file: File }, destination: PaStatus) {

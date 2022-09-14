@@ -1,14 +1,10 @@
+import { saveAs } from 'file-saver';
 
-export function stringToXml(xmltext: string, filename: string): void {
-  const pom = document.createElement('a');
-  const bb = new Blob([xmltext], { type: 'text/plain' });
+export function downloadAsXml(xmlText: string, filename: string): void {
 
-  pom.setAttribute('href', window.URL.createObjectURL(bb));
-  pom.setAttribute('download', filename);
-
-  pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
-  pom.draggable = true;
-  pom.classList.add('dragout');
-
-  pom.click();
+  saveAs(
+    new Blob([xmlText], { type: 'application/xml' }),
+    `${filename}-${new Date().toISOString().substring(0, 10)}.xml`,
+  );
 }
+
