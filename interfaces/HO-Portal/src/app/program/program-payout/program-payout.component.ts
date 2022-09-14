@@ -288,11 +288,10 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private checkFspWithExportFileIntegration(
-
     fsps: Program['financialServiceProviders'],
   ): boolean {
     for (const fsp of fsps || []) {
-      if (fsp && (fsp.integrationType === FspIntegrationType.csv || fsp.integrationType === FspIntegrationType.xml )) {
+      if (fsp && [FspIntegrationType.csv, FspIntegrationType.xml].includes(fsp.integrationType)) {
         return true;
       }
     }
