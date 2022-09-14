@@ -4,23 +4,17 @@ import { ProgramEntity } from '../../../programs/program.entity';
 import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
 import { TransactionsModule } from '../../transactions/transactions.module';
-import { VodacashRequestEntity } from './vodacash.request.entity';
-import { VodacashApiService } from './vodacash.api.service';
 import { VodacashService } from './vodacash.service';
 
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([
-      UserEntity,
-      ProgramEntity,
-      VodacashRequestEntity,
-    ]),
+    TypeOrmModule.forFeature([UserEntity, ProgramEntity]),
     UserModule,
     TransactionsModule,
   ],
-  providers: [VodacashService, VodacashApiService],
+  providers: [VodacashService],
   controllers: [],
-  exports: [VodacashService, VodacashApiService],
+  exports: [VodacashService],
 })
 export class VodacashModule {}
