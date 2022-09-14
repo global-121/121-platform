@@ -4,8 +4,9 @@
 ></app-refresh-data>
 
 <div class="chart-container">
-
-  <tooltip [value]="'page.program.metrics.over-time.tooltip'|translate"></tooltip>
+  <tooltip
+    [value]="'page.program.metrics.over-time.tooltip' | translate"
+  ></tooltip>
   <ngx-charts-bar-vertical-stacked
     [scheme]="'ocean'"
     [results]="chartData"
@@ -16,10 +17,9 @@
     [legendTitle]="''"
     [legendPosition]="'bottom'"
     [showXAxisLabel]="true"
-    [xAxisLabel]="'page.program.metrics.over-time.payment-label'|translate"
+    [xAxisLabel]="'page.program.metrics.over-time.payment-label' | translate"
     [showYAxisLabel]="false"
     [showGridLines]="true"
     [showDataLabel]="false"
   ></ngx-charts-bar-vertical-stacked>
-
 </div>

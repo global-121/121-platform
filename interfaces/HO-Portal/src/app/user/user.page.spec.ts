@@ -11,16 +11,14 @@ describe('UserPage', () => {
   let component: UserPage;
   let fixture: ComponentFixture<UserPage>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [UserPage],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        imports: [FormsModule, TranslateModule.forRoot()],
-        providers: [provideMagicalMock(AuthService)],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [UserPage],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [FormsModule, TranslateModule.forRoot()],
+      providers: [provideMagicalMock(AuthService)],
+    }).compileComponents();
+  }));
 
   let mockAuthService: jasmine.SpyObj<any>;
 

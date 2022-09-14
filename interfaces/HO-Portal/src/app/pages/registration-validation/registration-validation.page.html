@@ -42,7 +42,10 @@
               [exportType]="enumExportType.selectedForValidation"
             ></app-export-list>
           </div>
-          <div class="ion-no-padding ion-margin-end" *ngIf="hasDuplicateAttributes">
+          <div
+            class="ion-no-padding ion-margin-end"
+            *ngIf="hasDuplicateAttributes"
+          >
             <app-export-list
               *appIfPermissions="[Permission.RegistrationPersonalEXPORT]"
               [programId]="programId"

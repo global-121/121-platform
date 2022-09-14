@@ -12,7 +12,11 @@
         [attr.title]="'common.cancel' | translate"
         [attr.aria-label]="'common.cancel' | translate"
       >
-        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -109,7 +113,10 @@
       </ng-container>
     </div>
   </section>
-  <section *ngIf="canViewPersonalData" class="ion-margin-vertical">
+  <section
+    *ngIf="canViewPersonalData"
+    class="ion-margin-vertical"
+  >
     <h4 class="text-bold">
       {{
         'page.program.program-people-affected.edit-person-affected-popup.note.section-title'
@@ -146,7 +153,10 @@
                 }
         }}
       </ion-note>
-      <div *ngIf="canUpdatePersonalData" class="ml-auto">
+      <div
+        *ngIf="canUpdatePersonalData"
+        class="ml-auto"
+      >
         <ion-button
           (click)="saveNote()"
           [disabled]="inProgress?.note || false"

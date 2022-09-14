@@ -16,7 +16,7 @@
   "personal": {
     "consent-question": {
       "agree": "Je suis d'accord",
-      "answer": "J'ai lu/écouté comment mes informations personnelles seront sauvegardées en toute sécurité. Je comprends qu'il est nécessaire d'envoyer mes informations personnelles pour recevoir un bon numérique. <br><br> Je comprends qui voit mes informations personnelles. <br><br> En appuyant sur <b>J'accepte</b>, je choisis de participer au programme d'aide. <br><br> En appuyant sur <b>Je ne suis pas d'accord</b>, je choisis de ne pas participer au programme d'aide.",
+      "answer": "J'ai lu/écouté comment mes informations personnelles seront sauvegardées en toute sécurité. Je comprends qu'il est nécessaire d'envoyer mes informations personnelles pour recevoir de l'aide. <br><br> Je comprends qui voit mes informations personnelles. <br><br> En appuyant sur <b>J'accepte</b>, je choisis de participer au programme d'aide. <br><br> En appuyant sur <b>Je ne suis pas d'accord</b>, je choisis de ne pas participer au programme d'aide.",
       "disagree": "Je ne suis pas d'accord ",
       "more-info-personal-information": "À propos des informations personnelles",
       "question": "Pour postuler à ce programme d'aide financière, il faut que vous acceptez la manière dont nous garderons vos informations personnelles. Veuillez lire ou écouter comment nous garderons vos donnés personnelles."

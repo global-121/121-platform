@@ -13,18 +13,18 @@
           name="mail"
           size="small"
           aria-hidden="true"
-          style="vertical-align: middle;"
+          style="vertical-align: middle"
         >
         </ion-icon>
         {{ titleMessageIcon }}
-        <br>
+        <br />
       </ng-container>
       <ng-container *ngIf="titleMoneyIcon && !titleError">
         <ion-icon
           name="cash"
           size="small"
           aria-hidden="true"
-          style="vertical-align: middle;"
+          style="vertical-align: middle"
         >
         </ion-icon>
         {{ titleMoneyIcon }}
@@ -33,10 +33,14 @@
     <ion-buttons slot="end">
       <ion-button
         (click)="closeModal()"
-        [attr.title]="'common.cancel'|translate"
-        [attr.aria-label]="'common.cancel'|translate"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
       >
-        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -46,12 +50,17 @@
   color="light"
   class="ion-padding"
 >
-  <div *ngIf="content" [innerHTML]="content">
-  </div>
+  <div
+    *ngIf="content"
+    [innerHTML]="content"
+  ></div>
   <div *ngIf="showRetryButton">
-    <br>
+    <br />
     <ion-button (click)="retryPayment()">
-      {{ 'page.program.program-people-affected.payment-status-popup.retry'|translate }}
+      {{
+        'page.program.program-people-affected.payment-status-popup.retry'
+          | translate
+      }}
     </ion-button>
     <ion-spinner
       *ngIf="isInProgress"
@@ -60,34 +69,60 @@
     ></ion-spinner>
   </div>
   <div *ngIf="content && voucherButtons">
-    <hr style="border-width: 1px 0 0 0 ">
+    <hr style="border-width: 1px 0 0 0" />
   </div>
   <div *ngIf="voucherButtons">
     <ion-button (click)="getBalance()">
-      {{ 'page.program.program-people-affected.payment-status-popup.get-balance'|translate }}
+      {{
+        'page.program.program-people-affected.payment-status-popup.get-balance'
+          | translate
+      }}
     </ion-button>
-    <br>
-    <ion-button *ngIf="imageUrl" [href]="imageUrl" [download]="titleMoneyIcon">
-      <ion-icon name="download" slot="start" aria-hidden="true"></ion-icon>
-      {{ 'page.program.program-people-affected.payment-status-popup.download-voucher'|translate }}
+    <br />
+    <ion-button
+      *ngIf="imageUrl"
+      [href]="imageUrl"
+      [download]="titleMoneyIcon"
+    >
+      <ion-icon
+        name="download"
+        slot="start"
+        aria-hidden="true"
+      ></ion-icon>
+      {{
+        'page.program.program-people-affected.payment-status-popup.download-voucher'
+          | translate
+      }}
     </ion-button>
-    <ion-button *ngIf="sanitizedIimageUrl" (click)="printVoucher()">
-      <ion-icon name="print" slot="start" aria-hidden="true"></ion-icon>
-      {{ 'page.program.program-people-affected.payment-status-popup.print-voucher'|translate }}
+    <ion-button
+      *ngIf="sanitizedIimageUrl"
+      (click)="printVoucher()"
+    >
+      <ion-icon
+        name="print"
+        slot="start"
+        aria-hidden="true"
+      ></ion-icon>
+      {{
+        'page.program.program-people-affected.payment-status-popup.print-voucher'
+          | translate
+      }}
     </ion-button>
   </div>
   <div *ngIf="sanitizedIimageUrl">
-    <iframe id="voucherIframe" [src]="sanitizedIimageUrl" style="width: 100%; height: 450px; border:0;"></iframe>
+    <iframe
+      id="voucherIframe"
+      [src]="sanitizedIimageUrl"
+      style="width: 100%; height: 450px; border: 0"
+    ></iframe>
   </div>
 
   <div *ngIf="titleSinglePayment">
-    <br>
+    <br />
     <ion-row class="ion-align-items-center">
-      <ion-item
-        class="ion-margin-end"
-      >
+      <ion-item class="ion-margin-end">
         <ion-label position="stacked">
-          {{ 'page.program.program-details.fixedTransferValue'|translate }}
+          {{ 'page.program.program-details.fixedTransferValue' | translate }}
         </ion-label>
         <ion-input
           type="number"

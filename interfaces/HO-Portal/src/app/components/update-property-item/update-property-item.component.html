@@ -3,9 +3,7 @@
   #updatePropertyForm="ngForm"
   (ngSubmit)="doUpdate()"
 >
-  <div
-    class="input-item update-property-item"
-  >
+  <div class="input-item update-property-item">
     <label class="input-item--label text-bold">
       {{ label }}
     </label>
@@ -45,7 +43,7 @@
             <ng-container *ngSwitchCase="'dropdown'">
               <ion-item class="ion-margin-bottom">
                 <ion-select
-                  style="max-width: 100%;"
+                  style="max-width: 100%"
                   ngDefaultControl
                   name="propertyInput"
                   [(ngModel)]="propertyModel"
@@ -56,19 +54,20 @@
                 >
                   <ion-select-option
                     *ngFor="let option of translatedOptions()"
-                    value="{{ option.option }}">
-                      {{ option.label }}
+                    value="{{ option.option }}"
+                  >
+                    {{ option.label }}
                   </ion-select-option>
                 </ion-select>
               </ion-item>
             </ng-container>
             <ng-container *ngSwitchCase="'boolean'">
               <ion-checkbox
-              ngDefaultControl
-              [(ngModel)]="propertyModel"
-              name="propertyInput"
-              [checked]="value"
-              class="ion-margin-top"
+                ngDefaultControl
+                [(ngModel)]="propertyModel"
+                name="propertyInput"
+                [checked]="value"
+                class="ion-margin-top"
               ></ion-checkbox>
             </ng-container>
             <ng-container *ngSwitchDefault>
@@ -86,33 +85,39 @@
         </ion-col>
       </ion-row>
       <ion-row class="ion-align-items-center">
-        <ion-col size="10" class="ion-no-padding">
+        <ion-col
+          size="10"
+          class="ion-no-padding"
+        >
           <ion-note
             *ngIf="explanation"
             class="ion-margin-bottom explanation"
           >
-          {{ explanation }}
-        </ion-note>
-      </ion-col>
-      <ion-col size="2" class="ion-no-padding">
-        <ng-container *ngIf="showSubmit">
-          <ion-button
-            *ngIf="!inProgress"
-            type="submit"
-            class="ion-margin-start ion-float-right text-bold ion-text-uppercase"
-            fill=clear
-            [disabled]="disableSaveButton()"
-          >
-          {{ 'common.save'|translate }}
-        </ion-button>
-        <ion-spinner
-          *ngIf="inProgress"
-          color="primary"
-          class="ion-margin-start ion-float-right"
-        ></ion-spinner>
-      </ng-container>
-    </ion-col>
-  </ion-row>
+            {{ explanation }}
+          </ion-note>
+        </ion-col>
+        <ion-col
+          size="2"
+          class="ion-no-padding"
+        >
+          <ng-container *ngIf="showSubmit">
+            <ion-button
+              *ngIf="!inProgress"
+              type="submit"
+              class="ion-margin-start ion-float-right text-bold ion-text-uppercase"
+              fill="clear"
+              [disabled]="disableSaveButton()"
+            >
+              {{ 'common.save' | translate }}
+            </ion-button>
+            <ion-spinner
+              *ngIf="inProgress"
+              color="primary"
+              class="ion-margin-start ion-float-right"
+            ></ion-spinner>
+          </ng-container>
+        </ion-col>
+      </ion-row>
+    </div>
   </div>
-</div>
 </form>

@@ -8,6 +8,7 @@ import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { CreateAccountComponent } from './create-account.component';
 
 describe('CreateAccountComponent', () => {
@@ -17,7 +18,11 @@ describe('CreateAccountComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CreateAccountComponent],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      imports: [
+        TranslateModule.forRoot(),
+        HttpClientTestingModule,
+        SharedModule,
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {

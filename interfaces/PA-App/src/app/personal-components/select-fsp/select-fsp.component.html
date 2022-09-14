@@ -10,8 +10,8 @@
   </dialogue-turn>
   <dialogue-turn
     actor="self"
-    *ngIf="fsps"
-    [isSpoken]="fsps"
+    *ngIf="!!fsps"
+    [isSpoken]="!!fsps"
   >
     <form (submit)="submitFsp()">
       <ion-radio-group
@@ -74,8 +74,8 @@
 
   <form *ngIf="questions?.length">
     <dialogue-turn
-      isConnected="true"
-      isSpoken="true"
+      [isConnected]="true"
+      [isSpoken]="true"
     >
       <p>
         <play-text-audio

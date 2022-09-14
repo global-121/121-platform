@@ -42,21 +42,19 @@ describe('MetricsStatesOverTimeComponent', () => {
 
   const fixtureProgram = apiProgramsMock.programs[0];
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [MetricsStatesOverTimeComponent, TestHostComponent],
-        imports: [
-          TranslateModule.forRoot(),
-          FormsModule,
-          SharedModule,
-          NoopAnimationsModule,
-        ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [provideMagicalMock(PastPaymentsService)],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [MetricsStatesOverTimeComponent, TestHostComponent],
+      imports: [
+        TranslateModule.forRoot(),
+        FormsModule,
+        SharedModule,
+        NoopAnimationsModule,
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [provideMagicalMock(PastPaymentsService)],
+    }).compileComponents();
+  }));
 
   let mockPastPaymentsService: jasmine.SpyObj<any>;
 

@@ -1,19 +1,20 @@
-
-<div class="metrics" [ngClass]="{ 'is-collapsed': isCollapsed }">
-
+<div
+  class="metrics"
+  [ngClass]="{ 'is-collapsed': isCollapsed }"
+>
   <table class="metrics--table">
     <thead>
       <th class="metrics--cell-icon">&nbsp;</th>
       <th class="metrics--cell-label ion-text-start">
-        {{ 'page.program.metrics.header.metric'|translate }}
+        {{ 'page.program.metrics.header.metric' | translate }}
       </th>
       <th class="metrics--cell-value ion-text-end">
-        {{ 'page.program.metrics.header.latest-value'|translate }}
+        {{ 'page.program.metrics.header.latest-value' | translate }}
       </th>
     </thead>
     <tbody>
       <ng-container *ngFor="let metric of metricList">
-        <tr [class]="(metric.group) ? 'metrics--group-' + metric.group : ''">
+        <tr [class]="metric.group ? 'metrics--group-' + metric.group : ''">
           <td class="metrics--cell-icon">
             <ion-icon
               *ngIf="metric.icon"
@@ -22,7 +23,7 @@
             ></ion-icon>
           </td>
           <td class="metrics--cell-label">
-            {{ metric.label|translate }}
+            {{ metric.label | translate }}
           </td>
           <td class="metrics--cell-value ion-text-end">
             {{ metric.value }}
@@ -32,10 +33,7 @@
     </tbody>
   </table>
 
-
-  <div
-    *ngIf="!isCollapsed"
-  >
+  <div *ngIf="!isCollapsed">
     <app-refresh-data
       [lastUpdated]="lastUpdated"
       (refresh)="update()"

@@ -10,14 +10,17 @@
           fill="clear"
           size="small"
         >
-          {{ 'header.dashboard'|translate }}
+          {{ 'header.dashboard' | translate }}
         </ion-button>
         <span
           *ngIf="rlaDashboard.isActive"
           class="navigation-button--indicator"
         ></span>
       </span>
-      <span *ngIf="showManageAidworkers" class="navigation-button">
+      <span
+        *ngIf="showManageAidworkers"
+        class="navigation-button"
+      >
         <ion-button
           [disabled]="!canManageAidWorkers()"
           [routerLink]="['/program', programId, 'aid-workers']"
@@ -27,7 +30,7 @@
           fill="clear"
           size="small"
         >
-          {{ 'header.aid-workers'|translate }}
+          {{ 'header.aid-workers' | translate }}
         </ion-button>
         <span
           *ngIf="rlaAidWorkers.isActive"
@@ -39,9 +42,7 @@
   <ion-row>
     <ion-col class="horizontal-scroll-container">
       <div class="ion-text-nowrap">
-        <app-phase-navigation
-          [programId]="programId"
-        ></app-phase-navigation>
+        <app-phase-navigation [programId]="programId"></app-phase-navigation>
       </div>
     </ion-col>
   </ion-row>

@@ -1,6 +1,6 @@
-<span style="display: inline-block;">
-  {{ 'user-state.logged-in-as'|translate }}:
-  <br>
+<span style="display: inline-block">
+  {{ 'user-state.logged-in-as' | translate }}:
+  <br />
   <a [routerLink]="['/user']">
     <ion-note class="ion-text-nowrap">{{ userName }}</ion-note>
   </a>
@@ -17,17 +17,25 @@
   title="Show all Permissions"
   aria-label="Show all Permissions"
 >
-  <ion-icon name="id-card" slot="icon-only" size="small" aria-hidden="true"></ion-icon>
+  <ion-icon
+    name="id-card"
+    slot="icon-only"
+    size="small"
+    aria-hidden="true"
+  ></ion-icon>
 </ion-button>
 
 <ion-button
   type="button"
-  [title]="'user-state.log-out'|translate"
-  [attr.aria-label]="'user-state.log-out'|translate"
+  [title]="'user-state.log-out' | translate"
+  [attr.aria-label]="'user-state.log-out' | translate"
   size="small"
   fill="clear"
   (click)="doLogout()"
 >
-  <span class="ion-hide-sm-down">{{ 'user-state.log-out'|translate }}</span>
-  <ion-icon name="log-out" slot="end"></ion-icon>
+  <span class="ion-hide-sm-down">{{ 'user-state.log-out' | translate }}</span>
+  <ion-icon
+    name="log-out"
+    slot="end"
+  ></ion-icon>
 </ion-button>

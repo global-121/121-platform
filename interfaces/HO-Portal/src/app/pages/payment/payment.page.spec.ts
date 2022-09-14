@@ -11,19 +11,17 @@ describe('PaymentPage', () => {
   let component: PaymentPage;
   let fixture: ComponentFixture<PaymentPage>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [PaymentPage],
-        imports: [TranslateModule.forRoot(), RouterTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          provideMagicalMock(ProgramsServiceApiService),
-          provideMagicalMock(AuthService),
-        ],
-      }).compileComponents();
-    }),
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [PaymentPage],
+      imports: [TranslateModule.forRoot(), RouterTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        provideMagicalMock(ProgramsServiceApiService),
+        provideMagicalMock(AuthService),
+      ],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PaymentPage);

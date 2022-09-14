@@ -28,7 +28,7 @@ describe('TranslatableStringService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return " empty string" value for "invalid" input', () => {
+  it('should return "empty string" value for "invalid" input', () => {
     expect(service.get(undefined)).toBe('');
     expect(service.get(null)).toBe('');
   });

@@ -5,11 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.51.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.54.0...master)
 
-- Upgraded node version of the 121-service to node 14
 
 ---
+## [1.54.0](https://github.com/global-121/121-platform/compare/v1.53.1...v1.54.0) - 2022-09-13
+
+### Changed
+- Updated program questions DRC based on feedback
+
+## [1.53.1](https://github.com/global-121/121-platform/compare/v1.53.0...v1.53.1) - 2022-09-08
+
+### Fixed
+- Program question option in for DRC are now set to French (these commits were forgotten in v1.53.0)
+
+## [1.53.0](https://github.com/global-121/121-platform/compare/v1.52.1...v1.53.0) - 2022-09-08
+
+### Fixed
+- Program question option in for DRC are now set to French
+- Fix Swagger url test vm
+- Fix icons
+
+## [1.52.1](https://github.com/global-121/121-platform/compare/v1.52.0...v1.52.1) - 2022-09-06
+
+### Fixed
+- 2022-09-06: Swagger-UI now uses external URL for requests
+
+## [1.52.0](https://github.com/global-121/121-platform/compare/v1.51.0...v1.52.0) - 2022-08-24
+
+### Changed
+
+- 2022-09-01: Upgraded Node version of the 121-service to v14 LTS
+- 2022-09-01: Upgraded NestJS version of the 121-service to v7
 
 ## [1.51.0](https://github.com/global-121/121-platform/compare/v1.50.0...v1.51.0) - 2022-08-24
 

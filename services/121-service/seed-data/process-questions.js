@@ -43,11 +43,11 @@ function getOptions(answerType, row) {
       if (key.includes('Answer options') && row[key]) {
         const optionString = row[key];
         const option = {
-          option: stringToLetterString(optionString),
-          option: optionString,
+          // option: stringToLetterString(optionString),
+          option: optionString === '' ? 'NA' : optionString,
           label: {
             en: optionString,
-            fr: optionString,
+            // fr: optionString,
           },
         };
         options.push(option);
@@ -61,15 +61,16 @@ function getOptions(answerType, row) {
 
 function rowToQuestion(row) {
   const answerType = row['Question type'].toLowerCase();
-  const name = row['Key']
-    ? row['Key']
-    : stringToLetterString(row['Question text']);
+  // const name = row['Key']
+  //   ? row['Key']
+  //   : stringToLetterString(row['Question text']);
+  row['Question text'];
+
   const question = {
-    // name: name,
     name: row['French (original text)'],
     label: {
       en: row['Question text'],
-      fr: row['French (original text)'],
+      // fr: row['French (original text)'],
     },
     answerType: answerType,
     questionType: 'standard',
