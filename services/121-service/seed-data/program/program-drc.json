@@ -451,6 +451,129 @@
       }
     },
     {
+      "name": "3. 6. Au sein de votre ménage, y a-t-il quelqu’un qui a déjà été victime des violences sexuelles ?        ",
+      "label": {
+        "en": "C.9. In your household, is there anyone who has already been the victim of sexual violence?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "Yes",
+          "label": {
+            "en": "Yes"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "C.9. In your household, is there anyone who has already been the victim of sexual violence?"
+      }
+    },
+    {
+      "name": "3. 6. a. Si oui, Veuillez insérer un commentaire  ",
+      "label": {
+        "en": "C.10 If yes, please insert a comment"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "C.10. If yes, please insert a comment"
+      }
+    },
+    {
+      "name": "3. 7.  Au sein de votre ménage, y a-t-il des personnes de 3è âge ayant des besoins spécifiques ?",
+      "label": {
+        "en": "C.11. In your household, are there senior citizens with specific needs?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "Yes",
+          "label": {
+            "en": "Yes"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "C.11. In your household, are there senior citizens with specific needs?"
+      }
+    },
+    {
+      "name": "3. 7. a. Si oui, Veuillez insérer un commentaire ",
+      "label": {
+        "en": "C.12. If yes, please insert a comment"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "C.12. If yes, please insert a comment"
+      }
+    },
+    {
+      "name": "3. 7. b. Si « Oui », combien ? ",
+      "label": {
+        "en": "C.13. If yes how much ?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "C.13. If yes how much ?"
+      }
+    },
+    {
+      "name": "3.11.1. Etes-vous déjà enregistré sur les services d’argent mobile (Airtel money, m-Pesa, Orange money) ? ",
+      "label": {
+        "en": "C.14. Have you ever registered for mobile money services (Airtel money, m-Pesa, Orange money)?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "Yes",
+          "label": {
+            "en": "Yes"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "C.14. Have you ever registered for mobile money services (Airtel money, m-Pesa, Orange money)?"
+      }
+    },
+    {
       "name": "D. 1. Etes-vous ?       ",
       "label": {
         "en": "D.1. What is your household's situation?"
@@ -499,11 +622,26 @@
     {
       "name": "D. 4. Envisagez-vous de rentrer dans les 6 prochains mois ? ",
       "label": {
-        "en": "D.2. If you are displaced or returnee"
+        "en": "D.2. If you are displaced or returnee do you plan to return in the next 6 months?"
       },
-      "answerType": " do you plan to return in the next 6 months?",
+      "answerType": "dropdown",
       "questionType": "standard",
-      "options": null,
+      "options": [
+        {
+          "option": "Oui",
+          "label": {
+            "en": "Yes",
+            "fr": "Oui"
+          }
+        },
+        {
+          "option": "Non",
+          "label": {
+            "en": "No",
+            "fr": "Non"
+          }
+        }
+      ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
