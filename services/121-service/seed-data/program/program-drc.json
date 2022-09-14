@@ -46,7 +46,7 @@
     {
       "name": "A. 2. Territoire :  ",
       "label": {
-        "en": "A.2. Territory"
+        "en": "A.1. Territory"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -67,43 +67,35 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "A.2. Territory"
+        "en": "A.1. Territory"
       }
     },
     {
       "name": " A. 5. Village/Quartier :  ",
       "label": {
-        "en": "A.5. Village/Neighborhood"
+        "en": "A.2. Village/Neighborhood"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "A.5. Village/Neighborhood"
+        "en": "A.2. Village/Neighborhood"
       }
     },
     {
       "name": "B. 0. 1. Etes-vous le chef de ménage ?",
       "label": {
-        "en": "B.0.1. Are you the head of household?"
+        "en": "B.1. Are you the head of household?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -124,85 +116,69 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.0.1. Are you the head of household?"
+        "en": "B.1. Are you the head of household?"
       }
     },
     {
       "name": "B. 1. Quel est votre nom ? ",
       "label": {
-        "en": "B.1. What is your name?"
+        "en": "B.2. What is your name?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.1. What is your name?"
+        "en": "B.2. What is your name?"
       }
     },
     {
       "name": "B. 2. Quel est votre post-nom ? ",
       "label": {
-        "en": "B.2. What is your middle name?"
+        "en": "B.3. What is your middle name?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.2. What is your middle name?"
+        "en": "B.3. What is your middle name?"
       }
     },
     {
       "name": "B. 3. Quel est votre prénom ?",
       "label": {
-        "en": "B.3. What is your first name?"
+        "en": "B.4. What is your first name?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.3. What is your first name?"
+        "en": "B.4. What is your first name?"
       }
     },
     {
       "name": "B. 4. Sexe ",
       "label": {
-        "en": "B.4. What is your gender?"
+        "en": "B.5. What is your gender?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -223,106 +199,86 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.4. What is your gender?"
+        "en": "B.5. What is your gender?"
       }
     },
     {
       "name": "B. 5. Quel est vôtre âge ?  ou tout simplement quelle année de votre naissance ? ",
       "label": {
-        "en": "B.5. What is your birth year?"
+        "en": "B.6. What is your birth year?"
       },
       "answerType": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.5. What is your birth year?"
+        "en": "B.6. What is your birth year?"
       }
     },
     {
       "name": "B. 7. Nom conjoint/Délégué en cas de votre absence ? ",
       "label": {
-        "en": "B.7. In case of your absence: name of your spouse/delegate?"
+        "en": "B.8. In case of your absence: name of your spouse/delegate?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.7. In case of your absence: name of your spouse/delegate?"
+        "en": "B.8. In case of your absence: name of your spouse/delegate?"
       }
     },
     {
       "name": "B. 8. Post-nom/ Délégué en cas de votre absence ?",
       "label": {
-        "en": "B.8. In case of your absence: middle name of your spouse/delegate?"
+        "en": "B.9. In case of your absence: middle name of your spouse/delegate?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.8. In case of your absence: middle name of your spouse/delegate?"
+        "en": "B.9. In case of your absence: middle name of your spouse/delegate?"
       }
     },
     {
       "name": "B. 9. Prénom ? ",
       "label": {
-        "en": "B.9. In case of your absence: first name of your spouse/delegate?"
+        "en": "B.10. In case of your absence: first name of your spouse/delegate?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.9. In case of your absence: first name of your spouse/delegate?"
+        "en": "B.10. In case of your absence: first name of your spouse/delegate?"
       }
     },
     {
       "name": " B. 10. Sexe du conjoint/ Délégué en cas de votre absence ? ",
       "label": {
-        "en": "B.10. In case of your absence: gender of your spouse/delegate?"
+        "en": "B.11. In case of your absence: gender of your spouse/delegate?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -350,16 +306,12 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.10. In case of your absence: gender of your spouse/delegate?"
+        "en": "B.11. In case of your absence: gender of your spouse/delegate?"
       }
     },
     {
@@ -371,11 +323,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -392,11 +340,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -413,11 +357,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -434,11 +374,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -455,11 +391,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -476,11 +408,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -497,11 +425,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -518,11 +442,7 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -568,11 +488,7 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -583,28 +499,24 @@
     {
       "name": "D. 4. Envisagez-vous de rentrer dans les 6 prochains mois ? ",
       "label": {
-        "en": "D.4. If you are displaced or returnee"
+        "en": "D.2. If you are displaced or returnee"
       },
       "answerType": " do you plan to return in the next 6 months?",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "D.4. If you are displaced or returnee"
+        "en": "D.2. If you are displaced or returnee"
       }
     },
     {
       "name": "3. 1.  Le responsable du ménage est-il ? ",
       "label": {
-        "en": "3.1. What is the marital situation of the head of your household?"
+        "en": "E.1. What is the marital situation of the head of your household?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -653,22 +565,18 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "3.1. What is the marital situation of the head of your household?"
+        "en": "E.1. What is the marital situation of the head of your household?"
       }
     },
     {
       "name": "3. 2. Autres caractéristiques du chef de ménage ?",
       "label": {
-        "en": "3.2. What are special characteristics of the head of your household (if any)?"
+        "en": "E.2. What are special characteristics of the head of your household (if any)?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -717,22 +625,18 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "3.2. What are special characteristics of the head of your household (if any)?"
+        "en": "E.2. What are special characteristics of the head of your household (if any)?"
       }
     },
     {
       "name": " 3. 4.2. Veuillez préciser si le chef de ménage est dans l’incapacité de travailler ?",
       "label": {
-        "en": "3.4.2. Is the head of the household UNable to work?"
+        "en": "E.3. Is the head of the household UNable to work?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -753,43 +657,35 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "3.4.2. Is the head of the household UNable to work?"
+        "en": "E.3. Is the head of the household UNable to work?"
       }
     },
     {
       "name": " 3. 10. 2. Poursuit (vent) –il(s) un traitement au centre de santé ?             ",
       "label": {
-        "en": "3.10.2. If there are malnourished children in your household"
+        "en": "E.4. If there are malnourished children in your household"
       },
       "answerType": " are you pursuing (wind) treatment at the health center?",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "3.10.2. If there are malnourished children in your household"
+        "en": "E.4. If there are malnourished children in your household"
       }
     },
     {
       "name": "3.12. Seriez-vous à l’aise avec le transfert d’argent mobile au cas où cela serait une de modalités d’assistance adoptée ? ",
       "label": {
-        "en": "3.12. Would you be comfortable with mobile money transfer if this is one of the support modalities adopted?"
+        "en": "E.5. Would you be comfortable with mobile money transfer if this is one of the support modalities adopted?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -810,53 +706,41 @@
         }
       ],
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "3.12. Would you be comfortable with mobile money transfer if this is one of the support modalities adopted?"
+        "en": "E.5. Would you be comfortable with mobile money transfer if this is one of the support modalities adopted?"
       }
     },
     {
       "name": "_GPS_latitude",
       "label": {
-        "en": "3.15.1 What is the latitude of your household?"
+        "en": "F.1. What is the latitude of your household?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "3.15.1 Latitude"
+        "en": "F.1. Latitude"
       }
     },
     {
       "name": "_GPS_longitude",
       "label": {
-        "en": "3.15.2 What is the longitude of your household?"
+        "en": "F.2. What is the longitude of your household?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
@@ -867,43 +751,35 @@
     {
       "name": "_GPS_altitude",
       "label": {
-        "en": "3.15.3 What is the altitude of your household?"
+        "en": "F.3. What is the altitude of your household?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "3.15.3 Altitude"
+        "en": "F.3. Altitude"
       }
     },
     {
       "name": "_GPS_precision",
       "label": {
-        "en": "3.15.3 What is the GPS precision?"
+        "en": "F.4. What is the GPS precision?"
       },
       "answerType": "text",
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "3.15.3 Precision"
+        "en": "F.4. Precision"
       }
     }
   ],
