@@ -1,0 +1,5 @@
+<Customer>
+  <Identifier IdentifierType="MSISDN" IdentifierValue=""></Identifier>
+  <KYCValidation FieldType="" FieldValue=""></KYCValidation>
+  <Amount Value=""></Amount>
+</Customer>

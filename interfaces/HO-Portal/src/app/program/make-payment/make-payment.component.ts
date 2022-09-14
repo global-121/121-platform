@@ -119,6 +119,13 @@ export class MakePaymentComponent implements OnInit {
           nrPa: `<strong>${nrPa}</strong>`,
         },
       );
+    } else if (this.fspIntegrationType === FspIntegrationType.xml) {
+      message += this.translate.instant(
+        'page.program.program-payout.result.xml',
+        {
+          nrPa: `<strong>${nrPa}</strong>`,
+        },
+      );
     }
     return message;
   }

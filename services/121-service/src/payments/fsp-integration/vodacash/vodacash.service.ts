@@ -13,7 +13,10 @@ import { VodacashApiService } from './vodacash.api.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { VodacashTransferPayload } from './vodacash-transfer-payload.dto';
 import { VodacashRequestEntity } from './vodacash.request.entity';
-import { VodacashPaymentStatusDto } from './dto/vodacash-payment-status.dto';
+import { RegistrationEntity } from '../../../registration/registration.entity';
+import { TransactionEntity } from '../../transactions/transaction.entity';
+import fs from 'fs';
+import * as convert from 'xml-js';
 
 @Injectable()
 export class VodacashService {
@@ -24,7 +27,7 @@ export class VodacashService {
 
   public constructor(
     private readonly vodacashApiService: VodacashApiService,
-    private readonly transactionsService: TransactionsService,
+    private readonly transactionsService: TransactionsService, // private readonly xmlService: XmLService,
   ) {}
 
   public async sendPayment(
@@ -33,7 +36,6 @@ export class VodacashService {
     paymentNr: number,
     amount: number,
   ): Promise<FspTransactionResultDto> {
-    console.log('VODACASH PAYMENT');
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.vodacash;
@@ -122,50 +124,70 @@ export class VodacashService {
     return paTransactionResult;
   }
 
-  public async processTransactionStatus(
-    vodacashCallbackData: VodacashPaymentStatusDto,
-  ): Promise<void> {
-    const vodacashRequest = await this.vodacashRequestRepository.save(
-      vodacashCallbackData,
+  public async getFspInstructions(
+    registration: RegistrationEntity,
+    transaction: TransactionEntity,
+    vodacashInstructionsXml: string,
+  ): Promise<any> {
+    const locationBaseXml =
+      './src/payments/fsp-integration/vodacash/xml/vodacash-base.xml';
+    const locationCustomerXml =
+      './src/payments/fsp-integration/vodacash/xml/vodacash-customer.xml';
+
+    let vodacashInstructions;
+    if (!vodacashInstructionsXml) {
+      vodacashInstructions = await this.readXmlAsJs(locationBaseXml);
+      vodacashInstructions.elements[0]['elements'] = [];
+    } else {
+      console.log('else: ');
+      vodacashInstructions = convert.xml2js(vodacashInstructionsXml);
+    }
+
+    const vodcashInstructionCustomer = (
+      await this.readXmlAsJs(locationCustomerXml)
+    ).elements[0];
+
+    const phonenumber = registration.phoneNumber;
+    const drcCountrycode = '243';
+    if (phonenumber.startsWith(drcCountrycode)) {
+      const vodcashFormatPhonenumber = phonenumber.replace(drcCountrycode, '0');
+      this.setValue(
+        vodcashInstructionCustomer,
+        'Identifier',
+        'IdentifierValue',
+        vodcashFormatPhonenumber,
+      );
+    }
+
+    const amount = transaction.amount;
+    this.setValue(
+      vodcashInstructionCustomer,
+      'Amount',
+      'Value',
+      String(amount),
     );
+    vodacashInstructions.elements[0].elements.push(vodcashInstructionCustomer);
+    vodacashInstructionsXml = convert.js2xml(vodacashInstructions, {
+      compact: false,
+      spaces: 4,
+    });
+    return vodacashInstructionsXml;
+  }
 
-    const successStatuses = ['PROCESSED'];
-    const errorStatuses = ['CANCELED', 'EXPIRED', 'DENIED', 'FAILED'];
+  public async readXmlAsJs(path: string): Promise<any> {
+    const xml = fs.readFileSync(path, 'utf-8');
+    return convert.xml2js(xml);
+  }
 
-    if (
-      [...successStatuses, ...errorStatuses].includes(vodacashRequest.status)
-    ) {
-      // Unclear as of yet when which attribute is returned, but we pass equal values to both attributes
-      const matchingString =
-        vodacashRequest.referenceid || vodacashRequest.tracenumber;
-
-      if (matchingString) {
-        const referenceId = matchingString
-          .split('_')[0]
-          .replace('referenceId-', '');
-        const programId = Number(
-          matchingString.split('_')[1].replace('program-', ''),
-        );
-        const payment = Number(
-          matchingString.split('_')[2].replace('payment-', ''),
-        );
-
-        const paTransactionResult = new PaTransactionResultDto();
-        paTransactionResult.fspName = FspName.vodacash;
-        paTransactionResult.referenceId = referenceId;
-        paTransactionResult.status = successStatuses.includes(
-          vodacashRequest.status,
-        )
-          ? StatusEnum.success
-          : StatusEnum.error;
-        paTransactionResult.message = vodacashRequest.status;
-        paTransactionResult.calculatedAmount = Number(vodacashRequest.amount);
-
-        this.transactionsService.storeTransaction(
-          paTransactionResult,
-          programId,
-          payment,
-        );
+  public setValue(
+    xml,
+    elementName: string,
+    attributeName: string,
+    value: string,
+  ): any {
+    for (const el of xml.elements) {
+      if (el.name === elementName) {
+        el.attributes[attributeName] = value;
       }
     }
   }

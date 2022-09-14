@@ -45,7 +45,7 @@
     ></app-export-list>
 
     <app-export-fsp-instructions
-      *ngIf="hasFspWithCsvIntegration && canMakeFspInstructions"
+      *ngIf="hasFspWithExportFileIntegration && canMakeFspInstructions"
       [programId]="programId"
       [payment]="exportPaymentId"
       [lastPaymentId]="lastPaymentId"

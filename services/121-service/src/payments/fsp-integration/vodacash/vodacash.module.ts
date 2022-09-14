@@ -6,7 +6,6 @@ import { UserModule } from '../../../user/user.module';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { VodacashRequestEntity } from './vodacash.request.entity';
 import { VodacashApiService } from './vodacash.api.service';
-import { VodacashController } from './vodacash.controller';
 import { VodacashService } from './vodacash.service';
 
 @Module({
@@ -21,7 +20,7 @@ import { VodacashService } from './vodacash.service';
     TransactionsModule,
   ],
   providers: [VodacashService, VodacashApiService],
-  controllers: [VodacashController],
+  controllers: [],
   exports: [VodacashService, VodacashApiService],
 })
 export class VodacashModule {}
