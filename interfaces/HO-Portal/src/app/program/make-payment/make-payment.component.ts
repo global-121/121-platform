@@ -103,30 +103,33 @@ export class MakePaymentComponent implements OnInit {
       this.program.financialServiceProviders[0].integrationType;
   }
 
-  private getPaymentResultText(nrPa: number) {
+  private getPaymentResultText(nrPa: number): string {
     let message = '';
-    if (this.fspIntegrationType === FspIntegrationType.api) {
-      message += this.translate.instant(
-        'page.program.program-payout.result.api',
-        {
-          nrPa: `<strong>${nrPa}</strong>`,
-        },
-      );
-    } else if (this.fspIntegrationType === FspIntegrationType.csv) {
-      message += this.translate.instant(
-        'page.program.program-payout.result.csv',
-        {
-          nrPa: `<strong>${nrPa}</strong>`,
-        },
-      );
-    } else if (this.fspIntegrationType === FspIntegrationType.xml) {
-      message += this.translate.instant(
-        'page.program.program-payout.result.xml',
-        {
-          nrPa: `<strong>${nrPa}</strong>`,
-        },
-      );
+
+    switch (this.fspIntegrationType) {
+      case FspIntegrationType.xml:
+        message += this.translate.instant(
+          'page.program.program-payout.result.xml',
+          { nrPa: `<strong>${nrPa}</strong>` },
+        );
+        break;
+
+      case FspIntegrationType.csv:
+        message += this.translate.instant(
+          'page.program.program-payout.result.csv',
+          { nrPa: `<strong>${nrPa}</strong>` },
+        );
+        break;
+
+      case FspIntegrationType.api:
+      default:
+        message += this.translate.instant(
+          'page.program.program-payout.result.api',
+          { nrPa: `<strong>${nrPa}</strong>` },
+        );
+        break;
     }
+
     return message;
   }
 
