@@ -139,7 +139,6 @@ export class VodacashService {
       vodacashInstructions = await this.readXmlAsJs(locationBaseXml);
       vodacashInstructions.elements[0]['elements'] = [];
     } else {
-      console.log('else: ');
       vodacashInstructions = convert.xml2js(vodacashInstructionsXml);
     }
 
