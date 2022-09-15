@@ -48,24 +48,21 @@ export class SeedDemoMultipleProgram implements InterfaceScript {
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instancePilotNLLVV);
 
+    // Seeding NLRC-PV and LVV together does not work yet until we implement many to many program - programQuestions
     // // *******************
     // // ***** NLRC-PV *****
 
     // // *******************
-    // console.log('NLRC-PV : ');
     // // ***** CREATE PROGRAM *****
     // const programEntityNLPV = await this.seedHelper.addProgram(
     //   programPilotNLPV,
     // );
-    // console.log('programEntityNLPV: ');
 
     // // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     // this.seedHelper.addDefaultUsers(programEntityNLPV, false);
-    // console.log('addDefaultUsers: ');
 
     // // ***** CREATE INSTANCE *****
     // await this.seedHelper.addInstance(instancePilotNLPV);
-    // console.log('addInstance: ');
 
     // *******************
     // ***** NLRC-PV *****
