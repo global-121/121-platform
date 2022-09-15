@@ -121,7 +121,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.1. Are you the head of household?"
+        "en": "B.1. Household head?"
       }
     },
     {
@@ -138,7 +138,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.2. What is your name?"
+        "en": "B.2. Name"
       }
     },
     {
@@ -155,7 +155,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.3. What is your middle name?"
+        "en": "B.3. Middle name"
       }
     },
     {
@@ -172,7 +172,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.4. What is your first name?"
+        "en": "B.4. First name"
       }
     },
     {
@@ -204,7 +204,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.5. What is your gender?"
+        "en": "B.5. Gender"
       }
     },
     {
@@ -221,7 +221,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.6. What is your birth year?"
+        "en": "B.6. Birth year"
       }
     },
     {
@@ -238,7 +238,7 @@
       "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Voter card nr"
+        "en": "B.7. Voter card nr"
       }
     },
     {
@@ -255,7 +255,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.8. In case of your absence: name of your spouse/delegate?"
+        "en": "B.8. Spouse name"
       }
     },
     {
@@ -272,7 +272,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.9. In case of your absence: middle name of your spouse/delegate?"
+        "en": "B.9. Spouse middle name"
       }
     },
     {
@@ -289,7 +289,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.10. In case of your absence: first name of your spouse/delegate?"
+        "en": "B.10. Spouse first name"
       }
     },
     {
@@ -328,7 +328,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.11. In case of your absence: gender of your spouse/delegate?"
+        "en": "B.11. Spouse gender"
       }
     },
     {
@@ -345,7 +345,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.1. How many male(s) over 18 live in your household?"
+        "en": "C.1. # men"
       }
     },
     {
@@ -362,7 +362,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.2. How many boy(s) in the age group between 10 and 17 live in your household?"
+        "en": "C.2. # male 10-17"
       }
     },
     {
@@ -379,7 +379,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.3. How many boy(s) in the age group between 5 and 9 years old live in your household?"
+        "en": "C.3. # male 5-9"
       }
     },
     {
@@ -396,7 +396,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.4. How many boy(s) in the age group between 0 and 5 years old live in your household?"
+        "en": "C.4. # male 0-5"
       }
     },
     {
@@ -413,7 +413,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.5. How many women over 18 live in your household?"
+        "en": "C.5. # women"
       }
     },
     {
@@ -430,7 +430,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.6. How many girl(s) in the age group between 10 and 17 live in your household?"
+        "en": "C.6. # female 10-17"
       }
     },
     {
@@ -447,7 +447,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.7. How many girl(s) in the age group between 6 and 11 live in your household?"
+        "en": "C.7. # female 6-11"
       }
     },
     {
@@ -464,7 +464,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.8. How many girl(s) in the age group between 0 and 5 years old live in your household?"
+        "en": "C.8. # 0-5"
       }
     },
     {
@@ -510,7 +510,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "D.1. What is your household's situation?"
+        "en": "D.1. Household situation?"
       }
     },
     {
@@ -527,7 +527,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "If you are displaced or returnee, which village are you from? (- if not applicable)"
+        "en": "D.2 Village"
       }
     },
     {
@@ -559,7 +559,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "D.3. If you are displaced or returnee"
+        "en": "D.3. Return planned?"
       }
     },
     {
@@ -607,7 +607,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Time living here"
+        "en": "D.4. Time living here"
       }
     },
     {
@@ -667,7 +667,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.1. What is the marital situation of the head of your household?"
+        "en": "E.1. Head marital situation"
       }
     },
     {
@@ -727,7 +727,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.2. What are special characteristics of the head of your household (if any)?"
+        "en": "E.2. Head special characteristics"
       }
     },
     {
@@ -744,7 +744,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "# pregnant women"
+        "en": "E.3. # Pregnant women"
       }
     },
     {
@@ -761,7 +761,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "# breastfeeding women"
+        "en": "E.4. # Breastfeeding women"
       }
     },
     {
@@ -778,7 +778,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "# of women with disability"
+        "en": "E.5. # Women with disability"
       }
     },
     {
@@ -795,7 +795,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "# of men with disability"
+        "en": "E.6. # Men with disability"
       }
     },
     {
@@ -812,7 +812,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "# girls with disability"
+        "en": "E.7. # Girls with disability"
       }
     },
     {
@@ -829,7 +829,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "# boys with disability"
+        "en": "E.8. # Boys with disability"
       }
     },
     {
@@ -871,7 +871,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "Types of disability"
+        "en": "E.9. Types of disability"
       }
     },
     {
@@ -903,7 +903,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.10. Is the head of the household UNable to work?"
+        "en": "E.10. Head UNable to work?"
       }
     },
     {
@@ -1023,7 +1023,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.11. In your household, are there cases of:"
+        "en": "E.11. Household cases"
       }
     },
     {
@@ -1055,7 +1055,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.12. In your household, is there anyone who has already been the victim of sexual violence?"
+        "en": "E.12. Sexual violence?"
       }
     },
     {
@@ -1072,7 +1072,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.13. If yes, please insert a comment"
+        "en": "E.13. Sexual violence comment"
       }
     },
     {
@@ -1104,7 +1104,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.14. In your household, are there senior citizens with specific needs?"
+        "en": "E.14. Seniors specific needs?"
       }
     },
     {
@@ -1121,7 +1121,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.15. If yes, please insert a comment"
+        "en": "E.15. Seniors specific needs comment"
       }
     },
     {
@@ -1138,7 +1138,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.16. If yes how much ?"
+        "en": "E.16. # Seniors specific needs"
       }
     },
     {
@@ -1155,7 +1155,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "# malnourished children"
+        "en": "# Malnourished children?"
       }
     },
     {
@@ -1172,7 +1172,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.18. If there are malnourished children in your household"
+        "en": "E.18. # Malnourished children"
       }
     },
     {
@@ -1204,7 +1204,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "F.1. Have you ever registered for mobile money services (Airtel money, m-Pesa, Orange money)?"
+        "en": "F.1. Registered mobile money?"
       }
     },
     {
@@ -1236,7 +1236,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "F.2. Would you be comfortable with mobile money transfer if this is one of the support modalities adopted?"
+        "en": "F.2. Comfortable mobile money?"
       }
     },
     {
@@ -1302,7 +1302,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "If not, why?"
+        "en": "No mobile money reason"
       }
     },
     {
