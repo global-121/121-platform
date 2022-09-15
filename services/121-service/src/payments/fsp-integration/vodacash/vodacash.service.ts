@@ -18,9 +18,6 @@ import * as convert from 'xml-js';
 
 @Injectable()
 export class VodacashService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
-
   public constructor(
     private readonly transactionsService: TransactionsService, // private readonly xmlService: XmLService,
   ) {}
@@ -35,17 +32,17 @@ export class VodacashService {
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.vodacash;
 
-    const program = await this.programRepository.findOne(programId);
-
     for (let payment of paymentList) {
       const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
 
-      const paTransactionResult = new PaTransactionResultDto();
-      paTransactionResult.fspName = FspName.vodacash;
-      paTransactionResult.referenceId = payment.referenceId;
-      paTransactionResult.date = new Date();
-      paTransactionResult.calculatedAmount = calculatedAmount;
-      paTransactionResult.status = StatusEnum.success;
+      const paTransactionResult = {
+        fspName: FspName.vodacash,
+        referenceId: payment.referenceId,
+        date: new Date(),
+        calculatedAmount: calculatedAmount,
+        status: StatusEnum.success,
+        message: null,
+      };
 
       // Storing the per payment so you can continiously seed updates of transactions in HO-Portal
       this.transactionsService.storeTransaction(
@@ -54,7 +51,6 @@ export class VodacashService {
         paymentNr,
       );
     }
-
     return fspTransactionResult;
   }
 
@@ -107,13 +103,13 @@ export class VodacashService {
     return vodacashInstructionsXml;
   }
 
-  public async readXmlAsJs(path: string): Promise<any> {
+  private async readXmlAsJs(path: string): Promise<any> {
     const xml = fs.readFileSync(path, 'utf-8');
     return convert.xml2js(xml);
   }
 
-  public setValue(
-    xml,
+  private setValue(
+    xml: any,
     elementName: string,
     attributeName: string,
     value: string,
