@@ -34,7 +34,7 @@
   "paymentAmountMultiplierFormula": "0 + 1 * nrOfHouseHoldMembers",
   "financialServiceProviders": [
     {
-      "id": 1
+      "fsp": "UkrPoshta"
     }
   ],
   "inclusionCalculationType": "highestScoresX",
