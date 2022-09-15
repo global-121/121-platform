@@ -5,10 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.54.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.55.0...master)
 
 
 ---
+## [1.55.0](https://github.com/global-121/121-platform/compare/v1.54.0...v1.55.0) - 2022-09-15
+
+### Changed
+- Updated program questions DRC based on feedback
+
 ## [1.54.0](https://github.com/global-121/121-platform/compare/v1.53.1...v1.54.0) - 2022-09-13
 
 ### Changed
