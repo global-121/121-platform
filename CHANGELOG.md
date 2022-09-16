@@ -5,28 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.55.0...master)
-
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.57.0...master)
 
 ---
+
+## [1.57.0](https://github.com/global-121/121-platform/compare/v1.56.0...v1.57.0) - 2022-09-16
+
+### Changed
+
+- HAC DRC: Prevent undefined fields when importing new csv
+
+## [1.56.0](https://github.com/global-121/121-platform/compare/v1.55.0...v1.56.0) - 2022-09-16
+
+### Changed
+
+- Updated program questions DRC based on feedback
+
 ## [1.55.0](https://github.com/global-121/121-platform/compare/v1.54.0...v1.55.0) - 2022-09-15
 
 ### Changed
+
 - Updated program questions DRC based on feedback
 
 ## [1.54.0](https://github.com/global-121/121-platform/compare/v1.53.1...v1.54.0) - 2022-09-13
 
 ### Changed
+
 - Updated program questions DRC based on feedback
 
 ## [1.53.1](https://github.com/global-121/121-platform/compare/v1.53.0...v1.53.1) - 2022-09-08
 
 ### Fixed
+
 - Program question option in for DRC are now set to French (these commits were forgotten in v1.53.0)
 
 ## [1.53.0](https://github.com/global-121/121-platform/compare/v1.52.1...v1.53.0) - 2022-09-08
 
 ### Fixed
+
 - Program question option in for DRC are now set to French
 - Fix Swagger url test vm
 - Fix icons
@@ -34,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.52.1](https://github.com/global-121/121-platform/compare/v1.52.0...v1.52.1) - 2022-09-06
 
 ### Fixed
+
 - 2022-09-06: Swagger-UI now uses external URL for requests
 
 ## [1.52.0](https://github.com/global-121/121-platform/compare/v1.51.0...v1.52.0) - 2022-08-24
@@ -65,22 +82,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.48.4](https://github.com/global-121/121-platform/compare/v1.48.3...v1.48.4) - 2022-08-15
 
 ### Fixed
+
 - 2022-08-15: Fixed bug in export all People Affected 500 error because of duplicate stored whatsappnumbers.
 
 ## [1.48.3](https://github.com/global-121/121-platform/compare/v1.48.2...v1.48.3) - 2022-08-15
 
 ### Fixed
+
 - 2022-08-15: Fixed bug in export all People Affected phonenumber of imported not shown.
 - 2022-08-15: Fixed bug unable to edit PA transfer value in portal.
 
 ## [1.48.2](https://github.com/global-121/121-platform/compare/v1.48.1...v1.48.2) - 2022-08-10
 
 ### Fixed
+
 - 2022-08-11: Bug in the PA table; payment history is not shown.
 
 ## [1.48.1](https://github.com/global-121/121-platform/compare/v1.48.0...v1.48.1) - 2022-08-10
 
 ### Fixed
+
 - 2022-08-10: Bug in the `shortLabel` migration.
 
 ## [1.48.0](https://github.com/global-121/121-platform/compare/v1.47.0...v1.48.0) - 2022-08-10
