@@ -1,7 +1,7 @@
 {
   "published": false,
   "validation": true,
-  "validationByQr": false,
+  "validationByQr": true,
   "phase": "design",
   "location": "Democratic Republic of the Congo",
   "ngo": "Help a Child",
@@ -571,12 +571,6 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "NA",
-          "label": {
-            "en": "NA"
-          }
-        },
-        {
           "option": "1. Moins de 3 mois              ",
           "label": {
             "en": "Less than 3 months"
@@ -598,6 +592,12 @@
           "option": "4.  Plus de 12 mois      ",
           "label": {
             "en": "Over 12 months"
+          }
+        },
+        {
+          "option": "NA",
+          "label": {
+            "en": "Not displaced or returnee"
           }
         }
       ],
@@ -863,6 +863,12 @@
           "label": {
             "en": "Other"
           }
+        },
+        {
+          "option": "None",
+          "label": {
+            "en": "None"
+          }
         }
       ],
       "persistence": true,
@@ -1027,41 +1033,9 @@
       }
     },
     {
-      "name": "3. 6. Au sein de votre ménage, y a-t-il quelqu’un qui a déjà été victime des violences sexuelles ?        ",
-      "label": {
-        "en": "E.12. In your household, is there anyone who has already been the victim of sexual violence?"
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "Oui",
-          "label": {
-            "en": "Yes",
-            "fr": "Oui"
-          }
-        },
-        {
-          "option": "Non",
-          "label": {
-            "en": "No",
-            "fr": "Non"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "E.12. Sexual violence?"
-      }
-    },
-    {
       "name": "3. 6. a. Si oui, Veuillez insérer un commentaire  ",
       "label": {
-        "en": "E.13. If yes, please insert a comment"
+        "en": "E.12. In your household, is there anyone who has already been the victim of sexual violence? If yes, please add a comment. If no, please put 'No'."
       },
       "answerType": "text",
       "questionType": "standard",
@@ -1072,45 +1046,13 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.13. Sexual violence comment"
-      }
-    },
-    {
-      "name": "3. 7.  Au sein de votre ménage, y a-t-il des personnes de 3è âge ayant des besoins spécifiques ?",
-      "label": {
-        "en": "E.14. In your household, are there senior citizens with specific needs?"
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "Oui",
-          "label": {
-            "en": "Yes",
-            "fr": "Oui"
-          }
-        },
-        {
-          "option": "Non",
-          "label": {
-            "en": "No",
-            "fr": "Non"
-          }
-        }
-      ],
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "E.14. Seniors specific needs?"
+        "en": "E.12. Sexual violence"
       }
     },
     {
       "name": "3. 7. a. Si oui, Veuillez insérer un commentaire ",
       "label": {
-        "en": "E.15. If yes, please insert a comment"
+        "en": "E.13. In your household, are there senior citizens with specific needs? If yes, please add a comment. If no, please put 'No'."
       },
       "answerType": "text",
       "questionType": "standard",
@@ -1121,13 +1063,13 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.15. Seniors specific needs comment"
+        "en": "E.13. Seniors specific needs"
       }
     },
     {
       "name": "3. 7. b. Si « Oui », combien ? ",
       "label": {
-        "en": "E.16. If yes how much ?"
+        "en": "E.14. If yes how much ?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -1138,13 +1080,49 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.16. # Seniors specific needs"
+        "en": "E.14. # Seniors specific needs"
+      }
+    },
+    {
+      "name": "E.15. Children characteristics",
+      "label": {
+        "en": "E.15. What are the characteristics of the children in your household (if any)?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "A",
+          "label": {
+            "en": "A"
+          }
+        },
+        {
+          "option": "B",
+          "label": {
+            "en": "B"
+          }
+        },
+        {
+          "option": "None",
+          "label": {
+            "en": "None"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "E.15. Children characteristics"
       }
     },
     {
       "name": "3. 10. 1. Si Oui, combien d’enfants ?",
       "label": {
-        "en": "E.17. How many malnourished children are in your household (0 if none)? (0 if none)"
+        "en": "E.16. How many malnourished children are in your household? (0 if none)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -1155,15 +1133,47 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "# Malnourished children?"
+        "en": "E.16. # Malnourished children?"
       }
     },
     {
       "name": " 3. 10. 2. Poursuit (vent) –il(s) un traitement au centre de santé ?             ",
       "label": {
-        "en": "E.18. If there are malnourished children in your household are you pursuing (wind) treatment at the health center?"
+        "en": "E.17. If there are malnourished children in your household are you pursuing treatment at the health center?"
       },
-      "answerType": "",
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "Oui",
+          "label": {
+            "en": "Yes",
+            "fr": "Oui"
+          }
+        },
+        {
+          "option": "Non",
+          "label": {
+            "en": "No",
+            "fr": "Non"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "E.17. # Malnourished children"
+      }
+    },
+    {
+      "name": "E.18. Phis Dis Children",
+      "label": {
+        "en": "E.18. How many children with physical disabilities live in your household? (0 if none)"
+      },
+      "answerType": "numeric",
       "questionType": "standard",
       "options": null,
       "persistence": true,
@@ -1172,13 +1182,79 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.18. # Malnourished children"
+        "en": "E.18. # Phis Dis Children"
+      }
+    },
+    {
+      "name": "E.19. Ment Dis Children",
+      "label": {
+        "en": "E.19. How many children with mental disabilities live in your household? (0 if none)"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "E.19. # Ment Dis Children"
+      }
+    },
+    {
+      "name": "F.1. Fields",
+      "label": {
+        "en": "F.1. If you have a space to cultivate or do you own a field, how many ares? (0 if no space or field)"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "F.1. # Fields"
+      }
+    },
+    {
+      "name": "F.2. Own house?",
+      "label": {
+        "en": "F.2. Does this house belong to you?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "Oui",
+          "label": {
+            "en": "Yes",
+            "fr": "Oui"
+          }
+        },
+        {
+          "option": "Non",
+          "label": {
+            "en": "No",
+            "fr": "Non"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "F.2. Own house?"
       }
     },
     {
       "name": "3.11.1. Etes-vous déjà enregistré sur les services d’argent mobile (Airtel money, m-Pesa, Orange money) ? ",
       "label": {
-        "en": "F.1. Have you ever registered for mobile money services (Airtel money, m-Pesa, Orange money)?"
+        "en": "G.1. Have you ever registered for mobile money services (Airtel money, m-Pesa, Orange money)?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1204,13 +1280,13 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "F.1. Registered mobile money?"
+        "en": "G.1. Registered mobile money?"
       }
     },
     {
       "name": "3.12. Seriez-vous à l’aise avec le transfert d’argent mobile au cas où cela serait une de modalités d’assistance adoptée ? ",
       "label": {
-        "en": "F.2. Would you be comfortable with mobile money transfer if this is one of the support modalities adopted?"
+        "en": "G.2. Would you be comfortable with mobile money transfer if this is one of the support modalities adopted?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1236,13 +1312,13 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "F.2. Comfortable mobile money?"
+        "en": "G.2. Comfortable mobile money?"
       }
     },
     {
       "name": "3.12.1. Si non, pourquoi ? ",
       "label": {
-        "en": "F.3. If not, why?"
+        "en": "G.3. If you are not comfortable with mobile money transfer, why?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1302,13 +1378,13 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "No mobile money reason"
+        "en": "G.3. No mobile money reason"
       }
     },
     {
       "name": "_GPS_latitude",
       "label": {
-        "en": "G.1. What is the latitude of your household?"
+        "en": "H.1. What is the latitude of your household?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -1319,13 +1395,13 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "G.1. Latitude"
+        "en": "H.1. Latitude"
       }
     },
     {
       "name": "_GPS_longitude",
       "label": {
-        "en": "G.2. What is the longitude of your household?"
+        "en": "H.2. What is the longitude of your household?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -1336,13 +1412,13 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "G.2. Longitude"
+        "en": "H.2. Longitude"
       }
     },
     {
       "name": "_GPS_altitude",
       "label": {
-        "en": "G.3. What is the altitude of your household?"
+        "en": "H.3. What is the altitude of your household?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -1353,13 +1429,13 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "G.3. Altitude"
+        "en": "H.3. Altitude"
       }
     },
     {
       "name": "_GPS_precision",
       "label": {
-        "en": "G.4. What is the GPS precision?"
+        "en": "H.4. What is the GPS precision?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -1370,13 +1446,13 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "G.4. Precision"
+        "en": "H.4. Precision"
       }
     }
   ],
   "fullnameNamingConvention": [
-    "B.3. What is your first name?",
-    "B.2. What is your middle name?",
-    "B.1. What is your name?"
+    "B. 1. Quel est votre nom ? ",
+    "B. 2. Quel est votre post-nom ? ",
+    "B. 3. Quel est votre prénom ?"
   ]
 }
