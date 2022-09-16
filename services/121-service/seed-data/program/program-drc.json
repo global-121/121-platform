@@ -301,13 +301,6 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "NA",
-          "label": {
-            "en": "NA",
-            "fr": "NA"
-          }
-        },
-        {
           "option": "Masculin ",
           "label": {
             "en": "Male",
@@ -1067,26 +1060,9 @@
       }
     },
     {
-      "name": "3. 7. b. Si « Oui », combien ? ",
+      "name": "E.14. Children characteristics",
       "label": {
-        "en": "E.14. If yes how much ?"
-      },
-      "answerType": "numeric",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "E.14. # Seniors specific needs"
-      }
-    },
-    {
-      "name": "E.15. Children characteristics",
-      "label": {
-        "en": "E.15. What are the characteristics of the children in your household (if any)?"
+        "en": "E.14. What are the characteristics of the children in your household (if any)?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1116,13 +1092,13 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.15. Children characteristics"
+        "en": "E.14. Children characteristics"
       }
     },
     {
       "name": "3. 10. 1. Si Oui, combien d’enfants ?",
       "label": {
-        "en": "E.16. How many malnourished children are in your household? (0 if none)"
+        "en": "E.15. How many malnourished children are in your household? (0 if none)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -1133,13 +1109,13 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.16. # Malnourished children?"
+        "en": "E.15. # Malnourished children?"
       }
     },
     {
       "name": " 3. 10. 2. Poursuit (vent) –il(s) un traitement au centre de santé ?             ",
       "label": {
-        "en": "E.17. If there are malnourished children in your household are you pursuing treatment at the health center?"
+        "en": "E.16. If there are malnourished children in your household are you pursuing treatment at the health center?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1165,13 +1141,13 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.17. # Malnourished children"
+        "en": "E.16. # Malnourished children"
       }
     },
     {
-      "name": "E.18. Phis Dis Children",
+      "name": "E.17. Phis Dis Children",
       "label": {
-        "en": "E.18. How many children with physical disabilities live in your household? (0 if none)"
+        "en": "E.17. How many children with physical disabilities live in your household? (0 if none)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -1182,13 +1158,13 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.18. # Phis Dis Children"
+        "en": "E.17. # Phis Dis Children"
       }
     },
     {
-      "name": "E.19. Ment Dis Children",
+      "name": "E.18. Ment Dis Children",
       "label": {
-        "en": "E.19. How many children with mental disabilities live in your household? (0 if none)"
+        "en": "E.18. How many children with mental disabilities live in your household? (0 if none)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -1199,7 +1175,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.19. # Ment Dis Children"
+        "en": "E.18. # Ment Dis Children"
       }
     },
     {
