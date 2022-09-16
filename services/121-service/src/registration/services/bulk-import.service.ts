@@ -289,16 +289,17 @@ export class BulkImportService {
   ): Promise<void> {
     const dynamicAttributes = await this.getDynamicAttributes(programId);
     for await (let att of dynamicAttributes) {
+      let value;
       if (att.type === CustomAttributeType.boolean) {
-        await registration.saveData(
-          this.stringToBoolean(customData[att.name], false),
-          { name: att.name },
-        );
+        value = this.stringToBoolean(customData[att.name], false);
+      } else if (att.type === CustomAttributeType.text) {
+        value = customData[att.name] ? customData[att.name] : '';
       } else {
-        await registration.saveData(customData[att.name], {
-          name: att.name,
-        });
+        value = customData[att.name];
       }
+      await registration.saveData(value, {
+        name: att.name,
+      });
     }
   }
 
