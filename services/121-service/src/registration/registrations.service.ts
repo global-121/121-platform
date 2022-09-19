@@ -716,9 +716,7 @@ export class RegistrationsService {
           value,
         };
       }
-      console.log('row ', row);
       delete row.customData;
-      console.log('row without custom data: ', row);
       responseRows.push(row);
     }
     return responseRows;
