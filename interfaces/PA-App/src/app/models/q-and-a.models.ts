@@ -6,7 +6,7 @@ export enum AnswerType {
   Enum = 'dropdown',
   phoneNumber = 'tel',
   email = 'email',
-  MultiSelect = 'multi-select'
+  MultiSelect = 'multi-select',
 }
 
 export class Question {
