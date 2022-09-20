@@ -136,6 +136,38 @@
       "shortLabel": {
         "en": "Dragon Nr."
       }
+    },
+    {
+      "name": "skills",
+      "label": {
+        "en": "2. My skills include .. ?"
+      },
+      "answerType": "multi-select",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "demoOption1",
+          "label": {
+            "en": "Demo option 1"
+          }
+        },
+        {
+          "option": "demoOption2",
+          "label": {
+            "en": "Demo option 2"
+          }
+        },
+        {
+          "option": "demoOption3",
+          "label": {
+            "en": "Demo option 3"
+          }
+        }
+      ],
+      "scoring": {},
+      "shortLabel": {
+        "en": "Skills"
+      }
     }
   ]
 }

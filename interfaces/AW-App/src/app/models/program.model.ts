@@ -34,6 +34,7 @@ export enum AnswerType {
   Date = 'date',
   Enum = 'dropdown',
   phoneNumber = 'tel',
+  MultiSelect = 'multi-select'
 }
 
 export class ProgramAttribute {

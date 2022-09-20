@@ -20,6 +20,7 @@ export enum AnswerType {
   email = 'email',
   boolean = 'boolean',
   string = 'string',
+  MultiSelect = 'multi-select'
 }
 export class FspQuestion {
   id: number;
