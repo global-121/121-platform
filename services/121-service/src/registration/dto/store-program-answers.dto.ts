@@ -14,8 +14,7 @@ export class ProgramAnswer {
   public readonly programQuestionName: string;
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  public programAnswer: string;
+  public programAnswer: string | string[];
 }
 
 export class StoreProgramAnswersDto {

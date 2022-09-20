@@ -12,6 +12,5 @@ export class CustomDataDto {
   public readonly key: string;
   @ApiProperty({ example: '31600000000' })
   @IsNotEmpty()
-  @IsString()
-  public readonly value: string;
+  public readonly value: string | string[];
 }

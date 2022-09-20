@@ -20,5 +20,5 @@ export class UpdateAttributeDto {
   })
   public readonly attribute: Attributes | string;
   @ApiProperty({ example: 'new value' })
-  public readonly value: string | number;
+  public readonly value: string | number | string[];
 }

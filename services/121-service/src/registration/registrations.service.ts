@@ -159,20 +159,9 @@ export class RegistrationsService {
         where: { name: answer.programQuestionName },
       });
       if (programQuestion) {
-        let storedAnswer = await this.registrationDataRepository.findOne({
-          where: {
-            registration: { id: registration.id },
-            programQuestion: { id: programQuestion.id },
-          },
-        });
-        if (!storedAnswer) {
-          storedAnswer = new RegistrationDataEntity();
-          storedAnswer.registration = registration;
-          storedAnswer.programQuestion = programQuestion;
-        }
-        storedAnswer.value = answer.programAnswer;
-
-        await this.registrationDataRepository.save(storedAnswer);
+        const relation = new RegistrationDataRelation();
+        relation.programQuestionId = programQuestion.id;
+        registration.saveData(answer.programAnswer, { relation });
       }
     }
     await this.storePhoneNumberInRegistration(programAnswers, referenceId);
@@ -199,7 +188,10 @@ export class RegistrationsService {
 
     const cleanedAnswers = [];
     for (let programAnswer of programAnswers) {
-      if (phonenumberTypedAnswers.includes(programAnswer.programQuestionName)) {
+      if (
+        typeof programAnswer.programAnswer === 'string' &&
+        phonenumberTypedAnswers.includes(programAnswer.programQuestionName)
+      ) {
         programAnswer.programAnswer = await this.lookupService.lookupAndCorrect(
           programAnswer.programAnswer,
         );
@@ -220,7 +212,7 @@ export class RegistrationsService {
     const phoneAnswer = programAnswers.find(
       answer => answer.programQuestionName === CustomDataAttributes.phoneNumber,
     );
-    if (phoneAnswer) {
+    if (phoneAnswer && typeof phoneAnswer.programAnswer === 'string') {
       registration.phoneNumber = phoneAnswer.programAnswer;
       await this.registrationRepository.save(registration);
     }
@@ -242,7 +234,7 @@ export class RegistrationsService {
   public async addRegistrationData(
     referenceId: string,
     customDataKey: string,
-    customDataValueRaw: string,
+    customDataValueRaw: string | string[],
   ): Promise<RegistrationEntity> {
     const registration = await this.getRegistrationFromReferenceId(referenceId);
     const customDataValue = await this.cleanCustomDataIfPhoneNr(
@@ -256,8 +248,8 @@ export class RegistrationsService {
 
   public async cleanCustomDataIfPhoneNr(
     customDataKey: string,
-    customDataValue: string | number,
-  ): Promise<string | number> {
+    customDataValue: string | number | string[],
+  ): Promise<string | number | string[]> {
     const answersTypeTel = [];
     const fspAttributesTypeTel = await this.fspAttributeRepository.find({
       where: { answerType: AnswerTypes.tel },
@@ -816,7 +808,7 @@ export class RegistrationsService {
   public async setAttribute(
     referenceId: string,
     attribute: Attributes | string,
-    value: string | number,
+    value: string | number | string[],
   ): Promise<RegistrationEntity> {
     let registration = await this.getRegistrationFromReferenceId(referenceId, [
       'program',
