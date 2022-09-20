@@ -4,8 +4,8 @@ export enum AnswerType {
   Text = 'text',
   Date = 'date',
   Enum = 'dropdown',
-  phoneNumber = 'tel',
-  email = 'email',
+  PhoneNumber = 'tel',
+  Email = 'email',
   MultiSelect = 'multi-select',
 }
 

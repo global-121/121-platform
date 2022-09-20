@@ -33,7 +33,7 @@ export enum AnswerType {
   Text = 'text',
   Date = 'date',
   Enum = 'dropdown',
-  phoneNumber = 'tel',
+  PhoneNumber = 'tel',
   MultiSelect = 'multi-select',
 }
 

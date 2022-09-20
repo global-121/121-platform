@@ -51,7 +51,7 @@ export enum AnswerTypes {
   numeric = 'numeric',
   text = 'text',
   date = 'date',
-  MultiSelect = 'multi-select',
+  multiSelect = 'multi-select',
 }
 
 export enum CustomAttributeType {

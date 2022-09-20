@@ -72,7 +72,7 @@
             "
           ></date-input>
         </div>
-        <div *ngSwitchCase="answerType.phoneNumber">
+        <div *ngSwitchCase="answerType.PhoneNumber">
           <phone-number-input
             #phoneNumberInput
             ngDefaultControl
@@ -90,7 +90,7 @@
             "
           ></phone-number-input>
         </div>
-        <div *ngSwitchCase="answerType.email">
+        <div *ngSwitchCase="answerType.Email">
           <ion-input
             #emailInput="ngModel"
             ngDefaultControl
@@ -145,7 +145,7 @@
       class="ion-margin-bottom ion-padding-bottom"
     >
       <dialogue-turn [isSpoken]="checkValidationError(question.code)">
-        <p *ngIf="question.answerType === answerType.phoneNumber">
+        <p *ngIf="question.answerType === answerType.PhoneNumber">
           <play-text-audio
             key="q-and-a-set.validation.phone-number"
             class="ion-float-start ion-margin-end"
@@ -166,7 +166,7 @@
           ></play-text-audio>
           {{ 'q-and-a-set.validation.date' | translate }}
         </p>
-        <p *ngIf="question.answerType === answerType.email">
+        <p *ngIf="question.answerType === answerType.Email">
           <play-text-audio
             key="q-and-a-set.validation.date"
             class="ion-float-start ion-margin-end"
