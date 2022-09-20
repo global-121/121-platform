@@ -1375,8 +1375,8 @@
     }
   ],
   "fullnameNamingConvention": [
-    "B.3. What is your first name?",
-    "B.2. What is your middle name?",
-    "B.1. What is your name?"
+    "B. 3. Quel est votre prénom ?",
+    "B. 2. Quel est votre post-nom ? ",
+    "B. 1. Quel est votre nom ? "
   ]
 }
