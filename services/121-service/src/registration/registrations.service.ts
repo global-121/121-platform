@@ -482,7 +482,8 @@ export class RegistrationsService {
         `"${uniqueSubQueryId}"."fspQuestionId" = ${relation.fspQuestionId}`,
       );
     }
-    subQuery.addSelect(`"${uniqueSubQueryId}".value`);
+    // Because of string_agg no distinction between multi-select and other is needed
+    subQuery.addSelect(`string_agg("${uniqueSubQueryId}".value,'|')`);
     return subQuery;
   }
 
