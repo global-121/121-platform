@@ -294,10 +294,12 @@ export class BulkImportService {
         value = this.stringToBoolean(customData[att.name], false);
       } else if (att.type === CustomAttributeType.text) {
         value = customData[att.name] ? customData[att.name] : '';
+      } else if (att.type === AnswerTypes.multiSelect) {
+        value = customData[att.name].split('|');
       } else {
         value = customData[att.name];
       }
-      await registration.saveData(value, {
+      value = await registration.saveData(value, {
         name: att.name,
       });
     }
