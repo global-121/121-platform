@@ -5,7 +5,6 @@
       ngDefaultControl
       name="propertyInput"
       [(ngModel)]="propertyModel"
-      [value]="value"
       [placeholder]="placeholder"
       interface="popover"
       class="ion-margin-top"
@@ -67,7 +66,7 @@
               <ng-container
                 *ngTemplateOutlet="
                   selectInput;
-                  context: { propertyModel, value, placeholder, type }
+                  context: { propertyModel, placeholder, type }
                 "
               ></ng-container>
             </ng-container>
@@ -75,7 +74,7 @@
               <ng-container
                 *ngTemplateOutlet="
                   selectInput;
-                  context: { propertyModel, value, placeholder, type }
+                  context: { propertyModel, placeholder, type }
                 "
               ></ng-container>
             </ng-container>
