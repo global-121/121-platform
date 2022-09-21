@@ -263,7 +263,7 @@ export class BulkImportService {
 
     for await (let [i, registration] of savedRegistrations.entries()) {
       registration.registrationStatus = RegistrationStatusEnum.registered;
-      await this.storeProgramAnswersImportRegistrations(
+      await this.storeRegistrationData(
         registration,
         program.id,
         customDataList[i],
@@ -282,7 +282,7 @@ export class BulkImportService {
     return { aggregateImportResult: { countImported } };
   }
 
-  private async storeProgramAnswersImportRegistrations(
+  private async storeRegistrationData(
     registration: RegistrationEntity,
     programId: number,
     customData: object,
