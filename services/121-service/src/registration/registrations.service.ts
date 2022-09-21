@@ -502,6 +502,11 @@ export class RegistrationsService {
           WHEN ("fspQuestion"."name" is not NULL) THEN "fspQuestion"."name"
           WHEN ("monitoringQuestion"."name" is not NULL) THEN "monitoringQuestion"."name"
           WHEN ("programCustomAttribute"."name" is not NULL) THEN "programCustomAttribute"."name"
+        END ),
+                'types', array_agg( CASE
+          WHEN ("programQuestion"."answerType" is not NULL) THEN "programQuestion"."answerType"
+          WHEN ("fspQuestion"."answerType" is not NULL) THEN "fspQuestion"."answerType"
+          ELSE NULL
         END ))`,
         'name',
       );
@@ -510,10 +515,18 @@ export class RegistrationsService {
   private buildCustomDataObject(input: {
     values: string[];
     keys: string[];
+    types: string[];
   }): object {
     const customData = {};
     for (const i in input['keys']) {
-      customData[input['keys'][i]] = input['values'][i];
+      if (input['types'][i] === AnswerTypes.multiSelect) {
+        if (customData[input['keys'][i]] === undefined) {
+          customData[input['keys'][i]] = [];
+        }
+        customData[input['keys'][i]].push(input['values'][i]);
+      } else {
+        customData[input['keys'][i]] = input['values'][i];
+      }
     }
     return customData;
   }
@@ -522,6 +535,7 @@ export class RegistrationsService {
     referenceId: string,
   ): Promise<object> {
     const result = await this.registrationRepository
+
       .createQueryBuilder('registration')
       .select(subQuery => {
         return this.customDataSubQuery(subQuery);
@@ -1087,7 +1101,21 @@ export class RegistrationsService {
     for (const d of registration.data) {
       if (d.programQuestionId) {
         d['name'] = await d.getDataName();
-        programAnswers.push(d);
+        if (d.programQuestion.answerType === AnswerTypes.multiSelect) {
+          const existingQuestion = programAnswers.find(
+            a => a.programQuestionId === d.programQuestionId,
+          );
+          if (!existingQuestion) {
+            programAnswers.push(d);
+            programAnswers.find(
+              a => a.programQuestionId === d.programQuestionId,
+            ).value = [d.value];
+          } else {
+            existingQuestion.value.push(d.value);
+          }
+        } else {
+          programAnswers.push(d);
+        }
       }
     }
     registration['data'] = null;
@@ -1234,15 +1262,30 @@ export class RegistrationsService {
         programIds: programIds,
       })
       .getMany();
-
     let answers = [];
     for (const r of registrationsToValidate) {
+      const uniqueQuestions = [];
       for (const a of r.data) {
         a['referenceId'] = r.referenceId;
         a['programId'] = r.program.id;
         a['name'] = await a.getDataName();
+        if (a.programQuestion.answerType === AnswerTypes.multiSelect) {
+          const existingQuestion = uniqueQuestions.find(
+            q => q.programQuestionId === a.programQuestionId,
+          );
+          if (!existingQuestion) {
+            uniqueQuestions.push(a);
+            uniqueQuestions.find(
+              q => q.programQuestionId === a.programQuestionId,
+            ).value = [a.value];
+          } else {
+            existingQuestion.value.push(a.value);
+          }
+        } else {
+          uniqueQuestions.push(a);
+        }
       }
-      answers = [...answers, ...r.data];
+      answers = [...answers, ...uniqueQuestions];
     }
     return answers;
   }
@@ -1295,12 +1338,25 @@ export class RegistrationsService {
     for (const d of registration.data) {
       if (d.fspQuestionId) {
         const code = await d.getDataName();
-        const answer = {
-          code: code,
-          value: d.value,
-          lavel: d.fspQuestion.label['en'],
-        };
-        fspAnswers[code] = answer;
+        if (d.fspQuestion.answerType === AnswerTypes.multiSelect) {
+          if (!fspAnswers[code]) {
+            const answer = {
+              code: code,
+              value: [d.value],
+              lavel: d.fspQuestion.label['en'],
+            };
+            fspAnswers[code] = answer;
+          } else {
+            fspAnswers[code].value.push(d.value);
+          }
+        } else {
+          const answer = {
+            code: code,
+            value: d.value,
+            lavel: d.fspQuestion.label['en'],
+          };
+          fspAnswers[code] = answer;
+        }
       }
     }
     return fspAnswers;

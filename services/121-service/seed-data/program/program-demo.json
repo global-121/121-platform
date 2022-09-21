@@ -169,5 +169,6 @@
         "en": "Skills"
       }
     }
-  ]
+  ],
+  "fullnameNamingConvention": ["name"]
 }
