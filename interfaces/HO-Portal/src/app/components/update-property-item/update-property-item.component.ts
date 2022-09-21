@@ -21,7 +21,7 @@ export class UpdatePropertyItemComponent implements OnInit {
   public type: AnswerType;
 
   @Input()
-  public value: string;
+  public value: string | string[];
 
   @Input()
   public placeholder: string | undefined;
@@ -53,6 +53,9 @@ export class UpdatePropertyItemComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    if (this.type === AnswerType.MultiSelect) {
+      this.value = this.value.toString().split(',');
+    }
     this.propertyModel = this.value;
   }
 
