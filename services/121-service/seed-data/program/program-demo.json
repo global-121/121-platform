@@ -167,7 +167,10 @@
       "scoring": {},
       "shortLabel": {
         "en": "Skills"
-      }
+      },
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"]
     }
-  ]
+  ],
+  "fullnameNamingConvention": ["name"]
 }
