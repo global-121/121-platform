@@ -3,6 +3,7 @@ import { NgModel } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgramQuestionOption } from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { AnswerType } from '../../models/fsp.model';
 
 @Component({
   selector: 'app-update-property-item',
@@ -17,7 +18,7 @@ export class UpdatePropertyItemComponent implements OnInit {
   public explanation: string;
 
   @Input()
-  public type: string;
+  public type: AnswerType;
 
   @Input()
   public value: string;
@@ -43,6 +44,10 @@ export class UpdatePropertyItemComponent implements OnInit {
   >();
 
   public propertyModel: any | NgModel;
+
+  public get answerType(): typeof AnswerType {
+    return AnswerType;
+  }
 
   constructor(
     private translate: TranslatableStringService,

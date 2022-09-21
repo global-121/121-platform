@@ -1,7 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Fsp, FspAttributeOption, FspQuestion } from 'src/app/models/fsp.model';
+import {
+  AnswerType,
+  Fsp,
+  FspAttributeOption,
+  FspQuestion,
+} from 'src/app/models/fsp.model';
 import { Person } from 'src/app/models/person.model';
 import {
   Program,
@@ -164,8 +169,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
         let options = null;
         if (
-          paTableAttribute.type === 'dropdown' ||
-          paTableAttribute.type === 'multi-select'
+          paTableAttribute.type === AnswerType.Dropdown ||
+          paTableAttribute.type === AnswerType.MultiSelect
         ) {
           options = this.getDropdownOptions(paTableAttribute);
         }

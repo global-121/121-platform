@@ -11,7 +11,7 @@
       <ion-row class="ion-no-padding">
         <ion-col class="ion-no-padding">
           <ng-container [ngSwitch]="type">
-            <ng-container *ngSwitchCase="'number'">
+            <ng-container *ngSwitchCase="answerType.Number">
               <ion-input
                 ngDefaultControl
                 name="propertyInput"
@@ -26,7 +26,7 @@
                 [disabled]="isDisabled"
               ></ion-input>
             </ng-container>
-            <ng-container *ngSwitchCase="'tel'">
+            <ng-container *ngSwitchCase="answerType.PhoneNumber">
               <ion-input
                 ngDefaultControl
                 name="propertyInput"
@@ -40,7 +40,7 @@
                 [disabled]="isDisabled"
               ></ion-input>
             </ng-container>
-            <ng-container *ngSwitchCase="'dropdown'">
+            <ng-container *ngSwitchCase="answerType.Dropdown">
               <ion-item class="ion-margin-bottom">
                 <ion-select
                   style="max-width: 100%"
@@ -61,7 +61,7 @@
                 </ion-select>
               </ion-item>
             </ng-container>
-            <ng-container *ngSwitchCase="'boolean'">
+            <ng-container *ngSwitchCase="answerType.Boolean">
               <ion-checkbox
                 ngDefaultControl
                 [(ngModel)]="propertyModel"
@@ -70,7 +70,7 @@
                 class="ion-margin-top"
               ></ion-checkbox>
             </ng-container>
-            <ng-container *ngSwitchCase="'multi-select'">
+            <ng-container *ngSwitchCase="answerType.MultiSelect">
               <ion-list>
                 <ion-item>
                   <ion-select

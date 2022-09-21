@@ -20,6 +20,7 @@ export enum AnswerType {
   Email = 'email',
   Boolean = 'boolean',
   String = 'string',
+  Dropdown = 'dropdown',
   MultiSelect = 'multi-select',
 }
 export class FspQuestion {
