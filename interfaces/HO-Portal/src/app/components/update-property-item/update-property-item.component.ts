@@ -45,9 +45,7 @@ export class UpdatePropertyItemComponent implements OnInit {
 
   public propertyModel: any | NgModel;
 
-  public get answerType(): typeof AnswerType {
-    return AnswerType;
-  }
+  public answerType = AnswerType;
 
   constructor(
     private translate: TranslatableStringService,

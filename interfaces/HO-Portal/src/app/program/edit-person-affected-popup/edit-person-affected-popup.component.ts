@@ -169,7 +169,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
         let options = null;
         if (
-          paTableAttribute.type === AnswerType.Dropdown ||
+          paTableAttribute.type === AnswerType.Enum ||
           paTableAttribute.type === AnswerType.MultiSelect
         ) {
           options = this.getDropdownOptions(paTableAttribute);
