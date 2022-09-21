@@ -163,7 +163,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
           this.person.paTableAttributes[paTableAttribute.name].value;
 
         let options = null;
-        if (paTableAttribute.type === 'dropdown') {
+        if (
+          paTableAttribute.type === 'dropdown' ||
+          paTableAttribute.type === 'multi-select'
+        ) {
           options = this.getDropdownOptions(paTableAttribute);
         }
         const translationKey = `page.program.program-people-affected.edit-person-affected-popup.properties.${paTableAttribute.name}`;

@@ -70,6 +70,30 @@
                 class="ion-margin-top"
               ></ion-checkbox>
             </ng-container>
+            <ng-container *ngSwitchCase="'multi-select'">
+              <ion-list>
+                <ion-item>
+                  <ion-select
+                    style="max-width: 100%"
+                    ngDefaultControl
+                    name="propertyInput"
+                    [(ngModel)]="propertyModel"
+                    [value]="value"
+                    [placeholder]="placeholder"
+                    interface="popover"
+                    class="ion-margin-top"
+                    [multiple]="true"
+                  >
+                    <ion-select-option
+                      *ngFor="let option of translatedOptions()"
+                      value="{{ option.option }}"
+                    >
+                      {{ option.label }}
+                    </ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-list>
+            </ng-container>
             <ng-container *ngSwitchDefault>
               <ion-input
                 ngDefaultControl

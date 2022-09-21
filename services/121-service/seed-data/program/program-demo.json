@@ -167,7 +167,9 @@
       "scoring": {},
       "shortLabel": {
         "en": "Skills"
-      }
+      },
+      "editableInPortal": true
     }
-  ]
+  ],
+  "fullnameNamingConvention": ["name"]
 }
