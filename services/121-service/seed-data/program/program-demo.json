@@ -164,7 +164,11 @@
           }
         }
       ],
-      "scoring": {},
+      "scoring": {
+        "demoOption1": 10,
+        "demoOption2": 200,
+        "demoOption3": 3000
+      },
       "shortLabel": {
         "en": "Skills"
       },
