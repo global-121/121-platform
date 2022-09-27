@@ -92,7 +92,7 @@ export class QAndASetComponent implements OnChanges {
 
   private getAnswerOptionLabelByValue(
     options: QuestionOption[],
-    answerValue: string,
+    answerValue: string | string[],
   ) {
     const option = options.find((item: QuestionOption) => {
       return item.value === answerValue;
@@ -101,7 +101,10 @@ export class QAndASetComponent implements OnChanges {
     return option ? option.label : '';
   }
 
-  private createAnswer(question: Question, answerValue: string): Answer {
+  private createAnswer(
+    question: Question,
+    answerValue: string | string[],
+  ): Answer {
     const answer: Answer = {
       code: question.code,
       value: answerValue,
@@ -117,8 +120,11 @@ export class QAndASetComponent implements OnChanges {
     }
 
     // Convert 1 or multiple values to human-readable label(s)
-    if (question.answerType === AnswerType.MultiSelect) {
-      const answerOptions = answerValue.split(',').map((item) => {
+    if (
+      question.answerType === AnswerType.MultiSelect &&
+      Array.isArray(answerValue)
+    ) {
+      const answerOptions = answerValue.map((item) => {
         return this.getAnswerOptionLabelByValue(question.options, item);
       });
       answer.label = answerOptions.join(', ');
@@ -160,7 +166,7 @@ export class QAndASetComponent implements OnChanges {
     let answerValue;
 
     if (this.answers[questionCode] && this.answers[questionCode].value) {
-      answerStore = new Set(this.answers[questionCode].value.split(','));
+      answerStore = new Set(this.answers[questionCode].value);
     } else {
       answerStore = new Set([]);
     }
@@ -171,7 +177,7 @@ export class QAndASetComponent implements OnChanges {
       answerStore.delete(answerInput.value);
     }
 
-    answerValue = Array.from(answerStore).sort().join(',');
+    answerValue = Array.from(answerStore).sort();
 
     if (!answerValue) {
       // Reset previously stored answer(s)

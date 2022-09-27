@@ -36,5 +36,5 @@ export class ProgramQuestionOption {
 
 export class ProgramAttribute {
   programQuestionName: string;
-  programAnswer: string;
+  programAnswer: string | string[];
 }

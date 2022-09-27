@@ -174,7 +174,7 @@ export class ProgramsServiceApiService {
   postRegistrationCustomAttribute(
     referenceId: string,
     key: string,
-    value: string,
+    value: string | string[],
   ): Promise<any> {
     return this.syncService
       .tryPost(environment.url_121_service_api, ApiPath.customData, {
