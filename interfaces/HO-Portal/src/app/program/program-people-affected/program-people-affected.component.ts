@@ -89,7 +89,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     [AnswerType.Enum]: 160,
     [AnswerType.Email]: 180,
     [AnswerType.Boolean]: 90,
-    [AnswerType.String]: 150,
+    [AnswerType.MultiSelect]: 180,
   };
   public columnDefaults: any;
   public columns: PersonTableColumn[] = [];

@@ -19,7 +19,6 @@ export enum AnswerType {
   PhoneNumber = 'tel',
   Email = 'email',
   Boolean = 'boolean',
-  String = 'string',
   MultiSelect = 'multi-select',
 }
 export class FspQuestion {

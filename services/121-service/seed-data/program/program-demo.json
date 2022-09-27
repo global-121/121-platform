@@ -23,7 +23,7 @@
   "distributionFrequency": "month",
   "distributionDuration": 8,
   "fixedTransferValue": 10,
-  "paymentAmountMultiplierFormula": "0 + 1 * dragon",
+  "paymentAmountMultiplierFormula": "1 + 1 * dragon",
   "financialServiceProviders": [
     {
       "fsp": "Intersolve-whatsapp"
@@ -173,6 +173,7 @@
         "en": "Skills"
       },
       "editableInPortal": true,
+      "phases": ["registrationValidation"],
       "export": ["all-people-affected", "included", "selected-for-validation"]
     }
   ],
