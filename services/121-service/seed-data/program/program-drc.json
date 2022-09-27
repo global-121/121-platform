@@ -95,7 +95,7 @@
     {
       "name": "village",
       "label": {
-        "en": "A.2 Village"
+        "en": "A.3 Village"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -106,7 +106,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "A.2 Village"
+        "en": "A.3 Village"
       }
     },
     {
