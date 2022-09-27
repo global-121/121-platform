@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Length, IsString, IsIn } from 'class-validator';
+import { Length } from 'class-validator';
 import { CustomDataAttributes } from '../enum/custom-data-attributes';
 
 export enum AdditionalAttributes {
