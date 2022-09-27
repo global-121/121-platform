@@ -113,7 +113,7 @@ export class ProgramsServiceApiService {
   postRegistrationCustomAttribute(
     referenceId: string,
     attribute: string,
-    value: string,
+    value: string | string[],
   ): Promise<any> {
     return this.apiService
       .post(

@@ -25,8 +25,8 @@ export class QuestionOption {
 
 export class Answer {
   code: string;
-  value: string;
-  label: string;
+  value: string | string[];
+  label: string | string[];
 }
 
 export class AnswerSet {

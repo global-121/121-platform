@@ -133,6 +133,41 @@ export class QAndASetComponent implements OnChanges {
     );
     this.showNextQuestion(answersArray.indexOf(questionCode));
   }
+  public onAnswerChangeMultiSelect(
+    questionCode: string,
+    answerInput: { checked: boolean; value: string },
+  ) {
+    console.log('answerInput: ', answerInput);
+    let answerStore;
+    let answerValue;
+
+    if (this.answers[questionCode] && this.answers[questionCode].value) {
+      answerStore = new Set(this.answers[questionCode].value);
+    } else {
+      answerStore = new Set([]);
+    }
+
+    if (answerInput.checked) {
+      answerStore.add(answerInput.value);
+    } else {
+      answerStore.delete(answerInput.value);
+    }
+
+    answerValue = Array.from(answerStore).sort();
+
+    if (!answerValue) {
+      // Reset previously stored answer(s)
+      delete this.answers[questionCode];
+
+      this.addValidationError(questionCode);
+      return;
+    }
+    this.removeValidationError(questionCode);
+    console.log('answerStore: ', answerStore);
+    console.log('answerValue: ', answerValue);
+
+    this.onAnswerChange(questionCode, answerValue);
+  }
 
   private showNextQuestion(currentIndex: number) {
     const nextIndex = currentIndex + 1;

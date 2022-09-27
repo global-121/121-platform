@@ -40,5 +40,5 @@ export enum AnswerType {
 export class ProgramAttribute {
   attributeId: number;
   programQuestionName: string;
-  programAnswer: string;
+  programAnswer: string | string[];
 }
