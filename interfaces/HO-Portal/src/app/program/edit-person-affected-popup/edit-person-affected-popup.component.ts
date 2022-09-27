@@ -105,10 +105,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public async updatePaAttribute(
     attribute: string,
-    value: string,
+    value: string | string[],
     isPaTableAttribute: boolean,
   ): Promise<void> {
-    if (isPaTableAttribute) {
+    if (isPaTableAttribute && !Array.isArray(value)) {
       value = String(value);
     }
     this.inProgress[attribute] = true;
