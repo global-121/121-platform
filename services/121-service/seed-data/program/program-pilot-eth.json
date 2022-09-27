@@ -27,7 +27,7 @@
   "fixedTransferValue": 6250,
   "financialServiceProviders": [
     {
-      "id": 1
+      "fsp": "BelCash"
     }
   ],
   "inclusionCalculationType": "highestScoresX",

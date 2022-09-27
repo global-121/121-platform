@@ -28,7 +28,7 @@
   "fixedTransferValue": 50,
   "financialServiceProviders": [
     {
-      "id": 1
+      "fsp": "BoB-finance"
     }
   ],
   "inclusionCalculationType": "highestScoresX",

@@ -1,7 +1,7 @@
 {
   "published": false,
   "validation": true,
-  "validationByQr": true,
+  "validationByQr": false,
   "phase": "design",
   "location": "Democratic Republic of the Congo",
   "ngo": "Help a Child",
@@ -18,14 +18,14 @@
     "en": "Unconditional multi-purpose"
   },
   "startDate": "2020-09-01T12:00:00Z",
-  "endDate": "2022-10-01T12:00:00Z",
+  "endDate": "2022-11-30T12:00:00Z",
   "currency": "CDF",
-  "distributionFrequency": "monthly",
+  "distributionFrequency": "once",
   "distributionDuration": 1,
-  "fixedTransferValue": 35,
+  "fixedTransferValue": 104000,
   "financialServiceProviders": [
     {
-      "id": 1
+      "fsp": "VodaCash"
     }
   ],
   "inclusionCalculationType": "highestScoresX",
@@ -78,7 +78,7 @@
     {
       "name": " A. 5. Village/Quartier :  ",
       "label": {
-        "en": "A.2. Village/Neighborhood"
+        "en": "A.2 Health area/Village "
       },
       "answerType": "text",
       "questionType": "standard",
@@ -89,7 +89,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "A.2. Village/Neighborhood"
+        "en": "A.2 Health area/Village "
       }
     },
     {
@@ -944,9 +944,9 @@
           }
         },
         {
-          "option": "AIDS",
+          "option": "HIV",
           "label": {
-            "en": "AIDS"
+            "en": "HIV"
           }
         },
         {
@@ -1010,6 +1010,12 @@
           }
         },
         {
+          "option": "Other",
+          "label": {
+            "en": "Other"
+          }
+        },
+        {
           "option": "None",
           "label": {
             "en": "None"
@@ -1068,21 +1074,51 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "A",
+          "option": "Orphan",
           "label": {
-            "en": "A"
+            "en": "Orphan"
           }
         },
         {
-          "option": "B",
+          "option": "Not accompanied",
           "label": {
-            "en": "B"
+            "en": "Not accompanied"
           }
         },
         {
-          "option": "None",
+          "option": "Abandoned",
           "label": {
-            "en": "None"
+            "en": "Abandoned"
+          }
+        },
+        {
+          "option": "Separate",
+          "label": {
+            "en": "Separate"
+          }
+        },
+        {
+          "option": "Left an armed group",
+          "label": {
+            "en": "Left an armed group"
+          }
+        },
+        {
+          "option": "Pregnant girl",
+          "label": {
+            "en": "Pregnant girl"
+          }
+        },
+        {
+          "option": "Young girl mother",
+          "label": {
+            "en": "Young girl mother"
+          }
+        },
+        {
+          "option": "Albino",
+          "label": {
+            "en": "Albino"
           }
         }
       ],
@@ -1142,40 +1178,6 @@
       "editableInPortal": true,
       "shortLabel": {
         "en": "E.16. # Malnourished children"
-      }
-    },
-    {
-      "name": "E.17. Phis Dis Children",
-      "label": {
-        "en": "E.17. How many children with physical disabilities live in your household? (0 if none)"
-      },
-      "answerType": "numeric",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "E.17. # Phis Dis Children"
-      }
-    },
-    {
-      "name": "E.18. Ment Dis Children",
-      "label": {
-        "en": "E.18. How many children with mental disabilities live in your household? (0 if none)"
-      },
-      "answerType": "numeric",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "E.18. # Ment Dis Children"
       }
     },
     {
@@ -1355,74 +1357,6 @@
       "editableInPortal": true,
       "shortLabel": {
         "en": "G.3. No mobile money reason"
-      }
-    },
-    {
-      "name": "_GPS_latitude",
-      "label": {
-        "en": "H.1. What is the latitude of your household?"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "H.1. Latitude"
-      }
-    },
-    {
-      "name": "_GPS_longitude",
-      "label": {
-        "en": "H.2. What is the longitude of your household?"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "H.2. Longitude"
-      }
-    },
-    {
-      "name": "_GPS_altitude",
-      "label": {
-        "en": "H.3. What is the altitude of your household?"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "H.3. Altitude"
-      }
-    },
-    {
-      "name": "_GPS_precision",
-      "label": {
-        "en": "H.4. What is the GPS precision?"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "H.4. Precision"
       }
     }
   ],
