@@ -483,7 +483,9 @@ export class RegistrationsService {
       );
     }
     // Because of string_agg no distinction between multi-select and other is needed
-    subQuery.addSelect(`string_agg("${uniqueSubQueryId}".value,'|')`);
+    subQuery.addSelect(
+      `string_agg("${uniqueSubQueryId}".value,'|' order by value)`,
+    );
     return subQuery;
   }
 
