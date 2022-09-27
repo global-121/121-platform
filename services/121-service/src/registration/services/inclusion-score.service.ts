@@ -80,7 +80,15 @@ export class InlusionScoreService {
       if (entry.programQuestion) {
         let attrValue = entry.value;
         let newKeyName = entry.programQuestion.name;
-        scoreList[newKeyName] = attrValue;
+        if (entry.programQuestion.answerType === AnswerTypes.multiSelect) {
+          if (scoreList[newKeyName] !== undefined) {
+            scoreList[newKeyName].push(attrValue);
+          } else {
+            scoreList[newKeyName] = [attrValue];
+          }
+        } else {
+          scoreList[newKeyName] = attrValue;
+        }
       }
     }
     return scoreList;
@@ -96,13 +104,18 @@ export class InlusionScoreService {
       if (scoreList[questionName]) {
         let answerPA = scoreList[questionName];
         switch (question.answerType) {
-          case AnswerTypes.dropdown: {
+          case AnswerTypes.dropdown:
             totalScore =
               totalScore + this.getScoreForDropDown(question, answerPA);
-          }
+            break;
           case AnswerTypes.numeric:
             totalScore =
               totalScore + this.getScoreForNumeric(question, answerPA);
+            break;
+          case AnswerTypes.multiSelect:
+            totalScore =
+              totalScore + this.getScoreForMultiSelect(question, answerPA);
+            break;
         }
       }
     }
@@ -122,6 +135,29 @@ export class InlusionScoreService {
     for (let value of options) {
       if (value.option == answerPA && programQuestion.scoring[value.option]) {
         score = programQuestion.scoring[value.option];
+      }
+    }
+    return score;
+  }
+
+  private getScoreForMultiSelect(
+    programQuestion: ProgramQuestionEntity,
+    answerPA: object[],
+  ): number {
+    // If questions has no scoring system return 0;
+    if (Object.keys(programQuestion.scoring).length === 0) {
+      return 0;
+    }
+    let score = 0;
+    const options = JSON.parse(JSON.stringify(programQuestion.options));
+    for (const selectedOption of answerPA) {
+      for (let value of options) {
+        if (
+          value.option == selectedOption &&
+          programQuestion.scoring[value.option]
+        ) {
+          score = score + programQuestion.scoring[value.option];
+        }
       }
     }
     return score;

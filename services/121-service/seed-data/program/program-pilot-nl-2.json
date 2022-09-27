@@ -28,10 +28,10 @@
   "fixedTransferValue": 15,
   "financialServiceProviders": [
     {
-      "id": 1
+      "fsp": "Intersolve-whatsapp"
     },
     {
-      "id": 2
+      "fsp": "Intersolve-no-whatsapp"
     }
   ],
   "inclusionCalculationType": "highestScoresX",

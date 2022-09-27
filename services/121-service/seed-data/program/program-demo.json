@@ -26,19 +26,19 @@
   "paymentAmountMultiplierFormula": "0 + 1 * dragon",
   "financialServiceProviders": [
     {
-      "id": 1
+      "fsp": "Intersolve-whatsapp"
     },
     {
-      "id": 2
+      "fsp": "Africas-talking"
     },
     {
-      "id": 3
+      "fsp": "Bank A"
     },
     {
-      "id": 4
+      "fsp": "FSP - all attributes"
     },
     {
-      "id": 5
+      "fsp": "FSP - no attributes"
     }
   ],
   "inclusionCalculationType": "highestScoresX",
@@ -164,11 +164,16 @@
           }
         }
       ],
-      "scoring": {},
+      "scoring": {
+        "demoOption1": 10,
+        "demoOption2": 200,
+        "demoOption3": 3000
+      },
       "shortLabel": {
         "en": "Skills"
       },
-      "editableInPortal": true
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"]
     }
   ],
   "fullnameNamingConvention": ["name"]

@@ -307,7 +307,7 @@ export class SeedProgramEth implements InterfaceScript {
   }
 
   private async addUserPerCustomRole(program: ProgramEntity): Promise<void> {
-    const administrationZoaUser = await this.seedHelper.addUser({
+    const administrationZoaUser = await this.seedHelper.getOrSaveUser({
       username: 'administrator-zoa-user@example.org',
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
@@ -316,7 +316,7 @@ export class SeedProgramEth implements InterfaceScript {
       program.id,
       ['administrator-zoa'],
     );
-    const projectManagementUser = await this.seedHelper.addUser({
+    const projectManagementUser = await this.seedHelper.getOrSaveUser({
       username: 'project-management-user@example.org',
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
@@ -325,7 +325,7 @@ export class SeedProgramEth implements InterfaceScript {
       program.id,
       ['project-management'],
     );
-    const programmeManagementUser = await this.seedHelper.addUser({
+    const programmeManagementUser = await this.seedHelper.getOrSaveUser({
       username: 'programme-management-user@example.org',
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
@@ -334,7 +334,7 @@ export class SeedProgramEth implements InterfaceScript {
       program.id,
       ['programme-management'],
     );
-    const operationManagementUser = await this.seedHelper.addUser({
+    const operationManagementUser = await this.seedHelper.getOrSaveUser({
       username: 'operation-management-user@example.org',
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
@@ -343,14 +343,14 @@ export class SeedProgramEth implements InterfaceScript {
       program.id,
       ['manager-of-operations'],
     );
-    const programQualiyUser = await this.seedHelper.addUser({
+    const programQualiyUser = await this.seedHelper.getOrSaveUser({
       username: 'programme-quality-user@example.org',
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
     await this.seedHelper.assignAidworker(programQualiyUser.id, program.id, [
       'manager-of-programme-quality',
     ]);
-    const projectOfficerUser = await this.seedHelper.addUser({
+    const projectOfficerUser = await this.seedHelper.getOrSaveUser({
       username: 'project-officer-user@example.org',
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
