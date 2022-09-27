@@ -5,9 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.61.1...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.62.0...master)
 
 ---
+
+## [1.62.0](https://github.com/global-121/121-platform/compare/v1.61.1...v1.62.0) - 2022-09-27
+
+### Changed
+
+- Updated and split some questions in DRC program
+- Fixed duplication of "do payment" options in bulk actions dropdown
+
 ## [1.61.1](https://github.com/global-121/121-platform/compare/v1.61.0...v1.61.1) - 2022-09-23
 
 ### Changed
