@@ -764,6 +764,11 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private async addPaymentBulkActions() {
+    // filter out all dopayment actions to avoid duplication
+    this.bulkActions = this.bulkActions.filter(
+      (action) => action.id !== BulkActionId.doPayment,
+    );
+
     const nextPaymentId = await this.pastPaymentsService.getNextPaymentId(
       this.program,
     );
