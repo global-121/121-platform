@@ -1472,7 +1472,7 @@ export class RegistrationsService {
     const value = customData[attribute.name];
     switch (attribute.type) {
       case AttributeType.numeric:
-        return Number(value) || 0;
+        return Number(value) || undefined;
       case AttributeType.boolean:
         return value ? JSON.parse(value) : false;
       default:

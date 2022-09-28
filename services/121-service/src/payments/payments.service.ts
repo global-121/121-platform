@@ -350,7 +350,9 @@ export class PaymentsService {
     const paymentTransactions = transactions.filter(
       transaction => transaction.payment === payment,
     );
-    const instructions = [];
+    const csvInstructions = [];
+    let xmlInstructions: string;
+
     let fileType: ExportFileType;
 
     for await (const transaction of paymentTransactions) {
@@ -363,7 +365,7 @@ export class PaymentsService {
           registration,
           transaction,
         );
-        instructions.push(instruction);
+        csvInstructions.push(instruction);
         if (!fileType) {
           fileType = ExportFileType.csv;
         }
@@ -377,13 +379,23 @@ export class PaymentsService {
           fileType = ExportFileType.excel;
         }
         if (instruction) {
-          instructions.push(instruction);
+          csvInstructions.push(instruction);
+        }
+      }
+      if (registration.fsp.fsp === FspName.vodacash) {
+        xmlInstructions = await this.vodacashService.getFspInstructions(
+          registration,
+          transaction,
+          xmlInstructions,
+        );
+        if (!fileType) {
+          fileType = ExportFileType.xml;
         }
       }
     }
 
     return {
-      data: instructions,
+      data: fileType === ExportFileType.xml ? xmlInstructions : csvInstructions,
       fileType: fileType,
     };
   }

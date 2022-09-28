@@ -1,6 +1,6 @@
 {
   "fsp": "VodaCash",
-  "integrationType": "api",
+  "integrationType": "xml",
   "fspDisplayName": {
     "en": "Vodacash",
     "am_ET": "VodaCash"

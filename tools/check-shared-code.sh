@@ -45,9 +45,7 @@ function check_shared_code() {
 
   compare_code "_set-env-variables.js" "$repo_pa" "$repo_aw"
   compare_code "_set-env-variables.js" "$repo_pa" "$repo_ho"
-  compare_code "_convert-styles-to-async.js" "$repo_pa" "$repo_aw"
   compare_code "_check-icons-in-use.js" "$repo_pa" "$repo_aw"
-  compare_code "ngx-translate-lint.config.json" "$repo_pa" "$repo_aw"
 
   compare_code "src/app/shared/dialogue-turn/" "$repo_pa" "$repo_aw"
   compare_code "src/app/shared/q-and-a-set/" "$repo_pa" "$repo_aw"
@@ -72,6 +70,8 @@ function check_shared_code() {
 
   compare_code ".editorconfig" "$repo_pa" "$repo_aw"
   compare_code ".editorconfig" "$repo_pa" "$repo_ho"
+  compare_code ".node-version" "$repo_pa" "$repo_aw"
+  compare_code ".node-version" "$repo_pa" "$repo_ho"
   compare_code ".prettierignore" "$repo_pa" "$repo_aw"
   compare_code ".prettierignore" "$repo_pa" "$repo_ho"
   compare_code ".prettierrc.yml" "$repo_pa" "$repo_aw"

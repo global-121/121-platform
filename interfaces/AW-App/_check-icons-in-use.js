@@ -59,7 +59,9 @@ fromDir('www', /\.(js|css|html)$/, checkIfUsed);
 const iconsUsed = iconList.filter((icon) => icon.used === true);
 console.log(`\nFound ${iconsUsed.length} icons in use.\n`);
 
-const iconFileNames = iconsUsed.map((icon) => icon.iconName);
+const iconFileNames = iconsUsed
+  .map((icon) => icon.iconName)
+  .sort((a, b) => (a > b ? 1 : a < b ? -1 : 0));
 const globLine = `"glob": "**/{${iconFileNames.join(',')}}.svg",`;
 
 // Check if angular.json-glob line is as it should be...

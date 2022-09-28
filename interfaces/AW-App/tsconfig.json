@@ -8,7 +8,13 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "incremental": true,
-    "lib": ["es2018", "dom"],
+    "lib": [
+      "es2019",
+      "es2020.promise",
+      "es2020.bigint",
+      "es2020.string",
+      "DOM"
+    ],
     "module": "es2020",
     "moduleResolution": "node",
     "noUnusedLocals": true,
@@ -19,5 +25,10 @@
     "strict": false,
     "target": "es2015",
     "typeRoots": ["node_modules/@types"]
+  },
+  "angularCompilerOptions": {
+    "strictDomEventTypes": false,
+    "strictTemplates": false,
+    "strictInjectionParameters": true
   }
 }

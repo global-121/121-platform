@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BulkPaymentRequest>
+  <Customer>
+    <Identifier IdentifierType="O2CLink" IdentifierValue="3242323423"></Identifier>
+    <KYCValidation FieldType="[Personal Details][First Name]" FieldValue="ewrweewwre"></KYCValidation>
+    <Amount Value="6565"></Amount>
+  </Customer>
+</BulkPaymentRequest>

@@ -7,7 +7,7 @@
     {{ 'personal.create-account.introduction' | translate }}
   </p>
 </dialogue-turn>
-<dialogue-turn isConnected="true">
+<dialogue-turn [isConnected]="true">
   <p>
     <play-text-audio
       key="personal.create-account.username-password"

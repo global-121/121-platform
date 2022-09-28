@@ -27,7 +27,7 @@ export class PhoneNumberInputComponent {
   public value: string;
 
   @Input()
-  public placeholder: string;
+  public placeholder: string | undefined;
 
   @Input()
   public disabled: boolean;
@@ -75,7 +75,7 @@ export class PhoneNumberInputComponent {
 
     await this.programService.lookupPhoneNumber(phoneNumber).then(
       (result) => {
-        // Onlyu if there is a valid result, use that:
+        // Only if there is a valid result, use that:
         if (typeof result.result !== 'undefined') {
           isValid = result.result;
           return;

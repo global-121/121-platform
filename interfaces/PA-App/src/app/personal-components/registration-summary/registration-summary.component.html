@@ -38,9 +38,9 @@
     </p>
   </dialogue-turn>
   <dialogue-turn
-    isConnected="true"
-    *ngIf="validation && meetingDocuments?.length"
-    [isSpoken]="validation && meetingDocuments?.length"
+    [isConnected]="true"
+    *ngIf="validation && meetingDocuments?.length > 0"
+    [isSpoken]="validation && meetingDocuments?.length > 0"
   >
     <p>
       <play-text-audio
@@ -57,7 +57,7 @@
     </ul>
   </dialogue-turn>
   <dialogue-turn
-    isConnected="true"
+    [isConnected]="true"
     *ngIf="validation && showQrCode"
     [isSpoken]="validation && showQrCode"
   >
