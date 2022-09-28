@@ -64,10 +64,8 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   async initNew() {
     this.conversationService.startLoading();
 
-    await this.checkValidation();
-
-    await this.getReferenceId();
     await this.getProgram();
+    await this.getReferenceId();
 
     this.registrationStatus = await this.programsService.postRegistration(
       this.referenceId,
@@ -88,12 +86,6 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     this.validation = this.data.validation;
     this.registrationStatus = this.data.registrationStatus;
     this.meetingDocuments = this.data.meetingDocuments;
-  }
-
-  async checkValidation() {
-    const currentProgram = await this.paData.getCurrentProgram();
-    this.validation = currentProgram.validation;
-    this.validationByQr = currentProgram.validationByQr;
   }
 
   private async shouldShowQrCode() {
@@ -117,6 +109,9 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   }
 
   private getProgramProperties(program: Program) {
+    this.validation = program.validation;
+    this.validationByQr = program.validationByQr;
+
     const documents = this.translatableString.get(program.meetingDocuments);
     this.meetingDocuments = this.buildDocumentsList(documents);
   }
