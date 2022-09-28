@@ -117,6 +117,10 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   }
 
   private buildDocumentsList(documents: string): string[] {
+    if (!documents) {
+      return [];
+    }
+
     return documents.split(';');
   }
 
