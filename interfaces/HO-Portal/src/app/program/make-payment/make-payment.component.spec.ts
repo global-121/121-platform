@@ -9,18 +9,20 @@ describe('MakePaymentComponent', () => {
   let component: MakePaymentComponent;
   let fixture: ComponentFixture<MakePaymentComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [MakePaymentComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        RouterTestingModule,
-        HttpClientTestingModule,
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [MakePaymentComponent],
+        imports: [
+          TranslateModule.forRoot(),
+          RouterTestingModule,
+          HttpClientTestingModule,
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MakePaymentComponent);

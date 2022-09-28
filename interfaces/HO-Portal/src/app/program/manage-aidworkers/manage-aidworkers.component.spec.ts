@@ -13,14 +13,16 @@ describe('ManageAidworkersComponent', () => {
 
   const mockProgramId = 1;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ManageAidworkersComponent],
-      imports: [TranslateModule.forRoot()],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(ProgramsServiceApiService)],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ManageAidworkersComponent],
+        imports: [TranslateModule.forRoot()],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [provideMagicalMock(ProgramsServiceApiService)],
+      }).compileComponents();
+    }),
+  );
 
   let mockProgramsApi: jasmine.SpyObj<any>;
 

@@ -18,37 +18,39 @@ describe('HeaderComponent', () => {
 
   const mockProgramId = 1;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [HeaderComponent],
-      imports: [TranslateModule.forRoot(), RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              params: {
-                id: mockProgramId,
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [HeaderComponent],
+        imports: [TranslateModule.forRoot(), RouterTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              snapshot: {
+                params: {
+                  id: mockProgramId,
+                },
               },
             },
           },
-        },
-        provideMagicalMock(AuthService),
-        provideMagicalMock(ProgramsServiceApiService),
-        provideMagicalMock(TranslatableStringService),
-      ],
-    }).compileComponents();
+          provideMagicalMock(AuthService),
+          provideMagicalMock(ProgramsServiceApiService),
+          provideMagicalMock(TranslatableStringService),
+        ],
+      }).compileComponents();
 
-    mockProgramsApi = TestBed.inject(ProgramsServiceApiService);
-    mockProgramsApi.getProgramById.and.returnValue(
-      new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
-    );
+      mockProgramsApi = TestBed.inject(ProgramsServiceApiService);
+      mockProgramsApi.getProgramById.and.returnValue(
+        new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
+      );
 
-    fixture = TestBed.createComponent(HeaderComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  }));
+      fixture = TestBed.createComponent(HeaderComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    }),
+  );
 
   it('should create', async () => {
     expect(component).toBeTruthy();

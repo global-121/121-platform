@@ -14,19 +14,21 @@ describe('LoginPage', () => {
     authenticationState$: of(null),
   };
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [LoginPage],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [FormsModule, TranslateModule.forRoot()],
-      providers: [
-        {
-          provide: AuthService,
-          useValue: authServiceMock,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [LoginPage],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [FormsModule, TranslateModule.forRoot()],
+        providers: [
+          {
+            provide: AuthService,
+            useValue: authServiceMock,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoginPage);

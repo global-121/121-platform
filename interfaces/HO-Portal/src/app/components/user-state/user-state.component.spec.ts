@@ -21,19 +21,21 @@ describe('UserStateComponent', () => {
     authenticationState$: of(mockUser),
   };
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserStateComponent],
-      providers: [
-        {
-          provide: AuthService,
-          useValue: authServiceMock,
-        },
-      ],
-      imports: [TranslateModule.forRoot(), RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UserStateComponent],
+        providers: [
+          {
+            provide: AuthService,
+            useValue: authServiceMock,
+          },
+        ],
+        imports: [TranslateModule.forRoot(), RouterTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UserStateComponent);

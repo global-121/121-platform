@@ -7,12 +7,14 @@ describe('ConfirmPromptComponent', () => {
   let component: ConfirmPromptComponent;
   let fixture: ComponentFixture<ConfirmPromptComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ConfirmPromptComponent],
-      imports: [TranslateModule.forRoot(), IonicModule],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ConfirmPromptComponent],
+        imports: [TranslateModule.forRoot(), IonicModule],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ConfirmPromptComponent);

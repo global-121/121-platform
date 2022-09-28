@@ -29,16 +29,10 @@
         lines="none"
         class="ion-justify-content-between ion-align-items-center table-filter-popover--multiple-choice--item"
       >
-        <ion-col
-          size="7"
-          class="ion-no-padding"
-        >
+        <ion-col size="7" class="ion-no-padding">
           <ion-label class="ion-text-wrap">{{ option.label }}</ion-label>
         </ion-col>
-        <ion-col
-          size="4"
-          class="ion-no-padding"
-        >
+        <ion-col size="4" class="ion-no-padding">
           <ion-row class="ion-justify-content-end">
             <ion-label color="medium">{{ option.count }}</ion-label>
             <ion-checkbox
@@ -50,10 +44,7 @@
       </ion-row>
     </ion-grid>
     <div class="ion-padding table-filter-popover--multiple-choice--note">
-      <ion-label
-        color="medium"
-        class="ion-text-wrap"
-      >
+      <ion-label color="medium" class="ion-text-wrap">
         <small>{{
           'page.program.program-people-affected.filter-btn.multiple-choice-hidden-options'
             | translate
@@ -62,22 +53,13 @@
     </div>
   </ng-container>
   <ion-footer class="ion-text-end ion-padding ion-no-margin">
-    <ion-button
-      (click)="cancel()"
-      fill="clear"
-      color="danger"
-      size="small"
-    >
+    <ion-button (click)="cancel()" fill="clear" color="danger" size="small">
       {{
         'page.program.program-people-affected.filter-btn.common.cancel-btn'
           | translate
       }}
     </ion-button>
-    <ion-button
-      (click)="applyFilter()"
-      size="small"
-      class="ion-margin-start"
-    >
+    <ion-button (click)="applyFilter()" size="small" class="ion-margin-start">
       {{
         'page.program.program-people-affected.filter-btn.common.apply-btn'
           | translate

@@ -11,18 +11,24 @@ describe('UpdateFspComponent', () => {
   let component: UpdateFspComponent;
   let fixture: ComponentFixture<UpdateFspComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [UpdateFspComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        FormsModule,
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
-      ],
-      providers: [ProgramsServiceApiService, AlertController, TranslateService],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UpdateFspComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [
+          FormsModule,
+          HttpClientTestingModule,
+          TranslateModule.forRoot(),
+        ],
+        providers: [
+          ProgramsServiceApiService,
+          AlertController,
+          TranslateService,
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UpdateFspComponent);

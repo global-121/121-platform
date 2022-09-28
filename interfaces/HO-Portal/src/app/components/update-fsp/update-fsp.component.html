@@ -1,8 +1,4 @@
-<form
-  method="POST"
-  #updatePropertyForm="ngForm"
-  (ngSubmit)="updateChosenFsp()"
->
+<form method="POST" #updatePropertyForm="ngForm" (ngSubmit)="updateChosenFsp()">
   <div class="input-item ion-padding-vertical">
     <label class="input-item--label text-bold">
       {{ label }}
@@ -30,10 +26,7 @@
           </ion-select>
         </ion-item>
         <ng-container *ngIf="propertyModel != startingFspName">
-          <ion-text
-            class="ion-padding"
-            *ngIf="attributeDifference.length > 0"
-          >
+          <ion-text class="ion-padding" *ngIf="attributeDifference.length > 0">
             {{
               'page.program.program-people-affected.edit-person-affected-popup.fspChangeWarning'
                 | translate

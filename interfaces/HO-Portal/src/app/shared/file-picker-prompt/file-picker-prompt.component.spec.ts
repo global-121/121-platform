@@ -10,13 +10,15 @@ describe('FilePickerPromptComponent', () => {
   let component: FilePickerPromptComponent;
   let fixture: ComponentFixture<FilePickerPromptComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [FilePickerPromptComponent],
-      imports: [TranslateModule.forRoot(), IonicModule, FormsModule],
-      providers: [provideMagicalMock(ProgramsServiceApiService)],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [FilePickerPromptComponent],
+        imports: [TranslateModule.forRoot(), IonicModule, FormsModule],
+        providers: [provideMagicalMock(ProgramsServiceApiService)],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FilePickerPromptComponent);

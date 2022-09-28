@@ -16,21 +16,23 @@ describe('ProgramPayoutComponent', () => {
 
   const mockProgramId = 1;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProgramPayoutComponent],
-      imports: [TranslateModule.forRoot(), FormsModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMagicalMock(AuthService),
-        provideMagicalMock(ProgramsServiceApiService),
-        provideMagicalMock(PastPaymentsService),
-        {
-          provide: AlertController,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProgramPayoutComponent],
+        imports: [TranslateModule.forRoot(), FormsModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          provideMagicalMock(AuthService),
+          provideMagicalMock(ProgramsServiceApiService),
+          provideMagicalMock(PastPaymentsService),
+          {
+            provide: AlertController,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   let mockAuthService: jasmine.SpyObj<any>;
   let mockProgramsApi: jasmine.SpyObj<any>;

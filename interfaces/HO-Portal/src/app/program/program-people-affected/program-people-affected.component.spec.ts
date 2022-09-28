@@ -28,25 +28,27 @@ describe('ProgramPeopleAffectedComponent', () => {
 
   const mockProgramId = 1;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ProgramPeopleAffectedComponent],
-      imports: [TranslateModule.forRoot(), FormsModule, RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMagicalMock(AuthService),
-        provideMagicalMock(ProgramsServiceApiService),
-        {
-          provide: ModalController,
-          useValue: modalCtrlSpy,
-        },
-        {
-          provide: PopoverController,
-          useValue: popoverCtrlSpy,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ProgramPeopleAffectedComponent],
+        imports: [TranslateModule.forRoot(), FormsModule, RouterTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          provideMagicalMock(AuthService),
+          provideMagicalMock(ProgramsServiceApiService),
+          {
+            provide: ModalController,
+            useValue: modalCtrlSpy,
+          },
+          {
+            provide: PopoverController,
+            useValue: popoverCtrlSpy,
+          },
+        ],
+      }).compileComponents();
+    }),
+  );
 
   let mockProgramsApi: jasmine.SpyObj<any>;
 

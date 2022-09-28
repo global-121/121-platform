@@ -17,14 +17,16 @@ describe('MetricsComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let testHost: TestHostComponent;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [MetricsComponent, TestHostComponent],
-      imports: [TranslateModule.forRoot()],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(TranslatableStringService)],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [MetricsComponent, TestHostComponent],
+        imports: [TranslateModule.forRoot()],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [provideMagicalMock(TranslatableStringService)],
+      }).compileComponents();
+    }),
+  );
 
   let mockTranslatableStringService: jasmine.SpyObj<any>;
 

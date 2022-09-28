@@ -25,17 +25,19 @@ describe('PhaseNextComponent', () => {
     active: true,
   };
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [PhaseNextComponent],
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMagicalMock(ProgramsServiceApiService),
-        provideMagicalMock(ProgramPhaseService),
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [PhaseNextComponent],
+        imports: [HttpClientTestingModule, RouterTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          provideMagicalMock(ProgramsServiceApiService),
+          provideMagicalMock(ProgramPhaseService),
+        ],
+      }).compileComponents();
+    }),
+  );
 
   let mockProgramsApi: jasmine.SpyObj<any>;
   let mockProgramPhaseService: jasmine.SpyObj<any>;

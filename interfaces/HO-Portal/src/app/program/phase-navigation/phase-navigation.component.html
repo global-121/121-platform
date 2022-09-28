@@ -1,7 +1,4 @@
-<span
-  *ngFor="let phase of programPhases"
-  class="navigation-button"
->
+<span *ngFor="let phase of programPhases" class="navigation-button">
   <ion-button
     [routerLink]="['/program', programId, phase.name]"
     routerLinkActive
@@ -14,8 +11,5 @@
     {{ phase.label }}
   </ion-button>
 
-  <span
-    *ngIf="rlaPhase.isActive"
-    class="navigation-button--indicator"
-  ></span>
+  <span *ngIf="rlaPhase.isActive" class="navigation-button--indicator"></span>
 </span>

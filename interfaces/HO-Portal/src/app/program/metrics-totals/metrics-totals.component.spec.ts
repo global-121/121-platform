@@ -45,19 +45,21 @@ describe('MetricsTotalsComponent', () => {
 
   const fixtureProgram = apiProgramsMock.programs[0];
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [MetricsTotalsComponent, TestHostComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        FormsModule,
-        SharedModule,
-        NoopAnimationsModule,
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(ProgramsServiceApiService)],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [MetricsTotalsComponent, TestHostComponent],
+        imports: [
+          TranslateModule.forRoot(),
+          FormsModule,
+          SharedModule,
+          NoopAnimationsModule,
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [provideMagicalMock(ProgramsServiceApiService)],
+      }).compileComponents();
+    }),
+  );
 
   let mockProgramsApi: jasmine.SpyObj<any>;
 

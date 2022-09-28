@@ -9,19 +9,10 @@
       class="ion-justify-content-center ion-align-items-center full-height"
     >
       <ion-col size="4"></ion-col>
-      <ion-col
-        size="12"
-        size-lg="4"
-      >
-        <div
-          id="portal-title"
-          class="ion-margin-vertical"
-        >
+      <ion-col size="12" size-lg="4">
+        <div id="portal-title" class="ion-margin-vertical">
           <div id="logo-container">
-            <img
-              src="./assets/img/121-logo.png"
-              alt="121"
-            />
+            <img src="./assets/img/121-logo.png" alt="121" />
           </div>
           <h1 class="text-uppercase">
             {{ 'page.login.portalTitle'|translate }}
@@ -109,9 +100,7 @@
                 </ion-input>
               </div>
               <div class="validation-message">
-                <ion-note
-                  color="danger"
-                  *ngIf="!samePassword"
+                <ion-note color="danger" *ngIf="!samePassword"
                   ><small
                     ><strong
                       >{{ "page.user.notification-messages.different-passwords"
@@ -134,10 +123,7 @@
             </div>
           </form>
         </div>
-        <div
-          *ngIf="passwordChanged"
-          class="ion-text-center"
-        >
+        <div *ngIf="passwordChanged" class="ion-text-center">
           <ion-icon
             name="checkmark-circle"
             color="success"

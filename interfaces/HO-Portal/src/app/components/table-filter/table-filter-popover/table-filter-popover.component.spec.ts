@@ -7,16 +7,18 @@ describe('TableFilterPopoverComponent', () => {
   let component: TableFilterPopoverComponent;
   let fixture: ComponentFixture<TableFilterPopoverComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [TableFilterPopoverComponent],
-      imports: [IonicModule.forRoot(), TranslateModule.forRoot()],
-    }).compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TableFilterPopoverComponent],
+        imports: [IonicModule.forRoot(), TranslateModule.forRoot()],
+      }).compileComponents();
 
-    fixture = TestBed.createComponent(TableFilterPopoverComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  }));
+      fixture = TestBed.createComponent(TableFilterPopoverComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    }),
+  );
 
   it('should create', () => {
     expect(component).toBeTruthy();

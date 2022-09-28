@@ -22,11 +22,7 @@
     resizeable="false"
     draggable="false"
   >
-    <ng-template
-      let-row="row"
-      let-value="value"
-      ngx-datatable-cell-template
-    >
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
       <ng-container *ngIf="column.prop === 'delete'; else elseBlock">
         <confirm-prompt
           (confirm)="deleteAidworker(row)"
@@ -35,11 +31,7 @@
           size="small"
           fill="outline"
         >
-          <ion-icon
-            size="small"
-            slot="icon-only"
-            name="trash"
-          ></ion-icon>
+          <ion-icon size="small" slot="icon-only" name="trash"></ion-icon>
         </confirm-prompt>
       </ng-container>
       <ng-template #elseBlock>
@@ -84,11 +76,7 @@
       "
     ></password-toggle-input>
     <ion-button type="submit">
-      <ion-icon
-        name="person-add"
-        size="small"
-        slot="start"
-      ></ion-icon>
+      <ion-icon name="person-add" size="small" slot="start"></ion-icon>
       {{ 'page.program.manage-aidworkers.confirm' | translate }}
     </ion-button>
   </ion-row>

@@ -7,11 +7,7 @@
         [attr.title]="'common.cancel' | translate"
         [attr.aria-label]="'common.cancel' | translate"
       >
-        <ion-icon
-          name="close"
-          slot="icon-only"
-          aria-hidden="true"
-        ></ion-icon>
+        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -45,18 +41,10 @@
 <ion-footer>
   <ion-toolbar>
     <ion-buttons slot="primary">
-      <ion-button
-        fill="clear"
-        color="danger"
-        (click)="closeModal()"
-      >
+      <ion-button fill="clear" color="danger" (click)="closeModal()">
         {{ 'common.cancel' | translate }}
       </ion-button>
-      <ion-button
-        fill="solid"
-        color="primary"
-        (click)="submitConfirm()"
-      >
+      <ion-button fill="solid" color="primary" (click)="submitConfirm()">
         {{ 'common.ok' | translate }}
       </ion-button>
     </ion-buttons>

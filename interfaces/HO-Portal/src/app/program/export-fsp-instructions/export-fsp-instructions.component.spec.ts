@@ -13,18 +13,20 @@ describe('ExportFspInstructionsComponent', () => {
 
   const mockProgramId = 1;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ExportFspInstructionsComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule,
-        RouterTestingModule,
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(ProgramsServiceApiService)],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ExportFspInstructionsComponent],
+        imports: [
+          TranslateModule.forRoot(),
+          HttpClientTestingModule,
+          RouterTestingModule,
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [provideMagicalMock(ProgramsServiceApiService)],
+      }).compileComponents();
+    }),
+  );
 
   let mockProgramsApi: jasmine.SpyObj<any>;
 

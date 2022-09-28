@@ -13,22 +13,24 @@ describe('DashboardPage', () => {
   let component: DashboardPage;
   let fixture: ComponentFixture<DashboardPage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [DashboardPage],
-      imports: [
-        TranslateModule.forRoot(),
-        RouterTestingModule,
-        SharedModule,
-        NoopAnimationsModule,
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMagicalMock(ProgramsServiceApiService),
-        provideMagicalMock(ProgramPhaseService),
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [DashboardPage],
+        imports: [
+          TranslateModule.forRoot(),
+          RouterTestingModule,
+          SharedModule,
+          NoopAnimationsModule,
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          provideMagicalMock(ProgramsServiceApiService),
+          provideMagicalMock(ProgramPhaseService),
+        ],
+      }).compileComponents();
+    }),
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardPage);

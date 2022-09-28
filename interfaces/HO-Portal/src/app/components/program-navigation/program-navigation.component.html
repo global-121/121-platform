@@ -17,10 +17,7 @@
           class="navigation-button--indicator"
         ></span>
       </span>
-      <span
-        *ngIf="showManageAidworkers"
-        class="navigation-button"
-      >
+      <span *ngIf="showManageAidworkers" class="navigation-button">
         <ion-button
           [disabled]="!canManageAidWorkers()"
           [routerLink]="['/program', programId, 'aid-workers']"
