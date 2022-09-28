@@ -100,19 +100,19 @@ export class ProgramsServiceApiService {
       });
   }
 
-  getAllProgramsStats(): Promise<ProgramStats[]> {
-    // MOCK DATA
-    return new Promise((resolve) =>
-      resolve([
-        {
-          programId: '1',
-          targetedPeople: 6754,
-          includedPeople: 34,
-          totalBudget: 5425000,
-          spentMoney: 2324000,
-        },
-      ]),
-    );
+  async getAllProgramsStats(programIds: number[]): Promise<ProgramStats[]> {
+    const programStats: ProgramStats[] = [];
+
+    for (const programId of programIds) {
+      const stats = await this.apiService.get(
+        environment.url_121_service_api,
+        `/export-metrics/program-stats-summary/${programId}`,
+      );
+
+      programStats.push(stats);
+    }
+
+    return programStats;
   }
 
   getProgramById(programId: number | string): Promise<Program> {

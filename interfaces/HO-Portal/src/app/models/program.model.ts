@@ -36,7 +36,7 @@ export class Program {
 }
 
 export class ProgramStats {
-  programId: string;
+  programId: number;
   targetedPeople: number;
   includedPeople: number;
   totalBudget: number;

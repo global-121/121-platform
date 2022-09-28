@@ -19,7 +19,9 @@ export class ProgramsListComponent implements OnInit {
 
   async ngOnInit() {
     const programs = await this.programsService.getAllPrograms();
-    this.programStats = await this.programsService.getAllProgramsStats();
+    this.programStats = await this.programsService.getAllProgramsStats(
+      programs.map((p) => p.id),
+    );
     this.items = this.translateProperties(programs);
   }
 
@@ -33,6 +35,6 @@ export class ProgramsListComponent implements OnInit {
   }
 
   public getProgramStatsById(programId): ProgramStats {
-    return this.programStats.find((p) => p.programId === String(programId));
+    return this.programStats.find((p) => p.programId === programId);
   }
 }
