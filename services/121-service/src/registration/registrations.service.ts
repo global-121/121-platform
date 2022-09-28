@@ -402,21 +402,23 @@ export class RegistrationsService {
     await this.registrationRepository.save(registration);
   }
 
-  public async register(referenceId: string): Promise<void> {
+  public async register(
+    referenceId: string,
+  ): Promise<ReferenceIdDto | boolean> {
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
       ['program'],
     );
 
     if (
-      RegistrationStatusEnum.startedRegistration !==
-      registration.registrationStatus
+      registration.registrationStatus !==
+      RegistrationStatusEnum.startedRegistration
     ) {
-      const errors = `Registration status is not 'startedRegistration'`;
+      const errors = `Registration status is not '${RegistrationStatusEnum.startedRegistration}'`;
       throw new HttpException(errors, HttpStatus.NOT_FOUND);
     }
 
-    await this.setRegistrationStatus(
+    const registerResult = await this.setRegistrationStatus(
       referenceId,
       RegistrationStatusEnum.registered,
     );
@@ -428,6 +430,14 @@ export class RegistrationsService {
       null,
       RegistrationStatusEnum.registered,
     );
+    if (
+      !registerResult ||
+      registerResult.registrationStatus !== RegistrationStatusEnum.registered
+    ) {
+      return false;
+    }
+
+    return { referenceId: registerResult.referenceId };
   }
 
   public async importBulk(

@@ -157,7 +157,12 @@ export class ProgramsServiceApiService {
         referenceId,
       })
       .toPromise()
-      .then(() => true)
+      .then((response) => {
+        if (response && response.referenceId === referenceId) {
+          return true;
+        }
+        return response;
+      })
       .catch(() => false);
   }
 

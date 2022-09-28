@@ -164,7 +164,9 @@ export class RegistrationsController {
       'Person Affected switched from started registration to registered for program',
   })
   @Post('/register')
-  public async register(@Body() referenceIdDto: ReferenceIdDto): Promise<void> {
+  public async register(
+    @Body() referenceIdDto: ReferenceIdDto,
+  ): Promise<ReferenceIdDto | boolean> {
     return await this.registrationsService.register(referenceIdDto.referenceId);
   }
 

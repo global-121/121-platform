@@ -86,8 +86,8 @@
     </div>
   </dialogue-turn>
   <dialogue-turn
-    *ngIf="!validation"
-    [isSpoken]="!validation"
+    *ngIf="!validation && !!registrationStatus"
+    [isSpoken]="!validation && !!registrationStatus"
   >
     <p>
       <play-text-audio
