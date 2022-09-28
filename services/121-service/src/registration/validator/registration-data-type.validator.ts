@@ -59,7 +59,7 @@ export class RegistrationDataTypeValidator
 
   private createErrorMessageType(type, value, attribute): void {
     const valueString = Array.isArray(value) ? JSON.stringify(value) : value;
-    this.message = `The value '${valueString} given for the attribute '${attribute}' does not have the corect type: '${type}'`;
+    this.message = `The value '${valueString}' given for the attribute '${attribute}' does not have the correct format for type '${type}'`;
   }
 
   public defaultMessage(args: ValidationArguments): string {
