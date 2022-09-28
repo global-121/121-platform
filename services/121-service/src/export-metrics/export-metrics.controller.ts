@@ -25,6 +25,7 @@ import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { PermissionsGuard } from '../permissions.guard';
 import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
+import { ProgramStats } from './dto/program-stats.dto';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('export-metrics')
@@ -149,6 +150,20 @@ export class ExportMetricsController {
     return await this.exportMetricsService.getTotalTransferAmounts(
       Number(params.programId),
       referenceIdsDto,
+    );
+  }
+
+  @Permissions(PermissionEnum.ProgramMetricsREAD)
+  @ApiOperation({ summary: 'Get program stats summary' })
+  @ApiParam({ name: 'programId', required: true })
+  @ApiResponse({
+    status: 200,
+    description: 'Program stats summary',
+  })
+  @Get('program-stats-summary/:programId')
+  public async getProgramStats(@Param() params): Promise<ProgramStats> {
+    return await this.exportMetricsService.getProgramStats(
+      Number(params.programId),
     );
   }
 }

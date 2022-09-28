@@ -38,6 +38,7 @@ import { TransactionsService } from '../payments/transactions/transactions.servi
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
+import { ProgramStats } from './dto/program-stats.dto';
 
 @Injectable()
 export class ExportMetricsService {
@@ -1084,6 +1085,29 @@ export class ExportMetricsService {
     return {
       registrations: registrations.length,
       transferAmounts: sum,
+    };
+  }
+
+  public async getProgramStats(programId: number): Promise<ProgramStats> {
+    const registrations = await this.registrationRepository.find({
+      where: {
+        program: { id: programId },
+      },
+    });
+
+    const targetedPeople = registrations.length;
+    const includedPeople = registrations.filter(
+      r => r.registrationStatus === RegistrationStatusEnum.included,
+    ).length;
+    // MOCK DATA
+    const totalBudget = 5425000;
+    const spentMoney = 2324000;
+    return {
+      programId,
+      targetedPeople,
+      includedPeople,
+      totalBudget,
+      spentMoney,
     };
   }
 }
