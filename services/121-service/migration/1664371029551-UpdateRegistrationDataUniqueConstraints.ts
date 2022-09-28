@@ -1,8 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class DropProgramAnswerUniqueConstraint1663678995291
+export class UpdateRegistrationDataUniqueConstraints1664371029551
   implements MigrationInterface {
-  name = 'DropProgramAnswerUniqueConstraint1663678995291';
+  name = 'UpdateRegistrationDataUniqueConstraints1664371029551';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -11,9 +11,21 @@ export class DropProgramAnswerUniqueConstraint1663678995291
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration_data" DROP CONSTRAINT "registrationFspQuestionUnique"`,
     );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration_data" ADD CONSTRAINT "registrationFspQuestionUnique" UNIQUE ("registrationId", "fspQuestionId", "value")`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration_data" ADD CONSTRAINT "registrationProgramQuestionUnique" UNIQUE ("registrationId", "programQuestionId", "value")`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration_data" DROP CONSTRAINT "registrationProgramQuestionUnique"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration_data" DROP CONSTRAINT "registrationFspQuestionUnique"`,
+    );
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration_data" ADD CONSTRAINT "registrationProgramQuestionUnique" UNIQUE ("registrationId", "programQuestionId")`,
     );

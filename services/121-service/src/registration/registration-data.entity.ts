@@ -13,6 +13,16 @@ import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { Base121Entity } from '../base.entity';
 import { MonitoringQuestionEntity } from '../instance/monitoring-question.entity';
 
+@Unique('registrationProgramQuestionUnique', [
+  'registrationId',
+  'programQuestionId',
+  'value',
+])
+@Unique('registrationFspQuestionUnique', [
+  'registrationId',
+  'fspQuestionId',
+  'value',
+])
 @Unique('registrationProgramCustomAttributeUnique', [
   'registrationId',
   'programCustomAttributeId',
