@@ -140,7 +140,7 @@
     {
       "name": "skills",
       "label": {
-        "en": "2. My skills include .. ?"
+        "en": "3. My skills include .. ?"
       },
       "answerType": "multi-select",
       "questionType": "standard",

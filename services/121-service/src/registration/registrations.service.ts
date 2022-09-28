@@ -1057,6 +1057,18 @@ export class RegistrationsService {
           registrations.push(registration);
         }
       }
+      if (matchingRegistrationData.length === 0) {
+        // It is also possible that phoneNumber is not a registration-data but only a registration-attribute (if phoneNumber is neither program- nor fsp-question)
+        const matchingRegistrations = await this.registrationRepository.find({
+          where: { phoneNumber: phoneNumber },
+        });
+        for (const matchingReg of matchingRegistrations) {
+          const registration = await this.getRegistrationFromReferenceId(
+            matchingReg.referenceId,
+          );
+          registrations.push(registration);
+        }
+      }
     }
     if (name) {
       const customAttributesNameNames = [
