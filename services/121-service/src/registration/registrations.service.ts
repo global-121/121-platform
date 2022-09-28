@@ -1358,7 +1358,7 @@ export class RegistrationsService {
             const answer = {
               code: code,
               value: [d.value],
-              lavel: d.fspQuestion.label['en'],
+              label: d.fspQuestion.label['en'],
             };
             fspAnswers[code] = answer;
           } else {
@@ -1368,7 +1368,7 @@ export class RegistrationsService {
           const answer = {
             code: code,
             value: d.value,
-            lavel: d.fspQuestion.label['en'],
+            label: d.fspQuestion.label['en'],
           };
           fspAnswers[code] = answer;
         }
