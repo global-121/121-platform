@@ -58,7 +58,7 @@ export class ConversationService {
   }
 
   startNewConversation() {
-    this.addSection(ValidationComponents.mainMenu);
+    this.addSection(ValidationComponents.selectProgram);
   }
 
   private addSection(sectionName) {

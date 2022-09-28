@@ -64,6 +64,13 @@ export class MainMenuComponent implements ValidationComponent {
         visible: true,
       },
       {
+        id: ValidationComponents.selectProgram,
+        option: this.translate.instant('validation.main-menu.select-program'),
+        disabled: false,
+        connectionRequired: false,
+        visible: true,
+      },
+      {
         id: ValidationComponents.uploadData,
         option: this.translate.instant('validation.main-menu.upload-data'),
         counter: pendingUploadCount,

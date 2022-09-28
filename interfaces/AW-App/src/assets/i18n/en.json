@@ -27,7 +27,8 @@
       "download-data": "Download validation data",
       "scan-qr": "Find Person Affected by QR-code",
       "find-by-phone": "Find Person Affected by phonenumber",
-      "upload-data": "Upload validation data"
+      "upload-data": "Upload validation data",
+      "select-program": "Select program"
     },
     "download-data": {
       "downloading": "Validation data is being downloaded. Wait a second.",
@@ -73,6 +74,10 @@
       "back-menu": "Back to main menu",
       "generic-error": "Something went wrong.",
       "conclusion": "The financial service provider data has been saved. Please make sure to upload it (now or when internet is available)."
+    },
+    "select-program": {
+      "introduction": "You can use this app to validate registrations for an aid program. Please select below.",
+      "no-published-programs": "There are currently no programs open for registration. Please return here later."
     }
   },
   "connection": {
