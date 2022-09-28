@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Length } from 'class-validator';
 import { CustomDataAttributes } from '../enum/custom-data-attributes';
+import { IsRegistrationDataValidType } from '../validator/registration-data-type.validator';
 
 export enum AdditionalAttributes {
   paymentAmountMultiplier = 'paymentAmountMultiplier',
@@ -20,5 +21,9 @@ export class UpdateAttributeDto {
   })
   public readonly attribute: Attributes | string;
   @ApiProperty({ example: 'new value' })
+  @IsRegistrationDataValidType({
+    referenceId: 'referenceId',
+    attribute: 'attribute',
+  })
   public readonly value: string | number | string[];
 }

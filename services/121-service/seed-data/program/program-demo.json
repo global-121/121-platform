@@ -177,5 +177,14 @@
       "export": ["all-people-affected", "included", "selected-for-validation"]
     }
   ],
+  "programCustomAttributes": [
+    {
+      "label": {
+        "en": "Knows nothing"
+      },
+      "name": "knowsNothing",
+      "type": "boolean"
+    }
+  ],
   "fullnameNamingConvention": ["name"]
 }
