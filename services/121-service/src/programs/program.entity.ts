@@ -3,10 +3,8 @@ import {
   AnswerTypes,
   CustomAttributeType,
 } from './../registration/enum/custom-data-attributes';
-import { FspQuestionEntity } from './../fsp/fsp-question.entity';
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   OneToMany,
   BeforeUpdate,
