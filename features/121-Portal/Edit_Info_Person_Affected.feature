@@ -22,7 +22,7 @@ Feature: Edit information on Person Affected
     Then a popup opens
     And in the title the ID-number of the Person Affected is mentioned
     And an input-field for the "paymentAmountMultiplier" and "phoneNumber" is shown
-    And an input-field for each Custom Attribute with type 'string', 'phoneNumer', 'dropdown' and 'date' (such as "namePartnerOrganization") is shown
+    And an input-field for each Custom Attribute with type 'string', 'phoneNumer', 'dropdown', 'multi-select' or 'date' is shown
     And an input-field for each FSP-attribute (such as "whatsappPhoneNumber") is shown
     And all input-fields have an accompanying "update" button which is enabled
     And the pop-up shows a dropdown-list for the current FSP is shown
@@ -113,6 +113,13 @@ Feature: Edit information on Person Affected
     And a feedback message with the specific requirements of the value is shown
     And the progress indicator changes into the update-button again
 
+  Scenario: Update 'multi-select' custom attributes to 'no options'
+    Given a logged-in user with "RegistrationPersonalREAD" permission
+    Given the user has opened the popup to edit information
+    Given an input-field for the attribute is shown
+    When the user deselects all options and presses the update-button
+    Then feedback is given that this is not allowed
+    
   Scenario: Update chosen FSP
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
