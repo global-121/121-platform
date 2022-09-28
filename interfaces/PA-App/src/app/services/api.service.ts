@@ -11,6 +11,7 @@ export enum ApiPath {
   personAffected = '/user/person-affected',
   phoneNumber = '/registrations/phone',
   registrations = '/registrations',
+  logout = '/user/logout',
 }
 
 @Injectable({

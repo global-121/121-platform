@@ -175,7 +175,7 @@ export class SyncService implements OnDestroy {
   private getCompleteRegistrations(tasks: SyncTask[]): number {
     return tasks.filter((task) => {
       return (
-        task.url === `${environment.url_121_service_api}/user/logout` &&
+        task.url === `${environment.url_121_service_api}${ApiPath.logout}` &&
         task.body.completedRegistration
       );
     }).length;

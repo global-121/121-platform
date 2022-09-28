@@ -20,7 +20,6 @@ export class ProgramsServiceApiService {
   ) {}
 
   getInstanceInformation(): Promise<InstanceData> {
-    console.log('getInstanceInformation() called... ');
     return this.apiService
       .get(environment.url_121_service_api, '/instance')
       .toPromise();
@@ -95,7 +94,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        '/people-affected/data-storage/' + type,
+        `${ApiPath.dataStorage}/${type}`,
         false,
       )
       .pipe(
