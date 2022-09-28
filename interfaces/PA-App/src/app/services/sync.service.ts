@@ -32,7 +32,7 @@ export class SyncService implements OnDestroy {
       passive: true,
     });
 
-    this.setBatchCountSubject(this.getExistingSyncTasks());
+    this.setBatchCount(this.getExistingSyncTasks());
   }
 
   ngOnDestroy() {
@@ -117,7 +117,7 @@ export class SyncService implements OnDestroy {
 
     tasks.push(syncTask);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-    this.setBatchCountSubject(tasks);
+    this.setBatchCount(tasks);
     console.log(
       `SyncService: Task added to queue. Tasks pending: ${tasks.length}`,
     );
@@ -155,7 +155,7 @@ export class SyncService implements OnDestroy {
       const index = syncTasks.findIndex((t) => t === task);
       syncTasks.splice(index, 1);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(syncTasks));
-      this.setBatchCountSubject(syncTasks);
+      this.setBatchCount(syncTasks);
 
       // Let the last request signal that "we're done for now"
       if (syncTasks.length === 0) {
@@ -166,7 +166,7 @@ export class SyncService implements OnDestroy {
     return allRequests$;
   }
 
-  private setBatchCountSubject(tasks: SyncTask[]) {
+  private setBatchCount(tasks: SyncTask[]) {
     this.batchCountSubject.next(
       tasks ? this.getCompleteRegistrations(tasks) : 0,
     );
