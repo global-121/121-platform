@@ -1,5 +1,5 @@
 <section *ngIf="isCanceled === false">
-  <dialogue-turn>
+  <dialogue-turn [isSpoken]="isCanceled === false">
     <p>
       <play-text-audio
         key="personal.set-notification-number.introduction1"
@@ -31,7 +31,10 @@
       </li>
     </ul>
   </dialogue-turn>
-  <dialogue-turn actor="self">
+  <dialogue-turn
+    actor="self"
+    [isSpoken]="isCanceled === false"
+  >
     <form (ngSubmit)="submitPhoneNumber(phone)">
       <p>
         <play-text-audio
