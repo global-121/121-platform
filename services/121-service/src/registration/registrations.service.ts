@@ -45,6 +45,7 @@ import { CustomAttributeType } from '../programs/dto/create-program-custom-attri
 import { ProgramService } from '../programs/programs.service';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { v4 as uuid } from 'uuid';
+import { CustomDataDto } from './dto/custom-data.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -229,6 +230,21 @@ export class RegistrationsService {
     });
     registration.fsp = fsp;
     return await this.registrationRepository.save(registration);
+  }
+
+  public async addRegistrationDataBulk(
+    dataArray: CustomDataDto[],
+  ): Promise<RegistrationEntity[]> {
+    const registrations = [];
+    for (const data of dataArray) {
+      const registration = await this.addRegistrationData(
+        data.referenceId,
+        data.key,
+        data.value,
+      );
+      registrations.push(registration);
+    }
+    return registrations;
   }
 
   public async addRegistrationData(

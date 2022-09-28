@@ -1,3 +1,9 @@
+import { ValidationInfo } from './dto/validation-info.dto';
+import {
+  AnswerTypes,
+  CustomAttributeType,
+} from './../registration/enum/custom-data-attributes';
+import { FspQuestionEntity } from './../fsp/fsp-question.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -6,6 +12,7 @@ import {
   BeforeUpdate,
   ManyToMany,
   JoinTable,
+  getConnection,
 } from 'typeorm';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
@@ -17,6 +24,8 @@ import { ProgramAidworkerAssignmentEntity } from './program-aidworker.entity';
 import { CascadeDeleteEntity } from '../base.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { Attribute } from '../registration/enum/custom-data-attributes';
+import { InstanceEntity } from '../instance/instance.entity';
+import { Attributes } from '../registration/dto/update-attribute.dto';
 
 @Entity('program')
 export class ProgramEntity extends CascadeDeleteEntity {
@@ -154,4 +163,91 @@ export class ProgramEntity extends CascadeDeleteEntity {
   // This is an array of ProgramQuestionEntity names that build up the full name of a PA.
   @Column('json', { nullable: true })
   public fullnameNamingConvention: JSON;
+
+  public async getValidationInfoForQuestionName(
+    name: string,
+  ): Promise<ValidationInfo> {
+    if (name === Attributes.paymentAmountMultiplier) {
+      return { type: AnswerTypes.numeric };
+    } else if (name === Attributes.phoneNumber) {
+      return { type: AnswerTypes.tel };
+    }
+
+    const repo = getConnection().getRepository(ProgramEntity);
+    const resultProgramQuestion = await repo
+      .createQueryBuilder('program')
+      .leftJoin('program.programQuestions', 'programQuestion')
+      .where('program.id = :programId', { programId: this.id })
+      .andWhere('programQuestion.name = :name', { name: name })
+      .select('"programQuestion"."answerType"', 'type')
+      .addSelect('"programQuestion"."options"', 'options')
+      .getRawOne();
+
+    const resultFspQuestion = await repo
+      .createQueryBuilder('program')
+      .leftJoin('program.financialServiceProviders', 'fsp')
+      .leftJoin('fsp.questions', 'question')
+      .where('program.id = :programId', { programId: this.id })
+      .andWhere('question.name = :name', { name: name })
+      .select('"question"."answerType"', 'type')
+      .addSelect('"question"."options"', 'options')
+      .getRawOne();
+
+    const resultProgramCustomAttribute = await repo
+      .createQueryBuilder('program')
+      .leftJoin('program.programCustomAttributes', 'programCustomAttribute')
+      .where('program.id = :programId', { programId: this.id })
+      .andWhere('programCustomAttribute.name = :name', { name: name })
+      .select('"programCustomAttribute".type', 'type')
+      .getRawOne();
+
+    const repoInstance = getConnection().getRepository(InstanceEntity);
+    const monitoringQuestion = await repoInstance
+      .createQueryBuilder('instance')
+      .leftJoin('instance.monitoringQuestion', 'question')
+      .andWhere('question.name = :name', { name: name })
+      .getOne();
+
+    const resultMonitoringQuestion = monitoringQuestion
+      ? AnswerTypes.text
+      : undefined;
+
+    if (
+      Number(!!resultProgramQuestion) +
+        Number(!!resultFspQuestion) +
+        Number(!!resultProgramCustomAttribute) +
+        Number(!!resultMonitoringQuestion) >
+      1
+    ) {
+      throw new Error(
+        'Found more than one fsp question, program question or  with the same name for program',
+      );
+    } else if (resultProgramQuestion && resultProgramQuestion.type) {
+      return {
+        type: resultProgramQuestion.type as AnswerTypes,
+        options: resultProgramQuestion.options,
+      };
+    } else if (resultFspQuestion && resultFspQuestion.type) {
+      return {
+        type: resultFspQuestion.type as AnswerTypes,
+        options: resultFspQuestion.options,
+      };
+    } else if (
+      resultProgramCustomAttribute &&
+      resultProgramCustomAttribute.type
+    ) {
+      return {
+        type: resultProgramCustomAttribute.type as CustomAttributeType,
+      };
+    } else if (
+      resultProgramCustomAttribute &&
+      resultProgramCustomAttribute.type
+    ) {
+      return {
+        type: resultMonitoringQuestion,
+      };
+    } else {
+      return new ValidationInfo();
+    }
+  }
 }

@@ -162,11 +162,13 @@ export class SelectFspComponent extends PersonalDirective {
     this.processInOrder(
       Object.values(this.customAttributeAnswers),
       (answer: Answer) =>
-        this.programsService.postRegistrationCustomAttribute(
-          this.referenceId,
-          answer.code,
-          answer.value,
-        ),
+        this.programsService.postRegistrationCustomAttributes([
+          {
+            referenceId: this.referenceId,
+            key: answer.code,
+            value: answer.value,
+          },
+        ]),
     )
       .then(
         () => {
