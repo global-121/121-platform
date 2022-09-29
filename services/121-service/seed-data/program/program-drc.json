@@ -38,6 +38,9 @@
   "notifications": {
     "en": {
       "registered": "This is a message from Help a Child DRC.\n\nWe have received your application for support.\n\nYou will receive another SMS with more information within 1 week."
+    },
+    "fr": {
+      "registered": "Ceci est un message de Help a Child DRC.\n\nNous avons reçu votre demande de soutien.\n\nVous recevrez un autre SMS avec plus d'informations dans 1 semaine."
     }
   },
   "phoneNumberPlaceholder": "+24 300 00 00 00",
@@ -46,7 +49,8 @@
     {
       "name": "A. 2. Territoire :  ",
       "label": {
-        "en": "A.1. Territory"
+        "en": "A.1. Territory",
+        "fr": "A.1 Territoire"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -72,13 +76,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "A.1. Territory"
+        "en": "A.1. Territory",
+        "fr": "A.1 Territoire"
       }
     },
     {
       "name": " A. 5. Village/Quartier :  ",
       "label": {
-        "en": "A.2 Health area/Village "
+        "en": "A.2 Health area",
+        "fr": "A.2  Espace santé"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -89,13 +95,34 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "A.2 Health area/Village "
+        "en": "A.2 Health area ",
+        "fr": "A.2 Espace santé"
+      }
+    },
+    {
+      "name": "village",
+      "label": {
+        "en": "A.3 Village",
+        "fr": "A.3 Village"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "A.3 Village",
+        "fr": "A.3 Village"
       }
     },
     {
       "name": "B. 0. 1. Etes-vous le chef de ménage ?",
       "label": {
-        "en": "B.1. Are you the head of household?"
+        "en": "B.1. Are you the head of household?",
+        "fr": "B.1. Etes-vous le chef de famille ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -121,13 +148,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.1. Household head?"
+        "en": "B.1. Household head?",
+        "fr": "B.1. Chef de famille ?"
       }
     },
     {
       "name": "B. 1. Quel est votre nom ? ",
       "label": {
-        "en": "B.2. What is your name?"
+        "en": "B.2. What is your name?",
+        "fr": "B.2. Quel est votre nom de famille ?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -138,13 +167,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.2. Name"
+        "en": "B.2. Name",
+        "fr": "B.2. Nom de famille"
       }
     },
     {
       "name": "B. 2. Quel est votre post-nom ? ",
       "label": {
-        "en": "B.3. What is your middle name?"
+        "en": "B.3. What is your middle name?",
+        "fr": "B.3. Quel est votre deuxième prénom ?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -155,13 +186,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.3. Middle name"
+        "en": "B.3. Middle name",
+        "fr": "B.3. Deuxième prénom"
       }
     },
     {
       "name": "B. 3. Quel est votre prénom ?",
       "label": {
-        "en": "B.4. What is your first name?"
+        "en": "B.4. What is your first name?",
+        "fr": "B.4. Quel est votre prénom ?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -172,13 +205,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.4. First name"
+        "en": "B.4. First name",
+        "fr": "B.4. Prénom"
       }
     },
     {
       "name": "B. 4. Sexe ",
       "label": {
-        "en": "B.5. What is your gender?"
+        "en": "B.5. What is your gender?",
+        "fr": "B.5. Quel est votre genre ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -204,13 +239,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.5. Gender"
+        "en": "B.5. Gender",
+        "fr": "B.5. Genre"
       }
     },
     {
       "name": "B. 5. Quel est vôtre âge ?  ou tout simplement quelle année de votre naissance ? ",
       "label": {
-        "en": "B.6. What is your birth year?"
+        "en": "B.6. What is your birth year?",
+        "fr": "B.6. Quelle est votre année de naissance ?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -221,13 +258,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.6. Birth year"
+        "en": "B.6. Birth year",
+        "fr": "B.6. Année de naissance"
       }
     },
     {
       "name": "B. 6. Quel est votre numéro de la carte d’électeur, s’il en possède ? Ou autre document d’identification. ",
       "label": {
-        "en": "B.7. What is your voter card number? (- of none)"
+        "en": "B.7. What is your voter card number? (- of none)",
+        "fr": "B.7. Quel est le numéro de votre carte d'électeur ? ( - si aucun)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -238,13 +277,15 @@
       "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.7. Voter card nr"
+        "en": "B.7. Voter card nr",
+        "fr": "B.7. N° de la carte d'électeur"
       }
     },
     {
       "name": "B. 7. Nom conjoint/Délégué en cas de votre absence ? ",
       "label": {
-        "en": "B.8. In case of your absence: name of your spouse/delegate?"
+        "en": "B.8. In case of your absence: name of your spouse/delegate?",
+        "fr": "B.8. En cas d'absence : nom de votre conjoint/délégué ?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -255,13 +296,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.8. Spouse name"
+        "en": "B.8. Spouse name",
+        "fr": "B.8. Nom du conjoint"
       }
     },
     {
       "name": "B. 8. Post-nom/ Délégué en cas de votre absence ?",
       "label": {
-        "en": "B.9. In case of your absence: middle name of your spouse/delegate?"
+        "en": "B.9. In case of your absence: middle name of your spouse/delegate?",
+        "fr": "B.9. En cas d'absence : deuxième prénom de votre conjoint/délégué ?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -272,13 +315,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.9. Spouse middle name"
+        "en": "B.9. Spouse middle name",
+        "fr": "B.9. Deuxième prénom du conjoint"
       }
     },
     {
       "name": "B. 9. Prénom ? ",
       "label": {
-        "en": "B.10. In case of your absence: first name of your spouse/delegate?"
+        "en": "B.10. In case of your absence: first name of your spouse/delegate?",
+        "fr": "B.10. En cas d'absence : prénom de votre conjoint/délégué ?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -289,13 +334,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.10. Spouse first name"
+        "en": "B.10. Spouse first name",
+        "fr": "B.10. Prénom du conjoint"
       }
     },
     {
       "name": " B. 10. Sexe du conjoint/ Délégué en cas de votre absence ? ",
       "label": {
-        "en": "B.11. In case of your absence: gender of your spouse/delegate?"
+        "en": "B.11. In case of your absence: gender of your spouse/delegate?",
+        "fr": "B.11. En cas d'absence : genre de votre conjoint/délégué ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -321,13 +368,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "B.11. Spouse gender"
+        "en": "B.11. Spouse gender",
+        "fr": "B.11. Genre du conjoint"
       }
     },
     {
       "name": "C. 1. Combien d’homme(s) de plus de 18 ans vivent ici ?  ",
       "label": {
-        "en": "C.1. How many male(s) over 18 live in your household? (0 if none)"
+        "en": "C.1. How many male(s) over 18 live in your household? (0 if none)",
+        "fr": "C.1. Combien d'homme(s) de plus de 18 ans vivent dans votre foyer ? (0 si aucun)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -338,13 +387,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.1. # men"
+        "en": "C.1. # men",
+        "fr": "C.1 # hommes"
       }
     },
     {
       "name": "C. 2. Combien de garçon(s)  de la tranche d’âge entre 10 à 17 ans vivent ici ? ",
       "label": {
-        "en": "C.2. How many boy(s) in the age group between 10 and 17 live in your household? (0 if none)"
+        "en": "C.2. How many boy(s) in the age group between 10 and 17 live in your household? (0 if none)",
+        "fr": "C.2. Combien de garçon(s) âgés de 10 à 17 ans vivent dans votre foyer ? (0 si aucun)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -355,13 +406,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.2. # male 10-17"
+        "en": "C.2. # male 10-17",
+        "fr": "C.2. # homme 10-17"
       }
     },
     {
       "name": "C. 3. Combien de garçon(s)  de la tranche d’âge entre 5 à 9 ans vivent ici ? ",
       "label": {
-        "en": "C.3. How many boy(s) in the age group between 5 and 9 years old live in your household? (0 if none)"
+        "en": "C.3. How many boy(s) in the age group between 5 and 9 years old live in your household? (0 if none)",
+        "fr": "C.3. Combien de garçon(s) âgés de 5 et 9 ans vivent dans votre foyer ? (0 si aucun)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -372,13 +425,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.3. # male 5-9"
+        "en": "C.3. # male 5-9",
+        "fr": "C.3. # homme 5-9"
       }
     },
     {
       "name": "C. 4. Combien de garçon(s)  de la tranche d’âge entre 0 à 5 ans vivent ici ? ",
       "label": {
-        "en": "C.4. How many boy(s) in the age group between 0 and 5 years old live in your household? (0 if none)"
+        "en": "C.4. How many boy(s) in the age group between 0 and 5 years old live in your household? (0 if none)",
+        "fr": "C.4. Combien de garçon(s) âgés de 0 et 5 ans vivent dans votre foyer ? (0 si aucun)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -389,13 +444,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.4. # male 0-5"
+        "en": "C.4. # male 0-5",
+        "fr": "C.4. # homme 0-5"
       }
     },
     {
       "name": "C. 5. Combien de femme(s) de plus de 18 ans vivent ici ?",
       "label": {
-        "en": "C.5. How many women over 18 live in your household? (0 if none)"
+        "en": "C.5. How many women over 18 live in your household? (0 if none)",
+        "fr": "C.5. Combien de femmes âgés de plus de 18 ans vivent dans votre foyer ? (0 si aucun)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -406,13 +463,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.5. # women"
+        "en": "C.5. # women",
+        "fr": "C.5. # femmes"
       }
     },
     {
       "name": "C. 6. Combien de fille(s) de la tranche d’âge entre 10 à 17 ans vivent ici ? ",
       "label": {
-        "en": "C.6. How many girl(s) in the age group between 10 and 17 live in your household? (0 if none)"
+        "en": "C.6. How many girl(s) in the age group between 10 and 17 live in your household? (0 if none)",
+        "fr": "C.6. Combien de fille(s) âgées de 10 à 17 ans vivent dans votre foyer ? (0 si aucune)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -423,13 +482,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.6. # female 10-17"
+        "en": "C.6. # female 10-17",
+        "fr": "C.6. # femme 10-17"
       }
     },
     {
       "name": "C. 7. Combien de fille(s) de la tranche d’âge entre 6 à 11 ans vivent ici ? ",
       "label": {
-        "en": "C.7. How many girl(s) in the age group between 6 and 11 live in your household? (0 if none)"
+        "en": "C.7. How many girl(s) in the age group between 6 and 11 live in your household? (0 if none)",
+        "fr": "C.7. Combien de fille(s) âgées de 6 à 11 ans vivent dans votre foyer ? (0 si aucune)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -440,13 +501,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.7. # female 6-11"
+        "en": "C.7. # female 6-11",
+        "fr": "C.7. # femme 6-11"
       }
     },
     {
       "name": " C. 8. Combien de fille(s)  de la tranche d’âge entre 0 à 5 ans vivent ici ? ",
       "label": {
-        "en": "C.8. How many girl(s) in the age group between 0 and 5 years old live in your household? (0 if none)"
+        "en": "C.8. How many girl(s) in the age group between 0 and 5 years old live in your household? (0 if none)",
+        "fr": "C.8. Combien de fille(s) âgées de 0 à 5 ans vivent dans votre foyer ? (0 si aucune)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -457,13 +520,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.8. # 0-5"
+        "en": "C.8. # 0-5",
+        "fr": "C.8. # 0-5"
       }
     },
     {
       "name": "D. 1. Etes-vous ?       ",
       "label": {
-        "en": "D.1. What is your household's situation?"
+        "en": "D.1. What is your household's situation?",
+        "fr": "D.1. Quelle est la situation de votre foyer ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -472,28 +537,28 @@
           "option": " 2. Retourné     ",
           "label": {
             "en": "Retournee",
-            "fr": "Retourné"
+            "fr": "Personne retournée"
           }
         },
         {
           "option": "1. Déplacé      ",
           "label": {
             "en": "Displaced",
-            "fr": "Déplacé"
+            "fr": "Personne déplacée"
           }
         },
         {
           "option": "3. Autochtone (simple résident) ",
           "label": {
             "en": "Autochtone (private residency)",
-            "fr": "Autochtone (simple résident)"
+            "fr": "Autochtone (résidence privée)"
           }
         },
         {
           "option": "4. Autochtone (famille d’accueil)",
           "label": {
             "en": "Autochtone (host family)",
-            "fr": "Autochtone (famille d’accueil)"
+            "fr": "Autochtone (famille d'accueil)"
           }
         }
       ],
@@ -503,13 +568,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "D.1. Household situation?"
+        "en": "D.1. Household situation?",
+        "fr": "D.1. Situation du foyer ?"
       }
     },
     {
       "name": "D. 2.D. 2. Si vous êtes déplacé ou retourné, de quel village provenez-vous ?               ",
       "label": {
-        "en": "D.2. If you are displaced or returnee, which village are you from? (- if not applicable)"
+        "en": "D.2. If you are displaced or returnee, which village are you from? (- if not applicable)",
+        "fr": "D.2. Si vous êtes une personne déplacée ou retournée, de quel village êtes-vous originaire ? (- si non applicable)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -520,13 +587,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "D.2 Village"
+        "en": "D.2 Village",
+        "fr": "D.2 Village"
       }
     },
     {
       "name": "D. 4. Envisagez-vous de rentrer dans les 6 prochains mois ? ",
       "label": {
-        "en": "D.3. If you are displaced or returnee do you plan to return in the next 6 months?"
+        "en": "D.3. If you are displaced or returnee do you plan to return in the next 6 months?",
+        "fr": "D.3. Si vous êtes une personne déplacée ou retournée, avez-vous l'intention de retourner dans les 6 prochains mois ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -552,13 +621,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "D.3. Return planned?"
+        "en": "D.3. Return planned?",
+        "fr": "D.3. Retour prévu ?"
       }
     },
     {
       "name": "D. D. 3. Etant déplacé ou retourné, depuis combien de temps résidez-vous ici :",
       "label": {
-        "en": "D.4. If you are displaced or returnee, how long have you been living here?"
+        "en": "D.4. If you are displaced or returnee, how long have you been living here?",
+        "fr": "D.4. Si vous êtes une personne déplacée ou retournée, depuis combien de temps vivez-vous ici ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -566,31 +637,36 @@
         {
           "option": "1. Moins de 3 mois              ",
           "label": {
-            "en": "Less than 3 months"
+            "en": "Less than 3 months",
+            "fr": "Moins de 3 mois"
           }
         },
         {
           "option": "2. Entre 3 et 6 mois           ",
           "label": {
-            "en": "Between 3 and 6 months"
+            "en": "Between 3 and 6 months",
+            "fr": "Entre 3 et 6 mois"
           }
         },
         {
           "option": "3. Entre 6 et 12 mois            ",
           "label": {
-            "en": "Between 6 and 12 months"
+            "en": "Between 6 and 12 months",
+            "fr": "Entre 6 et 12 mois"
           }
         },
         {
           "option": "4.  Plus de 12 mois      ",
           "label": {
-            "en": "Over 12 months"
+            "en": "Over 12 months",
+            "fr": "Plus de 12 mois"
           }
         },
         {
           "option": "NA",
           "label": {
-            "en": "Not displaced or returnee"
+            "en": "Not displaced or returnee",
+            "fr": "Personne non déplacée ou retournée"
           }
         }
       ],
@@ -600,13 +676,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "D.4. Time living here"
+        "en": "D.4. Time living here",
+        "fr": "D.4. Durée de vie ici"
       }
     },
     {
       "name": "3. 1.  Le responsable du ménage est-il ? ",
       "label": {
-        "en": "E.1. What is the marital situation of the head of your household?"
+        "en": "E.1. What is the marital situation of the head of your household?",
+        "fr": "E.1. Quelle est la situation matrimoniale de votre chef de famille ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -615,7 +693,7 @@
           "option": "1. Veuf/Veuve ?                           ",
           "label": {
             "en": "Widowed",
-            "fr": "Veuf/Veuve"
+            "fr": "Veuf ou veuve"
           }
         },
         {
@@ -650,7 +728,7 @@
           "option": "6. Enfant/adolescent ménage?",
           "label": {
             "en": "Girl/adolescent < 18 pregnant or mother",
-            "fr": "Enfant/adolescent ménage"
+            "fr": "Fille/adolescente < 18 ans enceinte ou mère"
           }
         }
       ],
@@ -660,13 +738,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.1. Head marital situation"
+        "en": "E.1. Head marital situation",
+        "fr": "E.1. Situation matrimoniale du chef de famille"
       }
     },
     {
       "name": "3. 2. Autres caractéristiques du chef de ménage ?",
       "label": {
-        "en": "E.2. What are special characteristics of the head of your household (if any)?"
+        "en": "E.2. What are special characteristics of the head of your household (if any)?",
+        "fr": "E.2. Quelles sont les caractéristiques particulières de votre chef de famille (le cas échéant) ?"
       },
       "answerType": "multi-select",
       "questionType": "standard",
@@ -674,43 +754,50 @@
         {
           "option": "Older person living alone",
           "label": {
-            "en": "Older person living alone"
+            "en": "Older person living alone",
+            "fr": "Personne âgée vivant seule"
           }
         },
         {
           "option": "Elderly person in charge of a household",
           "label": {
-            "en": "Elderly person in charge of a household"
+            "en": "Elderly person in charge of a household",
+            "fr": "Personne âgée en charge d'un foyer"
           }
         },
         {
           "option": "Pregnant/breastfeeding woman",
           "label": {
-            "en": "Pregnant/breastfeeding woman"
+            "en": "Pregnant/breastfeeding woman",
+            "fr": "Femme enceinte ou allaitante"
           }
         },
         {
           "option": "Woman in charge of a household",
           "label": {
-            "en": "Woman in charge of a household"
+            "en": "Woman in charge of a household",
+            "fr": "Femme en charge d'un foyer"
           }
         },
         {
           "option": "Child/adolescent in charge of a household",
           "label": {
-            "en": "Child/adolescent in charge of a household"
+            "en": "Child/adolescent in charge of a household",
+            "fr": "Enfant ou adolescent en charge d'un foyer"
           }
         },
         {
           "option": "Girl/adolescent < 18 pregnant or mother",
           "label": {
-            "en": "Girl/adolescent < 18 pregnant or mother"
+            "en": "Girl/adolescent < 18 pregnant or mother",
+            "fr": "Fille/adolescente < 18 ans enceinte ou mère"
           }
         },
         {
           "option": "None",
           "label": {
-            "en": "None"
+            "en": "None",
+            "fr": "Aucun"
           }
         }
       ],
@@ -720,13 +807,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.2. Head special characteristics"
+        "en": "E.2. Head special characteristics",
+        "fr": "E.2. Caractéristiques spéciales du chef de famille"
       }
     },
     {
       "name": "3. 3. 1. a. Si Oui, Combien : ",
       "label": {
-        "en": "E.3. How many pregnant women are in your household? (0 if none)"
+        "en": "E.3. How many pregnant women are in your household? (0 if none)",
+        "fr": "E.3. Combien de femmes enceintes y a-t-il dans votre foyer ? (0 si aucune)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -737,13 +826,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.3. # Pregnant women"
+        "en": "E.3. # Pregnant women",
+        "fr": "E.3> # Femmes enceintes"
       }
     },
     {
       "name": "3. 3. 2. a. Si Oui, Combien : ",
       "label": {
-        "en": "E.4. How many breastfeeding women are in your household? (0 if none)"
+        "en": "E.4. How many breastfeeding women are in your household? (0 if none)",
+        "fr": "E.4. Combien de femmes allaitantes y a-t-il dans votre foyer ? (0 si aucune)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -754,13 +845,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.4. # Breastfeeding women"
+        "en": "E.4. # Breastfeeding women",
+        "fr": "E.4.# Femmes allaitantes "
       }
     },
     {
       "name": "3.4.1.1. Si « Oui », combien de Femmes de 18 ans et plus :",
       "label": {
-        "en": "E.5. How many women in your household aged 18 and over have a disability? (0 if none)"
+        "en": "E.5. How many women in your household aged 18 and over have a disability? (0 if none)",
+        "fr": "E.5. Combien de femmes de votre foyer âgées de 18 ans et plus ont un handicap ? (0 si aucune)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -771,13 +864,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.5. # Women with disability"
+        "en": "E.5. # Women with disability",
+        "fr": "E.5. # Femmes avec un handicap"
       }
     },
     {
       "name": "3.4.1.2. Si « Oui », combien d’Hommes de 18 ans et plus :",
       "label": {
-        "en": "E.6. How many men in your household aged 18 and over have a disability? (0 if none)"
+        "en": "E.6. How many men in your household aged 18 and over have a disability? (0 if none)",
+        "fr": "E.6. Combien d'hommes de votre foyer âgés de 18 ans et plus ont un handicap ? (0 si aucun)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -788,13 +883,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.6. # Men with disability"
+        "en": "E.6. # Men with disability",
+        "fr": "E.6. # Hommes avec un handicap"
       }
     },
     {
       "name": "3.4.1.3. Si « Oui », combien de Filles de moins de 18 ans : ",
       "label": {
-        "en": "E.7. How many girls in your household aged under 18 have a disability? (0 if none)"
+        "en": "E.7. How many girls in your household aged under 18 have a disability? (0 if none)",
+        "fr": "E.7. Combien de filles de votre foyer âgées de moins de 18 ans ont un handicap ? (0 si aucune)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -805,13 +902,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.7. # Girls with disability"
+        "en": "E.7. # Girls with disability",
+        "fr": "E.7. # Filles avec un handicap"
       }
     },
     {
       "name": "3.4.1.4. Si « Oui », combien de Garçons de moins de 18 ans :",
       "label": {
-        "en": "E.8. How many boys in your household aged under 18 have a disability? (0 if none)"
+        "en": "E.8. How many boys in your household aged under 18 have a disability? (0 if none)",
+        "fr": "E.8. Combien de garçons de votre foyer âgés de moins de 18 ans ont un handicap ? (0 si aucun)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -822,13 +921,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.8. # Boys with disability"
+        "en": "E.8. # Boys with disability",
+        "fr": "E.8. # Garçons avec un handicap"
       }
     },
     {
       "name": "3.4.1.5. Si « Oui », de quels types de handicap s’agit-il ? ",
       "label": {
-        "en": "E.9. If there are disabilities in your household, what types are they?"
+        "en": "E.9. If there are disabilities in your household, what types are they?",
+        "fr": "E.9. S'il y a des handicaps dans votre foyer, de quels types s'agit-il ?"
       },
       "answerType": "multi-select",
       "questionType": "standard",
@@ -836,31 +937,36 @@
         {
           "option": "Sensory disability",
           "label": {
-            "en": "Sensory disability"
+            "en": "Sensory disability",
+            "fr": "Handicap sensoriel"
           }
         },
         {
           "option": "Physical disability",
           "label": {
-            "en": "Physical disability"
+            "en": "Physical disability",
+            "fr": "Handicap physique"
           }
         },
         {
           "option": "Psychological handicap",
           "label": {
-            "en": "Psychological handicap"
+            "en": "Psychological handicap",
+            "fr": "Handicap psychologique"
           }
         },
         {
           "option": "Other",
           "label": {
-            "en": "Other"
+            "en": "Other",
+            "fr": "Autre"
           }
         },
         {
           "option": "None",
           "label": {
-            "en": "None"
+            "en": "None",
+            "fr": "Aucun"
           }
         }
       ],
@@ -870,13 +976,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.9. Types of disability"
+        "en": "E.9. Types of disability",
+        "fr": "E.9. Types de handicap"
       }
     },
     {
       "name": " 3. 4.2. Veuillez préciser si le chef de ménage est dans l’incapacité de travailler ?",
       "label": {
-        "en": "E.10. Is the head of the household UNable to work?"
+        "en": "E.10. Is the head of the household UNable to work?",
+        "fr": "E.10. Le chef de famille est-il incapable de travailler ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -902,13 +1010,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.10. Head UNable to work?"
+        "en": "E.10. Head UNable to work?",
+        "fr": "E.10. Chef de famille incapable de travailler ?"
       }
     },
     {
       "name": "3. 5. Au sein de votre ménage, y a-t-il des cas de : ",
       "label": {
-        "en": "E.11. In your household, are there cases of:"
+        "en": "E.11. In your household, are there cases of:",
+        "fr": "E.11. Dans votre foyer, y a-t-il des cas de :"
       },
       "answerType": "multi-select",
       "questionType": "standard",
@@ -916,109 +1026,127 @@
         {
           "option": "Malnutrition",
           "label": {
-            "en": "Malnutrition"
+            "en": "Malnutrition",
+            "fr": "Malnutrition"
           }
         },
         {
           "option": "Tuberculosis",
           "label": {
-            "en": "Tuberculosis"
+            "en": "Tuberculosis",
+            "fr": "Tuberculose"
           }
         },
         {
           "option": "Meadow",
           "label": {
-            "en": "Meadow"
+            "en": "Meadow",
+            "fr": "Dermite des prés"
           }
         },
         {
           "option": "Diabetes",
           "label": {
-            "en": "Diabetes"
+            "en": "Diabetes",
+            "fr": "Diabète"
           }
         },
         {
           "option": "Epilepsy",
           "label": {
-            "en": "Epilepsy"
+            "en": "Epilepsy",
+            "fr": "Épilepsie"
           }
         },
         {
           "option": "HIV",
           "label": {
-            "en": "HIV"
+            "en": "HIV",
+            "fr": "VIH"
           }
         },
         {
           "option": "Hyper",
           "label": {
-            "en": "Hyper/Hypotension"
+            "en": "Hyper/Hypotension",
+            "fr": "Hyper/Hypotension"
           }
         },
         {
           "option": "Cancer",
           "label": {
-            "en": "Cancer"
+            "en": "Cancer",
+            "fr": "Cancer"
           }
         },
         {
           "option": "Renal",
           "label": {
-            "en": "Renal failure"
+            "en": "Renal failure",
+            "fr": "Insuffisance rénale"
           }
         },
         {
           "option": "sickle",
           "label": {
-            "en": "sickle cell disease"
+            "en": "sickle cell disease",
+            "fr": "drépanocytose"
           }
         },
         {
           "option": "Stomach",
           "label": {
-            "en": "Stomach"
+            "en": "Stomach",
+            "fr": "Estomac"
           }
         },
         {
           "option": "Ernie",
           "label": {
-            "en": "Ernie"
+            "en": "Ernie",
+            "fr": "Ernie"
           }
         },
         {
           "option": "Measles",
           "label": {
-            "en": "Measles"
+            "en": "Measles",
+            "fr": "Rougeole"
           }
         },
         {
           "option": "Heart",
           "label": {
-            "en": "Heart"
+            "en": "Heart",
+            "fr": "Cœur"
           }
         },
         {
           "option": "Goitre",
           "label": {
-            "en": "Goitre"
+            "en": "Goitre",
+            "fr": "Goitre"
           }
         },
         {
           "option": "Rheumatism",
           "label": {
-            "en": "Rheumatism"
+            "en": "Rheumatism",
+            "fr": "Rhumatismes"
           }
         },
         {
           "option": "Other",
           "label": {
-            "en": "Other"
+            "en": "Other",
+            "fr": "Autre"
           }
         },
         {
           "option": "None",
           "label": {
-            "en": "None"
+            "en": "None",
+            "fr": "Aucun"
           }
         }
       ],
@@ -1028,13 +1156,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.11. Household cases"
+        "en": "E.11. Household cases",
+        "fr": "E.11. Cas dans le foyer"
       }
     },
     {
       "name": "3. 6. a. Si oui, Veuillez insérer un commentaire  ",
       "label": {
-        "en": "E.12. In your household, is there anyone who has already been the victim of sexual violence? If yes, please add a comment. If no, please put 'No'."
+        "en": "E.12. In your household, is there anyone who has already been the victim of sexual violence? If yes, please add a comment. If no, please put 'No'.",
+        "fr": "E.12. Dans votre foyer, y a-t-il quelqu'un qui a déjà été victime de violence sexuelle ? Si oui, veuillez ajouter un commentaire. Si non, veuillez mettre 'Non'."
       },
       "answerType": "text",
       "questionType": "standard",
@@ -1045,13 +1175,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.12. Sexual violence"
+        "en": "E.12. Sexual violence",
+        "fr": "E.12. Violence sexuelle"
       }
     },
     {
       "name": "3. 7. a. Si oui, Veuillez insérer un commentaire ",
       "label": {
-        "en": "E.13. In your household, are there senior citizens with specific needs? If yes, please add a comment. If no, please put 'No'."
+        "en": "E.13. In your household, are there senior citizens with specific needs? If yes, please add a comment. If no, please put 'No'.",
+        "fr": "E.13. Dans votre foyer, y a-t-il des personnes âgées ayant des besoins spécifiques ? Si oui, veuillez ajouter un commentaire. Si non, veuillez mettre \"Non\"."
       },
       "answerType": "text",
       "questionType": "standard",
@@ -1062,13 +1194,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.13. Seniors specific needs"
+        "en": "E.13. Seniors specific needs",
+        "fr": "E.13. Besoins spécifiques des personnes âgées"
       }
     },
     {
       "name": "E.14. Children characteristics",
       "label": {
-        "en": "E.14. What are the characteristics of the children in your household (if any)?"
+        "en": "E.14. What are the characteristics of the children in your household (if any)?",
+        "fr": "E.14. Quelles sont les caractéristiques des enfants de votre foyer (s'il y en a) ?"
       },
       "answerType": "multi-select",
       "questionType": "standard",
@@ -1076,61 +1210,71 @@
         {
           "option": "Orphan",
           "label": {
-            "en": "Orphan"
+            "en": "Orphan",
+            "fr": "Orphelin"
           }
         },
         {
           "option": "Not accompanied",
           "label": {
-            "en": "Not accompanied"
+            "en": "Not accompanied",
+            "fr": "Non accompagné"
           }
         },
         {
           "option": "Abandoned",
           "label": {
-            "en": "Abandoned"
+            "en": "Abandoned",
+            "fr": "Abandonné"
           }
         },
         {
           "option": "Separate",
           "label": {
-            "en": "Separate"
+            "en": "Separate",
+            "fr": "Séparer"
           }
         },
         {
           "option": "Left an armed group",
           "label": {
-            "en": "Left an armed group"
+            "en": "Left an armed group",
+            "fr": "A quitté un groupe armé"
           }
         },
         {
           "option": "Pregnant girl",
           "label": {
-            "en": "Pregnant girl"
+            "en": "Pregnant girl",
+            "fr": "Fille enceinte"
           }
         },
         {
           "option": "Young girl mother",
           "label": {
-            "en": "Young girl mother"
+            "en": "Young girl mother",
+            "fr": "Jeune fille mère"
           }
         },
         {
           "option": "Albino",
           "label": {
-            "en": "Albino"
+            "en": "Albino",
+            "fr": "Albinos"
           }
         },
         {
           "option": "Other",
           "label": {
-            "en": "Other"
+            "en": "Other",
+            "fr": "Autre"
           }
         },
         {
           "option": "None",
           "label": {
-            "en": "None"
+            "en": "None",
+            "fr": "Aucun"
           }
         }
       ],
@@ -1140,13 +1284,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.14. Children characteristics"
+        "en": "E.14. Children characteristics",
+        "fr": "E.14. Caractéristiques des enfants"
       }
     },
     {
       "name": "3. 10. 1. Si Oui, combien d’enfants ?",
       "label": {
-        "en": "E.15. How many malnourished children are in your household? (0 if none)"
+        "en": "E.15. How many malnourished children are in your household? (0 if none)",
+        "fr": "E.15. Combien d'enfants souffrant de malnutrition y a-t-il dans votre foyer ? (0 si aucun)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -1157,13 +1303,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.15. # Malnourished children?"
+        "en": "E.15. # Malnourished children?",
+        "fr": "E.15. # Des enfants malnutris ?"
       }
     },
     {
       "name": " 3. 10. 2. Poursuit (vent) –il(s) un traitement au centre de santé ?             ",
       "label": {
-        "en": "E.16. If there are malnourished children in your household are you pursuing treatment at the health center?"
+        "en": "E.16. If there are malnourished children in your household are you pursuing treatment at the health center?",
+        "fr": "E.16. S'il y a des enfants souffrant de malnutrition dans votre foyer, suivez-vous un traitement au centre de santé ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1189,13 +1337,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "E.16. # Malnourished children"
+        "en": "E.16. # Malnourished children",
+        "fr": "E.16. # Enfants mal nourris"
       }
     },
     {
       "name": "F.1. Fields",
       "label": {
-        "en": "F.1. If you have a space to cultivate or do you own a field, how many ares? (0 if no space or field)"
+        "en": "F.1. If you have a space to cultivate or do you own a field, how many ares? (0 if no space or field)",
+        "fr": "F.1. Si vous avez un espace à cultiver ou si vous possédez un champ, combien d'ares ? (0 si pas d'espace ou de champ)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -1206,13 +1356,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "F.1. # Fields"
+        "en": "F.1. # Fields",
+        "fr": "F.1. # Champs"
       }
     },
     {
       "name": "F.2. Own house?",
       "label": {
-        "en": "F.2. Does this house belong to you?"
+        "en": "F.2. Does this house belong to you?",
+        "fr": "F.2. Cette maison vous appartient-elle ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1238,13 +1390,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "F.2. Own house?"
+        "en": "F.2. Own house?",
+        "fr": "F.2. Posséder vous une maison ?"
       }
     },
     {
       "name": "3.11.1. Etes-vous déjà enregistré sur les services d’argent mobile (Airtel money, m-Pesa, Orange money) ? ",
       "label": {
-        "en": "G.1. Have you ever registered for mobile money services (Airtel money, m-Pesa, Orange money)?"
+        "en": "G.1. Have you ever registered for mobile money services (Airtel money, m-Pesa, Orange money)?",
+        "fr": "G.1. Vous êtes-vous déjà inscrit à des services d'argent mobile (Airtel money, m-Pesa, Orange money) ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1270,13 +1424,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "G.1. Registered mobile money?"
+        "en": "G.1. Registered mobile money?",
+        "fr": "G.1. Inscrit à de l'argent mobile ?"
       }
     },
     {
       "name": "3.12. Seriez-vous à l’aise avec le transfert d’argent mobile au cas où cela serait une de modalités d’assistance adoptée ? ",
       "label": {
-        "en": "G.2. Would you be comfortable with mobile money transfer if this is one of the support modalities adopted?"
+        "en": "G.2. Would you be comfortable with mobile money transfer if this is one of the support modalities adopted?",
+        "fr": "G.2. Seriez-vous à l'aise avec le transfert d'argent mobile si c'est l'une des modalités de soutien adoptées ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1302,13 +1458,15 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "G.2. Comfortable mobile money?"
+        "en": "G.2. Comfortable mobile money?",
+        "fr": "G.2. Comfortable avec de l'argent mobile ?"
       }
     },
     {
       "name": "3.12.1. Si non, pourquoi ? ",
       "label": {
-        "en": "G.3. If you are not comfortable with mobile money transfer, why?"
+        "en": "G.3. If you are not comfortable with mobile money transfer, why?",
+        "fr": "G.3. Si vous n'êtes pas à l'aise avec le transfert d'argent par téléphone mobile, pourquoi ?"
       },
       "answerType": "multi-select",
       "questionType": "standard",
@@ -1316,49 +1474,57 @@
         {
           "option": "I do not have a telephone",
           "label": {
-            "en": "I do not have a telephone"
+            "en": "I do not have a telephone",
+            "fr": "Je n'ai pas de téléphone"
           }
         },
         {
           "option": "I have never used the mobile money service",
           "label": {
-            "en": "I have never used the mobile money service"
+            "en": "I have never used the mobile money service",
+            "fr": "Je n'ai jamais utilisé de service d'argent par téléphone"
           }
         },
         {
           "option": "I fear that my money will be lost",
           "label": {
-            "en": "I fear that my money will be lost"
+            "en": "I fear that my money will be lost",
+            "fr": "J'ai peur que mon argent soit perdu"
           }
         },
         {
           "option": "Disruption of the connection of telecommunication networks",
           "label": {
-            "en": "Disruption of the connection of telecommunication networks"
+            "en": "Disruption of the connection of telecommunication networks",
+            "fr": "Perturbation de la connexion des réseaux de télécommunication"
           }
         },
         {
           "option": "Absence of telecommunication network in my village",
           "label": {
-            "en": "Absence of telecommunication network in my village"
+            "en": "Absence of telecommunication network in my village",
+            "fr": "Absence de réseaux de télécommunication dans mon village"
           }
         },
         {
           "option": "We do not have the ability to charge phones",
           "label": {
-            "en": "We do not have the ability to charge phones"
+            "en": "We do not have the ability to charge phones",
+            "fr": "Nous n'avons pas la possibilité de charger les téléphones"
           }
         },
         {
           "option": "I can neither read nor write",
           "label": {
-            "en": "I can neither read nor write"
+            "en": "I can neither read nor write",
+            "fr": "Je ne sais ni lire ni écrire"
           }
         },
         {
           "option": "I am comfortable with mobile money",
           "label": {
-            "en": "I am comfortable with mobile money"
+            "en": "I am comfortable with mobile money",
+            "fr": "Je suis à l'aise avec l'argent mobile"
           }
         },
         {
@@ -1374,7 +1540,8 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "G.3. No mobile money reason"
+        "en": "G.3. No mobile money reason",
+        "fr": "G.3. Pas de raison pour l'argent mobile"
       }
     }
   ],

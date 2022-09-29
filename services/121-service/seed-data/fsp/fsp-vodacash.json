@@ -2,14 +2,14 @@
   "fsp": "VodaCash",
   "integrationType": "xml",
   "fspDisplayName": {
-    "en": "Vodacash",
-    "am_ET": "VodaCash"
+    "en": "Vodacash"
   },
   "questions": [
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Which phone number do you want to receive your mobile money transfer from VodaCash on? (With country-code. It should look like: <strong>+243 000 000 000</strong>)"
+        "en": "Which phone number do you want to receive your mobile money transfer from VodaCash on? (With country-code. It should look like: <strong>+243 000 000 000</strong>)",
+        "fr": "Sur quel numéro de téléphone voulez-vous recevoir votre transfert d'argent mobile de VodaCash ? (Avec l'indicatif du pays, cela devrait ressembler à : +243 000 000 000)"
       },
       "placeholder": {
         "en": "+243 000 000 000"
@@ -18,7 +18,8 @@
       "answerType": "tel",
       "options": null,
       "shortLabel": {
-        "en": "Phone Number"
+        "en": "Phone Number",
+        "fr": "Numéro de téléphone"
       }
     }
   ]
