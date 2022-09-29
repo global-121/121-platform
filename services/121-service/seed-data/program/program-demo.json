@@ -1,65 +1,52 @@
 {
   "published": false,
   "validation": true,
-  "validationByQr": true,
+  "validationByQr": false,
   "phase": "design",
-  "location": "Westeros",
-  "ngo": "Yellow Cross",
+  "location": "Demoland",
+  "ngo": "Demo NGO",
   "titlePortal": {
-    "en": "Cash program Westeros"
+    "en": "Demo Cash Aid Project"
   },
   "titlePaApp": {
-    "en": "Cash program Westeros"
+    "en": "Demo Cash Aid Project"
   },
   "description": {
-    "en": "This program is aimed to help the commoners in Westeros most affected by the War of the Five Kings."
+    "en": ""
   },
   "descCashType": {
     "en": "Unconditional multi-purpose"
   },
-  "startDate": "2020-01-01T12:00:00Z",
-  "endDate": "2020-12-31T12:00:00Z",
-  "currency": "MWK",
-  "distributionFrequency": "month",
-  "distributionDuration": 8,
-  "fixedTransferValue": 10,
-  "paymentAmountMultiplierFormula": "1 + 1 * dragon",
+  "startDate": "2022-09-29T12:00:00Z",
+  "endDate": "2030-11-30T12:00:00Z",
+  "currency": "EUR",
+  "distributionFrequency": "week",
+  "distributionDuration": 10,
+  "fixedTransferValue": 35,
   "financialServiceProviders": [
     {
       "fsp": "Intersolve-whatsapp"
-    },
-    {
-      "fsp": "Africas-talking"
-    },
-    {
-      "fsp": "Bank A"
-    },
-    {
-      "fsp": "FSP - all attributes"
-    },
-    {
-      "fsp": "FSP - no attributes"
     }
   ],
   "inclusionCalculationType": "highestScoresX",
   "minimumScore": 0,
-  "highestScoresX": 250,
+  "highestScoresX": 870,
+  "tryWhatsAppFirst": true,
   "meetingDocuments": {
-    "en": "Dragon license certificate; House birth certificate"
+    "en": ""
   },
   "notifications": {
     "en": {
-      "registered": "You have been successfully registered for this program.",
-      "whatsappPayment": "Please reply to this message within 24 hours to receive your voucher",
-      "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk"
+      "registered": "This is a message from Demo NGO.\n\nWe have received your application for support.\n\nYou will receive another message with more information within 1 week."
     }
   },
-  "phoneNumberPlaceholder": "+000 000 00 00",
+  "phoneNumberPlaceholder": "+31 600 00 00 00",
+  "programCustomAttributes": [],
   "programQuestions": [
     {
       "name": "name",
       "label": {
-        "en": "My full name:"
+        "en": "1. What is your name?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -67,14 +54,82 @@
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
       "shortLabel": {
-        "en": "Full Name"
+        "en": "Name"
       }
     },
     {
-      "name": "dob",
+      "name": "middlename",
       "label": {
-        "en": "My date of birth: Format is day-month-year example: 31-12-1970"
+        "en": "2. What is your middle name?"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Middle name"
+      }
+    },
+    {
+      "name": "firstname",
+      "label": {
+        "en": "3. What is your first name?"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "First name"
+      }
+    },
+    {
+      "name": "gender",
+      "label": {
+        "en": "4. What is your gender?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "Masculin ",
+          "label": {
+            "en": "Male",
+            "fr": "Masculin"
+          }
+        },
+        {
+          "option": "Féminin",
+          "label": {
+            "en": "Female",
+            "fr": "Féminin"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Gender"
+      }
+    },
+    {
+      "name": "birthdate",
+      "label": {
+        "en": "5. What is your birth date?"
       },
       "answerType": "date",
       "questionType": "standard",
@@ -82,109 +137,446 @@
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
       "shortLabel": {
-        "en": "Date of Birth"
+        "en": "Birth date"
       }
     },
     {
-      "name": "house",
+      "name": "documentid",
       "label": {
-        "en": "1. I am a..?"
+        "en": "6. What is your document ID number? (- of none)"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": ["registrationValidation", "inclusion", "payment"],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Document ID"
+      }
+    },
+    {
+      "name": "headhousehold",
+      "label": {
+        "en": "7. Are you the head of household?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
       "options": [
         {
-          "option": "lannister",
+          "option": "Oui",
           "label": {
-            "en": "Lannister"
+            "en": "Yes",
+            "fr": "Oui"
           }
         },
         {
-          "option": "stark",
+          "option": "Non",
           "label": {
-            "en": "Stark"
-          }
-        },
-        {
-          "option": "greyjoy",
-          "label": {
-            "en": "Greyjoy"
+            "en": "No",
+            "fr": "Non"
           }
         }
       ],
-      "scoring": {
-        "lannister": 3,
-        "stark": 6,
-        "greyjoy": 9
-      },
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
       "shortLabel": {
-        "en": "House"
+        "en": "Household head"
       }
     },
     {
-      "name": "dragon",
+      "name": "males",
       "label": {
-        "en": "2. How many dragons do you own?"
+        "en": "8. How many male(s) of 18 or older live in your household? (0 if none)"
       },
       "answerType": "numeric",
       "questionType": "standard",
       "options": null,
-      "scoring": {
-        "multiplier": 2
-      },
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
       "shortLabel": {
-        "en": "Dragon Nr."
+        "en": "Men"
       }
     },
     {
-      "name": "skills",
+      "name": "boys",
       "label": {
-        "en": "3. My skills include .. ?"
+        "en": "9. How many boy(s) of 17 or younger live in your household? (0 if none)"
       },
-      "answerType": "multi-select",
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Boys"
+      }
+    },
+    {
+      "name": "women",
+      "label": {
+        "en": "10. How many women of 18 or older live in your household? (0 if none)"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Women"
+      }
+    },
+    {
+      "name": "girls",
+      "label": {
+        "en": "11. How many girl(s) of 17 or younger live in your household? (0 if none)"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Girls"
+      }
+    },
+    {
+      "name": "householdsituation",
+      "label": {
+        "en": "12. What is your household's situation?"
+      },
+      "answerType": "dropdown",
       "questionType": "standard",
       "options": [
         {
-          "option": "demoOption1",
+          "option": " 2. Retourné     ",
           "label": {
-            "en": "Demo option 1"
+            "en": "Retournee",
+            "fr": "Retourné"
           }
         },
         {
-          "option": "demoOption2",
+          "option": "1. Déplacé      ",
           "label": {
-            "en": "Demo option 2"
+            "en": "Displaced",
+            "fr": "Déplacé"
           }
         },
         {
-          "option": "demoOption3",
+          "option": "3. Autochtone (simple résident) ",
           "label": {
-            "en": "Demo option 3"
+            "en": "Autochtone (private residency)",
+            "fr": "Autochtone (simple résident)"
+          }
+        },
+        {
+          "option": "4. Autochtone (famille d’accueil)",
+          "label": {
+            "en": "Autochtone (host family)",
+            "fr": "Autochtone (famille d’accueil)"
           }
         }
       ],
-      "scoring": {
-        "demoOption1": 10,
-        "demoOption2": 200,
-        "demoOption3": 3000
-      },
-      "shortLabel": {
-        "en": "Skills"
-      },
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
       "editableInPortal": true,
-      "phases": ["registrationValidation"],
-      "export": ["all-people-affected", "included", "selected-for-validation"]
-    }
-  ],
-  "programCustomAttributes": [
+      "shortLabel": {
+        "en": "Household situation"
+      }
+    },
     {
+      "name": "maritalsituation",
       "label": {
-        "en": "Knows nothing"
+        "en": "13. What is the marital situation of the head of your household?"
       },
-      "name": "knowsNothing",
-      "type": "boolean"
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "1. Veuf/Veuve ?                           ",
+          "label": {
+            "en": "Widowed",
+            "fr": "Veuf/Veuve"
+          }
+        },
+        {
+          "option": "2. Marié(e) ?                                ",
+          "label": {
+            "en": "Married",
+            "fr": "Marié(e)"
+          }
+        },
+        {
+          "option": "3. Abandonné(e)?                                  ",
+          "label": {
+            "en": "Abandoned",
+            "fr": "Abandonné(e)"
+          }
+        },
+        {
+          "option": "4. Séparé(e)?                                             ",
+          "label": {
+            "en": "Seperated",
+            "fr": "Séparé(e)"
+          }
+        },
+        {
+          "option": "5. Divorcé (e)?                               ",
+          "label": {
+            "en": "Divorced",
+            "fr": "Divorcé (e)"
+          }
+        },
+        {
+          "option": "6. Enfant/adolescent ménage?",
+          "label": {
+            "en": "Girl/adolescent < 18 pregnant or mother",
+            "fr": "Enfant/adolescent ménage"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Marital situation"
+      }
+    },
+    {
+      "name": "specialcharacteristics",
+      "label": {
+        "en": "14. What are special characteristics of the head of your household (if any)?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "Older person living alone",
+          "label": {
+            "en": "Older person living alone"
+          }
+        },
+        {
+          "option": "Elderly person in charge of a household",
+          "label": {
+            "en": "Elderly person in charge of a household"
+          }
+        },
+        {
+          "option": "Pregnant/breastfeeding woman",
+          "label": {
+            "en": "Pregnant/breastfeeding woman"
+          }
+        },
+        {
+          "option": "Woman in charge of a household",
+          "label": {
+            "en": "Woman in charge of a household"
+          }
+        },
+        {
+          "option": "Child/adolescent in charge of a household",
+          "label": {
+            "en": "Child/adolescent in charge of a household"
+          }
+        },
+        {
+          "option": "Girl/adolescent < 18 pregnant or mother",
+          "label": {
+            "en": "Girl/adolescent < 18 pregnant or mother"
+          }
+        },
+        {
+          "option": "None",
+          "label": {
+            "en": "None"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Special characteristics"
+      }
+    },
+    {
+      "name": "pregnant",
+      "label": {
+        "en": "15. How many pregnant women are in your household? (0 if none)"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Pregnant women"
+      }
+    },
+    {
+      "name": "breastfeeding",
+      "label": {
+        "en": "16. How many breastfeeding women are in your household? (0 if none)"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Breastfeeding women"
+      }
+    },
+    {
+      "name": "womendisabled",
+      "label": {
+        "en": "17. How many women in your household aged 18 and over have a disability? (0 if none)"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Women disability"
+      }
+    },
+    {
+      "name": "mendisabled",
+      "label": {
+        "en": "18. How many men in your household aged 18 and over have a disability? (0 if none)"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Men disability"
+      }
+    },
+    {
+      "name": "girlsdisabled",
+      "label": {
+        "en": "19. How many girls in your household aged under 18 have a disability? (0 if none)"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Girls disability"
+      }
+    },
+    {
+      "name": "boysdisabled",
+      "label": {
+        "en": "20. How many boys in your household aged under 18 have a disability? (0 if none)"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Boys disability"
+      }
+    },
+    {
+      "name": "childrenmalnourished",
+      "label": {
+        "en": "21. How many malnourished children are in your household? (0 if none)"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Malnourished children"
+      }
+    },
+    {
+      "name": "malnourishedtreatment",
+      "label": {
+        "en": "22. If there are malnourished children in your household are you pursuing treatment at the health center?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "Oui",
+          "label": {
+            "en": "Yes",
+            "fr": "Oui"
+          }
+        },
+        {
+          "option": "Non",
+          "label": {
+            "en": "No",
+            "fr": "Non"
+          }
+        }
+      ],
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": [],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "Malnourished treatment"
+      }
     }
   ],
-  "fullnameNamingConvention": ["name"]
+  "fullnameNamingConvention": ["name", "middlename", "firstname"]
 }
