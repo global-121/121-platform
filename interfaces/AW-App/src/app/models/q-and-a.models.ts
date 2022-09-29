@@ -4,8 +4,9 @@ export enum AnswerType {
   Text = 'text',
   Date = 'date',
   Enum = 'dropdown',
-  phoneNumber = 'tel',
-  email = 'email',
+  PhoneNumber = 'tel',
+  Email = 'email',
+  MultiSelect = 'multi-select',
 }
 
 export class Question {
@@ -24,8 +25,8 @@ export class QuestionOption {
 
 export class Answer {
   code: string;
-  value: string;
-  label: string;
+  value: string | string[];
+  label: string | string[];
 }
 
 export class AnswerSet {

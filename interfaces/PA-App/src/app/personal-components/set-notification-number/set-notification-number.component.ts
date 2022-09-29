@@ -47,6 +47,8 @@ export class SetNotificationNumberComponent extends PersonalDirective {
   }
 
   async initNew() {
+    this.isCanceled = false;
+
     await this.checkExistingPhoneNumber();
 
     if (this.isCanceled) {

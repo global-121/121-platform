@@ -92,7 +92,7 @@ export class QAndASetComponent implements OnChanges {
 
   private getAnswerOptionLabelByValue(
     options: QuestionOption[],
-    answerValue: string,
+    answerValue: string | string[],
   ) {
     const option = options.find((item: QuestionOption) => {
       return item.value === answerValue;
@@ -101,7 +101,10 @@ export class QAndASetComponent implements OnChanges {
     return option ? option.label : '';
   }
 
-  private createAnswer(question: Question, answerValue: string): Answer {
+  private createAnswer(
+    question: Question,
+    answerValue: string | string[],
+  ): Answer {
     const answer: Answer = {
       code: question.code,
       value: answerValue,
@@ -116,12 +119,28 @@ export class QAndASetComponent implements OnChanges {
       );
     }
 
+    // Convert 1 or multiple values to human-readable label(s)
+    if (
+      question.answerType === AnswerType.MultiSelect &&
+      Array.isArray(answerValue)
+    ) {
+      const answerOptions = answerValue.map((item) => {
+        return this.getAnswerOptionLabelByValue(question.options, item);
+      });
+      answer.label = answerOptions.join(', ');
+    }
+
     return answer;
   }
 
-  public onAnswerChange(questionCode: string, answerValue: string) {
+  public onAnswerChange(
+    questionCode: string,
+    answerValue: string,
+    forceChange = false,
+  ) {
     // Remove 'false positive' change-events on load/initiation of the component with data
-    if (!answerValue) {
+    // But keep the option to 'change' to an empty value (for AnswerType.MultiSelect)
+    if (!answerValue && !forceChange) {
       return;
     }
     const question = this.getQuestionByCode(questionCode);
@@ -137,6 +156,47 @@ export class QAndASetComponent implements OnChanges {
       answersArray,
     );
     this.showNextQuestion(answersArray.indexOf(questionCode));
+  }
+
+  public onAnswerChangeMultiSelect(
+    questionCode: string,
+    answerInput: { checked: boolean; value: string },
+  ) {
+    let answerStore;
+    let answerValue;
+
+    if (this.answers[questionCode] && this.answers[questionCode].value) {
+      answerStore = new Set(this.answers[questionCode].value);
+    } else {
+      answerStore = new Set([]);
+    }
+
+    if (answerInput.checked) {
+      answerStore.add(answerInput.value);
+    } else {
+      answerStore.delete(answerInput.value);
+    }
+
+    answerValue = Array.from(answerStore).sort();
+
+    if (!answerValue || answerValue.length === 0) {
+      // Reset previously stored answer(s)
+      delete this.answers[questionCode];
+
+      this.addValidationError(questionCode);
+      this.logger.logEvent(
+        LoggingEventCategory.input,
+        LoggingEvent.qaAnswerNotValid,
+        {
+          name: `type: ${this.getQuestionByCode(questionCode).answerType}`,
+          code: questionCode,
+        },
+      );
+      return;
+    }
+    this.removeValidationError(questionCode);
+
+    this.onAnswerChange(questionCode, answerValue, true);
   }
 
   private showNextQuestion(currentIndex: number) {

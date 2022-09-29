@@ -3,6 +3,7 @@ import { NgModel } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgramQuestionOption } from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { AnswerType } from '../../models/fsp.model';
 
 @Component({
   selector: 'app-update-property-item',
@@ -17,10 +18,10 @@ export class UpdatePropertyItemComponent implements OnInit {
   public explanation: string;
 
   @Input()
-  public type: string;
+  public type: AnswerType;
 
   @Input()
-  public value: string;
+  public value: string | string[];
 
   @Input()
   public placeholder: string | undefined;
@@ -44,12 +45,17 @@ export class UpdatePropertyItemComponent implements OnInit {
 
   public propertyModel: any | NgModel;
 
+  public answerType = AnswerType;
+
   constructor(
     private translate: TranslatableStringService,
     private translateService: TranslateService,
   ) {}
 
   ngOnInit() {
+    if (this.type === AnswerType.MultiSelect) {
+      this.value = this.value.toString().split(',');
+    }
     this.propertyModel = this.value;
   }
 

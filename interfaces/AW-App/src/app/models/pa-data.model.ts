@@ -27,5 +27,5 @@ export class ProgramAnswer extends ProgramAttribute {}
 export class FspAnswer {
   referenceId: string;
   code: string;
-  value: string;
+  value: string | string[];
 }

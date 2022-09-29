@@ -76,9 +76,9 @@
       }
     },
     {
-      "name": "health-area",
+      "name": " A. 5. Village/Quartier :  ",
       "label": {
-        "en": "A.2 Health area"
+        "en": "A.2 Health area/Village "
       },
       "answerType": "text",
       "questionType": "standard",
@@ -89,24 +89,7 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "A.2 Health area "
-      }
-    },
-    {
-      "name": "village",
-      "label": {
-        "en": "A.3 Village"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": true,
-      "shortLabel": {
-        "en": "A.3 Village"
+        "en": "A.2 Health area/Village "
       }
     },
     {
@@ -685,7 +668,7 @@
       "label": {
         "en": "E.2. What are special characteristics of the head of your household (if any)?"
       },
-      "answerType": "dropdown",
+      "answerType": "multi-select",
       "questionType": "standard",
       "options": [
         {
@@ -847,7 +830,7 @@
       "label": {
         "en": "E.9. If there are disabilities in your household, what types are they?"
       },
-      "answerType": "dropdown",
+      "answerType": "multi-select",
       "questionType": "standard",
       "options": [
         {
@@ -927,7 +910,7 @@
       "label": {
         "en": "E.11. In your household, are there cases of:"
       },
-      "answerType": "dropdown",
+      "answerType": "multi-select",
       "questionType": "standard",
       "options": [
         {
@@ -1087,7 +1070,7 @@
       "label": {
         "en": "E.14. What are the characteristics of the children in your household (if any)?"
       },
-      "answerType": "dropdown",
+      "answerType": "multi-select",
       "questionType": "standard",
       "options": [
         {
@@ -1327,7 +1310,7 @@
       "label": {
         "en": "G.3. If you are not comfortable with mobile money transfer, why?"
       },
-      "answerType": "dropdown",
+      "answerType": "multi-select",
       "questionType": "standard",
       "options": [
         {
@@ -1376,6 +1359,12 @@
           "option": "I am comfortable with mobile money",
           "label": {
             "en": "I am comfortable with mobile money"
+          }
+        },
+        {
+          "option": "None",
+          "label": {
+            "en": "None"
           }
         }
       ],

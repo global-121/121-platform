@@ -45,6 +45,7 @@ import { CustomAttributeType } from '../programs/dto/create-program-custom-attri
 import { ProgramService } from '../programs/programs.service';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { v4 as uuid } from 'uuid';
+import { CustomDataDto } from './dto/custom-data.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -159,20 +160,9 @@ export class RegistrationsService {
         where: { name: answer.programQuestionName },
       });
       if (programQuestion) {
-        let storedAnswer = await this.registrationDataRepository.findOne({
-          where: {
-            registration: { id: registration.id },
-            programQuestion: { id: programQuestion.id },
-          },
-        });
-        if (!storedAnswer) {
-          storedAnswer = new RegistrationDataEntity();
-          storedAnswer.registration = registration;
-          storedAnswer.programQuestion = programQuestion;
-        }
-        storedAnswer.value = answer.programAnswer;
-
-        await this.registrationDataRepository.save(storedAnswer);
+        const relation = new RegistrationDataRelation();
+        relation.programQuestionId = programQuestion.id;
+        registration.saveData(answer.programAnswer, { relation });
       }
     }
     await this.storePhoneNumberInRegistration(programAnswers, referenceId);
@@ -199,7 +189,10 @@ export class RegistrationsService {
 
     const cleanedAnswers = [];
     for (let programAnswer of programAnswers) {
-      if (phonenumberTypedAnswers.includes(programAnswer.programQuestionName)) {
+      if (
+        typeof programAnswer.programAnswer === 'string' &&
+        phonenumberTypedAnswers.includes(programAnswer.programQuestionName)
+      ) {
         programAnswer.programAnswer = await this.lookupService.lookupAndCorrect(
           programAnswer.programAnswer,
         );
@@ -220,7 +213,7 @@ export class RegistrationsService {
     const phoneAnswer = programAnswers.find(
       answer => answer.programQuestionName === CustomDataAttributes.phoneNumber,
     );
-    if (phoneAnswer) {
+    if (phoneAnswer && typeof phoneAnswer.programAnswer === 'string') {
       registration.phoneNumber = phoneAnswer.programAnswer;
       await this.registrationRepository.save(registration);
     }
@@ -239,10 +232,25 @@ export class RegistrationsService {
     return await this.registrationRepository.save(registration);
   }
 
+  public async addRegistrationDataBulk(
+    dataArray: CustomDataDto[],
+  ): Promise<RegistrationEntity[]> {
+    const registrations = [];
+    for (const data of dataArray) {
+      const registration = await this.addRegistrationData(
+        data.referenceId,
+        data.key,
+        data.value,
+      );
+      registrations.push(registration);
+    }
+    return registrations;
+  }
+
   public async addRegistrationData(
     referenceId: string,
     customDataKey: string,
-    customDataValueRaw: string,
+    customDataValueRaw: string | string[],
   ): Promise<RegistrationEntity> {
     const registration = await this.getRegistrationFromReferenceId(referenceId);
     const customDataValue = await this.cleanCustomDataIfPhoneNr(
@@ -256,8 +264,8 @@ export class RegistrationsService {
 
   public async cleanCustomDataIfPhoneNr(
     customDataKey: string,
-    customDataValue: string | number,
-  ): Promise<string | number> {
+    customDataValue: string | number | string[],
+  ): Promise<string | number | string[]> {
     const answersTypeTel = [];
     const fspAttributesTypeTel = await this.fspAttributeRepository.find({
       where: { answerType: AnswerTypes.tel },
@@ -490,7 +498,10 @@ export class RegistrationsService {
         `"${uniqueSubQueryId}"."fspQuestionId" = ${relation.fspQuestionId}`,
       );
     }
-    subQuery.addSelect(`"${uniqueSubQueryId}".value`);
+    // Because of string_agg no distinction between multi-select and other is needed
+    subQuery.addSelect(
+      `string_agg("${uniqueSubQueryId}".value,'|' order by value)`,
+    );
     return subQuery;
   }
 
@@ -510,6 +521,11 @@ export class RegistrationsService {
           WHEN ("fspQuestion"."name" is not NULL) THEN "fspQuestion"."name"
           WHEN ("monitoringQuestion"."name" is not NULL) THEN "monitoringQuestion"."name"
           WHEN ("programCustomAttribute"."name" is not NULL) THEN "programCustomAttribute"."name"
+        END ),
+                'types', array_agg( CASE
+          WHEN ("programQuestion"."answerType" is not NULL) THEN "programQuestion"."answerType"
+          WHEN ("fspQuestion"."answerType" is not NULL) THEN "fspQuestion"."answerType"
+          ELSE NULL
         END ))`,
         'name',
       );
@@ -518,10 +534,18 @@ export class RegistrationsService {
   private buildCustomDataObject(input: {
     values: string[];
     keys: string[];
+    types: string[];
   }): object {
     const customData = {};
     for (const i in input['keys']) {
-      customData[input['keys'][i]] = input['values'][i];
+      if (input['types'][i] === AnswerTypes.multiSelect) {
+        if (customData[input['keys'][i]] === undefined) {
+          customData[input['keys'][i]] = [];
+        }
+        customData[input['keys'][i]].push(input['values'][i]);
+      } else {
+        customData[input['keys'][i]] = input['values'][i];
+      }
     }
     return customData;
   }
@@ -530,6 +554,7 @@ export class RegistrationsService {
     referenceId: string,
   ): Promise<object> {
     const result = await this.registrationRepository
+
       .createQueryBuilder('registration')
       .select(subQuery => {
         return this.customDataSubQuery(subQuery);
@@ -816,7 +841,7 @@ export class RegistrationsService {
   public async setAttribute(
     referenceId: string,
     attribute: Attributes | string,
-    value: string | number,
+    value: string | number | string[],
   ): Promise<RegistrationEntity> {
     let registration = await this.getRegistrationFromReferenceId(referenceId, [
       'program',
@@ -1048,6 +1073,18 @@ export class RegistrationsService {
           registrations.push(registration);
         }
       }
+      if (matchingRegistrationData.length === 0) {
+        // It is also possible that phoneNumber is not a registration-data but only a registration-attribute (if phoneNumber is neither program- nor fsp-question)
+        const matchingRegistrations = await this.registrationRepository.find({
+          where: { phoneNumber: phoneNumber },
+        });
+        for (const matchingReg of matchingRegistrations) {
+          const registration = await this.getRegistrationFromReferenceId(
+            matchingReg.referenceId,
+          );
+          registrations.push(registration);
+        }
+      }
     }
     if (name) {
       const customAttributesNameNames = [
@@ -1095,7 +1132,21 @@ export class RegistrationsService {
     for (const d of registration.data) {
       if (d.programQuestionId) {
         d['name'] = await d.getDataName();
-        programAnswers.push(d);
+        if (d.programQuestion.answerType === AnswerTypes.multiSelect) {
+          const existingQuestion = programAnswers.find(
+            a => a.programQuestionId === d.programQuestionId,
+          );
+          if (!existingQuestion) {
+            programAnswers.push(d);
+            programAnswers.find(
+              a => a.programQuestionId === d.programQuestionId,
+            ).value = [d.value];
+          } else {
+            existingQuestion.value.push(d.value);
+          }
+        } else {
+          programAnswers.push(d);
+        }
       }
     }
     registration['data'] = null;
@@ -1242,15 +1293,30 @@ export class RegistrationsService {
         programIds: programIds,
       })
       .getMany();
-
     let answers = [];
     for (const r of registrationsToValidate) {
+      const uniqueQuestions = [];
       for (const a of r.data) {
         a['referenceId'] = r.referenceId;
         a['programId'] = r.program.id;
         a['name'] = await a.getDataName();
+        if (a.programQuestion.answerType === AnswerTypes.multiSelect) {
+          const existingQuestion = uniqueQuestions.find(
+            q => q.programQuestionId === a.programQuestionId,
+          );
+          if (!existingQuestion) {
+            uniqueQuestions.push(a);
+            uniqueQuestions.find(
+              q => q.programQuestionId === a.programQuestionId,
+            ).value = [a.value];
+          } else {
+            existingQuestion.value.push(a.value);
+          }
+        } else {
+          uniqueQuestions.push(a);
+        }
       }
-      answers = [...answers, ...r.data];
+      answers = [...answers, ...uniqueQuestions];
     }
     return answers;
   }
@@ -1303,12 +1369,25 @@ export class RegistrationsService {
     for (const d of registration.data) {
       if (d.fspQuestionId) {
         const code = await d.getDataName();
-        const answer = {
-          code: code,
-          value: d.value,
-          lavel: d.fspQuestion.label['en'],
-        };
-        fspAnswers[code] = answer;
+        if (d.fspQuestion.answerType === AnswerTypes.multiSelect) {
+          if (!fspAnswers[code]) {
+            const answer = {
+              code: code,
+              value: [d.value],
+              label: d.fspQuestion.label['en'],
+            };
+            fspAnswers[code] = answer;
+          } else {
+            fspAnswers[code].value.push(d.value);
+          }
+        } else {
+          const answer = {
+            code: code,
+            value: d.value,
+            label: d.fspQuestion.label['en'],
+          };
+          fspAnswers[code] = answer;
+        }
       }
     }
     return fspAnswers;

@@ -190,19 +190,22 @@ export class EnrollInProgramComponent extends PersonalDirective {
       this.paData.type.referenceId,
     );
 
-    await this.programsService.postProgramAnswers(
-      referenceId,
-      this.createAttributes(Object.values(this.answers)),
+    await this.programsService.postRegistrationCustomAttributes(
+      this.createAttributes(Object.values(this.answers), referenceId),
     );
   }
 
-  private createAttributes(answers: Answer[]): ProgramAttribute[] {
+  private createAttributes(
+    answers: Answer[],
+    referenceId: string,
+  ): ProgramAttribute[] {
     const attributes: ProgramAttribute[] = [];
 
     answers.forEach((item: Answer) => {
       attributes.push({
-        programQuestionName: item.code,
-        programAnswer: item.value,
+        key: item.code,
+        value: item.value,
+        referenceId,
       });
     });
 
