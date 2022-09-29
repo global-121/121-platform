@@ -84,12 +84,12 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private columnWidthPerType = {
     [AnswerType.Number]: 90,
     [AnswerType.Date]: 142,
-    [AnswerType.phoneNumber]: 130,
+    [AnswerType.PhoneNumber]: 130,
     [AnswerType.Text]: 150,
     [AnswerType.Enum]: 160,
-    [AnswerType.email]: 180,
-    [AnswerType.boolean]: 90,
-    [AnswerType.string]: 150,
+    [AnswerType.Email]: 180,
+    [AnswerType.Boolean]: 90,
+    [AnswerType.MultiSelect]: 180,
   };
   public columnDefaults: any;
   public columns: PersonTableColumn[] = [];
@@ -361,8 +361,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ...this.columnDefaults,
         frozenLeft: this.platform.width() > 1280,
         permissions: [Permission.RegistrationPersonalREAD],
-        minWidth: this.columnWidthPerType[AnswerType.phoneNumber],
-        width: this.columnWidthPerType[AnswerType.phoneNumber],
+        minWidth: this.columnWidthPerType[AnswerType.PhoneNumber],
+        width: this.columnWidthPerType[AnswerType.PhoneNumber],
       },
       {
         prop: 'preferredLanguage',

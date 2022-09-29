@@ -23,7 +23,7 @@
   "distributionFrequency": "month",
   "distributionDuration": 8,
   "fixedTransferValue": 10,
-  "paymentAmountMultiplierFormula": "0 + 1 * dragon",
+  "paymentAmountMultiplierFormula": "1 + 1 * dragon",
   "financialServiceProviders": [
     {
       "fsp": "Intersolve-whatsapp"
@@ -136,6 +136,55 @@
       "shortLabel": {
         "en": "Dragon Nr."
       }
+    },
+    {
+      "name": "skills",
+      "label": {
+        "en": "3. My skills include .. ?"
+      },
+      "answerType": "multi-select",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "demoOption1",
+          "label": {
+            "en": "Demo option 1"
+          }
+        },
+        {
+          "option": "demoOption2",
+          "label": {
+            "en": "Demo option 2"
+          }
+        },
+        {
+          "option": "demoOption3",
+          "label": {
+            "en": "Demo option 3"
+          }
+        }
+      ],
+      "scoring": {
+        "demoOption1": 10,
+        "demoOption2": 200,
+        "demoOption3": 3000
+      },
+      "shortLabel": {
+        "en": "Skills"
+      },
+      "editableInPortal": true,
+      "phases": ["registrationValidation"],
+      "export": ["all-people-affected", "included", "selected-for-validation"]
     }
-  ]
+  ],
+  "programCustomAttributes": [
+    {
+      "label": {
+        "en": "Knows nothing"
+      },
+      "name": "knowsNothing",
+      "type": "boolean"
+    }
+  ],
+  "fullnameNamingConvention": ["name"]
 }

@@ -81,7 +81,7 @@
       }
     },
     {
-      "name": "health-area",
+      "name": " A. 5. Village/Quartier :  ",
       "label": {
         "en": "A.2 Health area",
         "fr": "A.2  Espace santé"
@@ -748,7 +748,7 @@
         "en": "E.2. What are special characteristics of the head of your household (if any)?",
         "fr": "E.2. Quelles sont les caractéristiques particulières de votre chef de famille (le cas échéant) ?"
       },
-      "answerType": "dropdown",
+      "answerType": "multi-select",
       "questionType": "standard",
       "options": [
         {
@@ -931,7 +931,7 @@
         "en": "E.9. If there are disabilities in your household, what types are they?",
         "fr": "E.9. S'il y a des handicaps dans votre foyer, de quels types s'agit-il ?"
       },
-      "answerType": "dropdown",
+      "answerType": "multi-select",
       "questionType": "standard",
       "options": [
         {
@@ -1020,7 +1020,7 @@
         "en": "E.11. In your household, are there cases of:",
         "fr": "E.11. Dans votre foyer, y a-t-il des cas de :"
       },
-      "answerType": "dropdown",
+      "answerType": "multi-select",
       "questionType": "standard",
       "options": [
         {
@@ -1204,7 +1204,7 @@
         "en": "E.14. What are the characteristics of the children in your household (if any)?",
         "fr": "E.14. Quelles sont les caractéristiques des enfants de votre foyer (s'il y en a) ?"
       },
-      "answerType": "dropdown",
+      "answerType": "multi-select",
       "questionType": "standard",
       "options": [
         {
@@ -1468,7 +1468,7 @@
         "en": "G.3. If you are not comfortable with mobile money transfer, why?",
         "fr": "G.3. Si vous n'êtes pas à l'aise avec le transfert d'argent par téléphone mobile, pourquoi ?"
       },
-      "answerType": "dropdown",
+      "answerType": "multi-select",
       "questionType": "standard",
       "options": [
         {
@@ -1525,6 +1525,12 @@
           "label": {
             "en": "I am comfortable with mobile money",
             "fr": "Je suis à l'aise avec l'argent mobile"
+          }
+        },
+        {
+          "option": "None",
+          "label": {
+            "en": "None"
           }
         }
       ],

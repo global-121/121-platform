@@ -263,7 +263,7 @@ export class BulkImportService {
 
     for await (let [i, registration] of savedRegistrations.entries()) {
       registration.registrationStatus = RegistrationStatusEnum.registered;
-      await this.storeProgramAnswersImportRegistrations(
+      await this.storeRegistrationData(
         registration,
         program.id,
         customDataList[i],
@@ -282,7 +282,7 @@ export class BulkImportService {
     return { aggregateImportResult: { countImported } };
   }
 
-  private async storeProgramAnswersImportRegistrations(
+  private async storeRegistrationData(
     registration: RegistrationEntity,
     programId: number,
     customData: object,
@@ -294,10 +294,12 @@ export class BulkImportService {
         value = this.stringToBoolean(customData[att.name], false);
       } else if (att.type === CustomAttributeType.text) {
         value = customData[att.name] ? customData[att.name] : '';
+      } else if (att.type === AnswerTypes.multiSelect) {
+        value = customData[att.name].split('|');
       } else {
         value = customData[att.name];
       }
-      await registration.saveData(value, {
+      value = await registration.saveData(value, {
         name: att.name,
       });
     }

@@ -1,7 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Fsp, FspAttributeOption, FspQuestion } from 'src/app/models/fsp.model';
+import {
+  AnswerType,
+  Fsp,
+  FspAttributeOption,
+  FspQuestion,
+} from 'src/app/models/fsp.model';
 import { Person } from 'src/app/models/person.model';
 import {
   Program,
@@ -100,10 +105,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public async updatePaAttribute(
     attribute: string,
-    value: string,
+    value: string | string[],
     isPaTableAttribute: boolean,
   ): Promise<void> {
-    if (isPaTableAttribute) {
+    if (isPaTableAttribute && !Array.isArray(value)) {
       value = String(value);
     }
     this.inProgress[attribute] = true;
@@ -125,27 +130,29 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         console.log('error: ', error);
         if (error && error.error) {
           const errorMessage = this.translate.instant('common.update-error', {
-            error: this.formatErrors(error.error, attribute),
+            error: this.formatErrors(error.error),
           });
           this.actionResult(errorMessage);
         }
       });
   }
 
-  private formatErrors(error, attribute: string): string {
-    if (error.errors) {
-      return this.formatConstraintsErrors(error.errors, attribute);
+  private formatErrors(error): string {
+    if (error.statusCode === 400) {
+      return this.formatConstraintsErrors(error.message);
     }
     if (error.message) {
       return '<br><br>' + error.message + '<br>';
     }
   }
 
-  private formatConstraintsErrors(errors, attribute: string): string {
-    const attributeError = errors.find(
-      (message) => message.property === attribute,
-    );
-    const attributeConstraints = Object.values(attributeError.constraints);
+  private formatConstraintsErrors(errors): string {
+    let attributeConstraints = [];
+    for (const error of errors) {
+      attributeConstraints = attributeConstraints.concat(
+        Object.values(error.constraints),
+      );
+    }
     return '<br><br>' + attributeConstraints.join('<br>');
   }
 
@@ -163,7 +170,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
           this.person.paTableAttributes[paTableAttribute.name].value;
 
         let options = null;
-        if (paTableAttribute.type === 'dropdown') {
+        if (
+          paTableAttribute.type === AnswerType.Enum ||
+          paTableAttribute.type === AnswerType.MultiSelect
+        ) {
           options = this.getDropdownOptions(paTableAttribute);
         }
         const translationKey = `page.program.program-people-affected.edit-person-affected-popup.properties.${paTableAttribute.name}`;

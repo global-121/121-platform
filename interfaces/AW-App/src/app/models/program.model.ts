@@ -33,11 +33,12 @@ export enum AnswerType {
   Text = 'text',
   Date = 'date',
   Enum = 'dropdown',
-  phoneNumber = 'tel',
+  PhoneNumber = 'tel',
+  MultiSelect = 'multi-select',
 }
 
 export class ProgramAttribute {
   attributeId: number;
   programQuestionName: string;
-  programAnswer: string;
+  programAnswer: string | string[];
 }

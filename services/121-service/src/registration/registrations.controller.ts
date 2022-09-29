@@ -10,6 +10,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Get,
+  ParseArrayPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -75,7 +76,9 @@ export class RegistrationsController {
   }
 
   @PersonAffectedAuth()
-  @ApiOperation({ summary: 'Store program answers for registration' })
+  @ApiOperation({
+    summary: 'Store program answers for registration (Used by Person Affected)',
+  })
   @ApiResponse({
     status: 200,
     description: 'Stored program answers for registration',
@@ -102,19 +105,20 @@ export class RegistrationsController {
   }
 
   @PersonAffectedAuth()
-  @ApiOperation({ summary: 'Set custom data for registration' })
+  @ApiOperation({
+    summary: 'Set custom data for registration (Used by Person Affected)',
+  })
   @ApiResponse({
     status: 200,
     description: 'Custom data  set for registration',
   })
   @Post('/custom-data')
   public async addCustomData(
-    @Body() customData: CustomDataDto,
-  ): Promise<RegistrationEntity> {
-    return await this.registrationsService.addRegistrationData(
-      customData.referenceId,
-      customData.key,
-      customData.value,
+    @Body(new ParseArrayPipe({ items: CustomDataDto }))
+    customDataArray: CustomDataDto[],
+  ): Promise<RegistrationEntity[]> {
+    return await this.registrationsService.addRegistrationDataBulk(
+      customDataArray,
     );
   }
 
@@ -255,7 +259,9 @@ export class RegistrationsController {
   }
 
   @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
-  @ApiOperation({ summary: 'Update attribute for registration' })
+  @ApiOperation({
+    summary: 'Update attribute for registration (Used by Aidworker)',
+  })
   @ApiResponse({
     status: 200,
     description: 'Updated attribute for registration',
