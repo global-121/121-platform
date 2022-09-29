@@ -116,15 +116,15 @@ export class SeedHelper {
     const programExampleDump = JSON.stringify(programExample);
     const program = JSON.parse(programExampleDump);
 
+    const programReturn = await programRepository.save(program);
+
     // Remove original program custom attributes and add it to a separate variable
     const programCustomAttributes = program.programCustomAttributes;
     program.programCustomAttributes = [];
     if (programCustomAttributes) {
       for (let attribute of programCustomAttributes) {
-        let attributeReturn = await programCustomAttributeRepository.save(
-          attribute,
-        );
-        program.programCustomAttributes.push(attributeReturn);
+        attribute.program = programReturn;
+        await programCustomAttributeRepository.save(attribute);
       }
     }
 
@@ -148,20 +148,23 @@ export class SeedHelper {
         }
         // assert(optionsArray.includes(scoringkey));
       }
-      let questionReturn = await programQuestionRepository.save(question);
-      program.programQuestions.push(questionReturn);
+      question.program = program;
+      await programQuestionRepository.save(question);
     }
 
-    // Remove original fsp questions and add it to a separate variable
+    // Remove original fsp and add it to a separate variable
+    const foundProgram = await programRepository.findOne({
+      where: { id: programReturn.id },
+    });
     const fsps = program.financialServiceProviders;
-    program.financialServiceProviders = [];
+    foundProgram.financialServiceProviders = [];
     for (let fsp of fsps) {
       let fspReturn = await fspRepository.findOne({
         where: { fsp: fsp.fsp },
       });
-      program.financialServiceProviders.push(fspReturn);
+      foundProgram.financialServiceProviders.push(fspReturn);
     }
-    return await programRepository.save(program);
+    return await programRepository.save(foundProgram);
   }
 
   public async addFsp(fspInput: any): Promise<void> {
@@ -180,12 +183,13 @@ export class SeedHelper {
     const questions = fsp.questions;
     fsp.questions = [];
 
+    const fspReturn = await fspRepository.save(fsp);
+
     for (let question of questions) {
+      question.fsp = fspReturn;
       let customReturn = await fspQuestionRepository.save(question);
       fsp.questions.push(customReturn);
     }
-
-    await fspRepository.save(fsp);
   }
 
   public async assignAidworker(
