@@ -137,7 +137,6 @@ export class QAndASetComponent implements OnChanges {
     questionCode: string,
     answerInput: { checked: boolean; value: string },
   ) {
-    console.log('answerInput: ', answerInput);
     let answerStore;
     let answerValue;
 
@@ -155,7 +154,7 @@ export class QAndASetComponent implements OnChanges {
 
     answerValue = Array.from(answerStore).sort();
 
-    if (!answerValue) {
+    if (!answerValue || answerValue.length === 0) {
       // Reset previously stored answer(s)
       delete this.answers[questionCode];
 
@@ -163,8 +162,6 @@ export class QAndASetComponent implements OnChanges {
       return;
     }
     this.removeValidationError(questionCode);
-    console.log('answerStore: ', answerStore);
-    console.log('answerValue: ', answerValue);
 
     this.onAnswerChange(questionCode, answerValue);
   }

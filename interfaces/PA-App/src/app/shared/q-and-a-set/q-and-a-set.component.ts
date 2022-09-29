@@ -179,7 +179,7 @@ export class QAndASetComponent implements OnChanges {
 
     answerValue = Array.from(answerStore).sort();
 
-    if (!answerValue) {
+    if (!answerValue || answerValue.length === 0) {
       // Reset previously stored answer(s)
       delete this.answers[questionCode];
 

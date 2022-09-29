@@ -179,7 +179,12 @@
         <p *ngIf="question.answerType === answerType.Email">
           {{ 'q-and-a-set.validation.email' | translate }}
         </p>
-        <p *ngIf="question.answerType === answerType.Text">
+        <p
+          *ngIf="
+            question.answerType === answerType.Text ||
+            question.answerType === answerType.MultiSelect
+          "
+        >
           {{ 'q-and-a-set.validation.required' | translate }}
         </p>
       </dialogue-turn>
