@@ -428,7 +428,7 @@
           }
         },
         {
-          "option": "None",
+          "option": "none",
           "label": {
             "en": "None"
           }
@@ -442,7 +442,8 @@
         "pregnantbrestfeeding": 2,
         "womancharge": 1,
         "childcharge": 3,
-        "girlmother": 4
+        "girlmother": 4,
+        "none": 0
       },
       "phases": [],
       "editableInPortal": true,
