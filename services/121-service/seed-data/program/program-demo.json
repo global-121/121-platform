@@ -154,6 +154,7 @@
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {},
+      "duplicateCheck": true,
       "phases": ["registrationValidation", "inclusion", "payment"],
       "editableInPortal": true,
       "shortLabel": {
@@ -219,7 +220,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
+      "scoring": {
+        "multiplier": 1
+      },
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
@@ -253,7 +256,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
+      "scoring": {
+        "multiplier": 1
+      },
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
@@ -269,28 +274,28 @@
       "questionType": "standard",
       "options": [
         {
-          "option": " 2. Retourné     ",
+          "option": "returnee",
           "label": {
             "en": "Retournee",
             "fr": "Retourné"
           }
         },
         {
-          "option": "1. Déplacé      ",
+          "option": "displaced",
           "label": {
             "en": "Displaced",
             "fr": "Déplacé"
           }
         },
         {
-          "option": "3. Autochtone (simple résident) ",
+          "option": "autochtoneprivate",
           "label": {
             "en": "Autochtone (private residency)",
             "fr": "Autochtone (simple résident)"
           }
         },
         {
-          "option": "4. Autochtone (famille d’accueil)",
+          "option": "autochtonehost",
           "label": {
             "en": "Autochtone (host family)",
             "fr": "Autochtone (famille d’accueil)"
@@ -299,7 +304,12 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
+      "scoring": {
+        "returnee": 2,
+        "displaced": 2,
+        "autochtoneprivate": 0,
+        "autochtonehost": 1
+      },
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
@@ -315,42 +325,42 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "1. Veuf/Veuve ?                           ",
+          "option": "widowed",
           "label": {
             "en": "Widowed",
             "fr": "Veuf/Veuve"
           }
         },
         {
-          "option": "2. Marié(e) ?                                ",
+          "option": "married",
           "label": {
             "en": "Married",
             "fr": "Marié(e)"
           }
         },
         {
-          "option": "3. Abandonné(e)?                                  ",
+          "option": "abandoned",
           "label": {
             "en": "Abandoned",
             "fr": "Abandonné(e)"
           }
         },
         {
-          "option": "4. Séparé(e)?                                             ",
+          "option": "seperated",
           "label": {
             "en": "Seperated",
             "fr": "Séparé(e)"
           }
         },
         {
-          "option": "5. Divorcé (e)?                               ",
+          "option": "divorced",
           "label": {
             "en": "Divorced",
             "fr": "Divorcé (e)"
           }
         },
         {
-          "option": "6. Enfant/adolescent ménage?",
+          "option": "girl",
           "label": {
             "en": "Girl/adolescent < 18 pregnant or mother",
             "fr": "Enfant/adolescent ménage"
@@ -359,7 +369,14 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
+      "scoring": {
+        "widowed": 1,
+        "married": 0,
+        "abandoned": 1,
+        "seperated": 1,
+        "divorced": 1,
+        "girl": 3
+      },
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
@@ -375,37 +392,37 @@
       "questionType": "standard",
       "options": [
         {
-          "option": "Older person living alone",
+          "option": "olderalone",
           "label": {
             "en": "Older person living alone"
           }
         },
         {
-          "option": "Elderly person in charge of a household",
+          "option": "elderlycharge",
           "label": {
             "en": "Elderly person in charge of a household"
           }
         },
         {
-          "option": "Pregnant/breastfeeding woman",
+          "option": "pregnantbrestfeeding",
           "label": {
             "en": "Pregnant/breastfeeding woman"
           }
         },
         {
-          "option": "Woman in charge of a household",
+          "option": "womancharge",
           "label": {
             "en": "Woman in charge of a household"
           }
         },
         {
-          "option": "Child/adolescent in charge of a household",
+          "option": "childcharge",
           "label": {
             "en": "Child/adolescent in charge of a household"
           }
         },
         {
-          "option": "Girl/adolescent < 18 pregnant or mother",
+          "option": "girlmother",
           "label": {
             "en": "Girl/adolescent < 18 pregnant or mother"
           }
@@ -419,7 +436,14 @@
       ],
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
+      "scoring": {
+        "olderalone": 0,
+        "elderlycharge": 1,
+        "pregnantbrestfeeding": 2,
+        "womancharge": 1,
+        "childcharge": 3,
+        "girlmother": 4
+      },
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
@@ -436,7 +460,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
+      "scoring": {
+        "multiplier": 1
+      },
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
@@ -453,7 +479,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
+      "scoring": {
+        "multiplier": 1
+      },
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
@@ -470,7 +498,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
+      "scoring": {
+        "multiplier": 2
+      },
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
@@ -487,7 +517,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
+      "scoring": {
+        "multiplier": 2
+      },
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
@@ -504,7 +536,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
+      "scoring": {
+        "multiplier": 2
+      },
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
@@ -521,7 +555,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
+      "scoring": {
+        "multiplier": 2
+      },
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
@@ -538,7 +574,9 @@
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
+      "scoring": {
+        "multiplier": 2
+      },
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
