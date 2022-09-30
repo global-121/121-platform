@@ -19,7 +19,7 @@ import programDrc from '../../seed-data/program/program-drc.json';
 import intanceDrc from '../../seed-data/instance/instance-drc.json';
 
 @Injectable()
-export class SeedDemoMultipleProgram implements InterfaceScript {
+export class SeedTestMultipleProgram implements InterfaceScript {
   public constructor(private connection: Connection) {}
 
   private readonly seedHelper = new SeedHelper(this.connection);
@@ -79,4 +79,4 @@ export class SeedDemoMultipleProgram implements InterfaceScript {
   }
 }
 
-export default SeedDemoMultipleProgram;
+export default SeedTestMultipleProgram;
