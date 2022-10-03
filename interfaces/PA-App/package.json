@@ -77,7 +77,7 @@
     "@types/jasmine": "^4.0.2",
     "@types/node": "^14.x",
     "codelyzer": "^6.0.0",
-    "dotenv": "^16.0.2",
+    "dotenv": "^16.0.3",
     "ffbinaries": "^1.1.4",
     "gzipper": "^5.0.0",
     "http-server": "^14.1.0",
