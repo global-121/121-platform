@@ -351,7 +351,6 @@ export class WhatsappService {
       registrationsWithPendingMessage.length === 0
     ) {
       const programs = await getRepository(ProgramEntity).find();
-      console.log('programs: ', programs);
       if (programs.length === 1) {
         // If only 1 program in database: use default reply of that program
         const whatsappDefaultReply =
@@ -366,10 +365,6 @@ export class WhatsappService {
         return;
       } else {
         // If multiple or 0 programs: use generic reply in code
-        console.log(
-          'this.genericDefaultReplies[this.fallbackLanguage]: ',
-          this.genericDefaultReplies[this.fallbackLanguage],
-        );
         await this.sendWhatsapp(
           this.genericDefaultReplies[this.fallbackLanguage],
           fromNumber,

@@ -288,7 +288,7 @@ export class IntersolveService {
     const programId = registration.programId;
 
     const language = await this.getLanguage(paymentInfo.referenceId);
-    const program = await getRepository(ProgramEntity).findOne(programId);
+    const program = await this.programRepository.findOne(programId);
     let whatsappPayment = program.notifications[language]['whatsappPayment'];
     const calculatedAmount = this.getMultipliedAmount(
       amount,
