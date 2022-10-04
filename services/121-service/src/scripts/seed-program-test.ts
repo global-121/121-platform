@@ -11,11 +11,11 @@ import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
 import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
 
-import programDemo from '../../seed-data/program/program-demo.json';
+import programTest from '../../seed-data/program/program-test.json';
 import instanceDemo from '../../seed-data/instance/instance-demo.json';
 
 @Injectable()
-export class SeedDemoProgram implements InterfaceScript {
+export class SeedTestProgram implements InterfaceScript {
   public constructor(private connection: Connection) {}
 
   private readonly seedHelper = new SeedHelper(this.connection);
@@ -26,9 +26,13 @@ export class SeedDemoProgram implements InterfaceScript {
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
+    await this.seedHelper.addFsp(fspAfricasTalking);
+    await this.seedHelper.addFsp(fspBank);
+    await this.seedHelper.addFsp(fspMixedAttributes);
+    await this.seedHelper.addFsp(fspNoAttributes);
 
     // ***** CREATE PROGRAM *****
-    const program = await this.seedHelper.addProgram(programDemo);
+    const program = await this.seedHelper.addProgram(programTest);
 
     this.seedHelper.addDefaultUsers(program, true);
 
@@ -37,4 +41,4 @@ export class SeedDemoProgram implements InterfaceScript {
   }
 }
 
-export default SeedDemoProgram;
+export default SeedTestProgram;
