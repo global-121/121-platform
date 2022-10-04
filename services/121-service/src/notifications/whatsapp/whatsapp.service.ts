@@ -112,8 +112,7 @@ export class WhatsappService {
     recipientPhoneNr: string,
     messageType: null | IntersolvePayoutStatus,
     mediaUrl: null | string,
-    registrationId?: number,
-    preferedLanguage?: string,
+    registrationId: number,
   ): Promise<any> {
     const pendingMesssage = new WhatsappPendingMessageEntity();
     pendingMesssage.body = message;
@@ -122,15 +121,14 @@ export class WhatsappService {
     pendingMesssage.messageType = messageType;
     pendingMesssage.registrationId = registrationId;
     this.pendingMessageRepo.save(pendingMesssage);
-    const language = preferedLanguage
-      ? preferedLanguage
-      : this.fallbackLanguage;
+
     const registration = await this.registrationRepository.findOne(
       registrationId,
       {
         relations: ['program'],
       },
     );
+    const language = registration.preferredLanguage || this.fallbackLanguage;
     const whatsappGenericMessage = this.getGenericNotificationText(
       language,
       registration.program,

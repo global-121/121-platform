@@ -990,7 +990,6 @@ export class RegistrationsService {
           null,
           null,
           registration.id,
-          registration.preferredLanguage,
         );
       } else if (tryWhatsApp && registration.phoneNumber) {
         this.tryWhatsapp(registration, messageText);
@@ -1023,7 +1022,6 @@ export class RegistrationsService {
         null,
         null,
         registration.id,
-        registration.preferredLanguage,
       )
       .then(result => {
         // Store the sid of a whatsapp message of which we do not know if the receiver registered on whatsapp
@@ -1195,9 +1193,7 @@ export class RegistrationsService {
     // Check if potential phonenumbers are correct and clean them
     const newFspAttributes = {};
     for (const [key, value] of Object.entries(newFspAttributesRaw)) {
-      console.log('key: ', key, value);
       newFspAttributes[key] = await this.cleanCustomDataIfPhoneNr(key, value);
-      console.log('newFspAttributes[key]: ', newFspAttributes[key]);
     }
 
     // Get registration by referenceId
