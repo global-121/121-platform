@@ -1195,7 +1195,9 @@ export class RegistrationsService {
     // Check if potential phonenumbers are correct and clean them
     const newFspAttributes = {};
     for (const [key, value] of Object.entries(newFspAttributesRaw)) {
+      console.log('key: ', key, value);
       newFspAttributes[key] = await this.cleanCustomDataIfPhoneNr(key, value);
+      console.log('newFspAttributes[key]: ', newFspAttributes[key]);
     }
 
     // Get registration by referenceId

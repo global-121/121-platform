@@ -55,8 +55,6 @@ export class IntersolveService {
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
 
-  private readonly programId = 1;
-
   public constructor(
     private readonly intersolveApiService: IntersolveApiService,
     @Inject(forwardRef(() => WhatsappService))
@@ -99,6 +97,7 @@ export class IntersolveService {
           1,
           paResult.status,
           paResult.message,
+          registration.programId,
         );
       }
     }
@@ -281,8 +280,15 @@ export class IntersolveService {
     const result = new PaTransactionResultDto();
     result.referenceId = paymentInfo.referenceId;
 
+    const registration = await this.registrationRepository.findOne({
+      select: ['id'],
+      where: { referenceId: paymentInfo.referenceId },
+    });
+
+    const programId = registration.programId;
+
     const language = await this.getLanguage(paymentInfo.referenceId);
-    const program = await getRepository(ProgramEntity).findOne(this.programId);
+    const program = await getRepository(ProgramEntity).findOne(programId);
     let whatsappPayment = program.notifications[language]['whatsappPayment'];
     const calculatedAmount = this.getMultipliedAmount(
       amount,
@@ -290,10 +296,6 @@ export class IntersolveService {
     );
     whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
 
-    const registration = await this.registrationRepository.findOne({
-      select: ['id'],
-      where: { referenceId: paymentInfo.referenceId },
-    });
     await this.whatsappService
       .sendWhatsapp(
         whatsappPayment,
@@ -312,6 +314,7 @@ export class IntersolveService {
             1,
             StatusEnum.waiting,
             null,
+            registration.programId,
             messageSid,
           );
 
@@ -551,6 +554,7 @@ export class IntersolveService {
     transactionStep: number,
     status: StatusEnum,
     errorMessage: string,
+    programId: number,
     messageSid?: string,
   ): Promise<void> {
     const transactionResultDto = await this.createTransactionResult(
@@ -563,7 +567,7 @@ export class IntersolveService {
     );
     this.transactionsService.storeTransaction(
       transactionResultDto,
-      this.programId,
+      programId,
       paymentNr,
       transactionStep,
     );

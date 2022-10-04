@@ -58,9 +58,11 @@ export class WhatsappService {
     WhatsappPendingMessageEntity
   >;
 
-  private readonly programId = 1;
   private readonly fallbackLanguage = 'en';
-
+  private readonly genericDefaultReplies = {
+    en:
+      'This is an automated message. Your phone number is not recognized for any 121 program. For questions please contact the NGO.',
+  };
   private readonly whatsappTemplatedMessageKeys = [
     'whatsappPayment',
     'whatsappGenericMessage',
@@ -319,6 +321,7 @@ export class WhatsappService {
   public async handleIncoming(
     callbackData: TwilioIncomingCallbackDto,
   ): Promise<void> {
+    console.log('callbackData: ', callbackData);
     if (!callbackData.From) {
       throw new HttpException(
         `No "From" address specified.`,
@@ -343,23 +346,39 @@ export class WhatsappService {
     );
 
     // If no registrations with outstanding barcodes or messages: send auto-reply
-    const program = await getRepository(ProgramEntity).findOne(this.programId);
-    const language =
-      registrationsWithOpenVouchers[0]?.preferredLanguage || 'en';
     if (
       registrationsWithOpenVouchers.length === 0 &&
       registrationsWithPendingMessage.length === 0
     ) {
-      const whatsappDefaultReply =
-        program.notifications[language]['whatsappReply'];
-      await this.sendWhatsapp(
-        whatsappDefaultReply,
-        fromNumber,
-        null,
-        null,
-        null,
-      );
-      return;
+      const programs = await getRepository(ProgramEntity).find();
+      console.log('programs: ', programs);
+      if (programs.length === 1) {
+        // If only 1 program in database: use default reply of that program
+        const whatsappDefaultReply =
+          programs[0].notifications[this.fallbackLanguage]['whatsappReply'];
+        await this.sendWhatsapp(
+          whatsappDefaultReply,
+          fromNumber,
+          null,
+          null,
+          null,
+        );
+        return;
+      } else {
+        // If multiple or 0 programs: use generic reply in code
+        console.log(
+          'this.genericDefaultReplies[this.fallbackLanguage]: ',
+          this.genericDefaultReplies[this.fallbackLanguage],
+        );
+        await this.sendWhatsapp(
+          this.genericDefaultReplies[this.fallbackLanguage],
+          fromNumber,
+          null,
+          null,
+          null,
+        );
+        return;
+      }
     }
 
     // Start loop over (potentially) multiple PA's
@@ -368,6 +387,10 @@ export class WhatsappService {
       const intersolveBarcodesPerPa = registration.images.map(
         image => image.barcode,
       );
+      const program = await getRepository(ProgramEntity).findOne(
+        registration.programId,
+      );
+      const language = registration.preferredLanguage || this.fallbackLanguage;
 
       // Loop over current and (potentially) old barcodes per PA
       for await (let intersolveBarcode of intersolveBarcodesPerPa) {
@@ -402,6 +425,7 @@ export class WhatsappService {
           2,
           StatusEnum.success,
           null,
+          registration.programId,
         );
 
         // Add small delay/sleep to ensure the order in which messages are received

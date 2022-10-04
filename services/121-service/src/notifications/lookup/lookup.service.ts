@@ -29,14 +29,16 @@ export class LookupService {
     phoneNumber: string,
     throwNoException?: boolean,
   ): Promise<string> {
+    console.log('phoneNumber: ', phoneNumber);
     try {
       // Add additional sanitizing (incl NL-specific) because user is given no opportunity to correct here
       const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);
+      console.log('updatedPhone: ', updatedPhone);
 
       const lookupResponse = await twilioClient.lookups
         .phoneNumbers(updatedPhone)
         .fetch({ type: ['carrier'] });
-
+      console.log('lookupResponse: ', lookupResponse);
       if (lookupResponse.phoneNumber.substr(0, 4) == '+961') {
         lookupResponse.phoneNumber = this.processLebanonException(
           lookupResponse,
