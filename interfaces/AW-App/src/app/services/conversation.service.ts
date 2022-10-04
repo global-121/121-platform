@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { ValidationComponents } from '../validation-components/validation-components.enum';
 
 @Injectable({
@@ -58,7 +59,11 @@ export class ConversationService {
   }
 
   startNewConversation() {
-    this.addSection(ValidationComponents.selectProgram);
+    if (environment.useMultiplePrograms) {
+      this.addSection(ValidationComponents.selectProgram);
+    } else {
+      this.addSection(ValidationComponents.mainMenu);
+    }
   }
 
   private addSection(sectionName) {
