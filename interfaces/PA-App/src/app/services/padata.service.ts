@@ -111,11 +111,6 @@ export class PaDataService {
   public async getCurrentProgramId(): Promise<number> {
     if (!this.currentProgramId) {
       this.currentProgramId = Number(await this.retrieve(this.type.programId));
-
-      // Fall back to hard-coded value, if all else fails
-      if (!this.currentProgramId) {
-        this.currentProgramId = 1;
-      }
     }
     return this.currentProgramId;
   }

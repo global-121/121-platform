@@ -89,6 +89,7 @@ export class AutoSignupComponent extends PersonalDirective {
     );
 
     await this.paData.store(this.paData.type.referenceId, referenceId);
+    await this.paData.store(this.paData.type.programId, currentProgram.id);
   }
 
   getNextSection() {
