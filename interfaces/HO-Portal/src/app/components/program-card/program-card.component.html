@@ -22,16 +22,12 @@
   </div>
 </ng-template>
 
-<ion-card *ngIf="program">
+<ion-card *ngIf="program" [routerLink]="['/program', program.id, 'dashboard']">
   <ion-card-header>
     <ion-row class="ion-padding-horizontal">
       <ion-col size="10">
         <ion-card-title color="primary">
-          <strong
-            [routerLink]="['/program', program.id, 'dashboard']"
-            class="program-title"
-            >{{ program.titlePortal }}</strong
-          >
+          <strong class="program-title">{{ program.titlePortal }}</strong>
         </ion-card-title>
         <ion-card-subtitle color="medium">
           <small>
