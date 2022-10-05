@@ -621,5 +621,8 @@
       }
     }
   ],
+  "aboutProgram": {
+    "en": "[about aid program]"
+  },
   "fullnameNamingConvention": ["name", "middlename", "firstname"]
 }

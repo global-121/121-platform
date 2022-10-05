@@ -1545,6 +1545,10 @@
       }
     }
   ],
+  "aboutProgram": {
+    "en": "This <strong>Help a Child DRC</strong> aid program was created to support people who are in need. Help a Child DRC will distribute money via VodaCom to included people.",
+    "fr": "Le programme d'aide Help a Child DRC a été créé pour soutenir les personnes dans le besoin. Help a Child DRC distribuera de l'argent via VodaCom aux personnes concernées."
+  },
   "fullnameNamingConvention": [
     "B. 1. Quel est votre nom ? ",
     "B. 2. Quel est votre post-nom ? ",

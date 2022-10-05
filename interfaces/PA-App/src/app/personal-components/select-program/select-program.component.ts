@@ -1,11 +1,16 @@
 import { Component, Input } from '@angular/core';
-import { InstanceInformation } from 'src/app/models/instance.model';
+import { ModalController } from '@ionic/angular';
 import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import {
+  LoggingEvent,
+  LoggingEventCategory,
+} from '../../models/logging-event.enum';
+import { LoggingService } from '../../services/logging.service';
+import { InfoPopupComponent } from '../../shared/info-popup/info-popup.component';
 import { PersonalDirective } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
@@ -18,8 +23,6 @@ export class SelectProgramComponent extends PersonalDirective {
   @Input()
   public data;
 
-  public instanceInformation: InstanceInformation;
-
   public programs: Program[];
   public programChoice: number;
 
@@ -28,14 +31,13 @@ export class SelectProgramComponent extends PersonalDirective {
     public paData: PaDataService,
     public conversationService: ConversationService,
     public translatableString: TranslatableStringService,
-    private instanceService: InstanceService,
+    private modalController: ModalController,
+    private logger: LoggingService,
   ) {
     super();
   }
 
   ngOnInit() {
-    this.getInstanceInformation();
-
     if (this.data) {
       this.initHistory();
       return;
@@ -55,14 +57,6 @@ export class SelectProgramComponent extends PersonalDirective {
     await this.getPrograms();
   }
 
-  private getInstanceInformation() {
-    this.instanceService.instanceInformation.subscribe(
-      (instanceInformation) => {
-        this.instanceInformation = instanceInformation;
-      },
-    );
-  }
-
   private async getPrograms() {
     this.conversationService.startLoading();
 
@@ -76,6 +70,7 @@ export class SelectProgramComponent extends PersonalDirective {
     return programs.map((program: Program) => {
       program.titlePaApp = this.translatableString.get(program.titlePaApp);
       program.description = this.translatableString.get(program.description);
+      program.aboutProgram = this.translatableString.get(program.aboutProgram);
       return program;
     });
   }
@@ -84,6 +79,23 @@ export class SelectProgramComponent extends PersonalDirective {
     return this.programs.find((item: Program) => {
       return item.id === programId;
     });
+  }
+
+  public async openAboutProgramPopup(program: Program) {
+    const infoPopup = await this.modalController.create({
+      component: InfoPopupComponent,
+      componentProps: {
+        headingKey: 'personal.select-program.more-info-programs',
+        message: program.aboutProgram,
+      },
+      cssClass: 'more-info-popup',
+    });
+
+    this.logger.logEvent(LoggingEventCategory.ui, LoggingEvent.popUpOpen, {
+      name: 'personal.select-program.more-info-programs',
+    });
+
+    return await infoPopup.present();
   }
 
   public changeProgram($event) {

@@ -831,5 +831,9 @@
       }
     }
   ],
+  "aboutProgram": {
+    "en": "Returnees face economic and social difficulties upon return to Ethiopia. Therefore, this programme is designed to support a successful economic reintegration of returnees from the Middle East through a cash for livelihoods intervention. The project targets vulnerable women with existing small-scale business, who are victims of trafficking.",
+    "am_ET": "ከስደት ተመላሾች ወደ ኢትዮጵያ ሲመለሱ ኢኮኖሚያዊ እና ማህበራዊ ችግሮች ይገጥማቸዋል። ስለዚህ ይህ ፕሮግራም ከመካከለኛው ምስራቅ የተመለሱ ስደተኞችን መልሶ ለማቋቋም የገንዘብ ድጋፍ ለማድረግ የተነደፈ ነው።"
+  },
   "fullnameNamingConvention": ["name"]
 }

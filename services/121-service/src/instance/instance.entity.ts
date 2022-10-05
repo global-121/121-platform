@@ -17,9 +17,6 @@ export class InstanceEntity extends Base121Entity {
   public dataPolicy: JSON;
 
   @Column('json', { nullable: true, default: null })
-  public aboutProgram: JSON;
-
-  @Column('json', { nullable: true, default: null })
   public contactDetails: JSON;
 
   @OneToOne(
