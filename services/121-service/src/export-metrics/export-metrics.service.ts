@@ -7,17 +7,11 @@ import { RegistrationsService } from './../registration/registrations.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import {
-  Repository,
-  getRepository,
-  In,
-  ConnectionIsNotSetError,
-} from 'typeorm';
+import { Repository, getRepository, In, Connection } from 'typeorm';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import {
   AnswerTypes,
-  Attribute,
   GenericAttributes,
 } from '../registration/enum/custom-data-attributes';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
@@ -62,6 +56,7 @@ export class ExportMetricsService {
     private readonly paymentsService: PaymentsService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
+    private readonly connection: Connection,
   ) {}
 
   public getExportList(
@@ -1102,13 +1097,20 @@ export class ExportMetricsService {
       r => r.registrationStatus === RegistrationStatusEnum.included,
     ).length;
 
-    const { spentMoney } = await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select('SUM(transaction.amount)', 'spentMoney')
-      .where('transaction.programId = :programId', { programId: programId })
+    // Use this method to get only the latest attempt per PA per payment
+    const transactionsQuery = this.transactionsService.getMaxAttemptPerPaAndPaymentTransactionsQuery(
+      programId,
+      false,
+    );
+
+    const { spentMoney } = await this.connection
+      .createQueryBuilder()
+      .select('SUM(amount)', 'spentMoney')
+      .from('(' + transactionsQuery.getQuery() + ')', 'transactions')
+      .setParameters(transactionsQuery.getParameters())
+      .where('status = :status', { status: StatusEnum.success })
       .getRawOne();
 
-    // MOCK DATA
     const totalBudget = 0; // TODO: we don't have this property yet in the program and it will be picked up in the future
     return {
       programId,

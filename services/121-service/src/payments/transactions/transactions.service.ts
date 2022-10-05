@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { PaTransactionResultDto } from '../dto/payment-transaction-result.dto';
-import {
-  FinancialServiceProviderEntity,
-  FspName,
-} from '../../fsp/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import {
@@ -33,12 +30,26 @@ export class TransactionsService {
     splitByTransactionStep: boolean,
     minPayment?: number,
   ): Promise<any> {
-    const maxAttemptPerPaAndPayment = await this.transactionRepository
+    const transactions = await this.getMaxAttemptPerPaAndPaymentTransactionsQuery(
+      programId,
+      splitByTransactionStep,
+      minPayment,
+    ).getRawMany();
+    return transactions;
+  }
+
+  public getMaxAttemptPerPaAndPaymentTransactionsQuery(
+    programId: number,
+    splitByTransactionStep: boolean,
+    minPayment?: number,
+  ): SelectQueryBuilder<any> {
+    const maxAttemptPerPaAndPayment = this.transactionRepository
       .createQueryBuilder('transaction')
       .select(['payment', '"registrationId"'])
       .addSelect(
         `MAX(cast("transactionStep" as varchar) || '-' || cast(created as varchar)) AS max_attempt`,
       )
+      .where('transaction.program.id = :programId', { programId: programId })
       .groupBy('payment')
       .addGroupBy('"registrationId"');
 
@@ -48,7 +59,7 @@ export class TransactionsService {
         .addGroupBy('"transactionStep"');
     }
 
-    const transactions = await this.transactionRepository
+    return this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
         'transaction.created AS "paymentDate"',
@@ -69,9 +80,7 @@ export class TransactionsService {
       .andWhere('transaction.payment >= :minPayment', {
         minPayment: minPayment || 0,
       })
-      .andWhere('subquery.max_attempt IS NOT NULL')
-      .getRawMany();
-    return transactions;
+      .andWhere('subquery.max_attempt IS NOT NULL');
   }
 
   public async getTransaction(
