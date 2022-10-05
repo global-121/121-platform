@@ -37,11 +37,9 @@ import { DownloadData } from './dto/download-data.interface';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { Attributes } from './dto/update-attribute.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
-import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
-import { CustomAttributeType } from '../programs/dto/create-program-custom-attribute.dto';
 import { ProgramService } from '../programs/programs.service';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { v4 as uuid } from 'uuid';
@@ -1474,29 +1472,6 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return { referenceId: registration.referenceId };
-  }
-
-  public async getInclusionStatus(
-    programId: number,
-    referenceId: string,
-  ): Promise<InclusionStatus> {
-    let registration = await this.getRegistrationFromReferenceId(referenceId);
-
-    await this.findProgramOrThrow(programId);
-
-    let inclusionStatus: InclusionStatus;
-
-    if (registration.registrationStatus === RegistrationStatusEnum.included) {
-      inclusionStatus = { status: RegistrationStatusEnum.included };
-    } else if (
-      registration.registrationStatus === RegistrationStatusEnum.rejected
-    ) {
-      inclusionStatus = { status: RegistrationStatusEnum.rejected };
-    } else {
-      inclusionStatus = { status: 'unavailable' };
-    }
-
-    return inclusionStatus;
   }
 
   public async sendCustomTextMessage(

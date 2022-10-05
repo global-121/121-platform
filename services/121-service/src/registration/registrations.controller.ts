@@ -40,7 +40,6 @@ import { UpdateAttributeDto } from './dto/update-attribute.dto';
 import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
-import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
@@ -502,20 +501,6 @@ export class RegistrationsController {
   ): Promise<ReferenceIdDto> {
     return await this.registrationsService.findReferenceIdWithQrIdentifier(
       data.qrIdentifier,
-    );
-  }
-
-  @PersonAffectedAuth()
-  @ApiOperation({ summary: 'Get inclusion status (Used by PA)' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('inclusion-status/:programId')
-  public async inclusionStatus(
-    @Param() params,
-    @Body() data: ReferenceIdDto,
-  ): Promise<InclusionStatus> {
-    return await this.registrationsService.getInclusionStatus(
-      Number(params.programId),
-      data.referenceId,
     );
   }
 
