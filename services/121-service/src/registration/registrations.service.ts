@@ -1536,7 +1536,8 @@ export class RegistrationsService {
     const value = customData[attribute.name];
     switch (attribute.type) {
       case AttributeType.numeric:
-        return Number(value) || undefined;
+        const number = Number(value);
+        return typeof number === 'number' ? number : undefined;
       case AttributeType.boolean:
         return value ? JSON.parse(value) : false;
       default:
