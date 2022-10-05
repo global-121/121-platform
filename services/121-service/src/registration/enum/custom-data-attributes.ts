@@ -43,11 +43,6 @@ export class Attribute {
   public type: string;
   public label: object;
   public shortLabel?: object;
-  public category?: AttributeCategory;
-}
-
-export enum AttributeCategory {
-  fspQuestion = 'fspQuestion',
 }
 
 export enum AnswerTypes {
