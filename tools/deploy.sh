@@ -125,7 +125,7 @@ END
     then
       # Run status check in a parallel process...
       (
-        ./tools/wait-for.sh "$services_status_url" -- rm "$web_root/.maintenance"
+        ./tools/wait-for.sh "$services_status_url" --timeout=500 -- rm "$web_root/.maintenance"
       ) &
     else
       disable_maintenance_mode

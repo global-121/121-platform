@@ -19,7 +19,6 @@
             [name]="question.code"
             [value]="answers[question.code]?.value"
             (ionChange)="onAnswerChange(question.code, $event.target.value)"
-            debounce="100"
           >
             <ion-item
               *ngFor="let option of question.options"
@@ -37,12 +36,33 @@
             </ion-item>
           </ion-radio-group>
         </div>
+        <div *ngSwitchCase="answerType.MultiSelect">
+          <div>
+            <ion-item
+              *ngFor="let option of question.options"
+              color="light"
+              lines="full"
+              class="ion-no-padding"
+            >
+              <ion-label class="ion-text-wrap ion-padding-end">
+                {{ option.label }}
+              </ion-label>
+              <ion-checkbox
+                [value]="option.value"
+                [disabled]="isSubmitted"
+                (ionChange)="
+                  onAnswerChangeMultiSelect(question.code, $event.detail)
+                "
+              ></ion-checkbox>
+            </ion-item>
+          </div>
+        </div>
         <div *ngSwitchCase="answerType.Number">
           <numeric-input
             #numInput
             ngDefaultControl
             [(ngModel)]="theFormModels[question.code]"
-            required
+            [required]="true"
             [name]="question.code"
             [placeholder]="question.placeholder"
             [pattern]="question.pattern"
@@ -61,7 +81,7 @@
             #dateInput
             ngDefaultControl
             [(ngModel)]="theFormModels[question.code]"
-            required
+            [required]="true"
             [name]="question.code"
             [disabled]="isSubmitted"
             (isValidChange)="
@@ -73,12 +93,12 @@
             "
           ></date-input>
         </div>
-        <div *ngSwitchCase="answerType.phoneNumber">
+        <div *ngSwitchCase="answerType.PhoneNumber">
           <phone-number-input
             #phoneNumberInput
             ngDefaultControl
             [(ngModel)]="theFormModels[question.code]"
-            required
+            [required]="true"
             [placeholder]="question.placeholder"
             [name]="question.code"
             [disabled]="isSubmitted"
@@ -91,7 +111,7 @@
             "
           ></phone-number-input>
         </div>
-        <div *ngSwitchCase="answerType.email">
+        <div *ngSwitchCase="answerType.Email">
           <ion-input
             #emailInput="ngModel"
             ngDefaultControl
@@ -101,7 +121,7 @@
             autocomplete="email"
             pattern="^[\w\-+]+(\.[\w\-+]+)*@(([\w\-]+\.)*[\w\-]+)\.[a-z]{2,}$"
             [title]="'q-and-a-set.validation.email' | translate"
-            required
+            [required]="true"
             [name]="question.code"
             [disabled]="isSubmitted"
             (ionChange)="
@@ -112,7 +132,7 @@
                   (emailInput.dirty || emailInput.touched || allQuestionsShown)
               )
             "
-            debounce="300"
+            [debounce]="300"
           ></ion-input>
         </div>
         <div *ngSwitchDefault>
@@ -121,9 +141,9 @@
             ngDefaultControl
             [(ngModel)]="theFormModels[question.code]"
             type="text"
-            [placeholder]="question.placeholder"
+            [placeholder]="question.placeholder || undefined"
             [pattern]="question.pattern ? question.pattern : '.*\\S+.*'"
-            required
+            [required]="true"
             [name]="question.code"
             [disabled]="isSubmitted"
             (ionChange)="
@@ -136,7 +156,7 @@
                     allQuestionsShown)
               )
             "
-            debounce="300"
+            [debounce]="300"
           ></ion-input>
         </div>
       </div>
@@ -146,7 +166,7 @@
       class="ion-margin-bottom ion-padding-bottom"
     >
       <dialogue-turn [isSpoken]="checkValidationError(question.code)">
-        <p *ngIf="question.answerType === answerType.phoneNumber">
+        <p *ngIf="question.answerType === answerType.PhoneNumber">
           <play-text-audio
             key="q-and-a-set.validation.phone-number"
             class="ion-float-start ion-margin-end"
@@ -167,14 +187,19 @@
           ></play-text-audio>
           {{ 'q-and-a-set.validation.date' | translate }}
         </p>
-        <p *ngIf="question.answerType === answerType.email">
+        <p *ngIf="question.answerType === answerType.Email">
           <play-text-audio
             key="q-and-a-set.validation.date"
             class="ion-float-start ion-margin-end"
           ></play-text-audio>
           {{ 'q-and-a-set.validation.email' | translate }}
         </p>
-        <p *ngIf="question.answerType === answerType.Text">
+        <p
+          *ngIf="
+            question.answerType === answerType.Text ||
+            question.answerType === answerType.MultiSelect
+          "
+        >
           <play-text-audio
             key="q-and-a-set.validation.required"
             class="ion-float-start ion-margin-end"
@@ -210,7 +235,7 @@
 
   <dialogue-turn
     actor="self"
-    isConnected="true"
+    [isConnected]="true"
     *ngIf="theForm.valid && !checkValidationErrors() && allQuestionsShown"
     [isSpoken]="theForm.valid && !checkValidationErrors() && allQuestionsShown"
   >

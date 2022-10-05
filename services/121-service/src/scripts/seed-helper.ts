@@ -22,22 +22,22 @@ export class SeedHelper {
     program: ProgramEntity,
     addFieldValidation: boolean,
   ): Promise<void> {
-    const fullAccessUser = await this.addUser({
+    const fullAccessUser = await this.getOrSaveUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FULL_ACCESS,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
 
-    const runProgramUser = await this.addUser({
+    const runProgramUser = await this.getOrSaveUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
     });
 
-    const personalDataUser = await this.addUser({
+    const personalDataUser = await this.getOrSaveUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_PERSONAL_DATA,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_PERSONAL_DATA,
     });
 
-    const viewOnlyUser = await this.addUser({
+    const viewOnlyUser = await this.getOrSaveUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
     });
@@ -58,7 +58,7 @@ export class SeedHelper {
     ]);
 
     if (addFieldValidation) {
-      const fieldValidationUser = await this.addUser({
+      const fieldValidationUser = await this.getOrSaveUser({
         username:
           process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FIELD_VALIDATION,
         password:
@@ -72,13 +72,20 @@ export class SeedHelper {
     await this.assignAdminUserToProgram(program.id);
   }
 
-  public async addUser(userInput: any): Promise<UserEntity> {
+  public async getOrSaveUser(userInput: any): Promise<UserEntity> {
     const userRepository = this.connection.getRepository(UserEntity);
-    return await userRepository.save({
-      username: userInput.username,
-      password: crypto.createHmac('sha256', userInput.password).digest('hex'),
-      userType: UserType.aidWorker,
+    const user = await userRepository.findOne({
+      where: { username: userInput.username },
     });
+    if (user) {
+      return user;
+    } else {
+      return await userRepository.save({
+        username: userInput.username,
+        password: crypto.createHmac('sha256', userInput.password).digest('hex'),
+        userType: UserType.aidWorker,
+      });
+    }
   }
 
   public async addInstance(
@@ -109,15 +116,15 @@ export class SeedHelper {
     const programExampleDump = JSON.stringify(programExample);
     const program = JSON.parse(programExampleDump);
 
+    const programReturn = await programRepository.save(program);
+
     // Remove original program custom attributes and add it to a separate variable
     const programCustomAttributes = program.programCustomAttributes;
     program.programCustomAttributes = [];
     if (programCustomAttributes) {
       for (let attribute of programCustomAttributes) {
-        let attributeReturn = await programCustomAttributeRepository.save(
-          attribute,
-        );
-        program.programCustomAttributes.push(attributeReturn);
+        attribute.program = programReturn;
+        await programCustomAttributeRepository.save(attribute);
       }
     }
 
@@ -141,18 +148,23 @@ export class SeedHelper {
         }
         // assert(optionsArray.includes(scoringkey));
       }
-      let questionReturn = await programQuestionRepository.save(question);
-      program.programQuestions.push(questionReturn);
+      question.program = program;
+      await programQuestionRepository.save(question);
     }
 
-    // Remove original fsp questions and add it to a separate variable
+    // Remove original fsp and add it to a separate variable
+    const foundProgram = await programRepository.findOne({
+      where: { id: programReturn.id },
+    });
     const fsps = program.financialServiceProviders;
-    program.financialServiceProviders = [];
+    foundProgram.financialServiceProviders = [];
     for (let fsp of fsps) {
-      let fspReturn = await fspRepository.findOne(fsp.id);
-      program.financialServiceProviders.push(fspReturn);
+      let fspReturn = await fspRepository.findOne({
+        where: { fsp: fsp.fsp },
+      });
+      foundProgram.financialServiceProviders.push(fspReturn);
     }
-    return await programRepository.save(program);
+    return await programRepository.save(foundProgram);
   }
 
   public async addFsp(fspInput: any): Promise<void> {
@@ -171,12 +183,13 @@ export class SeedHelper {
     const questions = fsp.questions;
     fsp.questions = [];
 
+    const fspReturn = await fspRepository.save(fsp);
+
     for (let question of questions) {
+      question.fsp = fspReturn;
       let customReturn = await fspQuestionRepository.save(question);
       fsp.questions.push(customReturn);
     }
-
-    await fspRepository.save(fsp);
   }
 
   public async assignAidworker(

@@ -3,16 +3,16 @@
   "validation": true,
   "validationByQr": true,
   "phase": "design",
-  "location": "Location B",
-  "ngo": "NGO B",
+  "location": "Westeros",
+  "ngo": "Yellow Cross",
   "titlePortal": {
-    "en": "Program 2"
+    "en": "Cash program Westeros"
   },
   "titlePaApp": {
-    "en": "Program 2"
+    "en": "Cash program Westeros"
   },
   "description": {
-    "en": "Short description."
+    "en": "This program is aimed to help the commoners in Westeros most affected by the War of the Five Kings."
   },
   "descCashType": {
     "en": "Unconditional multi-purpose"
@@ -21,43 +21,37 @@
   "endDate": "2020-12-31T12:00:00Z",
   "currency": "MWK",
   "distributionFrequency": "month",
-  "distributionDuration": 3,
+  "distributionDuration": 8,
   "fixedTransferValue": 10,
+  "paymentAmountMultiplierFormula": "1 + 1 * dragon",
   "financialServiceProviders": [
     {
-      "id": 1
+      "fsp": "Intersolve-whatsapp"
     },
     {
-      "id": 2
+      "fsp": "Africas-talking"
     },
     {
-      "id": 3
+      "fsp": "Bank A"
     },
     {
-      "id": 4
+      "fsp": "FSP - all attributes"
     },
     {
-      "id": 5
-    },
-    {
-      "id": 6
+      "fsp": "FSP - no attributes"
     }
   ],
   "inclusionCalculationType": "highestScoresX",
   "minimumScore": 0,
   "highestScoresX": 250,
   "meetingDocuments": {
-    "en": "Document 1; Document 2; Document 3"
+    "en": "Dragon license certificate; House birth certificate"
   },
   "notifications": {
     "en": {
       "registered": "You have been successfully registered for this program.",
       "whatsappPayment": "Please reply to this message within 24 hours to receive your voucher",
       "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk"
-    },
-    "nl": {
-      "included": "Je zit wel in het programma",
-      "rejected": "Je zit niet in het programma"
     }
   },
   "phoneNumberPlaceholder": "+000 000 00 00",
@@ -93,81 +87,45 @@
       }
     },
     {
-      "name": "question1",
+      "name": "house",
       "label": {
-        "en": "1. I am..."
+        "en": "1. I am a..?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
       "options": [
         {
-          "option": "optionA",
+          "option": "lannister",
           "label": {
-            "en": "Option A"
+            "en": "Lannister"
           }
         },
         {
-          "option": "optionB",
+          "option": "stark",
           "label": {
-            "en": "Option B"
+            "en": "Stark"
           }
         },
         {
-          "option": "optionC",
+          "option": "greyjoy",
           "label": {
-            "en": "Option C"
+            "en": "Greyjoy"
           }
         }
       ],
       "scoring": {
-        "optionA": 3,
-        "optionB": 6,
-        "optionC": 9
+        "lannister": 3,
+        "stark": 6,
+        "greyjoy": 9
       },
       "shortLabel": {
-        "en": "Dropdown 1"
+        "en": "House"
       }
     },
     {
-      "name": "question2",
+      "name": "dragon",
       "label": {
-        "en": "2. I am.."
-      },
-      "answerType": "dropdown",
-      "questionType": "standard",
-      "options": [
-        {
-          "option": "optionA",
-          "label": {
-            "en": "Option A"
-          }
-        },
-        {
-          "option": "optionB",
-          "label": {
-            "en": "Option B"
-          }
-        },
-        {
-          "option": "optionC",
-          "label": {
-            "en": "Option C"
-          }
-        }
-      ],
-      "scoring": {
-        "optionA": 3,
-        "optionB": 6,
-        "optionC": 9
-      },
-      "shortLabel": {
-        "en": "Dropdown 2"
-      }
-    },
-    {
-      "name": "question3",
-      "label": {
-        "en": "Question 3..."
+        "en": "2. How many dragons do you own?"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -176,8 +134,57 @@
         "multiplier": 2
       },
       "shortLabel": {
-        "en": "Number 3"
+        "en": "Dragon Nr."
       }
+    },
+    {
+      "name": "skills",
+      "label": {
+        "en": "3. My skills include .. ?"
+      },
+      "answerType": "multi-select",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "demoOption1",
+          "label": {
+            "en": "Demo option 1"
+          }
+        },
+        {
+          "option": "demoOption2",
+          "label": {
+            "en": "Demo option 2"
+          }
+        },
+        {
+          "option": "demoOption3",
+          "label": {
+            "en": "Demo option 3"
+          }
+        }
+      ],
+      "scoring": {
+        "demoOption1": 10,
+        "demoOption2": 200,
+        "demoOption3": 3000
+      },
+      "shortLabel": {
+        "en": "Skills"
+      },
+      "editableInPortal": true,
+      "phases": ["registrationValidation"],
+      "export": ["all-people-affected", "included", "selected-for-validation"]
     }
-  ]
+  ],
+  "programCustomAttributes": [
+    {
+      "label": {
+        "en": "Knows nothing"
+      },
+      "name": "knowsNothing",
+      "type": "boolean"
+    }
+  ],
+  "fullnameNamingConvention": ["name"]
 }

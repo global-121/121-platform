@@ -590,20 +590,19 @@ export class ExportMetricsService {
     );
     const relationOptions = [...nameRelations, ...duplicateRelationOptions];
 
+    let whereOptions = [];
+    if (fspQuestionIds.length > 0) {
+      whereOptions.push({ fspQuestionId: In(fspQuestionIds) });
+    }
+    if (programQuestionIds.length > 0) {
+      whereOptions.push({ programQuestionId: In(programQuestionIds) });
+    }
     const duplicates = await this.registrationDataRepository
       .createQueryBuilder('registration_data')
       .select(
         `array_agg(DISTINCT registration_data."registrationId") AS "duplicateRegistrationIds"`,
       )
-      .where('registration_data."fspQuestionId" IN (:...fspQuestionIds)', {
-        fspQuestionIds: fspQuestionIds,
-      })
-      .orWhere(
-        'registration_data."programQuestionId" IN (:...programQuestionIds)',
-        {
-          programQuestionIds: programQuestionIds,
-        },
-      )
+      .where(whereOptions)
       .having('COUNT(registration_data.value) > 1')
       .andHaving('COUNT(DISTINCT "registrationId") > 1')
       .groupBy('registration_data.value')

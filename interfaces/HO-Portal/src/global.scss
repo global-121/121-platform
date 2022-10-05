@@ -206,3 +206,9 @@ ion-icon {
     }
   }
 }
+
+.datatable-body-cell-label {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

@@ -8,8 +8,8 @@ import {
   APP_FAVICON,
   SWAGGER_CUSTOM_CSS,
   PORT,
-  SCHEME,
   DEBUG,
+  EXTERNAL_API,
 } from './config';
 import * as bodyParser from 'body-parser';
 import appInsights = require('applicationinsights');
@@ -31,11 +31,10 @@ async function bootstrap(): Promise<void> {
       credentials: true,
     });
   }
-
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
-    .addServer(SCHEME)
+    .addServer(EXTERNAL_API.root)
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/docs', app, document, {

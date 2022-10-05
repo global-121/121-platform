@@ -7,7 +7,7 @@ check_if_need_to_lint() {
   if git diff --cached --name-only | grep --quiet "$1*"
   then
     cd "$(git rev-parse --show-toplevel)" || exit
-    npm run lint --if-present --prefix "$1"
+    npm run lint:syntax --if-present --prefix "$1"
   fi
 }
 

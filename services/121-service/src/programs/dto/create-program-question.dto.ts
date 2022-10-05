@@ -29,6 +29,7 @@ export class CreateProgramQuestionDto {
     AnswerTypes.tel,
     AnswerTypes.text,
     AnswerTypes.date,
+    AnswerTypes.multiSelect,
   ])
   public readonly answerType: string;
   @ApiProperty()

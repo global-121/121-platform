@@ -6,7 +6,6 @@ import {
   Column,
   JoinColumn,
   ManyToOne,
-  AfterLoad,
   getConnection,
   Unique,
 } from 'typeorm';
@@ -17,8 +16,13 @@ import { MonitoringQuestionEntity } from '../instance/monitoring-question.entity
 @Unique('registrationProgramQuestionUnique', [
   'registrationId',
   'programQuestionId',
+  'value',
 ])
-@Unique('registrationFspQuestionUnique', ['registrationId', 'fspQuestionId'])
+@Unique('registrationFspQuestionUnique', [
+  'registrationId',
+  'fspQuestionId',
+  'value',
+])
 @Unique('registrationProgramCustomAttributeUnique', [
   'registrationId',
   'programCustomAttributeId',

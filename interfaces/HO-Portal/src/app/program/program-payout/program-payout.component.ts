@@ -40,7 +40,7 @@ export class ProgramPayoutComponent implements OnInit {
   public program: Program;
   public payments: Payment[];
   public isIntersolve: boolean;
-  public hasFspWithCsvIntegration: boolean;
+  public hasFspWithExportFileIntegration: boolean;
   public canMakeFspInstructions: boolean;
 
   public canMakePayment: boolean;
@@ -73,9 +73,10 @@ export class ProgramPayoutComponent implements OnInit {
     this.isIntersolve = this.checkIntersolve(
       this.program.financialServiceProviders,
     );
-    this.hasFspWithCsvIntegration = this.checkFspWithCsvIntegration(
-      this.program.financialServiceProviders,
-    );
+    this.hasFspWithExportFileIntegration =
+      this.checkFspWithExportFileIntegration(
+        this.program.financialServiceProviders,
+      );
 
     this.canMakePayment = this.checkCanMakePayment();
     this.canMakeExport = this.checkCanMakeExport();
@@ -287,11 +288,15 @@ export class ProgramPayoutComponent implements OnInit {
     return false;
   }
 
-  private checkFspWithCsvIntegration(
+  private checkFspWithExportFileIntegration(
     fsps: Program['financialServiceProviders'],
   ): boolean {
     for (const fsp of fsps || []) {
-      if (fsp && fsp.integrationType === FspIntegrationType.csv) {
+      if (
+        fsp &&
+        (fsp.integrationType === FspIntegrationType.csv ||
+          fsp.integrationType === FspIntegrationType.xml)
+      ) {
         return true;
       }
     }

@@ -1,3 +1,25 @@
+<ng-template #selectInput>
+  <ion-item class="ion-margin-bottom">
+    <ion-select
+      style="max-width: 100%"
+      ngDefaultControl
+      name="propertyInput"
+      [(ngModel)]="propertyModel"
+      [placeholder]="placeholder"
+      interface="popover"
+      class="ion-margin-top"
+      [multiple]="type === answerType.MultiSelect"
+    >
+      <ion-select-option
+        *ngFor="let option of translatedOptions()"
+        value="{{ option.option }}"
+      >
+        {{ option.label }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+</ng-template>
+
 <form method="POST" #updatePropertyForm="ngForm" (ngSubmit)="doUpdate()">
   <div class="input-item update-property-item">
     <label class="input-item--label text-bold">
@@ -7,7 +29,7 @@
       <ion-row class="ion-no-padding">
         <ion-col class="ion-no-padding">
           <ng-container [ngSwitch]="type">
-            <ng-container *ngSwitchCase="'number'">
+            <ng-container *ngSwitchCase="answerType.Number">
               <ion-input
                 ngDefaultControl
                 name="propertyInput"
@@ -22,7 +44,7 @@
                 [disabled]="isDisabled"
               ></ion-input>
             </ng-container>
-            <ng-container *ngSwitchCase="'tel'">
+            <ng-container *ngSwitchCase="answerType.PhoneNumber">
               <ion-input
                 ngDefaultControl
                 name="propertyInput"
@@ -36,28 +58,31 @@
                 [disabled]="isDisabled"
               ></ion-input>
             </ng-container>
-            <ng-container *ngSwitchCase="'dropdown'">
-              <ion-item class="ion-margin-bottom">
-                <ion-select
-                  style="max-width: 100%"
-                  ngDefaultControl
-                  name="propertyInput"
-                  [(ngModel)]="propertyModel"
-                  [value]="value"
-                  [placeholder]="placeholder"
-                  interface="popover"
-                  class="ion-margin-top"
-                >
-                  <ion-select-option
-                    *ngFor="let option of translatedOptions()"
-                    value="{{ option.option }}"
-                  >
-                    {{ option.label }}
-                  </ion-select-option>
-                </ion-select>
-              </ion-item>
+            <ng-container *ngSwitchCase="answerType.Enum">
+              <ng-container
+                *ngTemplateOutlet="
+                  selectInput;
+                  context: {
+                    propertyModel: this.propertyModel,
+                    placeholder: this.placeholder,
+                    type: this.type
+                  }
+                "
+              ></ng-container>
             </ng-container>
-            <ng-container *ngSwitchCase="'boolean'">
+            <ng-container *ngSwitchCase="answerType.MultiSelect">
+              <ng-container
+                *ngTemplateOutlet="
+                  selectInput;
+                  context: {
+                    propertyModel: this.propertyModel,
+                    placeholder: this.placeholder,
+                    type: this.type
+                  }
+                "
+              ></ng-container>
+            </ng-container>
+            <ng-container *ngSwitchCase="answerType.Boolean">
               <ion-checkbox
                 ngDefaultControl
                 [(ngModel)]="propertyModel"

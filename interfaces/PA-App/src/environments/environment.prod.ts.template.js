@@ -8,6 +8,7 @@ export const environment = {
   isDebug: ${process.env.NG_IS_DEBUG || 'false'},
   showDebug: ${process.env.NG_SHOW_DEBUG || 'false'},
   useAnimation: ${process.env.NG_USE_ANIMATION || 'true'},
+  disableTextPlayer: ${process.env.NG_DISABLE_TEXT_PLAYER || 'false'},
   alwaysShowTextPlayer: ${process.env.NG_ALWAYS_SHOW_TEXT_PLAYER || 'false'},
   useServiceWorker: ${process.env.NG_USE_SERVICE_WORKER || 'false'},
 

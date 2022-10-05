@@ -16,10 +16,10 @@ export enum AnswerType {
   Text = 'text',
   Date = 'date',
   Enum = 'dropdown',
-  phoneNumber = 'tel',
-  email = 'email',
-  boolean = 'boolean',
-  string = 'string',
+  PhoneNumber = 'tel',
+  Email = 'email',
+  Boolean = 'boolean',
+  MultiSelect = 'multi-select',
 }
 export class FspQuestion {
   id: number;
@@ -41,4 +41,5 @@ export class FspAttributeOption {
 export enum FspIntegrationType {
   api = 'api',
   csv = 'csv',
+  xml = 'xml',
 }

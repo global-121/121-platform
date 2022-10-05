@@ -5,11 +5,118 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.51.0...master)
-
-- Upgraded node version of the 121-service to node 14
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.64.1...master)
 
 ---
+## [1.64.1](https://github.com/global-121/121-platform/compare/v1.64.0...v1.64.1) - 2022-09-30
+
+### Changed
+
+- Fix: Added missing notification text
+
+## [1.64.0](https://github.com/global-121/121-platform/compare/v1.63.0...v1.64.0) - 2022-09-30
+
+### Changed
+
+- The 'demo' seed is now actually a seed for demo purposes
+- New seed for testing: 'test' (this was previously 'demo')
+
+## [1.63.0](https://github.com/global-121/121-platform/compare/v1.62.0...v1.63.0) - 2022-09-29
+
+### Changed
+
+- French translations for DRC (program, instance, FSP: Vodacash)
+- New question type: multi-select
+
+## [1.62.0](https://github.com/global-121/121-platform/compare/v1.61.1...v1.62.0) - 2022-09-27
+
+### Changed
+
+- Updated and split some questions in DRC program
+- Fixed duplication of "do payment" options in bulk actions dropdown
+
+## [1.61.1](https://github.com/global-121/121-platform/compare/v1.61.0...v1.61.1) - 2022-09-23
+
+### Changed
+
+- Fixed FSP in DRC program so it's seedable again
+
+## [1.61.0](https://github.com/global-121/121-platform/compare/v1.60.0...v1.61.0) - 2022-09-23
+
+### Changed
+
+- Updated & removed some questions in DRC program
+- Updated DRC program parameters
+
+## [1.60.0](https://github.com/global-121/121-platform/compare/v1.59.0...v1.60.0) - 2022-09-22
+
+### Changed
+
+- Removed gps questions program DRC
+
+## [1.59.0](https://github.com/global-121/121-platform/compare/v1.58.0...v1.59.0) - 2022-09-20
+
+### Changed
+
+- Add vodacash xml export
+- Numeric values do not show as 0 in PA pop-up
+
+## [1.58.0](https://github.com/global-121/121-platform/compare/v1.57.0...v1.58.0) - 2022-09-16
+
+### Changed
+
+- Updated program questions DRC based on test
+
+## [1.57.0](https://github.com/global-121/121-platform/compare/v1.56.0...v1.57.0) - 2022-09-16
+
+### Changed
+
+- HAC DRC: Prevent undefined fields when importing new csv
+
+## [1.56.0](https://github.com/global-121/121-platform/compare/v1.55.0...v1.56.0) - 2022-09-16
+
+### Changed
+
+- Updated program questions DRC based on feedback
+
+## [1.55.0](https://github.com/global-121/121-platform/compare/v1.54.0...v1.55.0) - 2022-09-15
+
+### Changed
+
+- Updated program questions DRC based on feedback
+
+## [1.54.0](https://github.com/global-121/121-platform/compare/v1.53.1...v1.54.0) - 2022-09-13
+
+### Changed
+
+- Updated program questions DRC based on feedback
+
+## [1.53.1](https://github.com/global-121/121-platform/compare/v1.53.0...v1.53.1) - 2022-09-08
+
+### Fixed
+
+- Program question option in for DRC are now set to French (these commits were forgotten in v1.53.0)
+
+## [1.53.0](https://github.com/global-121/121-platform/compare/v1.52.1...v1.53.0) - 2022-09-08
+
+### Fixed
+
+- Program question option in for DRC are now set to French
+- Fix Swagger url test vm
+- Fix icons
+
+## [1.52.1](https://github.com/global-121/121-platform/compare/v1.52.0...v1.52.1) - 2022-09-06
+
+### Fixed
+
+- 2022-09-06: Swagger-UI now uses external URL for requests
+
+## [1.52.0](https://github.com/global-121/121-platform/compare/v1.51.0...v1.52.0) - 2022-08-24
+
+### Changed
+
+- 2022-09-01: Upgraded Node version of the 121-service to v14 LTS
+- 2022-09-01: Upgraded NestJS version of the 121-service to v7
 
 ## [1.51.0](https://github.com/global-121/121-platform/compare/v1.50.0...v1.51.0) - 2022-08-24
 
@@ -33,22 +140,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.48.4](https://github.com/global-121/121-platform/compare/v1.48.3...v1.48.4) - 2022-08-15
 
 ### Fixed
+
 - 2022-08-15: Fixed bug in export all People Affected 500 error because of duplicate stored whatsappnumbers.
 
 ## [1.48.3](https://github.com/global-121/121-platform/compare/v1.48.2...v1.48.3) - 2022-08-15
 
 ### Fixed
+
 - 2022-08-15: Fixed bug in export all People Affected phonenumber of imported not shown.
 - 2022-08-15: Fixed bug unable to edit PA transfer value in portal.
 
 ## [1.48.2](https://github.com/global-121/121-platform/compare/v1.48.1...v1.48.2) - 2022-08-10
 
 ### Fixed
+
 - 2022-08-11: Bug in the PA table; payment history is not shown.
 
 ## [1.48.1](https://github.com/global-121/121-platform/compare/v1.48.0...v1.48.1) - 2022-08-10
 
 ### Fixed
+
 - 2022-08-10: Bug in the `shortLabel` migration.
 
 ## [1.48.0](https://github.com/global-121/121-platform/compare/v1.47.0...v1.48.0) - 2022-08-10

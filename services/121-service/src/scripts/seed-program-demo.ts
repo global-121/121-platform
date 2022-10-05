@@ -26,10 +26,6 @@ export class SeedDemoProgram implements InterfaceScript {
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
-    await this.seedHelper.addFsp(fspAfricasTalking);
-    await this.seedHelper.addFsp(fspBank);
-    await this.seedHelper.addFsp(fspMixedAttributes);
-    await this.seedHelper.addFsp(fspNoAttributes);
 
     // ***** CREATE PROGRAM *****
     const program = await this.seedHelper.addProgram(programDemo);

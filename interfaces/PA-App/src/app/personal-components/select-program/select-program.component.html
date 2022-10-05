@@ -1,8 +1,8 @@
 <section #selectProgram>
   <dialogue-turn
-    *ngIf="programs?.length"
-    [isSpoken]="programs?.length"
-    isConnected="true"
+    *ngIf="programs?.length > 0"
+    [isSpoken]="programs?.length > 0"
+    [isConnected]="true"
   >
     <p>
       <play-text-audio
@@ -21,8 +21,8 @@
   </dialogue-turn>
   <dialogue-turn
     actor="self"
-    *ngIf="programs?.length"
-    [isSpoken]="programs?.length"
+    *ngIf="programs?.length > 0"
+    [isSpoken]="programs?.length > 0"
   >
     <form (submit)="submitProgram()">
       <ion-radio-group

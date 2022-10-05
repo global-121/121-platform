@@ -263,7 +263,7 @@ export class BulkImportService {
 
     for await (let [i, registration] of savedRegistrations.entries()) {
       registration.registrationStatus = RegistrationStatusEnum.registered;
-      await this.storeProgramAnswersImportRegistrations(
+      await this.storeRegistrationData(
         registration,
         program.id,
         customDataList[i],
@@ -282,23 +282,26 @@ export class BulkImportService {
     return { aggregateImportResult: { countImported } };
   }
 
-  private async storeProgramAnswersImportRegistrations(
+  private async storeRegistrationData(
     registration: RegistrationEntity,
     programId: number,
     customData: object,
   ): Promise<void> {
     const dynamicAttributes = await this.getDynamicAttributes(programId);
     for await (let att of dynamicAttributes) {
+      let value;
       if (att.type === CustomAttributeType.boolean) {
-        await registration.saveData(
-          this.stringToBoolean(customData[att.name], false),
-          { name: att.name },
-        );
+        value = this.stringToBoolean(customData[att.name], false);
+      } else if (att.type === CustomAttributeType.text) {
+        value = customData[att.name] ? customData[att.name] : '';
+      } else if (att.type === AnswerTypes.multiSelect) {
+        value = customData[att.name].split('|');
       } else {
-        await registration.saveData(customData[att.name], {
-          name: att.name,
-        });
+        value = customData[att.name];
       }
+      value = await registration.saveData(value, {
+        name: att.name,
+      });
     }
   }
 
