@@ -1,10 +1,10 @@
 {
-  "name": "Yellow Cross",
+  "name": "Demo NGO",
   "displayName": {
-    "en": "Yellow Cross"
+    "en": "Demo NGO"
   },
   "dataPolicy": {
-    "en": "[long text of data-policy]"
+    "en": "[text of data-policy]"
   },
   "aboutProgram": {
     "en": "[about aid program]"

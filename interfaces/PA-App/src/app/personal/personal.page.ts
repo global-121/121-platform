@@ -174,7 +174,7 @@ export class PersonalPage implements OnInit, OnDestroy {
       return;
     }
     this.conversationService.startLoading();
-    await this.loadEndpoints();
+    await this.preloadAllProgramsData();
     await this.loadComponents();
     this.conversationService.stopLoading();
     this.scrollToLastWhenReady();
@@ -308,7 +308,7 @@ export class PersonalPage implements OnInit, OnDestroy {
     });
   }
 
-  private async loadEndpoints() {
+  private async preloadAllProgramsData() {
     await this.paDataService.getInstance();
     const programs = await this.paDataService.getAllPrograms();
     for (const program of programs) {

@@ -1,5 +1,4 @@
 import {
-  ApiBearerAuth,
   ApiTags,
   ApiOperation,
   ApiResponse,
@@ -16,7 +15,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { ExportMetricsService } from './export-metrics.service';
-import { DefaultUserRole } from '../user/user-role.enum';
 import { ExportDetails } from './dto/export-details';
 import { User } from '../user/user.decorator';
 import { ProgramMetrics } from './dto/program-metrics.dto';

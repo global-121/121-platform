@@ -19,6 +19,7 @@ Feature: Import people affected
     And the dynamic "programCustomAttributes" of that program
     And it has as delimiter ";" or ","
     And the "paymentAmountMultiplier" column has only positive integers as values
+    And any "multi-select" attributes are formatted as pipe-delimited string
     Given the user clicks the "Import People Affected" button
     When the user selects the CSV-file, through 'choose file' or 'drag and drop'
     Then the "OK" button becomes enabled
@@ -104,6 +105,7 @@ Feature: Import registrations
     And it has generic columns "preferredLanguage", "phoneNumber", "fspName"
     And it has the dynamic columns for programQuestions of that program  (for NL-LVV: "whatsappPhoneNumber", "nameFirst", "nameLast", "vnumber")
     And it has the dynamic "programCustomAttributes" of that program
+    And any "multi-select" attributes are pipe-delimited strings
     And it has as delimiter ";" or ","
     And it has "X" rows
     And the input of each cell is valid

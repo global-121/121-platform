@@ -16,6 +16,7 @@ Feature: Answer program questions
       | Phone-number    | tel field     |
       | Date            | date picker   |
       | Multiple choice | radio-buttons |
+      | Multi select    | checkboxes    |
 
 
   Scenario Outline: Answer "Open (default)" question
@@ -48,7 +49,12 @@ Feature: Answer program questions
       | "abc"                  | "number only" message | no        |
       | "  " (only whitespace) | "number only" message | no        |
       | "" (empty)             | "number only" message | no        |
-
+  
+  Scenario Outline: Answer "Multi select" question
+    When the PA needs to answer a "Multi select" question
+    Then it should always included "none" as one of the options
+    And at least one option is required to be able to continue to the next question
+    And - for now - there is no validation on selecting both 'none' and (at least) one other option
 
   Scenario: Answer all questions
     Given the PA has seen all questions

@@ -5,18 +5,17 @@ import {
   Column,
   ManyToOne,
   BeforeUpdate,
-  Index,
   OneToMany,
-  BeforeRemove,
+  Unique,
+  JoinColumn,
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
-import { Base121Entity } from '../base.entity';
 import { ExportType } from '../export-metrics/dto/export-details';
 
+@Unique('programQuestionUnique', ['name', 'programId'])
 @Entity('program_question')
 export class ProgramQuestionEntity extends CascadeDeleteEntity {
   @Column()
-  @Index({ unique: true })
   public name: string;
 
   @Column('json')
@@ -49,7 +48,10 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
     _type => ProgramEntity,
     program => program.programQuestions,
   )
+  @JoinColumn({ name: 'programId' })
   public program: ProgramEntity;
+  @Column()
+  public programId: number;
 
   @Column({ default: true })
   public persistence: boolean;

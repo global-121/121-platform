@@ -10,8 +10,8 @@ export enum ApiPath {
   fsp = '/registrations/fsp',
   personAffected = '/user/person-affected',
   phoneNumber = '/registrations/phone',
-  programAnswers = '/registrations/program-answers',
   registrations = '/registrations',
+  logout = '/user/logout',
 }
 
 @Injectable({

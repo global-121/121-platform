@@ -1,3 +1,4 @@
+import { SeedTestProgram } from './seed-program-test';
 import { SeedProgramDrc } from './seed-program-drc';
 import { SeedProgramLbn } from './seed-program-lbn';
 import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
@@ -6,7 +7,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { Connection } from 'typeorm';
 import { SeedProgramValidation } from './seed-program-validation';
 import { SeedDemoProgram } from './seed-program-demo';
-import { SeedDemoMultipleProgram } from './seed-program-demo-multiple';
+import { SeedTestMultipleProgram } from './seed-program-test-multiple';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
 import SeedProgramEth from './seed-program-eth';
@@ -20,7 +21,8 @@ enum SeedScript {
   pilotUKR = 'pilot-ukr',
   DRC = 'drc',
   demo = 'demo',
-  demoMultiple = 'demo-multiple',
+  test = 'test',
+  testMultiple = 'test-multiple',
   validation = 'validation',
 }
 
@@ -49,8 +51,10 @@ export class ScriptsController {
     let seed;
     if (body.script == SeedScript.demo) {
       seed = new SeedDemoProgram(this.connection);
-    } else if (body.script == SeedScript.demoMultiple) {
-      seed = new SeedDemoMultipleProgram(this.connection);
+    } else if (body.script == SeedScript.test) {
+      seed = new SeedTestProgram(this.connection);
+    } else if (body.script == SeedScript.testMultiple) {
+      seed = new SeedTestMultipleProgram(this.connection);
     } else if (body.script == SeedScript.pilotNL) {
       seed = new SeedPilotNLProgram(this.connection);
     } else if (body.script == SeedScript.pilotNLPV) {

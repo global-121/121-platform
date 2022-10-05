@@ -88,7 +88,10 @@ export class SetNotificationNumberComponent extends PersonalDirective {
     if (phoneNumber) {
       await this.storePhoneNumber(phoneNumber);
       this.cancel();
+      return;
     }
+
+    this.isCanceled = false;
   }
 
   public async submitPhoneNumber(phoneNumber: string) {

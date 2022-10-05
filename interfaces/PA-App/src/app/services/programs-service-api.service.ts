@@ -4,7 +4,7 @@ import { catchError, map } from 'rxjs/operators';
 import { Fsp } from 'src/app/models/fsp.model';
 import { InstanceData } from 'src/app/models/instance.model';
 import { PaInclusionStates } from 'src/app/models/pa-statuses.enum';
-import { Program } from 'src/app/models/program.model';
+import { Program, ProgramAttribute } from 'src/app/models/program.model';
 import { ApiPath, ApiService } from 'src/app/services/api.service';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/user.model';
@@ -20,7 +20,6 @@ export class ProgramsServiceApiService {
   ) {}
 
   getInstanceInformation(): Promise<InstanceData> {
-    console.log('getInstanceInformation() called... ');
     return this.apiService
       .get(environment.url_121_service_api, '/instance')
       .toPromise();
@@ -95,7 +94,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        '/people-affected/data-storage/' + type,
+        `${ApiPath.dataStorage}/${type}`,
         false,
       )
       .pipe(
@@ -136,15 +135,6 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  postProgramAnswers(referenceId: string, programAnswers: any): Promise<any> {
-    return this.syncService
-      .tryPost(environment.url_121_service_api, ApiPath.programAnswers, {
-        referenceId,
-        programAnswers,
-      })
-      .toPromise();
-  }
-
   checkInclusionStatus(
     referenceId: string,
     programId: number,
@@ -167,21 +157,24 @@ export class ProgramsServiceApiService {
         referenceId,
       })
       .toPromise()
-      .then(() => true)
+      .then((response) => {
+        if (response && response.referenceId === referenceId) {
+          return true;
+        }
+        return response;
+      })
       .catch(() => false);
   }
 
-  postRegistrationCustomAttribute(
-    referenceId: string,
-    key: string,
-    value: string,
+  postRegistrationCustomAttributes(
+    programAttributes: ProgramAttribute[],
   ): Promise<any> {
     return this.syncService
-      .tryPost(environment.url_121_service_api, ApiPath.customData, {
-        referenceId,
-        key,
-        value,
-      })
+      .tryPost(
+        environment.url_121_service_api,
+        ApiPath.customData,
+        programAttributes,
+      )
       .toPromise();
   }
 

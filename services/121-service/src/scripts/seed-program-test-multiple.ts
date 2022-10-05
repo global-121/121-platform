@@ -19,7 +19,7 @@ import programDrc from '../../seed-data/program/program-drc.json';
 import intanceDrc from '../../seed-data/instance/instance-drc.json';
 
 @Injectable()
-export class SeedDemoMultipleProgram implements InterfaceScript {
+export class SeedTestMultipleProgram implements InterfaceScript {
   public constructor(private connection: Connection) {}
 
   private readonly seedHelper = new SeedHelper(this.connection);
@@ -41,6 +41,7 @@ export class SeedDemoMultipleProgram implements InterfaceScript {
     const programEntityNLLVV = await this.seedHelper.addProgram(
       programPilotNLLVV,
     );
+    console.log('programEntityNLLVV: ', programEntityNLLVV);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     this.seedHelper.addDefaultUsers(programEntityNLLVV, false);
@@ -49,20 +50,20 @@ export class SeedDemoMultipleProgram implements InterfaceScript {
     await this.seedHelper.addInstance(instancePilotNLLVV);
 
     // Seeding NLRC-PV and LVV together does not work yet until we implement many to many program - programQuestions
-    // // *******************
-    // // ***** NLRC-PV *****
+    // *******************
+    // ***** NLRC-PV *****
 
-    // // *******************
-    // // ***** CREATE PROGRAM *****
-    // const programEntityNLPV = await this.seedHelper.addProgram(
-    //   programPilotNLPV,
-    // );
+    // *******************
+    // ***** CREATE PROGRAM *****
+    const programEntityNLPV = await this.seedHelper.addProgram(
+      programPilotNLPV,
+    );
 
-    // // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    // this.seedHelper.addDefaultUsers(programEntityNLPV, false);
+    // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
+    this.seedHelper.addDefaultUsers(programEntityNLPV, false);
 
-    // // ***** CREATE INSTANCE *****
-    // await this.seedHelper.addInstance(instancePilotNLPV);
+    // ***** CREATE INSTANCE *****
+    await this.seedHelper.addInstance(instancePilotNLPV);
 
     // *******************
     // ***** NLRC-PV *****
@@ -79,4 +80,4 @@ export class SeedDemoMultipleProgram implements InterfaceScript {
   }
 }
 
-export default SeedDemoMultipleProgram;
+export default SeedTestMultipleProgram;

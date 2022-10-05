@@ -1,6 +1,5 @@
 import { RegistrationDataByNameDto } from './dto/registration-data-by-name.dto';
 import { InstanceEntity } from './../instance/instance.entity';
-import { ProgramQuestionEntity } from './../programs/program-question.entity';
 import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsapp-pending-message.entity';
 import { CascadeDeleteEntity } from './../base.entity';
 import { UserEntity } from '../user/user.entity';
@@ -29,7 +28,6 @@ import {
   RegistrationDataOptions,
   RegistrationDataRelation,
 } from './dto/registration-data-relation.model';
-import { HttpException, HttpStatus } from '@nestjs/common';
 
 @Entity('registration')
 export class RegistrationEntity extends CascadeDeleteEntity {
@@ -195,7 +193,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   // To save registration data you need either a relation or a name
   public async saveData(
-    value: string | number | boolean,
+    value: string | number | boolean | string[],
     options: RegistrationDataOptions,
   ): Promise<RegistrationEntity> {
     try {
@@ -207,24 +205,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       if (!options.relation) {
         relation = await this.getRelationForName(options.name);
       }
-      value = String(value);
-      if (relation.programQuestionId) {
-        await this.saveProgramQuestionData(value, relation.programQuestionId);
-      }
-      if (relation.fspQuestionId) {
-        await this.saveFspQuestionData(value, relation.fspQuestionId);
-      }
-      if (relation.programCustomAttributeId) {
-        await this.saveProgramCustomAttributeData(
-          value,
-          relation.programCustomAttributeId,
-        );
-      }
-      if (relation.monitoringQuestionId) {
-        await this.saveMonitoringQuestionData(
-          value,
-          relation.monitoringQuestionId,
-        );
+      if (Array.isArray(value)) {
+        await this.saveMultipleData(value, relation);
+      } else {
+        await this.saveOneData(value, relation);
       }
     } catch (error) {
       console.log('error: ', error);
@@ -235,6 +219,58 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     return await getConnection()
       .getRepository(RegistrationEntity)
       .findOne(this.id, { relations: ['data'] });
+  }
+
+  private async saveOneData(
+    value: string | number | boolean,
+    relation: RegistrationDataRelation,
+  ): Promise<void> {
+    value = String(value);
+    if (relation.programQuestionId) {
+      await this.saveProgramQuestionData(value, relation.programQuestionId);
+    }
+    if (relation.fspQuestionId) {
+      await this.saveFspQuestionData(value, relation.fspQuestionId);
+    }
+    if (relation.programCustomAttributeId) {
+      await this.saveProgramCustomAttributeData(
+        value,
+        relation.programCustomAttributeId,
+      );
+    }
+    if (relation.monitoringQuestionId) {
+      await this.saveMonitoringQuestionData(
+        value,
+        relation.monitoringQuestionId,
+      );
+    }
+  }
+
+  private async saveMultipleData(
+    value: string[],
+    relation: RegistrationDataRelation,
+  ): Promise<void> {
+    if (relation.programQuestionId) {
+      await this.saveProgramQuestionDataMultiSelect(
+        value,
+        relation.programQuestionId,
+      );
+    }
+    if (relation.fspQuestionId) {
+      await this.saveFspQuestionDataMultiSelect(value, relation.fspQuestionId);
+    }
+    if (relation.programCustomAttributeId) {
+      await this.saveProgramCustomAttributeDataMultiSelect(
+        value,
+        relation.programCustomAttributeId,
+      );
+    }
+    if (relation.monitoringQuestionId) {
+      await this.saveMonitoringQuestionDataMultiSelect(
+        value,
+        relation.monitoringQuestionId,
+      );
+    }
   }
 
   private async saveProgramQuestionData(
@@ -262,6 +298,28 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     }
   }
 
+  private async saveProgramQuestionDataMultiSelect(
+    values: string[],
+    id: number,
+  ): Promise<void> {
+    const repoRegistrationData = getConnection().getRepository(
+      RegistrationDataEntity,
+    );
+
+    await repoRegistrationData.delete({
+      registration: { id: this.id },
+      programQuestion: { id: id },
+    });
+
+    for await (const value of values) {
+      const newRegistrationData = new RegistrationDataEntity();
+      newRegistrationData.registration = this;
+      newRegistrationData.value = value;
+      newRegistrationData.programQuestionId = id;
+      await repoRegistrationData.save(newRegistrationData);
+    }
+  }
+
   private async saveFspQuestionData(value: string, id: number): Promise<void> {
     const repoRegistrationData = getConnection().getRepository(
       RegistrationDataEntity,
@@ -276,6 +334,28 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       existingEntry.value = value;
       await repoRegistrationData.save(existingEntry);
     } else {
+      const newRegistrationData = new RegistrationDataEntity();
+      newRegistrationData.registration = this;
+      newRegistrationData.value = value;
+      newRegistrationData.fspQuestionId = id;
+      await repoRegistrationData.save(newRegistrationData);
+    }
+  }
+
+  private async saveFspQuestionDataMultiSelect(
+    values: string[],
+    id: number,
+  ): Promise<void> {
+    const repoRegistrationData = getConnection().getRepository(
+      RegistrationDataEntity,
+    );
+
+    await repoRegistrationData.delete({
+      registration: { id: this.id },
+      fspQuestion: { id: id },
+    });
+
+    for await (const value of values) {
       const newRegistrationData = new RegistrationDataEntity();
       newRegistrationData.registration = this;
       newRegistrationData.value = value;
@@ -312,6 +392,28 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     }
   }
 
+  private async saveProgramCustomAttributeDataMultiSelect(
+    values: string[],
+    id: number,
+  ): Promise<void> {
+    const repoRegistrationData = getConnection().getRepository(
+      RegistrationDataEntity,
+    );
+
+    await repoRegistrationData.delete({
+      registration: { id: this.id },
+      programCustomAttribute: { id: id },
+    });
+
+    for await (const value of values) {
+      const newRegistrationData = new RegistrationDataEntity();
+      newRegistrationData.registration = this;
+      newRegistrationData.value = value;
+      newRegistrationData.programCustomAttributeId = id;
+      await repoRegistrationData.save(newRegistrationData);
+    }
+  }
+
   private async saveMonitoringQuestionData(
     value: string,
     id: number,
@@ -329,6 +431,28 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       existingEntry.value = value;
       await repoRegistrationData.save(existingEntry);
     } else {
+      const newRegistrationData = new RegistrationDataEntity();
+      newRegistrationData.registration = this;
+      newRegistrationData.value = value;
+      newRegistrationData.monitoringQuestionId = id;
+      await repoRegistrationData.save(newRegistrationData);
+    }
+  }
+
+  private async saveMonitoringQuestionDataMultiSelect(
+    values: string[],
+    id: number,
+  ): Promise<void> {
+    const repoRegistrationData = getConnection().getRepository(
+      RegistrationDataEntity,
+    );
+
+    await repoRegistrationData.delete({
+      registration: { id: this.id },
+      monitoringQuestion: { id: id },
+    });
+
+    for await (const value of values) {
       const newRegistrationData = new RegistrationDataEntity();
       newRegistrationData.registration = this;
       newRegistrationData.value = value;

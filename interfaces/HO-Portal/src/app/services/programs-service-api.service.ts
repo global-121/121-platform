@@ -209,7 +209,7 @@ export class ProgramsServiceApiService {
   async updatePaAttribute(
     referenceId: string,
     attribute: string,
-    value: string | number,
+    value: string | number | string[],
   ): Promise<Person | Error> {
     return this.apiService.post(
       environment.url_121_service_api,

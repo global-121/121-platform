@@ -5,9 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.62.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.64.1...master)
 
 ---
+## [1.64.1](https://github.com/global-121/121-platform/compare/v1.64.0...v1.64.1) - 2022-09-30
+
+### Changed
+
+- Fix: Added missing notification text
+
+## [1.64.0](https://github.com/global-121/121-platform/compare/v1.63.0...v1.64.0) - 2022-09-30
+
+### Changed
+
+- The 'demo' seed is now actually a seed for demo purposes
+- New seed for testing: 'test' (this was previously 'demo')
+
+## [1.63.0](https://github.com/global-121/121-platform/compare/v1.62.0...v1.63.0) - 2022-09-29
+
+### Changed
+
+- French translations for DRC (program, instance, FSP: Vodacash)
+- New question type: multi-select
 
 ## [1.62.0](https://github.com/global-121/121-platform/compare/v1.61.1...v1.62.0) - 2022-09-27
 

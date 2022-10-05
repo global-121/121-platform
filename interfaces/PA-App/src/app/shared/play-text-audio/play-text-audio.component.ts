@@ -31,8 +31,10 @@ export class PlayTextAudioComponent implements OnInit {
   @Input()
   public color: string;
 
-  public alwaysVisible = environment.alwaysShowTextPlayer;
-  public isDisabled = false;
+  public isDisabled = environment.disableTextPlayer;
+  public alwaysVisible =
+    !environment.disableTextPlayer && environment.alwaysShowTextPlayer;
+
   public iconName: string;
   public buttonLabel: string;
 
@@ -64,6 +66,9 @@ export class PlayTextAudioComponent implements OnInit {
   }
 
   private createPlayer() {
+    if (environment.disableTextPlayer) {
+      return;
+    }
     this.isDisabled = false;
     this.player = new Howl({
       src: this.getSourceUrls(this.key),

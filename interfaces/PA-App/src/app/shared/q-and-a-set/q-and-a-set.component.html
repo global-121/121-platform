@@ -36,6 +36,27 @@
             </ion-item>
           </ion-radio-group>
         </div>
+        <div *ngSwitchCase="answerType.MultiSelect">
+          <div>
+            <ion-item
+              *ngFor="let option of question.options"
+              color="light"
+              lines="full"
+              class="ion-no-padding"
+            >
+              <ion-label class="ion-text-wrap ion-padding-end">
+                {{ option.label }}
+              </ion-label>
+              <ion-checkbox
+                [value]="option.value"
+                [disabled]="isSubmitted"
+                (ionChange)="
+                  onAnswerChangeMultiSelect(question.code, $event.detail)
+                "
+              ></ion-checkbox>
+            </ion-item>
+          </div>
+        </div>
         <div *ngSwitchCase="answerType.Number">
           <numeric-input
             #numInput
@@ -72,7 +93,7 @@
             "
           ></date-input>
         </div>
-        <div *ngSwitchCase="answerType.phoneNumber">
+        <div *ngSwitchCase="answerType.PhoneNumber">
           <phone-number-input
             #phoneNumberInput
             ngDefaultControl
@@ -90,7 +111,7 @@
             "
           ></phone-number-input>
         </div>
-        <div *ngSwitchCase="answerType.email">
+        <div *ngSwitchCase="answerType.Email">
           <ion-input
             #emailInput="ngModel"
             ngDefaultControl
@@ -145,7 +166,7 @@
       class="ion-margin-bottom ion-padding-bottom"
     >
       <dialogue-turn [isSpoken]="checkValidationError(question.code)">
-        <p *ngIf="question.answerType === answerType.phoneNumber">
+        <p *ngIf="question.answerType === answerType.PhoneNumber">
           <play-text-audio
             key="q-and-a-set.validation.phone-number"
             class="ion-float-start ion-margin-end"
@@ -166,14 +187,19 @@
           ></play-text-audio>
           {{ 'q-and-a-set.validation.date' | translate }}
         </p>
-        <p *ngIf="question.answerType === answerType.email">
+        <p *ngIf="question.answerType === answerType.Email">
           <play-text-audio
             key="q-and-a-set.validation.date"
             class="ion-float-start ion-margin-end"
           ></play-text-audio>
           {{ 'q-and-a-set.validation.email' | translate }}
         </p>
-        <p *ngIf="question.answerType === answerType.Text">
+        <p
+          *ngIf="
+            question.answerType === answerType.Text ||
+            question.answerType === answerType.MultiSelect
+          "
+        >
           <play-text-audio
             key="q-and-a-set.validation.required"
             class="ion-float-start ion-margin-end"
