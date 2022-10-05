@@ -7,9 +7,6 @@
   "connection": {
     "error-retry": "Algo salió mal, desea intentarlo otra vez?"
   },
-  "notification": {
-    "inclusion": "Estado de Inclusión recibido"
-  },
   "password-toggle": {
     "hide": "Ocultar contraseña",
     "show": "Mostrar contraseña"
@@ -38,11 +35,6 @@
       "introduction-information": "Para asegurarnos que tengas la mejor asistencia posible y un proceso justo necesitamos alguna información personal.",
       "please-confirm": "A continuación se muestra una descripción general de su información. Marque y luego toque enviar.",
       "submit-confirm": "Enviar mi Información"
-    },
-    "inclusion-status": {
-      "inclusion-status-negative": "Lamentamos informarle que no recibirá ningún (o mas) pagos de éste programa. Si tiene alguna pregunta, por favor contáctenos.",
-      "inclusion-status-positive": "Ha sido incluido en el programa",
-      "notify": "Le notificaremos si usted ha sido incluido"
     },
     "login-account": {
       "incorrect-credentials": "La combinación de nombre completo y contraseña que ha proporcionado no es reconocible. Por favor inténtelo de nuevo.",

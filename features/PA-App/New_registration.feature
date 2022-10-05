@@ -28,13 +28,11 @@ Feature: New registration
     And the PA's status in the PA-table in the 121-portal is updated to "registered"
     And the PA's details are visible in the PA-table in the 121-portal
     And the inclusion score is calculated correctly
-    And - if configured for the program - the "paymentAmountMultiplier" is calculated based on formula 
+    And - if configured for the program - the "paymentAmountMultiplier" is calculated based on formula
     And the "registration summary"-step is shown
     And the "monitoring question"-step is shown
     When the PA completes this step
-    Then the "inclusion status"-step is shown
-    When the PA is included in the 121-portal
-    Then an inclusion-message appears in the PA-app
+    Then the PA details are visible in the PA-table in the 121-portal
 
   Scenario: Offline self registration
     Given the PA has an active internet connection
@@ -50,7 +48,6 @@ Feature: New registration
     When the PA has an active internet connection again
     Then the PA-app syncs the registration to the back-end
     And the PA details are visible in the PA-table in the 121-portal
-    And the listening for inclusion-status is enabled again
 
   Scenario: Switch to multiple registrations mode
     Given the Aidworker has opened the PA-app
@@ -67,9 +64,8 @@ Feature: New registration
     Given the PA-app is in batch-mode
     When the Aidworker finishes a registration
     Then the registration is uploaded automatically and not added to the queue
-    And the PA-app gives a button to 'Add another person affected'
     And the PA details are visible in the PA-table in the 121-portal
-
+    And the PA-app shows a button to 'Add another person affected'
     When the button 'Add another person affected' is clicked
     Then the registration process is restarted
 
