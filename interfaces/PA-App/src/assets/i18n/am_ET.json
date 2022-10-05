@@ -7,9 +7,6 @@
   "connection": {
     "error-retry": "የሆነ ችግር ተፈጥሯል ፣ እንደገና መሞከር ይፈልጋሉ?"
   },
-  "notification": {
-    "inclusion": "የመካተት ሁኔታ ተቀብሏል"
-  },
   "password-toggle": {
     "hide": "የይለፍ ቃል ደብቅ",
     "show": "የይለፍ ቃል አሳይ"
@@ -38,11 +35,6 @@
       "introduction-information": "የሚቻለውን እገዛ በፍትሃዊ ሂደት ማግኘትዎን ለማረጋገጥ ፣ አንዳንድ የግል መረጃዎች ያስፈልጉናል።",
       "please-confirm": "ከዚህ በታች የእርስዎ አጠቃላይ መረጃ ነው። እባክዎን መረጃው ትክክል መሆኑን አረጋግጠው ላክ የሚለዉን ይጫኑ።",
       "submit-confirm": "መረጃዬን ላክ"
-    },
-    "inclusion-status": {
-      "inclusion-status-negative": "ከይቅርታ ጋር ከዚህ ፕሮግራም ምንም (ተጨማሪ ) ክፍያ እንደማያገኙ ልናሳውቅዎ አንወዳልን። ጥያቄዎች ካሉዎት እባክዎ ያነጋግሩን።",
-      "inclusion-status-positive": "በፕሮግራሙ ውስጥ ተካተዋል.",
-      "notify": "በፕሮግራሙ ውስጥ ሰለመካተትዎ እናሳውቅዎታለን።"
     },
     "login-account": {
       "incorrect-credentials": "ያቀረቡት ሙሉ ስም እና የይለፍ ቃል ጥምረት አይታወቅም። እባክዎ እንደገና ይሞክሩ።",

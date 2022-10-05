@@ -3,7 +3,6 @@ export enum PersonalComponents {
   contactDetails = 'contact-details',
   createAccount = 'create-account',
   enrollInProgram = 'enroll-in-program',
-  inclusionStatus = 'inclusion-status',
   loginAccount = 'login-account',
   monitoringQuestion = 'monitoring-question',
   preprintedQrcode = 'preprinted-qrcode',

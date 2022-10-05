@@ -95,9 +95,10 @@ export class MonitoringQuestionComponent extends PersonalDirective {
   }
 
   getNextSection() {
-    return this.registrationMode.multiple
-      ? PersonalComponents.nextPa
-      : PersonalComponents.inclusionStatus;
+    if (this.registrationMode.multiple) {
+      return PersonalComponents.nextPa;
+    }
+    return '';
   }
 
   cancel() {

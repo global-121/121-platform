@@ -43,7 +43,6 @@ import {
 import { PaDataService } from '../services/padata.service';
 import { RegistrationModeService } from '../services/registration-mode.service';
 import { SyncService } from '../services/sync.service';
-import { InclusionStatusComponent } from './../personal-components/inclusion-status/inclusion-status.component';
 
 enum ToastType {
   toastWaitToGoOffline = 'toastWaitToGoOffline',
@@ -82,7 +81,6 @@ export class PersonalPage implements OnInit, OnDestroy {
     [PersonalComponents.contactDetails]: ContactDetailsComponent,
     [PersonalComponents.createAccount]: CreateAccountComponent,
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
-    [PersonalComponents.inclusionStatus]: InclusionStatusComponent,
     [PersonalComponents.loginAccount]: LoginAccountComponent,
     [PersonalComponents.monitoringQuestion]: MonitoringQuestionComponent,
     [PersonalComponents.registrationSummary]: RegistrationSummaryComponent,
