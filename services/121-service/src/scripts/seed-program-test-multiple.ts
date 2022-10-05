@@ -41,7 +41,6 @@ export class SeedTestMultipleProgram implements InterfaceScript {
     const programEntityNLLVV = await this.seedHelper.addProgram(
       programPilotNLLVV,
     );
-    console.log('programEntityNLLVV: ', programEntityNLLVV);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     this.seedHelper.addDefaultUsers(programEntityNLLVV, false);
