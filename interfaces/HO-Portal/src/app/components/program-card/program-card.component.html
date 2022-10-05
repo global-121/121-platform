@@ -36,7 +36,6 @@
                   <h1>
                     <strong>
                       {{
-                        programStats?.targetedPeople ||
                         programStats?.targetedPeople > 0
                           ? programStats?.targetedPeople
                           : '-'
@@ -61,7 +60,6 @@
                   <h1>
                     <strong>
                       {{
-                        programStats?.includedPeople ||
                         programStats?.includedPeople > 0
                           ? programStats?.includedPeople
                           : '-'
@@ -84,11 +82,10 @@
           <ion-col class="border-right">
             <div class="ion-padding">
               <ion-col>
-                <ion-text color="dark">
+                <!-- <ion-text color="dark">
                   <h1>
                     <strong>
                       {{
-                        programStats?.totalBudget ||
                         programStats?.totalBudget > 0
                           ? (programStats?.totalBudget | number: '1.0-0')
                           : '-'
@@ -104,7 +101,7 @@
                       }})
                     </strong>
                   </small>
-                </ion-text>
+                </ion-text> -->
               </ion-col>
             </div>
           </ion-col>
@@ -115,9 +112,9 @@
                   <h1>
                     <strong>
                       {{
-                        programStats?.spentMoney || programStats?.spentMoney > 0
+                        programStats?.spentMoney > 0
                           ? (programStats?.spentMoney | number: '1.0-0')
-                          : ('-' | number: '1.2-2')
+                          : '-'
                       }}
                     </strong>
                   </h1>
