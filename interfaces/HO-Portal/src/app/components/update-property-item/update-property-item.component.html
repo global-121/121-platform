@@ -20,11 +20,7 @@
   </ion-item>
 </ng-template>
 
-<form
-  method="POST"
-  #updatePropertyForm="ngForm"
-  (ngSubmit)="doUpdate()"
->
+<form method="POST" #updatePropertyForm="ngForm" (ngSubmit)="doUpdate()">
   <div class="input-item update-property-item">
     <label class="input-item--label text-bold">
       {{ label }}
@@ -66,7 +62,11 @@
               <ng-container
                 *ngTemplateOutlet="
                   selectInput;
-                  context: { propertyModel, placeholder, type }
+                  context: {
+                    propertyModel: this.propertyModel,
+                    placeholder: this.placeholder,
+                    type: this.type
+                  }
                 "
               ></ng-container>
             </ng-container>
@@ -74,7 +74,11 @@
               <ng-container
                 *ngTemplateOutlet="
                   selectInput;
-                  context: { propertyModel, placeholder, type }
+                  context: {
+                    propertyModel: this.propertyModel,
+                    placeholder: this.placeholder,
+                    type: this.type
+                  }
                 "
               ></ng-container>
             </ng-container>

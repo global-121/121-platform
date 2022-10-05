@@ -1088,19 +1088,28 @@ export class ExportMetricsService {
   }
 
   public async getProgramStats(programId: number): Promise<ProgramStats> {
+    const targetedPeople = (await this.programRepository.findOne(programId))
+      .highestScoresX;
+
     const registrations = await this.registrationRepository.find({
       where: {
         program: { id: programId },
+        registrationStatus: RegistrationStatusEnum.included,
       },
     });
 
-    const targetedPeople = registrations.length;
     const includedPeople = registrations.filter(
       r => r.registrationStatus === RegistrationStatusEnum.included,
     ).length;
+
+    const { spentMoney } = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('SUM(transaction.amount)', 'spentMoney')
+      .where('transaction.programId = :programId', { programId: programId })
+      .getRawOne();
+
     // MOCK DATA
-    const totalBudget = 5425000;
-    const spentMoney = 2324000;
+    const totalBudget = 0; // TODO: we don't have this property yet in the program and it will be picked up in the future
     return {
       programId,
       targetedPeople,

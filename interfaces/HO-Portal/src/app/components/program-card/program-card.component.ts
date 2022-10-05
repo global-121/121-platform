@@ -17,7 +17,7 @@ export class ProgramCardComponent implements OnInit {
   @Input()
   programStats: ProgramStats;
 
-  public progress: number = 0;
+  public progress = 0;
   private programPhases: Phase[];
 
   constructor(private programPhaseService: ProgramPhaseService) {}

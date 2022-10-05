@@ -1,3 +1,24 @@
+<ng-template #statContainer let-statAmount="statAmount" let-statName="statName">
+  <div class="ion-padding">
+    <ion-col>
+      <ion-text color="dark">
+        <h1>
+          <strong>
+            {{ statAmount }}
+          </strong>
+        </h1>
+      </ion-text>
+      <ion-text>
+        <small>
+          <strong>
+            {{ statName | translate }}
+          </strong>
+        </small>
+      </ion-text>
+    </ion-col>
+  </div>
+</ng-template>
+
 <ion-card *ngIf="program">
   <ion-card-header>
     <ion-row class="ion-padding-horizontal">
@@ -30,107 +51,66 @@
       <ion-grid class="ion-no-padding">
         <ion-row class="border-bottom">
           <ion-col class="border-right">
-            <div class="ion-padding">
-              <ion-col>
-                <ion-text color="dark">
-                  <h1>
-                    <strong>
-                      {{
-                        programStats?.targetedPeople ||
-                        programStats?.targetedPeople > 0
-                          ? programStats?.targetedPeople
-                          : '-'
-                      }}
-                    </strong>
-                  </h1>
-                </ion-text>
-                <ion-text>
-                  <small>
-                    <strong>
-                      {{ 'page.programs-list.card.targeted' | translate }}
-                    </strong>
-                  </small>
-                </ion-text>
-              </ion-col>
-            </div>
+            <ng-container
+              *ngTemplateOutlet="
+                statContainer;
+                context: {
+                  statAmount:
+                    programStats?.targetedPeople > 0
+                      ? programStats?.targetedPeople
+                      : '-',
+                  statName: 'page.programs-list.card.targeted'
+                }
+              "
+            ></ng-container>
           </ion-col>
           <ion-col>
-            <div class="ion-padding">
-              <ion-col>
-                <ion-text color="dark">
-                  <h1>
-                    <strong>
-                      {{
-                        programStats?.includedPeople ||
-                        programStats?.includedPeople > 0
-                          ? programStats?.includedPeople
-                          : '-'
-                      }}
-                    </strong>
-                  </h1>
-                </ion-text>
-                <ion-text>
-                  <small>
-                    <strong>
-                      {{ 'page.programs-list.card.included' | translate }}
-                    </strong>
-                  </small>
-                </ion-text>
-              </ion-col>
-            </div>
+            <ng-container
+              *ngTemplateOutlet="
+                statContainer;
+                context: {
+                  statAmount:
+                    programStats?.includedPeople > 0
+                      ? programStats?.includedPeople
+                      : '-',
+                  statName: 'page.programs-list.card.targeted'
+                }
+              "
+            ></ng-container>
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col class="border-right">
             <div class="ion-padding">
               <ion-col>
-                <ion-text color="dark">
-                  <h1>
-                    <strong>
-                      {{
-                        programStats?.totalBudget ||
-                        programStats?.totalBudget > 0
-                          ? (programStats?.totalBudget | number: '1.0-0')
-                          : '-'
-                      }}
-                    </strong>
-                  </h1>
-                </ion-text>
-                <ion-text>
-                  <small>
-                    <strong>
-                      {{ 'page.programs-list.card.budget' | translate }} ({{
-                        program.currency
-                      }})
-                    </strong>
-                  </small>
-                </ion-text>
+                <!-- <ng-container
+              *ngTemplateOutlet="
+                statContainer;
+                context: {
+                  statAmount:
+                    programStats?.totalBudget > 0
+                    ? (programStats?.totalBudget | number: '1.0-0')
+                    : '-',
+                  statName: 'page.programs-list.card.targeted'
+                }
+              "
+            ></ng-container> -->
               </ion-col>
             </div>
           </ion-col>
           <ion-col>
-            <div class="ion-padding">
-              <ion-col>
-                <ion-text color="dark">
-                  <h1>
-                    <strong>
-                      {{
-                        programStats?.spentMoney || programStats?.spentMoney > 0
-                          ? (programStats?.spentMoney | number: '1.0-0')
-                          : ('-' | number: '1.2-2')
-                      }}
-                    </strong>
-                  </h1>
-                </ion-text>
-                <ion-text>
-                  <small>
-                    <strong>
-                      {{ 'page.programs-list.card.spent' | translate }}
-                    </strong>
-                  </small>
-                </ion-text>
-              </ion-col>
-            </div>
+            <ng-container
+              *ngTemplateOutlet="
+                statContainer;
+                context: {
+                  statAmount:
+                    programStats?.spentMoney > 0
+                      ? (programStats?.spentMoney | number: '1.0-0')
+                      : '-',
+                  statName: 'page.programs-list.card.targeted'
+                }
+              "
+            ></ng-container>
           </ion-col>
         </ion-row>
       </ion-grid>
