@@ -11,7 +11,10 @@
       <ion-text>
         <small>
           <strong>
-            {{ statName | translate }}
+            {{ 'page.programs-list.card.' + statName | translate }}
+            <span *ngIf="statName === 'budget' || statName === 'spent'"
+              >({{ program.currency }})</span
+            >
           </strong>
         </small>
       </ion-text>
@@ -40,9 +43,9 @@
         </ion-card-subtitle>
       </ion-col>
       <ion-col size="2" class="ion-no-padding ion-text-end">
-        <ion-button fill="clear" color="dark" size="small">
+        <!-- <ion-button fill="clear" color="dark" size="small">
           <ion-icon name="ellipsis-horizontal"></ion-icon>
-        </ion-button>
+        </ion-button> -->
       </ion-col>
     </ion-row>
   </ion-card-header>
@@ -59,7 +62,7 @@
                     programStats?.targetedPeople > 0
                       ? programStats?.targetedPeople
                       : '-',
-                  statName: 'page.programs-list.card.targeted'
+                  statName: 'targeted'
                 }
               "
             ></ng-container>
@@ -73,7 +76,7 @@
                     programStats?.includedPeople > 0
                       ? programStats?.includedPeople
                       : '-',
-                  statName: 'page.programs-list.card.targeted'
+                  statName: 'included'
                 }
               "
             ></ng-container>
@@ -91,7 +94,7 @@
                     programStats?.totalBudget > 0
                     ? (programStats?.totalBudget | number: '1.0-0')
                     : '-',
-                  statName: 'page.programs-list.card.targeted'
+                  statName: 'budget'
                 }
               "
             ></ng-container> -->
@@ -107,7 +110,7 @@
                     programStats?.spentMoney > 0
                       ? (programStats?.spentMoney | number: '1.0-0')
                       : '-',
-                  statName: 'page.programs-list.card.targeted'
+                  statName: 'spent'
                 }
               "
             ></ng-container>
