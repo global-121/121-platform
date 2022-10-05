@@ -55,8 +55,8 @@
       "not-available": "No programs available.",
       "card": {
         "updated": "Last updated: ",
-        "targeted": "Targeted People",
-        "included": "Included People",
+        "targeted": "Targeted People Affected",
+        "included": "Included People Affected",
         "budget": "Total project budget ",
         "spent": "Spent money",
         "status": "Program status: "
