@@ -299,9 +299,16 @@ export class BulkImportService {
       } else {
         value = customData[att.name];
       }
-      value = await registration.saveData(value, {
-        name: att.name,
-      });
+      try {
+        value = await registration.saveData(value, {
+          name: att.name,
+        });
+      } catch (error) {
+        // Skip data that is not relevant PA like fsp question of FSP for which they are not registered
+        if (error.name !== 'RegistrationDataSaveError') {
+          throw error;
+        }
+      }
     }
   }
 
