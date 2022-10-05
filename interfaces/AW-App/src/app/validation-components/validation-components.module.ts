@@ -9,6 +9,7 @@ import { DownloadDataComponent } from './download-data/download-data.component';
 import { FindByPhoneComponent } from './find-by-phone/find-by-phone.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ScanQrComponent } from './scan-qr/scan-qr.component';
+import { SelectProgramComponent } from './select-program/select-program.component';
 import { UploadDataComponent } from './upload-data/upload-data.component';
 import { ValidateFspComponent } from './validate-fsp/validate-fsp.component';
 import { ValidateProgramComponent } from './validate-program/validate-program.component';
@@ -23,6 +24,7 @@ import { ValidateProgramComponent } from './validate-program/validate-program.co
     ValidateFspComponent,
     DownloadDataComponent,
     UploadDataComponent,
+    SelectProgramComponent,
   ],
   imports: [CommonModule, SharedModule, FormsModule, ZXingScannerModule],
   exports: [
@@ -34,6 +36,7 @@ import { ValidateProgramComponent } from './validate-program/validate-program.co
     ValidateFspComponent,
     DownloadDataComponent,
     UploadDataComponent,
+    SelectProgramComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [ConversationService],

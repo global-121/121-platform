@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { InstanceData } from '../models/instance.model';
 import { ProgramAnswer } from '../models/pa-data.model';
-import { Program } from '../models/program.model';
+import { Program, ProgramsDTO } from '../models/program.model';
 import { User } from '../models/user.model';
 import { ApiService } from './api.service';
 
@@ -62,6 +62,12 @@ export class ProgramsServiceApiService {
   getProgramById(programId: number): Promise<Program> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/' + programId)
+      .toPromise();
+  }
+
+  getAllPublishedPrograms(): Promise<ProgramsDTO> {
+    return this.apiService
+      .get(environment.url_121_service_api, '/programs/published/all')
       .toPromise();
   }
 
