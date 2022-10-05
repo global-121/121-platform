@@ -319,7 +319,6 @@ export class WhatsappService {
   public async handleIncoming(
     callbackData: TwilioIncomingCallbackDto,
   ): Promise<void> {
-    console.log('callbackData: ', callbackData);
     if (!callbackData.From) {
       throw new HttpException(
         `No "From" address specified.`,
@@ -336,7 +335,7 @@ export class WhatsappService {
 
     const registrationsWithPendingMessage = registrationsWithPhoneNumber.filter(
       (registration: RegistrationEntity) =>
-        registration.whatsappPendingMessages,
+        registration.whatsappPendingMessages.length > 0,
     );
 
     const registrationsWithOpenVouchers = await this.getRegistrationsWithOpenVouchers(

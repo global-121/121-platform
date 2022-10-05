@@ -87,7 +87,7 @@ export class IntersolveService {
       // If 'waiting' then transaction is stored already earlier, to make sure it's there before status-callback comes in
       if (paResult.status !== StatusEnum.waiting) {
         const registration = await this.registrationRepository.findOne({
-          select: ['id'],
+          select: ['id', 'programId'],
           where: { referenceId: paResult.referenceId },
         });
         await this.storeTransactionResult(
@@ -281,7 +281,7 @@ export class IntersolveService {
     result.referenceId = paymentInfo.referenceId;
 
     const registration = await this.registrationRepository.findOne({
-      select: ['id'],
+      select: ['id', 'programId'],
       where: { referenceId: paymentInfo.referenceId },
     });
 
