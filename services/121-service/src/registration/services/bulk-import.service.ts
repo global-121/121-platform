@@ -8,6 +8,7 @@ import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import {
   AnswerTypes,
   Attribute,
+  AttributeCategory,
   GenericAttributes,
 } from '../enum/custom-data-attributes';
 import { LookupService } from '../../notifications/lookup/lookup.service';
@@ -247,6 +248,7 @@ export class BulkImportService {
 
       const fsp = await this.fspRepository.findOne({
         where: { fsp: record.fspName },
+        relations: ['questions'],
       });
       registration.fsp = fsp;
       registrations.push(registration);
@@ -289,6 +291,12 @@ export class BulkImportService {
   ): Promise<void> {
     const dynamicAttributes = await this.getDynamicAttributes(programId);
     for await (let att of dynamicAttributes) {
+      if (
+        att.category === AttributeCategory.fspQuestion &&
+        !registration.fsp.questions.map(q => q.name).includes(att.name)
+      ) {
+        continue;
+      }
       let value;
       if (att.type === CustomAttributeType.boolean) {
         value = this.stringToBoolean(customData[att.name], false);
@@ -457,6 +465,7 @@ export class BulkImportService {
           id: c.id,
           name: c.name,
           type: c.answerType,
+          category: AttributeCategory.fspQuestion,
         };
       });
     return [...attributes, ...programFspAttributes];
