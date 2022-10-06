@@ -11,7 +11,6 @@
       ></play-text-audio>
       {{ 'personal.select-program.introduction' | translate }}
     </p>
-
   </dialogue-turn>
   <dialogue-turn
     actor="self"
@@ -34,7 +33,7 @@
             color="primary"
             shape="round"
             fill="solid"
-            class="program-info"
+            class="program-info ion-margin-end"
             (click)="openAboutProgramPopup(program)"
           >
             <ion-icon
@@ -43,13 +42,13 @@
               slot="icon-only"
               aria-hidden="true"
             ></ion-icon>
-          </ion-button>    
+          </ion-button>
           <ion-item
             lines="none"
             color="light"
             class="ion-no-padding"
             style="width: 100%"
-          >  
+          >
             <ion-label class="ion-text-wrap ion-padding-end">
               {{ program.titlePaApp }}
               <ng-container *ngIf="program.description">
