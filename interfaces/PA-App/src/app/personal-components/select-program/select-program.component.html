@@ -11,13 +11,6 @@
       ></play-text-audio>
       {{ 'personal.select-program.introduction' | translate }}
     </p>
-
-    <more-info-button
-      *ngIf="instanceInformation?.aboutProgram"
-      buttonKey="personal.select-program.more-info-programs"
-      [message]="instanceInformation?.aboutProgram"
-      headingKey="personal.select-program.more-info-programs"
-    ></more-info-button>
   </dialogue-turn>
   <dialogue-turn
     actor="self"
@@ -35,19 +28,41 @@
           lines="full"
           class="ion-no-padding"
         >
-          <ion-label class="ion-text-wrap ion-padding-end">
-            {{ program.titlePaApp }}
-            <ng-container *ngIf="program.description">
-              <br />
-              <ion-note class="ion-text-wrap">
-                {{ program.description }}
-              </ion-note>
-            </ng-container>
-          </ion-label>
-          <ion-radio
-            [value]="program.id"
-            [disabled]="isDisabled"
-          ></ion-radio>
+          <ion-button
+            type="button"
+            color="primary"
+            shape="round"
+            fill="solid"
+            class="program-info ion-margin-end"
+            (click)="openAboutProgramPopup(program)"
+          >
+            <ion-icon
+              name="information"
+              size="small"
+              slot="icon-only"
+              aria-hidden="true"
+            ></ion-icon>
+          </ion-button>
+          <ion-item
+            lines="none"
+            color="light"
+            class="ion-no-padding"
+            style="width: 100%"
+          >
+            <ion-label class="ion-text-wrap ion-padding-end">
+              {{ program.titlePaApp }}
+              <ng-container *ngIf="program.description">
+                <br />
+                <ion-note class="ion-text-wrap">
+                  {{ program.description }}
+                </ion-note>
+              </ng-container>
+            </ion-label>
+            <ion-radio
+              [value]="program.id"
+              [disabled]="isDisabled"
+            ></ion-radio>
+          </ion-item>
         </ion-item>
       </ion-radio-group>
       <ion-row

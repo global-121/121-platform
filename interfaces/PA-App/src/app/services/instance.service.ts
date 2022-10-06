@@ -72,7 +72,6 @@ export class InstanceService {
       logoUrl: this.translatableString.get(instanceData.logoUrl),
       dataPolicy: this.translatableString.get(instanceData.dataPolicy),
       contactDetails: this.translatableString.get(instanceData.contactDetails),
-      aboutProgram: this.translatableString.get(instanceData.aboutProgram),
       monitoringQuestion: this.createMonitoringInfo(
         instanceData.monitoringQuestion,
       ),

@@ -69,7 +69,7 @@
                   "output": "assets"
                 },
                 {
-                  "glob": "**/{alert,arrow-down-circle-outline,arrow-undo,camera-reverse,chatbubbles,close,cloud-download,color-fill,construct,create,download,eye,eye-off,flash,flash-off,hourglass,log-out,nuclear,pause,people,person,qr-code,refresh,resize,trash}.svg",
+                  "glob": "**/{alert,arrow-down-circle-outline,arrow-undo,camera-reverse,chatbubbles,close,cloud-download,color-fill,construct,create,download,eye,eye-off,flash,flash-off,hourglass,information,log-out,nuclear,pause,people,person,qr-code,refresh,resize,trash}.svg",
                   "input": "node_modules/ionicons/dist/ionicons/svg",
                   "output": "./svg"
                 },
@@ -151,8 +151,13 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**"]
+            "tsConfig": [
+              "src/tsconfig.app.json",
+              "src/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }

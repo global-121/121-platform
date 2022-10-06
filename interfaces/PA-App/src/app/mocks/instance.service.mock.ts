@@ -16,7 +16,6 @@ const mockInstanceInformation: InstanceInformation = {
   name: 'system',
   displayName: 'test',
   logoUrl: 'test.svg',
-  aboutProgram: 'test',
   dataPolicy: 'test',
   contactDetails: 'test',
   monitoringQuestion: mockMonitoringInfo,

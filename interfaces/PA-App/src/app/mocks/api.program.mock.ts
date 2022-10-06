@@ -14,4 +14,5 @@ export const mockProgram: Program = {
   phoneNumberPlaceholder: '+000 000 00 00',
   validation: true,
   validationByQr: false,
+  aboutProgram: 'About program.',
 };

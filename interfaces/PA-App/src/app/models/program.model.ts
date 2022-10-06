@@ -17,6 +17,7 @@ export class Program {
   validation: boolean;
   validationByQr: boolean;
   phoneNumberPlaceholder: string;
+  aboutProgram: string;
 }
 
 export class ProgramQuestion {
