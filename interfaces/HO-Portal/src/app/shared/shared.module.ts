@@ -8,6 +8,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxPopperjsModule } from 'ngx-popperjs';
 import { HeaderComponent } from '../components/header/header.component';
+import { ProgramCardComponent } from '../components/program-card/program-card.component';
 import { ProgramNavigationComponent } from '../components/program-navigation/program-navigation.component';
 import { SystemNotificationComponent } from '../components/system-notification/system-notification.component';
 import { TableFilterPopoverComponent } from '../components/table-filter/table-filter-popover/table-filter-popover.component';
@@ -58,6 +59,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     UserStateComponent,
     TableFilterComponent,
     TableFilterPopoverComponent,
+    ProgramCardComponent,
   ],
   imports: [
     CommonModule,
@@ -98,6 +100,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     UserStateComponent,
     TableFilterComponent,
     TableFilterPopoverComponent,
+    ProgramCardComponent,
   ],
 })
 export class SharedModule {}

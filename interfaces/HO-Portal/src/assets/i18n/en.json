@@ -51,8 +51,17 @@
       "pageTitle": "Home"
     },
     "programs-list": {
-      "pageTitle": "All Programs",
-      "not-available": "No programs available."
+      "pageTitle": "Programs",
+      "pageSubtitle": "You are running {{nrPrograms}} program(s) actively",
+      "not-available": "No programs available.",
+      "card": {
+        "updated": "Last updated: ",
+        "targeted": "Targeted People Affected",
+        "included": "Included People Affected",
+        "budget": "Total project budget ",
+        "spent": "Spent money",
+        "status": "Program status: "
+      }
     },
     "program": {
       "phases": {

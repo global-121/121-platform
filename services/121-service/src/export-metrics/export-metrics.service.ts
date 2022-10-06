@@ -7,17 +7,11 @@ import { RegistrationsService } from './../registration/registrations.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import {
-  Repository,
-  getRepository,
-  In,
-  ConnectionIsNotSetError,
-} from 'typeorm';
+import { Repository, getRepository, In, Connection } from 'typeorm';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import {
   AnswerTypes,
-  Attribute,
   GenericAttributes,
 } from '../registration/enum/custom-data-attributes';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
@@ -38,6 +32,7 @@ import { TransactionsService } from '../payments/transactions/transactions.servi
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
+import { ProgramStats } from './dto/program-stats.dto';
 
 @Injectable()
 export class ExportMetricsService {
@@ -61,6 +56,7 @@ export class ExportMetricsService {
     private readonly paymentsService: PaymentsService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
+    private readonly connection: Connection,
   ) {}
 
   public getExportList(
@@ -1083,6 +1079,45 @@ export class ExportMetricsService {
     return {
       registrations: registrations.length,
       transferAmounts: sum,
+    };
+  }
+
+  public async getProgramStats(programId: number): Promise<ProgramStats> {
+    const targetedPeople = (await this.programRepository.findOne(programId))
+      .highestScoresX;
+
+    const registrations = await this.registrationRepository.find({
+      where: {
+        program: { id: programId },
+        registrationStatus: RegistrationStatusEnum.included,
+      },
+    });
+
+    const includedPeople = registrations.filter(
+      r => r.registrationStatus === RegistrationStatusEnum.included,
+    ).length;
+
+    // Use this method to get only the latest attempt per PA per payment
+    const transactionsQuery = this.transactionsService.getMaxAttemptPerPaAndPaymentTransactionsQuery(
+      programId,
+      false,
+    );
+
+    const { spentMoney } = await this.connection
+      .createQueryBuilder()
+      .select('SUM(amount)', 'spentMoney')
+      .from('(' + transactionsQuery.getQuery() + ')', 'transactions')
+      .setParameters(transactionsQuery.getParameters())
+      .where('status = :status', { status: StatusEnum.success })
+      .getRawOne();
+
+    const totalBudget = 0; // TODO: we don't have this property yet in the program and it will be picked up in the future
+    return {
+      programId,
+      targetedPeople,
+      includedPeople,
+      totalBudget,
+      spentMoney,
     };
   }
 }

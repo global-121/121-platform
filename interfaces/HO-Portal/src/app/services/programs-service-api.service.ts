@@ -13,6 +13,7 @@ import {
   PaTableAttribute,
   Program,
   ProgramPhase,
+  ProgramStats,
 } from '../models/program.model';
 import { Transaction } from '../models/transaction.model';
 import { User } from '../models/user.model';
@@ -97,6 +98,21 @@ export class ProgramsServiceApiService {
         }
         return null;
       });
+  }
+
+  async getAllProgramsStats(programIds: number[]): Promise<ProgramStats[]> {
+    const programStats: ProgramStats[] = [];
+
+    for (const programId of programIds) {
+      const stats = await this.apiService.get(
+        environment.url_121_service_api,
+        `/export-metrics/program-stats-summary/${programId}`,
+      );
+
+      programStats.push(stats);
+    }
+
+    return programStats;
   }
 
   getProgramById(programId: number | string): Promise<Program> {

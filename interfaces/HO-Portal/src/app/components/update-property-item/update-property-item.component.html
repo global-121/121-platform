@@ -66,7 +66,11 @@
               <ng-container
                 *ngTemplateOutlet="
                   selectInput;
-                  context: { propertyModel, placeholder, type }
+                  context: {
+                    propertyModel: this.propertyModel,
+                    placeholder: this.placeholder,
+                    type: this.type
+                  }
                 "
               ></ng-container>
             </ng-container>
@@ -74,7 +78,11 @@
               <ng-container
                 *ngTemplateOutlet="
                   selectInput;
-                  context: { propertyModel, placeholder, type }
+                  context: {
+                    propertyModel: this.propertyModel,
+                    placeholder: this.placeholder,
+                    type: this.type
+                  }
                 "
               ></ng-container>
             </ng-container>
