@@ -54,7 +54,10 @@
     </ion-row>
   </div>
   <div>
-    <ion-row *ngIf="program" class="ion-align-items-center">
+    <ion-row
+      *ngIf="program"
+      class="ion-align-items-center"
+    >
       <ion-input
         [placeholder]="
           'page.program.program-people-affected.filter-placeholder' | translate
@@ -190,8 +193,15 @@
     [sortable]="columnDefaults.sortable"
     [headerClass]="columnDefaults.headerClass"
   >
-    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-      <div class="ion-align-items-center" style="display: flex">
+    <ng-template
+      ngx-datatable-cell-template
+      let-value="value"
+      let-row="row"
+    >
+      <div
+        class="ion-align-items-center"
+        style="display: flex"
+      >
         <button
           *ngIf="canViewPersonalData"
           id="edit-button"
@@ -252,7 +262,11 @@
     [cellClass]="column.cellClass"
     [frozenLeft]="column.frozenLeft"
   >
-    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+    <ng-template
+      ngx-datatable-cell-template
+      let-value="value"
+      let-row="row"
+    >
       <ng-container *ngIf="value === true || value === false">
         <span
           [title]="
@@ -319,7 +333,11 @@
     [sortable]="paymentHistoryColumn?.sortable"
     [headerClass]="paymentHistoryColumn?.headerClass"
   >
-    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+    <ng-template
+      ngx-datatable-cell-template
+      let-value="value"
+      let-row="row"
+    >
       <ng-container *ngIf="value">
         <button
           *ngIf="row.paymentHistory?.paymentIndex"

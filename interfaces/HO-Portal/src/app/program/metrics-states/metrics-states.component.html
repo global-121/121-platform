@@ -1,6 +1,9 @@
 <ion-row>
   <ion-col class="ion-text-start">
-    <ion-button (click)="exportCSV()" size="small">
+    <ion-button
+      (click)="exportCSV()"
+      size="small"
+    >
       {{ 'page.program.metrics.export-button.label' | translate }}
     </ion-button>
   </ion-col>
@@ -16,12 +19,19 @@
     <table class="metrics-states--table">
       <colgroup>
         <col />
-        <col [span]="paStates.length" class="state-col" />
+        <col
+          [span]="paStates.length"
+          class="state-col"
+        />
       </colgroup>
       <thead>
         <tr>
           <td></td>
-          <th *ngFor="let col of paStates" scope="col" class="col-header">
+          <th
+            *ngFor="let col of paStates"
+            scope="col"
+            class="col-header"
+          >
             <span *ngIf="!col.explanation">{{ col.label }}</span>
             <span *ngIf="col.explanation">
               <tooltip [value]="col.explanation"></tooltip>
@@ -33,7 +43,10 @@
       </thead>
       <tbody class="border-bottom">
         <tr>
-          <th scope="row" class="row-header">
+          <th
+            scope="row"
+            class="row-header"
+          >
             {{ 'page.program.metrics.timeframe.payment.label' | translate }}
             <tooltip
               [value]="
@@ -55,7 +68,10 @@
                     | translate
                 }}
               </option>
-              <option *ngFor="let item of pastPayments" [value]="item.value">
+              <option
+                *ngFor="let item of pastPayments"
+                [value]="item.value"
+              >
                 {{
                   'page.program.metrics.timeframe.payment.option'
                     | translate
@@ -67,12 +83,18 @@
               </option>
             </select>
           </th>
-          <td *ngFor="let cell of paStates" class="cell-number">
+          <td
+            *ngFor="let cell of paStates"
+            class="cell-number"
+          >
             {{ cell.forPayment }}
           </td>
         </tr>
         <tr>
-          <th scope="row" class="row-header">
+          <th
+            scope="row"
+            class="row-header"
+          >
             {{
               'page.program.metrics.timeframe.payment-from-start.label'
                 | translate
@@ -84,14 +106,20 @@
               "
             ></tooltip>
           </th>
-          <td *ngFor="let cell of paStates" class="cell-number">
+          <td
+            *ngFor="let cell of paStates"
+            class="cell-number"
+          >
             {{ cell.forPaymentFromStart }}
           </td>
         </tr>
       </tbody>
       <tbody class="border-bottom">
         <tr>
-          <th scope="row" class="row-header">
+          <th
+            scope="row"
+            class="row-header"
+          >
             {{
               'page.program.metrics.timeframe.calendar-month.label' | translate
             }}
@@ -117,17 +145,26 @@
                     | translate
                 }}
               </option>
-              <option *ngFor="let item of pastMonths" [value]="item.value">
+              <option
+                *ngFor="let item of pastMonths"
+                [value]="item.value"
+              >
                 {{ item.date | date: 'yyyy-MM' }}
               </option>
             </select>
           </th>
-          <td *ngFor="let cell of paStates" class="cell-number">
+          <td
+            *ngFor="let cell of paStates"
+            class="cell-number"
+          >
             {{ cell.forMonth }}
           </td>
         </tr>
         <tr>
-          <th scope="row" class="row-header">
+          <th
+            scope="row"
+            class="row-header"
+          >
             {{
               'page.program.metrics.timeframe.month-from-start.label'
                 | translate
@@ -139,14 +176,20 @@
               "
             ></tooltip>
           </th>
-          <td *ngFor="let cell of paStates" class="cell-number">
+          <td
+            *ngFor="let cell of paStates"
+            class="cell-number"
+          >
             {{ cell.forMonthFromStart }}
           </td>
         </tr>
       </tbody>
       <tbody>
         <tr class="shaded">
-          <th scope="row" class="row-header">
+          <th
+            scope="row"
+            class="row-header"
+          >
             {{ 'page.program.metrics.timeframe.to-date.label' | translate }}
             <tooltip
               [value]="
@@ -154,7 +197,10 @@
               "
             ></tooltip>
           </th>
-          <td *ngFor="let cell of paStates" class="cell-number">
+          <td
+            *ngFor="let cell of paStates"
+            class="cell-number"
+          >
             {{ cell.toDate }}
           </td>
         </tr>

@@ -1,11 +1,18 @@
-<div style="display: inline-flex" class="ion-align-items-center">
+<div
+  style="display: inline-flex"
+  class="ion-align-items-center"
+>
   <confirm-prompt
     [disabled]="disabled"
     (confirm)="getExportFspInstructions()"
     [subHeader]="subHeader"
     [message]="message"
   >
-    <ion-icon name="download" slot="start" aria-hidden="true"></ion-icon>
+    <ion-icon
+      name="download"
+      slot="start"
+      aria-hidden="true"
+    ></ion-icon>
     {{ btnText }}
   </confirm-prompt>
   <ion-spinner

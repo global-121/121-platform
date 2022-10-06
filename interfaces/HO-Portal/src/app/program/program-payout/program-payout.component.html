@@ -1,4 +1,7 @@
-<div *ngIf="canMakeExport" class="ion-margin-vertical">
+<div
+  *ngIf="canMakeExport"
+  class="ion-margin-vertical"
+>
   <h3>{{ 'page.program.program-payout.make-export' | translate }}</h3>
   <ion-row class="ion-align-items-center">
     <select
@@ -12,7 +15,10 @@
           'page.program.program-payout.choose-payment' | translate
         }}</ng-container>
       </option>
-      <option [value]="-1" [disabled]="lastPaymentId < 1">
+      <option
+        [value]="-1"
+        [disabled]="lastPaymentId < 1"
+      >
         {{ 'page.program.program-payout.all-closed-payments' | translate }}
       </option>
       <option
@@ -51,7 +57,10 @@
       [lastPaymentId]="lastPaymentId"
     ></app-export-fsp-instructions>
   </ion-row>
-  <ion-row *ngIf="isIntersolve" class="ion-margin-vertical">
+  <ion-row
+    *ngIf="isIntersolve"
+    class="ion-margin-vertical"
+  >
     <app-export-list
       [programId]="programId"
       [exportType]="enumExportType.unusedVouchers"
@@ -60,8 +69,15 @@
   </ion-row>
 </div>
 
-<ion-row *ngIf="canMakePayment" class="ion-margin-vertical">
-  <ion-col *ngIf="!!lastPaymentId" [sizeXs]="12" [sizeMd]="4">
+<ion-row
+  *ngIf="canMakePayment"
+  class="ion-margin-vertical"
+>
+  <ion-col
+    *ngIf="!!lastPaymentId"
+    [sizeXs]="12"
+    [sizeMd]="4"
+  >
     <h3>
       {{
         'page.program.program-payout.last-payment.last-payment'

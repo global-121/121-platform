@@ -1,4 +1,8 @@
-<ng-template #statContainer let-statAmount="statAmount" let-statName="statName">
+<ng-template
+  #statContainer
+  let-statAmount="statAmount"
+  let-statName="statName"
+>
   <div class="ion-padding">
     <ion-col>
       <ion-text color="dark">
@@ -22,7 +26,10 @@
   </div>
 </ng-template>
 
-<ion-card *ngIf="program" [routerLink]="['/program', program.id, 'dashboard']">
+<ion-card
+  *ngIf="program"
+  [routerLink]="['/program', program.id, 'dashboard']"
+>
   <ion-card-header>
     <ion-row class="ion-padding-horizontal">
       <ion-col size="10">
@@ -38,7 +45,10 @@
           </small>
         </ion-card-subtitle>
       </ion-col>
-      <ion-col size="2" class="ion-no-padding ion-text-end">
+      <ion-col
+        size="2"
+        class="ion-no-padding ion-text-end"
+      >
         <!-- <ion-button fill="clear" color="dark" size="small">
           <ion-icon name="ellipsis-horizontal"></ion-icon>
         </ion-button> -->

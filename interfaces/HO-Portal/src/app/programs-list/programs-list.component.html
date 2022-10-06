@@ -1,7 +1,14 @@
 <section>
-  <ion-item lines="none" color="light" class="programs-list-header">
+  <ion-item
+    lines="none"
+    color="light"
+    class="programs-list-header"
+  >
     <ion-col class="ion-padding">
-      <h2 class="ion-no-margin ion-padding-top" class="programs-list-title">
+      <h2
+        class="ion-no-margin ion-padding-top"
+        class="programs-list-title"
+      >
         <strong>
           {{ 'page.programs-list.pageTitle' | translate }}
         </strong>
@@ -17,7 +24,10 @@
       {{ 'page.programs-list.not-available' | translate }}
     </ion-note>
   </ion-item>
-  <ion-row style="width: 100%" class="ion-padding">
+  <ion-row
+    style="width: 100%"
+    class="ion-padding"
+  >
     <ion-col
       *ngFor="let program of items"
       size-xs="12"

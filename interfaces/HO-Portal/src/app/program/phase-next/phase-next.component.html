@@ -2,7 +2,10 @@
   style="display: flex"
   class="ion-align-items-center ion-justify-content-end"
 >
-  <ion-spinner *ngIf="isInProgress" color="primary"></ion-spinner>
+  <ion-spinner
+    *ngIf="isInProgress"
+    color="primary"
+  ></ion-spinner>
 
   <confirm-prompt
     *ngIf="btnAvailable"

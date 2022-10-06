@@ -36,14 +36,24 @@
         [attr.title]="'common.cancel' | translate"
         [attr.aria-label]="'common.cancel' | translate"
       >
-        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="light" class="ion-padding">
-  <div *ngIf="content" [innerHTML]="content"></div>
+<ion-content
+  color="light"
+  class="ion-padding"
+>
+  <div
+    *ngIf="content"
+    [innerHTML]="content"
+  ></div>
   <div *ngIf="showRetryButton">
     <br />
     <ion-button (click)="retryPayment()">
@@ -69,15 +79,30 @@
       }}
     </ion-button>
     <br />
-    <ion-button *ngIf="imageUrl" [href]="imageUrl" [download]="titleMoneyIcon">
-      <ion-icon name="download" slot="start" aria-hidden="true"></ion-icon>
+    <ion-button
+      *ngIf="imageUrl"
+      [href]="imageUrl"
+      [download]="titleMoneyIcon"
+    >
+      <ion-icon
+        name="download"
+        slot="start"
+        aria-hidden="true"
+      ></ion-icon>
       {{
         'page.program.program-people-affected.payment-status-popup.download-voucher'
           | translate
       }}
     </ion-button>
-    <ion-button *ngIf="sanitizedIimageUrl" (click)="printVoucher()">
-      <ion-icon name="print" slot="start" aria-hidden="true"></ion-icon>
+    <ion-button
+      *ngIf="sanitizedIimageUrl"
+      (click)="printVoucher()"
+    >
+      <ion-icon
+        name="print"
+        slot="start"
+        aria-hidden="true"
+      ></ion-icon>
       {{
         'page.program.program-people-affected.payment-status-popup.print-voucher'
           | translate

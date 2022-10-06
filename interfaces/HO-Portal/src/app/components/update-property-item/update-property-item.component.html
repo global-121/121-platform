@@ -20,7 +20,11 @@
   </ion-item>
 </ng-template>
 
-<form method="POST" #updatePropertyForm="ngForm" (ngSubmit)="doUpdate()">
+<form
+  method="POST"
+  #updatePropertyForm="ngForm"
+  (ngSubmit)="doUpdate()"
+>
   <div class="input-item update-property-item">
     <label class="input-item--label text-bold">
       {{ label }}
@@ -106,12 +110,21 @@
         </ion-col>
       </ion-row>
       <ion-row class="ion-align-items-center">
-        <ion-col size="10" class="ion-no-padding">
-          <ion-note *ngIf="explanation" class="ion-margin-bottom explanation">
+        <ion-col
+          size="10"
+          class="ion-no-padding"
+        >
+          <ion-note
+            *ngIf="explanation"
+            class="ion-margin-bottom explanation"
+          >
             {{ explanation }}
           </ion-note>
         </ion-col>
-        <ion-col size="2" class="ion-no-padding">
+        <ion-col
+          size="2"
+          class="ion-no-padding"
+        >
           <ng-container *ngIf="showSubmit">
             <ion-button
               *ngIf="!inProgress"

@@ -7,17 +7,34 @@
         [attr.title]="'common.cancel' | translate"
         [attr.aria-label]="'common.cancel' | translate"
       >
-        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="light" class="ion-padding">
-  <h2 *ngIf="subHeader" [innerHTML]="subHeader"></h2>
-  <div *ngIf="message" [innerHTML]="message" class="ion-margin-vertical"></div>
+<ion-content
+  color="light"
+  class="ion-padding"
+>
+  <h2
+    *ngIf="subHeader"
+    [innerHTML]="subHeader"
+  ></h2>
+  <div
+    *ngIf="message"
+    [innerHTML]="message"
+    class="ion-margin-vertical"
+  ></div>
 
-  <div *ngIf="filePickerProps" class="ion-margin-vertical">
+  <div
+    *ngIf="filePickerProps"
+    class="ion-margin-vertical"
+  >
     <div
       *ngIf="filePickerProps.explanation"
       [innerHTML]="filePickerProps.explanation"
@@ -39,7 +56,11 @@
         color="primary"
         fill="outline"
       >
-        <ion-icon name="download" slot="start" aria-hidden="true"></ion-icon>
+        <ion-icon
+          name="download"
+          slot="start"
+          aria-hidden="true"
+        ></ion-icon>
         {{ 'file-picker.download-template-button' | translate }}
       </ion-button>
     </div>
@@ -65,7 +86,11 @@
 <ion-footer>
   <ion-toolbar>
     <ion-buttons slot="primary">
-      <ion-button fill="clear" color="danger" (click)="closeModal()">
+      <ion-button
+        fill="clear"
+        color="danger"
+        (click)="closeModal()"
+      >
         {{ 'common.cancel' | translate }}
       </ion-button>
       <ion-button
