@@ -146,8 +146,8 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       },
       {
         entityClass: TryWhatsappEntity,
-        columnName: 'registration'
-      }
+        columnName: 'registration',
+      },
     ]);
   }
 
