@@ -346,13 +346,23 @@ export class RegistrationsService {
     await this.registrationStatusChangeRepository.save(
       importedRegistrationChanges,
     );
-    // .. then delete the imported registration
-    await this.registrationRepository.remove(importedRegistration);
 
     // .. and save the updated import-registration
     const updatedRegistration = await this.registrationRepository.save(
       currentRegistration,
     );
+
+    // .. and update the try whatsapp entity
+    const tryWhatsappEntity = await this.tryWhatsappRepository.findOne({
+      where: { registration: importedRegistration },
+    });
+    if (tryWhatsappEntity) {
+      tryWhatsappEntity.registration = updatedRegistration;
+      await this.tryWhatsappRepository.save(tryWhatsappEntity);
+    }
+
+    // .. then delete the imported registration
+    await this.registrationRepository.remove(importedRegistration);
 
     // .. if imported registration status was noLongerEligible set to registeredWhileNoLongerEligible
     if (
