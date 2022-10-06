@@ -18,7 +18,7 @@ describe('SelectProgramComponent', () => {
 
   const modalSpy = jasmine.createSpyObj('Modal', ['present']);
   const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-  modalCtrlSpy.create.and.callFake(function () {
+  modalCtrlSpy.create.and.callFake(() => {
     return modalSpy;
   });
 
