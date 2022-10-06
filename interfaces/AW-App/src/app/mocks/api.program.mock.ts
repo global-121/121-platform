@@ -2,7 +2,8 @@ import { AnswerType, Program } from '../models/program.model';
 
 export const mockProgram: Program = {
   id: 1,
-  titlePortal: 'Program Test Title',
+  titlePortal: 'HO Program Test Title',
+  titlePaApp: 'PA Program Test Title',
   description: 'Program Test Description',
   created: new Date().toISOString(),
   updated: new Date().toISOString(),

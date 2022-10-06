@@ -6,9 +6,6 @@
   "connection": {
     "error-retry": "Ada sesuatu yang tidak berjalan dengan baik, apakah anda ingin mencoba lagi?"
   },
-  "notification": {
-    "inclusion": "Status penerimaan telah diterima"
-  },
   "password-toggle": {
     "hide": "Sembunyikan password",
     "show": "Tunjukkan password"
@@ -37,11 +34,6 @@
       "introduction-information": "Untuk menjamin bahwa anda bisa dibantu sebaik mungkin, melalui proses yang aman, kami butuh beberapa informasi pribadi anda.",
       "please-confirm": "Dibawah ini adalah rangkuman dari informasi anda. Harap diperiksa dan setelah itu klik 'send'.",
       "submit-confirm": "Kirim informasi saya"
-    },
-    "inclusion-status": {
-      "inclusion-status-negative": "Amat disayangkan  kami harus memberitahu bahwa anda tidak akan menerima bantuan dana (lagi) dalam program ini. Apabila anda ada pertanyaan, harap hubungi kami.",
-      "inclusion-status-positive": "Anda telah diikutsertakan dalam program ini.",
-      "notify": "Kami akan beritahu anda apabila anda diikutsertakan dalam program ini."
     },
     "login-account": {
       "incorrect-credentials": "Kombinasi antara nama lengkap anda dengan password yang anda berikan, tidak cocok. Harap coba kembali.",

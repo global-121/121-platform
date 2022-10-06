@@ -9,9 +9,10 @@ import {
 import { PeopleAffectedService } from './people-affected.service';
 import { User } from '../user/user.decorator';
 import { StoreDataDto } from './dto/store-data.dto';
-import { PermissionsGuard } from '../permissions.guard';
+import { PersonAffectedAuthGuard } from '../person-affected-auth.guard';
+import { PersonAffectedAuth } from '../person-affected-auth.decorator';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(PersonAffectedAuthGuard)
 @ApiTags('people-affected')
 @Controller('people-affected')
 export class PeopleAffectedController {
@@ -20,6 +21,7 @@ export class PeopleAffectedController {
     this.peopleAffectedService = peopleAffectedService;
   }
   @ApiOperation({ summary: 'Post data to storage' })
+  @PersonAffectedAuth()
   @Post('data-storage')
   public async postData(
     @User('id') userId: number,
@@ -35,6 +37,7 @@ export class PeopleAffectedController {
     required: true,
     type: 'string',
   })
+  @PersonAffectedAuth()
   @Get('data-storage/:type')
   public async getData(
     @User('id') userId: number,

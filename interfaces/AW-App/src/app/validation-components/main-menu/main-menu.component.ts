@@ -7,6 +7,7 @@ import Permission from 'src/app/auth/permission.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { NoConnectionService } from 'src/app/services/no-connection.service';
+import { environment } from 'src/environments/environment';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 
@@ -62,6 +63,13 @@ export class MainMenuComponent implements ValidationComponent {
         disabled: !this.canFindByPhone(),
         connectionRequired: false,
         visible: true,
+      },
+      {
+        id: ValidationComponents.selectProgram,
+        option: this.translate.instant('validation.main-menu.select-program'),
+        disabled: false,
+        connectionRequired: true,
+        visible: environment.useMultiplePrograms,
       },
       {
         id: ValidationComponents.uploadData,

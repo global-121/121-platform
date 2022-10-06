@@ -9,7 +9,6 @@ import { ConsentQuestionComponent } from './consent-question/consent-question.co
 import { ContactDetailsComponent } from './contact-details/contact-details.component';
 import { CreateAccountComponent } from './create-account/create-account.component';
 import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.component';
-import { InclusionStatusComponent } from './inclusion-status/inclusion-status.component';
 import { LoginAccountComponent } from './login-account/login-account.component';
 import { MonitoringQuestionComponent } from './monitoring-question/monitoring-question.component';
 import { NextPaComponent } from './next-pa/next-pa.component';
@@ -27,7 +26,6 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     ContactDetailsComponent,
     CreateAccountComponent,
     EnrollInProgramComponent,
-    InclusionStatusComponent,
     LoginAccountComponent,
     MonitoringQuestionComponent,
     PreprintedQrcodeComponent,
@@ -47,7 +45,6 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     ContactDetailsComponent,
     CreateAccountComponent,
     EnrollInProgramComponent,
-    InclusionStatusComponent,
     LoginAccountComponent,
     MonitoringQuestionComponent,
     PreprintedQrcodeComponent,

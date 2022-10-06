@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Fsp } from 'src/app/models/fsp.model';
 import { InstanceData } from 'src/app/models/instance.model';
-import { PaInclusionStates } from 'src/app/models/pa-statuses.enum';
 import { Program, ProgramAttribute } from 'src/app/models/program.model';
 import { ApiPath, ApiService } from 'src/app/services/api.service';
 import { environment } from 'src/environments/environment';
@@ -133,22 +132,6 @@ export class ProgramsServiceApiService {
         programId,
       })
       .toPromise();
-  }
-
-  checkInclusionStatus(
-    referenceId: string,
-    programId: number,
-  ): Observable<PaInclusionStates> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations/inclusion-status/' + programId,
-        {
-          referenceId,
-        },
-        false,
-      )
-      .pipe(map((response) => response.status));
   }
 
   async postRegistration(referenceId: string): Promise<boolean> {
