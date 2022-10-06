@@ -1,11 +1,23 @@
 <section>
-  <h2>
-    {{ 'page.programs-list.pageTitle' | translate }}
-  </h2>
-  <ion-note *ngIf="!items">
-    {{ 'page.programs-list.not-available' | translate }}
-  </ion-note>
-  <ion-row style="width: 100%">
+  <ion-item lines="none" color="light" class="programs-list-header">
+    <ion-col class="ion-padding">
+      <h2 class="ion-no-margin ion-padding-top" class="programs-list-title">
+        <strong>
+          {{ 'page.programs-list.pageTitle' | translate }}
+        </strong>
+      </h2>
+      <p class="ion-no-margin">
+        {{
+          'page.programs-list.pageSubtitle'
+            | translate: { nrPrograms: items?.length }
+        }}
+      </p>
+    </ion-col>
+    <ion-note *ngIf="!items">
+      {{ 'page.programs-list.not-available' | translate }}
+    </ion-note>
+  </ion-item>
+  <ion-row style="width: 100%" class="ion-padding">
     <ion-col
       *ngFor="let program of items"
       size-xs="12"

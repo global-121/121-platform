@@ -51,7 +51,8 @@
       "pageTitle": "Home"
     },
     "programs-list": {
-      "pageTitle": "All Programs",
+      "pageTitle": "Programs",
+      "pageSubtitle": "You are running {{nrPrograms}} program(s) actively",
       "not-available": "No programs available.",
       "card": {
         "updated": "Last updated: ",
