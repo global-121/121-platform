@@ -5,9 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.65.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.65.1...master)
 
 ---
+## [1.65.1](https://github.com/global-121/121-platform/compare/v1.65.0...v1.65.1) - 2022-10-06
+
+### Changed
+
+- Fix: TryWhatsapp entity updated on merging of registration. Also added a cascade delete for it.
+
 ## [1.65.0](https://github.com/global-121/121-platform/compare/v1.64.1...v1.65.0) - 2022-10-06
 
 ### Changed
