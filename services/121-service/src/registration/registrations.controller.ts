@@ -413,7 +413,7 @@ export class RegistrationsController {
     return await this.registrationsService.searchRegistration(
       searchRegistrationDto.phoneNumber,
       searchRegistrationDto.name,
-      userId
+      userId,
     );
   }
 
