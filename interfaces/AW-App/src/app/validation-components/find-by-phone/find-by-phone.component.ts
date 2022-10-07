@@ -5,6 +5,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { RegistrationStatusEnum } from '../../models/registration-status.enum';
+import { TranslatableStringService } from '../../services/translatable-string.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 
@@ -18,6 +19,7 @@ class PaToValidateOption {
   referenceId: string;
   name: string;
   phoneNumber: string;
+  programTitle: string;
 }
 
 @Component({
@@ -52,6 +54,7 @@ export class FindByPhoneComponent implements ValidationComponent {
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
+    private translate: TranslatableStringService,
     private storage: Storage,
   ) {}
 
@@ -173,7 +176,7 @@ export class FindByPhoneComponent implements ValidationComponent {
 
   private async getRegistrationForPhoneOnline(
     phoneNumber: string,
-  ): Promise<string> {
+  ): Promise<PaToValidateOption[]> {
     try {
       const rawRegistrations = await this.programsService.getPaByPhoneNr(
         phoneNumber,
@@ -186,13 +189,21 @@ export class FindByPhoneComponent implements ValidationComponent {
         return;
       }
 
-      return registrations.map((pa) => {
-        return {
-          referenceId: pa.referenceId,
-          name: this.getNameAttribute(pa.customData),
-          phoneNumber: pa.phoneNumber,
+      this.peopleAffectedFound = [];
+      for (const registration of registrations) {
+        const program = await this.programsService.getProgramById(
+          registration.programId,
+        );
+        const paRO = {
+          referenceId: registration.referenceId,
+          name: this.getNameAttribute(registration.customData),
+          phoneNumber: registration.phoneNumber,
+          programTitle: this.translate.get(program.titlePaApp),
         } as PaToValidateOption;
-      });
+        this.peopleAffectedFound.push(paRO);
+      }
+
+      return this.peopleAffectedFound;
     } catch (e) {
       console.log('Error: ', e);
       if (e.status === 0 || e instanceof TimeoutError) {

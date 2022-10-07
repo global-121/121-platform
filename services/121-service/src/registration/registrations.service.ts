@@ -1056,8 +1056,20 @@ export class RegistrationsService {
   public async searchRegistration(
     rawPhoneNumber?: string,
     name?: string,
+    userId?: number,
   ): Promise<RegistrationEntity[]> {
     const registrations = [];
+    const user = await this.userRepository.findOne(userId, {
+      relations: ['programAssignments', 'programAssignments.program'],
+    });
+    if (
+      !user ||
+      !user.programAssignments ||
+      user.programAssignments.length === 0
+    ) {
+      const errors = 'User not found or no assigned programs';
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     if (rawPhoneNumber) {
       const customAttributesPhoneNumberNames = [
         CustomDataAttributes.phoneNumber as string,
@@ -1121,7 +1133,14 @@ export class RegistrationsService {
         }
       }
     }
-    return registrations;
+
+    // Find uniques by referenceId because it's possible to get duplicates if program question and FSP question have phonenumber
+    const key = 'referenceId';
+    const arrayUniqueByKey = [
+      ...new Map(registrations.map(item => [item[key], item])).values(),
+    ];
+
+    return arrayUniqueByKey;
   }
 
   // AW: get answers to attributes for a given PA (identified first through referenceId/QR)

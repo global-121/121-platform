@@ -408,10 +408,12 @@ export class RegistrationsController {
   @Post('/search-name-phone')
   public async searchRegistration(
     @Body() searchRegistrationDto: SearchRegistrationDto,
+    @User('id') userId: number,
   ): Promise<RegistrationEntity[]> {
     return await this.registrationsService.searchRegistration(
       searchRegistrationDto.phoneNumber,
       searchRegistrationDto.name,
+      userId
     );
   }
 
