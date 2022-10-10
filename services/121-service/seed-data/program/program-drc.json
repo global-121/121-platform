@@ -84,7 +84,7 @@
       "name": " A. 5. Village/Quartier :  ",
       "label": {
         "en": "A.2 Health area",
-        "fr": "A.2  Espace santé"
+        "fr": "A.2 Aire de santé"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -96,7 +96,7 @@
       "editableInPortal": true,
       "shortLabel": {
         "en": "A.2 Health area ",
-        "fr": "A.2 Espace santé"
+        "fr": "A.2 Aire de santé"
       }
     },
     {
@@ -175,7 +175,7 @@
       "name": "B. 2. Quel est votre post-nom ? ",
       "label": {
         "en": "B.3. What is your middle name?",
-        "fr": "B.3. Quel est votre deuxième prénom ?"
+        "fr": "B.3. Quel est votre Post nom?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -266,7 +266,7 @@
       "name": "B. 6. Quel est votre numéro de la carte d’électeur, s’il en possède ? Ou autre document d’identification. ",
       "label": {
         "en": "B.7. What is your voter card number? (- of none)",
-        "fr": "B.7. Quel est le numéro de votre carte d'électeur ? ( - si aucun)"
+        "fr": "B.7. Si Aucun, quel est le numéro de votre carte d'électeur ? ( - si aucun)"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -285,7 +285,7 @@
       "name": "B. 7. Nom conjoint/Délégué en cas de votre absence ? ",
       "label": {
         "en": "B.8. In case of your absence: name of your spouse/delegate?",
-        "fr": "B.8. En cas d'absence : nom de votre conjoint/délégué ?"
+        "fr": "B.8. Lorsque vous etes absent : nom de votre conjoint/délégué ?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -304,7 +304,7 @@
       "name": "B. 8. Post-nom/ Délégué en cas de votre absence ?",
       "label": {
         "en": "B.9. In case of your absence: middle name of your spouse/delegate?",
-        "fr": "B.9. En cas d'absence : deuxième prénom de votre conjoint/délégué ?"
+        "fr": "B.9. Lorsque vous etes absent : Post nom de votre conjoint /delegué ?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -323,7 +323,7 @@
       "name": "B. 9. Prénom ? ",
       "label": {
         "en": "B.10. In case of your absence: first name of your spouse/delegate?",
-        "fr": "B.10. En cas d'absence : prénom de votre conjoint/délégué ?"
+        "fr": "B.10. Lorsque vous etes absent : prénom de votre conjoint/délégué ?"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -342,7 +342,7 @@
       "name": " B. 10. Sexe du conjoint/ Délégué en cas de votre absence ? ",
       "label": {
         "en": "B.11. In case of your absence: gender of your spouse/delegate?",
-        "fr": "B.11. En cas d'absence : genre de votre conjoint/délégué ?"
+        "fr": "B.11. Lorsque vous etes absent : genre de votre conjoint/délégué ?"
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -1041,7 +1041,7 @@
           "option": "Meadow",
           "label": {
             "en": "Meadow",
-            "fr": "Dermite des prés"
+            "fr": "Lepre"
           }
         },
         {
@@ -1239,7 +1239,7 @@
           "option": "Left an armed group",
           "label": {
             "en": "Left an armed group",
-            "fr": "A quitté un groupe armé"
+            "fr": "Demobilisé"
           }
         },
         {
