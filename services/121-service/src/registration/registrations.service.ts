@@ -41,7 +41,6 @@ import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
-import { CustomAttributeType } from '../programs/dto/create-program-custom-attribute.dto';
 import { ProgramService } from '../programs/programs.service';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { v4 as uuid } from 'uuid';
@@ -1059,17 +1058,8 @@ export class RegistrationsService {
     userId?: number,
   ): Promise<RegistrationEntity[]> {
     const registrations = [];
-    const user = await this.userRepository.findOne(userId, {
-      relations: ['programAssignments', 'programAssignments.program'],
-    });
-    if (
-      !user ||
-      !user.programAssignments ||
-      user.programAssignments.length === 0
-    ) {
-      const errors = 'User not found or no assigned programs';
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
+    await this.programService.findUserProgramAssignmentsOrThrow(userId);
+
     if (rawPhoneNumber) {
       const customAttributesPhoneNumberNames = [
         CustomDataAttributes.phoneNumber as string,
@@ -1276,17 +1266,9 @@ export class RegistrationsService {
   }
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {
-    const user = await this.userRepository.findOne(userId, {
-      relations: ['programAssignments', 'programAssignments.program'],
-    });
-    if (
-      !user ||
-      !user.programAssignments ||
-      user.programAssignments.length === 0
-    ) {
-      const errors = 'User not found or no assigned programs';
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
+    const user = await this.programService.findUserProgramAssignmentsOrThrow(
+      userId,
+    );
     const programIds = user.programAssignments.map(p => p.program.id);
     const data = {
       answers: await this.getAllProgramAnswers(user),

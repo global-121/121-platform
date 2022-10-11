@@ -83,7 +83,9 @@ export class ProgramService {
     return { programs, programsCount };
   }
 
-  public async getAssignedPrograms(userId: number): Promise<ProgramsRO> {
+  public async findUserProgramAssignmentsOrThrow(
+    userId: number,
+  ): Promise<UserEntity> {
     const user = await this.userRepository.findOne(userId, {
       relations: ['programAssignments', 'programAssignments.program'],
     });
@@ -95,6 +97,11 @@ export class ProgramService {
       const errors = 'User not found or no assigned programs';
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
+    return user;
+  }
+
+  public async getAssignedPrograms(userId: number): Promise<ProgramsRO> {
+    const user = await this.findUserProgramAssignmentsOrThrow(userId);
     const programIds = user.programAssignments.map(p => p.program.id);
     const programs = await this.programRepository.findByIds(programIds);
     const programsCount = programs.length;
