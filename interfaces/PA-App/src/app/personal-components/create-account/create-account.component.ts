@@ -174,6 +174,7 @@ export class CreateAccountComponent extends PersonalDirective {
     );
 
     await this.paData.store(this.paData.type.referenceId, referenceId);
+    await this.paData.store(this.paData.type.programId, currentProgram.id);
   }
 
   private createRandomHexaDecimalString(length: number): string {

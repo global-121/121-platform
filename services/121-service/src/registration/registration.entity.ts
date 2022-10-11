@@ -29,6 +29,7 @@ import {
   RegistrationDataRelation,
 } from './dto/registration-data-relation.model';
 import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
+import { RegistrationDataSaveError } from './errors/registration-data.error';
 
 @Entity('registration')
 export class RegistrationEntity extends CascadeDeleteEntity {
@@ -201,23 +202,18 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     value: string | number | boolean | string[],
     options: RegistrationDataOptions,
   ): Promise<RegistrationEntity> {
-    try {
-      let relation = options.relation;
-      if (!options.relation && !options.name) {
-        const errors = `Cannot save registration data, need either a dataRelation or a name`;
-        throw new Error(errors);
-      }
-      if (!options.relation) {
-        relation = await this.getRelationForName(options.name);
-      }
-      if (Array.isArray(value)) {
-        await this.saveMultipleData(value, relation);
-      } else {
-        await this.saveOneData(value, relation);
-      }
-    } catch (error) {
-      console.log('error: ', error);
-      throw error;
+    let relation = options.relation;
+    if (!options.relation && !options.name) {
+      const errors = `Cannot save registration data, need either a dataRelation or a name`;
+      throw new Error(errors);
+    }
+    if (!options.relation) {
+      relation = await this.getRelationForName(options.name);
+    }
+    if (Array.isArray(value)) {
+      await this.saveMultipleData(value, relation);
+    } else {
+      await this.saveOneData(value, relation);
     }
 
     // Fetches updated registration from database and return it
@@ -470,8 +466,8 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     name: string,
   ): Promise<RegistrationDataRelation> {
     const result = new RegistrationDataRelation();
-    const repo = getConnection().getRepository(ProgramEntity);
-    const query = repo
+    const repoProgram = getConnection().getRepository(ProgramEntity);
+    const query = repoProgram
       .createQueryBuilder('program')
       .leftJoin('program.programQuestions', 'programQuestion')
       .where('program.id = :programId', { programId: this.programId })
@@ -484,11 +480,12 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       result.programQuestionId = resultProgramQuestion.id;
       return result;
     }
-    const resultFspQuestion = await repo
-      .createQueryBuilder('program')
-      .leftJoin('program.financialServiceProviders', 'fsp')
+    const repoRegistration = getConnection().getRepository(RegistrationEntity);
+    const resultFspQuestion = await repoRegistration
+      .createQueryBuilder('registration')
+      .leftJoin('registration.fsp', 'fsp')
       .leftJoin('fsp.questions', 'question')
-      .where('program.id = :programId', { programId: this.programId })
+      .where('registration.id = :registration', { registration: this.id })
       .andWhere('question.name = :name', { name: name })
       .select('"question".id', 'id')
       .getRawOne();
@@ -496,7 +493,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       result.fspQuestionId = resultFspQuestion.id;
       return result;
     }
-    const resultProgramCustomAttribute = await repo
+    const resultProgramCustomAttribute = await repoProgram
       .createQueryBuilder('program')
       .leftJoin('program.programCustomAttributes', 'programCustomAttribute')
       .where('program.id = :programId', { programId: this.programId })
@@ -518,7 +515,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       result.monitoringQuestionId = resultMonitoringQuestion.id;
       return result;
     }
-    const errors = `Cannot save registration data, name: '${name}' not found (In program questions, fsp questions, monitoring questions and program custom attributes)`;
-    throw new Error(errors);
+    const errorMessage = `Cannot save registration data, name: '${name}' not found (In program questions, fsp questions, monitoring questions and program custom attributes)`;
+    throw new RegistrationDataSaveError(errorMessage);
   }
 }

@@ -998,7 +998,6 @@ export class RegistrationsService {
           null,
           null,
           registration.id,
-          registration.preferredLanguage,
         );
       } else if (tryWhatsApp && registration.phoneNumber) {
         this.tryWhatsapp(registration, messageText);
@@ -1031,7 +1030,6 @@ export class RegistrationsService {
         null,
         null,
         registration.id,
-        registration.preferredLanguage,
       )
       .then(result => {
         // Store the sid of a whatsapp message of which we do not know if the receiver registered on whatsapp
