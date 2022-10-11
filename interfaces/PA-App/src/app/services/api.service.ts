@@ -5,6 +5,7 @@ import { tap } from 'rxjs/operators';
 import InterfaceName from '../enums/interface-names.enum';
 
 export enum ApiPath {
+  programsPrefix = '/programs/',
   customData = '/registrations/custom-data',
   dataStorage = '/people-affected/data-storage',
   fsp = '/registrations/fsp',
@@ -12,6 +13,8 @@ export enum ApiPath {
   phoneNumber = '/registrations/phone',
   registrations = '/registrations',
   logout = '/user/logout',
+  addQr = '/registrations/add-qr-identifier',
+  register = '/registrations/register',
 }
 
 @Injectable({

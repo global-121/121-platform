@@ -79,10 +79,10 @@ export class ProgramsServiceApiService {
     );
   }
 
-  deleteRegistrations(referenceIds: string[]): Promise<any> {
+  deleteRegistrations(programId: number, referenceIds: string[]): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/registrations/delete`,
+      `/programs/${programId}/registrations/delete`,
       {
         referenceIds,
       },
@@ -207,13 +207,14 @@ export class ProgramsServiceApiService {
   }
 
   async updatePaAttribute(
+    programId: number,
     referenceId: string,
     attribute: string,
     value: string | number | string[],
   ): Promise<Person | Error> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/registrations/attribute`,
+      `/programs/${programId}/registrations/attribute`,
       {
         referenceId,
         attribute,
@@ -222,10 +223,14 @@ export class ProgramsServiceApiService {
     );
   }
 
-  updateNote(referenceId: string, note: string): Promise<Note> {
+  updateNote(
+    programId: number,
+    referenceId: string,
+    note: string,
+  ): Promise<Note> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/registrations/note`,
+      `/programs/${programId}/registrations/note`,
       {
         referenceId,
         note,
@@ -233,16 +238,16 @@ export class ProgramsServiceApiService {
     );
   }
 
-  retrieveNote(referenceId: string): Promise<Note> {
+  retrieveNote(programId: number, referenceId: string): Promise<Note> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/registrations/note/${referenceId}`,
+      `/programs/${programId}/registrations/note/${referenceId}`,
     );
   }
-  retrieveMsgHistory(referenceId: string): Promise<any> {
+  retrieveMsgHistory(programId: number, referenceId: string): Promise<any> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/registrations/message-history/${referenceId}`,
+      `/programs/${programId}/registrations/message-history/${referenceId}`,
     );
   }
 
@@ -288,7 +293,7 @@ export class ProgramsServiceApiService {
   ): Promise<void> {
     const downloadData: string[] = await this.apiService.get(
       environment.url_121_service_api,
-      `/registrations/import-template/${programId}/${type}`,
+      `/programs/${programId}/registrations/import-template/${type}`,
       false,
     );
 
@@ -309,10 +314,10 @@ export class ProgramsServiceApiService {
     const formData = new FormData();
     formData.append('file', file);
 
-    let path = `/registrations/import-bulk/${programId}`;
+    let path = `programs/${programId}/registrations/import-bulk`;
 
     if (destination === PaStatus.registered) {
-      path = `/registrations/import-registrations/${programId}`;
+      path = `programs/${programId}/registrations/import-registrations`;
     }
 
     return new Promise<ImportResult>((resolve, reject) => {
@@ -394,14 +399,14 @@ export class ProgramsServiceApiService {
   getPeopleAffected(programId: number | string): Promise<Person[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/registrations/${programId}`,
+      `/programs/${programId}/registrations`,
     );
   }
 
   getPeopleAffectedPrivacy(programId: number | string): Promise<Person[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/registrations/personal-data/${programId}`,
+      `/programs/${programId}/registrations/personal-data`,
     );
   }
 
@@ -413,7 +418,7 @@ export class ProgramsServiceApiService {
   ): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/registrations/${action}/${programId}`,
+      `/programs/${programId}/registrations/${action}`,
       {
         referenceIds,
         message,
@@ -442,7 +447,7 @@ export class ProgramsServiceApiService {
   ): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/registrations/invite/${programId}`,
+      `/programs/${programId}/registrations/invite`,
       {
         phoneNumbers: JSON.stringify(phoneNumbers),
         message,
@@ -474,10 +479,14 @@ export class ProgramsServiceApiService {
     return this.updatePaStatus('reject', programId, referenceIds, message);
   }
 
-  sendMessage(referenceIds: string[], message: string): Promise<any> {
+  sendMessage(
+    referenceIds: string[],
+    message: string,
+    programId: number,
+  ): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/registrations/text-message`,
+      `/programs/${programId}/registrations/text-message`,
       {
         referenceIds,
         message,
@@ -553,12 +562,13 @@ export class ProgramsServiceApiService {
 
   updateChosenFsp(
     referenceId: string,
+    programId: number,
     newFspName: string,
     newFspAttributes?: object,
   ): Promise<Fsp> {
     return this.apiService.post(
       environment.url_121_service_api,
-      '/registrations/update-chosen-fsp',
+      `/programs/${programId}/registrations/update-chosen-fsp`,
       { referenceId, newFspName, newFspAttributes },
     );
   }

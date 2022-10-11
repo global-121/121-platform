@@ -132,7 +132,7 @@ export class PreprintedQrcodeComponent extends PersonalDirective {
     }
 
     await this.programsService
-      .addQrIdentifier(this.referenceId, this.scanResult)
+      .addQrIdentifier(this.referenceId, this.scanResult, this.program.id)
       .then(
         async () => {
           this.scanResultError = false;

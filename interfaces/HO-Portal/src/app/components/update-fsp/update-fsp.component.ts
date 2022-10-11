@@ -38,6 +38,9 @@ export class UpdateFspComponent implements OnInit {
   @Input()
   public referenceId: string;
 
+  @Input()
+  public programId: number;
+
   @Output()
   updated: EventEmitter<string> = new EventEmitter<string>();
 
@@ -71,6 +74,7 @@ export class UpdateFspComponent implements OnInit {
     this.programsService
       .updateChosenFsp(
         this.referenceId,
+        this.programId,
         this.selectedFspName,
         this.attributesToSave,
       )

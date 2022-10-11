@@ -82,13 +82,17 @@ export class MonitoringQuestionComponent extends PersonalDirective {
     const referenceId = await this.paData.retrieve(
       this.paData.type.referenceId,
     );
-    this.programsService.postRegistrationCustomAttributes([
-      {
-        referenceId,
-        key: 'monitoringAnswer',
-        value: this.monitoringChoice,
-      },
-    ]);
+    const programId = await this.paData.retrieve(this.paData.type.programId);
+    this.programsService.postRegistrationCustomAttributes(
+      [
+        {
+          referenceId,
+          key: 'monitoringAnswer',
+          value: this.monitoringChoice,
+        },
+      ],
+      programId,
+    );
 
     this.conversationService.stopLoading();
     this.complete();

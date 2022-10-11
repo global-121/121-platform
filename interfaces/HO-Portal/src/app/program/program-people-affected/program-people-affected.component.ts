@@ -1356,7 +1356,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   public onCheckboxChange(row: PersonRow, column: any, value: string) {
     this.programsService
-      .updatePaAttribute(row.referenceId, column.prop, value)
+      .updatePaAttribute(this.programId, row.referenceId, column.prop, value)
       .then(
         () => {
           row[column.prop] = value;

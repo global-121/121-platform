@@ -69,6 +69,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
 
     this.registrationStatus = await this.programsService.postRegistration(
       this.referenceId,
+      this.program.id,
     );
 
     if (this.validation && this.validationByQr) {

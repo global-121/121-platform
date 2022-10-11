@@ -135,9 +135,11 @@ export class BulkActionsService {
         return await this.programsService.sendMessage(
           this.onlyIds(selectedPeople),
           customBulkActionInput.message,
+          programId,
         );
       case BulkActionId.deletePa:
         return await this.programsService.deleteRegistrations(
+          programId,
           this.onlyIds(selectedPeople),
         );
     }

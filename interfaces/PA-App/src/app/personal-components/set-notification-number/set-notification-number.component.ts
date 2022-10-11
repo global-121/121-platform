@@ -119,6 +119,7 @@ export class SetNotificationNumberComponent extends PersonalDirective {
     const referenceId = await this.paData.retrieve(
       this.paData.type.referenceId,
     );
+    const programId = await this.paData.retrieve(this.paData.type.programId);
 
     const useForInvitationMatching = true;
 
@@ -126,6 +127,7 @@ export class SetNotificationNumberComponent extends PersonalDirective {
       referenceId,
       phoneNumber,
       this.languageCode,
+      programId,
       useForInvitationMatching,
     );
   }

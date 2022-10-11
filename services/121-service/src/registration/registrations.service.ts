@@ -96,15 +96,14 @@ export class RegistrationsService {
 
   public async create(
     postData: CreateRegistrationDto,
+    programId: number,
     userId: number,
   ): Promise<RegistrationEntity> {
     const user = await this.findUserOrThrow(userId);
     let registration = new RegistrationEntity();
     registration.referenceId = postData.referenceId;
     registration.user = user;
-    registration.program = await this.programRepository.findOne(
-      postData.programId,
-    );
+    registration.program = await this.programRepository.findOne(programId);
     await this.registrationRepository.save(registration);
     return this.setRegistrationStatus(
       postData.referenceId,
@@ -144,6 +143,7 @@ export class RegistrationsService {
   public async storeProgramAnswers(
     referenceId: string,
     rawProgramAnswers: ProgramAnswer[],
+    programId: number,
   ): Promise<void> {
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
@@ -151,7 +151,7 @@ export class RegistrationsService {
     );
     const programAnswers = await this.cleanAnswers(
       rawProgramAnswers,
-      registration.program.id,
+      programId,
     );
     for (let answer of programAnswers) {
       const programQuestion = await this.programQuestionRepository.findOne({
@@ -166,7 +166,7 @@ export class RegistrationsService {
     await this.storePhoneNumberInRegistration(programAnswers, referenceId);
     await this.inclusionScoreService.calculateInclusionScore(referenceId);
     await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-      registration.program.id,
+      programId,
       referenceId,
     );
   }
@@ -1447,8 +1447,15 @@ export class RegistrationsService {
   }
 
   // Used by Aidworker
-  public async issueValidation(payload: ValidationIssueDataDto): Promise<void> {
-    await this.storeProgramAnswers(payload.referenceId, payload.programAnswers);
+  public async issueValidation(
+    payload: ValidationIssueDataDto,
+    programId: number,
+  ): Promise<void> {
+    await this.storeProgramAnswers(
+      payload.referenceId,
+      payload.programAnswers,
+      programId,
+    );
     await this.setRegistrationStatus(
       payload.referenceId,
       RegistrationStatusEnum.validated,

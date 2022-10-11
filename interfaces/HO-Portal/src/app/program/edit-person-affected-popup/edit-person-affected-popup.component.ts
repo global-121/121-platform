@@ -114,7 +114,12 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.inProgress[attribute] = true;
 
     this.programsService
-      .updatePaAttribute(this.person.referenceId, attribute, value)
+      .updatePaAttribute(
+        this.programId,
+        this.person.referenceId,
+        attribute,
+        value,
+      )
       .then((response: Person) => {
         this.inProgress[attribute] = false;
         this.attributeValues[attribute] = value;
@@ -218,6 +223,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   private async getNote() {
     const note = await this.programsService.retrieveNote(
+      this.programId,
       this.person.referenceId,
     );
 
@@ -227,6 +233,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   private async getMessageHistory() {
     const msghistory = await this.programsService.retrieveMsgHistory(
+      this.programId,
       this.person.referenceId,
     );
     this.messageHistory = msghistory;
@@ -245,7 +252,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public async saveNote() {
     this.inProgress.note = true;
     await this.programsService
-      .updateNote(this.person.referenceId, this.noteModel)
+      .updateNote(this.programId, this.person.referenceId, this.noteModel)
       .then(
         (note) => {
           this.actionResult(
