@@ -12,6 +12,7 @@ export class Program {
   programQuestions: ProgramQuestion[];
   financialServiceProviders: any[];
   validationByQr: boolean;
+  fullnameNamingConvention: string[];
 }
 
 export class ProgramQuestion {

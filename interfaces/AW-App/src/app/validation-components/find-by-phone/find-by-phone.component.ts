@@ -4,6 +4,7 @@ import { TimeoutError } from 'rxjs';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { Program } from '../../models/program.model';
 import { RegistrationStatusEnum } from '../../models/registration-status.enum';
 import { TranslatableStringService } from '../../services/translatable-string.service';
 import { ValidationComponents } from '../validation-components.enum';
@@ -108,6 +109,7 @@ export class FindByPhoneComponent implements ValidationComponent {
   private async getRegistrationForPhoneOffline(
     phoneNumber: string,
   ): Promise<any> {
+    const myPrograms = await this.storage.get(IonicStorageTypes.myPrograms);
     const validationDataProgram = await this.storage.get(
       IonicStorageTypes.validationProgramData,
     );
@@ -150,6 +152,7 @@ export class FindByPhoneComponent implements ValidationComponent {
         matchingReferenceIds,
         validationData,
         phoneNumber,
+        myPrograms,
       );
     }
   }
@@ -158,17 +161,29 @@ export class FindByPhoneComponent implements ValidationComponent {
     referenceIds: string[],
     validationData: any[],
     phoneNumber: string,
+    allPrograms: Program[],
   ) {
     const paToValidateOptions = [];
     for (const referenceId of referenceIds) {
       const paToValidateOption = new PaToValidateOption();
-      paToValidateOption.name = validationData.find(
-        (o) =>
-          o.referenceId === referenceId &&
-          Object.values(CustomDataNameAttributes).includes(o.name),
-      ).name;
+      const programId = validationData.find(
+        (regData) => regData.referenceId === referenceId,
+      ).programId;
+      const program = allPrograms.find((program) => program.id === programId);
+
+      let fullName = '';
+      for (const attribute of program.fullnameNamingConvention) {
+        const nameData = validationData.find(
+          (data) => data.name === attribute,
+        ).value;
+        if (nameData) {
+          fullName = fullName.concat(' ' + nameData);
+        }
+      }
+      paToValidateOption.name = fullName;
       paToValidateOption.referenceId = referenceId;
       paToValidateOption.phoneNumber = phoneNumber;
+      paToValidateOption.programTitle = this.translate.get(program.titlePaApp);
       paToValidateOptions.push(paToValidateOption);
     }
     return paToValidateOptions;
@@ -196,7 +211,7 @@ export class FindByPhoneComponent implements ValidationComponent {
         );
         const paRO = {
           referenceId: registration.referenceId,
-          name: this.getNameAttribute(registration.customData),
+          name: this.getNameAttribute(registration.customData, program),
           phoneNumber: registration.phoneNumber,
           programTitle: this.translate.get(program.titlePaApp),
         } as PaToValidateOption;
@@ -212,12 +227,14 @@ export class FindByPhoneComponent implements ValidationComponent {
     }
   }
 
-  private getNameAttribute(input: any): string {
-    for (const attribute of Object.values(CustomDataNameAttributes)) {
+  private getNameAttribute(input: any, program: Program): string {
+    let fullName = '';
+    for (const attribute of program.fullnameNamingConvention) {
       if (input[attribute]) {
-        return input[attribute];
+        fullName = fullName.concat(' ' + input[attribute]);
       }
     }
+    return fullName;
   }
 
   private async findPaData(referenceId: string): Promise<any> {
