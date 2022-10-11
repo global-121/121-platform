@@ -37,11 +37,9 @@ import { DownloadData } from './dto/download-data.interface';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { Attributes } from './dto/update-attribute.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
-import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
-import { CustomAttributeType } from '../programs/dto/create-program-custom-attribute.dto';
 import { ProgramService } from '../programs/programs.service';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { v4 as uuid } from 'uuid';
@@ -348,13 +346,23 @@ export class RegistrationsService {
     await this.registrationStatusChangeRepository.save(
       importedRegistrationChanges,
     );
-    // .. then delete the imported registration
-    await this.registrationRepository.remove(importedRegistration);
 
     // .. and save the updated import-registration
     const updatedRegistration = await this.registrationRepository.save(
       currentRegistration,
     );
+
+    // .. and update the try whatsapp entity
+    const tryWhatsappEntity = await this.tryWhatsappRepository.findOne({
+      where: { registration: importedRegistration },
+    });
+    if (tryWhatsappEntity) {
+      tryWhatsappEntity.registration = updatedRegistration;
+      await this.tryWhatsappRepository.save(tryWhatsappEntity);
+    }
+
+    // .. then delete the imported registration
+    await this.registrationRepository.remove(importedRegistration);
 
     // .. if imported registration status was noLongerEligible set to registeredWhileNoLongerEligible
     if (
@@ -1474,29 +1482,6 @@ export class RegistrationsService {
     return { referenceId: registration.referenceId };
   }
 
-  public async getInclusionStatus(
-    programId: number,
-    referenceId: string,
-  ): Promise<InclusionStatus> {
-    let registration = await this.getRegistrationFromReferenceId(referenceId);
-
-    await this.findProgramOrThrow(programId);
-
-    let inclusionStatus: InclusionStatus;
-
-    if (registration.registrationStatus === RegistrationStatusEnum.included) {
-      inclusionStatus = { status: RegistrationStatusEnum.included };
-    } else if (
-      registration.registrationStatus === RegistrationStatusEnum.rejected
-    ) {
-      inclusionStatus = { status: RegistrationStatusEnum.rejected };
-    } else {
-      inclusionStatus = { status: 'unavailable' };
-    }
-
-    return inclusionStatus;
-  }
-
   public async sendCustomTextMessage(
     referenceIds: string[],
     message: string,
@@ -1559,7 +1544,8 @@ export class RegistrationsService {
     const value = customData[attribute.name];
     switch (attribute.type) {
       case AttributeType.numeric:
-        return Number(value) || undefined;
+        const number = Number(value);
+        return typeof number === 'number' ? number : undefined;
       case AttributeType.boolean:
         return value ? JSON.parse(value) : false;
       default:

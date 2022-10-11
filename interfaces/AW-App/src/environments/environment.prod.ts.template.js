@@ -9,6 +9,7 @@ export const environment = {
   showDebug: ${process.env.NG_SHOW_DEBUG || 'false'},
   useAnimation: ${process.env.NG_USE_ANIMATION || 'true'},
   useServiceWorker: ${process.env.NG_USE_SERVICE_WORKER || 'false'},
+  useMultiplePrograms: false,
   envName: '${process.env.NG_ENV_NAME || ''}',
 
   // APIs:

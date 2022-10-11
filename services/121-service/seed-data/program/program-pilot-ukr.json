@@ -407,5 +407,10 @@
       "scoring": {}
     }
   ],
+  "aboutProgram": {
+    "en": "Hello, my name is ... and I am carrying out a registration activity for DORCAS to distribute cash to support people who had to leave their homes in East Ukraine due to the war. DORCAS is an international NGO from the Netherlands supporting people affected by conflict and  will ask you questions about you, your family and personal information needed to distribute cash. This project aims to provide cash to allow you to cover your most urgent basic needs. Registration does not mean you are automatically selected for the project.",
+    "uk": "Доброго дня, мене звати .... я співробітник благодійного фонду Доркас і займаюся реєстрацією переселенців для отримання грошової допомоги. Доркас - голанський благодійний фонд, який займається наданням допомоги людям, постраждалим від війни. Мені потрібно задати вам питання про вас, вашу родину а також паспортні дані для можливості отримання грошової допомоги. Відповідь на питання анкети не означає автоматичного залучення до програми і отримання грошової допомоги",
+    "ru": "Добрый день, меня зовут …. я сотрудник благотворительного фонда Доркас и занимаюсь регистрацией переселенцев для получения денежной помощи. Доркас – голландский благотворительный фонд, который предоставляет помощь людям, пострадавшим от войны. Я задам вам вопросы про вас, вашу семью, а также паспортные данные для возможности получения денежной помощи. Ответы на вопросы не означают автоматическое включение в программу и получение денежной помощи. "
+  },
   "fullnameNamingConvention": ["lastName", "firstName", "fathersName"]
 }

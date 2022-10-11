@@ -6,9 +6,6 @@
   "connection": {
     "error-retry": "Une erreur s'est produite, voulez-vous réessayer"
   },
-  "notification": {
-    "inclusion": "Statut d'inclusion reçu"
-  },
   "password-toggle": {
     "hide": "Cachez le mot de passe",
     "show": "Montrez le mot de passe."
@@ -37,11 +34,6 @@
       "introduction-information": "Afin de garantir que vous recevez la meilleure assistance possible et que votre demande sera traitée correctement, nous avons besoin de certaines données personnelles vous concernant.",
       "please-confirm": "Vous trouvez ci-dessous un récapitulatif de vos informations. Veuillez les vérifier. Après cliquez sur envoyer.",
       "submit-confirm": "Envoyez mes informations."
-    },
-    "inclusion-status": {
-      "inclusion-status-negative": "Malheureusement, nous vous informons que vous n'allez plus recevoir de paiements pour ce programme. Si vous avez des questions, contactez-nous, s'il vous plaît.",
-      "inclusion-status-positive": "Vous êtes inclus(e) dans le programme.",
-      "notify": "Nous allons vous notifier si vous êtes inclus(e) dans le programme."
     },
     "login-account": {
       "incorrect-credentials": "La combinaison de votre nom, prénom et du mot de passe que vous avez fourni n'est pas reconnue. Réessayez s'il vous plaît.",

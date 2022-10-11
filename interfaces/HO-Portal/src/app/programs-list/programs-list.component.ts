@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Program } from '../models/program.model';
+import { Program, ProgramStats } from '../models/program.model';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { TranslatableStringService } from '../services/translatable-string.service';
 
@@ -10,6 +10,7 @@ import { TranslatableStringService } from '../services/translatable-string.servi
 })
 export class ProgramsListComponent implements OnInit {
   public items: Program[];
+  private programStats: ProgramStats[];
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -18,6 +19,9 @@ export class ProgramsListComponent implements OnInit {
 
   async ngOnInit() {
     const programs = await this.programsService.getAllPrograms();
+    this.programStats = await this.programsService.getAllProgramsStats(
+      programs.map((p) => p.id),
+    );
     this.items = this.translateProperties(programs);
   }
 
@@ -28,5 +32,9 @@ export class ProgramsListComponent implements OnInit {
 
       return program;
     });
+  }
+
+  public getProgramStatsById(programId): ProgramStats {
+    return this.programStats.find((p) => p.programId === programId);
   }
 }

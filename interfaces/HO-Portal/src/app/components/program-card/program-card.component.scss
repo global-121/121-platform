@@ -1,0 +1,29 @@
+.ion-card {
+  cursor: pointer;
+}
+
+ion-card-content {
+  border-top: 1px solid var(--ion-color-light);
+}
+
+ion-progress-bar {
+  height: 8px;
+  --background: var(--ion-color-light);
+  border-radius: 4px;
+}
+
+.porgram-card--central-content {
+  padding-bottom: 0;
+}
+
+.program-title {
+  cursor: pointer;
+}
+
+.border-bottom {
+  border-bottom: 1px solid var(--ion-color-light);
+}
+
+.border-right {
+  border-right: 1px solid var(--ion-color-light);
+}

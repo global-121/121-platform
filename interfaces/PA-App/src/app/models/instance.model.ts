@@ -25,7 +25,6 @@ export class InstanceInformation {
   logoUrl: string;
   dataPolicy: string;
   contactDetails: string;
-  aboutProgram: string;
   monitoringQuestion: MonitoringInfo | null;
 }
 

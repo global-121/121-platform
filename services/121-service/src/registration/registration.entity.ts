@@ -28,6 +28,7 @@ import {
   RegistrationDataOptions,
   RegistrationDataRelation,
 } from './dto/registration-data-relation.model';
+import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
 import { RegistrationDataSaveError } from './errors/registration-data.error';
 
 @Entity('registration')
@@ -142,6 +143,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       },
       {
         entityClass: WhatsappPendingMessageEntity,
+        columnName: 'registration',
+      },
+      {
+        entityClass: TryWhatsappEntity,
         columnName: 'registration',
       },
     ]);

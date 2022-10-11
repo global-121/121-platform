@@ -186,5 +186,8 @@
       "type": "boolean"
     }
   ],
+  "aboutProgram": {
+    "en": "[about aid program]"
+  },
   "fullnameNamingConvention": ["name"]
 }

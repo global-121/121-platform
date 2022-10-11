@@ -6,9 +6,6 @@
   "connection": {
     "error-retry": "Er ging iets mis, wil je het opnieuw proberen?"
   },
-  "notification": {
-    "inclusion": "Registratie status is ontvangen"
-  },
   "password-toggle": {
     "hide": "Verberg wachtwoord",
     "show": "Toon wachtwoord"
@@ -37,11 +34,6 @@
       "introduction-information": "Om de best mogelijke hulp en een eerlijk proces te bieden, hebben we wat persoonlijke informatie nodig.",
       "please-confirm": "Hieronder is een overzicht van jouw persoonlijke informatie. Controleer en klik op versturen.",
       "submit-confirm": "Verstuur mijn informatie"
-    },
-    "inclusion-status": {
-      "inclusion-status-negative": "Helaas moeten we je mededelen dat je geen (verdere) betalingen zal ontvangen voor dit hulp programma. Neem gerust contact met ons op als je vragen hebt. ",
-      "inclusion-status-positive": "Je bent toegelaten tot het programma.",
-      "notify": "We laten je weten of je bent toegelaten."
     },
     "login-account": {
       "incorrect-credentials": "De combinatie van je volledige naam en wachtwoord wordt niet herkend. Probeer het opnieuw.",

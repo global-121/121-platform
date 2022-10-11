@@ -59,7 +59,7 @@ export class CronjobService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM)
-  private async cacheUnusedVoucers(): Promise<void> {
+  private async cacheUnusedVouchers(): Promise<void> {
     this.intersolveService.getUnusedVouchers();
   }
 
