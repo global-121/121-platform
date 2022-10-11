@@ -10,12 +10,6 @@ import { TranslatableStringService } from '../../services/translatable-string.se
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 
-export enum CustomDataNameAttributes {
-  name = 'name',
-  nameFirst = 'nameFirst',
-  nameLast = 'nameLast',
-}
-
 class PaToValidateOption {
   referenceId: string;
   name: string;
