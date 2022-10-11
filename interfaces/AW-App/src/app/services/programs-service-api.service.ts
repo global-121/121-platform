@@ -65,9 +65,9 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getAllPublishedPrograms(): Promise<ProgramsDTO> {
+  getAllAssignedPrograms(): Promise<ProgramsDTO> {
     return this.apiService
-      .get(environment.url_121_service_api, '/programs/published/all')
+      .get(environment.url_121_service_api, '/programs/assigned/all', false)
       .toPromise();
   }
 

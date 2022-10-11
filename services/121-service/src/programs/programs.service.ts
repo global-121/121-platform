@@ -15,6 +15,7 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { Attribute } from '../registration/enum/custom-data-attributes';
+import { UserEntity } from '../user/user.entity';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -35,6 +36,8 @@ export class ProgramService {
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ActionEntity)
   public actionRepository: Repository<ActionEntity>;
+  @InjectRepository(UserEntity)
+  private readonly userRepository: Repository<UserEntity>;
 
   public constructor() {}
 
@@ -77,6 +80,25 @@ export class ProgramService {
     let programs = (await this.findAll()).programs;
     programs = programs.filter(program => program.published);
     const programsCount = programs.length;
+    return { programs, programsCount };
+  }
+
+  public async getAssignedPrograms(userId: number): Promise<ProgramsRO> {
+    const user = await this.userRepository.findOne(userId, {
+      relations: ['programAssignments', 'programAssignments.program'],
+    });
+    if (
+      !user ||
+      !user.programAssignments ||
+      user.programAssignments.length === 0
+    ) {
+      const errors = 'User not found or no assigned programs';
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+    const programIds = user.programAssignments.map(p => p.program.id);
+    const programs = await this.programRepository.findByIds(programIds);
+    const programsCount = programs.length;
+
     return { programs, programsCount };
   }
 

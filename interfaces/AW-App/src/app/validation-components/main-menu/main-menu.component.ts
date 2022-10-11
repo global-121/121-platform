@@ -123,7 +123,7 @@ export class MainMenuComponent implements ValidationComponent {
     if (myPrograms) {
       return myPrograms.some((program) => program.validationByQr);
     } else {
-      const { programs } = await this.programsService.getAllPublishedPrograms();
+      const { programs } = await this.programsService.getAllAssignedPrograms();
       this.storage.set(IonicStorageTypes.myPrograms, programs);
       return programs.some((program) => program.validationByQr);
     }
