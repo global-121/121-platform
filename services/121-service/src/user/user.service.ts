@@ -54,6 +54,7 @@ export class UserService {
       .createQueryBuilder('user')
       .addSelect('password')
       .leftJoinAndSelect('user.programAssignments', 'assignment')
+      .leftJoinAndSelect('assignment.program', 'program')
       .leftJoinAndSelect('assignment.roles', 'roles')
       .leftJoinAndSelect('roles.permissions', 'permissions')
       .where(findOneOptions)
@@ -63,8 +64,8 @@ export class UserService {
     }
 
     const username = userEntity.username;
-    const token = this.generateJWT(userEntity);
-    const permissions = this.buildPermissionArray(userEntity);
+    const permissions = this.buildPermissionsObject(userEntity);
+    const token = this.generateJWT(userEntity, permissions);
     const user: UserRO = {
       user: {
         username,
@@ -288,31 +289,26 @@ export class UserService {
     return this.buildUserRO(user);
   }
 
-  public generateJWT(user: UserEntity): string {
+  public generateJWT(user: UserEntity, permissionsObject: any): string {
     let today = new Date();
     let exp = new Date(today);
     exp.setDate(today.getDate() + tokenExpirationDays);
 
-    let roles = [];
-    let permissions = [];
+    let roles = {};
     if (user.programAssignments && user.programAssignments[0]) {
-      roles = user.programAssignments[0].roles.map(role => role.role);
-      for (const role of user.programAssignments[0].roles) {
-        const permissionNames = role.permissions.map(a => a.name);
-        permissions = [...new Set([...permissions, ...permissionNames])];
+      for (const programAssignment of user.programAssignments) {
+        const programRoles = programAssignment.roles.map(role => role.role);
+        roles[`${programAssignment.program.id}`] = programRoles;
       }
     }
-
-    const result = jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-        roles,
-        exp: exp.getTime() / 1000,
-        permissions,
-      },
-      process.env.SECRETS_121_SERVICE_SECRET,
-    );
+    const jwtUsigned = {
+      id: user.id,
+      username: user.username,
+      roles,
+      exp: exp.getTime() / 1000,
+      permissions: permissionsObject,
+    };
+    const result = jwt.sign(jwtUsigned, process.env.SECRETS_121_SERVICE_SECRET);
 
     return result;
   }
@@ -333,29 +329,33 @@ export class UserService {
   }
 
   private buildUserRO(user: UserEntity): UserRO {
-    let permissions = this.buildPermissionArray(user);
+    let permissions = this.buildPermissionsObject(user);
 
     const userRO = {
       id: user.id,
       username: user.username,
-      token: this.generateJWT(user),
+      token: this.generateJWT(user, permissions),
       permissions,
     };
     return { user: userRO };
   }
 
-  private buildPermissionArray(user: UserEntity): string[] {
+  private buildPermissionsObject(user: UserEntity): any {
     let roles = [];
     let permissions = [];
 
+    const permissionsObject = {};
     if (user.programAssignments && user.programAssignments[0]) {
-      roles = user.programAssignments[0].roles.map(role => role.role);
-      for (const role of user.programAssignments[0].roles) {
-        const permissionNames = role.permissions.map(a => a.name);
-        permissions = [...new Set([...permissions, ...permissionNames])];
+      for (const programAssignment of user.programAssignments) {
+        roles = programAssignment.roles.map(role => role.role);
+        for (const role of programAssignment.roles) {
+          const permissionNames = role.permissions.map(a => a.name);
+          permissions = [...new Set([...permissions, ...permissionNames])];
+          permissionsObject[programAssignment.program.id] = permissions;
+        }
       }
     }
-    return permissions;
+    return permissionsObject;
   }
 
   private buildCookieByRequest(token: string): CookieSettingsDto {
