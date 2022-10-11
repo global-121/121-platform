@@ -37,7 +37,7 @@ export class CreateProgramCustomAttributesDto {
     example: [
       {
         name: 'mycustom',
-        type: 'string',
+        type: 'text',
         label: { en: 'MyCustom' },
         phases: [
           ProgramPhase.registrationValidation,
