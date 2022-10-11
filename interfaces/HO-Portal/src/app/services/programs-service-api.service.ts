@@ -314,10 +314,10 @@ export class ProgramsServiceApiService {
     const formData = new FormData();
     formData.append('file', file);
 
-    let path = `programs/${programId}/registrations/import-bulk`;
+    let path = `/programs/${programId}/registrations/import-bulk`;
 
     if (destination === PaStatus.registered) {
-      path = `programs/${programId}/registrations/import-registrations`;
+      path = `/programs/${programId}/registrations/import-registrations`;
     }
 
     return new Promise<ImportResult>((resolve, reject) => {
