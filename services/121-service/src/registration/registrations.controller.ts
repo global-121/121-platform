@@ -71,7 +71,7 @@ export class RegistrationsController {
   ): Promise<RegistrationEntity> {
     return await this.registrationsService.create(
       createRegistrationDto,
-      programId,
+      Number(programId),
       userId,
     );
   }

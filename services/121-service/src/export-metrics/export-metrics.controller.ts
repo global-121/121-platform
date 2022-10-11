@@ -27,7 +27,7 @@ import { ProgramStats } from './dto/program-stats.dto';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('export-metrics')
-@Controller('export-metrics')
+@Controller()
 export class ExportMetricsController {
   private readonly exportMetricsService: ExportMetricsService;
   public constructor(exportMetricsService: ExportMetricsService) {
@@ -41,13 +41,19 @@ export class ExportMetricsController {
     status: 200,
     description: 'List of people exported',
   })
-  @Post('export-list')
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+  })
+  @Post('programs/:programId/export-metrics/export-list')
   public async getExportList(
     @Body() data: ExportDetails,
+    @Param('programId') programId,
     @User('id') userId: number,
   ): Promise<any> {
     return await this.exportMetricsService.getExportList(
-      data.programId,
+      Number(programId),
       data.type,
       userId,
       data.minPayment,
@@ -86,7 +92,7 @@ export class ExportMetricsController {
     status: 200,
     description: 'Metrics of a program to gain an overview of the program ',
   })
-  @Get('person-affected/:programId')
+  @Get('programs/:programId/export-metrics/person-affected')
   public async getPAMetrics(
     @Param() params,
     @Query() query,
@@ -115,7 +121,7 @@ export class ExportMetricsController {
     description:
       'Payment state sums to create bar charts to show the number of new vs existing PAs per installmet',
   })
-  @Get('payment-state-sums/:programId')
+  @Get('programs/:programId/export-metrics/payment-state-sums')
   public async getPaymentsWithStateSums(@Param() params): Promise<any> {
     return await this.exportMetricsService.getPaymentsWithStateSums(
       Number(params.programId),
@@ -126,7 +132,7 @@ export class ExportMetricsController {
   @ApiOperation({ summary: 'Get monitoring data' })
   @ApiResponse({ status: 200, description: 'All monitoring data of a program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Get('/monitoring/:programId')
+  @Get('programs/:programId/export-metrics/monitoring')
   public async getMonitoringData(@Param() params): Promise<any[]> {
     return await this.exportMetricsService.getMonitoringData(
       Number(params.programId),
@@ -140,7 +146,7 @@ export class ExportMetricsController {
     status: 200,
     description: 'Total number of included per program',
   })
-  @Post('total-transfer-amounts/:programId')
+  @Post('programs/:programId/export-metrics/total-transfer-amounts')
   public async getTotalTransferAmounts(
     @Param() params,
     @Body() referenceIdsDto: ReferenceIdsDto,
@@ -158,7 +164,7 @@ export class ExportMetricsController {
     status: 200,
     description: 'Program stats summary',
   })
-  @Get('program-stats-summary/:programId')
+  @Get('programs/:programId/export-metrics/program-stats-summary')
   public async getProgramStats(@Param() params): Promise<ProgramStats> {
     return await this.exportMetricsService.getProgramStats(
       Number(params.programId),

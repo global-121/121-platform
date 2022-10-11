@@ -1,11 +1,5 @@
-import { PersonAffectedRole } from '../user/user-role.enum';
 import { Post, Body, Controller, UseGuards, Get, Param } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiTags,
-  ApiOperation,
-  ApiParam,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { PeopleAffectedService } from './people-affected.service';
 import { User } from '../user/user.decorator';
 import { StoreDataDto } from './dto/store-data.dto';

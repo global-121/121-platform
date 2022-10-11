@@ -106,7 +106,7 @@ export class ProgramsServiceApiService {
     for (const programId of programIds) {
       const stats = await this.apiService.get(
         environment.url_121_service_api,
-        `/export-metrics/program-stats-summary/${programId}`,
+        `/programs/${programId}/export-metrics/program-stats-summary`,
       );
 
       programStats.push(stats);
@@ -152,7 +152,7 @@ export class ProgramsServiceApiService {
   getMetricsById(programId: number | string): Promise<ProgramMetrics> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/export-metrics/person-affected/${programId}`,
+      `/programs/${programId}/export-metrics/person-affected`,
     );
   }
 
@@ -162,7 +162,7 @@ export class ProgramsServiceApiService {
   ): Promise<ProgramMetrics> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/export-metrics/person-affected/${programId}?${condition}`,
+      `/programs/${programId}/export-metrics/person-affected?${condition}`,
     );
   }
 
@@ -172,7 +172,7 @@ export class ProgramsServiceApiService {
   ): Promise<TotalTransferAmounts> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/export-metrics/total-transfer-amounts/${programId}`,
+      `/programs/${programId}/export-metrics/total-transfer-amounts`,
       { referenceIds },
     );
   }
@@ -358,12 +358,15 @@ export class ProgramsServiceApiService {
     maxPayment?: number,
   ): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, `/export-metrics/export-list`, {
-        programId,
-        type,
-        ...(minPayment && { minPayment }),
-        ...(maxPayment && { maxPayment }),
-      })
+      .post(
+        environment.url_121_service_api,
+        `/programs/${programId}/export-metrics/export-list`,
+        {
+          type,
+          ...(minPayment && { minPayment }),
+          ...(maxPayment && { maxPayment }),
+        },
+      )
       .then((response) => {
         if (response.data) {
           arrayToXlsx(response.data, response.fileName);
@@ -497,10 +500,9 @@ export class ProgramsServiceApiService {
   saveAction(actionType: ActionType, programId: number | string): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/actions/save`,
+      `/programs/${programId}/actions/save`,
       {
         actionType,
-        programId,
       },
     );
   }
@@ -511,10 +513,9 @@ export class ProgramsServiceApiService {
   ): Promise<LatestAction> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/actions/retrieve-latest`,
+      `/programs/${programId}/actions/retrieve-latest`,
       {
         actionType,
-        programId: Number(programId),
       },
     );
   }
@@ -549,7 +550,7 @@ export class ProgramsServiceApiService {
   getPaymentsWithStateSums(programId: number | string): Promise<any> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/export-metrics/payment-state-sums/${programId}`,
+      `/programs/${programId}/export-metrics/payment-state-sums`,
     );
   }
 
