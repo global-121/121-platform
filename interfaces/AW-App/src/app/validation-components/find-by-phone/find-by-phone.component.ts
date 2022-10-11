@@ -183,7 +183,7 @@ export class FindByPhoneComponent implements ValidationComponent {
       paToValidateOption.name = fullName;
       paToValidateOption.referenceId = referenceId;
       paToValidateOption.phoneNumber = phoneNumber;
-      paToValidateOption.programTitle = this.translate.get(program.titlePaApp);
+      paToValidateOption.programTitle = this.translate.get(program.titlePortal);
       paToValidateOptions.push(paToValidateOption);
     }
     return paToValidateOptions;
