@@ -78,6 +78,22 @@ export class UserService {
     return { userRo: user, cookieSettings: cookieSettings };
   }
 
+  public async canActivate(permissions, programId, userId): Promise<boolean> {
+    const results = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.programAssignments', 'assignment')
+      .leftJoin('assignment.program', 'program')
+      .leftJoin('assignment.roles', 'roles')
+      .leftJoin('roles.permissions', 'permissions')
+      .where('user.id = :userId', { userId: userId })
+      .andWhere('program.id = :programId', { programId: programId })
+      .andWhere('permissions.name IN (:...permissions)', {
+        permissions: permissions,
+      })
+      .getCount();
+    return results === 1;
+  }
+
   public async createPersonAffected(
     dto: CreateUserPersonAffectedDto,
   ): Promise<UserRO> {
@@ -301,14 +317,15 @@ export class UserService {
         roles[`${programAssignment.program.id}`] = programRoles;
       }
     }
-    const jwtUsigned = {
-      id: user.id,
-      username: user.username,
-      roles,
-      exp: exp.getTime() / 1000,
-      permissions: permissionsObject,
-    };
-    const result = jwt.sign(jwtUsigned, process.env.SECRETS_121_SERVICE_SECRET);
+
+    const result = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+        exp: exp.getTime() / 1000,
+      },
+      process.env.SECRETS_121_SERVICE_SECRET,
+    );
 
     return result;
   }

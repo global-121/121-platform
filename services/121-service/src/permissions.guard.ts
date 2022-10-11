@@ -10,10 +10,14 @@ import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
 import { InterfaceNames } from './shared/enum/interface-names.enum';
 import { CookieErrors, CookieNames } from './shared/enum/cookie.enums';
+import { UserService } from './user/user.service';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-  public constructor(private readonly reflector: Reflector) {}
+  public constructor(
+    private readonly reflector: Reflector,
+    private readonly userService: UserService,
+  ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     let hasAccess: boolean;
@@ -29,6 +33,11 @@ export class PermissionsGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
+
+    if (!request.params.programId) {
+      throw new Error('Endpoint is missing programId parameter');
+    }
+
     const originInterface = request.headers[headerKey];
 
     if (
@@ -64,9 +73,10 @@ export class PermissionsGuard implements CanActivate {
           process.env.SECRETS_121_SERVICE_SECRET,
         );
         if (decoded.permissions) {
-          hasAccess = await this.aidworkerCanActivate(
-            decoded.permissions,
+          hasAccess = await this.userService.canActivate(
             endpointPermissions,
+            request.params.programId,
+            decoded.id,
           );
         }
       }
@@ -86,15 +96,5 @@ export class PermissionsGuard implements CanActivate {
       }
     }
     return hasAccess;
-  }
-
-  private async aidworkerCanActivate(
-    userPermissions: PermissionEnum[],
-    endpointPermissions: PermissionEnum[],
-  ): Promise<boolean> {
-    const overlappingPermissions = userPermissions.filter(permission =>
-      endpointPermissions.includes(permission),
-    );
-    return overlappingPermissions.length > 0;
   }
 }
