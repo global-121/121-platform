@@ -213,7 +213,7 @@ export class FindByPhoneComponent implements ValidationComponent {
           referenceId: registration.referenceId,
           name: this.getNameAttribute(registration.customData, program),
           phoneNumber: registration.phoneNumber,
-          programTitle: this.translate.get(program.titlePaApp),
+          programTitle: this.translate.get(program.titlePortal),
         } as PaToValidateOption;
         this.peopleAffectedFound.push(paRO);
       }
