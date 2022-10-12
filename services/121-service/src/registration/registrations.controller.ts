@@ -26,7 +26,6 @@ import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { User } from '../user/user.decorator';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
-import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImportResult } from './dto/bulk-import.dto';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
@@ -37,7 +36,6 @@ import { DownloadData } from './dto/download-data.interface';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
 import { UpdateAttributeDto } from './dto/update-attribute.dto';
 import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
-import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
@@ -120,23 +118,6 @@ export class RegistrationsController {
       setPhoneRequest.phonenumber,
       setPhoneRequest.language,
       setPhoneRequest.useForInvitationMatching,
-    );
-  }
-
-  @PersonAffectedAuth()
-  @ApiOperation({ summary: 'Set QR identifier for registration' })
-  @ApiResponse({
-    status: 201,
-    description: 'QR identifier set for registration',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/add-qr-identifier')
-  public async addQrIdentifier(
-    @Body() data: AddQrIdentifierDto,
-  ): Promise<void> {
-    await this.registrationsService.addQrIdentifier(
-      data.referenceId,
-      data.qrIdentifier,
     );
   }
 
@@ -488,21 +469,6 @@ export class RegistrationsController {
     return await this.registrationsService.issueValidation(
       validationIssueData,
       programId,
-    );
-  }
-
-  @Permissions(PermissionEnum.RegistrationReferenceIdSEARCH)
-  @ApiOperation({ summary: 'Find reference id using qr identifier' })
-  @ApiResponse({
-    status: 200,
-    description: 'Found reference id using qr',
-  })
-  @Post('registrations/qr-find-reference-id')
-  public async findReferenceIdWithQrIdentifier(
-    @Body() data: QrIdentifierDto,
-  ): Promise<ReferenceIdDto> {
-    return await this.registrationsService.findReferenceIdWithQrIdentifier(
-      data.qrIdentifier,
     );
   }
 

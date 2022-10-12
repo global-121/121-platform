@@ -22,7 +22,6 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   public data: any;
 
   public validation: boolean;
-  public validationByQr: boolean;
 
   public registrationStatus: boolean;
 
@@ -36,9 +35,6 @@ export class RegistrationSummaryComponent extends PersonalDirective {
 
   public chosenTimeslot: Timeslot;
   public daysToMeeting: number;
-
-  public showQrCode: boolean;
-  public qrDataString: string;
 
   constructor(
     public conversationService: ConversationService,
@@ -72,11 +68,6 @@ export class RegistrationSummaryComponent extends PersonalDirective {
       this.program.id,
     );
 
-    if (this.validation && this.validationByQr) {
-      await this.shouldShowQrCode();
-      await this.generateContent();
-    }
-
     this.conversationService.stopLoading();
 
     this.complete();
@@ -87,17 +78,6 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     this.validation = this.data.validation;
     this.registrationStatus = this.data.registrationStatus;
     this.meetingDocuments = this.data.meetingDocuments;
-  }
-
-  private async shouldShowQrCode() {
-    const usePreprintedQrCodeData = await this.paData.retrieve(
-      this.paData.type.usePreprintedQrCode,
-    );
-    if (typeof usePreprintedQrCodeData !== undefined) {
-      this.showQrCode = !JSON.parse(usePreprintedQrCodeData);
-    } else {
-      this.showQrCode = false;
-    }
   }
 
   private async getReferenceId() {
@@ -111,7 +91,6 @@ export class RegistrationSummaryComponent extends PersonalDirective {
 
   private getProgramProperties(program: Program) {
     this.validation = program.validation;
-    this.validationByQr = program.validationByQr;
 
     const documents = this.translatableString.get(program.meetingDocuments);
     this.meetingDocuments = this.buildDocumentsList(documents);
@@ -123,19 +102,6 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     }
 
     return documents.split(';');
-  }
-
-  private generateQrCode(referenceId: string, programId: number) {
-    const qrData = {
-      referenceId,
-      programId,
-    };
-
-    this.qrDataString = JSON.stringify(qrData);
-  }
-
-  public async generateContent() {
-    this.generateQrCode(this.referenceId, this.program.id);
   }
 
   public retry() {

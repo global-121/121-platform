@@ -25,7 +25,6 @@
     "main-menu": {
       "introduction": "The following actions are available. Please select one.",
       "download-data": "Download validation data",
-      "scan-qr": "Find Person Affected by QR-code",
       "find-by-phone": "Find Person Affected by phonenumber",
       "upload-data": "Upload validation data",
       "select-program": "Select program"
@@ -34,14 +33,6 @@
       "downloading": "Validation data is being downloaded. Wait a second.",
       "download-result": "Validation data downloaded for {{nrDownloaded}} People Affected.",
       "download-aborted": "No validation data could be downloaded at this time. Please try again later."
-    },
-    "scan-qr": {
-      "introduction": "Scan QR-code to retrieve Person Affected's information.",
-      "scan-button": "Scan QR-code",
-      "error": "The scanned QR-code is not valid.",
-      "unknownReferenceIdCombination": "QR-code not found. You can try scanning another QR-code.",
-      "conclusion": "Thank you. You have scanned a valid reference-ID.",
-      "main-menu": "Back to main menu"
     },
     "find-by-phone": {
       "introduction": "Enter phonenumber to retrieve Person Affected's information.",
@@ -96,16 +87,6 @@
       "phone-number": "We couldn't verify this phone-number. Please adjust and try again.",
       "required": "An answer is required for this question. Please adjust and try again."
     }
-  },
-  "qr-scanner": {
-    "title": "Scan QR-code",
-    "error-not-compatible": "Your device is not able to scan",
-    "error-no-permissions": "Please allow the camera to be used or check if its not already in use and try again.",
-    "error-generic": "Something went wrong.",
-    "switch-camera": "Switch camera",
-    "try-again": "Try again",
-    "toggle-flash": "Toggle flash-light",
-    "close": "Close"
   },
   "shared": {
     "close": "Close",

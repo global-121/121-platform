@@ -389,23 +389,6 @@ export class RegistrationsService {
     });
   }
 
-  public async addQrIdentifier(
-    referenceId: string,
-    qrIdentifier: string,
-  ): Promise<void> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
-
-    const duplicateIdentifier = await this.registrationRepository.findOne({
-      where: { qrIdentifier: qrIdentifier },
-    });
-    if (duplicateIdentifier) {
-      const errors = 'This QR identifier already exists';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    registration.qrIdentifier = qrIdentifier;
-    await this.registrationRepository.save(registration);
-  }
-
   public async register(
     referenceId: string,
   ): Promise<ReferenceIdDto | boolean> {
@@ -1136,7 +1119,7 @@ export class RegistrationsService {
     return arrayUniqueByKey;
   }
 
-  // AW: get answers to attributes for a given PA (identified first through referenceId/QR)
+  // AW: get answers to attributes for a given PA (identified first through referenceId)
   public async getRegistrationToValidate(
     referenceId: string,
   ): Promise<RegistrationEntity> {
@@ -1276,7 +1259,6 @@ export class RegistrationsService {
     const data = {
       answers: await this.getAllProgramAnswers(user),
       fspData: await this.getAllFspAnswers(programIds),
-      qrRegistrationMapping: await this.getQrRegistrationMapping(programIds),
       programIds: user.programAssignments.map(assignment => {
         return assignment.program.id;
       }),
@@ -1407,24 +1389,6 @@ export class RegistrationsService {
     return fspAnswers;
   }
 
-  public async getQrRegistrationMapping(
-    programIds: number[],
-  ): Promise<RegistrationEntity[]> {
-    return await this.registrationRepository
-      .createQueryBuilder('registration')
-      .select(['registration.qrIdentifier', 'registration.referenceId'])
-      .where('registration."programId" IN (:...programIds)', {
-        programIds: programIds,
-      })
-      .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
-        registrationStatuses: [
-          RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.selectedForValidation,
-        ],
-      })
-      .getMany();
-  }
-
   public async getFspAnswersAttributes(
     referenceId: string,
   ): Promise<FspAnswersAttrInterface> {
@@ -1472,19 +1436,6 @@ export class RegistrationsService {
         this.registrationDataRepository.remove(data);
       }
     }
-  }
-
-  public async findReferenceIdWithQrIdentifier(
-    qrIdentifier: string,
-  ): Promise<ReferenceIdDto> {
-    let registration = await this.registrationRepository.findOne({
-      where: { qrIdentifier: qrIdentifier },
-    });
-    if (!registration) {
-      const errors = 'No registration found for QR';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    return { referenceId: registration.referenceId };
   }
 
   public async sendCustomTextMessage(
