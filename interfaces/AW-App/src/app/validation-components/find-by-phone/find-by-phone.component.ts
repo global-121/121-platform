@@ -4,20 +4,17 @@ import { TimeoutError } from 'rxjs';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { Program } from '../../models/program.model';
 import { RegistrationStatusEnum } from '../../models/registration-status.enum';
+import { TranslatableStringService } from '../../services/translatable-string.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
-
-export enum CustomDataNameAttributes {
-  name = 'name',
-  nameFirst = 'nameFirst',
-  nameLast = 'nameLast',
-}
 
 class PaToValidateOption {
   referenceId: string;
   name: string;
   phoneNumber: string;
+  programTitle: string;
 }
 
 @Component({
@@ -52,6 +49,7 @@ export class FindByPhoneComponent implements ValidationComponent {
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
+    private translate: TranslatableStringService,
     private storage: Storage,
   ) {}
 
@@ -105,6 +103,7 @@ export class FindByPhoneComponent implements ValidationComponent {
   private async getRegistrationForPhoneOffline(
     phoneNumber: string,
   ): Promise<any> {
+    const myPrograms = await this.storage.get(IonicStorageTypes.myPrograms);
     const validationDataProgram = await this.storage.get(
       IonicStorageTypes.validationProgramData,
     );
@@ -147,6 +146,7 @@ export class FindByPhoneComponent implements ValidationComponent {
         matchingReferenceIds,
         validationData,
         phoneNumber,
+        myPrograms,
       );
     }
   }
@@ -155,17 +155,29 @@ export class FindByPhoneComponent implements ValidationComponent {
     referenceIds: string[],
     validationData: any[],
     phoneNumber: string,
+    allPrograms: Program[],
   ) {
     const paToValidateOptions = [];
     for (const referenceId of referenceIds) {
       const paToValidateOption = new PaToValidateOption();
-      paToValidateOption.name = validationData.find(
-        (o) =>
-          o.referenceId === referenceId &&
-          Object.values(CustomDataNameAttributes).includes(o.name),
-      ).name;
+      const programId = validationData.find(
+        (regData) => regData.referenceId === referenceId,
+      ).programId;
+      const program = allPrograms.find((p) => p.id === programId);
+
+      let fullName = '';
+      for (const attribute of program.fullnameNamingConvention) {
+        const nameData = validationData.find(
+          (data) => data.name === attribute && data.programId === program.id,
+        ).value;
+        if (nameData) {
+          fullName = fullName.concat(' ' + nameData);
+        }
+      }
+      paToValidateOption.name = fullName;
       paToValidateOption.referenceId = referenceId;
       paToValidateOption.phoneNumber = phoneNumber;
+      paToValidateOption.programTitle = this.translate.get(program.titlePortal);
       paToValidateOptions.push(paToValidateOption);
     }
     return paToValidateOptions;
@@ -173,7 +185,7 @@ export class FindByPhoneComponent implements ValidationComponent {
 
   private async getRegistrationForPhoneOnline(
     phoneNumber: string,
-  ): Promise<string> {
+  ): Promise<PaToValidateOption[]> {
     try {
       const rawRegistrations = await this.programsService.getPaByPhoneNr(
         phoneNumber,
@@ -186,13 +198,21 @@ export class FindByPhoneComponent implements ValidationComponent {
         return;
       }
 
-      return registrations.map((pa) => {
-        return {
-          referenceId: pa.referenceId,
-          name: this.getNameAttribute(pa.customData),
-          phoneNumber: pa.phoneNumber,
+      this.peopleAffectedFound = [];
+      for (const registration of registrations) {
+        const program = await this.programsService.getProgramById(
+          registration.programId,
+        );
+        const paRO = {
+          referenceId: registration.referenceId,
+          name: this.getNameAttribute(registration.customData, program),
+          phoneNumber: registration.phoneNumber,
+          programTitle: this.translate.get(program.titlePortal),
         } as PaToValidateOption;
-      });
+        this.peopleAffectedFound.push(paRO);
+      }
+
+      return this.peopleAffectedFound;
     } catch (e) {
       console.log('Error: ', e);
       if (e.status === 0 || e instanceof TimeoutError) {
@@ -201,12 +221,14 @@ export class FindByPhoneComponent implements ValidationComponent {
     }
   }
 
-  private getNameAttribute(input: any): string {
-    for (const attribute of Object.values(CustomDataNameAttributes)) {
+  private getNameAttribute(input: any, program: Program): string {
+    let fullName = '';
+    for (const attribute of program.fullnameNamingConvention) {
       if (input[attribute]) {
-        return input[attribute];
+        fullName = fullName.concat(' ' + input[attribute]);
       }
     }
+    return fullName;
   }
 
   private async findPaData(referenceId: string): Promise<any> {
@@ -250,7 +272,7 @@ export class FindByPhoneComponent implements ValidationComponent {
     if (prefilledQuestions.length > 0) {
       return {
         referenceId,
-        program: { id: offlineData[0].programId },
+        program: { id: prefilledQuestions[0].programId },
         programAnswers: prefilledQuestions,
       };
     }

@@ -8,6 +8,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { NoConnectionService } from 'src/app/services/no-connection.service';
 import { environment } from 'src/environments/environment';
+import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 
@@ -30,6 +31,7 @@ export class MainMenuComponent implements ValidationComponent {
     private storage: Storage,
     private noConnectionService: NoConnectionService,
     private authService: AuthService,
+    private programsService: ProgramsServiceApiService,
   ) {
     this.authService.authenticationState$.subscribe(() => {
       // Refresh all option when current logged in user changes
@@ -117,10 +119,14 @@ export class MainMenuComponent implements ValidationComponent {
   }
 
   private async checkValidationByQr(): Promise<boolean> {
-    return this.storage
-      .get(IonicStorageTypes.myPrograms)
-      .then((programs) => programs.some((program) => program.validationByQr))
-      .catch(() => false);
+    const myPrograms = await this.storage.get(IonicStorageTypes.myPrograms);
+    if (myPrograms) {
+      return myPrograms.some((program) => program.validationByQr);
+    } else {
+      const { programs } = await this.programsService.getAllAssignedPrograms();
+      this.storage.set(IonicStorageTypes.myPrograms, programs);
+      return programs.some((program) => program.validationByQr);
+    }
   }
 
   public changeOption($event) {

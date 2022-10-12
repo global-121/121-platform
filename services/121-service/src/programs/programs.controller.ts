@@ -29,6 +29,7 @@ import { Permissions } from '../permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { Attribute } from '../registration/enum/custom-data-attributes';
+import { User } from '../user/user.decorator';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('programs')
@@ -60,6 +61,18 @@ export class ProgramController {
   @Get('published/all')
   public async getPublishedPrograms(): Promise<ProgramsRO> {
     return await this.programService.getPublishedPrograms();
+  }
+
+  @ApiOperation({ summary: 'Get all assigned programs for a user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all assigned programs for a user.',
+  })
+  @Get('assigned/all')
+  public async getAssignedPrograms(
+    @User('id') userId: number,
+  ): Promise<ProgramsRO> {
+    return await this.programService.getAssignedPrograms(userId);
   }
 
   @Permissions(PermissionEnum.ProgramCREATE)

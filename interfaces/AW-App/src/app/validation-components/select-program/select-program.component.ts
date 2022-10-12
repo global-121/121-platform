@@ -49,7 +49,7 @@ export class SelectProgramComponent implements ValidationComponent {
     this.conversationService.startLoading();
 
     const { programs, programsCount } =
-      await this.programsService.getAllPublishedPrograms();
+      await this.programsService.getAllAssignedPrograms();
     this.programs = programs;
     this.programsCount = programsCount;
     this.programs = this.translateProgramProperties(this.programs);
