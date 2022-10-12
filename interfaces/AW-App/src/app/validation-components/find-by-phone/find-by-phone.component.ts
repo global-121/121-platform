@@ -272,7 +272,7 @@ export class FindByPhoneComponent implements ValidationComponent {
     if (prefilledQuestions.length > 0) {
       return {
         referenceId,
-        program: { id: offlineData[0].programId },
+        program: { id: prefilledQuestions[0].programId },
         programAnswers: prefilledQuestions,
       };
     }
