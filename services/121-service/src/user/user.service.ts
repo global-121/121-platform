@@ -64,7 +64,7 @@ export class UserService {
     }
 
     const username = userEntity.username;
-    const permissions = this.buildPermissionsObject(userEntity);
+    const permissions = await this.buildPermissionsObject(userEntity.id);
     const token = this.generateJWT(userEntity, permissions);
     const user: UserRO = {
       user: {
@@ -192,7 +192,7 @@ export class UserService {
     newUser.password = password;
     newUser.userType = userType;
     const savedUser = await this.userRepository.save(newUser);
-    return this.buildUserRO(savedUser);
+    return await this.buildUserRO(savedUser);
   }
 
   public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {
@@ -206,7 +206,7 @@ export class UserService {
     let updated = toUpdate;
     updated.password = crypto.createHmac('sha256', dto.password).digest('hex');
     await this.userRepository.save(updated);
-    return this.buildUserRO(updated);
+    return await this.buildUserRO(updated);
   }
 
   public async assigAidworkerToProgram(
@@ -302,7 +302,7 @@ export class UserService {
       const errors = `User not found'`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    return this.buildUserRO(user);
+    return await this.buildUserRO(user);
   }
 
   public generateJWT(user: UserEntity, permissionsObject: any): string {
@@ -345,8 +345,8 @@ export class UserService {
     }
   }
 
-  private buildUserRO(user: UserEntity): UserRO {
-    let permissions = this.buildPermissionsObject(user);
+  private async buildUserRO(user: UserEntity): Promise<UserRO> {
+    let permissions = await this.buildPermissionsObject(user.id);
 
     const userRO = {
       id: user.id,
@@ -356,14 +356,20 @@ export class UserService {
     return { user: userRO };
   }
 
-  private buildPermissionsObject(user: UserEntity): any {
-    let roles = [];
+  private async buildPermissionsObject(userId: number): Promise<any> {
+    const user = await this.userRepository.findOne(userId, {
+      relations: [
+        'programAssignments',
+        'programAssignments.roles',
+        'programAssignments.roles.permissions',
+        'programAssignments.program',
+      ],
+    });
     let permissions = [];
 
     const permissionsObject = {};
     if (user.programAssignments && user.programAssignments[0]) {
       for (const programAssignment of user.programAssignments) {
-        roles = programAssignment.roles.map(role => role.role);
         for (const role of programAssignment.roles) {
           const permissionNames = role.permissions.map(a => a.name);
           permissions = [...new Set([...permissions, ...permissionNames])];

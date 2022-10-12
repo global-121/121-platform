@@ -1,7 +1,7 @@
 export interface UserData {
   username: string;
   token?: string;
-  permissions: string[];
+  permissions: object;
 }
 export interface UserRO {
   user: UserData;
