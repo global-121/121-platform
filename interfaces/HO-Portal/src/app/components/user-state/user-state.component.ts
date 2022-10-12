@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppRoutes } from 'src/app/app-routes.enum';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { User } from 'src/app/models/user.model';
@@ -11,6 +12,7 @@ import { environment } from 'src/environments/environment';
 })
 export class UserStateComponent implements OnInit {
   public isDebug = !environment.production;
+  public appRoute = AppRoutes;
   public userName: string;
   public permissions: Permission[];
 

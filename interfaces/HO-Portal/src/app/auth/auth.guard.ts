@@ -6,6 +6,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { Observable } from 'rxjs';
+import { AppRoutes } from '../app-routes.enum';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -38,7 +39,7 @@ export class AuthGuard implements CanActivate {
 
     // Store the attempted URL for redirecting
     this.authService.redirectUrl = url;
-    this.router.navigate(['/login']);
+    this.router.navigate(['/', AppRoutes.login]);
     return false;
   }
 }

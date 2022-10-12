@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { AppRoutes } from '../app-routes.enum';
 import { User } from '../models/user.model';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import Permission from './permission.enum';
@@ -99,7 +100,7 @@ export class AuthService {
             return resolve();
           }
 
-          this.router.navigate(['/home']);
+          this.router.navigate(['/', AppRoutes.home]);
 
           return resolve();
         },
@@ -130,6 +131,6 @@ export class AuthService {
     await this.programsService.logout();
 
     this.authenticationState.next(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/', AppRoutes.login]);
   }
 }

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AppRoutes } from './app-routes.enum';
 import { AuthGuard } from './auth/auth.guard';
 import Permission from './auth/permission.enum';
 import { ProgramPhase } from './models/program.model';
@@ -8,27 +9,27 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'home',
+    redirectTo: AppRoutes.home,
   },
   {
-    path: 'login',
+    path: AppRoutes.login,
     loadChildren: () =>
       import('./login/login.module').then((m) => m.LoginPageModule),
   },
   {
-    path: 'user',
+    path: AppRoutes.user,
     loadChildren: () =>
       import('./user/user.module').then((m) => m.UserPageModule),
     canActivate: [AuthGuard],
   },
   {
-    path: 'home',
+    path: AppRoutes.home,
     loadChildren: () =>
       import('./home/home.module').then((m) => m.HomePageModule),
     canActivate: [AuthGuard],
   },
   {
-    path: 'help',
+    path: AppRoutes.help,
     loadChildren: () =>
       import('./help/help.module').then((m) => m.HelpPageModule),
     canActivate: [AuthGuard],
@@ -117,7 +118,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'home',
+    redirectTo: AppRoutes.home,
   },
 ];
 
