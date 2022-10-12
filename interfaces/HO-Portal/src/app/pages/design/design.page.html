@@ -12,8 +12,5 @@
     [phaseReady]="true"
   ></app-phase-next>
 
-  <app-program-details
-    *appIfPermissions="[Permission.ProgramAllREAD]"
-    [programId]="programId"
-  ></app-program-details>
+  <app-program-details [programId]="programId"></app-program-details>
 </ion-content>
