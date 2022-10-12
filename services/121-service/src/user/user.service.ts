@@ -351,7 +351,6 @@ export class UserService {
     const userRO = {
       id: user.id,
       username: user.username,
-      token: this.generateJWT(user, permissions),
       permissions,
     };
     return { user: userRO };
