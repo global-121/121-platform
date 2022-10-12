@@ -17,6 +17,7 @@ import {
   ApiOperation,
   ApiBody,
   ApiConsumes,
+  ApiParam,
 } from '@nestjs/swagger';
 import { IntersolveService } from './intersolve.service';
 import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
@@ -28,7 +29,7 @@ import { PermissionEnum } from '../../../user/permission.enum';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('payments/intersolve')
-@Controller('payments/intersolve')
+@Controller()
 export class IntersolveController {
   public constructor(private intersolveService: IntersolveService) {}
 
@@ -36,8 +37,9 @@ export class IntersolveController {
   @ApiOperation({
     summary: 'Export Intersolve vouchers',
   })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({ status: 200, description: 'Vouchers exported' })
-  @Post('export-voucher')
+  @Post('programs/:programId/payments/intersolve/export-voucher')
   public async exportVouchers(
     @Body() identifyVoucherDto: IdentifyVoucherDto,
     @Res() response: Response,
@@ -58,8 +60,9 @@ export class IntersolveController {
   @ApiOperation({
     summary: 'Get Intersolve voucher balance',
   })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({ status: 200, description: 'Vouchers balance retrieved' })
-  @Post('balance')
+  @Post('programs/:programId/payments/intersolve/balance')
   public async getBalance(
     @Body() identifyVoucherDto: IdentifyVoucherDto,
   ): Promise<number> {
@@ -72,8 +75,9 @@ export class IntersolveController {
   @ApiOperation({
     summary: 'Get intersolve instructions',
   })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({ status: 200, description: 'Get intersolve instructions' })
-  @Get('instruction')
+  @Get('/payments/intersolve/instruction')
   public async intersolveInstructions(
     @Res() response: Response,
   ): Promise<void> {
@@ -90,10 +94,11 @@ export class IntersolveController {
   @ApiOperation({
     summary: 'Post Intersolve instructions-image (Only .png-files supported)',
   })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiConsumes('multipart/form-data')
   @ApiBody(IMAGE_UPLOAD_API_FORMAT)
   @ApiResponse({ status: 200, description: 'Post intersolve instructions' })
-  @Post('instruction')
+  @Post('/payments/intersolve/instruction')
   @UseInterceptors(FileInterceptor('image'))
   public async postIntersolveInstructions(
     @UploadedFile() instructionsFileBlob,

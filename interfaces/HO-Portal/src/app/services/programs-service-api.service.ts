@@ -375,10 +375,14 @@ export class ProgramsServiceApiService {
       });
   }
 
-  exportVoucher(referenceId: string, payment: number): Promise<Blob> {
+  exportVoucher(
+    referenceId: string,
+    payment: number,
+    programId: number,
+  ): Promise<Blob> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/payments/intersolve/export-voucher`,
+      `/programs/${programId}/payments/intersolve/export-voucher`,
       {
         referenceId,
         payment,
@@ -388,10 +392,14 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getBalance(referenceId: string, payment: number): Promise<number> {
+  getBalance(
+    referenceId: string,
+    payment: number,
+    programId: number,
+  ): Promise<number> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/payments/intersolve/balance`,
+      `/programs/${programId}/payments/intersolve/balance`,
       {
         referenceId,
         payment,
