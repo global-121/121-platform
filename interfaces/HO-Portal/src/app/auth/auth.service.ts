@@ -33,7 +33,19 @@ export class AuthService {
     return this.getUserFromStorage() !== null;
   }
 
+  private isAssignedToProgram(programId: number, user?: User | null): boolean {
+    if (!user) {
+      user = this.getUserFromStorage();
+    }
+    return (
+      user &&
+      user.permissions &&
+      Object.keys(user.permissions).includes(String(programId))
+    );
+  }
+
   public hasPermission(
+    programId: number,
     requiredPermission: Permission,
     user?: User | null,
   ): boolean {
@@ -41,15 +53,24 @@ export class AuthService {
       user = this.getUserFromStorage();
     }
     return (
-      user && user.permissions && user.permissions.includes(requiredPermission)
+      user &&
+      user.permissions &&
+      this.isAssignedToProgram(programId, user) &&
+      user.permissions[programId].includes(requiredPermission)
     );
   }
 
-  public hasAllPermissions(requiredPermissions: Permission[]): boolean {
+  public hasAllPermissions(
+    programId: number,
+    requiredPermissions: Permission[],
+  ): boolean {
     const user = this.getUserFromStorage();
     return (
+      !!programId &&
       !!requiredPermissions &&
-      requiredPermissions.every((p) => this.hasPermission(p, user))
+      requiredPermissions.every((permissionName) =>
+        this.hasPermission(programId, permissionName, user),
+      )
     );
   }
 

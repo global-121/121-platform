@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppRoutes } from 'src/app/app-routes.enum';
 import { AuthService } from 'src/app/auth/auth.service';
-import Permission from 'src/app/auth/permission.enum';
 import { User } from 'src/app/models/user.model';
 import { environment } from 'src/environments/environment';
 
@@ -14,7 +13,7 @@ export class UserStateComponent implements OnInit {
   public isDebug = !environment.production;
   public appRoute = AppRoutes;
   public userName: string;
-  public permissions: Permission[];
+  public permissions: User['permissions'];
 
   constructor(private authService: AuthService) {}
 
@@ -22,8 +21,7 @@ export class UserStateComponent implements OnInit {
     this.authService.authenticationState$.subscribe((user: User | null) => {
       this.userName = user && user.username ? user.username : '';
       if (this.isDebug) {
-        this.permissions =
-          user && user.permissions ? user.permissions.sort() : [];
+        this.permissions = user && user.permissions ? user.permissions : {};
       }
     });
   }
@@ -35,10 +33,10 @@ export class UserStateComponent implements OnInit {
 
   public debugShowPermissions() {
     let allPermissions = 'UserState: All User Permissions:\n\n';
-    this.permissions.forEach((p) => {
-      allPermissions += `${p}\n`;
+    Object.keys(this.permissions).forEach((programId) => {
+      allPermissions += `${this.permissions[programId].sort().join('\n')}`;
+      allPermissions += `\n${this.permissions[programId].length} permissons for program: ${programId}\n\n`;
     });
-    allPermissions += `\n${this.permissions.length} permissons in total`;
     // tslint:disable:no-console
     console.info(allPermissions);
     window.alert(allPermissions);

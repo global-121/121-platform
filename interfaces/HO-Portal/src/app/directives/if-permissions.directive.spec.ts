@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { AuthService } from '../auth/auth.service';
 import Permission from '../auth/permission.enum';
 import { provideMagicalMock } from '../mocks/helpers';
 import { IfPermissionsDirective } from './if-permissions.directive';
 
 const mockText = 'TEST';
+const mockProgramId = 1;
+
 @Component({
   template: `<div *appIfPermissions="conditions">${mockText}</div>`,
 })
@@ -23,7 +27,20 @@ describe('IfPermissionsDirective', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [TestComponent, IfPermissionsDirective],
-      providers: [provideMagicalMock(AuthService)],
+      imports: [RouterTestingModule],
+      providers: [
+        provideMagicalMock(AuthService),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              params: {
+                id: mockProgramId,
+              },
+            },
+          },
+        },
+      ],
     }).compileComponents();
 
     mockAuthService = TestBed.inject(AuthService);
