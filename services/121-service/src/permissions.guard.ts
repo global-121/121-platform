@@ -11,6 +11,7 @@ import * as jwt from 'jsonwebtoken';
 import { InterfaceNames } from './shared/enum/interface-names.enum';
 import { CookieErrors, CookieNames } from './shared/enum/cookie.enums';
 import { UserService } from './user/user.service';
+import { UserToken } from './user/user.interface';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -51,7 +52,7 @@ export class PermissionsGuard implements CanActivate {
         (!originInterface && request.cookies[CookieNames.general])) &&
       endpointPermissions
     ) {
-      let token;
+      let token: string;
       switch (originInterface) {
         case InterfaceNames.portal:
           token = request.cookies[CookieNames.portal];
@@ -68,7 +69,7 @@ export class PermissionsGuard implements CanActivate {
           break;
       }
       if (token) {
-        const decoded: any = jwt.verify(
+        const decoded: UserToken = jwt.verify(
           token,
           process.env.SECRETS_121_SERVICE_SECRET,
         );

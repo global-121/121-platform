@@ -12,6 +12,7 @@ import * as jwt from 'jsonwebtoken';
 import { UserService } from './user/user.service';
 import { UserType } from './user/user-type-enum';
 import { CookieNames } from './shared/enum/cookie.enums';
+import { UserToken } from './user/user.interface';
 
 @Injectable()
 export class PersonAffectedAuthGuard implements CanActivate {
@@ -39,7 +40,7 @@ export class PersonAffectedAuthGuard implements CanActivate {
       endpointPersonAffectedAuth.length === 0
     ) {
       const token = request.cookies[CookieNames.paApp];
-      const decoded: any = jwt.verify(
+      const decoded: UserToken = jwt.verify(
         token,
         process.env.SECRETS_121_SERVICE_SECRET,
       );
