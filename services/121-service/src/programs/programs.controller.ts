@@ -12,13 +12,7 @@ import { ProgramService } from './programs.service';
 import { CreateProgramDto } from './dto/create-program.dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
 
-import {
-  ApiTags,
-  ApiBearerAuth,
-  ApiResponse,
-  ApiOperation,
-  ApiParam,
-} from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
@@ -46,14 +40,6 @@ export class ProgramController {
   @Get(':programId')
   public async findOne(@Param() params): Promise<ProgramEntity> {
     return await this.programService.findOne(Number(params.programId));
-  }
-
-  @Permissions(PermissionEnum.ProgramAllREAD)
-  @ApiOperation({ summary: 'Get all programs' })
-  @ApiResponse({ status: 200, description: 'Return all programs.' })
-  @Get()
-  public async findAll(): Promise<ProgramsRO> {
-    return await this.programService.findAll();
   }
 
   @ApiOperation({ summary: 'Get published programs' })

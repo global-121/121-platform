@@ -61,24 +61,14 @@ export class ProgramService {
     return program;
   }
 
-  public async findAll(): Promise<ProgramsRO> {
-    const qb = await getRepository(ProgramEntity)
+  public async getPublishedPrograms(): Promise<ProgramsRO> {
+    const programs = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.programQuestions', 'programQuestion')
-      .addOrderBy('programQuestion.id', 'ASC');
-
-    qb.where('1 = 1');
-    qb.orderBy('program.created', 'DESC');
-
-    const programs = await qb.getMany();
-    const programsCount = programs.length;
-
-    return { programs, programsCount };
-  }
-
-  public async getPublishedPrograms(): Promise<ProgramsRO> {
-    let programs = (await this.findAll()).programs;
-    programs = programs.filter(program => program.published);
+      .where('program.published = :published', { published: true })
+      .orderBy('program.created', 'DESC')
+      .addOrderBy('programQuestion.id', 'ASC')
+      .getMany();
     const programsCount = programs.length;
     return { programs, programsCount };
   }
@@ -251,7 +241,7 @@ export class ProgramService {
     programId: number,
     programQuestionId: number,
   ): Promise<ProgramQuestionEntity> {
-    const program = await this.findProgramOrThrow(programId);
+    await this.findProgramOrThrow(programId);
 
     const programQuestion = await this.programQuestionRepository.findOne({
       where: { id: Number(programQuestionId) },

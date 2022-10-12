@@ -91,7 +91,7 @@ export class ProgramsServiceApiService {
 
   getAllPrograms(): Promise<Program[]> {
     return this.apiService
-      .get(environment.url_121_service_api, '/programs')
+      .get(environment.url_121_service_api, '/programs/assigned/all')
       .then((response) => {
         if (response) {
           return response.programs;
