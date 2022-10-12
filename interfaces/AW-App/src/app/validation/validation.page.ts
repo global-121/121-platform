@@ -114,19 +114,15 @@ export class ValidationPage implements OnInit {
         if (!user) {
           return;
         }
-        const userPermissions = user.permissions.sort();
+        let allPermissions = `User: ${user.username}\n\n`;
 
-        let allPermissions = '';
-        userPermissions.forEach((p) => (allPermissions += `${p}\n`));
-
-        const userIdCard =
-          `User: ${user.username}\n\n` +
-          `Permissions: (${userPermissions.length})\n\n` +
-          `${allPermissions}\n`;
-
+        Object.keys(user.permissions).forEach((programId) => {
+          allPermissions += `${user.permissions[programId].sort().join('\n')}`;
+          allPermissions += `\n${user.permissions[programId].length} permissons for program: ${programId}\n\n`;
+        });
         // tslint:disable:no-console
-        console.info(userIdCard);
-        window.alert(userIdCard);
+        console.info(allPermissions);
+        window.alert(allPermissions);
       })
       .unsubscribe();
   }
