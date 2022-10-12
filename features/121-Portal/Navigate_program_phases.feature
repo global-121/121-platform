@@ -2,7 +2,7 @@
 Feature: Navigate program phases
 
   Background:
-    Given a logged-in user with the "ProgramAllREAD" permission
+    Given a logged-in user
 
   Scenario: See current phase of the program
     When the user views a "program" page

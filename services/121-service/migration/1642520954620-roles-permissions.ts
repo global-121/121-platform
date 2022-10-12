@@ -92,7 +92,7 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
           PermissionEnum.InstanceUPDATE,
           PermissionEnum.ProgramCREATE,
           PermissionEnum.ProgramUPDATE,
-          PermissionEnum.ProgramAllREAD,
+          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramPhaseUPDATE,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
@@ -120,7 +120,7 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
         role: DefaultUserRole.View,
         label: 'Only view data, including Personally Identifiable Information',
         permissions: [
-          PermissionEnum.ProgramAllREAD,
+          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
@@ -134,7 +134,7 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
         role: DefaultUserRole.PersonalData,
         label: 'Handle Personally Identifiable Information',
         permissions: [
-          PermissionEnum.ProgramAllREAD,
+          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentCREATE,

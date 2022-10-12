@@ -38,7 +38,7 @@ export class rolesPermissionsUpdate1644318599213 implements MigrationInterface {
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
-          PermissionEnum.ProgramAllREAD,
+          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramCREATE,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramPhaseUPDATE,
@@ -67,7 +67,7 @@ export class rolesPermissionsUpdate1644318599213 implements MigrationInterface {
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
-          PermissionEnum.ProgramAllREAD,
+          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.RegistrationAttributeUPDATE,
           PermissionEnum.RegistrationCREATE,
