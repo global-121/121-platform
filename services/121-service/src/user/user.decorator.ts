@@ -43,6 +43,6 @@ export const User = createParamDecorator((data, ctx: ExecutionContext) => {
       token,
       process.env.SECRETS_121_SERVICE_SECRET,
     );
-    return !!data ? decoded[data] : decoded.user;
+    return !!data ? decoded[data] : decoded;
   }
 });

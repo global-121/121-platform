@@ -65,7 +65,7 @@ export class UserService {
 
     const username = userEntity.username;
     const permissions = await this.buildPermissionsObject(userEntity.id);
-    const token = this.generateJWT(userEntity, permissions);
+    const token = this.generateJWT(userEntity);
     const user: UserRO = {
       user: {
         username,
@@ -305,7 +305,7 @@ export class UserService {
     return await this.buildUserRO(user);
   }
 
-  public generateJWT(user: UserEntity, permissionsObject: any): string {
+  public generateJWT(user: UserEntity): string {
     let today = new Date();
     let exp = new Date(today);
     exp.setDate(today.getDate() + tokenExpirationDays);
