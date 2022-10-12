@@ -10,7 +10,6 @@ export const environment = {
   showDebug: false, // Controls debugging features
   useAnimation: false, // Use animations and delays in the interface
   useServiceWorker: false, // Enable 'offline' support
-  useMultiplePrograms: false, // Enable multi-program-aware or -specific features
 
   envName: '', // To highlight the environment used
 
