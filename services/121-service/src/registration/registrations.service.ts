@@ -1054,11 +1054,13 @@ export class RegistrationsService {
 
   public async searchRegistration(
     rawPhoneNumber?: string,
-    name?: string,
     userId?: number,
   ): Promise<RegistrationEntity[]> {
     const registrations = [];
-    await this.programService.findUserProgramAssignmentsOrThrow(userId);
+    const user = await this.programService.findUserProgramAssignmentsOrThrow(
+      userId,
+    );
+    const programIds = user.programAssignments.map(p => p.program.id);
 
     if (rawPhoneNumber) {
       const customAttributesPhoneNumberNames = [
@@ -1070,12 +1072,19 @@ export class RegistrationsService {
         rawPhoneNumber,
       );
 
-      const matchingRegistrationData = await this.registrationDataRepository.find(
-        {
-          where: { value: phoneNumber },
-          relations: ['registration'],
-        },
-      );
+      const matchingRegistrationData = await getRepository(
+        RegistrationDataEntity,
+      )
+        .createQueryBuilder('registrationData')
+        .leftJoinAndSelect('registrationData.registration', 'registration')
+        .where('registrationData.value = :phoneNumber', {
+          phoneNumber: phoneNumber,
+        })
+        .andWhere('registration.program.id IN (:...programIds)', {
+          programIds: programIds,
+        })
+        .getMany();
+
       for (const d of matchingRegistrationData) {
         const dataName = await d.getDataName();
         if (customAttributesPhoneNumberNames.includes(dataName)) {
@@ -1093,31 +1102,6 @@ export class RegistrationsService {
         for (const matchingReg of matchingRegistrations) {
           const registration = await this.getRegistrationFromReferenceId(
             matchingReg.referenceId,
-          );
-          registrations.push(registration);
-        }
-      }
-    }
-    if (name) {
-      const customAttributesNameNames = [
-        CustomDataAttributes.nameFirst as string,
-        CustomDataAttributes.nameLast as string,
-        CustomDataAttributes.firstName as string,
-        CustomDataAttributes.secondName as string,
-        CustomDataAttributes.thirdName as string,
-      ];
-
-      const matchingRegistrationData = await this.registrationDataRepository.find(
-        {
-          where: { value: name },
-          relations: ['registration'],
-        },
-      );
-      for (const d of matchingRegistrationData) {
-        const dataName = await d.getDataName();
-        if (customAttributesNameNames.includes(dataName)) {
-          const registration = await this.getRegistrationFromReferenceId(
-            d.registration.referenceId,
           );
           registrations.push(registration);
         }
@@ -1300,9 +1284,7 @@ export class RegistrationsService {
           RegistrationStatusEnum.selectedForValidation,
         ],
       })
-      .andWhere('data.programQuestionId is not null', {
-        programIds: programIds,
-      })
+      .andWhere('data.programQuestionId is not null')
       .getMany();
     let answers = [];
     for (const r of registrationsToValidate) {

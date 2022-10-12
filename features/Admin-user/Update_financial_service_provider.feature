@@ -6,7 +6,7 @@ Feature: Update chosen Financial Service Provider of Person Affected
 
   Scenario: Successfully find "referenceId" of a Person Affected by name and/or phone-number
     Given a "name" or "phoneNumber" is provided
-    When the user fills (one of) these in as body and calls the "/registrations/search-name-phone" endpoint
+    When the user fills (one of) these in as body and calls the "/registrations/search-phone" endpoint
     Then a "registration" with all its attributes is returned including the "referenceId"
 
   Scenario: Successfully update Financial Service Provider of Person Affected
