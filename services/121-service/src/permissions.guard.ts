@@ -72,13 +72,14 @@ export class PermissionsGuard implements CanActivate {
           token,
           process.env.SECRETS_121_SERVICE_SECRET,
         );
-        if (decoded.permissions) {
-          hasAccess = await this.userService.canActivate(
-            endpointPermissions,
-            request.params.programId,
-            decoded.id,
-          );
+        if (!decoded && !decoded.id) {
+          return false;
         }
+        hasAccess = await this.userService.canActivate(
+          endpointPermissions,
+          request.params.programId,
+          decoded.id,
+        );
       }
     } else {
       hasAccess = false;
