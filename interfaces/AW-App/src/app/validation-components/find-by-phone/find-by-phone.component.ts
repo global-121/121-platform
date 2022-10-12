@@ -163,7 +163,7 @@ export class FindByPhoneComponent implements ValidationComponent {
       const programId = validationData.find(
         (regData) => regData.referenceId === referenceId,
       ).programId;
-      const program = allPrograms.find((program) => program.id === programId);
+      const program = allPrograms.find((p) => p.id === programId);
 
       let fullName = '';
       for (const attribute of program.fullnameNamingConvention) {
