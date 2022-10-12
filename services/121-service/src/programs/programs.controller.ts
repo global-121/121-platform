@@ -79,7 +79,7 @@ export class ProgramController {
   @Permissions(PermissionEnum.ProgramPhaseUPDATE)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('change-phase/:programId')
+  @Post(':programId/change-phase')
   public async changePhase(
     @Param() params,
     @Body() changePhaseData: ChangePhaseDto,

@@ -142,7 +142,7 @@ export class ProgramsServiceApiService {
   advancePhase(programId: number, newPhase: string): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/programs/change-phase/${programId}`,
+      `/programs/${programId}/change-phase`,
       {
         newPhase,
       },
