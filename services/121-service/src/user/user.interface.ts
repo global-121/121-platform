@@ -2,7 +2,7 @@ import { PermissionEnum } from './permission.enum';
 
 export interface UserData {
   username: string;
-  token?: string;
+  token: string;
   permissions: UserPermissions;
 }
 
