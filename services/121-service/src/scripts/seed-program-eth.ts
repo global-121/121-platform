@@ -86,7 +86,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
-          PermissionEnum.AidWorkerCREATE,
           PermissionEnum.AidWorkerDELETE,
           PermissionEnum.AidWorkerProgramUPDATE,
           // PermissionEnum.RoleCREATE, // Admin-only
@@ -131,7 +130,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
-          PermissionEnum.AidWorkerCREATE,
           PermissionEnum.AidWorkerDELETE,
           PermissionEnum.AidWorkerProgramUPDATE,
         ],
@@ -175,7 +173,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
-          PermissionEnum.AidWorkerCREATE,
           PermissionEnum.AidWorkerDELETE,
           PermissionEnum.AidWorkerProgramUPDATE,
         ],

@@ -210,25 +210,22 @@ export class UserService {
   }
 
   public async assigAidworkerToProgram(
+    programId: number,
+    userId: number,
     assignAidworkerToProgram: AssignAidworkerToProgramDto,
   ): Promise<UserRoleEntity[]> {
-    const user = await this.userRepository.findOne(
-      assignAidworkerToProgram.userId,
-      {
-        relations: [
-          'programAssignments',
-          'programAssignments.program',
-          'programAssignments.roles',
-        ],
-      },
-    );
+    const user = await this.userRepository.findOne(userId, {
+      relations: [
+        'programAssignments',
+        'programAssignments.program',
+        'programAssignments.roles',
+      ],
+    });
     if (!user) {
       const errors = { User: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const program = await this.programRepository.findOne(
-      assignAidworkerToProgram.programId,
-    );
+    const program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = { Program: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -239,14 +236,14 @@ export class UserService {
         role: In(assignAidworkerToProgram.roles),
       },
     });
-    if (!newRoles.length) {
+    if (newRoles.length !== assignAidworkerToProgram.roles.length) {
       const errors = { Roles: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     // if already assigned: add roles to program assignment
     for (const programAssignment of user.programAssignments) {
-      if (programAssignment.program.id === assignAidworkerToProgram.programId) {
+      if (programAssignment.program.id === programId) {
         programAssignment.roles = newRoles;
         await this.assignmentRepository.save(programAssignment);
         return programAssignment.roles;
@@ -260,6 +257,38 @@ export class UserService {
       roles: newRoles,
     });
     return newRoles;
+  }
+
+  public async deleteAssignment(
+    programId: number,
+    userId: number,
+  ): Promise<void> {
+    const user = await this.userRepository.findOne(userId, {
+      relations: ['programAssignments', 'programAssignments.program'],
+    });
+    if (!user) {
+      const errors = { User: ' not found' };
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    const program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = { Program: ' not found' };
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    // If 0 roles are posted remove aidworker assignment
+    for (const programAssignment of user.programAssignments) {
+      if (programAssignment.program.id === programId) {
+        this.assignmentRepository.remove(programAssignment);
+        // Also remove user without assignments
+        if (user.programAssignments.length <= 1) {
+          this.userRepository.remove(user);
+        }
+        return;
+      }
+    }
+    const errors = `User assignment for user id ${userId} to program ${programId} not found`;
+    throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
   }
 
   public async delete(userId: number): Promise<UserEntity> {

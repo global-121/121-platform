@@ -56,7 +56,6 @@ export class SeedInit implements InterfaceScript {
         permissions: [
           PermissionEnum.ActionCREATE,
           PermissionEnum.ActionREAD,
-          PermissionEnum.AidWorkerCREATE,
           PermissionEnum.AidWorkerDELETE,
           PermissionEnum.AidWorkerProgramUPDATE,
           PermissionEnum.InstanceUPDATE,
