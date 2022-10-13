@@ -203,21 +203,24 @@ export class ProgramEntity extends CascadeDeleteEntity {
       .getRawOne();
 
     const repoInstance = getConnection().getRepository(InstanceEntity);
-    const monitoringQuestion = await repoInstance
+    const resultMonitoringQuestion = await repoInstance
       .createQueryBuilder('instance')
       .leftJoin('instance.monitoringQuestion', 'question')
       .andWhere('question.name = :name', { name: name })
-      .getOne();
+      .select('"question".options', 'options')
+      .getRawOne();
 
-    const resultMonitoringQuestionType = monitoringQuestion
-      ? AnswerTypes.text
-      : undefined;
+    if (resultMonitoringQuestion) {
+      resultMonitoringQuestion.type = resultMonitoringQuestion.options
+        ? AnswerTypes.dropdown
+        : undefined;
+    }
 
     if (
       Number(!!resultProgramQuestion) +
         Number(!!resultFspQuestion) +
         Number(!!resultProgramCustomAttribute) +
-        Number(!!resultMonitoringQuestionType) >
+        Number(!!resultMonitoringQuestion) >
       1
     ) {
       throw new Error(
@@ -240,9 +243,10 @@ export class ProgramEntity extends CascadeDeleteEntity {
       return {
         type: resultProgramCustomAttribute.type as CustomAttributeType,
       };
-    } else if (resultMonitoringQuestionType) {
+    } else if (resultMonitoringQuestion && resultMonitoringQuestion.type) {
       return {
-        type: resultMonitoringQuestionType,
+        type: resultMonitoringQuestion.type,
+        options: resultMonitoringQuestion.options,
       };
     } else {
       return new ValidationInfo();
