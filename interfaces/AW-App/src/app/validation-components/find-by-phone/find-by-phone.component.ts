@@ -109,7 +109,6 @@ export class FindByPhoneComponent implements ValidationComponent {
   private async getRegistrationForPhoneOffline(
     phoneNumber: string,
   ): Promise<any> {
-    console.log('phoneNumber: ', phoneNumber);
     const myPrograms = await this.storage.get(IonicStorageTypes.myPrograms);
     const validationDataProgram = await this.storage.get(
       IonicStorageTypes.validationProgramData,
@@ -141,7 +140,6 @@ export class FindByPhoneComponent implements ValidationComponent {
         matchingReferenceIds.push(element.referenceId);
       }
     }
-    console.log('matchingReferenceIds: ', matchingReferenceIds);
     if (matchingReferenceIds.length === 0) {
       return;
     }
@@ -171,12 +169,10 @@ export class FindByPhoneComponent implements ValidationComponent {
       const programId = validationData.find(
         (regData) => regData.referenceId === referenceId,
       ).programId;
-      console.log('validationData: ', validationData);
       const program = allPrograms.find((p) => p.id === programId);
 
       let fullName = '';
       for (const attribute of program.fullnameNamingConvention) {
-        console.log('attribute: ', attribute);
         const nameData = validationData.find(
           (data) =>
             data.name === attribute &&
@@ -187,7 +183,6 @@ export class FindByPhoneComponent implements ValidationComponent {
           fullName = fullName.concat(' ' + nameData);
         }
       }
-      console.log('fullName: ', fullName);
       paToValidateOption.name = fullName;
       paToValidateOption.referenceId = referenceId;
       paToValidateOption.phoneNumber = phoneNumber;
