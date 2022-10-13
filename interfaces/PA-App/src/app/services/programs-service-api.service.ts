@@ -223,7 +223,7 @@ export class ProgramsServiceApiService {
       .then((res) => {
         return res.status === 'registered';
       })
-      .catch((e) => {
+      .catch(() => {
         return false;
       });
   }
