@@ -209,7 +209,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
       .andWhere('question.name = :name', { name: name })
       .getOne();
 
-    const resultMonitoringQuestion = monitoringQuestion
+    const resultMonitoringQuestionType = monitoringQuestion
       ? AnswerTypes.text
       : undefined;
 
@@ -217,7 +217,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
       Number(!!resultProgramQuestion) +
         Number(!!resultFspQuestion) +
         Number(!!resultProgramCustomAttribute) +
-        Number(!!resultMonitoringQuestion) >
+        Number(!!resultMonitoringQuestionType) >
       1
     ) {
       throw new Error(
@@ -240,12 +240,9 @@ export class ProgramEntity extends CascadeDeleteEntity {
       return {
         type: resultProgramCustomAttribute.type as CustomAttributeType,
       };
-    } else if (
-      resultProgramCustomAttribute &&
-      resultProgramCustomAttribute.type
-    ) {
+    } else if (resultMonitoringQuestionType) {
       return {
-        type: resultMonitoringQuestion,
+        type: resultMonitoringQuestionType,
       };
     } else {
       return new ValidationInfo();
