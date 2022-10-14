@@ -710,6 +710,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       if (!!this.columnWidthPerType[colPerPhase.type]) {
         addCol.minWidth = this.columnWidthPerType[colPerPhase.type];
         addCol.width = this.columnWidthPerType[colPerPhase.type];
+      } else {
+        addCol.minWidth = this.columnWidthPerType.text;
+        addCol.width = this.columnWidthPerType.text;
       }
       if (this.authService.hasAllPermissions(addCol.permissions)) {
         this.columns.push(addCol);

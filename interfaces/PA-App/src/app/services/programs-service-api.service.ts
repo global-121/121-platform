@@ -144,7 +144,7 @@ export class ProgramsServiceApiService {
         if (response && response.referenceId === referenceId) {
           return true;
         }
-        return response;
+        return false;
       })
       .catch(() => false);
   }
@@ -211,5 +211,20 @@ export class ProgramsServiceApiService {
         false,
       )
       .toPromise();
+  }
+
+  isStatusRegistered(referenceId: string): Promise<boolean> {
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        `/registrations/status/${referenceId}`,
+      )
+      .toPromise()
+      .then((res) => {
+        return res.status === 'registered';
+      })
+      .catch(() => {
+        return false;
+      });
   }
 }

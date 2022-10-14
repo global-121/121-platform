@@ -529,4 +529,19 @@ export class RegistrationsController {
       params.referenceId,
     );
   }
+
+  @PersonAffectedAuth()
+  @ApiOperation({ summary: 'Get registration status' })
+  @ApiResponse({ status: 200 })
+  @ApiParam({
+    name: 'referenceId',
+  })
+  @Get('status/:referenceId')
+  public async getRegistrationStatus(@Param() params): Promise<any> {
+    const status = await this.registrationsService.getRegistrationStatus(
+      params.referenceId,
+    );
+
+    return { status };
+  }
 }
