@@ -5,9 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.66.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.66.1...master)
 
 ---
+## [1.66.1](https://github.com/global-121/121-platform/compare/v1.66.0...v1.66.1) - 2022-10-14
+
+### Changed
+
+- Fix: age divisions in questions are right now
+- Fix: added missing french translations
+- Fix: dont show multiple "Add another person affected" buttons
+- Fix: Use fullnameNamingConvention in AW-App to construct name
+
 ## [1.66.0](https://github.com/global-121/121-platform/compare/v1.65.2...v1.66.0) - 2022-10-10
 
 ### Changed
