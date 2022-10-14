@@ -540,7 +540,7 @@ export class RegistrationsController {
   public async getRegistrationStatus(@Param() params): Promise<any> {
     const status = await this.registrationsService.getRegistrationStatus(
       params.referenceId,
-      );
+    );
 
     return { status };
   }

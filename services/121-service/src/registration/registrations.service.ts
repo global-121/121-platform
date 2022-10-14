@@ -1558,9 +1558,7 @@ export class RegistrationsService {
   public async getRegistrationStatus(
     referenceId: string,
   ): Promise<RegistrationStatusEnum> {
-    const registration = await this.getRegistrationFromReferenceId(
-      referenceId
-    );
+    const registration = await this.getRegistrationFromReferenceId(referenceId);
     return JSON.parse(JSON.stringify(registration.registrationStatus));
   }
 }
