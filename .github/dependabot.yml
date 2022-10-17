@@ -126,7 +126,5 @@ updates:
         versions: ['>= 7.0.0']
       - dependency-name: 'zone.js'
         versions: ['>= v0.11.1']
-      - dependency-name: angularx-qrcode
-        versions: ['>= 3.0.0']
       - dependency-name: '@zxing/ngx-scanner'
         versions: ['>= 3.2.0']
