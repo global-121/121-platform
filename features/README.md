@@ -82,7 +82,6 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Consent question](PA-App/Consent_question.feature)
 - [Answer program questions](PA-App/Answer_program_questions.feature)
 - [Fill payment details](PA-App/Fill_payment_details.feature)
-- [Link preprinted QR-code](PA-App/Link-preprinted-QR-code.feature)
 - Answer monitoring questions
 
 #### Generic PA-App components
