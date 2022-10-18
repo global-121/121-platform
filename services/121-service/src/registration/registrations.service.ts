@@ -1106,7 +1106,9 @@ export class RegistrationsService {
   // AW: get answers to attributes for a given PA (identified first through referenceId)
   public async getRegistrationToValidate(
     referenceId: string,
+    userId: number,
   ): Promise<RegistrationEntity> {
+    await this.programService.findUserProgramAssignmentsOrThrow(userId);
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
       [

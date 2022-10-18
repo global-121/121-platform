@@ -368,7 +368,7 @@ export class RegistrationsController {
     );
   }
 
-  @Permissions(PermissionEnum.RegistrationPersonalSEARCH)
+  // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
     summary:
       'Find registration by name and/or phone number for PM and FieldValidation',
@@ -417,7 +417,7 @@ export class RegistrationsController {
     await this.registrationsService.deleteBatch(data);
   }
 
-  @Permissions(PermissionEnum.RegistrationPersonalForValidationREAD)
+  // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({ summary: 'Download all program answers (for validation)' })
   @ApiResponse({ status: 200, description: 'Program answers downloaded' })
   @Get('registrations/download/validation-data')
@@ -427,16 +427,20 @@ export class RegistrationsController {
     return await this.registrationsService.downloadValidationData(userId);
   }
 
-  @Permissions(PermissionEnum.RegistrationPersonalForValidationREAD)
+  // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({ summary: 'Get registration with prefilled answers (for AW)' })
   @ApiResponse({ status: 200 })
   @ApiParam({
     name: 'referenceId',
   })
   @Get('registrations/get/:referenceId')
-  public async getRegistration(@Param() params): Promise<RegistrationEntity> {
+  public async getRegistration(
+    @Param() params,
+    @User('id') userId: number,
+  ): Promise<RegistrationEntity> {
     return await this.registrationsService.getRegistrationToValidate(
       params.referenceId,
+      userId
     );
   }
 
