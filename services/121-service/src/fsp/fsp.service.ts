@@ -31,7 +31,7 @@ export class FspService {
   private async getPaEditableAttributesFsp(fspId): Promise<Attribute[]> {
     return (
       await this.fspAttributeRepository.find({
-        where: { fsp: fspId },
+        where: { fspId: fspId },
       })
     ).map(c => {
       return {

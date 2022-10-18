@@ -79,7 +79,7 @@
         "en": "Partner Organization"
       },
       "name": "namePartnerOrganization",
-      "type": "string",
+      "type": "text",
       "export": [
         "all-people-affected",
         "included",
