@@ -6,7 +6,7 @@ import {
   TwilioIncomingCallbackDto,
 } from '../twilio.dto';
 import { PermissionEnum } from '../../user/permission.enum';
-import { Permissions } from '../../permissions.decorator';
+import { Permissions } from '../../guards/permissions.decorator';
 
 @ApiTags('notifications')
 @Controller('notifications/whatsapp')

@@ -20,8 +20,8 @@ import { User } from '../user/user.decorator';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
-import { PermissionsGuard } from '../permissions.guard';
-import { Permissions } from '../permissions.decorator';
+import { PermissionsGuard } from '../guards/permissions.guard';
+import { Permissions } from '../guards/permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 import { ProgramStats } from './dto/program-stats.dto';
 

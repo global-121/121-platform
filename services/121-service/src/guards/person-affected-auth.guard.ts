@@ -1,5 +1,3 @@
-import { PermissionEnum } from './user/permission.enum';
-import { UserEntity } from './user/user.entity';
 import {
   Injectable,
   CanActivate,
@@ -9,10 +7,12 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
-import { UserService } from './user/user.service';
-import { UserType } from './user/user-type-enum';
-import { CookieNames } from './shared/enum/cookie.enums';
-import { UserToken } from './user/user.interface';
+import { CookieNames } from '../shared/enum/cookie.enums';
+import { PermissionEnum } from '../user/permission.enum';
+import { UserType } from '../user/user-type-enum';
+import { UserEntity } from '../user/user.entity';
+import { UserToken } from '../user/user.interface';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class PersonAffectedAuthGuard implements CanActivate {

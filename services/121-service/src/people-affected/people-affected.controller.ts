@@ -3,8 +3,8 @@ import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { PeopleAffectedService } from './people-affected.service';
 import { User } from '../user/user.decorator';
 import { StoreDataDto } from './dto/store-data.dto';
-import { PersonAffectedAuthGuard } from '../person-affected-auth.guard';
-import { PersonAffectedAuth } from '../person-affected-auth.decorator';
+import { PersonAffectedAuthGuard } from '../guards/person-affected-auth.guard';
+import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
 
 @UseGuards(PersonAffectedAuthGuard)
 @ApiTags('people-affected')

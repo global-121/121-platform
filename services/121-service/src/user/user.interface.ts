@@ -14,6 +14,7 @@ export interface UserToken {
   id: number;
   username: string;
   exp: number;
+  admin: boolean;
 }
 
 export interface UserPermissions {

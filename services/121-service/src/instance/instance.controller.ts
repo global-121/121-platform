@@ -3,9 +3,8 @@ import { InstanceService } from './instance.service';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { InstanceEntity } from './instance.entity';
 import { UpdateInstanceDto } from './dto/update-instance.dto';
-import { PermissionsGuard } from '../permissions.guard';
-import { Permissions } from '../permissions.decorator';
-import { PermissionEnum } from '../user/permission.enum';
+import { PermissionsGuard } from '../guards/permissions.guard';
+import { Admin } from '../guards/admin.decorator';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('instance')
@@ -22,7 +21,7 @@ export class InstanceController {
     return await this.instanceService.getInstance();
   }
 
-  @Permissions(PermissionEnum.InstanceUPDATE)
+  @Admin()
   @ApiOperation({ summary: 'Update instance' })
   @Post('update')
   public async updateInstance(

@@ -352,6 +352,7 @@ export class UserService {
         id: user.id,
         username: user.username,
         exp: exp.getTime() / 1000,
+        admin: user.admin,
       },
       process.env.SECRETS_121_SERVICE_SECRET,
     );

@@ -55,6 +55,9 @@ export class UserEntity extends CascadeDeleteEntity {
   @Column()
   public userType: UserType;
 
+  @Column({ default: false })
+  public admin: boolean;
+
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     await this.deleteAllOneToMany([

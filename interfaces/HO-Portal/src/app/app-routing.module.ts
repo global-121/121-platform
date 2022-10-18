@@ -62,7 +62,6 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: {
           permissions: [
-            Permission.AidWorkerDELETE,
             Permission.AidWorkerProgramUPDATE,
           ],
         },

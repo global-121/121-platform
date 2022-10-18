@@ -23,9 +23,10 @@ import { IntersolveService } from './intersolve.service';
 import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
 import { Response } from 'express-serve-static-core';
 import stream from 'stream';
-import { PermissionsGuard } from '../../../permissions.guard';
-import { Permissions } from '../../../permissions.decorator';
+import { PermissionsGuard } from '../../../guards/permissions.guard';
+import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionEnum } from '../../../user/permission.enum';
+import { Admin } from '../../../guards/admin.decorator';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('payments/intersolve')
@@ -90,7 +91,7 @@ export class IntersolveController {
     bufferStream.pipe(response);
   }
 
-  @Permissions(PermissionEnum.PaymentVoucherInstructionUPDATE)
+  @Admin()
   @ApiOperation({
     summary: 'Post Intersolve instructions-image (Only .png-files supported)',
   })
