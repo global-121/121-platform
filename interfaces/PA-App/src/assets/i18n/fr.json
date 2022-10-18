@@ -1,10 +1,19 @@
 {
+  "_dir": "ltr",
   "account": {
     "delete-data": "Supprimez mes données",
     "logout": "Se déconnecter"
   },
+  "multiple-registration-mode": {
+    "toggle": "Mode d'enregistrements multiples"
+  },
   "connection": {
     "error-retry": "Une erreur s'est produite, voulez-vous réessayer"
+  },
+  "notification": {
+    "error-reload": "Quelque chose s'est mal passé, veuillez recharger l'application.",
+    "wait-to-go-offline": "Veuillez attendre 30 secondes avant d'utiliser l'application hors ligne, afin que tout le contenu de l'application soit téléchargé.",
+    "update-available": "Mise à jour disponible, veuillez recharger l'application."
   },
   "password-toggle": {
     "hide": "Cachez le mot de passe",
@@ -13,7 +22,7 @@
   "personal": {
     "consent-question": {
       "agree": "Je suis d'accord",
-      "answer": "J'ai lu/écouté comment mes informations personnelles seront sauvegardées en toute sécurité. Je comprends qu'il est nécessaire d'envoyer mes informations personnelles pour recevoir de l'aide. <br><br> Je comprends qui voit mes informations personnelles. <br><br> En appuyant sur <b>J'accepte</b>, je choisis de participer au programme d'aide. <br><br> En appuyant sur <b>Je ne suis pas d'accord</b>, je choisis de ne pas participer au programme d'aide.",
+      "answer": "J'ai lu/écouté comment mes informations personnelles seront sauvegardées en toute sécurité. Je comprends qu'il est nécessaire d'envoyer mes informations personnelles pour recevoir une aide financière. <br><br> Je comprends qui voit mes informations personnelles. <br><br> En appuyant sur <b>J'accepte</b>, je choisis de participer au programme d'aide. <br><br> En appuyant sur<b>Je ne suis pas d'accord</b>, je choisis de ne pas participer au programme d'aide.",
       "disagree": "Je ne suis pas d'accord ",
       "more-info-personal-information": "À propos des informations personnelles",
       "question": "Pour postuler à ce programme d'aide financière, il faut que vous acceptez la manière dont nous garderons vos informations personnelles. Veuillez lire ou écouter comment nous garderons vos donnés personnelles."
@@ -44,7 +53,8 @@
     "registration-summary": {
       "documents": "Préparez les documents suivants:",
       "no-validation-conclusion": "Merci. Votre inscription est maintenant complète. <br><br>Vous devriez recevoir bientôt la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni. <br><br>Vous serez informé si votre demande a été acceptée dans les 7 jours. <br><br>   Ceci est le dernier message pour l'instant.",
-      "validation-conclusion": "Merci. Votre inscription est maintenant complète. Vous devriez recevoir la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni.<br><br>Un travailleur humanitaire de l'ONG organisera un rendez-vous avec vous pour valider vos informations. Probablement ce rendez-vous sera organisé chez vous."
+      "validation-conclusion": "Merci. Votre inscription est maintenant complète. Vous devriez recevoir la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni.<br><br>Un travailleur humanitaire de l'ONG organisera un rendez-vous avec vous pour valider vos informations. Probablement ce rendez-vous sera organisé chez vous.",
+      "offline-warning": "Vous êtes actuellement hors ligne. Votre inscription ne peut pas être stockée. Veuillez vous connecter avec votre appareil, par exemple en vous connectant au Wi-Fi, puis cliquez sur \"Réessayer\"."
     },
     "select-fsp": {
       "attributes": {
@@ -56,7 +66,35 @@
       "introduction": "Veuillez sélectionner la manière dont vous souhaitez recevoir votre aide financière au cas vous seriez admis au programme."
     },
     "select-language": {
-      "result": "Merci, vous avez choisi {{language}}."
+      "introduction": {
+        "en": "Please select your language.",
+        "es": "Por favor seleccione su idioma",
+        "am_ET": "እባኮትን ቋንቋ ይምረጡ።",
+        "ar": "الرجاء اختيار لغتك",
+        "fr": "Choisissez votre langue, s'il vous plaît.",
+        "nl": "Kies jouw taal.",
+        "pt_BR": "Por favor, selecione seu idioma.",
+        "ru": " Пожалуйста, выберите ваш язык.",
+        "ti": "",
+        "tl": "Pumili ng iyong wika.",
+        "uk": "Будь ласка, виберіть свою мову.",
+        "in": "Pilih bahasa anda."
+      },
+      "result": "Thank you, you have selected {{language}}.",
+      "language": {
+        "en": "English",
+        "es": "Español",
+        "am_ET": "አማርኛ",
+        "ar": "عربى",
+        "fr": "Français",
+        "nl": "Nederlands",
+        "pt_BR": "Portuguese",
+        "ru": "Русский",
+        "ti": "ትግርኛ",
+        "tl": "Tagalog",
+        "uk": "Українська",
+        "in": "Bahasa Indonesia"
+      }
     },
     "select-program": {
       "introduction": "Vous pouvez utiliser cette application pour demander une aide financière. Veuillez sélectionner ci-dessous.",
@@ -81,6 +119,18 @@
       "create-id": "Créez un compte",
       "introduction": "Pour participer à ce programme d'aide financière, vous devez avoir un compte. Veuillez créer votre compte ou utiliser votre compte existant,.",
       "login-id": "Utilisez mon compte"
+    },
+    "next-pa": {
+      "new-pa": "Ajouter une autre personne concernée",
+      "save-pa": "Sauver cette personne affectée"
+    },
+    "batch": {
+      "toolbar-queue-button": "{{nrRegistrations}} enregistrements",
+      "menu-title": "Enregistrements multiples",
+      "menu-text-offline": "Pour le moment, vous êtes hors ligne.",
+      "menu-text": "Les inscriptions sont stockées dans votre navigateur. Lorsque la page Web est ouverte et que vous êtes en ligne, ils seront téléchargés automatiquement.",
+      "upload-alert-header": "Téléchargement des enregistrements.",
+      "upload-alert-message": "Vous êtes maintenant en ligne. Téléchargement de {{nrRegistrations}} enregistrements."
     }
   },
   "q-and-a-set": {

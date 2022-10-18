@@ -123,6 +123,14 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   }
 
   async checkStatus() {
+    // Single online registration
+    if (this.registrationStatus) {
+      console.log('Single online registration');
+      this.complete();
+      return;
+    }
+
+    // Single online registration but need to refetch status
     if (!this.registrationStatus && !this.syncService.areTasksQueued()) {
       this.registrationStatus = await this.programsService.isStatusRegistered(
         this.referenceId,
@@ -133,6 +141,14 @@ export class RegistrationSummaryComponent extends PersonalDirective {
         return;
       }
     }
+
+    // Multiple registrations mode
+    if (!this.registrationStatus && this.registrationMode.multiple) {
+      this.complete();
+      return;
+    }
+
+    // Single offline registration
     if (!this.registrationMode.multiple && this.syncService.areTasksQueued()) {
       this.openOfflineNotification();
       return;

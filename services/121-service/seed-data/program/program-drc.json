@@ -410,10 +410,10 @@
       }
     },
     {
-      "name": "C. 3. Combien de garçon(s)  de la tranche d’âge entre 5 à 9 ans vivent ici ? ",
+      "name": "C. 3. Combien de garçon(s)  de la tranche d’âge entre 6 à 9 ans vivent ici ? ",
       "label": {
-        "en": "C.3. How many boy(s) in the age group between 5 and 9 years old live in your household? (0 if none)",
-        "fr": "C.3. Combien de garçon(s) âgés de 5 et 9 ans vivent dans votre foyer ? (0 si aucun)"
+        "en": "C.3. How many boy(s) in the age group between 6 and 9 years old live in your household? (0 if none)",
+        "fr": "C.3. Combien de garçon(s) âgés de 6 et 9 ans vivent dans votre foyer ? (0 si aucun)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -486,10 +486,10 @@
       }
     },
     {
-      "name": "C. 7. Combien de fille(s) de la tranche d’âge entre 6 à 11 ans vivent ici ? ",
+      "name": "C. 7. Combien de fille(s) de la tranche d’âge entre 6 à 9 ans vivent ici ? ",
       "label": {
-        "en": "C.7. How many girl(s) in the age group between 6 and 11 live in your household? (0 if none)",
-        "fr": "C.7. Combien de fille(s) âgées de 6 à 11 ans vivent dans votre foyer ? (0 si aucune)"
+        "en": "C.7. How many girl(s) in the age group between 6 and 9 live in your household? (0 if none)",
+        "fr": "C.7. Combien de fille(s) âgées de 6 à 9 ans vivent dans votre foyer ? (0 si aucune)"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -500,8 +500,8 @@
       "phases": [],
       "editableInPortal": true,
       "shortLabel": {
-        "en": "C.7. # female 6-11",
-        "fr": "C.7. # femme 6-11"
+        "en": "C.7. # female 6-9",
+        "fr": "C.7. # femme 6-9"
       }
     },
     {

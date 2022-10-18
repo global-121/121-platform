@@ -51,6 +51,7 @@ export class FindByPhoneComponent implements ValidationComponent {
     public programsService: ProgramsServiceApiService,
     private translate: TranslatableStringService,
     private storage: Storage,
+    private translate: TranslatableStringService,
   ) {}
 
   async ngOnInit() {}
