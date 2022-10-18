@@ -23,4 +23,5 @@ export const PersonalComponentsRemoved = [
   'handle-proof',
   'create-identity',
   'login-identity',
+  'preprinted-qrcode',
 ];
