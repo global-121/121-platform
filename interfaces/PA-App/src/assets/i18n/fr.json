@@ -41,22 +41,9 @@
       "supply-password": "Votre mot de passe:",
       "supply-username": "Votre nom et prénom:"
     },
-    "preprinted-qrcode": {
-      "error": "Le code QR scanné ne peut pas être utilisé, veuillez en essayer un autre.",
-      "info-qr": "Plus de texte suivra",
-      "introduction": "Un travailleur humanitaire ou un volontaire scannera un code QR pour rassembler vos informations et vous les transmettre. Veuillez sauvegarder votre code QR en mode physique et dans un endroit  sûr.",
-      "more-info-qr": "À propos des codes QR",
-      "no": "Non",
-      "question": "Est-ce que le/la travailleur(use)  humanitaire/bénévole a un code QR pré-imprimé à scanner?",
-      "result-ok": "Le code QR scanné est maintenant connecté à votre compte et à vos informations personnelles. Veuillez sauvegarder votre code QR en mode physique et dans un endroit sûr.",
-      "start-scanner": "Démarrer le scanner.",
-      "try-again": "Réessayez ",
-      "yes": "Oui"
-    },
     "registration-summary": {
       "documents": "Préparez les documents suivants:",
       "no-validation-conclusion": "Merci. Votre inscription est maintenant complète. <br><br>Vous devriez recevoir bientôt la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni. <br><br>Vous serez informé si votre demande a été acceptée dans les 7 jours. <br><br>   Ceci est le dernier message pour l'instant.",
-      "qr-code": "Veuillez montrer ce code QR au travailleur humanitaire s'il le réclame.",
       "validation-conclusion": "Merci. Votre inscription est maintenant complète. Vous devriez recevoir la confirmation de votre inscription par SMS/WhatsApp sur le numéro de téléphone fourni.<br><br>Un travailleur humanitaire de l'ONG organisera un rendez-vous avec vous pour valider vos informations. Probablement ce rendez-vous sera organisé chez vous."
     },
     "select-fsp": {
@@ -105,16 +92,6 @@
       "phone-number": "Nous n'avons pas pu vérifier ce numéro de téléphone. Veuillez le corriger et essayez à nouveau.",
       "required": "Une réponse est nécessaire pour cette question. Veuillez corriger et réessayer."
     }
-  },
-  "qr-scanner": {
-    "close": "Fermez",
-    "error-generic": "Une erreur c'est produite.",
-    "error-no-permissions": "Veuillez autoriser l'utilisation de l'application photo ou vérifiez si elle n'est pas déjà utilisée et réessayez, s'il vous plaît.",
-    "error-not-compatible": "Votre appareil ne peut pas scanner",
-    "switch-camera": "Changez de caméra.",
-    "title": "Scannez le code QR",
-    "toggle-flash": "Activez le flash",
-    "try-again": "Réessayez s'il vous plaît"
   },
   "shared": {
     "close-button": "Fermez",

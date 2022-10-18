@@ -39,22 +39,9 @@
       "supply-password": "Ang iyong password:",
       "supply-username": "Ang iyong username:"
     },
-    "preprinted-qrcode": {
-      "error": "Ang na-scan na QR-code ay hindi magamit, gumamit ng iba pa.",
-      "info-qr": "Marami pang nilalaman na padating.",
-      "introduction": "Ii-scan ng Aidworker/Volunteer ang QR-code upang i-ugnay ang iyong impormasyon at ibigay ito sayo. Maingat na itabi ang iyong physical QR-code.",
-      "more-info-qr": "Tungkol sa QR-codes",
-      "no": "Hindi",
-      "question": "Mayroon bang  pre-printed QR-code ang Aidworker/Volunteer na pwedeng i-scan?",
-      "result-ok": "Ang na-scan na QR-code ay nakaugnay na saiyong account at personal na impormasyon. Ingatan ng mabuti ang iyong physical QR-code.",
-      "start-scanner": "Umpisahan ang Scanner",
-      "try-again": "Subukan muli",
-      "yes": "Oo"
-    },
     "registration-summary": {
       "documents": "Siguraduhing  nakahanda ang mga sumusunod na dokumento:",
       "no-validation-conclusion": "Salamat. Ang iyong registration ay kumpleto na.<br><br> Dapat ay may matanggap kang SMS/WhatsApp sa phone number na iyong binigay maya-maya lamang na nagpapatunay ng iyong registration.<br><br>Ipagbibigay alam sayo kung ang iyong aplikasyon ay matagumpay sa loob ng 7 na araw. <br><br>Ito na ang huling mensahe sa ngayon.",
-      "qr-code": "Ipakita ang QR-code sa aidworker pag hinanap.",
       "validation-conclusion": "Salamat. Ang iyong rehistrasyon ay tapos na. Dapat ay may matanggap kang SMS/WhatsApp sa numerong iyong binigay maya-maya lamang na nagpapatunay ng iyong rehistrasyon.<br><br>Magtatalaga ng pagkikita ang aidworker ng NGO upang patunayan ang iyong impormasyon, maaaring sa pamamagitan ng pagbisita sa iyong tahanan."
     },
     "select-fsp": {
@@ -103,16 +90,6 @@
       "phone-number": "Hindi namin makilala ang phone number na ito. Baguhin at subukan muli.",
       "required": "Kailangan ng sagot sa tanong na ito. Ayusin at subukan muli."
     }
-  },
-  "qr-scanner": {
-    "close": "Isarado",
-    "error-generic": "May maling nangyari.",
-    "error-no-permissions": "Bigyan ng permiso na magamit ang camera o suriin kung ito ay kasalukuyang ginagamit at subukan muli.",
-    "error-not-compatible": "Ang iyong device ay hindi mag-scan",
-    "switch-camera": "Buksan ang camera",
-    "title": "I-scan ang QR-code",
-    "toggle-flash": "Buksan ang flash-light",
-    "try-again": "Subukan muli"
   },
   "shared": {
     "more-info": "Magbasa pa...",

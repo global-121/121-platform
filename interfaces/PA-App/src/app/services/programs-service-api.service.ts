@@ -220,24 +220,6 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  addQrIdentifier(
-    referenceId: string,
-    qrIdentifier: string,
-    programId: number,
-  ): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        `${ApiPath.programsPrefix}${programId}${ApiPath.addQr}`,
-        {
-          referenceId,
-          qrIdentifier,
-        },
-        false,
-      )
-      .toPromise();
-  }
-
   isStatusRegistered(referenceId: string): Promise<boolean> {
     return this.apiService
       .get(

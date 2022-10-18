@@ -14,7 +14,6 @@ import { ConversationService } from '../services/conversation.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { DownloadDataComponent } from '../validation-components/download-data/download-data.component';
 import { MainMenuComponent } from '../validation-components/main-menu/main-menu.component';
-import { ScanQrComponent } from '../validation-components/scan-qr/scan-qr.component';
 import { UploadDataComponent } from '../validation-components/upload-data/upload-data.component';
 import { ValidateFspComponent } from '../validation-components/validate-fsp/validate-fsp.component';
 import { ValidateProgramComponent } from '../validation-components/validate-program/validate-program.component';
@@ -42,7 +41,6 @@ export class ValidationPage implements OnInit {
 
   public availableSections = {
     [ValidationComponents.mainMenu]: MainMenuComponent,
-    [ValidationComponents.scanQr]: ScanQrComponent,
     [ValidationComponents.findByPhone]: FindByPhoneComponent,
     [ValidationComponents.validateProgram]: ValidateProgramComponent,
     [ValidationComponents.validateFsp]: ValidateFspComponent,

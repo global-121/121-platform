@@ -54,37 +54,8 @@
     </ul>
   </dialogue-turn>
   <dialogue-turn
-    [isConnected]="true"
-    *ngIf="validation && showQrCode"
-    [isSpoken]="validation && showQrCode"
-  >
-    <p>
-      <play-text-audio
-        key="personal.registration-summary.qr-code"
-        class="ion-float-start ion-margin-end"
-      ></play-text-audio>
-      {{ 'personal.registration-summary.qr-code' | translate }}
-    </p>
-    <div
-      *ngIf="qrDataString"
-      text-center
-      margin-vertical
-      style="
-        margin: 1em auto;
-        max-width: 360px;
-        padding: 1em;
-        background: white;
-      "
-    >
-      <qrcode
-        [qrdata]="qrDataString"
-        level="H"
-      ></qrcode>
-    </div>
-  </dialogue-turn>
-  <dialogue-turn
-    *ngIf="!validation"
-    [isSpoken]="!validation"
+    *ngIf="!validation && !!registrationStatus"
+    [isSpoken]="!validation && !!registrationStatus"
   >
     <p>
       <play-text-audio

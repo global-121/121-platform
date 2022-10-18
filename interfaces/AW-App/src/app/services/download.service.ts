@@ -12,11 +12,6 @@ export class ValidationAnswer {
   answer: string | number;
 }
 
-export class QrRegistrationMap {
-  referenceId: string;
-  qrIdentifier: string;
-}
-
 @Injectable({
   providedIn: 'root',
 })
@@ -30,17 +25,11 @@ export class DownloadService {
     return await this.programsService.downloadData().then(
       async (response) => {
         const validationData: ValidationAnswer[] = response.answers;
-        const qrRegistrationMapping: QrRegistrationMap[] =
-          response.qrRegistrationMapping;
         const fspData = response.fspData;
 
         await this.storage.set(
           IonicStorageTypes.validationProgramData,
           validationData,
-        );
-        await this.storage.set(
-          IonicStorageTypes.qrRegistrationMapping,
-          qrRegistrationMapping,
         );
         await this.storage.set(IonicStorageTypes.validationFspData, fspData);
 

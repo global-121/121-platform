@@ -81,11 +81,6 @@ All interfaces use a common set of dependencies/frameworks/libraries.
 
   - GitHub: <https://github.com/svoboda-rabstvo/ngx-translate-lint/tree/v1.13.2#readme>
 
-- [`ngx-scanner` v3](https://www.npmjs.com/package/@zxing/ngx-scanner/v/3.2.0)
-  An Angular-component to scan QR-codes with a browser.
-
-  - GitHub: <https://github.com/zxing-js/ngx-scanner/tree/v3.2.0#readme>
-
 - [`gzipper`](https://www.npmjs.com/package/gzipper)
   To compress all assets of the interfaces after the build.
 

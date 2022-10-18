@@ -100,9 +100,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ default: true })
   public validation: boolean;
 
-  @Column({ default: false })
-  public validationByQr: boolean;
-
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public updated: Date;
 
