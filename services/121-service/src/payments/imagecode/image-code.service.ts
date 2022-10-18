@@ -107,6 +107,25 @@ export class ImageCodeService {
     return `${day} ${month} ${date.getFullYear()} ${time}`;
   }
 
+  private extendDecimalsAmount(
+    amount: string,
+    showZerosIfInteger: boolean,
+  ): string {
+    if (!amount.includes('.')) {
+      if (showZerosIfInteger) {
+        return `${amount}.00`;
+      } else {
+        return amount;
+      }
+    }
+    const amountParts = amount.split('.');
+    if (amountParts[1].length === 1) {
+      return `${amount}0`;
+    } else {
+      return `${amountParts[0]}.${amountParts[1].substring(0, 2)}`;
+    }
+  }
+
   public async generateVoucherImage(voucherData: {
     dateTime: Date;
     amount: number | string;
@@ -125,16 +144,34 @@ export class ImageCodeService {
 
       await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK).then(font => {
         image.print(font, 640, 79, this.formatDate(voucherData.dateTime)); // Date+time in the top-right corner
-        image.print(font, 108, 614, `${voucherData.amount} Albert Heijn`); // Below "Dit ticket is geldig voor", after "€"
-        image.print(font, 640, 604, `Euro ${voucherData.amount}.00`); // Below "Prijs:"
+        image.print(
+          font,
+          108,
+          614,
+          `${this.extendDecimalsAmount(
+            String(voucherData.amount),
+            false,
+          )} Albert Heijn`,
+        ); // Below "Dit ticket is geldig voor", after "€"
+        image.print(
+          font,
+          640,
+          604,
+          `Euro ${this.extendDecimalsAmount(String(voucherData.amount), true)}`,
+        ); // Below "Prijs:"
         image.print(font, 640, 730, voucherData.pin); // Below "Pincode:"
         image.print(font, 225, 800, voucherData.code); // Barcode numbers
       });
 
       // Add a 'scaled' amount to the title of the voucher
-      const titleAmount = new Jimp(50, 50);
+      const titleAmount = new Jimp(100, 50);
       await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK).then(font => {
-        titleAmount.print(font, 0, 0, voucherData.amount);
+        titleAmount.print(
+          font,
+          0,
+          0,
+          this.extendDecimalsAmount(String(voucherData.amount), false),
+        );
       });
       titleAmount.scale(0.7);
       image.composite(titleAmount, 583, 138);
