@@ -440,7 +440,7 @@ export class RegistrationsController {
   ): Promise<RegistrationEntity> {
     return await this.registrationsService.getRegistrationToValidate(
       params.referenceId,
-      userId
+      userId,
     );
   }
 
