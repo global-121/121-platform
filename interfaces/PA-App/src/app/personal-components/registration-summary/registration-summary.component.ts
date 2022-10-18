@@ -40,6 +40,8 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   public showQrCode: boolean;
   public qrDataString: string;
 
+  public showSomethingWentWrong = false;
+
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
@@ -66,11 +68,19 @@ export class RegistrationSummaryComponent extends PersonalDirective {
 
     await this.getProgram();
     await this.getReferenceId();
+    if (!this.registrationStatus) {
+      this.registrationStatus = await this.programsService.postRegistration(
+        this.referenceId,
+        this.program.id,
+      );
+    }
 
-    this.registrationStatus = await this.programsService.postRegistration(
-      this.referenceId,
-      this.program.id,
-    );
+    if (
+      !this.syncService.areTasksQueued() &&
+      this.registrationStatus === false
+    ) {
+      this.showSomethingWentWrong = true;
+    }
 
     if (this.validation && this.validationByQr) {
       await this.shouldShowQrCode();
@@ -79,7 +89,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
 
     this.conversationService.stopLoading();
 
-    this.complete();
+    this.checkStatus();
   }
 
   async initHistory() {
@@ -146,16 +156,35 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     return PersonalComponents.monitoringQuestion;
   }
 
-  complete() {
-    if (this.isDisabled) {
-      return;
-    }
+  async checkStatus() {
+    if (!this.registrationStatus && !this.syncService.areTasksQueued()) {
+      this.registrationStatus = await this.programsService.isStatusRegistered(
+        this.referenceId,
+      );
 
+      if (this.registrationStatus) {
+        this.complete();
+        return;
+      }
+    }
     if (!this.registrationMode.multiple && this.syncService.areTasksQueued()) {
       this.openOfflineNotification();
       return;
     }
 
+    if (
+      !this.syncService.areTasksQueued() &&
+      this.registrationStatus === false
+    ) {
+      this.showSomethingWentWrong = true;
+      return;
+    }
+  }
+
+  complete() {
+    if (this.isDisabled) {
+      return;
+    }
     this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.registrationSummary,
@@ -179,7 +208,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
           text: this.translate.instant('shared.retry'),
           role: 'cancel',
           handler: () => {
-            this.complete();
+            this.checkStatus();
           },
         },
       ],
