@@ -33,7 +33,7 @@ export class MainMenuComponent implements ValidationComponent {
     private storage: Storage,
     private noConnectionService: NoConnectionService,
     private authService: AuthService,
-    private programsServiceApiService: ProgramsServiceApiService
+    private programsServiceApiService: ProgramsServiceApiService,
   ) {
     this.authService.authenticationState$.subscribe(() => {
       // Refresh all option when current logged in user changes
@@ -108,7 +108,8 @@ export class MainMenuComponent implements ValidationComponent {
   private async getAllAssignedPrograms(): Promise<Program[]> {
     let myPrograms = await this.storage.get(IonicStorageTypes.myPrograms);
     if (!myPrograms) {
-      const { programs } = await this.programsServiceApiService.getAllAssignedPrograms();
+      const { programs } =
+        await this.programsServiceApiService.getAllAssignedPrograms();
       myPrograms = programs;
       this.storage.set(IonicStorageTypes.myPrograms, myPrograms);
     }
