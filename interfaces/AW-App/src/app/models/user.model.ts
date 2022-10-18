@@ -6,6 +6,8 @@ export class UserModel {
 
 export class User {
   username: string;
-  permissions: Permission[];
+  permissions: {
+    [programId: number]: Permission[];
+  };
   expires: string;
 }

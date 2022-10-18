@@ -14,7 +14,6 @@ import { ConversationService } from '../services/conversation.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { DownloadDataComponent } from '../validation-components/download-data/download-data.component';
 import { MainMenuComponent } from '../validation-components/main-menu/main-menu.component';
-import { SelectProgramComponent } from '../validation-components/select-program/select-program.component';
 import { UploadDataComponent } from '../validation-components/upload-data/upload-data.component';
 import { ValidateFspComponent } from '../validation-components/validate-fsp/validate-fsp.component';
 import { ValidateProgramComponent } from '../validation-components/validate-program/validate-program.component';
@@ -41,7 +40,6 @@ export class ValidationPage implements OnInit {
   private scrollSpeed = environment.useAnimation ? 600 : 0;
 
   public availableSections = {
-    [ValidationComponents.selectProgram]: SelectProgramComponent,
     [ValidationComponents.mainMenu]: MainMenuComponent,
     [ValidationComponents.findByPhone]: FindByPhoneComponent,
     [ValidationComponents.validateProgram]: ValidateProgramComponent,
@@ -114,19 +112,15 @@ export class ValidationPage implements OnInit {
         if (!user) {
           return;
         }
-        const userPermissions = user.permissions.sort();
+        let allPermissions = `User: ${user.username}\n\n`;
 
-        let allPermissions = '';
-        userPermissions.forEach((p) => (allPermissions += `${p}\n`));
-
-        const userIdCard =
-          `User: ${user.username}\n\n` +
-          `Permissions: (${userPermissions.length})\n\n` +
-          `${allPermissions}\n`;
-
+        Object.keys(user.permissions).forEach((programId) => {
+          allPermissions += `${user.permissions[programId].sort().join('\n')}`;
+          allPermissions += `\n${user.permissions[programId].length} permissons for program: ${programId}\n\n`;
+        });
         // tslint:disable:no-console
-        console.info(userIdCard);
-        window.alert(userIdCard);
+        console.info(allPermissions);
+        window.alert(allPermissions);
       })
       .unsubscribe();
   }

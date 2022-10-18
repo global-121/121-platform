@@ -71,14 +71,6 @@ export class ProgramsServiceApiService {
     );
   }
 
-  deleteUser(userId: string): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      `/user/delete/${userId}`,
-      {},
-    );
-  }
-
   deleteRegistrations(programId: number, referenceIds: string[]): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
@@ -546,12 +538,21 @@ export class ProgramsServiceApiService {
   ): Promise<Program> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/user/assign-to-program`,
+      `/programs/${programId}/users/${userId}/assignments`,
       {
-        programId,
-        userId,
         roles,
       },
+    );
+  }
+
+
+  unAssignAidworker(
+    programId: number | string,
+    userId: number,
+  ): Promise<Program> {
+    return this.apiService.delete(
+      environment.url_121_service_api,
+      `/programs/${programId}/users/${userId}/assignments`
     );
   }
 

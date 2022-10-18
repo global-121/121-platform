@@ -34,6 +34,7 @@
     "test:watchall": "npm test -- --watchAll",
     "test:coverage": "npm test -- --coverage --coverageDirectory=coverage",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migration:create": "npm run typeorm migration:create -- -n",
     "migration:generate": "npm run typeorm migration:generate -- -n",
     "migration:run": "npm run typeorm migration:run",
     "migration:revert": "npm run typeorm migration:revert"

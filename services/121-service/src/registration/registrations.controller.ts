@@ -377,14 +377,13 @@ export class RegistrationsController {
     status: 200,
     description: 'Returned registrations which match at least one of criteria',
   })
-  @Post('registrations/search-name-phone')
+  @Post('/search-phone')
   public async searchRegistration(
     @Body() searchRegistrationDto: SearchRegistrationDto,
     @User('id') userId: number,
   ): Promise<RegistrationEntity[]> {
     return await this.registrationsService.searchRegistration(
       searchRegistrationDto.phoneNumber,
-      searchRegistrationDto.name,
       userId,
     );
   }
@@ -498,5 +497,20 @@ export class RegistrationsController {
     return await this.registrationsService.getMessageHistoryRegistration(
       params.referenceId,
     );
+  }
+
+  @PersonAffectedAuth()
+  @ApiOperation({ summary: 'Get registration status' })
+  @ApiResponse({ status: 200 })
+  @ApiParam({
+    name: 'referenceId',
+  })
+  @Get('status/:referenceId')
+  public async getRegistrationStatus(@Param() params): Promise<any> {
+    const status = await this.registrationsService.getRegistrationStatus(
+      params.referenceId,
+    );
+
+    return { status };
   }
 }

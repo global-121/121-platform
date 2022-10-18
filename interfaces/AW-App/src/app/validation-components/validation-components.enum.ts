@@ -5,5 +5,4 @@ export enum ValidationComponents {
   downloadData = 'download-data',
   uploadData = 'upload-data',
   findByPhone = 'find-by-phone',
-  selectProgram = 'select-program',
 }

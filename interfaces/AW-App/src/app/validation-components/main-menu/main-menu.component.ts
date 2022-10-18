@@ -4,10 +4,11 @@ import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
+import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { NoConnectionService } from 'src/app/services/no-connection.service';
-import { environment } from 'src/environments/environment';
+import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 
@@ -23,6 +24,8 @@ export class MainMenuComponent implements ValidationComponent {
 
   public noConnection = this.noConnectionService.noConnection$;
 
+  private myPrograms: Program[];
+
   constructor(
     public translate: TranslateService,
     public conversationService: ConversationService,
@@ -30,6 +33,7 @@ export class MainMenuComponent implements ValidationComponent {
     private storage: Storage,
     private noConnectionService: NoConnectionService,
     private authService: AuthService,
+    private programsServiceApiService: ProgramsServiceApiService
   ) {
     this.authService.authenticationState$.subscribe(() => {
       // Refresh all option when current logged in user changes
@@ -39,6 +43,8 @@ export class MainMenuComponent implements ValidationComponent {
 
   async ngOnInit() {
     const pendingUploadCount = await this.getPendingUploadCount();
+
+    this.myPrograms = await this.getAllAssignedPrograms();
 
     this.menuOptions = [
       {
@@ -56,13 +62,6 @@ export class MainMenuComponent implements ValidationComponent {
         visible: true,
       },
       {
-        id: ValidationComponents.selectProgram,
-        option: this.translate.instant('validation.main-menu.select-program'),
-        disabled: false,
-        connectionRequired: true,
-        visible: environment.useMultiplePrograms,
-      },
-      {
         id: ValidationComponents.uploadData,
         option: this.translate.instant('validation.main-menu.upload-data'),
         counter: pendingUploadCount,
@@ -74,23 +73,29 @@ export class MainMenuComponent implements ValidationComponent {
   }
 
   private canDownloadData() {
-    return this.authService.hasAllPermissions([
-      Permission.RegistrationPersonalForValidationREAD,
-    ]);
+    return this.myPrograms.some((program) => {
+      return this.authService.hasAllPermissions(program.id, [
+        Permission.RegistrationPersonalForValidationREAD,
+      ]);
+    });
   }
 
   private canFindByPhone() {
-    return this.authService.hasAllPermissions([
-      Permission.RegistrationPersonalSEARCH,
-      Permission.RegistrationPersonalForValidationREAD,
-    ]);
+    return this.myPrograms.some((program) => {
+      return this.authService.hasAllPermissions(program.id, [
+        Permission.RegistrationPersonalSEARCH,
+        Permission.RegistrationPersonalForValidationREAD,
+      ]);
+    });
   }
 
   private canUploadData() {
-    return this.authService.hasAllPermissions([
-      Permission.RegistrationPersonalUPDATE,
-      Permission.RegistrationAttributeUPDATE,
-    ]);
+    return this.myPrograms.some((program) => {
+      return this.authService.hasAllPermissions(program.id, [
+        Permission.RegistrationPersonalUPDATE,
+        Permission.RegistrationAttributeUPDATE,
+      ]);
+    });
   }
 
   private async getPendingUploadCount(): Promise<number> {
@@ -98,6 +103,16 @@ export class MainMenuComponent implements ValidationComponent {
       IonicStorageTypes.validatedData,
     );
     return validatedData ? validatedData.length : 0;
+  }
+
+  private async getAllAssignedPrograms(): Promise<Program[]> {
+    let myPrograms = await this.storage.get(IonicStorageTypes.myPrograms);
+    if (!myPrograms) {
+      const { programs } = await this.programsServiceApiService.getAllAssignedPrograms();
+      myPrograms = programs;
+      this.storage.set(IonicStorageTypes.myPrograms, myPrograms);
+    }
+    return myPrograms;
   }
 
   public changeOption($event) {

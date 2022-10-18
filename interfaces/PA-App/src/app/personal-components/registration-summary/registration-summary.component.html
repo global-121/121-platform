@@ -1,8 +1,5 @@
-<section *ngIf="registrationStatus === false">
-  <dialogue-turn
-    *ngIf="registrationStatus === false"
-    [isSpoken]="registrationStatus === false"
-  >
+<section *ngIf="showSomethingWentWrong === true">
+  <dialogue-turn>
     <p>
       <play-text-audio
         key="connection.error-retry"
@@ -20,7 +17,7 @@
     </p>
   </dialogue-turn>
 </section>
-<section *ngIf="registrationStatus">
+<section *ngIf="registrationStatus === true">
   <dialogue-turn
     *ngIf="validation"
     [isSpoken]="validation"
