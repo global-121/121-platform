@@ -29,7 +29,7 @@
     >
       <ng-container *ngIf="column.prop === 'delete'; else elseBlock">
         <confirm-prompt
-          (confirm)="deleteAidworker(row)"
+          (confirm)="removeFieldvalidatorFromProgram(row)"
           [message]="'page.program.manage-aidworkers.column-delete' | translate"
           [disabled]="disableDelete(row)"
           size="small"

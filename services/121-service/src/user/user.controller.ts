@@ -74,7 +74,6 @@ export class UserController {
     return await this.userService.deleteUserRole(params.userRoleId);
   }
 
-  @Permissions(PermissionEnum.AidWorkerCREATE)
   @ApiOperation({ summary: 'Sign-up new Aid Worker user' })
   @Post('user/aidworker')
   public async createAw(
@@ -207,12 +206,29 @@ export class UserController {
 
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
   @ApiOperation({ summary: 'Assign Aidworker to program' })
-  @Post('user/assign-to-program')
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'userId', required: true, type: 'integer' })
+  @Post('programs/:programId/users/:userId/assignments')
   public async assignFieldValidationAidworkerToProgram(
+    @Param() params,
     @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
   ): Promise<UserRoleEntity[]> {
     return await this.userService.assigAidworkerToProgram(
+      Number(params.programId),
+      Number(params.userId),
       assignAidworkerToProgram,
+    );
+  }
+
+  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @ApiOperation({ summary: 'Assign Aidworker to program' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'userId', required: true, type: 'integer' })
+  @Delete('programs/:programId/users/:userId/assignments')
+  public async deleteAidWorkerAssignment(@Param() params): Promise<void> {
+    return await this.userService.deleteAssignment(
+      Number(params.programId),
+      Number(params.userId),
     );
   }
 }

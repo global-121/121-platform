@@ -109,7 +109,7 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
           PermissionEnum.RegistrationStatusIncludedUPDATE,
           PermissionEnum.RegistrationStatusRejectedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
-          PermissionEnum.AidWorkerCREATE,
+          // PermissionEnum.AidWorkerCREATE,  // REMOVED 2022-10-12
           PermissionEnum.AidWorkerDELETE,
           PermissionEnum.AidWorkerProgramUPDATE,
           PermissionEnum.ActionREAD,

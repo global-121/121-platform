@@ -86,7 +86,6 @@ export enum PermissionEnum {
   ActionCREATE = 'action.create',
 
   // User(s)
-  AidWorkerCREATE = 'aid-worker.create',
   AidWorkerDELETE = 'aid-worker.delete',
   AidWorkerProgramUPDATE = 'aid-worker:program.update',
 

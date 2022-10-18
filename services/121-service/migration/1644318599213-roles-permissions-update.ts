@@ -30,7 +30,7 @@ export class rolesPermissionsUpdate1644318599213 implements MigrationInterface {
           // Took version from seed-init.ts as latest version, not the one from previous migration-script
           PermissionEnum.ActionCREATE,
           PermissionEnum.ActionREAD,
-          PermissionEnum.AidWorkerCREATE,
+          // PermissionEnum.AidWorkerCREATE,  // REMOVED 2022-10-12
           PermissionEnum.AidWorkerDELETE,
           PermissionEnum.AidWorkerProgramUPDATE,
           PermissionEnum.InstanceUPDATE,
