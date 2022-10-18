@@ -86,8 +86,6 @@ updates:
         versions: ['>= 7.0.0']
       - dependency-name: 'zone.js'
         versions: ['>= v0.11.1']
-      - dependency-name: '@zxing/ngx-scanner'
-        versions: ['>= 3.2.0']
 
   - package-ecosystem: npm
     directory: '/interfaces/PA-App'
@@ -126,5 +124,3 @@ updates:
         versions: ['>= 7.0.0']
       - dependency-name: 'zone.js'
         versions: ['>= v0.11.1']
-      - dependency-name: '@zxing/ngx-scanner'
-        versions: ['>= 3.2.0']

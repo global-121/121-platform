@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { OnlyAllowedInputDirective } from '../directives/only-allowed-input.directive';
 import { DateInputComponent } from './date-input/date-input.component';
 import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
@@ -26,13 +25,7 @@ import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
     PlayTextAudioComponent,
     QAndASetComponent,
   ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ZXingScannerModule,
-    TranslateModule.forChild(),
-  ],
+  imports: [CommonModule, FormsModule, IonicModule, TranslateModule.forChild()],
   exports: [
     DialogueTurnComponent,
     NumericInputComponent,

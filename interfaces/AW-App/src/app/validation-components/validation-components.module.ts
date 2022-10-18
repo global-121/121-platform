@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { ConversationService } from '../services/conversation.service';
 import { SharedModule } from '../shared/shared.module';
 import { DownloadDataComponent } from './download-data/download-data.component';
@@ -20,7 +19,7 @@ import { ValidateProgramComponent } from './validate-program/validate-program.co
     DownloadDataComponent,
     UploadDataComponent,
   ],
-  imports: [CommonModule, SharedModule, FormsModule, ZXingScannerModule],
+  imports: [CommonModule, SharedModule, FormsModule],
   exports: [
     MainMenuComponent,
     FindByPhoneComponent,
