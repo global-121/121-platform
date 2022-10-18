@@ -25,7 +25,7 @@
   "currency": "EUR",
   "distributionFrequency": "week",
   "distributionDuration": 90,
-  "fixedTransferValue": 15,
+  "fixedTransferValue": 17.5,
   "financialServiceProviders": [
     {
       "fsp": "Intersolve-whatsapp"
