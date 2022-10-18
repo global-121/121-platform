@@ -19,6 +19,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Fix: Added a default width for columns in PA table.
+## [1.66.2](https://github.com/global-121/121-platform/compare/v1.66.1...v1.66.2) - 2022-10-14
+
+### Changed
+
+- Fix: added scenarios to checkStatus in registration-summary
+
+## [1.66.1](https://github.com/global-121/121-platform/compare/v1.66.0...v1.66.1) - 2022-10-14
+
+### Changed
+
+- Fix: age divisions in questions are right now
+- Fix: added missing french translations
+- Fix: dont show multiple "Add another person affected" buttons
+- Fix: Use fullnameNamingConvention in AW-App to construct name
 
 ## [1.66.0](https://github.com/global-121/121-platform/compare/v1.65.2...v1.66.0) - 2022-10-10
 

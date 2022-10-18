@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { take } from 'rxjs/internal/operators/take';
 import { MonitoringInfo } from 'src/app/models/instance.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { InstanceService } from 'src/app/services/instance.service';
@@ -59,8 +60,9 @@ export class MonitoringQuestionComponent extends PersonalDirective {
   }
 
   private getMonitoringQuestion() {
-    this.instanceService.instanceInformation.subscribe(
-      (instanceInformation) => {
+    this.instanceService.instanceInformation
+      .pipe(take(1))
+      .subscribe((instanceInformation) => {
         if (!instanceInformation.monitoringQuestion) {
           this.isCanceled = true;
           this.cancel();
@@ -68,8 +70,7 @@ export class MonitoringQuestionComponent extends PersonalDirective {
         }
 
         this.monitoringQuestion = instanceInformation.monitoringQuestion;
-      },
-    );
+      });
   }
 
   public changeMonitoringChoice(value: string) {
