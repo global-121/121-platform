@@ -55,31 +55,40 @@ describe('IfPermissionsDirective', () => {
   });
 
   it('should show the component when RequiredPermissions are undefined', () => {
+    // Arrange
     component.conditions = undefined;
     mockAuthService.hasAllPermissions.and.returnValue(true);
 
+    // Act
     fixture.detectChanges();
 
+    // Assert
     expect(mockAuthService.hasAllPermissions).toHaveBeenCalledTimes(1);
     expect(el.innerText).toBe(mockText);
   });
 
   it('should show the component when RequiredPermissions match', () => {
-    component.conditions = [Permission.Test];
+    // Arrange
+    component.conditions = [Permission.ProgramMetricsREAD];
     mockAuthService.hasAllPermissions.and.returnValue(true);
 
+    // Act
     fixture.detectChanges();
 
+    // Assert
     expect(mockAuthService.hasAllPermissions).toHaveBeenCalledTimes(1);
     expect(el.innerText).toBe(mockText);
   });
 
   it('should NOT show the component when RequiredPermissions do NOT match', () => {
-    component.conditions = [Permission.Test];
+    // Arrange
+    component.conditions = [Permission.ProgramMetricsREAD];
     mockAuthService.hasAllPermissions.and.returnValue(false);
 
+    // Act
     fixture.detectChanges();
 
+    // Assert
     expect(mockAuthService.hasAllPermissions).toHaveBeenCalledTimes(1);
     expect(el.innerText).not.toBe(mockText);
   });
