@@ -3,9 +3,8 @@
 <!-- TOC: -->
 
 - [All features / scenario's](#all-features--scenarios)
-  - [For Humanitarian Organization](#for-humanitarian-organization)
   - [For Person/People Affected](#for-personpeople-affected)
-  - [For Aid-Worker](#for-aid-worker)
+  - [For Aid Workers](#for-aid-workers)
   - [For Admin-user](#for-admin-user)
 - [Reference](#reference)
 - [Tools](#tools)
@@ -91,15 +90,12 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
 - Changes based on instance-configuration/values
 
-
-
-
-
 ### For Admin-user
 
 #### Using Swagger UI
 
 - [Manage user roles](Admin-user/Manage_Roles.feature)
+- [Find "referenceId" of Person Affected](Admin-user/Find_referenceId_of_Person_Affectes.feature)
 - [Update phone-numbers of Person Affected](Admin-user/Update_phone_numbers.feature)
 - [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provider.feature)
 
