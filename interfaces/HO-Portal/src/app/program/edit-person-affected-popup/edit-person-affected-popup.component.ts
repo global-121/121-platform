@@ -105,7 +105,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public async updatePaAttribute(
     attribute: string,
-    value: string | string[],
+    value: string | number | string[],
     isPaTableAttribute: boolean,
   ): Promise<void> {
     if (isPaTableAttribute && !Array.isArray(value)) {
