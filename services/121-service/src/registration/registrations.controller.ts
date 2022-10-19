@@ -370,12 +370,11 @@ export class RegistrationsController {
 
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
-    summary:
-      'Find registration by name and/or phone number for PM and FieldValidation',
+    summary: 'Find registration by phone-number for PM and FieldValidation',
   })
   @ApiResponse({
     status: 200,
-    description: 'Returned registrations which match at least one of criteria',
+    description: 'Return registrations that match the exact phone-number',
   })
   @Post('/search-phone')
   public async searchRegistration(
