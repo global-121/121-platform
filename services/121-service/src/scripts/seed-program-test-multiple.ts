@@ -44,7 +44,7 @@ export class SeedTestMultipleProgram implements InterfaceScript {
     const programEntityDemo = await this.seedHelper.addProgram(programDemo);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    this.seedHelper.addDefaultUsers(programEntityDemo, false);
+    this.seedHelper.addDefaultUsers(programEntityDemo, true);
 
     // ***** CREATE INSTANCE *****
     // Technically multiple instances could be loaded, but that should not be done
@@ -58,7 +58,7 @@ export class SeedTestMultipleProgram implements InterfaceScript {
     const programEntityTest = await this.seedHelper.addProgram(programTest);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    this.seedHelper.addDefaultUsers(programEntityTest, false);
+    this.seedHelper.addDefaultUsers(programEntityTest, true);
 
     // ******************************
     // ***** Program Validation *****
@@ -70,7 +70,7 @@ export class SeedTestMultipleProgram implements InterfaceScript {
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    this.seedHelper.addDefaultUsers(programEntityValidation, false);
+    this.seedHelper.addDefaultUsers(programEntityValidation, true);
   }
 }
 
