@@ -19,7 +19,7 @@ Feature: Export People Affected list
     And any columns that only contain null-values are automatically filtered out
 
   Scenario: Export inclusion list with 5000 PAs
-    Given there are 5000 PAs in the system (see Admin-user/Import_test_registrations_NL.feature)
+    Given there are 5000 PAs in the system
     When the user clicks the "export people affected" and confirms the confirm prompt
     Then an Excel-file is downloaded as in the scenario above quickly and without problem
 

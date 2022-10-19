@@ -175,7 +175,7 @@ Feature: View and manage people affected (generic features)
     And - if the action has an SMS-action and it is used - an SMS is sent to the PA
 
   Scenario: View and Filter PA-table with 2000 PAs
-    Given there are 2000 PAs in the system (see Admin-user/Import_test_registrations_NL.feature)
+    Given there are 2000 PAs in the syste m
     When the user scrolls through the PA-table
     Then this goes quickly and without problem
     When the user uses the text or status filter functions

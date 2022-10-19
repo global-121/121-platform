@@ -101,7 +101,6 @@ Features of the 121-platform are described in this folder in a standardizes way 
 #### Using Swagger UI
 
 - [Manage user roles](Admin-user/Manage_Roles.feature)
-- [Update phone-numbers of Person Affected](Admin-user/Update_phone_numbers.feature)
 - [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provider.feature)
 
 ### Automated processes (121-service)
@@ -128,8 +127,8 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 Features can be added to this folder by:
 
-- Create a `.feature`-file, named after its title with `_` for spaces;  
+- Create a `.feature`-file, named after its title with `_` for spaces;
   i.e. `View_all_PA-App_scenarios.feature`
 - Add a reference to the list above at the appropriate _actor_.
-- Tag the whole feature or each scenario with the components involved.  
+- Tag the whole feature or each scenario with the components involved.
   i.e: `@pa-app`, `@aw-app`, `@ho-portal`, etc. (all lowercase)

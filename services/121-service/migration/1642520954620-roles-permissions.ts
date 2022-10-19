@@ -81,8 +81,8 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
 
     const defaultRoles = [
       {
-        role: DefaultUserRole.Admin,
-        label: 'Admin',
+        role: DefaultUserRole.ProgramAdmin,
+        label: 'Program Admin',
         permissions: Object.values(PermissionEnum),
       },
       {

@@ -1,5 +1,5 @@
 export enum DefaultUserRole {
-  Admin = 'admin',
+  ProgramAdmin = 'program-admin',
   FieldValidation = 'field-validation',
   PersonalData = 'personal-data',
   RunProgram = 'run-program',

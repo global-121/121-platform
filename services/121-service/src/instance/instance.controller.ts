@@ -1,3 +1,4 @@
+import { AdminAuthGuard } from './../guards/admin.guard';
 import { Controller, UseGuards, Get, Post, Body } from '@nestjs/common';
 import { InstanceService } from './instance.service';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
@@ -6,7 +7,7 @@ import { UpdateInstanceDto } from './dto/update-instance.dto';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { Admin } from '../guards/admin.decorator';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('instance')
 @Controller('instance')
 export class InstanceController {
