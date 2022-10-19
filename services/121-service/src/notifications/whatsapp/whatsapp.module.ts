@@ -1,3 +1,4 @@
+import { UserModule } from './../../user/user.module';
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 import { SmsService } from './../sms/sms.service';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
@@ -37,6 +38,7 @@ import { TryWhatsappEntity } from './try-whatsapp.entity';
       WhatsappTemplateTestEntity,
     ]),
     ImageCodeModule,
+    UserModule,
     forwardRef(() => IntersolveModule),
   ],
   providers: [WhatsappService, SmsService],
