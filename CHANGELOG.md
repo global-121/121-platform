@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.67.1...master)
 
+### Removed
+
+- All QR-code scanning/generating/program-level configuration is no longer used
+- Some user-permissions that are not program-specific are moved into a "admin"-property
+
+### Changed
+
+- User-permissions are assigned/used per program
+- API URLs are formed to include a program-id in a consistent place
+
+### Added
+
+- Users can be an "admin" (instead of have specific Permissions)
+
 ---
 
 ## [1.67.1](https://github.com/global-121/121-platform/compare/v1.67.0...v1.67.1) - 2022-10-13
