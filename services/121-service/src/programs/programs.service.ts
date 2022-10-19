@@ -355,7 +355,7 @@ export class ProgramService {
 
     let queryFspAttributes = getRepository(FspQuestionEntity)
       .createQueryBuilder('fspAttribute')
-      .where({ fsp: In(fspIds) });
+      .where({ fspId: In(fspIds) });
 
     if (phase) {
       queryFspAttributes = queryFspAttributes.andWhere(
