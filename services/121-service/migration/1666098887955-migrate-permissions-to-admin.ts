@@ -51,6 +51,7 @@ export class migratePermissionsToAdmin1666098887955
       'role.create',
       'role.update',
       'role.delete',
+      'test',
     ];
     for (const p of permissions) {
       await this.removePermission(p, permissionRepo);

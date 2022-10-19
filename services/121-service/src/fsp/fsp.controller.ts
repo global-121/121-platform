@@ -1,3 +1,4 @@
+import { AdminAuthGuard } from './../guards/admin.guard';
 import {
   Post,
   Body,
@@ -15,7 +16,7 @@ import { FspQuestionEntity } from './fsp-question.entity';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { Admin } from '../guards/admin.decorator';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('fsp')
 @Controller('fsp')
 export class FspController {

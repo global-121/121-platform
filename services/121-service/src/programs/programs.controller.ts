@@ -1,3 +1,4 @@
+import { AdminAuthGuard } from './../guards/admin.guard';
 import { ProgramQuestionEntity } from './program-question.entity';
 import {
   Get,
@@ -26,7 +27,7 @@ import { Attribute } from '../registration/enum/custom-data-attributes';
 import { User } from '../user/user.decorator';
 import { Admin } from '../guards/admin.decorator';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('programs')
 @Controller('programs')
 export class ProgramController {

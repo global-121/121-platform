@@ -1,3 +1,4 @@
+import { AdminAuthGuard } from './../../../guards/admin.guard';
 import { IMAGE_UPLOAD_API_FORMAT } from './../../../shared/file-upload-api-format';
 import {
   Post,
@@ -28,7 +29,7 @@ import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionEnum } from '../../../user/permission.enum';
 import { Admin } from '../../../guards/admin.decorator';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('payments/intersolve')
 @Controller()
 export class IntersolveController {

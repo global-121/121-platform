@@ -46,8 +46,8 @@ export class SeedInit implements InterfaceScript {
     const userRoleRepository = this.connection.getRepository(UserRoleEntity);
     const defaultRoles = [
       {
-        role: DefaultUserRole.Admin,
-        label: 'Admin',
+        role: DefaultUserRole.ProgramAdmin,
+        label: 'Program Admin',
         permissions: Object.values(PermissionEnum),
       },
       {
