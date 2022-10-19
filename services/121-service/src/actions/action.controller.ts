@@ -4,9 +4,9 @@ import { User } from '../user/user.decorator';
 import { ApiTags, ApiResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { ActionDto } from './dto/action.dto';
 import { ActionEntity } from './action.entity';
-import { PermissionsGuard } from '../permissions.guard';
-import { Permissions } from '../permissions.decorator';
+import { Permissions } from '../guards/permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
+import { PermissionsGuard } from '../guards/permissions.guard';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('actions')

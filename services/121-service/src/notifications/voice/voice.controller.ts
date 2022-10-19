@@ -1,5 +1,5 @@
-import { PermissionsGuard } from './../../permissions.guard';
-import { Permissions } from './../../permissions.decorator';
+import { PermissionsGuard } from './../../guards/permissions.guard';
+import { Permissions } from './../../guards/permissions.decorator';
 import { PermissionEnum } from './../../user/permission.enum';
 import {
   Controller,

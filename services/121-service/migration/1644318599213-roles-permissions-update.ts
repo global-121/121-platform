@@ -31,15 +31,15 @@ export class rolesPermissionsUpdate1644318599213 implements MigrationInterface {
           PermissionEnum.ActionCREATE,
           PermissionEnum.ActionREAD,
           // PermissionEnum.AidWorkerCREATE,  // REMOVED 2022-10-12
-          PermissionEnum.AidWorkerDELETE,
+          // PermissionEnum.AidWorkerDELETE, Moved to admin
           PermissionEnum.AidWorkerProgramUPDATE,
-          PermissionEnum.InstanceUPDATE,
+          // PermissionEnum.InstanceUPDATE,
           PermissionEnum.PaymentCREATE,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
           // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
-          PermissionEnum.ProgramCREATE,
+          // PermissionEnum.ProgramCREATE, Moved to admin
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramPhaseUPDATE,
           PermissionEnum.ProgramUPDATE,

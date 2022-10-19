@@ -56,14 +56,14 @@ export class SeedInit implements InterfaceScript {
         permissions: [
           PermissionEnum.ActionCREATE,
           PermissionEnum.ActionREAD,
-          PermissionEnum.AidWorkerDELETE,
+          // PermissionEnum.AidWorkerDELETE, Moved to admin
           PermissionEnum.AidWorkerProgramUPDATE,
-          PermissionEnum.InstanceUPDATE,
+          // PermissionEnum.InstanceUPDATE,  // Admin-only
           PermissionEnum.PaymentCREATE,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
-          PermissionEnum.ProgramCREATE,
+          // PermissionEnum.ProgramCREATE, Moved to admin
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramPhaseUPDATE,
           PermissionEnum.ProgramUPDATE,
@@ -159,6 +159,7 @@ export class SeedInit implements InterfaceScript {
         .createHmac('sha256', process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN)
         .digest('hex'),
       userType: UserType.aidWorker,
+      admin: true,
     });
   }
 

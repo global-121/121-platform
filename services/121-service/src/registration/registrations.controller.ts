@@ -1,5 +1,5 @@
-import { PersonAffectedAuthGuard } from '../person-affected-auth.guard';
-import { PermissionsGuard } from './../permissions.guard';
+import { PersonAffectedAuthGuard } from '../guards/person-affected-auth.guard';
+import { PermissionsGuard } from '../guards/permissions.guard';
 import { RegistrationEntity } from './registration.entity';
 import {
   Post,
@@ -40,9 +40,9 @@ import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
-import { Permissions } from '../permissions.decorator';
+import { Permissions } from '../guards/permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
-import { PersonAffectedAuth } from '../person-affected-auth.decorator';
+import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 
 export class FileUploadDto {

@@ -18,12 +18,13 @@ import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ChangePhaseDto } from './dto/change-phase.dto';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { PermissionsGuard } from '../permissions.guard';
-import { Permissions } from '../permissions.decorator';
+import { PermissionsGuard } from '../guards/permissions.guard';
+import { Permissions } from '../guards/permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { User } from '../user/user.decorator';
+import { Admin } from '../guards/admin.decorator';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('programs')
@@ -61,7 +62,7 @@ export class ProgramController {
     return await this.programService.getAssignedPrograms(userId);
   }
 
-  @Permissions(PermissionEnum.ProgramCREATE)
+  @Admin()
   @ApiOperation({ summary: 'Create program' })
   @ApiResponse({
     status: 201,

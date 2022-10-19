@@ -48,7 +48,7 @@ export class SeedProgramEth implements InterfaceScript {
         label: 'Administrator (ZOA)',
         permissions: [
           // Listing all permission here to show which are not assigned (commented):
-          PermissionEnum.InstanceUPDATE,
+          // PermissionEnum.InstanceUPDATE, // Admin-only
           // PermissionEnum.ProgramCREATE, // Admin-only
           PermissionEnum.ProgramUPDATE,
           // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
@@ -86,7 +86,7 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
-          PermissionEnum.AidWorkerDELETE,
+          // PermissionEnum.AidWorkerDELETE, Moved to admin
           PermissionEnum.AidWorkerProgramUPDATE,
           // PermissionEnum.RoleCREATE, // Admin-only
         ],
@@ -96,14 +96,14 @@ export class SeedProgramEth implements InterfaceScript {
         label: 'Project Management',
         permissions: [
           // Listing all permissions here to show which are not assigned (commented):
-          PermissionEnum.InstanceUPDATE,
+          // PermissionEnum.InstanceUPDATE,  // Admin-only
           PermissionEnum.ProgramUPDATE,
           // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramPhaseUPDATE,
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.FspUPDATE,
-          PermissionEnum.FspAttributeUPDATE,
+          // PermissionEnum.FspUPDATE, Moved to admin
+          // PermissionEnum.FspAttributeUPDATE,  Moved to admin
           PermissionEnum.PaymentREAD,
           // PermissionEnum.PaymentCREATE, // not doing payments
           PermissionEnum.PaymentTransactionREAD,
@@ -130,7 +130,7 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
-          PermissionEnum.AidWorkerDELETE,
+          // PermissionEnum.AidWorkerDELETE, Moved to admin
           PermissionEnum.AidWorkerProgramUPDATE,
         ],
       },
@@ -139,14 +139,14 @@ export class SeedProgramEth implements InterfaceScript {
         label: 'Programme Management',
         permissions: [
           // Listing all permissions here to show which are not assigned (commented):
-          PermissionEnum.InstanceUPDATE,
+          // PermissionEnum.InstanceUPDATE,  // Admin-only
           PermissionEnum.ProgramUPDATE,
           // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramPhaseUPDATE, // 'Open registration' is allowed, so all phase updates allowed
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.FspUPDATE,
-          PermissionEnum.FspAttributeUPDATE,
+          // PermissionEnum.FspUPDATE, Moved to admin
+          // PermissionEnum.FspAttributeUPDATE,  Moved to admin
           PermissionEnum.PaymentREAD,
           // PermissionEnum.PaymentCREATE, // not doing payments
           PermissionEnum.PaymentTransactionREAD,
@@ -173,7 +173,7 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
-          PermissionEnum.AidWorkerDELETE,
+          // PermissionEnum.AidWorkerDELETE,  Moved to admin
           PermissionEnum.AidWorkerProgramUPDATE,
         ],
       },
@@ -182,14 +182,14 @@ export class SeedProgramEth implements InterfaceScript {
         label: 'Operation management',
         permissions: [
           // Listing all permissions here to show which are not assigned (commented):
-          PermissionEnum.InstanceUPDATE,
+          // PermissionEnum.InstanceUPDATE,  // Admin-only
           PermissionEnum.ProgramUPDATE,
           // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           // PermissionEnum.ProgramPhaseUPDATE, // 'Open registration' not allowed, so no phase updates allowed
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.FspUPDATE,
-          PermissionEnum.FspAttributeUPDATE,
+          // PermissionEnum.FspUPDATE,  Moved to admin
+          // PermissionEnum.FspAttributeUPDATE,  Moved to admin
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentCREATE,
           PermissionEnum.PaymentTransactionREAD,
@@ -226,13 +226,13 @@ export class SeedProgramEth implements InterfaceScript {
         label: 'Programme Quality',
         permissions: [
           // Listing all permissions of 'administratorZOA' role here to show which are not assigned (commented):
-          PermissionEnum.InstanceUPDATE,
+          // PermissionEnum.InstanceUPDATE, // Admin-only
           PermissionEnum.ProgramUPDATE,
           // PermissionEnum.ProgramPhaseUPDATE, // 'Open registration' not allowed, so no phase updates allowed
           PermissionEnum.ProgramQuestionUPDATE,
           PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.FspUPDATE,
-          PermissionEnum.FspAttributeUPDATE,
+          // PermissionEnum.FspUPDATE,  Moved to admin
+          // PermissionEnum.FspAttributeUPDATE,  Moved to admin
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentCREATE,
           PermissionEnum.PaymentTransactionREAD,

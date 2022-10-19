@@ -89,8 +89,8 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
         role: DefaultUserRole.RunProgram,
         label: 'Run Program',
         permissions: [
-          PermissionEnum.InstanceUPDATE,
-          PermissionEnum.ProgramCREATE,
+          // PermissionEnum.InstanceUPDATE, Moved to admin
+          // PermissionEnum.ProgramCREATE,  Moved to admin
           PermissionEnum.ProgramUPDATE,
           // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramPhaseUPDATE,
@@ -110,7 +110,7 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
           PermissionEnum.RegistrationStatusRejectedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
           // PermissionEnum.AidWorkerCREATE,  // REMOVED 2022-10-12
-          PermissionEnum.AidWorkerDELETE,
+          // PermissionEnum.AidWorkerDELETE, // Moved to admin
           PermissionEnum.AidWorkerProgramUPDATE,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,

@@ -1,4 +1,4 @@
-import { PermissionEnum } from './user/permission.enum';
+import { PermissionEnum } from './../user/permission.enum';
 import {
   Injectable,
   CanActivate,
@@ -8,16 +8,18 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
-import { InterfaceNames } from './shared/enum/interface-names.enum';
-import { CookieErrors, CookieNames } from './shared/enum/cookie.enums';
-import { UserService } from './user/user.service';
-import { UserToken } from './user/user.interface';
+import { CookieNames, CookieErrors } from '../shared/enum/cookie.enums';
+import { InterfaceNames } from '../shared/enum/interface-names.enum';
+import { UserToken } from '../user/user.interface';
+import { UserService } from '../user/user.service';
+import { GuardsService } from './guards.service';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
   public constructor(
     private readonly reflector: Reflector,
     private readonly userService: UserService,
+    private readonly guardService: GuardsService,
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -39,35 +41,17 @@ export class PermissionsGuard implements CanActivate {
       throw new Error('Endpoint is missing programId parameter');
     }
 
-    const originInterface = request.headers[headerKey];
+    const originInterface: InterfaceNames = request.headers[headerKey];
 
     if (
       request.cookies &&
-      ((originInterface === InterfaceNames.portal &&
-        request.cookies[CookieNames.portal]) ||
-        (originInterface === InterfaceNames.awApp &&
-          request.cookies[CookieNames.awApp]) ||
-        (originInterface === InterfaceNames.paApp &&
-          request.cookies[CookieNames.paApp]) ||
-        (!originInterface && request.cookies[CookieNames.general])) &&
+      this.guardService.interfacesMatch(request.cookies, originInterface) &&
       endpointPermissions
     ) {
-      let token: string;
-      switch (originInterface) {
-        case InterfaceNames.portal:
-          token = request.cookies[CookieNames.portal];
-          break;
-        case InterfaceNames.awApp:
-          token = request.cookies[CookieNames.awApp];
-          break;
-        case InterfaceNames.paApp:
-          token = request.cookies[CookieNames.paApp];
-          break;
-
-        default:
-          token = request.cookies[CookieNames.general];
-          break;
-      }
+      const token = this.guardService.getToken(
+        request.cookies,
+        originInterface,
+      );
       if (token) {
         const decoded: UserToken = jwt.verify(
           token,
