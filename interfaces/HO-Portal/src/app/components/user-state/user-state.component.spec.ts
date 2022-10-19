@@ -5,7 +5,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
-import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { User } from 'src/app/models/user.model';
 import { UserStateComponent } from './user-state.component';
 
@@ -21,16 +20,20 @@ describe('UserStateComponent', () => {
   let component: UserStateComponent;
   let fixture: ComponentFixture<UserStateComponent>;
 
-  let mockAuthService: jasmine.SpyObj<any>;
-
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [UserStateComponent],
-      providers: [provideMagicalMock(AuthService)],
+      providers: [
+        {
+          provide: AuthService,
+          useValue: {
+            authenticationState$: of(mockUser),
+          },
+        },
+      ],
       imports: [TranslateModule.forRoot(), RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
-    mockAuthService = TestBed.inject(AuthService);
   }));
 
   beforeEach(() => {
@@ -44,19 +47,6 @@ describe('UserStateComponent', () => {
   });
 
   it('should show the e-mail address of a logged-in user', () => {
-    // Arrange
-    const testUsername = 'username@example.test';
-    const testUser = {
-      ...mockUser,
-      username: testUsername,
-    };
-    mockAuthService.authenticationState$.and.returnValue(of(testUser));
-
-    // Act
-    fixture.detectChanges();
-
-    // Assert
-    expect(fixture.nativeElement.innerHTML).toContain(testUsername);
-  });
+    expect(fixture.nativeElement.innerHTML).toContain(mockUser.username);
   });
 });
