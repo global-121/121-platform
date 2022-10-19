@@ -71,13 +71,13 @@ Features of the 121-platform are described in this folder in a standardizes way 
 #### Using external tools/applications
 
 - Send a WhatsApp message
+  - [Receive voucher](PA-App/Receive_Voucher.feature)
   - [Claim digital voucher](Other/Claim_digital_voucher.feature)
   - Read queued notification
 
 #### Using PA-App
 
 - [New registration](PA-App/New_registration.feature)
-- [Use existing Account](PA-App/Use_existing_Account.feature)
 - [Consent question](PA-App/Consent_question.feature)
 - [Answer program questions](PA-App/Answer_program_questions.feature)
 - [Fill payment details](PA-App/Fill_payment_details.feature)
