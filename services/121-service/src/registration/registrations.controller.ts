@@ -377,7 +377,7 @@ export class RegistrationsController {
     status: 200,
     description: 'Returned registrations which match at least one of criteria',
   })
-  @Post('/search-phone')
+  @Post('/registrations/search-phone')
   public async searchRegistration(
     @Body() searchRegistrationDto: SearchRegistrationDto,
     @User('id') userId: number,
@@ -506,10 +506,9 @@ export class RegistrationsController {
   @PersonAffectedAuth()
   @ApiOperation({ summary: 'Get registration status' })
   @ApiResponse({ status: 200 })
-  @ApiParam({
-    name: 'referenceId',
-  })
-  @Get('status/:referenceId')
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @Get('programs/:programId/registrations/status/:referenceId')
   public async getRegistrationStatus(@Param() params): Promise<any> {
     const status = await this.registrationsService.getRegistrationStatus(
       params.referenceId,
