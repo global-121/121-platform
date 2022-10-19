@@ -31,4 +31,4 @@ Feature: Claim digital vouchers
     When the PA does not send anything
     Then a reminder is send out the next day at noon
     And the same scenarios as above are followed
-    And a PA without whatsapp should not get a reminder
+    And a PA without WhatsApp should not get a reminder
