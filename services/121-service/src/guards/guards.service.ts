@@ -5,10 +5,7 @@ import { CookieNames } from '../shared/enum/cookie.enums';
 import { InterfaceNames } from '../shared/enum/interface-names.enum';
 
 @Injectable()
-export class GuardsService implements CanActivate {
-  // This methods gets overwritten by parent classes
-  public canActivate(): any {}
-
+export class GuardsService {
   public getToken(
     cookies: CookiesType,
     originInterface: InterfaceNames,

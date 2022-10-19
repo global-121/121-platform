@@ -38,7 +38,7 @@ export class migratePermissionsToAdmin1666098887955
 
     const permissionRepo = connection.getRepository(PermissionEntity);
     const permissions = [
-      'program.all.read',
+      'program:all.read',
       'program.create',
       'fsp.update',
       'payment:voucher:instruction.update',
