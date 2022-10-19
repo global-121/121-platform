@@ -13,7 +13,6 @@ export enum ApiPath {
   phoneNumber = '/registrations/phone',
   registrations = '/registrations',
   logout = '/user/logout',
-  addQr = '/registrations/add-qr-identifier',
   register = '/registrations/register',
 }
 

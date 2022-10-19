@@ -33,7 +33,7 @@ export class MainMenuComponent implements ValidationComponent {
     private storage: Storage,
     private noConnectionService: NoConnectionService,
     private authService: AuthService,
-    private programsService: ProgramsServiceApiService,
+    private programsServiceApiService: ProgramsServiceApiService,
   ) {
     this.authService.authenticationState$.subscribe(() => {
       // Refresh all option when current logged in user changes
@@ -46,8 +46,6 @@ export class MainMenuComponent implements ValidationComponent {
 
     this.myPrograms = await this.getAllAssignedPrograms();
 
-    const showQrOption = await this.checkValidationByQr();
-
     this.menuOptions = [
       {
         id: ValidationComponents.downloadData,
@@ -55,13 +53,6 @@ export class MainMenuComponent implements ValidationComponent {
         disabled: !this.canDownloadData(),
         connectionRequired: true,
         visible: true,
-      },
-      {
-        id: ValidationComponents.scanQr,
-        option: this.translate.instant('validation.main-menu.scan-qr'),
-        disabled: !this.canScanQr(),
-        connectionRequired: false,
-        visible: showQrOption,
       },
       {
         id: ValidationComponents.findByPhone,
@@ -84,15 +75,6 @@ export class MainMenuComponent implements ValidationComponent {
   private canDownloadData() {
     return this.myPrograms.some((program) => {
       return this.authService.hasAllPermissions(program.id, [
-        Permission.RegistrationPersonalForValidationREAD,
-      ]);
-    });
-  }
-
-  private canScanQr() {
-    return this.myPrograms.some((program) => {
-      return this.authService.hasAllPermissions(program.id, [
-        Permission.RegistrationReferenceIdSEARCH,
         Permission.RegistrationPersonalForValidationREAD,
       ]);
     });
@@ -126,22 +108,12 @@ export class MainMenuComponent implements ValidationComponent {
   private async getAllAssignedPrograms(): Promise<Program[]> {
     let myPrograms = await this.storage.get(IonicStorageTypes.myPrograms);
     if (!myPrograms) {
-      const { programs } = await this.programsService.getAllAssignedPrograms();
+      const { programs } =
+        await this.programsServiceApiService.getAllAssignedPrograms();
       myPrograms = programs;
       this.storage.set(IonicStorageTypes.myPrograms, myPrograms);
     }
     return myPrograms;
-  }
-
-  private async checkValidationByQr(): Promise<boolean> {
-    const myPrograms = await this.storage.get(IonicStorageTypes.myPrograms);
-    if (myPrograms) {
-      return myPrograms.some((program) => program.validationByQr);
-    } else {
-      const { programs } = await this.programsService.getAllAssignedPrograms();
-      this.storage.set(IonicStorageTypes.myPrograms, programs);
-      return programs.some((program) => program.validationByQr);
-    }
   }
 
   public changeOption($event) {

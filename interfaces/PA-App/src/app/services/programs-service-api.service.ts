@@ -155,7 +155,7 @@ export class ProgramsServiceApiService {
         if (response && response.referenceId === referenceId) {
           return true;
         }
-        return response;
+        return false;
       })
       .catch(() => false);
   }
@@ -220,21 +220,18 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  addQrIdentifier(
-    referenceId: string,
-    qrIdentifier: string,
-    programId: number,
-  ): Promise<any> {
+  isStatusRegistered(referenceId: string): Promise<boolean> {
     return this.apiService
-      .post(
+      .get(
         environment.url_121_service_api,
-        `${ApiPath.programsPrefix}${programId}${ApiPath.addQr}`,
-        {
-          referenceId,
-          qrIdentifier,
-        },
-        false,
+        `/registrations/status/${referenceId}`,
       )
-      .toPromise();
+      .toPromise()
+      .then((res) => {
+        return res.status === 'registered';
+      })
+      .catch(() => {
+        return false;
+      });
   }
 }

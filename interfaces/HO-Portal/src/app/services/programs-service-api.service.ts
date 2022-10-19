@@ -545,14 +545,13 @@ export class ProgramsServiceApiService {
     );
   }
 
-
   unAssignAidworker(
     programId: number | string,
     userId: number,
   ): Promise<Program> {
     return this.apiService.delete(
       environment.url_121_service_api,
-      `/programs/${programId}/users/${userId}/assignments`
+      `/programs/${programId}/users/${userId}/assignments`,
     );
   }
 

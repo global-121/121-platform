@@ -2,14 +2,23 @@
 
 <!-- TOC: -->
 
-- [All features / scenario's](#all-features--scenarios)
-  - [For Humanitarian Organization](#for-humanitarian-organization)
-  - [For Person/People Affected](#for-personpeople-affected)
-  - [For Aid-Worker](#for-aid-worker)
-  - [For Admin-user](#for-admin-user)
-- [Reference](#reference)
-- [Tools](#tools)
-- [How to describe features / define scenarios](#how-to-describe-features--define-scenarios)
+- [Features](#features)
+  - [All features / scenario's](#all-features--scenarios)
+    - [For Aid Workers](#for-aid-workers)
+      - [Using 121-Portal](#using-121-portal)
+      - [Generic 121-Portal components/features](#generic-121-portal-componentsfeatures)
+      - [Using AW-App](#using-aw-app)
+      - [Generic AW-App components/features](#generic-aw-app-componentsfeatures)
+    - [For Person/People Affected](#for-personpeople-affected)
+      - [Using external tools/applications](#using-external-toolsapplications)
+      - [Using PA-App](#using-pa-app)
+      - [Generic PA-App components](#generic-pa-app-components)
+    - [For Admin-user](#for-admin-user)
+      - [Using Swagger UI](#using-swagger-ui)
+    - [Automated processes (121-service)](#automated-processes-121-service)
+  - [Reference](#reference)
+  - [Tools](#tools)
+  - [How to describe features / define scenarios](#how-to-describe-features--define-scenarios)
 
 ---
 
@@ -82,7 +91,6 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Consent question](PA-App/Consent_question.feature)
 - [Answer program questions](PA-App/Answer_program_questions.feature)
 - [Fill payment details](PA-App/Fill_payment_details.feature)
-- [Link preprinted QR-code](PA-App/Link-preprinted-QR-code.feature)
 - Answer monitoring questions
 
 #### Generic PA-App components
@@ -91,10 +99,6 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Verify password input](PA-App/Verify_password_input.feature)
 - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
 - Changes based on instance-configuration/values
-
-
-
-
 
 ### For Admin-user
 

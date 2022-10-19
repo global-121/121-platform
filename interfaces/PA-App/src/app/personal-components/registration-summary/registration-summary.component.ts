@@ -22,7 +22,6 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   public data: any;
 
   public validation: boolean;
-  public validationByQr: boolean;
 
   public registrationStatus: boolean;
 
@@ -37,8 +36,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   public chosenTimeslot: Timeslot;
   public daysToMeeting: number;
 
-  public showQrCode: boolean;
-  public qrDataString: string;
+  public showSomethingWentWrong = false;
 
   constructor(
     public conversationService: ConversationService,
@@ -66,20 +64,23 @@ export class RegistrationSummaryComponent extends PersonalDirective {
 
     await this.getProgram();
     await this.getReferenceId();
+    if (!this.registrationStatus) {
+      this.registrationStatus = await this.programsService.postRegistration(
+        this.referenceId,
+        this.program.id,
+      );
+    }
 
-    this.registrationStatus = await this.programsService.postRegistration(
-      this.referenceId,
-      this.program.id,
-    );
-
-    if (this.validation && this.validationByQr) {
-      await this.shouldShowQrCode();
-      await this.generateContent();
+    if (
+      !this.syncService.areTasksQueued() &&
+      this.registrationStatus === false
+    ) {
+      this.showSomethingWentWrong = true;
     }
 
     this.conversationService.stopLoading();
 
-    this.complete();
+    this.checkStatus();
   }
 
   async initHistory() {
@@ -87,17 +88,6 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     this.validation = this.data.validation;
     this.registrationStatus = this.data.registrationStatus;
     this.meetingDocuments = this.data.meetingDocuments;
-  }
-
-  private async shouldShowQrCode() {
-    const usePreprintedQrCodeData = await this.paData.retrieve(
-      this.paData.type.usePreprintedQrCode,
-    );
-    if (typeof usePreprintedQrCodeData !== undefined) {
-      this.showQrCode = !JSON.parse(usePreprintedQrCodeData);
-    } else {
-      this.showQrCode = false;
-    }
   }
 
   private async getReferenceId() {
@@ -111,7 +101,6 @@ export class RegistrationSummaryComponent extends PersonalDirective {
 
   private getProgramProperties(program: Program) {
     this.validation = program.validation;
-    this.validationByQr = program.validationByQr;
 
     const documents = this.translatableString.get(program.meetingDocuments);
     this.meetingDocuments = this.buildDocumentsList(documents);
@@ -125,19 +114,6 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     return documents.split(';');
   }
 
-  private generateQrCode(referenceId: string, programId: number) {
-    const qrData = {
-      referenceId,
-      programId,
-    };
-
-    this.qrDataString = JSON.stringify(qrData);
-  }
-
-  public async generateContent() {
-    this.generateQrCode(this.referenceId, this.program.id);
-  }
-
   public retry() {
     window.location.reload();
   }
@@ -146,16 +122,51 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     return PersonalComponents.monitoringQuestion;
   }
 
-  complete() {
-    if (this.isDisabled) {
+  async checkStatus() {
+    // Single online registration
+    if (this.registrationStatus) {
+      console.log('Single online registration');
+      this.complete();
       return;
     }
 
+    // Single online registration but need to refetch status
+    if (!this.registrationStatus && !this.syncService.areTasksQueued()) {
+      this.registrationStatus = await this.programsService.isStatusRegistered(
+        this.referenceId,
+      );
+
+      if (this.registrationStatus) {
+        this.complete();
+        return;
+      }
+    }
+
+    // Multiple registrations mode
+    if (!this.registrationStatus && this.registrationMode.multiple) {
+      this.complete();
+      return;
+    }
+
+    // Single offline registration
     if (!this.registrationMode.multiple && this.syncService.areTasksQueued()) {
       this.openOfflineNotification();
       return;
     }
 
+    if (
+      !this.syncService.areTasksQueued() &&
+      this.registrationStatus === false
+    ) {
+      this.showSomethingWentWrong = true;
+      return;
+    }
+  }
+
+  complete() {
+    if (this.isDisabled) {
+      return;
+    }
     this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.registrationSummary,
@@ -179,7 +190,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
           text: this.translate.instant('shared.retry'),
           role: 'cancel',
           handler: () => {
-            this.complete();
+            this.checkStatus();
           },
         },
       ],

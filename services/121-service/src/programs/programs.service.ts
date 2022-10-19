@@ -122,7 +122,6 @@ export class ProgramService {
     program.description = programData.description;
     program.descCashType = programData.descCashType;
     program.validation = programData.validation;
-    program.validationByQr = programData.validationByQr;
     program.programQuestions = [];
     program.financialServiceProviders = [];
 

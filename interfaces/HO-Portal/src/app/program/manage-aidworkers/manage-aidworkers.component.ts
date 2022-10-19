@@ -95,10 +95,7 @@ export class ManageAidworkersComponent implements OnInit {
   }
 
   public async removeFieldvalidatorFromProgram(row) {
-    await this.programsService.unAssignAidworker(
-      this.programId,
-      row.user.id
-    );
+    await this.programsService.unAssignAidworker(this.programId, row.user.id);
     this.loadData();
   }
 

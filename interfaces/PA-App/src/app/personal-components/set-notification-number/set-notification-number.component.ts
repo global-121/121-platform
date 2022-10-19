@@ -140,7 +140,7 @@ export class SetNotificationNumberComponent extends PersonalDirective {
   }
 
   getNextSection() {
-    return PersonalComponents.preprintedQrcode;
+    return PersonalComponents.registrationSummary;
   }
 
   complete() {

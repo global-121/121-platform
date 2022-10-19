@@ -5,14 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.67.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.67.1...master)
+
+### Removed
+
+- All QR-code scanning/generating/program-level configuration is no longer used
+- Some user-permissions that are not program-specific are moved into a "admin"-property
+
+### Changed
+
+- User-permissions are assigned/used per program
+- API URLs are formed to include a program-id in a consistent place
+
+### Added
+
+- Users can be an "admin" (instead of have specific Permissions)
 
 ---
+
+## [1.67.1](https://github.com/global-121/121-platform/compare/v1.67.0...v1.67.1) - 2022-10-13
+
+### Changed
+
+- Fix: Error saving monitoring questions
+
 ## [1.67.0](https://github.com/global-121/121-platform/compare/v1.66.0...v1.67.0) - 2022-10-10
 
 ### Changed
 
 - Fix: Added a default width for columns in PA table.
+
+## [1.66.2](https://github.com/global-121/121-platform/compare/v1.66.1...v1.66.2) - 2022-10-14
+
+### Changed
+
+- Fix: added scenarios to checkStatus in registration-summary
+
+## [1.66.1](https://github.com/global-121/121-platform/compare/v1.66.0...v1.66.1) - 2022-10-14
+
+### Changed
+
+- Fix: age divisions in questions are right now
+- Fix: added missing french translations
+- Fix: don't show multiple "Add another person affected" buttons
+- Fix: Use `fullnameNamingConvention` in AW-App to construct name
 
 ## [1.66.0](https://github.com/global-121/121-platform/compare/v1.65.2...v1.66.0) - 2022-10-10
 
@@ -22,15 +58,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.65.2](https://github.com/global-121/121-platform/compare/v1.65.1...v1.65.2) - 2022-10-06
 
-### Changed
-
-- Fix: linting in registration entity
-
 ## [1.65.1](https://github.com/global-121/121-platform/compare/v1.65.0...v1.65.1) - 2022-10-06
 
 ### Changed
 
-- Fix: TryWhatsapp entity updated on merging of registration. Also added a cascade delete for it.
+- Fix: `TryWhatsapp` entity updated on merging of registration. Also added a cascade delete for it.
 
 ## [1.65.0](https://github.com/global-121/121-platform/compare/v1.64.1...v1.65.0) - 2022-10-06
 
@@ -58,7 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- French translations for DRC (program, instance, FSP: Vodacash)
+- French translations for DRC (program, instance, FSP: VodaCash)
 - New question type: multi-select
 
 ## [1.62.0](https://github.com/global-121/121-platform/compare/v1.61.1...v1.62.0) - 2022-09-27
@@ -72,7 +104,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Fixed FSP in DRC program so it's seedable again
+- Fixed FSP in DRC program so the seed-script works again
 
 ## [1.61.0](https://github.com/global-121/121-platform/compare/v1.60.0...v1.61.0) - 2022-09-23
 
@@ -91,7 +123,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Add vodacash xml export
+- Add VodaCash xml export
 - Numeric values do not show as 0 in PA pop-up
 
 ## [1.58.0](https://github.com/global-121/121-platform/compare/v1.57.0...v1.58.0) - 2022-09-16
@@ -174,7 +206,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- 2022-08-15: Fixed bug in export all People Affected 500 error because of duplicate stored whatsappnumbers.
+- 2022-08-15: Fixed bug in export all People Affected 500 error because of duplicate stored WhatsApp-numbers.
 
 ## [1.48.3](https://github.com/global-121/121-platform/compare/v1.48.2...v1.48.3) - 2022-08-15
 
@@ -202,13 +234,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 2022-08-10: Refactored `RegistrationEntity.customData` to `RegistrationDataEntity` as a related table of `RegistrationEntity` to enable querying on that data.
 - 2022-08-10: Renamed `FspAttributeEntity` to `FspQuestionEntity`.
 - 2022-08-10: Added a `shortLabel` property to `ProgramQuestionEntity` and `FspQuestionEntity` to give these properties a different label in the 121-portal than in the PA-app.
-- 2022-08-10: Fixed downloading vouchers of failed payments where the creation of the voucher was succesful but the sending via Whatsapp failed.
+- 2022-08-10: Fixed downloading vouchers of failed payments where the creation of the voucher was successful but the sending via WhatsApp failed.
 
 ## [1.47.0](https://github.com/global-121/121-platform/compare/v1.46.0...v1.47.0) - 2022-06-23
 
 ### Changed
 
-- 2022-06-23: Customize which program questions/ fsp attributes/ program custom data attributes are vissible in which phase in the PA-table in the Portal
+- 2022-06-23: Customize which program questions/ FSP-attributes/ program custom data attributes are visible in which phase in the PA-table in the Portal
 - 2022-06-23: Customize which program question are editable in the pop-up in the PA table
 - 2022-06-23: Fixed fields in PA pop-up not updating after edit
 
@@ -216,9 +248,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- 2022-06-08: Configure program question as custom attributes for ukraine
+- 2022-06-08: Configure program question as custom attributes for Ukraine
 - 2022-06-08: Configure which custom attributes get exported in the inclusion list
-- 2022-06-08: Automatically calculate transer value based on a formula
+- 2022-06-08: Automatically calculate transfer value based on a formula
 
 ## [1.45.0](https://github.com/global-121/121-platform/compare/v1.44.0...1.45.0) - 2022-06-07
 

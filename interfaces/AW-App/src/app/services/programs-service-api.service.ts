@@ -71,25 +71,11 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getReferenceIdByQrIdentifier(qrIdentifier: string): Promise<string> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations/qr-find-reference-id',
-        {
-          qrIdentifier,
-        },
-        false,
-      )
-      .pipe(map((response) => response.referenceId))
-      .toPromise();
-  }
-
   getPaByPhoneNr(phoneNumber: string): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/registrations/search-phone',
+        '/search-phone',
         {
           phoneNumber,
         },
@@ -100,7 +86,11 @@ export class ProgramsServiceApiService {
 
   getRegistration(referenceId: string): Promise<any> {
     return this.apiService
-      .get(environment.url_121_service_api, `/registrations/get/${referenceId}`)
+      .get(
+        environment.url_121_service_api,
+        `/registrations/get/${referenceId}`,
+        false,
+      )
       .toPromise();
   }
 
