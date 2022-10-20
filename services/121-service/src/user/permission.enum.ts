@@ -19,24 +19,13 @@
  *
  */
 export enum PermissionEnum {
-  // Instance(s)
-  InstanceUPDATE = 'instance.update',
-
   // Program(s)
-  ProgramCREATE = 'program.create',
   ProgramUPDATE = 'program.update',
-  ProgramAllREAD = 'program:all.read',
   ProgramPhaseUPDATE = 'program:phase.update',
   ProgramQuestionUPDATE = 'program:question.update',
   ProgramQuestionDELETE = 'program:question.delete',
   ProgramCustomAttributeUPDATE = 'program:custom-attribute.update',
   ProgramMetricsREAD = 'program:metrics.read',
-
-  // FSP(s)
-  FspUPDATE = 'fsp.update',
-  FspAttributeUPDATE = 'fsp:attribute.update',
-  FspAttributeCREATE = 'fsp:attribute.create',
-  FspAttributeDELETE = 'fsp:attribute.delete',
 
   // Payment(s)
   PaymentREAD = 'payment.read',
@@ -46,7 +35,6 @@ export enum PermissionEnum {
 
   // Payment(s) - Voucher(s)
   PaymentVoucherREAD = 'payment:voucher.read',
-  PaymentVoucherInstructionUPDATE = 'payment:voucher:instruction.update',
 
   // Registration(s)
   RegistrationREAD = 'registration.read',
@@ -87,16 +75,5 @@ export enum PermissionEnum {
   ActionCREATE = 'action.create',
 
   // User(s)
-  AidWorkerCREATE = 'aid-worker.create',
-  AidWorkerDELETE = 'aid-worker.delete',
   AidWorkerProgramUPDATE = 'aid-worker:program.update',
-
-  // Roles
-  RoleREAD = 'role.read',
-  RoleCREATE = 'role.create',
-  RoleUPDATE = 'role.update',
-  RoleDELETE = 'role.delete',
-
-  // Used for development purposes to test endpoints only the admin can access
-  Test = 'test',
 }

@@ -41,22 +41,9 @@
       "supply-password": "Jouw wachtwoord:",
       "supply-username": "Jouw volledige naam:"
     },
-    "preprinted-qrcode": {
-      "error": "De gescande QR-code kon niet worden gebruikt, probeer een andere.",
-      "info-qr": "Meer tekst volgt",
-      "introduction": "De medewerker/vrijwilliger zal een QR-code scannen om jouw persoonlijke informatie te koppelen en zal deze aan jou geven. Bewaar jouw fysieke QR-code goed.",
-      "more-info-qr": "Over QR-codes",
-      "no": "Nee",
-      "question": "Heeft de mederwerker/vrijwilliger een voorgedrukte QR-code om te scannen?",
-      "result-ok": "De gescande QR-code is nu gekoppeld aan je account en je persoonlijke informatie. Bewaar je fysieke QR-code goed.",
-      "start-scanner": "Start scanner",
-      "try-again": "Probeer opnieuw",
-      "yes": "Ja"
-    },
     "registration-summary": {
       "documents": "Houd deze documenten gereed:",
       "no-validation-conclusion": "Bedankt. Je inschrijving is nu compleet. <br><br> Je ontvangt binnenkort een SMS/WhatsApp op het door jou ingevulde nummer om je inschrijving te bevestigen. <br><br> Je wordt binnen 7 dagen geïnformeerd of je toelating succesvol is. <br><br> Dit is voor nu het laatste bericht.",
-      "qr-code": "Toon de QR-code aan de medewerker wanneer deze daar om vraagt.",
       "validation-conclusion": "Bedankt. Je registratie is nu compleet. Je ontvangt binnenkort een SMS/WhatsApp op het door jou ingevulde nummer om je registratie te bevestigen. <br><br> Een medewerker van de NGO zal met jou een afspraak maken om je informatie te bevestigen, waarschijnlijk door je thuis te bezoeken."
     },
     "select-fsp": {
@@ -105,16 +92,6 @@
       "phone-number": "We konden dit telefoonnummer niet verifiëren. Pas aan en probeer opnieuw.",
       "required": "Een antwoord is nodig voor deze vraag. Pas aan en probeer opnieuw."
     }
-  },
-  "qr-scanner": {
-    "close": "Sluiten",
-    "error-generic": "Er ging iets mis.",
-    "error-no-permissions": "Zorg dat het is toegestaan om de camera te gebruiken, of check of die niet al in gebruik is en probeer opnieuw.",
-    "error-not-compatible": "Jouw toestel kan niet scannen",
-    "switch-camera": "Wissel camera",
-    "title": "Scan QR-code",
-    "toggle-flash": "Schakel flitser aan/uit",
-    "try-again": "Probeer opnieuw"
   },
   "shared": {
     "close-button": "Sluiten",

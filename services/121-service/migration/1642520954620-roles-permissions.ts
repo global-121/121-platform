@@ -81,18 +81,18 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
 
     const defaultRoles = [
       {
-        role: DefaultUserRole.Admin,
-        label: 'Admin',
+        role: DefaultUserRole.ProgramAdmin,
+        label: 'Program Admin',
         permissions: Object.values(PermissionEnum),
       },
       {
         role: DefaultUserRole.RunProgram,
         label: 'Run Program',
         permissions: [
-          PermissionEnum.InstanceUPDATE,
-          PermissionEnum.ProgramCREATE,
+          // PermissionEnum.InstanceUPDATE, Moved to admin
+          // PermissionEnum.ProgramCREATE,  Moved to admin
           PermissionEnum.ProgramUPDATE,
-          PermissionEnum.ProgramAllREAD,
+          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramPhaseUPDATE,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
@@ -109,8 +109,8 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
           PermissionEnum.RegistrationStatusIncludedUPDATE,
           PermissionEnum.RegistrationStatusRejectedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
-          PermissionEnum.AidWorkerCREATE,
-          PermissionEnum.AidWorkerDELETE,
+          // PermissionEnum.AidWorkerCREATE,  // REMOVED 2022-10-12
+          // PermissionEnum.AidWorkerDELETE, // Moved to admin
           PermissionEnum.AidWorkerProgramUPDATE,
           PermissionEnum.ActionREAD,
           PermissionEnum.ActionCREATE,
@@ -120,7 +120,7 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
         role: DefaultUserRole.View,
         label: 'Only view data, including Personally Identifiable Information',
         permissions: [
-          PermissionEnum.ProgramAllREAD,
+          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
@@ -134,7 +134,7 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
         role: DefaultUserRole.PersonalData,
         label: 'Handle Personally Identifiable Information',
         permissions: [
-          PermissionEnum.ProgramAllREAD,
+          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentCREATE,

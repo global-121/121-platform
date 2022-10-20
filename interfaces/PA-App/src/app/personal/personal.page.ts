@@ -29,7 +29,6 @@ import {
   PersonalComponents,
   PersonalComponentsRemoved,
 } from '../personal-components/personal-components.enum';
-import { PreprintedQrcodeComponent } from '../personal-components/preprinted-qrcode/preprinted-qrcode.component';
 import { RegistrationSummaryComponent } from '../personal-components/registration-summary/registration-summary.component';
 import { SelectFspComponent } from '../personal-components/select-fsp/select-fsp.component';
 import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
@@ -84,7 +83,6 @@ export class PersonalPage implements OnInit, OnDestroy {
     [PersonalComponents.loginAccount]: LoginAccountComponent,
     [PersonalComponents.monitoringQuestion]: MonitoringQuestionComponent,
     [PersonalComponents.registrationSummary]: RegistrationSummaryComponent,
-    [PersonalComponents.preprintedQrcode]: PreprintedQrcodeComponent,
     [PersonalComponents.selectFsp]: SelectFspComponent,
     [PersonalComponents.selectLanguage]: SelectLanguageComponent,
     [PersonalComponents.selectProgram]: SelectProgramComponent,

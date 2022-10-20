@@ -54,6 +54,7 @@ export class UserService {
       .createQueryBuilder('user')
       .addSelect('password')
       .leftJoinAndSelect('user.programAssignments', 'assignment')
+      .leftJoinAndSelect('assignment.program', 'program')
       .leftJoinAndSelect('assignment.roles', 'roles')
       .leftJoinAndSelect('roles.permissions', 'permissions')
       .where(findOneOptions)
@@ -63,8 +64,8 @@ export class UserService {
     }
 
     const username = userEntity.username;
+    const permissions = await this.buildPermissionsObject(userEntity.id);
     const token = this.generateJWT(userEntity);
-    const permissions = this.buildPermissionArray(userEntity);
     const user: UserRO = {
       user: {
         username,
@@ -75,6 +76,22 @@ export class UserService {
 
     const cookieSettings = this.buildCookieByRequest(token);
     return { userRo: user, cookieSettings: cookieSettings };
+  }
+
+  public async canActivate(permissions, programId, userId): Promise<boolean> {
+    const results = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.programAssignments', 'assignment')
+      .leftJoin('assignment.program', 'program')
+      .leftJoin('assignment.roles', 'roles')
+      .leftJoin('roles.permissions', 'permissions')
+      .where('user.id = :userId', { userId: userId })
+      .andWhere('program.id = :programId', { programId: programId })
+      .andWhere('permissions.name IN (:...permissions)', {
+        permissions: permissions,
+      })
+      .getCount();
+    return results === 1;
   }
 
   public async createPersonAffected(
@@ -175,7 +192,7 @@ export class UserService {
     newUser.password = password;
     newUser.userType = userType;
     const savedUser = await this.userRepository.save(newUser);
-    return this.buildUserRO(savedUser);
+    return await this.buildUserRO(savedUser);
   }
 
   public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {
@@ -189,29 +206,26 @@ export class UserService {
     let updated = toUpdate;
     updated.password = crypto.createHmac('sha256', dto.password).digest('hex');
     await this.userRepository.save(updated);
-    return this.buildUserRO(updated);
+    return await this.buildUserRO(updated);
   }
 
   public async assigAidworkerToProgram(
+    programId: number,
+    userId: number,
     assignAidworkerToProgram: AssignAidworkerToProgramDto,
   ): Promise<UserRoleEntity[]> {
-    const user = await this.userRepository.findOne(
-      assignAidworkerToProgram.userId,
-      {
-        relations: [
-          'programAssignments',
-          'programAssignments.program',
-          'programAssignments.roles',
-        ],
-      },
-    );
+    const user = await this.userRepository.findOne(userId, {
+      relations: [
+        'programAssignments',
+        'programAssignments.program',
+        'programAssignments.roles',
+      ],
+    });
     if (!user) {
       const errors = { User: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const program = await this.programRepository.findOne(
-      assignAidworkerToProgram.programId,
-    );
+    const program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = { Program: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -222,14 +236,14 @@ export class UserService {
         role: In(assignAidworkerToProgram.roles),
       },
     });
-    if (!newRoles.length) {
+    if (newRoles.length !== assignAidworkerToProgram.roles.length) {
       const errors = { Roles: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     // if already assigned: add roles to program assignment
     for (const programAssignment of user.programAssignments) {
-      if (programAssignment.program.id === assignAidworkerToProgram.programId) {
+      if (programAssignment.program.id === programId) {
         programAssignment.roles = newRoles;
         await this.assignmentRepository.save(programAssignment);
         return programAssignment.roles;
@@ -243,6 +257,38 @@ export class UserService {
       roles: newRoles,
     });
     return newRoles;
+  }
+
+  public async deleteAssignment(
+    programId: number,
+    userId: number,
+  ): Promise<void> {
+    const user = await this.userRepository.findOne(userId, {
+      relations: ['programAssignments', 'programAssignments.program'],
+    });
+    if (!user) {
+      const errors = { User: ' not found' };
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    const program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = { Program: ' not found' };
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    // If 0 roles are posted remove aidworker assignment
+    for (const programAssignment of user.programAssignments) {
+      if (programAssignment.program.id === programId) {
+        this.assignmentRepository.remove(programAssignment);
+        // Also remove user without assignments
+        if (user.programAssignments.length <= 1) {
+          this.userRepository.remove(user);
+        }
+        return;
+      }
+    }
+    const errors = `User assignment for user id ${userId} to program ${programId} not found`;
+    throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
   }
 
   public async delete(userId: number): Promise<UserEntity> {
@@ -285,7 +331,7 @@ export class UserService {
       const errors = `User not found'`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    return this.buildUserRO(user);
+    return await this.buildUserRO(user);
   }
 
   public generateJWT(user: UserEntity): string {
@@ -293,13 +339,11 @@ export class UserService {
     let exp = new Date(today);
     exp.setDate(today.getDate() + tokenExpirationDays);
 
-    let roles = [];
-    let permissions = [];
+    let roles = {};
     if (user.programAssignments && user.programAssignments[0]) {
-      roles = user.programAssignments[0].roles.map(role => role.role);
-      for (const role of user.programAssignments[0].roles) {
-        const permissionNames = role.permissions.map(a => a.name);
-        permissions = [...new Set([...permissions, ...permissionNames])];
+      for (const programAssignment of user.programAssignments) {
+        const programRoles = programAssignment.roles.map(role => role.role);
+        roles[`${programAssignment.program.id}`] = programRoles;
       }
     }
 
@@ -307,9 +351,8 @@ export class UserService {
       {
         id: user.id,
         username: user.username,
-        roles,
         exp: exp.getTime() / 1000,
-        permissions,
+        admin: user.admin,
       },
       process.env.SECRETS_121_SERVICE_SECRET,
     );
@@ -332,30 +375,40 @@ export class UserService {
     }
   }
 
-  private buildUserRO(user: UserEntity): UserRO {
-    let permissions = this.buildPermissionArray(user);
+  private async buildUserRO(user: UserEntity): Promise<UserRO> {
+    let permissions = await this.buildPermissionsObject(user.id);
 
     const userRO = {
       id: user.id,
-      username: user.username,
       token: this.generateJWT(user),
+      username: user.username,
       permissions,
     };
     return { user: userRO };
   }
 
-  private buildPermissionArray(user: UserEntity): string[] {
-    let roles = [];
+  private async buildPermissionsObject(userId: number): Promise<any> {
+    const user = await this.userRepository.findOne(userId, {
+      relations: [
+        'programAssignments',
+        'programAssignments.roles',
+        'programAssignments.roles.permissions',
+        'programAssignments.program',
+      ],
+    });
     let permissions = [];
 
+    const permissionsObject = {};
     if (user.programAssignments && user.programAssignments[0]) {
-      roles = user.programAssignments[0].roles.map(role => role.role);
-      for (const role of user.programAssignments[0].roles) {
-        const permissionNames = role.permissions.map(a => a.name);
-        permissions = [...new Set([...permissions, ...permissionNames])];
+      for (const programAssignment of user.programAssignments) {
+        for (const role of programAssignment.roles) {
+          const permissionNames = role.permissions.map(a => a.name);
+          permissions = [...new Set([...permissions, ...permissionNames])];
+          permissionsObject[programAssignment.program.id] = permissions;
+        }
       }
     }
-    return permissions;
+    return permissionsObject;
   }
 
   private buildCookieByRequest(token: string): CookieSettingsDto {

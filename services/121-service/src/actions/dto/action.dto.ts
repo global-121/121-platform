@@ -10,8 +10,4 @@ export class ActionDto {
   @IsNotEmpty()
   @IsIn(ActionArray)
   public readonly actionType: ActionType;
-
-  @ApiProperty({ example: 1 })
-  @IsNumber()
-  public readonly programId: number;
 }

@@ -2,7 +2,7 @@
 Feature: Select people affected for validation (extension of View_and_Manage_people_affected.feature)
 
   Background:
-    Given a logged-in user with "ProgramAllREAD" permission
+    Given a logged-in user
     And a program with "validation"
     And the "active phase" is "registration & validation"
 

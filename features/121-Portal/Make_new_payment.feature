@@ -64,7 +64,7 @@ Feature: Make a new payment
     And the same payment can be retried for all included PAs using the "payout" button
 
   Scenario: Send payment instructions for 5000 PAs
-    Given there are 5000 PAs in the system (to import: see Admin-user/Import_test_registrations_NL.feature)
+    Given there are 5000 PAs in the system
     And they are included (see e.g. HO-Portal/Include_people_affected_Run_Program_role.feature)
     Then the user selects the "Do payment" action
     And the user selects all 5000 PAs

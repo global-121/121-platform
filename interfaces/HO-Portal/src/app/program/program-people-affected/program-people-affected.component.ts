@@ -589,31 +589,37 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.program = await this.programsService.getProgramById(this.programId);
   }
   private async loadPermissions() {
-    this.canUpdatePaData = this.authService.hasAllPermissions([
+    this.canUpdatePaData = this.authService.hasAllPermissions(this.programId, [
       Permission.RegistrationAttributeUPDATE,
     ]);
-    this.canViewPersonalData = this.authService.hasAllPermissions([
-      Permission.RegistrationPersonalREAD,
-    ]);
-    this.canUpdatePersonalData = this.authService.hasAllPermissions([
-      Permission.RegistrationPersonalUPDATE,
-    ]);
-    this.canViewMessageHistory = this.authService.hasAllPermissions([
-      Permission.RegistrationNotificationREAD,
-    ]);
-    this.canViewPaymentData = this.authService.hasAllPermissions([
-      Permission.PaymentREAD,
-      Permission.PaymentTransactionREAD,
-    ]);
-    this.canViewVouchers = this.authService.hasAllPermissions([
+    this.canViewPersonalData = this.authService.hasAllPermissions(
+      this.programId,
+      [Permission.RegistrationPersonalREAD],
+    );
+    this.canUpdatePersonalData = this.authService.hasAllPermissions(
+      this.programId,
+      [Permission.RegistrationPersonalUPDATE],
+    );
+    this.canViewMessageHistory = this.authService.hasAllPermissions(
+      this.programId,
+      [Permission.RegistrationNotificationREAD],
+    );
+    this.canViewPaymentData = this.authService.hasAllPermissions(
+      this.programId,
+      [Permission.PaymentREAD, Permission.PaymentTransactionREAD],
+    );
+    this.canViewVouchers = this.authService.hasAllPermissions(this.programId, [
       Permission.PaymentVoucherREAD,
     ]);
-    this.canDoSinglePayment = this.authService.hasAllPermissions([
-      Permission.ActionREAD,
-      Permission.PaymentCREATE,
-      Permission.PaymentREAD,
-      Permission.PaymentTransactionREAD,
-    ]);
+    this.canDoSinglePayment = this.authService.hasAllPermissions(
+      this.programId,
+      [
+        Permission.ActionREAD,
+        Permission.PaymentCREATE,
+        Permission.PaymentREAD,
+        Permission.PaymentTransactionREAD,
+      ],
+    );
   }
 
   private setupProxyScrollbar() {
@@ -679,7 +685,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     for (const column of this.standardColumns) {
       if (
         column.phases.includes(this.thisPhase) &&
-        this.authService.hasAllPermissions(column.permissions) &&
+        this.authService.hasAllPermissions(
+          this.programId,
+          column.permissions,
+        ) &&
         this.checkValidationColumnOrAction(column)
       ) {
         this.columns.push(column);
@@ -714,7 +723,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         addCol.minWidth = this.columnWidthPerType.text;
         addCol.width = this.columnWidthPerType.text;
       }
-      if (this.authService.hasAllPermissions(addCol.permissions)) {
+      if (
+        this.authService.hasAllPermissions(this.programId, addCol.permissions)
+      ) {
         this.columns.push(addCol);
       }
     }
@@ -759,7 +770,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
     this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
-        this.authService.hasAllPermissions(action.permissions) &&
+        this.authService.hasAllPermissions(
+          this.programId,
+          action.permissions,
+        ) &&
         action.phases.includes(this.thisPhase) &&
         this.checkValidationColumnOrAction(action);
       return action;
@@ -1356,7 +1370,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   public onCheckboxChange(row: PersonRow, column: any, value: string) {
     this.programsService
-      .updatePaAttribute(row.referenceId, column.prop, value)
+      .updatePaAttribute(this.programId, row.referenceId, column.prop, value)
       .then(
         () => {
           row[column.prop] = value;

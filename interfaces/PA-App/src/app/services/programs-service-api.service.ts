@@ -127,18 +127,29 @@ export class ProgramsServiceApiService {
 
   createRegistration(referenceId: string, programId: number): Promise<any> {
     return this.syncService
-      .tryPost(environment.url_121_service_api, ApiPath.registrations, {
-        referenceId,
-        programId,
-      })
+      .tryPost(
+        environment.url_121_service_api,
+        `${ApiPath.programsPrefix}${programId}${ApiPath.registrations}`,
+        {
+          referenceId,
+          programId,
+        },
+      )
       .toPromise();
   }
 
-  async postRegistration(referenceId: string): Promise<boolean> {
+  async postRegistration(
+    referenceId: string,
+    programId: number,
+  ): Promise<boolean> {
     return this.syncService
-      .tryPost(environment.url_121_service_api, '/registrations/register', {
-        referenceId,
-      })
+      .tryPost(
+        environment.url_121_service_api,
+        `${ApiPath.programsPrefix}${programId}${ApiPath.register}`,
+        {
+          referenceId,
+        },
+      )
       .toPromise()
       .then((response) => {
         if (response && response.referenceId === referenceId) {
@@ -151,11 +162,12 @@ export class ProgramsServiceApiService {
 
   postRegistrationCustomAttributes(
     programAttributes: ProgramAttribute[],
+    programId: number,
   ): Promise<any> {
     return this.syncService
       .tryPost(
         environment.url_121_service_api,
-        ApiPath.customData,
+        `${ApiPath.programsPrefix}${programId}${ApiPath.customData}`,
         programAttributes,
       )
       .toPromise();
@@ -178,46 +190,41 @@ export class ProgramsServiceApiService {
     referenceId: string,
     phoneNumber: string,
     language: string,
+    programId: number,
     useForInvitationMatching?: boolean,
   ): Promise<any> {
     return this.syncService
-      .tryPost(`${environment.url_121_service_api}`, '/registrations/phone', {
-        referenceId,
-        phonenumber: phoneNumber,
-        language,
-        useForInvitationMatching,
-      })
-      .toPromise();
-  }
-
-  postFsp(referenceId: string, fspId: number): Promise<any> {
-    return this.syncService
-      .tryPost(`${environment.url_121_service_api}`, ApiPath.fsp, {
-        referenceId,
-        fspId,
-      })
-      .toPromise();
-  }
-
-  addQrIdentifier(referenceId: string, qrIdentifier: string): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations/add-qr-identifier',
+      .tryPost(
+        `${environment.url_121_service_api}`,
+        `${ApiPath.programsPrefix}${programId}${ApiPath.phoneNumber}`,
         {
           referenceId,
-          qrIdentifier,
+          phonenumber: phoneNumber,
+          language,
+          useForInvitationMatching,
         },
-        false,
       )
       .toPromise();
   }
 
-  isStatusRegistered(referenceId: string): Promise<boolean> {
+  postFsp(referenceId: string, fspId: number, programId: number): Promise<any> {
+    return this.syncService
+      .tryPost(
+        `${environment.url_121_service_api}`,
+        `${ApiPath.programsPrefix}${programId}${ApiPath.fsp}`,
+        {
+          referenceId,
+          fspId,
+        },
+      )
+      .toPromise();
+  }
+
+  isStatusRegistered(referenceId: string, programId: number): Promise<boolean> {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/registrations/status/${referenceId}`,
+        `/programs/${programId}/registrations/status/${referenceId}`,
       )
       .toPromise()
       .then((res) => {

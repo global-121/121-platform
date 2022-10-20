@@ -2,14 +2,23 @@
 
 <!-- TOC: -->
 
-- [All features / scenario's](#all-features--scenarios)
-  - [For Humanitarian Organization](#for-humanitarian-organization)
-  - [For Person/People Affected](#for-personpeople-affected)
-  - [For Aid-Worker](#for-aid-worker)
-  - [For Admin-user](#for-admin-user)
-- [Reference](#reference)
-- [Tools](#tools)
-- [How to describe features / define scenarios](#how-to-describe-features--define-scenarios)
+- [Features](#features)
+  - [All features / scenario's](#all-features--scenarios)
+    - [For Aid Workers](#for-aid-workers)
+      - [Using 121-Portal](#using-121-portal)
+      - [Generic 121-Portal components/features](#generic-121-portal-componentsfeatures)
+      - [Using AW-App](#using-aw-app)
+      - [Generic AW-App components/features](#generic-aw-app-componentsfeatures)
+    - [For Person/People Affected](#for-personpeople-affected)
+      - [Using external tools/applications](#using-external-toolsapplications)
+      - [Using PA-App](#using-pa-app)
+      - [Generic PA-App components](#generic-pa-app-components)
+    - [For Admin-user](#for-admin-user)
+      - [Using Swagger UI](#using-swagger-ui)
+    - [Automated processes (121-service)](#automated-processes-121-service)
+  - [Reference](#reference)
+  - [Tools](#tools)
+  - [How to describe features / define scenarios](#how-to-describe-features--define-scenarios)
 
 ---
 
@@ -72,17 +81,16 @@ Features of the 121-platform are described in this folder in a standardizes way 
 #### Using external tools/applications
 
 - Send a WhatsApp message
+  - [Receive voucher](PA-App/Receive_Voucher.feature)
   - [Claim digital voucher](Other/Claim_digital_voucher.feature)
   - Read queued notification
 
 #### Using PA-App
 
 - [New registration](PA-App/New_registration.feature)
-- [Use existing Account](PA-App/Use_existing_Account.feature)
 - [Consent question](PA-App/Consent_question.feature)
 - [Answer program questions](PA-App/Answer_program_questions.feature)
 - [Fill payment details](PA-App/Fill_payment_details.feature)
-- [Link preprinted QR-code](PA-App/Link-preprinted-QR-code.feature)
 - Answer monitoring questions
 
 #### Generic PA-App components
@@ -92,16 +100,11 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
 - Changes based on instance-configuration/values
 
-
-
-
-
 ### For Admin-user
 
 #### Using Swagger UI
 
 - [Manage user roles](Admin-user/Manage_Roles.feature)
-- [Update phone-numbers of Person Affected](Admin-user/Update_phone_numbers.feature)
 - [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provider.feature)
 
 ### Automated processes (121-service)
@@ -128,8 +131,8 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 Features can be added to this folder by:
 
-- Create a `.feature`-file, named after its title with `_` for spaces;  
+- Create a `.feature`-file, named after its title with `_` for spaces;
   i.e. `View_all_PA-App_scenarios.feature`
 - Add a reference to the list above at the appropriate _actor_.
-- Tag the whole feature or each scenario with the components involved.  
+- Tag the whole feature or each scenario with the components involved.
   i.e: `@pa-app`, `@aw-app`, `@ho-portal`, etc. (all lowercase)

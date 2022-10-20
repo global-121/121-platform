@@ -50,22 +50,9 @@
       "supply-password": "Your password:",
       "supply-username": "Your full name:"
     },
-    "preprinted-qrcode": {
-      "error": "The scanned QR-code cannot be used, please try another one.",
-      "info-qr": "More text to come",
-      "introduction": "The Aidworker/Volunteer will scan a QR-code to link your information and give it to you. Please keep your physical QR-code safe.",
-      "more-info-qr": "About QR-codes",
-      "no": "No",
-      "question": "Does the Aidworker/Volunteer have a pre-printed QR-code to scan?",
-      "result-ok": "The scanned QR-code is now connected to your account and personal information. Please keep your physical QR-code safe.",
-      "start-scanner": "Start scanner",
-      "try-again": "Try again",
-      "yes": "Yes"
-    },
     "registration-summary": {
       "documents": "Make sure to have these documents ready:",
       "no-validation-conclusion": "Thank you. Your registration is now complete.   <br><br>   You should receive an SMS/WhatsApp on the provided phone number shortly that confirms your registration.   <br><br>   You will be informed if your application has been successful within 7 days.   <br><br>   This is the final message for now.",
-      "qr-code": "Please show this QR-code to the aidworker when asked.",
       "validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS/WhatsApp on the phone number you provided. This SMS/WhatsApp confirms your registration.<br><br>In the following weeks, an Aid Worker from the organisation might reach out to you to organise a meeting to validate the information you provided. The Aid Worker will come to you for this meeting.",
       "offline-warning": "You are currently offline. Your registration cannot be stored. Please get online with your device, for example by connecting to Wifi, and click 'Try again'."
     },
@@ -155,16 +142,6 @@
       "phone-number": "We couldn't verify this phone-number. Please adjust and try again.",
       "required": "An answer is required for this question. Please adjust and try again."
     }
-  },
-  "qr-scanner": {
-    "close": "Close",
-    "error-generic": "Something went wrong.",
-    "error-no-permissions": "Please allow the camera to be used or check if its not already in use and try again.",
-    "error-not-compatible": "Your device is not able to scan",
-    "switch-camera": "Switch camera",
-    "title": "Scan QR-code",
-    "toggle-flash": "Toggle flash-light",
-    "try-again": "Try again"
   },
   "shared": {
     "close-button": "Close",

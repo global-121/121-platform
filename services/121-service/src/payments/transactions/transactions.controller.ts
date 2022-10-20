@@ -20,9 +20,9 @@ import {
   GetTransactionOutputDto,
 } from './dto/get-transaction.dto';
 import { TransactionsService } from './transactions.service';
-import { PermissionsGuard } from '../../permissions.guard';
-import { Permissions } from '../../permissions.decorator';
 import { PermissionEnum } from '../../user/permission.enum';
+import { Permissions } from '../../guards/permissions.decorator';
+import { PermissionsGuard } from '../../guards/permissions.guard';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('payments/transactions')

@@ -63,10 +63,6 @@ export class RegistrationsService {
   >;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
-  @InjectRepository(ProgramCustomAttributeEntity)
-  private readonly programCustomAttributeRepository: Repository<
-    ProgramCustomAttributeEntity
-  >;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspQuestionEntity)
@@ -96,15 +92,14 @@ export class RegistrationsService {
 
   public async create(
     postData: CreateRegistrationDto,
+    programId: number,
     userId: number,
   ): Promise<RegistrationEntity> {
     const user = await this.findUserOrThrow(userId);
     let registration = new RegistrationEntity();
     registration.referenceId = postData.referenceId;
     registration.user = user;
-    registration.program = await this.programRepository.findOne(
-      postData.programId,
-    );
+    registration.program = await this.programRepository.findOne(programId);
     await this.registrationRepository.save(registration);
     return this.setRegistrationStatus(
       postData.referenceId,
@@ -144,6 +139,7 @@ export class RegistrationsService {
   public async storeProgramAnswers(
     referenceId: string,
     rawProgramAnswers: ProgramAnswer[],
+    programId: number,
   ): Promise<void> {
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
@@ -151,7 +147,7 @@ export class RegistrationsService {
     );
     const programAnswers = await this.cleanAnswers(
       rawProgramAnswers,
-      registration.program.id,
+      programId,
     );
     for (let answer of programAnswers) {
       const programQuestion = await this.programQuestionRepository.findOne({
@@ -166,7 +162,7 @@ export class RegistrationsService {
     await this.storePhoneNumberInRegistration(programAnswers, referenceId);
     await this.inclusionScoreService.calculateInclusionScore(referenceId);
     await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-      registration.program.id,
+      programId,
       referenceId,
     );
   }
@@ -391,23 +387,6 @@ export class RegistrationsService {
       },
       relations: ['fsp', 'data'],
     });
-  }
-
-  public async addQrIdentifier(
-    referenceId: string,
-    qrIdentifier: string,
-  ): Promise<void> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
-
-    const duplicateIdentifier = await this.registrationRepository.findOne({
-      where: { qrIdentifier: qrIdentifier },
-    });
-    if (duplicateIdentifier) {
-      const errors = 'This QR identifier already exists';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    registration.qrIdentifier = qrIdentifier;
-    await this.registrationRepository.save(registration);
   }
 
   public async register(
@@ -1061,9 +1040,14 @@ export class RegistrationsService {
 
   public async searchRegistration(
     rawPhoneNumber?: string,
-    name?: string,
+    userId?: number,
   ): Promise<RegistrationEntity[]> {
     const registrations = [];
+    const user = await this.programService.findUserProgramAssignmentsOrThrow(
+      userId,
+    );
+    const programIds = user.programAssignments.map(p => p.program.id);
+
     if (rawPhoneNumber) {
       const customAttributesPhoneNumberNames = [
         CustomDataAttributes.phoneNumber as string,
@@ -1074,12 +1058,19 @@ export class RegistrationsService {
         rawPhoneNumber,
       );
 
-      const matchingRegistrationData = await this.registrationDataRepository.find(
-        {
-          where: { value: phoneNumber },
-          relations: ['registration'],
-        },
-      );
+      const matchingRegistrationData = await getRepository(
+        RegistrationDataEntity,
+      )
+        .createQueryBuilder('registrationData')
+        .leftJoinAndSelect('registrationData.registration', 'registration')
+        .where('registrationData.value = :phoneNumber', {
+          phoneNumber: phoneNumber,
+        })
+        .andWhere('registration.program.id IN (:...programIds)', {
+          programIds: programIds,
+        })
+        .getMany();
+
       for (const d of matchingRegistrationData) {
         const dataName = await d.getDataName();
         if (customAttributesPhoneNumberNames.includes(dataName)) {
@@ -1102,38 +1093,22 @@ export class RegistrationsService {
         }
       }
     }
-    if (name) {
-      const customAttributesNameNames = [
-        CustomDataAttributes.nameFirst as string,
-        CustomDataAttributes.nameLast as string,
-        CustomDataAttributes.firstName as string,
-        CustomDataAttributes.secondName as string,
-        CustomDataAttributes.thirdName as string,
-      ];
 
-      const matchingRegistrationData = await this.registrationDataRepository.find(
-        {
-          where: { value: name },
-          relations: ['registration'],
-        },
-      );
-      for (const d of matchingRegistrationData) {
-        const dataName = await d.getDataName();
-        if (customAttributesNameNames.includes(dataName)) {
-          const registration = await this.getRegistrationFromReferenceId(
-            d.registration.referenceId,
-          );
-          registrations.push(registration);
-        }
-      }
-    }
-    return registrations;
+    // Find uniques by referenceId because it's possible to get duplicates if program question and FSP question have phonenumber
+    const key = 'referenceId';
+    const arrayUniqueByKey = [
+      ...new Map(registrations.map(item => [item[key], item])).values(),
+    ];
+
+    return arrayUniqueByKey;
   }
 
-  // AW: get answers to attributes for a given PA (identified first through referenceId/QR)
+  // AW: get answers to attributes for a given PA (identified first through referenceId)
   public async getRegistrationToValidate(
     referenceId: string,
+    userId: number,
   ): Promise<RegistrationEntity> {
+    await this.programService.findUserProgramAssignmentsOrThrow(userId);
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
       [
@@ -1263,22 +1238,13 @@ export class RegistrationsService {
   }
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {
-    const user = await this.userRepository.findOne(userId, {
-      relations: ['programAssignments', 'programAssignments.program'],
-    });
-    if (
-      !user ||
-      !user.programAssignments ||
-      user.programAssignments.length === 0
-    ) {
-      const errors = 'User not found or no assigned programs';
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
+    const user = await this.programService.findUserProgramAssignmentsOrThrow(
+      userId,
+    );
     const programIds = user.programAssignments.map(p => p.program.id);
     const data = {
       answers: await this.getAllProgramAnswers(user),
       fspData: await this.getAllFspAnswers(programIds),
-      qrRegistrationMapping: await this.getQrRegistrationMapping(programIds),
       programIds: user.programAssignments.map(assignment => {
         return assignment.program.id;
       }),
@@ -1305,9 +1271,7 @@ export class RegistrationsService {
           RegistrationStatusEnum.selectedForValidation,
         ],
       })
-      .andWhere('data.programQuestionId is not null', {
-        programIds: programIds,
-      })
+      .andWhere('data.programQuestionId is not null')
       .getMany();
     let answers = [];
     for (const r of registrationsToValidate) {
@@ -1409,24 +1373,6 @@ export class RegistrationsService {
     return fspAnswers;
   }
 
-  public async getQrRegistrationMapping(
-    programIds: number[],
-  ): Promise<RegistrationEntity[]> {
-    return await this.registrationRepository
-      .createQueryBuilder('registration')
-      .select(['registration.qrIdentifier', 'registration.referenceId'])
-      .where('registration."programId" IN (:...programIds)', {
-        programIds: programIds,
-      })
-      .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
-        registrationStatuses: [
-          RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.selectedForValidation,
-        ],
-      })
-      .getMany();
-  }
-
   public async getFspAnswersAttributes(
     referenceId: string,
   ): Promise<FspAnswersAttrInterface> {
@@ -1447,8 +1393,15 @@ export class RegistrationsService {
   }
 
   // Used by Aidworker
-  public async issueValidation(payload: ValidationIssueDataDto): Promise<void> {
-    await this.storeProgramAnswers(payload.referenceId, payload.programAnswers);
+  public async issueValidation(
+    payload: ValidationIssueDataDto,
+    programId: number,
+  ): Promise<void> {
+    await this.storeProgramAnswers(
+      payload.referenceId,
+      payload.programAnswers,
+      programId,
+    );
     await this.setRegistrationStatus(
       payload.referenceId,
       RegistrationStatusEnum.validated,
@@ -1467,19 +1420,6 @@ export class RegistrationsService {
         this.registrationDataRepository.remove(data);
       }
     }
-  }
-
-  public async findReferenceIdWithQrIdentifier(
-    qrIdentifier: string,
-  ): Promise<ReferenceIdDto> {
-    let registration = await this.registrationRepository.findOne({
-      where: { qrIdentifier: qrIdentifier },
-    });
-    if (!registration) {
-      const errors = 'No registration found for QR';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    return { referenceId: registration.referenceId };
   }
 
   public async sendCustomTextMessage(

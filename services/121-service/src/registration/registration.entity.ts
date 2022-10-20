@@ -56,9 +56,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ nullable: true })
   public registrationStatus: RegistrationStatusEnum;
 
-  @Column({ nullable: true })
-  public qrIdentifier: string;
-
   @Index({ unique: true })
   @Column()
   public referenceId: string;

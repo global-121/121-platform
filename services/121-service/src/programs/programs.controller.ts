@@ -1,3 +1,4 @@
+import { AdminAuthGuard } from './../guards/admin.guard';
 import { ProgramQuestionEntity } from './program-question.entity';
 import {
   Get,
@@ -12,25 +13,21 @@ import { ProgramService } from './programs.service';
 import { CreateProgramDto } from './dto/create-program.dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
 
-import {
-  ApiTags,
-  ApiBearerAuth,
-  ApiResponse,
-  ApiOperation,
-  ApiParam,
-} from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { ChangePhaseDto } from './dto/change-phase.dto';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { PermissionsGuard } from '../permissions.guard';
-import { Permissions } from '../permissions.decorator';
+import { PermissionsGuard } from '../guards/permissions.guard';
+import { Permissions } from '../guards/permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { Attribute } from '../registration/enum/custom-data-attributes';
+import { User } from '../user/user.decorator';
+import { Admin } from '../guards/admin.decorator';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('programs')
 @Controller('programs')
 export class ProgramController {
@@ -47,14 +44,6 @@ export class ProgramController {
     return await this.programService.findOne(Number(params.programId));
   }
 
-  @Permissions(PermissionEnum.ProgramAllREAD)
-  @ApiOperation({ summary: 'Get all programs' })
-  @ApiResponse({ status: 200, description: 'Return all programs.' })
-  @Get()
-  public async findAll(): Promise<ProgramsRO> {
-    return await this.programService.findAll();
-  }
-
   @ApiOperation({ summary: 'Get published programs' })
   @ApiResponse({ status: 200, description: 'Return all published programs.' })
   @Get('published/all')
@@ -62,7 +51,19 @@ export class ProgramController {
     return await this.programService.getPublishedPrograms();
   }
 
-  @Permissions(PermissionEnum.ProgramCREATE)
+  @ApiOperation({ summary: 'Get all assigned programs for a user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all assigned programs for a user.',
+  })
+  @Get('assigned/all')
+  public async getAssignedPrograms(
+    @User('id') userId: number,
+  ): Promise<ProgramsRO> {
+    return await this.programService.getAssignedPrograms(userId);
+  }
+
+  @Admin()
   @ApiOperation({ summary: 'Create program' })
   @ApiResponse({
     status: 201,
@@ -79,7 +80,7 @@ export class ProgramController {
   @Permissions(PermissionEnum.ProgramPhaseUPDATE)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('change-phase/:programId')
+  @Post(':programId/change-phase')
   public async changePhase(
     @Param() params,
     @Body() changePhaseData: ChangePhaseDto,

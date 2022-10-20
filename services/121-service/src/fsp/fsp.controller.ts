@@ -1,3 +1,4 @@
+import { AdminAuthGuard } from './../guards/admin.guard';
 import {
   Post,
   Body,
@@ -8,21 +9,14 @@ import {
   Delete,
 } from '@nestjs/common';
 import { FspService } from './fsp.service';
-import {
-  ApiTags,
-  ApiResponse,
-  ApiOperation,
-  ApiParam,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { FspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
 import { FspQuestionEntity } from './fsp-question.entity';
-import { PermissionsGuard } from '../permissions.guard';
-import { Permissions } from '../permissions.decorator';
-import { PermissionEnum } from '../user/permission.enum';
+import { PermissionsGuard } from '../guards/permissions.guard';
+import { Admin } from '../guards/admin.decorator';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('fsp')
 @Controller('fsp')
 export class FspController {
@@ -41,7 +35,7 @@ export class FspController {
     return await this.fspService.getFspById(param.fspId);
   }
 
-  @Permissions(PermissionEnum.FspUPDATE)
+  @Admin()
   @ApiOperation({ summary: 'Update FSP' })
   @Post('update/fsp')
   public async updateFsp(
@@ -50,7 +44,7 @@ export class FspController {
     return await this.fspService.updateFsp(updateFspDto);
   }
 
-  @Permissions(PermissionEnum.FspAttributeUPDATE)
+  @Admin()
   @ApiOperation({ summary: 'Update FSP attribute' })
   @Post('update/fsp-attribute')
   public async updateFspAttribute(
@@ -59,7 +53,7 @@ export class FspController {
     return await this.fspService.updateFspAttribute(updateFspAttributeDto);
   }
 
-  @Permissions(PermissionEnum.FspAttributeCREATE)
+  @Admin()
   @ApiOperation({ summary: 'Create FSP attribute' })
   @Post('fsp-attribute')
   public async createFspAttribute(
@@ -68,7 +62,7 @@ export class FspController {
     return await this.fspService.createFspAttribute(updateFspAttributeDto);
   }
 
-  @Permissions(PermissionEnum.FspAttributeDELETE)
+  @Admin()
   @ApiParam({ name: 'fspAttributeId', required: true, type: 'integer' })
   @ApiOperation({ summary: 'Delete FSP attribute' })
   @Delete('fsp-attribute/:fspAttributeId')

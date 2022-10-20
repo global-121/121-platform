@@ -99,22 +99,24 @@ export class SelectFspComponent extends PersonalDirective {
   public async submitFsp() {
     this.fspSubmitted = true;
 
-    this.programsService.postFsp(this.referenceId, this.fspChoice).then(
-      async () => {
-        // Update FSPs with more details:
-        this.chosenFsp = await this.paData.getFspById(this.fspChoice);
-        this.chosenFsp.fspDisplayName = this.translatableString.get(
-          this.chosenFsp.fspDisplayName,
-        );
+    this.programsService
+      .postFsp(this.referenceId, this.fspChoice, this.program.id)
+      .then(
+        async () => {
+          // Update FSPs with more details:
+          this.chosenFsp = await this.paData.getFspById(this.fspChoice);
+          this.chosenFsp.fspDisplayName = this.translatableString.get(
+            this.chosenFsp.fspDisplayName,
+          );
 
-        if (!this.chosenFsp.questions.length) {
-          return this.complete();
-        }
+          if (!this.chosenFsp.questions.length) {
+            return this.complete();
+          }
 
-        this.questions = this.buildQuestions(this.chosenFsp.questions);
-      },
-      (error) => console.log('error', error),
-    );
+          this.questions = this.buildQuestions(this.chosenFsp.questions);
+        },
+        (error) => console.log('error', error),
+      );
   }
 
   private buildQuestions(fspAttributes: FspQuestion[]) {
@@ -162,13 +164,16 @@ export class SelectFspComponent extends PersonalDirective {
     this.processInOrder(
       Object.values(this.customAttributeAnswers),
       (answer: Answer) =>
-        this.programsService.postRegistrationCustomAttributes([
-          {
-            referenceId: this.referenceId,
-            key: answer.code,
-            value: answer.value,
-          },
-        ]),
+        this.programsService.postRegistrationCustomAttributes(
+          [
+            {
+              referenceId: this.referenceId,
+              key: answer.code,
+              value: answer.value,
+            },
+          ],
+          this.program.id,
+        ),
     )
       .then(
         () => {

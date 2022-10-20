@@ -1,16 +1,10 @@
 import { Post, Body, Controller, UseGuards, Get, Param } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { User } from '../user/user.decorator';
-import {
-  ApiTags,
-  ApiBearerAuth,
-  ApiResponse,
-  ApiOperation,
-  ApiParam,
-} from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { CreatePaymentDto } from './dto/create-payment.dto';
-import { PermissionsGuard } from '../permissions.guard';
-import { Permissions } from '../permissions.decorator';
+import { PermissionsGuard } from '../guards/permissions.guard';
+import { Permissions } from '../guards/permissions.decorator';
 import { PermissionEnum } from '../user/permission.enum';
 import { FspInstructions } from './dto/fsp-instructions.dto';
 

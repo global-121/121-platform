@@ -30,16 +30,16 @@ export class rolesPermissionsUpdate1644318599213 implements MigrationInterface {
           // Took version from seed-init.ts as latest version, not the one from previous migration-script
           PermissionEnum.ActionCREATE,
           PermissionEnum.ActionREAD,
-          PermissionEnum.AidWorkerCREATE,
-          PermissionEnum.AidWorkerDELETE,
+          // PermissionEnum.AidWorkerCREATE,  // REMOVED 2022-10-12
+          // PermissionEnum.AidWorkerDELETE, Moved to admin
           PermissionEnum.AidWorkerProgramUPDATE,
-          PermissionEnum.InstanceUPDATE,
+          // PermissionEnum.InstanceUPDATE,
           PermissionEnum.PaymentCREATE,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
-          PermissionEnum.ProgramAllREAD,
-          PermissionEnum.ProgramCREATE,
+          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
+          // PermissionEnum.ProgramCREATE, Moved to admin
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramPhaseUPDATE,
           PermissionEnum.ProgramUPDATE,
@@ -67,7 +67,7 @@ export class rolesPermissionsUpdate1644318599213 implements MigrationInterface {
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
-          PermissionEnum.ProgramAllREAD,
+          // PermissionEnum.ProgramAllREAD, // REMOVED 2022-10-12
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.RegistrationAttributeUPDATE,
           PermissionEnum.RegistrationCREATE,

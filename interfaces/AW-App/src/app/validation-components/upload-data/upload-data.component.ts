@@ -42,7 +42,10 @@ export class UploadDataComponent implements ValidationComponent {
         if (this.uploadAborted) {
           break;
         }
-        await this.validateFspAnswers(paAnswers.fspanswers);
+        await this.validateFspAnswers(
+          paAnswers.programId,
+          paAnswers.fspanswers,
+        );
         if (this.uploadAborted) {
           break;
         }
@@ -65,7 +68,11 @@ export class UploadDataComponent implements ValidationComponent {
       return;
     }
     await this.programsService
-      .postValidationData(paData.referenceId, paData.programAnswers)
+      .postValidationData(
+        paData.programId,
+        paData.referenceId,
+        paData.programAnswers,
+      )
       .then(
         () => {
           console.log(
@@ -83,6 +90,7 @@ export class UploadDataComponent implements ValidationComponent {
   }
 
   public async validateFspAnswers(
+    programId: number,
     validatedFspAnswers: FspAnswer[],
   ): Promise<void> {
     if (!validatedFspAnswers) {
@@ -92,6 +100,7 @@ export class UploadDataComponent implements ValidationComponent {
     for (const answer of validatedFspAnswers) {
       try {
         await this.programsService.postRegistrationCustomAttribute(
+          programId,
           answer.referenceId,
           answer.code,
           answer.value,

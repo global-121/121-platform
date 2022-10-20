@@ -34,9 +34,7 @@ export class ProgramNavigationComponent implements OnInit {
   }
 
   public canManageAidWorkers(): boolean {
-    return this.authService.hasAllPermissions([
-      Permission.AidWorkerCREATE,
-      Permission.AidWorkerDELETE,
+    return this.authService.hasAllPermissions(this.programId, [
       Permission.AidWorkerProgramUPDATE,
     ]);
   }

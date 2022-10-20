@@ -6,8 +6,4 @@ export class SearchRegistrationDto {
   @IsString()
   @IsOptional()
   public readonly phoneNumber: string;
-  @ApiProperty({ example: 'name' })
-  @IsString()
-  @IsOptional()
-  public readonly name: string;
 }

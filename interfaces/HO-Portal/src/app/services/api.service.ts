@@ -118,6 +118,44 @@ export class ApiService {
     );
   }
 
+  delete(
+    endpoint: string,
+    path: string,
+    anonymous: boolean = false,
+  ): Promise<any> {
+    const security = this.showSecurity(anonymous);
+
+    return new Promise((resolve, reject) =>
+      this.http
+        .delete(endpoint + path, {
+          headers: this.createHeaders(anonymous),
+          withCredentials: true,
+        })
+        .pipe(
+          tap((response) =>
+            console.log(
+              `ApiService DELETE: ${security} ${endpoint}${path}`,
+              `\nResponse:`,
+              response,
+            ),
+          ),
+          catchError((error: HttpErrorResponse): Observable<any> => {
+            return this.handleError(error, anonymous);
+          }),
+        )
+        .toPromise()
+        .then((response) => {
+          if (response && response.error) {
+            throw response;
+          }
+          return resolve(response);
+        })
+        .catch((err) => {
+          return reject(err);
+        }),
+    );
+  }
+
   handleError(error: HttpErrorResponse, anonymous: boolean) {
     if (anonymous === true) {
       return of(error);
