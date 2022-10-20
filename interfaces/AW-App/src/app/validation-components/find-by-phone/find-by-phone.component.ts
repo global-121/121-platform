@@ -156,8 +156,8 @@ export class FindByPhoneComponent implements ValidationComponent {
     validationData: any[],
     phoneNumber: string,
     allPrograms: Program[],
-  ) {
-    const paToValidateOptions = [];
+  ): PaToValidateOption[] {
+    const paToValidateOptions: PaToValidateOption[] = [];
     for (const referenceId of referenceIds) {
       const paToValidateOption = new PaToValidateOption();
       const programId = validationData.find(
@@ -211,7 +211,6 @@ export class FindByPhoneComponent implements ValidationComponent {
         } as PaToValidateOption;
         this.peopleAffectedFound.push(paRO);
       }
-
       return this.peopleAffectedFound;
     } catch (e) {
       console.log('Error: ', e);
