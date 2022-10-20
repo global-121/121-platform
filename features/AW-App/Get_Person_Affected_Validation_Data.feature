@@ -13,7 +13,6 @@ Feature: Get Person Affected Validation Data
     When the phonenumber is entered
     Then a positive feedback message is shown
     And the correct PA-data is loaded
-    And the "validate-program"-component is shown
 
   Scenario: Unsuccessfully get PA-data when online with incorrect phonenumber
     Given there is internet-connectivity
@@ -29,5 +28,34 @@ Feature: Get Person Affected Validation Data
     When the phonenumber is entered
     Then the correct PA-data is loaded
     And a positive feedback message is shown
-    And the "validate-program"-component is shown
+    And the correct PA-data is loaded
+
+  Scenario: Successfully show PA answers (without duplicate phonenumber & data found online)
+    Given only one PA has been found with search by phone online
+    Then the program answers are loaded
+    And the fsp answers are loaded
+
+  Scenario: Successfully show PA answers (with duplicate phonenumber data found online)
+    Given multiple PA have been found with search by phone online
+    And the full names are shown
+    And the corresponding program labels are shown
+    When a fullname is selected
+    Then the program answers are loaded
+    And the fsp answers are loaded
+
+
+  Scenario: Successfully show PA answers (without duplicate phonenumber data found offline)
+    Given only one PA has been found with search by phone from downloaded data
+    Then the program answers are loaded
+    And the fsp answers are loaded
+
+  Scenario: Successfully show PA answers (with duplicate phonenumber  data found offline)
+    Given multiple PA have been found with search by phone from downloaded data
+    And the full names are shown
+    And the corresponding program labels are shown
+    When a fullname is selected
+    Then the program answers are loaded
+    And the fsp answers are loaded
+
+
 

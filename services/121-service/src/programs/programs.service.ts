@@ -93,7 +93,9 @@ export class ProgramService {
   public async getAssignedPrograms(userId: number): Promise<ProgramsRO> {
     const user = await this.findUserProgramAssignmentsOrThrow(userId);
     const programIds = user.programAssignments.map(p => p.program.id);
-    const programs = await this.programRepository.findByIds(programIds);
+    const programs = await this.programRepository.findByIds(programIds, {
+      relations: ['programQuestions'],
+    });
     const programsCount = programs.length;
 
     return { programs, programsCount };

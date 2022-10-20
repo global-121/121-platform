@@ -37,8 +37,4 @@ Feature: Upload validation data
     And it has no numbered label attached anymore
     And the status of the PA in the HO-portal is updated to "Validated"
     And the inclusion score is recalculated
-    And - if configured for the program - the "paymentAmountMultiplier" is recalculated based on formula 
-
-  Scenario: Upload validation data unsuccessfully
-
-  Scenario: Upload validation data with changed answers that would lead to a different inclusion score
+    And - if configured for the program - the "paymentAmountMultiplier" is recalculated based on formula

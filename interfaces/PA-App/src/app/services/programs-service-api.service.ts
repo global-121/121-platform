@@ -220,11 +220,11 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  isStatusRegistered(referenceId: string): Promise<boolean> {
+  isStatusRegistered(referenceId: string, programId: number): Promise<boolean> {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/registrations/status/${referenceId}`,
+        `/programs/${programId}/registrations/status/${referenceId}`,
       )
       .toPromise()
       .then((res) => {

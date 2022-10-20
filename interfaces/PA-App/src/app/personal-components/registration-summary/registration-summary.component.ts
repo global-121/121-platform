@@ -134,6 +134,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     if (!this.registrationStatus && !this.syncService.areTasksQueued()) {
       this.registrationStatus = await this.programsService.isStatusRegistered(
         this.referenceId,
+        this.program.id,
       );
 
       if (this.registrationStatus) {
