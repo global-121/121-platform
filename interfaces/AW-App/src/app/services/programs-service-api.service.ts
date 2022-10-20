@@ -75,7 +75,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/search-phone',
+        '/registrations/search-phone',
         {
           phoneNumber,
         },
