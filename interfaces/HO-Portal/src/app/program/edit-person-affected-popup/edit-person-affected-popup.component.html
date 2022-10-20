@@ -51,7 +51,7 @@
             | translate
         "
         [value]="attributeValues?.paymentAmountMultiplier"
-        (updated)="updatePaAttribute('paymentAmountMultiplier', $event, false)"
+        (updated)="updatePaAttribute('paymentAmountMultiplier', +$event, false)"
         [inProgress]="inProgress?.paymentAmountMultiplier || false"
         [isDisabled]="readOnly || program?.paymentAmountMultiplierFormula"
         [showSubmit]="!readOnly && !program?.paymentAmountMultiplierFormula"

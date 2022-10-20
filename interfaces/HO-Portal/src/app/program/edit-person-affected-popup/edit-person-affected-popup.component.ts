@@ -7,7 +7,7 @@ import {
   FspAttributeOption,
   FspQuestion,
 } from 'src/app/models/fsp.model';
-import { Person } from 'src/app/models/person.model';
+import { Person, PersonDefaultAttributes } from 'src/app/models/person.model';
 import {
   Program,
   ProgramQuestion,
@@ -105,13 +105,24 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public async updatePaAttribute(
     attribute: string,
-    value: string | string[],
+    value: string | number | string[],
     isPaTableAttribute: boolean,
   ): Promise<void> {
     if (isPaTableAttribute && !Array.isArray(value)) {
       value = String(value);
     }
     this.inProgress[attribute] = true;
+
+    if (attribute === PersonDefaultAttributes.paymentAmountMultiplier) {
+      if (!Number.isInteger(value)) {
+        const errorMessage = this.translate.instant('common.update-error', {
+          error: 'Input should be an integer',
+        });
+        this.actionResult(errorMessage);
+        this.inProgress[attribute] = false;
+        return;
+      }
+    }
 
     this.programsService
       .updatePaAttribute(

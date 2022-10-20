@@ -110,5 +110,5 @@
   "aboutProgram": {
     "en": "[about aid program]"
   },
-  "fullnameNamingConvention": ["nameFirst", "nameLast"]
+  "fullnameNamingConvention": ["nameFirst", "nameMiddle", "nameLast"]
 }

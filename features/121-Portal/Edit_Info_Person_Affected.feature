@@ -11,7 +11,7 @@ Feature: Edit information on Person Affected
     When the user hovers over it
     Then it is highlighted
 
-  Scenario: No permission to edit information
+  Scenario: No permission to view information
     Given the user does not have the "RegistrationPersonalREAD" permission
     When the user views the "People Affected Table"
     Then the user does not see the information-icon, but only the 'PA#X' text
@@ -22,20 +22,18 @@ Feature: Edit information on Person Affected
     Then a popup opens
     And in the title the ID-number of the Person Affected is mentioned
     And an input-field for the "paymentAmountMultiplier" and "phoneNumber" is shown
-    And an input-field for each Custom Attribute with type 'string', 'phoneNumer', 'dropdown', 'multi-select' or 'date' is shown
+    And an input-field for each Custom Attribute with type 'text' is shown (not 'boolean')
     And an input-field for each FSP-attribute (such as "whatsappPhoneNumber") is shown
-    And all input-fields have an accompanying "update" button which is enabled
-    And the pop-up shows a dropdown-list for the current FSP is shown
-    And it has an accompanying "update" button which is disabled
+    And a dropdown-list with the current chosen FSP is shown
+    And all input-fields have an accompanying "save" button which is disabled
     And the popup has a "Notes" section
-    And an input-field for the "paymentAmountMultiplier" is shown
-    And the popup has a "Notes" section and a "Message History" section
     And there is an explanation, including PII-warning
     And there is a free text "note" field
     And it shows the current version of the note if available
     And it shows a placeholder if no note currently saved
     And there is a "save" button
     And there is a 'Last updated on' mention if there is a current version of the note available
+    And the popup has a "Message History" section (see scenario 'View Message History')
 
   Scenario: Successfully update note
     Given a logged-in user with "RegistrationPersonalREAD" permission
@@ -140,7 +138,7 @@ Feature: Edit information on Person Affected
     And input-fields for attributes of the new FSP are shown
     And the new FSP shows as the current selected value of the dropdown
 
-  Scenario: Message History
+  Scenario: View Message History
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to view and edit information
     Then after the Notes section if any messages are sent to PA then "Message History" section will be available

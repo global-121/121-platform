@@ -182,7 +182,18 @@
         "en": "Knows nothing"
       },
       "name": "knowsNothing",
-      "type": "boolean"
+      "type": "boolean",
+      "editableInPortal": true,
+      "phases": ["registrationValidation"]
+    },
+    {
+      "label": {
+        "en": "Text custom attribute"
+      },
+      "name": "textCustomAttribute",
+      "type": "text",
+      "editableInPortal": true,
+      "phases": ["registrationValidation"]
     }
   ],
   "aboutProgram": {
