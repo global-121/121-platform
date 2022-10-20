@@ -1,7 +1,7 @@
 {
-  "published": false,
+  "published": true,
   "validation": true,
-  "phase": "design",
+  "phase": "registrationValidation",
   "location": "Westeros",
   "ngo": "Yellow Cross",
   "titlePortal": {
