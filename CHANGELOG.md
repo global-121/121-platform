@@ -35,6 +35,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix: Added a default width for columns in PA table.
 
+## [1.66.3](https://github.com/global-121/121-platform/compare/v1.66.2...v1.66.3) - 2022-10-20
+
+### Changed
+
+- Fix Get PA data offline if pa data storage returns undefined
+
 ## [1.66.2](https://github.com/global-121/121-platform/compare/v1.66.1...v1.66.2) - 2022-10-14
 
 ### Changed
