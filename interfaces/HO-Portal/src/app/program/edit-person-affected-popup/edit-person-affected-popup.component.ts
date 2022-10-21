@@ -157,8 +157,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     if (error.status === 400) {
       return this.formatConstraintsErrors(error.error);
     }
-    if (error.message) {
-      return '<br><br>' + error.message + '<br>';
+    if (error.error.message) {
+      return '<br><br>' + error.error.message + '<br>';
     }
   }
 
