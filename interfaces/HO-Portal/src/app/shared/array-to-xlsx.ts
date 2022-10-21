@@ -11,7 +11,7 @@ export function arrayToXlsx(array: any[], filename: string): void {
 
 function toExportFileName(excelFileName: string): string {
   const date = new Date();
-  return `${excelFileName}_${
+  return `${excelFileName}-${date.getFullYear()}-${
     date.getMonth() + 1
-  }-${date.getDate()}-${date.getFullYear()}.xlsx`;
+  }-${date.getDate()}.xlsx`;
 }

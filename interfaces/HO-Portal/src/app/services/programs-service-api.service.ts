@@ -293,7 +293,7 @@ export class ProgramsServiceApiService {
 
     saveAs(
       new Blob([csvContents], { type: 'text/csv' }),
-      `program-${programId}_${type}_TEMPLATE.csv`,
+      `${type}-TEMPLATE.csv`,
     );
     return;
   }
