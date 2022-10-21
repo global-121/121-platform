@@ -146,7 +146,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         console.log('error: ', error);
         if (error && error.error) {
           const errorMessage = this.translate.instant('common.update-error', {
-            error: this.formatErrors(error.error),
+            error: this.formatErrors(error),
           });
           this.actionResult(errorMessage);
         }
@@ -154,8 +154,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   }
 
   private formatErrors(error): string {
-    if (error.statusCode === 400) {
-      return this.formatConstraintsErrors(error.message);
+    if (error.status === 400) {
+      return this.formatConstraintsErrors(error.error);
     }
     if (error.message) {
       return '<br><br>' + error.message + '<br>';
@@ -164,12 +164,17 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   private formatConstraintsErrors(errors): string {
     let attributeConstraints = [];
-    for (const error of errors) {
+    for (const error of errors.errors) {
       attributeConstraints = attributeConstraints.concat(
         Object.values(error.constraints),
       );
     }
-    return '<br><br>' + attributeConstraints.join('<br>');
+    return (
+      '<br><br>' +
+      attributeConstraints.join('<br>') +
+      '<br><br>' +
+      this.translate.instant('common.try-again-contact-support')
+    );
   }
 
   private fillPaTableAttributes() {
