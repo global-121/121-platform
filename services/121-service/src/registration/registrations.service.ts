@@ -856,7 +856,17 @@ export class RegistrationsService {
     }
 
     if (attribute !== Attributes.paymentAmountMultiplier) {
-      await registration.saveData(value, { name: attribute });
+      try {
+        await registration.saveData(value, { name: attribute });
+      } catch (error) {
+        // This is an exception because the phoneNumber is in the registration entity, not in the registrationData.
+        if (attribute === Attributes.phoneNumber) {
+          registration.phoneNumber = value.toString();
+          await this.registrationRepository.save(registration);
+        } else {
+          throw error;
+        }
+      }
     }
     const savedRegistration = await this.registrationRepository.save(
       registration,
