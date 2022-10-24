@@ -360,7 +360,7 @@ export class ProgramsServiceApiService {
         },
       )
       .then((response) => {
-        if (response.data) {
+        if (response.data && response.data.length > 0) {
           arrayToXlsx(response.data, response.fileName);
         }
         return response;
