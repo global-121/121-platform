@@ -66,12 +66,15 @@ export class ErrorHandlerService extends ErrorHandler {
   }
 
   private replaceErrorMessages(errorMessage: string): string {
-    switch (errorMessage) {
-      case "The value '[]' given for the attribute 'skills' does not have the correct format for type 'multi-select'":
-        return this.translate.instant('common.answer-is-required');
-
-      default:
-        return errorMessage;
+    if (
+      errorMessage.includes(`The value '[]' given for the attribute '`) &&
+      errorMessage.includes(
+        `' does not have the correct format for type 'multi-select'`,
+      )
+    ) {
+      return this.translate.instant('common.answer-is-required');
+    } else {
+      return errorMessage;
     }
   }
 }
