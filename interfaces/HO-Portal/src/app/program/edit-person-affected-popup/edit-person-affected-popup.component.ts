@@ -17,6 +17,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { Attribute } from '../../models/attribute.model';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 
 @Component({
   selector: 'app-edit-person-affected-popup',
@@ -69,6 +70,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private alertController: AlertController,
     private pubSub: PubSubService,
+    private errorHandlerService: ErrorHandlerService,
   ) {}
 
   async ngOnInit() {
@@ -146,30 +148,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         console.log('error: ', error);
         if (error && error.error) {
           const errorMessage = this.translate.instant('common.update-error', {
-            error: this.formatErrors(error.error),
+            error: this.errorHandlerService.formatErrors(error),
           });
           this.actionResult(errorMessage);
         }
       });
-  }
-
-  private formatErrors(error): string {
-    if (error.statusCode === 400) {
-      return this.formatConstraintsErrors(error.message);
-    }
-    if (error.message) {
-      return '<br><br>' + error.message + '<br>';
-    }
-  }
-
-  private formatConstraintsErrors(errors): string {
-    let attributeConstraints = [];
-    for (const error of errors) {
-      attributeConstraints = attributeConstraints.concat(
-        Object.values(error.constraints),
-      );
-    }
-    return '<br><br>' + attributeConstraints.join('<br>');
   }
 
   private fillPaTableAttributes() {

@@ -523,7 +523,9 @@
     "timestamp": {
       "done": "Done on:"
     },
-    "show-more": "Show More"
+    "show-more": "Show More",
+    "try-again-contact-support": "Please try again. If the problem persists, contact technical support.",
+    "answer-is-required": "An answer is required for this question."
   },
   "refresh-data": {
     "last-updated": "Last updated: {{date}}"
