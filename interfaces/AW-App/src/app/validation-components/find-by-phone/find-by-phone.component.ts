@@ -168,7 +168,10 @@ export class FindByPhoneComponent implements ValidationComponent {
       let fullName = '';
       for (const attribute of program.fullnameNamingConvention) {
         const nameData = validationData.find(
-          (data) => data.name === attribute && data.programId === program.id,
+          (data) =>
+            data.name === attribute &&
+            data.programId === program.id &&
+            data.referenceId === referenceId,
         ).value;
         if (nameData) {
           fullName = fullName.concat(' ' + nameData);
