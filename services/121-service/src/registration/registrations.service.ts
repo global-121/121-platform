@@ -322,6 +322,8 @@ export class RegistrationsService {
     }
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
+    currentRegistration.note = importedRegistration.note;
+    currentRegistration.noteUpdated = importedRegistration.noteUpdated;
 
     // .. and store phone number and language
     currentRegistration.phoneNumber = sanitizedPhoneNr;
