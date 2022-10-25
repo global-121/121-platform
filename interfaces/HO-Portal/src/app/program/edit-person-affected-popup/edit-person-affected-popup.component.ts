@@ -155,7 +155,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   private formatErrors(error): string {
     if (error.status === 400) {
-      return this.formatConstraintsErrors(error.error);
+      if (Array.isArray(error.error.message)) {
+        return this.formatConstraintsErrors(error.error.message);
+      } else {
+        return '<br><br>' + error.error.message + '<br>';
+      }
     }
     if (error.error.message) {
       return '<br><br>' + error.error.message + '<br>';
@@ -164,7 +168,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   private formatConstraintsErrors(errors): string {
     let attributeConstraints = [];
-    for (const error of errors.errors) {
+    for (const error of errors) {
       attributeConstraints = attributeConstraints.concat(
         Object.values(error.constraints),
       );
