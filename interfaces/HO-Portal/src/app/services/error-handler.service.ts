@@ -43,7 +43,6 @@ export class ErrorHandlerService extends ErrorHandler {
   }
 
   private formatConstraintsErrors(errors, attribute?: string): string {
-    let attributeConstraints = [];
     if (attribute) {
       const attributeError = errors.find(
         (message) => message.property === attribute,
@@ -51,6 +50,8 @@ export class ErrorHandlerService extends ErrorHandler {
       const attributeConstraints = Object.values(attributeError.constraints);
       return '<br><br>' + attributeConstraints.join('<br>');
     }
+
+    let attributeConstraints = [];
     for (const error of errors) {
       const constraints = Object.values(error.constraints).map((c: string) =>
         this.replaceErrorMessages(c),
