@@ -923,14 +923,12 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       included: person.inclusionDate
         ? formatDate(person.inclusionDate, this.dateFormat, this.locale)
         : null,
-      rejected:
-        person.rejectionDate && person.status === PaStatus.rejected
-          ? formatDate(person.rejectionDate, this.dateFormat, this.locale)
-          : null,
-      inclusionEnded:
-        person.inclusionEndDate && person.status === PaStatus.inclusionEnded
-          ? formatDate(person.inclusionEndDate, this.dateFormat, this.locale)
-          : null,
+      rejected: person.rejectionDate
+        ? formatDate(person.rejectionDate, this.dateFormat, this.locale)
+        : null,
+      inclusionEnded: person.inclusionEndDate
+        ? formatDate(person.inclusionEndDate, this.dateFormat, this.locale)
+        : null,
       name: person.name,
       preferredLanguage: person.preferredLanguage
         ? this.translate.instant(
