@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramPeopleAffectedComponent } from './program-people-affected.component';
 
 const modalSpy = jasmine.createSpyObj('Modal', ['present']);
@@ -36,6 +37,7 @@ describe('ProgramPeopleAffectedComponent', () => {
       providers: [
         provideMagicalMock(AuthService),
         provideMagicalMock(ProgramsServiceApiService),
+        provideMagicalMock(ErrorHandlerService),
         {
           provide: ModalController,
           useValue: modalCtrlSpy,
