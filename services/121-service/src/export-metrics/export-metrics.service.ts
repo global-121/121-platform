@@ -395,11 +395,11 @@ export class ExportMetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
-        `registration."${GenericAttributes.id}"`,
+        `registration."id"`,
         `registration."${GenericAttributes.phoneNumber}"`,
         `registration."${GenericAttributes.paymentAmountMultiplier}"`,
         `registration."${GenericAttributes.preferredLanguage}"`,
-        `registration."${GenericAttributes.note}"`,
+        `registration."note"`,
         `registration."registrationStatus" as status`,
         `registration."referenceId" as "referenceId"`,
         `fsp.fsp as financialServiceProvider`,
@@ -429,7 +429,7 @@ export class ExportMetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
-        `registration."${GenericAttributes.id}"`,
+        `registration."id"`,
         `registration."registrationStatus" AS status`,
         `fsp.fsp AS fsp`,
         `registration."${GenericAttributes.phoneNumber}"`,

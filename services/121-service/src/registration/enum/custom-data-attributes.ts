@@ -30,8 +30,6 @@ export enum CustomDataAttributes {
 }
 
 export enum GenericAttributes {
-  id = 'id',
-  note = 'note',
   phoneNumber = 'phoneNumber',
   preferredLanguage = 'preferredLanguage',
   fspName = 'fspName',
