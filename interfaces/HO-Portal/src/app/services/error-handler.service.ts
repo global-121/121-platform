@@ -47,8 +47,8 @@ export class ErrorHandlerService extends ErrorHandler {
       const attributeError = errors.find(
         (message) => message.property === attribute,
       );
-      const attributeConstraints = Object.values(attributeError.constraints);
-      return '<br><br>' + attributeConstraints.join('<br>');
+      const constraints = Object.values(attributeError.constraints);
+      return '<br><br>' + constraints.join('<br>');
     }
 
     let attributeConstraints = [];
