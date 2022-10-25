@@ -222,10 +222,11 @@ export class ProgramService {
   }
 
   public async updateProgramQuestion(
+    programId: number,
     updateProgramQuestionDto: UpdateProgramQuestionDto,
   ): Promise<ProgramQuestionEntity> {
     const programQuestion = await this.programQuestionRepository.findOne({
-      where: { name: updateProgramQuestionDto.name },
+      where: { name: updateProgramQuestionDto.name, programId: programId },
     });
     if (!programQuestion) {
       const errors = `No programQuestion found with name ${updateProgramQuestionDto.name}`;

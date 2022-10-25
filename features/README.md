@@ -106,11 +106,11 @@ Features of the 121-platform are described in this folder in a standardizes way 
 #### Using Swagger UI
 
 - [Manage user roles](Admin-user/Manage_Roles.feature)
-- [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provider.feature)
+- [Add and Update program custom attribute](Admin-user/Add_And_Update_program_custom_attribute.feature)
+- [Update program question](Admin-user/Update_program_question.feature)
 - Update Financial Service Provider (not chosen FSP, but entity itself)
 - Create/Update/Delete FSP attributes
 - Update program
-- Update program question
 - Update instance
 - Add/update Intersolve instructions image
 - Load seed data
