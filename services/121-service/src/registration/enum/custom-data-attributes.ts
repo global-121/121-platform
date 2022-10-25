@@ -30,8 +30,6 @@ export enum CustomDataAttributes {
 }
 
 export enum GenericAttributes {
-  id = 'id',
-  note = 'note',
   phoneNumber = 'phoneNumber',
   preferredLanguage = 'preferredLanguage',
   fspName = 'fspName',
@@ -43,6 +41,7 @@ export class Attribute {
   public type: string;
   public label: object;
   public shortLabel?: object;
+  public options?: JSON;
 }
 
 export enum AnswerTypes {

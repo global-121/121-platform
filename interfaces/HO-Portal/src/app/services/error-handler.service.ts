@@ -31,6 +31,8 @@ export class ErrorHandlerService extends ErrorHandler {
     if (error.status === 400) {
       if (Array.isArray(error.error.message)) {
         return this.formatConstraintsErrors(error.error.message, attribute);
+      } else if (Array.isArray(error.error.errors)) {
+        return this.formatConstraintsErrors(error.error.errors, attribute);
       } else {
         return '<br><br>' + error.error.message + '<br>';
       }
@@ -41,14 +43,15 @@ export class ErrorHandlerService extends ErrorHandler {
   }
 
   private formatConstraintsErrors(errors, attribute?: string): string {
-    let attributeConstraints = [];
     if (attribute) {
       const attributeError = errors.find(
         (message) => message.property === attribute,
       );
-      const attributeConstraints = Object.values(attributeError.constraints);
-      return '<br><br>' + attributeConstraints.join('<br>');
+      const constraints = Object.values(attributeError.constraints);
+      return '<br><br>' + constraints.join('<br>');
     }
+
+    let attributeConstraints = [];
     for (const error of errors) {
       const constraints = Object.values(error.constraints).map((c: string) =>
         this.replaceErrorMessages(c),
@@ -64,12 +67,15 @@ export class ErrorHandlerService extends ErrorHandler {
   }
 
   private replaceErrorMessages(errorMessage: string): string {
-    switch (errorMessage) {
-      case "The value '[]' given for the attribute 'skills' does not have the correct format for type 'multi-select'":
-        return this.translate.instant('common.answer-is-required');
-
-      default:
-        return errorMessage;
+    if (
+      errorMessage.includes(`The value '[]' given for the attribute '`) &&
+      errorMessage.includes(
+        `' does not have the correct format for type 'multi-select'`,
+      )
+    ) {
+      return this.translate.instant('common.answer-is-required');
+    } else {
+      return errorMessage;
     }
   }
 }

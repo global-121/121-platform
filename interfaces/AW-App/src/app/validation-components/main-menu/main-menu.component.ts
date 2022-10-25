@@ -112,8 +112,22 @@ export class MainMenuComponent implements ValidationComponent {
         await this.programsServiceApiService.getAllAssignedPrograms();
       myPrograms = programs;
       this.storage.set(IonicStorageTypes.myPrograms, myPrograms);
+    } else {
+      this.refreshAllAssignedPrograms();
     }
     return myPrograms;
+  }
+
+  private refreshAllAssignedPrograms(): void {
+    this.programsServiceApiService
+      .getAllAssignedPrograms()
+      .then((programDto) => {
+        this.storage.set(IonicStorageTypes.myPrograms, programDto.programs);
+        this.myPrograms = programDto.programs;
+      })
+      .catch(({ error }) => {
+        console.log('Failed to refresh assigned programs. Error:', error);
+      });
   }
 
   public changeOption($event) {
