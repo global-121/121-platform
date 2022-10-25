@@ -43,6 +43,7 @@ export class Attribute {
   public type: string;
   public label: object;
   public shortLabel?: object;
+  public options?: JSON;
 }
 
 export enum AnswerTypes {
