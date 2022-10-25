@@ -31,6 +31,8 @@ export class ErrorHandlerService extends ErrorHandler {
     if (error.status === 400) {
       if (Array.isArray(error.error.message)) {
         return this.formatConstraintsErrors(error.error.message, attribute);
+      } else if (Array.isArray(error.error.errors)) {
+        return this.formatConstraintsErrors(error.error.errors, attribute);
       } else {
         return '<br><br>' + error.error.message + '<br>';
       }
