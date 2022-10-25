@@ -10,7 +10,7 @@ Feature: Update Program question
     Given 0 or more other attributes are provided 
     When the user fills in the body properties
     And calls the "/programs/{programId}/update/program-question" endpoint
-    Then the provided properties of the existing "program question" are updated
+    Then only the provided properties of the existing "program question" are updated
     And the whole "program question" object is returned
 
   Scenario: Unsuccessfully update unknown program question
