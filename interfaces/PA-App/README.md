@@ -12,11 +12,6 @@ Some specific information need to be configured before use:
 
 Next to the 'generic' dependencies/libraries/components [used by all interfaces](../README.md#Dependencies-in-use), the PA-app also uses:
 
-- [`angularx-qrcode`](https://github.com/cordobo/angularx-qrcode)
-  A component to render QR-codes with custom data.
-
-  - Documentation: <https://github.com/cordobo/angularx-qrcode#basic-usage>
-
 - [Howler](https://howlerjs.com/)
   A component to play, (pre-)load and handle audio-files.
   - Documentation: <https://github.com/goldfire/howler.js#documentation>

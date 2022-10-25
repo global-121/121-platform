@@ -10,6 +10,7 @@ import { UserRoleEntity } from './user-role.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { PermissionEntity } from './permissions.entity';
+import { GuardsService } from '../guards/guards.service';
 
 @Module({
   imports: [
@@ -24,8 +25,8 @@ import { PermissionEntity } from './permissions.entity';
       PermissionEntity,
     ]),
   ],
-  providers: [UserService],
+  providers: [UserService, GuardsService],
   controllers: [UserController],
-  exports: [UserService],
+  exports: [UserService, GuardsService],
 })
 export class UserModule {}

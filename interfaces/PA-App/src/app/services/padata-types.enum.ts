@@ -7,6 +7,5 @@ export enum PaDataTypes {
   referenceId = 'referenceId',
   registrationStatus = 'registrationStatus',
   status = 'status',
-  usePreprintedQrCode = 'usePreprintedQrCode',
   username = 'username',
 }

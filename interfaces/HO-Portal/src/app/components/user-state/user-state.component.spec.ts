@@ -8,18 +8,17 @@ import Permission from 'src/app/auth/permission.enum';
 import { User } from 'src/app/models/user.model';
 import { UserStateComponent } from './user-state.component';
 
+const mockUser: User = {
+  username: 'test@example.org',
+  permissions: {
+    1: [Permission.ProgramMetricsREAD],
+  },
+  expires: Date().toString(),
+};
+
 describe('UserStateComponent', () => {
   let component: UserStateComponent;
   let fixture: ComponentFixture<UserStateComponent>;
-
-  const mockUser: User = {
-    username: 'test@example.org',
-    permissions: [Permission.Test],
-    expires: Date().toString(),
-  };
-  const authServiceMock = {
-    authenticationState$: of(mockUser),
-  };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -27,7 +26,9 @@ describe('UserStateComponent', () => {
       providers: [
         {
           provide: AuthService,
-          useValue: authServiceMock,
+          useValue: {
+            authenticationState$: of(mockUser),
+          },
         },
       ],
       imports: [TranslateModule.forRoot(), RouterTestingModule],

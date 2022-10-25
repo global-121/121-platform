@@ -7,7 +7,7 @@ import {
   FspAttributeOption,
   FspQuestion,
 } from 'src/app/models/fsp.model';
-import { Person } from 'src/app/models/person.model';
+import { Person, PersonDefaultAttributes } from 'src/app/models/person.model';
 import {
   Program,
   ProgramQuestion,
@@ -105,7 +105,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public async updatePaAttribute(
     attribute: string,
-    value: string | string[],
+    value: string | number | string[],
     isPaTableAttribute: boolean,
   ): Promise<void> {
     if (isPaTableAttribute && !Array.isArray(value)) {
@@ -113,8 +113,24 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     }
     this.inProgress[attribute] = true;
 
+    if (attribute === PersonDefaultAttributes.paymentAmountMultiplier) {
+      if (!Number.isInteger(value)) {
+        const errorMessage = this.translate.instant('common.update-error', {
+          error: 'Input should be an integer',
+        });
+        this.actionResult(errorMessage);
+        this.inProgress[attribute] = false;
+        return;
+      }
+    }
+
     this.programsService
-      .updatePaAttribute(this.person.referenceId, attribute, value)
+      .updatePaAttribute(
+        this.programId,
+        this.person.referenceId,
+        attribute,
+        value,
+      )
       .then((response: Person) => {
         this.inProgress[attribute] = false;
         this.attributeValues[attribute] = value;
@@ -218,6 +234,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   private async getNote() {
     const note = await this.programsService.retrieveNote(
+      this.programId,
       this.person.referenceId,
     );
 
@@ -227,6 +244,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   private async getMessageHistory() {
     const msghistory = await this.programsService.retrieveMsgHistory(
+      this.programId,
       this.person.referenceId,
     );
     this.messageHistory = msghistory;
@@ -245,7 +263,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public async saveNote() {
     this.inProgress.note = true;
     await this.programsService
-      .updateNote(this.person.referenceId, this.noteModel)
+      .updateNote(this.programId, this.person.referenceId, this.noteModel)
       .then(
         (note) => {
           this.actionResult(

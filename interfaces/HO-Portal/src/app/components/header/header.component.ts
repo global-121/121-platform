@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AppRoutes } from 'src/app/app-routes.enum';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -18,6 +19,8 @@ export class HeaderComponent implements OnInit {
 
   @Input()
   public showHelp = false;
+
+  public appRoute = AppRoutes;
 
   public programId: number;
   private program: Program;

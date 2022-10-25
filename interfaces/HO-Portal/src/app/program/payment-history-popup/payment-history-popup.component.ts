@@ -248,7 +248,11 @@ export class PaymentHistoryPopupComponent implements OnInit {
       !!paymentRow.transaction
     ) {
       await this.programsService
-        .exportVoucher(this.personRow.referenceId, paymentRow.paymentIndex)
+        .exportVoucher(
+          this.personRow.referenceId,
+          paymentRow.paymentIndex,
+          this.programId,
+        )
         .then(
           async (voucherBlob) => {
             voucherUrl = window.URL.createObjectURL(voucherBlob);

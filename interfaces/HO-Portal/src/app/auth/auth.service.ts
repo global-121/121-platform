@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { AppRoutes } from '../app-routes.enum';
 import { User } from '../models/user.model';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import Permission from './permission.enum';
@@ -32,7 +33,19 @@ export class AuthService {
     return this.getUserFromStorage() !== null;
   }
 
+  private isAssignedToProgram(programId: number, user?: User | null): boolean {
+    if (!user) {
+      user = this.getUserFromStorage();
+    }
+    return (
+      user &&
+      user.permissions &&
+      Object.keys(user.permissions).includes(String(programId))
+    );
+  }
+
   public hasPermission(
+    programId: number,
     requiredPermission: Permission,
     user?: User | null,
   ): boolean {
@@ -40,15 +53,24 @@ export class AuthService {
       user = this.getUserFromStorage();
     }
     return (
-      user && user.permissions && user.permissions.includes(requiredPermission)
+      user &&
+      user.permissions &&
+      this.isAssignedToProgram(programId, user) &&
+      user.permissions[programId].includes(requiredPermission)
     );
   }
 
-  public hasAllPermissions(requiredPermissions: Permission[]): boolean {
+  public hasAllPermissions(
+    programId: number,
+    requiredPermissions: Permission[],
+  ): boolean {
     const user = this.getUserFromStorage();
     return (
+      !!programId &&
       !!requiredPermissions &&
-      requiredPermissions.every((p) => this.hasPermission(p, user))
+      requiredPermissions.every((permissionName) =>
+        this.hasPermission(programId, permissionName, user),
+      )
     );
   }
 
@@ -99,7 +121,7 @@ export class AuthService {
             return resolve();
           }
 
-          this.router.navigate(['/home']);
+          this.router.navigate(['/', AppRoutes.home]);
 
           return resolve();
         },
@@ -130,6 +152,6 @@ export class AuthService {
     await this.programsService.logout();
 
     this.authenticationState.next(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/', AppRoutes.login]);
   }
 }

@@ -1,8 +1,7 @@
 {
-  "published": false,
+  "published": true,
   "validation": true,
-  "validationByQr": true,
-  "phase": "design",
+  "phase": "registrationValidation",
   "location": "Westeros",
   "ngo": "Yellow Cross",
   "titlePortal": {
@@ -183,7 +182,18 @@
         "en": "Knows nothing"
       },
       "name": "knowsNothing",
-      "type": "boolean"
+      "type": "boolean",
+      "editableInPortal": true,
+      "phases": ["registrationValidation"]
+    },
+    {
+      "label": {
+        "en": "Text custom attribute"
+      },
+      "name": "textCustomAttribute",
+      "type": "text",
+      "editableInPortal": true,
+      "phases": ["registrationValidation"]
     }
   ],
   "aboutProgram": {

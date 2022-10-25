@@ -15,6 +15,7 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { Attribute } from '../registration/enum/custom-data-attributes';
+import { UserEntity } from '../user/user.entity';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -35,6 +36,8 @@ export class ProgramService {
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ActionEntity)
   public actionRepository: Repository<ActionEntity>;
+  @InjectRepository(UserEntity)
+  private readonly userRepository: Repository<UserEntity>;
 
   public constructor() {}
 
@@ -58,25 +61,43 @@ export class ProgramService {
     return program;
   }
 
-  public async findAll(): Promise<ProgramsRO> {
-    const qb = await getRepository(ProgramEntity)
+  public async getPublishedPrograms(): Promise<ProgramsRO> {
+    const programs = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.programQuestions', 'programQuestion')
-      .addOrderBy('programQuestion.id', 'ASC');
-
-    qb.where('1 = 1');
-    qb.orderBy('program.created', 'DESC');
-
-    const programs = await qb.getMany();
+      .where('program.published = :published', { published: true })
+      .orderBy('program.created', 'DESC')
+      .addOrderBy('programQuestion.id', 'ASC')
+      .getMany();
     const programsCount = programs.length;
-
     return { programs, programsCount };
   }
 
-  public async getPublishedPrograms(): Promise<ProgramsRO> {
-    let programs = (await this.findAll()).programs;
-    programs = programs.filter(program => program.published);
+  public async findUserProgramAssignmentsOrThrow(
+    userId: number,
+  ): Promise<UserEntity> {
+    const user = await this.userRepository.findOne(userId, {
+      relations: ['programAssignments', 'programAssignments.program'],
+    });
+    if (
+      !user ||
+      !user.programAssignments ||
+      user.programAssignments.length === 0
+    ) {
+      const errors = 'User not found or no assigned programs';
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+    return user;
+  }
+
+  public async getAssignedPrograms(userId: number): Promise<ProgramsRO> {
+    const user = await this.findUserProgramAssignmentsOrThrow(userId);
+    const programIds = user.programAssignments.map(p => p.program.id);
+    const programs = await this.programRepository.findByIds(programIds, {
+      relations: ['programQuestions'],
+    });
     const programsCount = programs.length;
+
     return { programs, programsCount };
   }
 
@@ -103,7 +124,6 @@ export class ProgramService {
     program.description = programData.description;
     program.descCashType = programData.descCashType;
     program.validation = programData.validation;
-    program.validationByQr = programData.validationByQr;
     program.programQuestions = [];
     program.financialServiceProviders = [];
 
@@ -222,7 +242,7 @@ export class ProgramService {
     programId: number,
     programQuestionId: number,
   ): Promise<ProgramQuestionEntity> {
-    const program = await this.findProgramOrThrow(programId);
+    await this.findProgramOrThrow(programId);
 
     const programQuestion = await this.programQuestionRepository.findOne({
       where: { id: Number(programQuestionId) },
@@ -337,7 +357,7 @@ export class ProgramService {
 
     let queryFspAttributes = getRepository(FspQuestionEntity)
       .createQueryBuilder('fspAttribute')
-      .where({ fsp: In(fspIds) });
+      .where({ fspId: In(fspIds) });
 
     if (phase) {
       queryFspAttributes = queryFspAttributes.andWhere(

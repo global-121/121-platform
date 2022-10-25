@@ -17,5 +17,5 @@ Feature: Delete people affected (extension of View_and_Manage_people_affected.fe
     And it mentions the selected number of PAs to delete
     When the user confirms
     Then the selected registrations will be deleted
-    And all related entities will be deleted: "transactions", "twilio-messages", "program-answers", "status-changes" and "imagecode-export-vouchers", "whatsapp-pending-messages"
-    And if present the relate "user" account will be deleted (not present if PA is imported)
+    And all related entities will be deleted: "transactions", "twilio-messages", "registration-data", "registration-status-changes" and "imagecode-export-vouchers", "whatsapp-pending-messages", "people_affected_app_data"
+    And if present the related "user" account will be deleted (not present if PA is imported)

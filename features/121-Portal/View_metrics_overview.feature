@@ -2,7 +2,7 @@
 Feature: View metrics overview
 
   Background:
-    Given a logged-in user with the "ProgramMetricsREAD" or "ProgramAllREAD" permissions
+    Given a logged-in user with the "ProgramMetricsREAD" permissions
 
   Scenario: View metrics overview successfully
     Given the user sees the "dashboard" page

@@ -10,12 +10,6 @@ import { TranslatableStringService } from '../../services/translatable-string.se
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 
-export enum CustomDataNameAttributes {
-  name = 'name',
-  nameFirst = 'nameFirst',
-  nameLast = 'nameLast',
-}
-
 class PaToValidateOption {
   referenceId: string;
   name: string;
@@ -55,8 +49,8 @@ export class FindByPhoneComponent implements ValidationComponent {
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
-    private storage: Storage,
     private translate: TranslatableStringService,
+    private storage: Storage,
   ) {}
 
   async ngOnInit() {}
@@ -162,8 +156,8 @@ export class FindByPhoneComponent implements ValidationComponent {
     validationData: any[],
     phoneNumber: string,
     allPrograms: Program[],
-  ) {
-    const paToValidateOptions = [];
+  ): PaToValidateOption[] {
+    const paToValidateOptions: PaToValidateOption[] = [];
     for (const referenceId of referenceIds) {
       const paToValidateOption = new PaToValidateOption();
       const programId = validationData.find(
@@ -174,10 +168,7 @@ export class FindByPhoneComponent implements ValidationComponent {
       let fullName = '';
       for (const attribute of program.fullnameNamingConvention) {
         const nameData = validationData.find(
-          (data) =>
-            data.name === attribute &&
-            data.programId === program.id &&
-            data.referenceId === referenceId,
+          (data) => data.name === attribute && data.programId === program.id,
         ).value;
         if (nameData) {
           fullName = fullName.concat(' ' + nameData);
@@ -220,7 +211,6 @@ export class FindByPhoneComponent implements ValidationComponent {
         } as PaToValidateOption;
         this.peopleAffectedFound.push(paRO);
       }
-
       return this.peopleAffectedFound;
     } catch (e) {
       console.log('Error: ', e);

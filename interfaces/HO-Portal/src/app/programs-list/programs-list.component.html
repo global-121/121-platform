@@ -13,16 +13,19 @@
           {{ 'page.programs-list.pageTitle' | translate }}
         </strong>
       </h2>
-      <p class="ion-no-margin">
+      <ion-note *ngIf="!items || items?.length < 1">
+        {{ 'page.programs-list.not-available' | translate }}
+      </ion-note>
+      <p
+        *ngIf="items?.length > 0"
+        class="ion-no-margin"
+      >
         {{
           'page.programs-list.pageSubtitle'
             | translate: { nrPrograms: items?.length }
         }}
       </p>
     </ion-col>
-    <ion-note *ngIf="!items">
-      {{ 'page.programs-list.not-available' | translate }}
-    </ion-note>
   </ion-item>
   <ion-row
     style="width: 100%"

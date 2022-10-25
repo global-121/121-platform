@@ -1,10 +1,14 @@
 @ho-portal
 Feature: Navigate home page and main menu
 
+  Background: 
+    Given a logged-in user
+
   Scenario: View home screen
-    When a user with the "ProgramAllREAD" permission
+    When the user views the home screen
     Then the user sees the "home" page
-    And sees a list of all programs on this screen
+    And sees a "program card" for all programs that are assigned to this user
+    And sees a message on how many (assigned) programs are running
 
   Scenario: Open a program-page
     Given a logged-in user

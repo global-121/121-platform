@@ -2,7 +2,7 @@
   "user": {
     "email": "test@example.org",
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5vcmciLCJpYXQiOjE1MTYyMzkwMjIsInJvbGUiOiJhZG1pbiJ9.W6gHKwa3GTaANQXPmn9-sG-f_ZJVxdPF72Gm_73u35o",
-    "role": "admin",
+    "role": "program-admin",
     "status": null,
     "countryId": 1
   }

@@ -41,22 +41,9 @@
       "supply-password": "Password anda: ",
       "supply-username": "Nama lengkap:"
     },
-    "preprinted-qrcode": {
-      "error": "Code-QR yang di-scan tak bisa dipakai, harap coba yang lain.",
-      "info-qr": "Teks selanjutnya",
-      "introduction": "Petugas atau Volunteer Bantuan ini akan men-scan suatu QR-code untuk membuat link informasi anda dan memberikannya pada anda. Harap simpan secara aman QR-code fisik anda. ",
-      "more-info-qr": "Tentang QR-code",
-      "no": "Tidak",
-      "question": "Apakah petugas/volunteer Bantuan memiliki QR-code yang sudah di print, untuk di-scan?",
-      "result-ok": "QR-code yang sudah di-scan sekarang terhubungkan dengan akun anda dan informasi pribadi anda. Harap simpan QR-code fisik anda dengan aman.",
-      "start-scanner": "Mulai scanner",
-      "try-again": "Coba lagi",
-      "yes": "Iya"
-    },
     "registration-summary": {
       "documents": "Harap siap dengan dokumen-dokumen ini:",
       "no-validation-conclusion": "Terima kasih. Registrasi anda sekarang sudah lengkap. <br><br>Anda akan menerima SMS/WhatsApp di nomor HP yang telah anda berikan yang mengkonfirmasikan registrasi anda. <br><br>Anda akan diberitahukan seandainya aplikasi anda telah berhasil, dalam waktu 7 hari. <br><br> Ini adalah berita terakhir.",
-      "qr-code": "Harap tunjukkan QR-code ini ke petugas Bantuan, bila diminta",
       "validation-conclusion": "Terima kasih. Registrasi anda telah lengkap. Anda akan menerima SMS/WhatsApp di nomor telpon yang anda berikan secepatnya, yang akan mengkonfirmasi registrasi anda. <br><br>\nSeorang petugas Bantuan dari NGO ini akan mengoranisir pertemuan dengan anda untuk memvalidasi informasi anda, mungkin dengan mampir ke alamat anda."
     },
     "select-fsp": {
@@ -105,16 +92,6 @@
       "phone-number": "Kami tidak bisa mem-verifikasi nomor telpon ini. Harap sesuaikan dan coba kembali.",
       "required": "Sebuah jawaban dibutuhkan untuk pertanyaan ini. Harap disesuaikan dan coba kembali."
     }
-  },
-  "qr-scanner": {
-    "close": "Tutup",
-    "error-generic": "Ada yang tidak berjalan baik.",
-    "error-no-permissions": "Harap memungkinkan kamera untuk digunakan atau periksa apabila sedang tidak dipakai dan coba kembali.",
-    "error-not-compatible": "Alat atau device anda tidak bisa discan",
-    "switch-camera": "Alih kamera",
-    "title": "Scan kode-QR",
-    "toggle-flash": "Toggle lampu senter",
-    "try-again": "Coba lagi"
   },
   "shared": {
     "close-button": "Tutup",

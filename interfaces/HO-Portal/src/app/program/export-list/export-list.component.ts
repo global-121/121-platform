@@ -67,7 +67,7 @@ export class ExportListComponent implements OnChanges {
 
   private async updateDisplayMessage(): Promise<void> {
     let actionTimestamp;
-    if (this.authService.hasPermission(Permission.ActionREAD)) {
+    if (this.authService.hasPermission(this.programId, Permission.ActionREAD)) {
       actionTimestamp = await this.getLatestActionTime();
       this.message = actionTimestamp
         ? this.translate.instant('page.program.export-list.timestamp', {

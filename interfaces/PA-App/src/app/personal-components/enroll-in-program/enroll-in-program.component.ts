@@ -192,6 +192,7 @@ export class EnrollInProgramComponent extends PersonalDirective {
 
     await this.programsService.postRegistrationCustomAttributes(
       this.createAttributes(Object.values(this.answers), referenceId),
+      this.programId,
     );
   }
 

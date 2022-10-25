@@ -69,7 +69,7 @@
                   "output": "assets"
                 },
                 {
-                  "glob": "**/{alert,arrow-down-circle-outline,arrow-redo,camera-reverse,chatbox,close,construct,create,flash,flash-off,id-card,nuclear,person,refresh,resize,trash,warning}.svg",
+                  "glob": "**/{arrow-down-circle-outline,arrow-redo,chatbox,construct,create,id-card,nuclear,person,resize,trash,warning}.svg",
                   "input": "node_modules/ionicons/dist/ionicons/svg",
                   "output": "svg"
                 },

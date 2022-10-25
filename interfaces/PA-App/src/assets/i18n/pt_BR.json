@@ -41,22 +41,9 @@
       "supply-password": "Sua senha:",
       "supply-username": "Seu nome completo: "
     },
-    "preprinted-qrcode": {
-      "error": "O código QR escaneado não pode ser usado, por favor, tente outro.",
-      "info-qr": "Mais textos a seguir",
-      "introduction": "O assistente/voluntário escaneará um código QR para vincular suas informações e o entregará para você. Por favor, mantenha seu código QR físico seguro.",
-      "more-info-qr": "Sobre códigos QR",
-      "no": "Não",
-      "question": "O assistente/voluntário tem um código QR pré-impresso para escanear?",
-      "result-ok": "O código QR está agora conectado à sua conta e informações pessoais. Por favor, mantenha seu código QR físico seguro.",
-      "start-scanner": "Iniciar o scanner",
-      "try-again": "Tente novamente",
-      "yes": "Sim"
-    },
     "registration-summary": {
       "documents": "Certifique-se de ter estes documentos prontos:",
       "no-validation-conclusion": "Obrigado. Agora, seu registro está completo. <br><br> Em breve, você receberá um SMS/WhatsApp no número de telefone fornecido que confirma seu registro. <br><br> Você será informado se sua solicitação tiver sido bem sucedida no prazo de 7 dias.  <br><br> Esta é a mensagem final, por enquanto.",
-      "qr-code": "Por favor, mostre este código QR ao trabalhador humanitário quando pedido.",
       "validation-conclusion": "Obrigado. Agora seu registro está completo. Em breve, você receberá um SMS/WhatsApp no número de telefone fornecido que confirma seu cadastro. <br><br>Um trabalhador da ONG organizará uma reunião com você para validar suas informações, provavelmente visitando sua casa."
     },
     "select-fsp": {
@@ -105,16 +92,6 @@
       "phone-number": "Não pudemos verificar este número de telefone. Por favor, ajuste e tente novamente.",
       "required": "Uma resposta é necessária para esta pergunta. Por favor, ajuste e tente novamente."
     }
-  },
-  "qr-scanner": {
-    "close": "Fechar",
-    "error-generic": "Algo deu errado.",
-    "error-no-permissions": "Por favor, permita que a câmera seja usada ou verifique se já não está em uso e tente novamente.",
-    "error-not-compatible": "Seu celular não é capaz de escanear",
-    "switch-camera": "Alternar a câmera",
-    "title": "Escanear código QR",
-    "toggle-flash": "Alternar flash",
-    "try-again": "Tente novamente"
   },
   "shared": {
     "close-button": "Fechar",

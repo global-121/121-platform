@@ -94,7 +94,7 @@ export class ProgramPayoutComponent implements OnInit {
   private checkCanMakePayment(): boolean {
     return (
       this.program.phase === ProgramPhase.payment &&
-      this.authService.hasAllPermissions([
+      this.authService.hasAllPermissions(this.program.id, [
         Permission.PaymentREAD,
         Permission.PaymentCREATE,
         Permission.PaymentTransactionREAD,
@@ -103,7 +103,7 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private checkCanMakeExport(): boolean {
-    return this.authService.hasAllPermissions([
+    return this.authService.hasAllPermissions(this.program.id, [
       Permission.RegistrationPersonalEXPORT,
       Permission.PaymentREAD,
       Permission.PaymentTransactionREAD,
@@ -111,7 +111,10 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private checkCanMakeFspInstructions(): boolean {
-    return this.authService.hasPermission(Permission.PaymentFspInstructionREAD);
+    return this.authService.hasPermission(
+      this.program.id,
+      Permission.PaymentFspInstructionREAD,
+    );
   }
 
   private async getLastPaymentResults(): Promise<LastPaymentResults> {

@@ -2,6 +2,7 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { CookieNames } from '../shared/enum/cookie.enums';
 import { InterfaceNames } from '../shared/enum/interface-names.enum';
+import { UserToken } from './user.interface';
 
 export const User = createParamDecorator((data, ctx: ExecutionContext) => {
   // if route is protected, there is a user set in auth.middleware
@@ -38,10 +39,10 @@ export const User = createParamDecorator((data, ctx: ExecutionContext) => {
   }
 
   if (token) {
-    const decoded: any = jwt.verify(
+    const decoded: UserToken = jwt.verify(
       token,
       process.env.SECRETS_121_SERVICE_SECRET,
     );
-    return !!data ? decoded[data] : decoded.user;
+    return !!data ? decoded[data] : decoded;
   }
 });

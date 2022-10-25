@@ -8,9 +8,9 @@ Feature: View and manage people affected (generic features)
     When the user views a page with the "manage people affected" component
     Then a table with "people connected to a program" is shown
     And depending on the "selected phase" only current people affected with given "PA statuses" are shown
-      - "registration": imported, invited, created, selected for validation, no longer eligible, registered while no longer eligible
-      - "inclusion": validated, registered, selected for validation, rejected, inclusion ended
-      - "payment": included
+    - "registration": imported, invited, created, selected for validation, no longer eligible, registered while no longer eligible
+    - "inclusion": validated, registered, selected for validation, rejected, inclusion ended
+    - "payment": included
     And for each person the "Select" column is empty
     And for each person a "PA identifier" is shown
     And it has a clickable "i" button in front of it, which opens a popup
@@ -31,7 +31,7 @@ Feature: View and manage people affected (generic features)
     And "payment history column" is shown (in "payment" page only)
 
   Scenario: View payment history column and popup
-    >> See View_payment_history_popup.feature
+  >> See View_payment_history_popup.feature
 
   Scenario: View columns of table WITH access to personal data
     Given the logged-in user also has "RegistrationPersonalREAD" permission
@@ -175,7 +175,7 @@ Feature: View and manage people affected (generic features)
     And - if the action has an SMS-action and it is used - an SMS is sent to the PA
 
   Scenario: View and Filter PA-table with 2000 PAs
-    Given there are 2000 PAs in the system (see Admin-user/Import_test_registrations_NL.feature)
+    Given there are 2000 PAs in the system
     When the user scrolls through the PA-table
     Then this goes quickly and without problem
     When the user uses the text or status filter functions

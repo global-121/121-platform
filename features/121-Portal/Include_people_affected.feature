@@ -26,7 +26,7 @@ Feature: Include people affected
     And in the PA-app a notification appears that the PA is included
 
   Scenario: Include 2000 PAs
-    Given there are 2000 "registered" PAs in the system (see Admin-user/Import_test_registrations_NL.feature)
+    Given there are 2000 "registered" PAs in the system
     When the user uses and confirms the "include for program" action on all 2000 PAs
     Then this is all processed as in the scenario above, quickly and without problem
 

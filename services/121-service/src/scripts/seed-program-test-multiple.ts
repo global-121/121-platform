@@ -7,16 +7,16 @@ import { SeedInit } from './seed-init';
 
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
 import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-no-whatsapp.json';
-import fspVodacash from '../../seed-data/fsp/fsp-vodacash.json';
+import fspBank from '../../seed-data/fsp/fsp-bank.json';
+import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
+import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
+import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
 
-import programPilotNLLVV from '../../seed-data/program/program-pilot-nl.json';
-import instancePilotNLLVV from '../../seed-data/instance/instance-pilot-nl.json';
+import instanceDemo from '../../seed-data/instance/instance-demo.json';
 
-import programPilotNLPV from '../../seed-data/program/program-pilot-nl-2.json';
-import instancePilotNLPV from '../../seed-data/instance/instance-pilot-nl-2.json';
-
-import programDrc from '../../seed-data/program/program-drc.json';
-import intanceDrc from '../../seed-data/instance/instance-drc.json';
+import programDemo from '../../seed-data/program/program-demo.json';
+import programTest from '../../seed-data/program/program-test.json';
+import programValidation from '../../seed-data/program/program-validation.json';
 
 @Injectable()
 export class SeedTestMultipleProgram implements InterfaceScript {
@@ -31,51 +31,46 @@ export class SeedTestMultipleProgram implements InterfaceScript {
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
     await this.seedHelper.addFsp(fspIntersolveNoWhatsapp);
-    await this.seedHelper.addFsp(fspVodacash);
+    await this.seedHelper.addFsp(fspAfricasTalking);
+    await this.seedHelper.addFsp(fspBank);
+    await this.seedHelper.addFsp(fspMixedAttributes);
+    await this.seedHelper.addFsp(fspNoAttributes);
 
-    // ****************
-    // ***** NLRC *****
-    // ****************
+    // ************************
+    // ***** Program Demo *****
+    // ************************
 
     // ***** CREATE PROGRAM *****
-    const programEntityNLLVV = await this.seedHelper.addProgram(
-      programPilotNLLVV,
+    const programEntityDemo = await this.seedHelper.addProgram(programDemo);
+
+    // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
+    this.seedHelper.addDefaultUsers(programEntityDemo, true);
+
+    // ***** CREATE INSTANCE *****
+    // Technically multiple instances could be loaded, but that should not be done
+    await this.seedHelper.addInstance(instanceDemo);
+
+    // ************************
+    // ***** Program Test *****
+    // ************************
+
+    // ***** CREATE PROGRAM *****
+    const programEntityTest = await this.seedHelper.addProgram(programTest);
+
+    // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
+    this.seedHelper.addDefaultUsers(programEntityTest, true);
+
+    // ******************************
+    // ***** Program Validation *****
+    // ******************************
+
+    // ***** CREATE PROGRAM *****
+    const programEntityValidation = await this.seedHelper.addProgram(
+      programValidation,
     );
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    this.seedHelper.addDefaultUsers(programEntityNLLVV, false);
-
-    // ***** CREATE INSTANCE *****
-    await this.seedHelper.addInstance(instancePilotNLLVV);
-
-    // Seeding NLRC-PV and LVV together does not work yet until we implement many to many program - programQuestions
-    // *******************
-    // ***** NLRC-PV *****
-
-    // *******************
-    // ***** CREATE PROGRAM *****
-    const programEntityNLPV = await this.seedHelper.addProgram(
-      programPilotNLPV,
-    );
-
-    // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    this.seedHelper.addDefaultUsers(programEntityNLPV, false);
-
-    // ***** CREATE INSTANCE *****
-    await this.seedHelper.addInstance(instancePilotNLPV);
-
-    // *******************
-    // ***** NLRC-PV *****
-    // *******************
-
-    // ***** CREATE PROGRAM *****
-    const programEntityDrc = await this.seedHelper.addProgram(programDrc);
-
-    // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    this.seedHelper.addDefaultUsers(programEntityDrc, false);
-
-    // ***** CREATE INSTANCE *****
-    await this.seedHelper.addInstance(intanceDrc);
+    this.seedHelper.addDefaultUsers(programEntityValidation, true);
   }
 }
 

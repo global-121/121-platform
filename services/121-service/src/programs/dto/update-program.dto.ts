@@ -112,11 +112,6 @@ export class UpdateProgramDto {
   @IsBoolean()
   public readonly validation: boolean;
 
-  @ApiProperty()
-  @IsOptional()
-  @IsBoolean()
-  public readonly validationByQr: boolean;
-
   @ApiProperty({
     example: { en: 'Identity card;Health Insurance;Proof of children' },
   })

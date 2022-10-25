@@ -49,7 +49,6 @@ function check_shared_code() {
 
   compare_code "src/app/shared/dialogue-turn/" "$repo_pa" "$repo_aw"
   compare_code "src/app/shared/q-and-a-set/" "$repo_pa" "$repo_aw"
-  compare_code "src/app/shared/qr-scanner/" "$repo_pa" "$repo_aw"
   compare_code "src/app/shared/date-input/" "$repo_pa" "$repo_aw"
   compare_code "src/app/shared/numeric-input/" "$repo_pa" "$repo_aw"
   compare_code "src/app/shared/phone-number-input/" "$repo_pa" "$repo_aw"
