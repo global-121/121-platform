@@ -17,6 +17,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { Attribute } from '../../models/attribute.model';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 
 @Component({
   selector: 'app-edit-person-affected-popup',
@@ -69,6 +70,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private alertController: AlertController,
     private pubSub: PubSubService,
+    private errorHandlerService: ErrorHandlerService,
   ) {}
 
   async ngOnInit() {
@@ -146,39 +148,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         console.log('error: ', error);
         if (error && error.error) {
           const errorMessage = this.translate.instant('common.update-error', {
-            error: this.formatErrors(error),
+            error: this.errorHandlerService.formatErrors(error),
           });
           this.actionResult(errorMessage);
         }
       });
-  }
-
-  private formatErrors(error): string {
-    if (error.status === 400) {
-      if (Array.isArray(error.error.message)) {
-        return this.formatConstraintsErrors(error.error.message);
-      } else {
-        return '<br><br>' + error.error.message + '<br>';
-      }
-    }
-    if (error.error.message) {
-      return '<br><br>' + error.error.message + '<br>';
-    }
-  }
-
-  private formatConstraintsErrors(errors): string {
-    let attributeConstraints = [];
-    for (const error of errors) {
-      attributeConstraints = attributeConstraints.concat(
-        Object.values(error.constraints),
-      );
-    }
-    return (
-      '<br><br>' +
-      attributeConstraints.join('<br>') +
-      '<br><br>' +
-      this.translate.instant('common.try-again-contact-support')
-    );
   }
 
   private fillPaTableAttributes() {
