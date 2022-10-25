@@ -39,6 +39,7 @@ export class FspService {
         type: c.answerType,
         label: c.label,
         shortLabel: c.shortLabel,
+        options: c.options,
       };
     });
   }
