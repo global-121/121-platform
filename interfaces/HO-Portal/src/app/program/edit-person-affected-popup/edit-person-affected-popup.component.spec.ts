@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { PaStatus } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 import { EditPersonAffectedPopupComponent } from './edit-person-affected-popup.component';
 
 const modalSpy = jasmine.createSpyObj('Modal', ['present']);
@@ -29,6 +30,7 @@ describe('EditPersonAffectedPopupComponent', () => {
           useValue: modalCtrlSpy,
         },
         provideMagicalMock(ProgramsServiceApiService),
+        provideMagicalMock(ErrorHandlerService),
       ],
     }).compileComponents();
   }));

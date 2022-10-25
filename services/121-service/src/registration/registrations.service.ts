@@ -1,49 +1,48 @@
-import { RegistrationDataEntity } from './registration-data.entity';
-import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
-import { WhatsappService } from './../notifications/whatsapp/whatsapp.service';
-import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
-import { SmsService } from './../notifications/sms/sms.service';
-import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { validate } from 'class-validator';
 import { getRepository, In, Repository, SelectQueryBuilder } from 'typeorm';
+import { v4 as uuid } from 'uuid';
+import { FspName } from '../fsp/financial-service-provider.entity';
+import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { LookupService } from '../notifications/lookup/lookup.service';
+import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
+import { ProgramService } from '../programs/programs.service';
 import { UserEntity } from '../user/user.entity';
-import { RegistrationEntity } from './registration.entity';
-import {
-  RegistrationStatusEnum,
-  RegistrationStatusTimestampField,
-} from './enum/registration-status.enum';
+import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
+import { SmsService } from './../notifications/sms/sms.service';
+import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
+import { WhatsappService } from './../notifications/whatsapp/whatsapp.service';
+import { ImportResult } from './dto/bulk-import.dto';
+import { CreateRegistrationDto } from './dto/create-registration.dto';
+import { CustomDataDto } from './dto/custom-data.dto';
+import { DownloadData } from './dto/download-data.interface';
+import { MessageHistoryDto } from './dto/message-history.dto';
+import { NoteDto } from './dto/note.dto';
+import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
+import { RegistrationDataRelation } from './dto/registration-data-relation.model';
+import { RegistrationResponse } from './dto/registration-response.model';
 import { ProgramAnswer } from './dto/store-program-answers.dto';
+import { Attributes } from './dto/update-attribute.dto';
+import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import {
   AnswerTypes,
   Attribute,
   AttributeType,
   CustomDataAttributes,
 } from './enum/custom-data-attributes';
-import { LookupService } from '../notifications/lookup/lookup.service';
-import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { FspName } from '../fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
+import {
+  RegistrationStatusEnum,
+  RegistrationStatusTimestampField,
+} from './enum/registration-status.enum';
+import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
-import { InlusionScoreService } from './services/inclusion-score.service';
+import { RegistrationEntity } from './registration.entity';
 import { BulkImportService, ImportType } from './services/bulk-import.service';
-import { ImportResult } from './dto/bulk-import.dto';
-import { RegistrationResponse } from './dto/registration-response.model';
-import { NoteDto } from './dto/note.dto';
-import { validate } from 'class-validator';
-import { DownloadData } from './dto/download-data.interface';
-import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
-import { Attributes } from './dto/update-attribute.dto';
-import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
-import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
-import { MessageHistoryDto } from './dto/message-history.dto';
-import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
-import { ProgramService } from '../programs/programs.service';
-import { RegistrationDataRelation } from './dto/registration-data-relation.model';
-import { v4 as uuid } from 'uuid';
-import { CustomDataDto } from './dto/custom-data.dto';
+import { InlusionScoreService } from './services/inclusion-score.service';
 
 @Injectable()
 export class RegistrationsService {
@@ -323,6 +322,8 @@ export class RegistrationsService {
     }
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
+    currentRegistration.note = importedRegistration.note;
+    currentRegistration.noteUpdated = importedRegistration.noteUpdated;
 
     // .. and store phone number and language
     currentRegistration.phoneNumber = sanitizedPhoneNr;
@@ -856,7 +857,17 @@ export class RegistrationsService {
     }
 
     if (attribute !== Attributes.paymentAmountMultiplier) {
-      await registration.saveData(value, { name: attribute });
+      try {
+        await registration.saveData(value, { name: attribute });
+      } catch (error) {
+        // This is an exception because the phoneNumber is in the registration entity, not in the registrationData.
+        if (attribute === Attributes.phoneNumber) {
+          registration.phoneNumber = value.toString();
+          await this.registrationRepository.save(registration);
+        } else {
+          throw error;
+        }
+      }
     }
     const savedRegistration = await this.registrationRepository.save(
       registration,

@@ -1,13 +1,12 @@
-import { WhatsappService } from './whatsapp.service';
-import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiConsumes, ApiOperation, ApiParam } from '@nestjs/swagger';
-import {
-  TwilioStatusCallbackDto,
-  TwilioIncomingCallbackDto,
-} from '../twilio.dto';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiConsumes, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../../guards/admin.decorator';
 import { AdminAuthGuard } from '../../guards/admin.guard';
-import { PermissionsGuard } from '../../guards/permissions.guard';
+import {
+  TwilioIncomingCallbackDto,
+  TwilioStatusCallbackDto,
+} from '../twilio.dto';
+import { WhatsappService } from './whatsapp.service';
 
 @UseGuards(AdminAuthGuard)
 @ApiTags('notifications')

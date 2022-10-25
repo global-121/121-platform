@@ -49,6 +49,7 @@ import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
@@ -308,6 +309,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     private pubSub: PubSubService,
     private router: Router,
     private translatableStringService: TranslatableStringService,
+    private errorHandlerService: ErrorHandlerService,
   ) {
     this.locale = environment.defaultLocale;
     this.routerSubscription = this.router.events.subscribe(async (event) => {
@@ -1380,29 +1382,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           console.log('error: ', error);
           if (error && error.error) {
             const errorMessage = this.translate.instant('common.update-error', {
-              error: this.formatErrors(error.error, column.prop),
+              error: this.errorHandlerService.formatErrors(
+                error.error,
+                column.prop,
+              ),
             });
             this.actionResult(errorMessage);
           }
         },
       );
-  }
-
-  private formatErrors(error, attribute: string): string {
-    if (error.errors) {
-      return this.formatConstraintsErrors(error.errors, attribute);
-    }
-    if (error.message) {
-      return '<br><br>' + error.message + '<br>';
-    }
-  }
-
-  private formatConstraintsErrors(errors, attribute: string): string {
-    const attributeError = errors.find(
-      (message) => message.property === attribute,
-    );
-    const attributeConstraints = Object.values(attributeError.constraints);
-    return '<br><br>' + attributeConstraints.join('<br>');
   }
 
   public getPaStatusesFilterOptions(): TableFilterMultipleChoiceOption[] {

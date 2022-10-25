@@ -1,7 +1,7 @@
+import { Injectable } from '@nestjs/common';
 import soapRequest from 'easy-soap-request';
 import fs from 'fs';
 import * as convert from 'xml-js';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class SoapService {

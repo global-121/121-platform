@@ -1,22 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
-
-import { SeedHelper } from './seed-helper';
-import { SeedInit } from './seed-init';
-
-import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
-import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-no-whatsapp.json';
+import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
 import fspBank from '../../seed-data/fsp/fsp-bank.json';
+import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-no-whatsapp.json';
+import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
 import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
 import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
-import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
-
 import instanceDemo from '../../seed-data/instance/instance-demo.json';
-
 import programDemo from '../../seed-data/program/program-demo.json';
 import programTest from '../../seed-data/program/program-test.json';
 import programValidation from '../../seed-data/program/program-validation.json';
+import { InterfaceScript } from './scripts.module';
+import { SeedHelper } from './seed-helper';
+import { SeedInit } from './seed-init';
 
 @Injectable()
 export class SeedTestMultipleProgram implements InterfaceScript {

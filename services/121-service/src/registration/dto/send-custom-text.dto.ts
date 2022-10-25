@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, ArrayMinSize } from 'class-validator';
+import { ArrayMinSize, IsString } from 'class-validator';
 
 export class SendCustomTextDto {
   @ApiProperty({ example: ['910c50be-f131-4b53-b06b-6506a40a2734'] })

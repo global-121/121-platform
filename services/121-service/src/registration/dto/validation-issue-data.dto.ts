@@ -1,11 +1,11 @@
-import {
-  Length,
-  IsNotEmpty,
-  IsString,
-  IsNumber,
-  IsArray,
-} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Length,
+} from 'class-validator';
 import { ProgramAnswer } from './store-program-answers.dto';
 
 export class AttributeDto {

@@ -1,12 +1,11 @@
-import { RegistrationEntity } from './registration.entity';
 import {
-  EventSubscriber,
   EntitySubscriberInterface,
+  EventSubscriber,
   getConnection,
   UpdateEvent,
-  InsertEvent,
 } from 'typeorm';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { RegistrationEntity } from './registration.entity';
 
 @EventSubscriber()
 export class RegistrationSubscriber

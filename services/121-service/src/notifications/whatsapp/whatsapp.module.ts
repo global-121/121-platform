@@ -1,27 +1,27 @@
-import { UserModule } from './../../user/user.module';
-import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
-import { SmsService } from './../sms/sms.service';
-import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
-import { RegistrationEntity } from './../../registration/registration.entity';
-import { ProgramEntity } from './../../programs/program.entity';
-import { TransactionEntity } from '../../payments/transactions/transaction.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import {
-  Module,
-  MiddlewareConsumer,
-  RequestMethod,
-  NestModule,
   forwardRef,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
 } from '@nestjs/common';
-import { WhatsappService } from './whatsapp.service';
-import { WhatsappController } from './whatsapp.controller';
-import { TwilioMessageEntity } from '../twilio.entity';
-import { ImageCodeModule } from '../../payments/imagecode/image-code.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { API_PATHS } from '../../config';
 import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
 import { IntersolveModule } from '../../payments/fsp-integration/intersolve/intersolve.module';
+import { ImageCodeModule } from '../../payments/imagecode/image-code.module';
+import { TransactionEntity } from '../../payments/transactions/transaction.entity';
+import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
+import { TwilioMessageEntity } from '../twilio.entity';
+import { ProgramEntity } from './../../programs/program.entity';
+import { RegistrationEntity } from './../../registration/registration.entity';
+import { UserModule } from './../../user/user.module';
+import { SmsService } from './../sms/sms.service';
 import { TryWhatsappEntity } from './try-whatsapp.entity';
+import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
+import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
+import { WhatsappController } from './whatsapp.controller';
+import { WhatsappService } from './whatsapp.service';
 
 @Module({
   imports: [

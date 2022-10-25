@@ -1,8 +1,8 @@
+import { HttpStatus, Injectable, NestMiddleware } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
-import { NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { DEBUG, EXTERNAL_API } from '../config';
 import { twilio } from './twilio.client';
-import { EXTERNAL_API, DEBUG } from '../config';
 
 @Injectable()
 export class AuthMiddlewareTwilio implements NestMiddleware {

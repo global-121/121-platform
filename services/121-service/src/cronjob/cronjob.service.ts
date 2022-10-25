@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, Between } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { IntersolveApiService } from '../payments/fsp-integration/intersolve/instersolve.api.service';

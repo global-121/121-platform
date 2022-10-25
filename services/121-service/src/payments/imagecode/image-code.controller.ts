@@ -1,8 +1,8 @@
-import { Controller, Get, Param, Res, HttpStatus } from '@nestjs/common';
-import { ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
-import { ImageCodeService } from './image-code.service';
+import { Controller, Get, HttpStatus, Param, Res } from '@nestjs/common';
+import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express-serve-static-core';
 import stream from 'stream';
+import { ImageCodeService } from './image-code.service';
 
 @ApiTags('notifications')
 // I am afraid to change this url as it may break already sent whatsapps

@@ -1,12 +1,12 @@
-import { Post, Body, Controller, UseGuards, Param } from '@nestjs/common';
-import { ActionService } from './action.service';
-import { User } from '../user/user.decorator';
-import { ApiTags, ApiResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
-import { ActionDto } from './dto/action.dto';
-import { ActionEntity } from './action.entity';
+import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Permissions } from '../guards/permissions.decorator';
-import { PermissionEnum } from '../user/permission.enum';
 import { PermissionsGuard } from '../guards/permissions.guard';
+import { PermissionEnum } from '../user/permission.enum';
+import { User } from '../user/user.decorator';
+import { ActionEntity } from './action.entity';
+import { ActionService } from './action.service';
+import { ActionDto } from './dto/action.dto';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('actions')

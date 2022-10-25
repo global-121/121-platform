@@ -1,20 +1,19 @@
-import { RegistrationDataEntity } from './../registration-data.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { validate } from 'class-validator';
+import csv from 'csv-parser';
+import { Readable } from 'stream';
 import { Repository } from 'typeorm';
-import { ProgramEntity } from '../../programs/program.entity';
-import { RegistrationEntity } from '../registration.entity';
-import { RegistrationStatusEnum } from '../enum/registration-status.enum';
-import {
-  AnswerTypes,
-  Attribute,
-  GenericAttributes,
-} from '../enum/custom-data-attributes';
-import { LookupService } from '../../notifications/lookup/lookup.service';
-import { ProgramQuestionEntity } from '../../programs/program-question.entity';
-import { FspQuestionEntity } from '../../fsp/fsp-question.entity';
+import { v4 as uuid } from 'uuid';
+import { AdditionalActionType } from '../../actions/action.entity';
+import { ActionService } from '../../actions/action.service';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
-import { LanguageEnum } from '../enum/language.enum';
+import { FspQuestionEntity } from '../../fsp/fsp-question.entity';
+import { LookupService } from '../../notifications/lookup/lookup.service';
+import { CustomAttributeType } from '../../programs/dto/create-program-custom-attribute.dto';
+import { ProgramCustomAttributeEntity } from '../../programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '../../programs/program-question.entity';
+import { ProgramEntity } from '../../programs/program.entity';
 import {
   BulkImportDto,
   BulkImportResult,
@@ -22,15 +21,16 @@ import {
   ImportResult,
   ImportStatus,
 } from '../dto/bulk-import.dto';
-import { v4 as uuid } from 'uuid';
-import csv from 'csv-parser';
-import { ActionService } from '../../actions/action.service';
-import { AdditionalActionType } from '../../actions/action.entity';
-import { validate } from 'class-validator';
-import { Readable } from 'stream';
+import {
+  AnswerTypes,
+  Attribute,
+  GenericAttributes,
+} from '../enum/custom-data-attributes';
+import { LanguageEnum } from '../enum/language.enum';
+import { RegistrationStatusEnum } from '../enum/registration-status.enum';
+import { RegistrationEntity } from '../registration.entity';
+import { RegistrationDataEntity } from './../registration-data.entity';
 import { InlusionScoreService } from './inclusion-score.service';
-import { ProgramCustomAttributeEntity } from '../../programs/program-custom-attribute.entity';
-import { CustomAttributeType } from '../../programs/dto/create-program-custom-attribute.dto';
 
 export enum ImportType {
   imported = 'import-as-imported',
@@ -97,7 +97,7 @@ export class BulkImportService {
       }
 
       let existingRegistrations = await this.registrationRepository.findOne({
-        where: { phoneNumber: phoneNumberResult },
+        where: { phoneNumber: phoneNumberResult, programId: program.id },
       });
       if (existingRegistrations) {
         importResponseRecord.importStatus = ImportStatus.existingPhoneNumber;
@@ -127,11 +127,16 @@ export class BulkImportService {
         newRegistration,
       );
       programCustomAttributes.forEach(async att => {
-        const data = new RegistrationDataEntity();
-        data.value = record[att.name];
-        data.programCustomAttribute = att;
-        data.registrationId = savedRegistration.id;
-        await this.registrationDataRepository.save(data);
+        if (record[att.name]) {
+          const data = new RegistrationDataEntity();
+          data.value =
+            att.type === CustomAttributeType.boolean
+              ? this.stringToBoolean(record[att.name], false)
+              : record[att.name];
+          data.programCustomAttribute = att;
+          data.registrationId = savedRegistration.id;
+          await this.registrationDataRepository.save(data);
+        }
       });
 
       // Save already before status change, otherwise 'registration.subscriber' does not work
@@ -154,9 +159,12 @@ export class BulkImportService {
     };
   }
 
-  private stringToBoolean(string: string, defaultValue: boolean): boolean {
+  private stringToBoolean(string: string, defaultValue?: boolean): boolean {
     if (typeof string === 'boolean') {
       return string;
+    }
+    if (string === undefined) {
+      return defaultValue || undefined;
     }
     switch (string.toLowerCase().trim()) {
       case 'true':
@@ -166,10 +174,11 @@ export class BulkImportService {
       case 'false':
       case 'no':
       case '0':
+      case '':
       case null:
         return false;
       default:
-        return defaultValue;
+        return defaultValue || undefined;
     }
   }
 
@@ -389,7 +398,12 @@ export class BulkImportService {
         importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
       }
       for await (const att of programCustomAttributes) {
-        if (att.type === 'number' && isNaN(Number(row[att.name]))) {
+        if (
+          (att.type === 'number' && isNaN(Number(row[att.name]))) ||
+          (att.type === CustomAttributeType.boolean &&
+            row[att.name] &&
+            this.stringToBoolean(row[att.name]) === undefined)
+        ) {
           const errorObj = {
             lineNumber: i + 1,
             column: att.name,
@@ -503,7 +517,12 @@ export class BulkImportService {
             errors.push(errorObj);
           }
           row[att.name] = sanitized;
-        } else if (att.type === 'number' && isNaN(Number(row[att.name]))) {
+        } else if (
+          (att.type === 'number' && isNaN(Number(row[att.name]))) ||
+          (att.type === CustomAttributeType.boolean &&
+            row[att.name] &&
+            this.stringToBoolean(row[att.name]) === undefined)
+        ) {
           const errorObj = {
             lineNumber: i + 1,
             column: att.name,

@@ -5,14 +5,14 @@ Feature: Export payment data
     Given a logged-in user with "RegistrationPersonalEXPORT", "PaymentREAD" and "PaymentTransactionREAD" permissions
     When the user views the "payment" page
     Then the user sees an "Export payment data" component
-    And the dropdown contains a list of all payments, with number, "open" or "closed" and date
+    And the dropdown contains an option for all closed payments, and a list of all payments, with number, "open" or "closed" and date
 
   Scenario: Export payment report before payment
     Given a logged-in user with "RegistrationPersonalEXPORT", "PaymentREAD" and "PaymentTransactionREAD" permissions
     Given the payment has not taken place
     When the user selects the first "open" payment from the dropdown-list
-    Then the "export report" button is enabled
-    When the user clicks the "export report" button
+    Then the "export report" button is changed to the "export included people affected" button
+    When the user clicks the "export included people affected" button
     Then an Excel-file is downloaded
     And it shows a list of the registrations that are "included"
     And it shows the "name" and other program-attributes to be able to identify people

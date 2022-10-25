@@ -1,31 +1,30 @@
-import { AdminAuthGuard } from './../guards/admin.guard';
-import { ProgramQuestionEntity } from './program-question.entity';
 import {
-  Get,
-  Post,
   Body,
-  Param,
   Controller,
-  UseGuards,
   Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
 } from '@nestjs/common';
-import { ProgramService } from './programs.service';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Admin } from '../guards/admin.decorator';
+import { Permissions } from '../guards/permissions.decorator';
+import { PermissionsGuard } from '../guards/permissions.guard';
+import { Attribute } from '../registration/enum/custom-data-attributes';
+import { PermissionEnum } from '../user/permission.enum';
+import { User } from '../user/user.decorator';
+import { AdminAuthGuard } from './../guards/admin.guard';
+import { ChangePhaseDto } from './dto/change-phase.dto';
+import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
-import { ProgramsRO, SimpleProgramRO } from './program.interface';
-
-import { ApiTags, ApiResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
-import { ProgramEntity } from './program.entity';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
-import { ChangePhaseDto } from './dto/change-phase.dto';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { PermissionsGuard } from '../guards/permissions.guard';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionEnum } from '../user/permission.enum';
-import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
-import { Attribute } from '../registration/enum/custom-data-attributes';
-import { User } from '../user/user.decorator';
-import { Admin } from '../guards/admin.decorator';
+import { ProgramQuestionEntity } from './program-question.entity';
+import { ProgramEntity } from './program.entity';
+import { ProgramsRO, SimpleProgramRO } from './program.interface';
+import { ProgramService } from './programs.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('programs')

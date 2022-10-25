@@ -1,13 +1,7 @@
-import { UserEntity } from '../user/user.entity';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  Column,
-  Index,
-} from 'typeorm';
-import { PaDataTypes } from './enum/padata-types.enum';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../base.entity';
+import { UserEntity } from '../user/user.entity';
+import { PaDataTypes } from './enum/padata-types.enum';
 
 @Entity('people_affected_app_data')
 export class PersonAffectedAppDataEntity extends Base121Entity {

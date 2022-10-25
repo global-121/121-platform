@@ -1,6 +1,6 @@
-import { RegistrationEntity } from '../../registration/registration.entity';
-import { Entity, Column, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../../base.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
 import { IntersolveBarcodeEntity } from '../fsp-integration/intersolve/intersolve-barcode.entity';
 
 @Entity('imagecode_export_vouchers')

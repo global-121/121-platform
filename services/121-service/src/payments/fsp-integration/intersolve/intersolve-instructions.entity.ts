@@ -1,4 +1,4 @@
-import { Entity, Column } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
 
 @Entity('intersolve_instruction')

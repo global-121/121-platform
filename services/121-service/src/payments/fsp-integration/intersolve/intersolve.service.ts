@@ -1,16 +1,17 @@
 import {
-  Injectable,
-  Inject,
   forwardRef,
   HttpException,
   HttpStatus,
+  Inject,
+  Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, Not, IsNull, Between } from 'typeorm';
+import crypto from 'crypto';
+import { Between, getRepository, IsNull, Not, Repository } from 'typeorm';
 import { FspName } from '../../../fsp/financial-service-provider.entity';
 import {
-  TwilioStatusCallbackDto,
   TwilioStatus,
+  TwilioStatusCallbackDto,
 } from '../../../notifications/twilio.dto';
 import { WhatsappService } from '../../../notifications/whatsapp/whatsapp.service';
 import { ProgramEntity } from '../../../programs/program.entity';
@@ -21,7 +22,6 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
-import crypto from 'crypto';
 import { UnusedVoucherDto } from '../../dto/unused-voucher.dto';
 import { ImageCodeService } from '../../imagecode/image-code.service';
 import { TransactionEntity } from '../../transactions/transaction.entity';
@@ -309,7 +309,7 @@ export class IntersolveService {
           const messageSid = response;
           await this.storeTransactionResult(
             payment,
-            amount,
+            calculatedAmount,
             registration.id,
             1,
             StatusEnum.waiting,

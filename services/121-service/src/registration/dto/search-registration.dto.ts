@@ -1,5 +1,5 @@
-import { IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
 export class SearchRegistrationDto {
   @ApiProperty({ example: '31600000000' })
