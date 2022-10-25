@@ -97,7 +97,7 @@ export class BulkImportService {
       }
 
       let existingRegistrations = await this.registrationRepository.findOne({
-        where: { phoneNumber: phoneNumberResult },
+        where: { phoneNumber: phoneNumberResult, programId: program.id },
       });
       if (existingRegistrations) {
         importResponseRecord.importStatus = ImportStatus.existingPhoneNumber;

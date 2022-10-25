@@ -39,7 +39,6 @@ import { Attributes } from './dto/update-attribute.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
-import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramService } from '../programs/programs.service';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { v4 as uuid } from 'uuid';
