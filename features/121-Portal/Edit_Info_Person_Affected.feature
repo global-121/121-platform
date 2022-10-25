@@ -22,7 +22,7 @@ Feature: Edit information on Person Affected
     Then a popup opens
     And in the title the ID-number of the Person Affected is mentioned
     And an input-field for the "paymentAmountMultiplier" and "phoneNumber" is shown
-    And an input-field for each Custom Attribute with type 'text' is shown (not 'boolean')
+    And an input-field for each Custom Attribute is shown
     And an input-field for each FSP-attribute (such as "whatsappPhoneNumber") is shown
     And a dropdown-list with the current chosen FSP is shown
     And all input-fields have an accompanying "save" button which is disabled
@@ -84,25 +84,25 @@ Feature: Edit information on Person Affected
     Then the update-button changes into a progress indicator
     And a feedback message with the specific requirements of the value is shown
     And the progress indicator changes into the update-button again
-    And - if configured for the program - the "paymentAmountMultiplier" is recalculated based on formula 
+    And - if configured for the program - the "paymentAmountMultiplier" is recalculated based on formula
 
-  Scenario: Update 'numeric' custom attributes with invalid value
+  Scenario: Update 'numeric' answer with invalid value
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
     Given an input-field for the  is shown
-    When the user tries to enter a non-numberic number
+    When the user tries to enter a non-numeric number
     Then nothing happens
 
-  Scenario: Update 'phonenumber' custom attributes with invalid value
+  Scenario: Update 'phonenumber' answer with invalid value
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
     Given an input-field for the  is shown
-    When the user changes the phonenumber to a non-existent phonenumver and presses the update-button
+    When the user changes the phonenumber to a non-existent phone-number and presses the update-button
     Then the update-button changes into a progress indicator
     And a feedback message saying the value is invalid appears
     And the progress indicator changes into the update-button again
 
-  Scenario: Update 'date' custom attributes with invalid value
+  Scenario: Update 'date' answer with invalid value
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
     Given an input-field for the  is shown
@@ -111,13 +111,13 @@ Feature: Edit information on Person Affected
     And a feedback message with the specific requirements of the value is shown
     And the progress indicator changes into the update-button again
 
-  Scenario: Update 'multi-select' custom attributes to 'no options'
+  Scenario: Update 'multi-select' answer to 'no options'
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
     Given an input-field for the attribute is shown
     When the user deselects all options and presses the update-button
     Then feedback is given that this is not allowed
-    
+
   Scenario: Update chosen FSP
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
