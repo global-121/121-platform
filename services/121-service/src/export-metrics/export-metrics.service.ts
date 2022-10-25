@@ -592,16 +592,19 @@ export class ExportMetricsService {
     if (programQuestionIds.length > 0) {
       whereOptions.push({ programQuestionId: In(programQuestionIds) });
     }
-    const duplicates = await this.registrationDataRepository
+    const query = this.registrationDataRepository
       .createQueryBuilder('registration_data')
       .select(
         `array_agg(DISTINCT registration_data."registrationId") AS "duplicateRegistrationIds"`,
       )
+      .innerJoin('registration_data.registration', 'registration')
       .where(whereOptions)
+      .andWhere('registration.programId = :programId', { programId })
       .having('COUNT(registration_data.value) > 1')
       .andHaving('COUNT(DISTINCT "registrationId") > 1')
-      .groupBy('registration_data.value')
-      .getRawMany();
+      .groupBy('registration_data.value');
+
+    const duplicates = await query.getRawMany();
 
     if (!duplicates || duplicates.length === 0) {
       return {
