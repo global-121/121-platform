@@ -1,9 +1,9 @@
-import { PersonAffectedAppDataEntity } from './person-affected-app-data.entity';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { StoreDataDto } from './dto/store-data.dto';
+import { PersonAffectedAppDataEntity } from './person-affected-app-data.entity';
 
 @Injectable()
 export class PeopleAffectedService {

@@ -1,7 +1,6 @@
 import { HttpModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LookupService } from '../../../notifications/lookup/lookup.service';
-
 import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
 import { TransactionsModule } from '../../transactions/transactions.module';

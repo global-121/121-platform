@@ -1,12 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsNotEmpty,
-  IsString,
-  Length,
-  ValidateNested,
-} from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { IsRegistrationDataValidType } from '../validator/registration-data-type.validator';
 
 export class ProgramAnswer {

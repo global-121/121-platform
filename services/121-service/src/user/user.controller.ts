@@ -1,33 +1,32 @@
-import { PermissionEnum } from './permission.enum';
-import { UserEntity } from './user.entity';
-import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
-import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import {
-  Get,
-  Post,
   Body,
-  Param,
   Controller,
-  UseGuards,
-  Res,
-  Req,
-  Put,
   Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
-import { tokenExpirationDays, UserService } from './user.service';
-import { UserRO } from './user.interface';
-import { LoginUserDto, UpdateUserDto } from './dto';
-import { User } from './user.decorator';
-
-import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
-import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
-import { UserRoleEntity } from './user-role.entity';
-import { Permissions } from '../guards/permissions.decorator';
-import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
-import { CookieNames } from '../shared/enum/cookie.enums';
+import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../guards/admin.decorator';
 import { AdminAuthGuard } from '../guards/admin.guard';
+import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
+import { CookieNames } from '../shared/enum/cookie.enums';
+import { LoginUserDto, UpdateUserDto } from './dto';
+import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
+import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
+import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
+import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
+import { PermissionEnum } from './permission.enum';
+import { UserRoleEntity } from './user-role.entity';
+import { User } from './user.decorator';
+import { UserEntity } from './user.entity';
+import { UserRO } from './user.interface';
+import { tokenExpirationDays, UserService } from './user.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('user')

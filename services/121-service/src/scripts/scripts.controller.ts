@@ -1,17 +1,17 @@
-import { SeedTestProgram } from './seed-program-test';
-import { SeedProgramDrc } from './seed-program-drc';
-import { SeedProgramLbn } from './seed-program-lbn';
-import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { ApiOperation, ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Connection } from 'typeorm';
-import { SeedProgramValidation } from './seed-program-validation';
 import { SeedDemoProgram } from './seed-program-demo';
-import { SeedTestMultipleProgram } from './seed-program-test-multiple';
+import { SeedProgramDrc } from './seed-program-drc';
+import SeedProgramEth from './seed-program-eth';
+import { SeedProgramLbn } from './seed-program-lbn';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
-import SeedProgramEth from './seed-program-eth';
+import { SeedTestProgram } from './seed-program-test';
+import { SeedTestMultipleProgram } from './seed-program-test-multiple';
 import SeedProgramUkr from './seed-program-ukr';
+import { SeedProgramValidation } from './seed-program-validation';
 
 enum SeedScript {
   pilotNL = 'pilot-nl',

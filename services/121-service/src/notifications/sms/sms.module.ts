@@ -1,15 +1,15 @@
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import {
-  Module,
   MiddlewareConsumer,
-  RequestMethod,
+  Module,
   NestModule,
+  RequestMethod,
 } from '@nestjs/common';
-import { SmsService } from './sms.service';
-import { SmsController } from './sms.controller';
-import { TwilioMessageEntity } from '../twilio.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { API_PATHS } from '../../config';
+import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
+import { TwilioMessageEntity } from '../twilio.entity';
+import { SmsController } from './sms.controller';
+import { SmsService } from './sms.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TwilioMessageEntity])],

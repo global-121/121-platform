@@ -1,5 +1,5 @@
-import { Length, IsNumber, IsIn, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsIn, IsNumber, IsOptional, Length } from 'class-validator';
 import { FspName } from '../../fsp/financial-service-provider.entity';
 
 export class SetFspDto {

@@ -1,11 +1,9 @@
-import { RegistrationEntity } from './../../registration/registration.entity';
-import { ProgramEntity } from './../../programs/program.entity';
-import { EXTERNAL_API } from './../../config';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository } from 'typeorm';
-import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
+import { Repository } from 'typeorm';
 import { twilioClient } from '../twilio.client';
+import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
+import { EXTERNAL_API } from './../../config';
 
 @Injectable()
 export class SmsService {

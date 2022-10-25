@@ -1,6 +1,6 @@
-import { Entity, Column, ManyToMany, JoinTable, Unique } from 'typeorm';
-import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
+import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { Base121Entity } from '../base.entity';
+import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { PermissionEntity } from './permissions.entity';
 
 @Entity('user_role')

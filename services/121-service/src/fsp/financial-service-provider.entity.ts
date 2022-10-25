@@ -1,10 +1,10 @@
-import { Attribute } from './../registration/enum/custom-data-attributes';
+import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 import { CascadeDeleteEntity } from '../base.entity';
-import { Entity, Column, ManyToMany, OneToMany } from 'typeorm';
-import { ProgramEntity } from '../programs/program.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { FspQuestionEntity } from './fsp-question.entity';
+import { ProgramEntity } from '../programs/program.entity';
+import { Attribute } from './../registration/enum/custom-data-attributes';
 import { FspIntegrationType } from './enum/fsp-integration-type.enum';
+import { FspQuestionEntity } from './fsp-question.entity';
 
 @Entity('fsp')
 export class FinancialServiceProviderEntity extends CascadeDeleteEntity {

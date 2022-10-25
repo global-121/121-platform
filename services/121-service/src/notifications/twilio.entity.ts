@@ -1,6 +1,6 @@
-import { RegistrationEntity } from './../registration/registration.entity';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Base121Entity } from './../base.entity';
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { RegistrationEntity } from './../registration/registration.entity';
 
 export enum NotificationType {
   Sms = 'sms',

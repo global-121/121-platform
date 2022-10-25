@@ -1,10 +1,5 @@
-import { Post, Body, Controller, UseGuards } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiResponse,
-  ApiOperation,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BelcashService } from './belcash.service';
 import { BelcashPaymentStatusDto } from './dto/belcash-payment-status.dto';
 

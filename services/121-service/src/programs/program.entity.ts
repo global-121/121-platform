@@ -1,29 +1,29 @@
-import { ValidationInfo } from './dto/validation-info.dto';
+import {
+  BeforeUpdate,
+  Column,
+  Entity,
+  getConnection,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+} from 'typeorm';
+import { ActionEntity } from '../actions/action.entity';
+import { CascadeDeleteEntity } from '../base.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { InstanceEntity } from '../instance/instance.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { Attributes } from '../registration/dto/update-attribute.dto';
+import { Attribute } from '../registration/enum/custom-data-attributes';
+import { RegistrationEntity } from '../registration/registration.entity';
+import { ProgramPhase } from '../shared/enum/program-phase.model';
 import {
   AnswerTypes,
   CustomAttributeType,
 } from './../registration/enum/custom-data-attributes';
-import {
-  Entity,
-  Column,
-  OneToMany,
-  BeforeUpdate,
-  ManyToMany,
-  JoinTable,
-  getConnection,
-} from 'typeorm';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { ProgramPhase } from '../shared/enum/program-phase.model';
-import { ActionEntity } from '../actions/action.entity';
-import { RegistrationEntity } from '../registration/registration.entity';
-import { ProgramQuestionEntity } from './program-question.entity';
+import { ValidationInfo } from './dto/validation-info.dto';
 import { ProgramAidworkerAssignmentEntity } from './program-aidworker.entity';
-import { CascadeDeleteEntity } from '../base.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { Attribute } from '../registration/enum/custom-data-attributes';
-import { InstanceEntity } from '../instance/instance.entity';
-import { Attributes } from '../registration/dto/update-attribute.dto';
+import { ProgramQuestionEntity } from './program-question.entity';
 
 @Entity('program')
 export class ProgramEntity extends CascadeDeleteEntity {

@@ -1,19 +1,19 @@
-import { NestFactory } from '@nestjs/core';
-import { ApplicationModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import { ApplicationModule } from './app.module';
 import {
+  APP_FAVICON,
   APP_TITLE,
   APP_VERSION,
-  APP_FAVICON,
-  SWAGGER_CUSTOM_CSS,
-  PORT,
   DEBUG,
   EXTERNAL_API,
+  PORT,
+  SWAGGER_CUSTOM_CSS,
 } from './config';
-import * as bodyParser from 'body-parser';
 import appInsights = require('applicationinsights');
-import cookieParser from 'cookie-parser';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);

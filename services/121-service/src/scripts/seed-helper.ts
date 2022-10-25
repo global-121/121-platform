@@ -1,19 +1,17 @@
-import { MonitoringQuestionEntity } from './../instance/monitoring-question.entity';
 import { HttpException } from '@nestjs/common';
+import crypto from 'crypto';
 import { Connection, In } from 'typeorm';
-
-import { ProgramEntity } from '../programs/program.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { UserEntity } from '../user/user.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { InstanceEntity } from '../instance/instance.entity';
-import crypto from 'crypto';
-import { UserRoleEntity } from '../user/user-role.entity';
-import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
+import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '../programs/program-question.entity';
+import { ProgramEntity } from '../programs/program.entity';
+import { UserRoleEntity } from '../user/user-role.entity';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
-import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
+import { UserEntity } from '../user/user.entity';
 
 export class SeedHelper {
   public constructor(private connection: Connection) {}

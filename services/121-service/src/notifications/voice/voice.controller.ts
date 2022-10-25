@@ -1,26 +1,26 @@
-import { AdminAuthGuard } from './../../guards/admin.guard';
-import { PermissionsGuard } from './../../guards/permissions.guard';
 import {
+  Body,
   Controller,
   Get,
   Header,
-  Res,
-  Post,
-  Param,
-  Body,
   HttpStatus,
+  Param,
+  Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiTags,
-  ApiResponse,
-  ApiParam,
-  ApiOperation,
   ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
-import { VoiceService } from './voice.service';
 import { Response } from 'express-serve-static-core';
 import { Admin } from '../../guards/admin.decorator';
+import { AdminAuthGuard } from './../../guards/admin.guard';
+import { PermissionsGuard } from './../../guards/permissions.guard';
+import { VoiceService } from './voice.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('notifications')

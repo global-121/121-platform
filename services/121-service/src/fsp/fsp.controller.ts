@@ -1,20 +1,20 @@
-import { AdminAuthGuard } from './../guards/admin.guard';
 import {
-  Post,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
+  Post,
   UseGuards,
-  Delete,
 } from '@nestjs/common';
-import { FspService } from './fsp.service';
-import { ApiTags, ApiResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
-import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
-import { FspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
-import { FspQuestionEntity } from './fsp-question.entity';
-import { PermissionsGuard } from '../guards/permissions.guard';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../guards/admin.decorator';
+import { PermissionsGuard } from '../guards/permissions.guard';
+import { AdminAuthGuard } from './../guards/admin.guard';
+import { FspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
+import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
+import { FspQuestionEntity } from './fsp-question.entity';
+import { FspService } from './fsp.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('fsp')

@@ -1,6 +1,6 @@
 // This entity does not store intersolve vouchers messages only 'normal' notifications
 
-import { Entity, Column, Index } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 import { Base121Entity } from '../../base.entity';
 
 @Entity('whatsapp_template_test')

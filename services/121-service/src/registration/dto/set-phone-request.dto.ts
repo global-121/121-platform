@@ -1,13 +1,12 @@
-import {
-  Length,
-  IsString,
-  ValidateIf,
-  IsBoolean,
-  IsOptional,
-  IsEmail,
-  IsEnum,
-} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsBoolean,
+  IsEnum,
+  IsOptional,
+  IsString,
+  Length,
+  ValidateIf,
+} from 'class-validator';
 import { LanguageEnum } from '../../registration/enum/language.enum';
 
 export class SetPhoneRequestDto {

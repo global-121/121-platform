@@ -1,6 +1,6 @@
-import { MonitoringQuestionEntity } from './monitoring-question.entity';
-import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { Base121Entity } from '../base.entity';
+import { MonitoringQuestionEntity } from './monitoring-question.entity';
 
 @Entity('instance')
 export class InstanceEntity extends Base121Entity {

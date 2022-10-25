@@ -1,16 +1,16 @@
-import { GuardsService } from './guards.service';
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
   HttpException,
   HttpStatus,
+  Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
-import { CookieNames, CookieErrors } from '../shared/enum/cookie.enums';
+import { CookieErrors, CookieNames } from '../shared/enum/cookie.enums';
 import { InterfaceNames } from '../shared/enum/interface-names.enum';
 import { UserToken } from '../user/user.interface';
+import { GuardsService } from './guards.service';
 
 @Injectable()
 export class AdminAuthGuard implements CanActivate {

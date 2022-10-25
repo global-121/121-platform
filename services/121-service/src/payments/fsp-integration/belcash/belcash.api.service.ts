@@ -1,6 +1,6 @@
 import { HttpService, Injectable } from '@nestjs/common';
-import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { BelcashTransferPayload } from './belcash-transfer-payload.dto';
 
 @Injectable()
