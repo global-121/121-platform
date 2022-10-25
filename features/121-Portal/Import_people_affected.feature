@@ -9,9 +9,12 @@ Feature: Import people affected
     Given the user clicks the "Import People Affected" button
     When the user clicks the "Download template CSV-file" button
     Then a CSV-file is downloaded
-    And it contains only 1 row of column names
-    And it contains the columns "phoneNumber", and "paymentAmountMultiplier"
+    And it contains 1 row of column names
+    And it contains the column "phoneNumber"
     And the dynamic "programCustomAttributes" of that program
+
+    When the program is not configured with a paymentAmountMultiplierFormula
+    Then it contains the column "paymentAmountMultiplier" after the column "phoneNumber"
 
   Scenario: Successfully Import People Affected
     Given a valid import CSV file is prepared
@@ -19,7 +22,6 @@ Feature: Import people affected
     And the dynamic "programCustomAttributes" of that program
     And it has as delimiter ";" or ","
     And the "paymentAmountMultiplier" column has only positive integers as values
-    And any "multi-select" attributes are formatted as pipe-delimited string
     Given the user clicks the "Import People Affected" button
     When the user selects the CSV-file, through 'choose file' or 'drag and drop'
     Then the "OK" button becomes enabled
@@ -38,12 +40,11 @@ Feature: Import people affected
     And the CSV contains the following columns "phoneNumber", "paymentAmountMultiplier", a column per custom attribute in the program, "importStatus", "registrationStatus"
 
     When the users clicks "OK" on the popup
-    Then The popup disappears
+    Then the popup disappears
     And the page refreshes
     And the PA-table now shows new rows equal to the number of successfully imported "phoneNumbers"
     And they have status "Imported"
     And the Imported date is filled in
-    And the name of the "partner organization" is filled in
 
   Scenario: Unsuccessfully import invalid CSV file
     Given the user clicks the "Import People Affected" button
@@ -55,16 +56,18 @@ Feature: Import people affected
   Scenario: Person Affected registers with imported phone number
     Given a "phoneNumber" is successfully imported
     And there has been no registration with this "phoneNumber" yet (from after the import)
+    And a note was created
     When a new Person Affected starts registrations with this "phoneNumber" (see PA-app/New_registration.feature)
     Then a new row with status "Created" is shown in the PA-table in HO-portal
     and the row with status "Imported" is also still shown, because without the phone-number the system cannot know yet they belong together
     When the Person Affected finishes registrations with using the known "phoneNumber"
     Then the two rows are merged into one row with status "Registered"
-    And the "programCustomAttributes" (such as "partner organization") are visible
+    And the "programCustomAttributes" are visible
     And the "imported date" is visible
     And the "created digital ID" date is visible
     And the "completed vulnerability assessment" date is visible
     And the "inclusion score" is visible
+    And the "note" is visible
 
   Scenario: Person Affected registers with unknown phone number
       """
@@ -80,46 +83,3 @@ Feature: Import people affected
       """
       Normal registration (see PA-app/New_registration.feature)
       """
-
-
-
-@ho-portal
-Feature: Import registrations
-
-
-  Background:
-    Given a logged-in user with the "RegistrationCREATE" and "RegistrationImportTemplateREAD" permissions
-    Given the "selected phase" is "Registration (& Validation)"
-    Given the user clicks the "Import registrations" button
-
-  Scenario: Download template for import registrations
-    When the user clicks the "Download template CSV-file" button
-    Then a CSV-file is downloaded
-    And it contains only 1 row of column names
-    And it contains the generic column names "preferredLanguage", "phoneNumber", "fspName"
-    And it has the dynamic columns for programQuestions of that program (for NL-LVV: "whatsappPhoneNumber", "nameFirst", "nameLast", "vnumber")
-    And it has dynamic "programCustomAttributes" of that program
-
-  Scenario: Successfully import registrations via CSV
-    Given a valid import CSV file is prepared based on the template
-    And it has generic columns "preferredLanguage", "phoneNumber", "fspName"
-    And it has the dynamic columns for programQuestions of that program  (for NL-LVV: "whatsappPhoneNumber", "nameFirst", "nameLast", "vnumber")
-    And it has the dynamic "programCustomAttributes" of that program
-    And any "multi-select" attributes are pipe-delimited strings
-    And it has as delimiter ";" or ","
-    And it has "X" rows
-    And the input of each cell is valid
-    When the user clicks "OK" to confirm the import
-    Then it shows the number "X" of successfully imported "phoneNumbers"
-    And the PA-table in the HO-portal shows "X" new rows of PAs
-    And they have status "Registered"
-    And all other columns are filled as if a real registration was done
-    And - if configured for the program - the "paymentAmountMultiplier" is calculated based on formula
-    And no SMS is sent to the PA unlike a real registration
-    And in the AW-app the validation data for these PAs can be downloaded
-
-  Scenario: Unsuccessfully import registrations via CSV
-    Given an invalid import CSV file (wrong column names, disallowed values, etc.)
-    When the user selects this file and clicks "OK" to confirm the import
-    Then feedback is given that something went wrong and it gives details on where the error is, mainly if in a generic column
-    And there is no input validation on the dynamic columns

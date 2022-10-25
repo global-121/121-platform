@@ -36,6 +36,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [View and Manage people affected](121-Portal/View_and_Manage_people_affected.feature)
 - [View payment history popup](121-Portal/View_payment_history_popup.feature)
 - [Edit information of Person Affected](121-Portal/Edit_Info_Person_Affected.feature)
+- [Import registrations](121-Portal/Import_registrations.feature)
 - [Import people affected](121-Portal/Import_people_affected.feature)
 - [Invite people affected](121-Portal/Invite_people_affected.feature)
 - [Delete people affected](121-Portal/Delete_people_affected.feature)
@@ -144,4 +145,4 @@ Features can be added to this folder by:
   i.e. `View_all_PA-App_scenarios.feature`
 - Add a reference to the list above at the appropriate _actor_.
 - Tag the whole feature or each scenario with the components involved.
-  i.e: `@pa-app`, `@aw-app`, `@121-Portal`, etc. (all lowercase)
+  i.e: `@pa-app`, `@aw-app`, `@ho-Portal`, etc. (all lowercase)

@@ -39,7 +39,6 @@ import { Attributes } from './dto/update-attribute.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { MessageHistoryDto } from './dto/message-history.dto';
-import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramService } from '../programs/programs.service';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { v4 as uuid } from 'uuid';
@@ -323,6 +322,8 @@ export class RegistrationsService {
     }
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
+    currentRegistration.note = importedRegistration.note;
+    currentRegistration.noteUpdated = importedRegistration.noteUpdated;
 
     // .. and store phone number and language
     currentRegistration.phoneNumber = sanitizedPhoneNr;
@@ -856,7 +857,17 @@ export class RegistrationsService {
     }
 
     if (attribute !== Attributes.paymentAmountMultiplier) {
-      await registration.saveData(value, { name: attribute });
+      try {
+        await registration.saveData(value, { name: attribute });
+      } catch (error) {
+        // This is an exception because the phoneNumber is in the registration entity, not in the registrationData.
+        if (attribute === Attributes.phoneNumber) {
+          registration.phoneNumber = value.toString();
+          await this.registrationRepository.save(registration);
+        } else {
+          throw error;
+        }
+      }
     }
     const savedRegistration = await this.registrationRepository.save(
       registration,

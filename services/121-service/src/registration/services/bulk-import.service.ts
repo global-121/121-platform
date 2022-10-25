@@ -97,7 +97,7 @@ export class BulkImportService {
       }
 
       let existingRegistrations = await this.registrationRepository.findOne({
-        where: { phoneNumber: phoneNumberResult },
+        where: { phoneNumber: phoneNumberResult, programId: program.id },
       });
       if (existingRegistrations) {
         importResponseRecord.importStatus = ImportStatus.existingPhoneNumber;
@@ -127,11 +127,16 @@ export class BulkImportService {
         newRegistration,
       );
       programCustomAttributes.forEach(async att => {
-        const data = new RegistrationDataEntity();
-        data.value = record[att.name];
-        data.programCustomAttribute = att;
-        data.registrationId = savedRegistration.id;
-        await this.registrationDataRepository.save(data);
+        if (record[att.name]) {
+          const data = new RegistrationDataEntity();
+          data.value =
+            att.type === CustomAttributeType.boolean
+              ? this.stringToBoolean(record[att.name], false)
+              : record[att.name];
+          data.programCustomAttribute = att;
+          data.registrationId = savedRegistration.id;
+          await this.registrationDataRepository.save(data);
+        }
       });
 
       // Save already before status change, otherwise 'registration.subscriber' does not work
@@ -154,9 +159,12 @@ export class BulkImportService {
     };
   }
 
-  private stringToBoolean(string: string, defaultValue: boolean): boolean {
+  private stringToBoolean(string: string, defaultValue?: boolean): boolean {
     if (typeof string === 'boolean') {
       return string;
+    }
+    if (string === undefined) {
+      return defaultValue || undefined;
     }
     switch (string.toLowerCase().trim()) {
       case 'true':
@@ -166,10 +174,11 @@ export class BulkImportService {
       case 'false':
       case 'no':
       case '0':
+      case '':
       case null:
         return false;
       default:
-        return defaultValue;
+        return defaultValue || undefined;
     }
   }
 
@@ -389,7 +398,12 @@ export class BulkImportService {
         importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
       }
       for await (const att of programCustomAttributes) {
-        if (att.type === 'number' && isNaN(Number(row[att.name]))) {
+        if (
+          (att.type === 'number' && isNaN(Number(row[att.name]))) ||
+          (att.type === CustomAttributeType.boolean &&
+            row[att.name] &&
+            this.stringToBoolean(row[att.name]) === undefined)
+        ) {
           const errorObj = {
             lineNumber: i + 1,
             column: att.name,
@@ -503,7 +517,12 @@ export class BulkImportService {
             errors.push(errorObj);
           }
           row[att.name] = sanitized;
-        } else if (att.type === 'number' && isNaN(Number(row[att.name]))) {
+        } else if (
+          (att.type === 'number' && isNaN(Number(row[att.name]))) ||
+          (att.type === CustomAttributeType.boolean &&
+            row[att.name] &&
+            this.stringToBoolean(row[att.name]) === undefined)
+        ) {
           const errorObj = {
             lineNumber: i + 1,
             column: att.name,

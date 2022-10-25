@@ -309,7 +309,7 @@ export class IntersolveService {
           const messageSid = response;
           await this.storeTransactionResult(
             payment,
-            amount,
+            calculatedAmount,
             registration.id,
             1,
             StatusEnum.waiting,
