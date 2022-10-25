@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
@@ -9,13 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "incremental": true,
-    "lib": [
-      "es2019",
-      "es2020.promise",
-      "es2020.bigint",
-      "es2020.string",
-      "DOM"
-    ],
+    "lib": ["es2020", "DOM"],
     "module": "es2020",
     "moduleResolution": "node",
     "noUnusedLocals": true,

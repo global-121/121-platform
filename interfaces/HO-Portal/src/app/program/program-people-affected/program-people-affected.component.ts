@@ -84,7 +84,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   private columnWidthPerType = {
     [AnswerType.Number]: 90,
-    [AnswerType.Date]: 142,
+    [AnswerType.Date]: 150,
     [AnswerType.PhoneNumber]: 130,
     [AnswerType.Text]: 150,
     [AnswerType.Enum]: 160,
