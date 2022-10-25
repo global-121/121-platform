@@ -127,14 +127,16 @@ export class BulkImportService {
         newRegistration,
       );
       programCustomAttributes.forEach(async att => {
-        const data = new RegistrationDataEntity();
-        data.value =
-          att.type === CustomAttributeType.boolean
-            ? this.stringToBoolean(record[att.name], false)
-            : record[att.name];
-        data.programCustomAttribute = att;
-        data.registrationId = savedRegistration.id;
-        await this.registrationDataRepository.save(data);
+        if (record[att.name]) {
+          const data = new RegistrationDataEntity();
+          data.value =
+            att.type === CustomAttributeType.boolean
+              ? this.stringToBoolean(record[att.name], false)
+              : record[att.name];
+          data.programCustomAttribute = att;
+          data.registrationId = savedRegistration.id;
+          await this.registrationDataRepository.save(data);
+        }
       });
 
       // Save already before status change, otherwise 'registration.subscriber' does not work
@@ -160,6 +162,9 @@ export class BulkImportService {
   private stringToBoolean(string: string, defaultValue?: boolean): boolean {
     if (typeof string === 'boolean') {
       return string;
+    }
+    if (string === undefined) {
+      return defaultValue || undefined;
     }
     switch (string.toLowerCase().trim()) {
       case 'true':
@@ -396,6 +401,7 @@ export class BulkImportService {
         if (
           (att.type === 'number' && isNaN(Number(row[att.name]))) ||
           (att.type === CustomAttributeType.boolean &&
+            row[att.name] &&
             this.stringToBoolean(row[att.name]) === undefined)
         ) {
           const errorObj = {
@@ -514,6 +520,7 @@ export class BulkImportService {
         } else if (
           (att.type === 'number' && isNaN(Number(row[att.name]))) ||
           (att.type === CustomAttributeType.boolean &&
+            row[att.name] &&
             this.stringToBoolean(row[att.name]) === undefined)
         ) {
           const errorObj = {
