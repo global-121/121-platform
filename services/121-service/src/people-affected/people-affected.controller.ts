@@ -1,10 +1,10 @@
-import { Post, Body, Controller, UseGuards, Get, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
-import { PeopleAffectedService } from './people-affected.service';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
+import { PersonAffectedAuthGuard } from '../guards/person-affected-auth.guard';
 import { User } from '../user/user.decorator';
 import { StoreDataDto } from './dto/store-data.dto';
-import { PersonAffectedAuthGuard } from '../guards/person-affected-auth.guard';
-import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
+import { PeopleAffectedService } from './people-affected.service';
 
 @UseGuards(PersonAffectedAuthGuard)
 @ApiTags('people-affected')

@@ -1,5 +1,5 @@
-import { IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 import { UserRO } from '../user.interface';
 import { CookieSettingsDto } from './cookie-settings.dto';
 

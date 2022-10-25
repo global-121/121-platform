@@ -1,16 +1,7 @@
-import { InstanceEntity } from './instance.entity';
-import { RegistrationDataEntity } from './../registration/registration-data.entity';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import { CascadeDeleteEntity } from './../base.entity';
-import {
-  Entity,
-  Column,
-  ManyToOne,
-  BeforeUpdate,
-  Index,
-  OneToMany,
-  BeforeRemove,
-  OneToOne,
-} from 'typeorm';
+import { RegistrationDataEntity } from './../registration/registration-data.entity';
+import { InstanceEntity } from './instance.entity';
 
 @Entity('monitoring_question')
 export class MonitoringQuestionEntity extends CascadeDeleteEntity {

@@ -1,4 +1,4 @@
-import { PrimaryGeneratedColumn, getConnection, Column, Index } from 'typeorm';
+import { Column, getConnection, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 export class Base121Entity {
   @PrimaryGeneratedColumn()

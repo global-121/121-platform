@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ImageCodeEntity } from './image-code.entity';
+import crypto from 'crypto';
+import Jimp from 'jimp';
 import { Repository } from 'typeorm';
 import { EXTERNAL_API } from '../../config';
-import crypto from 'crypto';
-import { ImageCodeExportVouchersEntity } from './image-code-export-vouchers.entity';
-import Jimp from 'jimp';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { IntersolveBarcodeEntity } from '../fsp-integration/intersolve/intersolve-barcode.entity';
+import { ImageCodeExportVouchersEntity } from './image-code-export-vouchers.entity';
+import { ImageCodeEntity } from './image-code.entity';
 
 @Injectable()
 export class ImageCodeService {

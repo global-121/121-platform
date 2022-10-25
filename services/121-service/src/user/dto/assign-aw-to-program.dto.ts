@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsArray, IsNumber, ArrayMinSize } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { ArrayMinSize, IsArray } from 'class-validator';
 import { DefaultUserRole } from '../user-role.enum';
 
 export class AssignAidworkerToProgramDto {

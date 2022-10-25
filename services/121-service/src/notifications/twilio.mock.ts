@@ -1,6 +1,7 @@
-import { API_PATHS, EXTERNAL_API } from './../config';
 /* eslint-disable @typescript-eslint/camelcase */
-import { HttpService, Injectable, Post } from '@nestjs/common';
+import { HttpService, Injectable } from '@nestjs/common';
+import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
+import { API_PATHS, EXTERNAL_API } from './../config';
 import {
   TwilioIncomingCallbackDto,
   TwilioMessagesCreateDto,
@@ -8,7 +9,6 @@ import {
   TwilioStatusCallbackDto,
   TwilioValidateRequestDto,
 } from './twilio.dto';
-import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 
 class PhoneNumbers {
   public phoneNumber;

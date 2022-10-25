@@ -1,8 +1,7 @@
-import { CanActivate } from '@nestjs/common';
-import { CookiesType } from './cookies.type';
 import { Injectable } from '@nestjs/common';
 import { CookieNames } from '../shared/enum/cookie.enums';
 import { InterfaceNames } from '../shared/enum/interface-names.enum';
+import { CookiesType } from './cookies.type';
 
 @Injectable()
 export class GuardsService {

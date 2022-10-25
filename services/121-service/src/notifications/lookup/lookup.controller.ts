@@ -1,7 +1,7 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
-import { LookupService } from './lookup.service';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PhoneNumberDto } from './dto/phone-number.dto';
+import { LookupService } from './lookup.service';
 
 @ApiTags('notifications')
 @Controller('notifications/lookup')

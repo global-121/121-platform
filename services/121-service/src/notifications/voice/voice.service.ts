@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { twilioClient, twilio } from '../twilio.client';
-import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import fs from 'fs';
+import { Repository } from 'typeorm';
 import { EXTERNAL_API } from '../../config';
+import { twilio, twilioClient } from '../twilio.client';
+import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 
 @Injectable()
 export class VoiceService {

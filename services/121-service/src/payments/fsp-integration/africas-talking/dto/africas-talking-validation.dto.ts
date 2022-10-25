@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class AfricasTalkingValidationDto {
   @ApiProperty({ example: 'ATPid_1cbe5df027aca34ff15b885be975bfcd' })

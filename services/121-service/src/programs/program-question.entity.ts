@@ -1,16 +1,16 @@
-import { RegistrationDataEntity } from './../registration/registration-data.entity';
-import { CascadeDeleteEntity } from './../base.entity';
 import {
-  Entity,
-  Column,
-  ManyToOne,
   BeforeUpdate,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   Unique,
-  JoinColumn,
 } from 'typeorm';
-import { ProgramEntity } from './program.entity';
 import { ExportType } from '../export-metrics/dto/export-details';
+import { CascadeDeleteEntity } from './../base.entity';
+import { RegistrationDataEntity } from './../registration/registration-data.entity';
+import { ProgramEntity } from './program.entity';
 
 @Unique('programQuestionUnique', ['name', 'programId'])
 @Entity('program_question')

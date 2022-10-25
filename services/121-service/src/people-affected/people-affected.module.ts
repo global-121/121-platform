@@ -1,12 +1,10 @@
-import { PersonAffectedAppDataEntity } from './person-affected-app-data.entity';
+import { HttpModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Module, HttpModule } from '@nestjs/common';
-import { ActionEntity } from '../actions/action.entity';
-import { ProgramEntity } from '../programs/program.entity';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
 import { PeopleAffectedController } from './people-affected.controller';
 import { PeopleAffectedService } from './people-affected.service';
+import { PersonAffectedAppDataEntity } from './person-affected-app-data.entity';
 
 @Module({
   imports: [

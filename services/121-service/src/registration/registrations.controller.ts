@@ -1,49 +1,49 @@
-import { PersonAffectedAuthGuard } from '../guards/person-affected-auth.guard';
-import { PermissionsGuard } from '../guards/permissions.guard';
-import { RegistrationEntity } from './registration.entity';
 import {
-  Post,
   Body,
   Controller,
-  UseGuards,
-  Param,
-  UploadedFile,
-  UseInterceptors,
   Get,
+  Param,
   ParseArrayPipe,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiParam,
-  ApiConsumes,
-  ApiProperty,
-  ApiBody,
-} from '@nestjs/swagger';
-import { RegistrationsService } from './registrations.service';
-import { CreateRegistrationDto } from './dto/create-registration.dto';
-import { User } from '../user/user.decorator';
-import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
-import { CustomDataDto } from './dto/custom-data.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
+import { Permissions } from '../guards/permissions.decorator';
+import { PermissionsGuard } from '../guards/permissions.guard';
+import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
+import { PersonAffectedAuthGuard } from '../guards/person-affected-auth.guard';
+import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
+import { PermissionEnum } from '../user/permission.enum';
+import { User } from '../user/user.decorator';
 import { ImportResult } from './dto/bulk-import.dto';
-import { NoteDto, UpdateNoteDto } from './dto/note.dto';
-import { MessageDto } from './dto/message.dto';
-import { RegistrationStatusEnum } from './enum/registration-status.enum';
-import { SearchRegistrationDto } from './dto/search-registration.dto';
+import { CreateRegistrationDto } from './dto/create-registration.dto';
+import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
+import { MessageHistoryDto } from './dto/message-history.dto';
+import { MessageDto } from './dto/message.dto';
+import { NoteDto, UpdateNoteDto } from './dto/note.dto';
+import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
+import { SearchRegistrationDto } from './dto/search-registration.dto';
+import { SendCustomTextDto } from './dto/send-custom-text.dto';
+import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
 import { UpdateAttributeDto } from './dto/update-attribute.dto';
-import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
-import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
-import { MessageHistoryDto } from './dto/message-history.dto';
-import { SendCustomTextDto } from './dto/send-custom-text.dto';
-import { Permissions } from '../guards/permissions.decorator';
-import { PermissionEnum } from '../user/permission.enum';
-import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
-import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
+import { RegistrationStatusEnum } from './enum/registration-status.enum';
+import { RegistrationEntity } from './registration.entity';
+import { RegistrationsService } from './registrations.service';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })

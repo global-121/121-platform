@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../base.entity';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationEntity } from './registration.entity';

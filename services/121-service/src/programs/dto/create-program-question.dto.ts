@@ -1,16 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
+  IsDefined,
+  IsIn,
   IsNotEmpty,
   IsString,
-  IsIn,
   ValidateIf,
   ValidateNested,
-  IsDefined,
 } from 'class-validator';
-import { CreateOptionsDto } from './create-options.dto';
-import { Type } from 'class-transformer';
 import { AnswerTypes } from '../../registration/enum/custom-data-attributes';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
+import { CreateOptionsDto } from './create-options.dto';
 
 export class CreateProgramQuestionDto {
   @ApiProperty()

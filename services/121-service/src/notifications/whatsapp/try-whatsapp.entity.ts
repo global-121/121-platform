@@ -1,6 +1,6 @@
 // This entity does not store intersolve vouchers messages only 'normal' notifications
 
-import { Entity, Column, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { Base121Entity } from '../../base.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 

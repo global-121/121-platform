@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { LookupService } from './lookup.service';
 import { LookupController } from './lookup.controller';
+import { LookupService } from './lookup.service';
 
 @Module({
   imports: [],
