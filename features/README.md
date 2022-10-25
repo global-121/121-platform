@@ -30,26 +30,26 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 #### Using 121-Portal
 
-- [View metrics overview](HO-Portal/View_metrics_overview.feature)
-- [View PA-status metrics](HO-Portal/View_PA-status_metrics.feature)
-- [Manage aidworkers](HO-Portal/Manage_aidworkers.feature)
-- [View and Manage people affected](HO-Portal/View_and_Manage_people_affected.feature)
-- [View payment history popup](HO-Portal/View_payment_history_popup.feature)
-- [Edit information of Person Affected](HO-Portal/Edit_Info_Person_Affected.feature)
-- [Import people affected](HO-Portal/Import_people_affected.feature)
-- [Invite people affected](HO-Portal/Invite_people_affected.feature)
-- [Delete people affected](HO-Portal/Delete_people_affected.feature)
-- [Mark as no longer eligible](HO-Portal/Mark_as_no_longer_eligible.feature)
-- [Import registered people affected](HO-Portal/Import_people_affected.feature#L83)
-- [Select people for validation](HO-Portal/Select_people_for_validation.feature)
-- [Export People Affected list](HO-Portal/Export_PA_list.feature)
-- [Export selected for validation list](HO-Portal/Export_selected_for_validation_list.feature)
-- [Include people affected](HO-Portal/Include_people_affected.feature)
-- [Reject or End Inclusion of people affected](HO-Portal/Reject_or_End_inclusion_people_affected.feature)
-- [Export inclusion list](HO-Portal/Export_Inclusion_List.feature)
-- [Export duplicate People Affected list](HO-Portal/Export_duplicate_people-affected_List.feature)
-- [Make a new payment](HO-Portal/Make_new_payment.feature)
-- [Export payment details](HO-Portal/Export_Payment_Details.feature)
+- [View metrics overview](121-Portal/View_metrics_overview.feature)
+- [View PA-status metrics](121-Portal/View_PA-status_metrics.feature)
+- [Manage aidworkers](121-Portal/Manage_aidworkers.feature)
+- [View and Manage people affected](121-Portal/View_and_Manage_people_affected.feature)
+- [View payment history popup](121-Portal/View_payment_history_popup.feature)
+- [Edit information of Person Affected](121-Portal/Edit_Info_Person_Affected.feature)
+- [Import people affected](121-Portal/Import_people_affected.feature)
+- [Invite people affected](121-Portal/Invite_people_affected.feature)
+- [Delete people affected](121-Portal/Delete_people_affected.feature)
+- [Mark as no longer eligible](121-Portal/Mark_as_no_longer_eligible.feature)
+- [Import registered people affected](121-Portal/Import_people_affected.feature#L83)
+- [Select people for validation](121-Portal/Select_people_for_validation.feature)
+- [Export People Affected list](121-Portal/Export_PA_list.feature)
+- [Export selected for validation list](121-Portal/Export_selected_for_validation_list.feature)
+- [Include people affected](121-Portal/Include_people_affected.feature)
+- [Reject or End Inclusion of people affected](121-Portal/Reject_or_End_inclusion_people_affected.feature)
+- [Export inclusion list](121-Portal/Export_Inclusion_List.feature)
+- [Export duplicate People Affected list](121-Portal/Export_duplicate_people-affected_List.feature)
+- [Make a new payment](121-Portal/Make_new_payment.feature)
+- [Export payment details](121-Portal/Export_Payment_Details.feature)
 - Export all unused vouchers
 - Retry individual/all payment(s)
 - Get voucher balance
@@ -60,8 +60,8 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - Login
 - Logout
 - Change password
-- [Navigate home and main menu](HO-Portal/Navigate_home_and_main_menu.feature)
-- [Navigate program phases](HO-Portal/Navigate_program_phases.feature)
+- [Navigate home and main menu](121-Portal/Navigate_home_and_main_menu.feature)
+- [Navigate program phases](121-Portal/Navigate_program_phases.feature)
 
 #### Using AW-App
 
@@ -106,6 +106,15 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 - [Manage user roles](Admin-user/Manage_Roles.feature)
 - [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provider.feature)
+- Update Financial Service Provider (not chosen FSP, but entity itself)
+- Create/Update/Delete FSP attributes
+- Update program
+- Update program question
+- Update instance
+- Add/update Intersolve instructions image
+- Load seed data
+- Create new aidworker user and manage assignment to program
+- Delete user
 
 ### Automated processes (121-service)
 
@@ -135,4 +144,4 @@ Features can be added to this folder by:
   i.e. `View_all_PA-App_scenarios.feature`
 - Add a reference to the list above at the appropriate _actor_.
 - Tag the whole feature or each scenario with the components involved.
-  i.e: `@pa-app`, `@aw-app`, `@ho-portal`, etc. (all lowercase)
+  i.e: `@pa-app`, `@aw-app`, `@121-Portal`, etc. (all lowercase)
