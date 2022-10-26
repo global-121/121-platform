@@ -1,3 +1,4 @@
+import { FspName } from './../../fsp/financial-service-provider.entity';
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 import { SmsService } from './../sms/sms.service';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
@@ -9,7 +10,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, In } from 'typeorm';
+import { Repository, getRepository, In, Brackets } from 'typeorm';
 import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
 import { ProgramEntity } from '../../programs/program.entity';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
@@ -26,7 +27,6 @@ import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { IntersolvePayoutStatus } from '../../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
 import { IntersolveService } from '../../payments/fsp-integration/intersolve/intersolve.service';
-import { Message } from 'twilio/lib/twiml/MessagingResponse';
 import { TryWhatsappEntity } from './try-whatsapp.entity';
 import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
 import { v4 as uuid } from 'uuid';
@@ -246,7 +246,25 @@ export class WhatsappService {
     if (callbackData.MessageStatus === TwilioStatus.delivered) {
       // PA does have whatsapp
       // Store PA phone number as whatsappPhonenumber
-      await tryWhatsapp.registration.saveData(
+      // Since it is for now impossible to store a whatsapp number without a chosen FSP
+      // Explicitely search for the the fsp intersolve (in the related FSPs of this program)
+      // This should be refactored later
+      const program = await this.programRepository.findOne(
+        tryWhatsapp.registration.programId,
+        {
+          relations: ['financialServiceProviders'],
+        },
+      );
+      const fspIntersolveWhatsapp = program.financialServiceProviders.find(
+        fsp => {
+          return (fsp.fsp = FspName.intersolve);
+        },
+      );
+      tryWhatsapp.registration.fsp = fspIntersolveWhatsapp;
+      const savedRegistration = await this.registrationRepository.save(
+        tryWhatsapp.registration,
+      );
+      const r = await savedRegistration.saveData(
         tryWhatsapp.registration.phoneNumber,
         { name: CustomDataAttributes.whatsappPhoneNumber },
       );
@@ -265,13 +283,20 @@ export class WhatsappService {
         'registration.whatsappPendingMessages',
         'whatsappPendingMessages',
       )
+      .leftJoinAndSelect('registration.program', 'program')
       .leftJoin('registration_data.fspQuestion', 'fspQuestion')
-      .where('registration_data.value = :whatsappPhoneNumber', {
-        whatsappPhoneNumber: phoneNumber,
+      .where('registration.phoneNumber = :phoneNumber', {
+        phoneNumber: phoneNumber,
       })
-      .andWhere('fspQuestion.name = :name', {
-        name: CustomDataAttributes.whatsappPhoneNumber,
-      })
+      .orWhere(
+        new Brackets(qb => {
+          qb.where('registration_data.value = :whatsappPhoneNumber', {
+            whatsappPhoneNumber: phoneNumber,
+          }).andWhere('fspQuestion.name = :name', {
+            name: CustomDataAttributes.whatsappPhoneNumber,
+          });
+        }),
+      )
       .orderBy('whatsappPendingMessages.created', 'ASC')
       .getMany();
 
