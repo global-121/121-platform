@@ -49,8 +49,16 @@
   "notifications": {
     "en": {
       "registered": "You have been successfully registered for this program.",
+      "whatsappGenericMessage": "Dummy text EN: whatsappGenericMessage",
       "whatsappPayment": "Please reply to this message within 24 hours to receive your voucher",
       "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk"
+    },
+    "nl": {
+      "registered": "Dummy text NL: registered",
+      "whatsappGenericMessage": "Dummy text NL: whatsappGenericMessage",
+      "whatsappPayment": "Dummy text NL: whatsappPayment",
+      "whatsappVoucher": "Dummy text NL: whatsappVoucher",
+      "whatsappReply": "Dummy text NL: whatsappReply"
     }
   },
   "phoneNumberPlaceholder": "+000 000 00 00",
