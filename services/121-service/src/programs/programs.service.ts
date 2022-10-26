@@ -190,7 +190,7 @@ export class ProgramService {
 
     for (const attribute of updateProgramCustomAttributes.attributes) {
       const oldAttribute = await this.programCustomAttributeRepository.findOne({
-        where: { name: attribute.name },
+        where: { name: attribute.name, programId: programId },
       });
       if (oldAttribute) {
         // If existing: update ..
@@ -206,8 +206,12 @@ export class ProgramService {
         program.programCustomAttributes[attributeIndex] = savedAttribute;
       } else {
         // .. otherwise, create new
+        const newCustomAttribute = attribute as ProgramCustomAttributeEntity;
+        newCustomAttribute.programId = programId;
+
+        // attribute.programId = programId;
         const savedAttribute = await this.programCustomAttributeRepository.save(
-          attribute,
+          newCustomAttribute,
         );
         savedAttributes.push(savedAttribute);
         program.programCustomAttributes.push(savedAttribute);
@@ -218,10 +222,11 @@ export class ProgramService {
   }
 
   public async updateProgramQuestion(
+    programId: number,
     updateProgramQuestionDto: UpdateProgramQuestionDto,
   ): Promise<ProgramQuestionEntity> {
     const programQuestion = await this.programQuestionRepository.findOne({
-      where: { name: updateProgramQuestionDto.name },
+      where: { name: updateProgramQuestionDto.name, programId: programId },
     });
     if (!programQuestion) {
       const errors = `No programQuestion found with name ${updateProgramQuestionDto.name}`;

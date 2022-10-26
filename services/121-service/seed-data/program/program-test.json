@@ -38,6 +38,9 @@
     },
     {
       "fsp": "FSP - no attributes"
+    },
+    {
+      "fsp": "VodaCash"
     }
   ],
   "inclusionCalculationType": "highestScoresX",
