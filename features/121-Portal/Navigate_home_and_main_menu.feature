@@ -1,7 +1,7 @@
-@ho-portal
+@121-portal
 Feature: Navigate home page and main menu
 
-  Background: 
+  Background:
     Given a logged-in user
 
   Scenario: View home screen
