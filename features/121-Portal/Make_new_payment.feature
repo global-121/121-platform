@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Make a new payment
 
   Background:
@@ -47,9 +47,8 @@ Feature: Make a new payment
     And the "export payment data" component now shows that the payment is "closed"
     And the "export payment data" component now has the next payment enabled
     And the "PA-table" now shows the payment just completed in the "Payment History" column for all PAs that were selected
-    And for successful transactions it shows a date+time and the transaction amount
     And it opens the payment history when clicked
-    And it shows the payment number and the payment state
+    And it shows the payment number, the payment state, the payment date+time and the transaction amount
     And the payment state shows 'Success' when the payment went through
     And it shows 'Failed' for failed transactions
     And it shows 'Waiting' for waiting transactions
@@ -89,7 +88,7 @@ Feature: Make a new payment
     When the user refreshes the page again
     Then eventually all 'waiting' PAs have upgraded to 'success' or 'error' (unless some status callback fails for some reason)
 
-  Scenario: retry payment for 1 or all failed PAs
+  Scenario: retry failed payment for 1 PA
     Given the payment has failed for a PA
     When the user clicks the "Payment #x failed" button for this PA
     Then the "Payment History" popup appears
@@ -99,7 +98,7 @@ Feature: Make a new payment
     Then the user clicks the retry-button
     And a normal payment scenario is started for this 1 PA only (see other scenario)
 
-    Scenario: retry payment for all failed PAs
+  Scenario: retry payment for all failed payments of PAs
     Given the payment has failed for more than 1 PA
     Then the user sees the "Retry all failed" button above the bulk action dropdown
     When the user clicks it
@@ -112,7 +111,6 @@ Feature: Make a new payment
     Given the Person Affected has chosen the option "receive voucher via whatsApp"
     When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
     Then the Person Affected receives a whatsApp message
-    And it mentions the amount of the voucher
     And it explains the Person Affected to reply 'yes' to receive the voucher
     When the Person Affected replies 'yes' (or anything else)
     Then the Person Affected receives a voucher image
