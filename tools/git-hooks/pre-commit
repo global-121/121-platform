@@ -15,6 +15,7 @@ check_if_need_to_lint() {
 check_if_need_to_lint "interfaces/PA-App/"
 check_if_need_to_lint "interfaces/AW-App/"
 check_if_need_to_lint "interfaces/HO-Portal/"
+check_if_need_to_lint "services/121-service/"
 
 
 # Warn about files to keep in sync:

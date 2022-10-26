@@ -1,15 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
-
+import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-no-whatsapp.json';
+import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
+import instanceAnonymous from '../../seed-data/instance/instance-anonymous.json';
+import programValidation from '../../seed-data/program/program-validation.json';
+import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
-
-import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
-import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-no-whatsapp.json';
-
-import programValidation from '../../seed-data/program/program-validation.json';
-import instanceAnonymous from '../../seed-data/instance/instance-anonymous.json';
 
 @Injectable()
 export class SeedProgramValidation implements InterfaceScript {

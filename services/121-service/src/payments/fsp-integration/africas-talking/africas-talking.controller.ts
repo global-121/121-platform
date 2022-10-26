@@ -1,13 +1,8 @@
-import { Post, Body, Controller, UseGuards } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiResponse,
-  ApiOperation,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
-import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
-import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AfricasTalkingService } from './africas-talking.service';
+import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
+import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 
 @ApiTags('payments/africas-talking')
 @Controller('payments/africas-talking')

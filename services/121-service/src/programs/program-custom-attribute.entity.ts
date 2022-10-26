@@ -1,16 +1,15 @@
 import {
-  Entity,
   Column,
+  Entity,
+  JoinColumn,
   ManyToOne,
-  Index,
   OneToMany,
   Unique,
-  JoinColumn,
 } from 'typeorm';
-import { ProgramEntity } from './program.entity';
 import { Base121Entity } from '../base.entity';
-import { CustomAttributeType } from './dto/create-program-custom-attribute.dto';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
+import { CustomAttributeType } from './dto/create-program-custom-attribute.dto';
+import { ProgramEntity } from './program.entity';
 
 @Unique('programCustomAttributeUnique', ['name', 'programId'])
 @Entity('program_custom_attribute')

@@ -1,13 +1,13 @@
-import { DefaultUserRole } from '../user/user-role.enum';
 import { Injectable } from '@nestjs/common';
-import { InterfaceScript } from './scripts.module';
-import { Connection } from 'typeorm';
-import { UserEntity } from '../user/user.entity';
 import crypto from 'crypto';
-import { UserRoleEntity } from '../user/user-role.entity';
-import { UserType } from '../user/user-type-enum';
+import { Connection } from 'typeorm';
 import { PermissionEnum } from '../user/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
+import { UserRoleEntity } from '../user/user-role.entity';
+import { DefaultUserRole } from '../user/user-role.enum';
+import { UserType } from '../user/user-type-enum';
+import { UserEntity } from '../user/user.entity';
+import { InterfaceScript } from './scripts.module';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {

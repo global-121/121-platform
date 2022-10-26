@@ -1,11 +1,11 @@
 import {
-  Entity,
-  ManyToOne,
-  ManyToMany,
-  JoinTable,
-  Unique,
   Column,
+  Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  Unique,
 } from 'typeorm';
 import { Base121Entity } from '../base.entity';
 import { UserRoleEntity } from '../user/user-role.entity';

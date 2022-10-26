@@ -1,10 +1,10 @@
 import { Controller, Get, Module } from '@nestjs/common';
 import {
-  TerminusModule,
-  TypeOrmHealthIndicator,
-  HealthCheckService,
   HealthCheck,
   HealthCheckResult,
+  HealthCheckService,
+  TerminusModule,
+  TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
 
 @Controller('health')

@@ -1,20 +1,19 @@
-import { RegistrationDataEntity } from './../registration-data.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { validate } from 'class-validator';
+import csv from 'csv-parser';
+import { Readable } from 'stream';
 import { Repository } from 'typeorm';
-import { ProgramEntity } from '../../programs/program.entity';
-import { RegistrationEntity } from '../registration.entity';
-import { RegistrationStatusEnum } from '../enum/registration-status.enum';
-import {
-  AnswerTypes,
-  Attribute,
-  GenericAttributes,
-} from '../enum/custom-data-attributes';
-import { LookupService } from '../../notifications/lookup/lookup.service';
-import { ProgramQuestionEntity } from '../../programs/program-question.entity';
-import { FspQuestionEntity } from '../../fsp/fsp-question.entity';
+import { v4 as uuid } from 'uuid';
+import { AdditionalActionType } from '../../actions/action.entity';
+import { ActionService } from '../../actions/action.service';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
-import { LanguageEnum } from '../enum/language.enum';
+import { FspQuestionEntity } from '../../fsp/fsp-question.entity';
+import { LookupService } from '../../notifications/lookup/lookup.service';
+import { CustomAttributeType } from '../../programs/dto/create-program-custom-attribute.dto';
+import { ProgramCustomAttributeEntity } from '../../programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '../../programs/program-question.entity';
+import { ProgramEntity } from '../../programs/program.entity';
 import {
   BulkImportDto,
   BulkImportResult,
@@ -22,15 +21,16 @@ import {
   ImportResult,
   ImportStatus,
 } from '../dto/bulk-import.dto';
-import { v4 as uuid } from 'uuid';
-import csv from 'csv-parser';
-import { ActionService } from '../../actions/action.service';
-import { AdditionalActionType } from '../../actions/action.entity';
-import { validate } from 'class-validator';
-import { Readable } from 'stream';
+import {
+  AnswerTypes,
+  Attribute,
+  GenericAttributes,
+} from '../enum/custom-data-attributes';
+import { LanguageEnum } from '../enum/language.enum';
+import { RegistrationStatusEnum } from '../enum/registration-status.enum';
+import { RegistrationEntity } from '../registration.entity';
+import { RegistrationDataEntity } from './../registration-data.entity';
 import { InlusionScoreService } from './inclusion-score.service';
-import { ProgramCustomAttributeEntity } from '../../programs/program-custom-attribute.entity';
-import { CustomAttributeType } from '../../programs/dto/create-program-custom-attribute.dto';
 
 export enum ImportType {
   imported = 'import-as-imported',

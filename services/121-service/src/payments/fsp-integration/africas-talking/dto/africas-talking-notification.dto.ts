@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional, IsIn } from 'class-validator';
+import { IsIn, IsOptional, IsString } from 'class-validator';
 
 export class AfricasTalkingNotificationDto {
   @ApiProperty({ example: 'ATPid_1cbe5df027aca34ff15b885be975bfcd' })

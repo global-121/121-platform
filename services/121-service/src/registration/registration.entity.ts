@@ -1,35 +1,35 @@
-import { RegistrationDataByNameDto } from './dto/registration-data-by-name.dto';
+import { IsInt, IsOptional, IsPositive } from 'class-validator';
+import {
+  BeforeRemove,
+  Brackets,
+  Column,
+  Entity,
+  getConnection,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { TwilioMessageEntity } from '../notifications/twilio.entity';
+import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
+import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { ProgramEntity } from '../programs/program.entity';
+import { UserEntity } from '../user/user.entity';
+import { CascadeDeleteEntity } from './../base.entity';
 import { InstanceEntity } from './../instance/instance.entity';
 import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsapp-pending-message.entity';
-import { CascadeDeleteEntity } from './../base.entity';
-import { UserEntity } from '../user/user.entity';
-import {
-  Entity,
-  ManyToOne,
-  JoinColumn,
-  Index,
-  Column,
-  OneToMany,
-  BeforeRemove,
-  getConnection,
-  Brackets,
-} from 'typeorm';
-import { ProgramEntity } from '../programs/program.entity';
-import { RegistrationStatusEnum } from './enum/registration-status.enum';
-import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { LanguageEnum } from './enum/language.enum';
-import { IsInt, IsPositive, IsOptional } from 'class-validator';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
-import { TwilioMessageEntity } from '../notifications/twilio.entity';
-import { RegistrationDataEntity } from './registration-data.entity';
+import { RegistrationDataByNameDto } from './dto/registration-data-by-name.dto';
 import {
   RegistrationDataOptions,
   RegistrationDataRelation,
 } from './dto/registration-data-relation.model';
-import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
+import { LanguageEnum } from './enum/language.enum';
+import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationDataSaveError } from './errors/registration-data.error';
+import { RegistrationDataEntity } from './registration-data.entity';
+import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 
 @Entity('registration')
 export class RegistrationEntity extends CascadeDeleteEntity {

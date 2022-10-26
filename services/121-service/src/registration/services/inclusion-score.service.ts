@@ -1,10 +1,10 @@
-import { ProgramQuestionEntity } from './../../programs/program-question.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProgramEntity } from '../../programs/program.entity';
 import { Repository } from 'typeorm';
-import { RegistrationEntity } from '../registration.entity';
+import { ProgramEntity } from '../../programs/program.entity';
 import { AnswerTypes } from '../enum/custom-data-attributes';
+import { RegistrationEntity } from '../registration.entity';
+import { ProgramQuestionEntity } from './../../programs/program-question.entity';
 
 @Injectable()
 export class InlusionScoreService {

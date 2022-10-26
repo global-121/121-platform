@@ -1,24 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsString,
-  IsDateString,
-  Length,
-  IsBoolean,
-  IsIn,
-  IsArray,
-  IsNumber,
-  ValidateNested,
-  IsDefined,
-  IsOptional,
-} from 'class-validator';
-import { CreateProgramQuestionDto } from './create-program-question.dto';
 import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsDateString,
+  IsDefined,
+  IsIn,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+  ValidateNested,
+} from 'class-validator';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import {
   CreateProgramCustomAttributeDto,
   CustomAttributeType,
 } from './create-program-custom-attribute.dto';
+import { CreateProgramQuestionDto } from './create-program-question.dto';
 
 export class CreateProgramDto {
   @ApiProperty()

@@ -1,18 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
-
+import fspBelcash from '../../seed-data/fsp/fsp-belcash.json';
+import instancePilotEth from '../../seed-data/instance/instance-pilot-eth.json';
+import programPilotEth from '../../seed-data/program/program-pilot-eth.json';
+import { ProgramEntity } from '../programs/program.entity';
+import { PermissionEnum } from '../user/permission.enum';
+import { PermissionEntity } from '../user/permissions.entity';
+import { UserRoleEntity } from '../user/user-role.entity';
+import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
-
-import fspBelcash from '../../seed-data/fsp/fsp-belcash.json';
-
-import programPilotEth from '../../seed-data/program/program-pilot-eth.json';
-import instancePilotEth from '../../seed-data/instance/instance-pilot-eth.json';
-import { PermissionEnum } from '../user/permission.enum';
-import { UserRoleEntity } from '../user/user-role.entity';
-import { PermissionEntity } from '../user/permissions.entity';
-import { ProgramEntity } from '../programs/program.entity';
 
 @Injectable()
 export class SeedProgramEth implements InterfaceScript {

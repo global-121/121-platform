@@ -3,33 +3,33 @@ import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 import { SmsService } from './../sms/sms.service';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import {
-  Injectable,
-  Inject,
   forwardRef,
   HttpException,
   HttpStatus,
+  Inject,
+  Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, In, Brackets } from 'typeorm';
+import { Brackets, getRepository, In, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
-import { ProgramEntity } from '../../programs/program.entity';
-import { TransactionEntity } from '../../payments/transactions/transaction.entity';
-import { RegistrationEntity } from '../../registration/registration.entity';
-import { StatusEnum } from '../../shared/enum/status.enum';
-import { ImageCodeService } from '../../payments/imagecode/image-code.service';
-import { twilioClient } from '../twilio.client';
-import {
-  TwilioStatusCallbackDto,
-  TwilioStatus,
-  TwilioIncomingCallbackDto,
-} from '../twilio.dto';
-import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { IntersolvePayoutStatus } from '../../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
 import { IntersolveService } from '../../payments/fsp-integration/intersolve/intersolve.service';
-import { TryWhatsappEntity } from './try-whatsapp.entity';
+import { ImageCodeService } from '../../payments/imagecode/image-code.service';
+import { TransactionEntity } from '../../payments/transactions/transaction.entity';
+import { ProgramEntity } from '../../programs/program.entity';
 import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
-import { v4 as uuid } from 'uuid';
+import { RegistrationEntity } from '../../registration/registration.entity';
+import { StatusEnum } from '../../shared/enum/status.enum';
+import { twilioClient } from '../twilio.client';
+import {
+  TwilioIncomingCallbackDto,
+  TwilioStatus,
+  TwilioStatusCallbackDto,
+} from '../twilio.dto';
+import { TryWhatsappEntity } from './try-whatsapp.entity';
+import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 
 @Injectable()
 export class WhatsappService {

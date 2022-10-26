@@ -1,17 +1,16 @@
-import { RegistrationEntity } from '../registration.entity';
 import {
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
+  registerDecorator,
   ValidationArguments,
   ValidationOptions,
-  registerDecorator,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
 } from 'class-validator';
-import { getConnection, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { getConnection } from 'typeorm';
 import {
   AnswerTypes,
   CustomAttributeType,
 } from '../enum/custom-data-attributes';
+import { RegistrationEntity } from '../registration.entity';
 
 @ValidatorConstraint({ name: 'validateAttributeType', async: true })
 export class RegistrationDataTypeValidator

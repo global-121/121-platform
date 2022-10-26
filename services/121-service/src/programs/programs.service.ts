@@ -1,21 +1,21 @@
-import { ProgramQuestionEntity } from './program-question.entity';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, In } from 'typeorm';
-import { ProgramEntity } from './program.entity';
-import { ProgramPhase } from '../shared/enum/program-phase.model';
-import { CreateProgramDto } from './dto/create-program.dto';
-import { ProgramsRO, SimpleProgramRO } from './program.interface';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { getRepository, In, Repository } from 'typeorm';
 import { ActionEntity } from '../actions/action.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { Attribute } from '../registration/enum/custom-data-attributes';
+import { ProgramPhase } from '../shared/enum/program-phase.model';
+import { UserEntity } from '../user/user.entity';
+import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
+import { CreateProgramDto } from './dto/create-program.dto';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
-import { Attribute } from '../registration/enum/custom-data-attributes';
-import { UserEntity } from '../user/user.entity';
+import { ProgramQuestionEntity } from './program-question.entity';
+import { ProgramEntity } from './program.entity';
+import { ProgramsRO, SimpleProgramRO } from './program.interface';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)

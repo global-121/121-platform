@@ -1,8 +1,8 @@
-import SeedInit from './seed-init';
 import { Injectable } from '@nestjs/common';
-import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
+import { InterfaceScript } from './scripts.module';
+import SeedInit from './seed-init';
 
 @Injectable()
 export class SeedProd implements InterfaceScript {

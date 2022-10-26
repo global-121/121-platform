@@ -1,6 +1,6 @@
-import { PermissionEnum } from './permission.enum';
-import { Entity, Column, ManyToMany, Index } from 'typeorm';
+import { Column, Entity, Index, ManyToMany } from 'typeorm';
 import { Base121Entity } from '../base.entity';
+import { PermissionEnum } from './permission.enum';
 import { UserRoleEntity } from './user-role.entity';
 
 @Entity('permission')
