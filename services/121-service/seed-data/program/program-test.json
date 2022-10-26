@@ -53,14 +53,15 @@
     "en": {
       "registered": "You have been successfully registered for this program.",
       "whatsappGenericMessage": "Dummy text EN: whatsappGenericMessage",
-      "whatsappPayment": "Please reply to this message within 24 hours to receive your voucher",
+      "whatsappPayment": "Please reply to this message within 24 hours to receive your voucher {{1}} units",
+      "whatsappVoucher": "This is a message from the Red Cross.\n\nWith this message you will receive:\n1. An Albert Heijn supermarket voucher (cadeaukaart) - this is the picture with the barcode.\n2. An explanation on how to use the voucher in Albert Heijn.\n\nIf you received more than one voucher this is because you had not yet received vouchers from previous weeks.\n\nThe value of each voucher is €{{1}}.\nYou can spend the vouchers at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep the vouchers and re-use them until the €{{1}} on each voucher is finished.\n\nYou will receive your €{{1}} Albert Heijn voucher every week on Tuesday until:\n1. You are no longer on the list of our partner organisations.\n2. The end of the project (you will be informed two weeks in advance).\n\nDo you have questions? Send us a message on WhatsApp: https://wa.me/31614458781",
       "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk"
     },
     "nl": {
       "registered": "Dummy text NL: registered",
       "whatsappGenericMessage": "Dummy text NL: whatsappGenericMessage",
-      "whatsappPayment": "Dummy text NL: whatsappPayment",
-      "whatsappVoucher": "Dummy text NL: whatsappVoucher",
+      "whatsappPayment": "Dummy text NL: whatsappPayment {{1}} units",
+      "whatsappVoucher": "Dummy text NL: whatsappVoucher {{1}} units",
       "whatsappReply": "Dummy text NL: whatsappReply"
     }
   },
