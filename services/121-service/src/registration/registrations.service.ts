@@ -310,9 +310,22 @@ export class RegistrationsService {
       return;
     }
 
+    // Remove old attributes (only relevant in edge case where Intersolve-whatsapp is stored as fsp, because of try-whatsapp-via-invitation scenario)
+    const oldFsp = importedRegistration.fsp;
+    for (const attribute of oldFsp?.questions) {
+      const regData = await importedRegistration.getRegistrationDataByName(
+        attribute.name,
+      );
+      await this.registrationDataRepository.delete({ id: regData.id });
+    }
+    const registrationData = await this.registrationDataRepository.find({
+      where: { registrationId: importedRegistration.id },
+    });
+
     // If imported registration found ..
     // .. then transfer relevant attributes from imported registration to current registration
-    for (const d of importedRegistration.data) {
+
+    for (const d of registrationData) {
       const relation = new RegistrationDataRelation();
       relation.fspQuestionId = d.fspQuestionId;
       relation.programQuestionId = d.programQuestionId;
@@ -389,7 +402,7 @@ export class RegistrationsService {
         registrationStatus: In(importStatuses),
         programId: programId,
       },
-      relations: ['fsp', 'data'],
+      relations: ['fsp', 'data', 'fsp.questions'],
     });
   }
 
@@ -1175,7 +1188,6 @@ export class RegistrationsService {
     }
 
     // Check if required attributes are present
-
     newFsp.questions.forEach(requiredAttribute => {
       if (
         !newFspAttributesRaw ||
@@ -1202,6 +1214,7 @@ export class RegistrationsService {
       const errors = `New FSP is the same as existing FSP for this Person Affected.`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
+
     // Remove old attributes
     const oldFsp = registration.fsp;
     for (const attribute of oldFsp?.questions) {
@@ -1215,7 +1228,6 @@ export class RegistrationsService {
     const updatedRegistration = await this.addFsp(referenceId, newFsp.id);
 
     // Add new attributes
-
     for (const attribute of updatedRegistration.fsp.questions) {
       await this.addRegistrationData(
         referenceId,
