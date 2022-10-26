@@ -3,18 +3,16 @@ Feature: View and manage people affected (generic features)
 
   Background:
     Given a logged-in user with "RegistrationREAD" permission
+    Given a chosen "program"
 
-  Scenario: View people affected connected to a program
-    When the user views a page with the "manage people affected" component
-    Then a table with "people connected to a program" is shown
-    And depending on the "selected phase" only current people affected with given "PA statuses" are shown
-    - "registration": imported, invited, created, selected for validation, no longer eligible, registered while no longer eligible
-    - "inclusion": validated, registered, selected for validation, rejected, inclusion ended
-    - "payment": included
+  Scenario: View People Affected table
+    When the user views a page with the "PA table"
+    Then a table with all PAs of that program is shown
+    And depending on the "selected phase" only current people affected with given "PA statuses" are shown (see Scenario: Filter rows of PA-table by People Affected status)
     And for each person the "Select" column is empty
     And for each person a "PA identifier" is shown
     And it has a clickable "i" button in front of it, which opens a popup
-    And depending on which "page" other columns are shown (see detailed scenarios below)
+    And depending on the "selected phase" other columns are shown (see detailed scenarios below)
     And above the table a list of "bulk actions" is shown
     And next to it an "apply action" button is shown and it is "disabled"
     And above the table a free text "filter field" and a dropdown for "status filter" are shown
@@ -41,15 +39,15 @@ Feature: View and manage people affected (generic features)
     And for each person a "name" is shown
     And for each person a "phone number" is shown
     And all above columns are fixed when scrolling horizontally
-    And "custom attribute" columns are shown
-    And some other hard-coded columns such as "vnumber" and "whatsappPhoneNumber" are shown if available
+    And "custom attribute" columns are shown if configured to be showing for that phase
+    And "program questions" are shown if configured to be showing for that phase
+    And "fsp questions" are shown if configured to be showing for that phase
 
   Scenario: Edit boolean custom attributes in PA table
     Given the logged-in user also has "RegistrationAttributeUPDATE" permission
-    Given the logged-in user is viewing the PA-table
     When the user clicks one of the "custom attribute" columns with type 'boolean'
     Then the clicked "custom attribute" is updated
-    And the updated value is reflected in the PA-table
+    And a popup with 'update successful' appears
 
   Scenario: Filter rows of PA-table by string
     Given the table with all "people affected" relevant to the selected program phase is shown
@@ -63,6 +61,9 @@ Feature: View and manage people affected (generic features)
     When the user clicks on the "status" button above the table
     Then a dropdown with all the possible statuses appears
     And only the statuses relevant to the current phase are selected
+    - "registration": imported, invited, created, registered, selected for validation, no longer eligible, registered while no longer eligible
+    - "inclusion": registered, selected for validation, validated, rejected, inclusion ended
+    - "payment": included
     When the user makes a different selection of statuses
     And the user clicks on "apply"
     Then the table immediately updates to show only rows that match the status selection
@@ -102,17 +103,15 @@ Feature: View and manage people affected (generic features)
     And the dropdown is reset to the default "choose action" option
 
   Scenario: Sort people enrolled in a program by property(score, creation-date, update-date)
-    Given a table with all "people connected to a program" is shown
     When the user clicks a column-header
-    Then the rows show in "ascending, descending or initial" order
+    Then the rows show in "ascending or descending" order
 
   Scenario: Select a row
     Given a "bulk action" is selected
     And "row checkboxes" have appeared for eligible rows
     And all "row checkboxes" are unchecked
     When the "user" clicks on the checkbox
-    Then the row styling reflects selection by turning "blue"
-    And the footer shows an updated number of selected people
+    Then the 'Apply action' button becomes enabled
 
   Scenario: Select all rows given no row selection
     Given a "bulk action" is selected
@@ -159,7 +158,10 @@ Feature: View and manage people affected (generic features)
     Then a popup appears which lists which "bulk action" will be applied to "how many" people affected
     And it has a checkbox that allows to choose whether to send a Custom SMS with this action
     And it is checked by default or not based on the action
-    And - if checked by default or manually- it shows a free text field to enter the message
+      - default yes for: invite, reject, end inclusion, send message
+      - default no for: include
+      - SMS not an option for: select for validation, mark as no longer eligible, delete PA
+    And - if checked by default or manually - it shows a free text field to enter the message
     And it shows a character counter
     And it has a "confirm" button, which is disabled if checkbox is checked AND the entered text is below 20 characters
     And it has a "cancel" button
