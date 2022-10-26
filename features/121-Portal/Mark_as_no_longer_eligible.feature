@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Mark Person Affected as no longer eligible (extension of View_and_Manage_people_affected.feature)
 
   Background:

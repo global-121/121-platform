@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Manage aidworkers
 
   Background:
@@ -29,8 +29,9 @@ Feature: Manage aidworkers
     Given the user clicks the "delete button" for an aidworker
     Given the pop-up "Are you sure?" is shown
     When the user clicks the "OK"-button
-    Then the aidworker is deleted
+    Then the aidworker is unassigned from that program
     And the list is not showing the aidworker any more
+    And if the aidworker is not assigned to any program anymore the aidworker is deleted
 
   Scenario: View "Add aidworker" form
     When the user scrolls to the "manage aidworkers" section
