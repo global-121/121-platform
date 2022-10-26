@@ -289,14 +289,15 @@ export class RegistrationsService {
       phoneNumber,
     );
 
-    const importedRegistration = await this.findImportedRegistrationByPhoneNumber(
-      sanitizedPhoneNr,
-    );
     const currentRegistration = await this.getRegistrationFromReferenceId(
       referenceId,
       ['fsp'],
     );
 
+    const importedRegistration = await this.findImportedRegistrationByPhoneNumber(
+      sanitizedPhoneNr,
+      currentRegistration.programId,
+    );
     if (!useForInvitationMatching || !importedRegistration) {
       // If endpoint is used for other purpose OR no imported registration found  ..
       // .. continue with current registration
@@ -375,6 +376,7 @@ export class RegistrationsService {
 
   private async findImportedRegistrationByPhoneNumber(
     phoneNumber: string,
+    programId: number,
   ): Promise<RegistrationEntity> {
     const importStatuses = [
       RegistrationStatusEnum.imported,
@@ -385,6 +387,7 @@ export class RegistrationsService {
       where: {
         phoneNumber: phoneNumber,
         registrationStatus: In(importStatuses),
+        programId: programId,
       },
       relations: ['fsp', 'data'],
     });
