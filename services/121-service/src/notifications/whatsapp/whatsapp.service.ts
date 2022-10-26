@@ -1,7 +1,3 @@
-import { FspName } from './../../fsp/financial-service-provider.entity';
-import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
-import { SmsService } from './../sms/sms.service';
-import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import {
   forwardRef,
   HttpException,
@@ -28,8 +24,12 @@ import {
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from '../twilio.dto';
-import { TryWhatsappEntity } from './try-whatsapp.entity';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
+import { FspName } from './../../fsp/financial-service-provider.entity';
+import { SmsService } from './../sms/sms.service';
+import { TryWhatsappEntity } from './try-whatsapp.entity';
+import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
+import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 
 @Injectable()
 export class WhatsappService {
