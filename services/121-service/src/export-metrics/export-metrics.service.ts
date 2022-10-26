@@ -373,10 +373,7 @@ export class ExportMetricsService {
       }
       row[`payment${payment}_status`] = creationTransaction?.status;
       row[`payment${payment}_amount`] = creationTransaction?.amount;
-      row[`payment${payment}_date`] =
-        creationTransaction?.status === StatusEnum.success
-          ? creationTransaction?.paymentDate
-          : null;
+      row[`payment${payment}_date`] = creationTransaction?.paymentDate;
       row[`payment${payment}_voucherClaimed_date`] =
         transaction[IntersolvePayoutStatus.VoucherSent]?.status ===
         StatusEnum.success
