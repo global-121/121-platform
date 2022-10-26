@@ -6,7 +6,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, In, Repository } from 'typeorm';
+import { Brackets, getRepository, In, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
 import { IntersolvePayoutStatus } from '../../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
@@ -17,6 +17,7 @@ import { TransactionEntity } from '../../payments/transactions/transaction.entit
 import { ProgramEntity } from '../../programs/program.entity';
 import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../registration/registration.entity';
+import { ProgramPhase } from '../../shared/enum/program-phase.model';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { twilioClient } from '../twilio.client';
 import {
@@ -25,6 +26,7 @@ import {
   TwilioStatusCallbackDto,
 } from '../twilio.dto';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
+import { FspName } from './../../fsp/financial-service-provider.entity';
 import { SmsService } from './../sms/sms.service';
 import { TryWhatsappEntity } from './try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
@@ -245,7 +247,25 @@ export class WhatsappService {
     if (callbackData.MessageStatus === TwilioStatus.delivered) {
       // PA does have whatsapp
       // Store PA phone number as whatsappPhonenumber
-      await tryWhatsapp.registration.saveData(
+      // Since it is for now impossible to store a whatsapp number without a chosen FSP
+      // Explicitely search for the the fsp intersolve (in the related FSPs of this program)
+      // This should be refactored later
+      const program = await this.programRepository.findOne(
+        tryWhatsapp.registration.programId,
+        {
+          relations: ['financialServiceProviders'],
+        },
+      );
+      const fspIntersolveWhatsapp = program.financialServiceProviders.find(
+        fsp => {
+          return (fsp.fsp = FspName.intersolve);
+        },
+      );
+      tryWhatsapp.registration.fsp = fspIntersolveWhatsapp;
+      const savedRegistration = await this.registrationRepository.save(
+        tryWhatsapp.registration,
+      );
+      const r = await savedRegistration.saveData(
         tryWhatsapp.registration.phoneNumber,
         { name: CustomDataAttributes.whatsappPhoneNumber },
       );
@@ -264,13 +284,20 @@ export class WhatsappService {
         'registration.whatsappPendingMessages',
         'whatsappPendingMessages',
       )
+      .leftJoinAndSelect('registration.program', 'program')
       .leftJoin('registration_data.fspQuestion', 'fspQuestion')
-      .where('registration_data.value = :whatsappPhoneNumber', {
-        whatsappPhoneNumber: phoneNumber,
+      .where('registration.phoneNumber = :phoneNumber', {
+        phoneNumber: phoneNumber,
       })
-      .andWhere('fspQuestion.name = :name', {
-        name: CustomDataAttributes.whatsappPhoneNumber,
-      })
+      .orWhere(
+        new Brackets(qb => {
+          qb.where('registration_data.value = :whatsappPhoneNumber', {
+            whatsappPhoneNumber: phoneNumber,
+          }).andWhere('fspQuestion.name = :name', {
+            name: CustomDataAttributes.whatsappPhoneNumber,
+          });
+        }),
+      )
       .orderBy('whatsappPendingMessages.created', 'ASC')
       .getMany();
 
@@ -346,11 +373,28 @@ export class WhatsappService {
       registrationsWithOpenVouchers.length === 0 &&
       registrationsWithPendingMessage.length === 0
     ) {
-      const programs = await getRepository(ProgramEntity).find();
-      if (programs.length === 1) {
+      let program: ProgramEntity;
+      // If phonenumber is found in active programs but the registration has no outstanding vouchers/messages use the corresponding program
+      const registrationsWithPhoneNumberInActivePrograms = registrationsWithPhoneNumber.filter(
+        registration =>
+          [
+            ProgramPhase.registrationValidation,
+            ProgramPhase.inclusion,
+            ProgramPhase.payment,
+          ].includes(registration.program.phase),
+      );
+      if (registrationsWithPhoneNumberInActivePrograms.length > 0) {
+        program = registrationsWithPhoneNumberInActivePrograms[0].program;
+      } else {
         // If only 1 program in database: use default reply of that program
+        const programs = await getRepository(ProgramEntity).find();
+        if (programs.length === 1) {
+          program = programs[0];
+        }
+      }
+      if (program) {
         const whatsappDefaultReply =
-          programs[0].notifications[this.fallbackLanguage]['whatsappReply'];
+          program.notifications[this.fallbackLanguage]['whatsappReply'];
         await this.sendWhatsapp(
           whatsappDefaultReply,
           fromNumber,
@@ -360,7 +404,7 @@ export class WhatsappService {
         );
         return;
       } else {
-        // If multiple or 0 programs: use generic reply in code
+        // If multiple or 0 programs and phonenumber not found: use generic reply in code
         await this.sendWhatsapp(
           this.genericDefaultReplies[this.fallbackLanguage],
           fromNumber,
