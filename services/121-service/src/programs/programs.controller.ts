@@ -110,8 +110,10 @@ export class ProgramController {
   @Post(':programId/update/program-question')
   public async updateProgramQuestion(
     @Body() updateProgramQuestionDto: UpdateProgramQuestionDto,
+    @Param() params,
   ): Promise<ProgramQuestionEntity> {
     return await this.programService.updateProgramQuestion(
+      Number(params.programId),
       updateProgramQuestionDto,
     );
   }

@@ -287,9 +287,7 @@ export class MetricsStatesComponent implements OnChanges {
 
     saveAs(
       new Blob([csvContents], { type: 'text/csv' }),
-      `program-${this.program.id}-metrics-${new Date()
-        .toISOString()
-        .substr(0, 10)}.csv`,
+      `pa-status-metrics-${new Date().toISOString().substr(0, 10)}.csv`,
     );
   }
 }
