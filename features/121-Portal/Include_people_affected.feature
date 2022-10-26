@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Include people affected
 
   Background:
@@ -23,7 +23,6 @@ Feature: Include people affected
     And the "inclusion ended" date+time remains visible, if the PA had status "inclusion ended" before
     And the "status" is updated to "Included"
     And if the custom SMS option is used, an SMS is sent to the PA (see View_and_Manage_people_affected.feature)
-    And in the PA-app a notification appears that the PA is included
 
   Scenario: Include 2000 PAs
     Given there are 2000 "registered" PAs in the system

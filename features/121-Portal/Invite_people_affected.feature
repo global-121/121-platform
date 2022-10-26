@@ -1,9 +1,9 @@
-@ho-portal
+@portal
 Feature: Invite people affected (extension of View_and_Manage_people_affected.feature)
 
   Background:
     Given a logged-in user with "RegistrationREAD" permission
-    And the "selected phase" is "registration (& validation)"
+    And the "selected phase" is "registrationValidation"
 
   Background:
     Given a logged-in user with "RegistrationStatusInvitedUPDATE" permission
