@@ -361,14 +361,14 @@ export class RegistrationsService {
     // .. then delete the imported registration
     await this.registrationRepository.remove(importedRegistration);
 
-    // .. if imported registration status was noLongerEligible set to registeredWhileNoLongerEligible
+    // .. if imported registration status was noLongerEligible copy it, as this needs to be remembered
     if (
       importedRegistration.registrationStatus ===
       RegistrationStatusEnum.noLongerEligible
     ) {
       await this.setRegistrationStatus(
         updatedRegistration.referenceId,
-        RegistrationStatusEnum.registeredWhileNoLongerEligible,
+        importedRegistration.registrationStatus,
       );
     }
   }
@@ -399,17 +399,32 @@ export class RegistrationsService {
     );
 
     if (
-      registration.registrationStatus !==
-      RegistrationStatusEnum.startedRegistration
+      ![
+        RegistrationStatusEnum.startedRegistration,
+        RegistrationStatusEnum.noLongerEligible,
+      ].includes(registration.registrationStatus)
     ) {
-      const errors = `Registration status is not '${RegistrationStatusEnum.startedRegistration}'`;
+      const errors = `Registration status is not '${RegistrationStatusEnum.startedRegistration} or ${RegistrationStatusEnum.noLongerEligible}'`;
       throw new HttpException(errors, HttpStatus.NOT_FOUND);
     }
 
-    const registerResult = await this.setRegistrationStatus(
-      referenceId,
-      RegistrationStatusEnum.registered,
-    );
+    // If status was 'no longer eligible', switch to 'registeredWhileNoLongerEligible', otherwise to 'registered'
+    let registerResult;
+    if (
+      registration.registrationStatus ===
+      RegistrationStatusEnum.noLongerEligible
+    ) {
+      registerResult = await this.setRegistrationStatus(
+        registration.referenceId,
+        RegistrationStatusEnum.registeredWhileNoLongerEligible,
+      );
+    } else {
+      registerResult = await this.setRegistrationStatus(
+        referenceId,
+        RegistrationStatusEnum.registered,
+      );
+    }
+
     this.inclusionScoreService.calculateInclusionScore(referenceId);
 
     this.sendTextMessage(
@@ -418,9 +433,13 @@ export class RegistrationsService {
       null,
       RegistrationStatusEnum.registered,
     );
+
     if (
       !registerResult ||
-      registerResult.registrationStatus !== RegistrationStatusEnum.registered
+      ![
+        RegistrationStatusEnum.registered,
+        RegistrationStatusEnum.registeredWhileNoLongerEligible,
+      ].includes(registerResult.registrationStatus)
     ) {
       return false;
     }

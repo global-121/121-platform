@@ -3,18 +3,17 @@ Feature: View payment history column and popup
 
   Background:
     Given a logged-in user with "RegistrationREAD" permission
-    Given the user 
+    Given the user is on the "payment" page
+    Given 1 or more PAs with at least status "included"
 
   Scenario: View payment history column
-    Given the user is on the "payment" page
     When the user views the "payment history column" 
     Then it shows 'no payment yet' for PAs without any payment yet
     And otherwise it shows a button which says 'Payment #X success/waiting/failed'
     And for each PA X is the last payment which is done for that PA
     And the button has red text and outline if waiting/failed
 
-  Scenario: View payment history popup
-    Given the user is on the "payment" page
+  Scenario: View payment history popup for a PA
     Given a payment is done for the PA
     When the user clicks on the button in the payment history column
     Then the payment history popup opens
