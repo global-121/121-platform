@@ -30,8 +30,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 #### Using 121-Portal
 
-- [View metrics overview](HO-Portal/View_metrics_overview.feature)
-- [View PA-status metrics](HO-Portal/View_PA-status_metrics.feature)
+- [View dashboard page](121-Portal/View_dashboard_page.feature)
 - [Manage aidworkers](HO-Portal/Manage_aidworkers.feature)
 - [View and Manage people affected](HO-Portal/View_and_Manage_people_affected.feature)
 - [View payment history popup](HO-Portal/View_payment_history_popup.feature)
