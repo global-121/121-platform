@@ -1,4 +1,4 @@
-@121-portal
+@portal
 Feature: Navigate home page and main menu
 
   Background:

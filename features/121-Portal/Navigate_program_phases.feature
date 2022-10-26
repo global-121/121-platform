@@ -1,4 +1,4 @@
-@121-portal
+@portal
 Feature: Navigate program phases
 
   Background:
