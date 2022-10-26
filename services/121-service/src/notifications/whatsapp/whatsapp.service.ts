@@ -347,11 +347,20 @@ export class WhatsappService {
       registrationsWithOpenVouchers.length === 0 &&
       registrationsWithPendingMessage.length === 0
     ) {
-      const programs = await getRepository(ProgramEntity).find();
-      if (programs.length === 1) {
+      let program: ProgramEntity;
+      // If phonenumber is found but the registration has no outstanding vouchers/messages use the corresponding program
+      if (registrationsWithPhoneNumber.length > 0) {
+        program = registrationsWithPhoneNumber[0].program;
+      } else {
         // If only 1 program in database: use default reply of that program
+        const programs = await getRepository(ProgramEntity).find();
+        if (programs.length === 1) {
+          program = programs[0];
+        }
+      }
+      if (program) {
         const whatsappDefaultReply =
-          programs[0].notifications[this.fallbackLanguage]['whatsappReply'];
+          program.notifications[this.fallbackLanguage]['whatsappReply'];
         await this.sendWhatsapp(
           whatsappDefaultReply,
           fromNumber,
@@ -361,7 +370,7 @@ export class WhatsappService {
         );
         return;
       } else {
-        // If multiple or 0 programs: use generic reply in code
+        // If multiple or 0 programs and phonenumber not found: use generic reply in code
         await this.sendWhatsapp(
           this.genericDefaultReplies[this.fallbackLanguage],
           fromNumber,
