@@ -31,7 +31,7 @@ Feature: Make a new payment
     And the payment instructions for each PA contain the transfer value "20" times the PA's "paymentAmountMultiplier"
     And the message is shown according to the success of the transactions
 
-  Scenario: Send payment instructions for small amount of PAs with at least 1 successful transaction
+  Scenario: Send payment instructions
     Given this is not the last payment for the program
     And the user selects the "Do payment" action
     And the user clicks the button "apply action"
@@ -46,6 +46,7 @@ Feature: Make a new payment
     Then the page refreshes
     And the "export payment data" component now shows that the payment is "closed"
     And the "export payment data" component now has the next payment enabled
+    And the "bulk action" dropdown list now shows the next available payment to do
     And the "PA-table" now shows the payment just completed in the "Payment History" column for all PAs that were selected
     And it opens the payment history when clicked
     And it shows the payment number, the payment state, the payment date+time and the transaction amount
@@ -54,13 +55,6 @@ Feature: Make a new payment
     And it shows 'Waiting' for waiting transactions
     And - for successful transactions - the PA receives (notification about) voucher/cash depending on the FSP
     And the 'Export people affected' in the 'Registration' phase now contains 4 new columns for the new payment: status, amount, date and 'voucher-claimed-date'
-
-  Scenario: Send payment instructions with small amount of PAs with 0 successful transactions
-    When payment instructions are sent to the Financial Service Provider and have finished processing
-    Then the payment is not "closed"
-    And the "export payment" dropdown does not update accordingly
-    And the "Payment History" column contains the payment number and 'Failed' for all PAs
-    And the same payment can be retried for all included PAs using the "payout" button
 
   Scenario: Send payment instructions for 5000 PAs
     Given there are 5000 PAs in the system
