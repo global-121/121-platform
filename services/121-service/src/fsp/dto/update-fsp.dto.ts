@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ExportType } from '../../export-metrics/dto/export-details';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 

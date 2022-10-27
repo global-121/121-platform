@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-
-import { Length, IsString, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString, Length } from 'class-validator';
 import { IsRegistrationDataValidType } from '../validator/registration-data-type.validator';
 
 export class CustomDataDto {

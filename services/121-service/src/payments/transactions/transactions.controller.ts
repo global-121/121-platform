@@ -1,28 +1,27 @@
 import {
-  UseGuards,
-  Controller,
   Body,
+  Controller,
   Get,
   Param,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
+  ApiOperation,
   ApiParam,
   ApiQuery,
-  ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Permissions } from '../../guards/permissions.decorator';
+import { PermissionsGuard } from '../../guards/permissions.guard';
+import { PermissionEnum } from '../../user/permission.enum';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
 } from './dto/get-transaction.dto';
 import { TransactionsService } from './transactions.service';
-import { PermissionsGuard } from '../../permissions.guard';
-import { Permissions } from '../../permissions.decorator';
-import { PermissionEnum } from '../../user/permission.enum';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('payments/transactions')

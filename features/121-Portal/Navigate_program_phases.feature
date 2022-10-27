@@ -1,13 +1,13 @@
-@ho-portal
+@portal
 Feature: Navigate program phases
 
   Background:
-    Given a logged-in user with the "ProgramAllREAD" permission
+    Given a logged-in user
 
   Scenario: See current phase of the program
     When the user views a "program" page
-    Then the user sees a "phase-navigation-bar" with "six" possible phases of the program in the header
-    And sees the "current program phase" of the program highlighted in background-color and text-color
+    Then the user sees a "phase-navigation-bar" with "five" possible phases of the program in the header
+    And sees the "selected phase" highlighted when navigating to the progra page ths coresponds to the "current program phase"
     And sees that future phases are disabled
     And sees that past phases are enabled
     And the "move-to-next-phase" button is not visible if the user does not have the "ProgramPhaseUPDATE" permission
@@ -17,8 +17,7 @@ Feature: Navigate program phases
   Scenario: View past phase
     Given the user views a "program" page
     When the user clicks one of the past phases in the "phase-navigation-bar"
-    Then the background-color of the selected phase changes and reflects the "selected phase"
-    And the text-color of the previous phase remains different and reflects the "current program phase"
+    Then the color of the selected phase changes and reflects the "selected phase"
     And sees that the "move-to-next-phase"-button is disabled, reflecting the read-only mode of past phases.
     And sees that the text of the of the "move-to-next-phase"-button changes, reflecting the meaning of the phase-change.
     And sees - depending on which state - that certain program-components in the page will (dis)appear or will be dis/enabled.
@@ -27,7 +26,7 @@ Feature: Navigate program phases
     Given user views a "program" page
     Given "selected phase" is equal to "current program phase"
     When user clicks the "move-to-next-phase"-button
-    Then highlighting in the "phase-navigation-bar" will move to the next phase, both background- and text-color, reflecting a change in both "current program phase" and "selected phase"
+    Then highlighting in the "phase-navigation-bar" will move to the next phase reflecting a change in both "current program phase" and "selected phase"
     And sees that the text of the of the "move-to-next-phase"-button changes, reflecting the meaning of the next phase-change.
     And sees - depending on which state - that certain program-components in the page will (dis)appear.
 

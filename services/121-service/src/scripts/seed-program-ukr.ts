@@ -1,14 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
-
+import fspUkrPoshta from '../../seed-data/fsp/fsp-ukrposhta.json';
+import instanceUkr from '../../seed-data/instance/instance-pilot-ukr.json';
+import programPilotUkr from '../../seed-data/program/program-pilot-ukr.json';
+import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
-
-import fspUkrPoshta from '../../seed-data/fsp/fsp-ukrposhta.json';
-
-import programPilotUkr from '../../seed-data/program/program-pilot-ukr.json';
-import instanceUkr from '../../seed-data/instance/instance-pilot-ukr.json';
 
 @Injectable()
 export class SeedProgramUkr implements InterfaceScript {

@@ -1,13 +1,13 @@
-import { DefaultUserRole } from '../user/user-role.enum';
 import { Injectable } from '@nestjs/common';
-import { InterfaceScript } from './scripts.module';
-import { Connection } from 'typeorm';
-import { UserEntity } from '../user/user.entity';
 import crypto from 'crypto';
-import { UserRoleEntity } from '../user/user-role.entity';
-import { UserType } from '../user/user-type-enum';
+import { Connection } from 'typeorm';
 import { PermissionEnum } from '../user/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
+import { UserRoleEntity } from '../user/user-role.entity';
+import { DefaultUserRole } from '../user/user-role.enum';
+import { UserType } from '../user/user-type-enum';
+import { UserEntity } from '../user/user.entity';
+import { InterfaceScript } from './scripts.module';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {
@@ -46,8 +46,8 @@ export class SeedInit implements InterfaceScript {
     const userRoleRepository = this.connection.getRepository(UserRoleEntity);
     const defaultRoles = [
       {
-        role: DefaultUserRole.Admin,
-        label: 'Admin',
+        role: DefaultUserRole.ProgramAdmin,
+        label: 'Program Admin',
         permissions: Object.values(PermissionEnum),
       },
       {
@@ -56,16 +56,14 @@ export class SeedInit implements InterfaceScript {
         permissions: [
           PermissionEnum.ActionCREATE,
           PermissionEnum.ActionREAD,
-          PermissionEnum.AidWorkerCREATE,
-          PermissionEnum.AidWorkerDELETE,
+          // PermissionEnum.AidWorkerDELETE, Moved to admin
           PermissionEnum.AidWorkerProgramUPDATE,
-          PermissionEnum.InstanceUPDATE,
+          // PermissionEnum.InstanceUPDATE,  // Admin-only
           PermissionEnum.PaymentCREATE,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
-          PermissionEnum.ProgramAllREAD,
-          PermissionEnum.ProgramCREATE,
+          // PermissionEnum.ProgramCREATE, Moved to admin
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramPhaseUPDATE,
           PermissionEnum.ProgramUPDATE,
@@ -89,7 +87,6 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
-          PermissionEnum.ProgramAllREAD,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.RegistrationNotificationREAD,
           PermissionEnum.RegistrationPersonalREAD,
@@ -107,7 +104,6 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
-          PermissionEnum.ProgramAllREAD,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.RegistrationAttributeUPDATE,
           PermissionEnum.RegistrationCREATE,
@@ -163,6 +159,7 @@ export class SeedInit implements InterfaceScript {
         .createHmac('sha256', process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN)
         .digest('hex'),
       userType: UserType.aidWorker,
+      admin: true,
     });
   }
 

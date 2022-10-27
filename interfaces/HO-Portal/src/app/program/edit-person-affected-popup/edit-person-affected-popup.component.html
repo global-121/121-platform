@@ -51,7 +51,7 @@
             | translate
         "
         [value]="attributeValues?.paymentAmountMultiplier"
-        (updated)="updatePaAttribute('paymentAmountMultiplier', $event, false)"
+        (updated)="updatePaAttribute('paymentAmountMultiplier', +$event, false)"
         [inProgress]="inProgress?.paymentAmountMultiplier || false"
         [isDisabled]="readOnly || program?.paymentAmountMultiplierFormula"
         [showSubmit]="!readOnly && !program?.paymentAmountMultiplierFormula"
@@ -95,6 +95,7 @@
         [label]="'page.program.program-people-affected.column.fsp' | translate"
         [value]="person?.fsp"
         [referenceId]="person?.referenceId"
+        [programId]="programId"
         class="ion-margin-vertical"
       ></app-update-fsp>
 

@@ -1,16 +1,17 @@
 import {
-  Injectable,
-  Inject,
   forwardRef,
   HttpException,
   HttpStatus,
+  Inject,
+  Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, Not, IsNull, Between } from 'typeorm';
+import crypto from 'crypto';
+import { Between, getRepository, IsNull, Not, Repository } from 'typeorm';
 import { FspName } from '../../../fsp/financial-service-provider.entity';
 import {
-  TwilioStatusCallbackDto,
   TwilioStatus,
+  TwilioStatusCallbackDto,
 } from '../../../notifications/twilio.dto';
 import { WhatsappService } from '../../../notifications/whatsapp/whatsapp.service';
 import { ProgramEntity } from '../../../programs/program.entity';
@@ -21,7 +22,6 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
-import crypto from 'crypto';
 import { UnusedVoucherDto } from '../../dto/unused-voucher.dto';
 import { ImageCodeService } from '../../imagecode/image-code.service';
 import { TransactionEntity } from '../../transactions/transaction.entity';
@@ -55,8 +55,6 @@ export class IntersolveService {
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
 
-  private readonly programId = 1;
-
   public constructor(
     private readonly intersolveApiService: IntersolveApiService,
     @Inject(forwardRef(() => WhatsappService))
@@ -89,7 +87,7 @@ export class IntersolveService {
       // If 'waiting' then transaction is stored already earlier, to make sure it's there before status-callback comes in
       if (paResult.status !== StatusEnum.waiting) {
         const registration = await this.registrationRepository.findOne({
-          select: ['id'],
+          select: ['id', 'programId'],
           where: { referenceId: paResult.referenceId },
         });
         await this.storeTransactionResult(
@@ -99,6 +97,7 @@ export class IntersolveService {
           1,
           paResult.status,
           paResult.message,
+          registration.programId,
         );
       }
     }
@@ -281,8 +280,15 @@ export class IntersolveService {
     const result = new PaTransactionResultDto();
     result.referenceId = paymentInfo.referenceId;
 
+    const registration = await this.registrationRepository.findOne({
+      select: ['id', 'programId'],
+      where: { referenceId: paymentInfo.referenceId },
+    });
+
+    const programId = registration.programId;
+
     const language = await this.getLanguage(paymentInfo.referenceId);
-    const program = await getRepository(ProgramEntity).findOne(this.programId);
+    const program = await this.programRepository.findOne(programId);
     let whatsappPayment = program.notifications[language]['whatsappPayment'];
     const calculatedAmount = this.getMultipliedAmount(
       amount,
@@ -290,10 +296,6 @@ export class IntersolveService {
     );
     whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
 
-    const registration = await this.registrationRepository.findOne({
-      select: ['id'],
-      where: { referenceId: paymentInfo.referenceId },
-    });
     await this.whatsappService
       .sendWhatsapp(
         whatsappPayment,
@@ -307,11 +309,12 @@ export class IntersolveService {
           const messageSid = response;
           await this.storeTransactionResult(
             payment,
-            amount,
+            calculatedAmount,
             registration.id,
             1,
             StatusEnum.waiting,
             null,
+            registration.programId,
             messageSid,
           );
 
@@ -551,6 +554,7 @@ export class IntersolveService {
     transactionStep: number,
     status: StatusEnum,
     errorMessage: string,
+    programId: number,
     messageSid?: string,
   ): Promise<void> {
     const transactionResultDto = await this.createTransactionResult(
@@ -563,7 +567,7 @@ export class IntersolveService {
     );
     this.transactionsService.storeTransaction(
       transactionResultDto,
-      this.programId,
+      programId,
       paymentNr,
       transactionStep,
     );

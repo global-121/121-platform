@@ -1,14 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
-
+import fspVodaCash from '../../seed-data/fsp/fsp-vodacash.json';
+import instanceDrc from '../../seed-data/instance/instance-drc.json';
+import programDrc from '../../seed-data/program/program-drc.json';
+import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
-
-import fspVodaCash from '../../seed-data/fsp/fsp-vodacash.json';
-
-import programDrc from '../../seed-data/program/program-drc.json';
-import instanceDrc from '../../seed-data/instance/instance-drc.json';
 
 @Injectable()
 export class SeedProgramDrc implements InterfaceScript {

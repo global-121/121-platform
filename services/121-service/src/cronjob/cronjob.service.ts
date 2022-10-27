@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, Between } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { IntersolveApiService } from '../payments/fsp-integration/intersolve/instersolve.api.service';
@@ -59,17 +59,13 @@ export class CronjobService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM)
-  private async cacheUnusedVoucers(): Promise<void> {
+  private async cacheUnusedVouchers(): Promise<void> {
     this.intersolveService.getUnusedVouchers();
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_NOON)
   private async cronSendWhatsappReminders(): Promise<void> {
     console.log('CronjobService - Started: cronSendWhatsappReminders');
-
-    const programId = 1;
-    const program = await getRepository(ProgramEntity).findOne(programId);
-
     const sixteenHours = 16 * 60 * 60 * 1000;
     const sixteenHoursAgo = new Date(Date.now() - sixteenHours);
 
@@ -95,13 +91,14 @@ export class CronjobService {
       const referenceId = unsentIntersolveBarcode.referenceId;
       const registration = await this.registrationRepository.findOne({
         where: { referenceId: referenceId },
+        relations: ['program'],
       });
       const fromNumber = await registration.getRegistrationDataValueByName(
         CustomDataAttributes.whatsappPhoneNumber,
       );
       const language = await this.getLanguageForRegistration(referenceId);
       let whatsappPayment = this.getNotificationText(
-        program,
+        registration.program,
         'whatsappPayment',
         language,
       );

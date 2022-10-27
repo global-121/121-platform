@@ -65,23 +65,9 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getAllPublishedPrograms(): Promise<ProgramsDTO> {
+  getAllAssignedPrograms(): Promise<ProgramsDTO> {
     return this.apiService
-      .get(environment.url_121_service_api, '/programs/published/all')
-      .toPromise();
-  }
-
-  getReferenceIdByQrIdentifier(qrIdentifier: string): Promise<string> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/registrations/qr-find-reference-id',
-        {
-          qrIdentifier,
-        },
-        false,
-      )
-      .pipe(map((response) => response.referenceId))
+      .get(environment.url_121_service_api, '/programs/assigned/all', false)
       .toPromise();
   }
 
@@ -89,7 +75,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/registrations/search-name-phone',
+        '/registrations/search-phone',
         {
           phoneNumber,
         },
@@ -100,7 +86,11 @@ export class ProgramsServiceApiService {
 
   getRegistration(referenceId: string): Promise<any> {
     return this.apiService
-      .get(environment.url_121_service_api, '/registrations/get/' + referenceId)
+      .get(
+        environment.url_121_service_api,
+        `/registrations/get/${referenceId}`,
+        false,
+      )
       .toPromise();
   }
 
@@ -109,14 +99,18 @@ export class ProgramsServiceApiService {
     programId: number,
   ): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, '/registrations/get-fsp/', {
-        referenceId,
-        programId,
-      })
+      .post(
+        environment.url_121_service_api,
+        `/programs/${programId}/registrations/get-fsp/`,
+        {
+          referenceId,
+        },
+      )
       .toPromise();
   }
 
   postRegistrationCustomAttribute(
+    programId: number,
     referenceId: string,
     attribute: string,
     value: string | string[],
@@ -124,7 +118,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/registrations/attribute',
+        `/programs/${programId}/registrations/attribute`,
         {
           referenceId,
           attribute,
@@ -158,13 +152,14 @@ export class ProgramsServiceApiService {
   }
 
   postValidationData(
+    programId: number,
     referenceId: string,
     programAnswers: ProgramAnswer[],
   ): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/registrations/issue-validation',
+        `/programs/${programId}/registrations/issue-validation`,
         {
           referenceId,
           programAnswers,

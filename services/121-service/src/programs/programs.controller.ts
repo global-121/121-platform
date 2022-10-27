@@ -1,36 +1,32 @@
-import { ProgramQuestionEntity } from './program-question.entity';
 import {
-  Get,
-  Post,
   Body,
-  Param,
   Controller,
-  UseGuards,
   Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
 } from '@nestjs/common';
-import { ProgramService } from './programs.service';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Admin } from '../guards/admin.decorator';
+import { Permissions } from '../guards/permissions.decorator';
+import { PermissionsGuard } from '../guards/permissions.guard';
+import { Attribute } from '../registration/enum/custom-data-attributes';
+import { PermissionEnum } from '../user/permission.enum';
+import { User } from '../user/user.decorator';
+import { AdminAuthGuard } from './../guards/admin.guard';
+import { ChangePhaseDto } from './dto/change-phase.dto';
+import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
-import { ProgramsRO, SimpleProgramRO } from './program.interface';
-
-import {
-  ApiTags,
-  ApiBearerAuth,
-  ApiResponse,
-  ApiOperation,
-  ApiParam,
-} from '@nestjs/swagger';
-import { ProgramEntity } from './program.entity';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
-import { ChangePhaseDto } from './dto/change-phase.dto';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { PermissionsGuard } from '../permissions.guard';
-import { Permissions } from '../permissions.decorator';
-import { PermissionEnum } from '../user/permission.enum';
-import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
-import { Attribute } from '../registration/enum/custom-data-attributes';
+import { ProgramQuestionEntity } from './program-question.entity';
+import { ProgramEntity } from './program.entity';
+import { ProgramsRO, SimpleProgramRO } from './program.interface';
+import { ProgramService } from './programs.service';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('programs')
 @Controller('programs')
 export class ProgramController {
@@ -47,14 +43,6 @@ export class ProgramController {
     return await this.programService.findOne(Number(params.programId));
   }
 
-  @Permissions(PermissionEnum.ProgramAllREAD)
-  @ApiOperation({ summary: 'Get all programs' })
-  @ApiResponse({ status: 200, description: 'Return all programs.' })
-  @Get()
-  public async findAll(): Promise<ProgramsRO> {
-    return await this.programService.findAll();
-  }
-
   @ApiOperation({ summary: 'Get published programs' })
   @ApiResponse({ status: 200, description: 'Return all published programs.' })
   @Get('published/all')
@@ -62,7 +50,19 @@ export class ProgramController {
     return await this.programService.getPublishedPrograms();
   }
 
-  @Permissions(PermissionEnum.ProgramCREATE)
+  @ApiOperation({ summary: 'Get all assigned programs for a user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all assigned programs for a user.',
+  })
+  @Get('assigned/all')
+  public async getAssignedPrograms(
+    @User('id') userId: number,
+  ): Promise<ProgramsRO> {
+    return await this.programService.getAssignedPrograms(userId);
+  }
+
+  @Admin()
   @ApiOperation({ summary: 'Create program' })
   @ApiResponse({
     status: 201,
@@ -79,7 +79,7 @@ export class ProgramController {
   @Permissions(PermissionEnum.ProgramPhaseUPDATE)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('change-phase/:programId')
+  @Post(':programId/change-phase')
   public async changePhase(
     @Param() params,
     @Body() changePhaseData: ChangePhaseDto,
@@ -110,8 +110,10 @@ export class ProgramController {
   @Post(':programId/update/program-question')
   public async updateProgramQuestion(
     @Body() updateProgramQuestionDto: UpdateProgramQuestionDto,
+    @Param() params,
   ): Promise<ProgramQuestionEntity> {
     return await this.programService.updateProgramQuestion(
+      Number(params.programId),
       updateProgramQuestionDto,
     );
   }

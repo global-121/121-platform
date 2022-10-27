@@ -21,7 +21,7 @@ export const mockProgram: Program = {
     },
   ],
   financialServiceProviders: [],
-  validationByQr: false,
+  fullnameNamingConvention: [],
 };
 
 export const fspData = {

@@ -1,26 +1,24 @@
-<section *ngIf="registrationStatus === false">
-  <dialogue-turn
-    *ngIf="registrationStatus === false"
-    [isSpoken]="registrationStatus === false"
-  >
-    <p>
-      <play-text-audio
-        key="connection.error-retry"
-        class="ion-float-start ion-margin-end"
-      ></play-text-audio>
-      <span [innerHTML]="'connection.error-retry' | translate"></span>
-    </p>
-    <p>
-      <ion-button
-        type="button"
-        (click)="retry()"
-      >
-        {{ 'shared.retry' | translate }}
-      </ion-button>
-    </p>
-  </dialogue-turn>
-</section>
-<section *ngIf="registrationStatus">
+<dialogue-turn
+  *ngIf="showSomethingWentWrong === true"
+  [isSpoken]="showSomethingWentWrong === true"
+>
+  <p>
+    <play-text-audio
+      key="connection.error-retry"
+      class="ion-float-start ion-margin-end"
+    ></play-text-audio>
+    <span [innerHTML]="'connection.error-retry' | translate"></span>
+  </p>
+  <p>
+    <ion-button
+      type="button"
+      (click)="retry()"
+    >
+      {{ 'shared.retry' | translate }}
+    </ion-button>
+  </p>
+</dialogue-turn>
+<section *ngIf="registrationStatus === true">
   <dialogue-turn
     *ngIf="validation"
     [isSpoken]="validation"
@@ -55,35 +53,6 @@
         {{ document }}
       </li>
     </ul>
-  </dialogue-turn>
-  <dialogue-turn
-    [isConnected]="true"
-    *ngIf="validation && showQrCode"
-    [isSpoken]="validation && showQrCode"
-  >
-    <p>
-      <play-text-audio
-        key="personal.registration-summary.qr-code"
-        class="ion-float-start ion-margin-end"
-      ></play-text-audio>
-      {{ 'personal.registration-summary.qr-code' | translate }}
-    </p>
-    <div
-      *ngIf="qrDataString"
-      text-center
-      margin-vertical
-      style="
-        margin: 1em auto;
-        max-width: 360px;
-        padding: 1em;
-        background: white;
-      "
-    >
-      <qrcode
-        [qrdata]="qrDataString"
-        level="H"
-      ></qrcode>
-    </div>
   </dialogue-turn>
   <dialogue-turn
     *ngIf="!validation && !!registrationStatus"

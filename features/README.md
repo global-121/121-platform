@@ -2,14 +2,23 @@
 
 <!-- TOC: -->
 
-- [All features / scenario's](#all-features--scenarios)
-  - [For Humanitarian Organization](#for-humanitarian-organization)
-  - [For Person/People Affected](#for-personpeople-affected)
-  - [For Aid-Worker](#for-aid-worker)
-  - [For Admin-user](#for-admin-user)
-- [Reference](#reference)
-- [Tools](#tools)
-- [How to describe features / define scenarios](#how-to-describe-features--define-scenarios)
+- [Features](#features)
+  - [All features / scenario's](#all-features--scenarios)
+    - [For Aid Workers](#for-aid-workers)
+      - [Using 121-Portal](#using-121-portal)
+      - [Generic 121-Portal components/features](#generic-121-portal-componentsfeatures)
+      - [Using AW-App](#using-aw-app)
+      - [Generic AW-App components/features](#generic-aw-app-componentsfeatures)
+    - [For Person/People Affected](#for-personpeople-affected)
+      - [Using external tools/applications](#using-external-toolsapplications)
+      - [Using PA-App](#using-pa-app)
+      - [Generic PA-App components](#generic-pa-app-components)
+    - [For Admin-user](#for-admin-user)
+      - [Using Swagger UI](#using-swagger-ui)
+    - [Automated processes (121-service)](#automated-processes-121-service)
+  - [Reference](#reference)
+  - [Tools](#tools)
+  - [How to describe features / define scenarios](#how-to-describe-features--define-scenarios)
 
 ---
 
@@ -21,26 +30,26 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 #### Using 121-Portal
 
-- [View metrics overview](HO-Portal/View_metrics_overview.feature)
-- [View PA-status metrics](HO-Portal/View_PA-status_metrics.feature)
-- [Manage aidworkers](HO-Portal/Manage_aidworkers.feature)
-- [View and Manage people affected](HO-Portal/View_and_Manage_people_affected.feature)
-- [View payment history popup](HO-Portal/View_payment_history_popup.feature)
-- [Edit information of Person Affected](HO-Portal/Edit_Info_Person_Affected.feature)
-- [Import people affected](HO-Portal/Import_people_affected.feature)
-- [Invite people affected](HO-Portal/Invite_people_affected.feature)
-- [Delete people affected](HO-Portal/Delete_people_affected.feature)
-- [Mark as no longer eligible](HO-Portal/Mark_as_no_longer_eligible.feature)
-- [Import registered people affected](HO-Portal/Import_people_affected.feature#L83)
-- [Select people for validation](HO-Portal/Select_people_for_validation.feature)
-- [Export People Affected list](HO-Portal/Export_PA_list.feature)
-- [Export selected for validation list](HO-Portal/Export_selected_for_validation_list.feature)
-- [Include people affected](HO-Portal/Include_people_affected.feature)
-- [Reject or End Inclusion of people affected](HO-Portal/Reject_or_End_inclusion_people_affected.feature)
-- [Export inclusion list](HO-Portal/Export_Inclusion_List.feature)
-- [Export duplicate People Affected list](HO-Portal/Export_duplicate_people-affected_List.feature)
-- [Make a new payment](HO-Portal/Make_new_payment.feature)
-- [Export payment details](HO-Portal/Export_Payment_Details.feature)
+- [View dashboard page](121-Portal/View_dashboard_page.feature)
+- [Manage aidworkers](121-Portal/Manage_aidworkers.feature)
+- [View and Manage people affected](121-Portal/View_and_Manage_people_affected.feature)
+- [View payment history popup](121-Portal/View_payment_history_popup.feature)
+- [Edit information of Person Affected](121-Portal/Edit_Info_Person_Affected.feature)
+- [Import registrations](121-Portal/Import_registrations.feature)
+- [Import people affected](121-Portal/Import_people_affected.feature)
+- [Invite people affected](121-Portal/Invite_people_affected.feature)
+- [Delete people affected](121-Portal/Delete_people_affected.feature)
+- [Mark as no longer eligible](121-Portal/Mark_as_no_longer_eligible.feature)
+- [Import registered people affected](121-Portal/Import_people_affected.feature#L83)
+- [Select people for validation](121-Portal/Select_people_for_validation.feature)
+- [Export People Affected list](121-Portal/Export_PA_list.feature)
+- [Export selected for validation list](121-Portal/Export_selected_for_validation_list.feature)
+- [Include people affected](121-Portal/Include_people_affected.feature)
+- [Reject or End Inclusion of people affected](121-Portal/Reject_or_End_inclusion_people_affected.feature)
+- [Export inclusion list](121-Portal/Export_Inclusion_List.feature)
+- [Export duplicate People Affected list](121-Portal/Export_duplicate_people-affected_List.feature)
+- [Make a new payment](121-Portal/Make_new_payment.feature)
+- [Export payment details](121-Portal/Export_Payment_Details.feature)
 - Export all unused vouchers
 - Retry individual/all payment(s)
 - Get voucher balance
@@ -51,8 +60,8 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - Login
 - Logout
 - Change password
-- [Navigate home and main menu](HO-Portal/Navigate_home_and_main_menu.feature)
-- [Navigate program phases](HO-Portal/Navigate_program_phases.feature)
+- [Navigate home and main menu](121-Portal/Navigate_home_and_main_menu.feature)
+- [Navigate program phases](121-Portal/Navigate_program_phases.feature)
 
 #### Using AW-App
 
@@ -72,17 +81,16 @@ Features of the 121-platform are described in this folder in a standardizes way 
 #### Using external tools/applications
 
 - Send a WhatsApp message
+  - [Receive voucher](PA-App/Receive_Voucher.feature)
   - [Claim digital voucher](Other/Claim_digital_voucher.feature)
   - Read queued notification
 
 #### Using PA-App
 
 - [New registration](PA-App/New_registration.feature)
-- [Use existing Account](PA-App/Use_existing_Account.feature)
 - [Consent question](PA-App/Consent_question.feature)
 - [Answer program questions](PA-App/Answer_program_questions.feature)
 - [Fill payment details](PA-App/Fill_payment_details.feature)
-- [Link preprinted QR-code](PA-App/Link-preprinted-QR-code.feature)
 - Answer monitoring questions
 
 #### Generic PA-App components
@@ -92,17 +100,21 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
 - Changes based on instance-configuration/values
 
-
-
-
-
 ### For Admin-user
 
 #### Using Swagger UI
 
 - [Manage user roles](Admin-user/Manage_Roles.feature)
-- [Update phone-numbers of Person Affected](Admin-user/Update_phone_numbers.feature)
-- [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provider.feature)
+- [Add and Update program custom attribute](Admin-user/Add_And_Update_program_custom_attribute.feature)
+- [Update program question](Admin-user/Update_program_question.feature)
+- [Update program](Admin-user/Update_program.feature)
+- Update Financial Service Provider (not chosen FSP, but entity itself)
+- Create/Update/Delete FSP attributes
+- Update instance
+- Add/update Intersolve instructions image
+- Load seed data
+- Create new aidworker user and manage assignment to program
+- Delete user
 
 ### Automated processes (121-service)
 
@@ -128,8 +140,8 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 Features can be added to this folder by:
 
-- Create a `.feature`-file, named after its title with `_` for spaces;  
+- Create a `.feature`-file, named after its title with `_` for spaces;
   i.e. `View_all_PA-App_scenarios.feature`
 - Add a reference to the list above at the appropriate _actor_.
-- Tag the whole feature or each scenario with the components involved.  
-  i.e: `@pa-app`, `@aw-app`, `@ho-portal`, etc. (all lowercase)
+- Tag the whole feature or each scenario with the components involved.
+  i.e: `@pa-app`, `@aw-app`, `@ho-Portal`, etc. (all lowercase)

@@ -1,49 +1,48 @@
-import { RegistrationDataEntity } from './registration-data.entity';
-import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
-import { WhatsappService } from './../notifications/whatsapp/whatsapp.service';
-import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
-import { SmsService } from './../notifications/sms/sms.service';
-import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { validate } from 'class-validator';
 import { getRepository, In, Repository, SelectQueryBuilder } from 'typeorm';
+import { v4 as uuid } from 'uuid';
+import { FspName } from '../fsp/financial-service-provider.entity';
+import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { LookupService } from '../notifications/lookup/lookup.service';
+import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
+import { ProgramService } from '../programs/programs.service';
 import { UserEntity } from '../user/user.entity';
-import { RegistrationEntity } from './registration.entity';
-import {
-  RegistrationStatusEnum,
-  RegistrationStatusTimestampField,
-} from './enum/registration-status.enum';
+import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
+import { SmsService } from './../notifications/sms/sms.service';
+import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
+import { WhatsappService } from './../notifications/whatsapp/whatsapp.service';
+import { ImportResult } from './dto/bulk-import.dto';
+import { CreateRegistrationDto } from './dto/create-registration.dto';
+import { CustomDataDto } from './dto/custom-data.dto';
+import { DownloadData } from './dto/download-data.interface';
+import { MessageHistoryDto } from './dto/message-history.dto';
+import { NoteDto } from './dto/note.dto';
+import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
+import { RegistrationDataRelation } from './dto/registration-data-relation.model';
+import { RegistrationResponse } from './dto/registration-response.model';
 import { ProgramAnswer } from './dto/store-program-answers.dto';
+import { Attributes } from './dto/update-attribute.dto';
+import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import {
   AnswerTypes,
   Attribute,
   AttributeType,
   CustomDataAttributes,
 } from './enum/custom-data-attributes';
-import { LookupService } from '../notifications/lookup/lookup.service';
-import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { FspName } from '../fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
+import {
+  RegistrationStatusEnum,
+  RegistrationStatusTimestampField,
+} from './enum/registration-status.enum';
+import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
-import { InlusionScoreService } from './services/inclusion-score.service';
+import { RegistrationEntity } from './registration.entity';
 import { BulkImportService, ImportType } from './services/bulk-import.service';
-import { ImportResult } from './dto/bulk-import.dto';
-import { RegistrationResponse } from './dto/registration-response.model';
-import { NoteDto } from './dto/note.dto';
-import { validate } from 'class-validator';
-import { DownloadData } from './dto/download-data.interface';
-import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
-import { Attributes } from './dto/update-attribute.dto';
-import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
-import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
-import { MessageHistoryDto } from './dto/message-history.dto';
-import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
-import { ProgramService } from '../programs/programs.service';
-import { RegistrationDataRelation } from './dto/registration-data-relation.model';
-import { v4 as uuid } from 'uuid';
-import { CustomDataDto } from './dto/custom-data.dto';
+import { InlusionScoreService } from './services/inclusion-score.service';
 
 @Injectable()
 export class RegistrationsService {
@@ -63,10 +62,6 @@ export class RegistrationsService {
   >;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
-  @InjectRepository(ProgramCustomAttributeEntity)
-  private readonly programCustomAttributeRepository: Repository<
-    ProgramCustomAttributeEntity
-  >;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspQuestionEntity)
@@ -96,15 +91,14 @@ export class RegistrationsService {
 
   public async create(
     postData: CreateRegistrationDto,
+    programId: number,
     userId: number,
   ): Promise<RegistrationEntity> {
     const user = await this.findUserOrThrow(userId);
     let registration = new RegistrationEntity();
     registration.referenceId = postData.referenceId;
     registration.user = user;
-    registration.program = await this.programRepository.findOne(
-      postData.programId,
-    );
+    registration.program = await this.programRepository.findOne(programId);
     await this.registrationRepository.save(registration);
     return this.setRegistrationStatus(
       postData.referenceId,
@@ -144,6 +138,7 @@ export class RegistrationsService {
   public async storeProgramAnswers(
     referenceId: string,
     rawProgramAnswers: ProgramAnswer[],
+    programId: number,
   ): Promise<void> {
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
@@ -151,7 +146,7 @@ export class RegistrationsService {
     );
     const programAnswers = await this.cleanAnswers(
       rawProgramAnswers,
-      registration.program.id,
+      programId,
     );
     for (let answer of programAnswers) {
       const programQuestion = await this.programQuestionRepository.findOne({
@@ -166,7 +161,7 @@ export class RegistrationsService {
     await this.storePhoneNumberInRegistration(programAnswers, referenceId);
     await this.inclusionScoreService.calculateInclusionScore(referenceId);
     await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-      registration.program.id,
+      programId,
       referenceId,
     );
   }
@@ -294,14 +289,15 @@ export class RegistrationsService {
       phoneNumber,
     );
 
-    const importedRegistration = await this.findImportedRegistrationByPhoneNumber(
-      sanitizedPhoneNr,
-    );
     const currentRegistration = await this.getRegistrationFromReferenceId(
       referenceId,
       ['fsp'],
     );
 
+    const importedRegistration = await this.findImportedRegistrationByPhoneNumber(
+      sanitizedPhoneNr,
+      currentRegistration.programId,
+    );
     if (!useForInvitationMatching || !importedRegistration) {
       // If endpoint is used for other purpose OR no imported registration found  ..
       // .. continue with current registration
@@ -314,9 +310,22 @@ export class RegistrationsService {
       return;
     }
 
+    // Remove old attributes (only relevant in edge case where Intersolve-whatsapp is stored as fsp, because of try-whatsapp-via-invitation scenario)
+    const oldFsp = importedRegistration.fsp;
+    for (const attribute of oldFsp?.questions) {
+      const regData = await importedRegistration.getRegistrationDataByName(
+        attribute.name,
+      );
+      await this.registrationDataRepository.delete({ id: regData.id });
+    }
+    const registrationData = await this.registrationDataRepository.find({
+      where: { registrationId: importedRegistration.id },
+    });
+
     // If imported registration found ..
     // .. then transfer relevant attributes from imported registration to current registration
-    for (const d of importedRegistration.data) {
+
+    for (const d of registrationData) {
       const relation = new RegistrationDataRelation();
       relation.fspQuestionId = d.fspQuestionId;
       relation.programQuestionId = d.programQuestionId;
@@ -327,6 +336,8 @@ export class RegistrationsService {
     }
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
+    currentRegistration.note = importedRegistration.note;
+    currentRegistration.noteUpdated = importedRegistration.noteUpdated;
 
     // .. and store phone number and language
     currentRegistration.phoneNumber = sanitizedPhoneNr;
@@ -364,20 +375,21 @@ export class RegistrationsService {
     // .. then delete the imported registration
     await this.registrationRepository.remove(importedRegistration);
 
-    // .. if imported registration status was noLongerEligible set to registeredWhileNoLongerEligible
+    // .. if imported registration status was noLongerEligible copy it, as this needs to be remembered
     if (
       importedRegistration.registrationStatus ===
       RegistrationStatusEnum.noLongerEligible
     ) {
       await this.setRegistrationStatus(
         updatedRegistration.referenceId,
-        RegistrationStatusEnum.registeredWhileNoLongerEligible,
+        importedRegistration.registrationStatus,
       );
     }
   }
 
   private async findImportedRegistrationByPhoneNumber(
     phoneNumber: string,
+    programId: number,
   ): Promise<RegistrationEntity> {
     const importStatuses = [
       RegistrationStatusEnum.imported,
@@ -388,26 +400,10 @@ export class RegistrationsService {
       where: {
         phoneNumber: phoneNumber,
         registrationStatus: In(importStatuses),
+        programId: programId,
       },
-      relations: ['fsp', 'data'],
+      relations: ['fsp', 'data', 'fsp.questions'],
     });
-  }
-
-  public async addQrIdentifier(
-    referenceId: string,
-    qrIdentifier: string,
-  ): Promise<void> {
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
-
-    const duplicateIdentifier = await this.registrationRepository.findOne({
-      where: { qrIdentifier: qrIdentifier },
-    });
-    if (duplicateIdentifier) {
-      const errors = 'This QR identifier already exists';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    registration.qrIdentifier = qrIdentifier;
-    await this.registrationRepository.save(registration);
   }
 
   public async register(
@@ -419,17 +415,32 @@ export class RegistrationsService {
     );
 
     if (
-      registration.registrationStatus !==
-      RegistrationStatusEnum.startedRegistration
+      ![
+        RegistrationStatusEnum.startedRegistration,
+        RegistrationStatusEnum.noLongerEligible,
+      ].includes(registration.registrationStatus)
     ) {
-      const errors = `Registration status is not '${RegistrationStatusEnum.startedRegistration}'`;
+      const errors = `Registration status is not '${RegistrationStatusEnum.startedRegistration} or ${RegistrationStatusEnum.noLongerEligible}'`;
       throw new HttpException(errors, HttpStatus.NOT_FOUND);
     }
 
-    const registerResult = await this.setRegistrationStatus(
-      referenceId,
-      RegistrationStatusEnum.registered,
-    );
+    // If status was 'no longer eligible', switch to 'registeredWhileNoLongerEligible', otherwise to 'registered'
+    let registerResult;
+    if (
+      registration.registrationStatus ===
+      RegistrationStatusEnum.noLongerEligible
+    ) {
+      registerResult = await this.setRegistrationStatus(
+        registration.referenceId,
+        RegistrationStatusEnum.registeredWhileNoLongerEligible,
+      );
+    } else {
+      registerResult = await this.setRegistrationStatus(
+        referenceId,
+        RegistrationStatusEnum.registered,
+      );
+    }
+
     this.inclusionScoreService.calculateInclusionScore(referenceId);
 
     this.sendTextMessage(
@@ -438,9 +449,13 @@ export class RegistrationsService {
       null,
       RegistrationStatusEnum.registered,
     );
+
     if (
       !registerResult ||
-      registerResult.registrationStatus !== RegistrationStatusEnum.registered
+      ![
+        RegistrationStatusEnum.registered,
+        RegistrationStatusEnum.registeredWhileNoLongerEligible,
+      ].includes(registerResult.registrationStatus)
     ) {
       return false;
     }
@@ -877,7 +892,17 @@ export class RegistrationsService {
     }
 
     if (attribute !== Attributes.paymentAmountMultiplier) {
-      await registration.saveData(value, { name: attribute });
+      try {
+        await registration.saveData(value, { name: attribute });
+      } catch (error) {
+        // This is an exception because the phoneNumber is in the registration entity, not in the registrationData.
+        if (attribute === Attributes.phoneNumber) {
+          registration.phoneNumber = value.toString();
+          await this.registrationRepository.save(registration);
+        } else {
+          throw error;
+        }
+      }
     }
     const savedRegistration = await this.registrationRepository.save(
       registration,
@@ -998,7 +1023,6 @@ export class RegistrationsService {
           null,
           null,
           registration.id,
-          registration.preferredLanguage,
         );
       } else if (tryWhatsApp && registration.phoneNumber) {
         this.tryWhatsapp(registration, messageText);
@@ -1031,7 +1055,6 @@ export class RegistrationsService {
         null,
         null,
         registration.id,
-        registration.preferredLanguage,
       )
       .then(result => {
         // Store the sid of a whatsapp message of which we do not know if the receiver registered on whatsapp
@@ -1063,9 +1086,14 @@ export class RegistrationsService {
 
   public async searchRegistration(
     rawPhoneNumber?: string,
-    name?: string,
+    userId?: number,
   ): Promise<RegistrationEntity[]> {
     const registrations = [];
+    const user = await this.programService.findUserProgramAssignmentsOrThrow(
+      userId,
+    );
+    const programIds = user.programAssignments.map(p => p.program.id);
+
     if (rawPhoneNumber) {
       const customAttributesPhoneNumberNames = [
         CustomDataAttributes.phoneNumber as string,
@@ -1076,12 +1104,19 @@ export class RegistrationsService {
         rawPhoneNumber,
       );
 
-      const matchingRegistrationData = await this.registrationDataRepository.find(
-        {
-          where: { value: phoneNumber },
-          relations: ['registration'],
-        },
-      );
+      const matchingRegistrationData = await getRepository(
+        RegistrationDataEntity,
+      )
+        .createQueryBuilder('registrationData')
+        .leftJoinAndSelect('registrationData.registration', 'registration')
+        .where('registrationData.value = :phoneNumber', {
+          phoneNumber: phoneNumber,
+        })
+        .andWhere('registration.program.id IN (:...programIds)', {
+          programIds: programIds,
+        })
+        .getMany();
+
       for (const d of matchingRegistrationData) {
         const dataName = await d.getDataName();
         if (customAttributesPhoneNumberNames.includes(dataName)) {
@@ -1104,38 +1139,22 @@ export class RegistrationsService {
         }
       }
     }
-    if (name) {
-      const customAttributesNameNames = [
-        CustomDataAttributes.nameFirst as string,
-        CustomDataAttributes.nameLast as string,
-        CustomDataAttributes.firstName as string,
-        CustomDataAttributes.secondName as string,
-        CustomDataAttributes.thirdName as string,
-      ];
 
-      const matchingRegistrationData = await this.registrationDataRepository.find(
-        {
-          where: { value: name },
-          relations: ['registration'],
-        },
-      );
-      for (const d of matchingRegistrationData) {
-        const dataName = await d.getDataName();
-        if (customAttributesNameNames.includes(dataName)) {
-          const registration = await this.getRegistrationFromReferenceId(
-            d.registration.referenceId,
-          );
-          registrations.push(registration);
-        }
-      }
-    }
-    return registrations;
+    // Find uniques by referenceId because it's possible to get duplicates if program question and FSP question have phonenumber
+    const key = 'referenceId';
+    const arrayUniqueByKey = [
+      ...new Map(registrations.map(item => [item[key], item])).values(),
+    ];
+
+    return arrayUniqueByKey;
   }
 
-  // AW: get answers to attributes for a given PA (identified first through referenceId/QR)
+  // AW: get answers to attributes for a given PA (identified first through referenceId)
   public async getRegistrationToValidate(
     referenceId: string,
+    userId: number,
   ): Promise<RegistrationEntity> {
+    await this.programService.findUserProgramAssignmentsOrThrow(userId);
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
       [
@@ -1188,7 +1207,6 @@ export class RegistrationsService {
     }
 
     // Check if required attributes are present
-
     newFsp.questions.forEach(requiredAttribute => {
       if (
         !newFspAttributesRaw ||
@@ -1215,6 +1233,7 @@ export class RegistrationsService {
       const errors = `New FSP is the same as existing FSP for this Person Affected.`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
+
     // Remove old attributes
     const oldFsp = registration.fsp;
     for (const attribute of oldFsp?.questions) {
@@ -1228,7 +1247,6 @@ export class RegistrationsService {
     const updatedRegistration = await this.addFsp(referenceId, newFsp.id);
 
     // Add new attributes
-
     for (const attribute of updatedRegistration.fsp.questions) {
       await this.addRegistrationData(
         referenceId,
@@ -1265,22 +1283,13 @@ export class RegistrationsService {
   }
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {
-    const user = await this.userRepository.findOne(userId, {
-      relations: ['programAssignments', 'programAssignments.program'],
-    });
-    if (
-      !user ||
-      !user.programAssignments ||
-      user.programAssignments.length === 0
-    ) {
-      const errors = 'User not found or no assigned programs';
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
+    const user = await this.programService.findUserProgramAssignmentsOrThrow(
+      userId,
+    );
     const programIds = user.programAssignments.map(p => p.program.id);
     const data = {
       answers: await this.getAllProgramAnswers(user),
       fspData: await this.getAllFspAnswers(programIds),
-      qrRegistrationMapping: await this.getQrRegistrationMapping(programIds),
       programIds: user.programAssignments.map(assignment => {
         return assignment.program.id;
       }),
@@ -1307,9 +1316,7 @@ export class RegistrationsService {
           RegistrationStatusEnum.selectedForValidation,
         ],
       })
-      .andWhere('data.programQuestionId is not null', {
-        programIds: programIds,
-      })
+      .andWhere('data.programQuestionId is not null')
       .getMany();
     let answers = [];
     for (const r of registrationsToValidate) {
@@ -1411,24 +1418,6 @@ export class RegistrationsService {
     return fspAnswers;
   }
 
-  public async getQrRegistrationMapping(
-    programIds: number[],
-  ): Promise<RegistrationEntity[]> {
-    return await this.registrationRepository
-      .createQueryBuilder('registration')
-      .select(['registration.qrIdentifier', 'registration.referenceId'])
-      .where('registration."programId" IN (:...programIds)', {
-        programIds: programIds,
-      })
-      .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
-        registrationStatuses: [
-          RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.selectedForValidation,
-        ],
-      })
-      .getMany();
-  }
-
   public async getFspAnswersAttributes(
     referenceId: string,
   ): Promise<FspAnswersAttrInterface> {
@@ -1449,8 +1438,15 @@ export class RegistrationsService {
   }
 
   // Used by Aidworker
-  public async issueValidation(payload: ValidationIssueDataDto): Promise<void> {
-    await this.storeProgramAnswers(payload.referenceId, payload.programAnswers);
+  public async issueValidation(
+    payload: ValidationIssueDataDto,
+    programId: number,
+  ): Promise<void> {
+    await this.storeProgramAnswers(
+      payload.referenceId,
+      payload.programAnswers,
+      programId,
+    );
     await this.setRegistrationStatus(
       payload.referenceId,
       RegistrationStatusEnum.validated,
@@ -1469,19 +1465,6 @@ export class RegistrationsService {
         this.registrationDataRepository.remove(data);
       }
     }
-  }
-
-  public async findReferenceIdWithQrIdentifier(
-    qrIdentifier: string,
-  ): Promise<ReferenceIdDto> {
-    let registration = await this.registrationRepository.findOne({
-      where: { qrIdentifier: qrIdentifier },
-    });
-    if (!registration) {
-      const errors = 'No registration found for QR';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    return { referenceId: registration.referenceId };
   }
 
   public async sendCustomTextMessage(
@@ -1553,5 +1536,12 @@ export class RegistrationsService {
       default:
         return value || '';
     }
+  }
+
+  public async getRegistrationStatus(
+    referenceId: string,
+  ): Promise<RegistrationStatusEnum> {
+    const registration = await this.getRegistrationFromReferenceId(referenceId);
+    return JSON.parse(JSON.stringify(registration.registrationStatus));
   }
 }

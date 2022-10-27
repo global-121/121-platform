@@ -1,13 +1,14 @@
-import { WhatsappService } from './whatsapp.service';
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
-import { ApiTags, ApiConsumes, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiConsumes, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Admin } from '../../guards/admin.decorator';
+import { AdminAuthGuard } from '../../guards/admin.guard';
 import {
-  TwilioStatusCallbackDto,
   TwilioIncomingCallbackDto,
+  TwilioStatusCallbackDto,
 } from '../twilio.dto';
-import { PermissionEnum } from '../../user/permission.enum';
-import { Permissions } from '../../permissions.decorator';
+import { WhatsappService } from './whatsapp.service';
 
+@UseGuards(AdminAuthGuard)
 @ApiTags('notifications')
 @Controller('notifications/whatsapp')
 export class WhatsappController {
@@ -32,7 +33,7 @@ export class WhatsappController {
     return await this.whatsappService.handleIncoming(callbackData);
   }
 
-  @Permissions(PermissionEnum.Test)
+  @Admin()
   @ApiOperation({
     summary:
       'Tests all the templates of the platform. Copy paste the sessionId after this call to /notifications/whatsapp/templates/:sessionId to see the results',
@@ -55,7 +56,7 @@ export class WhatsappController {
     return await this.whatsappService.storeTemplateTestResult(callbackData);
   }
 
-  @Permissions(PermissionEnum.Test)
+  @Admin()
   @ApiOperation({
     summary:
       'Show results of tests the templates of the platform. Insert the sessionId you got from a GET request to /notifications/whatsapp/templates',

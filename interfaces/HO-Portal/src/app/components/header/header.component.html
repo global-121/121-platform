@@ -5,7 +5,7 @@
         <ion-button
           [title]="'header.help' | translate"
           [attr.aria-label]="'header.help' | translate"
-          routerLink="/help"
+          [routerLink]="['/', appRoute.help]"
           fill="clear"
           size="small"
           color="medium"
@@ -19,7 +19,7 @@
         <ion-button
           [title]="'header.home' | translate"
           [attr.aria-label]="'header.home' | translate"
-          routerLink="/home"
+          [routerLink]="['/', appRoute.home]"
           fill="clear"
           size="small"
           color="medium"

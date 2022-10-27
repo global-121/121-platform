@@ -111,11 +111,6 @@ export class PaDataService {
   public async getCurrentProgramId(): Promise<number> {
     if (!this.currentProgramId) {
       this.currentProgramId = Number(await this.retrieve(this.type.programId));
-
-      // Fall back to hard-coded value, if all else fails
-      if (!this.currentProgramId) {
-        this.currentProgramId = 1;
-      }
     }
     return this.currentProgramId;
   }
@@ -161,9 +156,14 @@ export class PaDataService {
 
     const typeKey = `${this.paDataKeyPrefix + type}`;
     if (!this.isOffline) {
-      const storeResult = await this.programService.retrieve(type);
-      localStorage.setItem(typeKey, JSON.stringify(storeResult));
-      return storeResult;
+      const result = await this.programService.retrieve(type);
+      if (result === undefined) {
+        // If the data that is attempted to be retrieved from the server is not found
+        // try to get it from localstorage as it may have been saved when app was offline
+        return this.findInLocalStorage<any>(typeKey);
+      }
+      localStorage.setItem(typeKey, JSON.stringify(result));
+      return result;
     }
     if (this.isOffline) {
       return this.findInLocalStorage<any>(typeKey);

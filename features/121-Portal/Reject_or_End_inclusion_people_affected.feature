@@ -17,14 +17,13 @@ Feature: Reject or end inclusion of people affected (extension of View_and_Manag
   Scenario: Confirm "reject from program" action
     Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)
     When the "bulk action" is "reject from program"
-    Then the PA is from now on only seeable in the "inclusion" page
+    Then the PA is from now on only viewable in the "inclusion" page
     And "rejected" timestamp is filled for the selected rows
     And the "included" column remains filled
     And the "status" is updated to "Rejected"
     And if the custom SMS option is used, an SMS is sent to the PA (see View_and_Manage_people_affected.feature)
-    And in the PA-app - after return or refresh - a notification appears that the PA is "not included"
 
-------------------------------------------
+  ------------------------------------------
 
   Background:
     Given a logged-in user with "RegistrationStatusInclusionEndedUPDATE" permission
@@ -47,15 +46,16 @@ Feature: Reject or end inclusion of people affected (extension of View_and_Manag
     And the "included" column remains filled
     And the "status" is updated to "Inclusion ended"
     And if the custom SMS option is used, an SMS is sent to the PA (see View_and_Manage_people_affected.feature)
-    And in the PA-app - after return or refresh - a notification appears that the PA is "not included"
 
-------------------------------------------
+  ------------------------------------------
 
   Scenario: Reject or End inclusion for 2000 PAs
-    Given there are 2000 PAs in the system (see Admin-user/Import_test_registrations_NL.feature)
-    And they are included (see e.g. HO-Portal/Include_people_affected_Run_Program_role.feature)
+    Given there are 2000 PAs in the system
+    And they are included (see Include_people_affected_Run_Program_role.feature)
     When the user uses and confirms the "reject from program" or "end inclusion in program" action on all 2000 PAs
     Then this is all processed as in the scenarios above, quickly and without problem
+
+  --------------------------------------------
 
   Scenario: Identify People Affected to Reject based on "Registered while no longer eligible"
     Given there are People Affected which are marked as no longer eligible

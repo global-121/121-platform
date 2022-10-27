@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Length, IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { IntersolvePayoutStatus } from '../../fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 

@@ -1,4 +1,4 @@
-@ho-portal
+@portal
 Feature: Make a new payment
 
   Background:
@@ -31,7 +31,7 @@ Feature: Make a new payment
     And the payment instructions for each PA contain the transfer value "20" times the PA's "paymentAmountMultiplier"
     And the message is shown according to the success of the transactions
 
-  Scenario: Send payment instructions for small amount of PAs with at least 1 successful transaction
+  Scenario: Send payment instructions
     Given this is not the last payment for the program
     And the user selects the "Do payment" action
     And the user clicks the button "apply action"
@@ -46,25 +46,18 @@ Feature: Make a new payment
     Then the page refreshes
     And the "export payment data" component now shows that the payment is "closed"
     And the "export payment data" component now has the next payment enabled
+    And the "bulk action" dropdown list now shows the next available payment to do
     And the "PA-table" now shows the payment just completed in the "Payment History" column for all PAs that were selected
-    And for successful transactions it shows a date+time and the transaction amount
     And it opens the payment history when clicked
-    And it shows the payment number and the payment state
+    And it shows the payment number, the payment state, the payment date+time and the transaction amount
     And the payment state shows 'Success' when the payment went through
     And it shows 'Failed' for failed transactions
     And it shows 'Waiting' for waiting transactions
     And - for successful transactions - the PA receives (notification about) voucher/cash depending on the FSP
     And the 'Export people affected' in the 'Registration' phase now contains 4 new columns for the new payment: status, amount, date and 'voucher-claimed-date'
 
-  Scenario: Send payment instructions with small amount of PAs with 0 successful transactions
-    When payment instructions are sent to the Financial Service Provider and have finished processing
-    Then the payment is not "closed"
-    And the "export payment" dropdown does not update accordingly
-    And the "Payment History" column contains the payment number and 'Failed' for all PAs
-    And the same payment can be retried for all included PAs using the "payout" button
-
   Scenario: Send payment instructions for 5000 PAs
-    Given there are 5000 PAs in the system (to import: see Admin-user/Import_test_registrations_NL.feature)
+    Given there are 5000 PAs in the system
     And they are included (see e.g. HO-Portal/Include_people_affected_Run_Program_role.feature)
     Then the user selects the "Do payment" action
     And the user selects all 5000 PAs
@@ -89,7 +82,7 @@ Feature: Make a new payment
     When the user refreshes the page again
     Then eventually all 'waiting' PAs have upgraded to 'success' or 'error' (unless some status callback fails for some reason)
 
-  Scenario: retry payment for 1 or all failed PAs
+  Scenario: retry failed payment for 1 PA
     Given the payment has failed for a PA
     When the user clicks the "Payment #x failed" button for this PA
     Then the "Payment History" popup appears
@@ -99,7 +92,7 @@ Feature: Make a new payment
     Then the user clicks the retry-button
     And a normal payment scenario is started for this 1 PA only (see other scenario)
 
-    Scenario: retry payment for all failed PAs
+  Scenario: retry payment for all failed payments of PAs
     Given the payment has failed for more than 1 PA
     Then the user sees the "Retry all failed" button above the bulk action dropdown
     When the user clicks it
@@ -112,7 +105,6 @@ Feature: Make a new payment
     Given the Person Affected has chosen the option "receive voucher via whatsApp"
     When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
     Then the Person Affected receives a whatsApp message
-    And it mentions the amount of the voucher
     And it explains the Person Affected to reply 'yes' to receive the voucher
     When the Person Affected replies 'yes' (or anything else)
     Then the Person Affected receives a voucher image

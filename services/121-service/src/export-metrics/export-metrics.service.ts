@@ -1,38 +1,37 @@
-import { CustomDataAttributes } from './../registration/enum/custom-data-attributes';
-import { RegistrationDataOptions } from './../registration/dto/registration-data-relation.model';
-import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
-import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
-import { RegistrationResponse } from '../registration/dto/registration-response.model';
-import { RegistrationsService } from './../registration/registrations.service';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
-import { Repository, getRepository, In, Connection } from 'typeorm';
-import { RegistrationEntity } from '../registration/registration.entity';
-import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
+import { uniq, without } from 'lodash';
+import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
+import { Connection, getRepository, In, Repository } from 'typeorm';
+import { ActionService } from '../actions/action.service';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
+import { PaymentsService } from '../payments/payments.service';
+import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { TransactionsService } from '../payments/transactions/transactions.service';
+import { ProgramQuestionEntity } from '../programs/program-question.entity';
+import { ProgramEntity } from '../programs/program.entity';
+import { RegistrationResponse } from '../registration/dto/registration-response.model';
+import { Attributes } from '../registration/dto/update-attribute.dto';
 import {
   AnswerTypes,
   GenericAttributes,
 } from '../registration/enum/custom-data-attributes';
-import { ProgramQuestionEntity } from '../programs/program-question.entity';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { ActionService } from '../actions/action.service';
+import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
+import { RegistrationDataEntity } from '../registration/registration-data.entity';
+import { RegistrationEntity } from '../registration/registration.entity';
+import { StatusEnum } from '../shared/enum/status.enum';
+import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
+import { RegistrationDataOptions } from './../registration/dto/registration-data-relation.model';
+import { CustomDataAttributes } from './../registration/enum/custom-data-attributes';
+import { RegistrationsService } from './../registration/registrations.service';
 import { ExportType } from './dto/export-details';
 import { FileDto } from './dto/file.dto';
-import { uniq, without, zipWith } from 'lodash';
-import { StatusEnum } from '../shared/enum/status.enum';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
-import { Attributes } from '../registration/dto/update-attribute.dto';
-import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
 import { PaymentStateSumDto } from './dto/payment-state-sum.dto';
-import { PaymentsService } from '../payments/payments.service';
-import { ProgramEntity } from '../programs/program.entity';
-import { TransactionsService } from '../payments/transactions/transactions.service';
-import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
-import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
-import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { ProgramStats } from './dto/program-stats.dto';
+import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
 
 @Injectable()
 export class ExportMetricsService {
@@ -374,10 +373,7 @@ export class ExportMetricsService {
       }
       row[`payment${payment}_status`] = creationTransaction?.status;
       row[`payment${payment}_amount`] = creationTransaction?.amount;
-      row[`payment${payment}_date`] =
-        creationTransaction?.status === StatusEnum.success
-          ? creationTransaction?.paymentDate
-          : null;
+      row[`payment${payment}_date`] = creationTransaction?.paymentDate;
       row[`payment${payment}_voucherClaimed_date`] =
         transaction[IntersolvePayoutStatus.VoucherSent]?.status ===
         StatusEnum.success
@@ -395,11 +391,11 @@ export class ExportMetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
-        `registration."${GenericAttributes.id}"`,
+        `registration."id"`,
         `registration."${GenericAttributes.phoneNumber}"`,
         `registration."${GenericAttributes.paymentAmountMultiplier}"`,
         `registration."${GenericAttributes.preferredLanguage}"`,
-        `registration."${GenericAttributes.note}"`,
+        `registration."note"`,
         `registration."registrationStatus" as status`,
         `registration."referenceId" as "referenceId"`,
         `fsp.fsp as financialServiceProvider`,
@@ -429,7 +425,7 @@ export class ExportMetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
-        `registration."${GenericAttributes.id}"`,
+        `registration."id"`,
         `registration."registrationStatus" AS status`,
         `fsp.fsp AS fsp`,
         `registration."${GenericAttributes.phoneNumber}"`,
@@ -592,16 +588,19 @@ export class ExportMetricsService {
     if (programQuestionIds.length > 0) {
       whereOptions.push({ programQuestionId: In(programQuestionIds) });
     }
-    const duplicates = await this.registrationDataRepository
+    const query = this.registrationDataRepository
       .createQueryBuilder('registration_data')
       .select(
         `array_agg(DISTINCT registration_data."registrationId") AS "duplicateRegistrationIds"`,
       )
+      .innerJoin('registration_data.registration', 'registration')
       .where(whereOptions)
+      .andWhere('registration.programId = :programId', { programId })
       .having('COUNT(registration_data.value) > 1')
       .andHaving('COUNT(DISTINCT "registrationId") > 1')
-      .groupBy('registration_data.value')
-      .getRawMany();
+      .groupBy('registration_data.value');
+
+    const duplicates = await query.getRawMany();
 
     if (!duplicates || duplicates.length === 0) {
       return {

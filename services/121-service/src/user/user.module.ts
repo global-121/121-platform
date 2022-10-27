@@ -1,15 +1,16 @@
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { RegistrationEntity } from './../registration/registration.entity';
 import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GuardsService } from '../guards/guards.service';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
+import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
+import { ProgramEntity } from '../programs/program.entity';
+import { RegistrationEntity } from './../registration/registration.entity';
+import { PermissionEntity } from './permissions.entity';
+import { UserRoleEntity } from './user-role.entity';
+import { UserController } from './user.controller';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
-import { ProgramEntity } from '../programs/program.entity';
-import { UserRoleEntity } from './user-role.entity';
-import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
-import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
-import { PermissionEntity } from './permissions.entity';
 
 @Module({
   imports: [
@@ -24,8 +25,8 @@ import { PermissionEntity } from './permissions.entity';
       PermissionEntity,
     ]),
   ],
-  providers: [UserService],
+  providers: [UserService, GuardsService],
   controllers: [UserController],
-  exports: [UserService],
+  exports: [UserService, GuardsService],
 })
 export class UserModule {}

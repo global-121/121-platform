@@ -1,6 +1,6 @@
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { SmsService } from './sms.service';
-import { Controller, Post, Body } from '@nestjs/common';
-import { ApiTags, ApiConsumes } from '@nestjs/swagger';
 
 @ApiTags('notifications')
 @Controller('notifications/sms')

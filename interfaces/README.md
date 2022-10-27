@@ -33,11 +33,11 @@ To use it locally:
 - Run: `npm run start:debug-production` instead of `npm start` (in each interfaces' specific folder).
 - This part is needed extra for the cookies to be correctly set and processed:
   - In Chrome
-    - go to chrome://flags/#unsafely-treat-insecure-origin-as-secure
-    - enable it
-    - add http://127.0.0.1
-    - relaunch
-    - change the values back to normal when switching to the normal local mode again
+    - Go to `chrome://flags/#unsafely-treat-insecure-origin-as-secure`
+      - Enable it
+      - Add "`http://127.0.0.1`"
+      - Relaunch
+    - Change the values back to normal when switching to the normal local mode again
   - Unfortunately no alternative for the below in other browsers have been identified at the moment
 - The interface will be available at: <http://localhost:8088/>.
 - Check the service-worker's status via: `Developer Tools > Application > Service Workers`.
@@ -80,11 +80,6 @@ All interfaces use a common set of dependencies/frameworks/libraries.
    A lint-tool to check for missing or unused translations or typos in keys.
 
   - GitHub: <https://github.com/svoboda-rabstvo/ngx-translate-lint/tree/v1.13.2#readme>
-
-- [`ngx-scanner` v3](https://www.npmjs.com/package/@zxing/ngx-scanner/v/3.2.0)
-  An Angular-component to scan QR-codes with a browser.
-
-  - GitHub: <https://github.com/zxing-js/ngx-scanner/tree/v3.2.0#readme>
 
 - [`gzipper`](https://www.npmjs.com/package/gzipper)
   To compress all assets of the interfaces after the build.

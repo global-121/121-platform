@@ -1,20 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { FspName } from '../../../fsp/financial-service-provider.entity';
-import { ProgramEntity } from '../../../programs/program.entity';
-import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import {
-  FspTransactionResultDto,
-  PaTransactionResultDto,
-} from '../../dto/payment-transaction-result.dto';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { StatusEnum } from '../../../shared/enum/status.enum';
-import { VodacashTransferPayload } from './vodacash-transfer-payload.dto';
-import { RegistrationEntity } from '../../../registration/registration.entity';
-import { TransactionEntity } from '../../transactions/transaction.entity';
 import fs from 'fs';
 import * as convert from 'xml-js';
+import { FspName } from '../../../fsp/financial-service-provider.entity';
+import { RegistrationEntity } from '../../../registration/registration.entity';
+import { StatusEnum } from '../../../shared/enum/status.enum';
+import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
+import { FspTransactionResultDto } from '../../dto/payment-transaction-result.dto';
+import { TransactionEntity } from '../../transactions/transaction.entity';
+import { TransactionsService } from '../../transactions/transactions.service';
 
 @Injectable()
 export class VodacashService {

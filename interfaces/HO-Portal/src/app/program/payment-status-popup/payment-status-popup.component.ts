@@ -225,7 +225,11 @@ export class PaymentStatusPopupComponent implements OnInit {
   public async getBalance() {
     this.isInProgress = true;
     await this.programsService
-      .getBalance(this.payoutDetails.referenceId, this.payoutDetails.payment)
+      .getBalance(
+        this.payoutDetails.referenceId,
+        this.payoutDetails.payment,
+        this.payoutDetails.programId,
+      )
       .then(
         (response) => {
           this.isInProgress = false;

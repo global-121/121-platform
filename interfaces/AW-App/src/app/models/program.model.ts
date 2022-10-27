@@ -11,7 +11,7 @@ export class Program {
   ngo: string;
   programQuestions: ProgramQuestion[];
   financialServiceProviders: any[];
-  validationByQr: boolean;
+  fullnameNamingConvention: string[];
 }
 
 export class ProgramQuestion {

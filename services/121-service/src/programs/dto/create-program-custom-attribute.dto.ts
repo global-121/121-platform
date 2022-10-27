@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsIn, IsJSON } from 'class-validator';
+import { IsIn, IsJSON, IsNotEmpty, IsString } from 'class-validator';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 
 export enum CustomAttributeType {
@@ -37,7 +37,7 @@ export class CreateProgramCustomAttributesDto {
     example: [
       {
         name: 'mycustom',
-        type: 'string',
+        type: 'text',
         label: { en: 'MyCustom' },
         phases: [
           ProgramPhase.registrationValidation,

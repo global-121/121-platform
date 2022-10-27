@@ -1,14 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
-
+import fspBob from '../../seed-data/fsp/fsp-bob.json';
+import intanceLbn from '../../seed-data/instance/instance-pilot-lbn.json';
+import programPilotLbn from '../../seed-data/program/program-pilot-lbn.json';
+import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
-
-import fspBob from '../../seed-data/fsp/fsp-bob.json';
-
-import programPilotLbn from '../../seed-data/program/program-pilot-lbn.json';
-import intanceLbn from '../../seed-data/instance/instance-pilot-lbn.json';
 
 @Injectable()
 export class SeedProgramLbn implements InterfaceScript {

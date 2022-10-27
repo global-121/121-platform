@@ -11,10 +11,10 @@ Feature: View, Add and Edit roles
   Scenario: Successfully add role
     Given a "role" that does not exist yet
     Given the new "Role" is provided
-    Given the required "attributes" for this "Role" have been provided
+    Given the required attributes "label" and "permissions" for this "Role" have been provided
     When the user fills in the "role" and the "label" and the "permissions" in as body
     And calls the POST "/roles" endpoint
-    Then a "Role" with all its attributes is returned"
+    Then a "Role" is created and returend as response
 
   Scenario: Unsuccessfully try to add role that already exists
     Given a "role" that already exists
@@ -22,7 +22,7 @@ Feature: View, Add and Edit roles
     Given the required "attributes" for this "Role" have been provided
     When the user fills in the "role" and the "label" and the "permissions" in as body
     And calls the POST "/roles" endpoint
-    Then a "Role" with all its attributes is returned"
+    Then a status 400 is returned with a message that "Role exists already"
 
   Scenario: Successfully update role
     Given an existing roleId

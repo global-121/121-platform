@@ -1,7 +1,6 @@
 {
   "published": false,
   "validation": false,
-  "validationByQr": false,
   "phase": "design",
   "location": "Nederland",
   "ngo": "NLRC",
@@ -105,7 +104,7 @@
         "en": "Partner Organization"
       },
       "name": "namePartnerOrganization",
-      "type": "string",
+      "type": "text",
       "export": [
         "all-people-affected",
         "included",

@@ -1,34 +1,35 @@
-import { RegistrationDataByNameDto } from './dto/registration-data-by-name.dto';
+import { IsInt, IsOptional, IsPositive } from 'class-validator';
+import {
+  BeforeRemove,
+  Brackets,
+  Column,
+  Entity,
+  getConnection,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { TwilioMessageEntity } from '../notifications/twilio.entity';
+import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
+import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { ProgramEntity } from '../programs/program.entity';
+import { UserEntity } from '../user/user.entity';
+import { CascadeDeleteEntity } from './../base.entity';
 import { InstanceEntity } from './../instance/instance.entity';
 import { WhatsappPendingMessageEntity } from './../notifications/whatsapp/whatsapp-pending-message.entity';
-import { CascadeDeleteEntity } from './../base.entity';
-import { UserEntity } from '../user/user.entity';
-import {
-  Entity,
-  ManyToOne,
-  JoinColumn,
-  Index,
-  Column,
-  OneToMany,
-  BeforeRemove,
-  getConnection,
-  Brackets,
-} from 'typeorm';
-import { ProgramEntity } from '../programs/program.entity';
-import { RegistrationStatusEnum } from './enum/registration-status.enum';
-import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { LanguageEnum } from './enum/language.enum';
-import { IsInt, IsPositive, IsOptional } from 'class-validator';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
-import { TwilioMessageEntity } from '../notifications/twilio.entity';
-import { RegistrationDataEntity } from './registration-data.entity';
+import { RegistrationDataByNameDto } from './dto/registration-data-by-name.dto';
 import {
   RegistrationDataOptions,
   RegistrationDataRelation,
 } from './dto/registration-data-relation.model';
-import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
+import { LanguageEnum } from './enum/language.enum';
+import { RegistrationStatusEnum } from './enum/registration-status.enum';
+import { RegistrationDataSaveError } from './errors/registration-data.error';
+import { RegistrationDataEntity } from './registration-data.entity';
+import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 
 @Entity('registration')
 export class RegistrationEntity extends CascadeDeleteEntity {
@@ -54,9 +55,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Index()
   @Column({ nullable: true })
   public registrationStatus: RegistrationStatusEnum;
-
-  @Column({ nullable: true })
-  public qrIdentifier: string;
 
   @Index({ unique: true })
   @Column()
@@ -201,23 +199,18 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     value: string | number | boolean | string[],
     options: RegistrationDataOptions,
   ): Promise<RegistrationEntity> {
-    try {
-      let relation = options.relation;
-      if (!options.relation && !options.name) {
-        const errors = `Cannot save registration data, need either a dataRelation or a name`;
-        throw new Error(errors);
-      }
-      if (!options.relation) {
-        relation = await this.getRelationForName(options.name);
-      }
-      if (Array.isArray(value)) {
-        await this.saveMultipleData(value, relation);
-      } else {
-        await this.saveOneData(value, relation);
-      }
-    } catch (error) {
-      console.log('error: ', error);
-      throw error;
+    let relation = options.relation;
+    if (!options.relation && !options.name) {
+      const errors = `Cannot save registration data, need either a dataRelation or a name`;
+      throw new Error(errors);
+    }
+    if (!options.relation) {
+      relation = await this.getRelationForName(options.name);
+    }
+    if (Array.isArray(value)) {
+      await this.saveMultipleData(value, relation);
+    } else {
+      await this.saveOneData(value, relation);
     }
 
     // Fetches updated registration from database and return it
@@ -470,8 +463,8 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     name: string,
   ): Promise<RegistrationDataRelation> {
     const result = new RegistrationDataRelation();
-    const repo = getConnection().getRepository(ProgramEntity);
-    const query = repo
+    const repoProgram = getConnection().getRepository(ProgramEntity);
+    const query = repoProgram
       .createQueryBuilder('program')
       .leftJoin('program.programQuestions', 'programQuestion')
       .where('program.id = :programId', { programId: this.programId })
@@ -484,11 +477,12 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       result.programQuestionId = resultProgramQuestion.id;
       return result;
     }
-    const resultFspQuestion = await repo
-      .createQueryBuilder('program')
-      .leftJoin('program.financialServiceProviders', 'fsp')
+    const repoRegistration = getConnection().getRepository(RegistrationEntity);
+    const resultFspQuestion = await repoRegistration
+      .createQueryBuilder('registration')
+      .leftJoin('registration.fsp', 'fsp')
       .leftJoin('fsp.questions', 'question')
-      .where('program.id = :programId', { programId: this.programId })
+      .where('registration.id = :registration', { registration: this.id })
       .andWhere('question.name = :name', { name: name })
       .select('"question".id', 'id')
       .getRawOne();
@@ -496,7 +490,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       result.fspQuestionId = resultFspQuestion.id;
       return result;
     }
-    const resultProgramCustomAttribute = await repo
+    const resultProgramCustomAttribute = await repoProgram
       .createQueryBuilder('program')
       .leftJoin('program.programCustomAttributes', 'programCustomAttribute')
       .where('program.id = :programId', { programId: this.programId })
@@ -518,7 +512,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       result.monitoringQuestionId = resultMonitoringQuestion.id;
       return result;
     }
-    const errors = `Cannot save registration data, name: '${name}' not found (In program questions, fsp questions, monitoring questions and program custom attributes)`;
-    throw new Error(errors);
+    const errorMessage = `Cannot save registration data, name: '${name}' not found (In program questions, fsp questions, monitoring questions and program custom attributes)`;
+    throw new RegistrationDataSaveError(errorMessage);
   }
 }

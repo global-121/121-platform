@@ -7,7 +7,7 @@ import {
   FspAttributeOption,
   FspQuestion,
 } from 'src/app/models/fsp.model';
-import { Person } from 'src/app/models/person.model';
+import { Person, PersonDefaultAttributes } from 'src/app/models/person.model';
 import {
   Program,
   ProgramQuestion,
@@ -17,6 +17,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { Attribute } from '../../models/attribute.model';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 
 @Component({
   selector: 'app-edit-person-affected-popup',
@@ -69,6 +70,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private alertController: AlertController,
     private pubSub: PubSubService,
+    private errorHandlerService: ErrorHandlerService,
   ) {}
 
   async ngOnInit() {
@@ -105,7 +107,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public async updatePaAttribute(
     attribute: string,
-    value: string | string[],
+    value: string | number | string[],
     isPaTableAttribute: boolean,
   ): Promise<void> {
     if (isPaTableAttribute && !Array.isArray(value)) {
@@ -113,8 +115,24 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     }
     this.inProgress[attribute] = true;
 
+    if (attribute === PersonDefaultAttributes.paymentAmountMultiplier) {
+      if (!Number.isInteger(value)) {
+        const errorMessage = this.translate.instant('common.update-error', {
+          error: 'Input should be an integer',
+        });
+        this.actionResult(errorMessage);
+        this.inProgress[attribute] = false;
+        return;
+      }
+    }
+
     this.programsService
-      .updatePaAttribute(this.person.referenceId, attribute, value)
+      .updatePaAttribute(
+        this.programId,
+        this.person.referenceId,
+        attribute,
+        value,
+      )
       .then((response: Person) => {
         this.inProgress[attribute] = false;
         this.attributeValues[attribute] = value;
@@ -130,30 +148,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         console.log('error: ', error);
         if (error && error.error) {
           const errorMessage = this.translate.instant('common.update-error', {
-            error: this.formatErrors(error.error),
+            error: this.errorHandlerService.formatErrors(error),
           });
           this.actionResult(errorMessage);
         }
       });
-  }
-
-  private formatErrors(error): string {
-    if (error.statusCode === 400) {
-      return this.formatConstraintsErrors(error.message);
-    }
-    if (error.message) {
-      return '<br><br>' + error.message + '<br>';
-    }
-  }
-
-  private formatConstraintsErrors(errors): string {
-    let attributeConstraints = [];
-    for (const error of errors) {
-      attributeConstraints = attributeConstraints.concat(
-        Object.values(error.constraints),
-      );
-    }
-    return '<br><br>' + attributeConstraints.join('<br>');
   }
 
   private fillPaTableAttributes() {
@@ -218,6 +217,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   private async getNote() {
     const note = await this.programsService.retrieveNote(
+      this.programId,
       this.person.referenceId,
     );
 
@@ -227,6 +227,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   private async getMessageHistory() {
     const msghistory = await this.programsService.retrieveMsgHistory(
+      this.programId,
       this.person.referenceId,
     );
     this.messageHistory = msghistory;
@@ -245,7 +246,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public async saveNote() {
     this.inProgress.note = true;
     await this.programsService
-      .updateNote(this.person.referenceId, this.noteModel)
+      .updateNote(this.programId, this.person.referenceId, this.noteModel)
       .then(
         (note) => {
           this.actionResult(

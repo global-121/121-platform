@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { QRCodeModule } from 'angularx-qrcode';
 import { InfoPopupComponent } from '../shared/info-popup/info-popup.component';
 import { SharedModule } from '../shared/shared.module';
 import { AutoSignupComponent } from './auto-signup/auto-signup.component';
@@ -12,7 +11,6 @@ import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.
 import { LoginAccountComponent } from './login-account/login-account.component';
 import { MonitoringQuestionComponent } from './monitoring-question/monitoring-question.component';
 import { NextPaComponent } from './next-pa/next-pa.component';
-import { PreprintedQrcodeComponent } from './preprinted-qrcode/preprinted-qrcode.component';
 import { RegistrationSummaryComponent } from './registration-summary/registration-summary.component';
 import { SelectFspComponent } from './select-fsp/select-fsp.component';
 import { SelectLanguageComponent } from './select-language/select-language.component';
@@ -28,7 +26,6 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     EnrollInProgramComponent,
     LoginAccountComponent,
     MonitoringQuestionComponent,
-    PreprintedQrcodeComponent,
     RegistrationSummaryComponent,
     SelectFspComponent,
     SelectLanguageComponent,
@@ -39,7 +36,7 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     AutoSignupComponent,
     NextPaComponent,
   ],
-  imports: [CommonModule, SharedModule, FormsModule, QRCodeModule],
+  imports: [CommonModule, SharedModule, FormsModule],
   exports: [
     ConsentQuestionComponent,
     ContactDetailsComponent,
@@ -47,7 +44,6 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     EnrollInProgramComponent,
     LoginAccountComponent,
     MonitoringQuestionComponent,
-    PreprintedQrcodeComponent,
     RegistrationSummaryComponent,
     SelectFspComponent,
     SelectLanguageComponent,

@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsIn,
   IsInt,
@@ -7,7 +8,6 @@ import {
   IsString,
   Min,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
 import { FspName } from '../../fsp/financial-service-provider.entity';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';

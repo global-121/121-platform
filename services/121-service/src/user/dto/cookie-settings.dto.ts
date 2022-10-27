@@ -1,5 +1,5 @@
-import { IsBoolean, IsDate, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsBoolean, IsDate, IsNotEmpty, IsString } from 'class-validator';
 import { CookieNames } from '../../shared/enum/cookie.enums';
 
 export class CookieSettingsDto {

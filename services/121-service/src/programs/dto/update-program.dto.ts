@@ -1,17 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
+  IsArray,
+  IsBoolean,
+  IsDateString,
+  IsDefined,
+  IsIn,
+  IsNumber,
   IsOptional,
   IsString,
-  IsDateString,
   Length,
-  IsBoolean,
-  IsIn,
-  IsArray,
-  IsNumber,
   ValidateNested,
-  IsDefined,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 
 export class UpdateProgramDto {
@@ -111,11 +111,6 @@ export class UpdateProgramDto {
   @IsOptional()
   @IsBoolean()
   public readonly validation: boolean;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsBoolean()
-  public readonly validationByQr: boolean;
 
   @ApiProperty({
     example: { en: 'Identity card;Health Insurance;Proof of children' },

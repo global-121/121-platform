@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IsNumber } from 'class-validator';
-
 export enum ExportType {
   allPeopleAffected = 'all-people-affected',
   included = 'included',
@@ -13,10 +11,6 @@ export enum ExportType {
 }
 
 export class ExportDetails {
-  @ApiProperty({ example: 1 })
-  @IsNumber()
-  public readonly programId: number;
-
   @ApiProperty({
     enum: ExportType,
     example: Object.values(ExportType).join(' | '),

@@ -3,6 +3,7 @@ import { NgModel } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 
 @Component({
@@ -38,6 +39,9 @@ export class UpdateFspComponent implements OnInit {
   @Input()
   public referenceId: string;
 
+  @Input()
+  public programId: number;
+
   @Output()
   updated: EventEmitter<string> = new EventEmitter<string>();
 
@@ -49,6 +53,7 @@ export class UpdateFspComponent implements OnInit {
     private alertController: AlertController,
     private translate: TranslateService,
     private translatableString: TranslatableStringService,
+    private errorHandlerService: ErrorHandlerService,
   ) {}
 
   public startingAttributes: any[] = [];
@@ -71,6 +76,7 @@ export class UpdateFspComponent implements OnInit {
     this.programsService
       .updateChosenFsp(
         this.referenceId,
+        this.programId,
         this.selectedFspName,
         this.attributesToSave,
       )
@@ -86,7 +92,10 @@ export class UpdateFspComponent implements OnInit {
           this.inProgress = false;
           console.log('error: ', error);
           if (error && error.error) {
-            this.actionResult(error.error.message);
+            const errorMessage = this.translate.instant('common.update-error', {
+              error: this.errorHandlerService.formatErrors(error),
+            });
+            this.actionResult(errorMessage);
           }
         },
       );

@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { twilioClient } from '../twilio.client';
 
 @Injectable()
@@ -36,7 +36,6 @@ export class LookupService {
       const lookupResponse = await twilioClient.lookups
         .phoneNumbers(updatedPhone)
         .fetch({ type: ['carrier'] });
-
       if (lookupResponse.phoneNumber.substr(0, 4) == '+961') {
         lookupResponse.phoneNumber = this.processLebanonException(
           lookupResponse,

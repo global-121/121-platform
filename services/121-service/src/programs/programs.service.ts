@@ -1,20 +1,21 @@
-import { ProgramQuestionEntity } from './program-question.entity';
-import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, In } from 'typeorm';
-import { ProgramEntity } from './program.entity';
-import { ProgramPhase } from '../shared/enum/program-phase.model';
-import { CreateProgramDto } from './dto/create-program.dto';
-import { ProgramsRO, SimpleProgramRO } from './program.interface';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { getRepository, In, Repository } from 'typeorm';
 import { ActionEntity } from '../actions/action.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { Attribute } from '../registration/enum/custom-data-attributes';
+import { ProgramPhase } from '../shared/enum/program-phase.model';
+import { UserEntity } from '../user/user.entity';
+import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
+import { CreateProgramDto } from './dto/create-program.dto';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
-import { Attribute } from '../registration/enum/custom-data-attributes';
+import { ProgramQuestionEntity } from './program-question.entity';
+import { ProgramEntity } from './program.entity';
+import { ProgramsRO, SimpleProgramRO } from './program.interface';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
@@ -35,6 +36,8 @@ export class ProgramService {
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ActionEntity)
   public actionRepository: Repository<ActionEntity>;
+  @InjectRepository(UserEntity)
+  private readonly userRepository: Repository<UserEntity>;
 
   public constructor() {}
 
@@ -58,25 +61,43 @@ export class ProgramService {
     return program;
   }
 
-  public async findAll(): Promise<ProgramsRO> {
-    const qb = await getRepository(ProgramEntity)
+  public async getPublishedPrograms(): Promise<ProgramsRO> {
+    const programs = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.programQuestions', 'programQuestion')
-      .addOrderBy('programQuestion.id', 'ASC');
-
-    qb.where('1 = 1');
-    qb.orderBy('program.created', 'DESC');
-
-    const programs = await qb.getMany();
+      .where('program.published = :published', { published: true })
+      .orderBy('program.created', 'DESC')
+      .addOrderBy('programQuestion.id', 'ASC')
+      .getMany();
     const programsCount = programs.length;
-
     return { programs, programsCount };
   }
 
-  public async getPublishedPrograms(): Promise<ProgramsRO> {
-    let programs = (await this.findAll()).programs;
-    programs = programs.filter(program => program.published);
+  public async findUserProgramAssignmentsOrThrow(
+    userId: number,
+  ): Promise<UserEntity> {
+    const user = await this.userRepository.findOne(userId, {
+      relations: ['programAssignments', 'programAssignments.program'],
+    });
+    if (
+      !user ||
+      !user.programAssignments ||
+      user.programAssignments.length === 0
+    ) {
+      const errors = 'User not found or no assigned programs';
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+    return user;
+  }
+
+  public async getAssignedPrograms(userId: number): Promise<ProgramsRO> {
+    const user = await this.findUserProgramAssignmentsOrThrow(userId);
+    const programIds = user.programAssignments.map(p => p.program.id);
+    const programs = await this.programRepository.findByIds(programIds, {
+      relations: ['programQuestions'],
+    });
     const programsCount = programs.length;
+
     return { programs, programsCount };
   }
 
@@ -103,7 +124,6 @@ export class ProgramService {
     program.description = programData.description;
     program.descCashType = programData.descCashType;
     program.validation = programData.validation;
-    program.validationByQr = programData.validationByQr;
     program.programQuestions = [];
     program.financialServiceProviders = [];
 
@@ -170,7 +190,7 @@ export class ProgramService {
 
     for (const attribute of updateProgramCustomAttributes.attributes) {
       const oldAttribute = await this.programCustomAttributeRepository.findOne({
-        where: { name: attribute.name },
+        where: { name: attribute.name, programId: programId },
       });
       if (oldAttribute) {
         // If existing: update ..
@@ -186,8 +206,12 @@ export class ProgramService {
         program.programCustomAttributes[attributeIndex] = savedAttribute;
       } else {
         // .. otherwise, create new
+        const newCustomAttribute = attribute as ProgramCustomAttributeEntity;
+        newCustomAttribute.programId = programId;
+
+        // attribute.programId = programId;
         const savedAttribute = await this.programCustomAttributeRepository.save(
-          attribute,
+          newCustomAttribute,
         );
         savedAttributes.push(savedAttribute);
         program.programCustomAttributes.push(savedAttribute);
@@ -198,10 +222,11 @@ export class ProgramService {
   }
 
   public async updateProgramQuestion(
+    programId: number,
     updateProgramQuestionDto: UpdateProgramQuestionDto,
   ): Promise<ProgramQuestionEntity> {
     const programQuestion = await this.programQuestionRepository.findOne({
-      where: { name: updateProgramQuestionDto.name },
+      where: { name: updateProgramQuestionDto.name, programId: programId },
     });
     if (!programQuestion) {
       const errors = `No programQuestion found with name ${updateProgramQuestionDto.name}`;
@@ -222,7 +247,7 @@ export class ProgramService {
     programId: number,
     programQuestionId: number,
   ): Promise<ProgramQuestionEntity> {
-    const program = await this.findProgramOrThrow(programId);
+    await this.findProgramOrThrow(programId);
 
     const programQuestion = await this.programQuestionRepository.findOne({
       where: { id: Number(programQuestionId) },

@@ -1,7 +1,6 @@
 {
   "published": false,
   "validation": true,
-  "validationByQr": true,
   "phase": "design",
   "location": "Location A",
   "ngo": "NGO A",
@@ -40,9 +39,17 @@
   "notifications": {
     "en": {
       "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS message with more information within 1 week.",
+      "whatsappGenericMessage": "Dummy text EN: whatsappGenericMessage",
       "whatsappPayment": "This is a message from the Red Cross.\n\nYour €{{1}} Albert Heijn supermarket voucher is ready to be sent.\n\nPlease reply “yes” to this message in order to receive:\n1. This week's voucher.\n2. Any previous vouchers you haven't received yet.\n",
       "whatsappVoucher": "This is a message from the Red Cross.\n\nWith this message you received 2 pictures.\nOne is the Albert Heijn supermarket voucher (cadeaukaart) with the barcode.\nThe other is an explanation of how you can use the voucher to pay in Albert Heijn.\n\n The value of this voucher is €{{1}}.\nYou can spend the voucher at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep this voucher in your phone and re-use it until the amount is finished.\n\nYou will receive a €{{1}} Albert Heijn voucher every week on Tuesday until 31 May 2021 the latest.\n\nDo you have questions? Send us a message on WhatsApp: https://wa.me/31600000000",
       "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31600000000"
+    },
+    "nl": {
+      "registered": "Dummy text NL: registered",
+      "whatsappGenericMessage": "Dummy text NL: whatsappGenericMessage",
+      "whatsappPayment": "Dummy text NL: whatsappPayment",
+      "whatsappVoucher": "Dummy text NL: whatsappVoucher",
+      "whatsappReply": "Dummy text NL: whatsappReply"
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
@@ -110,5 +117,6 @@
   ],
   "aboutProgram": {
     "en": "[about aid program]"
-  }
+  },
+  "fullnameNamingConvention": ["nameFirst", "nameMiddle", "nameLast"]
 }

@@ -119,3 +119,8 @@ export const PA_STATUS_ORDER = [
   { id: 10, name: PaStatus.noLongerEligible },
   { id: 11, name: PaStatus.registeredWhileNoLongerEligible },
 ];
+
+export enum PersonDefaultAttributes {
+  paymentAmountMultiplier = 'paymentAmountMultiplier',
+  phoneNumber = 'phoneNumber',
+}

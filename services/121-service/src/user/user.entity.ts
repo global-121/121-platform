@@ -1,18 +1,18 @@
-import { RegistrationEntity } from './../registration/registration.entity';
-import { PersonAffectedAppDataEntity } from './../people-affected/person-affected-app-data.entity';
-import { UserType } from './user-type-enum';
-import {
-  Entity,
-  Column,
-  BeforeInsert,
-  OneToMany,
-  Index,
-  BeforeRemove,
-} from 'typeorm';
 import crypto from 'crypto';
+import {
+  BeforeInsert,
+  BeforeRemove,
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+} from 'typeorm';
 import { ActionEntity } from '../actions/action.entity';
-import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { CascadeDeleteEntity } from '../base.entity';
+import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
+import { PersonAffectedAppDataEntity } from './../people-affected/person-affected-app-data.entity';
+import { RegistrationEntity } from './../registration/registration.entity';
+import { UserType } from './user-type-enum';
 
 @Entity('user')
 export class UserEntity extends CascadeDeleteEntity {
@@ -54,6 +54,9 @@ export class UserEntity extends CascadeDeleteEntity {
 
   @Column()
   public userType: UserType;
+
+  @Column({ default: false })
+  public admin: boolean;
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {

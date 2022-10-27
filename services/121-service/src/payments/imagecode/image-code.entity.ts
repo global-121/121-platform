@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { Base121Entity } from '../../base.entity';
 
 @Entity('imagecode')

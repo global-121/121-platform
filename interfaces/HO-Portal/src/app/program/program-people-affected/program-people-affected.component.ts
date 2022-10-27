@@ -49,6 +49,7 @@ import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
@@ -83,7 +84,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   private columnWidthPerType = {
     [AnswerType.Number]: 90,
-    [AnswerType.Date]: 142,
+    [AnswerType.Date]: 150,
     [AnswerType.PhoneNumber]: 130,
     [AnswerType.Text]: 150,
     [AnswerType.Enum]: 160,
@@ -308,6 +309,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     private pubSub: PubSubService,
     private router: Router,
     private translatableStringService: TranslatableStringService,
+    private errorHandlerService: ErrorHandlerService,
   ) {
     this.locale = environment.defaultLocale;
     this.routerSubscription = this.router.events.subscribe(async (event) => {
@@ -589,31 +591,37 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.program = await this.programsService.getProgramById(this.programId);
   }
   private async loadPermissions() {
-    this.canUpdatePaData = this.authService.hasAllPermissions([
+    this.canUpdatePaData = this.authService.hasAllPermissions(this.programId, [
       Permission.RegistrationAttributeUPDATE,
     ]);
-    this.canViewPersonalData = this.authService.hasAllPermissions([
-      Permission.RegistrationPersonalREAD,
-    ]);
-    this.canUpdatePersonalData = this.authService.hasAllPermissions([
-      Permission.RegistrationPersonalUPDATE,
-    ]);
-    this.canViewMessageHistory = this.authService.hasAllPermissions([
-      Permission.RegistrationNotificationREAD,
-    ]);
-    this.canViewPaymentData = this.authService.hasAllPermissions([
-      Permission.PaymentREAD,
-      Permission.PaymentTransactionREAD,
-    ]);
-    this.canViewVouchers = this.authService.hasAllPermissions([
+    this.canViewPersonalData = this.authService.hasAllPermissions(
+      this.programId,
+      [Permission.RegistrationPersonalREAD],
+    );
+    this.canUpdatePersonalData = this.authService.hasAllPermissions(
+      this.programId,
+      [Permission.RegistrationPersonalUPDATE],
+    );
+    this.canViewMessageHistory = this.authService.hasAllPermissions(
+      this.programId,
+      [Permission.RegistrationNotificationREAD],
+    );
+    this.canViewPaymentData = this.authService.hasAllPermissions(
+      this.programId,
+      [Permission.PaymentREAD, Permission.PaymentTransactionREAD],
+    );
+    this.canViewVouchers = this.authService.hasAllPermissions(this.programId, [
       Permission.PaymentVoucherREAD,
     ]);
-    this.canDoSinglePayment = this.authService.hasAllPermissions([
-      Permission.ActionREAD,
-      Permission.PaymentCREATE,
-      Permission.PaymentREAD,
-      Permission.PaymentTransactionREAD,
-    ]);
+    this.canDoSinglePayment = this.authService.hasAllPermissions(
+      this.programId,
+      [
+        Permission.ActionREAD,
+        Permission.PaymentCREATE,
+        Permission.PaymentREAD,
+        Permission.PaymentTransactionREAD,
+      ],
+    );
   }
 
   private setupProxyScrollbar() {
@@ -679,7 +687,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     for (const column of this.standardColumns) {
       if (
         column.phases.includes(this.thisPhase) &&
-        this.authService.hasAllPermissions(column.permissions) &&
+        this.authService.hasAllPermissions(
+          this.programId,
+          column.permissions,
+        ) &&
         this.checkValidationColumnOrAction(column)
       ) {
         this.columns.push(column);
@@ -714,7 +725,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         addCol.minWidth = this.columnWidthPerType.text;
         addCol.width = this.columnWidthPerType.text;
       }
-      if (this.authService.hasAllPermissions(addCol.permissions)) {
+      if (
+        this.authService.hasAllPermissions(this.programId, addCol.permissions)
+      ) {
         this.columns.push(addCol);
       }
     }
@@ -759,7 +772,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
     this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
-        this.authService.hasAllPermissions(action.permissions) &&
+        this.authService.hasAllPermissions(
+          this.programId,
+          action.permissions,
+        ) &&
         action.phases.includes(this.thisPhase) &&
         this.checkValidationColumnOrAction(action);
       return action;
@@ -909,14 +925,12 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       included: person.inclusionDate
         ? formatDate(person.inclusionDate, this.dateFormat, this.locale)
         : null,
-      rejected:
-        person.rejectionDate && person.status === PaStatus.rejected
-          ? formatDate(person.rejectionDate, this.dateFormat, this.locale)
-          : null,
-      inclusionEnded:
-        person.inclusionEndDate && person.status === PaStatus.inclusionEnded
-          ? formatDate(person.inclusionEndDate, this.dateFormat, this.locale)
-          : null,
+      rejected: person.rejectionDate
+        ? formatDate(person.rejectionDate, this.dateFormat, this.locale)
+        : null,
+      inclusionEnded: person.inclusionEndDate
+        ? formatDate(person.inclusionEndDate, this.dateFormat, this.locale)
+        : null,
       name: person.name,
       preferredLanguage: person.preferredLanguage
         ? this.translate.instant(
@@ -1356,7 +1370,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   public onCheckboxChange(row: PersonRow, column: any, value: string) {
     this.programsService
-      .updatePaAttribute(row.referenceId, column.prop, value)
+      .updatePaAttribute(this.programId, row.referenceId, column.prop, value)
       .then(
         () => {
           row[column.prop] = value;
@@ -1368,29 +1382,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           console.log('error: ', error);
           if (error && error.error) {
             const errorMessage = this.translate.instant('common.update-error', {
-              error: this.formatErrors(error.error, column.prop),
+              error: this.errorHandlerService.formatErrors(
+                error.error,
+                column.prop,
+              ),
             });
             this.actionResult(errorMessage);
           }
         },
       );
-  }
-
-  private formatErrors(error, attribute: string): string {
-    if (error.errors) {
-      return this.formatConstraintsErrors(error.errors, attribute);
-    }
-    if (error.message) {
-      return '<br><br>' + error.message + '<br>';
-    }
-  }
-
-  private formatConstraintsErrors(errors, attribute: string): string {
-    const attributeError = errors.find(
-      (message) => message.property === attribute,
-    );
-    const attributeConstraints = Object.values(attributeError.constraints);
-    return '<br><br>' + attributeConstraints.join('<br>');
   }
 
   public getPaStatusesFilterOptions(): TableFilterMultipleChoiceOption[] {

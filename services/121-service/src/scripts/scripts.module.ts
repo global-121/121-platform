@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScriptsController } from './scripts.controller';
-import { SeedInit } from './seed-init';
 import { SeedDev } from './seed-dev';
-import { SeedProd } from './seed-prod';
 import { SeedHelper } from './seed-helper';
-import { SeedProgramValidation } from './seed-program-validation';
-import { SeedPilotNLProgram } from './seed-program-pilot-nl';
-import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
+import { SeedInit } from './seed-init';
+import { SeedProd } from './seed-prod';
 import { SeedDemoProgram } from './seed-program-demo';
 import SeedProgramEth from './seed-program-eth';
 import SeedProgramLbn from './seed-program-lbn';
+import { SeedPilotNLProgram } from './seed-program-pilot-nl';
+import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
+import { SeedProgramValidation } from './seed-program-validation';
 
 @Module({
   imports: [

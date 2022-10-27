@@ -1,33 +1,34 @@
-import { PermissionsGuard } from './../permissions.guard';
-import { PermissionEnum } from './permission.enum';
-import { UserEntity } from './user.entity';
-import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
-import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import {
-  Get,
-  Post,
   Body,
-  Param,
   Controller,
-  UseGuards,
-  Res,
-  Req,
-  Put,
   Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
-import { tokenExpirationDays, UserService } from './user.service';
-import { UserRO } from './user.interface';
-import { LoginUserDto, UpdateUserDto } from './dto';
-import { User } from './user.decorator';
-
-import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
-import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
-import { UserRoleEntity } from './user-role.entity';
-import { Permissions } from '../permissions.decorator';
-import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
+import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Admin } from '../guards/admin.decorator';
+import { AdminAuthGuard } from '../guards/admin.guard';
+import { Permissions } from '../guards/permissions.decorator';
+import { PermissionsGuard } from '../guards/permissions.guard';
 import { CookieNames } from '../shared/enum/cookie.enums';
+import { LoginUserDto, UpdateUserDto } from './dto';
+import { AssignAidworkerToProgramDto } from './dto/assign-aw-to-program.dto';
+import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
+import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
+import { CreateUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
+import { PermissionEnum } from './permission.enum';
+import { UserRoleEntity } from './user-role.entity';
+import { User } from './user.decorator';
+import { UserEntity } from './user.entity';
+import { UserRO } from './user.interface';
+import { tokenExpirationDays, UserService } from './user.service';
 
-@UseGuards(PermissionsGuard)
+@UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('user')
 @Controller()
 export class UserController {
@@ -36,14 +37,14 @@ export class UserController {
     this.userService = userService;
   }
 
-  @Permissions(PermissionEnum.RoleREAD)
+  @Admin()
   @ApiOperation({ summary: 'Get all user roles' })
   @Get('roles')
   public async getUserRoles(): Promise<UserRoleEntity[]> {
     return await this.userService.getUserRoles();
   }
 
-  @Permissions(PermissionEnum.RoleCREATE)
+  @Admin()
   @ApiOperation({ summary: 'Create new user role' })
   @Post('roles')
   public async addUserRole(
@@ -52,7 +53,7 @@ export class UserController {
     return await this.userService.addUserRole(userRoleData);
   }
 
-  @Permissions(PermissionEnum.RoleUPDATE)
+  @Admin()
   @ApiOperation({ summary: 'Update existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
   @Put('roles/:userRoleId')
@@ -66,7 +67,7 @@ export class UserController {
     );
   }
 
-  @Permissions(PermissionEnum.RoleDELETE)
+  @Admin()
   @ApiOperation({ summary: 'Delete existing user role' })
   @ApiParam({ name: 'userRoleId', required: true, type: 'integer' })
   @Delete('roles/:userRoleId')
@@ -74,7 +75,6 @@ export class UserController {
     return await this.userService.deleteUserRole(params.userRoleId);
   }
 
-  @Permissions(PermissionEnum.AidWorkerCREATE)
   @ApiOperation({ summary: 'Sign-up new Aid Worker user' })
   @Post('user/aidworker')
   public async createAw(
@@ -183,7 +183,7 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
-  @Permissions(PermissionEnum.AidWorkerDELETE)
+  @Admin()
   @ApiOperation({ summary: 'Delete user by userId' })
   @Post('user/delete/:userId')
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
@@ -207,12 +207,29 @@ export class UserController {
 
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
   @ApiOperation({ summary: 'Assign Aidworker to program' })
-  @Post('user/assign-to-program')
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'userId', required: true, type: 'integer' })
+  @Post('programs/:programId/users/:userId/assignments')
   public async assignFieldValidationAidworkerToProgram(
+    @Param() params,
     @Body() assignAidworkerToProgram: AssignAidworkerToProgramDto,
   ): Promise<UserRoleEntity[]> {
     return await this.userService.assigAidworkerToProgram(
+      Number(params.programId),
+      Number(params.userId),
       assignAidworkerToProgram,
+    );
+  }
+
+  @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
+  @ApiOperation({ summary: 'Assign Aidworker to program' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'userId', required: true, type: 'integer' })
+  @Delete('programs/:programId/users/:userId/assignments')
+  public async deleteAidWorkerAssignment(@Param() params): Promise<void> {
+    return await this.userService.deleteAssignment(
+      Number(params.programId),
+      Number(params.userId),
     );
   }
 }

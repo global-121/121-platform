@@ -1,10 +1,10 @@
 import {
-  Entity,
   Column,
+  Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   Unique,
-  JoinColumn,
 } from 'typeorm';
 import { Base121Entity } from '../base.entity';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';

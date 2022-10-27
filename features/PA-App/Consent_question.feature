@@ -15,4 +15,5 @@ Feature: Consent question
     Given a button with "I agree" is shown
     Given a button with "I disagree" is shown
     When the PA presses "I agree"
-    Then the "sign-up/sign-in"-step is shown
+    Then the "auto-signup"-step is executed
+    And the "enroll in a program"-step is shown

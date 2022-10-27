@@ -1,7 +1,7 @@
 <span style="display: inline-block">
   {{ 'user-state.logged-in-as' | translate }}:
   <br />
-  <a [routerLink]="['/user']">
+  <a [routerLink]="['/', appRoute.user]">
     <ion-note class="ion-text-nowrap">{{ userName }}</ion-note>
   </a>
 </span>

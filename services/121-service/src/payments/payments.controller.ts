@@ -1,18 +1,12 @@
-import { Post, Body, Controller, UseGuards, Get, Param } from '@nestjs/common';
-import { PaymentsService } from './payments.service';
-import { User } from '../user/user.decorator';
-import {
-  ApiTags,
-  ApiBearerAuth,
-  ApiResponse,
-  ApiOperation,
-  ApiParam,
-} from '@nestjs/swagger';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { PermissionsGuard } from '../permissions.guard';
-import { Permissions } from '../permissions.decorator';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Permissions } from '../guards/permissions.decorator';
+import { PermissionsGuard } from '../guards/permissions.guard';
 import { PermissionEnum } from '../user/permission.enum';
+import { User } from '../user/user.decorator';
+import { CreatePaymentDto } from './dto/create-payment.dto';
 import { FspInstructions } from './dto/fsp-instructions.dto';
+import { PaymentsService } from './payments.service';
 
 @UseGuards(PermissionsGuard)
 @ApiTags('payments')

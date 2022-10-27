@@ -6,6 +6,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { Observable } from 'rxjs';
+import { AppRoutes } from '../app-routes.enum';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -15,30 +16,28 @@ export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(
-    next: ActivatedRouteSnapshot,
+    nextRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
   ): Observable<boolean> | Promise<boolean> | boolean {
-    const url: string = state.url;
-
-    return this.checkLogin(url, next);
-  }
-
-  checkLogin(url: string, route: ActivatedRouteSnapshot): boolean {
     // If no specific permission is required, only require a valid login
-    if (!route.data.permissions && this.authService.isLoggedIn()) {
+    if (!nextRoute.data.permissions && this.authService.isLoggedIn()) {
       return true;
     }
 
     if (
-      route.data.permissions &&
-      this.authService.hasAllPermissions(route.data.permissions)
+      nextRoute.params.id &&
+      nextRoute.data.permissions &&
+      this.authService.hasAllPermissions(
+        nextRoute.params.id,
+        nextRoute.data.permissions,
+      )
     ) {
       return true;
     }
 
     // Store the attempted URL for redirecting
-    this.authService.redirectUrl = url;
-    this.router.navigate(['/login']);
+    this.authService.redirectUrl = state.url;
+    this.router.navigate(['/', AppRoutes.login]);
     return false;
   }
 }

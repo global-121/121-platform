@@ -11,7 +11,7 @@ Feature: Edit information on Person Affected
     When the user hovers over it
     Then it is highlighted
 
-  Scenario: No permission to edit information
+  Scenario: No permission to view information
     Given the user does not have the "RegistrationPersonalREAD" permission
     When the user views the "People Affected Table"
     Then the user does not see the information-icon, but only the 'PA#X' text
@@ -22,20 +22,18 @@ Feature: Edit information on Person Affected
     Then a popup opens
     And in the title the ID-number of the Person Affected is mentioned
     And an input-field for the "paymentAmountMultiplier" and "phoneNumber" is shown
-    And an input-field for each Custom Attribute with type 'string', 'phoneNumer', 'dropdown', 'multi-select' or 'date' is shown
+    And an input-field for each Custom Attribute is shown
     And an input-field for each FSP-attribute (such as "whatsappPhoneNumber") is shown
-    And all input-fields have an accompanying "update" button which is enabled
-    And the pop-up shows a dropdown-list for the current FSP is shown
-    And it has an accompanying "update" button which is disabled
+    And a dropdown-list with the current chosen FSP is shown
+    And all input-fields have an accompanying "save" button which is disabled
     And the popup has a "Notes" section
-    And an input-field for the "paymentAmountMultiplier" is shown
-    And the popup has a "Notes" section and a "Message History" section
     And there is an explanation, including PII-warning
     And there is a free text "note" field
     And it shows the current version of the note if available
     And it shows a placeholder if no note currently saved
     And there is a "save" button
     And there is a 'Last updated on' mention if there is a current version of the note available
+    And the popup has a "Message History" section (see scenario 'View Message History')
 
   Scenario: Successfully update note
     Given a logged-in user with "RegistrationPersonalREAD" permission
@@ -86,25 +84,25 @@ Feature: Edit information on Person Affected
     Then the update-button changes into a progress indicator
     And a feedback message with the specific requirements of the value is shown
     And the progress indicator changes into the update-button again
-    And - if configured for the program - the "paymentAmountMultiplier" is recalculated based on formula 
+    And - if configured for the program - the "paymentAmountMultiplier" is recalculated based on formula
 
-  Scenario: Update 'numeric' custom attributes with invalid value
+  Scenario: Update 'numeric' answer with invalid value
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
     Given an input-field for the  is shown
-    When the user tries to enter a non-numberic number
+    When the user tries to enter a non-numeric number
     Then nothing happens
 
-  Scenario: Update 'phonenumber' custom attributes with invalid value
+  Scenario: Update 'phonenumber' answer with invalid value
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
     Given an input-field for the  is shown
-    When the user changes the phonenumber to a non-existent phonenumver and presses the update-button
+    When the user changes the phonenumber to a non-existent phone-number and presses the update-button
     Then the update-button changes into a progress indicator
     And a feedback message saying the value is invalid appears
     And the progress indicator changes into the update-button again
 
-  Scenario: Update 'date' custom attributes with invalid value
+  Scenario: Update 'date' answer with invalid value
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
     Given an input-field for the  is shown
@@ -113,13 +111,13 @@ Feature: Edit information on Person Affected
     And a feedback message with the specific requirements of the value is shown
     And the progress indicator changes into the update-button again
 
-  Scenario: Update 'multi-select' custom attributes to 'no options'
+  Scenario: Update 'multi-select' answer to 'no options'
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
     Given an input-field for the attribute is shown
     When the user deselects all options and presses the update-button
     Then feedback is given that this is not allowed
-    
+
   Scenario: Update chosen FSP
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to edit information
@@ -140,7 +138,7 @@ Feature: Edit information on Person Affected
     And input-fields for attributes of the new FSP are shown
     And the new FSP shows as the current selected value of the dropdown
 
-  Scenario: Message History
+  Scenario: View Message History
     Given a logged-in user with "RegistrationPersonalREAD" permission
     Given the user has opened the popup to view and edit information
     Then after the Notes section if any messages are sent to PA then "Message History" section will be available

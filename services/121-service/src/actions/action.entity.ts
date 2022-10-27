@@ -1,8 +1,8 @@
-import { ExportType } from '../export-metrics/dto/export-details';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { UserEntity } from '../user/user.entity';
-import { ProgramEntity } from '../programs/program.entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../base.entity';
+import { ExportType } from '../export-metrics/dto/export-details';
+import { ProgramEntity } from '../programs/program.entity';
+import { UserEntity } from '../user/user.entity';
 
 @Entity('action')
 export class ActionEntity extends Base121Entity {
