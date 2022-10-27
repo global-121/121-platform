@@ -65,15 +65,20 @@ function showManualDeployForm() {
 }
 
 /**
- * Remove unneccessary characters, return a predictable value
+ * Check for unsave branch-names
  * @param {string | number} input
  * @returns {string}
  */
 function sanitizeTarget(input) {
-  if (!input) {
+  const badBranchNames = new RegExp(
+    /(^|[/.])([/.]|$)|^@$|@{|[\x00-\x20\x7f~^:?*[\\]|\.lock(\/|$)/
+  );
+
+  if (!input || badBranchNames.test(input)) {
     return '';
   }
-  return input.toString().replace(/[^a-z/-_.0-9]/gi, '');
+
+  return input.toString();
 }
 
 // ----------------------------------------------------------------------------
