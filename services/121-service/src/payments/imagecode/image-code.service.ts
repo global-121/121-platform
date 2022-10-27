@@ -107,6 +107,15 @@ export class ImageCodeService {
     return `${day} ${month} ${date.getFullYear()} ${time}`;
   }
 
+  private formatDecimals(amount: string, showZerosIfInteger: boolean): string {
+    const amountFloat = parseFloat(amount);
+    if (!Number.isInteger(amountFloat) || showZerosIfInteger) {
+      return amountFloat.toFixed(2);
+    }
+
+    return amountFloat.toFixed(0);
+  }
+
   public async generateVoucherImage(voucherData: {
     dateTime: Date;
     amount: number | string;
@@ -125,16 +134,34 @@ export class ImageCodeService {
 
       await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK).then(font => {
         image.print(font, 640, 79, this.formatDate(voucherData.dateTime)); // Date+time in the top-right corner
-        image.print(font, 108, 614, `${voucherData.amount} Albert Heijn`); // Below "Dit ticket is geldig voor", after "€"
-        image.print(font, 640, 604, `Euro ${voucherData.amount}.00`); // Below "Prijs:"
+        image.print(
+          font,
+          108,
+          614,
+          `${this.formatDecimals(
+            String(voucherData.amount),
+            false,
+          )} Albert Heijn`,
+        ); // Below "Dit ticket is geldig voor", after "€"
+        image.print(
+          font,
+          640,
+          604,
+          `Euro ${this.formatDecimals(String(voucherData.amount), true)}`,
+        ); // Below "Prijs:"
         image.print(font, 640, 730, voucherData.pin); // Below "Pincode:"
         image.print(font, 225, 800, voucherData.code); // Barcode numbers
       });
 
       // Add a 'scaled' amount to the title of the voucher
-      const titleAmount = new Jimp(50, 50);
+      const titleAmount = new Jimp(100, 50);
       await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK).then(font => {
-        titleAmount.print(font, 0, 0, voucherData.amount);
+        titleAmount.print(
+          font,
+          0,
+          0,
+          this.formatDecimals(String(voucherData.amount), false),
+        );
       });
       titleAmount.scale(0.7);
       image.composite(titleAmount, 583, 138);

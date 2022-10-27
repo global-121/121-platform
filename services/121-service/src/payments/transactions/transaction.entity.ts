@@ -6,7 +6,7 @@ import { RegistrationEntity } from '../../registration/registration.entity';
 
 @Entity('transaction')
 export class TransactionEntity extends Base121Entity {
-  @Column()
+  @Column({ nullable: true, type: 'real' })
   public amount: number;
 
   @Column()

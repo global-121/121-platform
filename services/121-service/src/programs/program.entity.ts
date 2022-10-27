@@ -57,7 +57,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ nullable: true })
   public distributionDuration: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'real' })
   public fixedTransferValue: number;
 
   @Column({ nullable: true })

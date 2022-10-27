@@ -16,7 +16,7 @@ export class IntersolveBarcodeEntity extends Base121Entity {
   @Column()
   public barcode: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'real' })
   public amount: number;
 
   @Column({ nullable: true })

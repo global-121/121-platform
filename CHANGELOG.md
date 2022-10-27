@@ -28,6 +28,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.67.3](https://github.com/global-121/121-platform/compare/v1.67.2...v1.67.3) - 2022-10-27
+
+### Added
+
+- Allow decimals in voucher-amounts.
+
+## [1.67.2](https://github.com/global-121/121-platform/compare/v1.67.1...v1.67.2) - 2022-10-13
+
 ## [1.67.1](https://github.com/global-121/121-platform/compare/v1.67.0...v1.67.1) - 2022-10-13
 
 ### Changed
