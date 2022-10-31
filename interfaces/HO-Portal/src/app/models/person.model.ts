@@ -14,6 +14,7 @@ export class Person {
   importedDate?: string;
   invitedDate?: string;
   noLongerEligibleDate?: string;
+  registeredWhileNoLongerEligibleDate?: string;
   registeredDate?: string;
   selectedForValidationDate?: string;
   validationDate?: string;

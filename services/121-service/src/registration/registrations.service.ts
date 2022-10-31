@@ -648,6 +648,14 @@ export class RegistrationsService {
       )
       .addOrderBy(`${RegistrationStatusEnum.noLongerEligible}.created`, 'DESC')
       .addSelect(
+        `${RegistrationStatusEnum.registeredWhileNoLongerEligible}.created`,
+        RegistrationStatusTimestampField.registeredWhileNoLongerEligibleDate,
+      )
+      .addOrderBy(
+        `${RegistrationStatusEnum.registeredWhileNoLongerEligible}.created`,
+        'DESC',
+      )
+      .addSelect(
         `${RegistrationStatusEnum.registered}.created`,
         RegistrationStatusTimestampField.registeredDate,
       )
@@ -704,6 +712,11 @@ export class RegistrationsService {
         RegistrationStatusChangeEntity,
         RegistrationStatusEnum.noLongerEligible,
         `registration.id = ${RegistrationStatusEnum.noLongerEligible}.registrationId AND ${RegistrationStatusEnum.noLongerEligible}.registrationStatus = '${RegistrationStatusEnum.noLongerEligible}'`,
+      )
+      .leftJoin(
+        RegistrationStatusChangeEntity,
+        RegistrationStatusEnum.registeredWhileNoLongerEligible,
+        `registration.id = ${RegistrationStatusEnum.registeredWhileNoLongerEligible}.registrationId AND ${RegistrationStatusEnum.registeredWhileNoLongerEligible}.registrationStatus = '${RegistrationStatusEnum.registeredWhileNoLongerEligible}'`,
       )
       .leftJoin(
         RegistrationStatusChangeEntity,
