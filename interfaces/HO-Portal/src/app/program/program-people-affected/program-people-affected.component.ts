@@ -884,6 +884,12 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private createPersonRow(person: Person): PersonRow {
+    // If a person has registered while no longer eligeble the registeredWhileNoLongerEligibleDate
+    // corresponds wuth the vulnerabilityAssessmentComplete time stamp
+    const vulnerabilityAssessmentCompleteTime = person.registeredDate
+      ? person.registeredDate
+      : person.registeredWhileNoLongerEligibleDate;
+
     let personRow: PersonRow = {
       referenceId: person.referenceId,
       checkboxVisible: false,
@@ -908,8 +914,12 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
             this.locale,
           )
         : null,
-      vulnerabilityAssessmentCompleted: person.registeredDate
-        ? formatDate(person.registeredDate, this.dateFormat, this.locale)
+      vulnerabilityAssessmentCompleted: vulnerabilityAssessmentCompleteTime
+        ? formatDate(
+            vulnerabilityAssessmentCompleteTime,
+            this.dateFormat,
+            this.locale,
+          )
         : null,
       inclusionScore: person.inclusionScore,
       selectedForValidation: person.selectedForValidationDate
