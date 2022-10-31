@@ -551,18 +551,18 @@ export class RegistrationsService {
       .leftJoin('rd.programCustomAttribute', 'programCustomAttribute')
       .addSelect(
         `json_build_object(
-                'values', array_agg("rd"."value"),
+                'values', array_agg("rd"."value" order by "rd"."id"),
                 'keys', array_agg( CASE
           WHEN ("programQuestion"."name" is not NULL) THEN "programQuestion"."name"
           WHEN ("fspQuestion"."name" is not NULL) THEN "fspQuestion"."name"
           WHEN ("monitoringQuestion"."name" is not NULL) THEN "monitoringQuestion"."name"
           WHEN ("programCustomAttribute"."name" is not NULL) THEN "programCustomAttribute"."name"
-        END ),
+        END order by "rd"."id"),
                 'types', array_agg( CASE
           WHEN ("programQuestion"."answerType" is not NULL) THEN "programQuestion"."answerType"
           WHEN ("fspQuestion"."answerType" is not NULL) THEN "fspQuestion"."answerType"
           ELSE NULL
-        END ))`,
+        END order by "rd"."id"))`,
         'name',
       );
   }
