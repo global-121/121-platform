@@ -312,12 +312,15 @@ export class RegistrationsService {
 
     // Remove old attributes (only relevant in edge case where Intersolve-whatsapp is stored as fsp, because of try-whatsapp-via-invitation scenario)
     const oldFsp = importedRegistration.fsp;
-    for (const attribute of oldFsp?.questions) {
-      const regData = await importedRegistration.getRegistrationDataByName(
-        attribute.name,
-      );
-      await this.registrationDataRepository.delete({ id: regData.id });
+    if (oldFsp) {
+      for (const attribute of oldFsp?.questions) {
+        const regData = await importedRegistration.getRegistrationDataByName(
+          attribute.name,
+        );
+        await this.registrationDataRepository.delete({ id: regData.id });
+      }
     }
+
     const registrationData = await this.registrationDataRepository.find({
       where: { registrationId: importedRegistration.id },
     });

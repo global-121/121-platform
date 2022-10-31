@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { saveAs } from 'file-saver';
@@ -6,6 +7,7 @@ import { ProgramMetrics } from 'src/app/models/program-metrics.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { getValueOrUnknown } from 'src/app/shared/get-value-helpers';
+import { environment } from '../../../environments/environment';
 import { PastPaymentsService } from '../../services/past-payments.service';
 
 @Component({
@@ -265,15 +267,42 @@ export class MetricsStatesComponent implements OnChanges {
         `page.program.metrics.timeframe.${headerName}.label`,
       );
 
+    let chosenMonthString = '';
+    const chosenMonthObject = this.pastMonths.find(
+      (month) => month.value === this.chosenMonth,
+    );
+    if (chosenMonthObject && chosenMonthObject.date) {
+      chosenMonthString = formatDate(
+        chosenMonthObject.date,
+        'yyyy-MM',
+        environment.defaultLocale,
+      );
+    }
+
+    let chosenPaymentString = '';
+    const chosenPaymentObject = this.pastPayments.find(
+      (payment) => payment.value === this.chosenPayment,
+    );
+    if (chosenPaymentObject && chosenPaymentObject.date) {
+      chosenPaymentString = `${chosenPaymentObject.id} - ${formatDate(
+        chosenPaymentObject.date,
+        'yyyy-MM-dd',
+        environment.defaultLocale,
+      )}`;
+    }
+
     const rows = [
       ['', this.paStates.map(({ label }) => label)],
-      [rowHeader('payment'), this.paStates.map(({ forPayment }) => forPayment)],
+      [
+        `${rowHeader('payment')} ${chosenPaymentString}`,
+        this.paStates.map(({ forPayment }) => forPayment),
+      ],
       [
         rowHeader('payment-from-start'),
         this.paStates.map(({ forPaymentFromStart }) => forPaymentFromStart),
       ],
       [
-        rowHeader('calendar-month'),
+        `${rowHeader('calendar-month')} ${chosenMonthString}`,
         this.paStates.map(({ forMonth }) => forMonth),
       ],
       [
