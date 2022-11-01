@@ -17,6 +17,36 @@ import appInsights = require('applicationinsights');
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);
+
+  // NOTE: this commented out code can be used to visualize module dependencies using nestjs-spelunker
+  // Paste the outcome in https://mermaid.live
+  // const tree = SpelunkerModule.explore(app);
+  // const root = SpelunkerModule.graph(tree);
+  // const edges = SpelunkerModule.findGraphEdges(root);
+  // const genericModules = [
+  //   'ApplicationModule',
+  //   'DiscoveryModule',
+  //   'ScheduleModule',
+  //   'TypeOrmCoreModule',
+  //   'TypeOrmModule',
+  //   'HttpModule',
+  //   'ScriptsModule',
+  //   'TerminusModule',
+  //   'HealthModule',
+  //   'MulterModule',
+  //   'UserModule',
+  //   'ActionModule',
+  // ];
+  // const mermaidEdges = edges
+  //   .filter(
+  //     ({ from, to }) =>
+  //       !genericModules.includes(from.module.name) &&
+  //       !genericModules.includes(to.module.name),
+  //   )
+  //   .map(({ from, to }) => `  ${from.module.name}-->${to.module.name}`);
+  // console.log('graph LR');
+  // console.log(mermaidEdges.join('\n'));
+
   app.setGlobalPrefix('api');
 
   app
