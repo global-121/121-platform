@@ -1274,8 +1274,6 @@ export class RegistrationsService {
   }
 
   public async deleteBatch(referenceIdsDto: ReferenceIdsDto): Promise<void> {
-    const registrations = [];
-    const users = [];
     for (let referenceId of referenceIdsDto.referenceIds) {
       const registration = await this.registrationRepository.findOne({
         where: { referenceId: referenceId },
@@ -1287,15 +1285,11 @@ export class RegistrationsService {
           HttpStatus.NOT_FOUND,
         );
       }
-      registrations.push(registration);
-      // Also delete user if present (not in the case of imported PAs)
-      if (registration.user) {
-        const user = await this.userRepository.findOne(registration.user.id);
-        users.push(user);
-      }
+      await this.setRegistrationStatus(
+        referenceId,
+        RegistrationStatusEnum.deleted,
+      );
     }
-    await this.registrationRepository.remove(registrations);
-    await this.userRepository.remove(users);
   }
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {
