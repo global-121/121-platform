@@ -74,12 +74,10 @@ export class BulkActionsService {
         personData.checkboxVisible = personData.hasPhoneNumber;
         break;
       case BulkActionId.deletePa:
-        personData.checkboxVisible = this.hasStatus(personData, [
-          PaStatus.imported,
-          PaStatus.invited,
-          PaStatus.noLongerEligible,
-          PaStatus.startedRegistration,
-        ]);
+        personData.checkboxVisible = this.hasStatus(
+          personData,
+          Object.values(PaStatus),
+        );
         break;
       case BulkActionId.doPayment:
         personData.checkboxVisible =
