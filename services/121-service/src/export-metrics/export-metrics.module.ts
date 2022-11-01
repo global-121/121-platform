@@ -35,7 +35,6 @@ import { ExportMetricsService } from './export-metrics.service';
     ActionModule,
     PaymentsModule,
     TransactionsModule,
-    RegistrationsModule,
   ],
   providers: [ExportMetricsService],
   controllers: [ExportMetricsController],
