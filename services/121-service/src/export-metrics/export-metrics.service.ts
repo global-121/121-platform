@@ -798,8 +798,16 @@ export class ExportMetricsService {
         year,
         fromStart,
       ),
-      [PaMetricsProperty.totalPaHelped]: await this.getTotalPaHelped(
+      [RegistrationStatusEnum.deleted]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
+        registrations,
+        RegistrationStatusEnum.deleted,
+        payment,
+        month,
+        year,
+        fromStart,
+      ),
+      [PaMetricsProperty.totalPaHelped]: await this.getTotalPaHelped(
         payment,
         month,
         year,
@@ -869,7 +877,6 @@ export class ExportMetricsService {
   }
 
   public async getTotalPaHelped(
-    programId: number,
     payment?: number,
     month?: number,
     year?: number,
