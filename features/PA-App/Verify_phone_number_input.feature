@@ -18,10 +18,10 @@ Feature: Verify phone number input
 
     Examples:
       | Correct phone number value |
-      | +1234567890                |
-      | 1234567890                 |
-      | (1) 234567890              |
-      | (1) 234 56 78 90           |
+      | +15005550006               |
+      | 15005550006                |
+      | (1) 5005550006             |
+      | (1) 500 55 500 06          |
 
   Scenario: Accept an incorrect phone number value
     Given a "phone-number"-input is shown

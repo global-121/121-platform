@@ -79,6 +79,13 @@ export class BulkActionsService {
           PaStatus.invited,
           PaStatus.noLongerEligible,
           PaStatus.startedRegistration,
+          PaStatus.registered,
+          PaStatus.selectedForValidation,
+          PaStatus.registeredWhileNoLongerEligible,
+          PaStatus.validated,
+          PaStatus.included,
+          PaStatus.inclusionEnded,
+          PaStatus.rejected,
         ]);
         break;
       case BulkActionId.doPayment:
