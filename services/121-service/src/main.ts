@@ -1,4 +1,8 @@
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
@@ -17,45 +21,51 @@ import {
 } from './config';
 import appInsights = require('applicationinsights');
 
+/**
+ * A visualization of module dependencies is generated using `nestjs-spelunker`
+ * The file can be vied with [Mermaid](https://mermaid.live) or the VSCode extention "bierner.markdown-mermaid"
+ * See: https://github.com/jmcdo29/nestjs-spelunker
+ */
+function generateModuleDependencyGraph(app: INestApplication): void {
+  const tree = SpelunkerModule.explore(app);
+  const root = SpelunkerModule.graph(tree);
+  const edges = SpelunkerModule.findGraphEdges(root);
+  const genericModules = [
+    'ApplicationModule',
+    'DiscoveryModule',
+    'ScheduleModule',
+    'TypeOrmCoreModule',
+    'TypeOrmModule',
+    'HttpModule',
+    'ScriptsModule',
+    'TerminusModule',
+    'HealthModule',
+    'MulterModule',
+    'UserModule',
+    'ActionModule',
+  ];
+  const mermaidEdges = edges
+    .filter(
+      ({ from, to }) =>
+        !genericModules.includes(from.module.name) &&
+        !genericModules.includes(to.module.name),
+    )
+    .map(({ from, to }) => `  ${from.module.name}-->${to.module.name}`);
+  const mermaidGraph =
+    '# Module Dependencies Graph\n\n```mermaid\ngraph LR\n' +
+    mermaidEdges.join('\n') +
+    '\n```\n';
+
+  fs.writeFile('module-dependencies.md', mermaidGraph, 'utf8', err => {
+    if (err) console.warn(`Writing API-graph failed!`, err);
+  });
+}
+
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);
 
   if (DEBUG) {
-    // A visualization of module dependencies is generated using `nestjs-spelunker`
-    // See: https://github.com/jmcdo29/nestjs-spelunker
-    // The file can be vied with [Mermaid](https://mermaid.live) or the VSCode extention "bierner.markdown-mermaid"
-    const tree = SpelunkerModule.explore(app);
-    const root = SpelunkerModule.graph(tree);
-    const edges = SpelunkerModule.findGraphEdges(root);
-    const genericModules = [
-      'ApplicationModule',
-      'DiscoveryModule',
-      'ScheduleModule',
-      'TypeOrmCoreModule',
-      'TypeOrmModule',
-      'HttpModule',
-      'ScriptsModule',
-      'TerminusModule',
-      'HealthModule',
-      'MulterModule',
-      'UserModule',
-      'ActionModule',
-    ];
-    const mermaidEdges = edges
-      .filter(
-        ({ from, to }) =>
-          !genericModules.includes(from.module.name) &&
-          !genericModules.includes(to.module.name),
-      )
-      .map(({ from, to }) => `  ${from.module.name}-->${to.module.name}`);
-    const mermaidGraph =
-      '# Module Dependencies Graph\n\n```mermaid\ngraph LR\n' +
-      mermaidEdges.join('\n') +
-      '\n```\n';
-
-    fs.writeFile('module-dependencies.md', mermaidGraph, 'utf8', err => {
-      if (err) console.warn(`Writing API-graph failed!`, err);
-    });
+    generateModuleDependencyGraph(app);
   }
 
   app.setGlobalPrefix('api');
