@@ -758,7 +758,10 @@ export class RegistrationsService {
         RegistrationStatusEnum.deleted,
         `registration.id = ${RegistrationStatusEnum.deleted}.registrationId AND ${RegistrationStatusEnum.deleted}.registrationStatus = '${RegistrationStatusEnum.deleted}'`,
       )
-      .where('registration.program.id = :programId', { programId: programId });
+      .where('registration.program.id = :programId', { programId: programId })
+      .andWhere('registration.registrationStatus != :status', {
+        status: RegistrationStatusEnum.deleted,
+      });
 
     if (!includePersonalData) {
       const rows = await q.getRawMany();
