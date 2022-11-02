@@ -36,7 +36,7 @@ export class InstanceController {
   @Admin()
   @ApiOperation({ summary: 'Update monitoring question' })
   @Put('monitoringQuestion')
-  public async updateUserRole(
+  public async updateMonitoringQuestion(
     @Body() updateMonitoringQuestionDto: UpdateMonitoringQuestionDto,
   ): Promise<MonitoringQuestionEntity> {
     return await this.instanceService.updateMonitoringQuestion(
