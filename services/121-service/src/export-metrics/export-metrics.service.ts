@@ -401,6 +401,9 @@ export class ExportMetricsService {
         `fsp.fsp as financialServiceProvider`,
       ])
       .andWhere({ programId: programId })
+      .andWhere('registration."registrationStatus" != :registrationStatus', {
+        registrationStatus: RegistrationStatusEnum.deleted,
+      })
       .orderBy('"registration"."id"', 'ASC');
     if (status) {
       query = query.andWhere({ registrationStatus: status });
