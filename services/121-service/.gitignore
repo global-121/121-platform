@@ -13,7 +13,7 @@ node_modules
 dist
 coverage
 swagger-spec.json
-api-graph.md
+module-dependencies.md
 
 #IDEs
 .idea

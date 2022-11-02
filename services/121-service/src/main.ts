@@ -49,11 +49,11 @@ async function bootstrap(): Promise<void> {
       )
       .map(({ from, to }) => `  ${from.module.name}-->${to.module.name}`);
     const mermaidGraph =
-      '# API Graph\n\n```mermaid\ngraph LR\n' +
+      '# Module Dependencies Graph\n\n```mermaid\ngraph LR\n' +
       mermaidEdges.join('\n') +
       '\n```\n';
 
-    fs.writeFile('api-graph.md', mermaidGraph, 'utf8', err => {
+    fs.writeFile('module-dependencies.md', mermaidGraph, 'utf8', err => {
       if (err) console.warn(`Writing API-graph failed!`, err);
     });
   }

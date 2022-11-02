@@ -17,7 +17,8 @@ See instructions to get started in the main [`/services/README`](../README.md).
 
 - Access the Swagger UI via: <http://localhost:3000/docs/>
 - API-specification in JSON-format via: <http://localhost:3000/docs-json>
-- A graph will be generated when run in 'development' mode at [`api-graph.mermaid`](./api-graph.mermaid), it can be viewed with <https://mermaid.live/>
+- A graph will be generated when run in 'development' mode at [`module-dependencies.md`](./module-dependencies.md).  
+  It can be viewed with <https://mermaid.live/> or the VSCode-extension: [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid)
 
 ## Database
 
