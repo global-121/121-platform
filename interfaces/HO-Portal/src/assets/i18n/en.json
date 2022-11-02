@@ -103,7 +103,8 @@
           "validated": "Validated",
           "included": "Included",
           "inclusionEnded": "Inclusion Ended",
-          "rejected": "Rejected"
+          "rejected": "Rejected",
+          "deleted": "Deleted"
         },
         "state-explanation": {
           "imported": "PAs that were imported, based on phone-number.",
@@ -115,7 +116,8 @@
           "included": "PAs that were included. <br> They will receive payments starting with the next payment/payout round.",
           "inclusionEnded": "PAs for which inclusion was ended. <br> They will not receive any (more) payments for the next payment/payout round.",
           "noLongerEligible": "PAs that were marked as 'no longer eligible'. <br> These are PAs who were invited but did not yet register and are meanwhile no longer eligible.",
-          "rejected": "PAs that were rejected. <br> They will not receive any (more) payments for the next payment/payout round."
+          "rejected": "PAs that were rejected. <br> They will not receive any (more) payments for the next payment/payout round.",
+          "deleted": "PAs that were deleted. <br> They will not receive any (more) payments for the next payment/payout round."
         },
         "header": {
           "metric": "Metric",

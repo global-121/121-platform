@@ -2,7 +2,7 @@
   <div class="ion-no-padding ion-margin-end">
     <confirm-prompt
       [disabled]="isInProgress"
-      (confirm)="importPeopleAffected($event, PaStatus.imported)"
+      (confirm)="importPeopleAffected($event, RegistrationStatus.imported)"
       [subHeader]="
         'page.program.bulk-import.imported.confirm-message' | translate
       "
@@ -20,7 +20,7 @@
   <div class="ion-no-padding">
     <confirm-prompt
       [disabled]="isInProgress"
-      (confirm)="importPeopleAffected($event, PaStatus.registered)"
+      (confirm)="importPeopleAffected($event, RegistrationStatus.registered)"
       [subHeader]="
         'page.program.bulk-import.registered.confirm-message' | translate
       "
