@@ -111,7 +111,7 @@ export class BulkActionsService {
       case BulkActionId.invite:
         return await this.programsService.invite(
           programId,
-          selectedPeople.map((pa) => pa.phoneNumber),
+          this.onlyIds(selectedPeople),
           customBulkActionInput.message,
         );
       case BulkActionId.markNoLongerEligible:

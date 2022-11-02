@@ -117,6 +117,79 @@ export class RegistrationsService {
     return await this.registrationRepository.save(registrationToUpdate);
   }
 
+  private canChangeStatus(
+    currentStatus: RegistrationStatusEnum,
+    newStatus: RegistrationStatusEnum,
+  ): boolean {
+    let result = false;
+    switch (newStatus) {
+      case RegistrationStatusEnum.startedRegistration ||
+        RegistrationStatusEnum.imported:
+        result = [null].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.invited:
+        result = [
+          RegistrationStatusEnum.imported,
+          RegistrationStatusEnum.noLongerEligible,
+          null,
+        ].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.registered:
+        result = [
+          RegistrationStatusEnum.imported,
+          RegistrationStatusEnum.startedRegistration,
+          null,
+        ].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.noLongerEligible:
+        result = [
+          RegistrationStatusEnum.imported,
+          RegistrationStatusEnum.invited,
+        ].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.registeredWhileNoLongerEligible:
+        result = [RegistrationStatusEnum.noLongerEligible].includes(
+          currentStatus,
+        );
+        break;
+      case RegistrationStatusEnum.selectedForValidation:
+        result = [RegistrationStatusEnum.registered].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.validated:
+        result = [
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.selectedForValidation,
+        ].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.included:
+        result = [
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.selectedForValidation,
+          RegistrationStatusEnum.validated,
+          RegistrationStatusEnum.rejected,
+          RegistrationStatusEnum.inclusionEnded,
+        ].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.inclusionEnded:
+        result = [RegistrationStatusEnum.included].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.rejected:
+        result = [
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.selectedForValidation,
+          RegistrationStatusEnum.validated,
+          RegistrationStatusEnum.included,
+          RegistrationStatusEnum.noLongerEligible,
+          RegistrationStatusEnum.registeredWhileNoLongerEligible,
+        ].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.deleted:
+        result = currentStatus !== RegistrationStatusEnum.deleted;
+        break;
+    }
+    return result;
+  }
+
   public async getRegistrationFromReferenceId(
     referenceId: string,
     relations: string[] = [],
@@ -976,49 +1049,36 @@ export class RegistrationsService {
     message?: string,
   ): Promise<void> {
     await this.findProgramOrThrow(programId);
-
+    const errors = [];
     for (let referenceId of referenceIdsDto.referenceIds) {
-      const registration = await this.setRegistrationStatus(
-        referenceId,
-        registrationStatus,
-      );
-
-      if (message) {
-        this.sendTextMessage(registration, programId, message);
-      }
-    }
-  }
-
-  public async invite(
-    programId: number,
-    phoneNumbers: string,
-    message?: string,
-  ): Promise<void> {
-    const program = await this.findProgramOrThrow(programId);
-
-    for (let phoneNumber of JSON.parse(phoneNumbers['phoneNumbers'])) {
-      const sanitizedPhoneNr = await this.lookupService.lookupAndCorrect(
-        phoneNumber,
-      );
-      let registration = await this.registrationRepository.findOne({
-        where: { phoneNumber: sanitizedPhoneNr },
+      const registrationToUpdate = await this.registrationRepository.findOne({
+        where: { referenceId: referenceId, programId: programId },
       });
-      if (!registration) continue;
-
-      this.setRegistrationStatus(
-        registration.referenceId,
-        RegistrationStatusEnum.invited,
-      );
-
-      if (message) {
-        this.sendTextMessage(
-          registration,
-          programId,
-          message,
-          null,
-          program.tryWhatsAppFirst,
+      if (!registrationToUpdate) {
+        errors.push(`Registration '${referenceId}' is not found`);
+      } else if (
+        !this.canChangeStatus(
+          registrationToUpdate.registrationStatus,
+          registrationStatus,
+        )
+      ) {
+        errors.push(
+          `Registration '${referenceId}' has status '${registrationToUpdate.registrationStatus}' which cannot be changed to ${registrationStatus}`,
         );
       }
+    }
+    if (errors.length === 0) {
+      for (let referenceId of referenceIdsDto.referenceIds) {
+        const updatedRegistration = await this.setRegistrationStatus(
+          referenceId,
+          registrationStatus,
+        );
+        if (message) {
+          this.sendTextMessage(updatedRegistration, programId, message);
+        }
+      }
+    } else {
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
   }
 

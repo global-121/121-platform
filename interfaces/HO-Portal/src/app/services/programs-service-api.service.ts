@@ -446,17 +446,10 @@ export class ProgramsServiceApiService {
 
   invite(
     programId: number | string,
-    phoneNumbers: string[],
+    referenceIds: string[],
     message: string,
   ): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      `/programs/${programId}/registrations/invite`,
-      {
-        phoneNumbers: JSON.stringify(phoneNumbers),
-        message,
-      },
-    );
+    return this.updatePaStatus('invite', programId, referenceIds, message);
   }
 
   include(
