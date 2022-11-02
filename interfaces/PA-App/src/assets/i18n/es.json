@@ -66,35 +66,7 @@
       "introduction": "Por favor seleccione cómo le gustaría recibir su ayuda, si es que está dentro del programa."
     },
     "select-language": {
-      "introduction": {
-        "en": "Please select your language.",
-        "es": "Por favor seleccione su idioma",
-        "am_ET": "እባኮትን ቋንቋ ይምረጡ።",
-        "ar": "الرجاء اختيار لغتك",
-        "fr": "Choisissez votre langue, s'il vous plaît.",
-        "nl": "Kies jouw taal.",
-        "pt_BR": "Por favor, selecione seu idioma.",
-        "ru": " Пожалуйста, выберите ваш язык.",
-        "ti": "",
-        "tl": "Pumili ng iyong wika.",
-        "uk": "Будь ласка, виберіть свою мову.",
-        "in": "Pilih bahasa anda."
-      },
-      "result": "Gracias, ha seleccionado {{language}}.",
-      "language": {
-        "en": "English",
-        "es": "Español",
-        "am_ET": "አማርኛ",
-        "ar": "عربى",
-        "fr": "Français",
-        "nl": "Nederlands",
-        "pt_BR": "Portuguese",
-        "ru": "Русский",
-        "ti": "ትግርኛ",
-        "tl": "Tagalog",
-        "uk": "Українська",
-        "in": "Bahasa Indonesia"
-      }
+      "result": "Gracias, ha seleccionado {{language}}."
     },
     "select-program": {
       "introduction": "Puede utilizar esta aplicación para solicitar un programa de ayuda. Seleccione a continuación.",
