@@ -760,9 +760,14 @@ export class RegistrationsService {
         `${RegistrationStatusEnum.rejected}.created`,
         RegistrationStatusTimestampField.rejectionDate,
       )
+      .addOrderBy(`${RegistrationStatusEnum.rejected}.created`, 'DESC')
+      .addSelect(
+        `${RegistrationStatusEnum.deleted}.created`,
+        RegistrationStatusTimestampField.deleteDate,
+      )
+      .addOrderBy(`${RegistrationStatusEnum.deleted}.created`, 'DESC')
       .addSelect('registration.phoneNumber', 'phoneNumber')
       .addSelect('data.value', 'data')
-      .addOrderBy(`${RegistrationStatusEnum.rejected}.created`, 'DESC')
       .leftJoin('registration.data', 'data')
       .leftJoin('data.programQuestion', 'programQuestion')
       .leftJoin('registration.fsp', 'fsp')
@@ -821,7 +826,15 @@ export class RegistrationsService {
         RegistrationStatusEnum.rejected,
         `registration.id = ${RegistrationStatusEnum.rejected}.registrationId AND ${RegistrationStatusEnum.rejected}.registrationStatus = '${RegistrationStatusEnum.rejected}'`,
       )
-      .where('registration.program.id = :programId', { programId: programId });
+      .leftJoin(
+        RegistrationStatusChangeEntity,
+        RegistrationStatusEnum.deleted,
+        `registration.id = ${RegistrationStatusEnum.deleted}.registrationId AND ${RegistrationStatusEnum.deleted}.registrationStatus = '${RegistrationStatusEnum.deleted}'`,
+      )
+      .where('registration.program.id = :programId', { programId: programId })
+      .andWhere('registration.registrationStatus != :status', {
+        status: RegistrationStatusEnum.deleted,
+      });
 
     if (!includePersonalData) {
       const rows = await q.getRawMany();
@@ -957,6 +970,8 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.rejectionDate;
       case RegistrationStatusEnum.registeredWhileNoLongerEligible:
         return RegistrationStatusTimestampField.registeredWhileNoLongerEligibleDate;
+      case RegistrationStatusEnum.deleted:
+        return RegistrationStatusTimestampField.deleteDate;
     }
   }
 

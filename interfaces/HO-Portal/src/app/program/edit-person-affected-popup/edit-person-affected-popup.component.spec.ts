@@ -4,8 +4,8 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
-import { PaStatus } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import RegistrationStatus from '../../enums/registration-status.enum';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { EditPersonAffectedPopupComponent } from './edit-person-affected-popup.component';
 
@@ -54,7 +54,7 @@ describe('EditPersonAffectedPopupComponent', () => {
     component.person = {
       id: 1,
       referenceId: 'test',
-      status: PaStatus.startedRegistration,
+      status: RegistrationStatus.startedRegistration,
     };
 
     fixture.detectChanges();
