@@ -417,10 +417,9 @@ export class RegistrationsController {
     @Body() referenceIdsData: ReferenceIdsDto,
     @Param() params,
   ): Promise<void> {
-    await this.registrationsService.updateRegistrationStatusBatch(
+    await this.registrationsService.deleteBatch(
       Number(params.programId),
       referenceIdsData,
-      RegistrationStatusEnum.deleted,
     );
   }
 
