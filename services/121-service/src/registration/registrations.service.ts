@@ -7,6 +7,11 @@ import { FspName } from '../fsp/financial-service-provider.entity';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { LookupService } from '../notifications/lookup/lookup.service';
+import { TwilioMessageEntity } from '../notifications/twilio.entity';
+import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
+import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
+import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
+import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramService } from '../programs/programs.service';
@@ -68,6 +73,22 @@ export class RegistrationsService {
   private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
+  @InjectRepository(PersonAffectedAppDataEntity)
+  private readonly personAffectedAppDataRepository: Repository<
+    PersonAffectedAppDataEntity
+  >;
+  @InjectRepository(TwilioMessageEntity)
+  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
+  @InjectRepository(WhatsappPendingMessageEntity)
+  private readonly whatsappPendingMessageRepository: Repository<
+    WhatsappPendingMessageEntity
+  >;
+  @InjectRepository(ImageCodeExportVouchersEntity)
+  private readonly imageCodeExportVouchersRepo: Repository<
+    ImageCodeExportVouchersEntity
+  >;
+  @InjectRepository(IntersolveBarcodeEntity)
+  private readonly intersolveBarcodeRepo: Repository<IntersolveBarcodeEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -1358,22 +1379,58 @@ export class RegistrationsService {
     return await this.registrationRepository.save(updatedRegistration);
   }
 
-  public async deleteBatch(referenceIdsDto: ReferenceIdsDto): Promise<void> {
-    for (let referenceId of referenceIdsDto.referenceIds) {
-      const registration = await this.registrationRepository.findOne({
-        where: { referenceId: referenceId },
-        relations: ['user'],
-      });
-      if (!registration) {
-        throw new HttpException(
-          `Registration '${referenceId}' is not found`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
-      await this.setRegistrationStatus(
+  public async deleteBatch(
+    programId: number,
+    referenceIdsDto: ReferenceIdsDto,
+  ): Promise<void> {
+    // Do this first, so that error is already thrown if a PA cannot be changed to deleted, before removing any data below
+    await this.updateRegistrationStatusBatch(
+      programId,
+      referenceIdsDto,
+      RegistrationStatusEnum.deleted,
+    );
+
+    for await (const referenceId of referenceIdsDto.referenceIds) {
+      let registration = await this.getRegistrationFromReferenceId(
         referenceId,
-        RegistrationStatusEnum.deleted,
+        ['user'],
       );
+
+      // Delete all data for this registration
+      await this.registrationDataRepository.delete({
+        registrationId: registration.id,
+      });
+      if (registration.user) {
+        await this.personAffectedAppDataRepository.delete({
+          user: { id: registration.user.id },
+        });
+      }
+      await this.twilioMessageRepository.delete({
+        registrationId: registration.id,
+      });
+      await this.whatsappPendingMessageRepository.delete({
+        registrationId: registration.id,
+      });
+      await this.tryWhatsappRepository.delete({ registration: registration });
+
+      // anonymize some data for this registration
+      registration.phoneNumber = null;
+      registration.note = null;
+      await this.registrationRepository.save(registration);
+
+      const voucherImages = await this.imageCodeExportVouchersRepo.find({
+        where: { registration: registration },
+        relations: ['barcode'],
+      });
+      for await (const voucher of voucherImages) {
+        const barcode = await this.intersolveBarcodeRepo.findOne({
+          where: { id: voucher.barcode.id },
+        });
+        barcode.whatsappPhoneNumber = null;
+        await this.intersolveBarcodeRepo.save(barcode);
+      }
+
+      // not done, but should: clean up pii fields in at_notification + belcash_request
     }
   }
 
