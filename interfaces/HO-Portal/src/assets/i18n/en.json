@@ -117,7 +117,7 @@
           "inclusionEnded": "PAs for which inclusion was ended. <br> They will not receive any (more) payments for the next payment/payout round.",
           "noLongerEligible": "PAs that were marked as 'no longer eligible'. <br> These are PAs who were invited but did not yet register and are meanwhile no longer eligible.",
           "rejected": "PAs that were rejected. <br> They will not receive any (more) payments for the next payment/payout round.",
-          "deleted": "PAs that were deleted. <br> They will not receive any (more) payments for the next payment/payout round."
+          "deleted": "PAs that were deleted. <br> This can include e.g. deleted PAs after an incorrect import, as well as PAs who have received payments, are no longer included, and are subsequently deleted after some time."
         },
         "header": {
           "metric": "Metric",
