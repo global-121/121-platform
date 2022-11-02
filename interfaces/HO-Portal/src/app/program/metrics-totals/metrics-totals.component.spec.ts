@@ -5,7 +5,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { getRandomInt, provideMagicalMock } from 'src/app/mocks/helpers';
-import { PaStatus } from 'src/app/models/person.model';
 import {
   PeopleMetricsAttribute,
   ProgramMetrics,
@@ -13,6 +12,7 @@ import {
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
+import RegistrationStatus from '../../enums/registration-status.enum';
 import { MetricsTotalsComponent } from './metrics-totals.component';
 
 @Component({
@@ -29,16 +29,16 @@ describe('MetricsTotalsComponent', () => {
   const mockProgramMetrics: ProgramMetrics = {
     updated: new Date().toISOString(),
     pa: {
-      [PaStatus.imported]: getRandomInt(0, 100),
-      [PaStatus.invited]: getRandomInt(0, 100),
-      [PaStatus.noLongerEligible]: getRandomInt(0, 100),
-      [PaStatus.startedRegistration]: getRandomInt(0, 100),
-      [PaStatus.registered]: getRandomInt(0, 100),
-      [PaStatus.selectedForValidation]: getRandomInt(0, 100),
-      [PaStatus.validated]: getRandomInt(0, 100),
-      [PaStatus.included]: getRandomInt(0, 100),
-      [PaStatus.inclusionEnded]: getRandomInt(0, 100),
-      [PaStatus.rejected]: getRandomInt(0, 100),
+      [RegistrationStatus.imported]: getRandomInt(0, 100),
+      [RegistrationStatus.invited]: getRandomInt(0, 100),
+      [RegistrationStatus.noLongerEligible]: getRandomInt(0, 100),
+      [RegistrationStatus.startedRegistration]: getRandomInt(0, 100),
+      [RegistrationStatus.registered]: getRandomInt(0, 100),
+      [RegistrationStatus.selectedForValidation]: getRandomInt(0, 100),
+      [RegistrationStatus.validated]: getRandomInt(0, 100),
+      [RegistrationStatus.included]: getRandomInt(0, 100),
+      [RegistrationStatus.inclusionEnded]: getRandomInt(0, 100),
+      [RegistrationStatus.rejected]: getRandomInt(0, 100),
       [PeopleMetricsAttribute.totalPaHelped]: getRandomInt(0, 100),
     },
   };
