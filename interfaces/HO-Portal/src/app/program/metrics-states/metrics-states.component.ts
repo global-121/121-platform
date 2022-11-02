@@ -186,6 +186,15 @@ export class MetricsStatesComponent implements OnChanges {
         ),
         toDate: this.programMetrics.pa[RegistrationStatus.rejected],
       },
+      {
+        name: RegistrationStatus.deleted,
+        enabled: true,
+        label: this.translate.instant('page.program.metrics.pa.deleted'),
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.deleted',
+        ),
+        toDate: this.programMetrics.pa[RegistrationStatus.deleted],
+      },
     ];
     // Filter out disabled collumns:
     this.paStates = this.paStates.filter((col) => col.enabled);

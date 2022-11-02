@@ -20,6 +20,7 @@ export class PeopleMetrics {
   [RegistrationStatus.included]: number;
   [RegistrationStatus.inclusionEnded]: number;
   [RegistrationStatus.rejected]: number;
+  [RegistrationStatus.deleted]: number;
   [PeopleMetricsAttribute.totalPaHelped]: number;
 }
 
