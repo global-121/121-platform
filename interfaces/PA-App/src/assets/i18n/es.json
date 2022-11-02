@@ -1,11 +1,19 @@
 {
-  "_dir": "ltr",
+  "_dir": "",
   "account": {
     "delete-data": "Eliminar cuenta",
     "logout": "Cerrar sesión"
   },
+  "multiple-registration-mode": {
+    "toggle": "Modo de registros múltiples"
+  },
   "connection": {
     "error-retry": "Algo salió mal, desea intentarlo otra vez?"
+  },
+  "notification": {
+    "error-reload": "Algo salió mal, vuelve a cargar la aplicación.",
+    "wait-to-go-offline": "Espera 30 segundos antes de usar la aplicación sin conexión para que se descargue todo el contenido de la aplicación.",
+    "update-available": "Actualización disponible, vuelve a cargar la aplicación."
   },
   "password-toggle": {
     "hide": "Ocultar contraseña",
@@ -14,7 +22,7 @@
   "personal": {
     "consent-question": {
       "agree": "Estoy de Acuerdo",
-      "answer": "He leído/escuchado sobre cómo se almacenara de forma segura mi información personal. Entiendo que es necesario enviar mi información personal para recibir un vale digital. <br><br> Entiendo quién ve mi información personal. <br><br> Seleccionar y cotizar; <b>Estoy de acuerdo</b> cotizar; Decido participar en el programa de ayuda. <br><br>Seleccionar y cotizar;<b> No estoy de acuerdo </b> No Cotizar: He decidido no participar en el programa de ayuda.",
+      "answer": "He leído/escuchado cómo mi información personal se almacenará de forma segura. Entiendo que es obligatorio enviar mi información personal para recibir ayuda.   <br><br> Entiendo quién ve mi información personal.   <br><br> Tocando &quot;<b>Acepto</b>&quot; Elijo participar en el programa de ayuda.   <br><br> Tocando &quot;<b>No estoy de acuerdo</b>&quot; Elijo no participar en el programa de ayuda.",
       "disagree": "No estoy de acuerdo",
       "more-info-personal-information": "Acerca de la Información Personal",
       "question": "Para aplicar a este programa de ayuda  necesita estar de acuerdo con <strong> cómo resguardamos su información personal.</strong><br /><br />Por favor lea o escuche sobre cómo resguardamos su información personal."
@@ -45,7 +53,8 @@
     "registration-summary": {
       "documents": "Asegúrate de contar con los siguientes documentos:",
       "no-validation-conclusion": "Gracias. Su registro está completo.<br><br> Recibirá un SMS/WhatsApp al numero de teléfono proporcionado a la brevedad para confirmar su registro. <br><br> Se le informará si su aplicación ha sido exitosa dentro de un periodo de 7 días.<br><br> Es todo por el momento.",
-      "validation-conclusion": "Gracias. Su registro esta completo. Recibirá un mensaje de texto a la brevedad al número proporcionado para confirmar su registro. <br><br> Un trabajador Humanitario del NGO organizará una cita con usted para validar su información, probablemente al hacerle una visita en casa."
+      "validation-conclusion": "Gracias. Su registro esta completo. Recibirá un mensaje de texto a la brevedad al número proporcionado para confirmar su registro. <br><br> Un trabajador Humanitario del NGO organizará una cita con usted para validar su información, probablemente al hacerle una visita en casa.",
+      "offline-warning": "Actualmente estás desconectado. El registro no se puede almacenar. Conéctate a Internet con el dispositivo, por ejemplo, conectándote al WiFi, y haz clic en \"Intentar de nuevo\"."
     },
     "select-fsp": {
       "attributes": {
@@ -57,7 +66,35 @@
       "introduction": "Por favor seleccione cómo le gustaría recibir su ayuda, si es que está dentro del programa."
     },
     "select-language": {
-      "result": "Gracias, ha seleccionado {{language}}."
+      "introduction": {
+        "en": "Please select your language.",
+        "es": "Por favor seleccione su idioma",
+        "am_ET": "እባኮትን ቋንቋ ይምረጡ።",
+        "ar": "الرجاء اختيار لغتك",
+        "fr": "Choisissez votre langue, s'il vous plaît.",
+        "nl": "Kies jouw taal.",
+        "pt_BR": "Por favor, selecione seu idioma.",
+        "ru": " Пожалуйста, выберите ваш язык.",
+        "ti": "",
+        "tl": "Pumili ng iyong wika.",
+        "uk": "Будь ласка, виберіть свою мову.",
+        "in": "Pilih bahasa anda."
+      },
+      "result": "Gracias, ha seleccionado {{language}}.",
+      "language": {
+        "en": "English",
+        "es": "Español",
+        "am_ET": "አማርኛ",
+        "ar": "عربى",
+        "fr": "Français",
+        "nl": "Nederlands",
+        "pt_BR": "Portuguese",
+        "ru": "Русский",
+        "ti": "ትግርኛ",
+        "tl": "Tagalog",
+        "uk": "Українська",
+        "in": "Bahasa Indonesia"
+      }
     },
     "select-program": {
       "introduction": "Puede utilizar esta aplicación para solicitar un programa de ayuda. Seleccione a continuación.",
@@ -82,6 +119,18 @@
       "create-id": "Crear cuenta",
       "introduction": "Para aplicar a este programa de ayuda necesita tener una cuenta. Por favor elabore una cuenta o utilice una existente.",
       "login-id": "Usar mi cuenta"
+    },
+    "next-pa": {
+      "new-pa": "Agregar otra persona afectada",
+      "save-pa": "Guardar a esta persona afectada"
+    },
+    "batch": {
+      "toolbar-queue-button": "{{nrRegistrations}} registros",
+      "menu-title": "Múltiples registros",
+      "menu-text-offline": "En este momento estás desconectado.",
+      "menu-text": "Los registros se almacenan dentro del navegador. Cuando la página web esté abierta y estés en línea, se cargarán automáticamente.",
+      "upload-alert-header": "Carga de registros.",
+      "upload-alert-message": "Ahora estás en línea. Subiendo {{nrRegistrations}} registros."
     }
   },
   "q-and-a-set": {
