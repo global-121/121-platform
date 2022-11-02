@@ -1048,7 +1048,7 @@ export class RegistrationsService {
     registrationStatus: RegistrationStatusEnum,
     message?: string,
   ): Promise<void> {
-    await this.findProgramOrThrow(programId);
+    const program = await this.findProgramOrThrow(programId);
     const errors = [];
     for (let referenceId of referenceIdsDto.referenceIds) {
       const registrationToUpdate = await this.registrationRepository.findOne({
@@ -1074,7 +1074,17 @@ export class RegistrationsService {
           registrationStatus,
         );
         if (message) {
-          this.sendTextMessage(updatedRegistration, programId, message);
+          const tryWhatsappFirst =
+            registrationStatus === RegistrationStatusEnum.invited
+              ? program.tryWhatsAppFirst
+              : false;
+          this.sendTextMessage(
+            updatedRegistration,
+            programId,
+            message,
+            null,
+            tryWhatsappFirst,
+          );
         }
       }
     } else {
