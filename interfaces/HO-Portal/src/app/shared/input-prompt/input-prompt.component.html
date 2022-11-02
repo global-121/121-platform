@@ -52,37 +52,40 @@
         class="ion-margin-vertical"
       ></div>
 
-      <ion-label>
-        {{
-          'common.confirm-message-label'
-            | translate
-              : {
-                  minLength: inputProps.minLength
-                }
-        }}
-      </ion-label>
-      <ion-textarea
-        name="message"
-        #input="ngModel"
-        [(ngModel)]="inputModel"
-        [ngModelOptions]="{ standalone: true }"
-        ngDefaultControl
-        [required]="inputProps.inputRequired"
-        rows="3"
-        autoGrow="true"
-        [minlength]="inputProps.minLength"
-        [value]="inputProps.defaultValue"
-        [placeholder]="inputProps.placeholder"
-        style="
-          font-family: monospace;
-          border: 1px solid currentColor;
-          height: 66px;
-        "
-      ></ion-textarea>
-      <ion-note>
-        {{ input?.value ? input?.value?.length : 0 }} (≥
-        {{ inputProps.minLength }})
-      </ion-note>
+      <div *ngIf="inputProps.minLength !== undefined">
+        <ion-label>
+          {{
+            'common.confirm-message-label'
+              | translate
+                : {
+                    minLength: inputProps.minLength
+                  }
+          }}
+        </ion-label>
+        <ion-textarea
+          name="message"
+          #input="ngModel"
+          [(ngModel)]="inputModel"
+          [ngModelOptions]="{ standalone: true }"
+          ngDefaultControl
+          [required]="inputProps.inputRequired"
+          rows="3"
+          autoGrow="true"
+          [minlength]="inputProps.minLength"
+          [value]="inputProps.defaultValue"
+          [placeholder]="inputProps.placeholder"
+          style="
+            font-family: monospace;
+            border: 1px solid currentColor;
+            height: 66px;
+          "
+        ></ion-textarea>
+        <ion-note>
+          {{ input?.value ? input?.value?.length : 0 }} (≥
+          {{ inputProps.minLength }})
+        </ion-note>
+      </div>
+      
     </div>
   </div>
 </ion-content>

@@ -265,6 +265,11 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ProgramPhase.payment,
       ],
       showIfNoValidation: true,
+      confirmConditions: {
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.delete-warning',
+        ),
+      },
     },
     {
       id: BulkActionId.divider,

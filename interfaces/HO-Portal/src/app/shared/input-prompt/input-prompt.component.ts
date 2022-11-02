@@ -10,13 +10,13 @@ import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 
 export interface InputProps {
-  checkbox: string;
-  checkboxChecked: boolean;
-  inputRequired: boolean;
+  checkbox?: string;
+  checkboxChecked?: boolean;
+  inputRequired?: boolean;
   explanation?: string;
   placeholder?: string | undefined;
   defaultValue?: string;
-  minLength: number;
+  minLength?: number;
 }
 
 @Component({
