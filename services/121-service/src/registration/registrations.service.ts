@@ -178,7 +178,6 @@ export class RegistrationsService {
           RegistrationStatusEnum.registered,
           RegistrationStatusEnum.selectedForValidation,
           RegistrationStatusEnum.validated,
-          RegistrationStatusEnum.validated,
           RegistrationStatusEnum.included,
           RegistrationStatusEnum.noLongerEligible,
           RegistrationStatusEnum.registeredWhileNoLongerEligible,
@@ -1065,45 +1064,6 @@ export class RegistrationsService {
       }
     } else {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-  }
-
-  public async invite(
-    programId: number,
-    phoneNumbers: string,
-    message?: string,
-  ): Promise<void> {
-    const program = await this.findProgramOrThrow(programId);
-
-    for (let phoneNumber of JSON.parse(phoneNumbers['phoneNumbers'])) {
-      const sanitizedPhoneNr = await this.lookupService.lookupAndCorrect(
-        phoneNumber,
-      );
-      let registration = await this.registrationRepository.findOne({
-        where: { phoneNumber: sanitizedPhoneNr, programId: programId },
-      });
-      if (!registration) continue;
-
-      const statusCanChange = this.canChangeStatus(
-        registration.registrationStatus,
-        RegistrationStatusEnum.invited,
-      );
-
-      if (statusCanChange) {
-        this.setRegistrationStatus(
-          registration.referenceId,
-          RegistrationStatusEnum.invited,
-        );
-        if (message) {
-          this.sendTextMessage(
-            registration,
-            programId,
-            message,
-            null,
-            program.tryWhatsAppFirst,
-          );
-        }
-      }
     }
   }
 

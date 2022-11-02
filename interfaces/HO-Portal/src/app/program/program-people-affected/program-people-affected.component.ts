@@ -1307,41 +1307,44 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   public async applyAction(confirmInput?: string) {
     this.isInProgress = true;
-    await this.bulkActionService.applyAction(
-      this.action,
-      this.programId,
-      this.selectedPeople,
-      { message: confirmInput },
-    );
+    await this.bulkActionService
+      .applyAction(this.action, this.programId, this.selectedPeople, {
+        message: confirmInput,
+      })
+      .then(() => {
+        const actionStatus = {
+          [BulkActionId.invite]: PaStatus.invited,
+          [BulkActionId.selectForValidation]: PaStatus.selectedForValidation,
+          [BulkActionId.include]: PaStatus.included,
+          [BulkActionId.endInclusion]: PaStatus.inclusionEnded,
+          [BulkActionId.reject]: PaStatus.rejected,
+          [BulkActionId.markNoLongerEligible]: PaStatus.noLongerEligible,
+        };
 
-    const actionStatus = {
-      [BulkActionId.invite]: PaStatus.invited,
-      [BulkActionId.selectForValidation]: PaStatus.selectedForValidation,
-      [BulkActionId.include]: PaStatus.included,
-      [BulkActionId.endInclusion]: PaStatus.inclusionEnded,
-      [BulkActionId.reject]: PaStatus.rejected,
-      [BulkActionId.markNoLongerEligible]: PaStatus.noLongerEligible,
-    };
-
-    if (actionStatus[this.action]) {
-      this.actionResult(
-        `<p>${this.translate.instant(
-          'page.program.program-people-affected.status-changed',
-          {
-            pastatus: this.translate
-              .instant(
-                'page.program.program-people-affected.status.' +
-                  actionStatus[this.action],
-              )
-              .toLowerCase(),
-            panumber: this.selectedPeople.length,
-          },
-        )}
-          <p>${this.translate.instant(
-            'page.program.program-people-affected.pa-moved-phase',
-          )}</p>`,
-      );
-    }
+        if (actionStatus[this.action]) {
+          this.actionResult(
+            `<p>${this.translate.instant(
+              'page.program.program-people-affected.status-changed',
+              {
+                pastatus: this.translate
+                  .instant(
+                    'page.program.program-people-affected.status.' +
+                      actionStatus[this.action],
+                  )
+                  .toLowerCase(),
+                panumber: this.selectedPeople.length,
+              },
+            )}
+              <p>${this.translate.instant(
+                'page.program.program-people-affected.pa-moved-phase',
+              )}</p>`,
+          );
+        }
+      })
+      .catch((error) => {
+        console.log('Error:', error);
+        this.actionResult(error.error.errors.join('<br><br>'));
+      });
 
     this.isInProgress = false;
 

@@ -358,12 +358,13 @@ export class RegistrationsController {
   @Post('programs/:programId/registrations/invite')
   public async invite(
     @Param() params,
-    @Body() phoneNumbers: string,
+    @Body() referenceIdsData: ReferenceIdsDto,
     @Body() messageData: MessageDto,
   ): Promise<void> {
-    await this.registrationsService.invite(
+    await this.registrationsService.updateRegistrationStatusBatch(
       Number(params.programId),
-      phoneNumbers,
+      referenceIdsData,
+      RegistrationStatusEnum.invited,
       messageData.message,
     );
   }
