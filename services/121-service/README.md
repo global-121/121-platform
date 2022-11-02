@@ -17,6 +17,7 @@ See instructions to get started in the main [`/services/README`](../README.md).
 
 - Access the Swagger UI via: <http://localhost:3000/docs/>
 - API-specification in JSON-format via: <http://localhost:3000/docs-json>
+- A graph will be generated when run in 'development' mode at [`api-graph.mermaid`](./api-graph.mermaid), it can be viewed with <https://mermaid.live/>
 
 ## Database
 
