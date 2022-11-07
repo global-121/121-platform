@@ -393,12 +393,12 @@ export class ExportMetricsService {
       .select([
         `registration."id"`,
         `registration."registrationStatus" as status`,
-        `registration."note"`,
         `registration."${GenericAttributes.phoneNumber}"`,
-        `registration."${GenericAttributes.paymentAmountMultiplier}"`,
         `registration."${GenericAttributes.preferredLanguage}"`,
-        `registration."referenceId" as "referenceId"`,
+        `registration."${GenericAttributes.paymentAmountMultiplier}"`,
         `fsp.fsp as financialServiceProvider`,
+        `registration."note"`,
+        `registration."referenceId" as "referenceId"`,
       ])
       .andWhere({ programId: programId })
       .orderBy('"registration"."id"', 'ASC');
