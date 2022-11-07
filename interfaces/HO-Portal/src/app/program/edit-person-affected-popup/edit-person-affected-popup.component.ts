@@ -63,6 +63,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public programFspLength = 0;
   public personFsp: Fsp;
 
+  public availableLanguages = [];
+
   constructor(
     private modalController: ModalController,
     private translate: TranslateService,
@@ -75,7 +77,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
-
+    this.availableLanguages = this.getAvailableLanguages();
     if (this.program && this.program.financialServiceProviders) {
       for (const fsp of this.program.financialServiceProviders) {
         this.fspList.push(await this.programsService.getFspById(fsp.id));
@@ -292,5 +294,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public closeModal() {
     this.modalController.dismiss();
+  }
+
+  private getAvailableLanguages(): string[] {
+    return Object.keys(this.program.notifications);
   }
 }
