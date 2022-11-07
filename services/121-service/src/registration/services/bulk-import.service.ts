@@ -116,7 +116,8 @@ export class BulkImportService {
       const newRegistration = new RegistrationEntity();
       newRegistration.referenceId = uuid();
       newRegistration.phoneNumber = phoneNumberResult;
-      newRegistration.preferredLanguage = LanguageEnum.en;
+      newRegistration.preferredLanguage =
+        importResponseRecord.preferredLanguage;
       if (!program.paymentAmountMultiplierFormula) {
         newRegistration.paymentAmountMultiplier =
           record.paymentAmountMultiplier;
@@ -200,6 +201,7 @@ export class BulkImportService {
       genericAttributes = [
         GenericAttributes.phoneNumber,
         GenericAttributes.paymentAmountMultiplier,
+        GenericAttributes.preferredLanguage,
       ].map(item => String(item));
       dynamicAttributes = (
         await this.getProgramCustomAttributes(programId)
@@ -394,6 +396,9 @@ export class BulkImportService {
       }
       let importRecord = new BulkImportDto();
       importRecord.phoneNumber = row.phoneNumber;
+      importRecord.preferredLanguage = row.preferredLanguage
+        ? row.preferredLanguage
+        : LanguageEnum.en;
       if (!program.paymentAmountMultiplierFormula) {
         importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
       }
