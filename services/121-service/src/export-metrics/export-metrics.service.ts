@@ -221,6 +221,17 @@ export class ExportMetricsService {
         'financialServiceProviders.questions',
       ],
     });
+    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
+      programId,
+    );
+    for (const programCustomAttr of programCustomAttrs) {
+      const relationOption = new RegistrationDataOptions();
+      relationOption.name = programCustomAttr.name;
+      relationOption.relation = {
+        programCustomAttributeId: programCustomAttr.id,
+      };
+      relationOptions.push(relationOption);
+    }
     for (const programQuestion of program.programQuestions) {
       if (
         JSON.parse(JSON.stringify(programQuestion.export)).includes(
@@ -248,17 +259,6 @@ export class ExportMetricsService {
         relationOption.relation = { fspQuestionId: fspQuestion.id };
         relationOptions.push(relationOption);
       }
-    }
-    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
-      programId,
-    );
-    for (const programCustomAttr of programCustomAttrs) {
-      const relationOption = new RegistrationDataOptions();
-      relationOption.name = programCustomAttr.name;
-      relationOption.relation = {
-        programCustomAttributeId: programCustomAttr.id,
-      };
-      relationOptions.push(relationOption);
     }
     return relationOptions;
   }
@@ -392,13 +392,13 @@ export class ExportMetricsService {
       .leftJoin('registration.fsp', 'fsp')
       .select([
         `registration."id"`,
-        `registration."${GenericAttributes.phoneNumber}"`,
-        `registration."${GenericAttributes.paymentAmountMultiplier}"`,
-        `registration."${GenericAttributes.preferredLanguage}"`,
-        `registration."note"`,
         `registration."registrationStatus" as status`,
-        `registration."referenceId" as "referenceId"`,
+        `registration."${GenericAttributes.phoneNumber}"`,
+        `registration."${GenericAttributes.preferredLanguage}"`,
+        `registration."${GenericAttributes.paymentAmountMultiplier}"`,
         `fsp.fsp as financialServiceProvider`,
+        `registration."note"`,
+        `registration."referenceId" as "referenceId"`,
       ])
       .andWhere({ programId: programId })
       .andWhere('registration."registrationStatus" != :registrationStatus', {

@@ -1020,7 +1020,10 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
 
-    if (attribute !== Attributes.paymentAmountMultiplier) {
+    if (
+      attribute !== Attributes.paymentAmountMultiplier &&
+      attribute !== Attributes.preferredLanguage
+    ) {
       try {
         await registration.saveData(value, { name: attribute });
       } catch (error) {

@@ -169,6 +169,11 @@ export class ProgramEntity extends CascadeDeleteEntity {
       return { type: AnswerTypes.numeric };
     } else if (name === Attributes.phoneNumber) {
       return { type: AnswerTypes.tel };
+    } else if (name === Attributes.preferredLanguage) {
+      return {
+        type: AnswerTypes.dropdown,
+        options: await this.getPreferredLanguageOptions(),
+      };
     }
 
     const repo = getConnection().getRepository(ProgramEntity);
@@ -248,5 +253,16 @@ export class ProgramEntity extends CascadeDeleteEntity {
     } else {
       return new ValidationInfo();
     }
+  }
+
+  private async getPreferredLanguageOptions(): Promise<object[]> {
+    const repo = getConnection().getRepository(ProgramEntity);
+    const program = await repo.findOne(this.id);
+
+    return Object.keys(program.notifications).map(key => {
+      return {
+        option: key,
+      };
+    });
   }
 }
