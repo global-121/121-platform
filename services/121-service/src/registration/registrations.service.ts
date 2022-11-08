@@ -852,10 +852,7 @@ export class RegistrationsService {
         RegistrationStatusEnum.deleted,
         `registration.id = ${RegistrationStatusEnum.deleted}.registrationId AND ${RegistrationStatusEnum.deleted}.registrationStatus = '${RegistrationStatusEnum.deleted}'`,
       )
-      .where('registration.program.id = :programId', { programId: programId })
-      .andWhere('registration.registrationStatus != :status', {
-        status: RegistrationStatusEnum.deleted,
-      });
+      .where('registration.program.id = :programId', { programId: programId });
 
     if (!includePersonalData) {
       const rows = await q.getRawMany();
@@ -901,6 +898,19 @@ export class RegistrationsService {
       responseRows.push(row);
     }
     return responseRows;
+  }
+
+  public async getActiveRegistrationsForProgram(
+    programId: number,
+    includePersonalData: boolean,
+  ): Promise<RegistrationResponse[]> {
+    const registrations = await this.getRegistrationsForProgram(
+      programId,
+      includePersonalData,
+    );
+    return registrations.filter(
+      reg => reg.status !== RegistrationStatusEnum.deleted,
+    );
   }
 
   public async getLatestDateForRegistrationStatus(
