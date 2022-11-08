@@ -87,7 +87,6 @@ export class BulkActionsService {
           RegistrationStatus.selectedForValidation,
           RegistrationStatus.registeredWhileNoLongerEligible,
           RegistrationStatus.validated,
-          RegistrationStatus.included,
           RegistrationStatus.inclusionEnded,
           RegistrationStatus.rejected,
         ]);
