@@ -2,6 +2,7 @@ import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiQuery } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Connection } from 'typeorm';
+import SeedMultipleNLRC from './seed-multiple-nlrc';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedProgramDrc } from './seed-program-drc';
 import SeedProgramEth from './seed-program-eth';
@@ -22,8 +23,9 @@ enum SeedScript {
   DRC = 'drc',
   demo = 'demo',
   test = 'test',
-  testMultiple = 'test-multiple',
   validation = 'validation',
+  testMultiple = 'test-multiple',
+  nlrcMultiple = 'nlrc-multiple',
 }
 
 class ResetDto {
@@ -58,6 +60,8 @@ export class ScriptsController {
       seed = new SeedTestProgram(this.connection);
     } else if (script == SeedScript.testMultiple) {
       seed = new SeedTestMultipleProgram(this.connection);
+    } else if (script == SeedScript.nlrcMultiple) {
+      seed = new SeedMultipleNLRC(this.connection);
     } else if (script == SeedScript.pilotNL) {
       seed = new SeedPilotNLProgram(this.connection);
     } else if (script == SeedScript.pilotNLPV) {

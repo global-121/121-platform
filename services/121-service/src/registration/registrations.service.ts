@@ -699,6 +699,7 @@ export class RegistrationsService {
   public async getRegistrationsForProgram(
     programId: number,
     includePersonalData: boolean,
+    includeDeletedRegistrations: boolean,
   ): Promise<RegistrationResponse[]> {
     const program = await this.programService.findProgramOrThrow(programId);
     let q = await this.registrationRepository
@@ -852,10 +853,13 @@ export class RegistrationsService {
         RegistrationStatusEnum.deleted,
         `registration.id = ${RegistrationStatusEnum.deleted}.registrationId AND ${RegistrationStatusEnum.deleted}.registrationStatus = '${RegistrationStatusEnum.deleted}'`,
       )
-      .where('registration.program.id = :programId', { programId: programId })
-      .andWhere('registration.registrationStatus != :status', {
+      .where('registration.program.id = :programId', { programId: programId });
+
+    if (!includeDeletedRegistrations) {
+      q = q.andWhere('registration.registrationStatus != :status', {
         status: RegistrationStatusEnum.deleted,
       });
+    }
 
     if (!includePersonalData) {
       const rows = await q.getRawMany();

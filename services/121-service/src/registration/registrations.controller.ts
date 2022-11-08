@@ -207,6 +207,7 @@ export class RegistrationsController {
     return await this.registrationsService.getRegistrationsForProgram(
       Number(params.programId),
       false,
+      true,
     );
   }
 
@@ -226,6 +227,7 @@ export class RegistrationsController {
     return await this.registrationsService.getRegistrationsForProgram(
       Number(params.programId),
       true,
+      false,
     );
   }
 
