@@ -1,5 +1,4 @@
 import {
-  BeforeUpdate,
   Column,
   Entity,
   getConnection,
