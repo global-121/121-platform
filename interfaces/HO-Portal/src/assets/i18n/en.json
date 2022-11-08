@@ -103,7 +103,8 @@
           "validated": "Validated",
           "included": "Included",
           "inclusionEnded": "Inclusion Ended",
-          "rejected": "Rejected"
+          "rejected": "Rejected",
+          "deleted": "Deleted"
         },
         "state-explanation": {
           "imported": "PAs that were imported, based on phone-number.",
@@ -115,7 +116,8 @@
           "included": "PAs that were included. <br> They will receive payments starting with the next payment/payout round.",
           "inclusionEnded": "PAs for which inclusion was ended. <br> They will not receive any (more) payments for the next payment/payout round.",
           "noLongerEligible": "PAs that were marked as 'no longer eligible'. <br> These are PAs who were invited but did not yet register and are meanwhile no longer eligible.",
-          "rejected": "PAs that were rejected. <br> They will not receive any (more) payments for the next payment/payout round."
+          "rejected": "PAs that were rejected. <br> They will not receive any (more) payments for the next payment/payout round.",
+          "deleted": "PAs that were deleted. <br> This can include e.g. deleted PAs after an incorrect import, as well as PAs who have received payments, are no longer included, and are subsequently deleted after some time."
         },
         "header": {
           "metric": "Metric",
@@ -325,6 +327,7 @@
         },
         "action-inputs": {
           "message-checkbox": "Send a message to these People Affected",
+          "delete-warning": "You are about to delete the personal information of these People Affected. This action cannot be undone. You cannot see past payments of them anymore and cannot make new payments to them.",
           "message-explanation": "Please provide the message that will be sent. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
           "reject": {
             "explanation": "Please ensure to give a reason, and if possible, what their next steps could be."

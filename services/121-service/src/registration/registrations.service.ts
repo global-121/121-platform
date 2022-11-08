@@ -7,6 +7,11 @@ import { FspName } from '../fsp/financial-service-provider.entity';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { LookupService } from '../notifications/lookup/lookup.service';
+import { TwilioMessageEntity } from '../notifications/twilio.entity';
+import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
+import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
+import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
+import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramService } from '../programs/programs.service';
@@ -68,6 +73,22 @@ export class RegistrationsService {
   private readonly fspAttributeRepository: Repository<FspQuestionEntity>;
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
+  @InjectRepository(PersonAffectedAppDataEntity)
+  private readonly personAffectedAppDataRepository: Repository<
+    PersonAffectedAppDataEntity
+  >;
+  @InjectRepository(TwilioMessageEntity)
+  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
+  @InjectRepository(WhatsappPendingMessageEntity)
+  private readonly whatsappPendingMessageRepository: Repository<
+    WhatsappPendingMessageEntity
+  >;
+  @InjectRepository(ImageCodeExportVouchersEntity)
+  private readonly imageCodeExportVouchersRepo: Repository<
+    ImageCodeExportVouchersEntity
+  >;
+  @InjectRepository(IntersolveBarcodeEntity)
+  private readonly intersolveBarcodeRepo: Repository<IntersolveBarcodeEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -115,6 +136,79 @@ export class RegistrationsService {
     );
     registrationToUpdate.registrationStatus = status;
     return await this.registrationRepository.save(registrationToUpdate);
+  }
+
+  private canChangeStatus(
+    currentStatus: RegistrationStatusEnum,
+    newStatus: RegistrationStatusEnum,
+  ): boolean {
+    let result = false;
+    switch (newStatus) {
+      case RegistrationStatusEnum.startedRegistration ||
+        RegistrationStatusEnum.imported:
+        result = [null].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.invited:
+        result = [
+          RegistrationStatusEnum.imported,
+          RegistrationStatusEnum.noLongerEligible,
+          null,
+        ].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.registered:
+        result = [
+          RegistrationStatusEnum.imported,
+          RegistrationStatusEnum.startedRegistration,
+          null,
+        ].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.noLongerEligible:
+        result = [
+          RegistrationStatusEnum.imported,
+          RegistrationStatusEnum.invited,
+        ].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.registeredWhileNoLongerEligible:
+        result = [RegistrationStatusEnum.noLongerEligible].includes(
+          currentStatus,
+        );
+        break;
+      case RegistrationStatusEnum.selectedForValidation:
+        result = [RegistrationStatusEnum.registered].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.validated:
+        result = [
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.selectedForValidation,
+        ].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.included:
+        result = [
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.selectedForValidation,
+          RegistrationStatusEnum.validated,
+          RegistrationStatusEnum.rejected,
+          RegistrationStatusEnum.inclusionEnded,
+        ].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.inclusionEnded:
+        result = [RegistrationStatusEnum.included].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.rejected:
+        result = [
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.selectedForValidation,
+          RegistrationStatusEnum.validated,
+          RegistrationStatusEnum.included,
+          RegistrationStatusEnum.noLongerEligible,
+          RegistrationStatusEnum.registeredWhileNoLongerEligible,
+        ].includes(currentStatus);
+        break;
+      case RegistrationStatusEnum.deleted:
+        result = currentStatus !== RegistrationStatusEnum.deleted;
+        break;
+    }
+    return result;
   }
 
   public async getRegistrationFromReferenceId(
@@ -605,6 +699,7 @@ export class RegistrationsService {
   public async getRegistrationsForProgram(
     programId: number,
     includePersonalData: boolean,
+    includeDeletedRegistrations: boolean,
   ): Promise<RegistrationResponse[]> {
     const program = await this.programService.findProgramOrThrow(programId);
     let q = await this.registrationRepository
@@ -687,9 +782,14 @@ export class RegistrationsService {
         `${RegistrationStatusEnum.rejected}.created`,
         RegistrationStatusTimestampField.rejectionDate,
       )
+      .addOrderBy(`${RegistrationStatusEnum.rejected}.created`, 'DESC')
+      .addSelect(
+        `${RegistrationStatusEnum.deleted}.created`,
+        RegistrationStatusTimestampField.deleteDate,
+      )
+      .addOrderBy(`${RegistrationStatusEnum.deleted}.created`, 'DESC')
       .addSelect('registration.phoneNumber', 'phoneNumber')
       .addSelect('data.value', 'data')
-      .addOrderBy(`${RegistrationStatusEnum.rejected}.created`, 'DESC')
       .leftJoin('registration.data', 'data')
       .leftJoin('data.programQuestion', 'programQuestion')
       .leftJoin('registration.fsp', 'fsp')
@@ -748,7 +848,18 @@ export class RegistrationsService {
         RegistrationStatusEnum.rejected,
         `registration.id = ${RegistrationStatusEnum.rejected}.registrationId AND ${RegistrationStatusEnum.rejected}.registrationStatus = '${RegistrationStatusEnum.rejected}'`,
       )
+      .leftJoin(
+        RegistrationStatusChangeEntity,
+        RegistrationStatusEnum.deleted,
+        `registration.id = ${RegistrationStatusEnum.deleted}.registrationId AND ${RegistrationStatusEnum.deleted}.registrationStatus = '${RegistrationStatusEnum.deleted}'`,
+      )
       .where('registration.program.id = :programId', { programId: programId });
+
+    if (!includeDeletedRegistrations) {
+      q = q.andWhere('registration.registrationStatus != :status', {
+        status: RegistrationStatusEnum.deleted,
+      });
+    }
 
     if (!includePersonalData) {
       const rows = await q.getRawMany();
@@ -884,6 +995,8 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.rejectionDate;
       case RegistrationStatusEnum.registeredWhileNoLongerEligible:
         return RegistrationStatusTimestampField.registeredWhileNoLongerEligibleDate;
+      case RegistrationStatusEnum.deleted:
+        return RegistrationStatusTimestampField.deleteDate;
     }
   }
 
@@ -960,50 +1073,47 @@ export class RegistrationsService {
     registrationStatus: RegistrationStatusEnum,
     message?: string,
   ): Promise<void> {
-    await this.findProgramOrThrow(programId);
-
-    for (let referenceId of referenceIdsDto.referenceIds) {
-      const registration = await this.setRegistrationStatus(
-        referenceId,
-        registrationStatus,
-      );
-
-      if (message) {
-        this.sendTextMessage(registration, programId, message);
-      }
-    }
-  }
-
-  public async invite(
-    programId: number,
-    phoneNumbers: string,
-    message?: string,
-  ): Promise<void> {
     const program = await this.findProgramOrThrow(programId);
-
-    for (let phoneNumber of JSON.parse(phoneNumbers['phoneNumbers'])) {
-      const sanitizedPhoneNr = await this.lookupService.lookupAndCorrect(
-        phoneNumber,
-      );
-      let registration = await this.registrationRepository.findOne({
-        where: { phoneNumber: sanitizedPhoneNr },
+    const errors = [];
+    for (let referenceId of referenceIdsDto.referenceIds) {
+      const registrationToUpdate = await this.registrationRepository.findOne({
+        where: { referenceId: referenceId, programId: programId },
       });
-      if (!registration) continue;
-
-      this.setRegistrationStatus(
-        registration.referenceId,
-        RegistrationStatusEnum.invited,
-      );
-
-      if (message) {
-        this.sendTextMessage(
-          registration,
-          programId,
-          message,
-          null,
-          program.tryWhatsAppFirst,
+      if (!registrationToUpdate) {
+        errors.push(`Registration '${referenceId}' is not found`);
+      } else if (
+        !this.canChangeStatus(
+          registrationToUpdate.registrationStatus,
+          registrationStatus,
+        )
+      ) {
+        errors.push(
+          `Registration '${referenceId}' has status '${registrationToUpdate.registrationStatus}' which cannot be changed to ${registrationStatus}`,
         );
       }
+    }
+    if (errors.length === 0) {
+      for (let referenceId of referenceIdsDto.referenceIds) {
+        const updatedRegistration = await this.setRegistrationStatus(
+          referenceId,
+          registrationStatus,
+        );
+        if (message) {
+          const tryWhatsappFirst =
+            registrationStatus === RegistrationStatusEnum.invited
+              ? program.tryWhatsAppFirst
+              : false;
+          this.sendTextMessage(
+            updatedRegistration,
+            programId,
+            message,
+            null,
+            tryWhatsappFirst,
+          );
+        }
+      }
+    } else {
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -1273,29 +1383,59 @@ export class RegistrationsService {
     return await this.registrationRepository.save(updatedRegistration);
   }
 
-  public async deleteBatch(referenceIdsDto: ReferenceIdsDto): Promise<void> {
-    const registrations = [];
-    const users = [];
-    for (let referenceId of referenceIdsDto.referenceIds) {
-      const registration = await this.registrationRepository.findOne({
-        where: { referenceId: referenceId },
-        relations: ['user'],
+  public async deleteBatch(
+    programId: number,
+    referenceIdsDto: ReferenceIdsDto,
+  ): Promise<void> {
+    // Do this first, so that error is already thrown if a PA cannot be changed to deleted, before removing any data below
+    await this.updateRegistrationStatusBatch(
+      programId,
+      referenceIdsDto,
+      RegistrationStatusEnum.deleted,
+    );
+
+    for await (const referenceId of referenceIdsDto.referenceIds) {
+      let registration = await this.getRegistrationFromReferenceId(
+        referenceId,
+        ['user'],
+      );
+
+      // Delete all data for this registration
+      await this.registrationDataRepository.delete({
+        registrationId: registration.id,
       });
-      if (!registration) {
-        throw new HttpException(
-          `Registration '${referenceId}' is not found`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
-      registrations.push(registration);
-      // Also delete user if present (not in the case of imported PAs)
       if (registration.user) {
-        const user = await this.userRepository.findOne(registration.user.id);
-        users.push(user);
+        await this.personAffectedAppDataRepository.delete({
+          user: { id: registration.user.id },
+        });
       }
+      await this.twilioMessageRepository.delete({
+        registrationId: registration.id,
+      });
+      await this.whatsappPendingMessageRepository.delete({
+        registrationId: registration.id,
+      });
+      await this.tryWhatsappRepository.delete({ registration: registration });
+
+      // anonymize some data for this registration
+      registration.phoneNumber = null;
+      registration.note = null;
+      await this.registrationRepository.save(registration);
+
+      const voucherImages = await this.imageCodeExportVouchersRepo.find({
+        where: { registration: registration },
+        relations: ['barcode'],
+      });
+      for await (const voucher of voucherImages) {
+        const barcode = await this.intersolveBarcodeRepo.findOne({
+          where: { id: voucher.barcode.id },
+        });
+        barcode.whatsappPhoneNumber = null;
+        await this.intersolveBarcodeRepo.save(barcode);
+      }
+
+      // not done, but should: clean up pii fields in at_notification + belcash_request
     }
-    await this.registrationRepository.remove(registrations);
-    await this.userRepository.remove(users);
   }
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {

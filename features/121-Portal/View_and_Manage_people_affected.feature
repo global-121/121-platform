@@ -86,7 +86,11 @@ Feature: View and manage people affected (generic features)
   Scenario: View available actions
     When the user opens up the "choose action" dropdown
     Then a list appears with available "bulk actions"
-    And this is dependent on the currently logged-in "user" and "active phase" of the program
+    And it is dependent on permissions of the currently logged-in "user" 
+    And it is dependent on "selected phase" of the program
+    - registration: invite / mark as no longer eligible / select for validation / send message / delete PA
+    - inclusion: include / reject / send message / delete PA
+    - payment: reject / end inclusion / send message / do payment
 
   Scenario: Select "bulk action" while rows eligible
     Given at least 1 person is eligible for the "bulk action"

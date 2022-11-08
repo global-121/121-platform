@@ -401,6 +401,9 @@ export class ExportMetricsService {
         `fsp.fsp as financialServiceProvider`,
       ])
       .andWhere({ programId: programId })
+      .andWhere('registration."registrationStatus" != :registrationStatus', {
+        registrationStatus: RegistrationStatusEnum.deleted,
+      })
       .orderBy('"registration"."id"', 'ASC');
     if (status) {
       query = query.andWhere({ registrationStatus: status });
@@ -707,6 +710,7 @@ export class ExportMetricsService {
     const registrations = await this.registrationsService.getRegistrationsForProgram(
       programId,
       false,
+      true,
     );
 
     const metrics: PaMetrics = {
@@ -798,8 +802,16 @@ export class ExportMetricsService {
         year,
         fromStart,
       ),
-      [PaMetricsProperty.totalPaHelped]: await this.getTotalPaHelped(
+      [RegistrationStatusEnum.deleted]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
+        registrations,
+        RegistrationStatusEnum.deleted,
+        payment,
+        month,
+        year,
+        fromStart,
+      ),
+      [PaMetricsProperty.totalPaHelped]: await this.getTotalPaHelped(
         payment,
         month,
         year,
@@ -869,7 +881,6 @@ export class ExportMetricsService {
   }
 
   public async getTotalPaHelped(
-    programId: number,
     payment?: number,
     month?: number,
     year?: number,

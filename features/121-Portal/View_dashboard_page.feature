@@ -11,6 +11,7 @@ Feature: View dashboard page
     And a date for "Last updated" is shown with a refresh button
     And the "most recent payment" is selected in the 'Payment #' row
     And the "most recent calendar month" is selected in the 'Calendar month' row
+    And there is a column for each possible PA status, including "deleted"
     And for all rows and columns in the table an info-icon is shown
     And for all rows in the table numbers are shown
 
@@ -47,6 +48,7 @@ Feature: View dashboard page
     When the user views the "dashboard" page
     Then total number of PA's helped is shown on the right below the "PA-status metrics table"
     And it shows the total number of PA's helped to date
+    And it also still includes "deleted" PAs
     And a date for "Last updated" is shown with a refresh button
     And an info icon is shown
 
@@ -55,7 +57,8 @@ Feature: View dashboard page
     Then the chart is showing on the left below the "PA-status metrics table"
     And it shows all the payments - as defined by the "distribution duration" property of the program - on the x-axis
     And it shows the number of PAs per payment on the y-axis
-    And they are split in "pre-existing" and "new" PAs
+    And it also still includes "deleted" PAs
+    And they are split in "new" and "pre-existing" PAs, based on that payment being their first payment or not
     And an info-icon is shown
     And a "last updated" timestamp is shown with a refresh button
   

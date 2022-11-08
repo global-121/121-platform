@@ -4,10 +4,10 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionType } from 'src/app/models/actions.model';
 import { ImportType } from 'src/app/models/import-type.enum';
-import { PaStatus } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { FilePickerProps } from 'src/app/shared/file-picker-prompt/file-picker-prompt.component';
 import { environment } from 'src/environments/environment';
+import RegistrationStatus from '../../enums/registration-status.enum';
 import { downloadAsCsv } from '../../shared/array-to-csv';
 
 export class AggregateImportResult {
@@ -44,14 +44,14 @@ export class BulkImportComponent implements OnInit {
 
   public isInProgress = false;
 
-  public PaStatus = PaStatus;
+  public RegistrationStatus = RegistrationStatus;
   public message: {
-    [PaStatus.imported]: string;
-    [PaStatus.registered]: string;
+    [RegistrationStatus.imported]: string;
+    [RegistrationStatus.registered]: string;
   };
   public filePickerProps: {
-    [PaStatus.imported]: FilePickerProps;
-    [PaStatus.registered]: FilePickerProps;
+    [RegistrationStatus.imported]: FilePickerProps;
+    [RegistrationStatus.registered]: FilePickerProps;
   };
 
   private locale: string;
@@ -67,13 +67,15 @@ export class BulkImportComponent implements OnInit {
 
   async ngOnInit() {
     this.message = {
-      [PaStatus.imported]: await this.getLatestActionMessage(PaStatus.imported),
-      [PaStatus.registered]: await this.getLatestActionMessage(
-        PaStatus.registered,
+      [RegistrationStatus.imported]: await this.getLatestActionMessage(
+        RegistrationStatus.imported,
+      ),
+      [RegistrationStatus.registered]: await this.getLatestActionMessage(
+        RegistrationStatus.registered,
       ),
     };
     this.filePickerProps = {
-      [PaStatus.imported]: {
+      [RegistrationStatus.imported]: {
         type: 'csv',
         explanation: this.translate.instant(
           'page.program.bulk-import.imported.explanation',
@@ -81,7 +83,7 @@ export class BulkImportComponent implements OnInit {
         programId: this.programId,
         downloadTemplate: ImportType.imported,
       },
-      [PaStatus.registered]: {
+      [RegistrationStatus.registered]: {
         type: 'csv',
         explanation: this.translate.instant(
           'page.program.bulk-import.registered.explanation',
@@ -97,7 +99,10 @@ export class BulkImportComponent implements OnInit {
     downloadAsCsv(importResponse, filename);
   }
 
-  public importPeopleAffected(event: { file: File }, destination: PaStatus) {
+  public importPeopleAffected(
+    event: { file: File },
+    destination: RegistrationStatus,
+  ) {
     this.isInProgress = true;
 
     this.programsService
@@ -109,7 +114,7 @@ export class BulkImportComponent implements OnInit {
           this.translate.instant(
             'page.program.bulk-import.import-result.ready',
           ) +
-          (destination === PaStatus.imported
+          (destination === RegistrationStatus.imported
             ? ' ' +
               this.translate.instant(
                 'page.program.bulk-import.import-result.csv',
@@ -142,7 +147,7 @@ export class BulkImportComponent implements OnInit {
 
         this.actionResult(resultMessage, true);
 
-        if (destination === PaStatus.imported) {
+        if (destination === RegistrationStatus.imported) {
           this.exportCSV(response.importResult);
         }
       })
@@ -177,10 +182,12 @@ export class BulkImportComponent implements OnInit {
     await alert.present();
   }
 
-  private async getLatestActionMessage(type: PaStatus): Promise<string> {
+  private async getLatestActionMessage(
+    type: RegistrationStatus,
+  ): Promise<string> {
     let action = ActionType.importPeopleAffected;
 
-    if (type === PaStatus.registered) {
+    if (type === RegistrationStatus.registered) {
       action = ActionType.importRegistrations;
     }
 
