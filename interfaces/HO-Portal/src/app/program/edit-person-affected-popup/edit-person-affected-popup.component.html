@@ -77,6 +77,21 @@
         class="ion-margin-vertical"
       ></app-update-property-item>
 
+      <ng-container *ngIf="attributeValues.preferredLanguage">
+        <app-update-property-item
+          type="dropdown"
+          [label]="
+            'page.program.program-people-affected.edit-person-affected-popup.properties.preferredLanguage.label'
+              | translate
+          "
+          [value]="attributeValues.preferredLanguage"
+          [options]="availableLanguages"
+          (updated)="updatePaAttribute('preferredLanguage', $event, false)"
+          [inProgress]="inProgress?.preferredLanguage || false"
+          class="ion-margin-vertical"
+        ></app-update-property-item>
+      </ng-container>
+
       <div
         *ngIf="readOnly && fspList.length === programFspLength && person?.fsp"
         class="ion-margin-vertical"

@@ -87,6 +87,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.attributeValues.paymentAmountMultiplier =
       this.person?.paymentAmountMultiplier;
     this.attributeValues.phoneNumber = this.person?.phoneNumber;
+    this.attributeValues.preferredLanguage = this.person?.preferredLanguage;
 
     if (this.program && this.program.editableAttributes) {
       this.paTableAttributesInput = this.program.editableAttributes;
@@ -296,7 +297,14 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.modalController.dismiss();
   }
 
-  private getAvailableLanguages(): string[] {
-    return Object.keys(this.program.notifications);
+  private getAvailableLanguages(): object[] {
+    return Object.keys(this.program.notifications).map((key) => {
+      return {
+        option: key,
+        label: this.translate.instant(
+          'page.program.program-people-affected.language.' + key,
+        ),
+      };
+    });
   }
 }

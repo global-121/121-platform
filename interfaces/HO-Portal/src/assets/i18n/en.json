@@ -377,6 +377,9 @@
             },
             "personalId": {
               "label": "Personal ID"
+            },
+            "preferredLanguage": {
+              "label": "Preferred language"
             }
           },
           "fspChangeWarning": "Selecting this FSP will delete the following attributes related to the old FSP:",
