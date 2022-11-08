@@ -699,6 +699,7 @@ export class RegistrationsService {
   public async getRegistrationsForProgram(
     programId: number,
     includePersonalData: boolean,
+    includeDeletedRegistrations: boolean,
   ): Promise<RegistrationResponse[]> {
     const program = await this.programService.findProgramOrThrow(programId);
     let q = await this.registrationRepository
@@ -854,6 +855,12 @@ export class RegistrationsService {
       )
       .where('registration.program.id = :programId', { programId: programId });
 
+    if (!includeDeletedRegistrations) {
+      q = q.andWhere('registration.registrationStatus != :status', {
+        status: RegistrationStatusEnum.deleted,
+      });
+    }
+
     if (!includePersonalData) {
       const rows = await q.getRawMany();
       const responseRows = [];
@@ -898,19 +905,6 @@ export class RegistrationsService {
       responseRows.push(row);
     }
     return responseRows;
-  }
-
-  public async getActiveRegistrationsForProgram(
-    programId: number,
-    includePersonalData: boolean,
-  ): Promise<RegistrationResponse[]> {
-    const registrations = await this.getRegistrationsForProgram(
-      programId,
-      includePersonalData,
-    );
-    return registrations.filter(
-      reg => reg.status !== RegistrationStatusEnum.deleted,
-    );
   }
 
   public async getLatestDateForRegistrationStatus(

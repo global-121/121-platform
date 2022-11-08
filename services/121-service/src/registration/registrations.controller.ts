@@ -204,9 +204,10 @@ export class RegistrationsController {
   })
   @Get('programs/:programId/registrations')
   public async getPeopleAffected(@Param() params): Promise<any[]> {
-    return await this.registrationsService.getActiveRegistrationsForProgram(
+    return await this.registrationsService.getRegistrationsForProgram(
       Number(params.programId),
       false,
+      true,
     );
   }
 
@@ -223,9 +224,10 @@ export class RegistrationsController {
   public async getPeopleAffectedWithPersonalData(
     @Param() params,
   ): Promise<any[]> {
-    return await this.registrationsService.getActiveRegistrationsForProgram(
+    return await this.registrationsService.getRegistrationsForProgram(
       Number(params.programId),
       true,
+      false,
     );
   }
 
