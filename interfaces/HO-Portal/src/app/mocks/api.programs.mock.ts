@@ -25,6 +25,7 @@ const programsArray: Program[] = [
     validation: false,
     author: {},
     published: false,
+    notifications: { en: 'Notification text' },
     programCustomAttributes: [
       {
         id: 1,

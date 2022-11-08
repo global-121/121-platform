@@ -5,6 +5,7 @@ import { IsRegistrationDataValidType } from '../validator/registration-data-type
 
 export enum AdditionalAttributes {
   paymentAmountMultiplier = 'paymentAmountMultiplier',
+  preferredLanguage = 'preferredLanguage',
 }
 export const Attributes = { ...AdditionalAttributes, ...CustomDataAttributes };
 export type Attributes = AdditionalAttributes | CustomDataAttributes;
