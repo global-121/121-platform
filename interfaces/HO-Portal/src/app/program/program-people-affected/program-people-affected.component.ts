@@ -259,12 +259,14 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         'page.program.program-people-affected.actions.delete-pa',
       ),
       permissions: [Permission.RegistrationDELETE],
-      phases: [
-        ProgramPhase.registrationValidation,
-        ProgramPhase.inclusion,
-        ProgramPhase.payment,
-      ],
+      phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
       showIfNoValidation: true,
+      confirmConditions: {
+        inputRequired: false,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.delete-warning',
+        ),
+      },
     },
     {
       id: BulkActionId.divider,

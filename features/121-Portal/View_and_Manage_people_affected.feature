@@ -90,7 +90,7 @@ Feature: View and manage people affected (generic features)
     And it is dependent on "selected phase" of the program
     - registration: invite / mark as no longer eligible / select for validation / send message / delete PA
     - inclusion: include / reject / send message / delete PA
-    - payment: reject / end inclusion / send message / delete PA / do payment
+    - payment: reject / end inclusion / send message / do payment
 
   Scenario: Select "bulk action" while rows eligible
     Given at least 1 person is eligible for the "bulk action"
