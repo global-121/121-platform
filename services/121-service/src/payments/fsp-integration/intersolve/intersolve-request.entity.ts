@@ -4,9 +4,6 @@ import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
 
 @Entity('intersolve_request')
 export class IntersolveRequestEntity extends Base121Entity {
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public updated: Date;
-
   @Column({ type: 'bigint' })
   public refPos: number;
 

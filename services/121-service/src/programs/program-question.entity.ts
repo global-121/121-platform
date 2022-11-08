@@ -36,14 +36,6 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
   @Column('json')
   public scoring: JSON;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public updated: Date;
-
-  @BeforeUpdate()
-  public updateTimestamp(): void {
-    this.updated = new Date();
-  }
-
   @ManyToOne(
     _type => ProgramEntity,
     program => program.programQuestions,

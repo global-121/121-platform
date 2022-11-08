@@ -100,18 +100,10 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ default: true })
   public validation: boolean;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public updated: Date;
-
   @Column('json', { nullable: true, default: null })
   public aboutProgram: JSON;
 
   public editableAttributes?: Attribute[];
-
-  @BeforeUpdate()
-  public updateTimestamp(): void {
-    this.updated = new Date();
-  }
 
   @OneToMany(
     () => ProgramAidworkerAssignmentEntity,
