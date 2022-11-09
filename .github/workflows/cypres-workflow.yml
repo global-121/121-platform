@@ -31,8 +31,8 @@ jobs:
     - name: Start services
       run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build
 
-    # - name: Install Portal
-    #   run: npm run install:ho
+    - name: Install Portal
+      run: npm run install:ho
 
     # - name: Start Portal
     #   run: npm run start:ho
@@ -50,7 +50,8 @@ jobs:
       uses: cypress-io/github-action@v4.2.0
       with:
         build: npx cypress info
-        # start: npm run start:cypress:chrome
+        browser: chrome
+        start: npm run start:cypress:chrome
         wait-on: http://localhost:3000
         working-directory: ./interfaces/tests
 
