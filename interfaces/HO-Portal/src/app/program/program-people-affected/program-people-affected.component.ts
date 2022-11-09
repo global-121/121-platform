@@ -899,7 +899,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     let personRow: PersonRow = {
       referenceId: person.referenceId,
       checkboxVisible: false,
-      pa: `PA #${String(person.id)}`,
+      pa: `PA #${String(person.registrationProgramId)}`,
       status: person.status,
       statusLabel: this.translate.instant(
         'page.program.program-people-affected.status.' + person.status,
