@@ -1,5 +1,6 @@
 import { IsInt, IsOptional, IsPositive } from 'class-validator';
 import {
+  BeforeInsert,
   BeforeRemove,
   Brackets,
   Column,
@@ -91,6 +92,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ nullable: true })
   public noteUpdated: Date;
 
+  /** This is an "auto" incrementing field with a registration ID per program. */
+  @Column()
+  public registrationProgramId: number;
+
   @OneToMany(
     _type => TransactionEntity,
     transactions => transactions.registration,
@@ -114,6 +119,20 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     whatsappPendingMessages => whatsappPendingMessages.registration,
   )
   public whatsappPendingMessages: WhatsappPendingMessageEntity[];
+
+  @BeforeInsert()
+  public async assignRegistrationProgramId(): Promise<void> {
+    const repo = getConnection().getRepository(RegistrationEntity);
+    const query = repo
+      .createQueryBuilder('r')
+      .select('r."registrationProgramId"')
+      .where('r.programId = :programId', { programId: this.program.id })
+      .andWhere('r.registrationProgramId is not null')
+      .orderBy('r."registrationProgramId"', 'DESC')
+      .limit(1);
+    const result = await query.getRawOne();
+    this.registrationProgramId = result ? result.registrationProgramId + 1 : 1;
+  }
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
