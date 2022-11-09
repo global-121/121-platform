@@ -11,6 +11,7 @@
     "start:ho": "cd ../.. && npm run start:ho",
     "start:cypress": "npx cypress open --e2e",
     "start:cypress:chrome": "npx cypress open --e2e --browser chrome",
+    "start:cypress:run": "npx cypress run",
     "start:tests": "npx npm-run-all --print-label --parallel start:interfaces start:cypress",
     "start:test-aw": "npx npm-run-all --print-label --parallel start:aw start:cypress",
     "start:test-pa": "npx npm-run-all --print-label --parallel start:pa start:cypress",
