@@ -9,13 +9,13 @@
     "start:aw": "cd ../.. && npm run start:aw",
     "start:pa": "cd ../.. && npm run start:pa",
     "start:ho": "cd ../.. && npm run start:ho",
-    "start:cypress": "npx cypress open",
+    "start:cypress": "npx cypress open --e2e",
     "start:tests": "npx npm-run-all --print-label --parallel start:interfaces start:cypress",
     "start:test-aw": "npx npm-run-all --print-label --parallel start:aw start:cypress",
     "start:test-pa": "npx npm-run-all --print-label --parallel start:pa start:cypress",
     "start:test-ho": "npx npm-run-all --print-label --parallel start:ho start:cypress"
   },
   "devDependencies": {
-    "cypress": "^5.5.0"
+    "cypress": "^10.11.0"
   }
 }

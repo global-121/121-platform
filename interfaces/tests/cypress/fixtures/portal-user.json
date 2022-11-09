@@ -1,0 +1,8 @@
+{
+  "username": "admin@example.org",
+  "expires": "2023-11-22T15:33:26.467Z",
+  "permissions": {
+    "1": ["program:metrics.read"],
+    "2": ["program:metrics.read"] 
+  }
+}

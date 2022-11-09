@@ -1,5 +1,5 @@
 {
   "portal": "/login",
-  "email": "test@example.org",
+  "email": "admin@example.org",
   "password": "password"
 }
