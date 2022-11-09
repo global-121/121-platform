@@ -43,7 +43,7 @@ jobs:
         build: npx cypress info
         browser: chrome
         start: npm run start:cypress:run
-        wait-on: http://localhost:3000
+        wait-on: http://localhost:8888
         working-directory: ./interfaces/tests
 
 
