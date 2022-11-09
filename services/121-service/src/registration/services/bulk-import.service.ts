@@ -263,9 +263,14 @@ export class BulkImportService {
       registrations.push(registration);
       customDataList.push(customData);
     }
-    const savedRegistrations = await this.registrationRepository.save(
-      registrations,
-    );
+
+    let savedRegistrations = [];
+    for await (const registration of registrations) {
+      savedRegistrations.push(
+        await this.registrationRepository.save(registration),
+      );
+    }
+
     // Update status and save again (otherwise 'registration.subscriber' doesn't work)
     savedRegistrations.forEach(
       r => (r.registrationStatus = RegistrationStatusEnum.registered),
