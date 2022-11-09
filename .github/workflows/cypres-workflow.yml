@@ -4,7 +4,7 @@ name: "Cypress"
 on:
   push:
     branches:
-    - 'release/*'
+    - 'wip.cypress-act'
 
 jobs:
   test:
@@ -21,6 +21,7 @@ jobs:
     #     language: ['javascript']
 
     steps:
+
     - name: Checkout repository
       uses: actions/checkout@v3
 
