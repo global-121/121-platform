@@ -1,0 +1,56 @@
+name: "Cypress"
+
+
+on:
+  push:
+    branches:
+    - 'release/*'
+
+jobs:
+  test:
+    name: Run Cypress Tests
+    runs-on: ubuntu-18.04
+    # permissions:
+    #   actions: read
+    #   contents: read
+    #   security-events: write
+
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     language: ['javascript']
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set .env
+      run: cp services/.env.cypress services/.env
+
+    - name: Start services
+      run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build
+
+    # - name: Install Portal
+    #   run: npm run install:ho
+
+    # - name: Start Portal
+    #   run: npm run start:ho
+
+    # - name: Run tests
+    #   run: npm run start:ho
+
+    # - name: cyress test cases
+    #   uses: cypress-io/github-action@v4.2.0
+    #   with:
+    #     working-directory: ./interfaces/tests
+    #     start: npm start
+
+    - name: Run integration tests with cypress.
+      uses: cypress-io/github-action@v4.2.0
+      with:
+        build: npx cypress info
+        # start: npm run start:cypress:chrome
+        wait-on: http://localhost:3000
+        working-directory: ./interfaces/tests
+
+

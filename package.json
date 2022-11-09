@@ -34,6 +34,8 @@
     "test:pa": "npm test --prefix interfaces/PA-App/",
     "test:aw": "npm test --prefix interfaces/AW-App/",
     "test:ho": "npm test --prefix interfaces/HO-Portal/",
-    "install": "echo 'Nothing to install here. See README.md#getting-started \\n\\n' && exit 1"
+    "install": "echo 'Nothing to install here. See README.md#getting-started \\n\\n' && exit 1",
+    "start:cypress": "cd interfaces/tests && npm run start:cypress:chrome",
+    "install:cypress": "cd interfaces/tests && npm install"
   }
 }
