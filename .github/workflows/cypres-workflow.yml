@@ -34,17 +34,8 @@ jobs:
     - name: Install Portal
       run: npm run install:ho
 
-    # - name: Start Portal
-    #   run: npm run start:ho
-
-    # - name: Run tests
-    #   run: npm run start:ho
-
-    # - name: cyress test cases
-    #   uses: cypress-io/github-action@v4.2.0
-    #   with:
-    #     working-directory: ./interfaces/tests
-    #     start: npm start
+    - name: Start Portal
+      run: npm run start:ho
 
     - name: Run integration tests with cypress.
       uses: cypress-io/github-action@v4.2.0
