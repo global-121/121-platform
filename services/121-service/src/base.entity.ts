@@ -1,12 +1,21 @@
-import { Column, getConnection, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  CreateDateColumn,
+  getConnection,
+  Index,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export class Base121Entity {
   @PrimaryGeneratedColumn()
   public id: number;
 
   @Index()
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   public created: Date;
+
+  @UpdateDateColumn()
+  public updated: Date;
 }
 
 export class CascadeDeleteEntity extends Base121Entity {
