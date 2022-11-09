@@ -14,7 +14,7 @@
     "start:pa": "npm start --prefix interfaces/PA-App/ -- --port 8008",
     "start:aw": "npm start --prefix interfaces/AW-App/ -- --port 8080",
     "start:ho": "npm start --prefix interfaces/HO-Portal/ -- --port 8888",
-    "start:ho:cypress": "cd interfaces/HO-Portal/ && npm run build:prod  && angular-http-server --path ./www -p 8888",
+    "start:ho:cypress": "cd interfaces/HO-Portal/ && npm run build:prod  && angular-http-server --path ./www -p 8888 &",
     "install:all": "npx npm-run-all --npm-path npm --print-label --sequential install:services install:interfaces",
     "install:services": "cd services/ && docker-compose build",
     "install:interfaces": "npx npm-run-all --npm-path npm --print-label --sequential install:pa install:aw install:ho",

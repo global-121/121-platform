@@ -4,7 +4,7 @@ name: "Cypress"
 on:
   push:
     branches:
-    - 'wip.cypress-act'
+    - 'wip.cypress-github-actions'
 
 jobs:
   test:
