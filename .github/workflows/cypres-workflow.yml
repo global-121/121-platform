@@ -35,7 +35,7 @@ jobs:
       run: npm run install:ho
 
     - name: Start Portal
-      run: npm run start:ho
+      run: npm run start:ho:cypress
 
     - name: Run integration tests with cypress.
       uses: cypress-io/github-action@v4.2.0
