@@ -81,12 +81,15 @@ export class VodacashService {
       );
     }
 
-    const fullName = await registration.getFullName();
+    const voterCardIdFull = await registration.getRegistrationDataValueByName(
+      'B. 6. Quel est votre numéro de la carte d’électeur, s’il en possède ? Ou autre document d’identification. ',
+    );
+    const voterCardIdSubstring = voterCardIdFull.substring(0, 16);
     this.setValue(
       vodcashInstructionCustomer,
       'KYCValidation',
       'FieldValue',
-      fullName, // It is currently unkown if this is the correct value here
+      voterCardIdSubstring, // It is currently unkown if this is the correct value here
     );
 
     this.setValue(
