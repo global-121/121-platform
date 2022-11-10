@@ -28,23 +28,14 @@ jobs:
     - name: Set .env
       run: cp services/.env.cypress services/.env
 
-    # - name: Start services
-    #   run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build
+    - name: Start services
+      run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build
 
     - name: Install Portal
       run: npm run install:ho
 
     - name: Start Portal
       run: npm run start:ho:cypress
-
-    # - name: Wait for portal to compile
-    #   uses: cygnetdigital/wait_for_response@v2.0.0
-    #   with:
-    #     url: 'http://localhost:8888'
-    #     responseCode: '200'
-    #     timeout: 120000
-    #     interval: 2000
-
 
     - name: Sleep for 30 seconds
       run: sleep 120s
@@ -60,7 +51,6 @@ jobs:
         browser: chrome
         start: npm run start:cypress:run
         wait-on: 'http://localhost:8888/'
-        # wait-on: http://localhost:8888
         wait-on-timeout: 210
         working-directory: ./interfaces/tests
 
