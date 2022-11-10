@@ -54,6 +54,7 @@ describe('EditPersonAffectedPopupComponent', () => {
     component.person = {
       id: 1,
       referenceId: 'test',
+      registrationProgramId: 1,
       status: RegistrationStatus.startedRegistration,
     };
 
