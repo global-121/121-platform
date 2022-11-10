@@ -42,7 +42,7 @@ jobs:
       with:
         build: npx cypress info
         browser: chrome
-        start: npm run start:cypress:run
+        start: curl http://localhost:8888 npm run start:cypress:run
         wait-on: http://localhost:8888
         wait-on-timeout: 210
         working-directory: ./interfaces/tests
