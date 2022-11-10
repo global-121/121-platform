@@ -42,8 +42,8 @@ jobs:
       with:
         url: 'http://localhost:8888'
         responseCode: '200'
-        timeout: 2000
-        interval: 500
+        timeout: 180000
+        interval: 2000
 
 
     - name: Run integration tests with cypress.
