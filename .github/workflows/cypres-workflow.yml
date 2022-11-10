@@ -44,8 +44,7 @@ jobs:
     #     responseCode: '200'
     #     timeout: 120000
     #     interval: 2000
-    - name: Curl 1
-      run: curl -I http://localhost:8888
+
 
     - name: Sleep for 30 seconds
       run: sleep 120s
