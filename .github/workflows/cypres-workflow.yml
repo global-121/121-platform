@@ -32,10 +32,10 @@ jobs:
       run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build
 
     - name: Install Portal
-      run: npm run install:ho
+      run: npm run install:interfaces
 
     - name: Start Portal
-      run: npm run start:ho:cypress
+      run: npm run start:interfaces:cypress
 
     - name: Sleep for 30 seconds
       run: sleep 120s
