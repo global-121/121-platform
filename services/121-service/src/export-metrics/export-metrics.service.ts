@@ -290,7 +290,7 @@ export class ExportMetricsService {
       const registration = await this.registrationsService.getRegistrationFromReferenceId(
         v.referenceId,
       );
-      v.name = await this.registrationsService.getFullName(registration);
+      v.name = await registration.getFullName();
       delete v.referenceId;
     }
 

@@ -81,6 +81,21 @@ export class VodacashService {
       );
     }
 
+    const fullName = await registration.getFullName();
+    this.setValue(
+      vodcashInstructionCustomer,
+      'KYCValidation',
+      'FieldValue',
+      fullName, // It is currently unkown if this is the correct value here
+    );
+
+    this.setValue(
+      vodcashInstructionCustomer,
+      'KYCValidation',
+      'FieldType',
+      'name', // It is currently unkown if this is the correct value here
+    );
+
     const amount = transaction.amount;
     this.setValue(
       vodcashInstructionCustomer,
