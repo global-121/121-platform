@@ -42,7 +42,7 @@ jobs:
       with:
         url: 'http://localhost:8888'
         responseCode: '200'
-        timeout: 180000
+        timeout: 600000
         interval: 2000
 
 
