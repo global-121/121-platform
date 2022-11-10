@@ -28,8 +28,8 @@ jobs:
     - name: Set .env
       run: cp services/.env.cypress services/.env
 
-    - name: Start services
-      run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build
+    # - name: Start services
+    #   run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build
 
     - name: Install Portal
       run: npm run install:ho
