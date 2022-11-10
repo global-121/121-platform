@@ -705,8 +705,9 @@ export class RegistrationsService {
     let q = await this.registrationRepository
       .createQueryBuilder('registration')
       .select('registration.id', 'id')
-      .distinctOn(['registration.id'])
-      .orderBy(`registration.id`, 'ASC')
+      .addSelect('registration.registrationProgramId', 'registrationProgramId')
+      .distinctOn(['registration.registrationProgramId'])
+      .orderBy(`registration.registrationProgramId`, 'ASC')
       .addSelect('registration.referenceId', 'referenceId')
       .addSelect('registration.registrationStatus', 'status')
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
