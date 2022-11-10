@@ -44,6 +44,15 @@ jobs:
     #     responseCode: '200'
     #     timeout: 120000
     #     interval: 2000
+    - name: Curl 1
+      run: curl -I http://localhost:8888
+
+    - name: Sleep for 30 seconds
+      run: sleep 120s
+      shell: bash
+
+    - name: Curl 2
+      run: curl -I http://localhost:8888
 
     - name: Run integration tests with cypress.
       uses: cypress-io/github-action@v4.2.0
