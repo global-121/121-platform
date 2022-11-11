@@ -182,6 +182,7 @@ export class ExportMetricsService {
       programId,
       relationOptions,
       registrationStatus,
+      exportType,
     );
 
     let payments;
@@ -386,6 +387,7 @@ export class ExportMetricsService {
     programId: number,
     relationOptions: RegistrationDataOptions[],
     status?: RegistrationStatusEnum,
+    exportType?: ExportType,
   ): Promise<object[]> {
     let query = this.registrationRepository
       .createQueryBuilder('registration')
@@ -401,10 +403,15 @@ export class ExportMetricsService {
         `registration."referenceId" as "referenceId"`,
       ])
       .andWhere({ programId: programId })
-      .andWhere('registration."registrationStatus" != :registrationStatus', {
-        registrationStatus: RegistrationStatusEnum.deleted,
-      })
       .orderBy('"registration"."id"', 'ASC');
+    if (exportType !== ExportType.allPeopleAffected) {
+      query = query.andWhere(
+        'registration."registrationStatus" != :registrationStatus',
+        {
+          registrationStatus: RegistrationStatusEnum.deleted,
+        },
+      );
+    }
     if (status) {
       query = query.andWhere({ registrationStatus: status });
     }
