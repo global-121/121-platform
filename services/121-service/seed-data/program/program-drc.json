@@ -18,10 +18,10 @@
   },
   "startDate": "2020-09-01T12:00:00Z",
   "endDate": "2022-11-30T12:00:00Z",
-  "currency": "CDF",
+  "currency": "USD",
   "distributionFrequency": "once",
   "distributionDuration": 1,
-  "fixedTransferValue": 104000,
+  "fixedTransferValue": 53,
   "financialServiceProviders": [
     {
       "fsp": "VodaCash"
