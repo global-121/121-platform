@@ -120,7 +120,7 @@ export class RegistrationsService {
     registration.referenceId = postData.referenceId;
     registration.user = user;
     registration.program = await this.programRepository.findOne(programId);
-    await this.registrationRepository.save(registration);
+    await registration.save();
     return this.setRegistrationStatus(
       postData.referenceId,
       RegistrationStatusEnum.startedRegistration,
