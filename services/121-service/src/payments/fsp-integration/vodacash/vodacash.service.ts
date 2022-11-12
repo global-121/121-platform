@@ -96,7 +96,7 @@ export class VodacashService {
       vodcashInstructionCustomer,
       'KYCValidation',
       'FieldType',
-      'name', // It is currently unkown if this is the correct value here
+      'Voter Card', // It is currently unkown if this is the correct value here
     );
 
     const amount = transaction.amount;

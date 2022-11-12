@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.68.4](https://github.com/global-121/121-platform/compare/v1.68.2...v1.68.3) - 2022-11-12
+
+### Changed
+- Changed: Vodacash payment export use Voter Card instead of name as fieldname
+
 
 ## [1.68.3](https://github.com/global-121/121-platform/compare/v1.68.2...v1.68.3) - 2022-11-10
 
