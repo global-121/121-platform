@@ -524,7 +524,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     throw new RegistrationDataSaveError(errorMessage);
   }
 
-  public async save(): Promise<void> {
+  public async save(): Promise<RegistrationEntity> {
     const regRepo = getConnection().getRepository(RegistrationEntity);
     const query = regRepo
       .createQueryBuilder('r')
@@ -540,7 +540,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         : 1;
     }
     try {
-      await regRepo.save(this);
+      return await regRepo.save(this);
     } catch (error) {
       if (error instanceof QueryFailedError) {
         // This is the error code for unique_violation (see: https://www.postgresql.org/docs/current/errcodes-appendix.html)
