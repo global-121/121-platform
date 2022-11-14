@@ -31,11 +31,24 @@ jobs:
     - name: Start services
       run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build
 
-    - name: Install Portal
+    - name: Version npm
+      with:
+        node-version: '14.20'
+      run: npm -v
+
+    - name: Version node
+      with:
+        node-version: '14.20'
+      run: node -v
+
+    - name: Install Interfaces
+      with:
+        node-version: '14.20'
       run: npm run install:interfaces
 
-    - name: Start Portal
+    - name: Start Interfaces
       run: npm run start:interfaces:cypress
+
 
     - name: Sleep for 30 seconds
       run: sleep 120s
@@ -53,5 +66,3 @@ jobs:
         wait-on: 'http://localhost:8888/'
         wait-on-timeout: 210
         working-directory: ./interfaces/tests
-
-
