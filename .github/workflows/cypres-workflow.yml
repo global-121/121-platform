@@ -24,6 +24,8 @@ jobs:
 
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        node-version: '14.20'
 
     - name: Set .env
       run: cp services/.env.cypress services/.env
@@ -32,18 +34,13 @@ jobs:
       run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build
 
     - name: Version npm
-      with:
-        node-version: '14.20'
+
       run: npm -v
 
     - name: Version node
-      with:
-        node-version: '14.20'
       run: node -v
 
     - name: Install Interfaces
-      with:
-        node-version: '14.20'
       run: npm run install:interfaces
 
     - name: Start Interfaces
