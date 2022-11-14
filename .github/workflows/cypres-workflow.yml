@@ -54,9 +54,18 @@ jobs:
       run: npm run start:interfaces:cypress
 
 
-    - name: Sleep for 120 seconds
-      run: sleep 120s
-      shell: bash
+    # - name: Sleep for 120 seconds
+    #   run: sleep 120s
+    #   shell: bash
+    - name: Install wait port
+      run: npm install -g wait-port
+    - name: Wait for PA
+      run: wait-port -t 120000 localhost:8008
+    - name: Wait for AW
+      run: wait-port -t 120000 localhost:8080
+    - name: Wait for HO
+      run: wait-port -t 120000 localhost:8888
+
 
     - name: Curl test
       run: curl -I http://localhost:8888
