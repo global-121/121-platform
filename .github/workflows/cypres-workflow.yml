@@ -46,12 +46,8 @@ jobs:
     - name: Wait for HO
       run: wait-port -t 120000 localhost:8888
 
-    - name: Run integration tests with cypress.
+    - name: Run integration tests with Cypress
       uses: cypress-io/github-action@v4.2.0
       with:
-        build: npx cypress info
         browser: chrome
-        start: npm run start:cypress:run
-        wait-on: 'http://localhost:8888/'
-        wait-on-timeout: 210
         working-directory: ./interfaces/tests
