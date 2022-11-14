@@ -11,11 +11,9 @@
     "start:all": "npx npm-run-all --npm-path npm --print-label --parallel start:services start:interfaces",
     "start:services": "cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build",
     "start:interfaces": "npx npm-run-all --npm-path npm --print-label --parallel start:pa start:aw start:ho",
-    "start:interfaces:cypress": "npx npm-run-all --npm-path npm --print-label --parallel start:pa start:aw start:ho &",
     "start:pa": "npm start --prefix interfaces/PA-App/ -- --port 8008",
     "start:aw": "npm start --prefix interfaces/AW-App/ -- --port 8080",
     "start:ho": "npm start --prefix interfaces/HO-Portal/ -- --port 8888",
-    "start:ho:cypress": "npm start --prefix interfaces/HO-Portal/ -- --port 8888 &",
     "install:all": "npx npm-run-all --npm-path npm --print-label --sequential install:services install:interfaces",
     "install:services": "cd services/ && docker-compose build",
     "install:interfaces": "npx npm-run-all --npm-path npm --print-label --sequential install:pa install:aw install:ho",
@@ -36,8 +34,6 @@
     "test:pa": "npm test --prefix interfaces/PA-App/",
     "test:aw": "npm test --prefix interfaces/AW-App/",
     "test:ho": "npm test --prefix interfaces/HO-Portal/",
-    "install": "echo 'Nothing to install here. See README.md#getting-started \\n\\n' && exit 1",
-    "start:cypress": "cd interfaces/tests && npm run start:cypress:chrome",
-    "install:cypress": "cd interfaces/tests && npm install"
+    "install": "echo 'Nothing to install here. See README.md#getting-started \\n\\n' && exit 1"
   }
 }
