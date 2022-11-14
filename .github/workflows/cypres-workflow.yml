@@ -38,14 +38,7 @@ jobs:
       run: cp services/.env.cypress services/.env
 
     - name: Start services
-      run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build
-
-    - name: Version npm
-
-      run: npm -v
-
-    - name: Version node
-      run: node -v
+      run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build &
 
     - name: Install Interfaces
       run: npm run install:interfaces
@@ -59,12 +52,15 @@ jobs:
     #   shell: bash
     - name: Install wait port
       run: npm install -g wait-port
+    - name: Wait for 121-service
+      run: wait-port -t 120000 localhost:3000
     - name: Wait for PA
       run: wait-port -t 120000 localhost:8008
     - name: Wait for AW
       run: wait-port -t 120000 localhost:8080
     - name: Wait for HO
       run: wait-port -t 120000 localhost:8888
+
 
 
     - name: Curl test
