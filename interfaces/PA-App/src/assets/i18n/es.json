@@ -1,14 +1,14 @@
 {
   "_dir": "ltr",
   "account": {
-    "delete-data": "Eliminar cuenta",
+    "delete-data": "Eliminar mi cuenta",
     "logout": "Cerrar sesión"
   },
   "multiple-registration-mode": {
-    "toggle": "Modo de registros múltiples"
+    "toggle": "Modo para inscripciones múltiples"
   },
   "connection": {
-    "error-retry": "Algo salió mal, desea intentarlo otra vez?"
+    "error-retry": "Algo salió mal, ¿desea intentarlo otra vez?"
   },
   "notification": {
     "error-reload": "Algo salió mal, vuelve a cargar la aplicación.",
@@ -54,7 +54,7 @@
       "documents": "Asegúrate de contar con los siguientes documentos:",
       "no-validation-conclusion": "Gracias. Su registro está completo.<br><br> Recibirá un SMS/WhatsApp al numero de teléfono proporcionado a la brevedad para confirmar su registro. <br><br> Se le informará si su aplicación ha sido exitosa dentro de un periodo de 7 días.<br><br> Es todo por el momento.",
       "validation-conclusion": "Gracias. Su registro esta completo. Recibirá un mensaje de texto a la brevedad al número proporcionado para confirmar su registro. <br><br> Un trabajador Humanitario del NGO organizará una cita con usted para validar su información, probablemente al hacerle una visita en casa.",
-      "offline-warning": "Actualmente estás desconectado. El registro no se puede almacenar. Conéctate a Internet con el dispositivo, por ejemplo, conectándote al WiFi, y haz clic en \"Intentar de nuevo\"."
+      "offline-warning": "Actualmente estás desconectado. La inscripción no se puede almacenar. Conéctate a Internet con el dispositivo, por ejemplo, conectándote al WiFi, y haz clic en \"Intentar de nuevo\"."
     },
     "select-fsp": {
       "attributes": {
@@ -94,15 +94,15 @@
     },
     "next-pa": {
       "new-pa": "Agregar otra persona afectada",
-      "save-pa": "Guardar a esta persona afectada"
+      "save-pa": "Guardar los datos de esta persona afectada"
     },
     "batch": {
-      "toolbar-queue-button": "{{nrRegistrations}} registros",
-      "menu-title": "Múltiples registros",
-      "menu-text-offline": "En este momento estás desconectado.",
-      "menu-text": "Los registros se almacenan dentro del navegador. Cuando la página web esté abierta y estés en línea, se cargarán automáticamente.",
-      "upload-alert-header": "Carga de registros.",
-      "upload-alert-message": "Ahora estás en línea. Subiendo {{nrRegistrations}} registros."
+      "toolbar-queue-button": "{{nrRegistrations}} Inscripciones",
+      "menu-title": "Múltiples inscripciones",
+      "menu-text-offline": "En este momento estás desconectado/a.",
+      "menu-text": "Las inscripciones se almacenan dentro del navegador. Cuando la página web esté abierta y estés en línea, se subirán al servidor automáticamente.",
+      "upload-alert-header": "Subiendo inscripciones al servidor.",
+      "upload-alert-message": "Ahora estás en línea. Subiendo {{nrRegistrations}} inscripciones al servidor."
     }
   },
   "q-and-a-set": {
