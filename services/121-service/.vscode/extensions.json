@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    "editorconfig.editorconfig",
+    "mikestead.dotenv",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "tombonnike.vscode-status-bar-format-toggle",
+    "whtouche.vscode-js-console-utils",
+    "sburg.vscode-javascript-booster",
+    "meganrogge.template-string-converter",
+    "redhat.vscode-yaml",
+    "sysoev.vscode-open-in-github",
+    "davidanson.vscode-markdownlint",
+    "bierner.markdown-mermaid",
+    "mechatroner.rainbow-csv"
+  ]
+}

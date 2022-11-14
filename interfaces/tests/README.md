@@ -6,15 +6,25 @@
 
 We use Cypress(<https://www.cypress.io/>) for integration tests and writing end-to-end UI tests.
 
+### Start test locally
+
+To run locally, make sure all interfaces and services are running
+- `npm run start:services` (from root)
+- `npm run start:interfaces` (from root)
+- Seed data (for current admin-login test not needed yet, but will be for any future test)
+- `npm run start:cypress` (from interfaces/test folder)
+- This will open up a window, where you can choose your preferred browser first in which the tests will run
+- Click one of the test files to start running all the tests in that file
+
 ### Configuration and set-up
 
 Cypress module is set-up under `interfaces/tests` in order to accumulate all the integration tests within one directory which should also make it a lot more efficient in future to implement CI/CD pipeline.
 
-We have 4 directories within `interfaces/tests/cypress/integration` named as each of the interfaces.
+We have 3 directories within `interfaces/tests/cypress/e2e` named as each of the interfaces.
 
 #### Configuration
 
-The Configuration for all the URLs is in `tests/cypress.json`.
+The Configuration for all the URLs is in `tests/cypress.config.js`.
 
 #### Base URL
 
@@ -34,10 +44,6 @@ beforeEach(() => {
   cy.server();
 });
 ```
-
-### Modules
-
-Installed `cypress v.5.5.0`.
 
 ### Guides
 
@@ -80,12 +86,6 @@ cy.route({
 ```
 
 After the above stub, we should also be wait for the code to be executed by `cy.wait('@programs')`, This will remove possibilities for conflicts due to order of execution.
-
-#### Start test
-
-In order to get started with executing tests we must make sure that the `interfaces` and `services` are running. They can be started by running commands `npm run start:services` and `npm run start:interfaces` from the root folder.
-
-Once the services and interfaces are up and running, we can start the cypress suite using `npm run start:cypress`.
 
 ### Further implementation with CI
 

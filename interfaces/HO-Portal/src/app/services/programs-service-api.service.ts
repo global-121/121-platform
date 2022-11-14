@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { environment } from '../../environments/environment';
 import { UserRole } from '../auth/user-role.enum';
+import RegistrationStatus from '../enums/registration-status.enum';
 import { ActionType, LatestAction } from '../models/actions.model';
 import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
 import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
-import { Note, PaStatus, Person } from '../models/person.model';
+import { Note, Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import {
   PaTableAttribute,
@@ -301,14 +302,14 @@ export class ProgramsServiceApiService {
   import(
     programId: number,
     file: File,
-    destination: PaStatus = PaStatus.imported,
+    destination: RegistrationStatus = RegistrationStatus.imported,
   ): Promise<ImportResult> {
     const formData = new FormData();
     formData.append('file', file);
 
     let path = `/programs/${programId}/registrations/import-bulk`;
 
-    if (destination === PaStatus.registered) {
+    if (destination === RegistrationStatus.registered) {
       path = `/programs/${programId}/registrations/import-registrations`;
     }
 
@@ -445,17 +446,10 @@ export class ProgramsServiceApiService {
 
   invite(
     programId: number | string,
-    phoneNumbers: string[],
+    referenceIds: string[],
     message: string,
   ): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      `/programs/${programId}/registrations/invite`,
-      {
-        phoneNumbers: JSON.stringify(phoneNumbers),
-        message,
-      },
-    );
+    return this.updatePaStatus('invite', programId, referenceIds, message);
   }
 
   include(

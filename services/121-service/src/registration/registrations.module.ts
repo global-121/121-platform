@@ -7,8 +7,13 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspModule } from '../fsp/fsp.module';
 import { LookupModule } from '../notifications/lookup/lookup.module';
 import { SmsModule } from '../notifications/sms/sms.module';
+import { TwilioMessageEntity } from '../notifications/twilio.entity';
+import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
 import { WhatsappModule } from '../notifications/whatsapp/whatsapp.module';
+import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
+import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -39,6 +44,11 @@ import { InlusionScoreService } from './services/inclusion-score.service';
       TransactionEntity,
       ProgramCustomAttributeEntity,
       TryWhatsappEntity,
+      PersonAffectedAppDataEntity,
+      WhatsappPendingMessageEntity,
+      TwilioMessageEntity,
+      ImageCodeExportVouchersEntity,
+      IntersolveBarcodeEntity,
     ]),
     UserModule,
     HttpModule,

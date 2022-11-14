@@ -21,7 +21,7 @@ Feature: Edit information on Person Affected
     When the user click the "information icon"
     Then a popup opens
     And in the title the ID-number of the Person Affected is mentioned
-    And an input-field for the "paymentAmountMultiplier" and "phoneNumber" is shown
+    And an input-field for the "paymentAmountMultiplier" and "phoneNumber" and "preferredLanguage" is shown
     And an input-field for each Custom Attribute is shown
     And an input-field for each FSP-attribute (such as "whatsappPhoneNumber") is shown
     And a dropdown-list with the current chosen FSP is shown
@@ -75,6 +75,16 @@ Feature: Edit information on Person Affected
     Then the update-button changes into a progress indicator
     And a feedback message with the specific requirements of the value is shown
     And the progress indicator changes into the update-button again
+
+  Scenario: Update preferredLanguage successfully
+    Given a logged-in user with "RegistrationPersonalREAD" permission
+    Given the user has opened the popup to edit information
+    Given an input-field for the "preferredLanguage" is shown
+    When the user selects a different option from the dropdown and presses the update-button
+    Then the update-button changes into a progress indicator
+    And the value of the input-field is written to the database
+    And the progress indicator changes into the update-button again
+    And the page refreshes
 
   Scenario: Update custom attributes successfully
     Given a logged-in user with "RegistrationPersonalREAD" permission

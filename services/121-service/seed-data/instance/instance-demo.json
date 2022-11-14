@@ -8,5 +8,48 @@
   },
   "contactDetails": {
     "en": "Contact us via WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/00000000000'>+000 00 00 00 00</a>"
+  },
+  "monitoringQuestion": {
+    "intro": {
+      "ar": "لتحسين عملية التسجيل الإلكترونية، الرجاء الإجابة عن السؤال التالي: <br><br> لقد قمت بهذا التسجيل...",
+      "en": "To improve this digital registration process, please answer this last question:   <br><br>   I did this registration...",
+      "nl": "Om dit digitale registratieproces te verbeteren, kan je antwoord geven op deze laatste vraag:   <br><br>   Ik heb deze registratie gedaan...",
+      "fr": "Pour améliorer ce processus d'inscription numérique, veuillez répondre à cette dernière question :  <br><br>   J'ai fait cet inscription..."
+    },
+    "options": [
+      {
+        "option": "no-help",
+        "label": {
+          "ar": "دون مساعدة",
+          "en": "without help",
+          "nl": "zonder hulp",
+          "fr": "sans aide "
+        }
+      },
+      {
+        "option": "some-help",
+        "label": {
+          "ar": "مع قليل من المساعدة",
+          "en": "with a little bit of help",
+          "nl": "met een beetje hulp",
+          "fr": "avec un peu d'aide"
+        }
+      },
+      {
+        "option": "lot-of-help",
+        "label": {
+          "ar": "احتجت الكثير من المساعدة",
+          "en": "with a lot of help",
+          "nl": "met erg veel hulp",
+          "fr": "avec beaucoup d'aide"
+        }
+      }
+    ],
+    "conclusion": {
+      "ar": "شكراً على مشاركتنا برأيك.",
+      "en": "Thank you for the feedback.",
+      "nl": "Bedankt voor je feedback.",
+      "fr": "Merci pour votre retour."
+    }
   }
 }

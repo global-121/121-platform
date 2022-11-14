@@ -15,6 +15,7 @@ export class RegistrationResponse {
   public inclusionDate: Date | null;
   public inclusionEndDate: Date | null;
   public rejectionDate: Date | null;
+  public deletedDate: Date | null;
 
   public status: RegistrationStatusEnum;
   public inclusionScore?: number;

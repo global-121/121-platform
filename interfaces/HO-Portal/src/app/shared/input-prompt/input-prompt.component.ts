@@ -10,13 +10,13 @@ import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 
 export interface InputProps {
-  checkbox: string;
-  checkboxChecked: boolean;
-  inputRequired: boolean;
+  checkbox?: string;
+  checkboxChecked?: boolean;
+  inputRequired?: boolean;
   explanation?: string;
   placeholder?: string | undefined;
   defaultValue?: string;
-  minLength: number;
+  minLength?: number;
 }
 
 @Component({
@@ -71,6 +71,13 @@ export class InputPromptComponent implements AfterViewInit {
       this.input &&
       this.input.value &&
       this.input.valid
+    ) {
+      return false;
+    }
+
+    if (
+      this.inputProps.explanation &&
+      this.inputProps.inputRequired === false
     ) {
       return false;
     }

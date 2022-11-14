@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsEnum,
   IsIn,
   IsInt,
   IsNotEmpty,
@@ -30,6 +31,11 @@ export class BulkImportDto {
   @Min(1)
   @IsOptional()
   public paymentAmountMultiplier: number;
+
+  @ApiProperty()
+  @IsEnum(LanguageEnum)
+  @IsOptional()
+  public preferredLanguage: LanguageEnum;
 }
 
 export class BulkImportResult extends BulkImportDto {

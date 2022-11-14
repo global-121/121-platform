@@ -11,6 +11,7 @@ Feature: Import people affected
     Then a CSV-file is downloaded
     And it contains 1 row of column names
     And it contains the column "phoneNumber"
+    And it contains the column "preferredLanguage"
     And the dynamic "programCustomAttributes" of that program
 
     When the program is not configured with a paymentAmountMultiplierFormula
@@ -18,7 +19,7 @@ Feature: Import people affected
 
   Scenario: Successfully Import People Affected
     Given a valid import CSV file is prepared
-    And it has columns "phoneNumber", and "paymentAmountMultiplier"
+    And it has columns "phoneNumber", and "paymentAmountMultiplier" and "preferredLanguage"
     And the dynamic "programCustomAttributes" of that program
     And it has as delimiter ";" or ","
     And the "paymentAmountMultiplier" column has only positive integers as values
@@ -37,7 +38,7 @@ Feature: Import people affected
     And it shows an "OK" button
     And it mentions that a CSV is automatically downloaded with the import-result per row.
     And a download window for this CSV is appearing
-    And the CSV contains the following columns "phoneNumber", "paymentAmountMultiplier", a column per custom attribute in the program, "importStatus", "registrationStatus"
+    And the CSV contains the following columns "phoneNumber", "paymentAmountMultiplier", "preferredLanguage" a column per custom attribute in the program, "importStatus", "registrationStatus"
 
     When the users clicks "OK" on the popup
     Then the popup disappears
@@ -59,7 +60,7 @@ Feature: Import people affected
     And a note was created
     When a new Person Affected starts registrations with this "phoneNumber" (see PA-app/New_registration.feature)
     Then a new row with status "Created" is shown in the PA-table in HO-portal
-    and the row with status "Imported" is also still shown, because without the phone-number the system cannot know yet they belong together
+    And the row with status "Imported" is also still shown, because without the phone-number the system cannot know yet they belong together
     When the Person Affected finishes registrations with using the known "phoneNumber"
     Then the two rows are merged into one row with status "Registered"
     And the "programCustomAttributes" are visible

@@ -17,10 +17,10 @@ Feature: Fill payment details
     And a "<ANSWER-TYPE>"-input is shown
 
     Examples:
-      | TYPE          | QUESTION-TYPE | ANSWER-TYPE |
-      | mobile-money  | phone-number  | tel         |
-      | bank          | national-id   | text        |
-      | no-attributes | -             | -           |
+      | TYPE          | QUESTION-TYPE  | ANSWER-TYPE |
+      | mobile-money  | Phone-number   | tel         |
+      | bank          | Open (default) | text field  |
+      | no-attributes | -              | -           |
 
   Scenario: Store payment details when filled in
     Given the PA selects a financial service provider from the list

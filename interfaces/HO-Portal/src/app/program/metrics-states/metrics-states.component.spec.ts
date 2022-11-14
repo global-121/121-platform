@@ -2,13 +2,10 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import apiProgramMetricsMock from 'src/app/mocks/api.program-metrics.mock';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
-import { getRandomInt, provideMagicalMock } from 'src/app/mocks/helpers';
-import { PaStatus } from 'src/app/models/person.model';
-import {
-  PeopleMetricsAttribute,
-  ProgramMetrics,
-} from 'src/app/models/program-metrics.model';
+import { provideMagicalMock } from 'src/app/mocks/helpers';
+import { ProgramMetrics } from 'src/app/models/program-metrics.model';
 import { Program } from 'src/app/models/program.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -47,22 +44,7 @@ describe('MetricsStatesComponent', () => {
   });
 
   const fixtureProgram = apiProgramsMock.programs[0];
-  const mockProgramMetrics: ProgramMetrics = {
-    updated: new Date().toISOString(),
-    pa: {
-      [PaStatus.imported]: getRandomInt(0, 100),
-      [PaStatus.invited]: getRandomInt(0, 100),
-      [PaStatus.noLongerEligible]: getRandomInt(0, 100),
-      [PaStatus.startedRegistration]: getRandomInt(0, 100),
-      [PaStatus.registered]: getRandomInt(0, 100),
-      [PaStatus.selectedForValidation]: getRandomInt(0, 100),
-      [PaStatus.validated]: getRandomInt(0, 100),
-      [PaStatus.included]: getRandomInt(0, 100),
-      [PaStatus.inclusionEnded]: getRandomInt(0, 100),
-      [PaStatus.rejected]: getRandomInt(0, 100),
-      [PeopleMetricsAttribute.totalPaHelped]: getRandomInt(0, 100),
-    },
-  };
+  const mockProgramMetrics: ProgramMetrics = apiProgramMetricsMock;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -112,22 +94,28 @@ describe('MetricsStatesComponent', () => {
   });
 
   it('should request the "to-date" metrics for the provided program', async () => {
+    // Arrange
     testHost.program = fixtureProgram;
 
+    // Act
     fixture.autoDetectChanges();
     await fixture.whenStable();
 
+    // Assert
     expect(mockProgramsApi.getMetricsById).toHaveBeenCalledWith(
       fixtureProgram.id,
     );
   });
 
   it('should request the "past-payments" data for the provided program', async () => {
+    // Arrange
     testHost.program = fixtureProgram;
 
+    // Act
     fixture.autoDetectChanges();
     await fixture.whenStable();
 
+    // Assert
     expect(mockPastPaymentsService.getPaymentsWithDates).toHaveBeenCalledWith(
       fixtureProgram.id,
     );
@@ -137,12 +125,15 @@ describe('MetricsStatesComponent', () => {
   });
 
   it('should request the specific metrics for the most-recent payment', async () => {
+    // Arrange
     testHost.program = fixtureProgram;
     const mockLastPaymentId = mockPastPayments[0].id;
 
+    // Act
     fixture.autoDetectChanges();
     await fixture.whenStable();
 
+    // Assert
     expect(mockProgramsApi.getMetricsByIdWithCondition).toHaveBeenCalledWith(
       fixtureProgram.id,
       `payment=${mockLastPaymentId}`,
@@ -150,9 +141,11 @@ describe('MetricsStatesComponent', () => {
   });
 
   it('should request the specific metrics for the most-recent month', async () => {
+    // Arrange
     testHost.program = fixtureProgram;
     const mockLastPaymentDate = new Date(mockPastPayments[0].paymentDate);
 
+    // Act
     fixture.autoDetectChanges();
     await fixture.whenStable();
 
@@ -163,11 +156,14 @@ describe('MetricsStatesComponent', () => {
   });
 
   it('should request the metrics (again) when triggered from the interface', async () => {
+    // Arrange
     testHost.program = fixtureProgram;
 
+    // Act
     fixture.autoDetectChanges();
     await fixture.whenStable();
 
+    // Assert
     expect(mockProgramsApi.getMetricsById).toHaveBeenCalledTimes(1);
     expect(mockProgramsApi.getMetricsByIdWithCondition).toHaveBeenCalledTimes(
       4,

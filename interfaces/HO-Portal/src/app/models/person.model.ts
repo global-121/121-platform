@@ -1,4 +1,5 @@
 import Permission from '../auth/permission.enum';
+import RegistrationStatus from '../enums/registration-status.enum';
 import { Attribute } from './attribute.model';
 import { PaymentColumnDetail } from './payment.model';
 import { ProgramPhase } from './program.model';
@@ -21,7 +22,7 @@ export class Person {
   inclusionDate?: string;
   inclusionEndDate?: string;
   rejectionDate?: string;
-  status: PaStatus;
+  status: RegistrationStatus;
   hasNote?: boolean;
   hasPhoneNumber?: boolean;
   fsp?: string;
@@ -35,7 +36,7 @@ export class PersonRow {
   referenceId: string;
   checkboxVisible: boolean;
   pa: string; // Display label
-  status: PaStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
+  status: RegistrationStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
   statusLabel: string;
   hasNote: boolean;
   hasPhoneNumber?: boolean;
@@ -57,20 +58,6 @@ export class PersonRow {
   preferredLanguage?: string | null;
   paTableAttributes?: Person['paTableAttributes'];
   paymentHistory?: PaymentColumnDetail;
-}
-
-export enum PaStatus {
-  imported = 'imported',
-  invited = 'invited',
-  noLongerEligible = 'noLongerEligible',
-  startedRegistration = 'startedRegistration',
-  registered = 'registered',
-  selectedForValidation = 'selectedForValidation',
-  registeredWhileNoLongerEligible = 'registeredWhileNoLongerEligible',
-  validated = 'validated',
-  included = 'included',
-  inclusionEnded = 'inclusionEnded',
-  rejected = 'rejected',
 }
 
 export class Note {
@@ -108,17 +95,17 @@ export class PersonTableColumn {
 }
 
 export const PA_STATUS_ORDER = [
-  { id: 1, name: PaStatus.startedRegistration },
-  { id: 2, name: PaStatus.imported },
-  { id: 3, name: PaStatus.invited },
-  { id: 4, name: PaStatus.registered },
-  { id: 5, name: PaStatus.selectedForValidation },
-  { id: 6, name: PaStatus.validated },
-  { id: 7, name: PaStatus.included },
-  { id: 8, name: PaStatus.inclusionEnded },
-  { id: 9, name: PaStatus.rejected },
-  { id: 10, name: PaStatus.noLongerEligible },
-  { id: 11, name: PaStatus.registeredWhileNoLongerEligible },
+  { id: 1, name: RegistrationStatus.startedRegistration },
+  { id: 2, name: RegistrationStatus.imported },
+  { id: 3, name: RegistrationStatus.invited },
+  { id: 4, name: RegistrationStatus.registered },
+  { id: 5, name: RegistrationStatus.selectedForValidation },
+  { id: 6, name: RegistrationStatus.validated },
+  { id: 7, name: RegistrationStatus.included },
+  { id: 8, name: RegistrationStatus.inclusionEnded },
+  { id: 9, name: RegistrationStatus.rejected },
+  { id: 10, name: RegistrationStatus.noLongerEligible },
+  { id: 11, name: RegistrationStatus.registeredWhileNoLongerEligible },
 ];
 
 export enum PersonDefaultAttributes {

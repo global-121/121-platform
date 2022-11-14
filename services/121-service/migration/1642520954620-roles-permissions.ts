@@ -36,7 +36,8 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
     );
     // Commit transaction because the tables are needed before the insert
     await queryRunner.commitTransaction();
-    await this.migrateData(queryRunner.connection);
+    // 08-11-2022 migrateData() is commented out as this was causing issues with new entities and legacy migrations.
+    // await this.migrateData(queryRunner.connection);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
   }
@@ -68,10 +69,11 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
 
   private async migrateData(connection: Connection): Promise<void> {
     const permissionsRepository = connection.getRepository(PermissionEntity);
-    const permissionEntities = [];
+    const permissionEntities: PermissionEntity[] = [];
     for (const permissionName of Object.values(PermissionEnum)) {
-      const permission = new PermissionEntity();
-      permission.name = permissionName as PermissionEnum;
+      const permission = {
+        name: permissionName as PermissionEnum
+      }
       const permissionEntity = await permissionsRepository.save(permission);
       permissionEntities.push(permissionEntity);
     }

@@ -1,4 +1,4 @@
-import { PaStatus } from './person.model';
+import RegistrationStatus from '../enums/registration-status.enum';
 
 export class ProgramMetrics {
   updated: string | Date;
@@ -10,16 +10,17 @@ export enum PeopleMetricsAttribute {
 }
 
 export class PeopleMetrics {
-  [PaStatus.imported]: number;
-  [PaStatus.invited]: number;
-  [PaStatus.noLongerEligible]: number;
-  [PaStatus.startedRegistration]: number;
-  [PaStatus.registered]: number;
-  [PaStatus.selectedForValidation]: number;
-  [PaStatus.validated]: number;
-  [PaStatus.included]: number;
-  [PaStatus.inclusionEnded]: number;
-  [PaStatus.rejected]: number;
+  [RegistrationStatus.imported]: number;
+  [RegistrationStatus.invited]: number;
+  [RegistrationStatus.noLongerEligible]: number;
+  [RegistrationStatus.startedRegistration]: number;
+  [RegistrationStatus.registered]: number;
+  [RegistrationStatus.selectedForValidation]: number;
+  [RegistrationStatus.validated]: number;
+  [RegistrationStatus.included]: number;
+  [RegistrationStatus.inclusionEnded]: number;
+  [RegistrationStatus.rejected]: number;
+  [RegistrationStatus.deleted]: number;
   [PeopleMetricsAttribute.totalPaHelped]: number;
 }
 

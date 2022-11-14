@@ -8,13 +8,14 @@ import {
   PopupPayoutDetails,
   SinglePayoutDetails,
 } from 'src/app/models/payment.model';
-import { PaStatus, Person, PersonRow } from 'src/app/models/person.model';
+import { Person, PersonRow } from 'src/app/models/person.model';
 import { Program } from 'src/app/models/program.model';
 import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
+import RegistrationStatus from '../../enums/registration-status.enum';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 import { StatusEnum } from './../../models/status.enum';
 
@@ -181,7 +182,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
     paymentRow: PaymentRowDetail,
   ): boolean {
     const permission = this.canDoSinglePayment;
-    const included = personRow.status === PaStatus.included;
+    const included = personRow.status === RegistrationStatus.included;
     const noPaymentDone = !paymentRow.transaction;
     const noFuturePayment = paymentRow.paymentIndex <= this.lastPaymentId;
     // Note, the number 5 is the same as allowed for the bulk payment as set in program-people-affected.component

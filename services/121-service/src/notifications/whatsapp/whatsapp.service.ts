@@ -44,8 +44,6 @@ export class WhatsappService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
-  @InjectRepository(WhatsappPendingMessageEntity)
-  public pendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
   @InjectRepository(TryWhatsappEntity)
@@ -121,7 +119,7 @@ export class WhatsappService {
     pendingMesssage.mediaUrl = mediaUrl;
     pendingMesssage.messageType = messageType;
     pendingMesssage.registrationId = registrationId;
-    this.pendingMessageRepo.save(pendingMesssage);
+    this.whatsappPendingMessageRepo.save(pendingMesssage);
 
     const registration = await this.registrationRepository.findOne(
       registrationId,
@@ -500,7 +498,7 @@ export class WhatsappService {
             message.mediaUrl,
             message.registrationId,
           ).then(() => {
-            this.pendingMessageRepo.remove(message);
+            this.whatsappPendingMessageRepo.remove(message);
           });
         }
       }

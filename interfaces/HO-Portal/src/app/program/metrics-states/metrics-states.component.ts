@@ -2,12 +2,12 @@ import { formatDate } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { saveAs } from 'file-saver';
-import { PaStatus } from 'src/app/models/person.model';
 import { ProgramMetrics } from 'src/app/models/program-metrics.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { getValueOrUnknown } from 'src/app/shared/get-value-helpers';
 import { environment } from '../../../environments/environment';
+import RegistrationStatus from '../../enums/registration-status.enum';
 import { PastPaymentsService } from '../../services/past-payments.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class MetricsStatesComponent implements OnChanges {
   public lastUpdated: Date | string;
 
   public paStates: {
-    name: PaStatus;
+    name: RegistrationStatus;
     enabled: boolean;
     label: string;
     explanation?: string;
@@ -90,25 +90,25 @@ export class MetricsStatesComponent implements OnChanges {
   private createPaStateColumns() {
     this.paStates = [
       {
-        name: PaStatus.imported,
+        name: RegistrationStatus.imported,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.imported'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.imported',
         ),
-        toDate: this.programMetrics.pa[PaStatus.imported],
+        toDate: this.programMetrics.pa[RegistrationStatus.imported],
       },
       {
-        name: PaStatus.invited,
+        name: RegistrationStatus.invited,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.invited'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.invited',
         ),
-        toDate: this.programMetrics.pa[PaStatus.invited],
+        toDate: this.programMetrics.pa[RegistrationStatus.invited],
       },
       {
-        name: PaStatus.noLongerEligible,
+        name: RegistrationStatus.noLongerEligible,
         enabled: true,
         label: this.translate.instant(
           'page.program.metrics.pa.noLongerEligible',
@@ -116,10 +116,10 @@ export class MetricsStatesComponent implements OnChanges {
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.noLongerEligible',
         ),
-        toDate: this.programMetrics.pa[PaStatus.noLongerEligible],
+        toDate: this.programMetrics.pa[RegistrationStatus.noLongerEligible],
       },
       {
-        name: PaStatus.startedRegistration,
+        name: RegistrationStatus.startedRegistration,
         enabled: true,
         label: this.translate.instant(
           'page.program.metrics.pa.startedRegistration',
@@ -127,19 +127,19 @@ export class MetricsStatesComponent implements OnChanges {
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.startedRegistration',
         ),
-        toDate: this.programMetrics.pa[PaStatus.startedRegistration],
+        toDate: this.programMetrics.pa[RegistrationStatus.startedRegistration],
       },
       {
-        name: PaStatus.registered,
+        name: RegistrationStatus.registered,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.registered'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.registered',
         ),
-        toDate: this.programMetrics.pa[PaStatus.registered],
+        toDate: this.programMetrics.pa[RegistrationStatus.registered],
       },
       {
-        name: PaStatus.selectedForValidation,
+        name: RegistrationStatus.selectedForValidation,
         enabled: this.program.validation,
         label: this.translate.instant(
           'page.program.metrics.pa.selectedForValidation',
@@ -147,43 +147,53 @@ export class MetricsStatesComponent implements OnChanges {
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.selectedForValidation',
         ),
-        toDate: this.programMetrics.pa[PaStatus.selectedForValidation],
+        toDate:
+          this.programMetrics.pa[RegistrationStatus.selectedForValidation],
       },
       {
-        name: PaStatus.validated,
+        name: RegistrationStatus.validated,
         enabled: this.program.validation,
         label: this.translate.instant('page.program.metrics.pa.validated'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.validated',
         ),
-        toDate: this.programMetrics.pa[PaStatus.validated],
+        toDate: this.programMetrics.pa[RegistrationStatus.validated],
       },
       {
-        name: PaStatus.included,
+        name: RegistrationStatus.included,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.included'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.included',
         ),
-        toDate: this.programMetrics.pa[PaStatus.included],
+        toDate: this.programMetrics.pa[RegistrationStatus.included],
       },
       {
-        name: PaStatus.inclusionEnded,
+        name: RegistrationStatus.inclusionEnded,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.inclusionEnded'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.inclusionEnded',
         ),
-        toDate: this.programMetrics.pa[PaStatus.inclusionEnded],
+        toDate: this.programMetrics.pa[RegistrationStatus.inclusionEnded],
       },
       {
-        name: PaStatus.rejected,
+        name: RegistrationStatus.rejected,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.rejected'),
         explanation: this.translate.instant(
           'page.program.metrics.state-explanation.rejected',
         ),
-        toDate: this.programMetrics.pa[PaStatus.rejected],
+        toDate: this.programMetrics.pa[RegistrationStatus.rejected],
+      },
+      {
+        name: RegistrationStatus.deleted,
+        enabled: true,
+        label: this.translate.instant('page.program.metrics.pa.deleted'),
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.deleted',
+        ),
+        toDate: this.programMetrics.pa[RegistrationStatus.deleted],
       },
     ];
     // Filter out disabled collumns:

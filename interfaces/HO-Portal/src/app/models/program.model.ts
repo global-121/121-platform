@@ -32,6 +32,7 @@ export class Program {
   programCustomAttributes: ProgramCustomAttribute[];
   programQuestions: ProgramQuestion[];
   editableAttributes?: Attribute[];
+  notifications: string | TranslatableString;
 }
 
 export class ProgramStats {

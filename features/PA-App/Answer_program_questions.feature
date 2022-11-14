@@ -44,12 +44,12 @@ Feature: Answer program questions
       | ANSWER-VALUE           | FEEDBACK-TYPE         | CONTINUE? |
       | "0"                    | none                  | yes       |
       | "123"                  | none                  | yes       |
-      | "12 34 56"             | "number only" message | no        |
-      | "123abc"               | "number only" message | no        |
-      | "abc"                  | "number only" message | no        |
-      | "  " (only whitespace) | "number only" message | no        |
+      | "12 34 56"             | unable to enter value | no        |
+      | "123abc"               | unable to enter value | no        |
+      | "abc"                  | unable to enter value | no        |
+      | "  " (only whitespace) | unable to enter value | no        |
       | "" (empty)             | "number only" message | no        |
-  
+
   Scenario Outline: Answer "Multi select" question
     When the PA needs to answer a "Multi select" question
     Then it should always included "none" as one of the options

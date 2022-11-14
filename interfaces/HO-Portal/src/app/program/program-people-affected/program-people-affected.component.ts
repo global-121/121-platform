@@ -24,7 +24,6 @@ import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import { AnswerType } from 'src/app/models/fsp.model';
 import { PaymentColumnDetail } from 'src/app/models/payment.model';
 import {
-  PaStatus,
   PA_STATUS_ORDER,
   Person,
   PersonRow,
@@ -49,6 +48,7 @@ import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
+import RegistrationStatus from '../../enums/registration-status.enum';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
@@ -259,8 +259,14 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         'page.program.program-people-affected.actions.delete-pa',
       ),
       permissions: [Permission.RegistrationDELETE],
-      phases: [ProgramPhase.registrationValidation],
+      phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
       showIfNoValidation: true,
+      confirmConditions: {
+        inputRequired: false,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.delete-warning',
+        ),
+      },
     },
     {
       id: BulkActionId.divider,
@@ -834,26 +840,26 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     switch (this.thisPhase) {
       case ProgramPhase.registrationValidation:
         this.tableFilter.paStatus.selected = [
-          PaStatus.imported,
-          PaStatus.invited,
-          PaStatus.startedRegistration,
-          PaStatus.selectedForValidation,
-          PaStatus.registered,
-          PaStatus.noLongerEligible,
-          PaStatus.registeredWhileNoLongerEligible,
+          RegistrationStatus.imported,
+          RegistrationStatus.invited,
+          RegistrationStatus.startedRegistration,
+          RegistrationStatus.selectedForValidation,
+          RegistrationStatus.registered,
+          RegistrationStatus.noLongerEligible,
+          RegistrationStatus.registeredWhileNoLongerEligible,
         ];
         break;
       case ProgramPhase.inclusion:
         this.tableFilter.paStatus.selected = [
-          PaStatus.validated,
-          PaStatus.registered,
-          PaStatus.selectedForValidation,
-          PaStatus.rejected,
-          PaStatus.inclusionEnded,
+          RegistrationStatus.validated,
+          RegistrationStatus.registered,
+          RegistrationStatus.selectedForValidation,
+          RegistrationStatus.rejected,
+          RegistrationStatus.inclusionEnded,
         ];
         break;
       case ProgramPhase.payment:
-        this.tableFilter.paStatus.selected = [PaStatus.included];
+        this.tableFilter.paStatus.selected = [RegistrationStatus.included];
         break;
     }
 
@@ -1221,7 +1227,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   public enableSinglePayment(row: PersonRow, column): boolean {
     const permission = this.canDoSinglePayment;
-    const included = row.status === PaStatus.included;
+    const included = row.status === RegistrationStatus.included;
     const noPaymentDone = !row[column.prop];
     const noFuturePayment = column.paymentIndex <= this.lastPaymentId;
     const onlyLast3Payments = column.paymentIndex > this.lastPaymentId - 3;
@@ -1307,41 +1313,46 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   public async applyAction(confirmInput?: string) {
     this.isInProgress = true;
-    await this.bulkActionService.applyAction(
-      this.action,
-      this.programId,
-      this.selectedPeople,
-      { message: confirmInput },
-    );
+    await this.bulkActionService
+      .applyAction(this.action, this.programId, this.selectedPeople, {
+        message: confirmInput,
+      })
+      .then(() => {
+        const actionStatus = {
+          [BulkActionId.invite]: RegistrationStatus.invited,
+          [BulkActionId.selectForValidation]:
+            RegistrationStatus.selectedForValidation,
+          [BulkActionId.include]: RegistrationStatus.included,
+          [BulkActionId.endInclusion]: RegistrationStatus.inclusionEnded,
+          [BulkActionId.reject]: RegistrationStatus.rejected,
+          [BulkActionId.markNoLongerEligible]:
+            RegistrationStatus.noLongerEligible,
+        };
 
-    const actionStatus = {
-      [BulkActionId.invite]: PaStatus.invited,
-      [BulkActionId.selectForValidation]: PaStatus.selectedForValidation,
-      [BulkActionId.include]: PaStatus.included,
-      [BulkActionId.endInclusion]: PaStatus.inclusionEnded,
-      [BulkActionId.reject]: PaStatus.rejected,
-      [BulkActionId.markNoLongerEligible]: PaStatus.noLongerEligible,
-    };
-
-    if (actionStatus[this.action]) {
-      this.actionResult(
-        `<p>${this.translate.instant(
-          'page.program.program-people-affected.status-changed',
-          {
-            pastatus: this.translate
-              .instant(
-                'page.program.program-people-affected.status.' +
-                  actionStatus[this.action],
-              )
-              .toLowerCase(),
-            panumber: this.selectedPeople.length,
-          },
-        )}
-          <p>${this.translate.instant(
-            'page.program.program-people-affected.pa-moved-phase',
-          )}</p>`,
-      );
-    }
+        if (actionStatus[this.action]) {
+          this.actionResult(
+            `<p>${this.translate.instant(
+              'page.program.program-people-affected.status-changed',
+              {
+                pastatus: this.translate
+                  .instant(
+                    'page.program.program-people-affected.status.' +
+                      actionStatus[this.action],
+                  )
+                  .toLowerCase(),
+                panumber: this.selectedPeople.length,
+              },
+            )}
+              <p>${this.translate.instant(
+                'page.program.program-people-affected.pa-moved-phase',
+              )}</p>`,
+          );
+        }
+      })
+      .catch((error) => {
+        console.log('Error:', error);
+        this.actionResult(error.error.errors.join('<br><br>'));
+      });
 
     this.isInProgress = false;
 
@@ -1420,7 +1431,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     return this.allPeopleAffected.filter((pa) => pa.status === paStatus).length;
   }
 
-  private setPaStatusFilter(filter: PaStatus[]) {
+  private setPaStatusFilter(filter: RegistrationStatus[]) {
     if (this.tableFilter.paStatus.selected === filter) {
       return;
     }
@@ -1458,7 +1469,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.updateProxyScrollbarSize();
   }
 
-  public applyPaStatusFilter($event: PaStatus[]) {
+  public applyPaStatusFilter($event: RegistrationStatus[]) {
     if (!$event) {
       return;
     }

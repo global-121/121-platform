@@ -182,6 +182,7 @@ export class ExportMetricsService {
       programId,
       relationOptions,
       registrationStatus,
+      exportType,
     );
 
     let payments;
@@ -221,6 +222,17 @@ export class ExportMetricsService {
         'financialServiceProviders.questions',
       ],
     });
+    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
+      programId,
+    );
+    for (const programCustomAttr of programCustomAttrs) {
+      const relationOption = new RegistrationDataOptions();
+      relationOption.name = programCustomAttr.name;
+      relationOption.relation = {
+        programCustomAttributeId: programCustomAttr.id,
+      };
+      relationOptions.push(relationOption);
+    }
     for (const programQuestion of program.programQuestions) {
       if (
         JSON.parse(JSON.stringify(programQuestion.export)).includes(
@@ -248,17 +260,6 @@ export class ExportMetricsService {
         relationOption.relation = { fspQuestionId: fspQuestion.id };
         relationOptions.push(relationOption);
       }
-    }
-    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
-      programId,
-    );
-    for (const programCustomAttr of programCustomAttrs) {
-      const relationOption = new RegistrationDataOptions();
-      relationOption.name = programCustomAttr.name;
-      relationOption.relation = {
-        programCustomAttributeId: programCustomAttr.id,
-      };
-      relationOptions.push(relationOption);
     }
     return relationOptions;
   }
@@ -386,22 +387,31 @@ export class ExportMetricsService {
     programId: number,
     relationOptions: RegistrationDataOptions[],
     status?: RegistrationStatusEnum,
+    exportType?: ExportType,
   ): Promise<object[]> {
     let query = this.registrationRepository
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
         `registration."id"`,
-        `registration."${GenericAttributes.phoneNumber}"`,
-        `registration."${GenericAttributes.paymentAmountMultiplier}"`,
-        `registration."${GenericAttributes.preferredLanguage}"`,
-        `registration."note"`,
         `registration."registrationStatus" as status`,
-        `registration."referenceId" as "referenceId"`,
+        `registration."${GenericAttributes.phoneNumber}"`,
+        `registration."${GenericAttributes.preferredLanguage}"`,
+        `registration."${GenericAttributes.paymentAmountMultiplier}"`,
         `fsp.fsp as financialServiceProvider`,
+        `registration."note"`,
+        `registration."referenceId" as "referenceId"`,
       ])
       .andWhere({ programId: programId })
       .orderBy('"registration"."id"', 'ASC');
+    if (exportType !== ExportType.allPeopleAffected) {
+      query = query.andWhere(
+        'registration."registrationStatus" != :registrationStatus',
+        {
+          registrationStatus: RegistrationStatusEnum.deleted,
+        },
+      );
+    }
     if (status) {
       query = query.andWhere({ registrationStatus: status });
     }
@@ -707,6 +717,7 @@ export class ExportMetricsService {
     const registrations = await this.registrationsService.getRegistrationsForProgram(
       programId,
       false,
+      true,
     );
 
     const metrics: PaMetrics = {
@@ -798,8 +809,16 @@ export class ExportMetricsService {
         year,
         fromStart,
       ),
-      [PaMetricsProperty.totalPaHelped]: await this.getTotalPaHelped(
+      [RegistrationStatusEnum.deleted]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
+        registrations,
+        RegistrationStatusEnum.deleted,
+        payment,
+        month,
+        year,
+        fromStart,
+      ),
+      [PaMetricsProperty.totalPaHelped]: await this.getTotalPaHelped(
         payment,
         month,
         year,
@@ -869,7 +888,6 @@ export class ExportMetricsService {
   }
 
   public async getTotalPaHelped(
-    programId: number,
     payment?: number,
     month?: number,
     year?: number,

@@ -10,7 +10,8 @@ export class processNewCustomAttributePermission1644332255958
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Commit transaction because the tables are needed before the insert
     await queryRunner.commitTransaction();
-    await this.migrateData(queryRunner.connection);
+    // 08-11-2022 migrateData() is commented out as this was causing issues with new entities and legacy migrations.
+    // await this.migrateData(queryRunner.connection);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
   }

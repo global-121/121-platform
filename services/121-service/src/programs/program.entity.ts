@@ -1,5 +1,4 @@
 import {
-  BeforeUpdate,
   Column,
   Entity,
   getConnection,
@@ -100,18 +99,10 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ default: true })
   public validation: boolean;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public updated: Date;
-
   @Column('json', { nullable: true, default: null })
   public aboutProgram: JSON;
 
   public editableAttributes?: Attribute[];
-
-  @BeforeUpdate()
-  public updateTimestamp(): void {
-    this.updated = new Date();
-  }
 
   @OneToMany(
     () => ProgramAidworkerAssignmentEntity,
@@ -169,6 +160,11 @@ export class ProgramEntity extends CascadeDeleteEntity {
       return { type: AnswerTypes.numeric };
     } else if (name === Attributes.phoneNumber) {
       return { type: AnswerTypes.tel };
+    } else if (name === Attributes.preferredLanguage) {
+      return {
+        type: AnswerTypes.dropdown,
+        options: await this.getPreferredLanguageOptions(),
+      };
     }
 
     const repo = getConnection().getRepository(ProgramEntity);
@@ -248,5 +244,16 @@ export class ProgramEntity extends CascadeDeleteEntity {
     } else {
       return new ValidationInfo();
     }
+  }
+
+  private async getPreferredLanguageOptions(): Promise<object[]> {
+    const repo = getConnection().getRepository(ProgramEntity);
+    const program = await repo.findOne(this.id);
+
+    return Object.keys(program.notifications).map(key => {
+      return {
+        option: key,
+      };
+    });
   }
 }

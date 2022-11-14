@@ -10,6 +10,7 @@ export enum RegistrationStatusEnum {
   noLongerEligible = 'noLongerEligible',
   registeredWhileNoLongerEligible = 'registeredWhileNoLongerEligible',
   inclusionEnded = 'inclusionEnded',
+  deleted = 'deleted',
 }
 
 export enum RegistrationStatusTimestampField {
@@ -25,4 +26,5 @@ export enum RegistrationStatusTimestampField {
   inclusionEndDate = 'inclusionEndDate',
   rejectionDate = 'rejectionDate',
   registeredWhileNoLongerEligibleDate = 'registeredWhileNoLongerEligibleDate',
+  deleteDate = 'deleteDate',
 }
