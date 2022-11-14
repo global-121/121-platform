@@ -54,11 +54,11 @@ jobs:
       run: npm run start:interfaces:cypress
 
 
-    - name: Sleep for 30 seconds
+    - name: Sleep for 120 seconds
       run: sleep 120s
       shell: bash
 
-    - name: Curl 2
+    - name: Curl test
       run: curl -I http://localhost:8888
 
     - name: Run integration tests with cypress.
