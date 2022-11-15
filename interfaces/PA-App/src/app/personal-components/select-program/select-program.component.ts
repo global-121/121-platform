@@ -4,6 +4,7 @@ import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { QueryParamService } from 'src/app/services/query-param.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import {
   LoggingEvent,
@@ -33,6 +34,7 @@ export class SelectProgramComponent extends PersonalDirective {
     public translatableString: TranslatableStringService,
     private modalController: ModalController,
     private logger: LoggingService,
+    private queryParamsService: QueryParamService,
   ) {
     super();
   }
@@ -61,6 +63,15 @@ export class SelectProgramComponent extends PersonalDirective {
     this.conversationService.startLoading();
 
     this.programs = await this.paData.getAllPrograms();
+
+    const queryParams =
+      await this.queryParamsService.getProgramIdsByQueryParam();
+    if (queryParams.length > 0) {
+      this.programs = this.programs.filter((program) =>
+        queryParams.includes(program.id.toString()),
+      );
+    }
+
     this.programs = this.translateProgramProperties(this.programs);
 
     this.conversationService.stopLoading();
