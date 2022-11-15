@@ -28,8 +28,6 @@ jobs:
       run: whereis sed
     - name: Sed help
       run: /bin/sed --help
-    - name: Install sed
-      run: sudo apt-get install sed
     - name: Overwrite .env varables
       run: /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example && \
           /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example && \
