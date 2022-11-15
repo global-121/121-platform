@@ -10,7 +10,7 @@ Feature: View and manage people affected (generic features)
     Then a table with all PAs of that program is shown
     And depending on the "selected phase" only current people affected with given "PA statuses" are shown (see Scenario: Filter rows of PA-table by People Affected status)
     And for each person the "Select" column is empty
-    And for each person a "PA identifier" is shown
+    And for each person a "PA identifier" is shown and this is an auto-increment number per registration starting from 1 per program
     And it has a clickable "i" button in front of it, which opens a popup
     And depending on the "selected phase" other columns are shown (see detailed scenarios below)
     And above the table a list of "bulk actions" is shown
