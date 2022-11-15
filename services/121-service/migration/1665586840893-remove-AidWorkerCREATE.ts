@@ -5,7 +5,8 @@ import { PermissionEntity } from '../src/user/permissions.entity';
 export class removeAidWorkerCREATE1665586840893 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.commitTransaction();
-    await this.migrateData(queryRunner.connection);
+    // 08-11-2022 migrateData() is commented out as this was causing issues with new entities and legacy migrations.
+    // await this.migrateData(queryRunner.connection);
     await queryRunner.startTransaction();
   }
 

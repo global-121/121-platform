@@ -556,4 +556,25 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       }
     }
   }
+
+  public async getFullName(): Promise<string> {
+    const repoProgram = getConnection().getRepository(ProgramEntity);
+    let fullName = '';
+    const fullnameConcat = [];
+    const program = await repoProgram.findOne(this.programId);
+    if (program && program.fullnameNamingConvention) {
+      for (const nameColumn of JSON.parse(
+        JSON.stringify(program.fullnameNamingConvention),
+      )) {
+        const singleName = await this.getRegistrationDataValueByName(
+          nameColumn,
+        );
+        if (singleName) {
+          fullnameConcat.push(singleName);
+        }
+      }
+      fullName = fullnameConcat.join(' ');
+    }
+    return fullName;
+  }
 }
