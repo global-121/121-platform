@@ -3,7 +3,7 @@ name: "Cypress tests"
 on:
   pull_request:
     branches:
-      - master
+      - 'master'
     paths:
       - 'interfaces/AW-App/**'
       - 'interfaces/HO-Portal/**'
