@@ -32,19 +32,17 @@ jobs:
           interfaces/AW-App/package-lock.json
           interfaces/PA-App/package-lock.json
 
-    - name: Install sed
-      run: apt-get install sed
     - name: Overwrite .env varables
-      run: sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example && \
-          sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example && \
-          sed -i '/^ENV_NAME=/s/=.*/=Cypress/' ./services/.env.example && \
-          sed -i '/^RESET_SECRET=/s/=.*/=password/' ./services/.env.example && \
-          sed -i '/^ORMCONFIG_121_SERVICE_PASSWORD=/s/=.*/=global121/' ./services/.env.example && \
-          sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example && \
-          sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example && \
-          sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
-
-    - name: Set .env
+      run: >
+        /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example &&
+        /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example &&
+        /bin/sed -i '/^ENV_NAME=/s/=.*/=Cypress/' ./services/.env.example &&
+        /bin/sed -i '/^RESET_SECRET=/s/=.*/=password/' ./services/.env.example &&
+        /bin/sed -i '/^ORMCONFIG_121_SERVICE_PASSWORD=/s/=.*/=global121/' ./services/.env.example &&
+        /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example &&
+        /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example &&
+        /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
+    - name: Copy .env.example to .env
       run: cp ./services/.env.example services/.env
 
     - name: Start services
