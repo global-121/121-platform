@@ -122,8 +122,6 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   )
   public whatsappPendingMessages: WhatsappPendingMessageEntity[];
 
-  private saveRetriesCount = 0;
-
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     await this.deleteAllOneToMany([
@@ -525,17 +523,18 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     throw new RegistrationDataSaveError(errorMessage);
   }
 
+  private saveRetriesCount = 0;
   public async save(): Promise<RegistrationEntity> {
     const regRepo = getConnection().getRepository(RegistrationEntity);
-    const query = regRepo
-      .createQueryBuilder('r')
-      .select('r."registrationProgramId"')
-      .where('r.programId = :programId', { programId: this.program.id })
-      .andWhere('r.registrationProgramId is not null')
-      .orderBy('r."registrationProgramId"', 'DESC')
-      .limit(1);
-    const result = await query.getRawOne();
     if (!this.registrationProgramId) {
+      const query = regRepo
+        .createQueryBuilder('r')
+        .select('r."registrationProgramId"')
+        .where('r.programId = :programId', { programId: this.program.id })
+        .andWhere('r.registrationProgramId is not null')
+        .orderBy('r."registrationProgramId"', 'DESC')
+        .limit(1);
+      const result = await query.getRawOne();
       this.registrationProgramId = result
         ? result.registrationProgramId + 1
         : 1;
@@ -547,6 +546,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
         // This is the error code for unique_violation (see: https://www.postgresql.org/docs/current/errcodes-appendix.html)
         if (error['code'] === '23505' && this.saveRetriesCount < 3) {
           this.saveRetriesCount++;
+          this.registrationProgramId = null;
           await this.save();
         }
         if (this.saveRetriesCount >= 3) {

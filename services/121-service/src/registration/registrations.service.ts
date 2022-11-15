@@ -421,7 +421,6 @@ export class RegistrationsService {
 
     // If imported registration found ..
     // .. then transfer relevant attributes from imported registration to current registration
-
     for (const d of registrationData) {
       const relation = new RegistrationDataRelation();
       relation.fspQuestionId = d.fspQuestionId;
