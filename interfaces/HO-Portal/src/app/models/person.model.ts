@@ -29,6 +29,7 @@ export class Person {
   paymentAmountMultiplier?: number;
   preferredLanguage?: LanguageEnum;
   paTableAttributes?: Attribute[];
+  registrationProgramId: number;
 }
 
 // Model for display (in table)

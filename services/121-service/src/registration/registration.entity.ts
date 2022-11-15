@@ -9,6 +9,8 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  QueryFailedError,
+  Unique,
 } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
@@ -31,6 +33,7 @@ import { RegistrationDataSaveError } from './errors/registration-data.error';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 
+@Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Entity('registration')
 export class RegistrationEntity extends CascadeDeleteEntity {
   @ManyToOne(
@@ -90,6 +93,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   @Column({ nullable: true })
   public noteUpdated: Date;
+
+  /** This is an "auto" incrementing field with a registration ID per program. */
+  @Column()
+  public registrationProgramId: number;
 
   @OneToMany(
     _type => TransactionEntity,
@@ -514,6 +521,40 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     }
     const errorMessage = `Cannot save registration data, name: '${name}' not found (In program questions, fsp questions, monitoring questions and program custom attributes)`;
     throw new RegistrationDataSaveError(errorMessage);
+  }
+
+  private saveRetriesCount = 0;
+  public async save(): Promise<RegistrationEntity> {
+    const regRepo = getConnection().getRepository(RegistrationEntity);
+    if (!this.registrationProgramId) {
+      const query = regRepo
+        .createQueryBuilder('r')
+        .select('r."registrationProgramId"')
+        .where('r.programId = :programId', { programId: this.program.id })
+        .andWhere('r.registrationProgramId is not null')
+        .orderBy('r."registrationProgramId"', 'DESC')
+        .limit(1);
+      const result = await query.getRawOne();
+      this.registrationProgramId = result
+        ? result.registrationProgramId + 1
+        : 1;
+    }
+    try {
+      return await regRepo.save(this);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        // This is the error code for unique_violation (see: https://www.postgresql.org/docs/current/errcodes-appendix.html)
+        if (error['code'] === '23505' && this.saveRetriesCount < 3) {
+          this.saveRetriesCount++;
+          this.registrationProgramId = null;
+          await this.save();
+        }
+        if (this.saveRetriesCount >= 3) {
+          this.saveRetriesCount = 0;
+          throw error;
+        }
+      }
+    }
   }
 
   public async getFullName(): Promise<string> {

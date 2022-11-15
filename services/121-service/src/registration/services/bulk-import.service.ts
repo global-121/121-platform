@@ -124,9 +124,7 @@ export class BulkImportService {
       }
       newRegistration.program = program;
 
-      const savedRegistration = await this.registrationRepository.save(
-        newRegistration,
-      );
+      const savedRegistration = await newRegistration.save();
       programCustomAttributes.forEach(async att => {
         if (record[att.name]) {
           const data = new RegistrationDataEntity();
@@ -263,9 +261,12 @@ export class BulkImportService {
       registrations.push(registration);
       customDataList.push(customData);
     }
-    const savedRegistrations = await this.registrationRepository.save(
-      registrations,
-    );
+
+    let savedRegistrations = [];
+    for await (const registration of registrations) {
+      savedRegistrations.push(await registration.save());
+    }
+
     // Update status and save again (otherwise 'registration.subscriber' doesn't work)
     savedRegistrations.forEach(
       r => (r.registrationStatus = RegistrationStatusEnum.registered),

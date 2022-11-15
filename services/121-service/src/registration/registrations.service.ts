@@ -120,7 +120,7 @@ export class RegistrationsService {
     registration.referenceId = postData.referenceId;
     registration.user = user;
     registration.program = await this.programRepository.findOne(programId);
-    await this.registrationRepository.save(registration);
+    await registration.save();
     return this.setRegistrationStatus(
       postData.referenceId,
       RegistrationStatusEnum.startedRegistration,
@@ -421,7 +421,6 @@ export class RegistrationsService {
 
     // If imported registration found ..
     // .. then transfer relevant attributes from imported registration to current registration
-
     for (const d of registrationData) {
       const relation = new RegistrationDataRelation();
       relation.fspQuestionId = d.fspQuestionId;
@@ -705,8 +704,9 @@ export class RegistrationsService {
     let q = await this.registrationRepository
       .createQueryBuilder('registration')
       .select('registration.id', 'id')
-      .distinctOn(['registration.id'])
-      .orderBy(`registration.id`, 'ASC')
+      .addSelect('registration.registrationProgramId', 'registrationProgramId')
+      .distinctOn(['registration.registrationProgramId'])
+      .orderBy(`registration.registrationProgramId`, 'ASC')
       .addSelect('registration.referenceId', 'referenceId')
       .addSelect('registration.registrationStatus', 'status')
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
