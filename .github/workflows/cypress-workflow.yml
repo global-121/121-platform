@@ -12,6 +12,17 @@ on:
       - '!**.spec.ts'
       - '!**.md'
       - '!**.js'
+  push:
+    branches:
+      - 'release/*'
+    paths:
+      - 'interfaces/AW-App/**'
+      - 'interfaces/HO-Portal/**'
+      - 'interfaces/PA-App/**'
+      - 'services/121-service/**'
+      - '!**.spec.ts'
+      - '!**.md'
+      - '!**.js'
 
 jobs:
   test:
