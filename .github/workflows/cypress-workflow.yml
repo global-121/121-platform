@@ -26,6 +26,8 @@ jobs:
 
     - name: Where
       run: whereis sed
+    - name: Sed help
+      run: /bin/sed --help
     - name: Install sed
       run: sudo apt-get install sed
     - name: Overwrite .env varables
