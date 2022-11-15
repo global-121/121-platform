@@ -29,8 +29,8 @@ export class ActionService {
     const program = await this.programRepository.findOne(programId);
     action.program = program;
 
-    const newAction3 = await this.actionRepository.save(action);
-    return newAction3;
+    const newAction = await this.actionRepository.save(action);
+    return newAction;
   }
 
   public async getLatestActions(
