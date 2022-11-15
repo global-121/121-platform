@@ -5,17 +5,21 @@
   "location": "Nederland",
   "ngo": "NLRC",
   "titlePortal": {
-    "en": "NLRC Direct Digital Aid (LVV)"
+    "en": "NLRC Direct Digital Aid (LVV)",
+    "pt_BR": "Auxílio Digital Direto NLRC (LVV)"
   },
   "titlePaApp": {
     "en": "Red Cross Digital Voucher Support",
-    "nl": "Rode Kruis Digitale Voucherhulp "
+    "nl": "Rode Kruis Digitale Voucherhulp ",
+    "pt_BR": "Suporte para vouchers digitais da Cruz Vermelha"
   },
   "description": {
-    "en": ""
+    "en": "",
+    "pt_BR": ""
   },
   "descCashType": {
-    "en": "Unconditional multi-purpose"
+    "en": "Unconditional multi-purpose",
+    "pt_BR": "Multiuso incondicional"
   },
   "startDate": "2020-01-01T12:00:00Z",
   "endDate": "2022-12-31T12:00:00Z",
@@ -36,7 +40,8 @@
   "highestScoresX": 250,
   "tryWhatsAppFirst": true,
   "meetingDocuments": {
-    "en": ""
+    "en": "",
+    "pt_BR": ""
   },
   "notifications": {
     "ar": {
@@ -77,13 +82,22 @@
       "whatsappVoucher": "Éste es un mensaje de la Cruz Roja.\n\nCon este mensaje recibirá:\n1. Un bono del supermercado Albert Heijn (cadeaukaart): ésta es la imagen con el código de barras.\n2. Una explicación sobre cómo utilizar el bono en Albert Heijn.\n\nSi recibió más de un cupón, esto se debe a que aún no había recibido los cupones de las semanas anteriores.\n\nEl valor de cada bono es de {{1}} €.\nPuede gastar los cupones en cualquier supermercado Albert Heijn de los Países Bajos.\n\nNo tiene que gastarlo todo a la vez. Conserve los cupones y reutilícelos hasta que se acaben los {{1}} € de cada cupón.\n\nRecibirá su bono de Albert Heijn de {{1}} € cada semana los martes hasta que:\n1. Ya no esté en la lista de nuestras organizaciones asociadas.\n2. El final del programa (se le informará con dos semanas de antelación).\n\n¿Tienes preguntas? Envíanos un mensaje en WhatsApp: https://wa.me/31614458781",
       "whatsappVoucherMultiple": "Éste es un mensaje de la Cruz Roja.\n\nCon este mensaje recibirá:\n1. Un bono del supermercado Albert Heijn (cadeaukaart): ésta es la imagen con el código de barras.\n2. Una explicación sobre cómo utilizar el bono en Albert Heijn.\n\nSi recibió más de un cupón, esto se debe a que:\n1. No ha recibido bonos de semanas anteriores\n2. Un amigo o familiar esta registrado con el mismo número de teléfono.\nEsto sucede cuando él / ella también está incluido en la lista de la organización asociada para recibir el bono.\n\nEl valor de cada bono es de {{1}} €.\nPuede gastar los cupones en cualquier supermercado Albert Heijn de los Países Bajos.\n\nNo tiene que gastarlo todo a la vez. Conserve los cupones y reutilícelos hasta que se acaben los {{1}} € de cada cupón.\n\nRecibirá su bono de Albert Heijn de {{1}} € cada semana los martes hasta que:\n1. Ya no esté en la lista de nuestras organizaciones asociadas.\n2. El final del programa (se le informará con dos semanas de antelación).\n\n¿Tienes preguntas? Envíanos un mensaje en WhatsApp: https://wa.me/31614458781",
       "whatsappReply": "Éste es un mensaje automático, cualquier duda o pregunta por favor contacte al Buro de Asistencia de la Cruz Roja en WhatsApp: +31614458781"
+    },
+    "pt_BR": {
+      "registered": "Esta é uma mensagem da Cruz Vermelha.\n\nRecebemos seu pedido para receber ajuda.\n\nVocê receberá outra mensagem SMS/WhatsApp com mais informações no prazo de 1 semana.",
+      "whatsappGenericMessage": "Esta mensagem é da Cruz Vermelha.\nHá uma mensagem à sua espera. Por favor, responda “sim” para a receber.",
+      "whatsappPayment": "Esta é uma mensagem da Cruz Vermelha.\n\nSeu vale de supermercado de €{{1}} do Albert Heijn está pronto para ser enviado.\n\nPor favor, responda \"sim\" a esta mensagem para receber:\n1. O vale desta semana.\n2. Qualquer vale anterior que você ainda não tenha recebido.\n",
+      "whatsappVoucher": "Esta é uma mensagem da Cruz Vermelha.\n\nCom esta mensagem você receberá:\n1. Um vale de supermercado Albert Heijn (cadeaukaart) - esta é a foto com o código de barras.\n2. Uma explicação de como usar o vale no Albert Heijn.\n\nSe você recebeu mais de um vale, é porque ainda não tinha recebido os vales das semanas anteriores.\n\nO valor de cada vale é de €{{1}}.\nVocê pode gastar os vales em qualquer supermercado Albert Heijn na Holanda.\n\nVocê não precisa gastar tudo de uma vez. Portanto, guarde os vales e reutilize-os até que o valor de €{{1}} em cada vale esteja terminado.\n\nVocê receberá seus vales de €{{1}} do Albert Heijn todas as semanas na terça-feira até:\n1. Você não esteja mais na lista de nossas organizações parceiras.\n2. O fim do programa (será informado com duas semanas de antecedência).\n\nVocê tem perguntas? Envie-nos uma mensagem no WhatsApp: https://wa.me/31614458781",
+      "whatsappVoucherMultiple": "Esta é uma mensagem da Cruz Vermelha.\n\nCom esta mensagem você receberá:\n1. Um vale de supermercado Albert Heijn (cadeaukaart) - esta é a foto com o código de barras.\n2. Uma explicação de como usar o vale no Albert Heijn.\n\nSe você recebeu mais de um vale, é porque:\n1. Ainda não tinha recebido os vales das semanas anteriores.\n2. Um membro da família ou amigo é registrado com o mesmo número de telefone.\nIsto só acontece quando ele/ela também é inscrito na lista da organização parceira para receber o vale.\n\nO valor de cada vale é €{{1}}.\nVocê pode gastar os vales em qualquer supermercado Albert Heijn na Holanda.\n\nVocê não precisa gastar tudo de uma vez. Portanto, guarde os vales e reutilize-os até que o valor de €{{1}} em cada vale esteja terminado.\n\nVocê receberá seus vales de €{{1}} do Albert Heijn todas as semanas na terça-feira até:\n1. Você não esteja mais na lista de nossas organizações parceiras.\n2. O fim do programa (será informado com duas semanas de antecedência).\n\nVocê tem perguntas? Envie-nos uma mensagem no WhatsApp: https://wa.me/31614458781",
+      "whatsappReply": "Esta é uma mensagem automática, para dúvidas por favor, contate a Central de Ajuda da Cruz Vermelha no WhatsApp: +31614458781"
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
   "programCustomAttributes": [
     {
       "label": {
-        "en": "Partner Organization"
+        "en": "Partner Organization",
+        "pt_BR": "Organização Parceira"
       },
       "name": "namePartnerOrganization",
       "type": "text",
@@ -104,7 +118,8 @@
         "en": "Please enter your first name:",
         "nl": "Vul je voornaam in:",
         "fr": "Remplissez votre prénom, s'il vous plaît:",
-        "es": "Por favor introduzca su nombre:"
+        "es": "Por favor introduzca su nombre:",
+        "pt_BR": "Por favor, digite seu nome: "
       },
       "answerType": "text",
       "questionType": "standard",
@@ -115,7 +130,8 @@
       "phases": [],
       "editableInPortal": false,
       "shortLabel": {
-        "en": "First Name"
+        "en": "First Name",
+        "pt_BR": "Nome"
       }
     },
     {
@@ -125,7 +141,8 @@
         "en": "Please enter your last name:",
         "nl": "Vul je achternaam in:",
         "fr": "Remplissez votre nom, s'il vous plaît:",
-        "es": "Por favor introduzca su apellido:"
+        "es": "Por favor introduzca su apellido:",
+        "pt_BR": "Por favor, digite seu sobrenome:"
       },
       "answerType": "text",
       "questionType": "standard",
@@ -136,7 +153,8 @@
       "phases": [],
       "editableInPortal": false,
       "shortLabel": {
-        "en": "Last Name"
+        "en": "Last Name",
+        "pt_BR": "Sobrenome"
       }
     },
     {
@@ -146,10 +164,12 @@
         "en": "Your V-number consists of 10 numbers. You can find it on your (former) permit of stay or on a letter from the IND.   <br><br>   If you can’t find your V-Number, please contact the Rode Kruis helpdesk via WhatsApp on: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a>   <br><br>   Please enter your V-Number:",
         "nl": "Jouw V-nummer bestaat uit 10 cijfers. Deze kan je vinden op je (voormalige) verblijfsvergunning of in een brief van het IND. <br><br> Als je jouw V-nummer niet kan vinden, neem dan contact op met de Rode Kruis helpdesk via WhatsApp: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a> <br><br> Vul je V-nummer in:",
         "fr": "Votre Numéro V se compose de 10 chiffres. Vous pouvez le trouver sur votre (ancien) permis de séjour ou sur une lettre de l'IND. <br><br>  Si vous ne pouvez pas trouver votre Numéro V, s'il vous plaît, veuillez contacter le guiche d'information de la Croix-Rouge sur WhatsApp:<a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a><br><br> S'il vous plaît, veuillez remplir votre Numéro V:",
-        "es": "Su número V está formado por 10 cifras. Podrá encontrarlo en su (antiguo) permiso de estancia o en una carta del IND.   <br><br> Si no puede encontrar su número V, póngase en contacto con el servicio de asistencia de la Cruz Roja a través de WhatsApp en el: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a> <br><br> Introduzca su número V:"
+        "es": "Su número V está formado por 10 cifras. Podrá encontrarlo en su (antiguo) permiso de estancia o en una carta del IND.   <br><br> Si no puede encontrar su número V, póngase en contacto con el servicio de asistencia de la Cruz Roja a través de WhatsApp en el: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a> <br><br> Introduzca su número V:",
+        "pt_BR": "Seu número-V é composto por 10 números. Você pode encontrá-lo em sua (antiga) autorização de permanência ou em uma carta do IND.   <br><br> Caso não consiga encontrar seu Número-V, entre em contato com o suporte técnico da Rode Kruis através do WhatsApp em: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a> <br><br> Por favor, digite seu Número-V:"
       },
       "placeholder": {
-        "en": "0000000000"
+        "en": "0000000000",
+        "pt_BR": "0000000000"
       },
       "answerType": "numeric",
       "questionType": "standard",
@@ -161,7 +181,8 @@
       "phases": ["payment"],
       "editableInPortal": false,
       "shortLabel": {
-        "en": "V-Number"
+        "en": "V-Number",
+        "pt_BR": "Número-V"
       }
     },
     {
@@ -171,11 +192,13 @@
         "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>",
         "nl": "Geef het telefoonnummer waarop je een SMS kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+31 6 00 00 00 00</code>",
         "fr": "Veuillez indiquer le numéro de téléphone sur lequel vous pouvez recevoir un SMS. Nous utiliserons ce numéro de téléphone pour vous informer à propos du programme d'aide.<br><br> Cela devrait ressembler à:<code>3+31 6 00 00 00 00</code>\n",
-        "es": "Por favor comparta el número de teléfono donde pueda recibir los mensajes te texto. Utilizaremos éste numero de teléfono para informarle del programa de ayuda. <br><br>Deberá lucir así: <code>+31 6 00 00 00 003</code>"
+        "es": "Por favor comparta el número de teléfono donde pueda recibir los mensajes te texto. Utilizaremos éste numero de teléfono para informarle del programa de ayuda. <br><br>Deberá lucir así: <code>+31 6 00 00 00 003</code>",
+        "pt_BR": "Por favor digite o número de telefone em que você pode receber um mensagem de texto / SMS. Usaremos este número de telefone para informá-lo sobre o programa de ajuda. <br><br> Deve parecer: <code>+31 6 00 00 00 00</code>"
       },
       "placeholder": {
         "ar": "31600000000+",
-        "en": "+31 6 00 00 00 00"
+        "en": "+31 6 00 00 00 00",
+        "pt_BR": "+31 6 00 00 00 00"
       },
       "answerType": "tel",
       "questionType": "standard",
@@ -187,7 +210,8 @@
       "phases": [],
       "editableInPortal": false,
       "shortLabel": {
-        "en": "Phone Number"
+        "en": "Phone Number",
+        "pt_BR": "Número de Telefone"
       }
     }
   ],
@@ -196,7 +220,8 @@
     "en": "This <strong>Red Cross aid program</strong> was created to support people who are suggested to us by any of the following organizations:   <ul class='ion-padding-start'><li>Loket for Shelter in Amsterdam, for the LVV waiting list</li><li>Aanmeldloket Utrecht, for the LVV waiting list</li><li>STIL Utrecht</li><li>ROS Rotterdam</li></ul>   <br><br>   The <strong>Red Cross aid program</strong> aims to help you: <ul class='ion-padding-start'><li> Until you receive support from another organization </li><li> Until you are no longer registered with any of the above organizations </li><li> Or until the end of the project (you will be informed two weeks in advance). </li></ul>   <br>   The <strong>Red Cross aid program</strong> will support you with the following:   <ul class='ion-padding-start'><li> Weekly €35 Albert Heijn supermarket voucher<br> WhatsApp will be used to send your supermarket voucher. If you’re unable to receive the supermarket voucher on WhatsApp, we will send you an SMS and you can go to the Loket to pick it up. </li></ul>",
     "nl": "Dit <strong>Rode Kruis hulpprogramma</strong> is gemaakt om mensen te ondersteunen die aan ons zijn voorgesteld door de volgende organisaties: <ul class='ion-padding-start'><li>Loket Ongedocumenteerden Amsterdam (LOA), voor de LVV wachtlijst</li><li>Aanmeldloket Utrecht, voor de LVV wachtlijst</li><li>STIL Utrecht</li><li>ROS Rotterdam</li></ul> <br><br> Het <strong>Rode Kruis hulpprogramma</strong> streeft ernaar om jou te helpen: <ul class='ion-padding-start'><li> Totdat je hulp ontvangt van een andere organisatie </li><li> Totdat je niet meer geregistreerd bent bij een van de bovenstaande organisaties </li><li> Of tot het einde van het project (je wordt twee weken vantevoren op de hoogte gebracht). </li></ul> <br> Het <strong>Rode Kruis hulpprogramma</strong> zal jou ondersteunen met het volgende: <ul class='ion-padding-start'><li> Wekelijkse €35 Albert Heijn supermarkt voucher<br> WhatsApp zal gebruikt worden om jouw supermarkt voucher te sturen. Als je niet in staat bent om de supermarkt voucher te ontvangen op WhatsApp, zullen we jou een SMS sturen en kan je naar het Loket gaan om het op te halen. </li></ul>",
     "fr": "Ce <strong>programme d'aide de la Croix-Rouge</strong> a été créé pour soutenir les personnes qui nous sont actuellement suggérées par l'une de ces organisations: <ul class='ion-padding-start'><li> Loket pour shelter à Amsterdam (ACO), pour la liste d'attente </li><li>STIL Utrecht </li><li>ROS Rotterdam </li></ul><br><br> Le<strong> programme d'aide de la Croix-Rouge </strong> vise à vous aider : <ul class='ion-padding-start'><li> Jusqu'à ce que vous receviez le soutien d'un autre organisme </li><li>Jusqu'à ce que vous ne soyez plus pris en charge par aucune des organisations ci-dessus</li><li> Ou jusqu'à <strong> Ou jusqu'à la fin du projet (vous serez informé deux semaines à l'avance). < /li></ul><br> Le <strong>programme d'aide de la Croix-Rouge</strong> vous soutient avec les éléments suivants: <ul class='ion-padding-start'><li>Bon d'achat hebdomadaire de €35 pour le supermarché Albert Heijn <br> WhatsApp sera utilisé pour envoyer votre bon de supermarché. Si vous ne parvenez pas à recevoir le bon de supermarché sur WhatsApp, nous vous enverrons un SMS et vous pourrez le récupérer. </li></ul>",
-    "es": "Este <strong>programa de ayuda de la Cruz Roja</strong> fue creado para ayudar a las personas que nos sugieren cualquiera de las siguientes organizaciones: <ul class='ion-padding-start'><li>Loket for Shelter in Amsterdam, para la lista de espera de la LVV</li><li>Aanmeldloket Utrecht, para la lista de espera de la LVV</li><li>STIL Utrecht</li><li>ROS Rotterdam</li></ul> <br><br> El <strong>programa de ayuda de la Cruz Roja</strong> tiene como objetivo apoyarle: <ul class='ion-padding-start'><li> Hasta que reciba ayuda de otra organización </li><li> Hasta que deje de estar inscrito en alguna de las organizaciones anteriores </li><li> O hasta la finalización del proyecto (se le notificará con dos semanas de antelación). </li></ul> <br> El <strong>programa de ayuda de la Cruz Roja</strong> le ayudará en lo siguiente: <ul class='ion-padding-start'><li> Cupón semanal de 35€ para el supermercado Albert Heijn<br> Se utilizará WhatsApp para enviarle su cupón de supermercado. Si no puede recibir el cupón del supermercado por WhatsApp, le enviaremos un SMS y podrá ir al Loket a recogerlo. </li></ul>"
+    "es": "Este <strong>programa de ayuda de la Cruz Roja</strong> fue creado para ayudar a las personas que nos sugieren cualquiera de las siguientes organizaciones: <ul class='ion-padding-start'><li>Loket for Shelter in Amsterdam, para la lista de espera de la LVV</li><li>Aanmeldloket Utrecht, para la lista de espera de la LVV</li><li>STIL Utrecht</li><li>ROS Rotterdam</li></ul> <br><br> El <strong>programa de ayuda de la Cruz Roja</strong> tiene como objetivo apoyarle: <ul class='ion-padding-start'><li> Hasta que reciba ayuda de otra organización </li><li> Hasta que deje de estar inscrito en alguna de las organizaciones anteriores </li><li> O hasta la finalización del proyecto (se le notificará con dos semanas de antelación). </li></ul> <br> El <strong>programa de ayuda de la Cruz Roja</strong> le ayudará en lo siguiente: <ul class='ion-padding-start'><li> Cupón semanal de 35€ para el supermercado Albert Heijn<br> Se utilizará WhatsApp para enviarle su cupón de supermercado. Si no puede recibir el cupón del supermercado por WhatsApp, le enviaremos un SMS y podrá ir al Loket a recogerlo. </li></ul>",
+    "pt_BR": "Este <strong>programa de auxílio da Cruz Vermelha</strong> foi criado para ajudar as pessoas que nos são sugeridas por qualquer uma das seguintes organizações: <ul class='ion-padding-start'><li>Loket for Shelter em Amsterdã, para a lista de espera da LVV</li><li>Aanmeldloket Utrecht, para a lista de espera da LVV</li><li>STIL Utrecht</li><li>ROS Rotterdam</li></ul> <br>< br> O <strong>programa de auxílio da Cruz Vermelha</strong> visa ajudá-lo: <ul class='ion-padding-start'><li> Até que você receba ajuda de outra organização </li><li> Até que você não esteja mais registrado em nenhuma das organizações acima </li><li> Ou até o final do projeto (você será informado com duas semanas de antecedência). </li></ul> <br> O <strong>programa de auxílio da Cruz Vermelha</strong> irá ajudá-lo com o seguinte: <ul class='ion-padding-start'><li> Voucher semanal de 35 € para o supermercado Albert Heijn<br> O WhatsApp será usado para enviar seu voucher de supermercado. Caso não consiga receber o voucher do supermercado no WhatsApp, enviaremos um SMS e você poderá ir até o Loket para buscá-lo. </li></ul>"
   },
   "fullnameNamingConvention": ["nameFirst", "nameLast"]
 }
