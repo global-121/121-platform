@@ -1,6 +1,5 @@
 import { IsInt, IsOptional, IsPositive } from 'class-validator';
 import {
-  BeforeInsert,
   BeforeRemove,
   Brackets,
   Column,
@@ -11,6 +10,7 @@ import {
   ManyToOne,
   OneToMany,
   QueryFailedError,
+  Unique,
 } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
@@ -33,6 +33,7 @@ import { RegistrationDataSaveError } from './errors/registration-data.error';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 
+@Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Entity('registration')
 export class RegistrationEntity extends CascadeDeleteEntity {
   @ManyToOne(
