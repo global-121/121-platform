@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - master
+      - 'wip.cypress-when-to-run'
     paths:
       - 'interfaces/AW-App/**'
       - 'interfaces/HO-Portal/**'
