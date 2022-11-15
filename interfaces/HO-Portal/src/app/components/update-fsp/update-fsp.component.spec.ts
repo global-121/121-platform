@@ -13,7 +13,6 @@ describe('UpdateFspComponent', () => {
   let component: UpdateFspComponent;
   let fixture: ComponentFixture<UpdateFspComponent>;
 
-  // test comment
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [UpdateFspComponent],

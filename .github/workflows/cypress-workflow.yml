@@ -1,9 +1,9 @@
 name: "Cypress tests"
 
 on:
-  push:
+  pull_request:
     branches:
-      - 'wip.cypress-when-to-run'
+      - master
     paths:
       - 'interfaces/AW-App/**'
       - 'interfaces/HO-Portal/**'

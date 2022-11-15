@@ -11,8 +11,6 @@
 const fs = require('fs');
 const _ = require('lodash');
 
-//test comment
-
 /**
  * Perform check(s) on source paths/files before proceeding...
  * @param {String} path

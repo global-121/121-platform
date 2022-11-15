@@ -29,7 +29,6 @@ export class ActionService {
     const program = await this.programRepository.findOne(programId);
     action.program = program;
 
-    // add test comment here
     const newAction = await this.actionRepository.save(action);
     return newAction;
   }
