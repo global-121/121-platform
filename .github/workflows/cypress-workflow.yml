@@ -24,7 +24,7 @@ jobs:
           interfaces/PA-App/package-lock.json
 
     - name: Install sed
-    - run: sudo apt-get install sed
+      run: sudo apt-get install sed
     - name: Overwrite .env varables
       run: sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example && \
           sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example && \
