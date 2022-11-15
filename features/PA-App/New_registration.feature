@@ -17,7 +17,8 @@ Feature: New registration
     When the PA confirms the chosen "language"
     Then the "contact details"-step is shown
     And the "select program"-step is shown
-    And it shows only the programs listed in the 'programs' query parameter if it is provided
+    And it shows all published programs
+    And if 'programs' query parameters in URL is provided this is filtered to only those programs
     When the PA selects a "program" from the list
     Then the "consent question"-step is shown
     When the PA gives "consent"
