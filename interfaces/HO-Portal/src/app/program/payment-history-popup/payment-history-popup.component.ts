@@ -61,7 +61,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
   async ngOnInit() {
     this.canViewPersonalData
       ? (this.paDisplayName = this.person?.name)
-      : (this.paDisplayName = `PA #${this.person?.id}`);
+      : (this.paDisplayName = `PA #${this.person?.registrationProgramId}`);
 
     if (this.canViewPaymentData) {
       this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
