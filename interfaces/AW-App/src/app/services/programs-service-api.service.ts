@@ -73,12 +73,9 @@ export class ProgramsServiceApiService {
 
   getPaByPhoneNr(phoneNumber: string): Promise<any> {
     return this.apiService
-      .post(
+      .get(
         environment.url_121_service_api,
-        '/registrations/search-phone',
-        {
-          phoneNumber,
-        },
+        `/registrations/?phonenumber=${phoneNumber}`,
         false,
       )
       .toPromise();
