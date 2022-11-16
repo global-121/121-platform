@@ -1,4 +1,4 @@
-describe('Login Page', () => {
+describe('Pa Details Page', () => {
   before(() => {
     cy.fixture('reset-db').then((reset) => {
       cy.seedDatabase(reset.script);

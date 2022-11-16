@@ -9,7 +9,6 @@ on:
       - 'services/**'
       - '!**.spec.ts'
       - '!**.md'
-      - '!**.js'
   push:
     branches:
       - 'release/*'
@@ -18,7 +17,6 @@ on:
       - 'services/**'
       - '!**.spec.ts'
       - '!**.md'
-      - '!**.js'
 
 jobs:
   test:
