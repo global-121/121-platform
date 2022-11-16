@@ -1196,6 +1196,9 @@ export class RegistrationsService {
     userId?: number,
   ): Promise<RegistrationEntity[]> {
     const registrations = [];
+    if (!userId) {
+      throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
+    }
     const user = await this.programService.findUserProgramAssignmentsOrThrow(
       userId,
     );
@@ -1210,6 +1213,12 @@ export class RegistrationsService {
       const phoneNumber = await this.lookupService.lookupAndCorrect(
         rawPhoneNumber,
       );
+
+      const matchingReferenceIds = (
+        await this.registrationRepository.find({
+          where: { phoneNumber: phoneNumber },
+        })
+      ).map(r => r.referenceId);
 
       const matchingRegistrationData = await getRepository(
         RegistrationDataEntity,
@@ -1227,33 +1236,20 @@ export class RegistrationsService {
       for (const d of matchingRegistrationData) {
         const dataName = await d.getDataName();
         if (customAttributesPhoneNumberNames.includes(dataName)) {
-          const registration = await this.getRegistrationFromReferenceId(
-            d.registration.referenceId,
-          );
-          registrations.push(registration);
+          matchingReferenceIds.push(d.registration.referenceId);
         }
       }
-      if (matchingRegistrationData.length === 0) {
-        // It is also possible that phoneNumber is not a registration-data but only a registration-attribute (if phoneNumber is neither program- nor fsp-question)
-        const matchingRegistrations = await this.registrationRepository.find({
-          where: { phoneNumber: phoneNumber },
-        });
-        for (const matchingReg of matchingRegistrations) {
-          const registration = await this.getRegistrationFromReferenceId(
-            matchingReg.referenceId,
-          );
-          registrations.push(registration);
-        }
+
+      const uniqueReferenceIds = [...new Set(matchingReferenceIds)];
+
+      for (const referenceId of uniqueReferenceIds) {
+        const registration = await this.getRegistrationFromReferenceId(
+          referenceId,
+        );
+        registrations.push(registration);
       }
     }
-
-    // Find uniques by referenceId because it's possible to get duplicates if program question and FSP question have phonenumber
-    const key = 'referenceId';
-    const arrayUniqueByKey = [
-      ...new Map(registrations.map(item => [item[key], item])).values(),
-    ];
-
-    return arrayUniqueByKey;
+    return registrations;
   }
 
   // AW: get answers to attributes for a given PA (identified first through referenceId)
