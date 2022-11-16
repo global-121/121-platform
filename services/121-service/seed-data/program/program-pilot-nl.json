@@ -107,7 +107,11 @@
         "selected-for-validation",
         "payment"
       ],
-      "phases": ["registrationValidation", "inclusion", "payment"]
+      "phases": [
+        "registrationValidation",
+        "inclusion",
+        "payment"
+      ]
     }
   ],
   "programQuestions": [
@@ -125,7 +129,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": false,
@@ -148,7 +156,11 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "phases": [],
       "editableInPortal": false,
@@ -175,10 +187,16 @@
       "questionType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {},
       "pattern": "^\\d{10}$",
-      "phases": ["payment"],
+      "phases": [
+        "payment"
+      ],
       "editableInPortal": false,
       "shortLabel": {
         "en": "V-Number",
@@ -221,7 +239,10 @@
     "nl": "Dit <strong>Rode Kruis hulpprogramma</strong> is gemaakt om mensen te ondersteunen die aan ons zijn voorgesteld door de volgende organisaties: <ul class='ion-padding-start'><li>Loket Ongedocumenteerden Amsterdam (LOA), voor de LVV wachtlijst</li><li>Aanmeldloket Utrecht, voor de LVV wachtlijst</li><li>STIL Utrecht</li><li>ROS Rotterdam</li></ul> <br><br> Het <strong>Rode Kruis hulpprogramma</strong> streeft ernaar om jou te helpen: <ul class='ion-padding-start'><li> Totdat je hulp ontvangt van een andere organisatie </li><li> Totdat je niet meer geregistreerd bent bij een van de bovenstaande organisaties </li><li> Of tot het einde van het project (je wordt twee weken vantevoren op de hoogte gebracht). </li></ul> <br> Het <strong>Rode Kruis hulpprogramma</strong> zal jou ondersteunen met het volgende: <ul class='ion-padding-start'><li> Wekelijkse €35 Albert Heijn supermarkt voucher<br> WhatsApp zal gebruikt worden om jouw supermarkt voucher te sturen. Als je niet in staat bent om de supermarkt voucher te ontvangen op WhatsApp, zullen we jou een SMS sturen en kan je naar het Loket gaan om het op te halen. </li></ul>",
     "fr": "Ce <strong>programme d'aide de la Croix-Rouge</strong> a été créé pour soutenir les personnes qui nous sont actuellement suggérées par l'une de ces organisations: <ul class='ion-padding-start'><li> Loket pour shelter à Amsterdam (ACO), pour la liste d'attente </li><li>STIL Utrecht </li><li>ROS Rotterdam </li></ul><br><br> Le<strong> programme d'aide de la Croix-Rouge </strong> vise à vous aider : <ul class='ion-padding-start'><li> Jusqu'à ce que vous receviez le soutien d'un autre organisme </li><li>Jusqu'à ce que vous ne soyez plus pris en charge par aucune des organisations ci-dessus</li><li> Ou jusqu'à <strong> Ou jusqu'à la fin du projet (vous serez informé deux semaines à l'avance). < /li></ul><br> Le <strong>programme d'aide de la Croix-Rouge</strong> vous soutient avec les éléments suivants: <ul class='ion-padding-start'><li>Bon d'achat hebdomadaire de €35 pour le supermarché Albert Heijn <br> WhatsApp sera utilisé pour envoyer votre bon de supermarché. Si vous ne parvenez pas à recevoir le bon de supermarché sur WhatsApp, nous vous enverrons un SMS et vous pourrez le récupérer. </li></ul>",
     "es": "Este <strong>programa de ayuda de la Cruz Roja</strong> fue creado para ayudar a las personas que nos sugieren cualquiera de las siguientes organizaciones: <ul class='ion-padding-start'><li>Loket for Shelter in Amsterdam, para la lista de espera de la LVV</li><li>Aanmeldloket Utrecht, para la lista de espera de la LVV</li><li>STIL Utrecht</li><li>ROS Rotterdam</li></ul> <br><br> El <strong>programa de ayuda de la Cruz Roja</strong> tiene como objetivo apoyarle: <ul class='ion-padding-start'><li> Hasta que reciba ayuda de otra organización </li><li> Hasta que deje de estar inscrito en alguna de las organizaciones anteriores </li><li> O hasta la finalización del proyecto (se le notificará con dos semanas de antelación). </li></ul> <br> El <strong>programa de ayuda de la Cruz Roja</strong> le ayudará en lo siguiente: <ul class='ion-padding-start'><li> Cupón semanal de 35€ para el supermercado Albert Heijn<br> Se utilizará WhatsApp para enviarle su cupón de supermercado. Si no puede recibir el cupón del supermercado por WhatsApp, le enviaremos un SMS y podrá ir al Loket a recogerlo. </li></ul>",
-    "pt_BR": "Este <strong>programa de auxílio da Cruz Vermelha</strong> foi criado para ajudar as pessoas que nos são sugeridas por qualquer uma das seguintes organizações: <ul class='ion-padding-start'><li>Loket for Shelter em Amsterdã, para a lista de espera da LVV</li><li>Aanmeldloket Utrecht, para a lista de espera da LVV</li><li>STIL Utrecht</li><li>ROS Rotterdam</li></ul> <br>< br> O <strong>programa de auxílio da Cruz Vermelha</strong> visa ajudá-lo: <ul class='ion-padding-start'><li> Até que você receba ajuda de outra organização </li><li> Até que você não esteja mais registrado em nenhuma das organizações acima </li><li> Ou até o final do projeto (você será informado com duas semanas de antecedência). </li></ul> <br> O <strong>programa de auxílio da Cruz Vermelha</strong> irá ajudá-lo com o seguinte: <ul class='ion-padding-start'><li> Voucher semanal de 35 € para o supermercado Albert Heijn<br> O WhatsApp será usado para enviar seu voucher de supermercado. Caso não consiga receber o voucher do supermercado no WhatsApp, enviaremos um SMS e você poderá ir até o Loket para buscá-lo. </li></ul>"
+    "pt_BR": "Este <strong>programa de auxílio da Cruz Vermelha</strong> foi criado para ajudar as pessoas que nos são sugeridas por qualquer uma das seguintes organizações: <ul class='ion-padding-start'><li>Loket for Shelter em Amsterdã, para a lista de espera da LVV</li><li>Aanmeldloket Utrecht, para a lista de espera da LVV</li><li>STIL Utrecht</li><li>ROS Rotterdam</li></ul> <br><br> O <strong>programa de auxílio da Cruz Vermelha</strong> visa ajudá-lo: <ul class='ion-padding-start'><li> Até que você receba ajuda de outra organização </li><li> Até que você não esteja mais registrado em nenhuma das organizações acima </li><li> Ou até o final do projeto (você será informado com duas semanas de antecedência). </li></ul> <br> O <strong>programa de auxílio da Cruz Vermelha</strong> irá ajudá-lo com o seguinte: <ul class='ion-padding-start'><li> Voucher semanal de 35 € para o supermercado Albert Heijn<br> O WhatsApp será usado para enviar seu voucher de supermercado. Caso não consiga receber o voucher do supermercado no WhatsApp, enviaremos um SMS e você poderá ir até o Loket para buscá-lo. </li></ul>"
   },
-  "fullnameNamingConvention": ["nameFirst", "nameLast"]
+  "fullnameNamingConvention": [
+    "nameFirst",
+    "nameLast"
+  ]
 }
