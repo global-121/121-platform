@@ -1,20 +1,6 @@
 describe('Login Page', () => {
   before(() => {
-    cy.fixture('reset-db').then((reset) => {
-      cy.setServer();
-      cy.request(
-        {
-          method: "POST",
-          url: reset.url,
-          qs: {
-            "script": reset.script
-          },
-          body: {
-            "secret": Cypress.env('RESET_SECRET')
-          }
-        }
-      )
-    });
+    cy.seedDatabase();
   });
 
   beforeEach(() => {
@@ -24,13 +10,8 @@ describe('Login Page', () => {
   // Real log-in API-call
   it('lets the user log in', function () {
     cy.fixture('portal-login').then((login) => {
-      cy.visit(login.portal);
-      cy.get('input[name="email"]').type(login.email);
-      cy.get('input[name="password"]').type(login.password);
+      cy.loginPortal();
 
-      cy.get('*[type="submit"]').click();
-
-      cy.url().should('include', '/home');
       cy.get('span').contains('Logged in as');
       cy.get('ion-note').contains(login.email);
     });
@@ -40,8 +21,6 @@ describe('Login Page', () => {
   // This means you can skip certain steps in a flow without having to make all API-calls
   it('lets the user log in with fake API call', function () {
     cy.fixture('portal-user').then((user) => {
-      user.expires = new Date(2020,1,1);
-      console.log('user: ', user);
       cy.intercept('POST', '*/user/login*', {
         statusCode: 201,
         body: user
