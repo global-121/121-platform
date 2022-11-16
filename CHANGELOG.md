@@ -5,9 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.69.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.70.0...master)
 
 ---
+
+## [1.70.0](https://github.com/global-121/121-platform/compare/v1.69.0...v1.70.0) - 2022-11-16
+
+### Added
+- Feat: Portuguese translations in PA-app, LVV instance, LVV program
+
+### Changed
+- Feat: PA identifier increments per program instead of across programs
+
 
 ## [1.69.0](https://github.com/global-121/121-platform/compare/v1.68.9...v1.69.0) - 2022-11-14
 
