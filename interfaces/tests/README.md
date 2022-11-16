@@ -87,6 +87,6 @@ cy.route({
 
 After the above stub, we should also be wait for the code to be executed by `cy.wait('@programs')`, This will remove possibilities for conflicts due to order of execution.
 
-### Further implementation with CI
+### Github Actions
 
-We also look forwards to integrate the Cypress tests possibly with CI (See: <https://docs.cypress.io/guides/guides/continuous-integration.html>)
+On each Pull Request and push to a `release/*` the Cypress integrations are run. Releases should not be made unless the tests are a success.
