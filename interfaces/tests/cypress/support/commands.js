@@ -23,7 +23,7 @@ Cypress.Commands.add('seedDatabase', () => {
   });
 })
 
-Cypress.Commands.add('login', () => {
+Cypress.Commands.add('loginApi', () => {
   cy.fixture('portal-login').then((credentials) => {
     cy.setServer();
     cy.request(
@@ -33,6 +33,17 @@ Cypress.Commands.add('login', () => {
         body: {username: credentials.email, password: credentials.password}
       }
     )
+  });
+})
+
+Cypress.Commands.add('loginPortal', () => {
+  cy.fixture('portal-login').then((login) => {
+    cy.setHoPortal();
+    cy.visit(login.portal);
+    cy.get('input[name="email"]').type(login.email);
+    cy.get('input[name="password"]').type(login.password);
+    cy.get('*[type="submit"]').click();
+    cy.url().should('contain', '/home')
   });
 })
 

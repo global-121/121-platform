@@ -10,13 +10,8 @@ describe('Login Page', () => {
   // Real log-in API-call
   it('lets the user log in', function () {
     cy.fixture('portal-login').then((login) => {
-      cy.visit(login.portal);
-      cy.get('input[name="email"]').type(login.email);
-      cy.get('input[name="password"]').type(login.password);
+      cy.loginPortal();
 
-      cy.get('*[type="submit"]').click();
-
-      cy.url().should('include', '/home');
       cy.get('span').contains('Logged in as');
       cy.get('ion-note').contains(login.email);
     });
