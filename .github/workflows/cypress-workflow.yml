@@ -6,6 +6,7 @@ on:
     branches:
       - 'master'
     paths:
+      - '.github/workflows/cypress-workflow.yml'
       - 'interfaces/**'
       - 'services/**'
       - '!**.spec.ts'
@@ -15,6 +16,7 @@ on:
     branches:
       - 'release/*'
     paths:
+      - '.github/workflows/cypress-workflow.yml'
       - 'interfaces/**'
       - 'services/**'
       - '!**.spec.ts'
