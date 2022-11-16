@@ -462,7 +462,7 @@ This follows the same process as a regular release + deployment. With some small
   - [ ] Checkout code (of latest release)
   - [ ] Set secrets, configure ENV-variables (via all `.env`-files)
   - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):
-        Run: `sudo ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v1.0.0`
+         Run: `sudo ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v1.0.0`
 - [ ] Setup the web-server as described in [/tools > Hosting > Apache2](tools/README.md#apache2)
 - [ ] (Optional) Add data to the database using the available [seed-script](services/121-service/README.md#Seed-the-database)
 
