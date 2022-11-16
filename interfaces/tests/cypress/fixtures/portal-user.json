@@ -1,5 +1,5 @@
 {
-  "username": "admin@example.org",
+  "username": "full-access-user@example.org",
   "expires": "2023-11-22T15:33:26.467Z",
   "permissions": {
     "1": ["program:metrics.read"],
