@@ -113,6 +113,12 @@ const routes: Routes = [
     ],
   },
   {
+    path: AppRoutes.iframe,
+    loadChildren: () =>
+      import('./iframe/iframe.module').then((m) => m.IframeModule),
+    canActivate: [AuthGuard],
+  },
+  {
     path: '**',
     redirectTo: AppRoutes.home,
   },
