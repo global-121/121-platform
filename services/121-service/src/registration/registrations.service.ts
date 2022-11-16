@@ -1192,8 +1192,8 @@ export class RegistrationsService {
   }
 
   public async searchRegistration(
-    rawPhoneNumber?: string,
-    userId?: number,
+    rawPhoneNumber: string,
+    userId: number,
   ): Promise<RegistrationEntity[]> {
     const registrations = [];
     if (!userId) {
