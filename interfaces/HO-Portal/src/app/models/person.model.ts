@@ -8,6 +8,7 @@ import { ProgramPhase } from './program.model';
 export class Person {
   id: number;
   referenceId: string;
+  programId: number;
   phoneNumber?: string;
   inclusionScore?: number;
   name?: string;

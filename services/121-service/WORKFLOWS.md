@@ -8,24 +8,6 @@ In this file we document "how to do X", manually. As not everything is possible 
 
 ---
 
-## Find Reference ID of PA in database based on name and/or phone number and/or PA id
-
-1. [Log-in via Swagger-UI](./README.md#api-sign-uplog-in) as a user with the "`registration:reference-id.search`"-permission
-2. Find the `registration` of the PA that we want to update.
-   Use the endpoint: [`/registrations?phonenumber=`](https://test-vm.121.global/121-service/docs/#/registrations/post_registrations_search_phone)
-   Where you can optionally fill in `name` and/or old `phoneNumber` and/or `id` (PA-id in portal) to search for.
-
-   This will return all registrations that match _at least one_ of the parameters.
-
-   - If 0 registrations are returned, try spelling variations.
-   - If multiple registrations are returned, try to figure out which is the correct one.
-     - Maybe there are PA with the same name, but different phone-numbers?
-     - Maybe one is an unfinished registration?
-     - Check back with the **Pilot-team** if still unclear.
-   - If 1 registration is returned, continue
-
----
-
 ## Delete PA
 
 In the 121-portal only PAs with certain status can be deleted, while the API endpoint gives more flexibility.

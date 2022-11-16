@@ -10,6 +10,7 @@ export const MockPaDataService = {
   setCurrentProgramId: () => {},
   getCurrentProgramId: () => Promise.resolve(mockProgram.id),
   getCurrentProgram: () => Promise.resolve(mockProgram),
+  getAllPrograms: () => Promise.resolve([mockProgram]),
   saveAnswers: () => Promise.resolve(''),
   store: () => Promise.resolve(''),
   retrieve: () => Promise.resolve(''),
