@@ -4,42 +4,10 @@ import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
   {
-    path: 'tabs',
-    component: TabsPage,
-    children: [
-      {
-        path: 'tab1',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('../tab1/tab1.module').then((m) => m.Tab1PageModule),
-          },
-        ],
-      },
-      {
-        path: 'personal',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('../personal/personal.module').then(
-                (m) => m.PersonalPageModule,
-              ),
-          },
-        ],
-      },
-      {
-        path: '',
-        redirectTo: '/tabs/personal',
-        pathMatch: 'full',
-      },
-    ],
-  },
-  {
     path: '',
-    redirectTo: '/tabs/personal',
-    pathMatch: 'full',
+    component: TabsPage,
+    loadChildren: () =>
+      import('../personal/personal.module').then((m) => m.PersonalPageModule),
   },
 ];
 
