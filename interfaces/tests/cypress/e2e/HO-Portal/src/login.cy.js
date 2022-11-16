@@ -1,8 +1,6 @@
 describe('Login Page', () => {
   before(() => {
-    cy.fixture('reset-db').then((reset) => {
-      cy.seedDatabase(reset.script);
-    });
+    cy.seedDatabase();
   });
 
   beforeEach(() => {
@@ -28,8 +26,6 @@ describe('Login Page', () => {
   // This means you can skip certain steps in a flow without having to make all API-calls
   it('lets the user log in with fake API call', function () {
     cy.fixture('portal-user').then((user) => {
-      user.expires = new Date(2020,1,1);
-      console.log('user: ', user);
       cy.intercept('POST', '*/user/login*', {
         statusCode: 201,
         body: user
