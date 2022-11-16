@@ -56,6 +56,7 @@ describe('EditPersonAffectedPopupComponent', () => {
       referenceId: 'test',
       registrationProgramId: 1,
       status: RegistrationStatus.startedRegistration,
+      programId: 1,
     };
 
     fixture.detectChanges();
