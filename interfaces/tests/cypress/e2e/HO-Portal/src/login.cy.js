@@ -1,7 +1,24 @@
 describe('Login Page', () => {
+  before(() => {
+    cy.fixture('reset-db').then((reset) => {
+      cy.setServer();
+      cy.request(
+        {
+          method: "POST",
+          url: reset.url,
+          qs: {
+            "script": reset.script
+          },
+          body: {
+            "secret": Cypress.env('RESET_SECRET')
+          }
+        }
+      )
+    });
+  });
+
   beforeEach(() => {
     cy.setHoPortal();
-    // cy.server();
   });
 
   // Real log-in API-call
@@ -20,7 +37,7 @@ describe('Login Page', () => {
   });
 
   // Example of stubbing API calls: fill in wrong credentials but intercept the API-call with a predefined (real) response
-  // This means you can skip certain steps in a flow without having to make all API-calls 
+  // This means you can skip certain steps in a flow without having to make all API-calls
   it('lets the user log in with fake API call', function () {
     cy.fixture('portal-user').then((user) => {
       user.expires = new Date(2020,1,1);
