@@ -1,10 +1,15 @@
 # Testing Interfaces
 
-## Integration Tests
-
-### Cypress
+## Integration Tests with Cypress
 
 We use Cypress(<https://www.cypress.io/>) for integration tests and writing end-to-end UI tests.
+
+### Run tests with Github Actions
+
+- On each Pull Request to `master` and each push to a `release/*` the Cypress integrations are run. 
+- This means that tests are started on each new commit in a PR to master.
+- Results can be seen in the 'actions' page on Github
+- PR to master should not be merged and release branches should not be made until the tests are a success.
 
 ### Start test locally
 
@@ -87,6 +92,4 @@ cy.route({
 
 After the above stub, we should also be wait for the code to be executed by `cy.wait('@programs')`, This will remove possibilities for conflicts due to order of execution.
 
-### Github Actions
 
-On each Pull Request and push to a `release/*` the Cypress integrations are run. Releases should not be made unless the tests are a success.
