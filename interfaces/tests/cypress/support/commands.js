@@ -47,7 +47,7 @@ Cypress.Commands.add('loginPortal', () => {
   });
 })
 
-// Performs an XMLHttpRequest instead of a cy.request (able to send data as 
+// Performs an XMLHttpRequest instead of a cy.request (able to send data as
 // FormData - multipart/form-data)
 Cypress.Commands.add('form_request', (method, url, formData) => {
   const xhr = new XMLHttpRequest();
@@ -57,13 +57,15 @@ Cypress.Commands.add('form_request', (method, url, formData) => {
 })
 
 Cypress.Commands.add('importRegistrations', (programId) => {
+  const folderPath = '../../../../features/test-registration-data'
   const fileName = '121-import-test-registrations-NLRC.csv';
+  const filePath = `${folderPath}/${fileName}`
   const url = Cypress.config("baseUrl-server") + `/programs/${programId}/registrations/import-registrations`;
 
-  cy.fixture(fileName, 'binary').then((csvBin) => {
+  cy.fixture(filePath, 'binary').then((csvBin) => {
     const blob = Cypress.Blob.binaryStringToBlob(csvBin, 'text/csv');
     const formData = new FormData();
-    formData.set('file', blob, fileName);
+    formData.set('file', blob, filePath);
     cy.form_request('POST', url, formData);
   })
 })
