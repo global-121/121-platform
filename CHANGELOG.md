@@ -7,21 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.70.0...master)
 
+### Added
+
+- A way to configure Apache for a specific environment only.  
+  Follow the steps 4, 5, and 6 from the [Tools README: Hosting / Apache2](tools/README.md#apache2).
+
 ---
 
 ## [1.70.0](https://github.com/global-121/121-platform/compare/v1.69.0...v1.70.0) - 2022-11-16
 
 ### Added
+
 - Feat: Portuguese translations in PA-app, LVV instance, LVV program
 
 ### Changed
-- Feat: PA identifier increments per program instead of across programs
 
+- Feat: PA identifier increments per program instead of across programs
 
 ## [1.69.0](https://github.com/global-121/121-platform/compare/v1.68.9...v1.69.0) - 2022-11-14
 
 ### Added
-- Feat: Delete PAs in the Portal 
+
+- Feat: Delete PAs in the Portal
 - Feat: Optimized order of the columns in Export People Affected
 - Feat: Added 'updated' column to base entity
 - Feat: Preferred language in Import People Affected
@@ -32,26 +39,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.68.5](https://github.com/global-121/121-platform/compare/v1.68.4...v1.68.5) - 2022-11-12
 
 ### Changed
-- Changed: Vodacash payment export use [ID][Voter Card] as fieldname
+
+- Changed: Vodacash payment export use [ID][voter card] as fieldname
 
 ## [1.68.4](https://github.com/global-121/121-platform/compare/v1.68.3...v1.68.4) - 2022-11-12
 
 ### Changed
+
 - Changed: Vodacash payment export use Voter Card instead of name as fieldname
 
 ## [1.68.3](https://github.com/global-121/121-platform/compare/v1.68.2...v1.68.3) - 2022-11-10
 
 ### Changed
+
 - Changed: Vodacash payment export KYC info uses voter card number
 
 ## [1.68.2](https://github.com/global-121/121-platform/compare/v1.68.1...v1.68.2) - 2022-11-10
 
 ### Changed
+
 - Changed: add KYC information to xml export
 
 ## [1.68.1](https://github.com/global-121/121-platform/compare/v1.68.0...v1.68.1) - 2022-10-27
 
 ### Changed
+
 - Fixed: update voucher image allow decimals
 - Fixed: order of multi select options in portal
 - Fixed: register after import

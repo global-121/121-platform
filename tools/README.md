@@ -15,20 +15,45 @@ This folder contains code not directly related to the applications, but for exam
 
 ### Apache2
 
-All applications from `/services` folder are running as local applications on various ports of localhost. To expose them to the interfaces, we need Apache2.
+All applications from `/services` folder are running as local applications on various ports of localhost.
+We expose them to the interfaces/the public internet using Apache2 as a proxy.
+All the interfaces are served as web-apps through Apache2 as well.
 
-All the interfaces are served as web-apps through Apache2.
+1.  First, get the right certificates (`SSLCertificateFile` and `SSLCACertificateFile`) and place them in `/tools/certificates/`.
 
-First, get the right certificates (`SSLCertificateFile` and `SSLCACertificateFile`) and place them in `/tools/certificates/`.
+2.  Enable all necessary modules:
 
-On Ubuntu server do: (NOTE the absolute path /home/121-platform, which might be different in your instance)
-
-    ln -s /home/121-platform/tools/121-platform.conf /etc/apache2/sites-enabled/121-platform.conf
-    ln -s /home/121-platform/tools/121-platform-https.conf /etc/apache2/sites-enabled/121-platform-https.conf
     a2enmod ssl proxy proxy_http http2 rewrite headers expires mime dir
+
+3.  Put all default configuration in place:
+
+    ln -s /home/121-platform/tools/121-platform.conf /etc/apache2/sites-available/121-platform.conf
+    ln -s /home/121-platform/tools/121-platform-https.conf /etc/apache2/sites-available/121-platform-https.conf
+
+4.  Set or update the (optional) environment-specific configurations, based on the example:
+
+        cp /home/121-platform/tools/121-platform-https.env-example.conf /etc/apache2/sites-available/121-platform-https.env.conf
+
+    Make changes to this **newly created file**.
+
+5.  Enable these configurations:
+
+        ln -s /etc/apache2/sites-available/121-platform-http.conf /etc/apache2/sites-enabled/
+        ln -s /etc/apache2/sites-available/121-platform-https.conf /etc/apache2/sites-enabled/
+
+    Optionally:
+
+        ln -s /etc/apache2/sites-available/121-platform-https.env.conf /etc/apache2/sites-enabled/
+
+6.  Verify all configurations can be read/understood:
+
+    apachectl -S
+
+7.  Restart Apache:
+
     service apache2 restart
 
-To check if it started correctly:
+8.  To check if all started correctly:
 
     service apache2 status
 
