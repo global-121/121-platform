@@ -192,9 +192,9 @@ export class FindByPhoneComponent implements ValidationComponent {
     try {
       const rawRegistrations = await this.programsService.getPaByPhoneNr(
         phoneNumber,
-      );
+        );
       const registrations = rawRegistrations.filter((r) =>
-        this.validatableStatuses.includes(r.registrationStatus),
+      this.validatableStatuses.includes(r.status),
       );
 
       if (registrations.length === 0) {
@@ -208,7 +208,7 @@ export class FindByPhoneComponent implements ValidationComponent {
         );
         const paRO = {
           referenceId: registration.referenceId,
-          name: this.getNameAttribute(registration.customData, program),
+          name: registration.name,
           phoneNumber: registration.phoneNumber,
           programTitle: this.translate.get(program.titlePortal),
         } as PaToValidateOption;
@@ -221,16 +221,6 @@ export class FindByPhoneComponent implements ValidationComponent {
         return;
       }
     }
-  }
-
-  private getNameAttribute(input: any, program: Program): string {
-    let fullName = '';
-    for (const attribute of program.fullnameNamingConvention) {
-      if (input[attribute]) {
-        fullName = fullName.concat(' ' + input[attribute]);
-      }
-    }
-    return fullName;
   }
 
   private async findPaData(referenceId: string): Promise<any> {

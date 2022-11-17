@@ -15,6 +15,7 @@ import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramService } from '../programs/programs.service';
+import { PermissionEnum } from '../user/permission.enum';
 import { UserEntity } from '../user/user.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { SmsService } from './../notifications/sms/sms.service';
@@ -695,12 +696,16 @@ export class RegistrationsService {
     return this.buildCustomDataObject(result['customData']);
   }
 
-  public async getRegistrationsForProgram(
+  public async getRegistrations(
     programId: number,
     includePersonalData: boolean,
     includeDeletedRegistrations: boolean,
+    referenceId: string,
   ): Promise<RegistrationResponse[]> {
-    const program = await this.programService.findProgramOrThrow(programId);
+    let program: ProgramEntity;
+    if (programId) {
+      program = await this.programService.findProgramOrThrow(programId);
+    }
     let q = await this.registrationRepository
       .createQueryBuilder('registration')
       .select('registration.id', 'id')
@@ -716,10 +721,90 @@ export class RegistrationsService {
         'registration.paymentAmountMultiplier',
         'paymentAmountMultiplier',
       )
-      .addSelect(
-        `${RegistrationStatusEnum.startedRegistration}.created`,
-        RegistrationStatusTimestampField.startedRegistrationDate,
-      )
+      .addSelect(subQuery => {
+        return this.customDataSubQuery(subQuery);
+      }, 'customData')
+      .addSelect('registration.phoneNumber', 'phoneNumber')
+      .addSelect('data.value', 'data')
+      .leftJoin('registration.data', 'data')
+      .leftJoin('data.programQuestion', 'programQuestion')
+      .leftJoin('registration.fsp', 'fsp');
+
+    if (programId) {
+      q.where('registration.program.id = :programId', { programId: programId });
+    }
+
+    this.addStatusChangeToQuery(q);
+    if (!includeDeletedRegistrations) {
+      q.andWhere('registration.registrationStatus != :status', {
+        status: RegistrationStatusEnum.deleted,
+      });
+    }
+
+    if (referenceId) {
+      q.addSelect('registration.programId', 'programId');
+      q.andWhere('registration.referenceId = :referenceId', {
+        referenceId: referenceId,
+      });
+    }
+
+    if (!includePersonalData) {
+      const rows = await q.getRawMany();
+      const responseRows = [];
+      for (let row of rows) {
+        row['customData'] = this.buildCustomDataObject(row['customData']);
+        row['hasPhoneNumber'] = !!(
+          row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber]
+        );
+        delete row.customData;
+        delete row.phoneNumber;
+        responseRows.push(row);
+      }
+      return responseRows;
+    }
+
+    q = q.addSelect('registration.note', 'note');
+    const rows = await q.getRawMany();
+
+    if (referenceId && rows.length === 1) {
+      program = await this.programService.findProgramOrThrow(rows[0].programId);
+    }
+
+    const responseRows = [];
+    const paTableAttributes = await this.programService.getPaTableAttributes(
+      program.id,
+    );
+    for (let row of rows) {
+      row['customData'] = this.buildCustomDataObject(row['customData']);
+      row['name'] = this.getName(row.customData, program);
+      row['hasNote'] = !!row.note;
+      row['hasPhoneNumber'] = !!(
+        row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber]
+      );
+      row['phoneNumber'] =
+        row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber];
+      row['paTableAttributes'] = {};
+      for (let attribute of paTableAttributes) {
+        const value = this.mapAttributeByType(attribute, row.customData);
+
+        row['paTableAttributes'][attribute.name] = {
+          type: attribute.type,
+          value,
+        };
+      }
+      delete row.customData;
+      responseRows.push(row);
+    }
+    return responseRows;
+  }
+
+  private addStatusChangeToQuery(
+    q: SelectQueryBuilder<RegistrationEntity>,
+  ): void {
+    q.addSelect(
+      `${RegistrationStatusEnum.startedRegistration}.created`,
+      RegistrationStatusTimestampField.startedRegistrationDate,
+    )
       .addOrderBy(
         `${RegistrationStatusEnum.startedRegistration}.created`,
         'DESC',
@@ -728,9 +813,6 @@ export class RegistrationsService {
         `${RegistrationStatusEnum.imported}.created`,
         RegistrationStatusTimestampField.importedDate,
       )
-      .addSelect(subQuery => {
-        return this.customDataSubQuery(subQuery);
-      }, 'customData')
       .addOrderBy(`${RegistrationStatusEnum.imported}.created`, 'DESC')
       .addSelect(
         `${RegistrationStatusEnum.invited}.created`,
@@ -788,11 +870,6 @@ export class RegistrationsService {
         RegistrationStatusTimestampField.deleteDate,
       )
       .addOrderBy(`${RegistrationStatusEnum.deleted}.created`, 'DESC')
-      .addSelect('registration.phoneNumber', 'phoneNumber')
-      .addSelect('data.value', 'data')
-      .leftJoin('registration.data', 'data')
-      .leftJoin('data.programQuestion', 'programQuestion')
-      .leftJoin('registration.fsp', 'fsp')
       .leftJoin(
         RegistrationStatusChangeEntity,
         RegistrationStatusEnum.startedRegistration,
@@ -852,59 +929,7 @@ export class RegistrationsService {
         RegistrationStatusChangeEntity,
         RegistrationStatusEnum.deleted,
         `registration.id = ${RegistrationStatusEnum.deleted}.registrationId AND ${RegistrationStatusEnum.deleted}.registrationStatus = '${RegistrationStatusEnum.deleted}'`,
-      )
-      .where('registration.program.id = :programId', { programId: programId });
-
-    if (!includeDeletedRegistrations) {
-      q = q.andWhere('registration.registrationStatus != :status', {
-        status: RegistrationStatusEnum.deleted,
-      });
-    }
-
-    if (!includePersonalData) {
-      const rows = await q.getRawMany();
-      const responseRows = [];
-      for (let row of rows) {
-        row['customData'] = this.buildCustomDataObject(row['customData']);
-        row['hasPhoneNumber'] = !!(
-          row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber]
-        );
-        delete row.customData;
-        delete row.phoneNumber;
-        responseRows.push(row);
-      }
-      return responseRows;
-    }
-
-    q = q.addSelect('registration.note', 'note');
-
-    const rows = await q.getRawMany();
-    const responseRows = [];
-    const paTableAttributes = await this.programService.getPaTableAttributes(
-      programId,
-    );
-    for (let row of rows) {
-      row['customData'] = this.buildCustomDataObject(row['customData']);
-      row['name'] = this.getName(row.customData, program);
-      row['hasNote'] = !!row.note;
-      row['hasPhoneNumber'] = !!(
-        row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber]
       );
-      row['phoneNumber'] =
-        row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber];
-      row['paTableAttributes'] = {};
-      for (let attribute of paTableAttributes) {
-        const value = this.mapAttributeByType(attribute, row.customData);
-
-        row['paTableAttributes'][attribute.name] = {
-          type: attribute.type,
-          value,
-        };
-      }
-      delete row.customData;
-      responseRows.push(row);
-    }
-    return responseRows;
   }
 
   public async getLatestDateForRegistrationStatus(
@@ -1194,15 +1219,17 @@ export class RegistrationsService {
   public async searchRegistration(
     rawPhoneNumber: string,
     userId: number,
-  ): Promise<RegistrationEntity[]> {
+  ): Promise<RegistrationResponse[]> {
     const registrations = [];
     if (!userId) {
       throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
     }
-    const user = await this.programService.findUserProgramAssignmentsOrThrow(
+    // const programIds = user.programAssignments.map(p => p.program.id);
+
+    const programIds = await this.getProgramIdsUserHasPermission(
       userId,
+      PermissionEnum.RegistrationPersonalREAD,
     );
-    const programIds = user.programAssignments.map(p => p.program.id);
 
     if (rawPhoneNumber) {
       const customAttributesPhoneNumberNames = [
@@ -1232,7 +1259,6 @@ export class RegistrationsService {
           programIds: programIds,
         })
         .getMany();
-
       for (const d of matchingRegistrationData) {
         const dataName = await d.getDataName();
         if (customAttributesPhoneNumberNames.includes(dataName)) {
@@ -1241,15 +1267,32 @@ export class RegistrationsService {
       }
 
       const uniqueReferenceIds = [...new Set(matchingReferenceIds)];
-
       for (const referenceId of uniqueReferenceIds) {
-        const registration = await this.getRegistrationFromReferenceId(
-          referenceId,
-        );
+        const registration = (
+          await this.getRegistrations(null, true, true, referenceId)
+        )[0];
         registrations.push(registration);
       }
     }
     return registrations;
+  }
+
+  private async getProgramIdsUserHasPermission(
+    userId: number,
+    permission: PermissionEnum,
+  ): Promise<number[]> {
+    const user = await this.programService.findUserProgramAssignmentsOrThrow(
+      userId,
+    );
+    const programIds = [];
+    for (const assignment of user.programAssignments) {
+      for (const role of assignment.roles) {
+        if (role.permissions.map(p => p.name).includes(permission)) {
+          programIds.push(assignment.programId);
+        }
+      }
+    }
+    return programIds;
   }
 
   // AW: get answers to attributes for a given PA (identified first through referenceId)
@@ -1675,6 +1718,6 @@ export class RegistrationsService {
     referenceId: string,
   ): Promise<RegistrationStatusEnum> {
     const registration = await this.getRegistrationFromReferenceId(referenceId);
-    return JSON.parse(JSON.stringify(registration.registrationStatus));
+    return registration.registrationStatus;
   }
 }
