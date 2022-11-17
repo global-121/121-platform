@@ -40,6 +40,7 @@ export class ApiService {
     endpoint: string,
     path: string,
     anonymous: boolean = false,
+    params = null,
   ): Promise<any> {
     const security = this.showSecurity(anonymous);
 
@@ -48,11 +49,14 @@ export class ApiService {
         .get(endpoint + path, {
           headers: this.createHeaders(anonymous),
           withCredentials: true,
+          params: params,
         })
         .pipe(
           tap((response) =>
             console.log(
-              `ApiService GET: ${security} ${endpoint}${path}`,
+              `ApiService GET: ${security} ${endpoint}${path}${
+                params ? `\nParams ${params}` : ''
+              }`,
               `\nResponse:`,
               response,
             ),
