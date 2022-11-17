@@ -49,7 +49,7 @@ export class ApiService {
         .get(endpoint + path, {
           headers: this.createHeaders(anonymous),
           withCredentials: true,
-          params: params,
+          params,
         })
         .pipe(
           tap((response) =>
