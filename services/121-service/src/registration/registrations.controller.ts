@@ -5,6 +5,7 @@ import {
   Param,
   ParseArrayPipe,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -16,6 +17,7 @@ import {
   ApiOperation,
   ApiParam,
   ApiProperty,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -35,7 +37,6 @@ import { MessageHistoryDto } from './dto/message-history.dto';
 import { MessageDto } from './dto/message.dto';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
-import { SearchRegistrationDto } from './dto/search-registration.dto';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
@@ -373,19 +374,25 @@ export class RegistrationsController {
 
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
-    summary: 'Find registration by phone-number for PM and FieldValidation',
+    summary:
+      'Find registration by phone-number for PM, Redline integration and FieldValidation',
   })
   @ApiResponse({
     status: 200,
     description: 'Return registrations that match the exact phone-number',
   })
-  @Post('/registrations/search-phone')
+  @ApiQuery({
+    name: 'phonenumber',
+    required: true,
+    type: 'string',
+  })
+  @Get('/registrations')
   public async searchRegistration(
-    @Body() searchRegistrationDto: SearchRegistrationDto,
+    @Query('phonenumber') phonenumber,
     @User('id') userId: number,
   ): Promise<RegistrationEntity[]> {
     return await this.registrationsService.searchRegistration(
-      searchRegistrationDto.phoneNumber,
+      phonenumber,
       userId,
     );
   }
