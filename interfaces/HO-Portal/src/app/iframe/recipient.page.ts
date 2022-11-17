@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { Subscription } from 'rxjs';
 import RegistrationStatus from '../enums/registration-status.enum';
 import { Person } from '../models/person.model';
 
@@ -7,16 +9,30 @@ import { Person } from '../models/person.model';
   templateUrl: './recipient.page.html',
   styleUrls: ['./recipient.page.scss'],
 })
-export class RecipientPage implements OnInit {
+export class RecipientPage implements OnInit, OnDestroy {
   public recipients: Person[];
-  private queryParamPhonenumber = '+15005550002';
+  private paramsSubscription: Subscription;
+  public queryParamPhonenumber = '';
 
-  constructor() {}
+  constructor(private activatedRoute: ActivatedRoute) {
+    this.paramsSubscription = this.activatedRoute.queryParams.subscribe(
+      (params: Params) => {
+        if (!params.phonenumber) {
+          return;
+        }
+        this.queryParamPhonenumber = params.phonenumber;
+      },
+    );
+  }
 
   async ngOnInit() {
     this.recipients = await this.getPhoneNumberDetails(
       this.queryParamPhonenumber,
     );
+  }
+
+  ngOnDestroy(): void {
+    this.paramsSubscription.unsubscribe();
   }
 
   private async getPhoneNumberDetails(phoneNumber: string): Promise<Person[]> {

@@ -1,5 +1,25 @@
-<ion-content class="ion-padding">
-  <app-recipient-details></app-recipient-details>
-  <app-recipient-details></app-recipient-details>
-  <app-recipient-details></app-recipient-details>
+<ion-content>
+  <ng-container *ngIf="recipients?.length == 0">
+    <h1>No recipients found for phone number {{queryParamPhonenumber}}</h1>
+  </ng-container>
+  <ion-accordion-group>
+    <ion-accordion
+      *ngFor="let recipient of recipients"
+      value="{{recipient.id}}"
+    >
+      <ion-item
+        slot="header"
+        color="light"
+      >
+        <ion-label
+          >PA #{{recipient.registrationProgramId}} - Program
+          #{{recipient.programId}}</ion-label
+        >
+      </ion-item>
+      <app-recipient-details
+        class="ion-padding"
+        slot="content"
+      ></app-recipient-details>
+    </ion-accordion>
+  </ion-accordion-group>
 </ion-content>
