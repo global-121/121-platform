@@ -192,9 +192,9 @@ export class FindByPhoneComponent implements ValidationComponent {
     try {
       const rawRegistrations = await this.programsService.getPaByPhoneNr(
         phoneNumber,
-        );
+      );
       const registrations = rawRegistrations.filter((r) =>
-      this.validatableStatuses.includes(r.status),
+        this.validatableStatuses.includes(r.status),
       );
 
       if (registrations.length === 0) {
