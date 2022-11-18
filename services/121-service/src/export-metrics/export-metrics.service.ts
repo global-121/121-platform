@@ -714,10 +714,11 @@ export class ExportMetricsService {
     year?: number,
     fromStart?: number,
   ): Promise<PaMetrics> {
-    const registrations = await this.registrationsService.getRegistrationsForProgram(
+    const registrations = await this.registrationsService.getRegistrations(
       programId,
       false,
       true,
+      null,
     );
 
     const metrics: PaMetrics = {
