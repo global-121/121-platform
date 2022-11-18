@@ -77,7 +77,12 @@ export class ProgramService {
     userId: number,
   ): Promise<UserEntity> {
     const user = await this.userRepository.findOne(userId, {
-      relations: ['programAssignments', 'programAssignments.program'],
+      relations: [
+        'programAssignments',
+        'programAssignments.program',
+        'programAssignments.roles',
+        'programAssignments.roles.permissions',
+      ],
     });
     if (
       !user ||
