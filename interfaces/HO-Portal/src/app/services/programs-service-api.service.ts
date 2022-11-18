@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { environment } from '../../environments/environment';
@@ -190,12 +191,20 @@ export class ProgramsServiceApiService {
   getTransactions(
     programId: number | string,
     minPayment?: number | string,
+    referenceId?: string,
   ): Promise<Transaction[]> {
+    let params = new HttpParams();
+    if (minPayment) {
+      params = params.append('minPayment', minPayment);
+    }
+    if (referenceId) {
+      params = params.append('referenceId', referenceId);
+    }
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/payments/transactions${
-        minPayment ? '?minPayment=' + minPayment : ''
-      }`,
+      `/programs/${programId}/payments/transactions`,
+      false,
+      params,
     );
   }
 

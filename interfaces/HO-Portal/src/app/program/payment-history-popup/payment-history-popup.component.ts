@@ -70,6 +70,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
       this.pastTransactions = await this.programsService.getTransactions(
         this.programId,
         this.firstPaymentToShow,
+        this.person.referenceId,
       );
       this.fillPaymentRows();
       this.paymentRows.reverse();
