@@ -44,18 +44,13 @@ export class RecipientDetailsComponent implements OnInit {
   }
 
   private mapToKeyValue() {
-    const translationPrefix = 'page.iframe.recipient.recipient-details.';
+    const translationPrefix = 'recipient-details.';
     for (const key of Object.keys(this.recipient)) {
       if (this.keysToExclude.includes(key)) {
         continue;
       }
       let translationKey = translationPrefix + key;
       let label = this.translate.instant(translationKey);
-      if (label === translationKey) {
-        const string = this.convertCamelCaseToKebabCase(key);
-        translationKey = translationPrefix + string;
-        label = this.translate.instant(translationKey);
-      }
       // Add ' label !== translationKey && ' to this if when the translations for date columns are fixed
       if (this.recipient[key]) {
         this.labelAnswerMap.set(label, this.recipient[key]);
@@ -81,12 +76,5 @@ export class RecipientDetailsComponent implements OnInit {
       null,
       this.recipient.referenceId,
     );
-  }
-
-  private convertCamelCaseToKebabCase(input: string): string {
-    return input
-      .replace(/\B([A-Z])(?=[a-z])/g, '-$1')
-      .replace(/\B([a-z0-9])([A-Z])/g, '$1-$2')
-      .toLowerCase();
   }
 }
