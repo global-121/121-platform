@@ -1,18 +1,12 @@
 <ion-content>
   <ng-container *ngIf="recipients?.length == 0 && queryParamPhonenumber">
     <div class="ion-padding">
-      <h4>
-        No information linked to this person's phone number was found in any
-        active programs in the 121 Platform.
-      </h4>
+      <h4>{{"page.iframe.recipient.no-recipients-found" | translate}}</h4>
     </div>
   </ng-container>
   <ng-container *ngIf="!queryParamPhonenumber">
     <div class="ion-padding">
-      <h4>
-        When you receive a task, any information linked to the person's phone
-        number found in active programs in the 121 Platform will appear here.
-      </h4>
+      <h4>{{"page.iframe.recipient.no-phone-number" | translate}}</h4>
     </div>
   </ng-container>
   <ng-container *ngIf="recipients && programsMap">

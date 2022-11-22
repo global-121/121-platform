@@ -513,6 +513,15 @@
         "password-requirements": "Password must have at least {{minLength}} charachters, one capital letter, one lowercase letter and one number.",
         "different-passwords": "Passwords do not match."
       }
+    },
+    "iframe": {
+      "recipient":{
+        "no-recipients-found": "No information linked to this person's phone number was found in any active programs in the 121 Platform.",
+        "no-phone-number": "When you receive a task, any information linked to the person's phone number found in active programs in the 121 Platform will appear here.",
+        "recipient-details": {
+          
+        }
+      }
     }
   },
   "common": {

@@ -44,7 +44,7 @@ export class RecipientDetailsComponent implements OnInit {
   }
 
   private mapToKeyValue() {
-    const translationPrefix = 'page.program.program-people-affected.column.';
+    const translationPrefix = 'page.iframe.recipient.recipient-details.';
     for (const key of Object.keys(this.recipient)) {
       if (this.keysToExclude.includes(key)) {
         continue;
