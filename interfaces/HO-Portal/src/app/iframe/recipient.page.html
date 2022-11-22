@@ -10,7 +10,7 @@
     </div>
   </ng-container>
   <ng-container *ngIf="recipients && programsMap">
-    <ion-accordion-group>
+    <ion-accordion-group [value]="accordionGroupValue">
       <ion-accordion
         *ngFor="let recipient of recipients"
         value="{{recipient.id}}"

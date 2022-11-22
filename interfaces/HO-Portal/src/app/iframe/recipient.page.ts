@@ -14,6 +14,7 @@ export class RecipientPage implements OnInit, OnDestroy {
   public recipients: Person[];
   public programsMap: { [programId: number]: Program };
   public queryParamPhonenumber = '';
+  public accordionGroupValue = undefined;
   private paramsSubscription: Subscription;
 
   constructor(
@@ -34,6 +35,11 @@ export class RecipientPage implements OnInit, OnDestroy {
     this.recipients = await this.getPhoneNumberDetails(
       this.queryParamPhonenumber,
     );
+
+    if (this.recipients.length === 1) {
+      this.accordionGroupValue = this.recipients[0].id;
+    }
+
     const programs = await this.progamsServiceApiService.getAllPrograms();
     this.programsMap = {};
     for (const program of programs) {
