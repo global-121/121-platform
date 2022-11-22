@@ -69,7 +69,10 @@ export class RecipientDetailsComponent implements OnInit {
       if (question && this.recipient.paTableAttributes[key]) {
         label = this.translatableString.get(question.shortLabel);
         if (label) {
-          this.labelAnswerMap.set(label, this.recipient[key]);
+          this.labelAnswerMap.set(
+            label,
+            this.recipient.paTableAttributes[key].value,
+          );
         }
       }
     }
