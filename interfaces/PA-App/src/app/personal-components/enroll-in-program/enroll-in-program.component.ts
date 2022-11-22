@@ -172,9 +172,7 @@ export class EnrollInProgramComponent extends PersonalDirective {
   }
 
   private async postAnswers() {
-    const referenceId = await this.paData.retrieve(
-      this.paData.type.referenceId,
-    );
+    const referenceId = await this.paData.getReferenceId();
 
     await this.programsService.postRegistrationCustomAttributes(
       this.createAttributes(Object.values(this.answers), referenceId),

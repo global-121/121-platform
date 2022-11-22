@@ -20,6 +20,8 @@ export class PaDataService {
   private detailProgramKeyPrefix = 'program';
   private detailFspKeyPrefix = 'fsp';
   public paDataKeyPrefix = 'paData-';
+
+  private referenceId: string;
   private currentProgramId: number;
 
   private hasAccount = false;
@@ -59,6 +61,13 @@ export class PaDataService {
     if (instance) {
       return instance;
     }
+  }
+
+  public async getReferenceId(): Promise<string> {
+    if (!this.referenceId) {
+      this.referenceId = String(await this.retrieve(this.type.referenceId));
+    }
+    return this.referenceId;
   }
 
   public async getAllPrograms(): Promise<Program[]> {
