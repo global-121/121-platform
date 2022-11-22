@@ -49,8 +49,8 @@ export class RecipientDetailsComponent implements OnInit {
       if (this.keysToExclude.includes(key)) {
         continue;
       }
-      let translationKey = translationPrefix + key;
-      let label = this.translate.instant(translationKey);
+      const translationKey = translationPrefix + key;
+      const label = this.translate.instant(translationKey);
       // Add ' label !== translationKey && ' to this if when the translations for date columns are fixed
       if (this.recipient[key]) {
         this.labelAnswerMap.set(label, this.recipient[key]);
@@ -59,7 +59,7 @@ export class RecipientDetailsComponent implements OnInit {
     for (const key of Object.keys(this.recipient.paTableAttributes)) {
       let label = '';
       const question = this.program.programQuestions.find(
-        (question) => question.name === key,
+        (q) => q.name === key,
       );
       if (question && this.recipient.paTableAttributes[key]) {
         label = this.translatableString.get(question.shortLabel);
