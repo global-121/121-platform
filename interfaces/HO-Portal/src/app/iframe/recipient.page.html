@@ -17,12 +17,15 @@
       >
         <ion-item
           slot="header"
-          color="light"
+          color="white"
+          style="border-bottom: 1px solid var(--ion-color-medium)"
         >
-          <ion-label
-            >{{recipient.name}} -
-            {{programsMap[recipient.programId].titlePortal.en}}</ion-label
-          >
+          <ion-label color="secondary">
+            <strong>
+              {{recipient.name}} -
+              {{programsMap[recipient.programId].titlePortal.en}}
+            </strong>
+          </ion-label>
         </ion-item>
         <app-recipient-details
           class="ion-padding"

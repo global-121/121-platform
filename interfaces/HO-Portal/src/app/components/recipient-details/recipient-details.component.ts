@@ -23,8 +23,9 @@ export class RecipientDetailsComponent implements OnInit {
   @Input()
   program: Program;
 
-  public labelAnswerMap = new Map<string, string>();
+  public labelAnswerMap = {};
   public transactions: Transaction[] = [];
+  public translationPrefix = 'recipient-details.';
   private keysToExclude = [
     'id',
     'data',
@@ -33,6 +34,7 @@ export class RecipientDetailsComponent implements OnInit {
     'hasPhoneNumber',
     'referenceId',
     'programId',
+    'phone-number',
   ];
   private dateKeys = [
     'registeredDate',
@@ -48,6 +50,39 @@ export class RecipientDetailsComponent implements OnInit {
     'rejectionDate',
   ];
 
+  public columns = {
+    columnPersonalInformation: [
+      'registrationProgramId',
+      'phoneNumber',
+      'whatsappPhoneNumber',
+      'preferredLanguage',
+      'vnumber',
+      'dob',
+      'inclusionScore',
+    ],
+    columnProgramHistory: [
+      'startedRegistrationDate',
+      'invitedDate',
+      'registeredDate',
+      'importedDate',
+      'inclusionDate',
+      'noLongerEligibleDate',
+      'registeredWhileNoLongerEligibleDate',
+      'selectedForValidationDate',
+      'validationDate',
+      'inclusionEndDate',
+      'rejectionDate',
+      'status',
+    ],
+    columnPaymentHistory: ['fsp', 'paymentAmountMultiplier'],
+  };
+
+  public orderedColumns = [
+    'columnPersonalInformation',
+    'columnProgramHistory',
+    'columnPaymentHistory',
+  ];
+
   constructor(
     private translatableString: TranslatableStringService,
     private translate: TranslateService,
@@ -59,6 +94,9 @@ export class RecipientDetailsComponent implements OnInit {
   async ngOnInit() {
     this.mapToKeyValue();
     await this.getTransactions();
+    console.log('=== this.labelAnswerMap: ', this.labelAnswerMap);
+    console.log('=== this.labelAnswerMap[fsp]: ');
+    console.log('=== this.recipient: ', this.recipient);
   }
 
   private mapToKeyValue() {
@@ -66,12 +104,11 @@ export class RecipientDetailsComponent implements OnInit {
       return;
     }
 
-    const translationPrefix = 'recipient-details.';
     for (const key of Object.keys(this.recipient)) {
       if (this.keysToExclude.includes(key)) {
         continue;
       }
-      let translationKey = translationPrefix + key;
+      let translationKey = this.translationPrefix + key;
       let label = this.translate.instant(translationKey);
       // Add ' label !== translationKey && ' to this if when the translations for date columns are fixed
       if (this.recipient[key]) {
@@ -118,7 +155,8 @@ export class RecipientDetailsComponent implements OnInit {
     if (type === AnswerType.Date || this.dateKeys.includes(key)) {
       value = this.datePipe.transform(value, 'medium');
     }
-    this.labelAnswerMap.set(label, value);
+    console.log('label: ', label);
+    this.labelAnswerMap[key] = value;
   }
 
   public async buttonClick(

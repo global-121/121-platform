@@ -1,57 +1,26 @@
-<div class="">
+<div>
   <ion-grid>
     <ion-row>
       <ion-col
-        size="12"
-        sizeSm="6"
+        size="4"
+        *ngFor="let column of orderedColumns"
       >
-        <ng-container *ngFor="let entry of labelAnswerMap | keyvalue">
-          <ion-item>
-            <ion-label>{{ entry.key }}</ion-label>
-            <ion-note slot="end">{{ entry.value }}</ion-note>
-          </ion-item>
-        </ng-container>
-      </ion-col>
-      <ion-col
-        size="12"
-        sizeSm="6"
-      >
-        <ion-row>
-          <ion-col>
-            <ion-row
-              *ngFor="let transaction of transactions"
-              class="full-width ion-justify-content-between ion-padding-bottom ion-margin-vertical"
-            >
-              <div>
-                <h5 class="ion-no-margin">
-                  Payment #{{ transaction.payment }}
-                </h5>
-                <ion-text
-                  *ngIf="transaction.status"
-                  [color]="transaction.status === 'success' ? 'dark' : 'danger'"
-                  >{{
-                    'page.program.program-payout.last-payment.' +
-                      transaction.status | translate
-                  }}</ion-text
-                >
-              </div>
-              <ng-container *ngIf="transaction">
-                <button
-                  type="button"
-                  (click)="buttonClick(recipient, program, transaction)"
-                >
-                  {{ transaction.payment }}
-                  <div
-                    style="display: flex"
-                    class="ion-justify-content-center ion-align-items-center"
-                  >
-                    {{ transaction.amount }}
-                  </div>
-                </button>
-              </ng-container>
-            </ion-row>
-          </ion-col>
-        </ion-row>
+        <ion-item>
+          <h3>{{ translationPrefix + column | translate }}</h3>
+        </ion-item>
+        <ion-item
+          *ngFor="let attr of columns[column]"
+          lines="none"
+          style="--min-height: 30px"
+        >
+          <ion-label
+            color="secondary"
+            class="ion-no-margin"
+          >
+            {{ translationPrefix + attr | translate }}:
+            <strong>{{ labelAnswerMap[attr] || '-' }}</strong>
+          </ion-label>
+        </ion-item>
       </ion-col>
     </ion-row>
   </ion-grid>
