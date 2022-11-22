@@ -1,25 +1,42 @@
 <ion-content>
-  <ng-container *ngIf="recipients?.length == 0">
-    <h1>No recipients found for phone number {{queryParamPhonenumber}}</h1>
+  <ng-container *ngIf="recipients?.length == 0 && queryParamPhonenumber">
+    <div class="ion-padding">
+      <h4>
+        No information linked to this person's phone number was found in any
+        active programs in the 121 Platform.
+      </h4>
+    </div>
   </ng-container>
-  <ion-accordion-group>
-    <ion-accordion
-      *ngFor="let recipient of recipients"
-      value="{{recipient.id}}"
-    >
-      <ion-item
-        slot="header"
-        color="light"
+  <ng-container *ngIf="!queryParamPhonenumber">
+    <div class="ion-padding">
+      <h4>
+        When you receive a task, any information linked to the person's phone
+        number found in active programs in the 121 Platform will appear here.
+      </h4>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="recipients && programsMap">
+    <ion-accordion-group>
+      <ion-accordion
+        *ngFor="let recipient of recipients"
+        value="{{recipient.id}}"
       >
-        <ion-label
-          >PA #{{recipient.registrationProgramId}} - Program
-          #{{recipient.programId}}</ion-label
+        <ion-item
+          slot="header"
+          color="light"
         >
-      </ion-item>
-      <app-recipient-details
-        class="ion-padding"
-        slot="content"
-      ></app-recipient-details>
-    </ion-accordion>
-  </ion-accordion-group>
+          <ion-label
+            >{{recipient.name}} -
+            {{programsMap[recipient.programId].titlePortal.en}}</ion-label
+          >
+        </ion-item>
+        <app-recipient-details
+          class="ion-padding"
+          slot="content"
+          [recipient]="recipient"
+          [program]="programsMap[recipient.programId]"
+        ></app-recipient-details>
+      </ion-accordion>
+    </ion-accordion-group>
+  </ng-container>
 </ion-content>

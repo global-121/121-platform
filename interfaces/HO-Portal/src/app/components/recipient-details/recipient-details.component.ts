@@ -1,0 +1,93 @@
+import { Component, Input, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { Person } from '../../models/person.model';
+import { Program } from '../../models/program.model';
+import { Transaction } from '../../models/transaction.model';
+import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
+import { TranslatableStringService } from '../../services/translatable-string.service';
+
+@Component({
+  selector: 'app-recipient-details',
+  templateUrl: './recipient-details.component.html',
+  styleUrls: ['./recipient-details.component.scss'],
+})
+export class RecipientDetailsComponent implements OnInit {
+  @Input()
+  recipient: Person;
+
+  @Input()
+  program: Program;
+
+  public labelAnswerMap = new Map<String, String>();
+  public transactions: Transaction[] = [];
+  private keysToExclude = [
+    'id',
+    'data',
+    'name',
+    'paTableAttributes',
+    'hasPhoneNumber',
+    'referenceId',
+    'programId',
+  ];
+
+  constructor(
+    private translatableString: TranslatableStringService,
+    private translate: TranslateService,
+    private programsServiceApiService: ProgramsServiceApiService,
+  ) {}
+
+  async ngOnInit() {
+    console.log('this.recipient: ', this.recipient);
+    console.log('this.program: ', this.program);
+    this.mapToKeyValue();
+    await this.getTransactions();
+  }
+
+  private mapToKeyValue() {
+    const translationPrefix = 'page.program.program-people-affected.column.';
+    for (const key of Object.keys(this.recipient)) {
+      if (this.keysToExclude.includes(key)) {
+        continue;
+      }
+      let translationKey = translationPrefix + key;
+      let label = this.translate.instant(translationKey);
+      if (label === translationKey) {
+        const string = this.convertCamelCaseToKebabCase(key);
+        translationKey = translationPrefix + string;
+        label = this.translate.instant(translationKey);
+      }
+      // Add ' label !== translationKey && ' to this if when the translations for date columns are fixed
+      if (this.recipient[key]) {
+        this.labelAnswerMap.set(label, this.recipient[key]);
+      }
+    }
+    for (const key of Object.keys(this.recipient.paTableAttributes)) {
+      let label = '';
+      const question = this.program.programQuestions.find(
+        (question) => question.name === key,
+      );
+      if (question && this.recipient[key]) {
+        label = this.translatableString.get(question.shortLabel);
+        if (label) {
+          this.labelAnswerMap.set(label, this.recipient[key]);
+        }
+      }
+    }
+  }
+
+  private async getTransactions() {
+    this.transactions = await this.programsServiceApiService.getTransactions(
+      this.program.id,
+      null,
+      this.recipient.referenceId,
+    );
+    console.log('this.transactions: ', this.transactions);
+  }
+
+  private convertCamelCaseToKebabCase(input: string): string {
+    return input
+      .replace(/\B([A-Z])(?=[a-z])/g, '-$1')
+      .replace(/\B([a-z0-9])([A-Z])/g, '$1-$2')
+      .toLowerCase();
+  }
+}

@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
-import RegistrationStatus from '../enums/registration-status.enum';
 import { Person } from '../models/person.model';
+import { Program } from '../models/program.model';
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 
 @Component({
   selector: 'app-recipient-page',
@@ -11,10 +12,14 @@ import { Person } from '../models/person.model';
 })
 export class RecipientPage implements OnInit, OnDestroy {
   public recipients: Person[];
-  private paramsSubscription: Subscription;
+  public programsMap: { [programId: number]: Program };
   public queryParamPhonenumber = '';
+  private paramsSubscription: Subscription;
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private progamsServiceApiService: ProgramsServiceApiService,
+  ) {
     this.paramsSubscription = this.activatedRoute.queryParams.subscribe(
       (params: Params) => {
         if (!params.phonenumber) {
@@ -29,6 +34,15 @@ export class RecipientPage implements OnInit, OnDestroy {
     this.recipients = await this.getPhoneNumberDetails(
       this.queryParamPhonenumber,
     );
+    const programs = await this.progamsServiceApiService.getAllPrograms();
+    this.programsMap = {};
+    for (const program of programs) {
+      this.programsMap[program.id] = program;
+    }
+    this.recipients = this.recipients.map((recipient) => {
+      recipient.name = recipient.name ? recipient.name : `PA #${recipient.id}`;
+      return recipient;
+    });
   }
 
   ngOnDestroy(): void {
@@ -36,32 +50,6 @@ export class RecipientPage implements OnInit, OnDestroy {
   }
 
   private async getPhoneNumberDetails(phoneNumber: string): Promise<Person[]> {
-    console.log('phoneNumber: ', phoneNumber);
-    return [
-      {
-        id: 102,
-        phoneNumber: '+15005550002',
-        referenceId: '',
-        programId: 1,
-        status: RegistrationStatus.included,
-        registrationProgramId: 1,
-      },
-      {
-        id: 103,
-        phoneNumber: '+15005550003',
-        referenceId: '',
-        programId: 1,
-        status: RegistrationStatus.included,
-        registrationProgramId: 2,
-      },
-      {
-        id: 104,
-        phoneNumber: '+15005550002',
-        referenceId: '',
-        programId: 2,
-        status: RegistrationStatus.included,
-        registrationProgramId: 1,
-      },
-    ];
+    return await this.progamsServiceApiService.getPaByPhoneNr(phoneNumber);
   }
 }
