@@ -36,42 +36,18 @@
                 >
               </div>
               <ng-container *ngIf="transaction">
-                <!-- <button
-                    type="button"
-                    (click)="rowClick(transaction)"
-                    [ngClass]="{
-                      'is-error': hasError(transaction),
-                      'no-action':
-                        !hasVoucherSupport(paymentRow.fsp) && !hasError(paymentRow),
-                      'ion-no-padding popup-button': true
-                    }"
+                <button
+                  type="button"
+                  (click)="buttonClick(recipient, program, transaction)"
+                >
+                  {{ transaction.payment }}
+                  <div
+                    style="display: flex"
+                    class="ion-justify-content-center ion-align-items-center"
                   >
-                    {{ paymentRow.text }}
-                    <div
-                      style="display: flex"
-                      class="ion-justify-content-center ion-align-items-center"
-                    >
-                      {{ transaction.amount }}
-                      <span
-                        *ngIf="
-                          paymentRow.hasMessageIcon || paymentRow.hasMoneyIconTable
-                        "
-                        >&nbsp;</span
-                      >
-                      <ion-icon
-                        *ngIf="paymentRow.hasMessageIcon"
-                        name="mail"
-                        size="small"
-                        aria-hidden="true"
-                      ></ion-icon>
-                      <ion-icon
-                        *ngIf="paymentRow.hasMoneyIconTable"
-                        name="cash"
-                        size="small"
-                        aria-hidden="true"
-                      ></ion-icon>
-                    </div>
-                  </button> -->
+                    {{ transaction.amount }}
+                  </div>
+                </button>
               </ng-container>
             </ion-row>
           </ion-col>

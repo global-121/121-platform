@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
@@ -20,6 +20,7 @@ import { RecipientPage } from './recipient.page';
     ]),
     TranslateModule.forChild(),
   ],
+  providers: [DatePipe],
   declarations: [RecipientPage, RecipientDetailsComponent],
 })
 export class IframeModule {}
