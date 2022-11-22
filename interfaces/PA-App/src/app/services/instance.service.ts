@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import {
   InstanceData,
@@ -16,14 +16,7 @@ import { PaDataService } from './padata.service';
 export class InstanceService {
   private instanceData: InstanceData;
 
-  private instanceInformationSource = new BehaviorSubject<InstanceInformation>({
-    name: '',
-    displayName: '',
-    logoUrl: '',
-    dataPolicy: '',
-    contactDetails: '',
-    monitoringQuestion: { intro: '', options: [], conclusion: '' },
-  });
+  private instanceInformationSource = new Subject<InstanceInformation>();
   public instanceInformation = this.instanceInformationSource.asObservable();
 
   constructor(
