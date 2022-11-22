@@ -61,7 +61,7 @@ export class RecipientDetailsComponent implements OnInit {
       const question = this.program.programQuestions.find(
         (question) => question.name === key,
       );
-      if (question && this.recipient[key]) {
+      if (question && this.recipient.paTableAttributes[key]) {
         label = this.translatableString.get(question.shortLabel);
         if (label) {
           this.labelAnswerMap.set(label, this.recipient[key]);
