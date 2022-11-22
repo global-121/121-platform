@@ -162,11 +162,6 @@ export class RecipientDetailsComponent implements OnInit {
       }
     });
     await modal.present();
-
-    this.transactions = await this.programsServiceApiService.getTransactions(
-      this.program.id,
-      null,
-      this.recipient.referenceId,
-    );
   }
+
 }
