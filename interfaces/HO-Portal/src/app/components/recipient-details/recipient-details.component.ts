@@ -37,13 +37,15 @@ export class RecipientDetailsComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    console.log('this.recipient: ', this.recipient);
-    console.log('this.program: ', this.program);
     this.mapToKeyValue();
     await this.getTransactions();
   }
 
   private mapToKeyValue() {
+    if (!this.recipient || !this.recipient.paTableAttributes) {
+      return;
+    }
+
     const translationPrefix = 'recipient-details.';
     for (const key of Object.keys(this.recipient)) {
       if (this.keysToExclude.includes(key)) {
@@ -74,6 +76,10 @@ export class RecipientDetailsComponent implements OnInit {
   }
 
   private async getTransactions() {
+    if (!this.program) {
+      return;
+    }
+
     this.transactions = await this.programsServiceApiService.getTransactions(
       this.program.id,
       null,
