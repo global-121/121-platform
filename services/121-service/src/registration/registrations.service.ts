@@ -11,6 +11,7 @@ import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -708,7 +709,11 @@ export class RegistrationsService {
     }
     let q = await this.registrationRepository
       .createQueryBuilder('registration')
-      .select('registration.id', 'id')
+      .select('registration.id', 'id');
+    if (true) {
+      this.includeTransactionData(q);
+    }
+    q = q
       .addSelect('registration.registrationProgramId', 'registrationProgramId')
       .distinctOn(['registration.registrationProgramId'])
       .orderBy(`registration.registrationProgramId`, 'ASC')
@@ -930,6 +935,36 @@ export class RegistrationsService {
         RegistrationStatusEnum.deleted,
         `registration.id = ${RegistrationStatusEnum.deleted}.registrationId AND ${RegistrationStatusEnum.deleted}.registrationStatus = '${RegistrationStatusEnum.deleted}'`,
       );
+  }
+
+  private includeTransactionData(
+    q: SelectQueryBuilder<RegistrationEntity>,
+  ): SelectQueryBuilder<RegistrationEntity> {
+    q.leftJoin(
+      qb =>
+        qb
+          .from(TransactionEntity, 'transactions')
+          .select('MAX("payment")', 'payment')
+          .addSelect('"registrationId"', 'registrationId')
+          .groupBy('"registrationId"'),
+      'last_transaction',
+      'last_transaction."registrationId" = registration.id',
+    )
+      .addSelect(['last_transaction.payment as test'])
+      .leftJoin(
+        'registration.transactions',
+        'transaction',
+        `transaction.payment = last_transaction.payment`,
+      )
+      .addSelect([
+        'transaction.created AS "paymentDate"',
+        'transaction.payment AS payment',
+        'transaction.status AS transactionStatus',
+        'transaction.amount AS transactionAmount',
+        'transaction.errorMessage as "errorMessage"',
+        'transaction.customData as "customData"',
+      ]);
+    return q;
   }
 
   public async getLatestDateForRegistrationStatus(

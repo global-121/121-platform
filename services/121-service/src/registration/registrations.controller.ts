@@ -227,12 +227,15 @@ export class RegistrationsController {
   public async getPeopleAffectedWithPersonalData(
     @Param() params,
   ): Promise<any[]> {
-    return await this.registrationsService.getRegistrations(
+    console.time('get registrations');
+    const result = await this.registrationsService.getRegistrations(
       Number(params.programId),
       true,
       false,
       null,
     );
+    console.timeEnd('get registrations');
+    return result;
   }
 
   @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
