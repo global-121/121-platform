@@ -25,6 +25,8 @@ export class RecipientDetailsComponent implements OnInit {
 
   public labelAnswerMap = new Map<string, string>();
   public transactions: Transaction[] = [];
+  private formatString = 'yyyy-MM-dd, HH:mm';
+  private locale = environment.defaultLocale;
   private keysToExclude = [
     'id',
     'data',
@@ -116,7 +118,7 @@ export class RecipientDetailsComponent implements OnInit {
     type?: AnswerType,
   ) {
     if (type === AnswerType.Date || this.dateKeys.includes(key)) {
-      value = this.datePipe.transform(value, 'medium');
+      value = this.datePipe.transform(value, this.formatString);
     }
     this.labelAnswerMap.set(label, value);
   }
@@ -146,8 +148,8 @@ export class RecipientDetailsComponent implements OnInit {
       componentProps: {
         titleError: `${transaction.payment}: ${this.datePipe.transform(
           transaction.paymentDate,
-          'yyyy-MM-dd, HH:mm',
-          environment.defaultLocale,
+          this.formatString,
+          this.locale,
         )}`,
         voucherButtons,
         imageUrl: voucherUrl,
