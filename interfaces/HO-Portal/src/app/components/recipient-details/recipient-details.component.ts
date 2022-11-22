@@ -18,7 +18,7 @@ export class RecipientDetailsComponent implements OnInit {
   @Input()
   program: Program;
 
-  public labelAnswerMap = new Map<String, String>();
+  public labelAnswerMap = new Map<string, string>();
   public transactions: Transaction[] = [];
   private keysToExclude = [
     'id',
@@ -81,7 +81,6 @@ export class RecipientDetailsComponent implements OnInit {
       null,
       this.recipient.referenceId,
     );
-    console.log('this.transactions: ', this.transactions);
   }
 
   private convertCamelCaseToKebabCase(input: string): string {
