@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import {
   InstanceData,
@@ -16,7 +16,7 @@ import { PaDataService } from './padata.service';
 export class InstanceService {
   private instanceData: InstanceData;
 
-  private instanceInformationSource = new Subject<InstanceInformation>();
+  private instanceInformationSource = new ReplaySubject<InstanceInformation>(1);
   public instanceInformation = this.instanceInformationSource.asObservable();
 
   constructor(
