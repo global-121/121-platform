@@ -55,25 +55,11 @@ jobs:
         /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
         cp ./services/.env.example services/.env
 
-    - name: Start services
-      run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build &
-
     - name: Install interfaces
       run: npm run install:interfaces
 
-    - name: Start interfaces
-      run: npm run start:interfaces &
-
-    - name: Install wait port
-      run: npm install -g wait-port
-    - name: Wait for 121-service
-      run: wait-port -t 120000 localhost:3000
-    - name: Wait for PA
-      run: wait-port -t 120000 localhost:8008
-    - name: Wait for AW
-      run: wait-port -t 120000 localhost:8080
-    - name: Wait for HO
-      run: wait-port -t 120000 localhost:8888
+    - name: Install services
+      run: npm run install:services
 
     - name: Run integration tests with Cypress
       # See documentation: https://github.com/cypress-io/github-action/#readme
@@ -81,3 +67,8 @@ jobs:
       with:
         browser: chrome
         working-directory: ./interfaces/tests
+        start: |
+          npm run start:services:ci
+          npm run start:interfaces
+        wait-on-timeout: 120
+        wait-on: 'http://localhost:3000/api/health/health, http://localhost:8008/, http://localhost:8080/, http://localhost:8888/'

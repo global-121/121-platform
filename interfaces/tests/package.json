@@ -5,6 +5,8 @@
   "homepage": "https://www.121.global/",
   "scripts": {
     "test": "test",
+    "start:services": "cd ../.. && npm run start:services",
+    "start:services:ci": "cd ../.. && npm run start:services:ci",
     "start:interfaces": "cd ../.. && npm run start:interfaces",
     "start:aw": "cd ../.. && npm run start:aw",
     "start:pa": "cd ../.. && npm run start:pa",
