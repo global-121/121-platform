@@ -16,7 +16,7 @@ import { PaDataService } from './padata.service';
 export class InstanceService {
   private instanceData: InstanceData;
 
-  private instanceInformationSource = new ReplaySubject<InstanceInformation>();
+  private instanceInformationSource = new ReplaySubject<InstanceInformation>(1);
   public instanceInformation = this.instanceInformationSource.asObservable();
 
   constructor(

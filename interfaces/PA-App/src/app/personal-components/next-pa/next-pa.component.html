@@ -1,7 +1,8 @@
 <section>
   <dialogue-turn
-    actor="self"
     *ngIf="showSavePa"
+    [isSpoken]="showSavePa"
+    actor="self"
   >
     <ion-button
       type="button"
@@ -12,10 +13,10 @@
     </ion-button>
   </dialogue-turn>
   <dialogue-turn
-    [isSpoken]="showAddAnotherPa"
-    [isConnected]="true"
-    actor="self"
     *ngIf="showAddAnotherPa"
+    [isSpoken]="showAddAnotherPa"
+    [isConnected]="showSavePa && showAddAnotherPa"
+    actor="self"
   >
     <ion-button
       type="button"
