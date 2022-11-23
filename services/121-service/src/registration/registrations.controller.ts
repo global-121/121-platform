@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpException,
+  HttpStatus,
   Param,
   ParseArrayPipe,
   Post,
@@ -212,7 +213,10 @@ export class RegistrationsController {
         Number(params.programId),
       );
     } else {
-      throw new HttpException({ 'This endpoint only works in development' }, HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        { errors: 'This endpoint only works in development' },
+        HttpStatus.NOT_FOUND,
+      );
     }
   }
 
