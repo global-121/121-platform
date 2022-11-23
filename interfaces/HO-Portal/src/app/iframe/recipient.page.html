@@ -1,5 +1,39 @@
-<ion-content class="ion-padding">
-  <app-recipient-details></app-recipient-details>
-  <app-recipient-details></app-recipient-details>
-  <app-recipient-details></app-recipient-details>
+<ion-content>
+  <ng-container *ngIf="recipients?.length == 0 && queryParamPhonenumber">
+    <div class="ion-padding">
+      <h4>{{"page.iframe.recipient.no-recipients-found" | translate}}</h4>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!queryParamPhonenumber">
+    <div class="ion-padding">
+      <h4>{{"page.iframe.recipient.no-phone-number" | translate}}</h4>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="recipients && programsMap">
+    <ion-accordion-group [value]="accordionGroupValue">
+      <ion-accordion
+        *ngFor="let recipient of recipients"
+        value="{{recipient.id}}"
+      >
+        <ion-item
+          slot="header"
+          color="white"
+          style="border-bottom: 1px solid var(--ion-color-medium)"
+        >
+          <ion-label color="secondary">
+            <strong>
+              {{recipient.name}} -
+              {{programsMap[recipient.programId].titlePortal.en}}
+            </strong>
+          </ion-label>
+        </ion-item>
+        <app-recipient-details
+          class="ion-padding"
+          slot="content"
+          [recipient]="recipient"
+          [program]="programsMap[recipient.programId]"
+        ></app-recipient-details>
+      </ion-accordion>
+    </ion-accordion-group>
+  </ng-container>
 </ion-content>

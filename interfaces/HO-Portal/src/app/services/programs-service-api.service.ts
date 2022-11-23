@@ -607,4 +607,12 @@ export class ProgramsServiceApiService {
 
     return attributeNames;
   }
+
+  getPaByPhoneNr(phoneNumber: string): Promise<Person[]> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/registrations/?phonenumber=${phoneNumber}`,
+      false,
+    );
+  }
 }

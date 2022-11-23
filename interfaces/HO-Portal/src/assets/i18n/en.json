@@ -513,6 +513,12 @@
         "password-requirements": "Password must have at least {{minLength}} charachters, one capital letter, one lowercase letter and one number.",
         "different-passwords": "Passwords do not match."
       }
+    },
+    "iframe": {
+      "recipient": {
+        "no-recipients-found": "No information linked to this person's phone number was found in any active programs in the 121 Platform.",
+        "no-phone-number": "When you receive a task, any information linked to the person's phone number found in active programs in the 121 Platform will appear here."
+      }
     }
   },
   "common": {
@@ -532,6 +538,34 @@
     "show-more": "Show More",
     "try-again-contact-support": "Please try again. If the problem persists, contact technical support.",
     "answer-is-required": "An answer is required for this question."
+  },
+  "recipient-details": {
+    "columnPersonalInformation": "Personal information",
+    "columnProgramHistory": "Program history",
+    "columnPaymentHistory": "Payment history",
+    "status": "Status",
+    "registeredDate": "Registered",
+    "inclusionDate": "Included",
+    "registrationProgramId": "ID",
+    "startedRegistrationDate": "Started registration",
+    "name": "Name",
+    "dob": "Date of birth",
+    "phone-number": "Phonenumber",
+    "vnumber": "V-number",
+    "whatsappPhoneNumber": "WhatsApp nr.",
+    "preferredLanguage": "Preferred language",
+    "paymentAmountMultiplier": "Transfer value(s)",
+    "fsp": "Financial Service Provider",
+    "phoneNumber": "Phone number",
+    "inclusionScore": "Inclusion score",
+    "importedDate": "Imported",
+    "invitedDate": "Invited",
+    "noLongerEligibleDate": "No longer eligible",
+    "registeredWhileNoLongerEligibleDate": "Registered while no longer eligible",
+    "selectedForValidationDate": "Selected for validation",
+    "validationDate": "Validated",
+    "inclusionEndDate": "Inclusion ended",
+    "rejectionDate": "Rejected"
   },
   "refresh-data": {
     "last-updated": "Last updated: {{date}}"

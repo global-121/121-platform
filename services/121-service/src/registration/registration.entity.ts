@@ -523,8 +523,8 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     throw new RegistrationDataSaveError(errorMessage);
   }
 
-  private saveRetriesCount = 0;
-  public async save(): Promise<RegistrationEntity> {
+  public async save(retryCount?: number): Promise<RegistrationEntity> {
+    let saveRetriesCount = retryCount ? retryCount : 0;
     const regRepo = getConnection().getRepository(RegistrationEntity);
     if (!this.registrationProgramId) {
       const query = regRepo
@@ -544,13 +544,13 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     } catch (error) {
       if (error instanceof QueryFailedError) {
         // This is the error code for unique_violation (see: https://www.postgresql.org/docs/current/errcodes-appendix.html)
-        if (error['code'] === '23505' && this.saveRetriesCount < 3) {
-          this.saveRetriesCount++;
+        if (error['code'] === '23505' && saveRetriesCount < 3) {
+          saveRetriesCount++;
           this.registrationProgramId = null;
-          await this.save();
+          await this.save(saveRetriesCount);
         }
-        if (this.saveRetriesCount >= 3) {
-          this.saveRetriesCount = 0;
+        if (saveRetriesCount >= 3) {
+          saveRetriesCount = 0;
           throw error;
         }
       }
