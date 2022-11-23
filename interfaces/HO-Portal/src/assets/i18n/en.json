@@ -551,7 +551,6 @@
     "name": "Name",
     "dob": "Date of birth",
     "phone-number": "Phonenumber",
-    "vnumber": "V-number",
     "whatsappPhoneNumber": "WhatsApp nr.",
     "preferredLanguage": "Preferred language",
     "paymentAmountMultiplier": "Transfer value(s)",
