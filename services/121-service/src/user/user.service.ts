@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { Request } from 'express';
 import { getRepository, In, Repository } from 'typeorm';
+import { DEBUG } from '../config';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { CookieNames } from './../shared/enum/cookie.enums';
@@ -22,7 +23,6 @@ import { UserType } from './user-type-enum';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
 import jwt = require('jsonwebtoken');
-import { DEBUG } from '../config';
 
 export const tokenExpirationDays = 14;
 
