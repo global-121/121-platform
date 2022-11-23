@@ -66,7 +66,7 @@ jobs:
     - name: Install wait port
       run: npm install -g wait-port
     - name: Wait for 121-service
-      run: wait-port -t 120000 http://:3000/api/health/health
+      run: wait-port -t 120000 http://localhost:3000/api/health/health
     - name: Wait for portal
       run: wait-port -t 120000 localhost:8888
 
