@@ -13,14 +13,14 @@ describe('Login Page', () => {
       cy.loginPortal();
 
       cy.get('span').contains('Logged in as');
-      cy.get('ion-note').contains(login.email);
+      cy.get('ion-note').contains(login.username);
     });
   });
 
   // Example of stubbing API calls: fill in wrong credentials but intercept the API-call with a predefined (real) response
   // This means you can skip certain steps in a flow without having to make all API-calls
   it('lets the user log in with fake API call', function () {
-    cy.fixture('portal-user').then((user) => {
+    cy.fixture('portal-login').then((user) => {
       cy.intercept('POST', '*/user/login*', {
         statusCode: 201,
         body: user
