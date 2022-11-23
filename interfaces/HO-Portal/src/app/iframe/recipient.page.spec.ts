@@ -17,7 +17,7 @@ describe('Recipient.PageComponent', () => {
         IonicModule.forRoot(),
         RouterTestingModule,
         TranslateModule.forRoot(),
-        HttpClientModule,
+        HttpClientTestingModule,
       ],
       providers: [ProgramsServiceApiService],
     }).compileComponents();
