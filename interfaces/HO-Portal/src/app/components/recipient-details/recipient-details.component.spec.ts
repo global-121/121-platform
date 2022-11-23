@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
@@ -17,7 +18,7 @@ describe('RecipientDetailsComponent', () => {
         TranslateModule.forRoot(),
         HttpClientTestingModule,
       ],
-      providers: [ProgramsServiceApiService],
+      providers: [ProgramsServiceApiService, DatePipe],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RecipientDetailsComponent);

@@ -2,25 +2,48 @@
   <ion-grid>
     <ion-row>
       <ion-col
-        size="4"
+        size-lg="4"
+        size-md="6"
+        size-sm="12"
         *ngFor="let column of orderedColumns"
       >
         <ion-item>
-          <h3>{{ translationPrefix + column | translate }}</h3>
+          <h4>{{ translationPrefix + column | translate }}</h4>
         </ion-item>
         <ion-item
           *ngFor="let attr of columns[column]"
           lines="none"
-          style="--min-height: 30px"
+          style="--min-height: 2rem"
         >
           <ion-label
             color="secondary"
             class="ion-no-margin"
           >
             {{ translationPrefix + attr | translate }}:
-            <strong>{{ labelAnswerMap[attr] || '-' }}</strong>
+            <strong>{{ keysAnswersMap[attr] || '-' }}</strong>
           </ion-label>
         </ion-item>
+        <ng-container *ngIf="column === 'columnPaymentHistory'">
+          <ion-item
+            button
+            *ngFor="let transaction of transactions"
+            lines="none"
+            style="--min-height: 2rem"
+            (click)="buttonClick(recipient, program, transaction)"
+          >
+            <ion-label
+              color="secondary"
+              class="ion-no-margin"
+              style="text-decoration: underline"
+            >
+              {{ 'Payment #' + transaction.payment }}:
+              <strong>{{
+                'page.program.program-people-affected.transaction.' +
+                  transaction.status | translate
+              }}</strong>
+            </ion-label>
+          </ion-item>
+        </ng-container>
       </ion-col>
     </ion-row>
   </ion-grid>

@@ -9,7 +9,6 @@ import { Program } from '../../models/program.model';
 import { Transaction } from '../../models/transaction.model';
 import { PaymentStatusPopupComponent } from '../../program/payment-status-popup/payment-status-popup.component';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
-import { TranslatableStringService } from '../../services/translatable-string.service';
 
 @Component({
   selector: 'app-recipient-details',
@@ -23,7 +22,7 @@ export class RecipientDetailsComponent implements OnInit {
   @Input()
   program: Program;
 
-  public labelAnswerMap = {};
+  public keysAnswersMap = {};
   public transactions: Transaction[] = [];
   public translationPrefix = 'recipient-details.';
   private formatString = 'yyyy-MM-dd, HH:mm';
@@ -85,20 +84,21 @@ export class RecipientDetailsComponent implements OnInit {
     'columnPaymentHistory',
   ];
 
+  private valueTranslators = {
+    preferredLanguage: 'page.program.program-people-affected.language',
+    status: 'page.program.program-people-affected.status',
+  };
+
   constructor(
-    private translatableString: TranslatableStringService,
-    private translate: TranslateService,
     private programsServiceApiService: ProgramsServiceApiService,
     private datePipe: DatePipe,
     private modalController: ModalController,
+    private translate: TranslateService,
   ) {}
 
   async ngOnInit() {
     this.mapToKeyValue();
     await this.getTransactions();
-    console.log('=== this.labelAnswerMap: ', this.labelAnswerMap);
-    console.log('=== this.labelAnswerMap[fsp]: ');
-    console.log('=== this.recipient: ', this.recipient);
   }
 
   private mapToKeyValue() {
@@ -110,27 +110,17 @@ export class RecipientDetailsComponent implements OnInit {
       if (this.keysToExclude.includes(key)) {
         continue;
       }
-      let translationKey = this.translationPrefix + key;
-      let label = this.translate.instant(translationKey);
       // Add ' label !== translationKey && ' to this if when the translations for date columns are fixed
       if (this.recipient[key]) {
-        this.setAndFormatLabelAndValue(label, this.recipient[key], key);
+        this.setKeyAndValue(key, this.recipient[key]);
       }
     }
     for (const key of Object.keys(this.recipient.paTableAttributes)) {
-      let label = '';
       const question = this.program.programQuestions.find(
-        (question) => question.name === key,
+        (q) => q.name === key,
       );
       if (question && this.recipient.paTableAttributes[key]) {
-        label = this.translatableString.get(question.shortLabel);
-        if (label) {
-          this.setAndFormatLabelAndValue(
-            label,
-            this.recipient.paTableAttributes[key].value,
-            key,
-          );
-        }
+        this.setKeyAndValue(key, this.recipient.paTableAttributes[key].value);
       }
     }
   }
@@ -148,17 +138,15 @@ export class RecipientDetailsComponent implements OnInit {
     this.transactions = transactionsResult.reverse();
   }
 
-  private setAndFormatLabelAndValue(
-    label: string,
-    value: string,
-    key?: string,
-    type?: AnswerType,
-  ) {
+  private setKeyAndValue(key: string, value: string, type?: AnswerType) {
     if (type === AnswerType.Date || this.dateKeys.includes(key)) {
       value = this.datePipe.transform(value, this.formatString);
     }
-    console.log('label: ', label);
-    this.labelAnswerMap[key] = value;
+
+    if (this.valueTranslators[key]) {
+      value = this.translate.instant(`${this.valueTranslators[key]}.${value}`);
+    }
+    this.keysAnswersMap[key] = value;
   }
 
   public async buttonClick(
