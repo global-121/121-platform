@@ -30,7 +30,7 @@ Cypress.Commands.add('loginApi', () => {
       {
         method: "POST",
         url: 'user/login',
-        body: {username: credentials.email, password: credentials.password}
+        body: {username: credentials.username, password: credentials.password}
       }
     )
   });
@@ -41,7 +41,7 @@ Cypress.Commands.add('loginPortal', () => {
   cy.fixture('portal-login').then((login) => {
     cy.setHoPortal();
     cy.visit(login.portal);
-    cy.get('input[name="email"]').type(login.email);
+    cy.get('input[name="email"]').type(login.username);
     cy.get('input[name="password"]').type(login.password);
     cy.get('*[type="submit"]').click();
     cy.url().should('contain', '/home')
