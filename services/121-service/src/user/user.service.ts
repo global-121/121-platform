@@ -22,6 +22,7 @@ import { UserType } from './user-type-enum';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
 import jwt = require('jsonwebtoken');
+import { DEBUG } from '../config';
 
 export const tokenExpirationDays = 14;
 
@@ -420,8 +421,8 @@ export class UserService {
       tokenValue: token,
       domain,
       path,
-      sameSite: 'Lax',
-      secure: process.env.NODE_ENV === 'production',
+      sameSite: DEBUG ? 'Lax' : 'None',
+      secure: !DEBUG,
       expires: new Date(Date.now() + tokenExpirationDays * 24 * 3600000),
       httpOnly: true,
     };
