@@ -7,8 +7,7 @@ on:
       - 'master'
     paths:
       - '.github/workflows/cypress-workflow.yml'
-      - 'interfaces/HO-Portal/**'
-      - 'interfaces/tests/**'
+      - 'interfaces/**'
       - 'services/**'
       - '!**.spec.ts'
       - '!**.md'
@@ -17,8 +16,7 @@ on:
       - 'release/*'
     paths:
       - '.github/workflows/cypress-workflow.yml'
-      - 'interfaces/HO-Portal/**'
-      - 'interfaces/tests/**'
+      - 'interfaces/**'
       - 'services/**'
       - '!**.spec.ts'
       - '!**.md'
@@ -40,6 +38,8 @@ jobs:
         cache: 'npm'
         cache-dependency-path: |
           interfaces/HO-Portal/package-lock.json
+          interfaces/AW-App/package-lock.json
+          interfaces/PA-App/package-lock.json
 
     - name: Overwrite .env varables
       run: >
@@ -57,17 +57,21 @@ jobs:
     - name: Start services
       run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build &
 
-    - name: Install portal
-      run: npm run install:ho
+    - name: Install interfaces
+      run: npm run install:interfaces
 
-    - name: Start portal
-      run: npm run start:ho &
+    - name: Start interfaces
+      run: npm run start:interfaces &
 
     - name: Install wait port
       run: npm install -g wait-port
     - name: Wait for 121-service
-      run: wait-port -t 120000 http://localhost:3000/api/health/health
-    - name: Wait for portal
+      run: wait-port -t 120000 localhost:3000
+    - name: Wait for PA
+      run: wait-port -t 120000 localhost:8008
+    - name: Wait for AW
+      run: wait-port -t 120000 localhost:8080
+    - name: Wait for HO
       run: wait-port -t 120000 localhost:8888
 
     - name: Run integration tests with Cypress
