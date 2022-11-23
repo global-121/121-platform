@@ -43,18 +43,17 @@ jobs:
           interfaces/AW-App/package-lock.json
           interfaces/PA-App/package-lock.json
 
-    - name: Overwrite .env varables
-      run: >
-        /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example &&
-        /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example &&
-        /bin/sed -i '/^ENV_NAME=/s/=.*/=Cypress/' ./services/.env.example &&
-        /bin/sed -i '/^RESET_SECRET=/s/=.*/=password/' ./services/.env.example &&
-        /bin/sed -i '/^ORMCONFIG_121_SERVICE_PASSWORD=/s/=.*/=global121/' ./services/.env.example &&
-        /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example &&
-        /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example &&
+    - name: Create .env varables file
+      run: |
+        /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example
+        /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example
+        /bin/sed -i '/^ENV_NAME=/s/=.*/=Cypress/' ./services/.env.example
+        /bin/sed -i '/^RESET_SECRET=/s/=.*/=password/' ./services/.env.example
+        /bin/sed -i '/^ORMCONFIG_121_SERVICE_PASSWORD=/s/=.*/=global121/' ./services/.env.example
+        /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example
+        /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example
         /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
-    - name: Copy .env.example to .env
-      run: cp ./services/.env.example services/.env
+        cp ./services/.env.example services/.env
 
     - name: Start services
       run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build &
