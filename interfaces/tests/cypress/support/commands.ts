@@ -23,6 +23,7 @@ Cypress.Commands.add('seedDatabase', () => {
 })
 
 Cypress.Commands.add('loginApi', () => {
+  cy.setServer();
   cy.fixture('portal-login').then((credentials) => {
     cy.setServer();
     cy.request(
@@ -36,6 +37,7 @@ Cypress.Commands.add('loginApi', () => {
 })
 
 Cypress.Commands.add('loginPortal', () => {
+  cy.setHoPortal();
   cy.fixture('portal-login').then((login) => {
     cy.setHoPortal();
     cy.visit(login.portal);

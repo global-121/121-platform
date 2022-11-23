@@ -1,16 +1,14 @@
 import programLVV from '../../../../../../services/121-service/seed-data/program/program-pilot-nl.json';
 import portalEn from '../../../../../../interfaces/HO-Portal/src/assets/i18n/en.json'
 
-describe('Pa Details Page', () => {
+describe('Pa details iframe page', () => {
   beforeEach(() => {
     cy.seedDatabase();
-    cy.setServer();
     cy.loginApi();
-    cy.setHoPortal();
     cy.loginPortal();
   });
 
-  it('visits the accordion iframe page and finds one PA and checks details', function () {
+  it('Visits the PA details iframe page and finds 1 PA and checks details', function () {
     cy.importRegistrations(1);
     cy.fixture('pa-details-iframe').then((page) => {
       cy.fixture('registration-nlrc').then((registration) => {
@@ -39,16 +37,16 @@ describe('Pa Details Page', () => {
     });
   });
 
-  it('visits the accordion iframe page and find one PA on whatsapp number', function () {
+  it('Visits the PA details iframe page and finds 1 PA on whatsapp number', function () {
     cy.fixture('registration-nlrc').then((registration) => {
-      const whatsappPhone = 14155238887
-      registration.whatsappPhoneNumber = whatsappPhone;
+      const whatsappPhoneNumber = 14155238887;
+      registration.whatsappPhoneNumber = whatsappPhoneNumber;
       cy.importRegistrations(1, [registration]);
       cy.fixture('pa-details-iframe').then((page) => {
         cy.setHoPortal()
         cy.visit(page.url, {
           qs: {
-            phonenumber: whatsappPhone
+            phonenumber: whatsappPhoneNumber
           }
         })
         cy.url().should('include', 'iframe');
@@ -59,11 +57,12 @@ describe('Pa Details Page', () => {
     });
   });
 
-  it('visits the accordion iframe page and finds 2 PA', function () {
+  it('Visits the PA details iframe page and finds 2 PAs in 2 different programs', function () {
     cy.fixture('registration-nlrc').then((registration1) => {
       cy.fixture('registration-nlrc-no-whatsapp').then((registration2) => {
         registration2.phoneNumber = registration1.phoneNumber
-        cy.importRegistrations(1, [registration1, registration2]);
+        cy.importRegistrations(1, [registration1]);
+        cy.importRegistrations(2, [registration2]);
         cy.fixture('pa-details-iframe').then((page) => {
           cy.setHoPortal()
           cy.visit(page.url, {
@@ -82,7 +81,7 @@ describe('Pa Details Page', () => {
     });
   });
 
-  it('visits the accordion iframe page and finds no PA', function () {
+  it('Visits the PA details iframe page and finds no PAs with provided phonenumber', function () {
     cy.importRegistrations(1);
     cy.fixture('pa-details-iframe').then((page) => {
       cy.setHoPortal()
@@ -97,7 +96,7 @@ describe('Pa Details Page', () => {
     });
   });
 
-  it('visits the accordion iframe page with no phonenumber', function () {
+  it('Visits the PA details iframe page with no phonenumber provided', function () {
     cy.importRegistrations(1);
     cy.fixture('pa-details-iframe').then((page) => {
       cy.setHoPortal()
