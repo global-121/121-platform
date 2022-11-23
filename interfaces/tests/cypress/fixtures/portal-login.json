@@ -1,5 +1,10 @@
 {
   "portal": "/login",
-  "email": "full-access-user@example.org",
-  "password": "password"
+  "username": "full-access-user@example.org",
+  "password": "password",
+  "expires": "2023-11-22T15:33:26.467Z",
+  "permissions": {
+    "1": ["program:metrics.read"],
+    "2": ["program:metrics.read"] 
+  }
 }

@@ -18,7 +18,8 @@
     "start:test-ho": "npx npm-run-all --print-label --parallel start:ho start:cypress"
   },
   "devDependencies": {
-    "cypress": "^10.11.0"
+    "cypress": "^10.11.0",
+    "typescript": "^4.9.3"
   },
   "dependencies": {
     "dotenv": "^16.0.3"

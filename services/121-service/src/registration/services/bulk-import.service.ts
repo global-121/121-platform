@@ -229,7 +229,13 @@ export class BulkImportService {
       csvFile,
       program.id,
     );
+    return this.importValidatedRegistrations(validatedImportRecords, program);
+  }
 
+  public async importValidatedRegistrations(
+    validatedImportRecords: ImportRegistrationsDto[],
+    program: ProgramEntity,
+  ): Promise<ImportResult> {
     let countImported = 0;
     let registrations: RegistrationEntity[] = [];
     const customDataList = [];
