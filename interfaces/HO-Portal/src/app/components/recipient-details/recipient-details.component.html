@@ -36,7 +36,10 @@
               class="ion-no-margin"
               style="text-decoration: underline"
             >
-              {{ 'Payment #' + transaction.payment }}:
+              {{
+                'page.program.program-people-affected.transaction.payment-number'
+                  | translate
+              }}{{ transaction.payment }}:
               <strong>{{
                 'page.program.program-people-affected.transaction.' +
                   transaction.status | translate
