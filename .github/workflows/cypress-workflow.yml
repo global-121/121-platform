@@ -36,7 +36,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         fetch-depth: 10
-        node-version: '14.20'
+        node-version-file: '.node-version'
         cache: 'npm'
         cache-dependency-path: |
           interfaces/HO-Portal/package-lock.json
