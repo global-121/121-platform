@@ -517,7 +517,9 @@
     "iframe": {
       "recipient": {
         "no-recipients-found": "No information linked to this person's phone number was found in any active programs in the 121 Platform.",
-        "no-phone-number": "When you receive a task, any information linked to the person's phone number found in active programs in the 121 Platform will appear here."
+        "no-phone-number": "When you receive a task, any information linked to the person's phone number found in active programs in the 121 Platform will appear here.",
+        "single-recipient-found": "Found <b> 1 Person Affected </b> registered with this number",
+        "multiple-recipients-found": "Found <b> {{paCount}} People Affected </b> registered with this number"
       }
     }
   },

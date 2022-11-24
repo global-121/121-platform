@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { Person } from '../models/person.model';
 import { Program } from '../models/program.model';
@@ -15,11 +16,13 @@ export class RecipientPage implements OnInit, OnDestroy {
   public programsMap: { [programId: number]: Program };
   public queryParamPhonenumber = '';
   public accordionGroupValue = undefined;
+  public bannerText: string;
   private paramsSubscription: Subscription;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private progamsServiceApiService: ProgramsServiceApiService,
+    private translate: TranslateService,
   ) {
     this.paramsSubscription = this.activatedRoute.queryParams.subscribe(
       (params: Params) => {
@@ -49,6 +52,16 @@ export class RecipientPage implements OnInit, OnDestroy {
       recipient.name = recipient.name ? recipient.name : `PA #${recipient.id}`;
       return recipient;
     });
+
+    this.bannerText =
+      this.recipients.length > 1
+        ? this.translate.instant(
+            'page.iframe.recipient.multiple-recipients-found',
+            { paCount: this.recipients.length },
+          )
+        : this.translate.instant(
+            'page.iframe.recipient.single-recipient-found',
+          );
   }
 
   ngOnDestroy(): void {
