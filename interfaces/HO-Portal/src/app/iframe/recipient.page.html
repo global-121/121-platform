@@ -10,6 +10,7 @@
     </div>
   </ng-container>
   <ng-container *ngIf="recipients && programsMap">
+    <app-header [isIframeHeader]="true"></app-header>
     <ion-accordion-group [value]="accordionGroupValue">
       <ion-accordion
         *ngFor="let recipient of recipients"
