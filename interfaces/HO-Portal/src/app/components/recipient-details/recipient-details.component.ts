@@ -2,14 +2,21 @@ import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { AnswerType } from 'src/app/models/fsp.model';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { RegistrationStatusTimestampField } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { environment } from '../../../environments/environment';
-import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
 import { Transaction } from '../../models/transaction.model';
 import { PaymentStatusPopupComponent } from '../../program/payment-status-popup/payment-status-popup.component';
-import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 
+class RecipientDetail {
+  key: string;
+  label: string;
+  value: any;
+}
 @Component({
   selector: 'app-recipient-details',
   templateUrl: './recipient-details.component.html',
@@ -37,48 +44,14 @@ export class RecipientDetailsComponent implements OnInit {
     'programId',
     'phone-number',
   ];
-  private dateKeys = [
-    'registeredDate',
-    'inclusionDate',
-    'startedRegistrationDate',
-    'importedDate',
-    'invitedDate',
-    'noLongerEligibleDate',
-    'registeredWhileNoLongerEligibleDate',
-    'selectedForValidationDate',
-    'validationDate',
-    'inclusionEndDate',
-    'rejectionDate',
-  ];
 
   public columns = {
-    columnPersonalInformation: [
-      'registrationProgramId',
-      'phoneNumber',
-      'whatsappPhoneNumber',
-      'preferredLanguage',
-      'vnumber',
-      'dob',
-      'inclusionScore',
-    ],
-    columnProgramHistory: [
-      'startedRegistrationDate',
-      'invitedDate',
-      'registeredDate',
-      'importedDate',
-      'inclusionDate',
-      'noLongerEligibleDate',
-      'registeredWhileNoLongerEligibleDate',
-      'selectedForValidationDate',
-      'validationDate',
-      'inclusionEndDate',
-      'rejectionDate',
-      'status',
-    ],
-    columnPaymentHistory: ['fsp', 'paymentAmountMultiplier'],
+    columnPersonalInformation: [],
+    columnProgramHistory: [],
+    columnPaymentHistory: [],
   };
 
-  public orderedColumns = [
+  public columnOrder = [
     'columnPersonalInformation',
     'columnProgramHistory',
     'columnPaymentHistory',
@@ -94,11 +67,13 @@ export class RecipientDetailsComponent implements OnInit {
     private datePipe: DatePipe,
     private modalController: ModalController,
     private translate: TranslateService,
+    private translatableString: TranslatableStringService,
   ) {}
 
   async ngOnInit() {
     this.mapToKeyValue();
-    await this.getTransactions();
+
+    this.transactions = await this.getTransactions();
   }
 
   private mapToKeyValue() {
@@ -110,24 +85,73 @@ export class RecipientDetailsComponent implements OnInit {
       if (this.keysToExclude.includes(key)) {
         continue;
       }
+      const column = this.getColumn(key);
+
       // Add ' label !== translationKey && ' to this if when the translations for date columns are fixed
-      if (this.recipient[key]) {
-        this.setKeyAndValue(key, this.recipient[key]);
+      if (!this.recipient[key]) {
+        continue;
       }
+      this.columns[column].push(
+        this.getRecipientDetail(
+          key,
+          this.translate.instant(`recipient-details.${key}`),
+          this.recipient[key],
+        ),
+      );
     }
+
     for (const key of Object.keys(this.recipient.paTableAttributes)) {
-      const question = this.program.programQuestions.find(
+      const column = this.getColumn(key);
+      const programQuestion = this.program.programQuestions.find(
         (q) => q.name === key,
       );
-      if (question && this.recipient.paTableAttributes[key]) {
-        this.setKeyAndValue(key, this.recipient.paTableAttributes[key].value);
+      if (!programQuestion) {
+        continue;
       }
+      this.columns[column].push(
+        this.getRecipientDetail(
+          key,
+          this.translatableString.get(programQuestion.shortLabel),
+          this.recipient.paTableAttributes[key].value,
+          this.recipient.paTableAttributes[key].type,
+        ),
+      );
     }
   }
 
-  private async getTransactions() {
+  private getRecipientDetail(
+    key: string,
+    label: string,
+    value: any,
+    type?: AnswerType,
+  ): RecipientDetail {
+    if (RegistrationStatusTimestampField[key] || type === AnswerType.Date) {
+      value = this.convertDate(value);
+    }
+    if (this.valueTranslators[key]) {
+      value = this.translateValue(key, value);
+    }
+
+    return { key, label, value };
+  }
+
+  private getColumn(key: string) {
+    if (RegistrationStatusTimestampField[key]) {
+      return 'columnProgramHistory';
+    }
+
+    const keysToCol = {
+      status: 'columnProgramHistory',
+      fsp: 'columnPaymentHistory',
+      paymentAmountMultiplier: 'columnPaymentHistory',
+    };
+
+    return keysToCol[key] || 'columnPersonalInformation';
+  }
+
+  private async getTransactions(): Promise<Transaction[]> {
     if (!this.program) {
-      return;
+      return [];
     }
     const transactionsResult =
       await this.programsServiceApiService.getTransactions(
@@ -135,18 +159,15 @@ export class RecipientDetailsComponent implements OnInit {
         null,
         this.recipient.referenceId,
       );
-    this.transactions = transactionsResult.reverse();
+    return transactionsResult.reverse();
   }
 
-  private setKeyAndValue(key: string, value: string, type?: AnswerType) {
-    if (type === AnswerType.Date || this.dateKeys.includes(key)) {
-      value = this.datePipe.transform(value, this.formatString);
-    }
+  private convertDate(value) {
+    return this.datePipe.transform(value, this.formatString);
+  }
 
-    if (this.valueTranslators[key]) {
-      value = this.translate.instant(`${this.valueTranslators[key]}.${value}`);
-    }
-    this.keysAnswersMap[key] = value;
+  private translateValue(key, value) {
+    return this.translate.instant(`${this.valueTranslators[key]}.${value}`);
   }
 
   public async buttonClick(

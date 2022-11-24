@@ -5,7 +5,7 @@
         size-lg="4"
         size-md="6"
         size-sm="12"
-        *ngFor="let column of orderedColumns"
+        *ngFor="let column of columnOrder"
       >
         <ion-item>
           <h4>{{ translationPrefix + column | translate }}</h4>
@@ -19,8 +19,8 @@
             color="secondary"
             class="ion-no-margin"
           >
-            {{ translationPrefix + attr | translate }}:
-            <strong>{{ keysAnswersMap[attr] || '-' }}</strong>
+            {{ attr.label }}:
+            <strong>{{ attr.value || '-' }}</strong>
           </ion-label>
         </ion-item>
         <ng-container *ngIf="column === 'columnPaymentHistory'">
@@ -36,7 +36,10 @@
               class="ion-no-margin"
               style="text-decoration: underline"
             >
-              {{ 'Payment #' + transaction.payment }}:
+              {{
+                'page.program.program-people-affected.transaction.payment-number'
+                  | translate
+              }}{{ transaction.payment }}:
               <strong>{{
                 'page.program.program-people-affected.transaction.' +
                   transaction.status | translate

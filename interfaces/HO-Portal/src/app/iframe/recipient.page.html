@@ -11,10 +11,11 @@
   </ng-container>
   <ng-container *ngIf="recipients && programsMap">
     <app-header [isIframeHeader]="true"></app-header>
+    <app-banner [text]="bannerText"></app-banner>
     <ion-accordion-group [value]="accordionGroupValue">
       <ion-accordion
         *ngFor="let recipient of recipients"
-        value="{{recipient.id}}"
+        [value]="recipient.id"
       >
         <ion-item
           slot="header"
@@ -23,8 +24,8 @@
         >
           <ion-label color="secondary">
             <strong>
-              {{recipient.name}} -
-              {{programsMap[recipient.programId].titlePortal.en}}
+              {{ recipient.name }} - {{
+              programsMap[recipient.programId].titlePortal.en }}
             </strong>
           </ion-label>
         </ion-item>
