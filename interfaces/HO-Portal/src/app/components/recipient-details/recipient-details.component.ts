@@ -30,7 +30,6 @@ export class RecipientDetailsComponent implements OnInit {
   private keysToExclude = [
     'id',
     'data',
-    'name',
     'paTableAttributes',
     'hasPhoneNumber',
     'referenceId',
@@ -49,31 +48,33 @@ export class RecipientDetailsComponent implements OnInit {
     'validationDate',
     'inclusionEndDate',
     'rejectionDate',
+    'deleteDate',
   ];
 
   public columns = {
     columnPersonalInformation: [
       'registrationProgramId',
+      'name',
       'phoneNumber',
       'whatsappPhoneNumber',
       'preferredLanguage',
-      'vnumber',
-      'dob',
-      'inclusionScore',
+      'namePartnerOrganization',
+      'note',
     ],
     columnProgramHistory: [
-      'startedRegistrationDate',
-      'invitedDate',
-      'registeredDate',
+      'status',
       'importedDate',
-      'inclusionDate',
+      'invitedDate',
+      'startedRegistrationDate',
       'noLongerEligibleDate',
+      'registeredDate',
       'registeredWhileNoLongerEligibleDate',
       'selectedForValidationDate',
       'validationDate',
-      'inclusionEndDate',
+      'inclusionDate',
       'rejectionDate',
-      'status',
+      'inclusionEndDate',
+      'deleteDate',
     ],
     columnPaymentHistory: ['fsp', 'paymentAmountMultiplier'],
   };
@@ -119,9 +120,16 @@ export class RecipientDetailsComponent implements OnInit {
       const question = this.program.programQuestions.find(
         (q) => q.name === key,
       );
-      if (question && this.recipient.paTableAttributes[key]) {
+      const customAttribute = this.program.programCustomAttributes.find(
+        (attr) => attr.name === key,
+      );
+      if (
+        (question || customAttribute) &&
+        this.recipient.paTableAttributes[key]
+      ) {
         this.setKeyAndValue(key, this.recipient.paTableAttributes[key].value);
       }
+      console.log('this.keysAnswersMap: ', this.keysAnswersMap);
     }
   }
 

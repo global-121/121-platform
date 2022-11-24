@@ -10,19 +10,22 @@
         <ion-item>
           <h4>{{ translationPrefix + column | translate }}</h4>
         </ion-item>
-        <ion-item
-          *ngFor="let attr of columns[column]"
-          lines="none"
-          style="--min-height: 2rem"
-        >
-          <ion-label
-            color="secondary"
-            class="ion-no-margin"
+        <ng-container *ngFor="let attr of columns[column]">
+          <ion-item
+            *ngIf="keysAnswersMap[attr]"
+            lines="none"
+            style="--min-height: 2rem"
           >
-            {{ translationPrefix + attr | translate }}:
-            <strong>{{ keysAnswersMap[attr] || '-' }}</strong>
-          </ion-label>
-        </ion-item>
+            <ion-label
+              color="secondary"
+              class="ion-no-margin"
+              [ngClass]="{ 'ion-text-wrap': attr === 'note' }"
+            >
+              {{ translationPrefix + attr | translate }}:
+              <strong>{{ keysAnswersMap[attr] }}</strong>
+            </ion-label>
+          </ion-item>
+        </ng-container>
         <ng-container *ngIf="column === 'columnPaymentHistory'">
           <ion-item
             button

@@ -546,16 +546,13 @@
     "status": "Status",
     "registeredDate": "Registered",
     "inclusionDate": "Included",
-    "registrationProgramId": "ID",
+    "registrationProgramId": "PA#",
     "startedRegistrationDate": "Started registration",
-    "dob": "Date of birth",
-    "vnumber": "V-number",
     "whatsappPhoneNumber": "WhatsApp nr.",
     "preferredLanguage": "Preferred language",
     "paymentAmountMultiplier": "Transfer value(s)",
     "fsp": "Financial Service Provider",
     "phoneNumber": "Phone number",
-    "inclusionScore": "Inclusion score",
     "importedDate": "Imported",
     "invitedDate": "Invited",
     "noLongerEligibleDate": "No longer eligible",
@@ -563,7 +560,10 @@
     "selectedForValidationDate": "Selected for validation",
     "validationDate": "Validated",
     "inclusionEndDate": "Inclusion ended",
-    "rejectionDate": "Rejected"
+    "rejectionDate": "Rejected",
+    "name": "Name",
+    "namePartnerOrganization": "Name Partner Organization",
+    "note": "Note"
   },
   "refresh-data": {
     "last-updated": "Last updated: {{date}}"
