@@ -21,7 +21,7 @@ import { FinancialServiceProviderEntity } from './../fsp/financial-service-provi
 import { SmsService } from './../notifications/sms/sms.service';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './../notifications/whatsapp/whatsapp.service';
-import { ImportResult } from './dto/bulk-import.dto';
+import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
@@ -588,6 +588,17 @@ export class RegistrationsService {
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
     return await this.bulkImportService.importRegistrations(csvFile, program);
+  }
+
+  public async importValidatedRegistrations(
+    validatedImportRecords: ImportRegistrationsDto[],
+    programId: number,
+  ): Promise<ImportResult> {
+    const program = await this.findProgramOrThrow(programId);
+    return await this.bulkImportService.importValidatedRegistrations(
+      validatedImportRecords,
+      program,
+    );
   }
 
   private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {
