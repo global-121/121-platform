@@ -549,7 +549,7 @@
     "status": "Status",
     "registeredDate": "Registered",
     "inclusionDate": "Included",
-    "registrationProgramId": "ID",
+    "registrationProgramId": "PA#",
     "startedRegistrationDate": "Started registration",
     "phone-number": "Phonenumber",
     "whatsappPhoneNumber": "WhatsApp nr.",

@@ -101,7 +101,9 @@ export class RecipientDetailsComponent implements OnInit {
       }
       const column = this.getColumn(key);
 
-      this.columns[column].push(
+      this.columns[column.columnName].splice(
+        column.index,
+        0,
         this.getRecipientDetail(
           key,
           this.translate.instant(`recipient-details.${key}`),
@@ -115,21 +117,31 @@ export class RecipientDetailsComponent implements OnInit {
         continue;
       }
       const column = this.getColumn(key);
-      const programQuestion = this.program.programQuestions.find(
-        (q) => q.name === key,
+      const fsp = this.program.financialServiceProviders.find(
+        (f) => f.fsp === this.recipient.fsp,
       );
-      if (!programQuestion) {
+      const fspQuestion = fsp.questions.find((q) => q.name === key);
+      const customAttribute = this.program.programCustomAttributes.find(
+        (ca) => ca.name === key,
+      );
+
+      if (!customAttribute && !fspQuestion) {
         continue;
       }
-      this.columns[column].push(
+
+      const shortLabel = customAttribute?.shortLabel || fspQuestion?.shortLabel;
+      this.columns[column.columnName].splice(
+        column.index,
+        0,
         this.getRecipientDetail(
           key,
-          this.translatableString.get(programQuestion.shortLabel),
+          this.translatableString.get(shortLabel),
           this.recipient.paTableAttributes[key].value,
           this.recipient.paTableAttributes[key].type,
         ),
       );
     }
+    this.sortStatusHistory();
   }
 
   private getRecipientDetail(
@@ -144,22 +156,43 @@ export class RecipientDetailsComponent implements OnInit {
     if (this.valueTranslators[key]) {
       value = this.translateValue(key, value);
     }
+    if (key === 'phoneNumber' || type === AnswerType.PhoneNumber) {
+      value = '+' + value;
+    }
 
     return { key, label, value };
   }
 
-  private getColumn(key: string) {
+  private getColumn(key: string): { columnName: string; index: number } {
     if (RegistrationStatusTimestampField[key]) {
-      return 'columnStatusHistory';
+      return {
+        columnName: 'columnStatusHistory',
+        index: Object.keys(RegistrationStatusTimestampField).indexOf(key),
+      };
     }
 
     const keysToCol = {
-      status: 'columnStatusHistory',
-      fsp: 'columnPaymentHistory',
-      paymentAmountMultiplier: 'columnPaymentHistory',
+      registrationProgramId: {
+        columnName: 'columnPersonalInformation',
+        index: 0,
+      },
+      name: { columnName: 'columnPersonalInformation', index: 1 },
+      phoneNumber: { columnName: 'columnPersonalInformation', index: 2 },
+      whatsappPhoneNumber: {
+        columnName: 'columnPersonalInformation',
+        index: 3,
+      },
+      preferredLanguage: { columnName: 'columnPersonalInformation', index: 4 },
+      fsp: { columnName: 'columnPaymentHistory', index: 0 },
+      paymentAmountMultiplier: { columnName: 'columnPaymentHistory', index: 1 },
     };
 
-    return keysToCol[key] || 'columnPersonalInformation';
+    return (
+      keysToCol[key] || {
+        columnName: 'columnPersonalInformation',
+        index: this.columns['columnPersonalInformation'].length - 1,
+      }
+    );
   }
 
   private async getTransactions(): Promise<Transaction[]> {
@@ -181,6 +214,14 @@ export class RecipientDetailsComponent implements OnInit {
 
   private translateValue(key, value) {
     return this.translate.instant(`${this.valueTranslators[key]}.${value}`);
+  }
+
+  private sortStatusHistory() {
+    const statusOrder = Object.values(RegistrationStatusTimestampField);
+    const toBeSorted = [...this.columns['columnStatusHistory']];
+    this.columns['columnStatusHistory'] = toBeSorted.sort(
+      (a, b) => statusOrder.indexOf(a.key) - statusOrder.indexOf(b.key),
+    );
   }
 
   public async buttonClick(

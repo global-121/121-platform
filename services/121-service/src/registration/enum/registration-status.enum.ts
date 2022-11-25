@@ -14,17 +14,17 @@ export enum RegistrationStatusEnum {
 }
 
 export enum RegistrationStatusTimestampField {
-  startedRegistrationDate = 'startedRegistrationDate',
   importedDate = 'importedDate',
   invitedDate = 'invitedDate',
-  noLongerEligibleDate = 'noLongerEligibleDate',
   accountCreatedDate = 'accountCreatedDate',
+  startedRegistrationDate = 'startedRegistrationDate',
+  registeredWhileNoLongerEligibleDate = 'registeredWhileNoLongerEligibleDate',
   registeredDate = 'registeredDate',
-  selectedForValidationDate = 'selectedForValidationDate',
+  rejectionDate = 'rejectionDate',
+  noLongerEligibleDate = 'noLongerEligibleDate',
   validationDate = 'validationDate',
   inclusionDate = 'inclusionDate',
   inclusionEndDate = 'inclusionEndDate',
-  rejectionDate = 'rejectionDate',
-  registeredWhileNoLongerEligibleDate = 'registeredWhileNoLongerEligibleDate',
+  selectedForValidationDate = 'selectedForValidationDate',
   deleteDate = 'deleteDate',
 }
