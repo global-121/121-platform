@@ -543,8 +543,9 @@
   },
   "recipient-details": {
     "columnPersonalInformation": "Personal information",
-    "columnProgramHistory": "Program history",
+    "columnStatusHistory": "Status history",
     "columnPaymentHistory": "Payment history",
+    "columnNotes": "Notes",
     "status": "Current status",
     "registeredDate": "Registered",
     "inclusionDate": "Included",
@@ -565,7 +566,9 @@
     "selectedForValidationDate": "Selected for validation",
     "validationDate": "Validated",
     "inclusionEndDate": "Inclusion ended",
-    "rejectionDate": "Rejected"
+    "rejectionDate": "Rejected",
+    "note": "Note",
+    "name": "Name"
   },
   "refresh-data": {
     "last-updated": "Last updated: {{date}}"

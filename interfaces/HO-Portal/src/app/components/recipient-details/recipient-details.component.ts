@@ -37,23 +37,28 @@ export class RecipientDetailsComponent implements OnInit {
   private keysToExclude = [
     'id',
     'data',
-    'name',
     'paTableAttributes',
     'hasPhoneNumber',
+    'hasNote',
+    'note',
     'referenceId',
     'programId',
     'phone-number',
   ];
 
+  private questionKeysToInclude = ['whatsappPhoneNumber'];
+
   public columns = {
     columnPersonalInformation: [],
-    columnProgramHistory: [],
+    columnNotes: [],
+    columnStatusHistory: [],
     columnPaymentHistory: [],
   };
 
   public columnOrder = [
     'columnPersonalInformation',
-    'columnProgramHistory',
+    'columnNotes',
+    'columnStatusHistory',
     'columnPaymentHistory',
   ];
 
@@ -85,12 +90,11 @@ export class RecipientDetailsComponent implements OnInit {
       if (this.keysToExclude.includes(key)) {
         continue;
       }
-      const column = this.getColumn(key);
-
-      // Add ' label !== translationKey && ' to this if when the translations for date columns are fixed
       if (!this.recipient[key]) {
         continue;
       }
+      const column = this.getColumn(key);
+
       this.columns[column].push(
         this.getRecipientDetail(
           key,
@@ -101,6 +105,9 @@ export class RecipientDetailsComponent implements OnInit {
     }
 
     for (const key of Object.keys(this.recipient.paTableAttributes)) {
+      if (!this.questionKeysToInclude.includes(key)) {
+        continue;
+      }
       const column = this.getColumn(key);
       const programQuestion = this.program.programQuestions.find(
         (q) => q.name === key,
@@ -137,11 +144,11 @@ export class RecipientDetailsComponent implements OnInit {
 
   private getColumn(key: string) {
     if (RegistrationStatusTimestampField[key]) {
-      return 'columnProgramHistory';
+      return 'columnStatusHistory';
     }
 
     const keysToCol = {
-      status: 'columnProgramHistory',
+      status: 'columnStatusHistory',
       fsp: 'columnPaymentHistory',
       paymentAmountMultiplier: 'columnPaymentHistory',
     };

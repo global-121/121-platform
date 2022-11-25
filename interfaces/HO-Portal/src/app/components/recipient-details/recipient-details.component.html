@@ -2,9 +2,11 @@
   <ion-grid>
     <ion-row>
       <ion-col
-        size-lg="4"
-        size-md="6"
+        size="12"
+        size-xs="12"
         size-sm="12"
+        size-md="6"
+        size-lg="4"
         *ngFor="let column of columnOrder"
       >
         <ion-item>
@@ -20,9 +22,22 @@
             class="ion-no-margin"
           >
             {{ attr.label }}:
-            <strong>{{ attr.value || '-' }}</strong>
+            <strong>{{ attr.value }}</strong>
           </ion-label>
         </ion-item>
+        <ng-container *ngIf="column === 'columnNotes'">
+          <ion-item
+            lines="none"
+            style="--min-height: 2rem"
+          >
+            <ion-label
+              color="secondary"
+              class="ion-no-margin ion-text-wrap"
+            >
+              {{ recipient.note || '-' }}
+            </ion-label>
+          </ion-item>
+        </ng-container>
         <ng-container *ngIf="column === 'columnPaymentHistory'">
           <ion-item
             button
@@ -40,10 +55,14 @@
                 'page.program.program-people-affected.transaction.payment-number'
                   | translate
               }}{{ transaction.payment }}:
-              <strong>{{
-                'page.program.program-people-affected.transaction.' +
-                  transaction.status | translate
-              }}</strong>
+              <strong>
+                {{ '€ ' + transaction.amount }}
+                {{
+                  'page.program.program-people-affected.transaction.' +
+                    transaction.status | translate
+                }}
+                {{ transaction.paymentDate | date }}</strong
+              >
             </ion-label>
           </ion-item>
         </ng-container>
