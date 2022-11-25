@@ -32,6 +32,7 @@ export class RecipientDetailsComponent implements OnInit {
   public keysAnswersMap = {};
   public transactions: Transaction[] = [];
   public translationPrefix = 'recipient-details.';
+  public bannerText = '';
   private formatString = 'yyyy-MM-dd, HH:mm';
   private locale = environment.defaultLocale;
   private keysToExclude = [
@@ -44,6 +45,7 @@ export class RecipientDetailsComponent implements OnInit {
     'referenceId',
     'programId',
     'phone-number',
+    'status',
   ];
 
   private questionKeysToInclude = ['whatsappPhoneNumber'];
@@ -79,6 +81,10 @@ export class RecipientDetailsComponent implements OnInit {
     this.mapToKeyValue();
 
     this.transactions = await this.getTransactions();
+    this.bannerText = this.translate.instant(
+      this.translationPrefix + 'statusBannerText',
+      { status: this.translateValue('status', this.recipient.status) },
+    );
   }
 
   private mapToKeyValue() {

@@ -546,12 +546,11 @@
     "columnStatusHistory": "Status history",
     "columnPaymentHistory": "Payment history",
     "columnNotes": "Notes",
-    "status": "Current status",
+    "status": "Status",
     "registeredDate": "Registered",
     "inclusionDate": "Included",
     "registrationProgramId": "ID",
     "startedRegistrationDate": "Started registration",
-    "dob": "Date of birth",
     "phone-number": "Phonenumber",
     "whatsappPhoneNumber": "WhatsApp nr.",
     "preferredLanguage": "Preferred language",
@@ -568,7 +567,8 @@
     "inclusionEndDate": "Inclusion ended",
     "rejectionDate": "Rejected",
     "note": "Note",
-    "name": "Name"
+    "name": "Name",
+    "statusBannerText": "Status: <b> {{status}} </b>"
   },
   "refresh-data": {
     "last-updated": "Last updated: {{date}}"
