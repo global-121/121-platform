@@ -1,4 +1,5 @@
 <ion-content>
+  <app-header [isIframeHeader]="true"></app-header>
   <ng-container *ngIf="recipients?.length == 0 && queryParamPhonenumber">
     <div class="ion-padding">
       <h4>{{"page.iframe.recipient.no-recipients-found" | translate}}</h4>
@@ -9,8 +10,7 @@
       <h4>{{"page.iframe.recipient.no-phone-number" | translate}}</h4>
     </div>
   </ng-container>
-  <ng-container *ngIf="recipients && programsMap">
-    <app-header [isIframeHeader]="true"></app-header>
+  <ng-container *ngIf="recipients?.length > 0 && programsMap">
     <app-banner
       [text]="bannerText"
       [showTopBorder]="true"
