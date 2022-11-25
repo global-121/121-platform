@@ -10,7 +10,7 @@ export class BannerComponent implements OnInit {
   public text: string;
 
   @Input()
-  public showTopBorder: boolean = false;
+  public showTopBorder = false;
 
   constructor() {}
 

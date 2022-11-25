@@ -170,7 +170,7 @@ export class RecipientDetailsComponent implements OnInit {
         index: Object.keys(RegistrationStatusTimestampField).indexOf(key),
       };
     }
-
+    const defaultColumnName = 'columnPersonalInformation';
     const keysToCol = {
       registrationProgramId: {
         columnName: 'columnPersonalInformation',
@@ -189,8 +189,8 @@ export class RecipientDetailsComponent implements OnInit {
 
     return (
       keysToCol[key] || {
-        columnName: 'columnPersonalInformation',
-        index: this.columns['columnPersonalInformation'].length - 1,
+        columnName: defaultColumnName,
+        index: this.columns[defaultColumnName].length - 1,
       }
     );
   }
@@ -217,9 +217,10 @@ export class RecipientDetailsComponent implements OnInit {
   }
 
   private sortStatusHistory() {
+    const columnNameStatusHistory = 'columnStatusHistory';
     const statusOrder = Object.values(RegistrationStatusTimestampField);
-    const toBeSorted = [...this.columns['columnStatusHistory']];
-    this.columns['columnStatusHistory'] = toBeSorted.sort(
+    const toBeSorted = [...this.columns[columnNameStatusHistory]];
+    this.columns[columnNameStatusHistory] = toBeSorted.sort(
       (a, b) => statusOrder.indexOf(a.key) - statusOrder.indexOf(b.key),
     );
   }

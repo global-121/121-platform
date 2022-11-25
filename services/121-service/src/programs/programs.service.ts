@@ -99,7 +99,12 @@ export class ProgramService {
     const user = await this.findUserProgramAssignmentsOrThrow(userId);
     const programIds = user.programAssignments.map(p => p.program.id);
     const programs = await this.programRepository.findByIds(programIds, {
-      relations: ['programQuestions', 'programCustomAttributes', 'financialServiceProviders', 'financialServiceProviders.questions'],
+      relations: [
+        'programQuestions',
+        'programCustomAttributes',
+        'financialServiceProviders',
+        'financialServiceProviders.questions',
+      ],
     });
     const programsCount = programs.length;
 
