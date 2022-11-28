@@ -87,7 +87,7 @@ export class RecipientDetailsComponent implements OnInit {
     this.transactions = await this.getTransactions();
     this.bannerText = this.translate.instant(
       this.translationPrefix + 'statusBannerText',
-      { status: this.translateValue('status', this.recipient.status) },
+      { status: this.translateValue('status', this.recipient?.status) },
     );
   }
 
