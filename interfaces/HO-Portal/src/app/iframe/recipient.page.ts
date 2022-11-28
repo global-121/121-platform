@@ -26,10 +26,10 @@ export class RecipientPage implements OnInit, OnDestroy {
   ) {
     this.paramsSubscription = this.activatedRoute.queryParams.subscribe(
       (params: Params) => {
-        if (!params.phonenumber) {
+        if (!params.phonenumber && !params.phoneNumber) {
           return;
         }
-        this.queryParamPhonenumber = params.phonenumber;
+        this.queryParamPhonenumber = params.phonenumber || params.phoneNumber;
       },
     );
   }
