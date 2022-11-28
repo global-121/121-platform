@@ -1,7 +1,10 @@
 <ion-header>
   <ion-grid>
     <ion-row>
-      <ion-col size="1">
+      <ion-col
+        *ngIf="!isIframeHeader"
+        size="1"
+      >
         <ion-button
           [title]="'header.help' | translate"
           [attr.aria-label]="'header.help' | translate"
@@ -31,27 +34,41 @@
           ></ion-icon>
         </ion-button>
       </ion-col>
-      <ion-col size="4">
+      <ion-col
+        *ngIf="!isIframeHeader"
+        size="4"
+      >
         <h1 class="ion-no-margin">
           {{ title }}
         </h1>
         <ion-note *ngIf="subtitle">
           {{ subtitle }}
-          &nbsp;<!-- 'placeholder' to reserve vertical space for async-loaded programTitlePortal -->
+          &nbsp;
+          <!-- 'placeholder' to reserve vertical space for async-loaded programTitlePortal -->
         </ion-note>
       </ion-col>
-      <ion-col size="2">
-        <ion-row class="ion-justify-content-center">
+      <ion-col [size]="isIframeHeader ? '6' : '2'">
+        <ion-row
+          [ngClass]="{
+            'ion-justify-content-center': !isIframeHeader,
+            'ion-justify-content-start ion-align-items-center': isIframeHeader
+          }"
+        >
           <div id="logo-container">
             <img
               src="./assets/img/121-logo.png"
               alt="121"
             />
           </div>
+          <ng-container *ngIf="isIframeHeader">
+            <ion-text color="secondary">
+              <h2 class="ion-no-margin">121 Portal</h2>
+            </ion-text>
+          </ng-container>
         </ion-row>
       </ion-col>
       <ion-col
-        size="5"
+        [size]="isIframeHeader ? '6' : '5'"
         class="ion-text-end"
       >
         <app-user-state></app-user-state>

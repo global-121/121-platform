@@ -1,4 +1,5 @@
 <ion-content>
+  <app-header [isIframeHeader]="true"></app-header>
   <ng-container *ngIf="recipients?.length == 0 && queryParamPhonenumber">
     <div class="ion-padding">
       <h4>{{"page.iframe.recipient.no-recipients-found" | translate}}</h4>
@@ -9,21 +10,24 @@
       <h4>{{"page.iframe.recipient.no-phone-number" | translate}}</h4>
     </div>
   </ng-container>
-  <ng-container *ngIf="recipients && programsMap">
+  <ng-container *ngIf="recipients?.length > 0 && programsMap">
+    <app-banner
+      [text]="bannerText"
+      [showTopBorder]="true"
+    ></app-banner>
     <ion-accordion-group [value]="accordionGroupValue">
       <ion-accordion
         *ngFor="let recipient of recipients"
-        value="{{recipient.id}}"
+        [value]="recipient.id"
       >
         <ion-item
           slot="header"
           color="white"
-          style="border-bottom: 1px solid var(--ion-color-medium)"
         >
           <ion-label color="secondary">
             <strong>
-              {{recipient.name}} -
-              {{programsMap[recipient.programId].titlePortal.en}}
+              {{ recipient.name }} - {{
+              programsMap[recipient.programId].titlePortal.en }}
             </strong>
           </ion-label>
         </ion-item>
