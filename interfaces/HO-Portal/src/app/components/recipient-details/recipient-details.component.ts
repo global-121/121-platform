@@ -9,6 +9,7 @@ import { RegistrationStatusTimestampField } from '../../../../../../services/121
 import { environment } from '../../../environments/environment';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
+import { StatusEnum } from '../../models/status.enum';
 import { Transaction } from '../../models/transaction.model';
 import { PaymentStatusPopupComponent } from '../../program/payment-status-popup/payment-status-popup.component';
 
@@ -216,6 +217,14 @@ export class RecipientDetailsComponent implements OnInit {
     return this.translate.instant(`${this.valueTranslators[key]}.${value}`);
   }
 
+  private hasWaiting(transaction: Transaction): boolean {
+    return transaction.status === StatusEnum.waiting;
+  }
+
+  private hasError(transaction: Transaction): boolean {
+    return transaction.status === StatusEnum.error;
+  }
+
   private sortStatusHistory() {
     const columnNameStatusHistory = 'columnStatusHistory';
     const statusOrder = Object.values(RegistrationStatusTimestampField);
@@ -232,6 +241,22 @@ export class RecipientDetailsComponent implements OnInit {
   ) {
     let voucherUrl = null;
     let voucherButtons = null;
+
+    const content = this.hasWaiting
+      ? this.translate.instant(
+          'page.program.program-people-affected.transaction.waiting-message',
+        )
+      : this.hasError
+      ? this.translate.instant(
+          'page.program.program-people-affected.payment-status-popup.error-message',
+        ) +
+        ': <strong>' +
+        transaction.errorMessage +
+        '</strong><br><br>' +
+        this.translate.instant(
+          'page.program.program-people-affected.payment-status-popup.fix-error',
+        )
+      : null;
 
     await this.programsServiceApiService
       .exportVoucher(recipient.referenceId, transaction.payment, program.id)
@@ -253,6 +278,7 @@ export class RecipientDetailsComponent implements OnInit {
           this.formatString,
           this.locale,
         )}`,
+        content,
         voucherButtons,
         imageUrl: voucherUrl,
       },
