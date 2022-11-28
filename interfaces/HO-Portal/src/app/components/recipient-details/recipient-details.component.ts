@@ -49,7 +49,10 @@ export class RecipientDetailsComponent implements OnInit {
     'status',
   ];
 
-  private questionKeysToInclude = ['whatsappPhoneNumber'];
+  private questionKeysToInclude = [
+    'whatsappPhoneNumber',
+    'namePartnerOrganization',
+  ];
 
   public columns = {
     columnPersonalInformation: [],
@@ -130,7 +133,7 @@ export class RecipientDetailsComponent implements OnInit {
         continue;
       }
 
-      const shortLabel = customAttribute?.shortLabel || fspQuestion?.shortLabel;
+      const shortLabel = customAttribute?.label || fspQuestion?.shortLabel;
       this.columns[column.columnName].splice(
         column.index,
         0,
@@ -178,12 +181,16 @@ export class RecipientDetailsComponent implements OnInit {
         index: 0,
       },
       name: { columnName: 'columnPersonalInformation', index: 1 },
-      phoneNumber: { columnName: 'columnPersonalInformation', index: 2 },
+      namePartnerOrganization: {
+        columnName: 'columnPersonalInformation',
+        index: 2,
+      },
+      phoneNumber: { columnName: 'columnPersonalInformation', index: 3 },
       whatsappPhoneNumber: {
         columnName: 'columnPersonalInformation',
-        index: 3,
+        index: 4,
       },
-      preferredLanguage: { columnName: 'columnPersonalInformation', index: 4 },
+      preferredLanguage: { columnName: 'columnPersonalInformation', index: 5 },
       fsp: { columnName: 'columnPaymentHistory', index: 0 },
       paymentAmountMultiplier: { columnName: 'columnPaymentHistory', index: 1 },
     };
