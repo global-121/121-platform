@@ -22,17 +22,25 @@ describe('Pa details iframe page', () => {
         cy.get('ion-label').contains(registration.nameFirst);
         cy.get('ion-label').contains(registration.nameLast);
         cy.get('ion-label').contains(programLVV.titlePortal.en);
-        cy.get('ion-label').contains(registration.nameFirst);
-        cy.get('ion-label').contains(registration.nameLast);
-        cy.get('ion-label').contains(programLVV.titlePortal.en);
+        // Banner with status
+        cy.get('app-banner').contains(registration.status)
+
+        // Personal: ID, name, phonenumber, whatsappphonenumber, pref. language
+        // cy.get('app-recipient-details').contains(registration.registrationProgramId);
+        // cy.get('app-recipient-details').contains(registration.name);
         cy.get('app-recipient-details').contains(registration.phoneNumber);
         cy.get('app-recipient-details').contains(registration.whatsappPhoneNumber);
-        cy.get('app-recipient-details').contains(registration.vnumber);
-        cy.get('app-recipient-details').contains(registration.fspName);
         cy.get('app-recipient-details').contains(registration.preferredLanguage);
-        // for (const [_key, value] of Object.entries(portalEn['recipient-details'])) {
-        //   cy.get('app-recipient-details').contains(value);
-        // }
+
+        // Notes: note or -
+        cy.get('app-recipient-details').contains(registration.note || '-');
+
+        // Status history: timestamps of PA status changes
+        // TODO: add timestamp checks
+
+        // Payment history: FSP name & if exists: transaction rows
+        cy.get('app-recipient-details').contains(registration.fspName);
+        cy.get('app-recipient-details').contains(registration.paymentAmountMultiplier);
       })
     });
   });
