@@ -120,6 +120,9 @@ export class RecipientDetailsComponent implements OnInit {
       if (!this.questionKeysToInclude.includes(key)) {
         continue;
       }
+      if (!this.recipient.paTableAttributes[key].value) {
+        continue;
+      }
       const column = this.getColumn(key);
       const fsp = this.program.financialServiceProviders.find(
         (f) => f.fsp === this.recipient.fsp,
