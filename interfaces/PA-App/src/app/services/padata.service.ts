@@ -292,6 +292,7 @@ export class PaDataService {
     await this.programService.logout(completedRegistration);
     this.clearDataStorage();
     this.setLoggedOut();
+    this.referenceId = undefined;
   }
 
   public async deleteData(): Promise<any> {
