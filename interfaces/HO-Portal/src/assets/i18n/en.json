@@ -554,7 +554,7 @@
     "phone-number": "Phonenumber",
     "whatsappPhoneNumber": "WhatsApp nr.",
     "preferredLanguage": "Preferred language",
-    "paymentAmountMultiplier": "Transfer value(s)",
+    "paymentAmountMultiplier": "Transfer value multiplier",
     "fsp": "Financial Service Provider",
     "phoneNumber": "Phone number",
     "inclusionScore": "Inclusion score",
