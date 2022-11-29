@@ -3,7 +3,7 @@
     <ion-title>
       {{
         'page.program.program-people-affected.edit-person-affected-popup.popup-title'
-          | translate : { pa: 'PA #' + person?.registrationProgramId }
+          | translate: { pa: 'PA #' + person?.registrationProgramId }
       }}
     </ion-title>
     <ion-buttons slot="end">
@@ -165,7 +165,7 @@
           'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'
             | translate
               : {
-                  timestamp: noteLastUpdate | date : 'yyyy-MM-dd, HH:mm'
+                  timestamp: noteLastUpdate | date: 'yyyy-MM-dd, HH:mm'
                 }
         }}
       </ion-note>
@@ -210,14 +210,14 @@
       </ion-item>
       <ion-item
         *ngFor="
-          let message of messageHistory | slice : 0 : historySize;
+          let message of messageHistory | slice: 0:historySize;
           let i = index
         "
         [button]="true"
         (click)="openMessageDetails(i)"
       >
         <span class="ion-margin-end">
-          {{ message.created | date : 'yyyy-MM-dd, HH:mm' }}
+          {{ message.created | date: 'yyyy-MM-dd, HH:mm' }}
         </span>
         <span class="ion-margin-end">
           <strong>{{ message.type }}</strong>
