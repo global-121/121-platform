@@ -280,6 +280,14 @@ export class RecipientDetailsComponent implements OnInit {
           voucherButtons = false;
         },
       );
+    const paymentDetails = {
+      programId: this.program.id,
+      payment: transaction.payment,
+      amount: transaction.amount,
+      referenceId: this.recipient.referenceId,
+      currency: this.program.currency,
+    };
+
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PaymentStatusPopupComponent,
       componentProps: {
@@ -289,6 +297,7 @@ export class RecipientDetailsComponent implements OnInit {
           this.locale,
         )}`,
         content,
+        payoutDetails: paymentDetails,
         voucherButtons,
         imageUrl: voucherUrl,
       },
