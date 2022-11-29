@@ -184,16 +184,16 @@ export class RecipientDetailsComponent implements OnInit {
         index: 0,
       },
       name: { columnName: 'columnPersonalInformation', index: 1 },
-      namePartnerOrganization: {
-        columnName: 'columnPersonalInformation',
-        index: 2,
-      },
-      phoneNumber: { columnName: 'columnPersonalInformation', index: 3 },
+      phoneNumber: { columnName: 'columnPersonalInformation', index: 2 },
       whatsappPhoneNumber: {
         columnName: 'columnPersonalInformation',
-        index: 4,
+        index: 3,
       },
-      preferredLanguage: { columnName: 'columnPersonalInformation', index: 5 },
+      preferredLanguage: { columnName: 'columnPersonalInformation', index: 4 },
+      namePartnerOrganization: {
+        columnName: 'columnPersonalInformation',
+        index: 5,
+      },
       fsp: { columnName: 'columnPaymentHistory', index: 0 },
       paymentAmountMultiplier: { columnName: 'columnPaymentHistory', index: 1 },
     };
