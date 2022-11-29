@@ -49,6 +49,7 @@ export class removeRegistrationPersonalSEARCH1669718138929
       }
     }
     await this.removePermission('registration:personal.search', permRepo);
+    await this.removePermission('registration:reference-id.search', permRepo);
   }
 
   private async removePermission(

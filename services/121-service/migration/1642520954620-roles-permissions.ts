@@ -165,7 +165,6 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
         role: DefaultUserRole.FieldValidation,
         label: 'Do Field Validation',
         permissions: [
-          PermissionEnum.RegistrationReferenceIdSEARCH,
           PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationPersonalForValidationREAD,
           PermissionEnum.RegistrationPersonalUPDATE,

@@ -43,8 +43,6 @@ export enum PermissionEnum {
 
   RegistrationAttributeUPDATE = 'registration:attribute.update',
 
-  RegistrationReferenceIdSEARCH = 'registration:reference-id.search',
-
   RegistrationFspREAD = 'registration:fsp.read',
   RegistrationFspUPDATE = 'registration:fsp.update',
 
