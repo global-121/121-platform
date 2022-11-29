@@ -34,7 +34,7 @@ export class RecipientDetailsComponent implements OnInit {
   public keysAnswersMap = {};
   public transactions: Transaction[] = [];
   public translationPrefix = 'recipient-details.';
-  public bannerText = '';
+  public statusText = '';
   private formatString = 'yyyy-MM-dd, HH:mm';
   private locale = environment.defaultLocale;
   private keysToExclude = [
@@ -86,8 +86,8 @@ export class RecipientDetailsComponent implements OnInit {
     this.mapToKeyValue();
 
     this.transactions = await this.getTransactions();
-    this.bannerText = this.translate.instant(
-      this.translationPrefix + 'statusBannerText',
+    this.statusText = this.translate.instant(
+      this.translationPrefix + 'statusText',
       { status: this.translateValue('status', this.recipient?.status) },
     );
   }
