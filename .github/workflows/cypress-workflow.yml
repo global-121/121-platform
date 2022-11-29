@@ -42,7 +42,7 @@ jobs:
           interfaces/AW-App/package-lock.json
           interfaces/PA-App/package-lock.json
 
-    - name: Create .env varables file
+    - name: Create .env variables file
       run: |
         /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example
         /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example
