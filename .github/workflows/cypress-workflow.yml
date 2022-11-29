@@ -75,7 +75,7 @@ jobs:
       run: wait-port -t 120000 localhost:8888
 
     - name: Run integration tests with Cypress
-      uses: cypress-io/github-action@v4.2.0
+      uses: cypress-io/github-action@v4.2.1
       with:
         browser: chrome
         working-directory: ./interfaces/tests
