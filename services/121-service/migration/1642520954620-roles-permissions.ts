@@ -1,8 +1,8 @@
-import { PermissionEnum } from './../src/user/permission.enum';
-import { DefaultUserRole } from './../src/user/user-role.enum';
 import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
+import { PermissionEnum } from './../src/user/permission.enum';
 import { PermissionEntity } from './../src/user/permissions.entity';
 import { UserRoleEntity } from './../src/user/user-role.entity';
+import { DefaultUserRole } from './../src/user/user-role.enum';
 
 export class rolesPermissions1642520954620 implements MigrationInterface {
   public constructor(queryRunner: QueryRunner) {}
@@ -72,8 +72,8 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
     const permissionEntities: PermissionEntity[] = [];
     for (const permissionName of Object.values(PermissionEnum)) {
       const permission = {
-        name: permissionName as PermissionEnum
-      }
+        name: permissionName as PermissionEnum,
+      };
       const permissionEntity = await permissionsRepository.save(permission);
       permissionEntities.push(permissionEntity);
     }
@@ -151,7 +151,6 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
           PermissionEnum.RegistrationNotificationREAD,
           PermissionEnum.RegistrationNotificationCREATE,
           PermissionEnum.RegistrationPersonalEXPORT,
-          PermissionEnum.RegistrationPersonalSEARCH,
           PermissionEnum.RegistrationPersonalUPDATE,
           PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,
           PermissionEnum.RegistrationStatusIncludedUPDATE,
@@ -166,10 +165,8 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
         role: DefaultUserRole.FieldValidation,
         label: 'Do Field Validation',
         permissions: [
-          PermissionEnum.RegistrationReferenceIdSEARCH,
           PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationPersonalForValidationREAD,
-          PermissionEnum.RegistrationPersonalSEARCH,
           PermissionEnum.RegistrationPersonalUPDATE,
         ],
       },
