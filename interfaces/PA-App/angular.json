@@ -96,12 +96,6 @@
               "ngswConfigPath": "src/ngsw-config.json"
             },
             "ci": {
-              "budgets": [
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
-                }
-              ],
               "progress": false
             }
           },
@@ -119,7 +113,8 @@
               "vendorChunk": true
             },
             "ci": {
-              "progress": false
+              "browserTarget": "app:build:ci",
+              "watch": false
             }
           }
         },
