@@ -1,4 +1,6 @@
-name: "Cypress tests"
+# See: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+
+name: 'Cypress Full Integration Tests'
 
 on:
   workflow_dispatch:
@@ -29,53 +31,45 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-      
+
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
-        fetch-depth: 10
-        node-version: '14.20'
+        node-version-file: '.node-version'
         cache: 'npm'
         cache-dependency-path: |
           interfaces/HO-Portal/package-lock.json
           interfaces/AW-App/package-lock.json
           interfaces/PA-App/package-lock.json
 
-    - name: Overwrite .env varables
-      run: >
-        /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example &&
-        /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example &&
-        /bin/sed -i '/^ENV_NAME=/s/=.*/=Cypress/' ./services/.env.example &&
-        /bin/sed -i '/^RESET_SECRET=/s/=.*/=password/' ./services/.env.example &&
-        /bin/sed -i '/^ORMCONFIG_121_SERVICE_PASSWORD=/s/=.*/=global121/' ./services/.env.example &&
-        /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example &&
-        /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example &&
+    - name: Create .env variables file
+      run: |
+        /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example
+        /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example
+        /bin/sed -i '/^ENV_NAME=/s/=.*/=Cypress/' ./services/.env.example
+        /bin/sed -i '/^RESET_SECRET=/s/=.*/=password/' ./services/.env.example
+        /bin/sed -i '/^ORMCONFIG_121_SERVICE_PASSWORD=/s/=.*/=global121/' ./services/.env.example
+        /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example
+        /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example
         /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
-    - name: Copy .env.example to .env
-      run: cp ./services/.env.example services/.env
-
-    - name: Start services
-      run: cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build &
+        cp ./services/.env.example services/.env
 
     - name: Install interfaces
       run: npm run install:interfaces
 
-    - name: Start interfaces
-      run: npm run start:interfaces &
-
-    - name: Install wait port
-      run: npm install -g wait-port
-    - name: Wait for 121-service
-      run: wait-port -t 120000 localhost:3000
-    - name: Wait for PA
-      run: wait-port -t 120000 localhost:8008
-    - name: Wait for AW
-      run: wait-port -t 120000 localhost:8080
-    - name: Wait for HO
-      run: wait-port -t 120000 localhost:8888
+    - name: Install services
+      run: npm run install:services
 
     - name: Run integration tests with Cypress
-      uses: cypress-io/github-action@v4.2.1
+      # See documentation: https://github.com/cypress-io/github-action/#readme
+      uses: cypress-io/github-action@v4
+      env:
+        BROWSERSLIST_ENV: 'ci'
       with:
         browser: chrome
         working-directory: ./interfaces/tests
+        start: |
+          npm run start:services:ci
+          npm run start:interfaces -- --configuration=ci
+        wait-on-timeout: 300
+        wait-on: 'http://localhost:3000/api/health/health, http://localhost:8008/, http://localhost:8080/, http://localhost:8888/'
