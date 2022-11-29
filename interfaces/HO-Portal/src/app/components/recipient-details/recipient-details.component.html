@@ -65,6 +65,18 @@
                 }}
                 {{ transaction.paymentDate | date: formatString }}</strong
               >
+              <ion-icon
+                *ngIf="enableMessageSentIcon(transaction)"
+                name="mail"
+                size="small"
+                aria-hidden="true"
+              ></ion-icon>
+              <ion-icon
+              *ngIf="enableMoneySentIconTable(transaction)"
+                name="cash"
+                size="small"
+                aria-hidden="true"
+              ></ion-icon>
             </ion-label>
           </ion-item>
         </ng-container>

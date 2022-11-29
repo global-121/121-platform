@@ -10,6 +10,7 @@ import { environment } from '../../../environments/environment';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
 import { StatusEnum } from '../../models/status.enum';
+import { IntersolvePayoutStatus } from '../../models/transaction-custom-data';
 import { Transaction } from '../../models/transaction.model';
 import { PaymentStatusPopupComponent } from '../../program/payment-status-popup/payment-status-popup.component';
 
@@ -235,6 +236,25 @@ export class RecipientDetailsComponent implements OnInit {
     return transaction.status === StatusEnum.error;
   }
 
+  public enableMessageSentIcon(transaction: Transaction): boolean {
+    return (
+      transaction.customData &&
+      [
+        IntersolvePayoutStatus.initialMessage,
+        IntersolvePayoutStatus.voucherSent,
+      ].includes(transaction.customData.IntersolvePayoutStatus)
+    );
+  }
+
+  public enableMoneySentIconTable(transaction: Transaction): boolean {
+    return (
+      (!transaction.customData.IntersolvePayoutStatus ||
+        transaction.customData.IntersolvePayoutStatus ===
+          IntersolvePayoutStatus.voucherSent) &&
+      transaction.status === StatusEnum.success
+    );
+  }
+
   private sortStatusHistory() {
     const columnNameStatusHistory = 'columnStatusHistory';
     const statusOrder = Object.values(RegistrationStatusTimestampField);
@@ -291,11 +311,14 @@ export class RecipientDetailsComponent implements OnInit {
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PaymentStatusPopupComponent,
       componentProps: {
-        titleError: `${transaction.payment}: ${this.datePipe.transform(
-          transaction.paymentDate,
-          this.formatString,
-          this.locale,
-        )}`,
+        titleError:
+          this.hasError(transaction) || this.hasWaiting(transaction)
+            ? `${transaction.payment}: ${this.datePipe.transform(
+                transaction.paymentDate,
+                this.formatString,
+                this.locale,
+              )}`
+            : null,
         content,
         payoutDetails: paymentDetails,
         voucherButtons,
