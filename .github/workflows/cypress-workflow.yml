@@ -63,11 +63,13 @@ jobs:
     - name: Run integration tests with Cypress
       # See documentation: https://github.com/cypress-io/github-action/#readme
       uses: cypress-io/github-action@v4
+      env:
+        BROWSERSLIST_ENV: 'ci'
       with:
         browser: chrome
         working-directory: ./interfaces/tests
         start: |
           npm run start:services:ci
-          npm run start:interfaces
+          npm run start:interfaces -- --configuration=ci
         wait-on-timeout: 300
         wait-on: 'http://localhost:3000/api/health/health, http://localhost:8008/, http://localhost:8080/, http://localhost:8888/'
