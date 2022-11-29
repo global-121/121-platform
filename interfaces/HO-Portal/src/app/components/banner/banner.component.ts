@@ -9,9 +9,6 @@ export class BannerComponent implements OnInit {
   @Input()
   public text: string;
 
-  @Input()
-  public showTopBorder = false;
-
   constructor() {}
 
   ngOnInit(): void {}
