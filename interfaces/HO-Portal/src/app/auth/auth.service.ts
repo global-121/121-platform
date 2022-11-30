@@ -123,8 +123,7 @@ export class AuthService {
           }
 
           if (this.getIsIframe()) {
-            this.router.navigateByUrl('/iframe/recipients');
-            this.redirectUrl = null;
+            this.router.navigate(['/iframe/recipient']);
             return resolve();
           }
 
