@@ -199,5 +199,5 @@
     "fr": "Ce <strong>programme d'aide de la Croix-Rouge </strong> a été créé pour soutenir les personnes qui nous sont actuellement suggérées par l'une de ces organisations: <ul class='ion-padding-start'><li> Stap Verder </li><li> Filipino LGBT Europe</li><li> Opportunities in Amsterdam </li></ul><br> Le programme d'aide de la Croix-Rouge vise à vous aider : <ul class='ion-padding-start'><li> Jusqu'à ce que vous ne soyez plus pris en charge par aucune des organisations ci-dessus </li><li> Ou jusqu'à la fin du projet (vous serez informé deux semaines à l'avance). </li></ul><br> <strong>Le programme d'aide de la Croix-Rouge </strong> vous soutient avec les éléments suivants: <ul class='ion-padding-start'><li>Bon d'achat hebdomadaire de €17.50 pour le supermarché Albert Heijn <br> WhatsApp sera utilisé pour envoyer votre bon de supermarché. Si vous ne parvenez pas à recevoir le bon de supermarché sur WhatsApp, nous vous enverrons un SMS et vous pourrez le récupérer.</li></ul>"
   },
   "fullnameNamingConvention": ["nameFirst", "nameLast"],
-  "languages": ["en", "es", "nl", "pt_BR", "tl", "in", "fr"]
+  "languages": ["en", "es", "fr", "in", "nl", "pt_BR", "tl"]
 }
