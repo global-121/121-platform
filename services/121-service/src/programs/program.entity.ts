@@ -253,7 +253,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
     const repo = getConnection().getRepository(ProgramEntity);
     const program = await repo.findOne(this.id);
 
-    return Object.keys(program.notifications).map(key => {
+    return JSON.parse(JSON.stringify(program.languages)).map((key: string) => {
       return {
         option: key,
       };
