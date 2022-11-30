@@ -36,6 +36,18 @@ Cypress.Commands.add('loginApi', () => {
   });
 })
 
+Cypress.Commands.add('publishProgram', (programId: number) => {
+  cy.setServer();
+  cy.loginApi();
+  cy.request({
+    method: "POST",
+    url: `programs/${programId}/change-phase`,
+    body: {
+      "newPhase": "registrationValidation"
+    }
+  });
+})
+
 Cypress.Commands.add('loginPortal', () => {
   cy.setHoPortal();
   cy.fixture('portal-login').then((login) => {
@@ -101,5 +113,6 @@ declare namespace Cypress {
     setHoPortal(): void;
     setPaApp(): void;
     setServer(): void;
+    publishProgram(programId: number): void;
   }
 }
