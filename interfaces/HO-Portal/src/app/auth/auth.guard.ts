@@ -5,6 +5,7 @@ import {
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
+import { Observable } from 'rxjs';
 import { AppRoutes } from '../app-routes.enum';
 import { AuthService } from './auth.service';
 
@@ -14,12 +15,12 @@ import { AuthService } from './auth.service';
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
-  canActivate(nextRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  canActivate(
+    nextRoute: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot,
+  ): Observable<boolean> | Promise<boolean> | boolean {
     // If no specific permission is required, only require a valid login
     if (!nextRoute.data.permissions && this.authService.isLoggedIn()) {
-      if (this.authService.isIframe()) {
-        return this.router.parseUrl('/iframe/recipients');
-      }
       return true;
     }
 
