@@ -1552,5 +1552,6 @@
     "B. 1. Quel est votre nom ? ",
     "B. 2. Quel est votre post-nom ? ",
     "B. 3. Quel est votre prénom ?"
-  ]
+  ],
+  "languages": ["en", "fr"]
 }

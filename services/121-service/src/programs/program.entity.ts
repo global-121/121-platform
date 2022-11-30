@@ -153,6 +153,9 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column('json', { nullable: true })
   public fullnameNamingConvention: JSON;
 
+  @Column('json', { default: [] })
+  public languages: JSON;
+
   public async getValidationInfoForQuestionName(
     name: string,
   ): Promise<ValidationInfo> {

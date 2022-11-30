@@ -17,7 +17,7 @@ See instructions to get started in the main [`/services/README`](../README.md).
 
 - Access the Swagger UI via: <http://localhost:3000/docs/>
 - API-specification in JSON-format via: <http://localhost:3000/docs-json>
-- A graph will be generated when run in 'development' mode at [`module-dependencies.md`](./module-dependencies.md).  
+- A graph will be generated when run in 'development' mode at [`module-dependencies.md`](./module-dependencies.md).
   It can be viewed with <https://mermaid.live/> or the VSCode-extension: [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid)
 
 ## Database
@@ -79,7 +79,7 @@ See: [`src/notifications/voice/voice.service.ts`](`src/notifications/voice/voice
 
 To enter the 121-service in the terminal use:
 
-    docker exec-it 121-service /bin/sh
+    docker exec -it 121-service /bin/sh
 
 ---
 
