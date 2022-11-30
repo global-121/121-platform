@@ -10,6 +10,7 @@ import { environment } from '../../../environments/environment';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
 import { StatusEnum } from '../../models/status.enum';
+import { IntersolvePayoutStatus } from '../../models/transaction-custom-data';
 import { Transaction } from '../../models/transaction.model';
 import { PaymentStatusPopupComponent } from '../../program/payment-status-popup/payment-status-popup.component';
 
@@ -33,7 +34,7 @@ export class RecipientDetailsComponent implements OnInit {
   public keysAnswersMap = {};
   public transactions: Transaction[] = [];
   public translationPrefix = 'recipient-details.';
-  public bannerText = '';
+  public statusText = '';
   private formatString = 'yyyy-MM-dd, HH:mm';
   private locale = environment.defaultLocale;
   private keysToExclude = [
@@ -85,8 +86,8 @@ export class RecipientDetailsComponent implements OnInit {
     this.mapToKeyValue();
 
     this.transactions = await this.getTransactions();
-    this.bannerText = this.translate.instant(
-      this.translationPrefix + 'statusBannerText',
+    this.statusText = this.translate.instant(
+      this.translationPrefix + 'statusText',
       { status: this.translateValue('status', this.recipient?.status) },
     );
   }
@@ -118,6 +119,9 @@ export class RecipientDetailsComponent implements OnInit {
 
     for (const key of Object.keys(this.recipient.paTableAttributes)) {
       if (!this.questionKeysToInclude.includes(key)) {
+        continue;
+      }
+      if (!this.recipient.paTableAttributes[key].value) {
         continue;
       }
       const column = this.getColumn(key);
@@ -181,16 +185,16 @@ export class RecipientDetailsComponent implements OnInit {
         index: 0,
       },
       name: { columnName: 'columnPersonalInformation', index: 1 },
-      namePartnerOrganization: {
-        columnName: 'columnPersonalInformation',
-        index: 2,
-      },
-      phoneNumber: { columnName: 'columnPersonalInformation', index: 3 },
+      phoneNumber: { columnName: 'columnPersonalInformation', index: 2 },
       whatsappPhoneNumber: {
         columnName: 'columnPersonalInformation',
-        index: 4,
+        index: 3,
       },
-      preferredLanguage: { columnName: 'columnPersonalInformation', index: 5 },
+      preferredLanguage: { columnName: 'columnPersonalInformation', index: 4 },
+      namePartnerOrganization: {
+        columnName: 'columnPersonalInformation',
+        index: 5,
+      },
       fsp: { columnName: 'columnPaymentHistory', index: 0 },
       paymentAmountMultiplier: { columnName: 'columnPaymentHistory', index: 1 },
     };
@@ -230,6 +234,25 @@ export class RecipientDetailsComponent implements OnInit {
 
   private hasError(transaction: Transaction): boolean {
     return transaction.status === StatusEnum.error;
+  }
+
+  public enableMessageSentIcon(transaction: Transaction): boolean {
+    return (
+      transaction.customData &&
+      [
+        IntersolvePayoutStatus.initialMessage,
+        IntersolvePayoutStatus.voucherSent,
+      ].includes(transaction.customData.IntersolvePayoutStatus)
+    );
+  }
+
+  public enableMoneySentIconTable(transaction: Transaction): boolean {
+    return (
+      (!transaction.customData.IntersolvePayoutStatus ||
+        transaction.customData.IntersolvePayoutStatus ===
+          IntersolvePayoutStatus.voucherSent) &&
+      transaction.status === StatusEnum.success
+    );
   }
 
   private sortStatusHistory() {
@@ -277,15 +300,27 @@ export class RecipientDetailsComponent implements OnInit {
           voucherButtons = false;
         },
       );
+    const paymentDetails = {
+      programId: this.program.id,
+      payment: transaction.payment,
+      amount: transaction.amount,
+      referenceId: this.recipient.referenceId,
+      currency: this.program.currency,
+    };
+
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PaymentStatusPopupComponent,
       componentProps: {
-        titleError: `${transaction.payment}: ${this.datePipe.transform(
-          transaction.paymentDate,
-          this.formatString,
-          this.locale,
-        )}`,
+        titleError:
+          this.hasError(transaction) || this.hasWaiting(transaction)
+            ? `${transaction.payment}: ${this.datePipe.transform(
+                transaction.paymentDate,
+                this.formatString,
+                this.locale,
+              )}`
+            : null,
         content,
+        payoutDetails: paymentDetails,
         voucherButtons,
         imageUrl: voucherUrl,
       },

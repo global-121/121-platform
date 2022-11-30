@@ -11,6 +11,7 @@ import Permission from './permission.enum';
 })
 export class AuthService {
   public redirectUrl: string;
+  public isIframe: boolean;
   private userKey = 'logged-in-user-HO';
 
   private authenticationState = new BehaviorSubject<User | null>(null);
@@ -121,6 +122,11 @@ export class AuthService {
             return resolve();
           }
 
+          if (this.getIsIframe()) {
+            this.router.navigate(['/iframe/recipient']);
+            return resolve();
+          }
+
           this.router.navigate(['/', AppRoutes.home]);
 
           return resolve();
@@ -153,5 +159,14 @@ export class AuthService {
 
     this.authenticationState.next(null);
     this.router.navigate(['/', AppRoutes.login]);
+  }
+
+  public getIsIframe(): boolean {
+    try {
+      return window.self !== window.top;
+    } catch (e) {
+      this.isIframe = true;
+      return this.isIframe;
+    }
   }
 }

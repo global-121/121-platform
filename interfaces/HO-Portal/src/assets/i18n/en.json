@@ -568,7 +568,7 @@
     "rejectionDate": "Rejected",
     "note": "Note",
     "name": "Name",
-    "statusBannerText": "Status: <b> {{status}} </b>"
+    "statusText": "Status: <b> {{status}} </b>"
   },
   "refresh-data": {
     "last-updated": "Last updated: {{date}}"

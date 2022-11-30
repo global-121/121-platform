@@ -11,10 +11,7 @@
     </div>
   </ng-container>
   <ng-container *ngIf="recipients?.length > 0 && programsMap">
-    <app-banner
-      [text]="bannerText"
-      [showTopBorder]="true"
-    ></app-banner>
+    <app-banner [text]="bannerText"></app-banner>
     <ion-accordion-group [value]="accordionGroupValue">
       <ion-accordion
         *ngFor="let recipient of recipients"
