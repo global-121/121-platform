@@ -154,4 +154,12 @@ export class AuthService {
     this.authenticationState.next(null);
     this.router.navigate(['/', AppRoutes.login]);
   }
+
+  public isIframe(): boolean {
+    try {
+      return window.self !== window.top;
+    } catch (e) {
+      return true;
+    }
+  }
 }
