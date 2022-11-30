@@ -1,5 +1,6 @@
 import { Attribute } from './attribute.model';
 import { Fsp } from './fsp.model';
+import { LanguageEnum } from './person.model';
 import { TranslatableString } from './translatable-string.model';
 
 export class Program {
@@ -33,7 +34,7 @@ export class Program {
   programQuestions: ProgramQuestion[];
   editableAttributes?: Attribute[];
   notifications: string | TranslatableString;
-  languages: string[]
+  languages: LanguageEnum[];
 }
 
 export class ProgramStats {
