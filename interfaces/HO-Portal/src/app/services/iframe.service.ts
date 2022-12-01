@@ -18,8 +18,8 @@ export class IframeService implements OnDestroy {
           return;
         }
         this.savedPhoneNumber = params.phonenumber || params.phoneNumber;
-        this.phoneNumberSubject.next(this.savedPhoneNumber);
         localStorage.setItem('savedPhoneNumber', this.savedPhoneNumber);
+        this.phoneNumberSubject.next(this.savedPhoneNumber);
       },
     );
   }
@@ -29,11 +29,12 @@ export class IframeService implements OnDestroy {
   }
 
   getSavedPhoneNumber(): string | null {
+    const snapshotParams = this.activatedRoute.snapshot.queryParams;
     const phoneNumber =
-      this.savedPhoneNumber || localStorage.getItem('savedPhoneNumber');
-    if (phoneNumber) {
-      this.phoneNumberSubject.next(phoneNumber);
-    }
+      snapshotParams.phonenumber ||
+      snapshotParams.phoneNumber ||
+      this.savedPhoneNumber ||
+      localStorage.getItem('savedPhoneNumber');
     return phoneNumber;
   }
 
