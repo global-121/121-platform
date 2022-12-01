@@ -19,6 +19,7 @@ export class IframeService implements OnDestroy {
         }
         this.savedPhoneNumber = params.phonenumber || params.phoneNumber;
         this.phoneNumberSubject.next(this.savedPhoneNumber);
+        localStorage.setItem('savedPhoneNumber', this.savedPhoneNumber);
       },
     );
   }
@@ -27,9 +28,10 @@ export class IframeService implements OnDestroy {
     this.paramsSubscription.unsubscribe();
   }
 
-  public savePhoneNumber() {
-    const snapshot = this.activatedRoute.snapshot;
-    this.savedPhoneNumber =
-      snapshot.queryParams.phonenumber || snapshot.queryParams.phoneNumber;
+  getSavedPhoneNumber(): string | null {
+    if (!this.savedPhoneNumber) {
+      return localStorage.getItem('savedPhoneNumber');
+    }
+    return this.savedPhoneNumber;
   }
 }

@@ -125,13 +125,22 @@ export class AuthService {
           }
 
           if (this.getIsIframe()) {
-            if (this.iframeService.savedPhoneNumber) {
+            console.log(
+              'this.iframeService.getSavedPhoneNumber(): ',
+              this.iframeService.getSavedPhoneNumber(),
+            );
+            if (this.iframeService.getSavedPhoneNumber()) {
+              console.log(
+                'Should navigate to phoneNumber: ',
+                this.iframeService.getSavedPhoneNumber(),
+              );
               this.router.navigate(['/iframe/recipient'], {
                 queryParams: {
                   phoneNumber: this.iframeService.savedPhoneNumber,
                 },
               });
             } else {
+              console.log('No phoneNumber found in service or URL.');
               this.router.navigate(['/iframe/recipient']);
             }
             return resolve();
@@ -164,7 +173,6 @@ export class AuthService {
   }
 
   public async logout() {
-    this.iframeService.savePhoneNumber();
     localStorage.removeItem(this.userKey);
     await this.programsService.logout();
 

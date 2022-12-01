@@ -26,8 +26,12 @@ export class RecipientPage implements OnInit, OnDestroy {
   ) {
     this.phoneNumberSubscription =
       this.iframeService.phoneNumberChange$.subscribe((phoneNumber) => {
-        this.queryParamPhonenumber = phoneNumber;
-        this.getRecipientData();
+        console.log('phoneNumber OUTSIDE: ', phoneNumber);
+        if (phoneNumber) {
+          console.log('phoneNumber INSIDE: ', phoneNumber);
+          this.queryParamPhonenumber = phoneNumber;
+          this.getRecipientData();
+        }
       });
   }
 
