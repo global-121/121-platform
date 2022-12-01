@@ -118,7 +118,7 @@ export class AuthService {
             return reject({ status: 401 });
           }
 
-          if (this.redirectUrl) {
+          if (this.redirectUrl && !this.iframeService.getIsIframe()) {
             this.router.navigate([this.redirectUrl]);
             this.redirectUrl = null;
             return resolve();
