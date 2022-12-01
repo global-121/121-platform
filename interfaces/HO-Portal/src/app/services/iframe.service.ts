@@ -29,10 +29,12 @@ export class IframeService implements OnDestroy {
   }
 
   getSavedPhoneNumber(): string | null {
-    if (!this.savedPhoneNumber) {
-      return localStorage.getItem('savedPhoneNumber');
+    const phoneNumber =
+      this.savedPhoneNumber || localStorage.getItem('savedPhoneNumber');
+    if (phoneNumber) {
+      this.phoneNumberSubject.next(phoneNumber);
     }
-    return this.savedPhoneNumber;
+    return phoneNumber;
   }
 
   public getIsIframe(): boolean {
