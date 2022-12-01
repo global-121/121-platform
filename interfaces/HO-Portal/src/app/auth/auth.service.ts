@@ -125,15 +125,9 @@ export class AuthService {
           }
 
           if (this.iframeService.getIsIframe()) {
-            console.log(
-              'this.iframeService.getSavedPhoneNumber(): ',
-              this.iframeService.getSavedPhoneNumber(),
-            );
-            if (this.iframeService.getSavedPhoneNumber()) {
-              console.log(
-                'Should navigate to phoneNumber: ',
-                this.iframeService.getSavedPhoneNumber(),
-              );
+            const phoneNumber = this.iframeService.getSavedPhoneNumber();
+            if (phoneNumber) {
+              console.log('Should navigate to phoneNumber: ', phoneNumber);
               this.router.navigate(['/iframe/recipient'], {
                 queryParams: {
                   phoneNumber: this.iframeService.savedPhoneNumber,
