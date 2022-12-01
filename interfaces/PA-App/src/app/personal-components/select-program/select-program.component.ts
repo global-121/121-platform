@@ -62,15 +62,9 @@ export class SelectProgramComponent extends PersonalDirective {
   private async getPrograms() {
     this.conversationService.startLoading();
 
-    this.programs = await this.paData.getAllPrograms();
-
     const programIdsToFilter =
       await this.queryParametersService.getProgramIds();
-    if (programIdsToFilter.length > 0) {
-      this.programs = this.programs.filter((program: Program) =>
-        programIdsToFilter.includes(program.id),
-      );
-    }
+    this.programs = await this.paData.getAllPrograms(programIdsToFilter);
 
     this.programs = this.translateProgramProperties(this.programs);
 

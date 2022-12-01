@@ -70,9 +70,13 @@ export class PaDataService {
     return this.referenceId;
   }
 
-  public async getAllPrograms(): Promise<Program[]> {
+  public async getAllPrograms(
+    programIdsToFilter?: number[],
+  ): Promise<Program[]> {
     if (!this.isOffline) {
-      const allPrograms = await this.programService.getAllPrograms();
+      const allPrograms = await this.programService.getAllPrograms(
+        programIdsToFilter,
+      );
       localStorage.setItem(this.allProgramsKey, JSON.stringify(allPrograms));
       return allPrograms;
     }
