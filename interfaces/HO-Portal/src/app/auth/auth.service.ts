@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { AppRoutes } from '../app-routes.enum';
 import { User } from '../models/user.model';
+import { IframeService } from '../services/iframe.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import Permission from './permission.enum';
 
@@ -20,6 +21,7 @@ export class AuthService {
   constructor(
     private programsService: ProgramsServiceApiService,
     private router: Router,
+    private iframeService: IframeService,
   ) {
     this.checkAuthenticationState();
   }
@@ -123,7 +125,15 @@ export class AuthService {
           }
 
           if (this.getIsIframe()) {
-            this.router.navigate(['/iframe/recipient']);
+            if (this.iframeService.savedPhoneNumber) {
+              this.router.navigate(['/iframe/recipient'], {
+                queryParams: {
+                  phoneNumber: this.iframeService.savedPhoneNumber,
+                },
+              });
+            } else {
+              this.router.navigate(['/iframe/recipient']);
+            }
             return resolve();
           }
 
@@ -154,6 +164,7 @@ export class AuthService {
   }
 
   public async logout() {
+    this.iframeService.savePhoneNumber();
     localStorage.removeItem(this.userKey);
     await this.programsService.logout();
 
