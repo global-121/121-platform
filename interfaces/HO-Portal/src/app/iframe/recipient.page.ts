@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { Person } from '../models/person.model';
@@ -18,30 +17,24 @@ export class RecipientPage implements OnInit, OnDestroy {
   public queryParamPhonenumber = '';
   public accordionGroupValue = undefined;
   public bannerText: string;
-  private paramsSubscription: Subscription;
+  private phoneNumberSubscription: Subscription;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
     private progamsServiceApiService: ProgramsServiceApiService,
     private translate: TranslateService,
     private iframeService: IframeService,
   ) {
-    this.paramsSubscription = this.activatedRoute.queryParams.subscribe(
-      (params: Params) => {
-        if (!params.phonenumber && !params.phoneNumber) {
-          return;
-        }
-        this.queryParamPhonenumber = params.phonenumber || params.phoneNumber;
-        this.iframeService.savedPhoneNumber = this.queryParamPhonenumber;
+    this.phoneNumberSubscription =
+      this.iframeService.phoneNumberChange$.subscribe((phoneNumber) => {
+        this.queryParamPhonenumber = phoneNumber;
         this.getRecipientData();
-      },
-    );
+      });
   }
 
   async ngOnInit() {}
 
   ngOnDestroy(): void {
-    this.paramsSubscription.unsubscribe();
+    this.phoneNumberSubscription.unsubscribe();
   }
 
   private async getRecipientData() {
