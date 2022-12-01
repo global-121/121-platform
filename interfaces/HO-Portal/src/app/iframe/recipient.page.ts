@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { Person } from '../models/person.model';
 import { Program } from '../models/program.model';
+import { IframeService } from '../services/iframe.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 
 @Component({
@@ -23,6 +24,7 @@ export class RecipientPage implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private progamsServiceApiService: ProgramsServiceApiService,
     private translate: TranslateService,
+    private iframeService: IframeService,
   ) {
     this.paramsSubscription = this.activatedRoute.queryParams.subscribe(
       (params: Params) => {
@@ -30,11 +32,19 @@ export class RecipientPage implements OnInit, OnDestroy {
           return;
         }
         this.queryParamPhonenumber = params.phonenumber || params.phoneNumber;
+        this.iframeService.savedPhoneNumber = this.queryParamPhonenumber;
+        this.getRecipientData();
       },
     );
   }
 
-  async ngOnInit() {
+  async ngOnInit() {}
+
+  ngOnDestroy(): void {
+    this.paramsSubscription.unsubscribe();
+  }
+
+  private async getRecipientData() {
     this.recipients = await this.getPhoneNumberDetails(
       this.queryParamPhonenumber,
     );
@@ -62,10 +72,6 @@ export class RecipientPage implements OnInit, OnDestroy {
         : this.translate.instant(
             'page.iframe.recipient.single-recipient-found',
           );
-  }
-
-  ngOnDestroy(): void {
-    this.paramsSubscription.unsubscribe();
   }
 
   private async getPhoneNumberDetails(phoneNumber: string): Promise<Person[]> {
