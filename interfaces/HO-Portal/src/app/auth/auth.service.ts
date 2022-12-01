@@ -124,7 +124,7 @@ export class AuthService {
             return resolve();
           }
 
-          if (this.getIsIframe()) {
+          if (this.iframeService.getIsIframe()) {
             console.log(
               'this.iframeService.getSavedPhoneNumber(): ',
               this.iframeService.getSavedPhoneNumber(),
@@ -178,14 +178,5 @@ export class AuthService {
 
     this.authenticationState.next(null);
     this.router.navigate(['/', AppRoutes.login]);
-  }
-
-  public getIsIframe(): boolean {
-    try {
-      return window.self !== window.top;
-    } catch (e) {
-      this.isIframe = true;
-      return this.isIframe;
-    }
   }
 }

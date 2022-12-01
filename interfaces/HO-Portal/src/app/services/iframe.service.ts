@@ -34,4 +34,8 @@ export class IframeService implements OnDestroy {
     }
     return this.savedPhoneNumber;
   }
+
+  public getIsIframe(): boolean {
+    return window !== window.parent;
+  }
 }
