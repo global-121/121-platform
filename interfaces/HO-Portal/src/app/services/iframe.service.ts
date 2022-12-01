@@ -5,13 +5,7 @@ import { ActivatedRoute } from '@angular/router';
   providedIn: 'root',
 })
 export class IframeService {
-  private _savedPhoneNumber: string;
-  public get savedPhoneNumber(): string {
-    return this._savedPhoneNumber;
-  }
-  public set savedPhoneNumber(value: string) {
-    this._savedPhoneNumber = value;
-  }
+  public savedPhoneNumber: string;
 
   constructor(private route: ActivatedRoute) {}
 
