@@ -29,12 +29,9 @@ export class IframeService implements OnDestroy {
   }
 
   getSavedPhoneNumber(): string | null {
-    const snapshotParams = this.activatedRoute.snapshot.queryParams;
     const phoneNumber =
-      snapshotParams.phonenumber ||
-      snapshotParams.phoneNumber ||
-      this.savedPhoneNumber ||
-      localStorage.getItem('savedPhoneNumber');
+      this.savedPhoneNumber || localStorage.getItem('savedPhoneNumber');
+    console.log('phoneNumber: ', phoneNumber);
     return phoneNumber;
   }
 

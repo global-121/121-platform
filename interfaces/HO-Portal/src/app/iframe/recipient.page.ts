@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { Person } from '../models/person.model';
 import { Program } from '../models/program.model';
-import { IframeService } from '../services/iframe.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 
 @Component({
@@ -18,20 +18,21 @@ export class RecipientPage implements OnInit, OnDestroy {
   public accordionGroupValue = undefined;
   public bannerText: string;
   private phoneNumberSubscription: Subscription;
+  private paramsSubscription: Subscription;
 
   constructor(
     private progamsServiceApiService: ProgramsServiceApiService,
     private translate: TranslateService,
-    private iframeService: IframeService,
+    private activatedRoute: ActivatedRoute,
   ) {
-    this.phoneNumberSubscription =
-      this.iframeService.phoneNumberChange$.subscribe((phoneNumber) => {
-        console.log('phoneNumber OUTSIDE: ', phoneNumber);
-        if (phoneNumber) {
-          console.log('phoneNumber INSIDE: ', phoneNumber);
-          this.queryParamPhonenumber = phoneNumber;
-          this.getRecipientData();
+    this.phoneNumberSubscription = this.paramsSubscription =
+      this.activatedRoute.queryParams.subscribe((params: Params) => {
+        if (!params.phonenumber && !params.phoneNumber) {
+          return;
         }
+        console.log('phonenumber: ', params.phonenumber, params.phoneNumber);
+        this.queryParamPhonenumber = params.phonenumber || params.phoneNumber;
+        this.getRecipientData();
       });
   }
 
@@ -39,6 +40,7 @@ export class RecipientPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.phoneNumberSubscription.unsubscribe();
+    this.paramsSubscription.unsubscribe();
   }
 
   private async getRecipientData() {
