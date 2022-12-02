@@ -130,7 +130,7 @@ export class AuthService {
               console.log('Should navigate to phoneNumber: ', phoneNumber);
               this.router.navigate(['/iframe/recipient'], {
                 queryParams: {
-                  phoneNumber: phoneNumber,
+                  phoneNumber,
                 },
               });
             } else {
