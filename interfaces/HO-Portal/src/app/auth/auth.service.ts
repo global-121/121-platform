@@ -118,8 +118,8 @@ export class AuthService {
             return reject({ status: 401 });
           }
 
-          if (this.redirectUrl && !this.iframeService.getIsIframe()) {
-            this.router.navigate([this.redirectUrl]);
+          if (this.redirectUrl) {
+            this.router.navigateByUrl(this.redirectUrl);
             this.redirectUrl = null;
             return resolve();
           }
@@ -130,7 +130,7 @@ export class AuthService {
               console.log('Should navigate to phoneNumber: ', phoneNumber);
               this.router.navigate(['/iframe/recipient'], {
                 queryParams: {
-                  phoneNumber: this.iframeService.savedPhoneNumber,
+                  phoneNumber: phoneNumber,
                 },
               });
             } else {
