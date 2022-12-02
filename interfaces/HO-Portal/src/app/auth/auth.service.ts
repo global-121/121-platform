@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { AppRoutes } from '../app-routes.enum';
 import { User } from '../models/user.model';
-import { IframeService } from '../services/iframe.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import Permission from './permission.enum';
 
@@ -21,7 +20,6 @@ export class AuthService {
   constructor(
     private programsService: ProgramsServiceApiService,
     private router: Router,
-    private iframeService: IframeService,
   ) {
     this.checkAuthenticationState();
   }
@@ -121,22 +119,6 @@ export class AuthService {
           if (this.redirectUrl) {
             this.router.navigateByUrl(this.redirectUrl);
             this.redirectUrl = null;
-            return resolve();
-          }
-
-          if (this.iframeService.getIsIframe()) {
-            const phoneNumber = this.iframeService.getSavedPhoneNumber();
-            if (phoneNumber) {
-              console.log('Should navigate to phoneNumber: ', phoneNumber);
-              this.router.navigate(['/iframe/recipient'], {
-                queryParams: {
-                  phoneNumber,
-                },
-              });
-            } else {
-              console.log('No phoneNumber found in service or URL.');
-              this.router.navigate(['/iframe/recipient']);
-            }
             return resolve();
           }
 

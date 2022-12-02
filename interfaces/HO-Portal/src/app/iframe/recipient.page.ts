@@ -17,7 +17,6 @@ export class RecipientPage implements OnInit, OnDestroy {
   public queryParamPhonenumber = '';
   public accordionGroupValue = undefined;
   public bannerText: string;
-  private phoneNumberSubscription: Subscription;
   private paramsSubscription: Subscription;
 
   constructor(
@@ -25,21 +24,20 @@ export class RecipientPage implements OnInit, OnDestroy {
     private translate: TranslateService,
     private activatedRoute: ActivatedRoute,
   ) {
-    this.phoneNumberSubscription = this.paramsSubscription =
-      this.activatedRoute.queryParams.subscribe((params: Params) => {
+    this.paramsSubscription = this.activatedRoute.queryParams.subscribe(
+      (params: Params) => {
         if (!params.phonenumber && !params.phoneNumber) {
           return;
         }
-        console.log('phonenumber: ', params.phonenumber, params.phoneNumber);
         this.queryParamPhonenumber = params.phonenumber || params.phoneNumber;
         this.getRecipientData();
-      });
+      },
+    );
   }
 
   async ngOnInit() {}
 
   ngOnDestroy(): void {
-    this.phoneNumberSubscription.unsubscribe();
     this.paramsSubscription.unsubscribe();
   }
 
