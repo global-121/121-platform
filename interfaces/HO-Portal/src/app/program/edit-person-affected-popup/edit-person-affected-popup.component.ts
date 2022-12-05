@@ -298,7 +298,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   }
 
   private getAvailableLanguages(): object[] {
-    return Object.keys(this.program.notifications).map((key) => {
+    return this.program.languages.map((key) => {
       return {
         option: key,
         label: this.translate.instant(
