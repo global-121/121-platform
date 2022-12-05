@@ -62,7 +62,7 @@ jobs:
 
     - name: Run integration tests with Cypress
       # See documentation: https://github.com/cypress-io/github-action/#readme
-      uses: cypress-io/github-action@v4
+      uses: cypress-io/github-action@v5
       env:
         BROWSERSLIST_ENV: 'ci'
       with:
