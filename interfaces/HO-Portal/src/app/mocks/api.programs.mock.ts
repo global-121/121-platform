@@ -1,3 +1,4 @@
+import { LanguageEnum } from '../models/person.model';
 import {
   DistributionFrequency,
   InclusionCalculationType,
@@ -52,6 +53,7 @@ const programsArray: Program[] = [
         shortLabel: { en: 'Phone Number' },
       },
     ],
+    languages: [LanguageEnum.en],
   },
 ];
 // Copy 2:
