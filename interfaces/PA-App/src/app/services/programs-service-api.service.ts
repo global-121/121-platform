@@ -24,10 +24,19 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getAllPrograms(): Promise<Program[]> {
+  getAllPrograms(programIdsToFilter?: number[]): Promise<Program[]> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/published/all')
-      .pipe(map((response) => response.programs))
+      .pipe(
+        map((response) => {
+          if (!programIdsToFilter || programIdsToFilter.length === 0) {
+            return response.programs;
+          }
+          return response.programs.filter((program: Program) =>
+            programIdsToFilter.includes(program.id),
+          );
+        }),
+      )
       .toPromise();
   }
 

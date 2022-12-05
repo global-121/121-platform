@@ -17,6 +17,7 @@ export class Program {
   validation: boolean;
   phoneNumberPlaceholder: string;
   aboutProgram: string;
+  languages: string[];
 }
 
 export class ProgramQuestion {

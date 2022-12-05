@@ -41,7 +41,7 @@ describe('Personal Page', () => {
     cy.publishProgram(1)
     cy.publishProgram(2)
     cy.setPaApp();
-    cy.visit(`?programs=1`);
+    cy.visit(`?programs=2`);
     cy.get('ion-radio-group').contains('English');
     for (const l of programLVV.languages) {
       // Languages not included in LVV but included in PV
