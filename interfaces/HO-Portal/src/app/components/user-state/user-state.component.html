@@ -26,6 +26,7 @@
 </ion-button>
 
 <ion-button
+  *ngIf="!isIframeHeader"
   type="button"
   [title]="'user-state.log-out' | translate"
   [attr.aria-label]="'user-state.log-out' | translate"
