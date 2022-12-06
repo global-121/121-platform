@@ -248,9 +248,9 @@ If the errors are related to not being able to access/connect to the database th
 - Setting `dropSchema: true` in `ormconfig.ts` of the specific service.
 - Restarting that service will reset/recreate its database(-schema)
 
-### Updating/adding Node.js dependencies
+### Updated/new Node.js dependencies
 
-When new Node.js dependencies are added to the services since it is last build on you local machine, you can:
+When new Node.js dependencies are added to a service since it is last build on you local machine, you can:
 
 - Verify if everything is installed properly:
 

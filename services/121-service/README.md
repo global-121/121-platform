@@ -6,7 +6,7 @@ The 121-Service is the backend where 121-programs can be created and monitored, 
 
 ## Getting started / Installation
 
-See instructions to get started in the main [`/services/README`](../README.md).
+See instructions to get started in the main [`README`](../../README.md).
 
 - `npm start` - Start application
 - `npm run start:watch` - Start application in watch mode
@@ -19,6 +19,12 @@ See instructions to get started in the main [`/services/README`](../README.md).
 - API-specification in JSON-format via: <http://localhost:3000/docs-json>
 - A graph will be generated when run in 'development' mode at [`module-dependencies.md`](./module-dependencies.md).
   It can be viewed with <https://mermaid.live/> or the VSCode-extension: [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid)
+
+### Updating/adding Node.js dependencies
+
+Make sure to update any dependencies from _within_ the Docker-container, with:
+
+    docker-compose exec  121-service  npm install --save
 
 ## Database
 
