@@ -1,9 +1,14 @@
 <span style="display: inline-block">
   {{ 'user-state.logged-in-as' | translate }}:
   <br />
-  <a [routerLink]="['/', appRoute.user]">
+  <ng-container *ngIf="showUserStateActions">
+    <a [routerLink]="['/', appRoute.user]">
+      <ion-note class="ion-text-nowrap">{{ userName }}</ion-note>
+    </a>
+  </ng-container>
+  <ng-container *ngIf="!showUserStateActions">
     <ion-note class="ion-text-nowrap">{{ userName }}</ion-note>
-  </a>
+  </ng-container>
 </span>
 
 &nbsp;
@@ -26,7 +31,7 @@
 </ion-button>
 
 <ion-button
-  *ngIf="showLogOutBtn"
+  *ngIf="showUserStateActions"
   type="button"
   [title]="'user-state.log-out' | translate"
   [attr.aria-label]="'user-state.log-out' | translate"

@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
 })
 export class UserStateComponent implements OnInit {
   @Input()
-  public showLogOutBtn = true;
+  public showUserStateActions = true;
 
   public isDebug = !environment.production;
   public appRoute = AppRoutes;
