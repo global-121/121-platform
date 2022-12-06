@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Languages/locales used in the PA-app are now program-based, not set in the build. The ENV-variable `NG_LOCALES` has become an _**optional**_ override only. It can be removed from any deployment that expects default behavior.
 
+### Removed
+
+- Language/locale data for Amharic (`am_ET`)
+
 ---
 
 ## [1.71.0](https://github.com/global-121/121-platform/compare/v1.70.0...v1.71.0) - 2022-11-23

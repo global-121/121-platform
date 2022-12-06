@@ -1,6 +1,5 @@
 export enum LanguageEnum {
   en = 'en',
-  amET = 'am_ET',
   ar = 'ar',
   ti = 'ti',
   tl = 'tl',

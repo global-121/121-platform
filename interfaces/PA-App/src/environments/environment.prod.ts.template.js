@@ -14,7 +14,7 @@ export const environment = {
 
   envName: '${process.env.NG_ENV_NAME || ''}',
   locales: '${
-    process.env.NG_LOCALES || 'en,am_ET,ar,fr,nl,pt_BR,ti,tl,in,es,uk,ru'
+    process.env.NG_LOCALES || 'en,ar,fr,nl,pt_BR,ti,tl,in,es,uk,ru'
   }',
 
   // APIs:
