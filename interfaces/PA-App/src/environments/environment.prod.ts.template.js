@@ -13,9 +13,7 @@ export const environment = {
   useServiceWorker: ${process.env.NG_USE_SERVICE_WORKER || 'false'},
 
   envName: '${process.env.NG_ENV_NAME || ''}',
-  locales: '${
-    process.env.NG_LOCALES || 'en,am_ET,ar,fr,nl,pt_BR,ti,tl,in,es,uk,ru'
-  }',
+  locales: '${process.env.NG_LOCALES || 'en,ar,fr,nl,pt_BR,tl,in,es'}',
 
   // APIs:
   url_121_service_api: '${process.env.NG_URL_121_SERVICE_API || ''}',
