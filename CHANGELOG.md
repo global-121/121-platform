@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Language/locale data for Amharic (`am_ET`)
 - Language/locale data for Russian (`ru`)
+- Language/locale data for Tigrinya (`ti`)
 
 ---
 

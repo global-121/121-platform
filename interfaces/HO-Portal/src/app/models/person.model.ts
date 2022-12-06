@@ -75,7 +75,6 @@ export enum LanguageEnum {
   in = 'in',
   nl = 'nl',
   ptBR = 'pt_BR',
-  ti = 'ti',
   tl = 'tl',
   uk = 'uk',
 }
