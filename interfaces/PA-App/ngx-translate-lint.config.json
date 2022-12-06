@@ -18,7 +18,6 @@
       "personal.select-language.introduction.nl",
       "personal.select-language.introduction.pt_BR",
       "personal.select-language.introduction.tl",
-      "personal.select-language.introduction.uk",
       "personal.select-language.language.ar",
       "personal.select-language.language.en",
       "personal.select-language.language.es",
@@ -26,8 +25,7 @@
       "personal.select-language.language.in",
       "personal.select-language.language.nl",
       "personal.select-language.language.pt_BR",
-      "personal.select-language.language.tl",
-      "personal.select-language.language.uk"
+      "personal.select-language.language.tl"
     ],
     "ignoredMisprintKeys": [],
     "ast": {

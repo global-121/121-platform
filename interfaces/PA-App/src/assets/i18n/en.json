@@ -74,7 +74,6 @@
         "nl": "Kies jouw taal.",
         "pt_BR": "Por favor, selecione seu idioma.",
         "tl": "Pumili ng iyong wika.",
-        "uk": "Будь ласка, виберіть свою мову.",
         "in": "Pilih bahasa anda."
       },
       "result": "Thank you, you have selected {{language}}.",
@@ -86,7 +85,6 @@
         "nl": "Nederlands",
         "pt_BR": "Português",
         "tl": "Tagalog",
-        "uk": "Українська",
         "in": "Bahasa Indonesia"
       }
     },
