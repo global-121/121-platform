@@ -120,7 +120,10 @@ export class TwilioClientMock {
         } catch (error) {
           // In case external API is not reachable try localhost
           const urlLocalhost = `${EXTERNAL_API.rootApi}/${API_PATHS.whatsAppStatus}`;
-          await httpService.post(urlLocalhost, request).toPromise();
+          await httpService
+            .post(urlLocalhost, request)
+            .toPromise()
+            .catch(error => console.log(error));
         }
       }
     }
@@ -145,7 +148,10 @@ export class TwilioClientMock {
         } catch (error) {
           // In case external API is not reachable try localhost
           const urlLocalhost = `${EXTERNAL_API.rootApi}/${API_PATHS.whatsAppIncoming}`;
-          await httpService.post(urlLocalhost, request).toPromise();
+          await httpService
+            .post(urlLocalhost, request)
+            .toPromise()
+            .catch(error => console.log(error));
         }
       }
     }
