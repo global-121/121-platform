@@ -356,6 +356,36 @@ export class WhatsappService {
       fromNumber,
     );
 
+    // This is a temporary hack that will be removed after the transition period
+    const nlrcPvNumber = 'whatsapp:+3197010253925';
+    // const nlrcPvNumber = 'whatsapp:+14155238886'; // use sandbox-number for debugging
+    if (callbackData.To === nlrcPvNumber) {
+      const nlrcPvTempAutoReply = {
+        en:
+          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+        es:
+          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+        nl:
+          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+        ['pt_BR']:
+          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+        tl:
+          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+        in:
+          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+        fr:
+          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+      };
+
+      const language =
+        registrationsWithPhoneNumber[0]?.preferredLanguage ||
+        this.fallbackLanguage;
+      const message = nlrcPvTempAutoReply[language];
+      await this.sendWhatsapp(message, fromNumber, null, null, null);
+      return;
+    }
+    // end of temporary hack
+
     const registrationsWithPendingMessage = registrationsWithPhoneNumber.filter(
       (registration: RegistrationEntity) =>
         registration.whatsappPendingMessages.length > 0,
