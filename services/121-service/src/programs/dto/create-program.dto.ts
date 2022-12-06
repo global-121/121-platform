@@ -153,7 +153,6 @@ export class CreateProgramDto {
         name: 'id_number',
         label: {
           en: 'What is your id number?',
-          ny: 'Zaka zanu ndi id?',
         },
         answerType: 'numeric',
         questionType: 'standard',
@@ -167,7 +166,6 @@ export class CreateProgramDto {
         name: 'nr_of_children',
         label: {
           en: 'How many children do you have?',
-          ny: 'Zaka zanu ndi zingati?',
         },
         answerType: 'numeric',
         questionType: 'standard',
@@ -184,7 +182,6 @@ export class CreateProgramDto {
         name: 'roof_type',
         label: {
           en: 'What type is your roof?',
-          ny: 'Denga lanu ndi lotani?',
         },
         answerType: 'dropdown',
         questionType: 'standard',
@@ -195,7 +192,6 @@ export class CreateProgramDto {
               option: 'steel',
               name: {
                 en: 'steel',
-                ny: 'zitsulo',
               },
             },
             {
@@ -203,7 +199,6 @@ export class CreateProgramDto {
               option: 'tiles',
               name: {
                 en: 'tiles',
-                ny: 'matayala',
               },
             },
           ],
