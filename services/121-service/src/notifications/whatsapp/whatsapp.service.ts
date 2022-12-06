@@ -276,7 +276,7 @@ export class WhatsappService {
   ): Promise<RegistrationEntity[]> {
     const registrationsWithPhoneNumber = await getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
-      .select('registration.id')
+      .select('registration')
       .leftJoin('registration.data', 'registration_data')
       .leftJoinAndSelect(
         'registration.whatsappPendingMessages',
@@ -352,7 +352,6 @@ export class WhatsappService {
     const fromNumber = this.cleanWhatsAppNr(callbackData.From);
 
     // Get (potentially multiple) registrations on incoming phonenumber
-    // NOTE: this is still possible, even though 'grouping on phonenumber' is removed again on 2021-10-12
     const registrationsWithPhoneNumber = await this.getRegistrationsWithPhoneNumber(
       fromNumber,
     );
@@ -391,8 +390,11 @@ export class WhatsappService {
         }
       }
       if (program) {
+        const language =
+          registrationsWithPhoneNumber[0]?.preferredLanguage ||
+          this.fallbackLanguage;
         const whatsappDefaultReply =
-          program.notifications[this.fallbackLanguage]['whatsappReply'];
+          program.notifications[language]['whatsappReply'];
         await this.sendWhatsapp(
           whatsappDefaultReply,
           fromNumber,
