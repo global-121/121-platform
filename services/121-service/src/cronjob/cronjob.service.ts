@@ -8,6 +8,7 @@ import { IntersolveApiService } from '../payments/fsp-integration/intersolve/ins
 import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
 import { IntersolveRequestEntity } from '../payments/fsp-integration/intersolve/intersolve-request.entity';
 import { IntersolveService } from '../payments/fsp-integration/intersolve/intersolve.service';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../registration/registration.entity';
@@ -20,6 +21,9 @@ export class CronjobService {
   >;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
+
+  @InjectRepository(TransactionEntity)
+  private readonly transactionRepository: Repository<TransactionEntity>;
 
   public constructor(
     private whatsappService: WhatsappService,
@@ -68,6 +72,12 @@ export class CronjobService {
     console.log('CronjobService - Started: cronSendWhatsappReminders');
     const sixteenHours = 16 * 60 * 60 * 1000;
     const sixteenHoursAgo = new Date(Date.now() - sixteenHours);
+    // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
+    const lastPayment = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('MAX(transaction.payment)', 'max')
+      .getRawOne();
+    const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
 
     const unsentIntersolveBarcodes = await getRepository(
       IntersolveBarcodeEntity,
@@ -85,6 +95,9 @@ export class CronjobService {
         sixteenHoursAgo: sixteenHoursAgo,
       })
       .andWhere('"whatsappPhoneNumber" is not NULL')
+      .andWhere('barcode.payment >= :minimumPayment', {
+        minimumPayment: minimumPayment,
+      })
       .getRawMany();
 
     unsentIntersolveBarcodes.forEach(async unsentIntersolveBarcode => {
