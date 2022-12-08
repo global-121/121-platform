@@ -1,0 +1,17 @@
+# docker-compose  -f docker-compose-db.yml up -d --build
+version: '3.7'
+
+services:
+  121dbpv:
+    image: 'postgres:9.6'
+    init: true
+    container_name: 121dbpv
+    environment:
+      - POSTGRES_USER=global121
+      - POSTGRES_PASSWORD=global121
+      - POSTGRES_DB=global121
+    volumes:
+      - './postgresql.conf:/etc/postgresql.conf'
+      - './init.sql:/docker-entrypoint-initdb.d/init.sql'
+    ports:
+      - '5440:5432'

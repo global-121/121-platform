@@ -1,0 +1,19 @@
+# docker-compose up  -d --build
+# docker exec -it  nlrc-migrate bash
+# python3 migrate.py
+version: '3.7'
+
+services:
+  nlrc-migrate:
+    build:
+      context: .
+    init: true
+    container_name: nlrc-migrate
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    network_mode: "host"
+    volumes:
+      - ./src:/usr/src/app
+
