@@ -1,10 +1,13 @@
 const dotenv = require('dotenv');
 const ffbinaries = require('ffbinaries');
+const readline = require('readline');
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 const fs = require('fs');
 const pathLib = require('path');
 const { execSync } = require('child_process');
-
-const LOCALES_SRC_PATH = 'src/assets/i18n';
 
 // Load environment-variables from .env file (if available)
 dotenv.config();
@@ -66,7 +69,7 @@ function getSourceFiles(path, type) {
  * @returns {String} Path to existing source-files
  */
 function checkSourceExists(locale) {
-  const path = `${LOCALES_SRC_PATH}/${locale}/`;
+  const path = `src/assets/i18n/${locale}/`;
 
   if (!locale || !fs.existsSync(path)) {
     console.warn(`No folder available for locale: ${locale}`);
@@ -147,13 +150,6 @@ function getEnabledLocales(env) {
   return env.trim().split(/\s*,\s*/);
 }
 
-function getAllAvailableLocales() {
-  const folders = fs
-    .readdirSync(LOCALES_SRC_PATH, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory());
-  return folders.map((folder) => folder.name);
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 if (!!process.env.CI) {
@@ -171,18 +167,21 @@ if (process.argv[2]) {
   return generateAssetsAudio(process.argv[2]);
 }
 
-let audioLocales;
-
 // If locales are defined via ENV-variables, use that:
 if (typeof process.env.NG_LOCALES !== 'undefined') {
   console.log(`Using locales from ENV: ${process.env.NG_LOCALES}`);
 
-  audioLocales = getEnabledLocales(process.env.NG_LOCALES);
-} else {
-  audioLocales = getAllAvailableLocales();
+  const audioLocales = getEnabledLocales(process.env.NG_LOCALES);
+
+  return audioLocales.forEach((locale) => {
+    return generateAssetsAudio(locale);
+  });
 }
 
-// Otherwise, generate all:
-return audioLocales.forEach((locale) => {
-  return generateAssetsAudio(locale);
-});
+// Otherwise, ask for it:
+rl.question(
+  'For which locale do you want to generate audio assets? : ',
+  (locale) => {
+    return generateAssetsAudio(locale);
+  },
+);

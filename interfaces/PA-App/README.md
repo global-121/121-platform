@@ -26,7 +26,7 @@ Audio-file creation/processing:
 
 - Add the audio-file(s) to `./src/assets/i18n/<locale>/` where:
 
-  - `locale` is an [IETF BCP47](https://tools.ietf.org/html/bcp47) language-string; like `en` or `fr_BE`, etc.
+  - `locale` is an [IETF BCP47](https://tools.ietf.org/html/bcp47) language-string; like `en` or `fr-BE`, etc.
 
 - Set the audio files' filenames to: `<translation.string.key>.mp3` where:
 
@@ -36,7 +36,8 @@ Audio-file creation/processing:
   `npm run generate-assets-audio -- <locale> --convertFrom m4a`
 
 - Convert the audio files to the specified format(s) by running the script:  
-  `npm run generate-assets-audio -- <locale>`
+  `npm run generate-assets-audio -- <locale>`  
+   Or provide the locale/language-code at the prompt.
 
 ---
 
