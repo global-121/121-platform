@@ -362,19 +362,19 @@ export class WhatsappService {
     if (callbackData.To === nlrcPvNumber) {
       const nlrcPvTempAutoReply = {
         en:
-          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+          'This is an automatic message from the Red Cross. This number is not used anymore. We now send the vouchers from this number: +3197010253442. Do you want to receive the vouchers that we have send to you before? Send a message to the new number by clicking on this link: https://wa.me/3197010253442? For questions or help, please contact our WhatsApp Helpdesk: https://wa.me/31614458781.',
         es:
-          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+          'This is an automatic message from the Red Cross. This number is not used anymore. We now send the vouchers from this number: +3197010253442. Do you want to receive the vouchers that we have send to you before? Send a message to the new number by clicking on this link: https://wa.me/3197010253442? For questions or help, please contact our WhatsApp Helpdesk: https://wa.me/31614458781.',
         nl:
-          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+          'This is an automatic message from the Red Cross. This number is not used anymore. We now send the vouchers from this number: +3197010253442. Do you want to receive the vouchers that we have send to you before? Send a message to the new number by clicking on this link: https://wa.me/3197010253442? For questions or help, please contact our WhatsApp Helpdesk: https://wa.me/31614458781.',
         ['pt_BR']:
-          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+          'This is an automatic message from the Red Cross. This number is not used anymore. We now send the vouchers from this number: +3197010253442. Do you want to receive the vouchers that we have send to you before? Send a message to the new number by clicking on this link: https://wa.me/3197010253442? For questions or help, please contact our WhatsApp Helpdesk: https://wa.me/31614458781.',
         tl:
-          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+          'This is an automatic message from the Red Cross. This number is not used anymore. We now send the vouchers from this number: +3197010253442. Do you want to receive the vouchers that we have send to you before? Send a message to the new number by clicking on this link: https://wa.me/3197010253442? For questions or help, please contact our WhatsApp Helpdesk: https://wa.me/31614458781.',
         in:
-          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+          'This is an automatic message from the Red Cross. This number is not used anymore. We now send the vouchers from this number: +3197010253442. Do you want to receive the vouchers that we have send to you before? Send a message to the new number by clicking on this link: https://wa.me/3197010253442? For questions or help, please contact our WhatsApp Helpdesk: https://wa.me/31614458781.',
         fr:
-          'This is an automated message. This number will be out of service soon. Instead use the WhatsApp number +3197010253442 for collecting outstanding vouchers or messages. Or for general questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781',
+          'This is an automatic message from the Red Cross. This number is not used anymore. We now send the vouchers from this number: +3197010253442. Do you want to receive the vouchers that we have send to you before? Send a message to the new number by clicking on this link: https://wa.me/3197010253442? For questions or help, please contact our WhatsApp Helpdesk: https://wa.me/31614458781.',
       };
 
       const language =
