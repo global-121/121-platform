@@ -84,7 +84,7 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
     "ngx-translate-lint": "^1.13.2",
-    "prettier": "2.8.0",
+    "prettier": "2.8.1",
     "prettier-plugin-organize-imports": "^3.2.1",
     "shx": "^0.3.4",
     "tslint": "~6.1.0",
