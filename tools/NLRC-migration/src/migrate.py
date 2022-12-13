@@ -19,7 +19,7 @@ excludedTables = [
     'user_role',
     'user_role_permissions_permission',
     # imagecode_export_vouchers #only excluded for testing
-    'imagecode_export_vouchers',
+    #'imagecode_export_vouchers',
   ]
 
 def connect(credentialDB, useDict):
@@ -115,6 +115,7 @@ def migrateData(cursorOrigin, cursorDestination, connDestination):
     # https://www.psycopg.org/psycopg3/docs/basic/copy.html
     for tableNameObj in tablesNames:
       tableName = tableNameObj[0]
+      print("Copy data table: ", tableName)
       if tableName not in excludedTables:
         with cursorOrigin.copy(f"""COPY "{tableName}" TO STDOUT (FORMAT BINARY)""") as copy1:
           cursorDestination.execute(f"""ALTER TABLE "{tableName}" DISABLE TRIGGER ALL;""")
@@ -142,6 +143,7 @@ def prepareOrigin(cursor, conn):
   tables = getTableNames(cursor)
   for table in tables:
     tableIdPlusMillion(table, cursor, conn)
+    print("Updating table IDs in table:, ", table)
 
 
 def getCookies():
