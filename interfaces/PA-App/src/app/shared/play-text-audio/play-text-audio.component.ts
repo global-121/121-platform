@@ -69,11 +69,14 @@ export class PlayTextAudioComponent implements OnInit {
     if (environment.disableTextPlayer) {
       return;
     }
-    this.isDisabled = false;
+
     this.player = new Howl({
       src: this.getSourceUrls(this.key),
       preload: true,
-      onload: () => this.setState(PlayerState.ready),
+      onload: () => {
+        this.setState(PlayerState.ready);
+        this.isDisabled = false;
+      },
       onloaderror: (_SOUNDID: any, error: string) => this.onLoadError(error),
       onplayerror: () => this.setState(PlayerState.error),
       onend: () => this.setState(PlayerState.ready),
