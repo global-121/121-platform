@@ -10,6 +10,7 @@ import {
   Min,
 } from 'class-validator';
 import { FspName } from '../../fsp/financial-service-provider.entity';
+import { ImportFspReconciliationDto } from '../../payments/dto/import-fsp-reconciliation.dto';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 
@@ -17,6 +18,7 @@ export enum ImportStatus {
   imported = 'imported',
   invalidPhoneNumber = 'invalidPhoneNumber',
   existingPhoneNumber = 'existingPhoneNumber',
+  unmatched = 'unmatched',
 }
 
 export class BulkImportDto {
@@ -43,15 +45,21 @@ export class BulkImportResult extends BulkImportDto {
   public registrationStatus: RegistrationStatusEnum | string;
 }
 
+export class ImportFspReconciliationResult extends ImportFspReconciliationDto {
+  public importStatus: ImportStatus;
+}
+
 export class ImportResult {
   public aggregateImportResult: AggregateImportResult;
   public importResult?: BulkImportResult[];
+  public uploadFspReconciliationResult?: ImportFspReconciliationResult[];
 }
 
 export class AggregateImportResult {
   public countImported: number;
   public countExistingPhoneNr?: number;
   public countInvalidPhoneNr?: number;
+  public countNotFound?: number;
 }
 
 const fspArray = Object.values(FspName).map(item => String(item));

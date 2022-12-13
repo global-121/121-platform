@@ -7,11 +7,17 @@ import { FspName } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';
+import {
+  ImportFspReconciliationResult,
+  ImportResult,
+} from '../registration/dto/bulk-import.dto';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../registration/registration.entity';
+import { BulkImportService } from '../registration/services/bulk-import.service';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { ExportFileType, FspInstructions } from './dto/fsp-instructions.dto';
+import { ImportFspReconciliationDto } from './dto/import-fsp-reconciliation.dto';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 import { SplitPaymentListDto } from './dto/split-payment-lists.dto';
 import { UnusedVoucherDto } from './dto/unused-voucher.dto';
@@ -44,6 +50,7 @@ export class PaymentsService {
     private readonly bobFinanceService: BobFinanceService,
     private readonly ukrPoshtaService: UkrPoshtaService,
     private readonly vodacashService: VodacashService,
+    private readonly bulkImportService: BulkImportService,
   ) {}
 
   public async getPayments(
@@ -398,5 +405,102 @@ export class PaymentsService {
       data: fileType === ExportFileType.xml ? xmlInstructions : csvInstructions,
       fileType: fileType,
     };
+  }
+
+  public async importFspReconciliationData(
+    csvFile,
+    programId: number,
+    userId: number,
+  ): Promise<ImportResult> {
+    const validatedImportRecords = await this.csvToValidatedFspReconciliation(
+      csvFile,
+    );
+
+    let countImported = 0;
+    let countNotFound = 0;
+
+    const importResponseRecords = [];
+    for await (const record of validatedImportRecords) {
+      const importResponseRecord = record as ImportFspReconciliationResult;
+
+      // For now assume BoB Finance
+      // const registration = await this.bobFinanceService.findRegistrationFromInput(
+      //   record,
+      // );
+      // if (!registration) {
+      //   importResponseRecord.importStatus = ImportStatus.unmatched;
+      //   importResponseRecords.push(importResponseRecord);
+      //   countNotFound += 1;
+      //   continue;
+      // }
+
+      // // For now assume BoB Finance
+      // const paTransactionResult = await this.bobFinanceService.uploadReconciliationData(
+      //   registration,
+      //   record,
+      //   programId,
+      // );
+
+      // await this.transactionService.storeTransaction(
+      //   paTransactionResult,
+      //   programId,
+      //   paTransactionResult.payment,
+      // );
+
+      // importResponseRecord.importStatus = ImportStatus.imported;
+      // importResponseRecords.push(importResponseRecord);
+      // countImported += 1;
+    }
+
+    this.actionService.saveAction(
+      userId,
+      programId,
+      AdditionalActionType.importFspReconciliation,
+    );
+
+    return {
+      importResult: importResponseRecords,
+      aggregateImportResult: {
+        countImported,
+        countNotFound,
+      },
+    };
+  }
+
+  private async csvToValidatedFspReconciliation(
+    csvFile,
+  ): Promise<ImportFspReconciliationDto[]> {
+    const importRecords = await this.bulkImportService.validateCsv(csvFile);
+    return await this.validateFspReconciliationCsvInput(importRecords);
+  }
+
+  private async validateFspReconciliationCsvInput(
+    csvArray,
+  ): Promise<ImportFspReconciliationDto[]> {
+    const errors = [];
+    const validatatedArray = [];
+    for (const [i, row] of csvArray.entries()) {
+      if (this.bulkImportService.checkForCompletelyEmptyRow(row)) {
+        continue;
+      }
+
+      // For now assume BoB Finance
+      // const importRecord = this.bobFinanceService.validateReconciliationData(
+      //   row,
+      // );
+
+      // const result = await validate(importRecord);
+      // if (result.length > 0) {
+      //   const errorObj = {
+      //     lineNumber: i + 1,
+      //     column: result[0].property,
+      //     value: result[0].value,
+      //   };
+      //   errors.push(errorObj);
+      //   throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+      // }
+      // validatatedArray.push(importRecord);
+    }
+    return validatatedArray;
   }
 }

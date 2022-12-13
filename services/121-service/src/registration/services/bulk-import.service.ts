@@ -30,7 +30,7 @@ import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationDataEntity } from './../registration-data.entity';
-import { InlusionScoreService } from './inclusion-score.service';
+import { InclusionScoreService } from './inclusion-score.service';
 
 export enum ImportType {
   imported = 'import-as-imported',
@@ -61,7 +61,7 @@ export class BulkImportService {
   public constructor(
     private readonly lookupService: LookupService,
     private readonly actionService: ActionService,
-    private readonly inclusionScoreService: InlusionScoreService,
+    private readonly inclusionScoreService: InclusionScoreService,
   ) {}
 
   public async importBulk(
@@ -346,7 +346,7 @@ export class BulkImportService {
     return await this.validateRegistrationsCsvInput(importRecords, programId);
   }
 
-  private async validateCsv(csvFile): Promise<object[]> {
+  public async validateCsv(csvFile): Promise<object[]> {
     const indexLastPoint = csvFile.originalname.lastIndexOf('.');
     const extension = csvFile.originalname.substr(
       indexLastPoint,
@@ -380,7 +380,7 @@ export class BulkImportService {
     });
   }
 
-  private checkForCompletelyEmptyRow(row): boolean {
+  public checkForCompletelyEmptyRow(row): boolean {
     if (Object.keys(row).every(key => !row[key])) {
       return true;
     }

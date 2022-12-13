@@ -353,6 +353,40 @@ export class ProgramsServiceApiService {
     );
   }
 
+  importFspReconciliation(
+    programId: number,
+    payment: number,
+    file: File,
+  ): Promise<ImportResult> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const path = `/programs/${programId}/payments/${payment}/fsp-reconciliation`;
+
+    return new Promise<ImportResult>((resolve, reject) => {
+      this.apiService
+        .post(
+          environment.url_121_service_api,
+          path,
+          formData,
+          false,
+          false,
+          true,
+        )
+        .then((response) => {
+          if (response.error) {
+            throw response;
+          }
+          if (response) {
+            return resolve(response);
+          }
+        })
+        .catch((err) => {
+          return reject(err);
+        });
+    });
+  }
+
   exportList(
     programId: number,
     type: ExportType,

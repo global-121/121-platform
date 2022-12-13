@@ -1,0 +1,20 @@
+<div
+  style="display: inline-flex;"
+  class="ion-align-items-center"
+>
+  <confirm-prompt
+    [disabled]="disabled || isInProgress"
+    (confirm)="importFspReconciliation($event)"
+    [subHeader]="subHeader"
+    [message]="message"
+    [filePickerProps]="filePickerProps"
+  >
+    <ion-icon name="cloud-upload" slot="start" aria-hidden="true"></ion-icon>
+    {{ btnText }}
+  </confirm-prompt>
+  <ion-spinner
+    *ngIf="isInProgress"
+    color="primary"
+    class="ion-margin-start"
+  ></ion-spinner>
+</div>
