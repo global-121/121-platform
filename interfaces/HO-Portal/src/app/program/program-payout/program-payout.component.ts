@@ -41,6 +41,7 @@ export class ProgramPayoutComponent implements OnInit {
   public payments: Payment[];
   public isIntersolve: boolean;
   public hasFspWithExportFileIntegration: boolean;
+  public hasFspWithReconciliation: boolean;
   public canMakeFspInstructions: boolean;
 
   public canMakePayment: boolean;
@@ -73,11 +74,14 @@ export class ProgramPayoutComponent implements OnInit {
     this.isIntersolve = this.checkIntersolve(
       this.program.financialServiceProviders,
     );
-    this.hasFspWithExportFileIntegration =
-      this.checkFspWithExportFileIntegration(
-        this.program.financialServiceProviders,
-      );
-
+    this.hasFspWithExportFileIntegration = this.checkFspIntegrationType(
+      this.program.financialServiceProviders,
+      [FspIntegrationType.csv, FspIntegrationType.xml],
+    );
+    this.hasFspWithReconciliation = this.checkFspIntegrationType(
+      this.program.financialServiceProviders,
+      [FspIntegrationType.xml],
+    );
     this.canMakePayment = this.checkCanMakePayment();
     this.canMakeExport = this.checkCanMakeExport();
 
@@ -291,15 +295,12 @@ export class ProgramPayoutComponent implements OnInit {
     return false;
   }
 
-  private checkFspWithExportFileIntegration(
+  private checkFspIntegrationType(
     fsps: Program['financialServiceProviders'],
+    integrationTypes: FspIntegrationType[],
   ): boolean {
     for (const fsp of fsps || []) {
-      if (
-        fsp &&
-        (fsp.integrationType === FspIntegrationType.csv ||
-          fsp.integrationType === FspIntegrationType.xml)
-      ) {
+      if (fsp && integrationTypes.includes(fsp.integrationType)) {
         return true;
       }
     }

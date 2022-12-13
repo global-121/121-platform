@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionService } from '../actions/action.service';
+import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
 import { FspName } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspService } from '../fsp/fsp.service';
@@ -367,6 +368,15 @@ export class PaymentsService {
         where: { referenceId: transaction.referenceId },
         relations: ['fsp'],
       });
+
+      if (
+        // For fsp's with reconciliation upload (= xml at the moment) only export waiting transactions
+        registration.fsp.integrationType === FspIntegrationType.xml &&
+        transaction.status !== StatusEnum.waiting
+      ) {
+        continue;
+      }
+
       if (registration.fsp.fsp === FspName.bobFinance) {
         const instruction = await this.bobFinanceService.getFspInstructions(
           registration,

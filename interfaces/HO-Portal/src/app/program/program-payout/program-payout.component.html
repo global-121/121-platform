@@ -56,8 +56,8 @@
       [payment]="exportPaymentId"
       [lastPaymentId]="lastPaymentId"
     ></app-export-fsp-instructions>
-    <app-import-fsp-reconciliation 
-      *ngIf="hasFspWithExportFileIntegration && canMakeFspInstructions"
+    <app-import-fsp-reconciliation
+      *ngIf="hasFspWithReconciliation && canMakeFspInstructions"
       [programId]="programId"
       [payment]="exportPaymentId"
       [lastPaymentId]="lastPaymentId"
