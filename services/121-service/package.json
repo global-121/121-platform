@@ -67,7 +67,7 @@
     "ts-node": "^8.3.0",
     "tsconfig-paths": "^3.9.0",
     "twilio": "^3.36.0",
-    "typeorm": "^0.2.44",
+    "typeorm": "^0.2.45",
     "typescript": "^3.9.7",
     "xml-js": "^1.6.11"
   },
