@@ -820,6 +820,7 @@ export class ExportMetricsService {
         fromStart,
       ),
       [PaMetricsProperty.totalPaHelped]: await this.getTotalPaHelped(
+        programId,
         payment,
         month,
         year,
@@ -889,6 +890,7 @@ export class ExportMetricsService {
   }
 
   public async getTotalPaHelped(
+    programId: number,
     payment?: number,
     month?: number,
     year?: number,
@@ -896,6 +898,7 @@ export class ExportMetricsService {
   ): Promise<number> {
     let query = this.registrationRepository
       .createQueryBuilder('registration')
+      .where('registration."programId" = :programId', { programId: programId })
       .innerJoinAndSelect('registration.transactions', 'transactions');
     let yearMonthStartCondition;
     if (month >= 0 && year) {
