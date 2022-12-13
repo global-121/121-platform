@@ -4,7 +4,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../app/auth/auth.service';
 import { ProgramsServiceApiService } from '../../../app/services/programs-service-api.service';
 import Permission from '../../auth/permission.enum';
-import { ImportType } from '../../models/import-type.enum';
 import { FilePickerProps } from '../../shared/file-picker-prompt/file-picker-prompt.component';
 
 @Component({
@@ -48,7 +47,7 @@ export class ImportFspReconciliationComponent implements OnChanges {
         'page.program.import-fsp-reconciliation.explanation',
       ),
       programId: this.programId,
-      downloadTemplate: ImportType.imported,
+      downloadTemplate: null,
     };
   }
 
