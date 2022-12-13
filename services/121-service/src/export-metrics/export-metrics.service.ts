@@ -393,7 +393,7 @@ export class ExportMetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
-        `registration."id"`,
+        `registration."registrationProgramId"`,
         `registration."registrationStatus" as status`,
         `registration."${GenericAttributes.phoneNumber}"`,
         `registration."${GenericAttributes.preferredLanguage}"`,
@@ -403,7 +403,7 @@ export class ExportMetricsService {
         `registration."referenceId" as "referenceId"`,
       ])
       .andWhere({ programId: programId })
-      .orderBy('"registration"."id"', 'ASC');
+      .orderBy('"registration"."registrationProgramId"', 'ASC');
     if (exportType !== ExportType.allPeopleAffected) {
       query = query.andWhere(
         'registration."registrationStatus" != :registrationStatus',
@@ -435,16 +435,19 @@ export class ExportMetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
-        `registration."id"`,
+        `registration."registrationProgramId" AS "id"`,
         `registration."registrationStatus" AS status`,
         `fsp.fsp AS fsp`,
         `registration."${GenericAttributes.phoneNumber}"`,
       ])
       .andWhere({ programId: programId })
-      .andWhere('registration.id IN (:...registrationIds)', {
-        registrationIds: registrationIds,
-      })
-      .orderBy('"registration"."id"', 'ASC');
+      .andWhere(
+        'registration."registrationProgramId" IN (:...registrationIds)',
+        {
+          registrationIds: registrationIds,
+        },
+      )
+      .orderBy('"registration"."registrationProgramId"', 'ASC');
     for (const r of relationOptions) {
       query.select(subQuery => {
         return this.registrationsService.customDataEntrySubQuery(
@@ -603,6 +606,9 @@ export class ExportMetricsService {
       .select(
         `array_agg(DISTINCT registration_data."registrationId") AS "duplicateRegistrationIds"`,
       )
+      .addSelect(
+        `array_agg(DISTINCT registration."registrationProgramId") AS "duplicateRegistrationProgramIds"`,
+      )
       .innerJoin('registration_data.registration', 'registration')
       .where(whereOptions)
       .andWhere('registration.programId = :programId', { programId })
@@ -621,11 +627,14 @@ export class ExportMetricsService {
 
     for (const duplicateEntry of duplicates) {
       const {
-        duplicateRegistrationIds,
-      }: { duplicateRegistrationIds: number[] } = duplicateEntry;
-      for (const registrationId of duplicateRegistrationIds) {
+        duplicateRegistrationProgramIds,
+      }: {
+        duplicateRegistrationIds: number[];
+        duplicateRegistrationProgramIds: number[];
+      } = duplicateEntry;
+      for (const registrationId of duplicateRegistrationProgramIds) {
         uniqueRegistrationIds.add(registrationId);
-        const others = without(duplicateRegistrationIds, registrationId);
+        const others = without(duplicateRegistrationProgramIds, registrationId);
         if (duplicatesMap.has(registrationId)) {
           const duplicateMapEntry = duplicatesMap.get(registrationId);
           duplicatesMap.set(registrationId, duplicateMapEntry.concat(others));
