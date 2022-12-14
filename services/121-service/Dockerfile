@@ -10,15 +10,11 @@ RUN npm ci --only=production
 
 COPY . .
 
-USER node
-
 CMD ["npm", "start"]
 
 
 FROM base as development
 
 COPY . .
-
-USER root
 
 CMD ["npm", "run", "start:dev"]
