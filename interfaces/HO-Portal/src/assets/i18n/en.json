@@ -477,12 +477,17 @@
       "export-fsp-intructions": {
         "btn-text": "Export Payment Instructions",
         "confirm-message": "This will download a file with payment instructions for the Financial Service Provider.",
-        "sub-message": "You should only use this file <strong>once per payment</strong> in the portal of the Financial Service Provider."
+        "sub-message": {
+          "reconciliation": "This export will only include People Affected for which the current transaction status is <strong>waiting</strong>.",
+          "no-reconciliation": "You should only use this file <strong>once per payment</strong> in the portal of the Financial Service Provider."
+        },
+        "timestamp": "Latest export has been done on: {{dateTime}}"
       },
       "import-fsp-reconciliation": {
         "btn-text": "Import Payment Reconciliation Data",
         "confirm-message": "Import Payment Reconciliation Data",
         "explanation": "Make sure to upload the reconciliation data exactly as provided by the Financial Service Provider.",
+        "timestamp": "Latest import has been done on: {{dateTime}}",
         "import-result": {
           "ready": "Import ready.",
           "new": "There are {{countImported}} transactions updated: {{countPaymentSuccess}} transactions were successful and {{countPaymentFailed}} transactions failed.",

@@ -55,13 +55,14 @@
       [programId]="programId"
       [payment]="exportPaymentId"
       [lastPaymentId]="lastPaymentId"
+      [hasFspWithReconciliation]="hasFspWithReconciliation"
     ></app-export-fsp-instructions>
     <app-import-fsp-reconciliation
       *ngIf="hasFspWithReconciliation && canMakeFspInstructions"
       [programId]="programId"
       [payment]="exportPaymentId"
-      [fspIds]="fspIdsWithReconciliation"
       [lastPaymentId]="lastPaymentId"
+      [fspIds]="fspIdsWithReconciliation"
     ></app-import-fsp-reconciliation>
   </ion-row>
   <ion-row

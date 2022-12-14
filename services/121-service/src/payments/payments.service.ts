@@ -351,6 +351,7 @@ export class PaymentsService {
   public async getFspInstructions(
     programId,
     payment,
+    userId: number,
   ): Promise<FspInstructions> {
     const transactions = await this.transactionService.getTransactions(
       programId,
@@ -411,6 +412,12 @@ export class PaymentsService {
         }
       }
     }
+
+    this.actionService.saveAction(
+      userId,
+      programId,
+      AdditionalActionType.exportFspInstructions,
+    );
 
     return {
       data: fileType === ExportFileType.xml ? xmlInstructions : csvInstructions,
