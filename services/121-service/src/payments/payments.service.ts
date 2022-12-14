@@ -11,6 +11,7 @@ import { ProgramEntity } from '../programs/program.entity';
 import {
   ImportFspReconciliationResult,
   ImportResult,
+  ImportStatus,
 } from '../registration/dto/bulk-import.dto';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
@@ -420,15 +421,18 @@ export class PaymentsService {
   public async importFspReconciliationData(
     file,
     programId: number,
+    payment: number,
+    fspIds: number[],
     userId: number,
   ): Promise<ImportResult> {
     console.log('file: ', file);
     const validatedImportRecords = await this.xmlToValidatedFspReconciliation(
       file,
     );
-
     let countImported = 0;
     let countNotFound = 0;
+    let countPaymentSuccess = 0;
+    let countPaymentFailed = 0;
 
     const importResponseRecords = [];
 
@@ -436,33 +440,55 @@ export class PaymentsService {
     for await (const record of validatedImportRecords) {
       const importResponseRecord = record as ImportFspReconciliationResult;
 
-      // For now assume BoB Finance
-      // const registration = await this.bobFinanceService.findRegistrationFromInput(
-      //   record,
-      // );
-      // if (!registration) {
-      //   importResponseRecord.importStatus = ImportStatus.unmatched;
-      //   importResponseRecords.push(importResponseRecord);
-      //   countNotFound += 1;
-      //   continue;
-      // }
+      let registration, paTransactionResult;
+      // Loop over potentially multiple fsp's in same dataset
+      for (const fspId of fspIds) {
+        const fsp = await this.fspService.getFspById(fspId);
 
-      // // For now assume BoB Finance
-      // const paTransactionResult = await this.bobFinanceService.uploadReconciliationData(
-      //   registration,
-      //   record,
-      //   programId,
-      // );
+        if (fsp.fsp === FspName.vodacash) {
+          registration = null; //DUMMY > REMOVE
+          // const registration = await this.vodacashService.findRegistrationFromInput(
+          //   record,
+          // );
+          if (registration) {
+            paTransactionResult = null; //DUMMY > REMOVE
+            // const paTransactionResult = await this.vodacashService.uploadReconciliationData(
+            //   registration,
+            //   record,
+            //   programId,
+            // );
+          }
+        } else {
+          continue;
+        }
+      }
 
-      // await this.transactionService.storeTransaction(
-      //   paTransactionResult,
-      //   programId,
-      //   paTransactionResult.payment,
-      // );
+      if (!registration) {
+        importResponseRecord.importStatus = ImportStatus.notFound;
+        importResponseRecords.push(importResponseRecord);
+        countNotFound += 1;
+        continue;
+      }
 
-      // importResponseRecord.importStatus = ImportStatus.imported;
-      // importResponseRecords.push(importResponseRecord);
-      // countImported += 1;
+      await this.transactionService.storeTransaction(
+        paTransactionResult,
+        programId,
+        payment,
+      );
+
+      // This assumes that status is always 'success' or 'error', which should indeed be the case
+      importResponseRecord.importStatus =
+        paTransactionResult.status === StatusEnum.error
+          ? ImportStatus.paymentFailed
+          : ImportStatus.paymentSuccess;
+      importResponseRecords.push(importResponseRecord);
+      countImported += 1;
+      countPaymentSuccess += Number(
+        paTransactionResult.status === StatusEnum.success,
+      );
+      countPaymentFailed += Number(
+        paTransactionResult.status === StatusEnum.error,
+      );
     }
 
     this.actionService.saveAction(
@@ -475,6 +501,8 @@ export class PaymentsService {
       importResult: importResponseRecords,
       aggregateImportResult: {
         countImported,
+        countPaymentFailed,
+        countPaymentSuccess,
         countNotFound,
       },
     };

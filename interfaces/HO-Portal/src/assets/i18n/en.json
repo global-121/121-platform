@@ -485,7 +485,7 @@
         "explanation": "Make sure to upload the reconciliation data exactly as provided by the Financial Service Provider.",
         "import-result": {
           "ready": "Import ready.",
-          "new": "There are {{countImported}} transactions updated.",
+          "new": "There are {{countImported}} transactions updated: {{countPaymentSuccess}} transactions were successful and {{countPaymentFailed}} transactions failed.",
           "not-found": "There were {{countNotFound}} transactions for which no matching Person Affected was found. Try to correct them and upload again."
         }
       },

@@ -356,12 +356,15 @@ export class ProgramsServiceApiService {
   importFspReconciliation(
     programId: number,
     payment: number,
+    fspIds: number[],
     file: File,
   ): Promise<ImportResult> {
     const formData = new FormData();
     formData.append('file', file);
 
-    const path = `/programs/${programId}/payments/${payment}/fsp-reconciliation`;
+    const path = `/programs/${programId}/payments/${payment}/fsp-reconciliation?fspIds=${fspIds.join(
+      ',',
+    )}`;
 
     return new Promise<ImportResult>((resolve, reject) => {
       this.apiService

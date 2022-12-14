@@ -19,6 +19,9 @@ export class ImportFspReconciliationComponent implements OnChanges {
   public payment: number;
 
   @Input()
+  public fspIds: number[];
+
+  @Input()
   public lastPaymentId: number;
 
   public disabled: boolean;
@@ -77,7 +80,12 @@ export class ImportFspReconciliationComponent implements OnChanges {
     this.isInProgress = true;
 
     this.programsService
-      .importFspReconciliation(this.programId, this.payment, event.file)
+      .importFspReconciliation(
+        this.programId,
+        this.payment,
+        this.fspIds,
+        event.file,
+      )
       .then(
         (response) => {
           const aggregateResult = response.aggregateImportResult;
@@ -92,6 +100,8 @@ export class ImportFspReconciliationComponent implements OnChanges {
               'page.program.import-fsp-reconciliation.import-result.new',
               {
                 countImported: `<strong>${aggregateResult.countImported}</strong>`,
+                countPaymentSuccess: `<strong>${aggregateResult.countPaymentSuccess}</strong>`,
+                countPaymentFailed: `<strong>${aggregateResult.countPaymentFailed}</strong>`,
               },
             ) + '<br><br>';
 

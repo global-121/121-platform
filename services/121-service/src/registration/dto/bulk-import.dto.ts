@@ -18,7 +18,9 @@ export enum ImportStatus {
   imported = 'imported',
   invalidPhoneNumber = 'invalidPhoneNumber',
   existingPhoneNumber = 'existingPhoneNumber',
-  unmatched = 'unmatched',
+  notFound = 'notFound',
+  paymentSuccess = 'paymentSuccess',
+  paymentFailed = 'paymentFailed',
 }
 
 export class BulkImportDto {
@@ -60,6 +62,8 @@ export class AggregateImportResult {
   public countExistingPhoneNr?: number;
   public countInvalidPhoneNr?: number;
   public countNotFound?: number;
+  public countPaymentSuccess?: number;
+  public countPaymentFailed?: number;
 }
 
 const fspArray = Object.values(FspName).map(item => String(item));

@@ -60,6 +60,7 @@
       *ngIf="hasFspWithReconciliation && canMakeFspInstructions"
       [programId]="programId"
       [payment]="exportPaymentId"
+      [fspIds]="fspIdsWithReconciliation"
       [lastPaymentId]="lastPaymentId"
     ></app-import-fsp-reconciliation>
   </ion-row>
