@@ -1,17 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import fs from 'fs';
+import { Repository } from 'typeorm';
 import * as convert from 'xml-js';
 import { FspName } from '../../../fsp/financial-service-provider.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import { FspTransactionResultDto } from '../../dto/payment-transaction-result.dto';
+import {
+  FspTransactionResultDto,
+  PaTransactionResultDto,
+} from '../../dto/payment-transaction-result.dto';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { VodacashPaymentStatus } from './vodacash-payment-status';
 import { VodacashReconciliationRow } from './vodacash-reconciliation-row';
 
 @Injectable()
 export class VodacashService {
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
+
   public constructor(
     private readonly transactionsService: TransactionsService, // private readonly xmlService: XmLService,
   ) {}
@@ -108,21 +117,52 @@ export class VodacashService {
     row: convert.Element | convert.ElementCompact,
   ): VodacashReconciliationRow {
     let importRecord = new VodacashReconciliationRow();
-    // TODO: Map vodacash status to our own status.
-    // Completed -> Success
-    // Cancelled -> Failed
-    // Not Executed -> ???
     importRecord.status = this.getElementByName(row, 'Status').elements[0].text;
-    importRecord.referenceId = row['referenceId'];
-    const details = this.getElementByName(row, 'Details').elements;
-    for (const [i, row] of details.entries()) {
-      const key = this.getElementByName(row, 'Key');
-      if (key.elements[0].text === 'Amount') {
-        const amount = this.getElementByName(row, 'Value').elements[0].text;
-        importRecord.amount = amount;
+    if (importRecord.status === 'Completed') {
+      const details = this.getElementByName(row, 'Details').elements;
+      for (const [i, row] of details.entries()) {
+        const key = this.getElementByName(row, 'Key');
+        if (key.elements[0].text === 'Amount') {
+          importRecord.amount = this.getElementByName(
+            row,
+            'Value',
+          ).elements[0].text;
+        }
+        if (key.elements[0].text === 'TransactionDetails') {
+          importRecord.phoneNumber = this.getElementByName(
+            row,
+            'Value',
+          ).elements[0].text.match(/[2][4][3][0-9]*/)[0];
+        }
       }
     }
     return importRecord;
+  }
+
+  public async findRegistrationFromInput(
+    row: VodacashReconciliationRow,
+  ): Promise<RegistrationEntity> {
+    return await this.registrationRepository.findOne({
+      where: {
+        phoneNumber: row.phoneNumber,
+      },
+    });
+  }
+
+  public async createTransactionResult(
+    registration: RegistrationEntity,
+    record: VodacashReconciliationRow,
+  ): Promise<PaTransactionResultDto> {
+    const paTransactionResult = new PaTransactionResultDto();
+    paTransactionResult.referenceId = registration.referenceId;
+    paTransactionResult.status =
+      record.status == VodacashPaymentStatus.Completed
+        ? StatusEnum.success
+        : StatusEnum.error;
+    paTransactionResult.fspName = FspName.vodacash;
+    paTransactionResult.message = record.status;
+    paTransactionResult.calculatedAmount = Number(record.amount);
+    return paTransactionResult;
   }
 
   private getElementByName(

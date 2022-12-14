@@ -29,6 +29,7 @@ import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.ser
 import { IntersolveRequestEntity } from './fsp-integration/intersolve/intersolve-request.entity';
 import { IntersolveService } from './fsp-integration/intersolve/intersolve.service';
 import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service';
+import { VodacashReconciliationRow } from './fsp-integration/vodacash/vodacash-reconciliation-row';
 import { VodacashService } from './fsp-integration/vodacash/vodacash.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
@@ -447,23 +448,21 @@ export class PaymentsService {
     for await (const record of validatedImportRecords) {
       const importResponseRecord = record as ImportFspReconciliationResult;
 
-      let registration, paTransactionResult;
+      let registration: RegistrationEntity, paTransactionResult;
       // Loop over potentially multiple fsp's in same dataset
       for (const fspId of fspIds) {
         const fsp = await this.fspService.getFspById(fspId);
 
         if (fsp.fsp === FspName.vodacash) {
-          registration = null; //DUMMY > REMOVE
-          // const registration = await this.vodacashService.findRegistrationFromInput(
-          //   record,
-          // );
+          registration = await this.vodacashService.findRegistrationFromInput(
+            (record as unknown) as VodacashReconciliationRow,
+          );
+          console.log('registration: ', registration);
           if (registration) {
-            paTransactionResult = null; //DUMMY > REMOVE
-            // const paTransactionResult = await this.vodacashService.uploadReconciliationData(
-            //   registration,
-            //   record,
-            //   programId,
-            // );
+            paTransactionResult = await this.vodacashService.createTransactionResult(
+              registration,
+              (record as unknown) as VodacashReconciliationRow,
+            );
           }
         } else {
           continue;
