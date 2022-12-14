@@ -117,9 +117,9 @@ export class ImportFspReconciliationComponent implements OnChanges {
             this.translate.instant(
               'page.program.import-fsp-reconciliation.import-result.new',
               {
-                countImported: `<strong>${aggregateResult.countImported}</strong>`,
                 countPaymentSuccess: `<strong>${aggregateResult.countPaymentSuccess}</strong>`,
                 countPaymentFailed: `<strong>${aggregateResult.countPaymentFailed}</strong>`,
+                payment: `<strong>${this.payment}</strong>`,
               },
             ) + '<br><br>';
 

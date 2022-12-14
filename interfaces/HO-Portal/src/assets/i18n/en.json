@@ -490,7 +490,7 @@
         "timestamp": "Latest import has been done on: {{dateTime}}",
         "import-result": {
           "ready": "Import ready.",
-          "new": "There are {{countImported}} transactions updated: {{countPaymentSuccess}} transactions were successful and {{countPaymentFailed}} transactions failed.",
+          "new": "We matched {{countPaymentSuccess}} successful payments. The other {{countPaymentFailed}} payments of payment {{payment}} have been set to Failed",
           "not-found": "There were {{countNotFound}} transactions for which no matching Person Affected was found. Try to correct them and upload again."
         }
       },

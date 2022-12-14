@@ -4,8 +4,10 @@ import fs from 'fs';
 import { Repository } from 'typeorm';
 import * as convert from 'xml-js';
 import { FspName } from '../../../fsp/financial-service-provider.entity';
+import { ImportFspReconciliationResult } from '../../../registration/dto/bulk-import.dto';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+import { ImportFspReconciliationDto } from '../../dto/import-fsp-reconciliation.dto';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
@@ -13,8 +15,6 @@ import {
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
-import { VodacashPaymentStatus } from './vodacash-payment-status';
-import { VodacashReconciliationRow } from './vodacash-reconciliation-row';
 
 @Injectable()
 export class VodacashService {
@@ -115,8 +115,8 @@ export class VodacashService {
 
   public validateReconciliationData(
     row: convert.Element | convert.ElementCompact,
-  ): VodacashReconciliationRow {
-    let importRecord = new VodacashReconciliationRow();
+  ): ImportFspReconciliationDto {
+    let importRecord = new ImportFspReconciliationDto();
     importRecord.status = this.getElementByName(row, 'Status').elements[0].text;
     if (importRecord.status === 'Completed') {
       const details = this.getElementByName(row, 'Details').elements;
@@ -139,29 +139,31 @@ export class VodacashService {
     return importRecord;
   }
 
-  public async findRegistrationFromInput(
-    row: VodacashReconciliationRow,
-  ): Promise<RegistrationEntity> {
-    return await this.registrationRepository.findOne({
-      where: {
-        phoneNumber: row.phoneNumber,
-      },
-    });
+  public async findReconciliationRecord(
+    registration: RegistrationEntity,
+    importRecords: ImportFspReconciliationDto[],
+  ): Promise<ImportFspReconciliationDto> {
+    for (const record of importRecords) {
+      const importResponseRecord = record as ImportFspReconciliationResult;
+      if (importResponseRecord.phoneNumber === registration.phoneNumber) {
+        return importResponseRecord;
+      }
+    }
   }
 
   public async createTransactionResult(
     registration: RegistrationEntity,
-    record: VodacashReconciliationRow,
+    record: ImportFspReconciliationDto,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.referenceId = registration.referenceId;
-    paTransactionResult.status =
-      record.status == VodacashPaymentStatus.Completed
-        ? StatusEnum.success
-        : StatusEnum.error;
     paTransactionResult.fspName = FspName.vodacash;
-    paTransactionResult.message = record.status;
-    paTransactionResult.calculatedAmount = Number(record.amount);
+    paTransactionResult.status = StatusEnum.error;
+    if (record) {
+      // record will only be defined when the transaction is successful.
+      paTransactionResult.status = StatusEnum.success;
+      paTransactionResult.calculatedAmount = Number(record.amount);
+    }
     return paTransactionResult;
   }
 

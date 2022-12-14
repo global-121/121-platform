@@ -8,11 +8,7 @@ import { FspName } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';
-import {
-  ImportFspReconciliationResult,
-  ImportResult,
-  ImportStatus,
-} from '../registration/dto/bulk-import.dto';
+import { ImportResult } from '../registration/dto/bulk-import.dto';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../registration/registration.entity';
@@ -29,7 +25,6 @@ import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.ser
 import { IntersolveRequestEntity } from './fsp-integration/intersolve/intersolve-request.entity';
 import { IntersolveService } from './fsp-integration/intersolve/intersolve.service';
 import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service';
-import { VodacashReconciliationRow } from './fsp-integration/vodacash/vodacash-reconciliation-row';
 import { VodacashService } from './fsp-integration/vodacash/vodacash.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
@@ -262,6 +257,7 @@ export class PaymentsService {
     programId: number,
     payment: number,
     referenceIdsDto?: ReferenceIdsDto,
+    status?: StatusEnum,
   ): Promise<RegistrationEntity[]> {
     if (referenceIdsDto) {
       return await this.registrationRepository.find({
@@ -270,9 +266,23 @@ export class PaymentsService {
       });
     }
 
+    if (status === StatusEnum.waiting) {
+      const waitingReferenceIds = (
+        await this.getTransactionsByStatus(
+          programId,
+          payment,
+          StatusEnum.waiting,
+        )
+      ).map(t => t.referenceId);
+      return await this.registrationRepository.find({
+        where: { referenceId: In(waitingReferenceIds) },
+        relations: ['fsp'],
+      });
+    }
+
     // If no referenceIds passed, this must be because of the 'retry all failed' scenario ..
     const failedReferenceIds = (
-      await this.getFailedTransactions(programId, payment)
+      await this.getTransactionsByStatus(programId, payment, StatusEnum.error)
     ).map(t => t.referenceId);
     // .. if nothing found, throw an error
     if (!failedReferenceIds.length) {
@@ -326,9 +336,10 @@ export class PaymentsService {
     return null;
   }
 
-  private async getFailedTransactions(
+  private async getTransactionsByStatus(
     programId: number,
     payment: number,
+    status: StatusEnum,
   ): Promise<any[]> {
     const allLatestTransactionAttemptsPerPa = await this.transactionService.getTransactions(
       programId,
@@ -336,7 +347,7 @@ export class PaymentsService {
       payment,
     );
     const failedTransactions = allLatestTransactionAttemptsPerPa.filter(
-      t => t.payment === payment && t.status === StatusEnum.error,
+      t => t.payment === payment && t.status === status,
     );
     return failedTransactions;
   }
@@ -436,62 +447,43 @@ export class PaymentsService {
     const validatedImportRecords = await this.xmlToValidatedFspReconciliation(
       file,
     );
-    let countImported = 0;
-    let countNotFound = 0;
     let countPaymentSuccess = 0;
     let countPaymentFailed = 0;
 
-    const importResponseRecords = [];
+    const registrationsPerPayment = await this.getRegistrationsForPayment(
+      programId,
+      payment,
+      undefined,
+      StatusEnum.waiting,
+    );
+    let paTransactionResult, record;
 
-    for await (const record of validatedImportRecords) {
-      const importResponseRecord = record as ImportFspReconciliationResult;
-
-      let registration: RegistrationEntity, paTransactionResult;
-      // Loop over potentially multiple fsp's in same dataset
-      for (const fspId of fspIds) {
+    for await (const registration of registrationsPerPayment) {
+      for await (const fspId of fspIds) {
         const fsp = await this.fspService.getFspById(fspId);
 
         if (fsp.fsp === FspName.vodacash) {
-          registration = await this.vodacashService.findRegistrationFromInput(
-            (record as unknown) as VodacashReconciliationRow,
+          record = await this.vodacashService.findReconciliationRecord(
+            registration,
+            validatedImportRecords,
           );
-          if (registration) {
-            paTransactionResult = await this.vodacashService.createTransactionResult(
-              registration,
-              (record as unknown) as VodacashReconciliationRow,
-            );
-          }
-        } else {
-          continue;
+          paTransactionResult = await this.vodacashService.createTransactionResult(
+            registration,
+            record,
+          );
         }
+        await this.transactionService.storeTransaction(
+          paTransactionResult,
+          programId,
+          payment,
+        );
+        countPaymentSuccess += Number(
+          paTransactionResult.status === StatusEnum.success,
+        );
+        countPaymentFailed += Number(
+          paTransactionResult.status === StatusEnum.error,
+        );
       }
-
-      if (!registration) {
-        importResponseRecord.importStatus = ImportStatus.notFound;
-        importResponseRecords.push(importResponseRecord);
-        countNotFound += 1;
-        continue;
-      }
-
-      await this.transactionService.storeTransaction(
-        paTransactionResult,
-        programId,
-        payment,
-      );
-
-      // This assumes that status is always 'success' or 'error', which should indeed be the case
-      importResponseRecord.importStatus =
-        paTransactionResult.status === StatusEnum.error
-          ? ImportStatus.paymentFailed
-          : ImportStatus.paymentSuccess;
-      importResponseRecords.push(importResponseRecord);
-      countImported += 1;
-      countPaymentSuccess += Number(
-        paTransactionResult.status === StatusEnum.success,
-      );
-      countPaymentFailed += Number(
-        paTransactionResult.status === StatusEnum.error,
-      );
     }
 
     this.actionService.saveAction(
@@ -501,12 +493,9 @@ export class PaymentsService {
     );
 
     return {
-      importResult: importResponseRecords,
       aggregateImportResult: {
-        countImported,
         countPaymentFailed,
         countPaymentSuccess,
-        countNotFound,
       },
     };
   }
