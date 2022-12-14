@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -14,6 +15,7 @@ import {
   ApiConsumes,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -87,11 +89,11 @@ export class PaymentsController {
 
   @Permissions(PermissionEnum.PaymentCREATE)
   @ApiOperation({
-    summary:
-      'Upload payment reconciliation data from FSP - for any number of payments at once',
+    summary: 'Upload payment reconciliation data from FSP per payment',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'payment', required: true, type: 'integer' })
+  @ApiQuery({ name: 'fspIds', required: true, type: 'string' })
   @ApiResponse({
     status: 200,
     description: 'Uploaded payment reconciliation data',
@@ -103,11 +105,14 @@ export class PaymentsController {
   public async importFspReconciliationData(
     @UploadedFile() csvFile,
     @Param() params,
+    @Query() query,
     @User('id') userId: number,
   ): Promise<ImportResult> {
     return await this.paymentsService.importFspReconciliationData(
       csvFile,
       Number(params.programId),
+      Number(params.payment),
+      query.fspIds.split(','),
       userId,
     );
   }

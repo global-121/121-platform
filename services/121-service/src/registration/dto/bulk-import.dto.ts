@@ -18,7 +18,7 @@ export enum ImportStatus {
   imported = 'imported',
   invalidPhoneNumber = 'invalidPhoneNumber',
   existingPhoneNumber = 'existingPhoneNumber',
-  unmatched = 'unmatched',
+  notFound = 'notFound',
 }
 
 export class BulkImportDto {

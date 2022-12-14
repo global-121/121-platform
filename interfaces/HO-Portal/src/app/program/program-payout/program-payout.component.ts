@@ -42,6 +42,7 @@ export class ProgramPayoutComponent implements OnInit {
   public isIntersolve: boolean;
   public hasFspWithExportFileIntegration: boolean;
   public hasFspWithReconciliation: boolean;
+  public fspIdsWithReconciliation: number[];
   public canMakeFspInstructions: boolean;
 
   public canMakePayment: boolean;
@@ -82,6 +83,9 @@ export class ProgramPayoutComponent implements OnInit {
       this.program.financialServiceProviders,
       [FspIntegrationType.xml],
     );
+    this.fspIdsWithReconciliation = this.program.financialServiceProviders
+      .filter((fsp) => fsp.integrationType === FspIntegrationType.xml)
+      .map((fsp) => fsp.id);
     this.canMakePayment = this.checkCanMakePayment();
     this.canMakeExport = this.checkCanMakeExport();
 
