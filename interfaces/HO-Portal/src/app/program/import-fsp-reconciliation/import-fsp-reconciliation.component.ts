@@ -4,6 +4,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../app/auth/auth.service';
 import { ProgramsServiceApiService } from '../../../app/services/programs-service-api.service';
 import Permission from '../../auth/permission.enum';
+import { ActionType } from '../../models/actions.model';
+import { LatestActionService } from '../../services/latest-action.service';
 import { FilePickerProps } from '../../shared/file-picker-prompt/file-picker-prompt.component';
 
 @Component({
@@ -37,6 +39,7 @@ export class ImportFspReconciliationComponent implements OnChanges {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
+    private latestActionService: LatestActionService,
   ) {}
 
   ngOnInit() {
@@ -62,6 +65,21 @@ export class ImportFspReconciliationComponent implements OnChanges {
     this.subHeader = this.translate.instant(
       'page.program.import-fsp-reconciliation.confirm-message',
     );
+    if (this.authService.hasPermission(this.programId, Permission.ActionREAD)) {
+      const actionTimestamp =
+        await this.latestActionService.getLatestActionTime(
+          ActionType.importFspReconciliation,
+          this.programId,
+        );
+      this.message = actionTimestamp
+        ? this.translate.instant(
+            'page.program.import-fsp-reconciliation.timestamp',
+            {
+              dateTime: actionTimestamp,
+            },
+          )
+        : '';
+    }
   }
 
   private btnEnabled() {

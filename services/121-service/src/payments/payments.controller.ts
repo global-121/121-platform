@@ -80,10 +80,14 @@ export class PaymentsController {
       'Get payments instructions for past payment to post in Financial Service Provider Portal',
   })
   @Get('programs/:programId/payments/:payment/fsp-instructions')
-  public async getFspInstructions(@Param() params): Promise<FspInstructions> {
+  public async getFspInstructions(
+    @Param() params,
+    @User('id') userId: number,
+  ): Promise<FspInstructions> {
     return await this.paymentsService.getFspInstructions(
       Number(params.programId),
       Number(params.payment),
+      userId,
     );
   }
 
