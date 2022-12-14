@@ -72,5 +72,5 @@ jobs:
         start: |
           npm run start:services:ci
           npm run start:interfaces -- --configuration=ci
-        wait-on-timeout: 300
+        wait-on-timeout: 500
         wait-on: 'http://localhost:3000/api/health/health, http://localhost:8008/, http://localhost:8080/, http://localhost:8888/'
