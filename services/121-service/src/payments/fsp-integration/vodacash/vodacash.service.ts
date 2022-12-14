@@ -33,7 +33,7 @@ export class VodacashService {
         referenceId: payment.referenceId,
         date: new Date(),
         calculatedAmount: calculatedAmount,
-        status: StatusEnum.success,
+        status: StatusEnum.waiting,
         message: null,
       };
 
