@@ -24,7 +24,7 @@ See instructions to get started in the main [`README`](../../README.md).
 
 Make sure to update any dependencies from _within_ the Docker-container, with:
 
-    docker-compose exec  121-service  npm install --save
+    docker compose exec  121-service  npm install --save
 
 ## Database
 

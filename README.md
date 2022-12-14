@@ -104,9 +104,9 @@ To start all services, after setup, from the root of this repository, run:
 
     npm run start:services
 
-To see the status/logs of all Docker-containers, run from the `services/`-folder:
+To see the status/logs of all/a specific Docker-container(s), run: (Where `<container-name>` is optional)
 
-    docker-compose logs -f <container-name>
+    npm run logs:services <container-name>
 
 To verify the successful installation and setup of services, access their Swagger UI:
 
@@ -179,7 +179,7 @@ When making changes to the data-model of the `121-service` (creating/editing any
 The process is:
 
 1. Make the changes in the `\*.entity.ts` file
-2. Generate a migration-script with `docker-compose exec 121-service npm run migration:generate <descriptive-name-for-migration-script>`. This will compare the data-model according to your code with the data-model according to your database, and generate any CREATE, ALTER, etc SQL-statements that are needed to make the database align with code again.
+2. Generate a migration-script with `docker compose exec 121-service npm run migration:generate <descriptive-name-for-migration-script>`. This will compare the data-model according to your code with the data-model according to your database, and generate any CREATE, ALTER, etc SQL-statements that are needed to make the database align with code again.
 3. Restart the 121-service through `docker restart 121-service`: this will always run any new migration-scripts (and thus update the data-model in the database), so in this case the just generated migration-script.
 4. If more changes required, then follow the above process as often as needed.
 5. If ever running into issues with migrations locally, the reset process is:
@@ -234,8 +234,8 @@ To help with some types if files/tasks we've listed them here:
 
 If the Swagger-UI is not accessible after installing Docker and setting up the services, you can take the following steps to debug:
 
-1. `docker-compose ps` to list running containers and their status
-2. `docker-compose logs -f <container-name>` to check their logs/console output (or leave out the `<container-name>` to get ALL output)
+1. `docker compose ps` to list running containers and their status
+2. `docker compose logs -f <container-name>` to check their logs/console output (or leave out the `<container-name>` to get ALL output)
 
 ### Docker related issues
 
@@ -254,7 +254,7 @@ When new Node.js dependencies are added to a service since it is last build on y
 
 - Verify if everything is installed properly:
 
-      docker-compose exec <container-name> npm ls
+      docker compose exec <container-name> npm ls
 
 - If that produces errors or reports missing dependencies, try to build the service from a clean slate with:
 

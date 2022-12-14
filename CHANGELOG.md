@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking Change
 - 121-service uses Node.js v16
+- Network-specific settings in the Docker Compose configuration simplified, by using default settings.
+- `docker-compose` is replaced by `docker compose` everywhere; See [README / Start services](./README.md#start-services)
 
 ### Changed
 

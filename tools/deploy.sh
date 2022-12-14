@@ -137,7 +137,7 @@ END
 
     cd "$repo_services" || return
 
-    docker-compose up -d --build
+    docker compose up -d --build
   }
 
   function cleanup_services() {
