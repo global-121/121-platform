@@ -433,7 +433,6 @@ export class PaymentsService {
     fspIds: number[],
     userId: number,
   ): Promise<ImportResult> {
-    console.log('file: ', file);
     const validatedImportRecords = await this.xmlToValidatedFspReconciliation(
       file,
     );
@@ -444,7 +443,6 @@ export class PaymentsService {
 
     const importResponseRecords = [];
 
-    console.log('validatedImportRecords[0]: ', validatedImportRecords[0]);
     for await (const record of validatedImportRecords) {
       const importResponseRecord = record as ImportFspReconciliationResult;
 
@@ -457,7 +455,6 @@ export class PaymentsService {
           registration = await this.vodacashService.findRegistrationFromInput(
             (record as unknown) as VodacashReconciliationRow,
           );
-          console.log('registration: ', registration);
           if (registration) {
             paTransactionResult = await this.vodacashService.createTransactionResult(
               registration,
@@ -530,10 +527,7 @@ export class PaymentsService {
       if (this.bulkImportService.checkForCompletelyEmptyRow(row)) {
         continue;
       }
-
       const importRecord = this.vodacashService.validateReconciliationData(row);
-
-      console.log('importRecord: ', importRecord);
       // const result = await validate(importRecord);
       // if (result.length > 0) {
       //   const errorObj = {
