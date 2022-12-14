@@ -100,6 +100,8 @@ export class ImportFspReconciliationComponent implements OnChanges {
               'page.program.import-fsp-reconciliation.import-result.new',
               {
                 countImported: `<strong>${aggregateResult.countImported}</strong>`,
+                countPaymentSuccess: `<strong>${aggregateResult.countPaymentSuccess}</strong>`,
+                countPaymentFailed: `<strong>${aggregateResult.countPaymentFailed}</strong>`,
               },
             ) + '<br><br>';
 

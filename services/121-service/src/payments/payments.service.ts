@@ -430,6 +430,8 @@ export class PaymentsService {
     );
     let countImported = 0;
     let countNotFound = 0;
+    let countPaymentSuccess = 0;
+    let countPaymentFailed = 0;
 
     const importResponseRecords = [];
     for await (const record of validatedImportRecords) {
@@ -441,7 +443,6 @@ export class PaymentsService {
         const fsp = await this.fspService.getFspById(fspId);
 
         if (fsp.fsp === FspName.vodacash) {
-          console.log('fsp: ', fsp);
           registration = null; //DUMMY > REMOVE
           // const registration = await this.vodacashService.findRegistrationFromInput(
           //   record,
@@ -472,9 +473,19 @@ export class PaymentsService {
         payment,
       );
 
-      importResponseRecord.importStatus = ImportStatus.imported;
+      // This assumes that status is always 'success' or 'error', which should indeed be the case
+      importResponseRecord.importStatus =
+        paTransactionResult.status === StatusEnum.error
+          ? ImportStatus.paymentFailed
+          : ImportStatus.paymentSuccess;
       importResponseRecords.push(importResponseRecord);
       countImported += 1;
+      countPaymentSuccess += Number(
+        paTransactionResult.status === StatusEnum.success,
+      );
+      countPaymentFailed += Number(
+        paTransactionResult.status === StatusEnum.error,
+      );
     }
 
     this.actionService.saveAction(
@@ -487,6 +498,8 @@ export class PaymentsService {
       importResult: importResponseRecords,
       aggregateImportResult: {
         countImported,
+        countPaymentFailed,
+        countPaymentSuccess,
         countNotFound,
       },
     };
