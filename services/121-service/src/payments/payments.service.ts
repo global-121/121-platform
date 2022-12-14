@@ -470,6 +470,8 @@ export class PaymentsService {
           paTransactionResult = await this.vodacashService.createTransactionResult(
             registration,
             record,
+            programId,
+            payment,
           );
         }
         await this.transactionService.storeTransaction(

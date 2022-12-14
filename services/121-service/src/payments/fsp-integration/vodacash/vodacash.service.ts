@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import fs from 'fs';
-import { Repository } from 'typeorm';
 import * as convert from 'xml-js';
 import { FspName } from '../../../fsp/financial-service-provider.entity';
 import { ImportFspReconciliationResult } from '../../../registration/dto/bulk-import.dto';
@@ -18,11 +16,8 @@ import { TransactionsService } from '../../transactions/transactions.service';
 
 @Injectable()
 export class VodacashService {
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
-
   public constructor(
-    private readonly transactionsService: TransactionsService, // private readonly xmlService: XmLService,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async sendPayment(
@@ -154,13 +149,21 @@ export class VodacashService {
   public async createTransactionResult(
     registration: RegistrationEntity,
     record: ImportFspReconciliationDto,
+    programId: number,
+    payment: number,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.referenceId = registration.referenceId;
     paTransactionResult.fspName = FspName.vodacash;
     paTransactionResult.status = StatusEnum.error;
+    paTransactionResult.calculatedAmount = (
+      await this.transactionsService.getTransaction(programId, {
+        referenceId: registration.referenceId,
+        payment: payment,
+      })
+    ).amount;
     if (record) {
-      // record will only be defined when the transaction is successful.
+      // Vodacash reconciliation data only contains successful records
       paTransactionResult.status = StatusEnum.success;
       paTransactionResult.calculatedAmount = Number(record.amount);
     }
