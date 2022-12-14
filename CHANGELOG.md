@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.72.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.73.0...master)
+
+---
+
+## [1.73.0](https://github.com/global-121/121-platform/compare/v1.72.0...v1.73.0) - 2022-12-14
 
 ### Changed
 
@@ -18,8 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Language/locale data for Russian (`ru`)
 - Language/locale data for Ukrainian (`uk`)
 - Language/locale data for Tigrinya (`ti`)
-
----
 
 ## [1.72.0](https://github.com/global-121/121-platform/compare/v1.71.0...v1.72.0) - 2022-12-06
 
