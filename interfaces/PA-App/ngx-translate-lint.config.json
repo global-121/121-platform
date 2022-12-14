@@ -10,7 +10,6 @@
     "misprintCoefficient": "0.9",
     "ignoredKeys": [
       "_dir",
-      "personal.select-language.introduction.am_ET",
       "personal.select-language.introduction.ar",
       "personal.select-language.introduction.en",
       "personal.select-language.introduction.es",
@@ -18,11 +17,7 @@
       "personal.select-language.introduction.in",
       "personal.select-language.introduction.nl",
       "personal.select-language.introduction.pt_BR",
-      "personal.select-language.introduction.ru",
-      "personal.select-language.introduction.ti",
       "personal.select-language.introduction.tl",
-      "personal.select-language.introduction.uk",
-      "personal.select-language.language.am_ET",
       "personal.select-language.language.ar",
       "personal.select-language.language.en",
       "personal.select-language.language.es",
@@ -30,10 +25,7 @@
       "personal.select-language.language.in",
       "personal.select-language.language.nl",
       "personal.select-language.language.pt_BR",
-      "personal.select-language.language.ru",
-      "personal.select-language.language.ti",
-      "personal.select-language.language.tl",
-      "personal.select-language.language.uk"
+      "personal.select-language.language.tl"
     ],
     "ignoredMisprintKeys": [],
     "ast": {
