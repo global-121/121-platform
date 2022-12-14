@@ -101,12 +101,12 @@ export class PaymentsController {
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async importFspReconciliationData(
-    @UploadedFile() csvFile,
+    @UploadedFile() file,
     @Param() params,
     @User('id') userId: number,
   ): Promise<ImportResult> {
     return await this.paymentsService.importFspReconciliationData(
-      csvFile,
+      file,
       Number(params.programId),
       userId,
     );

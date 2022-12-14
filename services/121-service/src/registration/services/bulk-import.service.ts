@@ -5,6 +5,7 @@ import csv from 'csv-parser';
 import { Readable } from 'stream';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import * as convert from 'xml-js';
 import { AdditionalActionType } from '../../actions/action.entity';
 import { ActionService } from '../../actions/action.service';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
@@ -364,6 +365,23 @@ export class BulkImportService {
     return importRecords;
   }
 
+  public async validateXml(
+    xmlFile,
+  ): Promise<convert.Element | convert.ElementCompact> {
+    const indexLastPoint = xmlFile.originalname.lastIndexOf('.');
+    const extension = xmlFile.originalname.substr(
+      indexLastPoint,
+      xmlFile.originalname.length - indexLastPoint,
+    );
+    if (extension !== '.xml') {
+      const errors = [`Wrong file extension. It should be .xml`];
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    let importRecords = await this.xmlBufferToArray(xmlFile.buffer);
+    return importRecords;
+  }
+
   private async csvBufferToArray(buffer, separator): Promise<object[]> {
     const stream = new Readable();
     stream.push(buffer.toString());
@@ -378,6 +396,13 @@ export class BulkImportService {
           resolve(parsedData);
         });
     });
+  }
+
+  private async xmlBufferToArray(
+    buffer,
+  ): Promise<convert.Element | convert.ElementCompact> {
+    const xml = convert.xml2js(buffer.toString());
+    return xml.elements[0].elements.find(el => el.name === 'Records').elements;
   }
 
   public checkForCompletelyEmptyRow(row): boolean {

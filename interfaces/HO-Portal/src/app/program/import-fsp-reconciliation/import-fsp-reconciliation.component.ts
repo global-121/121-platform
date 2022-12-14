@@ -42,7 +42,7 @@ export class ImportFspReconciliationComponent implements OnChanges {
     );
     this.updateSubHeader();
     this.filePickerProps = {
-      type: 'csv',
+      type: 'xml',
       explanation: this.translate.instant(
         'page.program.import-fsp-reconciliation.explanation',
       ),

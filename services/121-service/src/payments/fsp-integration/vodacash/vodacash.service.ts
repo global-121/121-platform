@@ -8,6 +8,7 @@ import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { FspTransactionResultDto } from '../../dto/payment-transaction-result.dto';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { VodacashReconciliationRow } from './vodacash-reconciliation-row';
 
 @Injectable()
 export class VodacashService {
@@ -101,6 +102,34 @@ export class VodacashService {
       spaces: 2,
     });
     return vodacashInstructionsXml;
+  }
+
+  public validateReconciliationData(
+    row: convert.Element | convert.ElementCompact,
+  ): VodacashReconciliationRow {
+    let importRecord = new VodacashReconciliationRow();
+    // TODO: Map vodacash status to our own status.
+    // Completed -> Success
+    // Cancelled -> Failed
+    // Not Executed -> ???
+    importRecord.status = this.getElementByName(row, 'Status').elements[0].text;
+    importRecord.referenceId = row['referenceId'];
+    const details = this.getElementByName(row, 'Details').elements;
+    for (const [i, row] of details.entries()) {
+      const key = this.getElementByName(row, 'Key');
+      if (key.elements[0].text === 'Amount') {
+        const amount = this.getElementByName(row, 'Value').elements[0].text;
+        importRecord.amount = amount;
+      }
+    }
+    return importRecord;
+  }
+
+  private getElementByName(
+    element: convert.Element | convert.ElementCompact,
+    name: string,
+  ): convert.Element | convert.ElementCompact {
+    return element.elements.find(el => el.name === name);
   }
 
   private async readXmlAsJs(path: string): Promise<any> {

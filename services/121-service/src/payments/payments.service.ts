@@ -418,18 +418,21 @@ export class PaymentsService {
   }
 
   public async importFspReconciliationData(
-    csvFile,
+    file,
     programId: number,
     userId: number,
   ): Promise<ImportResult> {
-    const validatedImportRecords = await this.csvToValidatedFspReconciliation(
-      csvFile,
+    console.log('file: ', file);
+    const validatedImportRecords = await this.xmlToValidatedFspReconciliation(
+      file,
     );
 
     let countImported = 0;
     let countNotFound = 0;
 
     const importResponseRecords = [];
+
+    console.log('validatedImportRecords[0]: ', validatedImportRecords[0]);
     for await (const record of validatedImportRecords) {
       const importResponseRecord = record as ImportFspReconciliationResult;
 
@@ -477,28 +480,26 @@ export class PaymentsService {
     };
   }
 
-  private async csvToValidatedFspReconciliation(
-    csvFile,
+  private async xmlToValidatedFspReconciliation(
+    xmlFile,
   ): Promise<ImportFspReconciliationDto[]> {
-    const importRecords = await this.bulkImportService.validateCsv(csvFile);
-    return await this.validateFspReconciliationCsvInput(importRecords);
+    const importRecords = await this.bulkImportService.validateXml(xmlFile);
+    return await this.validateFspReconciliationXmlInput(importRecords);
   }
 
-  private async validateFspReconciliationCsvInput(
-    csvArray,
+  private async validateFspReconciliationXmlInput(
+    xmlArray,
   ): Promise<ImportFspReconciliationDto[]> {
     const errors = [];
     const validatatedArray = [];
-    for (const [i, row] of csvArray.entries()) {
+    for (const [i, row] of xmlArray.entries()) {
       if (this.bulkImportService.checkForCompletelyEmptyRow(row)) {
         continue;
       }
 
-      // For now assume BoB Finance
-      // const importRecord = this.bobFinanceService.validateReconciliationData(
-      //   row,
-      // );
+      const importRecord = this.vodacashService.validateReconciliationData(row);
 
+      console.log('importRecord: ', importRecord);
       // const result = await validate(importRecord);
       // if (result.length > 0) {
       //   const errorObj = {
@@ -509,7 +510,7 @@ export class PaymentsService {
       //   errors.push(errorObj);
       //   throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       // }
-      // validatatedArray.push(importRecord);
+      validatatedArray.push(importRecord);
     }
     return validatatedArray;
   }
