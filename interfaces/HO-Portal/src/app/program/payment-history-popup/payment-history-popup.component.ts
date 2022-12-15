@@ -162,6 +162,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
           paymentRowValue.errorMessage = transaction.errorMessage;
         }
       }
+      paymentRowValue.status = transaction.status;
       if (
         paymentRowValue.transaction ||
         this.enableSinglePayment(this.personRow, paymentRowValue)
@@ -175,7 +176,15 @@ export class PaymentHistoryPopupComponent implements OnInit {
   }
 
   public hasError(paymentRow: PaymentRowDetail): boolean {
-    return !!paymentRow.errorMessage;
+    if (paymentRow.errorMessage) {
+      return true;
+    }
+
+    if (paymentRow.status === StatusEnum.error) {
+      return true;
+    }
+
+    return false;
   }
 
   public enableSinglePayment(
