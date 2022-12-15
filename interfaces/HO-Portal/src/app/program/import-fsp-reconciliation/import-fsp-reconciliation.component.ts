@@ -133,21 +133,34 @@ export class ImportFspReconciliationComponent implements OnChanges {
               ) + '<br><br>';
           }
 
-          this.actionResult(resultMessage);
+          this.actionResult(resultMessage, true);
         },
         (err) => {
           this.isInProgress = false;
           console.log('err: ', err);
-          this.actionResult(this.translate.instant('common.export-import'));
+          this.actionResult(
+            this.translate.instant('common.export-import'),
+            true,
+          );
         },
       );
   }
 
-  private async actionResult(resultMessage: string) {
+  private async actionResult(resultMessage: string, refresh: boolean = false) {
     const alert = await this.alertController.create({
       backdropDismiss: false,
       message: resultMessage,
-      buttons: [this.translate.instant('common.ok')],
+      buttons: [
+        {
+          text: this.translate.instant('common.ok'),
+          handler: () => {
+            alert.dismiss();
+            if (refresh) {
+              window.location.reload();
+            }
+          },
+        },
+      ],
     });
     await alert.present();
   }
