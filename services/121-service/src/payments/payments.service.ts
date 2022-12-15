@@ -8,7 +8,10 @@ import { FspName } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';
-import { ImportResult } from '../registration/dto/bulk-import.dto';
+import {
+  ImportResult,
+  ImportStatus,
+} from '../registration/dto/bulk-import.dto';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../registration/registration.entity';
@@ -444,20 +447,20 @@ export class PaymentsService {
     fspIds: number[],
     userId: number,
   ): Promise<ImportResult> {
+    let countPaymentSuccess = 0;
+    let countPaymentFailed = 0;
+    let countNotFound = 0;
+    let paTransactionResult, record, importResponseRecord;
     const validatedImportRecords = await this.xmlToValidatedFspReconciliation(
       file,
     );
-    let countPaymentSuccess = 0;
-    let countPaymentFailed = 0;
-
     const registrationsPerPayment = await this.getRegistrationsForPayment(
       programId,
       payment,
       undefined,
       StatusEnum.waiting,
     );
-    let paTransactionResult, record;
-
+    const importResponseRecords = [];
     for await (const registration of registrationsPerPayment) {
       for await (const fspId of fspIds) {
         const fsp = await this.fspService.getFspById(fspId);
@@ -474,6 +477,14 @@ export class PaymentsService {
             payment,
           );
         }
+
+        if (!paTransactionResult) {
+          importResponseRecord.importStatus = ImportStatus.notFound;
+          importResponseRecords.push(importResponseRecord);
+          countNotFound += 1;
+          continue;
+        }
+
         await this.transactionService.storeTransaction(
           paTransactionResult,
           programId,
@@ -495,9 +506,11 @@ export class PaymentsService {
     );
 
     return {
+      importResult: importResponseRecords,
       aggregateImportResult: {
         countPaymentFailed,
         countPaymentSuccess,
+        countNotFound,
       },
     };
   }
@@ -519,16 +532,6 @@ export class PaymentsService {
         continue;
       }
       const importRecord = this.vodacashService.validateReconciliationData(row);
-      // const result = await validate(importRecord);
-      // if (result.length > 0) {
-      //   const errorObj = {
-      //     lineNumber: i + 1,
-      //     column: result[0].property,
-      //     value: result[0].value,
-      //   };
-      //   errors.push(errorObj);
-      //   throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-      // }
       validatatedArray.push(importRecord);
     }
     return validatatedArray;

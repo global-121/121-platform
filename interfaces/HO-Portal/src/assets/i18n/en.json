@@ -542,6 +542,7 @@
     "cancel": "Cancel",
     "ok": "OK",
     "export-error": "Something went wrong with the export.",
+    "import-error": "Something went wrong with the import.",
     "unknown-error": "Something went wrong. Error is unknown.",
     "update-success": "Update successful",
     "update-error": "Something went wrong: {{error}}",
