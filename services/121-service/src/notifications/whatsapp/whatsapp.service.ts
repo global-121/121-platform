@@ -80,11 +80,17 @@ export class WhatsappService {
     messageType: null | IntersolvePayoutStatus,
     mediaUrl: null | string,
     registrationId?: number,
+    whatsappNumber?: string,
+    messagingServiceSid?: string,
   ): Promise<any> {
     const payload = {
       body: message,
-      messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-      from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
+      messagingServiceSid: messagingServiceSid
+        ? messagingServiceSid
+        : process.env.TWILIO_MESSAGING_SID,
+      from: whatsappNumber
+        ? whatsappNumber
+        : 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
       statusCallback: EXTERNAL_API.whatsAppStatus,
       to: 'whatsapp:' + recipientPhoneNr,
     };
@@ -380,7 +386,15 @@ export class WhatsappService {
         registrationsWithPhoneNumber[0]?.preferredLanguage ||
         this.fallbackLanguage;
       const message = nlrcPvTempAutoReply[language];
-      await this.sendWhatsapp(message, fromNumber, null, null, null);
+      await this.sendWhatsapp(
+        message,
+        fromNumber,
+        null,
+        null,
+        null,
+        nlrcPvNumber,
+        process.env.TWILIO_MESSAGING_SID_PV,
+      );
       return;
     }
     // end of temporary hack
