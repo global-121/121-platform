@@ -139,7 +139,7 @@ export class ImportFspReconciliationComponent implements OnChanges {
           this.isInProgress = false;
           console.log('err: ', err);
           this.actionResult(
-            this.translate.instant('common.export-import'),
+            this.translate.instant('common.import-error'),
             true,
           );
         },
