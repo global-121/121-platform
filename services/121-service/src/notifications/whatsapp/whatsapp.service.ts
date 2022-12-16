@@ -324,22 +324,26 @@ export class WhatsappService {
       relations: ['images', 'images.barcode'],
     });
 
-    // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
-    const lastPayment = await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select('MAX(transaction.payment)', 'max')
-      .getRawOne();
-    const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
+    let filteredRegistrations: RegistrationEntity[] = [];
+    for (const r of registrationWithVouchers) {
+      // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
+      const lastPayment = await this.transactionRepository
+        .createQueryBuilder('transaction')
+        .select('MAX(transaction.payment)', 'max')
+        .where('transaction.programId = :programId', {
+          programId: r.programId,
+        })
+        .getRawOne();
+      const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
 
-    return registrationWithVouchers
-      .map(registration => {
-        registration.images = registration.images.filter(
-          image =>
-            !image.barcode.send && image.barcode.payment >= minimumPayment,
-        );
-        return registration;
-      })
-      .filter(registration => registration.images.length > 0);
+      r.images = r.images.filter(
+        image => !image.barcode.send && image.barcode.payment >= minimumPayment,
+      );
+      if (r.images.length > 0) {
+        filteredRegistrations.push(r);
+      }
+    }
+    return filteredRegistrations;
   }
 
   private cleanWhatsAppNr(value: string): string {
