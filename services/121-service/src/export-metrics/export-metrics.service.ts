@@ -946,6 +946,7 @@ export class ExportMetricsService {
     const totalProcessedPayments = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('MAX(transaction.payment)')
+      .where('transaction."programId" = :programId', { programId: programId })
       .getRawOne();
     const program = await this.programRepository.findOne(programId);
     const paymentNrSearch = Math.max(
@@ -956,6 +957,7 @@ export class ExportMetricsService {
     const transactionStepMin = await await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('MIN(transaction.transactionStep)')
+      .where('transaction."programId" = :programId', { programId: programId })
       .getRawOne();
     while (i <= paymentNrSearch) {
       const result = await this.getOnePaymentWithStateSum(
