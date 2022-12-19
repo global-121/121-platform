@@ -5,9 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.74.2...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.74.3...master)
 
 ---
+## [1.74.3](https://github.com/global-121/121-platform/compare/v1.74.2...v1.74.3) - 2022-12-19
+
+### Changed
+
+- Fix: Added 'id' for 'Export people affected'
+- Fix: Added several 'where' clausules with 'programId'.
+
 ## [1.74.2](https://github.com/global-121/121-platform/compare/v1.74.1...v1.74.2) - 2022-12-16
 
 ### Changed
