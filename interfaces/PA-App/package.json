@@ -50,7 +50,7 @@
     "@angular/router": "^12.2.16",
     "@angular/service-worker": "^12.2.16",
     "@ionic/angular": "^6.3.3",
-    "@ionic/cli": "^6.20.3",
+    "@ionic/cli": "^6.20.5",
     "@microsoft/applicationinsights-web": "^2.8.9",
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
