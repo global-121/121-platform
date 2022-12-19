@@ -204,6 +204,8 @@ export class ExportMetricsService {
         await this.addPaymentFieldsToExport(row, payments, transactions);
       }
       delete row['referenceId'];
+      row['id'] = row['registrationProgramId'];
+      delete row['registrationProgramId'];
     }
     await this.replaceValueWithDropdownLabel(rows, relationOptions);
 
@@ -393,6 +395,7 @@ export class ExportMetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
+        `registration.id as id`,
         `registration."registrationProgramId"`,
         `registration."registrationStatus" as status`,
         `registration."${GenericAttributes.phoneNumber}"`,
