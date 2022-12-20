@@ -67,7 +67,10 @@ export class CronjobService {
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM)
   private async cacheUnusedVouchers(): Promise<void> {
-    this.intersolveService.getUnusedVouchers();
+    const programs = await this.programRepository.find();
+    for (const program of programs) {
+      this.intersolveService.getUnusedVouchers(program.id);
+    }
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_NOON)

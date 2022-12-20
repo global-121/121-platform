@@ -502,11 +502,19 @@ export class IntersolveService {
     return toCancelVouchers;
   }
 
-  public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
+  public async getUnusedVouchers(
+    programId?: number,
+  ): Promise<UnusedVoucherDto[]> {
     const maxId = (
-      await this.intersolveBarcodeRepository.findOne({
-        order: { id: 'DESC' },
-      })
+      await this.intersolveBarcodeRepository
+        .createQueryBuilder('barcode')
+        .leftJoin('barcode.image', 'image')
+        .leftJoin('image.registration', 'registration')
+        .where('registration.programId = :programId', {
+          programId: programId,
+        })
+        .orderBy('barcode.id', 'DESC')
+        .getOne()
     )?.id;
 
     const unusedVouchers = [];
