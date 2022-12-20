@@ -451,9 +451,8 @@ export class PaymentsService {
     let countPaymentFailed = 0;
     let countNotFound = 0;
     let paTransactionResult, record, importResponseRecord;
-    const validatedImportRecords = await this.xmlToValidatedFspReconciliation(
-      file,
-    );
+    const validatedImport = await this.xmlToValidatedFspReconciliation(file);
+    const validatedImportRecords = validatedImport.validatedArray;
     const registrationsPerPayment = await this.getRegistrationsForPayment(
       programId,
       payment,
@@ -508,6 +507,8 @@ export class PaymentsService {
     return {
       importResult: importResponseRecords,
       aggregateImportResult: {
+        countImported: validatedImport.recordsCount,
+        countPaymentStarted: registrationsPerPayment.length,
         countPaymentFailed,
         countPaymentSuccess,
         countNotFound,
@@ -517,23 +518,27 @@ export class PaymentsService {
 
   private async xmlToValidatedFspReconciliation(
     xmlFile,
-  ): Promise<ImportFspReconciliationDto[]> {
+  ): Promise<ImportFspReconciliationDto> {
     const importRecords = await this.bulkImportService.validateXml(xmlFile);
     return await this.validateFspReconciliationXmlInput(importRecords);
   }
 
   private async validateFspReconciliationXmlInput(
     xmlArray,
-  ): Promise<ImportFspReconciliationDto[]> {
-    const errors = [];
-    const validatatedArray = [];
+  ): Promise<ImportFspReconciliationDto> {
+    const validatedArray = [];
+    let recordsCount = 0;
     for (const [i, row] of xmlArray.entries()) {
+      recordsCount += 1;
       if (this.bulkImportService.checkForCompletelyEmptyRow(row)) {
         continue;
       }
       const importRecord = this.vodacashService.validateReconciliationData(row);
-      validatatedArray.push(importRecord);
+      validatedArray.push(importRecord);
     }
-    return validatatedArray;
+    return {
+      validatedArray,
+      recordsCount,
+    };
   }
 }

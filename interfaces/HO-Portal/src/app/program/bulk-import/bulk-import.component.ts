@@ -17,6 +17,7 @@ export class AggregateImportResult {
   countNotFound: number;
   countPaymentSuccess?: number;
   countPaymentFailed?: number;
+  countPaymentStarted?: number;
 }
 
 export class ImportResult {

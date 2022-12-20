@@ -120,21 +120,35 @@ export class ImportFspReconciliationComponent implements OnChanges {
             this.translate.instant(
               'page.program.import-fsp-reconciliation.import-result.new',
               {
-                countTotal: `<strong>${
+                countTotal:
                   aggregateResult.countPaymentSuccess +
-                  aggregateResult.countPaymentFailed
-                }</strong>`,
-                countPaymentSuccess: `<strong>${aggregateResult.countPaymentSuccess}</strong>`,
-                countPaymentFailed: `<strong>${aggregateResult.countPaymentFailed}</strong>`,
+                  aggregateResult.countPaymentFailed,
+                countPaymentSuccess: aggregateResult.countPaymentSuccess,
+                countPaymentFailed: aggregateResult.countPaymentFailed,
               },
             ) + '<br><br>';
+
+          if (
+            aggregateResult.countPaymentStarted !==
+            aggregateResult.countImported
+          ) {
+            resultMessage +=
+              this.translate.instant(
+                'page.program.import-fsp-reconciliation.import-result.mismatch',
+                {
+                  payment: this.payment,
+                  countPaymentStarted: aggregateResult.countPaymentStarted,
+                  countImported: aggregateResult.countImported,
+                },
+              ) + '<br><br>';
+          }
 
           if (aggregateResult.countNotFound) {
             resultMessage +=
               this.translate.instant(
                 'page.program.import-fsp-reconciliation.import-result.not-found',
                 {
-                  countNotFound: `<strong>${aggregateResult.countNotFound}</strong>`,
+                  countNotFound: aggregateResult.countNotFound,
                 },
               ) + '<br><br>';
           }
@@ -154,6 +168,7 @@ export class ImportFspReconciliationComponent implements OnChanges {
 
   private async actionResult(resultMessage: string, refresh: boolean = false) {
     const alert = await this.alertController.create({
+      cssClass: 'alert-no-max-height',
       backdropDismiss: false,
       message: resultMessage,
       buttons: [

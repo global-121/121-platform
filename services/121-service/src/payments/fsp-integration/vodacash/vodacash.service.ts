@@ -5,7 +5,7 @@ import { FspName } from '../../../fsp/financial-service-provider.entity';
 import { ImportFspReconciliationResult } from '../../../registration/dto/bulk-import.dto';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
-import { ImportFspReconciliationDto } from '../../dto/import-fsp-reconciliation.dto';
+import { ImportFspReconciliationArrayDto } from '../../dto/import-fsp-reconciliation.dto';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
@@ -110,8 +110,8 @@ export class VodacashService {
 
   public validateReconciliationData(
     row: convert.Element | convert.ElementCompact,
-  ): ImportFspReconciliationDto {
-    let importRecord = new ImportFspReconciliationDto();
+  ): ImportFspReconciliationArrayDto {
+    let importRecord = new ImportFspReconciliationArrayDto();
     importRecord.status = this.getElementByName(row, 'Status').elements[0].text;
     if (importRecord.status === 'Completed') {
       const details = this.getElementByName(row, 'Details').elements;
@@ -136,8 +136,8 @@ export class VodacashService {
 
   public async findReconciliationRecord(
     registration: RegistrationEntity,
-    importRecords: ImportFspReconciliationDto[],
-  ): Promise<ImportFspReconciliationDto> {
+    importRecords: ImportFspReconciliationArrayDto[],
+  ): Promise<ImportFspReconciliationArrayDto> {
     for (const record of importRecords) {
       const importResponseRecord = record as ImportFspReconciliationResult;
       if (importResponseRecord.phoneNumber === registration.phoneNumber) {
@@ -148,7 +148,7 @@ export class VodacashService {
 
   public async createTransactionResult(
     registration: RegistrationEntity,
-    record: ImportFspReconciliationDto,
+    record: ImportFspReconciliationArrayDto,
     programId: number,
     payment: number,
   ): Promise<PaTransactionResultDto> {
