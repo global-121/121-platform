@@ -111,15 +111,21 @@ export class ImportFspReconciliationComponent implements OnChanges {
           let resultMessage =
             this.translate.instant(
               'page.program.import-fsp-reconciliation.import-result.ready',
+              {
+                payment: this.payment,
+              },
             ) + '<br><br>';
 
           resultMessage +=
             this.translate.instant(
               'page.program.import-fsp-reconciliation.import-result.new',
               {
+                countTotal: `<strong>${
+                  aggregateResult.countPaymentSuccess +
+                  aggregateResult.countPaymentFailed
+                }</strong>`,
                 countPaymentSuccess: `<strong>${aggregateResult.countPaymentSuccess}</strong>`,
                 countPaymentFailed: `<strong>${aggregateResult.countPaymentFailed}</strong>`,
-                payment: `<strong>${this.payment}</strong>`,
               },
             ) + '<br><br>';
 

@@ -489,8 +489,8 @@
         "explanation": "Make sure to upload the reconciliation data exactly as provided by the Financial Service Provider.",
         "timestamp": "Latest import has been done on: {{dateTime}}",
         "import-result": {
-          "ready": "Import ready.",
-          "new": "We matched {{countPaymentSuccess}} successful payments. The other {{countPaymentFailed}} payments of payment {{payment}} have been set to <strong>failed</strong>.",
+          "ready": "Reconciliation data imported for payment <strong>#{{payment}}</strong>.",
+          "new": "Reconciliation data found for {{countTotal}} payments:<ul><li>{{countPaymentSuccess}} payments changed from <strong>waiting</strong> to <strong>success</strong></li><li>{{countPaymentFailed}} payments changed from <strong>waiting</strong> to <strong>failed</strong></li></ul>",
           "not-found": "There were {{countNotFound}} transactions for which no matching Person Affected was found. Try to correct them and upload again."
         }
       },
