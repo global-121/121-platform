@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.74.3...master)
 
+### Added
+
+- HTTPS-certificates will be automatically renewed with `Certbot` by Lets Encrypt. This requires a one-time set-up step, see [Tools README / Hosting / Apache2, step 6](./tools/README.md#apache2).
+
+### Removed
+
+- Any specific certificates(i.e. `certvqebkt` and `cert2xF5qw`) in the folder`tools/certificates` can be removed, they are replaced by the Lets Encrypt certificates.
+
 ---
+
 ## [1.74.3](https://github.com/global-121/121-platform/compare/v1.74.2...v1.74.3) - 2022-12-19
 
 ### Changed

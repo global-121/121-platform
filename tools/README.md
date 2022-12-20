@@ -19,7 +19,7 @@ All applications from `/services` folder are running as local applications on va
 We expose them to the interfaces/the public internet using Apache2 as a proxy.
 All the interfaces are served as web-apps through Apache2 as well.
 
-1.  First, get the right certificates (`SSLCertificateFile` and `SSLCACertificateFile`) and place them in `/tools/certificates/`.
+1.  Set up Apache
 
 2.  Enable all necessary modules:
 
@@ -44,6 +44,18 @@ All the interfaces are served as web-apps through Apache2 as well.
     Optionally:
 
         ln -s /etc/apache2/sites-available/121-platform-https.env.conf /etc/apache2/sites-enabled/
+
+6. Install `Certbot`, following: <https://certbot.eff.org/instructions?ws=apache&os=ubuntufocal>  
+   - At step **7**, use "Certificate only" with:
+
+         certbot certonly --apache
+
+     Provide the preferred (sub)domain-name and other details at the prompts.
+
+   - Create symlinks to the generated files: (make sure to replace `server.example.org` in these commands!)
+
+         ln -s /etc/letsencrypt/live/server.example.org/fullchain.pem /home/121-platform/tools/certificates/letsencrypt-cert
+         ln -s /etc/letsencrypt/live/server.example.org/privkey.pem /home/121-platform/tools/certificates/letsencrypt-key
 
 6.  Verify all configurations can be read/understood:
 
