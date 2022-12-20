@@ -23,12 +23,12 @@ All the interfaces are served as web-apps through Apache2 as well.
 
 2.  Enable all necessary modules:
 
-    a2enmod ssl proxy proxy_http http2 rewrite headers expires mime dir
+        a2enmod ssl proxy proxy_http http2 rewrite headers expires mime dir
 
 3.  Put all default configuration in place:
 
-    ln -s /home/121-platform/tools/121-platform.conf /etc/apache2/sites-available/121-platform.conf
-    ln -s /home/121-platform/tools/121-platform-https.conf /etc/apache2/sites-available/121-platform-https.conf
+        ln -s /home/121-platform/tools/121-platform.conf /etc/apache2/sites-available/121-platform.conf
+        ln -s /home/121-platform/tools/121-platform-https.conf /etc/apache2/sites-available/121-platform-https.conf
 
 4.  Set or update the (optional) environment-specific configurations, based on the example:
 
@@ -57,17 +57,17 @@ All the interfaces are served as web-apps through Apache2 as well.
          ln -s /etc/letsencrypt/live/server.example.org/fullchain.pem /home/121-platform/tools/certificates/letsencrypt-cert
          ln -s /etc/letsencrypt/live/server.example.org/privkey.pem /home/121-platform/tools/certificates/letsencrypt-key
 
-6.  Verify all configurations can be read/understood:
+7.  Verify all configurations can be read/understood:
 
-    apachectl -S
+        apachectl -S
 
-7.  Restart Apache:
+8.  Restart Apache:
 
-    service apache2 restart
+        service apache2 restart
 
-8.  To check if all started correctly:
+9.  To check if all started correctly:
 
-    service apache2 status
+        service apache2 status
 
 ---
 
