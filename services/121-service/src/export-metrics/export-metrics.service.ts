@@ -80,7 +80,7 @@ export class ExportMetricsService {
         return this.getPaymentDetails(programId, minPayment, maxPayment);
       }
       case ExportType.unusedVouchers: {
-        return this.getUnusedVouchers();
+        return this.getUnusedVouchers(programId);
       }
       case ExportType.duplicates: {
         return this.getDuplicates(programId);
@@ -284,8 +284,10 @@ export class ExportMetricsService {
     return relationOptions;
   }
 
-  private async getUnusedVouchers(): Promise<FileDto> {
-    const unusedVouchers = await this.paymentsService.getUnusedVouchers();
+  private async getUnusedVouchers(programId?: number): Promise<FileDto> {
+    const unusedVouchers = await this.paymentsService.getUnusedVouchers(
+      programId,
+    );
     for (const v of unusedVouchers) {
       const registration = await this.registrationsService.getRegistrationFromReferenceId(
         v.referenceId,

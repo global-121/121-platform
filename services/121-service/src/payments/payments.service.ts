@@ -331,8 +331,10 @@ export class PaymentsService {
     return failedTransactions;
   }
 
-  public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
-    return this.intersolveService.getUnusedVouchers();
+  public async getUnusedVouchers(
+    programId?: number,
+  ): Promise<UnusedVoucherDto[]> {
+    return this.intersolveService.getUnusedVouchers(programId);
   }
 
   public async getToCancelVouchers(): Promise<IntersolveRequestEntity[]> {
