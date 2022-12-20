@@ -204,6 +204,8 @@ export class ExportMetricsService {
         await this.addPaymentFieldsToExport(row, payments, transactions);
       }
       delete row['referenceId'];
+      row['id'] = row['registrationProgramId'];
+      delete row['registrationProgramId'];
     }
     await this.replaceValueWithDropdownLabel(rows, relationOptions);
 
@@ -393,6 +395,7 @@ export class ExportMetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
+        `registration.id as id`,
         `registration."registrationProgramId"`,
         `registration."registrationStatus" as status`,
         `registration."${GenericAttributes.phoneNumber}"`,
@@ -946,6 +949,7 @@ export class ExportMetricsService {
     const totalProcessedPayments = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('MAX(transaction.payment)')
+      .where('transaction."programId" = :programId', { programId: programId })
       .getRawOne();
     const program = await this.programRepository.findOne(programId);
     const paymentNrSearch = Math.max(
@@ -956,6 +960,7 @@ export class ExportMetricsService {
     const transactionStepMin = await await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('MIN(transaction.transactionStep)')
+      .where('transaction."programId" = :programId', { programId: programId })
       .getRawOne();
     while (i <= paymentNrSearch) {
       const result = await this.getOnePaymentWithStateSum(

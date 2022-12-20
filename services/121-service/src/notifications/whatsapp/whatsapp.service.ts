@@ -80,11 +80,17 @@ export class WhatsappService {
     messageType: null | IntersolvePayoutStatus,
     mediaUrl: null | string,
     registrationId?: number,
+    whatsappNumber?: string,
+    messagingServiceSid?: string,
   ): Promise<any> {
     const payload = {
       body: message,
-      messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-      from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
+      messagingServiceSid: messagingServiceSid
+        ? messagingServiceSid
+        : process.env.TWILIO_MESSAGING_SID,
+      from: whatsappNumber
+        ? whatsappNumber
+        : 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
       statusCallback: EXTERNAL_API.whatsAppStatus,
       to: 'whatsapp:' + recipientPhoneNr,
     };
@@ -318,22 +324,26 @@ export class WhatsappService {
       relations: ['images', 'images.barcode'],
     });
 
-    // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
-    const lastPayment = await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select('MAX(transaction.payment)', 'max')
-      .getRawOne();
-    const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
+    let filteredRegistrations: RegistrationEntity[] = [];
+    for (const r of registrationWithVouchers) {
+      // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
+      const lastPayment = await this.transactionRepository
+        .createQueryBuilder('transaction')
+        .select('MAX(transaction.payment)', 'max')
+        .where('transaction.programId = :programId', {
+          programId: r.programId,
+        })
+        .getRawOne();
+      const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
 
-    return registrationWithVouchers
-      .map(registration => {
-        registration.images = registration.images.filter(
-          image =>
-            !image.barcode.send && image.barcode.payment >= minimumPayment,
-        );
-        return registration;
-      })
-      .filter(registration => registration.images.length > 0);
+      r.images = r.images.filter(
+        image => !image.barcode.send && image.barcode.payment >= minimumPayment,
+      );
+      if (r.images.length > 0) {
+        filteredRegistrations.push(r);
+      }
+    }
+    return filteredRegistrations;
   }
 
   private cleanWhatsAppNr(value: string): string {
@@ -380,7 +390,15 @@ export class WhatsappService {
         registrationsWithPhoneNumber[0]?.preferredLanguage ||
         this.fallbackLanguage;
       const message = nlrcPvTempAutoReply[language];
-      await this.sendWhatsapp(message, fromNumber, null, null, null);
+      await this.sendWhatsapp(
+        message,
+        fromNumber,
+        null,
+        null,
+        null,
+        nlrcPvNumber,
+        process.env.TWILIO_MESSAGING_SID_PV,
+      );
       return;
     }
     // end of temporary hack
