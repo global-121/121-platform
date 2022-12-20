@@ -118,7 +118,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 ### Automated processes (121-service)
 
-- Send reminder on uncollected vouchers
+- [Send reminder on uncollected vouchers](Automated/Send_reminder_on_uncollected_voucher.feature)
 
 ---
 
