@@ -50,6 +50,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Export duplicate People Affected list](121-Portal/Export_duplicate_people-affected_List.feature)
 - [Make a new payment](121-Portal/Make_new_payment.feature)
 - [Export payment details](121-Portal/Export_Payment_Details.feature)
+- [Manage payment via import and export](121-Portal/Manage_payment_via_import_and_export)
 - Export all unused vouchers
 - Retry individual/all payment(s)
 - Get voucher balance
