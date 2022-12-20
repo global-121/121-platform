@@ -161,8 +161,9 @@ export class PaymentHistoryPopupComponent implements OnInit {
         } else {
           paymentRowValue.errorMessage = transaction.errorMessage;
         }
+
+        paymentRowValue.status = transaction.status;
       }
-      paymentRowValue.status = transaction.status;
       if (
         paymentRowValue.transaction ||
         this.enableSinglePayment(this.personRow, paymentRowValue)
