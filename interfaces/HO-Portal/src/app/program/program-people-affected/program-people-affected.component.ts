@@ -823,15 +823,12 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private async loadData() {
-    if (this.canViewPersonalData) {
-      this.allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
-        this.programId,
-      );
-    } else {
-      this.allPeopleData = await this.programsService.getPeopleAffected(
-        this.programId,
-      );
-    }
+    this.allPeopleData = await this.programsService.getPeopleAffected(
+      this.programId,
+      this.canUpdatePersonalData,
+      this.canViewPaymentData && this.thisPhase === ProgramPhase.payment,
+    );
+
     this.allPeopleAffected = this.createTableData(this.allPeopleData);
     this.filterPeopleAffectedByPhase();
   }

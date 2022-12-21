@@ -400,17 +400,14 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getPeopleAffected(programId: number | string): Promise<Person[]> {
+  getPeopleAffected(
+    programId: number | string,
+    personalData: boolean,
+    paymentData: boolean,
+  ): Promise<Person[]> {
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations`,
-    );
-  }
-
-  getPeopleAffectedPrivacy(programId: number | string): Promise<Person[]> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      `/programs/${programId}/registrations/personal-data`,
+      `/programs/${programId}/registrations?personalData=${personalData}&paymentData=${paymentData}`,
     );
   }
 

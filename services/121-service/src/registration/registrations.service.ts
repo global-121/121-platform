@@ -700,6 +700,7 @@ export class RegistrationsService {
   public async getRegistrations(
     programId: number,
     includePersonalData: boolean,
+    includePaymentData: boolean,
     includeDeletedRegistrations: boolean,
     referenceId: string,
   ): Promise<RegistrationResponse[]> {
@@ -710,8 +711,8 @@ export class RegistrationsService {
     let q = await this.registrationRepository
       .createQueryBuilder('registration')
       .select('registration.id', 'id');
-    if (true) {
-      this.includeTransactionData(q);
+    if (includePaymentData) {
+      q = this.includeTransactionData(q);
     }
     q = q
       .addSelect('registration.registrationProgramId', 'registrationProgramId')
@@ -1304,7 +1305,7 @@ export class RegistrationsService {
       const uniqueReferenceIds = [...new Set(matchingReferenceIds)];
       for (const referenceId of uniqueReferenceIds) {
         const registration = (
-          await this.getRegistrations(null, true, true, referenceId)
+          await this.getRegistrations(null, true, false, true, referenceId)
         )[0];
         registrations.push(registration);
       }
@@ -1328,6 +1329,21 @@ export class RegistrationsService {
       }
     }
     return programIds;
+  }
+
+  public async checkPermissionAndThrow(
+    userId: number,
+    permission: PermissionEnum,
+    programId: number,
+  ): Promise<void> {
+    const programIds = await this.getProgramIdsUserHasPermission(
+      userId,
+      permission,
+    );
+    if (!programIds.includes(programId)) {
+      const error = `User does not have the ${permission} permission for this program`;
+      throw new HttpException({ error }, HttpStatus.UNAUTHORIZED);
+    }
   }
 
   // AW: get answers to attributes for a given PA (identified first through referenceId)

@@ -200,42 +200,43 @@ export class RegistrationsController {
     summary: 'Get all People Affected for program EXCLUDING personal data',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiQuery({ name: 'personalData', required: true, type: 'boolean' })
+  @ApiQuery({ name: 'paymentData', required: true, type: 'boolean' })
   @ApiResponse({
     status: 200,
     description: 'Got all People Affected for program EXCLUDING personal data',
   })
   @Get('programs/:programId/registrations')
-  public async getPeopleAffected(@Param() params): Promise<any[]> {
-    return await this.registrationsService.getRegistrations(
-      Number(params.programId),
-      false,
-      true,
-      null,
-    );
-  }
-
-  @Permissions(PermissionEnum.RegistrationPersonalREAD)
-  @ApiOperation({
-    summary: 'Get all People Affected for program INCLUDING personal data',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: 200,
-    description: 'Get all People Affected for program INCLUDING personal data',
-  })
-  @Get('programs/:programId/registrations/personal-data')
-  public async getPeopleAffectedWithPersonalData(
-    @Param() params,
+  public async getPeopleAffected(
+    @Param('programId') programId: number,
+    @User('id') userId: number,
+    @Query() queryParams,
   ): Promise<any[]> {
-    console.time('get registrations');
-    const result = await this.registrationsService.getRegistrations(
-      Number(params.programId),
+    const personalData = queryParams.personalData === 'true';
+    const paymentData = queryParams.paymentData === 'true';
+    if (personalData) {
+      await this.registrationsService.checkPermissionAndThrow(
+        userId,
+        PermissionEnum.RegistrationPersonalREAD,
+        Number(programId),
+      );
+    }
+
+    if (paymentData) {
+      await this.registrationsService.checkPermissionAndThrow(
+        userId,
+        PermissionEnum.PaymentTransactionREAD,
+        Number(programId),
+      );
+    }
+
+    return await this.registrationsService.getRegistrations(
+      Number(programId),
+      personalData,
+      paymentData,
       true,
-      false,
       null,
     );
-    console.timeEnd('get registrations');
-    return result;
   }
 
   @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
