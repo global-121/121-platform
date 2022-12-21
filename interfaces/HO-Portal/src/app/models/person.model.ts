@@ -35,6 +35,7 @@ export class Person {
   paymentDate?: string;
   transactionAmount?: number;
   transactionStatus?: string;
+  errorMessage?: string;
 }
 
 // Model for display (in table)

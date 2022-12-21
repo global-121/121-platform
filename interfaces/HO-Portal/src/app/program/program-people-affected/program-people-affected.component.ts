@@ -960,6 +960,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       lastPaymentNumber: person.payment,
       lastPaymentAmount: person.transactionAmount,
       lastPaymentStatus: person.transactionStatus,
+      lastPaymentErrorMessage: person.errorMessage,
     };
 
     if (this.canViewPaymentData) {
@@ -989,10 +990,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       lastPaymentNumber: number;
       lastPaymentAmount: number;
       lastPaymentStatus: string;
+      lastPaymentErrorMessage: string;
     },
   ): PersonRow {
-    const { lastPaymentNumber, lastPaymentAmount, lastPaymentStatus } =
-      lastPaymentInfo;
+    const {
+      lastPaymentNumber,
+      lastPaymentAmount,
+      lastPaymentStatus,
+      lastPaymentErrorMessage,
+    } = lastPaymentInfo;
 
     let paymentColumnValue = new PaymentColumnDetail();
     paymentColumnValue.payments = [];
@@ -1009,6 +1015,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         text: '',
         paymentIndex: lastPaymentNumber,
         amount: `${this.program.currency} ${lastPaymentAmount}`,
+        status: lastPaymentStatus,
+        errorMessage: lastPaymentErrorMessage,
       };
       if (lastPaymentStatus === StatusEnum.success) {
         paymentColumnValue.text = this.translate.instant(
