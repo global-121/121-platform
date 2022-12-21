@@ -1086,7 +1086,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   public hasError(row: PersonRow): boolean {
-    return !!row.paymentHistory.errorMessage;
+    if (row.paymentHistory.errorMessage) {
+      return true;
+    }
+
+    if (row.paymentHistory.status === StatusEnum.error) {
+      return true;
+    }
+
+    return false;
   }
 
   public async editPersonAffectedPopup(row: PersonRow, programId: number) {

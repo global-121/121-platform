@@ -28,7 +28,7 @@
       >
         {{
           'page.program.program-payout.payment-nr'
-            | translate: { number: payment.id }
+            | translate : { number: payment.id }
         }}
 
         <ng-container *ngIf="payment.statusOpen">
@@ -38,7 +38,7 @@
           {{ 'page.program.program-payout.closed' | translate }}
         </ng-container>
         -
-        {{ payment.paymentDate | date: 'yyyy-MM-dd' }}
+        {{ payment.paymentDate | date : 'yyyy-MM-dd' }}
       </option>
     </select>
 
@@ -55,7 +55,15 @@
       [programId]="programId"
       [payment]="exportPaymentId"
       [lastPaymentId]="lastPaymentId"
+      [hasFspWithReconciliation]="hasFspWithReconciliation"
     ></app-export-fsp-instructions>
+    <app-import-fsp-reconciliation
+      *ngIf="hasFspWithReconciliation && canMakeFspInstructions"
+      [programId]="programId"
+      [payment]="exportPaymentId"
+      [lastPaymentId]="lastPaymentId"
+      [fspIds]="fspIdsWithReconciliation"
+    ></app-import-fsp-reconciliation>
   </ion-row>
   <ion-row
     *ngIf="isIntersolve"
@@ -81,7 +89,7 @@
     <h3>
       {{
         'page.program.program-payout.last-payment.last-payment'
-          | translate: { nr: lastPaymentId ? '#' + lastPaymentId : '-' }
+          | translate : { nr: lastPaymentId ? '#' + lastPaymentId : '-' }
       }}
     </h3>
     <p *ngIf="lastPaymentResults">
@@ -99,7 +107,7 @@
       (confirm)="retryLastPayment()"
       [subHeader]="
         'page.program.program-payout.last-payment.confirm-prompt'
-          | translate: { number: lastPaymentResults?.error }
+          | translate : { number: lastPaymentResults?.error }
       "
       fill="outline"
       color="danger"
@@ -112,7 +120,7 @@
       ></ion-icon>
       {{
         'page.program.program-payout.last-payment.retry-all'
-          | translate: { number: lastPaymentResults?.error }
+          | translate : { number: lastPaymentResults?.error }
       }}
     </confirm-prompt>
   </ion-col>

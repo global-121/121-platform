@@ -57,13 +57,15 @@ export class DialogueTurnComponent implements OnInit {
     if (!this.instanceService) {
       return;
     }
-    this.instanceService.instanceInformation.subscribe((instanceInfo) => {
-      this.updateActor(
-        instanceInfo.name,
-        instanceInfo.displayName,
-        instanceInfo.logoUrl,
-      );
-    });
+    this.instanceService.instanceInformation.subscribe(
+      (instanceInformation) => {
+        this.updateActor(
+          instanceInformation.name,
+          instanceInformation.displayName,
+          instanceInformation.logoUrl,
+        );
+      },
+    );
   }
 
   private updateActor(

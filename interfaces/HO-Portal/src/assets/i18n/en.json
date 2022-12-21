@@ -289,17 +289,13 @@
         },
         "language": {
           "en": "English",
-          "am_ET": "Amharic",
           "ar": "Arabic",
-          "ti": "Tigrinya",
           "tl": "Tagalog",
           "pt_BR": "Portuguese",
           "in": "Indonesian",
           "nl": "Dutch",
           "es": "Spanish",
-          "fr": "French",
-          "ru": "Russian",
-          "uk": "Ukrainian"
+          "fr": "French"
         },
         "status": {
           "imported": "Imported",
@@ -481,7 +477,23 @@
       "export-fsp-intructions": {
         "btn-text": "Export Payment Instructions",
         "confirm-message": "This will download a file with payment instructions for the Financial Service Provider.",
-        "sub-message": "You should only use this file <strong>once per payment</strong> in the portal of the Financial Service Provider."
+        "sub-message": {
+          "reconciliation": "This export will only include People Affected for which the current transaction status is <strong>waiting</strong>.",
+          "no-reconciliation": "You should only use this file <strong>once per payment</strong> in the portal of the Financial Service Provider."
+        },
+        "timestamp": "Latest export has been done on: {{dateTime}}"
+      },
+      "import-fsp-reconciliation": {
+        "btn-text": "Import Payment Reconciliation Data",
+        "confirm-message": "Import Payment Reconciliation Data",
+        "explanation": "Make sure to upload the reconciliation data exactly as provided by the Financial Service Provider.",
+        "timestamp": "Latest import has been done on: {{dateTime}}",
+        "import-result": {
+          "ready": "Reconciliation data imported for payment <strong>#{{payment}}</strong>.",
+          "new": "Payment data updated for <strong>{{countTotal}}</strong> people affected:<ul><li><strong>{{countPaymentSuccess}}</strong> payments are <strong>successful</strong></li><li><strong>{{countPaymentFailed}}</strong> payments are <strong>failed</strong></li></ul>",
+          "mismatch": "BE CAREFUL: <strong>{{countPaymentStarted}}</strong> payments were started for payment <strong>#{{payment}}</strong>. Reconciliation data contains <strong>{{countImported}}</strong> payments. So, the total amount in the reconciliation data does not match with started payments. Note that all payments that do not have a success record in the reconciliation data are considered failed payments.",
+          "not-found": "There were <strong>{{countNotFound}}</strong> transactions for which no matching Person Affected was found. Try to correct them and upload again."
+        }
       },
       "manage-aidworkers": {
         "section-title": "Manage aidworkers",
@@ -513,6 +525,14 @@
         "password-requirements": "Password must have at least {{minLength}} charachters, one capital letter, one lowercase letter and one number.",
         "different-passwords": "Passwords do not match."
       }
+    },
+    "iframe": {
+      "recipient": {
+        "no-recipients-found": "No information linked to this person's phone number was found in any active programs in the 121 Platform.",
+        "no-phone-number": "When you receive a task, any information linked to the person's phone number found in active programs in the 121 Platform will appear here.",
+        "single-recipient-found": "Found <b> 1 Person Affected </b> registered with this number",
+        "multiple-recipients-found": "Found <b> {{paCount}} People Affected </b> registered with this number"
+      }
     }
   },
   "common": {
@@ -523,6 +543,7 @@
     "cancel": "Cancel",
     "ok": "OK",
     "export-error": "Something went wrong with the export.",
+    "import-error": "Something went wrong with the import.",
     "unknown-error": "Something went wrong. Error is unknown.",
     "update-success": "Update successful",
     "update-error": "Something went wrong: {{error}}",
@@ -532,6 +553,35 @@
     "show-more": "Show More",
     "try-again-contact-support": "Please try again. If the problem persists, contact technical support.",
     "answer-is-required": "An answer is required for this question."
+  },
+  "recipient-details": {
+    "columnPersonalInformation": "Personal information",
+    "columnStatusHistory": "Status history",
+    "columnPaymentHistory": "Payment history",
+    "columnNotes": "Notes",
+    "status": "Status",
+    "registeredDate": "Registered",
+    "inclusionDate": "Included",
+    "registrationProgramId": "PA#",
+    "startedRegistrationDate": "Started registration",
+    "phone-number": "Phonenumber",
+    "whatsappPhoneNumber": "WhatsApp nr.",
+    "preferredLanguage": "Preferred language",
+    "paymentAmountMultiplier": "Transfer value multiplier",
+    "fsp": "Financial Service Provider",
+    "phoneNumber": "Phone number",
+    "inclusionScore": "Inclusion score",
+    "importedDate": "Imported",
+    "invitedDate": "Invited",
+    "noLongerEligibleDate": "No longer eligible",
+    "registeredWhileNoLongerEligibleDate": "Registered while no longer eligible",
+    "selectedForValidationDate": "Selected for validation",
+    "validationDate": "Validated",
+    "inclusionEndDate": "Inclusion ended",
+    "rejectionDate": "Rejected",
+    "note": "Note",
+    "name": "Name",
+    "statusText": "Status: <b> {{status}} </b>"
   },
   "refresh-data": {
     "last-updated": "Last updated: {{date}}"

@@ -116,10 +116,8 @@ export class SetNotificationNumberComponent extends PersonalDirective {
   }
 
   private async storePhoneNumber(phoneNumber: string) {
-    const referenceId = await this.paData.retrieve(
-      this.paData.type.referenceId,
-    );
-    const programId = await this.paData.retrieve(this.paData.type.programId);
+    const referenceId = await this.paData.getReferenceId();
+    const programId = await this.paData.getCurrentProgramId();
 
     const useForInvitationMatching = true;
 

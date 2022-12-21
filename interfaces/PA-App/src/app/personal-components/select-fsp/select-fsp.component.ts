@@ -65,7 +65,7 @@ export class SelectFspComponent extends PersonalDirective {
       (fsp) =>
         (fsp.fspDisplayName = this.translatableString.get(fsp.fspDisplayName)),
     );
-    this.referenceId = await this.paData.retrieve(this.paData.type.referenceId);
+    this.referenceId = await this.paData.getReferenceId();
     this.conversationService.stopLoading();
   }
 

@@ -212,3 +212,11 @@ ion-icon {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+
+.alert-no-max-height {
+  --max-height: none;
+
+  .alert-message {
+    max-height: none;
+  }
+}

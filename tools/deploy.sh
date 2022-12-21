@@ -225,6 +225,12 @@ END
     log "Webhook service restarted: "
   }
 
+  function restart_webserver() {
+    service apache2 restart
+
+    log "Apache Webserver restarted: "
+  }
+
   function publish_version() {
     # Store version, accessible via web:
     echo "$GLOBAL_121_VERSION" | tee "$web_root/VERSION.txt"
@@ -251,6 +257,8 @@ END
     wait # Make sure the status-check has finised
 
     publish_version
+
+    restart_webserver
 
     log "Done."
 

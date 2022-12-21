@@ -64,7 +64,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationCREATE,
           PermissionEnum.RegistrationDELETE,
           PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationReferenceIdSEARCH,
           PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE, // Maybe N.A. to ZOA as only 1 FSP??
           PermissionEnum.RegistrationNotificationREAD,
@@ -72,7 +71,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationPersonalForValidationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
-          PermissionEnum.RegistrationPersonalSEARCH,
           PermissionEnum.RegistrationPersonalUPDATE,
           PermissionEnum.RegistrationStatusSelectedForValidationUPDATE,
           PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,
@@ -108,7 +106,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationCREATE,
           PermissionEnum.RegistrationDELETE,
           PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationReferenceIdSEARCH,
           PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE,
           PermissionEnum.RegistrationNotificationREAD,
@@ -116,7 +113,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationPersonalForValidationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
-          PermissionEnum.RegistrationPersonalSEARCH,
           PermissionEnum.RegistrationPersonalUPDATE,
           PermissionEnum.RegistrationStatusSelectedForValidationUPDATE,
           PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,
@@ -151,7 +147,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationCREATE,
           PermissionEnum.RegistrationDELETE,
           PermissionEnum.RegistrationAttributeUPDATE,
-          PermissionEnum.RegistrationReferenceIdSEARCH,
           PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE,
           PermissionEnum.RegistrationNotificationREAD,
@@ -159,7 +154,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationPersonalForValidationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
-          PermissionEnum.RegistrationPersonalSEARCH,
           PermissionEnum.RegistrationPersonalUPDATE,
           // PermissionEnum.RegistrationStatusSelectedForValidationUPDATE, // assuming all PA status updates not allowed
           // PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,
@@ -194,7 +188,6 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.RegistrationCREATE, // No importing
           PermissionEnum.RegistrationDELETE,
           // PermissionEnum.RegistrationAttributeUPDATE, // No editing from PA popup
-          // PermissionEnum.RegistrationReferenceIdSEARCH, // Needed for AW-app
           PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE,
           PermissionEnum.RegistrationNotificationREAD,
@@ -202,7 +195,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationPersonalREAD,
           // PermissionEnum.RegistrationPersonalForValidationREAD, // Needed for AW-app
           PermissionEnum.RegistrationPersonalEXPORT,
-          PermissionEnum.RegistrationPersonalSEARCH,
           // PermissionEnum.RegistrationPersonalUPDATE,
           // PermissionEnum.RegistrationStatusSelectedForValidationUPDATE, // assuming all PA status updates not allowed
           // PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,
@@ -237,7 +229,6 @@ export class SeedProgramEth implements InterfaceScript {
           // PermissionEnum.RegistrationCREATE, // No importing
           PermissionEnum.RegistrationDELETE,
           PermissionEnum.RegistrationAttributeUPDATE, // No editing from PA popup // But can edit from AW
-          PermissionEnum.RegistrationReferenceIdSEARCH,
           PermissionEnum.RegistrationFspREAD,
           PermissionEnum.RegistrationFspUPDATE,
           PermissionEnum.RegistrationNotificationREAD,
@@ -245,7 +236,6 @@ export class SeedProgramEth implements InterfaceScript {
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationPersonalForValidationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
-          PermissionEnum.RegistrationPersonalSEARCH,
           PermissionEnum.RegistrationPersonalUPDATE,
           // PermissionEnum.RegistrationStatusSelectedForValidationUPDATE, // assuming all PA status updates not allowed
           // PermissionEnum.RegistrationStatusNoLongerEligibleUPDATE,

@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { InstanceInformation } from 'src/app/models/instance.model';
 import {
   Program,
   ProgramAttribute,
@@ -7,7 +6,6 @@ import {
   ProgramQuestionOption,
 } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -39,7 +37,6 @@ export class EnrollInProgramComponent extends PersonalDirective {
   private currentProgram: Program;
 
   public programDetails: any;
-  public instanceInformation: InstanceInformation;
 
   public questions: Question[];
   public answerTypes = AnswerType;
@@ -58,14 +55,11 @@ export class EnrollInProgramComponent extends PersonalDirective {
     public paData: PaDataService,
     public translatableString: TranslatableStringService,
     public conversationService: ConversationService,
-    private instanceService: InstanceService,
   ) {
     super();
   }
 
   ngOnInit() {
-    this.getInstanceInformation();
-
     if (this.data) {
       this.initHistory();
       return;
@@ -89,14 +83,6 @@ export class EnrollInProgramComponent extends PersonalDirective {
     this.conversationService.startLoading();
     await this.getProgramDetails();
     this.conversationService.stopLoading();
-  }
-
-  private async getInstanceInformation() {
-    this.instanceService.instanceInformation.subscribe(
-      (instanceInformation) => {
-        this.instanceInformation = instanceInformation;
-      },
-    );
   }
 
   private async getProgramDetails() {
@@ -186,9 +172,7 @@ export class EnrollInProgramComponent extends PersonalDirective {
   }
 
   private async postAnswers() {
-    const referenceId = await this.paData.retrieve(
-      this.paData.type.referenceId,
-    );
+    const referenceId = await this.paData.getReferenceId();
 
     await this.programsService.postRegistrationCustomAttributes(
       this.createAttributes(Object.values(this.answers), referenceId),

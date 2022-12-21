@@ -29,11 +29,13 @@ export class TransactionsService {
     programId: number,
     splitByTransactionStep: boolean,
     minPayment?: number,
+    referenceId?: string,
   ): Promise<any> {
     const transactions = await this.getMaxAttemptPerPaAndPaymentTransactionsQuery(
       programId,
       splitByTransactionStep,
       minPayment,
+      referenceId,
     ).getRawMany();
     return transactions;
   }
@@ -42,6 +44,7 @@ export class TransactionsService {
     programId: number,
     splitByTransactionStep: boolean,
     minPayment?: number,
+    referenceId?: string,
   ): SelectQueryBuilder<any> {
     const maxAttemptPerPaAndPayment = this.transactionRepository
       .createQueryBuilder('transaction')
@@ -58,8 +61,7 @@ export class TransactionsService {
         .addSelect('"transactionStep"')
         .addGroupBy('"transactionStep"');
     }
-
-    return this.transactionRepository
+    let transactionQuery = this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
         'transaction.created AS "paymentDate"',
@@ -81,6 +83,13 @@ export class TransactionsService {
         minPayment: minPayment || 0,
       })
       .andWhere('subquery.max_attempt IS NOT NULL');
+    if (referenceId) {
+      transactionQuery = transactionQuery.andWhere(
+        '"referenceId" = :referenceId',
+        { referenceId: referenceId },
+      );
+    }
+    return transactionQuery;
   }
 
   public async getTransaction(

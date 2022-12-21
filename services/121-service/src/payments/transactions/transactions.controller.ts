@@ -39,6 +39,11 @@ export class TransactionsController {
     required: false,
     type: 'integer',
   })
+  @ApiQuery({
+    name: 'referenceId',
+    required: false,
+    type: 'string',
+  })
   @ApiResponse({
     status: 200,
   })
@@ -46,11 +51,13 @@ export class TransactionsController {
   public async getTransactions(
     @Param('programId') programId: number,
     @Query('minPayment') minPayment: number,
+    @Query('referenceId') referenceId: string,
   ): Promise<any> {
     return await this.transactionsService.getTransactions(
       Number(programId),
       false,
       minPayment,
+      referenceId,
     );
   }
 

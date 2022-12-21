@@ -19,16 +19,16 @@ All applications from `/services` folder are running as local applications on va
 We expose them to the interfaces/the public internet using Apache2 as a proxy.
 All the interfaces are served as web-apps through Apache2 as well.
 
-1.  First, get the right certificates (`SSLCertificateFile` and `SSLCACertificateFile`) and place them in `/tools/certificates/`.
+1.  Set up Apache
 
 2.  Enable all necessary modules:
 
-    a2enmod ssl proxy proxy_http http2 rewrite headers expires mime dir
+        a2enmod ssl proxy proxy_http http2 rewrite headers expires mime dir
 
 3.  Put all default configuration in place:
 
-    ln -s /home/121-platform/tools/121-platform.conf /etc/apache2/sites-available/121-platform.conf
-    ln -s /home/121-platform/tools/121-platform-https.conf /etc/apache2/sites-available/121-platform-https.conf
+        ln -s /home/121-platform/tools/121-platform.conf /etc/apache2/sites-available/121-platform.conf
+        ln -s /home/121-platform/tools/121-platform-https.conf /etc/apache2/sites-available/121-platform-https.conf
 
 4.  Set or update the (optional) environment-specific configurations, based on the example:
 
@@ -45,17 +45,29 @@ All the interfaces are served as web-apps through Apache2 as well.
 
         ln -s /etc/apache2/sites-available/121-platform-https.env.conf /etc/apache2/sites-enabled/
 
-6.  Verify all configurations can be read/understood:
+6. Install `Certbot`, following: <https://certbot.eff.org/instructions?ws=apache&os=ubuntufocal>  
+   - At step **7**, use "Certificate only" with:
 
-    apachectl -S
+         certbot certonly --apache
 
-7.  Restart Apache:
+     Provide the preferred (sub)domain-name and other details at the prompts.
 
-    service apache2 restart
+   - Create symlinks to the generated files: (make sure to replace `server.example.org` in these commands!)
 
-8.  To check if all started correctly:
+         ln -s /etc/letsencrypt/live/server.example.org/fullchain.pem /home/121-platform/tools/certificates/letsencrypt-cert
+         ln -s /etc/letsencrypt/live/server.example.org/privkey.pem /home/121-platform/tools/certificates/letsencrypt-key
 
-    service apache2 status
+7.  Verify all configurations can be read/understood:
+
+        apachectl -S
+
+8.  Restart Apache:
+
+        service apache2 restart
+
+9.  To check if all started correctly:
+
+        service apache2 status
 
 ---
 

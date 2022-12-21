@@ -1,4 +1,3 @@
-import { formatDate } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -6,7 +5,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { environment } from 'src/environments/environment';
+import { LatestActionService } from '../../services/latest-action.service';
 import { DuplicateAttributesProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 
 @Component({
@@ -38,9 +37,6 @@ export class ExportListComponent implements OnChanges {
   public btnText: string;
   public subHeader: string;
 
-  private locale: string;
-  private dateFormat = 'yyyy-MM-dd, HH:mm';
-
   public duplicateAttributesProps: DuplicateAttributesProps;
 
   constructor(
@@ -48,9 +44,8 @@ export class ExportListComponent implements OnChanges {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
-  ) {
-    this.locale = environment.defaultLocale;
-  }
+    private latestActionService: LatestActionService,
+  ) {}
 
   async ngOnChanges(changes: SimpleChanges) {
     if (changes.exportType && typeof changes.exportType === 'object') {
@@ -68,7 +63,10 @@ export class ExportListComponent implements OnChanges {
   private async updateDisplayMessage(): Promise<void> {
     let actionTimestamp;
     if (this.authService.hasPermission(this.programId, Permission.ActionREAD)) {
-      actionTimestamp = await this.getLatestActionTime();
+      actionTimestamp = await this.latestActionService.getLatestActionTime(
+        this.exportType,
+        this.programId,
+      );
       this.message = actionTimestamp
         ? this.translate.instant('page.program.export-list.timestamp', {
             dateTime: actionTimestamp,
@@ -128,20 +126,5 @@ export class ExportListComponent implements OnChanges {
       buttons: [this.translate.instant('common.ok')],
     });
     await alert.present();
-  }
-
-  private async getLatestActionTime(): Promise<string | null> {
-    const latestAction = await this.programsService.retrieveLatestActions(
-      this.exportType,
-      this.programId,
-    );
-    if (!latestAction) {
-      return null;
-    }
-    return formatDate(
-      new Date(latestAction.created),
-      this.dateFormat,
-      this.locale,
-    );
   }
 }

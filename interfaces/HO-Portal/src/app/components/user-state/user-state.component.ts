@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AppRoutes } from 'src/app/app-routes.enum';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/models/user.model';
@@ -10,6 +10,9 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./user-state.component.scss'],
 })
 export class UserStateComponent implements OnInit {
+  @Input()
+  public showUserStateActions = true;
+
   public isDebug = !environment.production;
   public appRoute = AppRoutes;
   public userName: string;

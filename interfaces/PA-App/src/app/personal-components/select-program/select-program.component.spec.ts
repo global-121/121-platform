@@ -6,10 +6,8 @@ import { ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { MockConversationService } from 'src/app/mocks/conversation.service.mock';
-import { MockInstanceService } from 'src/app/mocks/instance.service.mock';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { InstanceService } from 'src/app/services/instance.service';
 import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { SelectProgramComponent } from './select-program.component';
@@ -37,10 +35,6 @@ describe('SelectProgramComponent', () => {
         {
           provide: ConversationService,
           useValue: MockConversationService,
-        },
-        {
-          provide: InstanceService,
-          useValue: MockInstanceService,
         },
         {
           provide: ModalController,

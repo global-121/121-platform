@@ -19,6 +19,7 @@ import { PermissionsGuard } from '../guards/permissions.guard';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
+import { Admin } from './../guards/admin.decorator';
 import { ExportDetails } from './dto/export-details';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { ProgramStats } from './dto/program-stats.dto';
@@ -59,6 +60,19 @@ export class ExportMetricsController {
       data.minPayment,
       data.maxPayment,
     );
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary: 'Get list of to cancel vouchers only used by admin',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Get list of to cancel vouchers only used by admin',
+  })
+  @Post('export-metrics/to-cancel-vouchers')
+  public async getToCancelVouchers(): Promise<any> {
+    return await this.exportMetricsService.getToCancelVouchers();
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)

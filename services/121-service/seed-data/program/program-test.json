@@ -211,5 +211,6 @@
   "aboutProgram": {
     "en": "[about aid program]"
   },
-  "fullnameNamingConvention": ["name"]
+  "fullnameNamingConvention": ["name"],
+  "languages": ["en"]
 }
