@@ -32,3 +32,10 @@ Feature: Claim digital vouchers
     Then a reminder is send out the next day at noon
     And the same scenarios as above are followed
     And a PA without WhatsApp should not get a reminder
+
+  Scenario: PA claims digital voucher with other programs that have more payments
+    Given there is another program that has 3+ more payments
+    Given the PA is only ever included into the one program
+    When the PA replies 'yes' to initial WhatsApp-message
+    Then the PA receives all vouchers for their program that were not already sent up to 3 payments back irrespective of how many payments any other programs have
+    And this basically means that the counting of 'sending maximum 3 latest vouchers' is done per program, not overall

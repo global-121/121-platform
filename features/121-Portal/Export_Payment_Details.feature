@@ -36,18 +36,6 @@ Feature: Export payment data
     And the known "phonenumber"
     And it shows all program custom attributes which have "payment" as "export" attribute
 
-  Scenario: Export payment instructions
-    Given the program is configured with an FSP with csv option
-    Given a logged-in user with "RegistrationPersonalEXPORT", "PaymentREAD" and "PaymentTransactionREAD" permissions
-    Given the payment has taken place
-    When the user selects a "closed" payment from the dropdown-list
-    Then the "export payment instructions" button is enabled
-    When the user clicks the "export payment instructions" button
-    Then an Excel-file is dowloaded
-    And it shows a list of the registrations that were "included" for this payment
-    And "transaction" information where the "amount" is the multiplication of the PA's "paymentAmountMultiplier" and the supplied "transfer value"
-    And all data as programmed for this FSP
-
   Scenario: Viewing the export options without permission
     Given a logged-in user without "RegistrationPersonalEXPORT", "PaymentREAD" and "PaymentTransactionREAD" permissions
     When the user views the "payment" page

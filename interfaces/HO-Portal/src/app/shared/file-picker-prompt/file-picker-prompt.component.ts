@@ -12,7 +12,7 @@ import { ImportType } from 'src/app/models/import-type.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 export interface FilePickerProps {
-  type: 'csv';
+  type: 'csv' | 'xml';
   explanation?: string;
   programId?: number;
   downloadTemplate?: ImportType;
@@ -70,6 +70,9 @@ export class FilePickerPromptComponent implements OnInit, AfterViewInit {
   private getAcceptForType(type: FilePickerProps['type']): string {
     if (type === 'csv') {
       return '.csv,text/csv,text/comma-separated-values,application/csv';
+    }
+    if (type === 'xml') {
+      return '.xml,application/xml,application/xhtml+xml,';
     }
     return '';
   }

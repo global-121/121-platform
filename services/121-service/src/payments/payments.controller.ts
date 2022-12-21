@@ -1,7 +1,28 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
+import { ImportResult } from '../registration/dto/bulk-import.dto';
+import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
 import { CreatePaymentDto } from './dto/create-payment.dto';
@@ -59,10 +80,44 @@ export class PaymentsController {
       'Get payments instructions for past payment to post in Financial Service Provider Portal',
   })
   @Get('programs/:programId/payments/:payment/fsp-instructions')
-  public async getFspInstructions(@Param() params): Promise<FspInstructions> {
+  public async getFspInstructions(
+    @Param() params,
+    @User('id') userId: number,
+  ): Promise<FspInstructions> {
     return await this.paymentsService.getFspInstructions(
       Number(params.programId),
       Number(params.payment),
+      userId,
+    );
+  }
+
+  @Permissions(PermissionEnum.PaymentCREATE)
+  @ApiOperation({
+    summary: 'Upload payment reconciliation data from FSP per payment',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'payment', required: true, type: 'integer' })
+  @ApiQuery({ name: 'fspIds', required: true, type: 'string' })
+  @ApiResponse({
+    status: 200,
+    description: 'Uploaded payment reconciliation data',
+  })
+  @Post('programs/:programId/payments/:payment/fsp-reconciliation')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody(FILE_UPLOAD_API_FORMAT)
+  @UseInterceptors(FileInterceptor('file'))
+  public async importFspReconciliationData(
+    @UploadedFile() file,
+    @Param() params,
+    @Query() query,
+    @User('id') userId: number,
+  ): Promise<ImportResult> {
+    return await this.paymentsService.importFspReconciliationData(
+      file,
+      Number(params.programId),
+      Number(params.payment),
+      query.fspIds.split(','),
+      userId,
     );
   }
 }

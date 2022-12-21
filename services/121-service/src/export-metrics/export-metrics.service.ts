@@ -80,10 +80,7 @@ export class ExportMetricsService {
         return this.getPaymentDetails(programId, minPayment, maxPayment);
       }
       case ExportType.unusedVouchers: {
-        return this.getUnusedVouchers();
-      }
-      case ExportType.toCancelVouchers: {
-        return this.getToCancelVouchers();
+        return this.getUnusedVouchers(programId);
       }
       case ExportType.duplicates: {
         return this.getDuplicates(programId);
@@ -204,6 +201,8 @@ export class ExportMetricsService {
         await this.addPaymentFieldsToExport(row, payments, transactions);
       }
       delete row['referenceId'];
+      row['id'] = row['registrationProgramId'];
+      delete row['registrationProgramId'];
     }
     await this.replaceValueWithDropdownLabel(rows, relationOptions);
 
@@ -285,8 +284,10 @@ export class ExportMetricsService {
     return relationOptions;
   }
 
-  private async getUnusedVouchers(): Promise<FileDto> {
-    const unusedVouchers = await this.paymentsService.getUnusedVouchers();
+  private async getUnusedVouchers(programId?: number): Promise<FileDto> {
+    const unusedVouchers = await this.paymentsService.getUnusedVouchers(
+      programId,
+    );
     for (const v of unusedVouchers) {
       const registration = await this.registrationsService.getRegistrationFromReferenceId(
         v.referenceId,
@@ -303,7 +304,7 @@ export class ExportMetricsService {
     return response;
   }
 
-  private async getToCancelVouchers(): Promise<FileDto> {
+  public async getToCancelVouchers(): Promise<FileDto> {
     const toCancelVouchers = await this.paymentsService.getToCancelVouchers();
 
     const response = {
@@ -393,6 +394,7 @@ export class ExportMetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
+        `registration.id as id`,
         `registration."registrationProgramId"`,
         `registration."registrationStatus" as status`,
         `registration."${GenericAttributes.phoneNumber}"`,
@@ -946,6 +948,7 @@ export class ExportMetricsService {
     const totalProcessedPayments = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('MAX(transaction.payment)')
+      .where('transaction."programId" = :programId', { programId: programId })
       .getRawOne();
     const program = await this.programRepository.findOne(programId);
     const paymentNrSearch = Math.max(
@@ -956,6 +959,7 @@ export class ExportMetricsService {
     const transactionStepMin = await await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('MIN(transaction.transactionStep)')
+      .where('transaction."programId" = :programId', { programId: programId })
       .getRawOne();
     while (i <= paymentNrSearch) {
       const result = await this.getOnePaymentWithStateSum(

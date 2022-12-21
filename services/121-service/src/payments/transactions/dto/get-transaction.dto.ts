@@ -13,10 +13,10 @@ export class GetTransactionDto {
   public readonly payment: number;
   @ApiProperty({ example: 'IntersolvePayoutStatus' })
   @IsString()
-  public readonly customDataKey: string;
+  public readonly customDataKey?: string;
   @ApiProperty({ example: IntersolvePayoutStatus.InitialMessage })
   @IsString()
-  public readonly customDataValue: string;
+  public readonly customDataValue?: string;
 }
 
 export class GetTransactionOutputDto {
