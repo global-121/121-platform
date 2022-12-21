@@ -278,7 +278,6 @@
           "name": "Name",
           "dob": "Date of birth",
           "phone-number": "Phonenumber",
-          "vnumber": "V-number",
           "whatsappPhoneNumber": "WhatsApp nr.",
           "preferredLanguage": "Preferred language",
           "paymentAmountMultiplier": "Transfer value(s)",
@@ -358,9 +357,6 @@
             "whatsappPhoneNumber": {
               "label": "WhatsApp number",
               "explanation": "This value is required for a 'WhatsApp-enabled' FSP only."
-            },
-            "vnumber": {
-              "label": "V-number"
             },
             "accountId": {
               "label": "Account ID"
