@@ -958,8 +958,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
     const lastPaymentInfo = {
       lastPaymentNumber: person.payment,
-      lastPaymentAmount: person.transactionamount,
-      lastPaymentStatus: person.transactionstatus,
+      lastPaymentAmount: person.transactionAmount,
+      lastPaymentStatus: person.transactionStatus,
     };
 
     if (this.canViewPaymentData) {

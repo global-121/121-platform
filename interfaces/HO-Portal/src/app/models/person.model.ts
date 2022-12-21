@@ -33,8 +33,8 @@ export class Person {
   registrationProgramId: number;
   payment?: number;
   paymentDate?: string;
-  transactionamount?: number;
-  transactionstatus?: string;
+  transactionAmount?: number;
+  transactionStatus?: string;
 }
 
 // Model for display (in table)

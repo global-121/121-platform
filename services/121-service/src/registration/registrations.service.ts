@@ -971,8 +971,8 @@ export class RegistrationsService {
       .addSelect([
         'transaction.created AS "paymentDate"',
         'transaction.payment AS payment',
-        'transaction.status AS transactionStatus',
-        'transaction.amount AS transactionAmount',
+        'transaction.status AS "transactionStatus"',
+        'transaction.amount AS "transactionAmount"',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
       ]);
