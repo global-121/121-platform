@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - HTTPS-certificates will be automatically renewed with `Certbot` by Lets Encrypt. This requires a one-time set-up step, see [Tools README / Hosting / Apache2, step 6](./tools/README.md#apache2).
+- The Apache web-server will be restarted by the [`deploy.sh`](./tools/deploy.sh#L261)-script on every deployment.
 
 ### Removed
 
