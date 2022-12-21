@@ -5,7 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.72.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.74.3...master)
+
+### Added
+
+- HTTPS-certificates will be automatically renewed with `Certbot` by Lets Encrypt. This requires a one-time set-up step, see [Tools README / Hosting / Apache2, step 6](./tools/README.md#apache2).
+
+### Removed
+
+- Any specific certificates(i.e. `certvqebkt` and `cert2xF5qw`) in the folder`tools/certificates` can be removed, they are replaced by the Lets Encrypt certificates.
+
+---
+
+## [1.74.3](https://github.com/global-121/121-platform/compare/v1.74.2...v1.74.3) - 2022-12-19
+
+### Changed
+
+- Fix: Added 'id' for 'Export people affected'
+- Fix: Added several 'where' clauses with 'programId'.
+
+## [1.74.2](https://github.com/global-121/121-platform/compare/v1.74.1...v1.74.2) - 2022-12-16
+
+### Changed
+
+- Fix: Look for MAX payment per program for incoming WhatsApp message
+- Fix: Handle reminders per program (also with the above MAX fix)
+
+## [1.74.1](https://github.com/global-121/121-platform/compare/v1.74.0...v1.74.1) - 2022-12-15
+
+### Changed
+
+- Fix hack incoming PV WhatsApp-messages
+
+## [1.74.0](https://github.com/global-121/121-platform/compare/v1.73.0...v1.74.0) - 2022-12-14
+
+### Changed
+
+- URL of PA-app is changed to `/app` instead of `PA-app`
+- This release relates to the migration of LVV and PV instances into 1
+
+## [1.73.0](https://github.com/global-121/121-platform/compare/v1.72.0...v1.73.0) - 2022-12-14
 
 ### Changed
 
@@ -18,8 +57,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Language/locale data for Russian (`ru`)
 - Language/locale data for Ukrainian (`uk`)
 - Language/locale data for Tigrinya (`ti`)
-
----
 
 ## [1.72.0](https://github.com/global-121/121-platform/compare/v1.71.0...v1.72.0) - 2022-12-06
 

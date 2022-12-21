@@ -51,7 +51,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Make a new payment](121-Portal/Make_new_payment.feature)
 - [Export payment details](121-Portal/Export_Payment_Details.feature)
 - [Manage payment via import and export](121-Portal/Manage_payment_via_import_and_export)
-- Export all unused vouchers
+- [Export unused vouchers](121-Portal/Export_unused_vouchers.feature)
 - Retry individual/all payment(s)
 - Get voucher balance
 - View/Download/Print voucher
@@ -109,6 +109,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Add and Update program custom attribute](Admin-user/Add_And_Update_program_custom_attribute.feature)
 - [Update program question](Admin-user/Update_program_question.feature)
 - [Update program](Admin-user/Update_program.feature)
+- [Export vouchers to cancel](Admin-user/Export_vouchers_to_cancel.feature)
 - Update Financial Service Provider (not chosen FSP, but entity itself)
 - Create/Update/Delete FSP attributes
 - Update instance
@@ -119,7 +120,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 ### Automated processes (121-service)
 
-- Send reminder on uncollected vouchers
+- [Send reminder on uncollected vouchers](Automated/Send_reminder_on_uncollected_voucher.feature)
 
 ---
 
