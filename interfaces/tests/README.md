@@ -6,40 +6,40 @@ We use Cypress(<https://www.cypress.io/>) for integration tests and writing end-
 
 ### Run tests with Github Actions
 
-- On each Pull Request to `master` and each push to a `release/*` the Cypress integrations are run. 
+- On each Pull Request to `master` and each push to a `release/*`-branch the Cypress Integration Tests are run.
 - This means that tests are started on each new commit in a PR to master.
-- Results can be seen in the 'actions' page on Github
-- PR to master should not be merged and release branches should not be made until the tests are a success.
+- Results can be seen in the [Actions page on GitHub](https://github.com/global-121/121-platform/actions/workflows/cypress-workflow.yml)
 
 ### Start test locally
 
-To run locally, make sure all interfaces and services are running
-- `npm run start:services` (from root)
-- `npm run start:interfaces` (from root)
-- Seed data (for current admin-login test not needed yet, but will be for any future test)
-- `npm run start:cypress` (from interfaces/test folder)
-- This will open up a window, where you can choose your preferred browser first in which the tests will run
-- Click one of the test files to start running all the tests in that file
+1. To run locally, make sure all interfaces and services are running, or use:
+   - `npm run start:services`
+   - `npm run start:interfaces`
+2. Seed data
+3. Start with: `npm run start:cypress`
+
+   - This will open up a window, where you can choose your preferred browser first in which the tests will run
+   - Click one of the test files to start running all the tests in that file
 
 ### Configuration and set-up
 
-Cypress module is set-up under `interfaces/tests` in order to accumulate all the integration tests within one directory which should also make it a lot more efficient in future to implement CI/CD pipeline.
+Cypress module is set-up under `interfaces/tests` in order to accumulate all the integration tests within one directory so each interface's tests can share the test-tooling.
 
-We have 3 directories within `interfaces/tests/cypress/e2e` named as each of the interfaces.
+Within `interfaces/tests/cypress/e2e` there are folders for each of the interfaces.
 
 #### Configuration
 
-The Configuration for all the URLs is in `tests/cypress.config.js`.
+The Configuration for all the URLs is in [`cypress.config.js`](./cypress.config.js).
 
 #### Base URL
 
-Base URL is the default address that cypress uses and any additional sub-route string can be added to that base-url to visit or query a certain URL address.
+Base URL is the default address that Cypress uses and any additional sub-route string can be added to that base-url to visit or query a certain URL address.
 
 For example: is base-url is set as `http://example.net` then executing `cy.visit('/test')` will take us to `http://example.net/test`. For more information visit: <https://docs.cypress.io/guides/references/configuration.html#Options>
 
 #### Commands
 
-In each of the spec file within integration directories, one of the commands from 'setHoPortal', 'setAwApp' and 'setPaApp'. These custom commands are used to set-up the base url for the corresponding interfaces, since they are all hosted on different URLs.
+In each of the spec file within integration directories, one of the commands from `setHoPortal`, `setAwApp` and `setPaApp`. These custom commands are used to set-up the base url for the corresponding interfaces, since they are all hosted on different URLs.
 
 example:
 
@@ -54,7 +54,7 @@ beforeEach(() => {
 
 #### Getting started
 
-First, it is needed that a developer should go through the Documentation of the cypress, at following links:
+First, it is needed that a developer should go through the Documentation of Cypress, at following links:
 <https://docs.cypress.io/guides/getting-started/writing-your-first-test.html#Write-your-first-test>
 
 Get a basic idea about stubbing network requests and when they can be useful:
@@ -90,6 +90,4 @@ cy.route({
 }).as('programs');
 ```
 
-After the above stub, we should also be wait for the code to be executed by `cy.wait('@programs')`, This will remove possibilities for conflicts due to order of execution.
-
-
+After the above stub, we should also wait for the code to be executed by `cy.wait('@programs')`, This will remove possibilities for conflicts due to execution order.

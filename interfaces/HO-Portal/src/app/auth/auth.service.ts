@@ -11,6 +11,7 @@ import Permission from './permission.enum';
 })
 export class AuthService {
   public redirectUrl: string;
+  public isIframe: boolean;
   private userKey = 'logged-in-user-HO';
 
   private authenticationState = new BehaviorSubject<User | null>(null);
@@ -116,7 +117,7 @@ export class AuthService {
           }
 
           if (this.redirectUrl) {
-            this.router.navigate([this.redirectUrl]);
+            this.router.navigateByUrl(this.redirectUrl);
             this.redirectUrl = null;
             return resolve();
           }

@@ -19,6 +19,7 @@ export class PaymentColumnDetail {
   hasMessageIcon?: boolean;
   hasMoneyIconTable?: boolean;
   errorMessage?: string;
+  status?: string;
 }
 
 export class PaymentRowDetail {
@@ -31,6 +32,7 @@ export class PaymentRowDetail {
   errorMessage?: string;
   waiting?: boolean;
   fsp?: string;
+  status?: string;
 }
 
 export class PopupPayoutDetails {

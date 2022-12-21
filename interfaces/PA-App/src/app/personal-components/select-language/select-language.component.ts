@@ -8,8 +8,19 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { environment } from 'src/environments/environment';
+import { QueryParametersService } from '../../services/query-parameters.service';
 import { PersonalDirective } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
+
+const union = (...arr) => [...new Set(arr.flat(2))];
+
+class LanguageOption {
+  id: string;
+  languageKey: string;
+  language: string;
+  introductionKey: string;
+  introduction: string;
+}
 
 @Component({
   selector: 'app-select-language',
@@ -20,21 +31,24 @@ export class SelectLanguageComponent extends PersonalDirective {
   @Input()
   public data: any;
 
-  public languages: any;
+  public languages: LanguageOption[];
   public languageChoice: string;
   public languageChoiceName: string;
+
+  public DEFAULT_LANGUAGES = ['en'];
 
   constructor(
     public conversationService: ConversationService,
     public paData: PaDataService,
     public translate: TranslateService,
     private logger: LoggingService,
+    private queryParametersService: QueryParametersService,
   ) {
     super();
   }
 
-  ngOnInit() {
-    this.languages = this.getEnabledLanguages();
+  async ngOnInit() {
+    this.languages = await this.getEnabledLanguages();
 
     if (this.data) {
       this.initHistory();
@@ -48,8 +62,12 @@ export class SelectLanguageComponent extends PersonalDirective {
     this.isDisabled = true;
   }
 
-  private getEnabledLanguages() {
-    const enabledLocales = environment.locales.trim().split(/\s*,\s*/);
+  private async getEnabledLanguages(): Promise<LanguageOption[]> {
+    const allLocales = environment.locales.trim().split(/\s*,\s*/);
+    const allProgramLanguages = await this.getAllProgramLanguages();
+    const enabledLocales = allLocales.filter((locale) =>
+      allProgramLanguages.includes(locale),
+    );
 
     return enabledLocales.map((locale: string) => {
       const languageKey = `personal.select-language.language.${locale}`;
@@ -62,6 +80,18 @@ export class SelectLanguageComponent extends PersonalDirective {
         introduction: this.translate.instant(introductionKey),
       };
     });
+  }
+
+  private async getAllProgramLanguages(): Promise<string[]> {
+    const programIdsToFilter =
+      await this.queryParametersService.getProgramIds();
+    const programs = await this.paData.getAllPrograms(programIdsToFilter);
+
+    if (programs.length === 0) {
+      return this.DEFAULT_LANGUAGES;
+    }
+
+    return union(programs.map((p) => p.languages));
   }
 
   public getLanguageName(languageId: string): string {

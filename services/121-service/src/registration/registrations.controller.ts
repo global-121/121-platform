@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   ParseArrayPipe,
   Post,
@@ -29,7 +31,7 @@ import { PersonAffectedAuthGuard } from '../guards/person-affected-auth.guard';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
-import { ImportResult } from './dto/bulk-import.dto';
+import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
@@ -193,6 +195,29 @@ export class RegistrationsController {
       csvFile,
       Number(params.programId),
     );
+  }
+
+  @Permissions(PermissionEnum.RegistrationCREATE)
+  @ApiOperation({
+    summary: 'Import set of registered PAs, from JSON only used in testing ATM',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('programs/:programId/registrations/import-registrations-cypress')
+  public async importRegistrationsJSON(
+    @Body() data: ImportRegistrationsDto[],
+    @Param() params,
+  ): Promise<ImportResult> {
+    if (process.env.NODE_ENV === 'development') {
+      return await this.registrationsService.importValidatedRegistrations(
+        data,
+        Number(params.programId),
+      );
+    } else {
+      throw new HttpException(
+        { errors: 'This endpoint only works in development' },
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
 
   @Permissions(PermissionEnum.RegistrationREAD)

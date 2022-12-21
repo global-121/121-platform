@@ -68,7 +68,6 @@ export class Note {
 }
 
 export enum LanguageEnum {
-  amET = 'am_ET',
   ar = 'ar',
   en = 'en',
   es = 'es',
@@ -76,10 +75,7 @@ export enum LanguageEnum {
   in = 'in',
   nl = 'nl',
   ptBR = 'pt_BR',
-  ru = 'ru',
-  ti = 'ti',
   tl = 'tl',
-  uk = 'uk',
 }
 
 export class PersonTableColumn {

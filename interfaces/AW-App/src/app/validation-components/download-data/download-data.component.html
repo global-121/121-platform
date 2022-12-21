@@ -22,7 +22,8 @@
     <div
       [innerHTML]="
         'validation.download-data.download-result'
-          | translate: { nrDownloaded: '<strong>' + nrDownloaded + '</strong>' }
+          | translate
+            : { nrDownloaded: '<strong>' + nrDownloaded + '</strong>' }
       "
       class="ion-margin-bottom"
     ></div>

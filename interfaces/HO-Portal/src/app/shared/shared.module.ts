@@ -23,6 +23,7 @@ import { DisableRegistrationComponent } from '../program/disable-registration/di
 import { EditPersonAffectedPopupComponent } from '../program/edit-person-affected-popup/edit-person-affected-popup.component';
 import { ExportFspInstructionsComponent } from '../program/export-fsp-instructions/export-fsp-instructions.component';
 import { ExportListComponent } from '../program/export-list/export-list.component';
+import { ImportFspReconciliationComponent } from '../program/import-fsp-reconciliation/import-fsp-reconciliation.component';
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
@@ -44,6 +45,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     FilePickerPromptComponent,
     HeaderComponent,
     IfPermissionsDirective,
+    ImportFspReconciliationComponent,
     InputPromptComponent,
     OnlyAllowedInputDirective,
     PasswordToggleInputComponent,
@@ -81,6 +83,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     FilePickerPromptComponent,
     HeaderComponent,
     IfPermissionsDirective,
+    ImportFspReconciliationComponent,
     InputPromptComponent,
     NgxChartsModule,
     NgxDatatableModule,

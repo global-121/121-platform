@@ -5,6 +5,7 @@ import csv from 'csv-parser';
 import { Readable } from 'stream';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import * as convert from 'xml-js';
 import { AdditionalActionType } from '../../actions/action.entity';
 import { ActionService } from '../../actions/action.service';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
@@ -30,7 +31,7 @@ import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationDataEntity } from './../registration-data.entity';
-import { InlusionScoreService } from './inclusion-score.service';
+import { InclusionScoreService } from './inclusion-score.service';
 
 export enum ImportType {
   imported = 'import-as-imported',
@@ -61,7 +62,7 @@ export class BulkImportService {
   public constructor(
     private readonly lookupService: LookupService,
     private readonly actionService: ActionService,
-    private readonly inclusionScoreService: InlusionScoreService,
+    private readonly inclusionScoreService: InclusionScoreService,
   ) {}
 
   public async importBulk(
@@ -229,7 +230,13 @@ export class BulkImportService {
       csvFile,
       program.id,
     );
+    return this.importValidatedRegistrations(validatedImportRecords, program);
+  }
 
+  public async importValidatedRegistrations(
+    validatedImportRecords: ImportRegistrationsDto[],
+    program: ProgramEntity,
+  ): Promise<ImportResult> {
     let countImported = 0;
     let registrations: RegistrationEntity[] = [];
     const customDataList = [];
@@ -340,7 +347,7 @@ export class BulkImportService {
     return await this.validateRegistrationsCsvInput(importRecords, programId);
   }
 
-  private async validateCsv(csvFile): Promise<object[]> {
+  public async validateCsv(csvFile): Promise<object[]> {
     const indexLastPoint = csvFile.originalname.lastIndexOf('.');
     const extension = csvFile.originalname.substr(
       indexLastPoint,
@@ -355,6 +362,23 @@ export class BulkImportService {
     if (Object.keys(importRecords[0]).length === 1) {
       importRecords = await this.csvBufferToArray(csvFile.buffer, ';');
     }
+    return importRecords;
+  }
+
+  public async validateXml(
+    xmlFile,
+  ): Promise<convert.Element | convert.ElementCompact> {
+    const indexLastPoint = xmlFile.originalname.lastIndexOf('.');
+    const extension = xmlFile.originalname.substr(
+      indexLastPoint,
+      xmlFile.originalname.length - indexLastPoint,
+    );
+    if (extension !== '.xml') {
+      const errors = [`Wrong file extension. It should be .xml`];
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    let importRecords = await this.xmlBufferToArray(xmlFile.buffer);
     return importRecords;
   }
 
@@ -374,7 +398,14 @@ export class BulkImportService {
     });
   }
 
-  private checkForCompletelyEmptyRow(row): boolean {
+  private async xmlBufferToArray(
+    buffer,
+  ): Promise<convert.Element | convert.ElementCompact> {
+    const xml = convert.xml2js(buffer.toString());
+    return xml.elements[0].elements.find(el => el.name === 'Records').elements;
+  }
+
+  public checkForCompletelyEmptyRow(row): boolean {
     if (Object.keys(row).every(key => !row[key])) {
       return true;
     }

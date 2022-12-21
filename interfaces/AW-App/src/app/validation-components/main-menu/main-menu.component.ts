@@ -83,7 +83,7 @@ export class MainMenuComponent implements ValidationComponent {
   private canFindByPhone() {
     return this.myPrograms.some((program) => {
       return this.authService.hasAllPermissions(program.id, [
-        Permission.RegistrationPersonalSEARCH,
+        Permission.RegistrationPersonalREAD,
         Permission.RegistrationPersonalForValidationREAD,
       ]);
     });

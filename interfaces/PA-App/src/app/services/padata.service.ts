@@ -20,6 +20,8 @@ export class PaDataService {
   private detailProgramKeyPrefix = 'program';
   private detailFspKeyPrefix = 'fsp';
   public paDataKeyPrefix = 'paData-';
+
+  private referenceId: string;
   private currentProgramId: number;
 
   private hasAccount = false;
@@ -61,9 +63,20 @@ export class PaDataService {
     }
   }
 
-  public async getAllPrograms(): Promise<Program[]> {
+  public async getReferenceId(): Promise<string> {
+    if (!this.referenceId) {
+      this.referenceId = String(await this.retrieve(this.type.referenceId));
+    }
+    return this.referenceId;
+  }
+
+  public async getAllPrograms(
+    programIdsToFilter?: number[],
+  ): Promise<Program[]> {
     if (!this.isOffline) {
-      const allPrograms = await this.programService.getAllPrograms();
+      const allPrograms = await this.programService.getAllPrograms(
+        programIdsToFilter,
+      );
       localStorage.setItem(this.allProgramsKey, JSON.stringify(allPrograms));
       return allPrograms;
     }
@@ -283,6 +296,7 @@ export class PaDataService {
     await this.programService.logout(completedRegistration);
     this.clearDataStorage();
     this.setLoggedOut();
+    this.referenceId = undefined;
   }
 
   public async deleteData(): Promise<any> {

@@ -70,6 +70,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
       this.pastTransactions = await this.programsService.getTransactions(
         this.programId,
         this.firstPaymentToShow,
+        this.person?.referenceId,
       );
       this.fillPaymentRows();
       this.paymentRows.reverse();
@@ -160,6 +161,8 @@ export class PaymentHistoryPopupComponent implements OnInit {
         } else {
           paymentRowValue.errorMessage = transaction.errorMessage;
         }
+
+        paymentRowValue.status = transaction.status;
       }
       if (
         paymentRowValue.transaction ||
@@ -174,7 +177,15 @@ export class PaymentHistoryPopupComponent implements OnInit {
   }
 
   public hasError(paymentRow: PaymentRowDetail): boolean {
-    return !!paymentRow.errorMessage;
+    if (paymentRow.errorMessage) {
+      return true;
+    }
+
+    if (paymentRow.status === StatusEnum.error) {
+      return true;
+    }
+
+    return false;
   }
 
   public enableSinglePayment(

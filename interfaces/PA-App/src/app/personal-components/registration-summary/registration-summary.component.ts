@@ -91,7 +91,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
   }
 
   private async getReferenceId() {
-    this.referenceId = await this.paData.retrieve(this.paData.type.referenceId);
+    this.referenceId = await this.paData.getReferenceId();
   }
 
   private async getProgram() {

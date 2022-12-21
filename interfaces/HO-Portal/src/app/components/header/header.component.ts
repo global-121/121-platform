@@ -20,6 +20,9 @@ export class HeaderComponent implements OnInit {
   @Input()
   public showHelp = false;
 
+  @Input()
+  public isIframeHeader = false;
+
   public appRoute = AppRoutes;
 
   public programId: number;

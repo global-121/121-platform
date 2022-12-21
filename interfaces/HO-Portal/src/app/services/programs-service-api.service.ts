@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { environment } from '../../environments/environment';
@@ -190,12 +191,20 @@ export class ProgramsServiceApiService {
   getTransactions(
     programId: number | string,
     minPayment?: number | string,
+    referenceId?: string,
   ): Promise<Transaction[]> {
+    let params = new HttpParams();
+    if (minPayment) {
+      params = params.append('minPayment', minPayment);
+    }
+    if (referenceId) {
+      params = params.append('referenceId', referenceId);
+    }
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/payments/transactions${
-        minPayment ? '?minPayment=' + minPayment : ''
-      }`,
+      `/programs/${programId}/payments/transactions`,
+      false,
+      params,
     );
   }
 
@@ -342,6 +351,43 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       `/programs/${programId}/payments/${payment}/fsp-instructions`,
     );
+  }
+
+  importFspReconciliation(
+    programId: number,
+    payment: number,
+    fspIds: number[],
+    file: File,
+  ): Promise<ImportResult> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const path = `/programs/${programId}/payments/${payment}/fsp-reconciliation?fspIds=${fspIds.join(
+      ',',
+    )}`;
+
+    return new Promise<ImportResult>((resolve, reject) => {
+      this.apiService
+        .post(
+          environment.url_121_service_api,
+          path,
+          formData,
+          false,
+          false,
+          true,
+        )
+        .then((response) => {
+          if (response.error) {
+            throw response;
+          }
+          if (response) {
+            return resolve(response);
+          }
+        })
+        .catch((err) => {
+          return reject(err);
+        });
+    });
   }
 
   exportList(
@@ -594,5 +640,13 @@ export class ProgramsServiceApiService {
       .map((attribute) => attribute.name);
 
     return attributeNames;
+  }
+
+  getPaByPhoneNr(phoneNumber: string): Promise<Person[]> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/registrations/?phonenumber=${phoneNumber}`,
+      false,
+    );
   }
 }

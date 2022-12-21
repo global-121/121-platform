@@ -4,6 +4,7 @@ export enum ActionType {
   paymentFinished = 'payment-finished',
   paymentStarted = 'payment-started',
   exportFspInstructions = 'export-fsp-instructions',
+  importFspReconciliation = 'import-fsp-reconciliation',
 }
 
 export class LatestAction {

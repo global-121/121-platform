@@ -1,13 +1,10 @@
 const dotenv = require('dotenv');
 const ffbinaries = require('ffbinaries');
-const readline = require('readline');
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
 const fs = require('fs');
 const pathLib = require('path');
 const { execSync } = require('child_process');
+
+const LOCALES_SRC_PATH = 'src/assets/i18n';
 
 // Load environment-variables from .env file (if available)
 dotenv.config();
@@ -56,8 +53,8 @@ function getSourceFiles(path, type) {
   const files = fs.readdirSync(path).filter((file) => file.match(`${type}$`));
 
   if (!files || !files.length) {
-    console.warn(`No files found of type: ${type}`);
-    return process.exit(1);
+    console.warn(`\n! No files found of type: ${type} in: ${path}`);
+    return [];
   }
 
   return files;
@@ -66,14 +63,14 @@ function getSourceFiles(path, type) {
 /**
  * Perform check(s) on source paths/files before proceeding...
  * @param {String} locale
- * @returns {String} Path to existing source-files
+ * @returns {String | boolean} Path to existing source-files
  */
 function checkSourceExists(locale) {
-  const path = `src/assets/i18n/${locale}/`;
+  const path = `${LOCALES_SRC_PATH}/${locale}/`;
 
   if (!locale || !fs.existsSync(path)) {
-    console.warn(`No folder available for locale: ${locale}`);
-    return process.exit(1);
+    console.warn(`\n! No folder available for locale: ${locale} in: ${path}`);
+    return false;
   }
 
   return path;
@@ -91,7 +88,7 @@ function convertToMp3(locale, sourceType) {
   const path = checkSourceExists(locale);
   const sourceFiles = getSourceFiles(path, sourceFileType);
 
-  if (!sourceFiles) {
+  if (!sourceFiles || !path) {
     return;
   }
 
@@ -150,6 +147,13 @@ function getEnabledLocales(env) {
   return env.trim().split(/\s*,\s*/);
 }
 
+function getAllAvailableLocales() {
+  const folders = fs
+    .readdirSync(LOCALES_SRC_PATH, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory());
+  return folders.map((folder) => folder.name);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 if (!!process.env.CI) {
@@ -167,21 +171,18 @@ if (process.argv[2]) {
   return generateAssetsAudio(process.argv[2]);
 }
 
+let audioLocales;
+
 // If locales are defined via ENV-variables, use that:
 if (typeof process.env.NG_LOCALES !== 'undefined') {
   console.log(`Using locales from ENV: ${process.env.NG_LOCALES}`);
 
-  const audioLocales = getEnabledLocales(process.env.NG_LOCALES);
-
-  return audioLocales.forEach((locale) => {
-    return generateAssetsAudio(locale);
-  });
+  audioLocales = getEnabledLocales(process.env.NG_LOCALES);
+} else {
+  audioLocales = getAllAvailableLocales();
 }
 
-// Otherwise, ask for it:
-rl.question(
-  'For which locale do you want to generate audio assets? : ',
-  (locale) => {
-    return generateAssetsAudio(locale);
-  },
-);
+// Otherwise, generate all:
+return audioLocales.forEach((locale) => {
+  return generateAssetsAudio(locale);
+});

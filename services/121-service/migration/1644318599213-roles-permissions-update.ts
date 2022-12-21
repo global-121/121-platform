@@ -79,7 +79,6 @@ export class rolesPermissionsUpdate1644318599213 implements MigrationInterface {
           PermissionEnum.RegistrationNotificationREAD,
           PermissionEnum.RegistrationPersonalEXPORT,
           PermissionEnum.RegistrationPersonalREAD,
-          PermissionEnum.RegistrationPersonalSEARCH,
           PermissionEnum.RegistrationPersonalUPDATE,
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationStatusIncludedUPDATE,

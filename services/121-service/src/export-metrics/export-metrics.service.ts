@@ -80,10 +80,7 @@ export class ExportMetricsService {
         return this.getPaymentDetails(programId, minPayment, maxPayment);
       }
       case ExportType.unusedVouchers: {
-        return this.getUnusedVouchers();
-      }
-      case ExportType.toCancelVouchers: {
-        return this.getToCancelVouchers();
+        return this.getUnusedVouchers(programId);
       }
       case ExportType.duplicates: {
         return this.getDuplicates(programId);
@@ -204,6 +201,8 @@ export class ExportMetricsService {
         await this.addPaymentFieldsToExport(row, payments, transactions);
       }
       delete row['referenceId'];
+      row['id'] = row['registrationProgramId'];
+      delete row['registrationProgramId'];
     }
     await this.replaceValueWithDropdownLabel(rows, relationOptions);
 
@@ -285,8 +284,10 @@ export class ExportMetricsService {
     return relationOptions;
   }
 
-  private async getUnusedVouchers(): Promise<FileDto> {
-    const unusedVouchers = await this.paymentsService.getUnusedVouchers();
+  private async getUnusedVouchers(programId?: number): Promise<FileDto> {
+    const unusedVouchers = await this.paymentsService.getUnusedVouchers(
+      programId,
+    );
     for (const v of unusedVouchers) {
       const registration = await this.registrationsService.getRegistrationFromReferenceId(
         v.referenceId,
@@ -303,7 +304,7 @@ export class ExportMetricsService {
     return response;
   }
 
-  private async getToCancelVouchers(): Promise<FileDto> {
+  public async getToCancelVouchers(): Promise<FileDto> {
     const toCancelVouchers = await this.paymentsService.getToCancelVouchers();
 
     const response = {
@@ -393,7 +394,8 @@ export class ExportMetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
-        `registration."id"`,
+        `registration.id as id`,
+        `registration."registrationProgramId"`,
         `registration."registrationStatus" as status`,
         `registration."${GenericAttributes.phoneNumber}"`,
         `registration."${GenericAttributes.preferredLanguage}"`,
@@ -403,7 +405,7 @@ export class ExportMetricsService {
         `registration."referenceId" as "referenceId"`,
       ])
       .andWhere({ programId: programId })
-      .orderBy('"registration"."id"', 'ASC');
+      .orderBy('"registration"."registrationProgramId"', 'ASC');
     if (exportType !== ExportType.allPeopleAffected) {
       query = query.andWhere(
         'registration."registrationStatus" != :registrationStatus',
@@ -435,16 +437,19 @@ export class ExportMetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
-        `registration."id"`,
+        `registration."registrationProgramId" AS "id"`,
         `registration."registrationStatus" AS status`,
         `fsp.fsp AS fsp`,
         `registration."${GenericAttributes.phoneNumber}"`,
       ])
       .andWhere({ programId: programId })
-      .andWhere('registration.id IN (:...registrationIds)', {
-        registrationIds: registrationIds,
-      })
-      .orderBy('"registration"."id"', 'ASC');
+      .andWhere(
+        'registration."registrationProgramId" IN (:...registrationIds)',
+        {
+          registrationIds: registrationIds,
+        },
+      )
+      .orderBy('"registration"."registrationProgramId"', 'ASC');
     for (const r of relationOptions) {
       query.select(subQuery => {
         return this.registrationsService.customDataEntrySubQuery(
@@ -603,6 +608,9 @@ export class ExportMetricsService {
       .select(
         `array_agg(DISTINCT registration_data."registrationId") AS "duplicateRegistrationIds"`,
       )
+      .addSelect(
+        `array_agg(DISTINCT registration."registrationProgramId") AS "duplicateRegistrationProgramIds"`,
+      )
       .innerJoin('registration_data.registration', 'registration')
       .where(whereOptions)
       .andWhere('registration.programId = :programId', { programId })
@@ -621,11 +629,14 @@ export class ExportMetricsService {
 
     for (const duplicateEntry of duplicates) {
       const {
-        duplicateRegistrationIds,
-      }: { duplicateRegistrationIds: number[] } = duplicateEntry;
-      for (const registrationId of duplicateRegistrationIds) {
+        duplicateRegistrationProgramIds,
+      }: {
+        duplicateRegistrationIds: number[];
+        duplicateRegistrationProgramIds: number[];
+      } = duplicateEntry;
+      for (const registrationId of duplicateRegistrationProgramIds) {
         uniqueRegistrationIds.add(registrationId);
-        const others = without(duplicateRegistrationIds, registrationId);
+        const others = without(duplicateRegistrationProgramIds, registrationId);
         if (duplicatesMap.has(registrationId)) {
           const duplicateMapEntry = duplicatesMap.get(registrationId);
           duplicatesMap.set(registrationId, duplicateMapEntry.concat(others));
@@ -821,6 +832,7 @@ export class ExportMetricsService {
         fromStart,
       ),
       [PaMetricsProperty.totalPaHelped]: await this.getTotalPaHelped(
+        programId,
         payment,
         month,
         year,
@@ -890,6 +902,7 @@ export class ExportMetricsService {
   }
 
   public async getTotalPaHelped(
+    programId: number,
     payment?: number,
     month?: number,
     year?: number,
@@ -897,6 +910,7 @@ export class ExportMetricsService {
   ): Promise<number> {
     let query = this.registrationRepository
       .createQueryBuilder('registration')
+      .where('registration."programId" = :programId', { programId: programId })
       .innerJoinAndSelect('registration.transactions', 'transactions');
     let yearMonthStartCondition;
     if (month >= 0 && year) {
@@ -935,6 +949,7 @@ export class ExportMetricsService {
     const totalProcessedPayments = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('MAX(transaction.payment)')
+      .where('transaction."programId" = :programId', { programId: programId })
       .getRawOne();
     const program = await this.programRepository.findOne(programId);
     const paymentNrSearch = Math.max(
@@ -945,6 +960,7 @@ export class ExportMetricsService {
     const transactionStepMin = await await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('MIN(transaction.transactionStep)')
+      .where('transaction."programId" = :programId', { programId: programId })
       .getRawOne();
     while (i <= paymentNrSearch) {
       const result = await this.getOnePaymentWithStateSum(

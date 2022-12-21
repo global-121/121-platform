@@ -1,5 +1,5 @@
 ion-header {
-  border-bottom: 1px solid #c2c2c2;
+  border-bottom: 1px solid var(--ion-color-primary);
   &::after {
     background-image: none; //hide ion-header drop shadow
   }
