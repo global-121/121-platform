@@ -14,6 +14,10 @@ export class AggregateImportResult {
   countImported: number;
   countExistingPhoneNr: number;
   countInvalidPhoneNr: number;
+  countNotFound: number;
+  countPaymentSuccess?: number;
+  countPaymentFailed?: number;
+  countPaymentStarted?: number;
 }
 
 export class ImportResult {

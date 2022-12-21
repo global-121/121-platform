@@ -34,5 +34,6 @@ graph LR
   UkrPoshtaModule-->TransactionsModule
   PaymentsModule-->VodacashModule
   VodacashModule-->TransactionsModule
+  PaymentsModule-->RegistrationsModule
   ExportMetricsModule-->TransactionsModule
 ```

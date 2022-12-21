@@ -2,6 +2,10 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { AuthService } from '../../auth/auth.service';
+import Permission from '../../auth/permission.enum';
+import { ActionType } from '../../models/actions.model';
+import { LatestActionService } from '../../services/latest-action.service';
 import { downloadAsCsv } from '../../shared/array-to-csv';
 import { arrayToXlsx as downloadAsXlsx } from '../../shared/array-to-xlsx';
 import { downloadAsXml } from '../../shared/string-to-xml';
@@ -22,6 +26,9 @@ export class ExportFspInstructionsComponent implements OnChanges {
   @Input()
   public lastPaymentId: number;
 
+  @Input()
+  private hasFspWithReconciliation: boolean;
+
   public disabled: boolean;
   public isInProgress = false;
 
@@ -33,6 +40,8 @@ export class ExportFspInstructionsComponent implements OnChanges {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
+    private authService: AuthService,
+    private latestActionService: LatestActionService,
   ) {}
 
   ngOnInit() {
@@ -50,9 +59,28 @@ export class ExportFspInstructionsComponent implements OnChanges {
     this.subHeader = this.translate.instant(
       'page.program.export-fsp-intructions.confirm-message',
     );
+    // This shows the 'reconciliation' variant if there is at least one FSP with reconciliation (not 100% correct, but good enough for now)
     this.message = this.translate.instant(
-      'page.program.export-fsp-intructions.sub-message',
+      `page.program.export-fsp-intructions.sub-message.${
+        this.hasFspWithReconciliation ? 'reconciliation' : 'no-reconciliation'
+      }`,
     );
+    if (this.authService.hasPermission(this.programId, Permission.ActionREAD)) {
+      const actionTimestamp =
+        await this.latestActionService.getLatestActionTime(
+          ActionType.exportFspInstructions,
+          this.programId,
+        );
+      this.message += actionTimestamp
+        ? '<br><br>' +
+          this.translate.instant(
+            'page.program.export-fsp-intructions.timestamp',
+            {
+              dateTime: actionTimestamp,
+            },
+          )
+        : '';
+    }
   }
 
   private btnEnabled() {

@@ -48,7 +48,7 @@ import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
 import { BulkImportService, ImportType } from './services/bulk-import.service';
-import { InlusionScoreService } from './services/inclusion-score.service';
+import { InclusionScoreService } from './services/inclusion-score.service';
 
 @Injectable()
 export class RegistrationsService {
@@ -97,7 +97,7 @@ export class RegistrationsService {
     private readonly lookupService: LookupService,
     private readonly smsService: SmsService,
     private readonly whatsappService: WhatsappService,
-    private readonly inclusionScoreService: InlusionScoreService,
+    private readonly inclusionScoreService: InclusionScoreService,
     private readonly bulkImportService: BulkImportService,
     private readonly programService: ProgramService,
   ) {}

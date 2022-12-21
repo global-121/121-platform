@@ -1039,6 +1039,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         amount: `${this.program.currency} ${lastPayment.amount}`,
         hasMessageIcon: this.enableMessageSentIcon(lastPayment),
         hasMoneyIconTable: this.enableMoneySentIconTable(lastPayment),
+        status: lastPayment.status,
       };
       if (lastPayment.status === StatusEnum.success) {
         paymentColumnValue.text = this.translate.instant(
@@ -1117,7 +1118,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   public hasError(row: PersonRow): boolean {
-    return !!row.paymentHistory.errorMessage;
+    if (row.paymentHistory.errorMessage) {
+      return true;
+    }
+
+    if (row.paymentHistory.status === StatusEnum.error) {
+      return true;
+    }
+
+    return false;
   }
 
   public async editPersonAffectedPopup(row: PersonRow, programId: number) {
