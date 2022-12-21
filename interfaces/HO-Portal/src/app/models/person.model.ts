@@ -31,6 +31,10 @@ export class Person {
   preferredLanguage?: LanguageEnum;
   paTableAttributes?: Attribute[];
   registrationProgramId: number;
+  payment?: number;
+  paymentDate?: string;
+  transactionamount?: number;
+  transactionstatus?: string;
 }
 
 // Model for display (in table)
