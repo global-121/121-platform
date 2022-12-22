@@ -262,7 +262,7 @@
         },
         "last-message": {
           "no-message": "No messages yet",
-          "message-status": "LAST MESSAGE:"
+          "message-status": "Last message:"
         },
         "column": {
           "select": "Select",
