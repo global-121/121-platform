@@ -105,50 +105,44 @@ describe("Payment phase", () => {
     });
   });
 
-  // it('Send payment instructions with changed transfer value', function () {
-  //   const programId = 1;
-  //   cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
-  //   cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
-  //   cy.importRegistrations(programId);
-  //   let arr = [];
-  //   cy.getAllPeopleAffected(programId).then((response) => {
-  //     for (const pa of response.body) {
-  //       arr.push(pa.referenceId);
-  //     }
-  //     cy.includePeopleAffected(programId, arr);
-  //   });
-  //   cy.fixture("payment").then((page) => {
-  //     cy.setHoPortal();
-  //     cy.visit(page.url);
-  //     cy.url().should("include", "payment");
-  //     cy.get(
-  //       ".ion-justify-content-between > :nth-child(1) > ion-row.md > .styled-select"
-  //     ).select(
-  //       `${portalEn.page.program["program-people-affected"].actions["do-payment"]} #${page.payment}`
-  //     );
-  //     cy.get("label > input").click();
-  //     cy.get('[data-cy="apply-action"]').click();
-
-  //     // Use this to change transfer amount
-  //     cy.get('[data-cy="transfer-value-input"]');
-
-  //     cy.get(
-  //       "app-make-payment > .ion-align-items-center > confirm-prompt > .md"
-  //     ).click();
-  //     cy.get(".buttons-last-slot > .ion-color-primary").click();
-  //     cy.get("#alert-3-msg").contains("Successfully");
-  //     cy.get("#alert-3-msg").contains(String(arr.length));
-  //     cy.get(".alert-button").click();
-  //     cy.get('[data-cy="payment-history-button"]').contains(
-  //       portalEn.page.program["program-people-affected"].transaction.success
-  //     );
-  //     cy.get('[data-cy="payment-history-button"]').click();
-  //     cy.get(".full-width > :nth-child(1)").contains(
-  //       `${portalEn.page.program["program-people-affected"].transaction["payment-number"]}${page.payment}`
-  //     );
-  //     cy.get(".full-width > :nth-child(1)").contains(
-  //       portalEn.page.program["program-payout"]["last-payment"].success
-  //     );
-  //   });
-  // });
+  it("Send payment instructions with changed transfer value", function () {
+    const programId = 1;
+    const newFixedTransferValue = 4;
+    cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
+    cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
+    cy.importRegistrations(programId);
+    let arr = [];
+    let registrations = [];
+    cy.getAllPeopleAffected(programId).then((response) => {
+      for (const pa of response.body) {
+        arr.push(pa.referenceId);
+        registrations.push(pa);
+      }
+      cy.includePeopleAffected(programId, arr);
+    });
+    cy.fixture("payment").then((page) => {
+      cy.setHoPortal();
+      cy.visit(page.url);
+      cy.url().should("include", "payment");
+      cy.get(
+        ".ion-justify-content-between > :nth-child(1) > ion-row.md > .styled-select"
+      ).select(
+        `${portalEn.page.program["program-people-affected"].actions["do-payment"]} #${page.payment}`
+      );
+      cy.get("label > input").click();
+      cy.get('[data-cy="apply-action"]').click();
+      cy.get('[data-cy="transfer-value-input"]').clear();
+      cy.get('[data-cy="transfer-value-input"]').find('input').type(String(newFixedTransferValue), {force: true});
+      cy.get(
+        "app-make-payment > .ion-align-items-center > confirm-prompt > .md"
+      ).click();
+      const sum = registrations.reduce(function (a, b) {
+        return a + (b["paymentAmountMultiplier"] || 1);
+      }, 0);
+      const amountToCheck = newFixedTransferValue * sum;
+      cy.get(".ion-padding > .ion-margin-vertical").contains(
+        String(amountToCheck)
+      );
+    });
+  });
 });
