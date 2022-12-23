@@ -260,6 +260,10 @@
           "empty-selection-alert-message": "Please select at least one option",
           "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"
         },
+        "last-message": {
+          "no-message": "No messages yet",
+          "message-status": "Last message:"
+        },
         "column": {
           "select": "Select",
           "person": "Person Affected",
@@ -284,7 +288,8 @@
           "fsp": "Financial Service Provider",
           "custom-attribute-true": "Yes",
           "custom-attribute-false": "No",
-          "payment-history": "Payment history"
+          "payment-history": "Payment history",
+          "last-message-status": "Messages"
         },
         "language": {
           "en": "English",

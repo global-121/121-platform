@@ -512,6 +512,20 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         minWidth: 150,
         width: 150,
       },
+      {
+        prop: 'lastMessageStatus',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.last-message-status',
+        ),
+        ...this.columnDefaults,
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.payment,
+        ],
+        minWidth: 200,
+        width: 200,
+      },
     ];
   }
   ngOnDestroy(): void {
@@ -959,6 +973,13 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ? `${person.paymentAmountMultiplier}×`
         : '',
       fsp: person.fsp,
+      lastMessageStatus: person.lastMessageStatus
+        ? `${this.translate.instant(
+            'page.program.program-people-affected.last-message.message-status',
+          )} ${person.lastMessageStatus}`
+        : this.translate.instant(
+            'page.program.program-people-affected.last-message.no-message',
+          ),
       hasNote: !!person.hasNote,
       hasPhoneNumber: !!person.hasPhoneNumber,
       paTableAttributes: person.paTableAttributes,
