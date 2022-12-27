@@ -3,7 +3,7 @@ Feature: Send message to people affected (extension of View_and_Manage_people_af
 
   Background:
     Given a logged-in user with "RegistrationREAD" permission
-    And the "selected phase" is the "registrationValidation" or "inclusion" or "payment" phase 
+    And the "selected phase" is the "registrationValidation" or "inclusion" or "payment" phase
 
   Scenario: Use bulk-action "Send message to PAs"
     Given the generic "select bulk action" scenario (see View_and_Manage_people_affected.feature)
@@ -50,4 +50,8 @@ Feature: Send message to people affected (extension of View_and_Manage_people_af
     And the message doesn't arrive
 
   Scenario: Confirm "Send message to PAs" action for PA with last message 'failed'
-    # TODO: This scenario should include filtering for 'Last message: failed' and resending a message.
+    Given the "Send message to PAs" bulk action has been used
+    And this action has failed for one or more PA
+    When the text filter is used with the text "Last message: failed"
+    Then only the PA for which the last message failed appear in the PA table
+    And they can be selected for another "Send message to PAs" bulk action
