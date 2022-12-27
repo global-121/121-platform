@@ -743,6 +743,14 @@ export class RegistrationsService {
       }, 'customData')
       .addSelect('registration.phoneNumber', 'phoneNumber')
       .addSelect('data.value', 'data')
+      .leftJoin('registration.twilioMessages', 'twilioMessages')
+      .leftJoin(
+        'registration.twilioMessages',
+        'nextTwilioMessages',
+        'twilioMessages.created < nextTwilioMessages.created',
+      )
+      .addSelect('"twilioMessages".status', 'lastMessageStatus')
+      .where('nextTwilioMessages.id IS NULL')
       .leftJoin('registration.data', 'data')
       .leftJoin('data.programQuestion', 'programQuestion')
       .leftJoin('registration.fsp', 'fsp');

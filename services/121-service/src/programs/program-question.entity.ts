@@ -1,4 +1,5 @@
 import {
+  BeforeRemove,
   Column,
   Entity,
   JoinColumn,
@@ -76,4 +77,14 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @Column('json', { nullable: true })
   public shortLabel: JSON;
+
+  @BeforeRemove()
+  public async cascadeDelete(): Promise<void> {
+    await this.deleteAllOneToMany([
+      {
+        entityClass: RegistrationDataEntity,
+        columnName: 'programQuestionId',
+      },
+    ]);
+  }
 }

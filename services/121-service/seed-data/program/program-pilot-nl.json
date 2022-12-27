@@ -158,34 +158,6 @@
       }
     },
     {
-      "name": "vnumber",
-      "label": {
-        "ar": "رقم الـ V-number مكون من 10 ارقام. يمكنك إيجاده على إقامتك المؤقتة أو على أي رسالة من IND. <br><br> إذا لم تستطيع إيجاده، الرجاء التواصل مع الصليب الأحمر على واتس آب: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>31614458781+</a> <br><br> الرجاء إدخال رقم الـ V-Number:",
-        "en": "Your V-number consists of 10 numbers. You can find it on your (former) permit of stay or on a letter from the IND.   <br><br>   If you can’t find your V-Number, please contact the Rode Kruis helpdesk via WhatsApp on: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a>   <br><br>   Please enter your V-Number:",
-        "nl": "Jouw V-nummer bestaat uit 10 cijfers. Deze kan je vinden op je (voormalige) verblijfsvergunning of in een brief van het IND. <br><br> Als je jouw V-nummer niet kan vinden, neem dan contact op met de Rode Kruis helpdesk via WhatsApp: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a> <br><br> Vul je V-nummer in:",
-        "fr": "Votre Numéro V se compose de 10 chiffres. Vous pouvez le trouver sur votre (ancien) permis de séjour ou sur une lettre de l'IND. <br><br>  Si vous ne pouvez pas trouver votre Numéro V, s'il vous plaît, veuillez contacter le guiche d'information de la Croix-Rouge sur WhatsApp:<a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a><br><br> S'il vous plaît, veuillez remplir votre Numéro V:",
-        "es": "Su número V está formado por 10 cifras. Podrá encontrarlo en su (antiguo) permiso de estancia o en una carta del IND.   <br><br> Si no puede encontrar su número V, póngase en contacto con el servicio de asistencia de la Cruz Roja a través de WhatsApp en el: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a> <br><br> Introduzca su número V:",
-        "pt_BR": "Seu número-V é composto por 10 números. Você pode encontrá-lo em sua (antiga) autorização de permanência ou em uma carta do IND.   <br><br> Caso não consiga encontrar seu Número-V, entre em contato com o suporte técnico da Rode Kruis através do WhatsApp em: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a> <br><br> Por favor, digite seu Número-V:"
-      },
-      "placeholder": {
-        "en": "0000000000",
-        "pt_BR": "0000000000"
-      },
-      "answerType": "numeric",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "pattern": "^\\d{10}$",
-      "phases": ["payment"],
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "V-Number",
-        "pt_BR": "Número-V"
-      }
-    },
-    {
       "name": "phoneNumber",
       "label": {
         "ar": "الرجاء مشاركة رقم هاتف يمكننا إرسال رسالة نصية إليه. سوف نستخدم هذا الرقم لإعلامك عن برنامج المعونات. <br><br> مثال على الرقم: <code>+31600000000</code>",

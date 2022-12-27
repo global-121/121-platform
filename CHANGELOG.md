@@ -5,18 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.74.3...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.76.0...master)
+
+---
+
+## [1.76.0](https://github.com/global-121/121-platform/compare/v1.75.0...v1.76.0) - 2022-12-27
+
+### Added
+
+- Show last message status in PA-table
+
+## [1.75.0](https://github.com/global-121/121-platform/compare/v1.74.3...v1.75.0) - 2022-12-22
 
 ### Added
 
 - HTTPS-certificates will be automatically renewed with `Certbot` by Lets Encrypt. This requires a one-time set-up step, see [Tools README / Hosting / Apache2, step 6](./tools/README.md#apache2).
 - The Apache web-server will be restarted by the [`deploy.sh`](./tools/deploy.sh#L261)-script on every deployment.
+- Functionality to upload reconciliation data for FSP 'VodaCash'.
 
 ### Removed
 
 - Any specific certificates(i.e. `certvqebkt` and `cert2xF5qw`) in the folder`tools/certificates` can be removed, they are replaced by the Lets Encrypt certificates.
-
----
+- V-number from code and seed script
 
 ## [1.74.3](https://github.com/global-121/121-platform/compare/v1.74.2...v1.74.3) - 2022-12-19
 
