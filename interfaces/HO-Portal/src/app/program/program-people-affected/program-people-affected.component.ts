@@ -555,13 +555,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
     await this.loadColumns();
 
-    if (this.canViewPaymentData) {
-      if (this.thisPhase === ProgramPhase.payment) {
-        this.paymentHistoryColumn = this.createPaymentHistoryColumn();
-        await this.refreshData();
-      }
-    }
-
     await this.updateBulkActions();
 
     this.submitPaymentProps = {
@@ -837,6 +830,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       this.canUpdatePersonalData,
       this.canViewPaymentData && this.thisPhase === ProgramPhase.payment,
     );
+
+    if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
+      this.paymentHistoryColumn = this.createPaymentHistoryColumn();
+    }
 
     this.allPeopleAffected = this.createTableData(this.allPeopleData);
     this.filterPeopleAffectedByPhase();
