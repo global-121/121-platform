@@ -55,14 +55,14 @@ describe("Payment phase", () => {
       cy.get("#alert-3-msg").contains(String(arr.length));
       cy.get(".alert-button").click();
       cy.get('[data-cy="payment-history-button"]').contains(
-        portalEn.page.program["program-people-affected"].transaction.success
+        portalEn.page.program["program-people-affected"].transaction.waiting
       );
       cy.get('[data-cy="payment-history-button"]').click();
       cy.get(".full-width > :nth-child(1)").contains(
         `${portalEn.page.program["program-people-affected"].transaction["payment-number"]}${page.payment}`
       );
       cy.get(".full-width > :nth-child(1)").contains(
-        portalEn.page.program["program-payout"]["last-payment"].success
+        portalEn.page.program["program-payout"]["last-payment"].waiting
       );
     });
   });
