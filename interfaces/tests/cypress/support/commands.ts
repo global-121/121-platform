@@ -1,15 +1,18 @@
+const XLSX = require('xlsx');
+const fs = require('fs');
+
 // Contains a list of custom Commands
 Cypress.Commands.add("setHoPortal", () => {
-  Cypress.config("baseUrl", Cypress.config("baseUrl-HO" as any));
+  Cypress.config("baseUrl", Cypress.env("baseUrl-HO" as any));
 });
 Cypress.Commands.add("setAwApp", () => {
-  Cypress.config("baseUrl", Cypress.config("baseUrl-AW" as any));
+  Cypress.config("baseUrl", Cypress.env("baseUrl-AW" as any));
 });
 Cypress.Commands.add("setPaApp", () => {
-  Cypress.config("baseUrl", Cypress.config("baseUrl-PA" as any));
+  Cypress.config("baseUrl", Cypress.env("baseUrl-PA" as any));
 });
 Cypress.Commands.add("setServer", () => {
-  Cypress.config("baseUrl", Cypress.config("baseUrl-server" as any));
+  Cypress.config("baseUrl", Cypress.env("baseUrl-server" as any));
 });
 
 Cypress.Commands.add("seedDatabase", () => {
@@ -151,6 +154,18 @@ Cypress.Commands.add("getAllPeopleAffected", (programId: number) => {
   });
 });
 
+Cypress.Commands.add("readXlsx", (fileName: string, sheet: string) => {
+  const filePath = `cypress/downloads/${fileName}`
+  console.log('fs: ', fs.readFileSync);
+  // const buf = fs.readFileSync(filePath);
+  cy.readFile(filePath, null).then((text) => {
+    const workbook = XLSX.read(text, {type: 'buffer'} );
+    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+    return rows
+  })
+});
+
+
 /// <reference types="cypress" />
 declare namespace Cypress {
   interface Chainable<Subject> {
@@ -175,5 +190,6 @@ declare namespace Cypress {
     ): Cypress.Chainable<Cypress.Response<any>>;
     includePeopleAffected(programId: number, referenceIds: string[]): void;
     doPayment(programId: number, referenceIds: string[], payment: number, amount: number): void;
+    readXlsx(filename: string, sheet: string): any
   }
 }
