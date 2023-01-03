@@ -48,6 +48,7 @@ import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
+import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
@@ -1185,6 +1186,24 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         canUpdatePersonalData: this.canUpdatePersonalData,
         canDoSinglePayment: this.canDoSinglePayment,
         canViewVouchers: this.canViewVouchers,
+      },
+    });
+    await modal.present();
+  }
+
+  public async openMessageHistoryPopup(
+    personRow: PersonRow,
+    programId: number,
+  ) {
+    const person = this.allPeopleData.find(
+      (pa) => pa.referenceId === personRow.referenceId,
+    );
+
+    const modal: HTMLIonModalElement = await this.modalController.create({
+      component: MessageHistoryPopupComponent,
+      componentProps: {
+        person,
+        programId,
       },
     });
     await modal.present();

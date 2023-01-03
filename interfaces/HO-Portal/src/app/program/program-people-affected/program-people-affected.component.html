@@ -286,10 +286,20 @@
           ></ion-checkbox>
         </span>
       </ng-container>
-      <ng-container *ngIf="value !== true && value !== false && value">
-        <span [attr.title]="value">
-          {{ value }}
-        </span>
+      <ng-container
+        *ngIf="
+          value !== true &&
+          value !== false &&
+          value &&
+          column.prop !== 'lastMessageStatus'
+        "
+      >
+        <span [attr.title]="value"> {{ value }} </span>
+      </ng-container>
+      <ng-container *ngIf="column.prop === 'lastMessageStatus'">
+        <ion-button (click)="openMessageHistoryPopup(row, programId)">{{
+          value
+        }}</ion-button>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>
