@@ -22,11 +22,7 @@ export class WhatsappPendingMessageEntity extends Base121Entity {
   @Column({ type: 'int', nullable: true })
   public registrationId: number;
 
-  @Column({
-    type: 'enum',
-    enum: MessageContentType,
-    default: MessageContentType.custom,
-  })
+  @Column({ default: MessageContentType.custom })
   public contentType: MessageContentType;
 
   @ManyToOne(
