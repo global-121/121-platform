@@ -1213,13 +1213,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       ).map((r) => r.referenceId);
     }
     return people.map((person) => {
-      const hasSelectedPayment = registrationsWithPayment.includes(
-        person.referenceId,
-      );
       return this.bulkActionService.updateCheckbox(
         action,
         person,
-        hasSelectedPayment,
+        payment ? registrationsWithPayment.includes(person.referenceId) : null,
       );
     });
   }
