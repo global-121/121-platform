@@ -1,9 +1,6 @@
-import portalEn from "../../../../../../interfaces/HO-Portal/src/assets/i18n/en.json";
 import { ProgramPhase } from "../../../../../../services/121-service/src/shared/enum/program-phase.model";
-import programLVV from "../../../../../../services/121-service/seed-data/program/program-pilot-nl.json";
 
-
-describe("Regustration phase", () => {
+describe("Registration phase", () => {
   beforeEach(() => {
     const programId = 1;
     cy.seedDatabase();
@@ -23,9 +20,9 @@ describe("Regustration phase", () => {
     });
   });
 
-  it('Export with a PA', function () {
+  it('Export with a PA with 2 payments', function () {
     // Wait for the twilio mock to fake an incomming message
-    cy.wait(1000);
+    cy.wait(2000);
     cy.fixture("pa-export").then((page) => {
       cy.setHoPortal();
       cy.visit(page.url);
@@ -43,7 +40,6 @@ describe("Regustration phase", () => {
         // Checks if read excel contains original seeded values
         cy.readXlsx(filename, 'data').then((excelData) => {
           for (const excelRow of excelData) {
-            console.log('row: ', excelRow);
             for (let [key, value] of Object.entries(seededRegistration)) {
               if (key === 'fspName') {
                 key = 'financialserviceprovider';

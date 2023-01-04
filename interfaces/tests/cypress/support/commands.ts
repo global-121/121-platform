@@ -155,9 +155,7 @@ Cypress.Commands.add("getAllPeopleAffected", (programId: number) => {
 });
 
 Cypress.Commands.add("readXlsx", (fileName: string, sheet: string) => {
-  const filePath = `cypress/downloads/${fileName}`
-  console.log('fs: ', fs.readFileSync);
-  // const buf = fs.readFileSync(filePath);
+  const filePath = `cypress/downloads/${fileName}`;
   cy.readFile(filePath, null).then((text) => {
     const workbook = XLSX.read(text, {type: 'buffer'} );
     const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
@@ -166,7 +164,7 @@ Cypress.Commands.add("readXlsx", (fileName: string, sheet: string) => {
 });
 
 
-/// <reference types="cypress" />
+// <reference types="cypress" />
 declare namespace Cypress {
   interface Chainable<Subject> {
     form_request(method: string, url: string, formData: any): void;
