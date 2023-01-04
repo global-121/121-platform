@@ -31,6 +31,11 @@ export class Person {
   preferredLanguage?: LanguageEnum;
   paTableAttributes?: Attribute[];
   registrationProgramId: number;
+  payment?: number;
+  paymentDate?: string;
+  transactionAmount?: number;
+  transactionStatus?: string;
+  errorMessage?: string;
   lastMessageStatus?: string;
 }
 

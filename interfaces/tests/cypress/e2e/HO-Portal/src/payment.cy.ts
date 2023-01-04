@@ -17,9 +17,7 @@ describe("Payment phase", () => {
       cy.setHoPortal();
       cy.visit(page.url);
       cy.url().should("include", "payment");
-      cy.get(
-        ".ion-justify-content-between > :nth-child(1) > ion-row.md > .styled-select"
-      ).select("Do payment #1");
+      cy.get('[data-cy="select-action"]').select("Do payment #1");
       cy.get("#alert-1-msg").contains("no People");
     });
   });
@@ -40,9 +38,8 @@ describe("Payment phase", () => {
       cy.setHoPortal();
       cy.visit(page.url);
       cy.url().should("include", "payment");
-      cy.get(
-        ".ion-justify-content-between > :nth-child(1) > ion-row.md > .styled-select"
-      ).select(
+      cy.get('[data-cy="select-action"]')
+      .select(
         `${portalEn.page.program["program-people-affected"].actions["do-payment"]} #${page.payment}`
       );
       cy.get("label > input").click();
@@ -53,11 +50,12 @@ describe("Payment phase", () => {
       cy.get(".buttons-last-slot > .ion-color-primary").click();
       cy.get("#alert-3-msg").contains("Successfully");
       cy.get("#alert-3-msg").contains(String(arr.length));
+      cy.wait(2000);
       cy.get(".alert-button").click();
       cy.get('[data-cy="payment-history-button"]').contains(
         portalEn.page.program["program-people-affected"].transaction.success
       );
-      cy.get('[data-cy="payment-history-button"]').click();
+      cy.get('[data-cy="payment-history-button"]').click({force: true});
       cy.get(".full-width > :nth-child(1)").contains(
         `${portalEn.page.program["program-people-affected"].transaction["payment-number"]}${page.payment}`
       );

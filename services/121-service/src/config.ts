@@ -51,7 +51,7 @@ const rootUrl =
     : process.env.EXTERNAL_121_SERVICE_URL;
 export const EXTERNAL_API = {
   root: rootUrl,
-  rootApi: `${rootUrl}/api`,
+  rootApi: `${rootUrl}api`,
   smsStatus: baseApiUrl + API_PATHS.smsStatus,
   voiceStatus: baseApiUrl + API_PATHS.voiceStatus,
   whatsAppStatus: baseApiUrl + API_PATHS.whatsAppStatus,

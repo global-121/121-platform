@@ -12,10 +12,10 @@ We use Cypress(<https://www.cypress.io/>) for integration tests and writing end-
 
 ### Start test locally
 
-1. To run locally, make sure all interfaces and services are running, or use:
+1. Set `MOCK_TWILIO` and `MOCK_INTERSOLVE` and possible other mock env-variables to `TRUE`
+2. Make sure all interfaces and services are running, use:
    - `npm run start:services`
    - `npm run start:interfaces`
-2. Seed data
 3. Start with: `npm run start:cypress`
 
    - This will open up a window, where you can choose your preferred browser first in which the tests will run
