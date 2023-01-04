@@ -32,6 +32,7 @@
         </ng-container>
       </select>
       <confirm-prompt
+        data-cy="apply-action"
         [disabled]="applyBtnDisabled"
         (confirm)="applyAction($event)"
         [subHeader]="
@@ -350,6 +351,7 @@
     >
       <ng-container *ngIf="value">
         <button
+          data-cy="payment-history-button"
           *ngIf="row.paymentHistory?.paymentIndex"
           type="button"
           [attr.title]="
