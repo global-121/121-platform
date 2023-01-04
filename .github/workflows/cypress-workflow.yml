@@ -52,6 +52,7 @@ jobs:
         /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example
         /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example
         /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
+        /bin/sed -i '/^EXTERNAL_121_SERVICE_URL=/s/=.*/=http:\/\/localhost:3000\//' ./services/.env.example
         cp ./services/.env.example services/.env
 
     - name: Install interfaces
