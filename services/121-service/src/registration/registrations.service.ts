@@ -714,6 +714,7 @@ export class RegistrationsService {
     includePaymentData: boolean,
     includeDeletedRegistrations: boolean,
     referenceId: string,
+    filterOnPayment?: number,
   ): Promise<RegistrationResponse[]> {
     let program: ProgramEntity;
     if (programId) {
@@ -722,9 +723,11 @@ export class RegistrationsService {
     let q = await this.registrationRepository
       .createQueryBuilder('registration')
       .select('registration.id', 'id');
+
     if (includePaymentData) {
       q = this.includeTransactionData(q);
     }
+
     q = q
       .addSelect('registration.registrationProgramId', 'registrationProgramId')
       .distinctOn(['registration.registrationProgramId'])
@@ -757,6 +760,14 @@ export class RegistrationsService {
 
     if (programId) {
       q.where('registration.program.id = :programId', { programId: programId });
+    }
+
+    if (filterOnPayment) {
+      q.leftJoin(
+        TransactionEntity,
+        'transaction',
+        'transaction."registrationId" = registration.id',
+      ).where('transaction.payment = :payment', { payment: filterOnPayment });
     }
 
     this.addStatusChangeToQuery(q);

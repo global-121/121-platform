@@ -227,6 +227,7 @@ export class RegistrationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'personalData', required: true, type: 'boolean' })
   @ApiQuery({ name: 'paymentData', required: true, type: 'boolean' })
+  @ApiQuery({ name: 'filterOnPayment', required: false, type: 'number' })
   @ApiResponse({
     status: 200,
     description: 'Got all People Affected for program EXCLUDING personal data',
@@ -246,8 +247,7 @@ export class RegistrationsController {
         Number(programId),
       );
     }
-
-    if (paymentData) {
+    if (paymentData || queryParams.filterOnPayment) {
       await this.registrationsService.checkPermissionAndThrow(
         userId,
         PermissionEnum.PaymentTransactionREAD,
@@ -261,6 +261,7 @@ export class RegistrationsController {
       paymentData,
       true,
       null,
+      queryParams.filterOnPayment,
     );
   }
 

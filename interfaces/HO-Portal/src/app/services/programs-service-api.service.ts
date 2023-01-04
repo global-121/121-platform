@@ -450,10 +450,19 @@ export class ProgramsServiceApiService {
     programId: number | string,
     personalData: boolean,
     paymentData: boolean,
+    filterOnPayment?: number,
   ): Promise<Person[]> {
+    let params = new HttpParams();
+    params = params.append('personalData', personalData);
+    params = params.append('paymentData', paymentData);
+    if (filterOnPayment) {
+      params = params.append('filterOnPayment', filterOnPayment);
+    }
     return this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations?personalData=${personalData}&paymentData=${paymentData}`,
+      `/programs/${programId}/registrations`,
+      false,
+      params,
     );
   }
 

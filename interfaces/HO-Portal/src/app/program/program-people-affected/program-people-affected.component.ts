@@ -1163,7 +1163,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     await modal.present();
   }
 
-  public selectAction($event) {
+  public async selectAction($event) {
     if (this.action === BulkActionId.chooseAction) {
       this.resetBulkAction();
       return;
@@ -1176,7 +1176,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         dropdownOptionLabel.split('#')[1],
       );
     }
-    this.allPeopleAffected = this.updatePeopleForAction(
+    this.allPeopleAffected = await this.updatePeopleForAction(
       this.allPeopleAffected,
       this.action,
       this.submitPaymentProps.payment,
@@ -1196,14 +1196,32 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updatePeopleForAction(
+  private async updatePeopleForAction(
     people: PersonRow[],
     action: BulkActionId,
     payment?: number,
   ) {
-    return people.map((person) =>
-      this.bulkActionService.updateCheckbox(action, person, payment),
-    );
+    let registrationsWithPayment;
+    if (payment) {
+      registrationsWithPayment = (
+        await this.programsService.getPeopleAffected(
+          this.programId,
+          false,
+          false,
+          payment,
+        )
+      ).map((r) => r.referenceId);
+    }
+    return people.map((person) => {
+      const hasSelectedPayment = registrationsWithPayment.includes(
+        person.referenceId,
+      );
+      return this.bulkActionService.updateCheckbox(
+        action,
+        person,
+        hasSelectedPayment,
+      );
+    });
   }
 
   private resetBulkAction() {
