@@ -44,6 +44,12 @@ export class TwilioMessageEntity extends Base121Entity {
   @Column({ default: MessageContentType.custom })
   public contentType: MessageContentType;
 
+  @Column({ nullable: true })
+  public errorCode?: string;
+
+  @Column({ nullable: true })
+  public errorMessage?: string;
+
   @ManyToOne(
     _type => RegistrationEntity,
     registration => registration.twilioMessages,

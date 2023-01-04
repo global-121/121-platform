@@ -222,7 +222,11 @@ export class WhatsappService {
 
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
-      { status: callbackData.MessageStatus },
+      {
+        status: callbackData.MessageStatus,
+        errorCode: callbackData.ErrorCode,
+        errorMessage: callbackData.ErrorMessage,
+      },
     );
 
     const statuses = [
