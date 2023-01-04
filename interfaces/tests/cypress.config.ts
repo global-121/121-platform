@@ -1,14 +1,19 @@
+import { defineConfig } from "cypress";
 
-const fs = require('fs');
-module.exports = {
+const { verifyDownloadTasks } = require('cy-verify-downloads');
+
+module.exports = defineConfig({
+  env: {
   'baseUrl-PA': 'http://localhost:8008',
   'baseUrl-AW': 'http://localhost:8080',
   'baseUrl-HO': 'http://localhost:8888',
   'baseUrl-server': 'http://localhost:3000/api',
+  },
   viewportWidth: 1920,
   viewportHeight: 1080,
   e2e: {
     setupNodeEvents(on, config) {
+      on('task', verifyDownloadTasks);
       on('task', {
         readFile: ({ fileName }): any[] => { // there is a name and arguments for a task
           const folderPath = '../../features/test-registration-data';
@@ -38,4 +43,4 @@ module.exports = {
       return config
     },
   },
-}
+})
