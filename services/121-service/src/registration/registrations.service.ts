@@ -11,6 +11,7 @@ import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
+import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -710,8 +711,10 @@ export class RegistrationsService {
   public async getRegistrations(
     programId: number,
     includePersonalData: boolean,
+    includePaymentData: boolean,
     includeDeletedRegistrations: boolean,
     referenceId: string,
+    filterOnPayment?: number,
   ): Promise<RegistrationResponse[]> {
     let program: ProgramEntity;
     if (programId) {
@@ -719,7 +722,13 @@ export class RegistrationsService {
     }
     let q = await this.registrationRepository
       .createQueryBuilder('registration')
-      .select('registration.id', 'id')
+      .select('registration.id', 'id');
+
+    if (includePaymentData) {
+      q = this.includeTransactionData(q);
+    }
+
+    q = q
       .addSelect('registration.registrationProgramId', 'registrationProgramId')
       .distinctOn(['registration.registrationProgramId'])
       .orderBy(`registration.registrationProgramId`, 'ASC')
@@ -751,6 +760,14 @@ export class RegistrationsService {
 
     if (programId) {
       q.where('registration.program.id = :programId', { programId: programId });
+    }
+
+    if (filterOnPayment) {
+      q.leftJoin(
+        TransactionEntity,
+        'transaction',
+        'transaction."registrationId" = registration.id',
+      ).where('transaction.payment = :payment', { payment: filterOnPayment });
     }
 
     this.addStatusChangeToQuery(q);
@@ -949,6 +966,36 @@ export class RegistrationsService {
         RegistrationStatusEnum.deleted,
         `registration.id = ${RegistrationStatusEnum.deleted}.registrationId AND ${RegistrationStatusEnum.deleted}.registrationStatus = '${RegistrationStatusEnum.deleted}'`,
       );
+  }
+
+  private includeTransactionData(
+    q: SelectQueryBuilder<RegistrationEntity>,
+  ): SelectQueryBuilder<RegistrationEntity> {
+    q.leftJoin(
+      qb =>
+        qb
+          .from(TransactionEntity, 'transactions')
+          .select('MAX("payment")', 'payment')
+          .addSelect('"registrationId"', 'registrationId')
+          .groupBy('"registrationId"'),
+      'last_transaction',
+      'last_transaction."registrationId" = registration.id',
+    )
+      .addSelect(['last_transaction.payment as test'])
+      .leftJoin(
+        'registration.transactions',
+        'transaction',
+        `transaction.payment = last_transaction.payment`,
+      )
+      .addSelect([
+        'transaction.created AS "paymentDate"',
+        'transaction.payment AS payment',
+        'transaction.status AS "transactionStatus"',
+        'transaction.amount AS "transactionAmount"',
+        'transaction.errorMessage as "errorMessage"',
+        'transaction.customData as "customData"',
+      ]);
+    return q;
   }
 
   public async getLatestDateForRegistrationStatus(
@@ -1288,7 +1335,7 @@ export class RegistrationsService {
       const uniqueReferenceIds = [...new Set(matchingReferenceIds)];
       for (const referenceId of uniqueReferenceIds) {
         const registration = (
-          await this.getRegistrations(null, true, true, referenceId)
+          await this.getRegistrations(null, true, false, true, referenceId)
         )[0];
         registrations.push(registration);
       }
@@ -1312,6 +1359,21 @@ export class RegistrationsService {
       }
     }
     return programIds;
+  }
+
+  public async checkPermissionAndThrow(
+    userId: number,
+    permission: PermissionEnum,
+    programId: number,
+  ): Promise<void> {
+    const programIds = await this.getProgramIdsUserHasPermission(
+      userId,
+      permission,
+    );
+    if (!programIds.includes(programId)) {
+      const error = `User does not have the ${permission} permission for this program`;
+      throw new HttpException({ error }, HttpStatus.UNAUTHORIZED);
+    }
   }
 
   // AW: get answers to attributes for a given PA (identified first through referenceId)

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../../base.entity';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { ProgramEntity } from '../../programs/program.entity';
@@ -22,6 +22,7 @@ export class TransactionEntity extends Base121Entity {
   public program: ProgramEntity;
 
   @Column({ default: 1 })
+  @Index()
   public payment: number;
 
   @Column('json', {

@@ -728,6 +728,7 @@ export class ExportMetricsService {
     const registrations = await this.registrationsService.getRegistrations(
       programId,
       false,
+      false,
       true,
       null,
     );
