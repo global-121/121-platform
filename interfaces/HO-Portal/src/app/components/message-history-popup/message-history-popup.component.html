@@ -41,12 +41,12 @@
                 <ion-text>
                   <ion-label style="font-weight: 600">
                     {{
-                      'page.program.program-people-affected.message-history-popup.content-type' +
+                      'page.program.program-people-affected.message-history-popup.content-type.' +
                         message.contentType | translate
                     }}
                     {{ ' ' }}
                     ({{
-                      'page.program.program-people-affected.message-history-popup.content-type' +
+                      'page.program.program-people-affected.message-history-popup.type.' +
                         message.type | translate
                     }})
                     <ion-note style="font-weight: 400">
@@ -61,10 +61,9 @@
             <ion-col size="4">
               <ion-row class="ion-justify-content-end">
                 <ion-chip
-                  style="width: 120px; color: var(--ion-color-secondary)"
-                  color="success"
                   class="ion-justify-content-center"
-                  >Read</ion-chip
+                  [ngClass]="'chip-' + statusBg[message.status]"
+                  >{{ message.status }}</ion-chip
                 >
               </ion-row>
             </ion-col>

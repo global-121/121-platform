@@ -410,6 +410,17 @@
             "custom": "Custom message",
             "generic-templated": "Generic template",
             "payment-templated": "Payment template"
+          },
+          "status": {
+            "accepted": "Accepted",
+            "scheduled": "Scheduled",
+            "queued": "Queued",
+            "sending": "Sending",
+            "sent": "Sent",
+            "delivery_unknown": "Delivery unknown",
+            "delivered": "Delivered",
+            "undelivered": "Undelivered",
+            "failed": "Failed"
           }
         },
         "payment-status-popup": {

@@ -8,6 +8,7 @@ import { ActionType, LatestAction } from '../models/actions.model';
 import { ExportType } from '../models/export-type.model';
 import { Fsp } from '../models/fsp.model';
 import { ImportType } from '../models/import-type.enum';
+import { Message } from '../models/message.model';
 import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
 import { Note, Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
@@ -246,7 +247,10 @@ export class ProgramsServiceApiService {
       `/programs/${programId}/registrations/note/${referenceId}`,
     );
   }
-  retrieveMsgHistory(programId: number, referenceId: string): Promise<any> {
+  retrieveMsgHistory(
+    programId: number,
+    referenceId: string,
+  ): Promise<Message[]> {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/message-history/${referenceId}`,

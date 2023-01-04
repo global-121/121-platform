@@ -1712,7 +1712,8 @@ export class RegistrationsService {
         'twilioMessage.body as body',
         'twilioMessage.status as status',
         'twilioMessage.type as type',
-        'twilioMessage.mediaUrl as mediaUrl',
+        'twilioMessage.mediaUrl as "mediaUrl"',
+        'twilioMessage.contentType as "contentType"',
       ])
       .leftJoin('registration.twilioMessages', 'twilioMessage')
       .where('registration.referenceId = :referenceId', {

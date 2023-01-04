@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { Message } from '../../models/message.model';
 import { Person } from '../../models/person.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 
@@ -15,11 +16,23 @@ export class MessageHistoryPopupComponent implements OnInit {
   @Input()
   public programId: number;
 
-  public messageHistory: any;
+  public messageHistory: Message[];
   public historySize = 5;
   public trimBodyLength = 20;
   public imageString = '(image)';
   public rowIndex: number;
+
+  public statusBg = {
+    accepted: 'warning',
+    scheduled: 'warning',
+    queued: 'warning',
+    sending: 'warning',
+    sent: 'success',
+    delivery_unknown: 'danger',
+    delivered: 'success',
+    undelivered: 'danger',
+    failed: 'danger',
+  };
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -31,11 +44,10 @@ export class MessageHistoryPopupComponent implements OnInit {
   }
 
   private async getMessageHistory() {
-    const msghistory = await this.programsService.retrieveMsgHistory(
+    this.messageHistory = await this.programsService.retrieveMsgHistory(
       this.programId,
       this.person.referenceId,
     );
-    this.messageHistory = msghistory;
   }
   public async loadMore(historyLength) {
     this.historySize = historyLength;

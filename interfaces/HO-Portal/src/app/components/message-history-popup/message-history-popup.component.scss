@@ -1,0 +1,15 @@
+ion-chip {
+  width: 120px;
+  color: var(--ion-color-secondary);
+  cursor: default;
+
+  &.chip-success {
+    background-color: var(--ion-color-success);
+  }
+  &.chip-danger {
+    background-color: var(--ion-color-danger);
+  }
+  &.chip-warning {
+    background-color: var(--ion-color-warning);
+  }
+}
