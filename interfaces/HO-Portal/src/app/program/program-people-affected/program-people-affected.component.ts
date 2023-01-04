@@ -835,7 +835,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       this.paymentHistoryColumn = this.createPaymentHistoryColumn();
     }
 
-    this.allPeopleAffected = this.createTableData(this.allPeopleData);
+    this.allPeopleAffected = await this.createTableData(this.allPeopleData);
     this.filterPeopleAffectedByPhase();
   }
 
@@ -875,13 +875,19 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.visiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
   }
 
-  private createTableData(source: Person[]): PersonRow[] {
+  private async createTableData(source: Person[]): Promise<PersonRow[]> {
     if (!source || source.length === 0) {
       return [];
     }
-    return source
-      .sort(this.sortPeopleByInclusionScore)
-      .map((person) => this.createPersonRow(person));
+
+    let tableData: PersonRow[] = [];
+
+    for (const person of source.sort(this.sortPeopleByInclusionScore)) {
+      const personRow = await this.createPersonRow(person);
+      tableData.push(personRow);
+    }
+
+    return tableData;
   }
 
   private sortPeopleByInclusionScore(a: Person, b: Person) {
@@ -892,7 +898,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     }
   }
 
-  private createPersonRow(person: Person): PersonRow {
+  private async createPersonRow(person: Person): Promise<PersonRow> {
     // If a person has registered while no longer eligeble the registeredWhileNoLongerEligibleDate
     // corresponds wuth the vulnerabilityAssessmentComplete time stamp
     const vulnerabilityAssessmentCompleteTime = person.registeredDate
@@ -982,7 +988,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     };
 
     if (this.canViewPaymentData) {
-      personRow = this.fillPaymentHistoryColumn(personRow, lastPaymentInfo);
+      personRow = await this.fillPaymentHistoryColumn(
+        personRow,
+        lastPaymentInfo,
+      );
     }
 
     // Custom attributes can be personal data or not personal data
@@ -1002,7 +1011,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     return personRow;
   }
 
-  private fillPaymentHistoryColumn(
+  private async fillPaymentHistoryColumn(
     personRow: PersonRow,
     lastPaymentInfo: {
       lastPaymentNumber: number;
@@ -1010,7 +1019,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       lastPaymentStatus: string;
       lastPaymentErrorMessage: string;
     },
-  ): PersonRow {
+  ): Promise<PersonRow> {
     const {
       lastPaymentNumber,
       lastPaymentAmount,
@@ -1029,12 +1038,21 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       );
       personRow[columnKey] = paymentColumnValue.text;
     } else {
+      const payments = (
+        await this.programsService.getTransactions(
+          this.programId,
+          1,
+          personRow.referenceId,
+        )
+      ).map((t) => t.payment);
+
       paymentColumnValue = {
         text: '',
         paymentIndex: lastPaymentNumber,
         amount: `${this.program.currency} ${lastPaymentAmount}`,
         status: lastPaymentStatus,
         errorMessage: lastPaymentErrorMessage,
+        payments,
       };
       if (lastPaymentStatus === StatusEnum.success) {
         paymentColumnValue.text = this.translate.instant(
