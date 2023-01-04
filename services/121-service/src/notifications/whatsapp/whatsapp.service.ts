@@ -416,6 +416,7 @@ export class WhatsappService {
         null,
         nlrcPvNumber,
         process.env.TWILIO_MESSAGING_SID_PV,
+        MessageContentType.defaultReply,
       );
       return;
     }
@@ -466,6 +467,9 @@ export class WhatsappService {
           null,
           null,
           null,
+          null,
+          null,
+          MessageContentType.defaultReply,
         );
         return;
       } else {
@@ -476,6 +480,9 @@ export class WhatsappService {
           null,
           null,
           null,
+          null,
+          null,
+          MessageContentType.defaultReply,
         );
         return;
       }
@@ -512,6 +519,9 @@ export class WhatsappService {
           IntersolvePayoutStatus.VoucherSent,
           mediaUrl,
           registration.id,
+          null,
+          null,
+          MessageContentType.payment,
         );
         firstVoucherSent = true;
 
@@ -540,6 +550,9 @@ export class WhatsappService {
           null,
           EXTERNAL_API.voucherInstructionsUrl,
           registration.id,
+          null,
+          null,
+          MessageContentType.paymentInstructions,
         );
       }
     }
