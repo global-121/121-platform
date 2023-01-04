@@ -27,7 +27,7 @@ export class programLanguages1669802888828 implements MigrationInterface {
       const languages = Object.keys(program.notifications).map(key => {
         return key;
       });
-      const programRepo = queryRunner.connection.getRepository(ProgramEntity);
+      const programRepo = queryRunner.manager.getRepository(ProgramEntity);
       program.languages = languages;
       await programRepo.save(program);
     }

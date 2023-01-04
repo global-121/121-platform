@@ -79,7 +79,7 @@ export class ImageCodeService {
   }
 
   public async get(secret: string): Promise<any> {
-    const imageCode = await this.imageRepository.findOne({ secret: secret });
+    const imageCode = await this.imageRepository.findOneBy({ secret: secret });
     // Removes the image from the database after getting it
     await this.imageRepository.remove(imageCode);
     return imageCode.image;

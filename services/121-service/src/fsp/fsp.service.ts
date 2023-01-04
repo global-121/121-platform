@@ -18,7 +18,8 @@ export class FspService {
   public constructor() {}
 
   public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {
-    const fsp = await this.financialServiceProviderRepository.findOne(id, {
+    const fsp = await this.financialServiceProviderRepository.findOne({
+      where: { id: id },
       relations: ['questions'],
     });
     if (fsp) {

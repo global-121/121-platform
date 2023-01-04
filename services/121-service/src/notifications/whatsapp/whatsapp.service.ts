@@ -6,7 +6,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, getRepository, In, Repository } from 'typeorm';
+import { Brackets, DataSource, In, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
 import { IntersolvePayoutStatus } from '../../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
@@ -72,6 +72,7 @@ export class WhatsappService {
     @Inject(forwardRef(() => IntersolveService))
     private readonly intersolveService: IntersolveService,
     private readonly smsService: SmsService,
+    private readonly dataSource: DataSource,
   ) {}
 
   public async sendWhatsapp(
@@ -121,12 +122,10 @@ export class WhatsappService {
     pendingMesssage.registrationId = registrationId;
     this.whatsappPendingMessageRepo.save(pendingMesssage);
 
-    const registration = await this.registrationRepository.findOne(
-      registrationId,
-      {
-        relations: ['program'],
-      },
-    );
+    const registration = await this.registrationRepository.findOne({
+      where: { id: registrationId },
+      relations: ['program'],
+    });
     const language = registration.preferredLanguage || this.fallbackLanguage;
     const whatsappGenericMessage = this.getGenericNotificationText(
       language,
@@ -181,7 +180,7 @@ export class WhatsappService {
     const findOneOptions = {
       sid: sid,
     };
-    return await this.twilioMessageRepository.findOne(findOneOptions);
+    return await this.twilioMessageRepository.findOneBy(findOneOptions);
   }
 
   public async statusCallback(
@@ -248,12 +247,10 @@ export class WhatsappService {
       // Since it is for now impossible to store a whatsapp number without a chosen FSP
       // Explicitely search for the the fsp intersolve (in the related FSPs of this program)
       // This should be refactored later
-      const program = await this.programRepository.findOne(
-        tryWhatsapp.registration.programId,
-        {
-          relations: ['financialServiceProviders'],
-        },
-      );
+      const program = await this.programRepository.findOne({
+        where: { id: tryWhatsapp.registration.programId },
+        relations: ['financialServiceProviders'],
+      });
       const fspIntersolveWhatsapp = program.financialServiceProviders.find(
         fsp => {
           return (fsp.fsp = FspName.intersolve);
@@ -267,14 +264,14 @@ export class WhatsappService {
         tryWhatsapp.registration.phoneNumber,
         { name: CustomDataAttributes.whatsappPhoneNumber },
       );
-      this.tryWhatsappRepository.delete(tryWhatsapp);
+      this.tryWhatsappRepository.remove(tryWhatsapp);
     }
   }
 
   private async getRegistrationsWithPhoneNumber(
     phoneNumber,
   ): Promise<RegistrationEntity[]> {
-    const registrationsWithPhoneNumber = await getRepository(RegistrationEntity)
+    const registrationsWithPhoneNumber = await this.dataSource.getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .select('registration.id')
       .leftJoin('registration.data', 'registration_data')
@@ -385,7 +382,7 @@ export class WhatsappService {
         program = registrationsWithPhoneNumberInActivePrograms[0].program;
       } else {
         // If only 1 program in database: use default reply of that program
-        const programs = await getRepository(ProgramEntity).find();
+        const programs = await this.dataSource.getRepository(ProgramEntity).find();
         if (programs.length === 1) {
           program = programs[0];
         }
@@ -420,9 +417,9 @@ export class WhatsappService {
       const intersolveBarcodesPerPa = registration.images.map(
         image => image.barcode,
       );
-      const program = await getRepository(ProgramEntity).findOne(
-        registration.programId,
-      );
+      const program = await this.dataSource.getRepository(ProgramEntity).findOneBy({
+        id: registration.programId,
+      });
       const language = registration.preferredLanguage || this.fallbackLanguage;
 
       // Loop over current and (potentially) old barcodes per PA

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { uniq, without } from 'lodash';
 import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
-import { Connection, getRepository, In, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { ActionService } from '../actions/action.service';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
@@ -55,7 +55,7 @@ export class ExportMetricsService {
     private readonly paymentsService: PaymentsService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
-    private readonly connection: Connection,
+    private readonly dataSource: DataSource
   ) {}
 
   public getExportList(
@@ -215,7 +215,8 @@ export class ExportMetricsService {
     exportType: ExportType,
   ): Promise<RegistrationDataOptions[]> {
     const relationOptions = [];
-    const program = await this.programRepository.findOne(programId, {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
       relations: [
         'programQuestions',
         'financialServiceProviders',
@@ -335,7 +336,8 @@ export class ExportMetricsService {
   private async getAllProgramCustomAttributesForExport(
     programId: number,
   ): Promise<ProgramCustomAttributeEntity[]> {
-    const program = await this.programRepository.findOne(programId, {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
       relations: ['programCustomAttributes'],
     });
     return program.programCustomAttributes;
@@ -583,7 +585,9 @@ export class ExportMetricsService {
     const fspQuestionIds = fspQuestions.map(fspQuestion => {
       return fspQuestion.id;
     });
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+    });
     const nameRelations = await this.getNameRelationsByProgram(programId);
     const duplicateRelationOptions = this.getRelationOptionsForDuplicates(
       programQuestions,
@@ -935,7 +939,9 @@ export class ExportMetricsService {
       .createQueryBuilder('transaction')
       .select('MAX(transaction.payment)')
       .getRawOne();
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
     const paymentNrSearch = Math.max(
       ...[totalProcessedPayments.max, program.distributionDuration],
     );
@@ -1031,7 +1037,7 @@ export class ExportMetricsService {
   }
 
   private async queryMonitoringData(programId: number): Promise<any[]> {
-    const q = getRepository(RegistrationEntity)
+    const q = this.dataSource.getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .innerJoinAndSelect(
         'registration.program',
@@ -1101,8 +1107,11 @@ export class ExportMetricsService {
   }
 
   public async getProgramStats(programId: number): Promise<ProgramStats> {
-    const targetedPeople = (await this.programRepository.findOne(programId))
-      .highestScoresX;
+    const targetedPeople = (
+      await this.programRepository.findOneBy({
+        id: programId,
+      })
+    ).highestScoresX;
 
     const registrations = await this.registrationRepository.find({
       where: {
@@ -1121,7 +1130,8 @@ export class ExportMetricsService {
       false,
     );
 
-    const { spentMoney } = await this.connection
+    const { spentMoney } =
+    await this.dataSource
       .createQueryBuilder()
       .select('SUM(amount)', 'spentMoney')
       .from('(' + transactionsQuery.getQuery() + ')', 'transactions')

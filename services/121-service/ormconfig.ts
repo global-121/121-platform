@@ -1,4 +1,5 @@
-module.exports = {
+
+export const ORMConfig = {
   type: 'postgres',
   host: '121db',
   port: 5432,

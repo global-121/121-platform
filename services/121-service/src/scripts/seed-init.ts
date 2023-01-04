@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
-import { Connection } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { PermissionEnum } from '../user/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
 import { UserRoleEntity } from '../user/user-role.entity';
@@ -11,7 +11,7 @@ import { InterfaceScript } from './scripts.module';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {
-  public constructor(private connection: Connection) {}
+  public constructor(private dataSource: DataSource) {}
 
   public async run(): Promise<void> {
     await this.dropAll();
@@ -22,7 +22,7 @@ export class SeedInit implements InterfaceScript {
   }
 
   private async addPermissions(): Promise<PermissionEntity[]> {
-    const permissionsRepository = this.connection.getRepository(
+    const permissionsRepository = this.dataSource.getRepository(
       PermissionEntity,
     );
     const permissionEntities = [];
@@ -43,7 +43,7 @@ export class SeedInit implements InterfaceScript {
   private async createDefaultRoles(
     permissions: PermissionEntity[],
   ): Promise<UserRoleEntity[]> {
-    const userRoleRepository = this.connection.getRepository(UserRoleEntity);
+    const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
     const defaultRoles = [
       {
         role: DefaultUserRole.ProgramAdmin,
@@ -149,7 +149,7 @@ export class SeedInit implements InterfaceScript {
   }
 
   private async createAdminUser(): Promise<void> {
-    const userRepository = this.connection.getRepository(UserEntity);
+    const userRepository = this.dataSource.getRepository(UserEntity);
     await userRepository.save({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       password: crypto
@@ -161,24 +161,24 @@ export class SeedInit implements InterfaceScript {
   }
 
   public async dropAll(): Promise<void> {
-    const entities = this.connection.entityMetadatas;
-    const dropTableQueries = await this.connection.manager
+    const entities = this.dataSource.entityMetadatas;
+    const dropTableQueries = await this.dataSource.manager
       .query(`select 'drop table if exists "121-service"."' || tablename || '" cascade;'
         from pg_tables
         where schemaname = '121-service'
         and tablename not in ('custom_migration_table');`);
     for (const q of dropTableQueries) {
       for (const key in q) {
-        await this.connection.manager.query(q[key]);
+        await this.dataSource.manager.query(q[key]);
       }
     }
   }
 
   private async runAllMigrations(): Promise<void> {
-    await this.connection.query(
+    await this.dataSource.query(
       'TRUNCATE TABLE "121-service"."custom_migration_table"',
     );
-    await this.connection.runMigrations({
+    await this.dataSource.runMigrations({
       transaction: 'all',
     });
   }

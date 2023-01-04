@@ -207,7 +207,7 @@ export class BulkImportService {
     }
 
     // If paymentAmountMultiplier automatic, then drop from template
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({ id: programId });
     if (!!program.paymentAmountMultiplierFormula) {
       const index = genericAttributes.indexOf(
         GenericAttributes.paymentAmountMultiplier,
@@ -396,7 +396,7 @@ export class BulkImportService {
     const programCustomAttributes = await this.getProgramCustomAttributes(
       programId,
     );
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({ id: programId });
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
@@ -502,7 +502,7 @@ export class BulkImportService {
     const errors = [];
     const validatatedArray = [];
     const dynamicAttributes = await this.getDynamicAttributes(programId);
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({ id: programId });
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;

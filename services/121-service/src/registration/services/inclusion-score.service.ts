@@ -18,7 +18,7 @@ export class InlusionScoreService {
     programId: number,
     referenceId: string,
   ): Promise<RegistrationEntity> {
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({ id: programId });
     if (!program.paymentAmountMultiplierFormula) {
       return;
     }
@@ -52,12 +52,10 @@ export class InlusionScoreService {
 
     const scoreList = await this.createQuestionAnswerListPrefilled(referenceId);
 
-    let program = await this.programRepository.findOne(
-      registration.program.id,
-      {
-        relations: ['programQuestions'],
-      },
-    );
+    let program = await this.programRepository.findOne({
+      where: { id: registration.program.id },
+      relations: ['programQuestions'],
+    });
     const score = this.calculateScoreAllProgramQuestions(
       program.programQuestions,
       scoreList,

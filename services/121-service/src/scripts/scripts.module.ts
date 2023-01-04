@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { ORMConfig } from '../../ormconfig';
 import { ScriptsController } from './scripts.controller';
-import { SeedDev } from './seed-dev';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
 import { SeedProd } from './seed-prod';
@@ -13,14 +13,8 @@ import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
 import { SeedProgramValidation } from './seed-program-validation';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      migrations: [`src/migrations/*.{ts,js}`],
-      entities: ['src/app/**/*.entity.{ts,js}'],
-    }),
-  ],
-  providers: [
-    SeedDev,
+  imports: [TypeOrmModule.forRoot(ORMConfig as TypeOrmModuleOptions)],
+  providers:[
     SeedInit,
     SeedProd,
     SeedHelper,

@@ -1,9 +1,9 @@
 import {
   EntitySubscriberInterface,
   EventSubscriber,
-  getConnection,
   UpdateEvent,
 } from 'typeorm';
+import { AppDataSource } from '../../appdatasource';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
 
@@ -23,16 +23,16 @@ export class RegistrationSubscriber
   private async storeRegistrationStatusChange(
     registration: any,
   ): Promise<void> {
-    const registrationStatusRepo = getConnection().getRepository(
+    const registrationStatusRepo = AppDataSource.getRepository(
       RegistrationStatusChangeEntity,
     );
-    const foundRegistration = await getConnection()
+    const foundRegistration = await AppDataSource
       .getRepository(RegistrationEntity)
-      .findOne(registration.id);
+      .findOne({ where: { id: registration.id } });
 
     const oldRegistrationStatus = await registrationStatusRepo.findOne({
       where: {
-        registration: foundRegistration,
+        registrationId: foundRegistration.id,
       },
       order: { created: 'DESC' },
     });

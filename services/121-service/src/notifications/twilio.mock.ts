@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { HttpService, Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { API_PATHS, EXTERNAL_API } from './../config';
 import {
@@ -114,15 +116,13 @@ export class TwilioClientMock {
         request.MessageStatus = TwilioStatus.delivered;
         const httpService = new HttpService();
         try {
-          await httpService
-            .post(EXTERNAL_API.whatsAppStatus, request)
-            .toPromise();
+          await lastValueFrom(httpService
+            .post(EXTERNAL_API.whatsAppStatus, request));
         } catch (error) {
           // In case external API is not reachable try localhost
           const urlLocalhost = `${EXTERNAL_API.rootApi}/${API_PATHS.whatsAppStatus}`;
-          await httpService
-            .post(urlLocalhost, request)
-            .toPromise()
+          await lastValueFrom(httpService
+            .post(urlLocalhost, request))
             .catch(error => console.log(error));
         }
       }
@@ -142,15 +142,13 @@ export class TwilioClientMock {
         request.From = twilioMessagesCreateDto.to.replace('whatsapp:', '');
         const httpService = new HttpService();
         try {
-          await httpService
-            .post(EXTERNAL_API.whatsAppIncoming, request)
-            .toPromise();
+          await lastValueFrom(httpService
+            .post(EXTERNAL_API.whatsAppIncoming, request));
         } catch (error) {
           // In case external API is not reachable try localhost
           const urlLocalhost = `${EXTERNAL_API.rootApi}/${API_PATHS.whatsAppIncoming}`;
-          await httpService
-            .post(urlLocalhost, request)
-            .toPromise()
+          await lastValueFrom(httpService
+            .post(urlLocalhost, request))
             .catch(error => console.log(error));
         }
       }

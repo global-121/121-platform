@@ -14,10 +14,10 @@ export class InstanceService {
   public constructor() {}
 
   public async getInstance(): Promise<InstanceEntity> {
-    const instance = await this.instanceRepository.findOne({
+    const instances = await this.instanceRepository.find({
       relations: ['monitoringQuestion'],
     });
-    return instance;
+    return instances[0];
   }
 
   public async updateInstance(

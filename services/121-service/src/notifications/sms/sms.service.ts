@@ -47,7 +47,7 @@ export class SmsService {
     const findOneOptions = {
       sid: sid,
     };
-    return await this.twilioMessageRepository.findOne(findOneOptions);
+    return await this.twilioMessageRepository.findOneBy(findOneOptions);
   }
 
   public async statusCallback(callbackData): Promise<void> {

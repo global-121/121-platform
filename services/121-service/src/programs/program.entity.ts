@@ -1,11 +1,11 @@
 import {
   Column,
   Entity,
-  getConnection,
   JoinTable,
   ManyToMany,
   OneToMany,
 } from 'typeorm';
+import { AppDataSource } from '../../appdatasource';
 import { ActionEntity } from '../actions/action.entity';
 import { CascadeDeleteEntity } from '../base.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
@@ -170,7 +170,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
       };
     }
 
-    const repo = getConnection().getRepository(ProgramEntity);
+    const repo = AppDataSource.getRepository(ProgramEntity);
     const resultProgramQuestion = await repo
       .createQueryBuilder('program')
       .leftJoin('program.programQuestions', 'programQuestion')
@@ -198,7 +198,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
       .select('"programCustomAttribute".type', 'type')
       .getRawOne();
 
-    const repoInstance = getConnection().getRepository(InstanceEntity);
+    const repoInstance = AppDataSource.getRepository(InstanceEntity);
     const resultMonitoringQuestion = await repoInstance
       .createQueryBuilder('instance')
       .leftJoin('instance.monitoringQuestion', 'question')
@@ -250,8 +250,8 @@ export class ProgramEntity extends CascadeDeleteEntity {
   }
 
   private async getPreferredLanguageOptions(): Promise<object[]> {
-    const repo = getConnection().getRepository(ProgramEntity);
-    const program = await repo.findOne(this.id);
+    const repo = AppDataSource.getRepository(ProgramEntity);
+    const program = await repo.findOneBy({ id: this.id });
 
     return JSON.parse(JSON.stringify(program.languages)).map((key: string) => {
       return {

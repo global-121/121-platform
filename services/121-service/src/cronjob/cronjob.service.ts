@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { IntersolveApiService } from '../payments/fsp-integration/intersolve/instersolve.api.service';
@@ -29,6 +29,7 @@ export class CronjobService {
     private whatsappService: WhatsappService,
     private readonly intersolveApiService: IntersolveApiService,
     private readonly intersolveService: IntersolveService,
+    private readonly dataSource: DataSource
   ) {}
 
   private async getLanguageForRegistration(
@@ -36,7 +37,7 @@ export class CronjobService {
   ): Promise<string> {
     const fallbackLanguage = 'en';
 
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationRepository.findOneBy({
       referenceId: referenceId,
     });
 
@@ -79,7 +80,7 @@ export class CronjobService {
       .getRawOne();
     const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
 
-    const unsentIntersolveBarcodes = await getRepository(
+    const unsentIntersolveBarcodes = await this.dataSource.getRepository(
       IntersolveBarcodeEntity,
     )
       .createQueryBuilder('barcode')

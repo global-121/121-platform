@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { StoreDataDto } from './dto/store-data.dto';
+import { PaDataTypes } from './enum/padata-types.enum';
 import { PersonAffectedAppDataEntity } from './person-affected-app-data.entity';
 
 @Injectable()
@@ -21,7 +22,9 @@ export class PeopleAffectedService {
     storeData: StoreDataDto,
   ): Promise<void> {
     let data = new PersonAffectedAppDataEntity();
-    const user = await this.userRepository.findOne(userId);
+    const user = await this.userRepository.findOneBy({
+      id: userId,
+    });
 
     data.user = user;
     data.type = storeData.type;
@@ -33,7 +36,7 @@ export class PeopleAffectedService {
     await this.dataStorageRepository.save(data);
   }
 
-  public async getData(userId: number, type: string): Promise<string> {
+  public async getData(userId: number, type: PaDataTypes): Promise<string> {
     const data = await this.dataStorageRepository.find({
       where: {
         user: { id: userId },

@@ -77,7 +77,8 @@ export class PaymentsService {
     amount: number,
     referenceIdsDto?: ReferenceIdsDto,
   ): Promise<number> {
-    let program = await this.programRepository.findOne(programId, {
+    let program = await this.programRepository.findOne({
+      where: { id: programId },
       relations: ['financialServiceProviders'],
     });
     if (!program) {

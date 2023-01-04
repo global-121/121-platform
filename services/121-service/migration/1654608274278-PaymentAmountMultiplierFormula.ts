@@ -1,5 +1,5 @@
 import { RegistrationEntity } from './../src/registration/registration.entity';
-import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
+import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 import { ProgramEntity } from '../src/programs/program.entity';
 
 export class PaymentAmountMultiplierFormula1654608274278
@@ -12,7 +12,7 @@ export class PaymentAmountMultiplierFormula1654608274278
     );
     await queryRunner.commitTransaction();
     // This is commented out as it was giving errors and we are not supporting Dorcas Ukraine anymore
-    // await this.migrateData(queryRunner.connection);
+    // await this.migrateData(queryRunner.manager);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
   }
@@ -23,8 +23,8 @@ export class PaymentAmountMultiplierFormula1654608274278
     );
   }
 
-  private async migrateData(connection: Connection): Promise<void> {
-  //   const programRepo = connection.getRepository(ProgramEntity);
+  private async migrateData(manager: EntityManager): Promise<void> {
+  //   const programRepo = manager.getRepository(ProgramEntity);
   //   const programs = await programRepo
   //     .createQueryBuilder('program')
   //     .select('program.id')
@@ -36,7 +36,7 @@ export class PaymentAmountMultiplierFormula1654608274278
   //       await programRepo.save(p);
   //     }
   //   }
-  //   const registrationRepo = connection.getRepository(RegistrationEntity);
+  //   const registrationRepo = manager.getRepository(RegistrationEntity);
   //   const registrations = await registrationRepo
   //     .createQueryBuilder('registration')
   //     .select('registration.id')

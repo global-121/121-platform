@@ -4,7 +4,6 @@ import {
   Brackets,
   Column,
   Entity,
-  getConnection,
   Index,
   JoinColumn,
   ManyToOne,
@@ -12,6 +11,7 @@ import {
   QueryFailedError,
   Unique,
 } from 'typeorm';
+import { AppDataSource } from '../../appdatasource';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
@@ -168,7 +168,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public async getRegistrationDataByName(
     name: string,
   ): Promise<RegistrationDataByNameDto> {
-    const repo = getConnection().getRepository(RegistrationDataEntity);
+    const repo = AppDataSource.getRepository(RegistrationDataEntity);
     const q = repo
       .createQueryBuilder('registrationData')
       .leftJoin('registrationData.registration', 'registration')
@@ -220,10 +220,14 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       await this.saveOneData(value, relation);
     }
 
-    // Fetches updated registration from database and return it
-    return await getConnection()
+    return await AppDataSource
       .getRepository(RegistrationEntity)
-      .findOne(this.id, { relations: ['data'] });
+      .findOne({
+        relations: ['data'],
+        where: {
+          id: this.id,
+        },
+      });
   }
 
   private async saveOneData(
@@ -282,7 +286,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     value: string,
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
     const existingEntry = await repoRegistrationData
@@ -307,7 +311,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     values: string[],
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
 
@@ -326,7 +330,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   }
 
   private async saveFspQuestionData(value: string, id: number): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
     const existingEntry = await repoRegistrationData
@@ -351,7 +355,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     values: string[],
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
 
@@ -373,7 +377,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     value: string,
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
     const existingEntry = await repoRegistrationData
@@ -401,7 +405,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     values: string[],
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
 
@@ -423,7 +427,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     value: string,
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
     const existingEntry = await repoRegistrationData
@@ -448,7 +452,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     values: string[],
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
 
@@ -470,7 +474,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     name: string,
   ): Promise<RegistrationDataRelation> {
     const result = new RegistrationDataRelation();
-    const repoProgram = getConnection().getRepository(ProgramEntity);
+    const repoProgram = AppDataSource.getRepository(ProgramEntity);
     const query = repoProgram
       .createQueryBuilder('program')
       .leftJoin('program.programQuestions', 'programQuestion')
@@ -484,7 +488,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       result.programQuestionId = resultProgramQuestion.id;
       return result;
     }
-    const repoRegistration = getConnection().getRepository(RegistrationEntity);
+    const repoRegistration = AppDataSource.getRepository(RegistrationEntity);
     const resultFspQuestion = await repoRegistration
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
@@ -508,7 +512,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       result.programCustomAttributeId = resultProgramCustomAttribute.id;
       return result;
     }
-    const repoInstance = getConnection().getRepository(InstanceEntity);
+    const repoInstance = AppDataSource.getRepository(InstanceEntity);
     const resultMonitoringQuestion = await repoInstance
       .createQueryBuilder('instance')
       .leftJoin('instance.monitoringQuestion', 'question')
@@ -525,7 +529,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   public async save(retryCount?: number): Promise<RegistrationEntity> {
     let saveRetriesCount = retryCount ? retryCount : 0;
-    const regRepo = getConnection().getRepository(RegistrationEntity);
+    const regRepo = AppDataSource.getRepository(RegistrationEntity);
     if (!this.registrationProgramId) {
       const query = regRepo
         .createQueryBuilder('r')
@@ -558,10 +562,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   }
 
   public async getFullName(): Promise<string> {
-    const repoProgram = getConnection().getRepository(ProgramEntity);
+    const repoProgram = AppDataSource.getRepository(ProgramEntity);
     let fullName = '';
     const fullnameConcat = [];
-    const program = await repoProgram.findOne(this.programId);
+    const program = await repoProgram.findOneBy({ id: this.programId });
     if (program && program.fullnameNamingConvention) {
       for (const nameColumn of JSON.parse(
         JSON.stringify(program.fullnameNamingConvention),

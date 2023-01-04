@@ -152,7 +152,7 @@ export class TransactionsService {
     payment: number,
     transactionStep?: number,
   ): Promise<void> {
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({ id: programId });
     const fsp = await this.financialServiceProviderRepository.findOne({
       where: { fsp: transactionResponse.fspName },
     });

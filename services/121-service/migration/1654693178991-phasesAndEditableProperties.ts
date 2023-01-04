@@ -1,6 +1,6 @@
 import { FspQuestionEntity } from './../src/fsp/fsp-question.entity';
 import { ProgramQuestionEntity } from './../src/programs/program-question.entity';
-import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
+import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 import { ProgramEntity } from '../src/programs/program.entity';
 import fs from 'fs';
 import { ProgramCustomAttributeEntity } from '../src/programs/program-custom-attribute.entity';
@@ -27,7 +27,7 @@ export class PhasesAndEditableProperties1654693178991
     );
     await queryRunner.commitTransaction();
     // 08-11-2022 migrateData() is commented out as this was causing issues with new entities and legacy migrations.
-    // await this.migrateData(queryRunner.connection);
+    // await this.migrateData(queryRunner.manager);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
   }
@@ -50,7 +50,7 @@ export class PhasesAndEditableProperties1654693178991
     );
   }
 
-  private async migrateData(connection: Connection): Promise<void> {
+  private async migrateData(manager: EntityManager): Promise<void> {
     let programPilotNL, programPilotNL2, fspIntersolve;
     try {
       programPilotNL = JSON.parse(
@@ -68,11 +68,11 @@ export class PhasesAndEditableProperties1654693178991
       );
     }
     if (programPilotNL && programPilotNL2 && fspIntersolve) {
-      const programRepo = connection.getRepository(ProgramEntity);
-      const programQuestionsRepo = connection.getRepository(
+      const programRepo = manager.getRepository(ProgramEntity);
+      const programQuestionsRepo = manager.getRepository(
         ProgramQuestionEntity,
       );
-      const customAttributesRepo = connection.getRepository(
+      const customAttributesRepo = manager.getRepository(
         ProgramCustomAttributeEntity,
       );
       const program = await programRepo
@@ -117,7 +117,7 @@ export class PhasesAndEditableProperties1654693178991
         }
       }
 
-      const fspAttributeRepo = connection.getRepository(FspQuestionEntity);
+      const fspAttributeRepo = manager.getRepository(FspQuestionEntity);
 
       const fspAttributes = await fspAttributeRepo
         .createQueryBuilder('fspAttribute')

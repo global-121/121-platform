@@ -1,7 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { getRepository, In, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  DataSource,
+  In,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../fsp/financial-service-provider.entity';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
@@ -100,6 +105,7 @@ export class RegistrationsService {
     private readonly inclusionScoreService: InlusionScoreService,
     private readonly bulkImportService: BulkImportService,
     private readonly programService: ProgramService,
+    private readonly dataSource: DataSource
   ) {}
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
@@ -120,7 +126,9 @@ export class RegistrationsService {
     let registration = new RegistrationEntity();
     registration.referenceId = postData.referenceId;
     registration.user = user;
-    registration.program = await this.programRepository.findOne(programId);
+    registration.program = await this.programRepository.findOneBy({
+      id: programId,
+    });
     await registration.save();
     return this.setRegistrationStatus(
       postData.referenceId,
@@ -265,7 +273,8 @@ export class RegistrationsService {
     programAnswers: ProgramAnswer[],
     programId: number,
   ): Promise<ProgramAnswer[]> {
-    const program = await this.programRepository.findOne(programId, {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
       relations: ['programQuestions'],
     });
     const phonenumberTypedAnswers = [];
@@ -444,7 +453,7 @@ export class RegistrationsService {
     const importedRegistrationChanges = await this.registrationStatusChangeRepository.find(
       {
         where: {
-          registration: importedRegistration,
+          registrationId: importedRegistration.id,
         },
       },
     );
@@ -462,7 +471,7 @@ export class RegistrationsService {
 
     // .. and update the try whatsapp entity
     const tryWhatsappEntity = await this.tryWhatsappRepository.findOne({
-      where: { registration: importedRegistration },
+      where: { registrationId: importedRegistration.id },
     });
     if (tryWhatsappEntity) {
       tryWhatsappEntity.registration = updatedRegistration;
@@ -602,7 +611,8 @@ export class RegistrationsService {
   }
 
   private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {
-    const program = await this.programRepository.findOne(programId, {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
       relations: ['programCustomAttributes'],
     });
     if (!program) {
@@ -1214,7 +1224,9 @@ export class RegistrationsService {
     key: string,
     programId: number,
   ): Promise<string> {
-    const program = await getRepository(ProgramEntity).findOne(programId);
+    const program = await this.dataSource.getRepository(ProgramEntity).findOneBy({
+      id: programId,
+    });
     const fallbackNotifications = program.notifications[this.fallbackLanguage];
     let notifications = fallbackNotifications;
 
@@ -1258,7 +1270,7 @@ export class RegistrationsService {
         })
       ).map(r => r.referenceId);
 
-      const matchingRegistrationData = await getRepository(
+      const matchingRegistrationData = await this.dataSource.getRepository(
         RegistrationDataEntity,
       )
         .createQueryBuilder('registrationData')
@@ -1446,7 +1458,9 @@ export class RegistrationsService {
       await this.whatsappPendingMessageRepository.delete({
         registrationId: registration.id,
       });
-      await this.tryWhatsappRepository.delete({ registration: registration });
+      await this.tryWhatsappRepository.delete({
+        registrationId: registration.id,
+      });
 
       // anonymize some data for this registration
       registration.phoneNumber = null;
@@ -1454,7 +1468,7 @@ export class RegistrationsService {
       await this.registrationRepository.save(registration);
 
       const voucherImages = await this.imageCodeExportVouchersRepo.find({
-        where: { registration: registration },
+        where: { registrationId: registration.id },
         relations: ['barcode'],
       });
       for await (const voucher of voucherImages) {
@@ -1488,7 +1502,7 @@ export class RegistrationsService {
     user: UserEntity,
   ): Promise<RegistrationDataEntity[]> {
     const programIds = user.programAssignments.map(p => p.program.id);
-    const registrationsToValidate = await getRepository(RegistrationEntity)
+    const registrationsToValidate = await this.dataSource.getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .addSelect('"referenceId"')
       .leftJoinAndSelect('registration.program', 'program')
@@ -1536,7 +1550,7 @@ export class RegistrationsService {
   public async getAllFspAnswers(
     programIds: number[],
   ): Promise<FspAnswersAttrInterface[]> {
-    const registrations = await getRepository(RegistrationEntity)
+    const registrations = await this.dataSource.getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .leftJoinAndSelect('registration.fsp', 'fsp')
       .leftJoinAndSelect('fsp.questions', ' fsp_question.fsp')
@@ -1608,7 +1622,7 @@ export class RegistrationsService {
   public async getFspAnswersAttributes(
     referenceId: string,
   ): Promise<FspAnswersAttrInterface> {
-    const qb = await getRepository(RegistrationEntity)
+    const qb = await this.dataSource.getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .leftJoinAndSelect('registration.fsp', 'fsp')
       .leftJoinAndSelect('fsp.questions', ' fsp_attribute.fsp')

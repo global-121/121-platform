@@ -37,7 +37,7 @@ export class BelcashService {
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.belcash;
 
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({ id: programId });
 
     const authorizationToken = await this.belcashApiService.authenticate();
 

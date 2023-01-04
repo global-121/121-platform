@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
-import { Between, getRepository, IsNull, Not, Repository } from 'typeorm';
+import { Between, DataSource, IsNull, Not, Repository } from 'typeorm';
 import { FspName } from '../../../fsp/financial-service-provider.entity';
 import {
   TwilioStatus,
@@ -61,6 +61,7 @@ export class IntersolveService {
     private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
+    private readonly dataSource: DataSource
   ) {}
 
   public async sendPayment(
@@ -288,7 +289,7 @@ export class IntersolveService {
     const programId = registration.programId;
 
     const language = await this.getLanguage(paymentInfo.referenceId);
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({ id: programId });
     let whatsappPayment = program.notifications[language]['whatsappPayment'];
     const calculatedAmount = this.getMultipliedAmount(
       amount,
@@ -362,7 +363,7 @@ export class IntersolveService {
   public async processStatus(
     statusCallbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    const transaction = await getRepository(TransactionEntity)
+    const transaction = await this.dataSource.getRepository(TransactionEntity)
       .createQueryBuilder('transaction')
       .select(['transaction.id', 'transaction.payment'])
       .leftJoinAndSelect('transaction.registration', 'registration')
@@ -437,7 +438,9 @@ export class IntersolveService {
   }
 
   public async getInstruction(): Promise<any> {
-    const intersolveInstructionsEntity = await this.intersolveInstructionsRepository.findOne();
+    const [
+      intersolveInstructionsEntity,
+    ] = await this.intersolveInstructionsRepository.find();
 
     if (!intersolveInstructionsEntity) {
       throw new HttpException(
@@ -450,7 +453,9 @@ export class IntersolveService {
   }
 
   public async postInstruction(instructionsFileBlob): Promise<any> {
-    let intersolveInstructionsEntity = await this.intersolveInstructionsRepository.findOne();
+    let [
+      intersolveInstructionsEntity,
+    ] = await this.intersolveInstructionsRepository.find();
 
     if (!intersolveInstructionsEntity) {
       intersolveInstructionsEntity = new IntersolveInstructionsEntity();
@@ -504,11 +509,8 @@ export class IntersolveService {
 
   public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
     const maxId = (
-      await this.intersolveBarcodeRepository.findOne({
-        order: { id: 'DESC' },
-      })
-    )?.id;
-
+      await this.intersolveBarcodeRepository.createQueryBuilder('barcode').select("MAX(barcode.id)", "max")
+    .getRawOne())?.max;
     const unusedVouchers = [];
     let id = 1;
 

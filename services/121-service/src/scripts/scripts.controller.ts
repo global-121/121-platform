@@ -1,7 +1,8 @@
 import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiQuery } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { Connection } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { ORMConfig } from '../../ormconfig';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedProgramDrc } from './seed-program-drc';
@@ -37,7 +38,10 @@ class ResetDto {
 
 @Controller('scripts')
 export class ScriptsController {
-  public constructor(private connection: Connection) {}
+  public constructor(private dataSource: DataSource) { }
+
+  // private dataSource = new DataSource(ORMConfig as DataSourceOptions)
+  // public constructor() { }
   @ApiQuery({
     name: 'script',
     enum: SeedScript,
@@ -55,27 +59,27 @@ export class ScriptsController {
     }
     let seed;
     if (script == SeedScript.demo) {
-      seed = new SeedDemoProgram(this.connection);
+      seed = new SeedDemoProgram(this.dataSource);
     } else if (script == SeedScript.test) {
-      seed = new SeedTestProgram(this.connection);
+      seed = new SeedTestProgram(this.dataSource);
     } else if (script == SeedScript.testMultiple) {
-      seed = new SeedTestMultipleProgram(this.connection);
+      seed = new SeedTestMultipleProgram(this.dataSource);
     } else if (script == SeedScript.nlrcMultiple) {
-      seed = new SeedMultipleNLRC(this.connection);
+      seed = new SeedMultipleNLRC(this.dataSource);
     } else if (script == SeedScript.pilotNL) {
-      seed = new SeedPilotNLProgram(this.connection);
+      seed = new SeedPilotNLProgram(this.dataSource);
     } else if (script == SeedScript.pilotNLPV) {
-      seed = new SeedPilotNL2Program(this.connection);
+      seed = new SeedPilotNL2Program(this.dataSource);
     } else if (script == SeedScript.pilotETH) {
-      seed = new SeedProgramEth(this.connection);
+      seed = new SeedProgramEth(this.dataSource);
     } else if (script == SeedScript.pilotLBN) {
-      seed = new SeedProgramLbn(this.connection);
+      seed = new SeedProgramLbn(this.dataSource);
     } else if (script == SeedScript.pilotUKR) {
-      seed = new SeedProgramUkr(this.connection);
+      seed = new SeedProgramUkr(this.dataSource);
     } else if (script == SeedScript.DRC) {
-      seed = new SeedProgramDrc(this.connection);
+      seed = new SeedProgramDrc(this.dataSource);
     } else if (script == SeedScript.validation) {
-      seed = new SeedProgramValidation(this.connection);
+      seed = new SeedProgramValidation(this.dataSource);
     } else {
       return res.status(HttpStatus.BAD_REQUEST).send('Not a known program');
     }

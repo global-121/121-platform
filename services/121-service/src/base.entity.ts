@@ -1,10 +1,13 @@
 import {
   CreateDateColumn,
-  getConnection,
+  DataSource,
+  DataSourceOptions,
   Index,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { AppDataSource } from '../appdatasource';
+
 
 export class Base121Entity {
   @PrimaryGeneratedColumn()
@@ -29,7 +32,7 @@ export class CascadeDeleteEntity extends Base121Entity {
   }
 
   public async deleteOneToMany(entity: any, columnName: string): Promise<void> {
-    const repo = getConnection().getRepository(entity);
+    const repo = AppDataSource.getRepository(entity);
     const deleteItems = await repo
       .createQueryBuilder('todelete')
       .where(`todelete.${columnName} = :removeId`, { removeId: this.id })

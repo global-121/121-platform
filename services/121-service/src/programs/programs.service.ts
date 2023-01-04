@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, In, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { ActionEntity } from '../actions/action.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -25,6 +25,7 @@ export class ProgramService {
   @InjectRepository(ProgramCustomAttributeEntity)
   public programCustomAttributeRepository: Repository<
     ProgramCustomAttributeEntity
+
   >;
   @InjectRepository(FspQuestionEntity)
   public fspAttributeRepository: Repository<FspQuestionEntity>;
@@ -39,10 +40,11 @@ export class ProgramService {
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
 
-  public constructor() {}
+  public constructor(private readonly dataSource: DataSource) {}
 
-  public async findOne(where): Promise<ProgramEntity> {
-    const program = await this.programRepository.findOne(where, {
+  public async findOne(programId: number): Promise<ProgramEntity> {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
       relations: [
         'programQuestions',
         'aidworkerAssignments',
@@ -62,7 +64,7 @@ export class ProgramService {
   }
 
   public async getPublishedPrograms(): Promise<ProgramsRO> {
-    const programs = await getRepository(ProgramEntity)
+    const programs = await this.programRepository
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.programQuestions', 'programQuestion')
       .where('program.published = :published', { published: true })
@@ -76,7 +78,8 @@ export class ProgramService {
   public async findUserProgramAssignmentsOrThrow(
     userId: number,
   ): Promise<UserEntity> {
-    const user = await this.userRepository.findOne(userId, {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
       relations: [
         'programAssignments',
         'programAssignments.program',
@@ -98,7 +101,8 @@ export class ProgramService {
   public async getAssignedPrograms(userId: number): Promise<ProgramsRO> {
     const user = await this.findUserProgramAssignmentsOrThrow(userId);
     const programIds = user.programAssignments.map(p => p.program.id);
-    const programs = await this.programRepository.findByIds(programIds, {
+    const programs = await this.programRepository.find({
+      where: { id: In(programIds) },
       relations: [
         'programQuestions',
         'programCustomAttributes',
@@ -181,7 +185,7 @@ export class ProgramService {
   }
 
   public async findProgramOrThrow(programId): Promise<ProgramEntity> {
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({ id: programId });
     if (!program) {
       const errors = `No program found with id ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -194,7 +198,8 @@ export class ProgramService {
     updateProgramCustomAttributes: CreateProgramCustomAttributesDto,
   ): Promise<ProgramCustomAttributeEntity[]> {
     const savedAttributes: ProgramCustomAttributeEntity[] = [];
-    let program = await this.programRepository.findOne(programId, {
+    let program = await this.programRepository.findOne({
+      where: { id: programId },
       relations: ['programCustomAttributes'],
     });
 
@@ -273,7 +278,8 @@ export class ProgramService {
     programId: number,
     newPhase: ProgramPhase,
   ): Promise<SimpleProgramRO> {
-    const oldPhase = (await this.programRepository.findOne(programId)).phase;
+    const oldPhase = (await this.programRepository.findOneBy({ id: programId }))
+      .phase;
     await this.changeProgramValue(programId, {
       phase: newPhase,
     });
@@ -303,7 +309,7 @@ export class ProgramService {
     programId: number,
     change: object,
   ): Promise<void> {
-    await getRepository(ProgramEntity)
+    await this.dataSource.getRepository(ProgramEntity)
       .createQueryBuilder()
       .update(ProgramEntity)
       .set(change)
@@ -325,7 +331,7 @@ export class ProgramService {
     programId: number,
     phase?: ProgramPhase,
   ): Promise<Attribute[]> {
-    let queryCustomAttr = getRepository(ProgramCustomAttributeEntity)
+    let queryCustomAttr = this.dataSource.getRepository(ProgramCustomAttributeEntity)
       .createQueryBuilder('programCustomAttribute')
       .where({ program: { id: programId } });
 
@@ -345,7 +351,7 @@ export class ProgramService {
       };
     });
 
-    let queryProgramQuestions = getRepository(ProgramQuestionEntity)
+    let queryProgramQuestions = this.dataSource.getRepository(ProgramQuestionEntity)
       .createQueryBuilder('programQuestion')
       .where({ program: { id: programId } });
 
@@ -365,12 +371,13 @@ export class ProgramService {
       };
     });
 
-    const program = await this.programRepository.findOne(programId, {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
       relations: ['financialServiceProviders'],
     });
     const fspIds = program.financialServiceProviders.map(f => f.id);
 
-    let queryFspAttributes = getRepository(FspQuestionEntity)
+    let queryFspAttributes = this.dataSource.getRepository(FspQuestionEntity)
       .createQueryBuilder('fspAttribute')
       .where({ fspId: In(fspIds) });
 
@@ -421,7 +428,8 @@ export class ProgramService {
       };
     });
 
-    const program = await this.programRepository.findOne(programId, {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
       relations: ['financialServiceProviders'],
     });
     const fspIds = program.financialServiceProviders.map(f => f.id);

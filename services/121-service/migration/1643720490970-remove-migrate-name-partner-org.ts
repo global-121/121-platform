@@ -1,7 +1,6 @@
 import { ProgramCustomAttributeEntity } from './../src/programs/program-custom-attribute.entity';
 import {
-  Connection,
-  getRepository,
+  EntityManager,
   MigrationInterface,
   QueryRunner,
 } from 'typeorm';
@@ -14,7 +13,7 @@ export class removeMigrateNamePartnerOrg1643720490970
   name = 'removeMigrateNamePartnerOrg1643720490970';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await this.migrateData(queryRunner.connection);
+    await this.migrateData(queryRunner.manager);
     await queryRunner.commitTransaction();
     await queryRunner.startTransaction();
     await queryRunner.query(
@@ -34,13 +33,13 @@ export class removeMigrateNamePartnerOrg1643720490970
     );
   }
 
-  private async migrateData(connection: Connection): Promise<void> {
-    const programRepository = connection.getRepository(ProgramEntity);
-    const registrationRepository = connection.getRepository(RegistrationEntity);
-    const programCustomAttributeRepository = connection.getRepository(
+  private async migrateData(manager: EntityManager): Promise<void> {
+    const programRepository = manager.getRepository(ProgramEntity);
+    const registrationRepository = manager.getRepository(RegistrationEntity);
+    const programCustomAttributeRepository = manager.getRepository(
       ProgramCustomAttributeEntity,
     );
-    const regsWithPartnerOrg = await getRepository(RegistrationEntity)
+    const regsWithPartnerOrg = await manager.getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .select('registration.*')
       .where('"namePartnerOrganization" is not null')
@@ -50,7 +49,7 @@ export class removeMigrateNamePartnerOrg1643720490970
       await registrationRepository.save(r);
     }
 
-    const programs = await getRepository(ProgramEntity)
+    const programs = await manager.getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect(
         'program.programCustomAttributes',

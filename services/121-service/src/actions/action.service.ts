@@ -23,10 +23,14 @@ export class ActionService {
   ): Promise<ActionEntity> {
     let action = new ActionEntity();
     action.actionType = actionType;
-    const user = await this.userRepository.findOne(userId);
+    const user = await this.userRepository.findOneBy({
+      id: userId,
+    });
     action.user = user;
 
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({
+      id: userId,
+    });
     action.program = program;
 
     const newAction = await this.actionRepository.save(action);

@@ -4,7 +4,7 @@ import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { Request } from 'express';
-import { getRepository, In, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { DEBUG } from '../config';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -41,7 +41,7 @@ export class UserService {
     ProgramAidworkerAssignmentEntity
   >;
 
-  public constructor(@Inject(REQUEST) private readonly request: Request) {}
+  public constructor(@Inject(REQUEST) private readonly request: Request, private readonly dataSource: DataSource) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
     const findOneOptions = {
@@ -50,7 +50,7 @@ export class UserService {
         .createHmac('sha256', loginUserDto.password)
         .digest('hex'),
     };
-    const userEntity = await getRepository(UserEntity)
+    const userEntity = await this.dataSource.getRepository(UserEntity)
       .createQueryBuilder('user')
       .addSelect('password')
       .leftJoinAndSelect('user.programAssignments', 'assignment')
@@ -124,7 +124,7 @@ export class UserService {
     const permissionEntities = [];
     for (const permission of userRoleData.permissions) {
       permissionEntities.push(
-        await this.permissionRepository.findOne({ name: permission }),
+        await this.permissionRepository.findOneBy({ name: permission }),
       );
     }
     userRoleEntity.permissions = permissionEntities;
@@ -141,7 +141,7 @@ export class UserService {
     const permissionEntities = [];
     for (const permission of userRoleData.permissions) {
       permissionEntities.push(
-        await this.permissionRepository.findOne({ name: permission }),
+        await this.permissionRepository.findOneBy({ name: permission }),
       );
     }
     existingRole.permissions = permissionEntities;
@@ -155,7 +155,9 @@ export class UserService {
   }
 
   private async findRoleOrThrow(userRoleId: number): Promise<UserRoleEntity> {
-    const existingRole = await this.userRoleRepository.findOne(userRoleId);
+    const existingRole = await this.userRoleRepository.findOneBy({
+      id: userRoleId,
+    });
     if (!existingRole) {
       throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
     }
@@ -172,7 +174,7 @@ export class UserService {
     userType: UserType,
   ): Promise<UserRO> {
     // check uniqueness of email
-    const qb = await getRepository(UserEntity)
+    const qb = this.dataSource.getRepository(UserEntity)
       .createQueryBuilder('user')
       .where('user.username = :username', { username });
 
@@ -196,7 +198,8 @@ export class UserService {
   }
 
   public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {
-    let toUpdate = await this.userRepository.findOne(id, {
+    let toUpdate = await this.userRepository.findOne({
+      where: { id: id },
       relations: [
         'programAssignments',
         'programAssignments.roles',
@@ -214,7 +217,8 @@ export class UserService {
     userId: number,
     assignAidworkerToProgram: AssignAidworkerToProgramDto,
   ): Promise<UserRoleEntity[]> {
-    const user = await this.userRepository.findOne(userId, {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
       relations: [
         'programAssignments',
         'programAssignments.program',
@@ -225,7 +229,7 @@ export class UserService {
       const errors = { User: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({ id: programId });
     if (!program) {
       const errors = { Program: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -263,14 +267,15 @@ export class UserService {
     programId: number,
     userId: number,
   ): Promise<void> {
-    const user = await this.userRepository.findOne(userId, {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
       relations: ['programAssignments', 'programAssignments.program'],
     });
     if (!user) {
       const errors = { User: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({ id: programId });
     if (!program) {
       const errors = { Program: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -292,7 +297,8 @@ export class UserService {
   }
 
   public async delete(userId: number): Promise<UserEntity> {
-    const user = await this.userRepository.findOne(userId, {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
       relations: ['programAssignments', 'programAssignments.roles'],
     });
 
@@ -302,7 +308,8 @@ export class UserService {
   }
 
   public async findById(id: number): Promise<UserEntity> {
-    const user = await this.userRepository.findOne(id, {
+    const user = await this.userRepository.findOne({
+      where: { id: id },
       relations: [
         'programAssignments',
         'programAssignments.roles',
@@ -388,7 +395,8 @@ export class UserService {
   }
 
   private async buildPermissionsObject(userId: number): Promise<any> {
-    const user = await this.userRepository.findOne(userId, {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
       relations: [
         'programAssignments',
         'programAssignments.roles',

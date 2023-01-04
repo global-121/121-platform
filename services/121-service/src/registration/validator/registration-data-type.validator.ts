@@ -5,11 +5,11 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { getConnection } from 'typeorm';
 import {
   AnswerTypes,
   CustomAttributeType,
 } from '../enum/custom-data-attributes';
+import { AppDataSource } from '../../../appdatasource';
 import { RegistrationEntity } from '../registration.entity';
 
 @ValidatorConstraint({ name: 'validateAttributeType', async: true })
@@ -30,7 +30,7 @@ export class RegistrationDataTypeValidator
       this.message = 'ReferenceId or attribute are undefined';
       return false;
     }
-    const registrationRepository = getConnection().getRepository(
+    const registrationRepository = AppDataSource.getRepository(
       RegistrationEntity,
     );
     const registration = await registrationRepository.findOne({

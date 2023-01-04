@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Connection } from 'typeorm';
+import { DataSource } from 'typeorm';
 import fspBelcash from '../../seed-data/fsp/fsp-belcash.json';
 import instancePilotEth from '../../seed-data/instance/instance-pilot-eth.json';
 import programPilotEth from '../../seed-data/program/program-pilot-eth.json';
@@ -13,12 +13,12 @@ import { SeedInit } from './seed-init';
 
 @Injectable()
 export class SeedProgramEth implements InterfaceScript {
-  public constructor(private connection: Connection) {}
+  public constructor(private dataSource: DataSource) {}
 
-  private readonly seedHelper = new SeedHelper(this.connection);
+  private readonly seedHelper = new SeedHelper(this.dataSource);
 
   public async run(): Promise<void> {
-    const seedInit = await new SeedInit(this.connection);
+    const seedInit = await new SeedInit(this.dataSource);
     await seedInit.run();
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
@@ -268,8 +268,8 @@ export class SeedProgramEth implements InterfaceScript {
       },
     ];
 
-    const userRoleRepository = this.connection.getRepository(UserRoleEntity);
-    const permissionRepository = this.connection.getRepository(
+    const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
+    const permissionRepository = this.dataSource.getRepository(
       PermissionEntity,
     );
     const userRoleEntities = [];
@@ -281,7 +281,7 @@ export class SeedProgramEth implements InterfaceScript {
       const permissionEntities = [];
       for (const permission of customRole.permissions) {
         permissionEntities.push(
-          await permissionRepository.findOne({ name: permission }),
+          await permissionRepository.findOneBy({ name: permission }),
         );
       }
       customRoleEntity.permissions = permissionEntities;

@@ -1,7 +1,6 @@
 import {
   Column,
   Entity,
-  getConnection,
   JoinColumn,
   ManyToOne,
   Unique,
@@ -12,6 +11,7 @@ import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { FspQuestionEntity } from './../fsp/fsp-question.entity';
 import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
 import { RegistrationEntity } from './registration.entity';
+import { AppDataSource } from '../../appdatasource';
 
 @Unique('registrationProgramQuestionUnique', [
   'registrationId',
@@ -82,8 +82,9 @@ export class RegistrationDataEntity extends Base121Entity {
   public value: string;
 
   public async getDataName(): Promise<string> {
-    const repo = getConnection().getRepository(RegistrationDataEntity);
-    const dataWithRelations = await repo.findOne(this.id, {
+    const repo = AppDataSource.getRepository(RegistrationDataEntity);
+    const dataWithRelations = await repo.findOne({
+      where: { id: this.id },
       relations: [
         'programQuestion',
         'fspQuestion',

@@ -1,6 +1,6 @@
 import { HttpException } from '@nestjs/common';
 import crypto from 'crypto';
-import { Connection, In } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { InstanceEntity } from '../instance/instance.entity';
@@ -14,7 +14,7 @@ import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 
 export class SeedHelper {
-  public constructor(private connection: Connection) {}
+  public constructor(private dataSource: DataSource) {}
 
   public async addDefaultUsers(
     program: ProgramEntity,
@@ -71,7 +71,7 @@ export class SeedHelper {
   }
 
   public async getOrSaveUser(userInput: any): Promise<UserEntity> {
-    const userRepository = this.connection.getRepository(UserEntity);
+    const userRepository = this.dataSource.getRepository(UserEntity);
     const user = await userRepository.findOne({
       where: { username: userInput.username },
     });
@@ -89,7 +89,7 @@ export class SeedHelper {
   public async addInstance(
     exampleInstance: Record<string, any>,
   ): Promise<void> {
-    const instanceRepository = this.connection.getRepository(InstanceEntity);
+    const instanceRepository = this.dataSource.getRepository(InstanceEntity);
     const instanceDump = JSON.stringify(exampleInstance);
     const instance = JSON.parse(instanceDump);
     if (instance.monitoringQuestion) {
@@ -99,15 +99,15 @@ export class SeedHelper {
   }
 
   public async addProgram(programExample: any): Promise<ProgramEntity> {
-    const programRepository = this.connection.getRepository(ProgramEntity);
-    const fspRepository = this.connection.getRepository(
+    const programRepository = this.dataSource.getRepository(ProgramEntity);
+    const fspRepository = this.dataSource.getRepository(
       FinancialServiceProviderEntity,
     );
 
-    const programCustomAttributeRepository = this.connection.getRepository(
+    const programCustomAttributeRepository = this.dataSource.getRepository(
       ProgramCustomAttributeEntity,
     );
-    const programQuestionRepository = this.connection.getRepository(
+    const programQuestionRepository = this.dataSource.getRepository(
       ProgramQuestionEntity,
     );
 
@@ -169,11 +169,11 @@ export class SeedHelper {
     const exampleDump = JSON.stringify(fspInput);
     const fsp = JSON.parse(exampleDump);
 
-    const fspRepository = this.connection.getRepository(
+    const fspRepository = this.dataSource.getRepository(
       FinancialServiceProviderEntity,
     );
 
-    const fspQuestionRepository = this.connection.getRepository(
+    const fspQuestionRepository = this.dataSource.getRepository(
       FspQuestionEntity,
     );
 
@@ -195,13 +195,15 @@ export class SeedHelper {
     programId: number,
     roles: DefaultUserRole[] | string[],
   ): Promise<void> {
-    const userRepository = this.connection.getRepository(UserEntity);
-    const programRepository = this.connection.getRepository(ProgramEntity);
-    const userRoleRepository = this.connection.getRepository(UserRoleEntity);
-    const assignmentRepository = this.connection.getRepository(
+    const userRepository = this.dataSource.getRepository(UserEntity);
+    const programRepository = this.dataSource.getRepository(ProgramEntity);
+    const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
+    const assignmentRepository = this.dataSource.getRepository(
       ProgramAidworkerAssignmentEntity,
     );
-    const user = await userRepository.findOne(userId);
+    const user = await userRepository.findOneBy({
+      id: userId,
+    });
     await assignmentRepository.save({
       user: user,
       program: await programRepository.findOne({
@@ -218,7 +220,7 @@ export class SeedHelper {
   }
 
   public async assignAdminUserToProgram(programId: number): Promise<void> {
-    const userRepository = this.connection.getRepository(UserEntity);
+    const userRepository = this.dataSource.getRepository(UserEntity);
     const adminUser = await userRepository.findOne({
       where: { username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN },
     });
