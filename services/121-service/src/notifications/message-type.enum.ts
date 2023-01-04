@@ -1,6 +1,5 @@
 export enum MessageContentType {
   registered = 'registered',
-  invitation = 'invitation',
   included = 'included',
   inclusionEnded = 'inclusion-ended',
   rejected = 'rejected',
@@ -8,4 +7,8 @@ export enum MessageContentType {
   custom = 'custom',
   genericTemplated = 'generic-templated',
   paymentTemplated = 'payment-templated',
+  payment = 'payment',
+  paymentInstructions = 'payment-instructions',
+  paymentReminder = 'payment-reminder',
+  defaultReply = 'default-reply',
 }
