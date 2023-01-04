@@ -391,11 +391,25 @@
             "save": "Save note",
             "latest-update": "Latest update on: {{timestamp}}"
           },
-          "messageHistory": {
-            "section-title": "Message History"
-          },
           "error-alert": {
             "invalid-date": "The date format you inputted is not valid. A valid date format example is 31-12-1970 which follows day-month-year, DD-MM-YYYY"
+          }
+        },
+        "message-history-popup": {
+          "message-title": "Message History",
+          "type": {
+            "whatsapp": "WhatsApp",
+            "sms": "SMS"
+          },
+          "content-type": {
+            "registered": "Registration",
+            "included": "Inclusion",
+            "inclusion-ended": "Inclusion ended",
+            "rejected": "Rejection",
+            "invited": "Invitation for registration",
+            "custom": "Custom message",
+            "generic-templated": "Generic template",
+            "payment-templated": "Payment template"
           }
         },
         "payment-status-popup": {
