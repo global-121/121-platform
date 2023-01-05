@@ -353,6 +353,43 @@ export class ProgramsServiceApiService {
     );
   }
 
+  importFspReconciliation(
+    programId: number,
+    payment: number,
+    fspIds: number[],
+    file: File,
+  ): Promise<ImportResult> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const path = `/programs/${programId}/payments/${payment}/fsp-reconciliation?fspIds=${fspIds.join(
+      ',',
+    )}`;
+
+    return new Promise<ImportResult>((resolve, reject) => {
+      this.apiService
+        .post(
+          environment.url_121_service_api,
+          path,
+          formData,
+          false,
+          false,
+          true,
+        )
+        .then((response) => {
+          if (response.error) {
+            throw response;
+          }
+          if (response) {
+            return resolve(response);
+          }
+        })
+        .catch((err) => {
+          return reject(err);
+        });
+    });
+  }
+
   exportList(
     programId: number,
     type: ExportType,
@@ -409,17 +446,23 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getPeopleAffected(programId: number | string): Promise<Person[]> {
+  getPeopleAffected(
+    programId: number | string,
+    personalData: boolean,
+    paymentData: boolean,
+    filterOnPayment?: number,
+  ): Promise<Person[]> {
+    let params = new HttpParams();
+    params = params.append('personalData', personalData);
+    params = params.append('paymentData', paymentData);
+    if (filterOnPayment) {
+      params = params.append('filterOnPayment', filterOnPayment);
+    }
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
-    );
-  }
-
-  getPeopleAffectedPrivacy(programId: number | string): Promise<Person[]> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      `/programs/${programId}/registrations/personal-data`,
+      false,
+      params,
     );
   }
 

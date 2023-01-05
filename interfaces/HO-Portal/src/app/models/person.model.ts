@@ -31,6 +31,12 @@ export class Person {
   preferredLanguage?: LanguageEnum;
   paTableAttributes?: Attribute[];
   registrationProgramId: number;
+  payment?: number;
+  paymentDate?: string;
+  transactionAmount?: number;
+  transactionStatus?: string;
+  errorMessage?: string;
+  lastMessageStatus?: string;
 }
 
 // Model for display (in table)
@@ -60,6 +66,7 @@ export class PersonRow {
   preferredLanguage?: string | null;
   paTableAttributes?: Person['paTableAttributes'];
   paymentHistory?: PaymentColumnDetail;
+  lastMessageStatus?: string;
 }
 
 export class Note {

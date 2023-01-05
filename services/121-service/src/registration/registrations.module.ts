@@ -28,7 +28,7 @@ import { RegistrationEntity } from './registration.entity';
 import { RegistrationsController } from './registrations.controller';
 import { RegistrationsService } from './registrations.service';
 import { BulkImportService } from './services/bulk-import.service';
-import { InlusionScoreService } from './services/inclusion-score.service';
+import { InclusionScoreService } from './services/inclusion-score.service';
 
 @Module({
   imports: [
@@ -60,7 +60,7 @@ import { InlusionScoreService } from './services/inclusion-score.service';
     FspModule,
     WhatsappModule,
   ],
-  providers: [RegistrationsService, BulkImportService, InlusionScoreService],
+  providers: [RegistrationsService, BulkImportService, InclusionScoreService],
   controllers: [RegistrationsController],
   exports: [RegistrationsService],
 })

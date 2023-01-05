@@ -260,6 +260,10 @@
           "empty-selection-alert-message": "Please select at least one option",
           "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"
         },
+        "last-message": {
+          "no-message": "No messages yet",
+          "message-status": "Last message:"
+        },
         "column": {
           "select": "Select",
           "person": "Person Affected",
@@ -278,14 +282,14 @@
           "name": "Name",
           "dob": "Date of birth",
           "phone-number": "Phonenumber",
-          "vnumber": "V-number",
           "whatsappPhoneNumber": "WhatsApp nr.",
           "preferredLanguage": "Preferred language",
           "paymentAmountMultiplier": "Transfer value(s)",
           "fsp": "Financial Service Provider",
           "custom-attribute-true": "Yes",
           "custom-attribute-false": "No",
-          "payment-history": "Payment history"
+          "payment-history": "Payment history",
+          "last-message-status": "Messages"
         },
         "language": {
           "en": "English",
@@ -358,9 +362,6 @@
             "whatsappPhoneNumber": {
               "label": "WhatsApp number",
               "explanation": "This value is required for a 'WhatsApp-enabled' FSP only."
-            },
-            "vnumber": {
-              "label": "V-number"
             },
             "accountId": {
               "label": "Account ID"
@@ -477,7 +478,23 @@
       "export-fsp-intructions": {
         "btn-text": "Export Payment Instructions",
         "confirm-message": "This will download a file with payment instructions for the Financial Service Provider.",
-        "sub-message": "You should only use this file <strong>once per payment</strong> in the portal of the Financial Service Provider."
+        "sub-message": {
+          "reconciliation": "This export will only include People Affected for which the current transaction status is <strong>waiting</strong>.",
+          "no-reconciliation": "You should only use this file <strong>once per payment</strong> in the portal of the Financial Service Provider."
+        },
+        "timestamp": "Latest export has been done on: {{dateTime}}"
+      },
+      "import-fsp-reconciliation": {
+        "btn-text": "Import Payment Reconciliation Data",
+        "confirm-message": "Import Payment Reconciliation Data",
+        "explanation": "Make sure to upload the reconciliation data exactly as provided by the Financial Service Provider.",
+        "timestamp": "Latest import has been done on: {{dateTime}}",
+        "import-result": {
+          "ready": "Reconciliation data imported for payment <strong>#{{payment}}</strong>.",
+          "new": "Payment data updated for <strong>{{countTotal}}</strong> people affected:<ul><li><strong>{{countPaymentSuccess}}</strong> payments are <strong>successful</strong></li><li><strong>{{countPaymentFailed}}</strong> payments are <strong>failed</strong></li></ul>",
+          "mismatch": "BE CAREFUL: <strong>{{countPaymentStarted}}</strong> payments were started for payment <strong>#{{payment}}</strong>. Reconciliation data contains <strong>{{countImported}}</strong> payments. So, the total amount in the reconciliation data does not match with started payments. Note that all payments that do not have a success record in the reconciliation data are considered failed payments.",
+          "not-found": "There were <strong>{{countNotFound}}</strong> transactions for which no matching Person Affected was found. Try to correct them and upload again."
+        }
       },
       "manage-aidworkers": {
         "section-title": "Manage aidworkers",
@@ -527,6 +544,7 @@
     "cancel": "Cancel",
     "ok": "OK",
     "export-error": "Something went wrong with the export.",
+    "import-error": "Something went wrong with the import.",
     "unknown-error": "Something went wrong. Error is unknown.",
     "update-success": "Update successful",
     "update-error": "Something went wrong: {{error}}",

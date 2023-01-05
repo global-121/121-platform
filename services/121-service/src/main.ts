@@ -100,6 +100,7 @@ async function bootstrap(): Promise<void> {
   });
   app.useGlobalPipes(
     new ValidationPipe({
+      forbidUnknownValues: false,
       exceptionFactory: errors => new BadRequestException(errors),
     }),
   );

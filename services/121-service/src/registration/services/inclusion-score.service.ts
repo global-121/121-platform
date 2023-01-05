@@ -7,7 +7,7 @@ import { RegistrationEntity } from '../registration.entity';
 import { ProgramQuestionEntity } from './../../programs/program-question.entity';
 
 @Injectable()
-export class InlusionScoreService {
+export class InclusionScoreService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(RegistrationEntity)

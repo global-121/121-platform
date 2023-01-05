@@ -2,9 +2,18 @@ import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from '../actions/action.module';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspModule } from '../fsp/fsp.module';
+import { LookupService } from '../notifications/lookup/lookup.service';
+import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
+import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
+import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
+import { RegistrationsModule } from '../registration/registrations.module';
+import { BulkImportService } from '../registration/services/bulk-import.service';
+import { InclusionScoreService } from '../registration/services/inclusion-score.service';
 import { UserModule } from '../user/user.module';
 import { UserEntity } from './../user/user.entity';
 import { AfricasTalkingModule } from './fsp-integration/africas-talking/africas-talking.module';
@@ -25,6 +34,11 @@ import { TransactionsModule } from './transactions/transactions.module';
       TransactionEntity,
       RegistrationEntity,
       UserEntity,
+      RegistrationDataEntity,
+      ProgramQuestionEntity,
+      FinancialServiceProviderEntity,
+      FspQuestionEntity,
+      ProgramCustomAttributeEntity,
     ]),
     UserModule,
     HttpModule,
@@ -37,8 +51,14 @@ import { TransactionsModule } from './transactions/transactions.module';
     BobFinanceModule,
     UkrPoshtaModule,
     VodacashModule,
+    RegistrationsModule,
   ],
-  providers: [PaymentsService],
+  providers: [
+    PaymentsService,
+    BulkImportService,
+    LookupService,
+    InclusionScoreService,
+  ],
   controllers: [PaymentsController],
   exports: [PaymentsService],
 })

@@ -81,11 +81,17 @@ export class WhatsappService {
     messageType: null | IntersolvePayoutStatus,
     mediaUrl: null | string,
     registrationId?: number,
+    whatsappNumber?: string,
+    messagingServiceSid?: string,
   ): Promise<any> {
     const payload = {
       body: message,
-      messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-      from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
+      messagingServiceSid: messagingServiceSid
+        ? messagingServiceSid
+        : process.env.TWILIO_MESSAGING_SID,
+      from: whatsappNumber
+        ? whatsappNumber
+        : 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
       statusCallback: EXTERNAL_API.whatsAppStatus,
       to: 'whatsapp:' + recipientPhoneNr,
     };
@@ -273,7 +279,7 @@ export class WhatsappService {
   ): Promise<RegistrationEntity[]> {
     const registrationsWithPhoneNumber = await this.dataSource.getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
-      .select('registration.id')
+      .select('registration')
       .leftJoin('registration.data', 'registration_data')
       .leftJoinAndSelect(
         'registration.whatsappPendingMessages',
@@ -315,22 +321,26 @@ export class WhatsappService {
       relations: ['images', 'images.barcode'],
     });
 
-    // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
-    const lastPayment = await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select('MAX(transaction.payment)', 'max')
-      .getRawOne();
-    const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
+    let filteredRegistrations: RegistrationEntity[] = [];
+    for (const r of registrationWithVouchers) {
+      // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
+      const lastPayment = await this.transactionRepository
+        .createQueryBuilder('transaction')
+        .select('MAX(transaction.payment)', 'max')
+        .where('transaction.programId = :programId', {
+          programId: r.programId,
+        })
+        .getRawOne();
+      const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
 
-    return registrationWithVouchers
-      .map(registration => {
-        registration.images = registration.images.filter(
-          image =>
-            !image.barcode.send && image.barcode.payment >= minimumPayment,
-        );
-        return registration;
-      })
-      .filter(registration => registration.images.length > 0);
+      r.images = r.images.filter(
+        image => !image.barcode.send && image.barcode.payment >= minimumPayment,
+      );
+      if (r.images.length > 0) {
+        filteredRegistrations.push(r);
+      }
+    }
+    return filteredRegistrations;
   }
 
   private cleanWhatsAppNr(value: string): string {
@@ -349,10 +359,46 @@ export class WhatsappService {
     const fromNumber = this.cleanWhatsAppNr(callbackData.From);
 
     // Get (potentially multiple) registrations on incoming phonenumber
-    // NOTE: this is still possible, even though 'grouping on phonenumber' is removed again on 2021-10-12
     const registrationsWithPhoneNumber = await this.getRegistrationsWithPhoneNumber(
       fromNumber,
     );
+
+    // This is a temporary hack that will be removed after the transition period
+    const nlrcPvNumber = 'whatsapp:+3197010253925';
+    // const nlrcPvNumber = 'whatsapp:+14155238886'; // use sandbox-number for debugging
+    if (callbackData.To === nlrcPvNumber) {
+      const nlrcPvTempAutoReply = {
+        en:
+          'This is an automatic message from the Red Cross. This number is not used anymore. We now send the vouchers from this number: +3197010253442. Do you want to receive the vouchers that we have sent to you before? Send a message to the new number by clicking on this link: https://wa.me/3197010253442. For questions or help, please contact our WhatsApp Helpdesk: https://wa.me/31614458781.',
+        es:
+          'Este es un mensaje automático de la Cruz Roja. Este número ya no se usa. Ahora enviamos los vales desde este número: +3197010253442. ¿Quieres recibir los vales que te hemos enviado anteriormente? Envía un mensaje al nuevo número haciendo clic en este enlace: https://wa.me/3197010253442. Para preguntas o ayuda, comuníquese con nuestro servicio de asistencia de WhatsApp: https://wa.me/31614458781.',
+        nl:
+          'Dit is een automatisch bericht van het Rode Kruis. Dit nummer wordt niet meer gebruikt. We versturen de vouchers nu vanaf dit nummer: +3197010253442. Wil je de vouchers ontvangen die we je eerder hebben gestuurd? Stuur een bericht naar het nieuwe nummer door op deze link te klikken: https://wa.me/3197010253442. Neem voor vragen of hulp contact op met onze WhatsApp Helpdesk: https://wa.me/31614458781.',
+        ['pt_BR']:
+          'Esta é uma mensagem automática da Cruz Vermelha. Este número não é mais usado. Agora enviamos os vouchers a partir deste número: +3197010253442. Deseja receber os vouchers que lhe enviamos anteriormente? Envie uma mensagem para o novo número clicando neste link: https://wa.me/3197010253442. Para dúvidas ou ajuda, entre em contato com nosso WhatsApp Helpdesk: https://wa.me/31614458781.',
+        tl:
+          'Ito ay isang awtomatikong mensahe mula sa Red Cross. Hindi na ginagamit ang numerong ito. Ipinapadala na namin ngayon ang mga voucher mula sa numerong ito: +3197010253442. Gusto mo bang matanggap ang mga voucher na ipinadala namin sa iyo noon? Magpadala ng mensahe sa bagong numero sa pamamagitan ng pag-click sa link na ito: https://wa.me/3197010253442. Para sa mga katanungan o tulong, mangyaring makipag-ugnayan sa aming WhatsApp Helpdesk: https://wa.me/31614458781.',
+        in:
+          'Ini adalah pesan otomatis dari Red Cross. Nomor ini sudah tidak digunakan lagi. Kami sekarang mengirimkan voucher dari nomor ini: +3197010253442. Apakah Anda ingin menerima voucher yang telah kami kirimkan kepada Anda sebelumnya? Kirim pesan ke nomor baru dengan klik link ini : https://wa.me/3197010253442. Untuk pertanyaan atau bantuan, silakan hubungi Helpdesk WhatsApp kami: https://wa.me/31614458781.',
+        fr: `Ceci est un message automatique de la Croix-Rouge. Ce numéro n'est plus utilisé. Nous envoyons maintenant les bons à partir de ce numéro : +3197010253442. Voulez-vous recevoir les bons que nous vous avons déjà envoyés? Envoyez un message au nouveau numéro en cliquant sur ce lien : https://wa.me/3197010253442. Pour toute question ou aide, veuillez contacter notre service d'assistance WhatsApp : https://wa.me/31614458781.`,
+      };
+
+      const language =
+        registrationsWithPhoneNumber[0]?.preferredLanguage ||
+        this.fallbackLanguage;
+      const message = nlrcPvTempAutoReply[language];
+      await this.sendWhatsapp(
+        message,
+        fromNumber,
+        null,
+        null,
+        null,
+        nlrcPvNumber,
+        process.env.TWILIO_MESSAGING_SID_PV,
+      );
+      return;
+    }
+    // end of temporary hack
 
     const registrationsWithPendingMessage = registrationsWithPhoneNumber.filter(
       (registration: RegistrationEntity) =>
@@ -388,8 +434,11 @@ export class WhatsappService {
         }
       }
       if (program) {
+        const language =
+          registrationsWithPhoneNumber[0]?.preferredLanguage ||
+          this.fallbackLanguage;
         const whatsappDefaultReply =
-          program.notifications[this.fallbackLanguage]['whatsappReply'];
+          program.notifications[language]['whatsappReply'];
         await this.sendWhatsapp(
           whatsappDefaultReply,
           fromNumber,

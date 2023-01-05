@@ -30,7 +30,7 @@ export class BulkActionsService {
   public updateCheckbox(
     action: BulkActionId,
     personData: PersonRow,
-    payment?: number,
+    hasSelectedPayment?: boolean,
   ) {
     switch (action) {
       case BulkActionId.invite:
@@ -94,7 +94,7 @@ export class BulkActionsService {
       case BulkActionId.doPayment:
         personData.checkboxVisible =
           this.hasStatus(personData, [RegistrationStatus.included]) &&
-          !personData.paymentHistory?.payments.includes(payment);
+          !hasSelectedPayment;
         break;
     }
     return personData;

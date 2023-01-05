@@ -507,25 +507,38 @@ export class IntersolveService {
     return toCancelVouchers;
   }
 
-  public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
+  public async getUnusedVouchers(
+    programId?: number,
+  ): Promise<UnusedVoucherDto[]> {
     const maxId = (
-      await this.intersolveBarcodeRepository.createQueryBuilder('barcode').select("MAX(barcode.id)", "max")
-    .getRawOne())?.max;
+      await this.intersolveBarcodeRepository
+      .createQueryBuilder('barcode')
+      .select("MAX(barcode.id)", "max")
+      .leftJoin('barcode.image', 'image')
+      .leftJoin('image.registration', 'registration')
+      .where('registration.programId = :programId', {
+        programId: programId,
+      })
+      .getRawOne()
+      )?.max;
+
     const unusedVouchers = [];
     let id = 1;
 
     // Run this in batches of 1,000 as it is performance-heavy
     while (id <= maxId) {
-      const previouslyUnusedVouchers = await this.intersolveBarcodeRepository.find(
-        {
-          where: {
-            balanceUsed: false,
-            id: Between(id, id + 1000 - 1),
-          },
-          relations: ['image', 'image.registration'],
-        },
-      );
-
+      const previouslyUnusedVouchers = await this.intersolveBarcodeRepository
+        .createQueryBuilder('barcode')
+        .leftJoinAndSelect('barcode.image', 'image')
+        .leftJoinAndSelect('image.registration', 'registration')
+        .where('barcode.balanceUsed = false')
+        .andWhere(`barcode.id BETWEEN :id AND (:id + 1000 - 1)`, {
+          id: id,
+        })
+        .andWhere('registration.programId = :programId', {
+          programId: programId,
+        })
+        .getMany();
       for await (const voucher of previouslyUnusedVouchers) {
         const balance = await this.getBalance(voucher);
         if (balance === voucher.amount) {
