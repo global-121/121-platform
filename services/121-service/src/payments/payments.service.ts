@@ -54,9 +54,7 @@ export class PaymentsService {
     private readonly bulkImportService: BulkImportService,
   ) {}
 
-  public async getPayments(
-    programId: number,
-  ): Promise<
+  public async getPayments(programId: number): Promise<
     {
       payment: number;
       paymentDate: Date | string;
@@ -72,7 +70,9 @@ export class PaymentsService {
         'amount',
       )
       .leftJoin('transaction.registration', 'r')
-      .where('transaction.program.id = :programId', { programId: programId })
+      .where('transaction.program.id = :programId', {
+        programId: programId,
+      })
       .groupBy('payment')
       .getRawMany();
     return payments;
@@ -85,7 +85,7 @@ export class PaymentsService {
     amount: number,
     referenceIdsDto?: ReferenceIdsDto,
   ): Promise<number> {
-    let program = await this.programRepository.findOne({
+    const program = await this.programRepository.findOne({
       where: { id: programId },
       relations: ['financialServiceProviders'],
     });
@@ -157,7 +157,7 @@ export class PaymentsService {
     const bobFinancePaPayment = [];
     const ukrPoshtaPaPayment = [];
     const vodacashPaPayment = [];
-    for (let paPaymentData of paPaymentDataList) {
+    for (const paPaymentData of paPaymentDataList) {
       if (paPaymentData.fspName === FspName.intersolve) {
         intersolvePaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.intersolveNoWhatsapp) {
@@ -277,7 +277,7 @@ export class PaymentsService {
           payment,
           StatusEnum.waiting,
         )
-      ).map(t => t.referenceId);
+      ).map((t) => t.referenceId);
       return await this.registrationRepository.find({
         where: { referenceId: In(waitingReferenceIds) },
         relations: ['fsp'],
@@ -287,7 +287,7 @@ export class PaymentsService {
     // If no referenceIds passed, this must be because of the 'retry all failed' scenario ..
     const failedReferenceIds = (
       await this.getTransactionsByStatus(programId, payment, StatusEnum.error)
-    ).map(t => t.referenceId);
+    ).map((t) => t.referenceId);
     // .. if nothing found, throw an error
     if (!failedReferenceIds.length) {
       const errors = 'No failed transactions found for this payment.';
@@ -303,8 +303,8 @@ export class PaymentsService {
   private async createPaPaymentDataList(
     includedRegistrations: RegistrationEntity[],
   ): Promise<PaPaymentDataDto[]> {
-    let paPaymentDataList = [];
-    for (let includedRegistration of includedRegistrations) {
+    const paPaymentDataList = [];
+    for (const includedRegistration of includedRegistrations) {
       const paPaymentData = new PaPaymentDataDto();
       paPaymentData.referenceId = includedRegistration.referenceId;
       const fsp = await this.fspService.getFspById(includedRegistration.fsp.id);
@@ -325,7 +325,7 @@ export class PaymentsService {
     includedRegistration: RegistrationEntity,
     fspAttributes: FspQuestionEntity[],
   ): Promise<null | string> {
-    for (let attribute of fspAttributes) {
+    for (const attribute of fspAttributes) {
       // NOTE: this is still not ideal, as it is hard-coded. No other quick solution was found.
       if (
         attribute.name === CustomDataAttributes.phoneNumber ||
@@ -345,13 +345,10 @@ export class PaymentsService {
     payment: number,
     status: StatusEnum,
   ): Promise<any[]> {
-    const allLatestTransactionAttemptsPerPa = await this.transactionService.getTransactions(
-      programId,
-      false,
-      payment,
-    );
+    const allLatestTransactionAttemptsPerPa =
+      await this.transactionService.getTransactions(programId, false, payment);
     const failedTransactions = allLatestTransactionAttemptsPerPa.filter(
-      t => t.payment === payment && t.status === status,
+      (t) => t.payment === payment && t.status === status,
     );
     return failedTransactions;
   }
@@ -376,7 +373,7 @@ export class PaymentsService {
       false,
     );
     const paymentTransactions = transactions.filter(
-      transaction => transaction.payment === payment,
+      (transaction) => transaction.payment === payment,
     );
     const csvInstructions = [];
     let xmlInstructions: string;
@@ -472,12 +469,13 @@ export class PaymentsService {
             registration,
             validatedImportRecords,
           );
-          paTransactionResult = await this.vodacashService.createTransactionResult(
-            registration,
-            record,
-            programId,
-            payment,
-          );
+          paTransactionResult =
+            await this.vodacashService.createTransactionResult(
+              registration,
+              record,
+              programId,
+              payment,
+            );
         }
 
         if (!paTransactionResult) {
@@ -531,7 +529,7 @@ export class PaymentsService {
   ): Promise<ImportFspReconciliationDto> {
     const validatedArray = [];
     let recordsCount = 0;
-    for (const [i, row] of xmlArray.entries()) {
+    for (const row of xmlArray) {
       recordsCount += 1;
       if (this.bulkImportService.checkForCompletelyEmptyRow(row)) {
         continue;

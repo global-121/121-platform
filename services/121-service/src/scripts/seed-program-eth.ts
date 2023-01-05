@@ -269,9 +269,8 @@ export class SeedProgramEth implements InterfaceScript {
     ];
 
     const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
-    const permissionRepository = this.dataSource.getRepository(
-      PermissionEntity,
-    );
+    const permissionRepository =
+      this.dataSource.getRepository(PermissionEntity);
     const userRoleEntities = [];
     for (const customRole of customRoles) {
       const customRoleEntity = new UserRoleEntity();

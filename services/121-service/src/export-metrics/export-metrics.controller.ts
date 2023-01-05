@@ -144,7 +144,10 @@ export class ExportMetricsController {
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
   @ApiOperation({ summary: 'Get monitoring data' })
-  @ApiResponse({ status: 200, description: 'All monitoring data of a program' })
+  @ApiResponse({
+    status: 200,
+    description: 'All monitoring data of a program',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Get('programs/:programId/export-metrics/monitoring')
   public async getMonitoringData(@Param() params): Promise<any[]> {
@@ -154,7 +157,9 @@ export class ExportMetricsController {
   }
 
   @Permissions(PermissionEnum.ProgramMetricsREAD)
-  @ApiOperation({ summary: 'Get total transfer amounts of people to pay out' })
+  @ApiOperation({
+    summary: 'Get total transfer amounts of people to pay out',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,

@@ -37,11 +37,13 @@ export class BelcashService {
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.belcash;
 
-    const program = await this.programRepository.findOneBy({ id: programId });
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
 
     const authorizationToken = await this.belcashApiService.authenticate();
 
-    for (let payment of paymentList) {
+    for (const payment of paymentList) {
       const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
       const payload = this.createPayloadPerPa(
         payment,
@@ -99,7 +101,7 @@ export class BelcashService {
     authorizationToken: string,
   ): Promise<PaTransactionResultDto> {
     // A timeout of 100ms to not overload belcash server
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 2000));
 
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.fspName = FspName.belcash;

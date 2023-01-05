@@ -10,8 +10,8 @@ export class TryWhatsappEntity extends Base121Entity {
   public sid: string;
 
   @OneToOne(
-    _type => RegistrationEntity,
-    registration => registration.whatsappPendingMessages,
+    (_type) => RegistrationEntity,
+    (registration) => registration.whatsappPendingMessages,
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;

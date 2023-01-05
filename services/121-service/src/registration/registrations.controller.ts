@@ -476,7 +476,9 @@ export class RegistrationsController {
   }
 
   // There's no permission check here because there's a check included in the queries done to fetch data.
-  @ApiOperation({ summary: 'Get registration with prefilled answers (for AW)' })
+  @ApiOperation({
+    summary: 'Get registration with prefilled answers (for AW)',
+  })
   @ApiResponse({ status: 200 })
   @ApiParam({
     name: 'referenceId',

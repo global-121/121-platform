@@ -9,19 +9,15 @@ import { PersonAffectedAppDataEntity } from './person-affected-app-data.entity';
 @Injectable()
 export class PeopleAffectedService {
   @InjectRepository(PersonAffectedAppDataEntity)
-  private readonly dataStorageRepository: Repository<
-    PersonAffectedAppDataEntity
-  >;
+  private readonly dataStorageRepository: Repository<PersonAffectedAppDataEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
-
-  public constructor() {}
 
   public async postData(
     userId: number,
     storeData: StoreDataDto,
   ): Promise<void> {
-    let data = new PersonAffectedAppDataEntity();
+    const data = new PersonAffectedAppDataEntity();
     const user = await this.userRepository.findOneBy({
       id: userId,
     });

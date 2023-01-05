@@ -120,7 +120,7 @@ export class SeedHelper {
     const programCustomAttributes = program.programCustomAttributes;
     program.programCustomAttributes = [];
     if (programCustomAttributes) {
-      for (let attribute of programCustomAttributes) {
+      for (const attribute of programCustomAttributes) {
         attribute.program = programReturn;
         await programCustomAttributeRepository.save(attribute);
       }
@@ -129,7 +129,7 @@ export class SeedHelper {
     // Remove original program questions and add it to a separate variable
     const programQuestions = program.programQuestions;
     program.programQuestions = [];
-    for (let question of programQuestions) {
+    for (const question of programQuestions) {
       if (question.answerType === 'dropdown') {
         const scoringKeys = Object.keys(question.scoring);
         if (scoringKeys.length > 0) {
@@ -156,8 +156,8 @@ export class SeedHelper {
     });
     const fsps = program.financialServiceProviders;
     foundProgram.financialServiceProviders = [];
-    for (let fsp of fsps) {
-      let fspReturn = await fspRepository.findOne({
+    for (const fsp of fsps) {
+      const fspReturn = await fspRepository.findOne({
         where: { fsp: fsp.fsp },
       });
       foundProgram.financialServiceProviders.push(fspReturn);
@@ -173,9 +173,8 @@ export class SeedHelper {
       FinancialServiceProviderEntity,
     );
 
-    const fspQuestionRepository = this.dataSource.getRepository(
-      FspQuestionEntity,
-    );
+    const fspQuestionRepository =
+      this.dataSource.getRepository(FspQuestionEntity);
 
     // Remove original custom criteria and add it to a separate variable
     const questions = fsp.questions;
@@ -183,9 +182,9 @@ export class SeedHelper {
 
     const fspReturn = await fspRepository.save(fsp);
 
-    for (let question of questions) {
+    for (const question of questions) {
       question.fsp = fspReturn;
-      let customReturn = await fspQuestionRepository.save(question);
+      const customReturn = await fspQuestionRepository.save(question);
       fsp.questions.push(customReturn);
     }
   }

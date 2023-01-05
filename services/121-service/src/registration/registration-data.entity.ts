@@ -1,17 +1,11 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  Unique,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
+import { AppDataSource } from '../../appdatasource';
 import { Base121Entity } from '../base.entity';
 import { MonitoringQuestionEntity } from '../instance/monitoring-question.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { FspQuestionEntity } from './../fsp/fsp-question.entity';
 import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
 import { RegistrationEntity } from './registration.entity';
-import { AppDataSource } from '../../appdatasource';
 
 @Unique('registrationProgramQuestionUnique', [
   'registrationId',
@@ -33,18 +27,15 @@ import { AppDataSource } from '../../appdatasource';
 ])
 @Entity('registration_data')
 export class RegistrationDataEntity extends Base121Entity {
-  @ManyToOne(
-    _type => RegistrationEntity,
-    registration => registration.data,
-  )
+  @ManyToOne((_type) => RegistrationEntity, (registration) => registration.data)
   @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;
   @Column()
   public registrationId: number;
 
   @ManyToOne(
-    _type => ProgramQuestionEntity,
-    programQuestion => programQuestion.registrationData,
+    (_type) => ProgramQuestionEntity,
+    (programQuestion) => programQuestion.registrationData,
   )
   @JoinColumn({ name: 'programQuestionId' })
   public programQuestion: ProgramQuestionEntity;
@@ -52,8 +43,8 @@ export class RegistrationDataEntity extends Base121Entity {
   public programQuestionId: number;
 
   @ManyToOne(
-    _type => FspQuestionEntity,
-    fspQuestion => fspQuestion.registrationData,
+    (_type) => FspQuestionEntity,
+    (fspQuestion) => fspQuestion.registrationData,
   )
   @JoinColumn({ name: 'fspQuestionId' })
   public fspQuestion: FspQuestionEntity;
@@ -61,8 +52,8 @@ export class RegistrationDataEntity extends Base121Entity {
   public fspQuestionId: number;
 
   @ManyToOne(
-    _type => ProgramCustomAttributeEntity,
-    programCustomAttribute => programCustomAttribute.registrationData,
+    (_type) => ProgramCustomAttributeEntity,
+    (programCustomAttribute) => programCustomAttribute.registrationData,
   )
   @JoinColumn({ name: 'programCustomAttributeId' })
   public programCustomAttribute: ProgramCustomAttributeEntity;
@@ -70,8 +61,8 @@ export class RegistrationDataEntity extends Base121Entity {
   public programCustomAttributeId: number;
 
   @ManyToOne(
-    _type => MonitoringQuestionEntity,
-    monitoringQuestion => monitoringQuestion.registrationData,
+    (_type) => MonitoringQuestionEntity,
+    (monitoringQuestion) => monitoringQuestion.registrationData,
   )
   @JoinColumn({ name: 'monitoringQuestionId' })
   public monitoringQuestion: MonitoringQuestionEntity;

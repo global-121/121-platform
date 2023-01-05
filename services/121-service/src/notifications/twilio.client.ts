@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { TwilioClientMock } from './twilio.mock';
 
 export const twilioClient = !!process.env.MOCK_TWILIO

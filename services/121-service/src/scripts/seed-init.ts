@@ -22,9 +22,8 @@ export class SeedInit implements InterfaceScript {
   }
 
   private async addPermissions(): Promise<PermissionEntity[]> {
-    const permissionsRepository = this.dataSource.getRepository(
-      PermissionEntity,
-    );
+    const permissionsRepository =
+      this.dataSource.getRepository(PermissionEntity);
     const permissionEntities = [];
     for (const permissionName of Object.values(PermissionEnum)) {
       let permissionEntity = await permissionsRepository.findOne({
@@ -140,7 +139,7 @@ export class SeedInit implements InterfaceScript {
       const defaultRoleEntity = new UserRoleEntity();
       defaultRoleEntity.role = defaultRole.role;
       defaultRoleEntity.label = defaultRole.label;
-      defaultRoleEntity.permissions = permissions.filter(permission =>
+      defaultRoleEntity.permissions = permissions.filter((permission) =>
         defaultRole.permissions.includes(permission.name),
       );
       userRoleEntities.push(await userRoleRepository.save(defaultRoleEntity));
@@ -161,7 +160,6 @@ export class SeedInit implements InterfaceScript {
   }
 
   public async dropAll(): Promise<void> {
-    const entities = this.dataSource.entityMetadatas;
     const dropTableQueries = await this.dataSource.manager
       .query(`select 'drop table if exists "121-service"."' || tablename || '" cascade;'
         from pg_tables

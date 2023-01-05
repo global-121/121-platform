@@ -13,15 +13,12 @@ export class ActionService {
   private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-
-  public constructor() {}
-
   public async saveAction(
     userId: number,
     programId: number,
     actionType: ActionType,
   ): Promise<ActionEntity> {
-    let action = new ActionEntity();
+    const action = new ActionEntity();
     action.actionType = actionType;
     const user = await this.userRepository.findOneBy({
       id: userId,
@@ -29,7 +26,7 @@ export class ActionService {
     action.user = user;
 
     const program = await this.programRepository.findOneBy({
-      id: userId,
+      id: programId,
     });
     action.program = program;
 

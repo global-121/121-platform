@@ -1,4 +1,3 @@
-
 export const ORMConfig = {
   type: 'postgres',
   host: '121db',

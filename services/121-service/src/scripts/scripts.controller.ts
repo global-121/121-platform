@@ -1,8 +1,7 @@
 import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiQuery } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { DataSource, DataSourceOptions } from 'typeorm';
-import { ORMConfig } from '../../ormconfig';
+import { DataSource } from 'typeorm';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedProgramDrc } from './seed-program-drc';
@@ -38,7 +37,7 @@ class ResetDto {
 
 @Controller('scripts')
 export class ScriptsController {
-  public constructor(private dataSource: DataSource) { }
+  public constructor(private dataSource: DataSource) {}
 
   // private dataSource = new DataSource(ORMConfig as DataSourceOptions)
   // public constructor() { }

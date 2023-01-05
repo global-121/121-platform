@@ -16,4 +16,4 @@ import { AppDataSource } from '../appdatasource';
   ],
   exports: [DataSource],
 })
-export class TypeOrmModule { }
+export class TypeOrmModule {}

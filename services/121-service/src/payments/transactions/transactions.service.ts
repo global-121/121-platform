@@ -20,10 +20,7 @@ export class TransactionsService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
-  private readonly financialServiceProviderRepository: Repository<
-    FinancialServiceProviderEntity
-  >;
-  public constructor() {}
+  private readonly financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
 
   public async getTransactions(
     programId: number,
@@ -31,12 +28,13 @@ export class TransactionsService {
     minPayment?: number,
     referenceId?: string,
   ): Promise<any> {
-    const transactions = await this.getMaxAttemptPerPaAndPaymentTransactionsQuery(
-      programId,
-      splitByTransactionStep,
-      minPayment,
-      referenceId,
-    ).getRawMany();
+    const transactions =
+      await this.getMaxAttemptPerPaAndPaymentTransactionsQuery(
+        programId,
+        splitByTransactionStep,
+        minPayment,
+        referenceId,
+      ).getRawMany();
     return transactions;
   }
 
@@ -52,7 +50,9 @@ export class TransactionsService {
       .addSelect(
         `MAX(cast("transactionStep" as varchar) || '-' || cast(created as varchar)) AS max_attempt`,
       )
-      .where('transaction.program.id = :programId', { programId: programId })
+      .where('transaction.program.id = :programId', {
+        programId: programId,
+      })
       .groupBy('payment')
       .addGroupBy('"registrationId"');
 
@@ -78,7 +78,9 @@ export class TransactionsService {
         `transaction.registrationId = subquery."registrationId" AND transaction.payment = subquery.payment AND cast(transaction."transactionStep" as varchar) || '-' || cast(created as varchar) = subquery.max_attempt`,
       )
       .leftJoin('transaction.registration', 'r')
-      .where('transaction.program.id = :programId', { programId: programId })
+      .where('transaction.program.id = :programId', {
+        programId: programId,
+      })
       .andWhere('transaction.payment >= :minPayment', {
         minPayment: minPayment || 0,
       })
@@ -152,7 +154,9 @@ export class TransactionsService {
     payment: number,
     transactionStep?: number,
   ): Promise<void> {
-    const program = await this.programRepository.findOneBy({ id: programId });
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
     const fsp = await this.financialServiceProviderRepository.findOne({
       where: { fsp: transactionResponse.fspName },
     });
@@ -182,7 +186,7 @@ export class TransactionsService {
   ): Promise<void> {
     // Intersolve transactions are now stored during PA-request-loop already
     // Align across FSPs in future again
-    for (let transaction of transactionResults.paList) {
+    for (const transaction of transactionResults.paList) {
       await this.storeTransaction(transaction, programId, payment);
     }
   }

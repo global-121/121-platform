@@ -35,9 +35,7 @@ import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
 @Injectable()
 export class WhatsappService {
   @InjectRepository(IntersolveBarcodeEntity)
-  private readonly intersolveBarcodeRepository: Repository<
-    IntersolveBarcodeEntity
-  >;
+  private readonly intersolveBarcodeRepository: Repository<IntersolveBarcodeEntity>;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(RegistrationEntity)
@@ -49,18 +47,13 @@ export class WhatsappService {
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(WhatsappTemplateTestEntity)
-  private readonly whatsappTemplateTestRepository: Repository<
-    WhatsappTemplateTestEntity
-  >;
+  private readonly whatsappTemplateTestRepository: Repository<WhatsappTemplateTestEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
-  private readonly whatsappPendingMessageRepo: Repository<
-    WhatsappPendingMessageEntity
-  >;
+  private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
 
   private readonly fallbackLanguage = 'en';
   private readonly genericDefaultReplies = {
-    en:
-      'This is an automated message. Your phone number is not recognized for any 121 program. For questions please contact the NGO.',
+    en: 'This is an automated message. Your phone number is not recognized for any 121 program. For questions please contact the NGO.',
   };
   private readonly whatsappTemplatedMessageKeys = [
     'whatsappPayment',
@@ -103,11 +96,11 @@ export class WhatsappService {
     }
     return twilioClient.messages
       .create(payload)
-      .then(message => {
+      .then((message) => {
         this.storeSendWhatsapp(message, registrationId, mediaUrl);
         return message.sid;
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Error from Twilio:', err);
         throw err;
       });
@@ -258,7 +251,7 @@ export class WhatsappService {
         relations: ['financialServiceProviders'],
       });
       const fspIntersolveWhatsapp = program.financialServiceProviders.find(
-        fsp => {
+        (fsp) => {
           return (fsp.fsp = FspName.intersolve);
         },
       );
@@ -266,10 +259,9 @@ export class WhatsappService {
       const savedRegistration = await this.registrationRepository.save(
         tryWhatsapp.registration,
       );
-      const r = await savedRegistration.saveData(
-        tryWhatsapp.registration.phoneNumber,
-        { name: CustomDataAttributes.whatsappPhoneNumber },
-      );
+      await savedRegistration.saveData(tryWhatsapp.registration.phoneNumber, {
+        name: CustomDataAttributes.whatsappPhoneNumber,
+      });
       this.tryWhatsappRepository.remove(tryWhatsapp);
     }
   }
@@ -277,7 +269,8 @@ export class WhatsappService {
   private async getRegistrationsWithPhoneNumber(
     phoneNumber,
   ): Promise<RegistrationEntity[]> {
-    const registrationsWithPhoneNumber = await this.dataSource.getRepository(RegistrationEntity)
+    const registrationsWithPhoneNumber = await this.dataSource
+      .getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .select('registration')
       .leftJoin('registration.data', 'registration_data')
@@ -291,7 +284,7 @@ export class WhatsappService {
         phoneNumber: phoneNumber,
       })
       .orWhere(
-        new Brackets(qb => {
+        new Brackets((qb) => {
           qb.where('registration_data.value = :whatsappPhoneNumber', {
             whatsappPhoneNumber: phoneNumber,
           }).andWhere('fspQuestion.name = :name', {
@@ -315,13 +308,13 @@ export class WhatsappService {
     registrations: RegistrationEntity[],
   ): Promise<RegistrationEntity[]> {
     // Trim registrations down to only those with outstanding vouchers
-    const registrationIds = registrations.map(c => c.id);
+    const registrationIds = registrations.map((c) => c.id);
     const registrationWithVouchers = await this.registrationRepository.find({
       where: { id: In(registrationIds) },
       relations: ['images', 'images.barcode'],
     });
 
-    let filteredRegistrations: RegistrationEntity[] = [];
+    const filteredRegistrations: RegistrationEntity[] = [];
     for (const r of registrationWithVouchers) {
       // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
       const lastPayment = await this.transactionRepository
@@ -334,7 +327,8 @@ export class WhatsappService {
       const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
 
       r.images = r.images.filter(
-        image => !image.barcode.send && image.barcode.payment >= minimumPayment,
+        (image) =>
+          !image.barcode.send && image.barcode.payment >= minimumPayment,
       );
       if (r.images.length > 0) {
         filteredRegistrations.push(r);
@@ -359,27 +353,21 @@ export class WhatsappService {
     const fromNumber = this.cleanWhatsAppNr(callbackData.From);
 
     // Get (potentially multiple) registrations on incoming phonenumber
-    const registrationsWithPhoneNumber = await this.getRegistrationsWithPhoneNumber(
-      fromNumber,
-    );
+    const registrationsWithPhoneNumber =
+      await this.getRegistrationsWithPhoneNumber(fromNumber);
 
     // This is a temporary hack that will be removed after the transition period
     const nlrcPvNumber = 'whatsapp:+3197010253925';
     // const nlrcPvNumber = 'whatsapp:+14155238886'; // use sandbox-number for debugging
     if (callbackData.To === nlrcPvNumber) {
       const nlrcPvTempAutoReply = {
-        en:
-          'This is an automatic message from the Red Cross. This number is not used anymore. We now send the vouchers from this number: +3197010253442. Do you want to receive the vouchers that we have sent to you before? Send a message to the new number by clicking on this link: https://wa.me/3197010253442. For questions or help, please contact our WhatsApp Helpdesk: https://wa.me/31614458781.',
-        es:
-          'Este es un mensaje automático de la Cruz Roja. Este número ya no se usa. Ahora enviamos los vales desde este número: +3197010253442. ¿Quieres recibir los vales que te hemos enviado anteriormente? Envía un mensaje al nuevo número haciendo clic en este enlace: https://wa.me/3197010253442. Para preguntas o ayuda, comuníquese con nuestro servicio de asistencia de WhatsApp: https://wa.me/31614458781.',
-        nl:
-          'Dit is een automatisch bericht van het Rode Kruis. Dit nummer wordt niet meer gebruikt. We versturen de vouchers nu vanaf dit nummer: +3197010253442. Wil je de vouchers ontvangen die we je eerder hebben gestuurd? Stuur een bericht naar het nieuwe nummer door op deze link te klikken: https://wa.me/3197010253442. Neem voor vragen of hulp contact op met onze WhatsApp Helpdesk: https://wa.me/31614458781.',
+        en: 'This is an automatic message from the Red Cross. This number is not used anymore. We now send the vouchers from this number: +3197010253442. Do you want to receive the vouchers that we have sent to you before? Send a message to the new number by clicking on this link: https://wa.me/3197010253442. For questions or help, please contact our WhatsApp Helpdesk: https://wa.me/31614458781.',
+        es: 'Este es un mensaje automático de la Cruz Roja. Este número ya no se usa. Ahora enviamos los vales desde este número: +3197010253442. ¿Quieres recibir los vales que te hemos enviado anteriormente? Envía un mensaje al nuevo número haciendo clic en este enlace: https://wa.me/3197010253442. Para preguntas o ayuda, comuníquese con nuestro servicio de asistencia de WhatsApp: https://wa.me/31614458781.',
+        nl: 'Dit is een automatisch bericht van het Rode Kruis. Dit nummer wordt niet meer gebruikt. We versturen de vouchers nu vanaf dit nummer: +3197010253442. Wil je de vouchers ontvangen die we je eerder hebben gestuurd? Stuur een bericht naar het nieuwe nummer door op deze link te klikken: https://wa.me/3197010253442. Neem voor vragen of hulp contact op met onze WhatsApp Helpdesk: https://wa.me/31614458781.',
         ['pt_BR']:
           'Esta é uma mensagem automática da Cruz Vermelha. Este número não é mais usado. Agora enviamos os vouchers a partir deste número: +3197010253442. Deseja receber os vouchers que lhe enviamos anteriormente? Envie uma mensagem para o novo número clicando neste link: https://wa.me/3197010253442. Para dúvidas ou ajuda, entre em contato com nosso WhatsApp Helpdesk: https://wa.me/31614458781.',
-        tl:
-          'Ito ay isang awtomatikong mensahe mula sa Red Cross. Hindi na ginagamit ang numerong ito. Ipinapadala na namin ngayon ang mga voucher mula sa numerong ito: +3197010253442. Gusto mo bang matanggap ang mga voucher na ipinadala namin sa iyo noon? Magpadala ng mensahe sa bagong numero sa pamamagitan ng pag-click sa link na ito: https://wa.me/3197010253442. Para sa mga katanungan o tulong, mangyaring makipag-ugnayan sa aming WhatsApp Helpdesk: https://wa.me/31614458781.',
-        in:
-          'Ini adalah pesan otomatis dari Red Cross. Nomor ini sudah tidak digunakan lagi. Kami sekarang mengirimkan voucher dari nomor ini: +3197010253442. Apakah Anda ingin menerima voucher yang telah kami kirimkan kepada Anda sebelumnya? Kirim pesan ke nomor baru dengan klik link ini : https://wa.me/3197010253442. Untuk pertanyaan atau bantuan, silakan hubungi Helpdesk WhatsApp kami: https://wa.me/31614458781.',
+        tl: 'Ito ay isang awtomatikong mensahe mula sa Red Cross. Hindi na ginagamit ang numerong ito. Ipinapadala na namin ngayon ang mga voucher mula sa numerong ito: +3197010253442. Gusto mo bang matanggap ang mga voucher na ipinadala namin sa iyo noon? Magpadala ng mensahe sa bagong numero sa pamamagitan ng pag-click sa link na ito: https://wa.me/3197010253442. Para sa mga katanungan o tulong, mangyaring makipag-ugnayan sa aming WhatsApp Helpdesk: https://wa.me/31614458781.',
+        in: 'Ini adalah pesan otomatis dari Red Cross. Nomor ini sudah tidak digunakan lagi. Kami sekarang mengirimkan voucher dari nomor ini: +3197010253442. Apakah Anda ingin menerima voucher yang telah kami kirimkan kepada Anda sebelumnya? Kirim pesan ke nomor baru dengan klik link ini : https://wa.me/3197010253442. Untuk pertanyaan atau bantuan, silakan hubungi Helpdesk WhatsApp kami: https://wa.me/31614458781.',
         fr: `Ceci est un message automatique de la Croix-Rouge. Ce numéro n'est plus utilisé. Nous envoyons maintenant les bons à partir de ce numéro : +3197010253442. Voulez-vous recevoir les bons que nous vous avons déjà envoyés? Envoyez un message au nouveau numéro en cliquant sur ce lien : https://wa.me/3197010253442. Pour toute question ou aide, veuillez contacter notre service d'assistance WhatsApp : https://wa.me/31614458781.`,
       };
 
@@ -405,9 +393,8 @@ export class WhatsappService {
         registration.whatsappPendingMessages.length > 0,
     );
 
-    const registrationsWithOpenVouchers = await this.getRegistrationsWithOpenVouchers(
-      registrationsWithPhoneNumber,
-    );
+    const registrationsWithOpenVouchers =
+      await this.getRegistrationsWithOpenVouchers(registrationsWithPhoneNumber);
 
     // If no registrations with outstanding barcodes or messages: send auto-reply
     if (
@@ -416,19 +403,21 @@ export class WhatsappService {
     ) {
       let program: ProgramEntity;
       // If phonenumber is found in active programs but the registration has no outstanding vouchers/messages use the corresponding program
-      const registrationsWithPhoneNumberInActivePrograms = registrationsWithPhoneNumber.filter(
-        registration =>
+      const registrationsWithPhoneNumberInActivePrograms =
+        registrationsWithPhoneNumber.filter((registration) =>
           [
             ProgramPhase.registrationValidation,
             ProgramPhase.inclusion,
             ProgramPhase.payment,
           ].includes(registration.program.phase),
-      );
+        );
       if (registrationsWithPhoneNumberInActivePrograms.length > 0) {
         program = registrationsWithPhoneNumberInActivePrograms[0].program;
       } else {
         // If only 1 program in database: use default reply of that program
-        const programs = await this.dataSource.getRepository(ProgramEntity).find();
+        const programs = await this.dataSource
+          .getRepository(ProgramEntity)
+          .find();
         if (programs.length === 1) {
           program = programs[0];
         }
@@ -462,17 +451,19 @@ export class WhatsappService {
 
     // Start loop over (potentially) multiple PA's
     let firstVoucherSent = false;
-    for await (let registration of registrationsWithOpenVouchers) {
+    for await (const registration of registrationsWithOpenVouchers) {
       const intersolveBarcodesPerPa = registration.images.map(
-        image => image.barcode,
+        (image) => image.barcode,
       );
-      const program = await this.dataSource.getRepository(ProgramEntity).findOneBy({
-        id: registration.programId,
-      });
+      const program = await this.dataSource
+        .getRepository(ProgramEntity)
+        .findOneBy({
+          id: registration.programId,
+        });
       const language = registration.preferredLanguage || this.fallbackLanguage;
 
       // Loop over current and (potentially) old barcodes per PA
-      for await (let intersolveBarcode of intersolveBarcodesPerPa) {
+      for await (const intersolveBarcode of intersolveBarcodesPerPa) {
         const mediaUrl = await this.imageCodeService.createVoucherUrl(
           intersolveBarcode,
         );
@@ -508,7 +499,7 @@ export class WhatsappService {
         );
 
         // Add small delay/sleep to ensure the order in which messages are received
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       }
 
       // Send instruction message only once (outside of loops)
@@ -593,7 +584,7 @@ export class WhatsappService {
           statusCallback: EXTERNAL_API.whatsAppStatusTemplateTest,
           to: 'whatsapp:' + TWILIO_SANDBOX_WHATSAPP_NUMBER,
         };
-        await twilioClient.messages.create(payload).then(message => {
+        await twilioClient.messages.create(payload).then((message) => {
           this.whatsappTemplateTestRepository.save({
             sid: message.sid,
             language: language,
@@ -610,9 +601,10 @@ export class WhatsappService {
   public async storeTemplateTestResult(
     callbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    const tryWhatsappTemplateEntity = await this.whatsappTemplateTestRepository.findOne(
-      { where: { sid: callbackData.SmsSid } },
-    );
+    const tryWhatsappTemplateEntity =
+      await this.whatsappTemplateTestRepository.findOne({
+        where: { sid: callbackData.SmsSid },
+      });
     if (tryWhatsappTemplateEntity) {
       if (!tryWhatsappTemplateEntity.succes) {
         tryWhatsappTemplateEntity.callback = JSON.stringify(callbackData);
@@ -626,13 +618,12 @@ export class WhatsappService {
   }
 
   public async getWhatsappTemplateResult(sessionId: string): Promise<object> {
-    const tryWhatsappTemplateEntity = await this.whatsappTemplateTestRepository.findOne(
-      {
+    const tryWhatsappTemplateEntity =
+      await this.whatsappTemplateTestRepository.findOne({
         where: {
           sessionId: sessionId,
         },
-      },
-    );
+      });
     if (!tryWhatsappTemplateEntity) {
       return {
         error: 'sessionId not found',
@@ -676,8 +667,8 @@ export class WhatsappService {
     const resultsLanguage = {};
     for (const messageKey in messages) {
       if (this.whatsappTemplatedMessageKeys.includes(messageKey)) {
-        const whatsappTemplateTestEntity = await this.whatsappTemplateTestRepository.findOne(
-          {
+        const whatsappTemplateTestEntity =
+          await this.whatsappTemplateTestRepository.findOne({
             where: {
               language: language,
               messageKey: messageKey,
@@ -685,8 +676,7 @@ export class WhatsappService {
               sessionId: sessionId,
             },
             order: { created: 'ASC' },
-          },
-        );
+          });
         if (whatsappTemplateTestEntity && whatsappTemplateTestEntity.succes) {
           resultsLanguage[messageKey] = {
             status: 'Succes',

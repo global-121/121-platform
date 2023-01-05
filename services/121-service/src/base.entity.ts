@@ -1,13 +1,10 @@
 import {
   CreateDateColumn,
-  DataSource,
-  DataSourceOptions,
   Index,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { AppDataSource } from '../appdatasource';
-
 
 export class Base121Entity {
   @PrimaryGeneratedColumn()

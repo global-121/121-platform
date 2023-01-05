@@ -10,8 +10,6 @@ export class SmsService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
-  public constructor() {}
-
   public async sendSms(
     message: string,
     recipientPhoneNr: string,
@@ -25,8 +23,8 @@ export class SmsService {
         statusCallback: EXTERNAL_API.smsStatus,
         to: recipientPhoneNr,
       })
-      .then(message => this.storeSendSms(message, registrationId))
-      .catch(err => console.log('Error from Twilio:', err));
+      .then((message) => this.storeSendSms(message, registrationId))
+      .catch((err) => console.log('Error from Twilio:', err));
   }
 
   public storeSendSms(message, registrationId: number): void {

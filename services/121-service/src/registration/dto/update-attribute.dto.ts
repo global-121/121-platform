@@ -10,7 +10,7 @@ export enum AdditionalAttributes {
 export const Attributes = { ...AdditionalAttributes, ...CustomDataAttributes };
 export type Attributes = AdditionalAttributes | CustomDataAttributes;
 
-const attributesArray = Object.values(Attributes).map(item => String(item));
+const attributesArray = Object.values(Attributes).map((item) => String(item));
 
 export class UpdateAttributeDto {
   @ApiProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })

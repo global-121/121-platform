@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { AppDataSource } from '../../appdatasource';
 import { ActionEntity } from '../actions/action.entity';
 import { CascadeDeleteEntity } from '../base.entity';
@@ -64,7 +58,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @ManyToMany(
     () => FinancialServiceProviderEntity,
-    financialServiceProviders => financialServiceProviders.program,
+    (financialServiceProviders) => financialServiceProviders.program,
   )
   @JoinTable()
   public financialServiceProviders: FinancialServiceProviderEntity[];
@@ -106,38 +100,29 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @OneToMany(
     () => ProgramAidworkerAssignmentEntity,
-    assignment => assignment.program,
+    (assignment) => assignment.program,
   )
   public aidworkerAssignments: ProgramAidworkerAssignmentEntity[];
 
-  @OneToMany(
-    () => ActionEntity,
-    action => action.program,
-  )
+  @OneToMany(() => ActionEntity, (action) => action.program)
   public actions: ActionEntity[];
 
   @OneToMany(
     () => ProgramQuestionEntity,
-    programQuestions => programQuestions.program,
+    (programQuestions) => programQuestions.program,
   )
   public programQuestions: ProgramQuestionEntity[];
 
   @OneToMany(
     () => ProgramCustomAttributeEntity,
-    programCustomAttributes => programCustomAttributes.program,
+    (programCustomAttributes) => programCustomAttributes.program,
   )
   public programCustomAttributes: ProgramCustomAttributeEntity[];
 
-  @OneToMany(
-    () => TransactionEntity,
-    transactions => transactions.program,
-  )
+  @OneToMany(() => TransactionEntity, (transactions) => transactions.program)
   public transactions: TransactionEntity[];
 
-  @OneToMany(
-    () => RegistrationEntity,
-    registrations => registrations.program,
-  )
+  @OneToMany(() => RegistrationEntity, (registrations) => registrations.program)
   public registrations: RegistrationEntity[];
 
   // Can be used to add deprecated custom attributes to an export if

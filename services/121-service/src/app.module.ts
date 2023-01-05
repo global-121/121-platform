@@ -17,8 +17,8 @@ import { PeopleAffectedModule } from './people-affected/people-affected.module';
 import { ProgramModule } from './programs/programs.module';
 import { RegistrationsModule } from './registration/registrations.module';
 import { ScriptsModule } from './scripts/scripts.module';
-import { UserModule } from './user/user.module';
 import { TypeOrmModule } from './typeorm.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -46,6 +46,4 @@ import { TypeOrmModule } from './typeorm.module';
   controllers: [AppController],
   providers: [],
 })
-export class ApplicationModule {
-  public constructor() {}
-}
+export class ApplicationModule {}

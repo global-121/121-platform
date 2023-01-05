@@ -56,7 +56,7 @@ function generateModuleDependencyGraph(app: INestApplication): void {
     mermaidEdges.join('\n') +
     '\n```\n';
 
-  fs.writeFile('module-dependencies.md', mermaidGraph, 'utf8', err => {
+  fs.writeFile('module-dependencies.md', mermaidGraph, 'utf8', (err) => {
     if (err) console.warn(`Writing API-graph failed!`, err);
   });
 }
@@ -70,10 +70,7 @@ async function bootstrap(): Promise<void> {
 
   app.setGlobalPrefix('api');
 
-  app
-    .getHttpAdapter()
-    .getInstance()
-    .disable('x-powered-by');
+  app.getHttpAdapter().getInstance().disable('x-powered-by');
 
   if (DEBUG) {
     app.enableCors({
@@ -101,7 +98,7 @@ async function bootstrap(): Promise<void> {
   app.useGlobalPipes(
     new ValidationPipe({
       forbidUnknownValues: false,
-      exceptionFactory: errors => new BadRequestException(errors),
+      exceptionFactory: (errors) => new BadRequestException(errors),
     }),
   );
   app.use(bodyParser.json({ limit: '5mb' }));

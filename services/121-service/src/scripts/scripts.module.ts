@@ -14,7 +14,7 @@ import { SeedProgramValidation } from './seed-program-validation';
 
 @Module({
   imports: [TypeOrmModule.forRoot(ORMConfig as TypeOrmModuleOptions)],
-  providers:[
+  providers: [
     SeedInit,
     SeedProd,
     SeedHelper,

@@ -1,1 +1,1 @@
-export class MockType<T = void> {}
+export class MockType<_T = void> {}

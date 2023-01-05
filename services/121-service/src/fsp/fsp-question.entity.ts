@@ -39,10 +39,7 @@ export class FspQuestionEntity extends Base121Entity {
   @Column('json', { default: [] })
   public phases: JSON;
 
-  @ManyToOne(
-    _type => FinancialServiceProviderEntity,
-    fsp => fsp.questions,
-  )
+  @ManyToOne((_type) => FinancialServiceProviderEntity, (fsp) => fsp.questions)
   @JoinColumn({ name: 'fspId' })
   public fsp: FinancialServiceProviderEntity;
   @Column()
@@ -50,7 +47,7 @@ export class FspQuestionEntity extends Base121Entity {
 
   @OneToMany(
     () => RegistrationDataEntity,
-    registrationData => registrationData.fspQuestion,
+    (registrationData) => registrationData.fspQuestion,
   )
   public registrationData: RegistrationDataEntity[];
   @Column('json', { nullable: true })

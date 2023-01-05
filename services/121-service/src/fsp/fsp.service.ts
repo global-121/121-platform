@@ -9,14 +9,9 @@ import { FspQuestionEntity } from './fsp-question.entity';
 @Injectable()
 export class FspService {
   @InjectRepository(FinancialServiceProviderEntity)
-  private financialServiceProviderRepository: Repository<
-    FinancialServiceProviderEntity
-  >;
+  private financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspQuestionEntity)
   public fspAttributeRepository: Repository<FspQuestionEntity>;
-
-  public constructor() {}
-
   public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {
     const fsp = await this.financialServiceProviderRepository.findOne({
       where: { id: id },
@@ -33,7 +28,7 @@ export class FspService {
       await this.fspAttributeRepository.find({
         where: { fspId: fspId },
       })
-    ).map(c => {
+    ).map((c) => {
       return {
         name: c.name,
         type: c.answerType,
@@ -55,7 +50,7 @@ export class FspService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    for (let key in updateFspDto) {
+    for (const key in updateFspDto) {
       if (key !== 'fsp') {
         fsp[key] = updateFspDto[key];
       }
@@ -74,14 +69,14 @@ export class FspService {
     });
     // Filter out the right fsp, if fsp-attribute name occurs across multiple fsp's
     const fspAttribute = fspAttributes.filter(
-      a => a.fsp.fsp === fspAttributeDto.fsp,
+      (a) => a.fsp.fsp === fspAttributeDto.fsp,
     )[0];
     if (!fspAttribute) {
       const errors = `No fspAttribute found with name ${fspAttributeDto.name} in fsp with name ${fspAttributeDto.fsp}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    for (let key in fspAttributeDto) {
+    for (const key in fspAttributeDto) {
       if (key !== 'name' && key !== 'fsp') {
         fspAttribute[key] = fspAttributeDto[key];
       }
@@ -108,14 +103,14 @@ export class FspService {
     }
     // Filter out the right fsp, if fsp-attribute name occurs across multiple fsp's
     const oldFspAttribute = fspAttributes.filter(
-      a => a.fsp.fsp === fspAttributeDto.fsp,
+      (a) => a.fsp.fsp === fspAttributeDto.fsp,
     )[0];
     if (oldFspAttribute) {
       const errors = `FspAttribute already found! Attribute exists with name ${fspAttributeDto.name} in fsp with name ${fspAttributeDto.fsp}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     const fspAttribute = new FspQuestionEntity();
-    for (let key in fspAttributeDto) {
+    for (const key in fspAttributeDto) {
       if (key !== 'fsp') {
         fspAttribute[key] = fspAttributeDto[key];
       }

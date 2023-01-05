@@ -12,13 +12,14 @@ export class InclusionScoreService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-  public constructor() {}
 
   public async calculatePaymentAmountMultiplier(
     programId: number,
     referenceId: string,
   ): Promise<RegistrationEntity> {
-    const program = await this.programRepository.findOneBy({ id: programId });
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
     if (!program.paymentAmountMultiplierFormula) {
       return;
     }
@@ -45,14 +46,14 @@ export class InclusionScoreService {
   }
 
   public async calculateInclusionScore(referenceId: string): Promise<void> {
-    let registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['program'],
     });
 
     const scoreList = await this.createQuestionAnswerListPrefilled(referenceId);
 
-    let program = await this.programRepository.findOne({
+    const program = await this.programRepository.findOne({
       where: { id: registration.program.id },
       relations: ['programQuestions'],
     });
@@ -74,10 +75,10 @@ export class InclusionScoreService {
       relations: ['data', 'data.programQuestion'],
     });
     const scoreList = {};
-    for (let entry of registration.data) {
+    for (const entry of registration.data) {
       if (entry.programQuestion) {
-        let attrValue = entry.value;
-        let newKeyName = entry.programQuestion.name;
+        const attrValue = entry.value;
+        const newKeyName = entry.programQuestion.name;
         if (entry.programQuestion.answerType === AnswerTypes.multiSelect) {
           if (scoreList[newKeyName] !== undefined) {
             scoreList[newKeyName].push(attrValue);
@@ -97,10 +98,10 @@ export class InclusionScoreService {
     scoreList: object,
   ): number {
     let totalScore = 0;
-    for (let question of programQuestions) {
-      let questionName = question.name;
+    for (const question of programQuestions) {
+      const questionName = question.name;
       if (scoreList[questionName]) {
-        let answerPA = scoreList[questionName];
+        const answerPA = scoreList[questionName];
         switch (question.answerType) {
           case AnswerTypes.dropdown:
             totalScore =
@@ -130,7 +131,7 @@ export class InclusionScoreService {
     }
     let score = 0;
     const options = JSON.parse(JSON.stringify(programQuestion.options));
-    for (let value of options) {
+    for (const value of options) {
       if (value.option == answerPA && programQuestion.scoring[value.option]) {
         score = programQuestion.scoring[value.option];
       }
@@ -149,7 +150,7 @@ export class InclusionScoreService {
     let score = 0;
     const options = JSON.parse(JSON.stringify(programQuestion.options));
     for (const selectedOption of answerPA) {
-      for (let value of options) {
+      for (const value of options) {
         if (
           value.option == selectedOption &&
           programQuestion.scoring[value.option]

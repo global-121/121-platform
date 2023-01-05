@@ -43,15 +43,11 @@ export class BulkImportService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(RegistrationDataEntity)
-  private readonly registrationDataRepository: Repository<
-    RegistrationDataEntity
-  >;
+  private readonly registrationDataRepository: Repository<RegistrationDataEntity>;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(ProgramCustomAttributeEntity)
-  private readonly programCustomAttributeRepository: Repository<
-    ProgramCustomAttributeEntity
-  >;
+  private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspQuestionEntity)
@@ -97,8 +93,11 @@ export class BulkImportService {
         continue;
       }
 
-      let existingRegistrations = await this.registrationRepository.findOne({
-        where: { phoneNumber: phoneNumberResult, programId: program.id },
+      const existingRegistrations = await this.registrationRepository.findOne({
+        where: {
+          phoneNumber: phoneNumberResult,
+          programId: program.id,
+        },
       });
       if (existingRegistrations) {
         importResponseRecord.importStatus = ImportStatus.existingPhoneNumber;
@@ -126,7 +125,7 @@ export class BulkImportService {
       newRegistration.program = program;
 
       const savedRegistration = await newRegistration.save();
-      programCustomAttributes.forEach(async att => {
+      programCustomAttributes.forEach(async (att) => {
         if (record[att.name]) {
           const data = new RegistrationDataEntity();
           data.value =
@@ -190,25 +189,27 @@ export class BulkImportService {
     let dynamicAttributes: string[];
 
     if (type === ImportType.registered) {
-      genericAttributes = Object.values(GenericAttributes).map(item =>
+      genericAttributes = Object.values(GenericAttributes).map((item) =>
         String(item),
       );
       dynamicAttributes = (await this.getDynamicAttributes(programId)).map(
-        d => d.name,
+        (d) => d.name,
       );
     } else if (type === ImportType.imported) {
       genericAttributes = [
         GenericAttributes.phoneNumber,
         GenericAttributes.paymentAmountMultiplier,
         GenericAttributes.preferredLanguage,
-      ].map(item => String(item));
+      ].map((item) => String(item));
       dynamicAttributes = (
         await this.getProgramCustomAttributes(programId)
-      ).map(d => d.name);
+      ).map((d) => d.name);
     }
 
     // If paymentAmountMultiplier automatic, then drop from template
-    const program = await this.programRepository.findOneBy({ id: programId });
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
     if (!!program.paymentAmountMultiplierFormula) {
       const index = genericAttributes.indexOf(
         GenericAttributes.paymentAmountMultiplier,
@@ -238,7 +239,7 @@ export class BulkImportService {
     program: ProgramEntity,
   ): Promise<ImportResult> {
     let countImported = 0;
-    let registrations: RegistrationEntity[] = [];
+    const registrations: RegistrationEntity[] = [];
     const customDataList = [];
 
     const dynamicAttributes = await this.getDynamicAttributes(program.id);
@@ -269,18 +270,18 @@ export class BulkImportService {
       customDataList.push(customData);
     }
 
-    let savedRegistrations = [];
+    const savedRegistrations = [];
     for await (const registration of registrations) {
       savedRegistrations.push(await registration.save());
     }
 
     // Update status and save again (otherwise 'registration.subscriber' doesn't work)
     savedRegistrations.forEach(
-      r => (r.registrationStatus = RegistrationStatusEnum.registered),
+      (r) => (r.registrationStatus = RegistrationStatusEnum.registered),
     );
     await this.registrationRepository.save(savedRegistrations);
 
-    for await (let [i, registration] of savedRegistrations.entries()) {
+    for await (const [i, registration] of savedRegistrations.entries()) {
       registration.registrationStatus = RegistrationStatusEnum.registered;
       await this.storeRegistrationData(
         registration,
@@ -307,7 +308,7 @@ export class BulkImportService {
     customData: object,
   ): Promise<void> {
     const dynamicAttributes = await this.getDynamicAttributes(programId);
-    for await (let att of dynamicAttributes) {
+    for await (const att of dynamicAttributes) {
       let value;
       if (att.type === CustomAttributeType.boolean) {
         value = this.stringToBoolean(customData[att.name], false);
@@ -378,7 +379,7 @@ export class BulkImportService {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
 
-    let importRecords = await this.xmlBufferToArray(xmlFile.buffer);
+    const importRecords = await this.xmlBufferToArray(xmlFile.buffer);
     return importRecords;
   }
 
@@ -386,7 +387,7 @@ export class BulkImportService {
     const stream = new Readable();
     stream.push(buffer.toString());
     stream.push(null);
-    let parsedData = [];
+    const parsedData = [];
     return await new Promise((resolve, reject): void => {
       stream
         .pipe(csv({ separator: separator }))
@@ -402,11 +403,12 @@ export class BulkImportService {
     buffer,
   ): Promise<convert.Element | convert.ElementCompact> {
     const xml = convert.xml2js(buffer.toString());
-    return xml.elements[0].elements.find(el => el.name === 'Records').elements;
+    return xml.elements[0].elements.find((el) => el.name === 'Records')
+      .elements;
   }
 
   public checkForCompletelyEmptyRow(row): boolean {
-    if (Object.keys(row).every(key => !row[key])) {
+    if (Object.keys(row).every((key) => !row[key])) {
       return true;
     }
     return false;
@@ -421,12 +423,14 @@ export class BulkImportService {
     const programCustomAttributes = await this.getProgramCustomAttributes(
       programId,
     );
-    const program = await this.programRepository.findOneBy({ id: programId });
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
       }
-      let importRecord = new BulkImportDto();
+      const importRecord = new BulkImportDto();
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.preferredLanguage = row.preferredLanguage
         ? row.preferredLanguage
@@ -475,7 +479,7 @@ export class BulkImportService {
       await this.programCustomAttributeRepository.find({
         where: { program: { id: programId } },
       })
-    ).map(c => {
+    ).map((c) => {
       return {
         id: c.id,
         name: c.name,
@@ -496,7 +500,7 @@ export class BulkImportService {
       await this.programQuestionRepository.find({
         where: { program: { id: programId } },
       })
-    ).map(c => {
+    ).map((c) => {
       return {
         id: c.id,
         name: c.name,
@@ -509,8 +513,8 @@ export class BulkImportService {
       relations: ['fsp', 'fsp.program'],
     });
     const programFspAttributes = fspAttributes
-      .filter(a => a.fsp.program.map(p => p.id).includes(programId))
-      .map(c => {
+      .filter((a) => a.fsp.program.map((p) => p.id).includes(programId))
+      .map((c) => {
         return {
           id: c.id,
           name: c.name,
@@ -527,12 +531,14 @@ export class BulkImportService {
     const errors = [];
     const validatatedArray = [];
     const dynamicAttributes = await this.getDynamicAttributes(programId);
-    const program = await this.programRepository.findOneBy({ id: programId });
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
       }
-      let importRecord = new ImportRegistrationsDto();
+      const importRecord = new ImportRegistrationsDto();
       importRecord.preferredLanguage = row.preferredLanguage;
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;

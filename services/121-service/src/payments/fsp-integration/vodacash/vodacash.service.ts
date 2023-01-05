@@ -30,7 +30,7 @@ export class VodacashService {
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.vodacash;
 
-    for (let payment of paymentList) {
+    for (const payment of paymentList) {
       const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
 
       const paTransactionResult = {
@@ -111,11 +111,11 @@ export class VodacashService {
   public validateReconciliationData(
     row: convert.Element | convert.ElementCompact,
   ): ImportFspReconciliationArrayDto {
-    let importRecord = new ImportFspReconciliationArrayDto();
+    const importRecord = new ImportFspReconciliationArrayDto();
     importRecord.status = this.getElementByName(row, 'Status').elements[0].text;
     if (importRecord.status === 'Completed') {
       const details = this.getElementByName(row, 'Details').elements;
-      for (const [i, row] of details.entries()) {
+      for (const row of details) {
         const key = this.getElementByName(row, 'Key');
         if (key.elements[0].text === 'Amount') {
           importRecord.amount = this.getElementByName(
@@ -174,7 +174,7 @@ export class VodacashService {
     element: convert.Element | convert.ElementCompact,
     name: string,
   ): convert.Element | convert.ElementCompact {
-    return element.elements.find(el => el.name === name);
+    return element.elements.find((el) => el.name === name);
   }
 
   private async readXmlAsJs(path: string): Promise<any> {

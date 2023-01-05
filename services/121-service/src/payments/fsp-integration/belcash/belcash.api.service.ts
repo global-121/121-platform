@@ -5,9 +5,7 @@ import { BelcashTransferPayload } from './belcash-transfer-payload.dto';
 
 @Injectable()
 export class BelcashApiService {
-  public constructor(
-    private readonly httpService: HttpService
-  ) {}
+  public constructor(private readonly httpService: HttpService) {}
 
   public async authenticate(): Promise<string> {
     const payload = {
@@ -33,18 +31,20 @@ export class BelcashApiService {
     authorizationToken?: string,
   ): Promise<any> {
     const url = `${process.env.BELCASH_API_URL}/${endpoint}`;
-    return await lastValueFrom(this.httpService
-      .post(url, payload, {
-        headers: this.createHeaders(authorizationToken),
-      })
-      .pipe(
-        map(response => {
-          return response;
-        }),
-        catchError(err => {
-          return of(err.response);
-        }),
-      ))
+    return await lastValueFrom(
+      this.httpService
+        .post(url, payload, {
+          headers: this.createHeaders(authorizationToken),
+        })
+        .pipe(
+          map((response) => {
+            return response;
+          }),
+          catchError((err) => {
+            return of(err.response);
+          }),
+        ),
+    );
   }
 
   private createHeaders(authorizationToken?: string): object {

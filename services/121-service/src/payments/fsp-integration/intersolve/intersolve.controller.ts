@@ -50,7 +50,7 @@ export class IntersolveController {
       identifyVoucherDto.referenceId,
       identifyVoucherDto.payment,
     );
-    var bufferStream = new stream.PassThrough();
+    const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
     response.writeHead(HttpStatus.OK, {
       'Content-Type': 'image/png',
@@ -84,7 +84,7 @@ export class IntersolveController {
     @Res() response: Response,
   ): Promise<void> {
     const blob = await this.intersolveService.getInstruction();
-    var bufferStream = new stream.PassThrough();
+    const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
     response.writeHead(HttpStatus.OK, {
       'Content-Type': 'image/png',

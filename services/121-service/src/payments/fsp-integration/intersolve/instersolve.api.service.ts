@@ -12,9 +12,7 @@ import { SoapService } from './soap.service';
 @Injectable()
 export class IntersolveApiService {
   @InjectRepository(IntersolveRequestEntity)
-  private readonly intersolveRequestRepository: Repository<
-    IntersolveRequestEntity
-  >;
+  private readonly intersolveRequestRepository: Repository<IntersolveRequestEntity>;
 
   public constructor(
     private readonly soapService: SoapService,

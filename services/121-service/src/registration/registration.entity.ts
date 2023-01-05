@@ -36,10 +36,7 @@ import { RegistrationStatusChangeEntity } from './registration-status-change.ent
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Entity('registration')
 export class RegistrationEntity extends CascadeDeleteEntity {
-  @ManyToOne(
-    type => ProgramEntity,
-    program => program.registrations,
-  )
+  @ManyToOne((_type) => ProgramEntity, (program) => program.registrations)
   @JoinColumn({ name: 'programId' })
   public program: ProgramEntity;
   @Column()
@@ -50,7 +47,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   @OneToMany(
     () => RegistrationStatusChangeEntity,
-    statusChange => statusChange.registration,
+    (statusChange) => statusChange.registration,
   )
   @JoinColumn()
   public statusChanges: RegistrationStatusChangeEntity[];
@@ -63,10 +60,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column()
   public referenceId: string;
 
-  @OneToMany(
-    () => RegistrationDataEntity,
-    data => data.registration,
-  )
+  @OneToMany(() => RegistrationDataEntity, (data) => data.registration)
   public data: RegistrationDataEntity[];
 
   @Column({ nullable: true })
@@ -79,7 +73,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ nullable: true })
   public inclusionScore: number;
 
-  @ManyToOne(_type => FinancialServiceProviderEntity)
+  @ManyToOne((_type) => FinancialServiceProviderEntity)
   public fsp: FinancialServiceProviderEntity;
 
   @Column({ nullable: true })
@@ -99,26 +93,26 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public registrationProgramId: number;
 
   @OneToMany(
-    _type => TransactionEntity,
-    transactions => transactions.registration,
+    (_type) => TransactionEntity,
+    (transactions) => transactions.registration,
   )
   public transactions: TransactionEntity[];
 
   @OneToMany(
-    _type => ImageCodeExportVouchersEntity,
-    image => image.registration,
+    (_type) => ImageCodeExportVouchersEntity,
+    (image) => image.registration,
   )
   public images: ImageCodeExportVouchersEntity[];
 
   @OneToMany(
-    _type => TwilioMessageEntity,
-    twilioMessages => twilioMessages.registration,
+    (_type) => TwilioMessageEntity,
+    (twilioMessages) => twilioMessages.registration,
   )
   public twilioMessages: TwilioMessageEntity[];
 
   @OneToMany(
-    _type => WhatsappPendingMessageEntity,
-    whatsappPendingMessages => whatsappPendingMessages.registration,
+    (_type) => WhatsappPendingMessageEntity,
+    (whatsappPendingMessages) => whatsappPendingMessages.registration,
   )
   public whatsappPendingMessages: WhatsappPendingMessageEntity[];
 
@@ -181,11 +175,15 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       )
       .where('registration.id = :id', { id: this.id })
       .andWhere(
-        new Brackets(qb => {
+        new Brackets((qb) => {
           qb.where(`programQuestion.name = :name`, { name: name })
             .orWhere(`fspQuestion.name = :name`, { name: name })
-            .orWhere(`monitoringQuestion.name = :name`, { name: name })
-            .orWhere(`programCustomAttribute.name = :name`, { name: name });
+            .orWhere(`monitoringQuestion.name = :name`, {
+              name: name,
+            })
+            .orWhere(`programCustomAttribute.name = :name`, {
+              name: name,
+            });
         }),
       )
       .select(
@@ -220,14 +218,12 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       await this.saveOneData(value, relation);
     }
 
-    return await AppDataSource
-      .getRepository(RegistrationEntity)
-      .findOne({
-        relations: ['data'],
-        where: {
-          id: this.id,
-        },
-      });
+    return await AppDataSource.getRepository(RegistrationEntity).findOne({
+      relations: ['data'],
+      where: {
+        id: this.id,
+      },
+    });
   }
 
   private async saveOneData(
@@ -534,7 +530,9 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       const query = regRepo
         .createQueryBuilder('r')
         .select('r."registrationProgramId"')
-        .where('r.programId = :programId', { programId: this.program.id })
+        .where('r.programId = :programId', {
+          programId: this.program.id,
+        })
         .andWhere('r.registrationProgramId is not null')
         .orderBy('r."registrationProgramId"', 'DESC')
         .limit(1);
