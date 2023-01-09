@@ -32,6 +32,7 @@ export class Person {
   paTableAttributes?: Attribute[];
   registrationProgramId: number;
   lastMessageStatus?: string;
+  lastMessageType?: string;
 }
 
 // Model for display (in table)

@@ -298,9 +298,9 @@
         <span [attr.title]="value"> {{ value }} </span>
       </ng-container>
       <ng-container *ngIf="column.prop === 'lastMessageStatus'">
-        <ion-button (click)="openMessageHistoryPopup(row, programId)">{{
+        <button class="ion-no-padding popup-button status-pop-up" (click)="openMessageHistoryPopup(row, programId)">{{
           value
-        }}</ion-button>
+        }}</button>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>
