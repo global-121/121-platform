@@ -17,9 +17,7 @@ import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dt
 @Injectable()
 export class AfricasTalkingService {
   @InjectRepository(AfricasTalkingNotificationEntity)
-  public africasTalkingNotificationRepository: Repository<
-    AfricasTalkingNotificationEntity
-  >;
+  public africasTalkingNotificationRepository: Repository<AfricasTalkingNotificationEntity>;
   public constructor(
     private readonly africasTalkingApiService: AfricasTalkingApiService,
     private readonly transactionsService: TransactionsService,
@@ -35,7 +33,7 @@ export class AfricasTalkingService {
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.africasTalking;
 
-    for (let payment of paymentList) {
+    for (const payment of paymentList) {
       const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
       const payload = this.createPayloadPerPa(
         payment,
@@ -44,9 +42,8 @@ export class AfricasTalkingService {
         calculatedAmount,
       );
 
-      const paymentRequestResultPerPa = await this.africasTalkingApiService.sendPaymentPerPa(
-        payload,
-      );
+      const paymentRequestResultPerPa =
+        await this.africasTalkingApiService.sendPaymentPerPa(payload);
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
     }
     this.transactionsService.storeAllTransactions(

@@ -1,4 +1,4 @@
-import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
+import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 import { PermissionEnum } from '../src/user/permission.enum';
 import { PermissionEntity } from '../src/user/permissions.entity';
 import { UserRoleEntity } from '../src/user/user-role.entity';
@@ -11,18 +11,18 @@ export class rolesPermissionsUpdate1644318599213 implements MigrationInterface {
     // Commit transaction because the tables are needed before the insert
     await queryRunner.commitTransaction();
     // 08-11-2022 migrateData() is commented out as this was causing issues with new entities and legacy migrations.
-    // await this.migrateData(queryRunner.connection);
+    // await this.migrateData(queryRunner.manager);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {}
 
-  private async migrateData(connection: Connection): Promise<void> {
-    const permissionRepository = connection.getRepository(PermissionEntity);
+  private async migrateData(manager: EntityManager): Promise<void> {
+    const permissionRepository = manager.getRepository(PermissionEntity);
     const permissions = await permissionRepository.find();
 
-    const userRoleRepository = connection.getRepository(UserRoleEntity);
+    const userRoleRepository = manager.getRepository(UserRoleEntity);
     const defaultRolesToUpdate = [
       {
         role: DefaultUserRole.RunProgram,

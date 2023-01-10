@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { uniq, without } from 'lodash';
 import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
-import { Connection, getRepository, In, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { ActionService } from '../actions/action.service';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
@@ -38,9 +38,7 @@ export class ExportMetricsService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(RegistrationDataEntity)
-  private readonly registrationDataRepository: Repository<
-    RegistrationDataEntity
-  >;
+  private readonly registrationDataRepository: Repository<RegistrationDataEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramQuestionEntity)
@@ -55,7 +53,7 @@ export class ExportMetricsService {
     private readonly paymentsService: PaymentsService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
-    private readonly connection: Connection,
+    private readonly dataSource: DataSource,
   ) {}
 
   public getExportList(
@@ -141,7 +139,7 @@ export class ExportMetricsService {
       programId,
       ExportType.included,
     );
-    let pastPaymentDetails = await this.getPaymentDetailsPayment(
+    const pastPaymentDetails = await this.getPaymentDetailsPayment(
       programId,
       minPaymentId,
       maxPaymentId,
@@ -186,7 +184,7 @@ export class ExportMetricsService {
     let transactions;
     if (addPaymentColumns) {
       payments = (await this.paymentsService.getPayments(programId))
-        .map(i => i.payment)
+        .map((i) => i.payment)
         .sort((a, b) => (a > b ? 1 : -1));
 
       transactions = await this.transactionsService.getTransactions(
@@ -195,7 +193,7 @@ export class ExportMetricsService {
       );
     }
 
-    for await (let row of rows) {
+    for await (const row of rows) {
       await this.addRegistrationStatussesToExport(row);
       if (addPaymentColumns) {
         await this.addPaymentFieldsToExport(row, payments, transactions);
@@ -214,16 +212,16 @@ export class ExportMetricsService {
     exportType: ExportType,
   ): Promise<RegistrationDataOptions[]> {
     const relationOptions = [];
-    const program = await this.programRepository.findOne(programId, {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
       relations: [
         'programQuestions',
         'financialServiceProviders',
         'financialServiceProviders.questions',
       ],
     });
-    const programCustomAttrs = await this.getAllProgramCustomAttributesForExport(
-      programId,
-    );
+    const programCustomAttrs =
+      await this.getAllProgramCustomAttributesForExport(programId);
     for (const programCustomAttr of programCustomAttrs) {
       const relationOption = new RegistrationDataOptions();
       relationOption.name = programCustomAttr.name;
@@ -241,7 +239,9 @@ export class ExportMetricsService {
       ) {
         const relationOption = new RegistrationDataOptions();
         relationOption.name = programQuestion.name;
-        relationOption.relation = { programQuestionId: programQuestion.id };
+        relationOption.relation = {
+          programQuestionId: programQuestion.id,
+        };
         relationOptions.push(relationOption);
       }
     }
@@ -289,9 +289,10 @@ export class ExportMetricsService {
       programId,
     );
     for (const v of unusedVouchers) {
-      const registration = await this.registrationsService.getRegistrationFromReferenceId(
-        v.referenceId,
-      );
+      const registration =
+        await this.registrationsService.getRegistrationFromReferenceId(
+          v.referenceId,
+        );
       v.name = await registration.getFullName();
       delete v.referenceId;
     }
@@ -316,19 +317,18 @@ export class ExportMetricsService {
   }
 
   private async addRegistrationStatussesToExport(row: object): Promise<object> {
-    const registrationStatuses = Object.values(
-      RegistrationStatusEnum,
-    ).map(item => String(item));
-    for await (let status of registrationStatuses) {
+    const registrationStatuses = Object.values(RegistrationStatusEnum).map(
+      (item) => String(item),
+    );
+    for await (const status of registrationStatuses) {
       const dateField = this.registrationsService.getDateColumPerStatus(
         RegistrationStatusEnum[status],
       );
-      row[
-        dateField
-      ] = await this.registrationsService.getLatestDateForRegistrationStatus(
-        row['id'],
-        RegistrationStatusEnum[status],
-      );
+      row[dateField] =
+        await this.registrationsService.getLatestDateForRegistrationStatus(
+          row['id'],
+          RegistrationStatusEnum[status],
+        );
     }
     return row;
   }
@@ -336,7 +336,8 @@ export class ExportMetricsService {
   private async getAllProgramCustomAttributesForExport(
     programId: number,
   ): Promise<ProgramCustomAttributeEntity[]> {
-    const program = await this.programRepository.findOne(programId, {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
       relations: ['programCustomAttributes'],
     });
     return program.programCustomAttributes;
@@ -351,11 +352,11 @@ export class ExportMetricsService {
       IntersolvePayoutStatus.InitialMessage,
       IntersolvePayoutStatus.VoucherSent,
     ];
-    for await (let payment of payments) {
+    for await (const payment of payments) {
       const transaction = {};
-      for await (let voucherStatus of voucherStatuses) {
+      for await (const voucherStatus of voucherStatuses) {
         transaction[voucherStatus] = transactions.find(
-          t =>
+          (t) =>
             t.payment === payment &&
             t.referenceId === row['referenceId'] &&
             t.customData['IntersolvePayoutStatus'] === voucherStatus,
@@ -367,7 +368,7 @@ export class ExportMetricsService {
           transaction[IntersolvePayoutStatus.InitialMessage];
       } else {
         creationTransaction = transactions.find(
-          t =>
+          (t) =>
             t.payment === payment &&
             t.referenceId === row['referenceId'] &&
             !t.customData['IntersolvePayoutStatus'],
@@ -418,7 +419,7 @@ export class ExportMetricsService {
       query = query.andWhere({ registrationStatus: status });
     }
     for (const r of relationOptions) {
-      query.select(subQuery => {
+      query.select((subQuery) => {
         return this.registrationsService.customDataEntrySubQuery(
           subQuery,
           r.relation,
@@ -433,7 +434,7 @@ export class ExportMetricsService {
     relationOptions: RegistrationDataOptions[],
     registrationIds: number[],
   ): Promise<object[]> {
-    let query = this.registrationRepository
+    const query = this.registrationRepository
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
@@ -451,7 +452,7 @@ export class ExportMetricsService {
       )
       .orderBy('"registration"."registrationProgramId"', 'ASC');
     for (const r of relationOptions) {
-      query.select(subQuery => {
+      query.select((subQuery) => {
         return this.registrationsService.customDataEntrySubQuery(
           subQuery,
           r.relation,
@@ -469,14 +470,13 @@ export class ExportMetricsService {
     const valueOptionMappings = [];
     for (const option of relationOptions) {
       if (option.relation.programQuestionId) {
-        const dropdownProgramQuestion = await this.programQuestionRepository.findOne(
-          {
+        const dropdownProgramQuestion =
+          await this.programQuestionRepository.findOne({
             where: {
               id: option.relation.programQuestionId,
               answerType: AnswerTypes.dropdown,
             },
-          },
-        );
+          });
         if (dropdownProgramQuestion) {
           valueOptionMappings.push({
             questionName: dropdownProgramQuestion.name,
@@ -504,7 +504,7 @@ export class ExportMetricsService {
     for (const mapping of valueOptionMappings) {
       for (const r of rows) {
         const selectedOption = mapping.options.find(
-          o => o.option === r[mapping.questionName],
+          (o) => o.option === r[mapping.questionName],
         );
         if (selectedOption && selectedOption['label']['en']) {
           r[mapping.questionName] = selectedOption['label']['en'];
@@ -515,16 +515,16 @@ export class ExportMetricsService {
 
   private filterUnusedColumn(columnDetails): object[] {
     const emptyColumns = [];
-    for (let row of columnDetails) {
-      for (let key in row) {
+    for (const row of columnDetails) {
+      for (const key in row) {
         if (row[key]) {
           emptyColumns.push(key);
         }
       }
     }
     const filteredColumns = [];
-    for (let row of columnDetails) {
-      for (let key in row) {
+    for (const row of columnDetails) {
+      for (const key in row) {
         if (!emptyColumns.includes(key)) {
           delete row[key];
         }
@@ -552,16 +552,16 @@ export class ExportMetricsService {
       ) {
         const relationOption = new RegistrationDataOptions();
         relationOption.name = programQuestion.name;
-        relationOption.relation = { programQuestionId: programQuestion.id };
+        relationOption.relation = {
+          programQuestionId: programQuestion.id,
+        };
         relationOptions.push(relationOption);
       }
     }
     return relationOptions;
   }
 
-  private async getDuplicates(
-    programId: number,
-  ): Promise<{
+  private async getDuplicates(programId: number): Promise<{
     fileName: ExportType;
     data: any[];
   }> {
@@ -576,7 +576,7 @@ export class ExportMetricsService {
         duplicateCheck: true,
       },
     });
-    const programQuestionIds = programQuestions.map(question => {
+    const programQuestionIds = programQuestions.map((question) => {
       return question.id;
     });
     const fspQuestions = await this.fspQuestionRepository.find({
@@ -585,10 +585,12 @@ export class ExportMetricsService {
         duplicateCheck: true,
       },
     });
-    const fspQuestionIds = fspQuestions.map(fspQuestion => {
+    const fspQuestionIds = fspQuestions.map((fspQuestion) => {
       return fspQuestion.id;
     });
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+    });
     const nameRelations = await this.getNameRelationsByProgram(programId);
     const duplicateRelationOptions = this.getRelationOptionsForDuplicates(
       programQuestions,
@@ -596,7 +598,7 @@ export class ExportMetricsService {
     );
     const relationOptions = [...nameRelations, ...duplicateRelationOptions];
 
-    let whereOptions = [];
+    const whereOptions = [];
     if (fspQuestionIds.length > 0) {
       whereOptions.push({ fspQuestionId: In(fspQuestionIds) });
     }
@@ -652,11 +654,12 @@ export class ExportMetricsService {
       Array.from(uniqueRegistrationIds),
     );
 
-    const result = registrations.map(registration => {
-      registration = this.registrationsService.transformRegistrationByNamingConvention(
-        JSON.parse(JSON.stringify(program.fullnameNamingConvention)),
-        registration,
-      );
+    const result = registrations.map((registration) => {
+      registration =
+        this.registrationsService.transformRegistrationByNamingConvention(
+          JSON.parse(JSON.stringify(program.fullnameNamingConvention)),
+          registration,
+        );
       return {
         ...registration,
         duplicateWithIds: uniq(duplicatesMap.get(registration['id'])).join(','),
@@ -680,7 +683,9 @@ export class ExportMetricsService {
       .select('transaction.registrationId', 'registrationId')
       .addSelect('transaction.payment', 'payment')
       .addSelect('MAX(transaction.created)', 'maxCreated')
-      .where('transaction.program.id = :programId', { programId: programId })
+      .where('transaction.program.id = :programId', {
+        programId: programId,
+      })
       .andWhere('transaction.payment between :minPaymentId and :maxPaymentId', {
         minPaymentId: minPaymentId,
         maxPaymentId: maxPaymentId,
@@ -708,7 +713,7 @@ export class ExportMetricsService {
       .leftJoin('registration.fsp', 'fsp');
 
     for (const r of registrationDataOptions) {
-      transactionQuery.select(subQuery => {
+      transactionQuery.select((subQuery) => {
         return this.registrationsService.customDataEntrySubQuery(
           subQuery,
           r.relation,
@@ -734,103 +739,114 @@ export class ExportMetricsService {
     );
 
     const metrics: PaMetrics = {
-      [RegistrationStatusEnum.imported]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        registrations,
-        RegistrationStatusEnum.imported,
-        payment,
-        month,
-        year,
-        fromStart,
-      ),
-      [RegistrationStatusEnum.invited]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        registrations,
-        RegistrationStatusEnum.invited,
-        payment,
-        month,
-        year,
-        fromStart,
-      ),
-      [RegistrationStatusEnum.startedRegistration]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        registrations,
-        RegistrationStatusEnum.startedRegistration,
-        payment,
-        month,
-        year,
-        fromStart,
-      ),
-      [RegistrationStatusEnum.registered]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        registrations,
-        RegistrationStatusEnum.registered,
-        payment,
-        month,
-        year,
-        fromStart,
-      ),
-      [RegistrationStatusEnum.selectedForValidation]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        registrations,
-        RegistrationStatusEnum.selectedForValidation,
-        payment,
-        month,
-        year,
-        fromStart,
-      ),
-      [RegistrationStatusEnum.validated]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        registrations,
-        RegistrationStatusEnum.validated,
-        payment,
-        month,
-        year,
-      ),
-      [RegistrationStatusEnum.included]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        registrations,
-        RegistrationStatusEnum.included,
-        payment,
-        month,
-        year,
-        fromStart,
-      ),
-      [RegistrationStatusEnum.inclusionEnded]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        registrations,
-        RegistrationStatusEnum.inclusionEnded,
-        payment,
-        month,
-        year,
-        fromStart,
-      ),
-      [RegistrationStatusEnum.noLongerEligible]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        registrations,
-        RegistrationStatusEnum.noLongerEligible,
-        payment,
-        month,
-        year,
-      ),
-      [RegistrationStatusEnum.rejected]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        registrations,
-        RegistrationStatusEnum.rejected,
-        payment,
-        month,
-        year,
-        fromStart,
-      ),
-      [RegistrationStatusEnum.deleted]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        registrations,
-        RegistrationStatusEnum.deleted,
-        payment,
-        month,
-        year,
-        fromStart,
-      ),
+      [RegistrationStatusEnum.imported]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.imported,
+          payment,
+          month,
+          year,
+          fromStart,
+        ),
+      [RegistrationStatusEnum.invited]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.invited,
+          payment,
+          month,
+          year,
+          fromStart,
+        ),
+      [RegistrationStatusEnum.startedRegistration]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.startedRegistration,
+          payment,
+          month,
+          year,
+          fromStart,
+        ),
+      [RegistrationStatusEnum.registered]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.registered,
+          payment,
+          month,
+          year,
+          fromStart,
+        ),
+      [RegistrationStatusEnum.selectedForValidation]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.selectedForValidation,
+          payment,
+          month,
+          year,
+          fromStart,
+        ),
+      [RegistrationStatusEnum.validated]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.validated,
+          payment,
+          month,
+          year,
+        ),
+      [RegistrationStatusEnum.included]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.included,
+          payment,
+          month,
+          year,
+          fromStart,
+        ),
+      [RegistrationStatusEnum.inclusionEnded]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.inclusionEnded,
+          payment,
+          month,
+          year,
+          fromStart,
+        ),
+      [RegistrationStatusEnum.noLongerEligible]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.noLongerEligible,
+          payment,
+          month,
+          year,
+        ),
+      [RegistrationStatusEnum.rejected]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.rejected,
+          payment,
+          month,
+          year,
+          fromStart,
+        ),
+      [RegistrationStatusEnum.deleted]:
+        await this.getTimestampsPerStatusAndTimePeriod(
+          programId,
+          registrations,
+          RegistrationStatusEnum.deleted,
+          payment,
+          month,
+          year,
+          fromStart,
+        ),
       [PaMetricsProperty.totalPaHelped]: await this.getTotalPaHelped(
         programId,
         payment,
@@ -852,12 +868,11 @@ export class ExportMetricsService {
     year?: number,
     fromStart?: number,
   ): Promise<number> {
-    const dateColumn = this.registrationsService.getDateColumPerStatus(
-      filterStatus,
-    );
+    const dateColumn =
+      this.registrationsService.getDateColumPerStatus(filterStatus);
 
     let filteredRegistrations = registrations.filter(
-      registration => !!registration[dateColumn],
+      (registration) => !!registration[dateColumn],
     );
 
     if (
@@ -870,7 +885,7 @@ export class ExportMetricsService {
       );
     }
     if (month >= 0 && year) {
-      filteredRegistrations = filteredRegistrations.filter(registration => {
+      filteredRegistrations = filteredRegistrations.filter((registration) => {
         const yearMonth = new Date(
           registration[dateColumn].getFullYear(),
           registration[dateColumn].getUTCMonth(),
@@ -890,10 +905,10 @@ export class ExportMetricsService {
       const beginDate =
         payment === 1 || (fromStart && fromStart === 1)
           ? new Date(2000, 0, 1)
-          : payments.find(i => i.payment === payment - 1).paymentDate;
-      const endDate = payments.find(i => i.payment === payment).paymentDate;
+          : payments.find((i) => i.payment === payment - 1).paymentDate;
+      const endDate = payments.find((i) => i.payment === payment).paymentDate;
       filteredRegistrations = filteredRegistrations.filter(
-        registration =>
+        (registration) =>
           registration[dateColumn] > beginDate &&
           registration[dateColumn] <= endDate,
       );
@@ -910,7 +925,9 @@ export class ExportMetricsService {
   ): Promise<number> {
     let query = this.registrationRepository
       .createQueryBuilder('registration')
-      .where('registration."programId" = :programId', { programId: programId })
+      .where('registration."programId" = :programId', {
+        programId: programId,
+      })
       .innerJoinAndSelect('registration.transactions', 'transactions');
     let yearMonthStartCondition;
     if (month >= 0 && year) {
@@ -949,9 +966,13 @@ export class ExportMetricsService {
     const totalProcessedPayments = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('MAX(transaction.payment)')
-      .where('transaction."programId" = :programId', { programId: programId })
+      .where('transaction."programId" = :programId', {
+        programId: programId,
+      })
       .getRawOne();
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
     const paymentNrSearch = Math.max(
       ...[totalProcessedPayments.max, program.distributionDuration],
     );
@@ -960,7 +981,9 @@ export class ExportMetricsService {
     const transactionStepMin = await await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('MIN(transaction.transactionStep)')
-      .where('transaction."programId" = :programId', { programId: programId })
+      .where('transaction."programId" = :programId', {
+        programId: programId,
+      })
       .getRawOne();
     while (i <= paymentNrSearch) {
       const result = await this.getOnePaymentWithStateSum(
@@ -979,8 +1002,8 @@ export class ExportMetricsService {
     payment: number,
     transactionStepOfInterest: number,
   ): Promise<PaymentStateSumDto> {
-    const currentPaymentRegistrationsAndCount = await this.transactionRepository.findAndCount(
-      {
+    const currentPaymentRegistrationsAndCount =
+      await this.transactionRepository.findAndCount({
         where: {
           program: { id: programId },
           status: StatusEnum.success,
@@ -988,8 +1011,7 @@ export class ExportMetricsService {
           transactionStep: transactionStepOfInterest,
         },
         relations: ['registration'],
-      },
-    );
+      });
     const currentPaymentRegistrations = currentPaymentRegistrationsAndCount[0];
     const currentPaymentCount = currentPaymentRegistrationsAndCount[1];
     const currentPaymentRegistrationsIds = currentPaymentRegistrations.map(
@@ -1030,7 +1052,7 @@ export class ExportMetricsService {
 
   public async getMonitoringData(programId: number): Promise<any> {
     const registrations = await this.queryMonitoringData(programId);
-    return registrations.map(registration => {
+    return registrations.map((registration) => {
       const startDate = new Date(
         registration['statusChangeStarted_created'],
       ).getTime();
@@ -1048,7 +1070,8 @@ export class ExportMetricsService {
   }
 
   private async queryMonitoringData(programId: number): Promise<any[]> {
-    const q = getRepository(RegistrationEntity)
+    const q = this.dataSource
+      .getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .innerJoinAndSelect(
         'registration.program',
@@ -1108,7 +1131,7 @@ export class ExportMetricsService {
         order: { id: 'ASC' },
       });
     }
-    const sum = registrations.reduce(function(a, b) {
+    const sum = registrations.reduce(function (a, b) {
       return a + (b[Attributes.paymentAmountMultiplier] || 1);
     }, 0);
     return {
@@ -1118,8 +1141,11 @@ export class ExportMetricsService {
   }
 
   public async getProgramStats(programId: number): Promise<ProgramStats> {
-    const targetedPeople = (await this.programRepository.findOne(programId))
-      .highestScoresX;
+    const targetedPeople = (
+      await this.programRepository.findOneBy({
+        id: programId,
+      })
+    ).highestScoresX;
 
     const registrations = await this.registrationRepository.find({
       where: {
@@ -1129,16 +1155,17 @@ export class ExportMetricsService {
     });
 
     const includedPeople = registrations.filter(
-      r => r.registrationStatus === RegistrationStatusEnum.included,
+      (r) => r.registrationStatus === RegistrationStatusEnum.included,
     ).length;
 
     // Use this method to get only the latest attempt per PA per payment
-    const transactionsQuery = this.transactionsService.getMaxAttemptPerPaAndPaymentTransactionsQuery(
-      programId,
-      false,
-    );
+    const transactionsQuery =
+      this.transactionsService.getMaxAttemptPerPaAndPaymentTransactionsQuery(
+        programId,
+        false,
+      );
 
-    const { spentMoney } = await this.connection
+    const { spentMoney } = await this.dataSource
       .createQueryBuilder()
       .select('SUM(amount)', 'spentMoney')
       .from('(' + transactionsQuery.getQuery() + ')', 'transactions')

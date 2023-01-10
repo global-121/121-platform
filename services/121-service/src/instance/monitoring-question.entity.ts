@@ -17,15 +17,12 @@ export class MonitoringQuestionEntity extends CascadeDeleteEntity {
   @Column('json', { nullable: true })
   public options: JSON;
 
-  @OneToOne(
-    () => InstanceEntity,
-    instance => instance.monitoringQuestion,
-  )
+  @OneToOne(() => InstanceEntity, (instance) => instance.monitoringQuestion)
   public instance: InstanceEntity;
 
   @OneToMany(
     () => RegistrationDataEntity,
-    registrationData => registrationData.monitoringQuestion,
+    (registrationData) => registrationData.monitoringQuestion,
   )
   public registrationData: RegistrationDataEntity[];
 }

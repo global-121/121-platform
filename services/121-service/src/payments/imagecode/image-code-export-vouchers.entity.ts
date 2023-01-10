@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../../base.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { IntersolveBarcodeEntity } from '../fsp-integration/intersolve/intersolve-barcode.entity';
@@ -9,14 +9,14 @@ export class ImageCodeExportVouchersEntity extends Base121Entity {
   public image: any;
 
   @ManyToOne(
-    _type => RegistrationEntity,
-    registration => registration.images,
+    (_type) => RegistrationEntity,
+    (registration) => registration.images,
   )
+  @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;
+  @Column({ type: 'int', nullable: true })
+  public registrationId: number;
 
-  @ManyToOne(
-    _type => IntersolveBarcodeEntity,
-    barcode => barcode.image,
-  )
+  @ManyToOne((_type) => IntersolveBarcodeEntity, (barcode) => barcode.image)
   public barcode: IntersolveBarcodeEntity;
 }

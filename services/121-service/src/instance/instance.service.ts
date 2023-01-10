@@ -10,14 +10,11 @@ import { MonitoringQuestionEntity } from './monitoring-question.entity';
 export class InstanceService {
   @InjectRepository(InstanceEntity)
   private readonly instanceRepository: Repository<InstanceEntity>;
-
-  public constructor() {}
-
   public async getInstance(): Promise<InstanceEntity> {
-    const instance = await this.instanceRepository.findOne({
+    const instances = await this.instanceRepository.find({
       relations: ['monitoringQuestion'],
     });
-    return instance;
+    return instances[0];
   }
 
   public async updateInstance(
@@ -31,7 +28,7 @@ export class InstanceService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    for (let attribute in updateInstanceDto) {
+    for (const attribute in updateInstanceDto) {
       if (attribute !== 'name') {
         instance[attribute] = updateInstanceDto[attribute];
       }

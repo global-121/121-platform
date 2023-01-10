@@ -27,8 +27,8 @@ export class ProgramCustomAttributeEntity extends Base121Entity {
   public phases: JSON;
 
   @ManyToOne(
-    _type => ProgramEntity,
-    program => program.programCustomAttributes,
+    (_type) => ProgramEntity,
+    (program) => program.programCustomAttributes,
   )
   @JoinColumn({ name: 'programId' })
   public program: ProgramEntity;
@@ -37,7 +37,7 @@ export class ProgramCustomAttributeEntity extends Base121Entity {
 
   @OneToMany(
     () => RegistrationDataEntity,
-    registrationData => registrationData.programQuestion,
+    (registrationData) => registrationData.programQuestion,
   )
   public registrationData: RegistrationDataEntity[];
 }

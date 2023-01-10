@@ -13,14 +13,11 @@ export class UserRoleEntity extends Base121Entity {
 
   @ManyToMany(
     () => ProgramAidworkerAssignmentEntity,
-    assignment => assignment.roles,
+    (assignment) => assignment.roles,
   )
   public assignments: ProgramAidworkerAssignmentEntity[];
 
-  @ManyToMany(
-    () => PermissionEntity,
-    permission => permission.roles,
-  )
+  @ManyToMany(() => PermissionEntity, (permission) => permission.roles)
   @JoinTable()
   public permissions: PermissionEntity[];
 }

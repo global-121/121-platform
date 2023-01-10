@@ -1,8 +1,6 @@
-version: '3.7'
-
 # The settings from this file will override the values from `docker-compose.yml`
 # When run via:
-#     docker-compose -f docker-compose.yml -f docker-compose.development.yml
+#     docker compose -f docker-compose.yml -f docker-compose.development.yml
 
 # For use on macOS:
 # See: https://www.docker.com/blog/user-guided-caching-in-docker-for-mac/

@@ -4,7 +4,6 @@ import {
   Brackets,
   Column,
   Entity,
-  getConnection,
   Index,
   JoinColumn,
   ManyToOne,
@@ -12,6 +11,7 @@ import {
   QueryFailedError,
   Unique,
 } from 'typeorm';
+import { AppDataSource } from '../../appdatasource';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { TryWhatsappEntity } from '../notifications/whatsapp/try-whatsapp.entity';
@@ -36,10 +36,7 @@ import { RegistrationStatusChangeEntity } from './registration-status-change.ent
 @Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
 @Entity('registration')
 export class RegistrationEntity extends CascadeDeleteEntity {
-  @ManyToOne(
-    type => ProgramEntity,
-    program => program.registrations,
-  )
+  @ManyToOne((_type) => ProgramEntity, (program) => program.registrations)
   @JoinColumn({ name: 'programId' })
   public program: ProgramEntity;
   @Column()
@@ -50,7 +47,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   @OneToMany(
     () => RegistrationStatusChangeEntity,
-    statusChange => statusChange.registration,
+    (statusChange) => statusChange.registration,
   )
   @JoinColumn()
   public statusChanges: RegistrationStatusChangeEntity[];
@@ -63,10 +60,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column()
   public referenceId: string;
 
-  @OneToMany(
-    () => RegistrationDataEntity,
-    data => data.registration,
-  )
+  @OneToMany(() => RegistrationDataEntity, (data) => data.registration)
   public data: RegistrationDataEntity[];
 
   @Column({ nullable: true })
@@ -79,7 +73,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ nullable: true })
   public inclusionScore: number;
 
-  @ManyToOne(_type => FinancialServiceProviderEntity)
+  @ManyToOne((_type) => FinancialServiceProviderEntity)
   public fsp: FinancialServiceProviderEntity;
 
   @Column({ nullable: true })
@@ -99,26 +93,26 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public registrationProgramId: number;
 
   @OneToMany(
-    _type => TransactionEntity,
-    transactions => transactions.registration,
+    (_type) => TransactionEntity,
+    (transactions) => transactions.registration,
   )
   public transactions: TransactionEntity[];
 
   @OneToMany(
-    _type => ImageCodeExportVouchersEntity,
-    image => image.registration,
+    (_type) => ImageCodeExportVouchersEntity,
+    (image) => image.registration,
   )
   public images: ImageCodeExportVouchersEntity[];
 
   @OneToMany(
-    _type => TwilioMessageEntity,
-    twilioMessages => twilioMessages.registration,
+    (_type) => TwilioMessageEntity,
+    (twilioMessages) => twilioMessages.registration,
   )
   public twilioMessages: TwilioMessageEntity[];
 
   @OneToMany(
-    _type => WhatsappPendingMessageEntity,
-    whatsappPendingMessages => whatsappPendingMessages.registration,
+    (_type) => WhatsappPendingMessageEntity,
+    (whatsappPendingMessages) => whatsappPendingMessages.registration,
   )
   public whatsappPendingMessages: WhatsappPendingMessageEntity[];
 
@@ -168,7 +162,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public async getRegistrationDataByName(
     name: string,
   ): Promise<RegistrationDataByNameDto> {
-    const repo = getConnection().getRepository(RegistrationDataEntity);
+    const repo = AppDataSource.getRepository(RegistrationDataEntity);
     const q = repo
       .createQueryBuilder('registrationData')
       .leftJoin('registrationData.registration', 'registration')
@@ -181,11 +175,15 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       )
       .where('registration.id = :id', { id: this.id })
       .andWhere(
-        new Brackets(qb => {
+        new Brackets((qb) => {
           qb.where(`programQuestion.name = :name`, { name: name })
             .orWhere(`fspQuestion.name = :name`, { name: name })
-            .orWhere(`monitoringQuestion.name = :name`, { name: name })
-            .orWhere(`programCustomAttribute.name = :name`, { name: name });
+            .orWhere(`monitoringQuestion.name = :name`, {
+              name: name,
+            })
+            .orWhere(`programCustomAttribute.name = :name`, {
+              name: name,
+            });
         }),
       )
       .select(
@@ -220,10 +218,12 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       await this.saveOneData(value, relation);
     }
 
-    // Fetches updated registration from database and return it
-    return await getConnection()
-      .getRepository(RegistrationEntity)
-      .findOne(this.id, { relations: ['data'] });
+    return await AppDataSource.getRepository(RegistrationEntity).findOne({
+      relations: ['data'],
+      where: {
+        id: this.id,
+      },
+    });
   }
 
   private async saveOneData(
@@ -282,7 +282,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     value: string,
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
     const existingEntry = await repoRegistrationData
@@ -307,7 +307,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     values: string[],
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
 
@@ -326,7 +326,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   }
 
   private async saveFspQuestionData(value: string, id: number): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
     const existingEntry = await repoRegistrationData
@@ -351,7 +351,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     values: string[],
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
 
@@ -373,7 +373,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     value: string,
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
     const existingEntry = await repoRegistrationData
@@ -401,7 +401,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     values: string[],
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
 
@@ -423,7 +423,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     value: string,
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
     const existingEntry = await repoRegistrationData
@@ -448,7 +448,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     values: string[],
     id: number,
   ): Promise<void> {
-    const repoRegistrationData = getConnection().getRepository(
+    const repoRegistrationData = AppDataSource.getRepository(
       RegistrationDataEntity,
     );
 
@@ -470,7 +470,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     name: string,
   ): Promise<RegistrationDataRelation> {
     const result = new RegistrationDataRelation();
-    const repoProgram = getConnection().getRepository(ProgramEntity);
+    const repoProgram = AppDataSource.getRepository(ProgramEntity);
     const query = repoProgram
       .createQueryBuilder('program')
       .leftJoin('program.programQuestions', 'programQuestion')
@@ -484,7 +484,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       result.programQuestionId = resultProgramQuestion.id;
       return result;
     }
-    const repoRegistration = getConnection().getRepository(RegistrationEntity);
+    const repoRegistration = AppDataSource.getRepository(RegistrationEntity);
     const resultFspQuestion = await repoRegistration
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
@@ -508,7 +508,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       result.programCustomAttributeId = resultProgramCustomAttribute.id;
       return result;
     }
-    const repoInstance = getConnection().getRepository(InstanceEntity);
+    const repoInstance = AppDataSource.getRepository(InstanceEntity);
     const resultMonitoringQuestion = await repoInstance
       .createQueryBuilder('instance')
       .leftJoin('instance.monitoringQuestion', 'question')
@@ -525,12 +525,14 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   public async save(retryCount?: number): Promise<RegistrationEntity> {
     let saveRetriesCount = retryCount ? retryCount : 0;
-    const regRepo = getConnection().getRepository(RegistrationEntity);
+    const regRepo = AppDataSource.getRepository(RegistrationEntity);
     if (!this.registrationProgramId) {
       const query = regRepo
         .createQueryBuilder('r')
         .select('r."registrationProgramId"')
-        .where('r.programId = :programId', { programId: this.program.id })
+        .where('r.programId = :programId', {
+          programId: this.program.id,
+        })
         .andWhere('r.registrationProgramId is not null')
         .orderBy('r."registrationProgramId"', 'DESC')
         .limit(1);
@@ -558,10 +560,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   }
 
   public async getFullName(): Promise<string> {
-    const repoProgram = getConnection().getRepository(ProgramEntity);
+    const repoProgram = AppDataSource.getRepository(ProgramEntity);
     let fullName = '';
     const fullnameConcat = [];
-    const program = await repoProgram.findOne(this.programId);
+    const program = await repoProgram.findOneBy({ id: this.programId });
     if (program && program.fullnameNamingConvention) {
       for (const nameColumn of JSON.parse(
         JSON.stringify(program.fullnameNamingConvention),

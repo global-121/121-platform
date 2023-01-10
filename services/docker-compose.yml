@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   121db:
     image: 'postgres:9.6'
@@ -14,10 +12,17 @@ services:
       - './init.sql:/docker-entrypoint-initdb.d/init.sql'
     ports:
       - '5438:5432'
-    networks:
-      pool_network:
-        ipv4_address: 11.0.0.6
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "sh -c 'pg_isready -U global121 -d global121'",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
   121-service:
     build:
       context: 121-service
@@ -32,17 +37,7 @@ services:
       - '${PORT_121_SERVICE}:${PORT_121_SERVICE}'
     stdin_open: true
     tty: true
-    networks:
-      pool_network:
-        ipv4_address: ${IPV4_121_SERVICE}
     depends_on:
-      - 121db
+      121db:
+        condition: service_healthy
     restart: on-failure
-
-networks:
-  pool_network:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 11.0.0.0/24

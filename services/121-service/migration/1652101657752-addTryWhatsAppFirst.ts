@@ -1,5 +1,5 @@
 import { ProgramEntity } from './../src/programs/program.entity';
-import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
+import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 
 export class addTryWhatsAppFirst1652101657752 implements MigrationInterface {
   name = 'addTryWhatsAppFirst1652101657752';
@@ -15,7 +15,7 @@ export class addTryWhatsAppFirst1652101657752 implements MigrationInterface {
       `CREATE INDEX "IDX_80de8dd79363e1274cfdba6bd4" ON "121-service"."try_whatsapp" ("created") `,
     );
     await queryRunner.commitTransaction();
-    await this.migrateData(queryRunner.connection);
+    await this.migrateData(queryRunner.manager);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
   }
@@ -30,8 +30,8 @@ export class addTryWhatsAppFirst1652101657752 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "121-service"."try_whatsapp"`);
   }
 
-  private async migrateData(connection: Connection): Promise<void> {
-    const programRepo = connection.getRepository(ProgramEntity);
+  private async migrateData(manager: EntityManager): Promise<void> {
+    const programRepo = manager.getRepository(ProgramEntity);
     const programs = await programRepo
       .createQueryBuilder('program')
       .select('program.id')

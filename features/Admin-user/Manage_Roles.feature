@@ -29,7 +29,7 @@ Feature: View, Add and Edit roles
     Given the required "attributes" for this "Role" have been provided
     When the user fills in the "label" and the "permissions" in as body
     And calls the PUT "/roles/:roleId" endpoint
-    Then a "Role" with all its attributes is returned"
+    Then a "Role" with all its attributes is returned
 
   Scenario: Unsuccessfully try to update unknown role
     Given an unkonwn roleId

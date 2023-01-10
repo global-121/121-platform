@@ -1,5 +1,5 @@
 import { FspQuestionEntity } from './../src/fsp/fsp-question.entity';
-import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
+import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 import { ProgramEntity } from '../src/programs/program.entity';
 import fs from 'fs';
 import { RegistrationEntity } from '../src/registration/registration.entity';
@@ -51,7 +51,7 @@ export class registrationData1656412499569 implements MigrationInterface {
     );
 
     await queryRunner.commitTransaction();
-    await this.migrateData(queryRunner.connection);
+    await this.migrateData(queryRunner.manager);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
     await queryRunner.query(
@@ -103,15 +103,15 @@ export class registrationData1656412499569 implements MigrationInterface {
     );
   }
 
-  private async migrateData(connection: Connection): Promise<void> {
-    const programRepo = connection.getRepository(ProgramEntity);
-    const registrationRepo = connection.getRepository(RegistrationEntity);
-    const fspAttributeRepo = connection.getRepository(FspQuestionEntity);
-    const registrationDataRepo = connection.getRepository(
+  private async migrateData(manager: EntityManager): Promise<void> {
+    const programRepo = manager.getRepository(ProgramEntity);
+    const registrationRepo = manager.getRepository(RegistrationEntity);
+    const fspAttributeRepo = manager.getRepository(FspQuestionEntity);
+    const registrationDataRepo = manager.getRepository(
       RegistrationDataEntity,
     );
-    const instanceRepo = connection.getRepository(InstanceEntity);
-    const monQuestionRepo = connection.getRepository(MonitoringQuestionEntity);
+    const instanceRepo = manager.getRepository(InstanceEntity);
+    const monQuestionRepo = manager.getRepository(MonitoringQuestionEntity);
 
     let instancePilotLVV, instancePilotPV;
     try {

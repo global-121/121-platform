@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Connection } from 'typeorm';
+import { DataSource } from 'typeorm';
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
 import instanceDemo from '../../seed-data/instance/instance-demo.json';
 import programDemo from '../../seed-data/program/program-demo.json';
@@ -9,12 +9,12 @@ import { SeedInit } from './seed-init';
 
 @Injectable()
 export class SeedDemoProgram implements InterfaceScript {
-  public constructor(private connection: Connection) {}
+  public constructor(private dataSource: DataSource) {}
 
-  private readonly seedHelper = new SeedHelper(this.connection);
+  private readonly seedHelper = new SeedHelper(this.dataSource);
 
   public async run(): Promise<void> {
-    const seedInit = await new SeedInit(this.connection);
+    const seedInit = await new SeedInit(this.dataSource);
     await seedInit.run();
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****

@@ -5,7 +5,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { getConnection } from 'typeorm';
+import { AppDataSource } from '../../../appdatasource';
 import {
   AnswerTypes,
   CustomAttributeType,
@@ -14,10 +14,9 @@ import { RegistrationEntity } from '../registration.entity';
 
 @ValidatorConstraint({ name: 'validateAttributeType', async: true })
 export class RegistrationDataTypeValidator
-  implements ValidatorConstraintInterface {
+  implements ValidatorConstraintInterface
+{
   private message: string;
-
-  public constructor() {}
 
   public async validate(
     value: any,
@@ -30,9 +29,8 @@ export class RegistrationDataTypeValidator
       this.message = 'ReferenceId or attribute are undefined';
       return false;
     }
-    const registrationRepository = getConnection().getRepository(
-      RegistrationEntity,
-    );
+    const registrationRepository =
+      AppDataSource.getRepository(RegistrationEntity);
     const registration = await registrationRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['program'],
@@ -41,9 +39,8 @@ export class RegistrationDataTypeValidator
       this.message = `Registration was not found for referenceId: '${referenceId}'`;
       return false;
     }
-    const validationInfo = await registration.program.getValidationInfoForQuestionName(
-      attribute,
-    );
+    const validationInfo =
+      await registration.program.getValidationInfoForQuestionName(attribute);
     if (!validationInfo.type) {
       this.message = `Attribute '${attribute}' was not found for the program related to the reference id:' ${referenceId}'`;
       return false;
@@ -61,7 +58,7 @@ export class RegistrationDataTypeValidator
     this.message = `The value '${valueString}' given for the attribute '${attribute}' does not have the correct format for type '${type}'`;
   }
 
-  public defaultMessage(args: ValidationArguments): string {
+  public defaultMessage(_args: ValidationArguments): string {
     return this.message;
   }
 
@@ -73,7 +70,8 @@ export class RegistrationDataTypeValidator
   ): boolean {
     let isValid = false;
     if (type === AnswerTypes.date) {
-      const datePattern = /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-(19[2-9][0-9]|20[0-1][0-9])$/;
+      const datePattern =
+        /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-(19[2-9][0-9]|20[0-1][0-9])$/;
       isValid = datePattern.test(value);
     } else if (type === AnswerTypes.dropdown) {
       isValid = this.optionIsValid(value, options);
@@ -139,7 +137,7 @@ export function IsRegistrationDataValidType(
   validationAttributes: ValidateRegistrationDataAttributessDto,
   validationOptions?: ValidationOptions,
 ): any {
-  return function(object: Record<string, any>, propertyName: string) {
+  return function (object: Record<string, any>, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,

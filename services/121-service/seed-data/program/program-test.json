@@ -212,5 +212,6 @@
     "en": "[about aid program]"
   },
   "fullnameNamingConvention": ["name"],
-  "languages": ["en"]
+  "languages": ["en"],
+  "tryWhatsAppFirst": true
 }
