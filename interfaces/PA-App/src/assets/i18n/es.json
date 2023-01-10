@@ -15,10 +15,6 @@
     "wait-to-go-offline": "Espera 30 segundos antes de usar la aplicación sin conexión para que se descargue todo el contenido de la aplicación.",
     "update-available": "Actualización disponible, vuelve a cargar la aplicación."
   },
-  "password-toggle": {
-    "hide": "Ocultar contraseña",
-    "show": "Mostrar contraseña"
-  },
   "personal": {
     "consent-question": {
       "agree": "Estoy de Acuerdo",
@@ -27,28 +23,11 @@
       "more-info-personal-information": "Acerca de la Información Personal",
       "question": "Para aplicar a este programa de ayuda  necesita estar de acuerdo con <strong> cómo resguardamos su información personal.</strong><br /><br />Por favor lea o escuche sobre cómo resguardamos su información personal."
     },
-    "create-account": {
-      "conclusion": "Estupendo! Ha creado una cuenta.",
-      "confirm-password": "Confirmar contraseña",
-      "create-password-explanation": "Cree una contraseña de al menos {{minimalLength}} números:",
-      "create-username": "Introduzca su nombre completo:",
-      "introduction": "Para crear una cuenta necesita completar los siguientes pasos.",
-      "password-too-short": "Por favor introduzca al menos {{minimalLength}} caracteres.",
-      "unequal-passwords": "Las contraseñas creadas no coinciden. Por favor inténtelo de nuevo.",
-      "username-not-unique": "El nombre introducido no es único. Por favor Inténtelo de nuevo.",
-      "username-password": "Introduzca su nombre completo y cree una contraseña"
-    },
     "enroll-in-program": {
       "change": "Cambiar mi información",
       "introduction-information": "Para asegurarnos que tengas la mejor asistencia posible y un proceso justo necesitamos alguna información personal.",
       "please-confirm": "A continuación se muestra una descripción general de su información. Marque y luego toque enviar.",
       "submit-confirm": "Enviar mi Información"
-    },
-    "login-account": {
-      "incorrect-credentials": "La combinación de nombre completo y contraseña que ha proporcionado no es reconocible. Por favor inténtelo de nuevo.",
-      "introduction": "Para usar una cuenta existente necesita iniciar sesión con su nombre completo y contraseña",
-      "supply-password": "Su contraseña",
-      "supply-username": "Nombre Completo"
     },
     "registration-summary": {
       "documents": "Asegúrate de contar con los siguientes documentos:",
@@ -86,11 +65,6 @@
       "validation": {
         "phone-number": "No pudimos verificar el numero de teléfono. Por favor modifique e inténtelo de nuevo."
       }
-    },
-    "signup-signin": {
-      "create-id": "Crear cuenta",
-      "introduction": "Para aplicar a este programa de ayuda necesita tener una cuenta. Por favor elabore una cuenta o utilice una existente.",
-      "login-id": "Usar mi cuenta"
     },
     "next-pa": {
       "new-pa": "Agregar otra persona afectada",

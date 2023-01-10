@@ -1,16 +1,13 @@
 export enum PersonalComponents {
   consentQuestion = 'consent-question',
   contactDetails = 'contact-details',
-  createAccount = 'create-account',
   enrollInProgram = 'enroll-in-program',
-  loginAccount = 'login-account',
   monitoringQuestion = 'monitoring-question',
   registrationSummary = 'registration-summary',
   selectFsp = 'select-fsp',
   selectLanguage = 'select-language',
   selectProgram = 'select-program',
   setNotificationNumber = 'set-notification-number',
-  signupSignin = 'signup-signin',
   autoSignup = 'auto-signup',
   nextPa = 'next-pa',
 }
@@ -24,4 +21,7 @@ export const PersonalComponentsRemoved = [
   'create-identity',
   'login-identity',
   'preprinted-qrcode',
+  'signup-signin',
+  'login-account',
+  'create-account',
 ];
