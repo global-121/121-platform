@@ -40,10 +40,10 @@ export class PersonAffectedAuthGuard implements CanActivate {
       endpointPersonAffectedAuth.length === 0
     ) {
       const token = request.cookies[CookieNames.paApp];
-      const decoded: UserToken = jwt.verify(
+      const decoded = jwt.verify(
         token,
         process.env.SECRETS_121_SERVICE_SECRET,
-      );
+      ) as UserToken;
       const user = await this.userService.findById(decoded.id);
       if (user.userType === UserType.personAffected) {
         hasAccess = await this.personAffectedCanActivate(user, request);

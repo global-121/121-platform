@@ -6,10 +6,10 @@ export class BaseController {
     if (!authorization) return null;
 
     const token = authorization.split(' ')[1];
-    const decoded: UserToken = jwt.verify(
+    const decoded = jwt.verify(
       token,
       process.env.SECRETS_121_SERVICE_SECRET,
-    );
+    ) as UserToken;
     return decoded.id;
   }
 }
