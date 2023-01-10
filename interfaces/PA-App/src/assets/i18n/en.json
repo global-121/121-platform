@@ -27,28 +27,11 @@
       "more-info-personal-information": "About personal information",
       "question": "To apply for this aid program you need to agree to <strong>how we secure your personal information.</strong><br /><br /> Please read or listen to how we secure your personal information."
     },
-    "create-account": {
-      "conclusion": "Great! You have created an account.",
-      "confirm-password": "Confirm password:",
-      "create-password-explanation": "Create a password of at least {{minimalLength}} numbers:",
-      "create-username": "Enter your full name:",
-      "introduction": "To create an account you need to complete the following steps.",
-      "password-too-short": "Please enter at least {{minimalLength}} characters.",
-      "unequal-passwords": "The passwords you created are not the same. Please try again.",
-      "username-not-unique": "The name you entered is not unique. Please try again.",
-      "username-password": "Enter your full name and create a password."
-    },
     "enroll-in-program": {
       "change": "Change my information",
       "introduction-information": "To make sure you get the best possible help and a fair process, we need some personal information.",
       "please-confirm": "Below is an overview of your information. Please check and then tap send.",
       "submit-confirm": "Send my information"
-    },
-    "login-account": {
-      "incorrect-credentials": "The combination of your full name and password you provided is not recognized. Please try again.",
-      "introduction": "To use an existing account you need to log in with your full name and password.",
-      "supply-password": "Your password:",
-      "supply-username": "Your full name:"
     },
     "registration-summary": {
       "documents": "Make sure to have these documents ready:",
@@ -106,11 +89,6 @@
       "validation": {
         "phone-number": "We couldn't verify that phone-number. Please update and try again."
       }
-    },
-    "signup-signin": {
-      "create-id": "Create account",
-      "introduction": "To apply for this aid program, you need to have an account. Please create your account or use your existing account.",
-      "login-id": "Use my account"
     },
     "next-pa": {
       "new-pa": "Add another person affected",

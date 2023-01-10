@@ -18,28 +18,11 @@
       "more-info-personal-information": "Tentang informasi pribadi",
       "question": "Untuk mendaftar ke program bantuan ini anda perlu menyetujui <strong><br /><br />Harap baca atau dengarkan bagaimana kami akan memperoleh informasi pribadi anda."
     },
-    "create-account": {
-      "conclusion": "Hebat! Anda telah berhasil membuat akun anda.",
-      "confirm-password": "Konfirmasi password anda:",
-      "create-password-explanation": "Ciptakan sebuah password yang terdiri dari {{minimalLength}} angka:",
-      "create-username": "Isi nama lengkap anda:",
-      "introduction": "Untuk membuat sebuah akun, anda perlu melakukan beberapa langkah ini.",
-      "password-too-short": "Harap isi paling sedikit {{jumlah minimum}} karakter.",
-      "unequal-passwords": "Kedua password yang anda buat, tidak sama. Harap coba kembali,",
-      "username-not-unique": "Nama yang anda isi tidak unik. Harap coba kembali.",
-      "username-password": "Isi nama lengkap anda dan ciptakan sebuah password"
-    },
     "enroll-in-program": {
       "change": "Ubah informasi saya",
       "introduction-information": "Untuk menjamin bahwa anda bisa dibantu sebaik mungkin, melalui proses yang aman, kami butuh beberapa informasi pribadi anda.",
       "please-confirm": "Dibawah ini adalah rangkuman dari informasi anda. Harap diperiksa dan setelah itu klik 'send'.",
       "submit-confirm": "Kirim informasi saya"
-    },
-    "login-account": {
-      "incorrect-credentials": "Kombinasi antara nama lengkap anda dengan password yang anda berikan, tidak cocok. Harap coba kembali.",
-      "introduction": "Untuk menggunakan akun anda yang sudah berlaku, anda perlu log in dengan nama lengkap dan password anda.",
-      "supply-password": "Password anda: ",
-      "supply-username": "Nama lengkap:"
     },
     "registration-summary": {
       "documents": "Harap siap dengan dokumen-dokumen ini:",
@@ -76,11 +59,6 @@
       "validation": {
         "phone-number": "Kami tidak bisa mem-verifikasi nomor HP itu. Tolong di update dan coba lagi."
       }
-    },
-    "signup-signin": {
-      "create-id": "Ciptakan akun",
-      "introduction": "Untuk mendaftar ke program bantuan ini, anda harus memiliki sebuah akun. Harap buat akun, atau gunakan akun anda yang sudah ada.",
-      "login-id": "Pakai akun saya"
     }
   },
   "q-and-a-set": {
