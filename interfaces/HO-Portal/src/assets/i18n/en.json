@@ -408,9 +408,9 @@
             "rejected": "Rejection",
             "invited": "Invitation for registration",
             "custom": "Custom message",
-            "generic-templated": "Generic template",
-            "payment-templated": "Payment template",
-            "payment": "Payment",
+            "generic-templated": "Message notification",
+            "payment-templated": "Payment notification",
+            "payment": "Payment voucher",
             "payment-instructions": "Payment instructions",
             "payment-reminder": "Payment reminder",
             "default-reply": "Default reply"
