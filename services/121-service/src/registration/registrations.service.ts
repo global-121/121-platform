@@ -983,9 +983,8 @@ export class RegistrationsService {
       'transaction_max_payment',
       'transaction_max_payment."registrationId" = registration.id',
     )
-
       .leftJoin(
-        qb =>
+        (qb) =>
           qb
             .from(TransactionEntity, 'transactions')
             .select('MAX("transactionStep")', 'transactionStep')
@@ -995,10 +994,10 @@ export class RegistrationsService {
             .addGroupBy('"registrationId"'),
         'transaction_max_transaction_step',
         `transaction_max_transaction_step."registrationId" = registration.id
-        AND transaction_max_transaction_step.payment = transaction_max_payment.payment`,
+      AND transaction_max_transaction_step.payment = transaction_max_payment.payment`,
       )
       .leftJoin(
-        qb =>
+        (qb) =>
           qb
             .from(TransactionEntity, 'transactions')
             .select('MAX("created")', 'created')
@@ -1012,8 +1011,8 @@ export class RegistrationsService {
             .addGroupBy('"id"'),
         'transaction_max_created',
         `transaction_max_created."registrationId" = registration.id
-        AND transaction_max_created.payment = transaction_max_payment.payment
-        AND transaction_max_created."transactionStep" = transaction_max_transaction_step."transactionStep"`,
+      AND transaction_max_created.payment = transaction_max_payment.payment
+      AND transaction_max_created."transactionStep" = transaction_max_transaction_step."transactionStep"`,
       )
       .leftJoin(
         'registration.transactions',
