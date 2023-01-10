@@ -747,6 +747,7 @@ export class RegistrationsService {
         'twilioMessages.created < nextTwilioMessages.created',
       )
       .addSelect('"twilioMessages".status', 'lastMessageStatus')
+      .addSelect('"twilioMessages".type', 'lastMessageType')
       .where('nextTwilioMessages.id IS NULL')
       .leftJoin('registration.data', 'data')
       .leftJoin('data.programQuestion', 'programQuestion')

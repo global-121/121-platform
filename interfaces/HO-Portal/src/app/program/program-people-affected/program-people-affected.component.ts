@@ -976,8 +976,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       fsp: person.fsp,
       lastMessageStatus: person.lastMessageStatus
         ? `${this.translate.instant(
-            'page.program.program-people-affected.last-message.message-status',
-          )} ${person.lastMessageStatus}`
+            'page.program.program-people-affected.message-history-popup.type.' +
+              person.lastMessageType,
+          )}: ${person.lastMessageStatus}`
         : this.translate.instant(
             'page.program.program-people-affected.last-message.no-message',
           ),
