@@ -10,7 +10,6 @@ import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 export class VoiceService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-  public constructor() {}
 
   public notifyByVoice(
     registrationId: number,
@@ -41,8 +40,8 @@ export class VoiceService {
         statusCallback: EXTERNAL_API.voiceStatus,
         from: process.env.TWILIO_TEST_FROM_NUMBER_VOICE,
       })
-      .then(call => this.storeCall(call, mp3Param, registrationId))
-      .catch(err => {
+      .then((call) => this.storeCall(call, mp3Param, registrationId))
+      .catch((err) => {
         console.log(err);
         // Do we need error handling here?
       });

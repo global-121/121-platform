@@ -9,9 +9,6 @@ export class PermissionEntity extends Base121Entity {
   @Index({ unique: true })
   public name: PermissionEnum;
 
-  @ManyToMany(
-    () => UserRoleEntity,
-    roles => roles.permissions,
-  )
+  @ManyToMany(() => UserRoleEntity, (roles) => roles.permissions)
   public roles: UserRoleEntity[];
 }

@@ -1,4 +1,4 @@
-import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
+import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 import { PermissionEnum } from './../src/user/permission.enum';
 import { PermissionEntity } from './../src/user/permissions.entity';
 import { UserRoleEntity } from './../src/user/user-role.entity';
@@ -37,7 +37,7 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
     // Commit transaction because the tables are needed before the insert
     await queryRunner.commitTransaction();
     // 08-11-2022 migrateData() is commented out as this was causing issues with new entities and legacy migrations.
-    // await this.migrateData(queryRunner.connection);
+    // await this.migrateData(queryRunner.manager);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
   }
@@ -67,8 +67,8 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "121-service"."permission"`);
   }
 
-  private async migrateData(connection: Connection): Promise<void> {
-    const permissionsRepository = connection.getRepository(PermissionEntity);
+  private async migrateData(manager: EntityManager): Promise<void> {
+    const permissionsRepository = manager.getRepository(PermissionEntity);
     const permissionEntities: PermissionEntity[] = [];
     for (const permissionName of Object.values(PermissionEnum)) {
       const permission = {
@@ -79,7 +79,7 @@ export class rolesPermissions1642520954620 implements MigrationInterface {
     }
     const permissions = permissionEntities;
 
-    const userRoleRepository = connection.getRepository(UserRoleEntity);
+    const userRoleRepository = manager.getRepository(UserRoleEntity);
 
     const defaultRoles = [
       {

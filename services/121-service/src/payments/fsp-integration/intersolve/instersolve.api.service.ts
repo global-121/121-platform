@@ -12,9 +12,7 @@ import { SoapService } from './soap.service';
 @Injectable()
 export class IntersolveApiService {
   @InjectRepository(IntersolveRequestEntity)
-  private readonly intersolveRequestRepository: Repository<
-    IntersolveRequestEntity
-  >;
+  private readonly intersolveRequestRepository: Repository<IntersolveRequestEntity>;
 
   public constructor(
     private readonly soapService: SoapService,
@@ -116,8 +114,8 @@ export class IntersolveApiService {
   }
 
   public async markAsToCancelByRefPos(refPos: number): Promise<void> {
-    const intersolveRequest = await this.intersolveRequestRepository.findOne({
-      refPos,
+    const intersolveRequest = await this.intersolveRequestRepository.findOneBy({
+      refPos: refPos,
     });
     intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled = false;
@@ -130,9 +128,9 @@ export class IntersolveApiService {
     transactionIdString: string,
   ): Promise<void> {
     const transactionId = Number(transactionIdString);
-    const intersolveRequest = await this.intersolveRequestRepository.findOne({
-      cardId,
-      transactionId,
+    const intersolveRequest = await this.intersolveRequestRepository.findOneBy({
+      cardId: cardId,
+      transactionId: transactionId,
     });
     intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled = false;

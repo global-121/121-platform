@@ -19,9 +19,7 @@ import { environment } from 'src/environments/environment';
 import { AutoSignupComponent } from '../personal-components/auto-signup/auto-signup.component';
 import { ConsentQuestionComponent } from '../personal-components/consent-question/consent-question.component';
 import { ContactDetailsComponent } from '../personal-components/contact-details/contact-details.component';
-import { CreateAccountComponent } from '../personal-components/create-account/create-account.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
-import { LoginAccountComponent } from '../personal-components/login-account/login-account.component';
 import { MonitoringQuestionComponent } from '../personal-components/monitoring-question/monitoring-question.component';
 import { NextPaComponent } from '../personal-components/next-pa/next-pa.component';
 import { PersonalDirective } from '../personal-components/personal-component.class';
@@ -34,7 +32,6 @@ import { SelectFspComponent } from '../personal-components/select-fsp/select-fsp
 import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
 import { SelectProgramComponent } from '../personal-components/select-program/select-program.component';
 import { SetNotificationNumberComponent } from '../personal-components/set-notification-number/set-notification-number.component';
-import { SignupSigninComponent } from '../personal-components/signup-signin/signup-signin.component';
 import {
   ConversationSection,
   ConversationService,
@@ -78,16 +75,13 @@ export class PersonalPage implements OnInit, OnDestroy {
   private availableSections = {
     [PersonalComponents.consentQuestion]: ConsentQuestionComponent,
     [PersonalComponents.contactDetails]: ContactDetailsComponent,
-    [PersonalComponents.createAccount]: CreateAccountComponent,
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
-    [PersonalComponents.loginAccount]: LoginAccountComponent,
     [PersonalComponents.monitoringQuestion]: MonitoringQuestionComponent,
     [PersonalComponents.registrationSummary]: RegistrationSummaryComponent,
     [PersonalComponents.selectFsp]: SelectFspComponent,
     [PersonalComponents.selectLanguage]: SelectLanguageComponent,
     [PersonalComponents.selectProgram]: SelectProgramComponent,
     [PersonalComponents.setNotificationNumber]: SetNotificationNumberComponent,
-    [PersonalComponents.signupSignin]: SignupSigninComponent,
     [PersonalComponents.autoSignup]: AutoSignupComponent,
     [PersonalComponents.nextPa]: NextPaComponent,
   };

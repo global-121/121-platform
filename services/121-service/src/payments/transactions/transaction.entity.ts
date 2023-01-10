@@ -15,10 +15,7 @@ export class TransactionEntity extends Base121Entity {
   @Column({ nullable: true })
   public errorMessage: string;
 
-  @ManyToOne(
-    _type => ProgramEntity,
-    program => program.transactions,
-  )
+  @ManyToOne((_type) => ProgramEntity, (program) => program.transactions)
   public program: ProgramEntity;
 
   @Column({ default: 1 })
@@ -35,14 +32,14 @@ export class TransactionEntity extends Base121Entity {
   public transactionStep: number;
 
   @ManyToOne(
-    _type => FinancialServiceProviderEntity,
-    financialServiceProvider => financialServiceProvider.transactions,
+    (_type) => FinancialServiceProviderEntity,
+    (financialServiceProvider) => financialServiceProvider.transactions,
   )
   public financialServiceProvider: FinancialServiceProviderEntity;
 
   @ManyToOne(
-    _type => RegistrationEntity,
-    registration => registration.transactions,
+    (_type) => RegistrationEntity,
+    (registration) => registration.transactions,
   )
   public registration: RegistrationEntity;
 }

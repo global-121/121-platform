@@ -25,24 +25,27 @@ Feature: Send message to people affected (extension of View_and_Manage_people_af
     Then the "changed data" is that "Messages" is filled with the text "Last message: undelivered" or "Last message: failed" for the selected rows
     And the message doesn't arrive
 
-  Scenario: Confirm "Send message to PAs" action with tryWhatsapp enabled
+  Scenario: Confirm "Invite for registration" action with tryWhatsapp enabled
     Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)
+    And "Send a message to these People Affected" is enabled
     And tryWhatsapp is on in the program configuration
     And the phone number is able to receive WhatsApp messages
     When the "bulk action" is "Send message to PAs"
     Then the "changed data" is that "Messages" is filled with the text "Last message: sent" for the selected rows
     And the message arrives via WhatsApp
 
-  Scenario: Confirm "Send message to PAs" action with tryWhatsapp enabled and whatsapp fails
+  Scenario: Confirm "Invite for registration" action with tryWhatsapp enabled and whatsapp fails
     Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)
+    And "Send a message to these People Affected" is enabled
     And tryWhatsapp is on in the program configuration
     And the phone number is NOT able to receive WhatsApp messages
     When the "bulk action" is "Send message to PAs"
     Then the "changed data" is that "Messages" is filled with the text "Last message: sent" for the selected rows
     And the message arrives via SMS
 
-  Scenario: Confirm "Send message to PAs" action with tryWhatsapp enabled and whatsapp and SMS fails
+  Scenario: Confirm "Invite for registration"  action with tryWhatsapp enabled and whatsapp and SMS fails
     Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)
+    And "Send a message to these People Affected" is enabled
     And tryWhatsapp is on in the program configuration
     And the phone number cannot receive WhatsApp and SMS messages
     When the "bulk action" is "Send message to PAs"

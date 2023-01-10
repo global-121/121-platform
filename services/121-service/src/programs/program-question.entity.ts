@@ -36,10 +36,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
   @Column('json')
   public scoring: JSON;
 
-  @ManyToOne(
-    _type => ProgramEntity,
-    program => program.programQuestions,
-  )
+  @ManyToOne((_type) => ProgramEntity, (program) => program.programQuestions)
   @JoinColumn({ name: 'programId' })
   public program: ProgramEntity;
   @Column()
@@ -68,7 +65,7 @@ export class ProgramQuestionEntity extends CascadeDeleteEntity {
 
   @OneToMany(
     () => RegistrationDataEntity,
-    registrationData => registrationData.programQuestion,
+    (registrationData) => registrationData.programQuestion,
   )
   public registrationData: RegistrationDataEntity[];
 

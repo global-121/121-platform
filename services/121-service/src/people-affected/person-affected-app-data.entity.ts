@@ -12,9 +12,6 @@ export class PersonAffectedAppDataEntity extends Base121Entity {
   @Column()
   public data: string;
 
-  @ManyToOne(
-    () => UserEntity,
-    user => user.personAffectedAppData,
-  )
+  @ManyToOne(() => UserEntity, (user) => user.personAffectedAppData)
   public user: UserEntity;
 }

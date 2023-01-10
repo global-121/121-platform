@@ -1,8 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { ScheduleModule } from '@nestjs/schedule';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Connection } from 'typeorm';
 import { ActionModule } from './actions/action.module';
 import { AppController } from './app.controller';
 import { CronjobModule } from './cronjob/cronjob.module';
@@ -18,11 +17,12 @@ import { PeopleAffectedModule } from './people-affected/people-affected.module';
 import { ProgramModule } from './programs/programs.module';
 import { RegistrationsModule } from './registration/registrations.module';
 import { ScriptsModule } from './scripts/scripts.module';
+import { TypeOrmModule } from './typeorm.module';
 import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(),
+    TypeOrmModule,
     ProgramModule,
     UserModule,
     HealthModule,
@@ -46,6 +46,4 @@ import { UserModule } from './user/user.module';
   controllers: [AppController],
   providers: [],
 })
-export class ApplicationModule {
-  public constructor(private readonly connection: Connection) {}
-}
+export class ApplicationModule {}

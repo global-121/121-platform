@@ -3,14 +3,12 @@ import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
 
 @Injectable()
 export class IntersolveMockService {
-  public constructor() {}
-
   public post(payload: any): Promise<any> {
     const soapBody = payload.elements[0].elements.find(
-      e => e.name === 'soap:Body',
+      (e) => e.name === 'soap:Body',
     );
     const name = soapBody.elements[0].name;
-    const amount = soapBody.elements[0].elements.find(e => e.name === 'Value')
+    const amount = soapBody.elements[0].elements.find((e) => e.name === 'Value')
       .elements[0].text;
 
     console.log('IntersolveMock: post(): ', 'payload:', {
@@ -25,7 +23,9 @@ export class IntersolveMockService {
     const expiryDate = '2099-01-01';
     const response = {
       IssueCardResponse: {
-        _attributes: { xmlns: 'http://www.loyaltyinabox.com/giftcard_6_8/' },
+        _attributes: {
+          xmlns: 'http://www.loyaltyinabox.com/giftcard_6_8/',
+        },
         ResultCode: { _text: String(IntersolveResultCode.Ok) },
         ResultDescription: { _text: 'Ok' },
         CardId: { _text: String(cardId) },
@@ -40,7 +40,7 @@ export class IntersolveMockService {
       },
     };
     console.log('IntersolveMock post(): response:', response);
-    return new Promise(resolve => resolve(response));
+    return new Promise((resolve) => resolve(response));
   }
 
   private getRandomInt(min: number, max: number): number {

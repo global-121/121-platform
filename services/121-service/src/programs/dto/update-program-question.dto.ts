@@ -35,7 +35,7 @@ export class UpdateProgramQuestionDto {
   @IsOptional()
   public readonly questionType: string;
   @ApiProperty()
-  @ValidateIf(o => o.answerType === AnswerTypes.dropdown)
+  @ValidateIf((o) => o.answerType === AnswerTypes.dropdown)
   @ValidateNested()
   @IsOptional()
   @Type(() => CreateOptionsDto)
