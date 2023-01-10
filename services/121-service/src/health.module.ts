@@ -14,10 +14,9 @@ export class HealthController {
     private db: TypeOrmHealthIndicator,
   ) {}
 
-  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   @Get('health')
   @HealthCheck()
-  check(): Promise<HealthCheckResult> {
+  public check(): Promise<HealthCheckResult> {
     return this.health.check([
       () => this.db.pingCheck('database', { timeout: 300 }),
     ]);
