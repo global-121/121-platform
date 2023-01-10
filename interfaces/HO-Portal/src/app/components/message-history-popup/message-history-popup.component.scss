@@ -9,6 +9,7 @@ ion-chip {
     background-color: var(--ion-color-success);
   }
   &.chip-failed {
+    color: var(--ion-color-primary-contrast);
     background-color: var(--ion-color-danger);
   }
   &.chip-waiting {

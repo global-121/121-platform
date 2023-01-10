@@ -6,6 +6,7 @@ export class Message {
   to: string;
   type: string;
   contentType: string;
+  errorCode: string;
 }
 
 export enum TwilioStatus {
