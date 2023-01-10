@@ -31,18 +31,18 @@ function generateModuleDependencyGraph(app: INestApplication): void {
   const root = SpelunkerModule.graph(tree);
   const edges = SpelunkerModule.findGraphEdges(root);
   const genericModules = [
+    // Sorted alphabetically
+    'ActionModule',
     'ApplicationModule',
-    'DiscoveryModule',
-    'ScheduleModule',
-    'TypeOrmCoreModule',
-    'TypeOrmModule',
+    'HealthModule',
     'HttpModule',
+    'MulterModule',
+    'ScheduleModule',
     'ScriptsModule',
     'TerminusModule',
-    'HealthModule',
-    'MulterModule',
+    'TypeOrmCoreModule',
+    'TypeOrmModule',
     'UserModule',
-    'ActionModule',
   ];
   const mermaidEdges = edges
     .filter(

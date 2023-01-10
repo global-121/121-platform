@@ -8,10 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.76.0...master)
 
 ### Breaking Change
-- 121-service uses Node.js v16. Using a different base-image. Run in production as a non-root user.
+- 121-service uses Node.js v16. Using a different base-image.
 - Network-specific settings in the Docker Compose configuration simplified, by using default settings.
 - `docker-compose` is replaced by `docker compose` everywhere; See [README / Start services](./README.md#start-services)
-
 
 ---
 
@@ -62,7 +61,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This release relates to the migration of LVV and PV instances into 1
 
 ## [1.73.0](https://github.com/global-121/121-platform/compare/v1.72.0...v1.73.0) - 2022-12-14
-
 
 ### Changed
 

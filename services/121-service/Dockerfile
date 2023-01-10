@@ -6,11 +6,9 @@ FROM base as production
 
 COPY ./package*.json ./
 
-RUN npm ci --only=production
+RUN npm ci
 
 COPY . .
-
-USER node
 
 CMD ["npm", "start"]
 
@@ -18,7 +16,5 @@ CMD ["npm", "start"]
 FROM base as development
 
 COPY . .
-
-USER root
 
 CMD ["npm", "run", "start:dev"]
