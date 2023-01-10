@@ -48,7 +48,8 @@
   width: 180px;
 }
 
-.status-pop-up {
+.status-pop-up,
+.messages-pop-up {
   margin-top: 0;
   color: var(--ion-color-primary);
   text-transform: uppercase;
@@ -56,6 +57,13 @@
 
   &.is-error {
     color: var(--ion-color-danger);
+    border-color: currentColor;
+  }
+}
+
+.messages-pop-up {
+  &.is-success {
+    color: var(--ion-color-success);
     border-color: currentColor;
   }
 }

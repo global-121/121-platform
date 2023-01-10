@@ -50,6 +50,7 @@ import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
+import { MessageStatus, TwilioStatus } from '../../models/message.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
@@ -303,6 +304,19 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     },
   };
 
+  private messageColumnStatus = {
+    [TwilioStatus.accepted]: MessageStatus.waiting,
+    [TwilioStatus.delivered]: MessageStatus.delivered,
+    [TwilioStatus.delivery_unknown]: MessageStatus.waiting,
+    [TwilioStatus.failed]: MessageStatus.failed,
+    [TwilioStatus.queued]: MessageStatus.waiting,
+    [TwilioStatus.read]: MessageStatus.read,
+    [TwilioStatus.scheduled]: MessageStatus.waiting,
+    [TwilioStatus.sending]: MessageStatus.waiting,
+    [TwilioStatus.sent]: MessageStatus.sent,
+    [TwilioStatus.undelivered]: MessageStatus.failed,
+  };
+
   constructor(
     private authService: AuthService,
     private programsService: ProgramsServiceApiService,
@@ -514,7 +528,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         width: 150,
       },
       {
-        prop: 'lastMessageStatus',
+        prop: 'messages',
         name: this.translate.instant(
           'page.program.program-people-affected.column.last-message-status',
         ),
@@ -974,11 +988,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ? `${person.paymentAmountMultiplier}×`
         : '',
       fsp: person.fsp,
-      lastMessageStatus: person.lastMessageStatus
+      lastMessageStatus: person.lastMessageStatus,
+      messages: person.lastMessageStatus
         ? `${this.translate.instant(
             'page.program.program-people-affected.message-history-popup.type.' +
               person.lastMessageType,
-          )}: ${person.lastMessageStatus}`
+          )}: ${this.translate.instant(
+            'page.program.program-people-affected.message-history-popup.chip-status.' +
+              this.messageColumnStatus[person.lastMessageStatus],
+          )}`
         : this.translate.instant(
             'page.program.program-people-affected.last-message.no-message',
           ),
@@ -1526,5 +1544,17 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
     this.setPaStatusFilter($event);
     this.updateVisiblePeopleAffectedByFilter();
+  }
+
+  public hasMessageError(messageStatus): boolean {
+    return this.messageColumnStatus[messageStatus] === MessageStatus.failed;
+  }
+
+  public hasMessageSuccess(messageStatus): boolean {
+    return [
+      MessageStatus.delivered,
+      MessageStatus.read,
+      MessageStatus.sent,
+    ].includes(messageStatus);
   }
 }

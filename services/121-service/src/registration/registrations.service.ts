@@ -1715,6 +1715,7 @@ export class RegistrationsService {
         'twilioMessage.type as type',
         'twilioMessage.mediaUrl as "mediaUrl"',
         'twilioMessage.contentType as "contentType"',
+        'twilioMessage.errorCode as "errorCode"',
       ])
       .leftJoin('registration.twilioMessages', 'twilioMessage')
       .where('registration.referenceId = :referenceId', {

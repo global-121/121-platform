@@ -63,6 +63,7 @@ export class PersonRow {
   paTableAttributes?: Person['paTableAttributes'];
   paymentHistory?: PaymentColumnDetail;
   lastMessageStatus?: string;
+  messages?: string;
 }
 
 export class Note {
