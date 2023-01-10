@@ -31,6 +31,7 @@ export class TransactionEntity extends Base121Entity {
   public customData: JSON;
 
   @Column({ default: 1 })
+  @Index()
   public transactionStep: number;
 
   @ManyToOne(

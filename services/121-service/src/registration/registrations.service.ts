@@ -978,14 +978,45 @@ export class RegistrationsService {
           .select('MAX("payment")', 'payment')
           .addSelect('"registrationId"', 'registrationId')
           .groupBy('"registrationId"'),
-      'last_transaction',
-      'last_transaction."registrationId" = registration.id',
+      'transaction_max_payment',
+      'transaction_max_payment."registrationId" = registration.id',
     )
-      .addSelect(['last_transaction.payment as test'])
+
+      .leftJoin(
+        qb =>
+          qb
+            .from(TransactionEntity, 'transactions')
+            .select('MAX("transactionStep")', 'transactionStep')
+            .addSelect('"payment"', 'payment')
+            .groupBy('"payment"')
+            .addSelect('"registrationId"', 'registrationId')
+            .addGroupBy('"registrationId"'),
+        'transaction_max_transaction_step',
+        `transaction_max_transaction_step."registrationId" = registration.id
+        AND transaction_max_transaction_step.payment = transaction_max_payment.payment`,
+      )
+      .leftJoin(
+        qb =>
+          qb
+            .from(TransactionEntity, 'transactions')
+            .select('MAX("created")', 'created')
+            .addSelect('"payment"', 'payment')
+            .groupBy('"payment"')
+            .addSelect('"transactionStep"', 'transactionStep')
+            .addGroupBy('"transactionStep"')
+            .addSelect('"registrationId"', 'registrationId')
+            .addGroupBy('"registrationId"')
+            .addSelect('"id"', 'id')
+            .addGroupBy('"id"'),
+        'transaction_max_created',
+        `transaction_max_created."registrationId" = registration.id
+        AND transaction_max_created.payment = transaction_max_payment.payment
+        AND transaction_max_created."transactionStep" = transaction_max_transaction_step."transactionStep"`,
+      )
       .leftJoin(
         'registration.transactions',
         'transaction',
-        `transaction.payment = last_transaction.payment`,
+        `transaction.id = transaction_max_created.id`,
       )
       .addSelect([
         'transaction.created AS "paymentDate"',
