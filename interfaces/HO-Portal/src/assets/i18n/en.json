@@ -415,16 +415,28 @@
             "payment-reminder": "Payment reminder",
             "default-reply": "Default reply"
           },
-          "status": {
+          "twilio-status": {
             "accepted": "Accepted",
             "scheduled": "Scheduled",
             "queued": "Queued",
             "sending": "Sending",
             "sent": "Sent",
-            "delivery_unknown": "Delivery unknown",
+            "delivery-unknown": "Delivery unknown",
             "delivered": "Delivered",
             "undelivered": "Undelivered",
-            "failed": "Failed"
+            "failed": "Failed",
+            "read": "Read"
+          },
+          "chip-status": {
+            "waiting": "Waiting",
+            "sent": "Sent",
+            "delivered": "Delivered",
+            "failed": "Failed",
+            "read": "Read"
+          },
+          "status-line": {
+            "status": "Status: ",
+            "error": " - Error code: "
           }
         },
         "payment-status-popup": {

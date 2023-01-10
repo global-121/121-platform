@@ -1,6 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { Message } from '../../models/message.model';
+import {
+  Message,
+  MessageStatus,
+  TwilioStatus,
+} from '../../models/message.model';
 import { Person } from '../../models/person.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 
@@ -22,16 +26,17 @@ export class MessageHistoryPopupComponent implements OnInit {
   public imageString = '(image)';
   public rowIndex: number;
 
-  public statusBg = {
-    accepted: 'warning',
-    scheduled: 'warning',
-    queued: 'warning',
-    sending: 'warning',
-    sent: 'success',
-    delivery_unknown: 'danger',
-    delivered: 'success',
-    undelivered: 'danger',
-    failed: 'danger',
+  public chipStatus = {
+    [TwilioStatus.accepted]: MessageStatus.waiting,
+    [TwilioStatus.delivered]: MessageStatus.delivered,
+    [TwilioStatus.delivery_unknown]: MessageStatus.waiting,
+    [TwilioStatus.failed]: MessageStatus.failed,
+    [TwilioStatus.queued]: MessageStatus.waiting,
+    [TwilioStatus.read]: MessageStatus.read,
+    [TwilioStatus.scheduled]: MessageStatus.waiting,
+    [TwilioStatus.sending]: MessageStatus.waiting,
+    [TwilioStatus.sent]: MessageStatus.sent,
+    [TwilioStatus.undelivered]: MessageStatus.failed,
   };
 
   constructor(
