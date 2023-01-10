@@ -14,10 +14,6 @@
     "wait-to-go-offline": "Aguarde 30 segundos antes de usar o aplicativo off-line, para que todo o conteúdo do aplicativo seja baixado.",
     "update-available": "Atualização disponível, recarregue o aplicativo."
   },
-  "password-toggle": {
-    "hide": "Esconder a senha",
-    "show": "Mostrar a senha"
-  },
   "personal": {
     "consent-question": {
       "agree": "Eu concordo",
@@ -26,28 +22,11 @@
       "more-info-personal-information": "Sobre informações pessoais",
       "question": "Para se inscrever neste programa de ajuda, você precisa concordar com <strong>como nós asseguramos suas informações pessoais.</strong><br /><br /> Por favor, leia ou ouça como asseguramos suas informações pessoais."
     },
-    "create-account": {
-      "conclusion": "Ótimo! Você criou uma conta.",
-      "confirm-password": "Confirme a senha:",
-      "create-password-explanation": "Crie uma senha de pelo menos {{minimalLength}} números:",
-      "create-username": "Digite seu nome completo:",
-      "introduction": "Para criar uma conta, você precisa completar as etapas seguintes.",
-      "password-too-short": "Por favor digite pelo menos {{minimalLength}} letras.",
-      "unequal-passwords": "As senhas que você criou não são as mesmas. Por favor, tente novamente.",
-      "username-not-unique": "O nome que você digitou não é único. Por favor, tente novamente.",
-      "username-password": "Digite seu nome completo e crie uma senha. "
-    },
     "enroll-in-program": {
       "change": "Mudar minhas informações",
       "introduction-information": "Para garantir que você obtenha a melhor ajuda possível e um processo justo, precisamos de algumas informações pessoais.",
       "please-confirm": "Abaixo está um resumo de suas informações. Por favor, verifique e depois clique em enviar.",
       "submit-confirm": "Enviar minhas informações"
-    },
-    "login-account": {
-      "incorrect-credentials": "A combinação de seu nome completo e senha que você deu não é reconhecida. Por favor, tente novamente.",
-      "introduction": "Para utilizar uma conta existente, você precisa fazer o login com seu nome completo e senha.",
-      "supply-password": "Sua senha:",
-      "supply-username": "Seu nome completo: "
     },
     "registration-summary": {
       "documents": "Certifique-se de ter estes documentos prontos:",
@@ -85,11 +64,6 @@
       "validation": {
         "phone-number": "Não pudemos verificar esse número de telefone. Por favor, atualize-o e tente novamente."
       }
-    },
-    "signup-signin": {
-      "create-id": "Criar conta",
-      "introduction": "Para se inscrever neste programa de ajuda, você precisa ter uma conta. Por favor, crie sua conta ou use sua conta existente.",
-      "login-id": "Usar a minha conta"
     },
     "next-pa": {
       "new-pa": "Adicionar outra pessoa afetada",

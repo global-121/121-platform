@@ -5,10 +5,6 @@
   "connection": {
     "error-retry": "May maling nangyari, nais mo bang subukan muli?"
   },
-  "password-toggle": {
-    "hide": "Itago ang password",
-    "show": "Ipakita ang password"
-  },
   "personal": {
     "consent-question": {
       "agree": "Sumasang-ayon ako",
@@ -17,27 +13,11 @@
       "more-info-personal-information": "Tungkol sa personal na impormasyon",
       "question": "Upang makapag-apply ng aid program na ito, kailangan mong sumang-ayon sa <strong>paano namin i-secure ang iyong personal na impormasyon. </strong><br /><br /> Pakibasa kung paano namin i-secure ang iyong personal na impormasyon."
     },
-    "create-account": {
-      "conclusion": "Magaling! Mayroon ka ng account.",
-      "create-password-explanation": "Gumawa ng password na hindi lalagpas sa {{minimalLength}} na numero:",
-      "create-username": "Maglagay ng username:",
-      "introduction": "Upang makalikha ng account, kailangang kumpletuhin ang mga sumusunod:",
-      "password-too-short": "Mag-lagay ng hindi lalagpas sa {{minimalLength}} na characters.",
-      "unequal-passwords": "Ang password na iyong nilagay ay magka-iba. Subukan muli.",
-      "username-not-unique": "Ang username na napili mo ay hindi kakaiba / unique. Subukan muli.",
-      "username-password": "Ilagay ang username at gumawa ng password."
-    },
     "enroll-in-program": {
       "change": "Palitan ang aking impormasyon",
       "introduction-information": "Upang masigurado ang pinakamainam na tulong at patas na proseso, kailangan namin ng ilang personal na impormasyon.",
       "please-confirm": "Sa ibaba ay ang iyong mga impormasyon. Suriin at i-tap ang send.",
       "submit-confirm": "i-send ang aking impormasyon"
-    },
-    "login-account": {
-      "incorrect-credentials": "Ang kombinasyon ng iyong buong pangalan at password na ibinigay ay hindi tugma. Subukan muli.",
-      "introduction": "Upang magamit ang iyong account, kailangan mag log-in gamit ang iyong username at password.",
-      "supply-password": "Ang iyong password:",
-      "supply-username": "Ang iyong username:"
     },
     "registration-summary": {
       "documents": "Siguraduhing  nakahanda ang mga sumusunod na dokumento:",
@@ -74,11 +54,6 @@
       "validation": {
         "phone-number": "Hindi namin ma-verify ang phone number mo. I-update at subukan muli."
       }
-    },
-    "signup-signin": {
-      "create-id": "Gumawa ng account",
-      "introduction": "Upang makasali sa aid program na ito, kinakailangang may account. Gumawa ng account o gamitin ang account na mayroon ka.",
-      "login-id": "Gamitin ang aking account"
     }
   },
   "q-and-a-set": {

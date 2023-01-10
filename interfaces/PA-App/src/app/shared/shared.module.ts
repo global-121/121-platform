@@ -8,7 +8,6 @@ import { DateInputComponent } from './date-input/date-input.component';
 import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
 import { MoreInfoButtonComponent } from './more-info-button/more-info-button.component';
 import { NumericInputComponent } from './numeric-input/numeric-input.component';
-import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
 import { PhoneNumberInputComponent } from './phone-number-input/phone-number-input.component';
 import { PlayTextAudioComponent } from './play-text-audio/play-text-audio.component';
 import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
@@ -20,7 +19,6 @@ import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
     MoreInfoButtonComponent,
     NumericInputComponent,
     OnlyAllowedInputDirective,
-    PasswordToggleInputComponent,
     PhoneNumberInputComponent,
     PlayTextAudioComponent,
     QAndASetComponent,
@@ -30,7 +28,6 @@ import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
     DialogueTurnComponent,
     NumericInputComponent,
     MoreInfoButtonComponent,
-    PasswordToggleInputComponent,
     PhoneNumberInputComponent,
     DateInputComponent,
     PlayTextAudioComponent,
