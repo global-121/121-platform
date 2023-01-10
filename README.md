@@ -52,9 +52,7 @@ To set up a local development-environment:
 - Install Docker
   - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
   - On Windows, install Docker Desktop: <https://docs.docker.com/docker-for-windows/install/>
-  - On Linux:
-    - Install Docker Engine: <https://docs.docker.com/engine/install/>
-    - Install Docker Compose: <https://docs.docker.com/compose/install/#install-compose-on-linux-systems>
+  - On Linux, install Docker Engine + Compose plugin: <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
 
 With these tools in place you can checkout the code and start setting up:
 
