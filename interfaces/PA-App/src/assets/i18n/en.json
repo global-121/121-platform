@@ -15,10 +15,6 @@
     "wait-to-go-offline": "Please wait 30 seconds before using the app offline, so all app content is downloaded.",
     "update-available": "Update available, please reload the app."
   },
-  "password-toggle": {
-    "hide": "Hide password",
-    "show": "Show password"
-  },
   "personal": {
     "consent-question": {
       "agree": "I agree",

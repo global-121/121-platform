@@ -6,10 +6,6 @@
   "connection": {
     "error-retry": "Ada sesuatu yang tidak berjalan dengan baik, apakah anda ingin mencoba lagi?"
   },
-  "password-toggle": {
-    "hide": "Sembunyikan password",
-    "show": "Tunjukkan password"
-  },
   "personal": {
     "consent-question": {
       "agree": "Saya setuju",

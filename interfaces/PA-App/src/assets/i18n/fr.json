@@ -15,10 +15,6 @@
     "wait-to-go-offline": "Veuillez attendre 30 secondes avant d'utiliser l'application hors ligne, afin que tout le contenu de l'application soit téléchargé.",
     "update-available": "Mise à jour disponible, veuillez recharger l'application."
   },
-  "password-toggle": {
-    "hide": "Cachez le mot de passe",
-    "show": "Montrez le mot de passe."
-  },
   "personal": {
     "consent-question": {
       "agree": "Je suis d'accord",

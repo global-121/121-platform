@@ -7,10 +7,6 @@
   "connection": {
     "error-retry": "حدث خطأ، هل تريد اعادة المحاولة؟"
   },
-  "password-toggle": {
-    "hide": "اخفاء كلمة المرور",
-    "show": "اظهار كلمة المرور"
-  },
   "personal": {
     "consent-question": {
       "agree": "موافق",

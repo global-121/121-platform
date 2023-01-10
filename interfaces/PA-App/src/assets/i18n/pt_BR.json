@@ -14,10 +14,6 @@
     "wait-to-go-offline": "Aguarde 30 segundos antes de usar o aplicativo off-line, para que todo o conteúdo do aplicativo seja baixado.",
     "update-available": "Atualização disponível, recarregue o aplicativo."
   },
-  "password-toggle": {
-    "hide": "Esconder a senha",
-    "show": "Mostrar a senha"
-  },
   "personal": {
     "consent-question": {
       "agree": "Eu concordo",

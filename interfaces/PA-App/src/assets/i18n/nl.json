@@ -6,10 +6,6 @@
   "connection": {
     "error-retry": "Er ging iets mis, wil je het opnieuw proberen?"
   },
-  "password-toggle": {
-    "hide": "Verberg wachtwoord",
-    "show": "Toon wachtwoord"
-  },
   "personal": {
     "consent-question": {
       "agree": "Ik ga akkoord",

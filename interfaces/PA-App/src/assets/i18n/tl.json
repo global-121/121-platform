@@ -5,10 +5,6 @@
   "connection": {
     "error-retry": "May maling nangyari, nais mo bang subukan muli?"
   },
-  "password-toggle": {
-    "hide": "Itago ang password",
-    "show": "Ipakita ang password"
-  },
   "personal": {
     "consent-question": {
       "agree": "Sumasang-ayon ako",

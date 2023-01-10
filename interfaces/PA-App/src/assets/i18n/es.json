@@ -15,10 +15,6 @@
     "wait-to-go-offline": "Espera 30 segundos antes de usar la aplicación sin conexión para que se descargue todo el contenido de la aplicación.",
     "update-available": "Actualización disponible, vuelve a cargar la aplicación."
   },
-  "password-toggle": {
-    "hide": "Ocultar contraseña",
-    "show": "Mostrar contraseña"
-  },
   "personal": {
     "consent-question": {
       "agree": "Estoy de Acuerdo",
