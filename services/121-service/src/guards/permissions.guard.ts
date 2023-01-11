@@ -53,10 +53,10 @@ export class PermissionsGuard implements CanActivate {
         originInterface,
       );
       if (token) {
-        const decoded: UserToken = jwt.verify(
+        const decoded = jwt.verify(
           token,
           process.env.SECRETS_121_SERVICE_SECRET,
-        );
+        ) as UserToken;
         if (!decoded && !decoded.id) {
           return false;
         }
