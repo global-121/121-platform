@@ -35,7 +35,7 @@ export class MessageHistoryPopupComponent implements OnInit {
   private async getMessageHistory() {
     this.messageHistory = await this.programsService.retrieveMsgHistory(
       this.programId,
-      this.person.referenceId,
+      this.person?.referenceId,
     );
   }
   public async loadMore(historyLength) {
