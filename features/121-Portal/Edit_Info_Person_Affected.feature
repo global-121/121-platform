@@ -33,7 +33,6 @@ Feature: Edit information on Person Affected
     And it shows a placeholder if no note currently saved
     And there is a "save" button
     And there is a 'Last updated on' mention if there is a current version of the note available
-    And the popup has a "Message History" section (see scenario 'View Message History')
 
   Scenario: Successfully update note
     Given a logged-in user with "RegistrationPersonalREAD" permission
@@ -148,10 +147,3 @@ Feature: Edit information on Person Affected
     And input-fields for attributes of the new FSP are shown
     And the new FSP shows as the current selected value of the dropdown
 
-  Scenario: View Message History
-    Given a logged-in user with "RegistrationPersonalREAD" permission
-    Given the user has opened the popup to view and edit information
-    Then after the Notes section if any messages are sent to PA then "Message History" section will be available
-    And under this section initially 5 messages will be visible with "Show More" button
-    When the user click the "Show More " button complete message list will be displayed
-    And the "Show More" button will no longer be visible
