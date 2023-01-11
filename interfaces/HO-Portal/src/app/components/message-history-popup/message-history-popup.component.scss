@@ -1,19 +1,17 @@
 ion-chip {
   width: 120px;
-  color: var(--ion-color-secondary);
   cursor: default;
 
   &.chip-deliverd,
   &.chip-read,
   &.chip-sent {
-    background-color: var(--ion-color-success);
+    background-color: var(--ion-color-primary-contrast);
+    color: black;
+    border: 1px solid black;
   }
   &.chip-failed {
-    color: var(--ion-color-primary-contrast);
-    background-color: var(--ion-color-danger);
-  }
-  &.chip-waiting {
-    color: var(--ion-color-primary-contrast);
-    background-color: var(--ion-color-primary);
+    background-color: var(--ion-color-primary-contrast);
+    color: var(--ion-color-danger);
+    border: 1px solid var(--ion-color-danger);
   }
 }

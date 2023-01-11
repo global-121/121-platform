@@ -300,10 +300,9 @@
       <ng-container *ngIf="column.prop === 'messages'">
         <button
           *ngIf="row.lastMessageStatus"
-          class="ion-no-padding popup-button status-pop-up messages-pop-up"
+          class="ion-no-padding popup-button status-pop-up"
           [ngClass]="{
-            'is-error': hasMessageError(row.lastMessageStatus),
-            'is-success': hasMessageSuccess(row.lastMessageStatus)
+            'is-error': hasMessageError(row.lastMessageStatus)
           }"
           (click)="openMessageHistoryPopup(row, programId)"
         >
