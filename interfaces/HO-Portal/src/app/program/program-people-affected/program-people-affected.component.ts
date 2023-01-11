@@ -50,7 +50,10 @@ import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
-import { MessageStatus, TwilioStatus } from '../../models/message.model';
+import {
+  MessageStatus,
+  MessageStatusMapping,
+} from '../../models/message.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
@@ -303,18 +306,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     },
   };
 
-  private messageColumnStatus = {
-    [TwilioStatus.accepted]: MessageStatus.sent,
-    [TwilioStatus.delivered]: MessageStatus.delivered,
-    [TwilioStatus.delivery_unknown]: MessageStatus.sent,
-    [TwilioStatus.failed]: MessageStatus.failed,
-    [TwilioStatus.queued]: MessageStatus.sent,
-    [TwilioStatus.read]: MessageStatus.read,
-    [TwilioStatus.scheduled]: MessageStatus.sent,
-    [TwilioStatus.sending]: MessageStatus.sent,
-    [TwilioStatus.sent]: MessageStatus.sent,
-    [TwilioStatus.undelivered]: MessageStatus.failed,
-  };
+  private messageColumnStatus = MessageStatusMapping;
 
   constructor(
     private authService: AuthService,
