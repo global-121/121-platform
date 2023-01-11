@@ -39,10 +39,10 @@ export const User = createParamDecorator((data, ctx: ExecutionContext) => {
   }
 
   if (token) {
-    const decoded: UserToken = jwt.verify(
+    const decoded = jwt.verify(
       token,
       process.env.SECRETS_121_SERVICE_SECRET,
-    );
+    ) as UserToken;
     return !!data ? decoded[data] : decoded;
   }
 });
