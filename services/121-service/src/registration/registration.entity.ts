@@ -512,7 +512,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     const resultMonitoringQuestion = await repoInstance
       .createQueryBuilder('instance')
       .leftJoin('instance.monitoringQuestion', 'question')
-      .andWhere('question.name = :name', { name: name })
+      .where('question.name = :name', { name: name })
       .select('"question".id', 'id')
       .getRawOne();
     if (resultMonitoringQuestion) {
