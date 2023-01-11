@@ -83,7 +83,10 @@
                     color="light"
                   >
                     <ion-label style="font-weight: 600">
-                      {{ message.body }}
+                      {{
+                        'page.program.program-people-affected.message-history-popup.accordion-header'
+                          | translate
+                      }}
                     </ion-label>
                   </ion-item>
                   <div
@@ -96,20 +99,11 @@
             </ion-col>
           </ion-row>
           <ion-row>
-            <ion-note
-              >{{
-                'page.program.program-people-affected.message-history-popup.status-line.status'
-                  | translate
-              }}
+            <ion-note *ngIf="message.errorCode">
               {{
-                'page.program.program-people-affected.message-history-popup.twilio-status.' +
-                  message.status | translate
-              }}<span *ngIf="message.errorCode"
-                >{{
-                  'page.program.program-people-affected.message-history-popup.status-line.error'
-                    | translate
-                }}{{ message.errorCode }}</span
-              ></ion-note
+                'page.program.program-people-affected.message-history-popup.status-line.code'
+                  | translate
+              }}{{ message.errorCode }}</ion-note
             >
           </ion-row>
         </ion-col>

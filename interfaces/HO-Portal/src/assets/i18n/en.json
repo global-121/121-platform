@@ -434,9 +434,9 @@
             "read": "Read"
           },
           "status-line": {
-            "status": "Status: ",
-            "error": " - Error code: "
-          }
+            "code": "Twilio status code: "
+          },
+          "accordion-header": "Message text"
         },
         "payment-status-popup": {
           "message-title": "Message sent payment #{{payment}}: {{timestamp}}",
