@@ -37,29 +37,26 @@
         <ion-col>
           <ion-row class="ion-align-items-center">
             <ion-col size="9">
-              <ion-row class="ion-justify-content-between">
-                <ion-label
-                  class="ion-text-nowrap"
-                  style="font-weight: 600; max-width: 70%"
-                >
-                  {{
-                    'page.program.program-people-affected.message-history-popup.content-type.' +
-                      message.contentType | translate
-                  }}
-                  {{ ' ' }}
-                  ({{
-                    'page.program.program-people-affected.message-history-popup.type.' +
-                      message.type | translate
-                  }})
-                </ion-label>
+              <ion-label
+                class="ion-text-nowrap"
+                style="font-weight: 600"
+              >
+                {{
+                  'page.program.program-people-affected.message-history-popup.content-type.' +
+                    message.contentType | translate
+                }}
+                ({{
+                  'page.program.program-people-affected.message-history-popup.type.' +
+                    message.type | translate
+                }})
+              </ion-label>
 
-                <ion-note
-                  class="ion-text-end"
-                  style="font-weight: 400"
-                >
-                  {{ message.created | date : 'dd-MM-yyyy HH:mm' }}</ion-note
-                >
-              </ion-row>
+              <ion-note
+                class="ion-text-end"
+                style="font-weight: 400"
+              >
+                {{ message.created | date : 'dd-MM-yyyy HH:mm' }}</ion-note
+              >
             </ion-col>
             <ion-col size="3">
               <ion-row class="ion-justify-content-end">
