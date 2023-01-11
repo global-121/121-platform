@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Base121Entity } from './../base.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
+import { MessageContentType } from './message-type.enum';
 
 export enum NotificationType {
   Sms = 'sms',
@@ -39,6 +40,15 @@ export class TwilioMessageEntity extends Base121Entity {
 
   @Column({ type: 'int', nullable: true })
   public registrationId: number;
+
+  @Column({ default: MessageContentType.custom })
+  public contentType: MessageContentType;
+
+  @Column({ nullable: true })
+  public errorCode?: string;
+
+  @Column({ nullable: true })
+  public errorMessage?: string;
 
   @ManyToOne(
     (_type) => RegistrationEntity,

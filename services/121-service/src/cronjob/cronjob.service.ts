@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
+import { MessageContentType } from '../notifications/message-type.enum';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { IntersolveApiService } from '../payments/fsp-integration/intersolve/instersolve.api.service';
@@ -137,6 +138,9 @@ export class CronjobService {
           IntersolvePayoutStatus.InitialMessage,
           null,
           registration.id,
+          null,
+          null,
+          MessageContentType.paymentReminder,
         );
       });
 

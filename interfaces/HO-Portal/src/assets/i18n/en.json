@@ -391,12 +391,52 @@
             "save": "Save note",
             "latest-update": "Latest update on: {{timestamp}}"
           },
-          "messageHistory": {
-            "section-title": "Message History"
-          },
           "error-alert": {
             "invalid-date": "The date format you inputted is not valid. A valid date format example is 31-12-1970 which follows day-month-year, DD-MM-YYYY"
           }
+        },
+        "message-history-popup": {
+          "message-title": "Message History",
+          "type": {
+            "whatsapp": "WhatsApp",
+            "sms": "SMS"
+          },
+          "content-type": {
+            "registered": "Registration",
+            "included": "Inclusion",
+            "inclusion-ended": "Inclusion ended",
+            "rejected": "Rejection",
+            "invited": "Invitation for registration",
+            "custom": "Custom message",
+            "generic-templated": "Message notification",
+            "payment-templated": "Payment notification",
+            "payment": "Payment voucher",
+            "payment-instructions": "Payment instructions",
+            "payment-reminder": "Payment reminder",
+            "default-reply": "Default reply"
+          },
+          "twilio-status": {
+            "accepted": "Accepted",
+            "scheduled": "Scheduled",
+            "queued": "Queued",
+            "sending": "Sending",
+            "sent": "Sent",
+            "delivery-unknown": "Delivery unknown",
+            "delivered": "Delivered",
+            "undelivered": "Undelivered",
+            "failed": "Failed",
+            "read": "Read"
+          },
+          "chip-status": {
+            "sent": "Sent",
+            "delivered": "Delivered",
+            "failed": "Failed",
+            "read": "Read"
+          },
+          "status-line": {
+            "code": "Twilio status code: "
+          },
+          "accordion-header": "Message text"
         },
         "payment-status-popup": {
           "message-title": "Message sent payment #{{payment}}: {{timestamp}}",

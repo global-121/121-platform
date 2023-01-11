@@ -51,11 +51,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public noteModel: string;
   public noteLastUpdate: string;
-  public messageHistory: any;
-  public historySize = 5;
-  public trimBodyLength = 20;
-  public imageString = '(image)';
-  public rowIndex: number;
 
   public paTableAttributes: {}[] = [];
 
@@ -102,9 +97,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     if (this.canViewPersonalData) {
       this.fillPaTableAttributes();
       this.getNote();
-    }
-    if (this.canViewMessageHistory) {
-      this.getMessageHistory();
     }
   }
 
@@ -226,24 +218,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
     this.noteModel = note.note;
     this.noteLastUpdate = note.noteUpdated;
-  }
-
-  private async getMessageHistory() {
-    const msghistory = await this.programsService.retrieveMsgHistory(
-      this.programId,
-      this.person.referenceId,
-    );
-    this.messageHistory = msghistory;
-  }
-  public async loadMore(historyLength) {
-    this.historySize = historyLength;
-  }
-  public openMessageDetails(index) {
-    if (index === this.rowIndex) {
-      this.rowIndex = null;
-    } else {
-      this.rowIndex = index;
-    }
   }
 
   public async saveNote() {

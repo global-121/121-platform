@@ -19,6 +19,7 @@ import { CustomDataAttributes } from '../../registration/enum/custom-data-attrib
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 import { StatusEnum } from '../../shared/enum/status.enum';
+import { MessageContentType } from '../message-type.enum';
 import { twilioClient } from '../twilio.client';
 import {
   TwilioIncomingCallbackDto,
@@ -76,6 +77,7 @@ export class WhatsappService {
     registrationId?: number,
     whatsappNumber?: string,
     messagingServiceSid?: string,
+    messageContentType?: MessageContentType,
   ): Promise<any> {
     const payload = {
       body: message,
@@ -97,7 +99,12 @@ export class WhatsappService {
     return twilioClient.messages
       .create(payload)
       .then((message) => {
-        this.storeSendWhatsapp(message, registrationId, mediaUrl);
+        this.storeSendWhatsapp(
+          message,
+          registrationId,
+          mediaUrl,
+          messageContentType,
+        );
         return message.sid;
       })
       .catch((err) => {
@@ -112,6 +119,7 @@ export class WhatsappService {
     messageType: null | IntersolvePayoutStatus,
     mediaUrl: null | string,
     registrationId: number,
+    messageContentType: MessageContentType,
   ): Promise<any> {
     const pendingMesssage = new WhatsappPendingMessageEntity();
     pendingMesssage.body = message;
@@ -119,6 +127,7 @@ export class WhatsappService {
     pendingMesssage.mediaUrl = mediaUrl;
     pendingMesssage.messageType = messageType;
     pendingMesssage.registrationId = registrationId;
+    pendingMesssage.contentType = messageContentType;
     this.whatsappPendingMessageRepo.save(pendingMesssage);
 
     const registration = await this.registrationRepository.findOne({
@@ -136,6 +145,9 @@ export class WhatsappService {
       messageType,
       mediaUrl,
       registrationId,
+      null,
+      null,
+      MessageContentType.genericTemplated,
     );
   }
 
@@ -160,6 +172,7 @@ export class WhatsappService {
     message,
     registrationId: number,
     mediaUrl: string,
+    messageContentType?: MessageContentType,
   ): void {
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = message.accountSid;
@@ -172,6 +185,7 @@ export class WhatsappService {
     twilioMessage.type = NotificationType.Whatsapp;
     twilioMessage.dateCreated = message.dateCreated;
     twilioMessage.registrationId = registrationId;
+    twilioMessage.contentType = messageContentType;
     this.twilioMessageRepository.save(twilioMessage);
   }
 
@@ -200,7 +214,11 @@ export class WhatsappService {
 
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
-      { status: callbackData.MessageStatus },
+      {
+        status: callbackData.MessageStatus,
+        errorCode: callbackData.ErrorCode,
+        errorMessage: callbackData.ErrorMessage,
+      },
     );
 
     const statuses = [
@@ -383,6 +401,7 @@ export class WhatsappService {
         null,
         nlrcPvNumber,
         process.env.TWILIO_MESSAGING_SID_PV,
+        MessageContentType.defaultReply,
       );
       return;
     }
@@ -434,6 +453,9 @@ export class WhatsappService {
           null,
           null,
           null,
+          null,
+          null,
+          MessageContentType.defaultReply,
         );
         return;
       } else {
@@ -444,6 +466,9 @@ export class WhatsappService {
           null,
           null,
           null,
+          null,
+          null,
+          MessageContentType.defaultReply,
         );
         return;
       }
@@ -482,6 +507,9 @@ export class WhatsappService {
           IntersolvePayoutStatus.VoucherSent,
           mediaUrl,
           registration.id,
+          null,
+          null,
+          MessageContentType.payment,
         );
         firstVoucherSent = true;
 
@@ -510,6 +538,9 @@ export class WhatsappService {
           null,
           EXTERNAL_API.voucherInstructionsUrl,
           registration.id,
+          null,
+          null,
+          MessageContentType.paymentInstructions,
         );
       }
     }
@@ -534,6 +565,9 @@ export class WhatsappService {
               : null,
             message.mediaUrl,
             message.registrationId,
+            null,
+            null,
+            message.contentType,
           ).then(() => {
             this.whatsappPendingMessageRepo.remove(message);
           });

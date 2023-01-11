@@ -1,0 +1,113 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title
+      color="secondary"
+      style="font-weight: 600"
+    >
+      {{
+        'page.program.program-people-affected.message-history-popup.message-title'
+          | translate
+          | uppercase
+      }}
+      - PA #{{ person?.registrationProgramId }} - {{ person?.name }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
+      >
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <section>
+    <ion-list>
+      <ion-item
+        lines="none"
+        *ngFor="let message of messageHistory; let i = index"
+        class="ion-margin-bottom"
+      >
+        <ion-col>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="9">
+              <ion-row class="ion-justify-content-between">
+                <ion-label
+                  class="ion-text-nowrap"
+                  style="font-weight: 600; max-width: 70%"
+                >
+                  {{
+                    'page.program.program-people-affected.message-history-popup.content-type.' +
+                      message.contentType | translate
+                  }}
+                  {{ ' ' }}
+                  ({{
+                    'page.program.program-people-affected.message-history-popup.type.' +
+                      message.type | translate
+                  }})
+                </ion-label>
+
+                <ion-note
+                  class="ion-text-end"
+                  style="font-weight: 400"
+                >
+                  {{ message.created | date : 'dd-MM-yyyy HH:mm' }}</ion-note
+                >
+              </ion-row>
+            </ion-col>
+            <ion-col size="3">
+              <ion-row class="ion-justify-content-end">
+                <ion-chip
+                  class="ion-justify-content-center"
+                  [ngClass]="'chip-' + chipStatus[message.status]"
+                  >{{
+                    'page.program.program-people-affected.message-history-popup.chip-status.' +
+                      chipStatus[message.status] | translate
+                  }}</ion-chip
+                >
+              </ion-row>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-accordion-group>
+                <ion-accordion value="index_{{ i }}">
+                  <ion-item
+                    slot="header"
+                    color="light"
+                  >
+                    <ion-label style="font-weight: 600">
+                      {{
+                        'page.program.program-people-affected.message-history-popup.accordion-header'
+                          | translate
+                      }}
+                    </ion-label>
+                  </ion-item>
+                  <div
+                    class="ion-padding"
+                    slot="content"
+                    [innerText]="message.body"
+                  ></div>
+                </ion-accordion>
+              </ion-accordion-group>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-note *ngIf="message.errorCode">
+              {{
+                'page.program.program-people-affected.message-history-popup.status-line.code'
+                  | translate
+              }}{{ message.errorCode }}</ion-note
+            >
+          </ion-row>
+        </ion-col>
+      </ion-item>
+    </ion-list>
+  </section>
+</ion-content>

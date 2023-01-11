@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { DataSource, IsNull, Not, Repository } from 'typeorm';
 import { FspName } from '../../../fsp/financial-service-provider.entity';
+import { MessageContentType } from '../../../notifications/message-type.enum';
 import {
   TwilioStatus,
   TwilioStatusCallbackDto,
@@ -301,6 +302,9 @@ export class IntersolveService {
         IntersolvePayoutStatus.InitialMessage,
         null,
         registration.id,
+        null,
+        null,
+        MessageContentType.paymentTemplated,
       )
       .then(
         async (response) => {

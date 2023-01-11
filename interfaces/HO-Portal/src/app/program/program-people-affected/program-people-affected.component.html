@@ -288,8 +288,28 @@
           ></ion-checkbox>
         </span>
       </ng-container>
-      <ng-container *ngIf="value !== true && value !== false && value">
-        <span [attr.title]="value">
+      <ng-container
+        *ngIf="
+          value !== true &&
+          value !== false &&
+          value &&
+          column.prop !== 'messages'
+        "
+      >
+        <span [attr.title]="value"> {{ value }} </span>
+      </ng-container>
+      <ng-container *ngIf="column.prop === 'messages'">
+        <button
+          *ngIf="row.lastMessageStatus"
+          class="ion-no-padding popup-button status-pop-up"
+          [ngClass]="{
+            'is-error': hasMessageError(row.lastMessageStatus)
+          }"
+          (click)="openMessageHistoryPopup(row, programId)"
+        >
+          {{ value }}
+        </button>
+        <span *ngIf="!row.lastMessageStatus">
           {{ value }}
         </span>
       </ng-container>

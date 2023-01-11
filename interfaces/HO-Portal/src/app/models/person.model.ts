@@ -37,6 +37,7 @@ export class Person {
   transactionStatus?: string;
   errorMessage?: string;
   lastMessageStatus?: string;
+  lastMessageType?: string;
 }
 
 // Model for display (in table)
@@ -67,6 +68,7 @@ export class PersonRow {
   paTableAttributes?: Person['paTableAttributes'];
   paymentHistory?: PaymentColumnDetail;
   lastMessageStatus?: string;
+  messages?: string;
 }
 
 export class Note {

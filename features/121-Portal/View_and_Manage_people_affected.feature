@@ -186,3 +186,6 @@ Feature: View and manage people affected (generic features)
     Then this goes quickly and without problem
     When the user uses the text or status filter functions
     Then the PA-table updates to only filtered rows quickly and without problem
+
+  Scenario: View Message History
+  >> This is tested with Cypress. See message-history.cy.ts 

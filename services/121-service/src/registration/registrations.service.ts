@@ -7,6 +7,7 @@ import { FspName } from '../fsp/financial-service-provider.entity';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { LookupService } from '../notifications/lookup/lookup.service';
+import { MessageContentType } from '../notifications/message-type.enum';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
@@ -545,6 +546,8 @@ export class RegistrationsService {
       registration.program.id,
       null,
       RegistrationStatusEnum.registered,
+      null,
+      MessageContentType.registered,
     );
 
     if (
@@ -751,6 +754,7 @@ export class RegistrationsService {
         'twilioMessages.created < nextTwilioMessages.created',
       )
       .addSelect('"twilioMessages".status', 'lastMessageStatus')
+      .addSelect('"twilioMessages".type', 'lastMessageType')
       .where('nextTwilioMessages.id IS NULL')
       .leftJoin('registration.data', 'data')
       .leftJoin('data.programQuestion', 'programQuestion')
@@ -1177,6 +1181,7 @@ export class RegistrationsService {
     referenceIdsDto: ReferenceIdsDto,
     registrationStatus: RegistrationStatusEnum,
     message?: string,
+    messageContentType?: MessageContentType,
   ): Promise<void> {
     const program = await this.findProgramOrThrow(programId);
     const errors = [];
@@ -1214,6 +1219,7 @@ export class RegistrationsService {
             message,
             null,
             tryWhatsappFirst,
+            messageContentType,
           );
         }
       }
@@ -1228,6 +1234,7 @@ export class RegistrationsService {
     message?: string,
     key?: string,
     tryWhatsApp = false,
+    messageContentType?: MessageContentType,
   ): Promise<void> {
     if (!message && !key) {
       throw new HttpException(
@@ -1254,14 +1261,16 @@ export class RegistrationsService {
           null,
           null,
           registration.id,
+          messageContentType,
         );
       } else if (tryWhatsApp && registration.phoneNumber) {
-        this.tryWhatsapp(registration, messageText);
+        this.tryWhatsapp(registration, messageText, messageContentType);
       } else if (registration.phoneNumber) {
         this.smsService.sendSms(
           messageText,
           registration.phoneNumber,
           registration.id,
+          messageContentType,
         );
       } else {
         throw new HttpException(
@@ -1278,6 +1287,7 @@ export class RegistrationsService {
   private async tryWhatsapp(
     registration: RegistrationEntity,
     messageText,
+    messageContentType?: MessageContentType,
   ): Promise<void> {
     this.whatsappService
       .queueMessageSendTemplate(
@@ -1286,6 +1296,7 @@ export class RegistrationsService {
         null,
         null,
         registration.id,
+        messageContentType,
       )
       .then((result) => {
         // Store the sid of a whatsapp message of which we do not know if the receiver registered on whatsapp
@@ -1788,6 +1799,9 @@ export class RegistrationsService {
         validRegistration,
         validRegistration.program.id,
         message,
+        null,
+        null,
+        MessageContentType.custom,
       );
     }
   }
@@ -1804,7 +1818,9 @@ export class RegistrationsService {
         'twilioMessage.body as body',
         'twilioMessage.status as status',
         'twilioMessage.type as type',
-        'twilioMessage.mediaUrl as mediaUrl',
+        'twilioMessage.mediaUrl as "mediaUrl"',
+        'twilioMessage.contentType as "contentType"',
+        'twilioMessage.errorCode as "errorCode"',
       ])
       .leftJoin('registration.twilioMessages', 'twilioMessage')
       .where('registration.referenceId = :referenceId', {
