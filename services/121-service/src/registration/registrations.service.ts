@@ -807,10 +807,7 @@ export class RegistrationsService {
     }
 
     q = q.addSelect('registration.note', 'note');
-
-    console.log('q', q.getSql());
     const rows = await q.getRawMany();
-    console.log('rows: ', rows);
 
     if (referenceId && rows.length === 1) {
       program = await this.programService.findProgramOrThrow(rows[0].programId);
