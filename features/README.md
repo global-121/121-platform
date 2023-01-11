@@ -85,6 +85,8 @@ Features of the 121-platform are described in this folder in a standardizes way 
   - [Receive voucher](PA-App/Receive_Voucher.feature)
   - [Claim digital voucher](Other/Claim_digital_voucher.feature)
   - Read queued notification
+- View recipient details in portal through iframe in 3rd-party application (e.g. Redline)
+  >> This is tested with Cypress. See: pa-details-iframe.cy.ts
 
 #### Using PA-App
 
@@ -97,7 +99,6 @@ Features of the 121-platform are described in this folder in a standardizes way 
 #### Generic PA-App components
 
 - [Listen to text in conversation-view](PA-App/Listen_to_text_in_conversation-view.feature)
-- [Verify password input](PA-App/Verify_password_input.feature)
 - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
 - Changes based on instance-configuration/values
 

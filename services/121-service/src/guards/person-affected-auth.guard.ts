@@ -66,7 +66,7 @@ export class PersonAffectedAuthGuard implements CanActivate {
     let referenceIdsOfUser = [];
 
     if (user.registrations && user.registrations[0]) {
-      referenceIdsOfUser = user.registrations.map(r => r.referenceId);
+      referenceIdsOfUser = user.registrations.map((r) => r.referenceId);
     }
 
     if (

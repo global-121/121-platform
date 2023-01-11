@@ -226,38 +226,43 @@ export class RegistrationsController {
     summary: 'Get all People Affected for program EXCLUDING personal data',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiQuery({ name: 'personalData', required: true, type: 'boolean' })
+  @ApiQuery({ name: 'paymentData', required: true, type: 'boolean' })
+  @ApiQuery({ name: 'filterOnPayment', required: false, type: 'number' })
   @ApiResponse({
     status: 200,
     description: 'Got all People Affected for program EXCLUDING personal data',
   })
   @Get('programs/:programId/registrations')
-  public async getPeopleAffected(@Param() params): Promise<any[]> {
-    return await this.registrationsService.getRegistrations(
-      Number(params.programId),
-      false,
-      true,
-      null,
-    );
-  }
-
-  @Permissions(PermissionEnum.RegistrationPersonalREAD)
-  @ApiOperation({
-    summary: 'Get all People Affected for program INCLUDING personal data',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: 200,
-    description: 'Get all People Affected for program INCLUDING personal data',
-  })
-  @Get('programs/:programId/registrations/personal-data')
-  public async getPeopleAffectedWithPersonalData(
-    @Param() params,
+  public async getPeopleAffected(
+    @Param('programId') programId: number,
+    @User('id') userId: number,
+    @Query() queryParams,
   ): Promise<any[]> {
+    const personalData = queryParams.personalData === 'true';
+    const paymentData = queryParams.paymentData === 'true';
+    if (personalData) {
+      await this.registrationsService.checkPermissionAndThrow(
+        userId,
+        PermissionEnum.RegistrationPersonalREAD,
+        Number(programId),
+      );
+    }
+    if (paymentData || queryParams.filterOnPayment) {
+      await this.registrationsService.checkPermissionAndThrow(
+        userId,
+        PermissionEnum.PaymentTransactionREAD,
+        Number(programId),
+      );
+    }
+
     return await this.registrationsService.getRegistrations(
-      Number(params.programId),
+      Number(programId),
+      personalData,
+      paymentData,
       true,
-      false,
       null,
+      queryParams.filterOnPayment,
     );
   }
 
@@ -476,7 +481,9 @@ export class RegistrationsController {
   }
 
   // There's no permission check here because there's a check included in the queries done to fetch data.
-  @ApiOperation({ summary: 'Get registration with prefilled answers (for AW)' })
+  @ApiOperation({
+    summary: 'Get registration with prefilled answers (for AW)',
+  })
   @ApiResponse({ status: 200 })
   @ApiParam({
     name: 'referenceId',

@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import { HttpService, Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { API_PATHS, EXTERNAL_API } from './../config';
 import {
@@ -20,12 +21,14 @@ class PhoneNumbers {
       this.phoneNumber = '+31600000000';
     }
 
-    return { phoneNumber: this.phoneNumber, nationalFormat: this.phoneNumber };
+    return {
+      phoneNumber: this.phoneNumber,
+      nationalFormat: this.phoneNumber,
+    };
   }
 }
 
 class LookUp {
-  public constructor() {}
   public phoneNumbers(nr): any {
     return new PhoneNumbers(nr);
   }
@@ -75,12 +78,12 @@ export class TwilioClientMock {
       console.log('TwilioClientMock create(): response:', response);
       this.sendStatusResponse121(twilioMessagesCreateDto, messageSid);
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       if (
         twilioMessagesCreateDto.messageType ===
         IntersolvePayoutStatus.InitialMessage
       ) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid);
       }
       return response;
@@ -108,19 +111,21 @@ export class TwilioClientMock {
         twilioMessagesCreateDto.from &&
         twilioMessagesCreateDto.from.includes('whatsapp')
       ) {
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 500));
         const request = new TwilioStatusCallbackDto();
         request.MessageSid = messageSid;
         request.MessageStatus = TwilioStatus.delivered;
         const httpService = new HttpService();
         try {
-          await httpService
-            .post(EXTERNAL_API.whatsAppStatus, request)
-            .toPromise();
+          await lastValueFrom(
+            httpService.post(EXTERNAL_API.whatsAppStatus, request),
+          );
         } catch (error) {
           // In case external API is not reachable try localhost
           const urlLocalhost = `${EXTERNAL_API.rootApi}/${API_PATHS.whatsAppStatus}`;
-          await httpService.post(urlLocalhost, request).toPromise();
+          await lastValueFrom(httpService.post(urlLocalhost, request)).catch(
+            (error) => console.log(error),
+          );
         }
       }
     }
@@ -133,19 +138,21 @@ export class TwilioClientMock {
         twilioMessagesCreateDto.from &&
         twilioMessagesCreateDto.from.includes('whatsapp')
       ) {
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 500));
         const request = new TwilioIncomingCallbackDto();
         request.MessageSid = messageSid;
         request.From = twilioMessagesCreateDto.to.replace('whatsapp:', '');
         const httpService = new HttpService();
         try {
-          await httpService
-            .post(EXTERNAL_API.whatsAppIncoming, request)
-            .toPromise();
+          await lastValueFrom(
+            httpService.post(EXTERNAL_API.whatsAppIncoming, request),
+          );
         } catch (error) {
           // In case external API is not reachable try localhost
           const urlLocalhost = `${EXTERNAL_API.rootApi}/${API_PATHS.whatsAppIncoming}`;
-          await httpService.post(urlLocalhost, request).toPromise();
+          await lastValueFrom(httpService.post(urlLocalhost, request)).catch(
+            (error) => console.log(error),
+          );
         }
       }
     }

@@ -1,4 +1,4 @@
-import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
+import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 import { PermissionEnum } from '../src/user/permission.enum';
 import { PermissionEntity } from '../src/user/permissions.entity';
 import { UserRoleEntity } from '../src/user/user-role.entity';
@@ -10,14 +10,14 @@ export class processNewUserRolePermissions1644432255958
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Commit transaction because the tables are needed before the insert
     await queryRunner.commitTransaction();
-    await this.migrateData(queryRunner.connection);
+    await this.migrateData(queryRunner.manager);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {}
 
-  private async migrateData(connection: Connection): Promise<void> {
+  private async migrateData(manager: EntityManager): Promise<void> {
     // COMMENTED OUT THIS CODE AS THESE PERMISSION ARE MIGRATED TO ADMIN
     // // Define new permissions
     // const newPermissions = [
@@ -28,7 +28,7 @@ export class processNewUserRolePermissions1644432255958
     // // Define closest permission to the new permission
     // const closestPermission = PermissionEnum.RoleCREATE;
     // // Add the new permission
-    // const permissionsRepository = connection.getRepository(PermissionEntity);
+    // const permissionsRepository = manager.getRepository(PermissionEntity);
     // for await (const newPermission of newPermissions) {
     //   const permission = new PermissionEntity();
     //   permission.name = newPermission;
@@ -39,7 +39,7 @@ export class processNewUserRolePermissions1644432255958
     //     permissionEntity = await permissionsRepository.save(permission);
     //   }
     //   // Loop over all existing roles, if it has the closes permission, also add the new permission
-    //   const userRoleRepository = connection.getRepository(UserRoleEntity);
+    //   const userRoleRepository = manager.getRepository(UserRoleEntity);
     //   const userRoles = await userRoleRepository.find({
     //     relations: ['permissions'],
     //   });

@@ -23,7 +23,8 @@ pool:
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: '14.x'
+      versionSource: 'fromFile'
+      versionFilePath: 'services/121-service/.node-version'
 
   - script: npm ci
     displayName: Install

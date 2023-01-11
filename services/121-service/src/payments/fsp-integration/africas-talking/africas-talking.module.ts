@@ -1,4 +1,5 @@
-import { HttpModule, Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';

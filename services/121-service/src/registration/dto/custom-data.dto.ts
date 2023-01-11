@@ -12,6 +12,9 @@ export class CustomDataDto {
   public readonly key: string;
   @ApiProperty({ example: '31600000000' })
   @IsNotEmpty()
-  @IsRegistrationDataValidType({ referenceId: 'referenceId', attribute: 'key' })
+  @IsRegistrationDataValidType({
+    referenceId: 'referenceId',
+    attribute: 'key',
+  })
   public readonly value: string | string[];
 }

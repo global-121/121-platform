@@ -6,7 +6,7 @@ The 121-Service is the backend where 121-programs can be created and monitored, 
 
 ## Getting started / Installation
 
-See instructions to get started in the main [`/services/README`](../README.md).
+See instructions to get started in the main [`README`](../../README.md).
 
 - `npm start` - Start application
 - `npm run start:watch` - Start application in watch mode
@@ -17,8 +17,14 @@ See instructions to get started in the main [`/services/README`](../README.md).
 
 - Access the Swagger UI via: <http://localhost:3000/docs/>
 - API-specification in JSON-format via: <http://localhost:3000/docs-json>
-- A graph will be generated when run in 'development' mode at [`module-dependencies.md`](./module-dependencies.md).
+- A graph will be generated when run in 'development' mode at [`module-dependencies.md`](./module-dependencies.md).  
   It can be viewed with <https://mermaid.live/> or the VSCode-extension: [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid)
+
+### Updating/adding Node.js dependencies
+
+Make sure to update any dependencies from _within_ the Docker-container, with:
+
+    docker compose exec  121-service  npm install --save
 
 ## Database
 
@@ -32,8 +38,8 @@ Any time, the database-structure is adapted, before pushing, run:
 
     docker exec -it 121-service npm run migration:generate <name>
 
-This stores all edits in a migration-file, which is pushed along with your code.
-On test- and production-server, this file is automatically run within the `npm prestart` command.
+This stores all edits in a migration-file, which is pushed along with your code.  
+On test- and production-server, this file is automatically run within the `npm prestart` command.  
 To run this file locally, do:
 
     docker exec -it 121-service npm run migration:run

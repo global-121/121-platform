@@ -31,18 +31,18 @@ function generateModuleDependencyGraph(app: INestApplication): void {
   const root = SpelunkerModule.graph(tree);
   const edges = SpelunkerModule.findGraphEdges(root);
   const genericModules = [
+    // Sorted alphabetically
+    'ActionModule',
     'ApplicationModule',
-    'DiscoveryModule',
-    'ScheduleModule',
-    'TypeOrmCoreModule',
-    'TypeOrmModule',
+    'HealthModule',
     'HttpModule',
+    'MulterModule',
+    'ScheduleModule',
     'ScriptsModule',
     'TerminusModule',
-    'HealthModule',
-    'MulterModule',
+    'TypeOrmCoreModule',
+    'TypeOrmModule',
     'UserModule',
-    'ActionModule',
   ];
   const mermaidEdges = edges
     .filter(
@@ -56,7 +56,7 @@ function generateModuleDependencyGraph(app: INestApplication): void {
     mermaidEdges.join('\n') +
     '\n```\n';
 
-  fs.writeFile('module-dependencies.md', mermaidGraph, 'utf8', err => {
+  fs.writeFile('module-dependencies.md', mermaidGraph, 'utf8', (err) => {
     if (err) console.warn(`Writing API-graph failed!`, err);
   });
 }
@@ -70,10 +70,7 @@ async function bootstrap(): Promise<void> {
 
   app.setGlobalPrefix('api');
 
-  app
-    .getHttpAdapter()
-    .getInstance()
-    .disable('x-powered-by');
+  app.getHttpAdapter().getInstance().disable('x-powered-by');
 
   if (DEBUG) {
     app.enableCors({
@@ -100,7 +97,8 @@ async function bootstrap(): Promise<void> {
   });
   app.useGlobalPipes(
     new ValidationPipe({
-      exceptionFactory: errors => new BadRequestException(errors),
+      forbidUnknownValues: false,
+      exceptionFactory: (errors) => new BadRequestException(errors),
     }),
   );
   app.use(bodyParser.json({ limit: '5mb' }));

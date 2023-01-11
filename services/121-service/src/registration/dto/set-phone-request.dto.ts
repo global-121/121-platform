@@ -14,10 +14,10 @@ export class SetPhoneRequestDto {
   @Length(29, 36)
   public readonly referenceId: string;
   @ApiProperty({ example: '31600000000' })
-  @ValidateIf(o => o.phonenumber)
+  @ValidateIf((o) => o.phonenumber)
   @IsString()
   public readonly phonenumber: string;
-  @ValidateIf(o => o.language)
+  @ValidateIf((o) => o.language)
   @ApiProperty({ enum: LanguageEnum, example: LanguageEnum.en })
   @IsEnum(LanguageEnum)
   @Length(2, 8)
@@ -33,7 +33,7 @@ export class UpdatePhoneRequestDto {
   @Length(29, 36)
   public readonly referenceId: string;
   @ApiProperty({ example: '31600000000' })
-  @ValidateIf(o => o.phonenumber)
+  @ValidateIf((o) => o.phonenumber)
   @IsString()
   public readonly phonenumber: string;
 }

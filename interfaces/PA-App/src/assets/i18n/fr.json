@@ -15,10 +15,6 @@
     "wait-to-go-offline": "Veuillez attendre 30 secondes avant d'utiliser l'application hors ligne, afin que tout le contenu de l'application soit téléchargé.",
     "update-available": "Mise à jour disponible, veuillez recharger l'application."
   },
-  "password-toggle": {
-    "hide": "Cachez le mot de passe",
-    "show": "Montrez le mot de passe."
-  },
   "personal": {
     "consent-question": {
       "agree": "Je suis d'accord",
@@ -27,28 +23,11 @@
       "more-info-personal-information": "À propos des informations personnelles",
       "question": "Pour postuler à ce programme d'aide financière, il faut que vous acceptez la manière dont nous garderons vos informations personnelles. Veuillez lire ou écouter comment nous garderons vos donnés personnelles."
     },
-    "create-account": {
-      "conclusion": "Parfait! Vous avez créé votre compte.",
-      "confirm-password": "Confirmez votre mot de passe:",
-      "create-password-explanation": "Créez un mot de passe d'au moins {{minimalLength}} chiffres:",
-      "create-username": "Saisissez votre nom et prénom:",
-      "introduction": "Pour créer un compte, vous devez compléter les étapes suivantes.",
-      "password-too-short": "Veuillez saisir au moins {{minimalLength}} caractères.",
-      "unequal-passwords": "Les mots de passe que vous avez créé ne sont pas identiques. Réessayez, s'il vous plaît.",
-      "username-not-unique": "Le nom que vous avez entré n'est pas unique. Réessayez, s'il vous plaît.",
-      "username-password": "Saisissez votre nom et prénom et créez un mot de passe."
-    },
     "enroll-in-program": {
       "change": "Changer mes informations.",
       "introduction-information": "Afin de garantir que vous recevez la meilleure assistance possible et que votre demande sera traitée correctement, nous avons besoin de certaines données personnelles vous concernant.",
       "please-confirm": "Vous trouvez ci-dessous un récapitulatif de vos informations. Veuillez les vérifier. Après cliquez sur envoyer.",
       "submit-confirm": "Envoyez mes informations."
-    },
-    "login-account": {
-      "incorrect-credentials": "La combinaison de votre nom, prénom et du mot de passe que vous avez fourni n'est pas reconnue. Réessayez s'il vous plaît.",
-      "introduction": "Pour utiliser un compte existant, vous devez vous connecter avec votre nom, prénom et votre mot de passe",
-      "supply-password": "Votre mot de passe:",
-      "supply-username": "Votre nom et prénom:"
     },
     "registration-summary": {
       "documents": "Préparez les documents suivants:",
@@ -86,11 +65,6 @@
       "validation": {
         "phone-number": "Nous ne pouvons pas vérifier ce numéro de téléphone. Veuillez mettre à jour et réessayez, s'il vous plaît."
       }
-    },
-    "signup-signin": {
-      "create-id": "Créez un compte",
-      "introduction": "Pour participer à ce programme d'aide financière, vous devez avoir un compte. Veuillez créer votre compte ou utiliser votre compte existant,.",
-      "login-id": "Utilisez mon compte"
     },
     "next-pa": {
       "new-pa": "Ajouter une autre personne concernée",

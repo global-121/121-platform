@@ -1,6 +1,8 @@
 @portal
 Feature: Make a new payment
 
+  >> These scenarios are also (partly) with Cypress. See: payment.cy.ts
+
   Background:
     Given a logged-in user with the "PaymentCREATE" permission
     And the user views the "payment" page

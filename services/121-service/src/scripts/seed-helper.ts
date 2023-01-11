@@ -1,6 +1,6 @@
 import { HttpException } from '@nestjs/common';
 import crypto from 'crypto';
-import { Connection, In } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { InstanceEntity } from '../instance/instance.entity';
@@ -14,7 +14,7 @@ import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 
 export class SeedHelper {
-  public constructor(private connection: Connection) {}
+  public constructor(private dataSource: DataSource) {}
 
   public async addDefaultUsers(
     program: ProgramEntity,
@@ -71,7 +71,7 @@ export class SeedHelper {
   }
 
   public async getOrSaveUser(userInput: any): Promise<UserEntity> {
-    const userRepository = this.connection.getRepository(UserEntity);
+    const userRepository = this.dataSource.getRepository(UserEntity);
     const user = await userRepository.findOne({
       where: { username: userInput.username },
     });
@@ -89,7 +89,7 @@ export class SeedHelper {
   public async addInstance(
     exampleInstance: Record<string, any>,
   ): Promise<void> {
-    const instanceRepository = this.connection.getRepository(InstanceEntity);
+    const instanceRepository = this.dataSource.getRepository(InstanceEntity);
     const instanceDump = JSON.stringify(exampleInstance);
     const instance = JSON.parse(instanceDump);
     if (instance.monitoringQuestion) {
@@ -99,15 +99,15 @@ export class SeedHelper {
   }
 
   public async addProgram(programExample: any): Promise<ProgramEntity> {
-    const programRepository = this.connection.getRepository(ProgramEntity);
-    const fspRepository = this.connection.getRepository(
+    const programRepository = this.dataSource.getRepository(ProgramEntity);
+    const fspRepository = this.dataSource.getRepository(
       FinancialServiceProviderEntity,
     );
 
-    const programCustomAttributeRepository = this.connection.getRepository(
+    const programCustomAttributeRepository = this.dataSource.getRepository(
       ProgramCustomAttributeEntity,
     );
-    const programQuestionRepository = this.connection.getRepository(
+    const programQuestionRepository = this.dataSource.getRepository(
       ProgramQuestionEntity,
     );
 
@@ -120,7 +120,7 @@ export class SeedHelper {
     const programCustomAttributes = program.programCustomAttributes;
     program.programCustomAttributes = [];
     if (programCustomAttributes) {
-      for (let attribute of programCustomAttributes) {
+      for (const attribute of programCustomAttributes) {
         attribute.program = programReturn;
         await programCustomAttributeRepository.save(attribute);
       }
@@ -129,7 +129,7 @@ export class SeedHelper {
     // Remove original program questions and add it to a separate variable
     const programQuestions = program.programQuestions;
     program.programQuestions = [];
-    for (let question of programQuestions) {
+    for (const question of programQuestions) {
       if (question.answerType === 'dropdown') {
         const scoringKeys = Object.keys(question.scoring);
         if (scoringKeys.length > 0) {
@@ -156,8 +156,8 @@ export class SeedHelper {
     });
     const fsps = program.financialServiceProviders;
     foundProgram.financialServiceProviders = [];
-    for (let fsp of fsps) {
-      let fspReturn = await fspRepository.findOne({
+    for (const fsp of fsps) {
+      const fspReturn = await fspRepository.findOne({
         where: { fsp: fsp.fsp },
       });
       foundProgram.financialServiceProviders.push(fspReturn);
@@ -169,13 +169,12 @@ export class SeedHelper {
     const exampleDump = JSON.stringify(fspInput);
     const fsp = JSON.parse(exampleDump);
 
-    const fspRepository = this.connection.getRepository(
+    const fspRepository = this.dataSource.getRepository(
       FinancialServiceProviderEntity,
     );
 
-    const fspQuestionRepository = this.connection.getRepository(
-      FspQuestionEntity,
-    );
+    const fspQuestionRepository =
+      this.dataSource.getRepository(FspQuestionEntity);
 
     // Remove original custom criteria and add it to a separate variable
     const questions = fsp.questions;
@@ -183,9 +182,9 @@ export class SeedHelper {
 
     const fspReturn = await fspRepository.save(fsp);
 
-    for (let question of questions) {
+    for (const question of questions) {
       question.fsp = fspReturn;
-      let customReturn = await fspQuestionRepository.save(question);
+      const customReturn = await fspQuestionRepository.save(question);
       fsp.questions.push(customReturn);
     }
   }
@@ -195,13 +194,15 @@ export class SeedHelper {
     programId: number,
     roles: DefaultUserRole[] | string[],
   ): Promise<void> {
-    const userRepository = this.connection.getRepository(UserEntity);
-    const programRepository = this.connection.getRepository(ProgramEntity);
-    const userRoleRepository = this.connection.getRepository(UserRoleEntity);
-    const assignmentRepository = this.connection.getRepository(
+    const userRepository = this.dataSource.getRepository(UserEntity);
+    const programRepository = this.dataSource.getRepository(ProgramEntity);
+    const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
+    const assignmentRepository = this.dataSource.getRepository(
       ProgramAidworkerAssignmentEntity,
     );
-    const user = await userRepository.findOne(userId);
+    const user = await userRepository.findOneBy({
+      id: userId,
+    });
     await assignmentRepository.save({
       user: user,
       program: await programRepository.findOne({
@@ -218,7 +219,7 @@ export class SeedHelper {
   }
 
   public async assignAdminUserToProgram(programId: number): Promise<void> {
-    const userRepository = this.connection.getRepository(UserEntity);
+    const userRepository = this.dataSource.getRepository(UserEntity);
     const adminUser = await userRepository.findOne({
       where: { username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN },
     });

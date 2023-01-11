@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { MessageContentType } from '../notifications/message-type.enum';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
@@ -17,9 +17,7 @@ import { RegistrationEntity } from '../registration/registration.entity';
 @Injectable()
 export class CronjobService {
   @InjectRepository(IntersolveRequestEntity)
-  private readonly intersolveRequestRepository: Repository<
-    IntersolveRequestEntity
-  >;
+  private readonly intersolveRequestRepository: Repository<IntersolveRequestEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
 
@@ -33,6 +31,7 @@ export class CronjobService {
     private whatsappService: WhatsappService,
     private readonly intersolveApiService: IntersolveApiService,
     private readonly intersolveService: IntersolveService,
+    private readonly dataSource: DataSource,
   ) {}
 
   private async getLanguageForRegistration(
@@ -40,7 +39,7 @@ export class CronjobService {
   ): Promise<string> {
     const fallbackLanguage = 'en';
 
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationRepository.findOneBy({
       referenceId: referenceId,
     });
 
@@ -91,9 +90,8 @@ export class CronjobService {
         .getRawOne();
       const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
 
-      const unsentIntersolveBarcodes = await getRepository(
-        IntersolveBarcodeEntity,
-      )
+      const unsentIntersolveBarcodes = await await this.dataSource
+        .getRepository(IntersolveBarcodeEntity)
         .createQueryBuilder('barcode')
         .select([
           '"whatsappPhoneNumber"',
@@ -115,7 +113,7 @@ export class CronjobService {
         })
         .getRawMany();
 
-      unsentIntersolveBarcodes.forEach(async unsentIntersolveBarcode => {
+      unsentIntersolveBarcodes.forEach(async (unsentIntersolveBarcode) => {
         const referenceId = unsentIntersolveBarcode.referenceId;
         const registration = await this.registrationRepository.findOne({
           where: { referenceId: referenceId },

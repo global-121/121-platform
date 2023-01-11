@@ -21,7 +21,7 @@ export class ImageCodeController {
   @Get(':secret')
   public async get(@Param() params, @Res() response: Response): Promise<void> {
     const blob = await this.imageCodeService.get(params.secret);
-    var bufferStream = new stream.PassThrough();
+    const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
     response.writeHead(HttpStatus.OK, {
       'Content-Type': 'image/png',

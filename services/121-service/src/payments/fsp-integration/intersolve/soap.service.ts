@@ -5,8 +5,6 @@ import * as convert from 'xml-js';
 
 @Injectable()
 export class SoapService {
-  public constructor() {}
-
   public async post(payload: any): Promise<any> {
     payload = await this.setSoapHeader(payload);
     const xml = convert.js2xml(payload);
@@ -26,7 +24,7 @@ export class SoapService {
   }
 
   private async setSoapHeader(payload: any): Promise<any> {
-    let header = await this.readXmlAsJs('header');
+    const header = await this.readXmlAsJs('header');
     let headerPart = this.getChild(header, 0);
     headerPart = this.setValue(
       headerPart,
@@ -51,7 +49,7 @@ export class SoapService {
   }
 
   public findSoapIndex(soapElement: any, q: string): any {
-    return soapElement['elements'].findIndex(x => x.name === q);
+    return soapElement['elements'].findIndex((x) => x.name === q);
   }
 
   public changeSoapBody(
@@ -66,9 +64,9 @@ export class SoapService {
     const mainElementIndex = this.findSoapIndex(soapBodyXML, mainElement);
     const mainElementXML = soapBodyXML['elements'][mainElementIndex];
     let rootElement = mainElementXML;
-    let pathIndices: number[] = [0, bodyIndex, mainElementIndex];
+    const pathIndices: number[] = [0, bodyIndex, mainElementIndex];
     let subElementXMLIndex = -1;
-    for (let subElementIndex in subElements) {
+    for (const subElementIndex in subElements) {
       subElementXMLIndex = this.findSoapIndex(
         rootElement,
         subElements[subElementIndex],

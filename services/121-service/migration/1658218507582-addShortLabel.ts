@@ -1,4 +1,4 @@
-import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
+import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 import fs from 'fs';
 import { ProgramQuestionEntity } from '../src/programs/program-question.entity';
 import { ProgramEntity } from '../src/programs/program.entity';
@@ -15,7 +15,7 @@ export class addShortLabel1658218507582 implements MigrationInterface {
       `ALTER TABLE "121-service"."program_question" ADD "shortLabel" json`,
     );
     await queryRunner.commitTransaction();
-    await this.migrateData(queryRunner.connection);
+    await this.migrateData(queryRunner.manager);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
   }
@@ -29,7 +29,7 @@ export class addShortLabel1658218507582 implements MigrationInterface {
     );
   }
 
-  private async migrateData(connection: Connection): Promise<void> {
+  private async migrateData(manager: EntityManager): Promise<void> {
     const programPilotNL = JSON.parse(
       fs.readFileSync('seed-data/program/program-pilot-nl.json', 'utf8'),
     );
@@ -41,8 +41,8 @@ export class addShortLabel1658218507582 implements MigrationInterface {
     );
 
     if (programPilotNL && programPilotNL2 && fspIntersolve) {
-      const programRepo = connection.getRepository(ProgramEntity);
-      const programQuestionsRepo = connection.getRepository(
+      const programRepo = manager.getRepository(ProgramEntity);
+      const programQuestionsRepo = manager.getRepository(
         ProgramQuestionEntity,
       );
       const program: ProgramEntity | undefined = await programRepo
@@ -78,7 +78,7 @@ export class addShortLabel1658218507582 implements MigrationInterface {
           await programQuestionsRepo.save(q);
         }
 
-        const fspAttributeRepo = connection.getRepository(FspQuestionEntity);
+        const fspAttributeRepo = manager.getRepository(FspQuestionEntity);
 
         const fspAttributes = await fspAttributeRepo
           .createQueryBuilder('fspAttribute')

@@ -18,6 +18,8 @@ Feature: Export People Affected list
     And it shows payment information for each done payment
     And any columns that only contain null-values are automatically filtered out
 
+  >> This is also partly tested with Cypress. See: pa-export.cy.ts
+
   Scenario: Export inclusion list with 5000 PAs
     Given there are 5000 PAs in the system
     When the user clicks the "export people affected" and confirms the confirm prompt

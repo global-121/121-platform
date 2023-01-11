@@ -3,8 +3,6 @@ import { twilioClient } from '../twilio.client';
 
 @Injectable()
 export class LookupService {
-  public constructor() {}
-
   public async lookupPhoneNr(
     phoneNumber: string,
   ): Promise<{ result: boolean | undefined }> {
@@ -37,9 +35,8 @@ export class LookupService {
         .phoneNumbers(updatedPhone)
         .fetch({ type: ['carrier'] });
       if (lookupResponse.phoneNumber.substr(0, 4) == '+961') {
-        lookupResponse.phoneNumber = this.processLebanonException(
-          lookupResponse,
-        );
+        lookupResponse.phoneNumber =
+          this.processLebanonException(lookupResponse);
       }
       return lookupResponse.phoneNumber.replace(/\D/g, '');
     } catch (e) {

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../../base.entity';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { ProgramEntity } from '../../programs/program.entity';
@@ -15,13 +15,11 @@ export class TransactionEntity extends Base121Entity {
   @Column({ nullable: true })
   public errorMessage: string;
 
-  @ManyToOne(
-    _type => ProgramEntity,
-    program => program.transactions,
-  )
+  @ManyToOne((_type) => ProgramEntity, (program) => program.transactions)
   public program: ProgramEntity;
 
   @Column({ default: 1 })
+  @Index()
   public payment: number;
 
   @Column('json', {
@@ -30,17 +28,18 @@ export class TransactionEntity extends Base121Entity {
   public customData: JSON;
 
   @Column({ default: 1 })
+  @Index()
   public transactionStep: number;
 
   @ManyToOne(
-    _type => FinancialServiceProviderEntity,
-    financialServiceProvider => financialServiceProvider.transactions,
+    (_type) => FinancialServiceProviderEntity,
+    (financialServiceProvider) => financialServiceProvider.transactions,
   )
   public financialServiceProvider: FinancialServiceProviderEntity;
 
   @ManyToOne(
-    _type => RegistrationEntity,
-    registration => registration.transactions,
+    (_type) => RegistrationEntity,
+    (registration) => registration.transactions,
   )
   public registration: RegistrationEntity;
 }

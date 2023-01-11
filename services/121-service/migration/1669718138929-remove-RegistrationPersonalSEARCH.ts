@@ -1,4 +1,4 @@
-import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
+import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 import { PermissionEnum } from '../src/user/permission.enum';
 import { PermissionEntity } from '../src/user/permissions.entity';
 import { UserRoleEntity } from './../src/user/user-role.entity';
@@ -7,15 +7,15 @@ export class removeRegistrationPersonalSEARCH1669718138929
   implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.commitTransaction();
-    await this.migrateData(queryRunner.connection);
+    await this.migrateData(queryRunner.manager);
     await queryRunner.startTransaction();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {}
 
-  private async migrateData(connection: Connection): Promise<void> {
-    const userRoleRepo = connection.getRepository(UserRoleEntity);
-    const permRepo = connection.getRepository(PermissionEntity);
+  private async migrateData(manager: EntityManager): Promise<void> {
+    const userRoleRepo = manager.getRepository(UserRoleEntity);
+    const permRepo = manager.getRepository(PermissionEntity);
     const searchPerm = await permRepo
       .createQueryBuilder('permission')
       .select([`permission."id"`])

@@ -11,7 +11,7 @@ export class SetFspDto {
   public readonly fspId: number;
 }
 
-const fspArray = Object.values(FspName).map(item => String(item));
+const fspArray = Object.values(FspName).map((item) => String(item));
 
 export class UpdateChosenFspDto {
   @ApiProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })

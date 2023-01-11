@@ -51,8 +51,8 @@ export class TwilioMessageEntity extends Base121Entity {
   public errorMessage?: string;
 
   @ManyToOne(
-    _type => RegistrationEntity,
-    registration => registration.twilioMessages,
+    (_type) => RegistrationEntity,
+    (registration) => registration.twilioMessages,
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;

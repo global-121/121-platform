@@ -11,8 +11,6 @@ export class SmsService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
-  public constructor() {}
-
   public async sendSms(
     message: string,
     recipientPhoneNr: string,
@@ -27,10 +25,10 @@ export class SmsService {
         statusCallback: EXTERNAL_API.smsStatus,
         to: recipientPhoneNr,
       })
-      .then(message =>
+      .then((message) =>
         this.storeSendSms(message, registrationId, messageContentType),
       )
-      .catch(err => console.log('Error from Twilio:', err));
+      .catch((err) => console.log('Error from Twilio:', err));
   }
 
   public storeSendSms(
@@ -56,7 +54,7 @@ export class SmsService {
     const findOneOptions = {
       sid: sid,
     };
-    return await this.twilioMessageRepository.findOne(findOneOptions);
+    return await this.twilioMessageRepository.findOneBy(findOneOptions);
   }
 
   public async statusCallback(callbackData): Promise<void> {
