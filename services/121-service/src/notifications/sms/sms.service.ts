@@ -25,10 +25,10 @@ export class SmsService {
         statusCallback: EXTERNAL_API.smsStatus,
         to: recipientPhoneNr,
       })
-      .then(message =>
+      .then((message) =>
         this.storeSendSms(message, registrationId, messageContentType),
       )
-      .catch(err => console.log('Error from Twilio:', err));
+      .catch((err) => console.log('Error from Twilio:', err));
   }
 
   public storeSendSms(

@@ -98,7 +98,7 @@ export class WhatsappService {
     }
     return twilioClient.messages
       .create(payload)
-      .then(message => {
+      .then((message) => {
         this.storeSendWhatsapp(
           message,
           registrationId,

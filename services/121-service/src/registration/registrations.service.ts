@@ -1233,7 +1233,7 @@ export class RegistrationsService {
     programId: number,
     message?: string,
     key?: string,
-    tryWhatsApp: boolean = false,
+    tryWhatsApp = false,
     messageContentType?: MessageContentType,
   ): Promise<void> {
     if (!message && !key) {
