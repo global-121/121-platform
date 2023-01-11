@@ -1,6 +1,7 @@
 ion-chip {
   width: 120px;
   cursor: default;
+  pointer-events: none;
 
   &.chip-deliverd,
   &.chip-read,
