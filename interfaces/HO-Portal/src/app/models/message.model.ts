@@ -23,7 +23,6 @@ export enum TwilioStatus {
 }
 
 export enum MessageStatus {
-  waiting = 'waiting',
   sent = 'sent',
   delivered = 'delivered',
   failed = 'failed',

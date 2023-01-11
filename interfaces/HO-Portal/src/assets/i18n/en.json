@@ -428,7 +428,6 @@
             "read": "Read"
           },
           "chip-status": {
-            "waiting": "Waiting",
             "sent": "Sent",
             "delivered": "Delivered",
             "failed": "Failed",

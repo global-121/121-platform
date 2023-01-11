@@ -305,14 +305,14 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   };
 
   private messageColumnStatus = {
-    [TwilioStatus.accepted]: MessageStatus.waiting,
+    [TwilioStatus.accepted]: MessageStatus.sent,
     [TwilioStatus.delivered]: MessageStatus.delivered,
-    [TwilioStatus.delivery_unknown]: MessageStatus.waiting,
+    [TwilioStatus.delivery_unknown]: MessageStatus.sent,
     [TwilioStatus.failed]: MessageStatus.failed,
-    [TwilioStatus.queued]: MessageStatus.waiting,
+    [TwilioStatus.queued]: MessageStatus.sent,
     [TwilioStatus.read]: MessageStatus.read,
-    [TwilioStatus.scheduled]: MessageStatus.waiting,
-    [TwilioStatus.sending]: MessageStatus.waiting,
+    [TwilioStatus.scheduled]: MessageStatus.sent,
+    [TwilioStatus.sending]: MessageStatus.sent,
     [TwilioStatus.sent]: MessageStatus.sent,
     [TwilioStatus.undelivered]: MessageStatus.failed,
   };
