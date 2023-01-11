@@ -67,8 +67,8 @@ export class AggregateImportResult {
   public countPaymentStarted?: number;
 }
 
-const fspArray = Object.values(FspName).map(item => String(item));
-const languageArray = Object.values(LanguageEnum).map(item => String(item));
+const fspArray = Object.values(FspName).map((item) => String(item));
+const languageArray = Object.values(LanguageEnum).map((item) => String(item));
 
 export class ImportRegistrationsDto extends BulkImportDto {
   @ApiProperty({

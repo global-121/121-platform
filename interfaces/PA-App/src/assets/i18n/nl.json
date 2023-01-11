@@ -6,10 +6,6 @@
   "connection": {
     "error-retry": "Er ging iets mis, wil je het opnieuw proberen?"
   },
-  "password-toggle": {
-    "hide": "Verberg wachtwoord",
-    "show": "Toon wachtwoord"
-  },
   "personal": {
     "consent-question": {
       "agree": "Ik ga akkoord",
@@ -18,28 +14,11 @@
       "more-info-personal-information": "Over persoonlijke informatie",
       "question": "Om je in te schrijven voor dit hulp programma moet je akkoord gaan met <strong>hoe we omgaan met jouw persoonlijke informatie</strong>.   <br /><br />   Lees of luister hoe we jouw persoonlijke informatie veilig stellen."
     },
-    "create-account": {
-      "conclusion": "Geweldig! Je hebt een account aangemaakt.",
-      "confirm-password": "Bevestig wachtwoord:",
-      "create-password-explanation": "Maak een wachtwoord van minimaal {{minimalLength}} tekens:",
-      "create-username": "Vul je volledige naam in:",
-      "introduction": "Om een account aan te maken, moet je de volgende stappen voltooien.",
-      "password-too-short": "Vul minimaal {{minimalLength}} tekens in.",
-      "unequal-passwords": "De wachtwoorden die je ingevuld hebt zijn niet hetzelfde. Probeer het opnieuw.",
-      "username-not-unique": "De naam die je ingevuld hebt is niet uniek. Probeer het opnieuw.",
-      "username-password": "Vul je volledige naam in en maak een wachtwoord aan."
-    },
     "enroll-in-program": {
       "change": "Wijzig mijn informatie",
       "introduction-information": "Om de best mogelijke hulp en een eerlijk proces te bieden, hebben we wat persoonlijke informatie nodig.",
       "please-confirm": "Hieronder is een overzicht van jouw persoonlijke informatie. Controleer en klik op versturen.",
       "submit-confirm": "Verstuur mijn informatie"
-    },
-    "login-account": {
-      "incorrect-credentials": "De combinatie van je volledige naam en wachtwoord wordt niet herkend. Probeer het opnieuw.",
-      "introduction": "Om een bestaand account te gebruiken moet je inloggen met je volledige naam en wachtwoord.",
-      "supply-password": "Jouw wachtwoord:",
-      "supply-username": "Jouw volledige naam:"
     },
     "registration-summary": {
       "documents": "Houd deze documenten gereed:",
@@ -76,11 +55,6 @@
       "validation": {
         "phone-number": "We konden dit telefoonnummer niet verifiëren. Update en probeer opnieuw. "
       }
-    },
-    "signup-signin": {
-      "create-id": "Maak account aan",
-      "introduction": "Om je in te schrijven voor dit hulp programma moet je een account hebben. Maak een account aan of gebruik een bestaand account.",
-      "login-id": "Gebruik mijn account"
     }
   },
   "q-and-a-set": {

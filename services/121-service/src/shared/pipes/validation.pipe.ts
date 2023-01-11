@@ -36,9 +36,9 @@ export class ValidationPipe implements PipeTransform<any> {
 
   private buildError(errors): any {
     const result = {};
-    errors.forEach(el => {
-      let prop = el.property;
-      Object.entries(el.constraints).forEach(constraint => {
+    errors.forEach((el) => {
+      const prop = el.property;
+      Object.entries(el.constraints).forEach((constraint) => {
         result[prop + constraint[0]] = `${constraint[1]}`;
       });
     });
@@ -47,6 +47,6 @@ export class ValidationPipe implements PipeTransform<any> {
 
   private toValidate(metatype): boolean {
     const types = [String, Boolean, Number, Array, Object];
-    return !types.find(type => metatype === type);
+    return !types.find((type) => metatype === type);
   }
 }

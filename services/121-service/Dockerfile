@@ -1,7 +1,6 @@
-FROM node:14-alpine as base
+FROM node:16-slim as base
 
 WORKDIR /home/node/app
-
 
 FROM base as production
 

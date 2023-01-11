@@ -4,7 +4,7 @@ import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { Request } from 'express';
-import { getRepository, In, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { DEBUG } from '../config';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -37,11 +37,12 @@ export class UserService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramAidworkerAssignmentEntity)
-  private readonly assignmentRepository: Repository<
-    ProgramAidworkerAssignmentEntity
-  >;
+  private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
 
-  public constructor(@Inject(REQUEST) private readonly request: Request) {}
+  public constructor(
+    @Inject(REQUEST) private readonly request: Request,
+    private readonly dataSource: DataSource,
+  ) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
     const findOneOptions = {
@@ -50,7 +51,8 @@ export class UserService {
         .createHmac('sha256', loginUserDto.password)
         .digest('hex'),
     };
-    const userEntity = await getRepository(UserEntity)
+    const userEntity = await this.dataSource
+      .getRepository(UserEntity)
       .createQueryBuilder('user')
       .addSelect('password')
       .leftJoinAndSelect('user.programAssignments', 'assignment')
@@ -105,7 +107,9 @@ export class UserService {
   }
 
   public async getUserRoles(): Promise<UserRoleEntity[]> {
-    return await this.userRoleRepository.find({ relations: ['permissions'] });
+    return await this.userRoleRepository.find({
+      relations: ['permissions'],
+    });
   }
 
   public async addUserRole(
@@ -124,7 +128,7 @@ export class UserService {
     const permissionEntities = [];
     for (const permission of userRoleData.permissions) {
       permissionEntities.push(
-        await this.permissionRepository.findOne({ name: permission }),
+        await this.permissionRepository.findOneBy({ name: permission }),
       );
     }
     userRoleEntity.permissions = permissionEntities;
@@ -141,7 +145,7 @@ export class UserService {
     const permissionEntities = [];
     for (const permission of userRoleData.permissions) {
       permissionEntities.push(
-        await this.permissionRepository.findOne({ name: permission }),
+        await this.permissionRepository.findOneBy({ name: permission }),
       );
     }
     existingRole.permissions = permissionEntities;
@@ -155,7 +159,9 @@ export class UserService {
   }
 
   private async findRoleOrThrow(userRoleId: number): Promise<UserRoleEntity> {
-    const existingRole = await this.userRoleRepository.findOne(userRoleId);
+    const existingRole = await this.userRoleRepository.findOneBy({
+      id: userRoleId,
+    });
     if (!existingRole) {
       throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
     }
@@ -172,7 +178,8 @@ export class UserService {
     userType: UserType,
   ): Promise<UserRO> {
     // check uniqueness of email
-    const qb = await getRepository(UserEntity)
+    const qb = this.dataSource
+      .getRepository(UserEntity)
       .createQueryBuilder('user')
       .where('user.username = :username', { username });
 
@@ -187,7 +194,7 @@ export class UserService {
     }
 
     // create new user
-    let newUser = new UserEntity();
+    const newUser = new UserEntity();
     newUser.username = username;
     newUser.password = password;
     newUser.userType = userType;
@@ -196,14 +203,15 @@ export class UserService {
   }
 
   public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {
-    let toUpdate = await this.userRepository.findOne(id, {
+    const toUpdate = await this.userRepository.findOne({
+      where: { id: id },
       relations: [
         'programAssignments',
         'programAssignments.roles',
         'programAssignments.roles.permissions',
       ],
     });
-    let updated = toUpdate;
+    const updated = toUpdate;
     updated.password = crypto.createHmac('sha256', dto.password).digest('hex');
     await this.userRepository.save(updated);
     return await this.buildUserRO(updated);
@@ -214,7 +222,8 @@ export class UserService {
     userId: number,
     assignAidworkerToProgram: AssignAidworkerToProgramDto,
   ): Promise<UserRoleEntity[]> {
-    const user = await this.userRepository.findOne(userId, {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
       relations: [
         'programAssignments',
         'programAssignments.program',
@@ -225,7 +234,9 @@ export class UserService {
       const errors = { User: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
     if (!program) {
       const errors = { Program: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -263,14 +274,17 @@ export class UserService {
     programId: number,
     userId: number,
   ): Promise<void> {
-    const user = await this.userRepository.findOne(userId, {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
       relations: ['programAssignments', 'programAssignments.program'],
     });
     if (!user) {
       const errors = { User: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
     if (!program) {
       const errors = { Program: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -292,7 +306,8 @@ export class UserService {
   }
 
   public async delete(userId: number): Promise<UserEntity> {
-    const user = await this.userRepository.findOne(userId, {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
       relations: ['programAssignments', 'programAssignments.roles'],
     });
 
@@ -302,7 +317,8 @@ export class UserService {
   }
 
   public async findById(id: number): Promise<UserEntity> {
-    const user = await this.userRepository.findOne(id, {
+    const user = await this.userRepository.findOne({
+      where: { id: id },
       relations: [
         'programAssignments',
         'programAssignments.roles',
@@ -335,14 +351,14 @@ export class UserService {
   }
 
   public generateJWT(user: UserEntity): string {
-    let today = new Date();
-    let exp = new Date(today);
+    const today = new Date();
+    const exp = new Date(today);
     exp.setDate(today.getDate() + tokenExpirationDays);
 
-    let roles = {};
+    const roles = {};
     if (user.programAssignments && user.programAssignments[0]) {
       for (const programAssignment of user.programAssignments) {
-        const programRoles = programAssignment.roles.map(role => role.role);
+        const programRoles = programAssignment.roles.map((role) => role.role);
         roles[`${programAssignment.program.id}`] = programRoles;
       }
     }
@@ -376,7 +392,7 @@ export class UserService {
   }
 
   private async buildUserRO(user: UserEntity): Promise<UserRO> {
-    let permissions = await this.buildPermissionsObject(user.id);
+    const permissions = await this.buildPermissionsObject(user.id);
 
     const userRO = {
       id: user.id,
@@ -388,7 +404,8 @@ export class UserService {
   }
 
   private async buildPermissionsObject(userId: number): Promise<any> {
-    const user = await this.userRepository.findOne(userId, {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
       relations: [
         'programAssignments',
         'programAssignments.roles',
@@ -402,7 +419,7 @@ export class UserService {
     if (user.programAssignments && user.programAssignments[0]) {
       for (const programAssignment of user.programAssignments) {
         for (const role of programAssignment.roles) {
-          const permissionNames = role.permissions.map(a => a.name);
+          const permissionNames = role.permissions.map((a) => a.name);
           permissions = [...new Set([...permissions, ...permissionNames])];
           permissionsObject[programAssignment.program.id] = permissions;
         }
@@ -414,7 +431,7 @@ export class UserService {
   private buildCookieByRequest(token: string): CookieSettingsDto {
     let domain: string;
     let path: string;
-    let tokenKey: string = this.getInterfaceKeyByHeader();
+    const tokenKey: string = this.getInterfaceKeyByHeader();
 
     return {
       tokenKey,

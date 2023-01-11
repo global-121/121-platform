@@ -98,7 +98,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   public columns: PersonTableColumn[] = [];
   private standardColumns: PersonTableColumn[] = [];
   public paymentHistoryColumn: PersonTableColumn;
-  private pastTransactions: Transaction[] = [];
   private lastPaymentId: number;
 
   private allPeopleData: Person[];
@@ -571,22 +570,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
     await this.loadColumns();
 
-    if (this.canViewPaymentData) {
-      this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
-        this.programId,
-      );
-      const firstPaymentToShow = 1;
-
-      if (this.thisPhase === ProgramPhase.payment) {
-        this.pastTransactions = await this.programsService.getTransactions(
-          this.programId,
-          firstPaymentToShow,
-        );
-        this.paymentHistoryColumn = this.createPaymentHistoryColumn();
-        await this.refreshData();
-      }
-    }
-
     await this.updateBulkActions();
 
     this.submitPaymentProps = {
@@ -617,6 +600,11 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     await this.loadProgram();
     await this.loadPermissions();
+    if (this.canViewPaymentData) {
+      this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
+        this.programId,
+      );
+    }
     await this.loadData();
     this.updateProxyScrollbarSize();
     this.isLoading = false;
@@ -852,15 +840,16 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private async loadData() {
-    if (this.canViewPersonalData) {
-      this.allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
-        this.programId,
-      );
-    } else {
-      this.allPeopleData = await this.programsService.getPeopleAffected(
-        this.programId,
-      );
+    this.allPeopleData = await this.programsService.getPeopleAffected(
+      this.programId,
+      this.canUpdatePersonalData,
+      this.canViewPaymentData && this.thisPhase === ProgramPhase.payment,
+    );
+
+    if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
+      this.paymentHistoryColumn = this.createPaymentHistoryColumn();
     }
+
     this.allPeopleAffected = this.createTableData(this.allPeopleData);
     this.filterPeopleAffectedByPhase();
   }
@@ -1005,8 +994,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       paTableAttributes: person.paTableAttributes,
     };
 
+    const lastPaymentInfo = {
+      lastPaymentNumber: person.payment,
+      lastPaymentAmount: person.transactionAmount,
+      lastPaymentStatus: person.transactionStatus,
+      lastPaymentErrorMessage: person.errorMessage,
+    };
+
     if (this.canViewPaymentData) {
-      personRow = this.fillPaymentHistoryColumn(personRow);
+      personRow = this.fillPaymentHistoryColumn(personRow, lastPaymentInfo);
     }
 
     // Custom attributes can be personal data or not personal data
@@ -1018,17 +1014,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     return personRow;
   }
 
-  private getTransactionOfPaymentForRegistration(
-    paymentIndex: number,
-    referenceId: string,
-  ): Transaction {
-    return this.pastTransactions.find(
-      (transaction) =>
-        transaction.payment === paymentIndex &&
-        transaction.referenceId === referenceId,
-    );
-  }
-
   private fillPaTableAttributeRows(personRow: PersonRow): PersonRow {
     for (const paTableAttribute of this.paTableAttributes) {
       personRow[paTableAttribute.name] =
@@ -1037,56 +1022,45 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     return personRow;
   }
 
-  private fillPaymentHistoryColumn(personRow: PersonRow): PersonRow {
-    let lastPayment: Transaction = null;
-
-    for (
-      let paymentIndex = this.lastPaymentId;
-      paymentIndex > 0;
-      paymentIndex--
-    ) {
-      const transaction = this.getTransactionOfPaymentForRegistration(
-        paymentIndex,
-        personRow.referenceId,
-      );
-
-      if (!transaction) {
-        continue;
-      } else {
-        lastPayment = transaction;
-        break;
-      }
-    }
+  private fillPaymentHistoryColumn(
+    personRow: PersonRow,
+    lastPaymentInfo: {
+      lastPaymentNumber: number;
+      lastPaymentAmount: number;
+      lastPaymentStatus: string;
+      lastPaymentErrorMessage: string;
+    },
+  ): PersonRow {
+    const {
+      lastPaymentNumber,
+      lastPaymentAmount,
+      lastPaymentStatus,
+      lastPaymentErrorMessage,
+    } = lastPaymentInfo;
 
     let paymentColumnValue = new PaymentColumnDetail();
     paymentColumnValue.payments = [];
 
     const columnKey = 'paymentHistoryColumn';
 
-    if (!lastPayment) {
+    if (!lastPaymentNumber) {
       paymentColumnValue.text = this.translate.instant(
         'page.program.program-people-affected.transaction.no-payment-yet',
       );
       personRow[columnKey] = paymentColumnValue.text;
     } else {
-      const pastTransactionsOfPa = this.pastTransactions.filter(
-        (transaction) => transaction.referenceId === personRow.referenceId,
-      );
-
       paymentColumnValue = {
         text: '',
-        paymentIndex: lastPayment.payment,
-        payments: pastTransactionsOfPa.map((t) => t.payment),
-        amount: `${this.program.currency} ${lastPayment.amount}`,
-        hasMessageIcon: this.enableMessageSentIcon(lastPayment),
-        hasMoneyIconTable: this.enableMoneySentIconTable(lastPayment),
-        status: lastPayment.status,
+        paymentIndex: lastPaymentNumber,
+        amount: `${this.program.currency} ${lastPaymentAmount}`,
+        status: lastPaymentStatus,
+        errorMessage: lastPaymentErrorMessage,
       };
-      if (lastPayment.status === StatusEnum.success) {
+      if (lastPaymentStatus === StatusEnum.success) {
         paymentColumnValue.text = this.translate.instant(
           'page.program.program-people-affected.transaction.success',
         );
-      } else if (lastPayment.status === StatusEnum.waiting) {
+      } else if (lastPaymentStatus === StatusEnum.waiting) {
         paymentColumnValue.errorMessage = this.translate.instant(
           'page.program.program-people-affected.transaction.waiting-message',
         );
@@ -1094,7 +1068,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           'page.program.program-people-affected.transaction.waiting',
         );
       } else {
-        paymentColumnValue.errorMessage = lastPayment.errorMessage;
         paymentColumnValue.text = this.translate.instant(
           'page.program.program-people-affected.transaction.failed',
         );
@@ -1228,7 +1201,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     await modal.present();
   }
 
-  public selectAction($event) {
+  public async selectAction($event) {
     if (this.action === BulkActionId.chooseAction) {
       this.resetBulkAction();
       return;
@@ -1241,7 +1214,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         dropdownOptionLabel.split('#')[1],
       );
     }
-    this.allPeopleAffected = this.updatePeopleForAction(
+    this.allPeopleAffected = await this.updatePeopleForAction(
       this.allPeopleAffected,
       this.action,
       this.submitPaymentProps.payment,
@@ -1261,14 +1234,29 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updatePeopleForAction(
+  private async updatePeopleForAction(
     people: PersonRow[],
     action: BulkActionId,
     payment?: number,
   ) {
-    return people.map((person) =>
-      this.bulkActionService.updateCheckbox(action, person, payment),
-    );
+    let registrationsWithPayment;
+    if (payment) {
+      registrationsWithPayment = (
+        await this.programsService.getPeopleAffected(
+          this.programId,
+          false,
+          false,
+          payment,
+        )
+      ).map((r) => r.referenceId);
+    }
+    return people.map((person) => {
+      return this.bulkActionService.updateCheckbox(
+        action,
+        person,
+        payment ? registrationsWithPayment.includes(person.referenceId) : null,
+      );
+    });
   }
 
   private resetBulkAction() {

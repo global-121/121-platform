@@ -17,21 +17,18 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   @Column({ default: FspIntegrationType.api })
   public integrationType: FspIntegrationType;
 
-  @OneToMany(
-    _type => FspQuestionEntity,
-    questions => questions.fsp,
-  )
+  @OneToMany((_type) => FspQuestionEntity, (questions) => questions.fsp)
   public questions: FspQuestionEntity[];
 
   @ManyToMany(
-    _type => ProgramEntity,
-    program => program.financialServiceProviders,
+    (_type) => ProgramEntity,
+    (program) => program.financialServiceProviders,
   )
   public program: ProgramEntity[];
 
   @OneToMany(
-    _type => TransactionEntity,
-    transactions => transactions.financialServiceProvider,
+    (_type) => TransactionEntity,
+    (transactions) => transactions.financialServiceProvider,
   )
   public transactions: TransactionEntity[];
 

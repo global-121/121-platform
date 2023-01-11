@@ -1,6 +1,6 @@
-import { HttpService, Injectable } from '@nestjs/common';
-import { of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { HttpService } from '@nestjs/axios';
+import { Injectable } from '@nestjs/common';
+import { catchError, lastValueFrom, map, of } from 'rxjs';
 import { BelcashTransferPayload } from './belcash-transfer-payload.dto';
 
 @Injectable()
@@ -31,19 +31,20 @@ export class BelcashApiService {
     authorizationToken?: string,
   ): Promise<any> {
     const url = `${process.env.BELCASH_API_URL}/${endpoint}`;
-    return await this.httpService
-      .post(url, payload, {
-        headers: this.createHeaders(authorizationToken),
-      })
-      .pipe(
-        map(response => {
-          return response;
-        }),
-        catchError(err => {
-          return of(err.response);
-        }),
-      )
-      .toPromise();
+    return await lastValueFrom(
+      this.httpService
+        .post(url, payload, {
+          headers: this.createHeaders(authorizationToken),
+        })
+        .pipe(
+          map((response) => {
+            return response;
+          }),
+          catchError((err) => {
+            return of(err.response);
+          }),
+        ),
+    );
   }
 
   private createHeaders(authorizationToken?: string): object {

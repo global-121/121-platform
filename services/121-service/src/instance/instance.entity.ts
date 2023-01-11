@@ -21,7 +21,7 @@ export class InstanceEntity extends Base121Entity {
 
   @OneToOne(
     () => MonitoringQuestionEntity,
-    monitoringQuestion => monitoringQuestion.instance,
+    (monitoringQuestion) => monitoringQuestion.instance,
     {
       cascade: true,
     },

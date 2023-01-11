@@ -30,25 +30,19 @@ export class UserEntity extends CascadeDeleteEntity {
 
   @OneToMany(
     () => ProgramAidworkerAssignmentEntity,
-    assignment => assignment.user,
+    (assignment) => assignment.user,
   )
   public programAssignments: ProgramAidworkerAssignmentEntity[];
 
-  @OneToMany(
-    () => ActionEntity,
-    program => program.user,
-  )
+  @OneToMany(() => ActionEntity, (program) => program.user)
   public actions: ActionEntity[];
 
-  @OneToMany(
-    () => RegistrationEntity,
-    registration => registration.user,
-  )
+  @OneToMany(() => RegistrationEntity, (registration) => registration.user)
   public registrations: RegistrationEntity[];
 
   @OneToMany(
     () => PersonAffectedAppDataEntity,
-    personAffectedAppData => personAffectedAppData.user,
+    (personAffectedAppData) => personAffectedAppData.user,
   )
   public personAffectedAppData: PersonAffectedAppDataEntity[];
 

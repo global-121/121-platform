@@ -1,11 +1,5 @@
-import {
-  Column,
-  Entity,
-  getConnection,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import { AppDataSource } from '../../appdatasource';
 import { ActionEntity } from '../actions/action.entity';
 import { CascadeDeleteEntity } from '../base.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
@@ -64,7 +58,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @ManyToMany(
     () => FinancialServiceProviderEntity,
-    financialServiceProviders => financialServiceProviders.program,
+    (financialServiceProviders) => financialServiceProviders.program,
   )
   @JoinTable()
   public financialServiceProviders: FinancialServiceProviderEntity[];
@@ -106,38 +100,29 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @OneToMany(
     () => ProgramAidworkerAssignmentEntity,
-    assignment => assignment.program,
+    (assignment) => assignment.program,
   )
   public aidworkerAssignments: ProgramAidworkerAssignmentEntity[];
 
-  @OneToMany(
-    () => ActionEntity,
-    action => action.program,
-  )
+  @OneToMany(() => ActionEntity, (action) => action.program)
   public actions: ActionEntity[];
 
   @OneToMany(
     () => ProgramQuestionEntity,
-    programQuestions => programQuestions.program,
+    (programQuestions) => programQuestions.program,
   )
   public programQuestions: ProgramQuestionEntity[];
 
   @OneToMany(
     () => ProgramCustomAttributeEntity,
-    programCustomAttributes => programCustomAttributes.program,
+    (programCustomAttributes) => programCustomAttributes.program,
   )
   public programCustomAttributes: ProgramCustomAttributeEntity[];
 
-  @OneToMany(
-    () => TransactionEntity,
-    transactions => transactions.program,
-  )
+  @OneToMany(() => TransactionEntity, (transactions) => transactions.program)
   public transactions: TransactionEntity[];
 
-  @OneToMany(
-    () => RegistrationEntity,
-    registrations => registrations.program,
-  )
+  @OneToMany(() => RegistrationEntity, (registrations) => registrations.program)
   public registrations: RegistrationEntity[];
 
   // Can be used to add deprecated custom attributes to an export if
@@ -170,7 +155,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
       };
     }
 
-    const repo = getConnection().getRepository(ProgramEntity);
+    const repo = AppDataSource.getRepository(ProgramEntity);
     const resultProgramQuestion = await repo
       .createQueryBuilder('program')
       .leftJoin('program.programQuestions', 'programQuestion')
@@ -198,7 +183,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
       .select('"programCustomAttribute".type', 'type')
       .getRawOne();
 
-    const repoInstance = getConnection().getRepository(InstanceEntity);
+    const repoInstance = AppDataSource.getRepository(InstanceEntity);
     const resultMonitoringQuestion = await repoInstance
       .createQueryBuilder('instance')
       .leftJoin('instance.monitoringQuestion', 'question')
@@ -250,8 +235,8 @@ export class ProgramEntity extends CascadeDeleteEntity {
   }
 
   private async getPreferredLanguageOptions(): Promise<object[]> {
-    const repo = getConnection().getRepository(ProgramEntity);
-    const program = await repo.findOne(this.id);
+    const repo = AppDataSource.getRepository(ProgramEntity);
+    const program = await repo.findOneBy({ id: this.id });
 
     return JSON.parse(JSON.stringify(program.languages)).map((key: string) => {
       return {

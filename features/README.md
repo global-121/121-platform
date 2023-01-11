@@ -97,7 +97,6 @@ Features of the 121-platform are described in this folder in a standardizes way 
 #### Generic PA-App components
 
 - [Listen to text in conversation-view](PA-App/Listen_to_text_in_conversation-view.feature)
-- [Verify password input](PA-App/Verify_password_input.feature)
 - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
 - Changes based on instance-configuration/values
 

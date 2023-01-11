@@ -26,3 +26,5 @@ coverage/
 *.sublime-project
 *.sublime-workspace
 .idea/
+
+tests/cypress/downloads/

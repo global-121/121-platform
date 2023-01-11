@@ -29,7 +29,7 @@ export class BobFinanceService {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.bobFinance;
-    for (let payment of paymentList) {
+    for (const payment of paymentList) {
       const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
       const transactionResult = new PaTransactionResultDto();
       transactionResult.calculatedAmount = calculatedAmount;
@@ -53,16 +53,14 @@ export class BobFinanceService {
   ): Promise<BobFinanceFspInstructions> {
     const bobFinanceFspInstructions = new BobFinanceFspInstructions();
 
-    bobFinanceFspInstructions[
-      'Receiver First name'
-    ] = await registration.getRegistrationDataValueByName(
-      CustomDataAttributes.nameFirst,
-    );
-    bobFinanceFspInstructions[
-      'Receiver last name'
-    ] = await registration.getRegistrationDataValueByName(
-      CustomDataAttributes.nameLast,
-    );
+    bobFinanceFspInstructions['Receiver First name'] =
+      await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.nameFirst,
+      );
+    bobFinanceFspInstructions['Receiver last name'] =
+      await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.nameLast,
+      );
     bobFinanceFspInstructions['Mobile Number'] = await this.formatToLocalNumber(
       await registration.getRegistrationDataValueByName(
         CustomDataAttributes.nameLast,

@@ -6,8 +6,6 @@ import { twilio } from './twilio.client';
 
 @Injectable()
 export class AuthMiddlewareTwilio implements NestMiddleware {
-  public constructor() {}
-
   public async use(
     req: Request,
     res: Response,

@@ -1,5 +1,5 @@
 import { UserEntity } from './../src/user/user.entity';
-import { Connection, MigrationInterface, QueryRunner } from 'typeorm';
+import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 import { PermissionEnum } from '../src/user/permission.enum';
 import { PermissionEntity } from '../src/user/permissions.entity';
 
@@ -8,15 +8,15 @@ export class migratePermissionsToAdmin1666098887955
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.commitTransaction();
     // 08-11-2022 migrateData() is commented out as this was causing issues with new entities and legacy migrations.
-    // await this.migrateData(queryRunner.connection);
+    // await this.migrateData(queryRunner.manager);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {}
 
-  private async migrateData(connection: Connection): Promise<void> {
-    const userRepo = connection.getRepository(UserEntity);
+  private async migrateData(manager: EntityManager): Promise<void> {
+    const userRepo = manager.getRepository(UserEntity);
     const users = await userRepo.find({
       relations: ['programAssignments', 'programAssignments.roles'],
     });
@@ -37,7 +37,7 @@ export class migratePermissionsToAdmin1666098887955
       }
     }
 
-    const permissionRepo = connection.getRepository(PermissionEntity);
+    const permissionRepo = manager.getRepository(PermissionEntity);
     const permissions = [
       'program:all.read',
       'program.create',

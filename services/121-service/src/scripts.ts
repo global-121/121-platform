@@ -26,17 +26,17 @@ function confirmRun(scriptName): any {
   let result = null;
   process.stdin.resume();
 
-  process.stdin.on('data', function(data) {
+  process.stdin.on('data', function (data) {
     prompt.emit(current, data.toString().trim());
   });
 
-  prompt.on(':new', function(name, question) {
+  prompt.on(':new', function (name, question) {
     current = name;
     console.log(question);
     process.stdout.write('> ');
   });
 
-  prompt.on(':end', function() {
+  prompt.on(':end', function () {
     process.stdin.pause();
     if (result !== 'y') {
       console.log('Operation aborted.');
@@ -53,7 +53,7 @@ function confirmRun(scriptName): any {
     'Are you sure? This might delete existing data in the database. (y/n)',
   );
 
-  prompt.on('confirm', function(data) {
+  prompt.on('confirm', function (data) {
     result = data;
     prompt.emit(':end');
   });

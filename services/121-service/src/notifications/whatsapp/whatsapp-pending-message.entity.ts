@@ -26,8 +26,8 @@ export class WhatsappPendingMessageEntity extends Base121Entity {
   public contentType: MessageContentType;
 
   @ManyToOne(
-    _type => RegistrationEntity,
-    registration => registration.whatsappPendingMessages,
+    (_type) => RegistrationEntity,
+    (registration) => registration.whatsappPendingMessages,
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;

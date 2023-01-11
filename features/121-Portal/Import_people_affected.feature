@@ -46,6 +46,7 @@ Feature: Import people affected
     And the PA-table now shows new rows equal to the number of successfully imported "phoneNumbers"
     And they have status "Imported"
     And the Imported date is filled in
+    And "Messages" shows "No messages yet"
 
   Scenario: Unsuccessfully import invalid CSV file
     Given the user clicks the "Import People Affected" button

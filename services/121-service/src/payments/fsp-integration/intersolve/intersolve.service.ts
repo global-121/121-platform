@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
-import { getRepository, IsNull, Not, Repository } from 'typeorm';
+import { DataSource, IsNull, Not, Repository } from 'typeorm';
 import { FspName } from '../../../fsp/financial-service-provider.entity';
 import { MessageContentType } from '../../../notifications/message-type.enum';
 import {
@@ -40,17 +40,11 @@ export class IntersolveService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(IntersolveBarcodeEntity)
-  private readonly intersolveBarcodeRepository: Repository<
-    IntersolveBarcodeEntity
-  >;
+  private readonly intersolveBarcodeRepository: Repository<IntersolveBarcodeEntity>;
   @InjectRepository(IntersolveInstructionsEntity)
-  private readonly intersolveInstructionsRepository: Repository<
-    IntersolveInstructionsEntity
-  >;
+  private readonly intersolveInstructionsRepository: Repository<IntersolveInstructionsEntity>;
   @InjectRepository(IntersolveRequestEntity)
-  private readonly intersolveRequestRepository: Repository<
-    IntersolveRequestEntity
-  >;
+  private readonly intersolveRequestRepository: Repository<IntersolveRequestEntity>;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
@@ -62,6 +56,7 @@ export class IntersolveService {
     private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
+    private readonly dataSource: DataSource,
   ) {}
 
   public async sendPayment(
@@ -73,7 +68,7 @@ export class IntersolveService {
     const result = new FspTransactionResultDto();
     result.paList = [];
 
-    for (let paymentInfo of paPaymentList) {
+    for (const paymentInfo of paPaymentList) {
       const paResult = await this.sendIndividualPayment(
         paymentInfo,
         useWhatsapp,
@@ -210,9 +205,10 @@ export class IntersolveService {
     if (!rawBarcode) {
       return;
     }
-    const barcode: IntersolveBarcodeEntity = this.intersolveBarcodeRepository.create(
-      rawBarcode as IntersolveBarcodeEntity,
-    );
+    const barcode: IntersolveBarcodeEntity =
+      this.intersolveBarcodeRepository.create(
+        rawBarcode as IntersolveBarcodeEntity,
+      );
     return await this.intersolveBarcodeRepository.save(barcode);
   }
 
@@ -289,7 +285,9 @@ export class IntersolveService {
     const programId = registration.programId;
 
     const language = await this.getLanguage(paymentInfo.referenceId);
-    const program = await this.programRepository.findOne(programId);
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
     let whatsappPayment = program.notifications[language]['whatsappPayment'];
     const calculatedAmount = this.getMultipliedAmount(
       amount,
@@ -309,7 +307,7 @@ export class IntersolveService {
         MessageContentType.paymentTemplated,
       )
       .then(
-        async response => {
+        async (response) => {
           const messageSid = response;
           await this.storeTransactionResult(
             payment,
@@ -328,7 +326,7 @@ export class IntersolveService {
             IntersolvePayoutStatus: IntersolvePayoutStatus.InitialMessage,
           };
         },
-        error => {
+        (error) => {
           result.message = error;
           result.status = StatusEnum.error;
         },
@@ -340,7 +338,10 @@ export class IntersolveService {
     return (
       (
         await this.registrationRepository.findOne({
-          where: { referenceId: referenceId, preferredLanguage: Not(IsNull()) },
+          where: {
+            referenceId: referenceId,
+            preferredLanguage: Not(IsNull()),
+          },
         })
       )?.preferredLanguage || 'en'
     );
@@ -366,7 +367,8 @@ export class IntersolveService {
   public async processStatus(
     statusCallbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    const transaction = await getRepository(TransactionEntity)
+    const transaction = await this.dataSource
+      .getRepository(TransactionEntity)
       .createQueryBuilder('transaction')
       .select(['transaction.id', 'transaction.payment'])
       .leftJoinAndSelect('transaction.registration', 'registration')
@@ -429,7 +431,7 @@ export class IntersolveService {
     }
 
     const voucher = registration.images.find(
-      image => image.barcode.payment === payment,
+      (image) => image.barcode.payment === payment,
     );
     if (!voucher) {
       throw new HttpException(
@@ -441,7 +443,8 @@ export class IntersolveService {
   }
 
   public async getInstruction(): Promise<any> {
-    const intersolveInstructionsEntity = await this.intersolveInstructionsRepository.findOne();
+    const [intersolveInstructionsEntity] =
+      await this.intersolveInstructionsRepository.find();
 
     if (!intersolveInstructionsEntity) {
       throw new HttpException(
@@ -454,7 +457,8 @@ export class IntersolveService {
   }
 
   public async postInstruction(instructionsFileBlob): Promise<any> {
-    let intersolveInstructionsEntity = await this.intersolveInstructionsRepository.findOne();
+    let [intersolveInstructionsEntity] =
+      await this.intersolveInstructionsRepository.find();
 
     if (!intersolveInstructionsEntity) {
       intersolveInstructionsEntity = new IntersolveInstructionsEntity();
@@ -512,14 +516,14 @@ export class IntersolveService {
     const maxId = (
       await this.intersolveBarcodeRepository
         .createQueryBuilder('barcode')
+        .select('MAX(barcode.id)', 'max')
         .leftJoin('barcode.image', 'image')
         .leftJoin('image.registration', 'registration')
         .where('registration.programId = :programId', {
           programId: programId,
         })
-        .orderBy('barcode.id', 'DESC')
-        .getOne()
-    )?.id;
+        .getRawOne()
+    )?.max;
 
     const unusedVouchers = [];
     let id = 1;
@@ -541,7 +545,7 @@ export class IntersolveService {
       for await (const voucher of previouslyUnusedVouchers) {
         const balance = await this.getBalance(voucher);
         if (balance === voucher.amount) {
-          let unusedVoucher = new UnusedVoucherDto();
+          const unusedVoucher = new UnusedVoucherDto();
           unusedVoucher.payment = voucher.payment;
           unusedVoucher.issueDate = voucher.created;
           unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;

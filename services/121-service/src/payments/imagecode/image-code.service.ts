@@ -15,18 +15,14 @@ export class ImageCodeService {
   @InjectRepository(ImageCodeEntity)
   private readonly imageRepository: Repository<ImageCodeEntity>;
   @InjectRepository(ImageCodeExportVouchersEntity)
-  private readonly imageExportVouchersRepository: Repository<
-    ImageCodeExportVouchersEntity
-  >;
+  private readonly imageExportVouchersRepository: Repository<ImageCodeExportVouchersEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-
-  public constructor() {}
 
   public async createVoucherUrl(
     barcodeData: IntersolveBarcodeEntity,
   ): Promise<string> {
-    let barcode = new ImageCodeEntity();
+    const barcode = new ImageCodeEntity();
     barcode.secret = crypto.randomBytes(100).toString('hex');
     barcode.image = await this.generateVoucherImage({
       dateTime: barcodeData.created,
@@ -43,7 +39,7 @@ export class ImageCodeService {
     barcodeData: IntersolveBarcodeEntity,
     referenceId: string,
   ): Promise<ImageCodeExportVouchersEntity> {
-    let barcode = new ImageCodeExportVouchersEntity();
+    const barcode = new ImageCodeExportVouchersEntity();
 
     barcode.registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
@@ -79,7 +75,9 @@ export class ImageCodeService {
   }
 
   public async get(secret: string): Promise<any> {
-    const imageCode = await this.imageRepository.findOne({ secret: secret });
+    const imageCode = await this.imageRepository.findOneBy({
+      secret: secret,
+    });
     // Removes the image from the database after getting it
     await this.imageRepository.remove(imageCode);
     return imageCode.image;
@@ -126,13 +124,13 @@ export class ImageCodeService {
     const barcodeImage = await this.generateBarCode(voucherData.code);
 
     // See Jimp documentation: https://www.npmjs.com/package/jimp/v/0.16.1
-    const voucher = await Jimp.read(voucherBaseFile).then(async image => {
+    const voucher = await Jimp.read(voucherBaseFile).then(async (image) => {
       // Add the generated barcode
-      await Jimp.read(barcodeImage).then(async barcode => {
+      await Jimp.read(barcodeImage).then(async (barcode) => {
         image.composite(barcode, 120, 652);
       });
 
-      await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK).then(font => {
+      await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK).then((font) => {
         image.print(font, 640, 79, this.formatDate(voucherData.dateTime)); // Date+time in the top-right corner
         image.print(
           font,
@@ -155,7 +153,7 @@ export class ImageCodeService {
 
       // Add a 'scaled' amount to the title of the voucher
       const titleAmount = new Jimp(100, 50);
-      await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK).then(font => {
+      await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK).then((font) => {
         titleAmount.print(
           font,
           0,

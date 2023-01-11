@@ -86,11 +86,11 @@ Feature: View and manage people affected (generic features)
   Scenario: View available actions
     When the user opens up the "choose action" dropdown
     Then a list appears with available "bulk actions"
-    And it is dependent on permissions of the currently logged-in "user" 
+    And it is dependent on permissions of the currently logged-in "user"
     And it is dependent on "selected phase" of the program
-    - registration: invite / mark as no longer eligible / select for validation / send message / delete PA
-    - inclusion: include / reject / send message / delete PA
-    - payment: reject / end inclusion / send message / do payment
+  - registration: invite / mark as no longer eligible / select for validation / send message / delete PA
+  - inclusion: include / reject / send message / delete PA
+  - payment: reject / end inclusion / send message / do payment
 
   Scenario: Select "bulk action" while rows eligible
     Given at least 1 person is eligible for the "bulk action"
@@ -146,7 +146,7 @@ Feature: View and manage people affected (generic features)
     When user checks last eligible row through "row checkbox"
     Then "header checkbox" also automatically checks
 
-  Scenario: Apply action without SMS-option
+  Scenario: Apply action without message-option
     Given a "bulk action" is selected
     And 0 or more rows are selected
     And there is no custom-SMS option for this action
@@ -154,7 +154,7 @@ Feature: View and manage people affected (generic features)
     Then a popup appears which lists which "bulk action" will be applied to "how many" people affected
     And it has a "confirm" button and a "cancel" button
 
-  Scenario: Apply action with SMS-option
+  Scenario: Apply action with message-option
     Given a "bulk action" is selected
     And 0 or more rows are selected
     And there is a custom-SMS option for this action
@@ -162,9 +162,9 @@ Feature: View and manage people affected (generic features)
     Then a popup appears which lists which "bulk action" will be applied to "how many" people affected
     And it has a checkbox that allows to choose whether to send a Custom SMS with this action
     And it is checked by default or not based on the action
-      - default yes for: invite, reject, end inclusion, send message
-      - default no for: include
-      - SMS not an option for: select for validation, mark as no longer eligible, delete PA
+    - default yes for: invite, reject, end inclusion, send message
+    - default no for: include
+    - SMS not an option for: select for validation, mark as no longer eligible, delete PA
     And - if checked by default or manually - it shows a free text field to enter the message
     And it shows a character counter
     And it has a "confirm" button, which is disabled if checkbox is checked AND the entered text is below 20 characters

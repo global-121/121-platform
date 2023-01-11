@@ -11,8 +11,6 @@ export class SmsService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
-  public constructor() {}
-
   public async sendSms(
     message: string,
     recipientPhoneNr: string,
@@ -56,7 +54,7 @@ export class SmsService {
     const findOneOptions = {
       sid: sid,
     };
-    return await this.twilioMessageRepository.findOne(findOneOptions);
+    return await this.twilioMessageRepository.findOneBy(findOneOptions);
   }
 
   public async statusCallback(callbackData): Promise<void> {
