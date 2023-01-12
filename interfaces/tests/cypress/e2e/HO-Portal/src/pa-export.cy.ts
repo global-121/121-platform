@@ -28,7 +28,7 @@ describe("Registration phase", () => {
       cy.visit(page.url);
       cy.get('[data-cy="export-list-all-pa"]').click();
       cy.get(
-        '[data-cy="input-prompt-ok"]'
+        '[data-cy="input-prompt-confirm"]'
       ).click();
       cy.verifyDownload('.xlsx', { contains: true });
       const date = new Date();
