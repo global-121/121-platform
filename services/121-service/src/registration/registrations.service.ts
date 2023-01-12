@@ -470,6 +470,17 @@ export class RegistrationsService {
       await this.tryWhatsappRepository.save(tryWhatsappEntity);
     }
 
+    // .. and update the twilio messages (to keep history of the invite message etc.)
+    const twilioMessages = await this.twilioMessageRepository.find({
+      where: { registrationId: importedRegistration.id },
+    });
+    if (twilioMessages) {
+      for (const message of twilioMessages) {
+        message.registration = updatedRegistration;
+      }
+      await this.twilioMessageRepository.save(twilioMessages);
+    }
+
     // .. then delete the imported registration
     await this.registrationRepository.remove(importedRegistration);
 
