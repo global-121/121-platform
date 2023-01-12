@@ -126,6 +126,7 @@ describe("Check message history", () => {
   });
 
   const checkPATable = (fixture: any, messageStatus: string, messageType: string, interceptId = 'textmessage') => {
+    cy.get('.proxy-scrollbar').scrollTo('right')
     cy.wait(`@${interceptId}`) // Wait for textmessage cy intercept to complete
     cy.setHoPortal();
     cy.visit(fixture.url);
