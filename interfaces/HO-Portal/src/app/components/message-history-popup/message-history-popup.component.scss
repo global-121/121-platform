@@ -3,7 +3,7 @@ ion-chip {
   cursor: default;
   pointer-events: none;
 
-  &.chip-deliverd,
+  &.chip-delivered,
   &.chip-read,
   &.chip-sent {
     background-color: var(--ion-color-primary-contrast);
