@@ -16,4 +16,6 @@ export const environment = {
   // Third-party tokens:
   ai_ikey: '',
   ai_endpoint: '',
+
+  twilio_error_codes_url: 'https://www.twilio.com/docs/api/errors',
 };

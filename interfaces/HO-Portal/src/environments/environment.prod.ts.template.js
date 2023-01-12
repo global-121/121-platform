@@ -15,5 +15,7 @@ export const environment = {
   // Third-party tokens:
   ai_ikey: '${process.env.NG_AI_IKEY}',
   ai_endpoint: '${process.env.NG_AI_ENDPOINT}',
+
+  twilio_error_codes_url: '${process.env.NG_TWILIO_ERROR_CODES_URL}'
 };
 `;

@@ -434,7 +434,7 @@
             "read": "Read"
           },
           "status-line": {
-            "code": "Twilio status code: "
+            "code": "Twilio error code: "
           },
           "accordion-header": "Message text",
           "image-string": "(image)"
