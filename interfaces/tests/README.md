@@ -46,7 +46,6 @@ example:
 ```ts
 beforeEach(() => {
   cy.setHoPortal();
-  cy.server();
 });
 ```
 

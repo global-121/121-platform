@@ -1,7 +1,6 @@
 describe('Personal Page', () => {
   beforeEach(() => {
     cy.setPaApp();
-    cy.server();
   });
 
   // Real API call

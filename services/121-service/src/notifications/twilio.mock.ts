@@ -75,6 +75,11 @@ export class TwilioClientMock {
           media: `/2010-04-01/Accounts/${process.env.TWILIO_SID}/Messages/${twilioMessagesCreateDto.messagingServiceSid}/Media.json`,
         },
       };
+      if (twilioMessagesCreateDto.to.includes('15005550001')) {
+        response.status = TwilioStatus.failed;
+        response.errorCode = '1';
+        response.errorMessage = 'Magic fail';
+      }
       console.log('TwilioClientMock create(): response:', response);
       this.sendStatusResponse121(twilioMessagesCreateDto, messageSid);
 
@@ -115,6 +120,12 @@ export class TwilioClientMock {
         const request = new TwilioStatusCallbackDto();
         request.MessageSid = messageSid;
         request.MessageStatus = TwilioStatus.delivered;
+
+        if (twilioMessagesCreateDto.to.includes('15005550001')) {
+          request.MessageStatus = TwilioStatus.failed;
+          request.ErrorCode = '1';
+          request.ErrorMessage = 'Magic fail';
+        }
         const httpService = new HttpService();
         try {
           await lastValueFrom(

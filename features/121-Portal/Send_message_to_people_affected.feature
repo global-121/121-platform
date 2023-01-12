@@ -17,6 +17,7 @@ Feature: Send message to people affected (extension of View_and_Manage_people_af
     Then the "changed data" is that "Messages" is filled with the text "Last message: sent" for the selected rows
     And the message arrives via SMS
 
+  # You can use 15005550001 in combination with Twilio Mock to test a failed SMS
   Scenario: Confirm "Send message to PAs" action with tryWhatsapp disabled and SMS fails
     Given the generic "confirm apply action" scenario (see View_and_Manage_people_affected.feature)
     And tryWhatsapp is off in the program configuration

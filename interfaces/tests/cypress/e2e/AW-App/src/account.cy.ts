@@ -1,7 +1,6 @@
 describe('AW Account Page', () => {
   beforeEach(() => {
     cy.setAwApp();
-    cy.server();
   });
 
   // Real API call
