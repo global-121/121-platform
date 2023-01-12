@@ -723,7 +723,8 @@ export class RegistrationsService {
     }
     let q = await this.registrationRepository
       .createQueryBuilder('registration')
-      .select('registration.id', 'id');
+      .select('registration.id', 'id')
+      .where('1 = 1');
 
     if (includePaymentData) {
       q = this.includeTransactionData(q);
@@ -755,13 +756,13 @@ export class RegistrationsService {
       )
       .addSelect('"twilioMessages".status', 'lastMessageStatus')
       .addSelect('"twilioMessages".type', 'lastMessageType')
-      .where('nextTwilioMessages.id IS NULL')
+      .andWhere('nextTwilioMessages.id IS NULL')
       .leftJoin('registration.data', 'data')
       .leftJoin('data.programQuestion', 'programQuestion')
       .leftJoin('registration.fsp', 'fsp');
 
     if (programId) {
-      q.where('registration.program.id = :programId', {
+      q.andWhere('registration.program.id = :programId', {
         programId: programId,
       });
     }
@@ -771,7 +772,7 @@ export class RegistrationsService {
         TransactionEntity,
         'transaction',
         'transaction."registrationId" = registration.id',
-      ).where('transaction.payment = :payment', {
+      ).andWhere('transaction.payment = :payment', {
         payment: filterOnPayment,
       });
     }
