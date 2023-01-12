@@ -1394,6 +1394,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
               <p>${this.translate.instant(
                 'page.program.program-people-affected.pa-moved-phase',
               )}</p>`,
+            true,
           );
         }
       })
@@ -1407,7 +1408,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.resetBulkAction();
   }
 
-  private async actionResult(resultMessage: string) {
+  private async actionResult(resultMessage: string, refresh: boolean = false) {
     const alert = await this.alertController.create({
       message: resultMessage,
       buttons: [
@@ -1415,7 +1416,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           text: this.translate.instant('common.ok'),
           handler: () => {
             alert.dismiss(true);
-            window.location.reload();
+            if (refresh) {
+              window.location.reload();
+            }
           },
         },
       ],
