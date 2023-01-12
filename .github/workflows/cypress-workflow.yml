@@ -56,7 +56,10 @@ jobs:
         cp ./services/.env.example services/.env
 
     - name: Install interfaces
-      run: npm run install:interfaces
+      run: |
+        npm ci --no-audit --no-fund --prefix interfaces/AW-App/
+        npm ci --no-audit --no-fund --prefix interfaces/PA-App/
+        npm ci --no-audit --no-fund --prefix interfaces/HO-Portal/
 
     - name: Install services
       run: npm run install:services
