@@ -223,7 +223,7 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationREAD)
   @ApiOperation({
-    summary: 'Get all People Affected for program EXCLUDING personal data',
+    summary: 'Get all registrations for program',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'personalData', required: true, type: 'boolean' })

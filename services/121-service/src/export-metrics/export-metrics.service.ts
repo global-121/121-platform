@@ -939,20 +939,20 @@ export class ExportMetricsService {
         yearMonthEndCondition = new Date(year, month + 1, 1, 0, 0);
       }
       query = query
-        .where('transactions.created > :yearMonthStartCondition', {
+        .andWhere('transactions.created > :yearMonthStartCondition', {
           yearMonthStartCondition: yearMonthStartCondition,
         })
-        .where('transactions.created < :yearMonthEndCondition', {
+        .andWhere('transactions.created < :yearMonthEndCondition', {
           yearMonthEndCondition: yearMonthEndCondition,
         });
     }
     if (payment) {
       if (fromStart) {
-        query = query.where('transactions.payment >= :payment', {
+        query = query.andWhere('transactions.payment >= :payment', {
           payment: payment,
         });
       } else {
-        query = query.where('transactions.payment = :payment', {
+        query = query.andWhere('transactions.payment = :payment', {
           payment: payment,
         });
       }

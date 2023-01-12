@@ -16,3 +16,32 @@ ion-chip {
     border: 1px solid var(--ion-color-danger);
   }
 }
+
+details {
+  summary {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .details-closed {
+    display: inline;
+  }
+
+  .details-open {
+    display: none;
+  }
+
+  &[open] {
+    .details-closed {
+      display: none;
+    }
+
+    .details-open {
+      display: inline;
+    }
+  }
+}
