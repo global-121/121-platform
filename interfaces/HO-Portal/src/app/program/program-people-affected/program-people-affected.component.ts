@@ -1366,6 +1366,11 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         message: confirmInput,
       })
       .then(() => {
+        if (this.action === BulkActionId.sendMessage) {
+          window.location.reload();
+          return;
+        }
+
         const actionStatus = {
           [BulkActionId.invite]: RegistrationStatus.invited,
           [BulkActionId.selectForValidation]:
