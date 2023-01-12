@@ -6,7 +6,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, DataSource, In, Repository } from 'typeorm';
+import { Brackets, DataSource, In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
 import { IntersolvePayoutStatus } from '../../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
@@ -211,9 +211,8 @@ export class WhatsappService {
         await this.handleWhatsappTestResult(callbackData, tryWhatsapp);
       }
     }
-
     await this.twilioMessageRepository.update(
-      { sid: callbackData.MessageSid },
+      { sid: callbackData.MessageSid, status: Not(TwilioStatus.read) },
       {
         status: callbackData.MessageStatus,
         errorCode: callbackData.ErrorCode,
