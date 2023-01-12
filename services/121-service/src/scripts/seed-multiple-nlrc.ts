@@ -31,7 +31,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     const programEntityLVV = await this.seedHelper.addProgram(programLVV);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    this.seedHelper.addDefaultUsers(programEntityLVV, true);
+    await this.seedHelper.addDefaultUsers(programEntityLVV, true);
 
     // ***** CREATE INSTANCE *****
     // Technically multiple instances could be loaded, but that should not be done
@@ -45,7 +45,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     const programEntityPV = await this.seedHelper.addProgram(programPV);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    this.seedHelper.addDefaultUsers(programEntityPV, true);
+    await this.seedHelper.addDefaultUsers(programEntityPV, true);
   }
 }
 
