@@ -74,3 +74,8 @@ jobs:
           npm run start:interfaces -- --configuration=ci
         wait-on-timeout: 900
         wait-on: 'http://localhost:3000/api/health/health, http://localhost:8008/, http://localhost:8080/, http://localhost:8888/'
+
+
+    - name: Dump docker logs on failure
+      if: failure()
+      uses: jwalton/gh-docker-logs@v2
