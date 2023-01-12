@@ -1410,7 +1410,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private async actionResult(resultMessage: string) {
     const alert = await this.alertController.create({
       message: resultMessage,
-      buttons: [this.translate.instant('common.ok')],
+      buttons: [
+        {
+          text: this.translate.instant('common.ok'),
+          handler: () => {
+            alert.dismiss(true);
+            window.location.reload();
+          },
+        },
+      ],
     });
 
     await alert.present();
