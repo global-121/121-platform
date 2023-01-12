@@ -79,6 +79,7 @@
             border: 1px solid currentColor;
             height: 66px;
           "
+          data-cy="input-props-textarea"
         ></ion-textarea>
         <ion-note>
           {{ input?.value ? input?.value?.length : 0 }} (≥
@@ -103,8 +104,8 @@
         fill="solid"
         color="primary"
         (click)="submitConfirm()"
+        data-cy="input-prompt-confirm"
         [disabled]="checkOkDisabled()"
-        data-cy="input-prompt-ok"
       >
         {{ 'common.ok' | translate }}
       </ion-button>

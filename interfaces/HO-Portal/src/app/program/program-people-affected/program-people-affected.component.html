@@ -301,6 +301,7 @@
       <ng-container *ngIf="column.prop === 'messages'">
         <button
           *ngIf="row.lastMessageStatus"
+          data-cy="message-history-button"
           class="ion-no-padding popup-button status-pop-up"
           [ngClass]="{
             'is-error': hasMessageError(row.lastMessageStatus)

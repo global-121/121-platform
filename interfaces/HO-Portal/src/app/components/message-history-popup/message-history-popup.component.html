@@ -33,6 +33,7 @@
         lines="none"
         *ngFor="let message of messageHistory; let i = index"
         class="ion-margin-bottom"
+        data-cy="message-history-row"
       >
         <ion-col>
           <ion-row class="ion-align-items-center">
@@ -77,7 +78,10 @@
           <ion-row>
             <ion-col>
               <ion-accordion-group>
-                <ion-accordion value="index_{{ i }}">
+                <ion-accordion
+                  value="index_{{ i }}"
+                  data-cy="message-history-accordion"
+                >
                   <ion-item
                     slot="header"
                     color="light"
