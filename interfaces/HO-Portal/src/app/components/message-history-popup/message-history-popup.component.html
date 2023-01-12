@@ -107,7 +107,11 @@
                 </div>
               </summary>
               <div
-                [innerText]="message.body"
+                [innerText]="
+                  message.body ||
+                    'page.program.program-people-affected.message-history-popup.image-string'
+                    | translate
+                "
                 class="ion-padding"
               ></div>
             </details>
