@@ -1,5 +1,8 @@
 const XLSX = require('xlsx');
 const fs = require('fs');
+const portalEn = require("../../../HO-Portal/src/assets/i18n/en.json")
+
+
 
 // Contains a list of custom Commands
 Cypress.Commands.add("setHoPortal", () => {
@@ -145,6 +148,20 @@ Cypress.Commands.add(
   }
 );
 
+
+Cypress.Commands.add(
+  "editPaAttribute",
+  (programId: number, referenceId: string, attribute: string, value: any) => {
+    cy.setServer();
+    cy.loginApi();
+    return cy.request({
+      method: "POST",
+      url: `programs/${programId}/registrations/attribute`,
+      body: { referenceId, attribute, value },
+    });
+  }
+);
+
 Cypress.Commands.add("getAllPeopleAffected", (programId: number) => {
   cy.setServer();
   cy.loginApi();
@@ -153,6 +170,17 @@ Cypress.Commands.add("getAllPeopleAffected", (programId: number) => {
     url: `programs/${programId}/registrations`,
   });
 });
+
+Cypress.Commands.add("sendBulkMessage", (messageText: string) => {
+  const dropdownText = portalEn.page.program["program-people-affected"].actions["send-message"]
+  cy.get(
+    ".ion-justify-content-between > :nth-child(1) > ion-row.md > .styled-select"
+  ).select(dropdownText);
+  cy.get("label > input").click();
+  cy.get('[data-cy="apply-action"]').click();
+  cy.get('[data-cy="input-props-textarea"]').type(messageText, { delay: 1 });
+  cy.get('[data-cy="input-prompt-confirm"]').click()
+})
 
 Cypress.Commands.add("readXlsx", (fileName: string, sheet: string) => {
   const filePath = `cypress/downloads/${fileName}`;
@@ -181,6 +209,7 @@ declare namespace Cypress {
     setHoPortal(): void;
     setPaApp(): void;
     setServer(): void;
+    sendBulkMessage(messageText: string): void;
     publishProgram(programId: number): void;
     moveToSpecifiedPhase(programId: number, phase: string): void;
     getAllPeopleAffected(
@@ -189,5 +218,6 @@ declare namespace Cypress {
     includePeopleAffected(programId: number, referenceIds: string[]): void;
     doPayment(programId: number, referenceIds: string[], payment: number, amount: number): void;
     readXlsx(filename: string, sheet: string): any
+    editPaAttribute(programId: number, referenceId: string, attribute: string, value: any): void
   }
 }

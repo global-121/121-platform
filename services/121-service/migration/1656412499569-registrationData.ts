@@ -1,11 +1,11 @@
-import { FspQuestionEntity } from './../src/fsp/fsp-question.entity';
-import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
-import { ProgramEntity } from '../src/programs/program.entity';
 import fs from 'fs';
-import { RegistrationEntity } from '../src/registration/registration.entity';
-import { RegistrationDataEntity } from '../src/registration/registration-data.entity';
+import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 import { InstanceEntity } from '../src/instance/instance.entity';
 import { MonitoringQuestionEntity } from '../src/instance/monitoring-question.entity';
+import { ProgramEntity } from '../src/programs/program.entity';
+import { RegistrationDataEntity } from '../src/registration/registration-data.entity';
+import { RegistrationEntity } from '../src/registration/registration.entity';
+import { FspQuestionEntity } from './../src/fsp/fsp-question.entity';
 export class registrationData1656412499569 implements MigrationInterface {
   name = 'registrationData1656412499569';
 
@@ -51,7 +51,7 @@ export class registrationData1656412499569 implements MigrationInterface {
     );
 
     await queryRunner.commitTransaction();
-    await this.migrateData(queryRunner.manager);
+    // await this.migrateData(queryRunner.manager);
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
     await queryRunner.query(
@@ -107,9 +107,7 @@ export class registrationData1656412499569 implements MigrationInterface {
     const programRepo = manager.getRepository(ProgramEntity);
     const registrationRepo = manager.getRepository(RegistrationEntity);
     const fspAttributeRepo = manager.getRepository(FspQuestionEntity);
-    const registrationDataRepo = manager.getRepository(
-      RegistrationDataEntity,
-    );
+    const registrationDataRepo = manager.getRepository(RegistrationDataEntity);
     const instanceRepo = manager.getRepository(InstanceEntity);
     const monQuestionRepo = manager.getRepository(MonitoringQuestionEntity);
 
@@ -203,7 +201,7 @@ export class registrationData1656412499569 implements MigrationInterface {
               case 'nameLast':
               case 'vnumber':
               case 'phoneNumber':
-                const q = program.programQuestions.find(q => q.name === key);
+                const q = program.programQuestions.find((q) => q.name === key);
                 if (q) {
                   registrationData.programQuestion = q;
                   registrationData.value = registration.customData[key];
@@ -212,7 +210,7 @@ export class registrationData1656412499569 implements MigrationInterface {
                 break;
               // FSP attribute(s)
               case 'whatsappPhoneNumber':
-                const attr = fspAttributes.find(att => att.name === key);
+                const attr = fspAttributes.find((att) => att.name === key);
                 if (attr) {
                   registrationData.fspQuestion = attr;
                   registrationData.value = registration.customData[key];
@@ -222,7 +220,7 @@ export class registrationData1656412499569 implements MigrationInterface {
               // Custom data
               case 'namePartnerOrganization':
                 const ca = program.programCustomAttributes.find(
-                  q => q.name === key,
+                  (q) => q.name === key,
                 );
                 if (ca) {
                   registrationData.programCustomAttribute = ca;

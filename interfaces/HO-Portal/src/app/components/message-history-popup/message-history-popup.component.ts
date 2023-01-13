@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { environment } from '../../../environments/environment';
 import { Message, MessageStatusMapping } from '../../models/message.model';
 import { Person } from '../../models/person.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
@@ -22,6 +23,7 @@ export class MessageHistoryPopupComponent implements OnInit {
   public imageString = '(image)';
   public rowIndex: number;
   public chipStatus = MessageStatusMapping;
+  public errorCodeUrl = `${environment.twilio_error_codes_url}/`;
 
   constructor(
     private programsService: ProgramsServiceApiService,
