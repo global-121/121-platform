@@ -869,7 +869,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ];
         break;
       case ProgramPhase.payment:
-        this.tableFilter.paStatus.selected = [RegistrationStatus.included];
+        this.tableFilter.paStatus.selected = [
+          RegistrationStatus.included,
+          RegistrationStatus.completed,
+        ];
         break;
     }
 

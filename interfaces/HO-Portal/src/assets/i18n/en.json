@@ -312,7 +312,8 @@
           "validated": "Validated",
           "included": "Included",
           "inclusionEnded": "Inclusion ended",
-          "rejected": "Rejected"
+          "rejected": "Rejected",
+          "completed": "Completed"
         },
         "actions": {
           "invite": "Invite for registration",
