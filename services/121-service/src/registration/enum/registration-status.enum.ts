@@ -11,6 +11,7 @@ export enum RegistrationStatusEnum {
   registeredWhileNoLongerEligible = 'registeredWhileNoLongerEligible',
   inclusionEnded = 'inclusionEnded',
   deleted = 'deleted',
+  completed = 'completed',
 }
 
 export enum RegistrationStatusTimestampField {
@@ -27,4 +28,5 @@ export enum RegistrationStatusTimestampField {
   inclusionEndDate = 'inclusionEndDate',
   selectedForValidationDate = 'selectedForValidationDate',
   deleteDate = 'deleteDate',
+  completedDate = 'completedDate',
 }

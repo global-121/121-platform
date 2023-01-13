@@ -205,6 +205,9 @@ export class RegistrationsService {
       case RegistrationStatusEnum.deleted:
         result = currentStatus !== RegistrationStatusEnum.deleted;
         break;
+      case RegistrationStatusEnum.completed:
+        result = [RegistrationStatusEnum.included].includes(currentStatus);
+        break;
     }
     return result;
   }
@@ -983,6 +986,11 @@ export class RegistrationsService {
         RegistrationStatusChangeEntity,
         RegistrationStatusEnum.deleted,
         `registration.id = ${RegistrationStatusEnum.deleted}.registrationId AND ${RegistrationStatusEnum.deleted}.registrationStatus = '${RegistrationStatusEnum.deleted}'`,
+      )
+      .leftJoin(
+        RegistrationStatusChangeEntity,
+        RegistrationStatusEnum.completed,
+        `registration.id = ${RegistrationStatusEnum.completed}.registrationId AND ${RegistrationStatusEnum.completed}.registrationStatus = '${RegistrationStatusEnum.completed}'`,
       );
   }
 
@@ -1113,6 +1121,8 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.registeredWhileNoLongerEligibleDate;
       case RegistrationStatusEnum.deleted:
         return RegistrationStatusTimestampField.deleteDate;
+      case RegistrationStatusEnum.completed:
+        return RegistrationStatusTimestampField.completedDate;
     }
   }
 

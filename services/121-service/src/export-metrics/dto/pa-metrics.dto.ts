@@ -17,5 +17,6 @@ export interface PaMetrics {
   [RegistrationStatusEnum.inclusionEnded]: number;
   [RegistrationStatusEnum.rejected]: number;
   [RegistrationStatusEnum.deleted]: number;
+  [RegistrationStatusEnum.completed]: number;
   [PaMetricsProperty.totalPaHelped]: number;
 }

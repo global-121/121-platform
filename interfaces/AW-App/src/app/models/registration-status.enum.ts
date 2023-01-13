@@ -10,4 +10,6 @@ export enum RegistrationStatusEnum {
   noLongerEligible = 'noLongerEligible',
   registeredWhileNoLongerEligible = 'registeredWhileNoLongerEligible',
   inclusionEnded = 'inclusionEnded',
+  deleted = 'deleted',
+  completed = 'completed',
 }
