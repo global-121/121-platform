@@ -141,6 +141,9 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column('json', { default: [] })
   public languages: JSON;
 
+  @Column({ default: false })
+  public enableMaxPayments: boolean;
+
   public async getValidationInfoForQuestionName(
     name: string,
   ): Promise<ValidationInfo> {
