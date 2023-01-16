@@ -583,7 +583,7 @@ export class IntersolveService {
       errorMessage,
       messageSid,
     );
-    this.transactionsService.storeTransaction(
+    await this.transactionsService.storeTransaction(
       transactionResultDto,
       programId,
       paymentNr,

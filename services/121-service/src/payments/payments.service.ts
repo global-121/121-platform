@@ -14,6 +14,7 @@ import {
 } from '../registration/dto/bulk-import.dto';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
+import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { BulkImportService } from '../registration/services/bulk-import.service';
 import { StatusEnum } from '../shared/enum/status.enum';
@@ -123,6 +124,8 @@ export class PaymentsService {
       userId,
     );
 
+    await this.checkAndUpdateMaxPaymentRegistrations(targetedRegistrations);
+
     return paymentTransactionResult;
   }
 
@@ -135,15 +138,14 @@ export class PaymentsService {
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    this.makePaymentRequest(paLists, programId, payment, amount).then(() => {
-      if (payment > -1) {
-        this.actionService.saveAction(
-          userId,
-          programId,
-          AdditionalActionType.paymentFinished,
-        );
-      }
-    });
+    await this.makePaymentRequest(paLists, programId, payment, amount);
+    if (payment > -1) {
+      this.actionService.saveAction(
+        userId,
+        programId,
+        AdditionalActionType.paymentFinished,
+      );
+    }
     return paPaymentDataList.length;
   }
 
@@ -541,5 +543,31 @@ export class PaymentsService {
       validatedArray,
       recordsCount,
     };
+  }
+
+  private async checkAndUpdateMaxPaymentRegistrations(
+    registrations: RegistrationEntity[],
+  ): Promise<void> {
+    for (const registration of registrations) {
+      if (registration.maxPayments) {
+        // Get current amount of payments done to PA
+        const { currentPaymentCount } = await this.transactionRepository
+          .createQueryBuilder('transaction')
+          .select('COUNT(DISTINCT payment)', 'currentPaymentCount')
+          .leftJoin('transaction.registration', 'r')
+          .where('transaction.program.id = :programId', {
+            programId: registration.programId,
+          })
+          .andWhere('r.id = :registrationId', {
+            registrationId: registration.id,
+          })
+          .getRawOne();
+        // Match that against registration.maxPayments
+        if (currentPaymentCount >= registration.maxPayments) {
+          registration.registrationStatus = RegistrationStatusEnum.completed;
+          await this.registrationRepository.save(registration);
+        }
+      }
+    }
   }
 }
