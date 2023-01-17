@@ -14,7 +14,6 @@ export class Payment extends PaymentData {
 export class PaymentColumnDetail {
   text: string;
   paymentIndex?: number;
-  payments?: number[];
   amount?: string;
   hasMessageIcon?: boolean;
   hasMoneyIconTable?: boolean;

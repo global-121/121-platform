@@ -1003,6 +1003,7 @@ export class RegistrationsService {
         qb
           .from(TransactionEntity, 'transactions')
           .select('MAX("payment")', 'payment')
+          .addSelect('COUNT(DISTINCT(payment))', 'nrPayments')
           .addSelect('"registrationId"', 'registrationId')
           .groupBy('"registrationId"'),
       'transaction_max_payment',
@@ -1051,6 +1052,7 @@ export class RegistrationsService {
         'transaction.amount AS "transactionAmount"',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
+        'transaction_max_payment."nrPayments" as "nrPayments"',
       ]);
     return q;
   }

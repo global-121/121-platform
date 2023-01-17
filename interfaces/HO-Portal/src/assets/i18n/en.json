@@ -264,6 +264,9 @@
           "no-message": "No messages yet",
           "message-status": "Last message:"
         },
+        "max-payments": {
+          "left": "left"
+        },
         "column": {
           "select": "Select",
           "person": "Person Affected",
