@@ -34,6 +34,7 @@ export enum GenericAttributes {
   preferredLanguage = 'preferredLanguage',
   fspName = 'fspName',
   paymentAmountMultiplier = 'paymentAmountMultiplier',
+  maxPayments = 'maxPayments',
 }
 
 export class Attribute {
