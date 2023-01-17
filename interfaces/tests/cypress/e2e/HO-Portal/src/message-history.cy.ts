@@ -129,7 +129,7 @@ describe("Check message history", () => {
     cy.wait(`@${interceptId}`) // Wait for textmessage cy intercept to complete
     cy.setHoPortal();
     cy.visit(fixture.url);
-    cy.get('.proxy-scrollbar').scrollTo('right')
+    cy.get('.proxy-scrollbar').scrollTo('right', { easing: 'linear', duration: 100 })
     cy.get('[data-cy="message-history-button"]').contains(messageType, { matchCase: false })
     cy.get('[data-cy="message-history-button"]').contains(messageStatus, { matchCase: false })
   }
@@ -137,7 +137,7 @@ describe("Check message history", () => {
 
   const checkMessageHistoryPopup = (registration: any, customLabel: string, messageText: string, messageType: string, messageStatus: MessageStatus,nEntry?: number) => {
     // Check headers
-    cy.get('.proxy-scrollbar').scrollTo('right')
+    cy.get('.proxy-scrollbar').scrollTo('right', { easing: 'linear', duration: 100 })
     cy.get('[data-cy="message-history-button"]').click()
     cy.get('.toolbar-title-default > .ion-color').contains(registration.nameFirst)
     cy.get('.toolbar-title-default > .ion-color').contains(registration.nameLast)
