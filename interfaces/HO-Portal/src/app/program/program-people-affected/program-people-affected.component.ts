@@ -715,7 +715,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           this.programId,
           column.permissions,
         ) &&
-        this.checkValidationColumnOrAction(column)
+        this.checkValidationColumnOrAction(column) &&
+        this.showMaxPaymentsColumn(column)
       ) {
         this.columns.push(column);
       }
@@ -761,6 +762,13 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     return (
       (columnOrAction.showIfNoValidation && !this.program.validation) ||
       this.program.validation
+    );
+  }
+
+  private showMaxPaymentsColumn(column: PersonTableColumn): boolean {
+    return (
+      column.prop !== 'maxPayments' ||
+      (column.prop === 'maxPayments' && this.program.enableMaxPayments)
     );
   }
 
