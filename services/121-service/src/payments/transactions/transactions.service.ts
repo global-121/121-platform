@@ -178,7 +178,7 @@ export class TransactionsService {
     transaction.transactionStep = transactionStep || 1;
 
     await this.transactionRepository.save(transaction);
-    if (registration.maxPayments) {
+    if (program.enableMaxPayments && registration.maxPayments) {
       await this.checkAndUpdateMaxPaymentRegistration(registration);
     }
   }
