@@ -510,6 +510,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         width: this.columnWidthPerType[AnswerType.Number],
       },
       {
+        prop: 'maxPayments',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.maxPayments',
+        ),
+        ...this.columnDefaults,
+        minWidth: this.columnWidthPerType[AnswerType.Number],
+        width: this.columnWidthPerType[AnswerType.Number],
+      },
+      {
         prop: 'fsp',
         name: this.translate.instant(
           'page.program.program-people-affected.column.fsp',
@@ -971,6 +980,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       paymentAmountMultiplier: person.paymentAmountMultiplier
         ? `${person.paymentAmountMultiplier}×`
         : '',
+      maxPayments: person.maxPayments ? `${person.maxPayments}` : '',
       fsp: person.fsp,
       lastMessageStatus: person.lastMessageStatus,
       messages: person.lastMessageStatus

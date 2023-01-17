@@ -28,6 +28,7 @@ export class Person {
   hasPhoneNumber?: boolean;
   fsp?: string;
   paymentAmountMultiplier?: number;
+  maxPayments?: number;
   preferredLanguage?: LanguageEnum;
   paTableAttributes?: Attribute[];
   registrationProgramId: number;
@@ -64,6 +65,7 @@ export class PersonRow {
   phoneNumber?: string | null;
   fsp?: string | null;
   paymentAmountMultiplier?: string | null;
+  maxPayments?: string | null;
   preferredLanguage?: string | null;
   paTableAttributes?: Person['paTableAttributes'];
   paymentHistory?: PaymentColumnDetail;

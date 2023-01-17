@@ -285,6 +285,7 @@
           "whatsappPhoneNumber": "WhatsApp nr.",
           "preferredLanguage": "Preferred language",
           "paymentAmountMultiplier": "Transfer value(s)",
+          "maxPayments": "Max payments",
           "fsp": "Financial Service Provider",
           "custom-attribute-true": "Yes",
           "custom-attribute-false": "No",

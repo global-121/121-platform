@@ -757,6 +757,7 @@ export class RegistrationsService {
         'registration.paymentAmountMultiplier',
         'paymentAmountMultiplier',
       )
+      .addSelect('registration.maxPayments','maxPayments')
       .addSelect((subQuery) => {
         return this.customDataSubQuery(subQuery);
       }, 'customData')
