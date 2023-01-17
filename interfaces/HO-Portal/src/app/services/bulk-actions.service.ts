@@ -62,6 +62,7 @@ export class BulkActionsService {
       case BulkActionId.endInclusion:
         personData.checkboxVisible = this.hasStatus(personData, [
           RegistrationStatus.included,
+          RegistrationStatus.completed,
         ]);
         break;
       case BulkActionId.reject:
