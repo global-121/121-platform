@@ -190,7 +190,10 @@ export class RegistrationsService {
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.inclusionEnded:
-        result = [RegistrationStatusEnum.included].includes(currentStatus);
+        result = [
+          RegistrationStatusEnum.included,
+          RegistrationStatusEnum.completed,
+        ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.rejected:
         result = [
