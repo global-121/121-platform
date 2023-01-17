@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { ProgramEntity } from '../../programs/program.entity';
+import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { PaTransactionResultDto } from '../dto/payment-transaction-result.dto';
 import {
@@ -148,7 +149,7 @@ export class TransactionsService {
     }
   }
 
-  public async storeTransaction(
+  public async storeTransactionUpdateStatus(
     transactionResponse: PaTransactionResultDto,
     programId: number,
     payment: number,
@@ -177,6 +178,31 @@ export class TransactionsService {
     transaction.transactionStep = transactionStep || 1;
 
     await this.transactionRepository.save(transaction);
+    if (registration.maxPayments) {
+      await this.checkAndUpdateMaxPaymentRegistration(registration);
+    }
+  }
+
+  private async checkAndUpdateMaxPaymentRegistration(
+    registration: RegistrationEntity,
+  ): Promise<void> {
+    // Get current amount of payments done to PA
+    const { currentPaymentCount } = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('COUNT(DISTINCT payment)', 'currentPaymentCount')
+      .leftJoin('transaction.registration', 'r')
+      .where('transaction.program.id = :programId', {
+        programId: registration.programId,
+      })
+      .andWhere('r.id = :registrationId', {
+        registrationId: registration.id,
+      })
+      .getRawOne();
+    // Match that against registration.maxPayments
+    if (currentPaymentCount >= registration.maxPayments) {
+      registration.registrationStatus = RegistrationStatusEnum.completed;
+      await this.registrationRepository.save(registration);
+    }
   }
 
   public async storeAllTransactions(
@@ -187,7 +213,7 @@ export class TransactionsService {
     // Intersolve transactions are now stored during PA-request-loop already
     // Align across FSPs in future again
     for (const transaction of transactionResults.paList) {
-      await this.storeTransaction(transaction, programId, payment);
+      await this.storeTransactionUpdateStatus(transaction, programId, payment);
     }
   }
 }
