@@ -14,8 +14,7 @@ import { RegistrationEntity } from '../registration.entity';
 
 @ValidatorConstraint({ name: 'validateAttributeType', async: true })
 export class RegistrationDataTypeValidator
-  implements ValidatorConstraintInterface
-{
+  implements ValidatorConstraintInterface {
   private message: string;
 
   public async validate(
@@ -29,8 +28,9 @@ export class RegistrationDataTypeValidator
       this.message = 'ReferenceId or attribute are undefined';
       return false;
     }
-    const registrationRepository =
-      AppDataSource.getRepository(RegistrationEntity);
+    const registrationRepository = AppDataSource.getRepository(
+      RegistrationEntity,
+    );
     const registration = await registrationRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['program'],
@@ -39,8 +39,9 @@ export class RegistrationDataTypeValidator
       this.message = `Registration was not found for referenceId: '${referenceId}'`;
       return false;
     }
-    const validationInfo =
-      await registration.program.getValidationInfoForQuestionName(attribute);
+    const validationInfo = await registration.program.getValidationInfoForQuestionName(
+      attribute,
+    );
     if (!validationInfo.type) {
       this.message = `Attribute '${attribute}' was not found for the program related to the reference id:' ${referenceId}'`;
       return false;
@@ -70,8 +71,7 @@ export class RegistrationDataTypeValidator
   ): boolean {
     let isValid = false;
     if (type === AnswerTypes.date) {
-      const datePattern =
-        /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-(19[2-9][0-9]|20[0-1][0-9])$/;
+      const datePattern = /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-(19[2-9][0-9]|20[0-1][0-9])$/;
       isValid = datePattern.test(value);
     } else if (type === AnswerTypes.dropdown) {
       isValid = this.optionIsValid(value, options);
@@ -79,6 +79,8 @@ export class RegistrationDataTypeValidator
       isValid = this.multiSelectIsValid(value, options);
     } else if (type === AnswerTypes.numeric) {
       isValid = !isNaN(+value);
+    } else if (AnswerTypes.numericNullable) {
+      isValid = !isNaN(+value) || null;
     } else if (type === AnswerTypes.tel) {
       // Potential refactor: put lookup code here
       isValid = !!value.length && value.length >= 8 && value.length <= 17;
@@ -137,7 +139,7 @@ export function IsRegistrationDataValidType(
   validationAttributes: ValidateRegistrationDataAttributessDto,
   validationOptions?: ValidationOptions,
 ): any {
-  return function (object: Record<string, any>, propertyName: string) {
+  return function(object: Record<string, any>, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,

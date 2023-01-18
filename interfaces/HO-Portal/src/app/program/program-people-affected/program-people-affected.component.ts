@@ -1179,6 +1179,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,
         canViewMessageHistory: this.canViewMessageHistory,
+        canViewPaymentData: this.canViewPaymentData
       },
     });
 

@@ -123,4 +123,5 @@ export const PA_STATUS_ORDER = [
 export enum PersonDefaultAttributes {
   paymentAmountMultiplier = 'paymentAmountMultiplier',
   phoneNumber = 'phoneNumber',
+  maxPayments = 'maxPayments',
 }

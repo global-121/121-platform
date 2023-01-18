@@ -57,13 +57,17 @@ export class RegistrationsService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(RegistrationStatusChangeEntity)
-  private readonly registrationStatusChangeRepository: Repository<RegistrationStatusChangeEntity>;
+  private readonly registrationStatusChangeRepository: Repository<
+    RegistrationStatusChangeEntity
+  >;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(RegistrationDataEntity)
-  private readonly registrationDataRepository: Repository<RegistrationDataEntity>;
+  private readonly registrationDataRepository: Repository<
+    RegistrationDataEntity
+  >;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
@@ -73,13 +77,19 @@ export class RegistrationsService {
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(PersonAffectedAppDataEntity)
-  private readonly personAffectedAppDataRepository: Repository<PersonAffectedAppDataEntity>;
+  private readonly personAffectedAppDataRepository: Repository<
+    PersonAffectedAppDataEntity
+  >;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
-  private readonly whatsappPendingMessageRepository: Repository<WhatsappPendingMessageEntity>;
+  private readonly whatsappPendingMessageRepository: Repository<
+    WhatsappPendingMessageEntity
+  >;
   @InjectRepository(ImageCodeExportVouchersEntity)
-  private readonly imageCodeExportVouchersRepo: Repository<ImageCodeExportVouchersEntity>;
+  private readonly imageCodeExportVouchersRepo: Repository<
+    ImageCodeExportVouchersEntity
+  >;
   @InjectRepository(IntersolveBarcodeEntity)
   private readonly intersolveBarcodeRepo: Repository<IntersolveBarcodeEntity>;
 
@@ -303,8 +313,7 @@ export class RegistrationsService {
       ['program'],
     );
     const phoneAnswer = programAnswers.find(
-      (answer) =>
-        answer.programQuestionName === CustomDataAttributes.phoneNumber,
+      answer => answer.programQuestionName === CustomDataAttributes.phoneNumber,
     );
     if (phoneAnswer && typeof phoneAnswer.programAnswer === 'string') {
       registration.phoneNumber = phoneAnswer.programAnswer;
@@ -394,11 +403,10 @@ export class RegistrationsService {
       ['fsp'],
     );
 
-    const importedRegistration =
-      await this.findImportedRegistrationByPhoneNumber(
-        sanitizedPhoneNr,
-        currentRegistration.programId,
-      );
+    const importedRegistration = await this.findImportedRegistrationByPhoneNumber(
+      sanitizedPhoneNr,
+      currentRegistration.programId,
+    );
     if (!useForInvitationMatching || !importedRegistration) {
       // If endpoint is used for other purpose OR no imported registration found  ..
       // .. continue with current registration
@@ -449,14 +457,15 @@ export class RegistrationsService {
     currentRegistration.preferredLanguage = preferredLanguage;
 
     // Update the 'imported' registration-changes to the current registration
-    const importedRegistrationChanges =
-      await this.registrationStatusChangeRepository.find({
+    const importedRegistrationChanges = await this.registrationStatusChangeRepository.find(
+      {
         where: {
           registrationId: importedRegistration.id,
         },
-      });
+      },
+    );
     importedRegistrationChanges.forEach(
-      (i) => (i.registration = currentRegistration),
+      i => (i.registration = currentRegistration),
     );
     await this.registrationStatusChangeRepository.save(
       importedRegistrationChanges,
@@ -637,7 +646,9 @@ export class RegistrationsService {
     subQuery: SelectQueryBuilder<any>,
     relation: RegistrationDataRelation,
   ): SelectQueryBuilder<any> {
-    const uniqueSubQueryId = uuid().replace(/-/g, '').toLowerCase();
+    const uniqueSubQueryId = uuid()
+      .replace(/-/g, '')
+      .toLowerCase();
     subQuery = subQuery
       .where(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
       .from(RegistrationDataEntity, uniqueSubQueryId);
@@ -716,7 +727,7 @@ export class RegistrationsService {
     const result = await this.registrationRepository
 
       .createQueryBuilder('registration')
-      .select((subQuery) => {
+      .select(subQuery => {
         return this.customDataSubQuery(subQuery);
       }, 'customData')
       .where('registration."referenceId" = :referenceId', {
@@ -761,7 +772,7 @@ export class RegistrationsService {
         'paymentAmountMultiplier',
       )
       .addSelect('registration.maxPayments', 'maxPayments')
-      .addSelect((subQuery) => {
+      .addSelect(subQuery => {
         return this.customDataSubQuery(subQuery);
       }, 'customData')
       .addSelect('registration.phoneNumber', 'phoneNumber')
@@ -1002,7 +1013,7 @@ export class RegistrationsService {
     q: SelectQueryBuilder<RegistrationEntity>,
   ): SelectQueryBuilder<RegistrationEntity> {
     q.leftJoin(
-      (qb) =>
+      qb =>
         qb
           .from(TransactionEntity, 'transactions')
           .select('MAX("payment")', 'payment')
@@ -1013,7 +1024,7 @@ export class RegistrationsService {
       'transaction_max_payment."registrationId" = registration.id',
     )
       .leftJoin(
-        (qb) =>
+        qb =>
           qb
             .from(TransactionEntity, 'transactions')
             .select('MAX("transactionStep")', 'transactionStep')
@@ -1026,7 +1037,7 @@ export class RegistrationsService {
       AND transaction_max_transaction_step.payment = transaction_max_payment.payment`,
       )
       .leftJoin(
-        (qb) =>
+        qb =>
           qb
             .from(TransactionEntity, 'transactions')
             .select('MAX("created")', 'created')
@@ -1064,14 +1075,15 @@ export class RegistrationsService {
     registrationId: number,
     status: RegistrationStatusEnum,
   ): Promise<Date> {
-    const registrationStatusChange =
-      await this.registrationStatusChangeRepository.findOne({
+    const registrationStatusChange = await this.registrationStatusChangeRepository.findOne(
+      {
         where: {
           registration: { id: registrationId },
           registrationStatus: status,
         },
         order: { created: 'DESC' },
-      });
+      },
+    );
     return registrationStatusChange ? registrationStatusChange.created : null;
   }
 
@@ -1155,7 +1167,8 @@ export class RegistrationsService {
 
     if (
       attribute !== Attributes.paymentAmountMultiplier &&
-      attribute !== Attributes.preferredLanguage
+      attribute !== Attributes.preferredLanguage &&
+      attribute !== Attributes.maxPayments
     ) {
       try {
         await registration.saveData(value, { name: attribute });
@@ -1172,11 +1185,10 @@ export class RegistrationsService {
     const savedRegistration = await this.registrationRepository.save(
       registration,
     );
-    const calculatedRegistration =
-      await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-        registration.program.id,
-        referenceId,
-      );
+    const calculatedRegistration = await this.inclusionScoreService.calculatePaymentAmountMultiplier(
+      registration.program.id,
+      referenceId,
+    );
     if (calculatedRegistration) {
       return this.getRegistrationFromReferenceId(
         calculatedRegistration.referenceId,
@@ -1326,7 +1338,7 @@ export class RegistrationsService {
         registration.id,
         messageContentType,
       )
-      .then((result) => {
+      .then(result => {
         // Store the sid of a whatsapp message of which we do not know if the receiver registered on whatsapp
         const tryWhatsapp = {
           sid: result,
@@ -1387,7 +1399,7 @@ export class RegistrationsService {
         await this.registrationRepository.find({
           where: { phoneNumber: phoneNumber },
         })
-      ).map((r) => r.referenceId);
+      ).map(r => r.referenceId);
 
       const matchingRegistrationData = await this.dataSource
         .getRepository(RegistrationDataEntity)
@@ -1428,7 +1440,7 @@ export class RegistrationsService {
     const programIds = [];
     for (const assignment of user.programAssignments) {
       for (const role of assignment.roles) {
-        if (role.permissions.map((p) => p.name).includes(permission)) {
+        if (role.permissions.map(p => p.name).includes(permission)) {
           programIds.push(assignment.programId);
         }
       }
@@ -1473,12 +1485,12 @@ export class RegistrationsService {
         d['name'] = await d.getDataName();
         if (d.programQuestion.answerType === AnswerTypes.multiSelect) {
           const existingQuestion = programAnswers.find(
-            (a) => a.programQuestionId === d.programQuestionId,
+            a => a.programQuestionId === d.programQuestionId,
           );
           if (!existingQuestion) {
             programAnswers.push(d);
             programAnswers.find(
-              (a) => a.programQuestionId === d.programQuestionId,
+              a => a.programQuestionId === d.programQuestionId,
             ).value = [d.value];
           } else {
             existingQuestion.value.push(d.value);
@@ -1509,14 +1521,12 @@ export class RegistrationsService {
     }
 
     // Check if required attributes are present
-    newFsp.questions.forEach((requiredAttribute) => {
+    newFsp.questions.forEach(requiredAttribute => {
       if (
         !newFspAttributesRaw ||
         !Object.keys(newFspAttributesRaw).includes(requiredAttribute.name)
       ) {
-        const requiredAttributes = newFsp.questions
-          .map((a) => a.name)
-          .join(', ');
+        const requiredAttributes = newFsp.questions.map(a => a.name).join(', ');
         const errors = `Not all required FSP attributes provided correctly: ${requiredAttributes}`;
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
@@ -1622,11 +1632,11 @@ export class RegistrationsService {
     const user = await this.programService.findUserProgramAssignmentsOrThrow(
       userId,
     );
-    const programIds = user.programAssignments.map((p) => p.program.id);
+    const programIds = user.programAssignments.map(p => p.program.id);
     const data = {
       answers: await this.getAllProgramAnswers(user),
       fspData: await this.getAllFspAnswers(programIds),
-      programIds: user.programAssignments.map((assignment) => {
+      programIds: user.programAssignments.map(assignment => {
         return assignment.program.id;
       }),
     };
@@ -1636,7 +1646,7 @@ export class RegistrationsService {
   public async getAllProgramAnswers(
     user: UserEntity,
   ): Promise<RegistrationDataEntity[]> {
-    const programIds = user.programAssignments.map((p) => p.program.id);
+    const programIds = user.programAssignments.map(p => p.program.id);
     const registrationsToValidate = await this.dataSource
       .getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
@@ -1664,12 +1674,12 @@ export class RegistrationsService {
         a['name'] = await a.getDataName();
         if (a.programQuestion.answerType === AnswerTypes.multiSelect) {
           const existingQuestion = uniqueQuestions.find(
-            (q) => q.programQuestionId === a.programQuestionId,
+            q => q.programQuestionId === a.programQuestionId,
           );
           if (!existingQuestion) {
             uniqueQuestions.push(a);
             uniqueQuestions.find(
-              (q) => q.programQuestionId === a.programQuestionId,
+              q => q.programQuestionId === a.programQuestionId,
             ).value = [a.value];
           } else {
             existingQuestion.value.push(a.value);

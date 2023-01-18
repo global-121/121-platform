@@ -58,7 +58,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @ManyToMany(
     () => FinancialServiceProviderEntity,
-    (financialServiceProviders) => financialServiceProviders.program,
+    financialServiceProviders => financialServiceProviders.program,
   )
   @JoinTable()
   public financialServiceProviders: FinancialServiceProviderEntity[];
@@ -100,29 +100,38 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @OneToMany(
     () => ProgramAidworkerAssignmentEntity,
-    (assignment) => assignment.program,
+    assignment => assignment.program,
   )
   public aidworkerAssignments: ProgramAidworkerAssignmentEntity[];
 
-  @OneToMany(() => ActionEntity, (action) => action.program)
+  @OneToMany(
+    () => ActionEntity,
+    action => action.program,
+  )
   public actions: ActionEntity[];
 
   @OneToMany(
     () => ProgramQuestionEntity,
-    (programQuestions) => programQuestions.program,
+    programQuestions => programQuestions.program,
   )
   public programQuestions: ProgramQuestionEntity[];
 
   @OneToMany(
     () => ProgramCustomAttributeEntity,
-    (programCustomAttributes) => programCustomAttributes.program,
+    programCustomAttributes => programCustomAttributes.program,
   )
   public programCustomAttributes: ProgramCustomAttributeEntity[];
 
-  @OneToMany(() => TransactionEntity, (transactions) => transactions.program)
+  @OneToMany(
+    () => TransactionEntity,
+    transactions => transactions.program,
+  )
   public transactions: TransactionEntity[];
 
-  @OneToMany(() => RegistrationEntity, (registrations) => registrations.program)
+  @OneToMany(
+    () => RegistrationEntity,
+    registrations => registrations.program,
+  )
   public registrations: RegistrationEntity[];
 
   // Can be used to add deprecated custom attributes to an export if
@@ -149,6 +158,8 @@ export class ProgramEntity extends CascadeDeleteEntity {
   ): Promise<ValidationInfo> {
     if (name === Attributes.paymentAmountMultiplier) {
       return { type: AnswerTypes.numeric };
+    } else if (name === Attributes.maxPayments) {
+      return { type: AnswerTypes.numericNullable };
     } else if (name === Attributes.phoneNumber) {
       return { type: AnswerTypes.tel };
     } else if (name === Attributes.preferredLanguage) {
