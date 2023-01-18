@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class AfricasTalkingValidationDto {
   @ApiProperty({ example: 'ATPid_1cbe5df027aca34ff15b885be975bfcd' })
@@ -29,5 +29,6 @@ export class AfricasTalkingValidationDto {
   // public readonly sourceIpAddress: string;
 
   @ApiProperty({ example: { programId: '1', payment: '1' } })
+  @IsOptional()
   public readonly metadata: JSON;
 }

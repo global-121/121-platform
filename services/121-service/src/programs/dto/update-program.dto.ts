@@ -75,23 +75,6 @@ export class UpdateProgramDto {
   @IsString()
   public readonly paymentAmountMultiplierFormula: string;
 
-  @ApiProperty({
-    example: [
-      {
-        id: 1,
-      },
-      {
-        id: 2,
-      },
-    ],
-  })
-  @IsOptional()
-  @IsArray()
-  @ValidateNested()
-  @IsDefined()
-  @Type(() => FinancialServiceProviderEntity)
-  public readonly financialServiceProviders: FinancialServiceProviderEntity[];
-
   @ApiProperty({ example: 'minimumScore' })
   @IsOptional()
   @IsIn(['minimumScore', 'highestScoresX'])

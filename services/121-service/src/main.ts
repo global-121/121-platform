@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   INestApplication,
   ValidationPipe,
 } from '@nestjs/common';
@@ -97,8 +99,15 @@ async function bootstrap(): Promise<void> {
   });
   app.useGlobalPipes(
     new ValidationPipe({
-      forbidUnknownValues: false,
-      exceptionFactory: (errors) => new BadRequestException(errors),
+      forbidUnknownValues: true,
+      exceptionFactory: (errors) => {
+        for (const e of errors) {
+          if (e.constraints && e.constraints['unknownValue']) {
+            throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+          }
+        }
+        throw new BadRequestException(errors);
+      }
     }),
   );
   app.use(bodyParser.json({ limit: '5mb' }));
