@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsIn, IsJSON, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import {
+  IsIn,
+  IsJSON,
+  IsNotEmpty,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 
 export enum CustomAttributeType {

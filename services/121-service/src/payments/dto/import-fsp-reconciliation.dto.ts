@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsArray, IsNumber } from 'class-validator';
+import { IsArray, IsNumber, IsOptional } from 'class-validator';
 import { StatusEnum } from '../../shared/enum/status.enum';
 
 export class ImportFspReconciliationArrayDto {

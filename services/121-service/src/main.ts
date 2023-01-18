@@ -107,7 +107,7 @@ async function bootstrap(): Promise<void> {
           }
         }
         throw new BadRequestException(errors);
-      }
+      },
     }),
   );
   app.use(bodyParser.json({ limit: '5mb' }));

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsArray } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { PermissionEnum } from '../permission.enum';
 
 export class CreateUserRoleDto {

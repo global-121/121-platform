@@ -1,18 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import {
-  IsArray,
   IsBoolean,
   IsDateString,
-  IsDefined,
   IsIn,
   IsNumber,
   IsOptional,
   IsString,
   Length,
-  ValidateNested,
 } from 'class-validator';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 
 export class UpdateProgramDto {
   @ApiProperty()
