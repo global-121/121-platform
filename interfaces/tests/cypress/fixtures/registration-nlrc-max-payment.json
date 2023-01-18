@@ -7,5 +7,6 @@
   "phoneNumber": 14155238886,
   "fspName": "Intersolve-whatsapp",
   "whatsappPhoneNumber": 14155238886,
-  "status": "registered"
+  "status": "registered",
+  "maxPayments": 1
 }

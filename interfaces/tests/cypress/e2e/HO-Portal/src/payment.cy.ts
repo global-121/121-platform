@@ -12,8 +12,7 @@ describe("'Do Payment #1' bulk action", () => {
   it(`should show a 'no people' alert when no included PAs`,
     {
       retries: {
-        runMode: 1,
-        openMode: 2,
+        openMode: 1,
       },
     },
    function () {
@@ -63,22 +62,25 @@ describe("'Do Payment #1' bulk action", () => {
     cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
     cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
     cy.importRegistrations(programId);
-    const [arr,registrations] = includeAllRegistrations(programId);
-    cy.fixture("payment").then((page) => {
-      selectPaymentAction(page);
-      selectPaAndApply();
-      cy.get(
-        "app-make-payment > .ion-align-items-center > confirm-prompt > .md"
-      ).click();
-      cy.get(".buttons-last-slot > .ion-color-primary").click();
-      cy.get("#alert-3-msg").contains("Successfully");
-      cy.get("#alert-3-msg").contains(String(arr.length));
-      cy.wait(2000);
-      cy.get(".alert-button").click();
-      cy.get('[data-cy="payment-history-button"]').contains(
-        portalEn.page.program["program-people-affected"].transaction.success
-      );
-      cy.get('.datatable-body-cell-label > span').contains(portalEn.page.program["program-people-affected"].status.completed)
+    cy.fixture("registration-nlrc-max-payment").then((registrationMaxPayment) => {
+      cy.importRegistrations(1, [registrationMaxPayment]);
+      const [arr,registrations] = includeAllRegistrations(programId);
+      cy.fixture("payment").then((page) => {
+        selectPaymentAction(page);
+        selectPaAndApply();
+        cy.get(
+          "app-make-payment > .ion-align-items-center > confirm-prompt > .md"
+        ).click();
+        cy.get(".buttons-last-slot > .ion-color-primary").click();
+        cy.get("#alert-3-msg").contains("Successfully");
+        cy.get("#alert-3-msg").contains(String(arr.length));
+        cy.wait(2000);
+        cy.get(".alert-button").click();
+        cy.get('[data-cy="payment-history-button"]').contains(
+          portalEn.page.program["program-people-affected"].transaction.success
+        );
+        cy.get('.datatable-body-cell-label > span').contains(portalEn.page.program["program-people-affected"].status.completed)
+      });
     });
   });
 
