@@ -26,7 +26,7 @@ import { ProgramCustomAttributeEntity } from './../programs/program-custom-attri
 import { RegistrationDataOptions } from './../registration/dto/registration-data-relation.model';
 import { CustomDataAttributes } from './../registration/enum/custom-data-attributes';
 import { RegistrationsService } from './../registration/registrations.service';
-import { ExportType } from './dto/export-details';
+import { ExportType } from './dto/export-details.dto';
 import { FileDto } from './dto/file.dto';
 import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { PaymentStateSumDto } from './dto/payment-state-sum.dto';

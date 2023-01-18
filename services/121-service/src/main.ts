@@ -103,6 +103,7 @@ async function bootstrap(): Promise<void> {
       exceptionFactory: (errors) => {
         for (const e of errors) {
           if (e.constraints && e.constraints['unknownValue']) {
+            console.log('e: ', e);
             throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
           }
         }
