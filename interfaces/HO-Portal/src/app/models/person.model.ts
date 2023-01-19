@@ -33,6 +33,7 @@ export class Person {
   paTableAttributes?: Attribute[];
   registrationProgramId: number;
   payment?: number;
+  nrPayments?: number;
   paymentDate?: string;
   transactionAmount?: number;
   transactionStatus?: string;
@@ -66,6 +67,7 @@ export class PersonRow {
   fsp?: string | null;
   paymentAmountMultiplier?: string | null;
   maxPayments?: string | null;
+  paymentsLeft?: number | null;
   preferredLanguage?: string | null;
   paTableAttributes?: Person['paTableAttributes'];
   paymentHistory?: PaymentColumnDetail;
@@ -121,4 +123,5 @@ export const PA_STATUS_ORDER = [
 export enum PersonDefaultAttributes {
   paymentAmountMultiplier = 'paymentAmountMultiplier',
   phoneNumber = 'phoneNumber',
+  maxPayments = 'maxPayments',
 }

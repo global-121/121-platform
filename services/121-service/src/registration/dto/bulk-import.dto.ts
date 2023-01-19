@@ -6,8 +6,8 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
-  Min,
 } from 'class-validator';
 import { FspName } from '../../fsp/financial-service-provider.entity';
 import { ImportFspReconciliationArrayDto } from '../../payments/dto/import-fsp-reconciliation.dto';
@@ -32,9 +32,15 @@ export class BulkImportDto {
   @ApiProperty()
   @IsNumber()
   @IsInt()
-  @Min(1)
+  @IsPositive()
   @IsOptional()
   public paymentAmountMultiplier: number;
+
+  @ApiProperty()
+  @IsInt()
+  @IsPositive()
+  @IsOptional()
+  public maxPayments: number;
 
   @ApiProperty()
   @IsEnum(LanguageEnum)

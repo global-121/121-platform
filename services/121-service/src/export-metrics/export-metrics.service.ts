@@ -407,6 +407,14 @@ export class ExportMetricsService {
       ])
       .andWhere({ programId: programId })
       .orderBy('"registration"."registrationProgramId"', 'ASC');
+
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
+    if (program.enableMaxPayments) {
+      query.addSelect(`registration."${GenericAttributes.maxPayments}"`);
+    }
+
     if (exportType !== ExportType.allPeopleAffected) {
       query = query.andWhere(
         'registration."registrationStatus" != :registrationStatus',
@@ -415,9 +423,11 @@ export class ExportMetricsService {
         },
       );
     }
+
     if (status) {
       query = query.andWhere({ registrationStatus: status });
     }
+
     for (const r of relationOptions) {
       query.select((subQuery) => {
         return this.registrationsService.customDataEntrySubQuery(
@@ -426,6 +436,7 @@ export class ExportMetricsService {
         );
       }, r.name);
     }
+
     return await query.getRawMany();
   }
 

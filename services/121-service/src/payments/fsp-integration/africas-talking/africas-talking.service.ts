@@ -129,7 +129,7 @@ export class AfricasTalkingService {
       africasTalkingNotificationData,
     );
 
-    this.transactionsService.storeTransaction(
+    this.transactionsService.storeTransactionUpdateStatus(
       enrichedNotification.paTransactionResult,
       enrichedNotification.programId,
       enrichedNotification.payment,

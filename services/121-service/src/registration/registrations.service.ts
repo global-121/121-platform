@@ -190,7 +190,10 @@ export class RegistrationsService {
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.inclusionEnded:
-        result = [RegistrationStatusEnum.included].includes(currentStatus);
+        result = [
+          RegistrationStatusEnum.included,
+          RegistrationStatusEnum.completed,
+        ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.rejected:
         result = [
@@ -757,7 +760,7 @@ export class RegistrationsService {
         'registration.paymentAmountMultiplier',
         'paymentAmountMultiplier',
       )
-      .addSelect('registration.maxPayments','maxPayments')
+      .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect((subQuery) => {
         return this.customDataSubQuery(subQuery);
       }, 'customData')
@@ -1003,6 +1006,7 @@ export class RegistrationsService {
         qb
           .from(TransactionEntity, 'transactions')
           .select('MAX("payment")', 'payment')
+          .addSelect('COUNT(DISTINCT(payment))', 'nrPayments')
           .addSelect('"registrationId"', 'registrationId')
           .groupBy('"registrationId"'),
       'transaction_max_payment',
@@ -1051,6 +1055,7 @@ export class RegistrationsService {
         'transaction.amount AS "transactionAmount"',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
+        'transaction_max_payment."nrPayments" as "nrPayments"',
       ]);
     return q;
   }
@@ -1150,7 +1155,8 @@ export class RegistrationsService {
 
     if (
       attribute !== Attributes.paymentAmountMultiplier &&
-      attribute !== Attributes.preferredLanguage
+      attribute !== Attributes.preferredLanguage &&
+      attribute !== Attributes.maxPayments
     ) {
       try {
         await registration.saveData(value, { name: attribute });

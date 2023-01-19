@@ -264,6 +264,9 @@
           "no-message": "No messages yet",
           "message-status": "Last message:"
         },
+        "max-payments": {
+          "left": "left"
+        },
         "column": {
           "select": "Select",
           "person": "Person Affected",
@@ -355,7 +358,10 @@
           "properties": {
             "paymentAmountMultiplier": {
               "label": "Transfer value multiplier",
-              "explanation": "The transfer value will be multiplied by this number for this Person Affected"
+              "explanation": "The transfer value will be multiplied by this number for this Person Affected",
+              "error": {
+                "not-an-integer": "Input should be an integer"
+              }
             },
             "phoneNumber": {
               "label": "Phone number",
@@ -382,6 +388,15 @@
             },
             "preferredLanguage": {
               "label": "Preferred language"
+            },
+            "maxPayments": {
+              "label-payments": "Max payments ({{alreadyReceivedPayments}} already sent)",
+              "label-no-payments": "Max payments",
+              "explanation": "The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.",
+              "error": {
+                "not-an-integer": "Input should be an integer",
+                "too-low": "Input should be higher than the number of payments that have already been sent"
+              }
             }
           },
           "fspChangeWarning": "Selecting this FSP will delete the following attributes related to the old FSP:",

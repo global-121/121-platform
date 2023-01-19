@@ -34,6 +34,7 @@ export enum GenericAttributes {
   preferredLanguage = 'preferredLanguage',
   fspName = 'fspName',
   paymentAmountMultiplier = 'paymentAmountMultiplier',
+  maxPayments = 'maxPayments',
 }
 
 export class Attribute {
@@ -48,6 +49,7 @@ export enum AnswerTypes {
   tel = 'tel',
   dropdown = 'dropdown',
   numeric = 'numeric',
+  numericNullable = 'numeric-nullable',
   text = 'text',
   date = 'date',
   multiSelect = 'multi-select',

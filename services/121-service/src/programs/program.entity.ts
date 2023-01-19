@@ -149,6 +149,8 @@ export class ProgramEntity extends CascadeDeleteEntity {
   ): Promise<ValidationInfo> {
     if (name === Attributes.paymentAmountMultiplier) {
       return { type: AnswerTypes.numeric };
+    } else if (name === Attributes.maxPayments) {
+      return { type: AnswerTypes.numericNullable };
     } else if (name === Attributes.phoneNumber) {
       return { type: AnswerTypes.tel };
     } else if (name === Attributes.preferredLanguage) {
