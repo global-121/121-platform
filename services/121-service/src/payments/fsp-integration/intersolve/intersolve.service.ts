@@ -28,6 +28,7 @@ import { ImageCodeService } from '../../imagecode/image-code.service';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
+import { IntersolveJobName } from './dto/job-details.dto';
 import { IntersolvePayoutStatus } from './enum/intersolve-payout-status.enum';
 import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
 import { IntersolveApiService } from './instersolve.api.service';
@@ -497,6 +498,9 @@ export class IntersolveService {
       intersolveBarcode.pin,
     );
     const realBalance = getCard.balance / getCard.balanceFactor;
+
+    intersolveBarcode.lastRequestedBalance = realBalance;
+    await this.intersolveBarcodeRepository.save(intersolveBarcode);
     return realBalance;
   }
 
@@ -630,5 +634,55 @@ export class IntersolveService {
       transactionResult.fspName = FspName.intersolveNoWhatsapp;
     }
     return transactionResult;
+  }
+
+  public async updateVoucherBalanceJob(
+    programId: number,
+    jobName: IntersolveJobName,
+  ): Promise<void> {
+    if (jobName === IntersolveJobName.getLastestVoucherBalance) {
+      const maxId = (
+        await this.intersolveBarcodeRepository
+          .createQueryBuilder('barcode')
+          .select('MAX(barcode.id)', 'max')
+          .leftJoin('barcode.image', 'image')
+          .leftJoin('image.registration', 'registration')
+          .where('registration.programId = :programId', {
+            programId: programId,
+          })
+          .getRawOne()
+      )?.max;
+      let id = 1;
+
+      // Run this in batches of 1,000 as it is performance-heavy
+      while (id <= maxId) {
+        // Query gets all voouher that need to be checked these can be:
+        // 1) Vouchers  with null (which have never been checked)
+        // 2) Voucher with a balance 0 (which could have been used more in the meantime)
+        const q = await this.intersolveBarcodeRepository
+          .createQueryBuilder('barcode')
+          .leftJoinAndSelect('barcode.image', 'image')
+          .leftJoinAndSelect('image.registration', 'registration')
+          .where('barcode.lastRequestedBalance IS DISTINCT from 0')
+          .andWhere(`barcode.id BETWEEN :id AND (:id + 1000 - 1)`, {
+            id: id,
+          })
+          .andWhere('registration.programId = :programId', {
+            programId: programId,
+          });
+
+        const vouchersToUpdate = await q.getMany();
+
+        for await (const voucher of vouchersToUpdate) {
+          const balance = await this.getBalance(voucher);
+          if (balance !== voucher.amount) {
+            voucher.balanceUsed = true;
+            voucher.send = true;
+            await this.intersolveBarcodeRepository.save(voucher);
+          }
+        }
+        id += 1000;
+      }
+    }
   }
 }

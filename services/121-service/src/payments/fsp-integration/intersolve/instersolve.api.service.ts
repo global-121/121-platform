@@ -100,7 +100,9 @@ export class IntersolveApiService {
       pin,
     );
 
-    const responseBody = await this.soapService.post(payload);
+    const responseBody = !!process.env.MOCK_INTERSOLVE
+      ? await this.intersolveMock.post(payload)
+      : await this.soapService.post(payload);
     const result = {
       resultCode: responseBody.GetCardResponse.ResultCode._text,
       resultDescription: responseBody.GetCardResponse.ResultDescription._text,
