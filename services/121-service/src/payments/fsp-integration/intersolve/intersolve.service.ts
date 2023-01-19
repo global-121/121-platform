@@ -27,6 +27,7 @@ import { UnusedVoucherDto } from '../../dto/unused-voucher.dto';
 import { ImageCodeService } from '../../imagecode/image-code.service';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { VoucherWithBalanceDto } from './../../dto/voucher-with-balance.dto';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
 import { IntersolveJobName } from './dto/job-details.dto';
 import { IntersolvePayoutStatus } from './enum/intersolve-payout-status.enum';
@@ -684,5 +685,50 @@ export class IntersolveService {
         id += 1000;
       }
     }
+  }
+
+  public async getVouchersWithBalance(
+    programId: number,
+  ): Promise<VoucherWithBalanceDto[]> {
+    const vouchersWithBalance: VoucherWithBalanceDto[] = [];
+    const voucherWithBalanceRaw = await this.intersolveBarcodeRepository
+      .createQueryBuilder('barcode')
+      .leftJoinAndSelect('barcode.image', 'image')
+      .leftJoinAndSelect('image.registration', 'registration')
+      .where('barcode.lastRequestedBalance > 0')
+      .andWhere('registration.programId = :programId', {
+        programId: programId,
+      })
+      .getMany();
+    for await (const voucher of voucherWithBalanceRaw) {
+      const voucherWithBalance = await this.createVoucherWithBalanceDto(
+        voucher,
+      );
+      vouchersWithBalance.push(voucherWithBalance);
+    }
+    return vouchersWithBalance;
+  }
+
+  private async createVoucherWithBalanceDto(
+    voucher: IntersolveBarcodeEntity,
+  ): Promise<VoucherWithBalanceDto> {
+    const voucherWithBalance = new VoucherWithBalanceDto();
+    voucherWithBalance.paNumber =
+      voucher.image[0].registration.registrationProgramId;
+    voucherWithBalance.name = await voucher.image[0].registration.getFullName();
+    voucherWithBalance.phoneNumber = voucher.image[0].registration.phoneNumber;
+    voucherWithBalance.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
+    voucherWithBalance.paStatus =
+      voucher.image[0].registration.registrationStatus;
+    voucherWithBalance.partnerName =
+      await voucher.image[0].registration.getRegistrationDataValueByName(
+        'namePartnerOrganization',
+      );
+    voucherWithBalance.payment = voucher.payment;
+    voucherWithBalance.issueDate = voucher.created;
+    voucherWithBalance.originalBalance = voucher.amount;
+    voucherWithBalance.remainingBalance = voucher.lastRequestedBalance;
+    voucherWithBalance.voucherSend = voucher.send;
+    return voucherWithBalance;
   }
 }

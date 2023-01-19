@@ -22,6 +22,7 @@ import { ImportFspReconciliationDto } from './dto/import-fsp-reconciliation.dto'
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 import { SplitPaymentListDto } from './dto/split-payment-lists.dto';
 import { UnusedVoucherDto } from './dto/unused-voucher.dto';
+import { VoucherWithBalanceDto } from './dto/voucher-with-balance.dto';
 import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
 import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
@@ -357,6 +358,12 @@ export class PaymentsService {
     programId?: number,
   ): Promise<UnusedVoucherDto[]> {
     return this.intersolveService.getUnusedVouchers(programId);
+  }
+
+  public async getVouchersWithBalance(
+    programId: number,
+  ): Promise<VoucherWithBalanceDto[]> {
+    return this.intersolveService.getVouchersWithBalance(programId);
   }
 
   public async getToCancelVouchers(): Promise<IntersolveRequestEntity[]> {
