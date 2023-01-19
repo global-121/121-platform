@@ -501,6 +501,7 @@ export class IntersolveService {
     const realBalance = getCard.balance / getCard.balanceFactor;
 
     intersolveBarcode.lastRequestedBalance = realBalance;
+    intersolveBarcode.updatedLastRequestedBalance = new Date();
     await this.intersolveBarcodeRepository.save(intersolveBarcode);
     return realBalance;
   }
@@ -728,6 +729,8 @@ export class IntersolveService {
     voucherWithBalance.issueDate = voucher.created;
     voucherWithBalance.originalBalance = voucher.amount;
     voucherWithBalance.remainingBalance = voucher.lastRequestedBalance;
+    voucherWithBalance.updatedRemainingBalanceUTC =
+      voucher.updatedLastRequestedBalance;
     voucherWithBalance.voucherSend = voucher.send;
     return voucherWithBalance;
   }

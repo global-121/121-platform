@@ -10,5 +10,6 @@ export class VoucherWithBalanceDto {
   public issueDate: Date;
   public originalBalance: number;
   public remainingBalance: number;
+  public updatedRemainingBalanceUTC: Date;
   public voucherSend: boolean;
 }
