@@ -5,9 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.77.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.77.2...master)
 
 ---
+## [1.77.2](https://github.com/global-121/121-platform/compare/v1.77.1...v1.77.2) - 2023-01-19
+
+### Fixed
+- Added 'failed' as a final Twilio message status to prevent it from being updated by a late callback
+
+## [1.77.1](https://github.com/global-121/121-platform/compare/v1.77.0...v1.77.1) - 2023-01-18
+
+### Fixed
+- Improved speed query registrations
+
 ## [1.77.0](https://github.com/global-121/121-platform/compare/v1.76.0...v1.77.0) - 2023-01-13
 
 ### Breaking Change
