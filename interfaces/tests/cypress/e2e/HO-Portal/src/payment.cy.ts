@@ -4,6 +4,7 @@ import programLVV from "../../../../../../services/121-service/seed-data/program
 
 describe("'Do Payment #1' bulk action", () => {
   beforeEach(() => {
+    cy.wait(4000);
     cy.seedDatabase();
     cy.loginApi();
     cy.loginPortal();
@@ -21,7 +22,7 @@ describe("'Do Payment #1' bulk action", () => {
     cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
     cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
     cy.fixture("payment").then((page) => {
-      selectPaymentAction(page);
+      selectPaymentAction(page, page.payment);
       cy.get("#alert-1-msg").contains("no People");
     });
   });
@@ -34,7 +35,7 @@ describe("'Do Payment #1' bulk action", () => {
     const [arr,registrations] = includeAllRegistrations(programId);
     
     cy.fixture("payment").then((page) => {
-      selectPaymentAction(page);
+      selectPaymentAction(page, page.payment);
       selectPaAndApply();
       cy.get(
         "app-make-payment > .ion-align-items-center > confirm-prompt > .md"
@@ -66,7 +67,7 @@ describe("'Do Payment #1' bulk action", () => {
       cy.importRegistrations(1, [registrationMaxPayment]);
       const [arr,registrations] = includeAllRegistrations(programId);
       cy.fixture("payment").then((page) => {
-        selectPaymentAction(page);
+        selectPaymentAction(page, page.payment);
         selectPaAndApply();
         cy.get(
           "app-make-payment > .ion-align-items-center > confirm-prompt > .md"
@@ -78,7 +79,8 @@ describe("'Do Payment #1' bulk action", () => {
         cy.get(".alert-button").click();
         cy.get('[data-cy="payment-history-button"]').contains(
           portalEn.page.program["program-people-affected"].transaction.success
-        );
+          );
+        cy.wait(2000);
         cy.get('.datatable-body-cell-label > span').contains(portalEn.page.program["program-people-affected"].status.completed)
       });
     });
@@ -91,7 +93,7 @@ describe("'Do Payment #1' bulk action", () => {
     cy.importRegistrations(programId);
     const [arr,registrations] = includeAllRegistrations(programId);
     cy.fixture("payment").then((page) => {
-      selectPaymentAction(page);
+      selectPaymentAction(page, page.payment);
       selectPaAndApply();
       cy.get(
         "app-make-payment > .ion-align-items-center > confirm-prompt > .md"
@@ -114,7 +116,7 @@ describe("'Do Payment #1' bulk action", () => {
     cy.importRegistrations(programId);
     const [arr,registrations] = includeAllRegistrations(programId);
     cy.fixture("payment").then((page) => {
-      selectPaymentAction(page);
+      selectPaymentAction(page, page.payment);
       selectPaAndApply();
       cy.get('[data-cy="transfer-value-input"]').clear();
       cy.get('[data-cy="transfer-value-input"]').find('input').type(String(newFixedTransferValue), {force: true});
@@ -131,13 +133,45 @@ describe("'Do Payment #1' bulk action", () => {
     });
   });
 
-  const selectPaymentAction = (fixture: any) => {
+  it(`should not be able to do a payment for a 'completed' PA`, function () {
+    const programId = 1;
+    cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
+    cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
+    cy.importRegistrations(programId);
+    cy.fixture("registration-nlrc-max-payment").then((registrationMaxPayment) => {
+      cy.importRegistrations(1, [registrationMaxPayment]);
+      const [arr,registrations] = includeAllRegistrations(programId);
+      cy.fixture("payment").then((page) => {
+        selectPaymentAction(page, page.payment);
+        selectPaAndApply();
+        cy.get(
+          "app-make-payment > .ion-align-items-center > confirm-prompt > .md"
+        ).click();
+        cy.get(".buttons-last-slot > .ion-color-primary").click();
+        cy.get("#alert-3-msg").contains("Successfully");
+        cy.get("#alert-3-msg").contains(String(arr.length));
+        cy.wait(2000);
+        cy.get(".alert-button").click();
+        cy.get('[data-cy="payment-history-button"]').contains(
+          portalEn.page.program["program-people-affected"].transaction.success
+        );
+        cy.wait(2000);
+        cy.get('.datatable-body-cell-label > span').contains(portalEn.page.program["program-people-affected"].status.completed);
+        selectPaymentAction(page, page.nextPayment);
+        cy.get(".datatable-body-cell-label > input").click().should('length', 1);
+      });
+    });
+  });
+
+
+
+  const selectPaymentAction = (fixture: any, payment: number) => {
     cy.setHoPortal();
     cy.visit(fixture.url);
     cy.url().should("include", "payment");
     cy.get('[data-cy="select-action"]')
     .select(
-      `${portalEn.page.program["program-people-affected"].actions["do-payment"]} #${fixture.payment}`
+      `${portalEn.page.program["program-people-affected"].actions["do-payment"]} #${payment}`
     );
   }
 
