@@ -67,11 +67,11 @@ export class RegistrationDataTypeValidator
     type: string,
     options: any[],
     attribute: string,
-  ): boolean {
-    let isValid = false;
+    ): boolean {
+      let isValid = false;
     if (type === AnswerTypes.date) {
       const datePattern =
-        /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-(19[2-9][0-9]|20[0-1][0-9])$/;
+      /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-(19[2-9][0-9]|20[0-1][0-9])$/;
       isValid = datePattern.test(value);
     } else if (type === AnswerTypes.dropdown) {
       isValid = this.optionIsValid(value, options);
@@ -79,7 +79,7 @@ export class RegistrationDataTypeValidator
       isValid = this.multiSelectIsValid(value, options);
     } else if (type === AnswerTypes.numeric) {
       isValid = !isNaN(+value);
-    } else if (AnswerTypes.numericNullable) {
+    } else if (type === AnswerTypes.numericNullable) {
       isValid = !isNaN(+value) || null;
     } else if (type === AnswerTypes.tel) {
       // Potential refactor: put lookup code here
