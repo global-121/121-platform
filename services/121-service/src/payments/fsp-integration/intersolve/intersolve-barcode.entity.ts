@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
 import { ImageCodeExportVouchersEntity } from '../../imagecode/image-code-export-vouchers.entity';
 
@@ -16,14 +16,25 @@ export class IntersolveBarcodeEntity extends Base121Entity {
   @Column()
   public barcode: string;
 
+  // The amount with which the voucher was originally created
   @Column({ nullable: true, type: 'real' })
   public amount: number;
 
+  @Index()
   @Column({ nullable: true })
   public send: boolean;
 
+  @Index()
   @Column({ default: false })
   public balanceUsed: boolean;
+
+  // The last known balance we got from intersolve
+  @Index()
+  @Column({ nullable: true, default: null })
+  public lastRequestedBalance: number;
+
+  @Column({ nullable: true, default: null })
+  public updatedLastRequestedBalance: Date;
 
   @OneToMany((_type) => ImageCodeExportVouchersEntity, (image) => image.barcode)
   public image: ImageCodeExportVouchersEntity[];
