@@ -187,6 +187,7 @@ export class RegistrationsService {
           RegistrationStatusEnum.validated,
           RegistrationStatusEnum.rejected,
           RegistrationStatusEnum.inclusionEnded,
+          RegistrationStatusEnum.completed,
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.inclusionEnded:
