@@ -163,7 +163,38 @@ describe("'Do Payment #1' bulk action", () => {
     });
   });
 
-
+  it(`should not be able to move a PA back to 'included' when max payments = payments done`, function () {
+    const programId = 1;
+    cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
+    cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
+    cy.importRegistrations(programId);
+    cy.fixture("registration-nlrc-max-payment").then((registrationMaxPayment) => {
+      cy.importRegistrations(1, [registrationMaxPayment]);
+      const [arr,registrations] = includeAllRegistrations(programId);
+      cy.fixture("payment").then((page) => {
+        selectPaymentAction(page, page.payment);
+        selectPaAndApply();
+        cy.get(
+          "app-make-payment > .ion-align-items-center > confirm-prompt > .md"
+        ).click();
+        cy.get(".buttons-last-slot > .ion-color-primary").click();
+        cy.get("#alert-3-msg").contains("Successfully");
+        cy.get("#alert-3-msg").contains(String(arr.length));
+        cy.wait(2000);
+        cy.get(".alert-button").click();
+        cy.get('[data-cy="payment-history-button"]').contains(
+          portalEn.page.program["program-people-affected"].transaction.success
+        );
+        cy.wait(2000);
+        cy.get('.datatable-body-cell-label > span').contains(portalEn.page.program["program-people-affected"].status.completed);
+        cy.get('[data-cy="select-action"]')
+        .select(
+          `${portalEn.page.program["program-people-affected"].actions['include']}`
+        );
+        cy.get("#alert-1-msg").contains("no People");
+      });
+    });
+  });
 
   const selectPaymentAction = (fixture: any, payment: number) => {
     cy.setHoPortal();
