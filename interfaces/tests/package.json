@@ -16,16 +16,23 @@
     "start:test-aw": "npx npm-run-all --print-label --parallel start:aw start:cypress",
     "start:test-pa": "npx npm-run-all --print-label --parallel start:pa start:cypress",
     "start:test-ho": "npx npm-run-all --print-label --parallel start:ho start:cypress",
-    "lint:syntax": "prettier --check \"**/*.{md,js,ts,scss,html}\"",
-    "lint": "npm run lint:syntax && ng lint",
-    "fix:syntax": "npm run lint:syntax -- --write"
+    "lint": "npm run lint:seed-data && npm run lint:code && npm run lint:syntax",
+    "lint:code": "eslint \"cypress/**/*.ts\"",
+    "fix:code": "npm run lint:code -- --fix",
+    "lint:syntax": "prettier --check \"**/*.{md,ts,js,json,yml}\"",
+    "fix:syntax": "npm run lint:code -- --fix && npm run lint:syntax -- --write"
   },
   "devDependencies": {
     "cy-verify-downloads": "^0.1.11",
     "cypress": "^10.11.0",
+    "eslint": "^8.32.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-prettier": "^4.2.1",
     "typescript": "^4.9.3"
   },
   "dependencies": {
+    "@typescript-eslint/parser": "^5.48.2",
     "dotenv": "^16.0.3",
     "prettier": "^2.7.1",
     "xlsx": "^0.18.5"
