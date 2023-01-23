@@ -15,7 +15,10 @@
     "start:tests": "npx npm-run-all --print-label --parallel start:interfaces start:cypress",
     "start:test-aw": "npx npm-run-all --print-label --parallel start:aw start:cypress",
     "start:test-pa": "npx npm-run-all --print-label --parallel start:pa start:cypress",
-    "start:test-ho": "npx npm-run-all --print-label --parallel start:ho start:cypress"
+    "start:test-ho": "npx npm-run-all --print-label --parallel start:ho start:cypress",
+    "lint:syntax": "prettier --check \"**/*.{md,js,ts,scss,html}\"",
+    "lint": "npm run lint:syntax && ng lint",
+    "fix:syntax": "npm run lint:syntax -- --write"
   },
   "devDependencies": {
     "cy-verify-downloads": "^0.1.11",
@@ -24,6 +27,7 @@
   },
   "dependencies": {
     "dotenv": "^16.0.3",
+    "prettier": "^2.7.1",
     "xlsx": "^0.18.5"
   }
 }

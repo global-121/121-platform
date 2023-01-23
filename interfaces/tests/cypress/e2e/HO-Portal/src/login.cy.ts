@@ -23,11 +23,11 @@ describe('Login Page', () => {
     cy.fixture('portal-login').then((user) => {
       cy.intercept('POST', '*/user/login*', {
         statusCode: 201,
-        body: user
+        body: user,
       }).as('login');
       cy.intercept('GET', '*/programs/assigned/all*', {
         statusCode: 201,
-        body: {}
+        body: {},
       }).as('programs');
 
       cy.visit('/login');
