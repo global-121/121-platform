@@ -17,6 +17,7 @@
   },
   "plugins": ["cypress"],
   "rules": {
-    "no-unused-vars": "off"
+    "no-unused-vars": "off",
+    "cypress/no-unnecessary-waiting": "off"
   }
 }
