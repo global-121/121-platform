@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress';
+import { readFileSync } from 'fs';
 
 const { verifyDownloadTasks } = require('cy-verify-downloads');
 
@@ -19,7 +20,7 @@ module.exports = defineConfig({
           // there is a name and arguments for a task
           const folderPath = '../../features/test-registration-data';
           const filePath = `${folderPath}/${fileName}`;
-          const csv = fs.readFileSync(filePath, 'utf8');
+          const csv = readFileSync(filePath, 'utf8');
           const lines = csv.split('\n');
           const result = [];
           // NOTE: If your columns contain commas in their values, you'll need  // to deal with those before doing the next step   // (you might convert them to &&& or something, then covert them back later)  // jsfiddle showing the issue https://jsfiddle.net/
