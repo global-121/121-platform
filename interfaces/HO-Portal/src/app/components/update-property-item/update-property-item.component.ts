@@ -39,7 +39,7 @@ export class UpdatePropertyItemComponent implements OnInit {
   public options: ProgramQuestionOption[] = null;
 
   @Input()
-  public prop?: string = '';
+  public prop = '';
 
   @Output()
   updated: EventEmitter<string | boolean> = new EventEmitter<
