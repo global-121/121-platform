@@ -16,6 +16,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Response } from 'express-serve-static-core';
 import { Admin } from '../../guards/admin.decorator';
 import { AdminAuthGuard } from './../../guards/admin.guard';
@@ -74,6 +75,7 @@ export class VoiceController {
     mp3Stream.readStream.pipe(response);
   }
 
+  @SkipThrottle()
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Post('status')
   public async statusCallback(@Body() callbackData: any): Promise<void> {

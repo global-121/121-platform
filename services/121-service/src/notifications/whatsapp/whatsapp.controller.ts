@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiConsumes, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Admin } from '../../guards/admin.decorator';
 import { AdminAuthGuard } from '../../guards/admin.guard';
 import {
@@ -17,6 +18,7 @@ export class WhatsappController {
     this.whatsappService = whatsappService;
   }
 
+  @SkipThrottle()
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Post('status')
   public async statusCallback(
@@ -25,6 +27,7 @@ export class WhatsappController {
     return await this.whatsappService.statusCallback(callbackData);
   }
 
+  @SkipThrottle()
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Post('incoming')
   public async incoming(
@@ -44,6 +47,7 @@ export class WhatsappController {
     return await this.whatsappService.testTemplates();
   }
 
+  @SkipThrottle()
   @ApiOperation({
     summary:
       'Url for callbacks from Twilio triggered by a GET request to /notifications/whatsapp/templates',
