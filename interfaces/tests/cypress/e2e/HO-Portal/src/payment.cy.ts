@@ -72,14 +72,7 @@ describe("'Do Payment #1' bulk action", () => {
         cy.fixture('payment').then((page) => {
           selectPaymentAction(page, page.payment);
           selectPaAndApply();
-          cy.get(
-            'app-make-payment > .ion-align-items-center > confirm-prompt > .md',
-          ).click();
-          cy.get('.buttons-last-slot > .ion-color-primary').click();
-          cy.get('#alert-3-msg').contains('Successfully');
-          cy.get('#alert-3-msg').contains(String(arr.length));
-          cy.wait(2000);
-          cy.get('.alert-button').click();
+          confirmPaymentPopupt(arr.length);
           cy.get('[data-cy="payment-history-button"]').contains(
             portalEn.page.program['program-people-affected'].transaction
               .success,
@@ -154,14 +147,7 @@ describe("'Do Payment #1' bulk action", () => {
         cy.fixture('payment').then((page) => {
           selectPaymentAction(page, page.payment);
           selectPaAndApply();
-          cy.get(
-            'app-make-payment > .ion-align-items-center > confirm-prompt > .md',
-          ).click();
-          cy.get('.buttons-last-slot > .ion-color-primary').click();
-          cy.get('#alert-3-msg').contains('Successfully');
-          cy.get('#alert-3-msg').contains(String(arr.length));
-          cy.wait(2000);
-          cy.get('.alert-button').click();
+          confirmPaymentPopupt(arr.length);
           cy.get('[data-cy="payment-history-button"]').contains(
             portalEn.page.program['program-people-affected'].transaction
               .success,
@@ -191,14 +177,7 @@ describe("'Do Payment #1' bulk action", () => {
         cy.fixture('payment').then((page) => {
           selectPaymentAction(page, page.payment);
           selectPaAndApply();
-          cy.get(
-            'app-make-payment > .ion-align-items-center > confirm-prompt > .md',
-          ).click();
-          cy.get('.buttons-last-slot > .ion-color-primary').click();
-          cy.get('#alert-3-msg').contains('Successfully');
-          cy.get('#alert-3-msg').contains(String(arr.length));
-          cy.wait(2000);
-          cy.get('.alert-button').click();
+          confirmPaymentPopupt(arr.length);
           cy.get('[data-cy="payment-history-button"]').contains(
             portalEn.page.program['program-people-affected'].transaction
               .success,
@@ -215,6 +194,17 @@ describe("'Do Payment #1' bulk action", () => {
       },
     );
   });
+
+  const confirmPaymentPopupt = (nrOfPa: number) => {
+    cy.get(
+      'app-make-payment > .ion-align-items-center > confirm-prompt > .md',
+    ).click();
+    cy.get('.buttons-last-slot > .ion-color-primary').click();
+    cy.get('#alert-3-msg').contains('Successfully');
+    cy.get('#alert-3-msg').contains(String(nrOfPa));
+    cy.wait(2000);
+    cy.get('.alert-button').click();
+  };
 
   const selectPaymentAction = (fixture: any, payment: number) => {
     cy.setHoPortal();
