@@ -4,7 +4,9 @@
   "author": "121.global",
   "homepage": "https://www.121.global/",
   "scripts": {
-    "test": "npm-run-all --print-label --sequential start:services:ci start:interfaces && npx cypress test --e2e",
+    "pretest": "echo '\n\n ! Make sure all interfaces and services are running! \n\n'",
+    "test": "npm run test:e2e",
+    "test:e2e": "npx cypress run --e2e",
     "start:services": "cd ../.. && npm run start:services",
     "start:services:ci": "cd ../.. && npm run start:services:ci",
     "start:interfaces": "cd ../.. && npm run start:interfaces",
