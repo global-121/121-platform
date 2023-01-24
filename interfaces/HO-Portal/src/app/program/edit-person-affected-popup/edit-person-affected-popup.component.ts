@@ -43,6 +43,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   @Input()
   public canViewMessageHistory = false;
 
+  @Input()
+  public canViewPaymentData = false;
+
   public program: Program;
   private paTableAttributesInput: Program['editableAttributes'];
 
@@ -59,6 +62,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public personFsp: Fsp;
 
   public availableLanguages = [];
+
+  public alreadyReceivedPayments = 0;
 
   constructor(
     private modalController: ModalController,
@@ -81,6 +86,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
     this.attributeValues.paymentAmountMultiplier =
       this.person?.paymentAmountMultiplier;
+    if (this.showMaxPaymentsField()) {
+      this.attributeValues.maxPayments = this.person?.maxPayments;
+    }
     this.attributeValues.phoneNumber = this.person?.phoneNumber;
     this.attributeValues.preferredLanguage = this.person?.preferredLanguage;
 
@@ -105,19 +113,40 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     value: string | number | string[],
     isPaTableAttribute: boolean,
   ): Promise<void> {
+    let valueToStore;
+
     if (isPaTableAttribute && !Array.isArray(value)) {
-      value = String(value);
+      valueToStore = String(value);
     }
     this.inProgress[attribute] = true;
 
     if (attribute === PersonDefaultAttributes.paymentAmountMultiplier) {
-      if (!Number.isInteger(value)) {
-        const errorMessage = this.translate.instant('common.update-error', {
-          error: 'Input should be an integer',
-        });
-        this.actionResult(errorMessage);
-        this.inProgress[attribute] = false;
+      if (!Number.isInteger(Number(value))) {
+        this.showAttributeErrorAlert('not-an-integer', attribute);
         return;
+      }
+
+      valueToStore = Number(value);
+    }
+
+    if (attribute === PersonDefaultAttributes.maxPayments) {
+      if (!Number.isInteger(Number(value))) {
+        this.showAttributeErrorAlert('not-an-integer', attribute);
+        return;
+      }
+
+      if (
+        value !== '' &&
+        (Number(value) === 0 || Number(value) <= this.person.nrPayments)
+      ) {
+        this.showAttributeErrorAlert('too-low', attribute);
+        return;
+      }
+
+      if (!value || value === '') {
+        valueToStore = null;
+      } else {
+        valueToStore = Number(value);
       }
     }
 
@@ -126,11 +155,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         this.programId,
         this.person.referenceId,
         attribute,
-        value,
+        valueToStore,
       )
       .then((response: Person) => {
         this.inProgress[attribute] = false;
-        this.attributeValues[attribute] = value;
+        this.attributeValues[attribute] = valueToStore;
         this.attributeValues.paymentAmountMultiplier =
           response.paymentAmountMultiplier;
         this.actionResult(
@@ -148,6 +177,20 @@ export class EditPersonAffectedPopupComponent implements OnInit {
           this.actionResult(errorMessage);
         }
       });
+  }
+
+  private showAttributeErrorAlert(
+    errorType: string,
+    attribute: PersonDefaultAttributes,
+  ) {
+    const errorKeyPrefix = `page.program.program-people-affected.edit-person-affected-popup.properties`;
+    const errorMessage = this.translate.instant('common.update-error', {
+      error: this.translate.instant(
+        `${errorKeyPrefix}.${attribute}.error.${errorType}`,
+      ),
+    });
+    this.actionResult(errorMessage);
+    this.inProgress[attribute] = false;
   }
 
   private fillPaTableAttributes() {
@@ -280,5 +323,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         ),
       };
     });
+  }
+
+  public showMaxPaymentsField() {
+    return this.program?.enableMaxPayments;
   }
 }

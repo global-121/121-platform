@@ -136,15 +136,14 @@ export class PaymentsService {
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    this.makePaymentRequest(paLists, programId, payment, amount).then(() => {
-      if (payment > -1) {
-        this.actionService.saveAction(
-          userId,
-          programId,
-          AdditionalActionType.paymentFinished,
-        );
-      }
-    });
+    this.makePaymentRequest(paLists, programId, payment, amount);
+    if (payment > -1) {
+      this.actionService.saveAction(
+        userId,
+        programId,
+        AdditionalActionType.paymentFinished,
+      );
+    }
     return paPaymentDataList.length;
   }
 
@@ -492,7 +491,7 @@ export class PaymentsService {
           continue;
         }
 
-        await this.transactionService.storeTransaction(
+        await this.transactionService.storeTransactionUpdateStatus(
           paTransactionResult,
           programId,
           payment,

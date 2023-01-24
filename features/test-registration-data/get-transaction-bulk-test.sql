@@ -1,3 +1,4 @@
+-- IMPORTANT: this query needs to be kept up-to-date with changes to registration and transaction entities
 -- You can create a dataset of 1024 PAs with 64 payments:
 
 --     1. reset to nlrc-multiple
@@ -34,7 +35,8 @@ INSERT
 		SELECT
 			max("registrationProgramId")
 		FROM
-			"121-service"."registration")
+			"121-service"."registration"),
+		"maxPayments"
 	FROM
 		"121-service".registration);
 END LOOP;

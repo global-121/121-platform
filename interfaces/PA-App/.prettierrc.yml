@@ -1,5 +1,7 @@
 # Make sure to keep contents aligned with all other interfaces!
 #
+arrowParens: always
+semi: true
+singleAttributePerLine: true
 singleQuote: true
 trailingComma: all
-singleAttributePerLine: true

@@ -187,10 +187,14 @@ export class RegistrationsService {
           RegistrationStatusEnum.validated,
           RegistrationStatusEnum.rejected,
           RegistrationStatusEnum.inclusionEnded,
+          RegistrationStatusEnum.completed,
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.inclusionEnded:
-        result = [RegistrationStatusEnum.included].includes(currentStatus);
+        result = [
+          RegistrationStatusEnum.included,
+          RegistrationStatusEnum.completed,
+        ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.rejected:
         result = [
@@ -204,6 +208,9 @@ export class RegistrationsService {
         break;
       case RegistrationStatusEnum.deleted:
         result = currentStatus !== RegistrationStatusEnum.deleted;
+        break;
+      case RegistrationStatusEnum.completed:
+        result = [RegistrationStatusEnum.included].includes(currentStatus);
         break;
     }
     return result;
@@ -756,6 +763,7 @@ export class RegistrationsService {
         'registration.paymentAmountMultiplier',
         'paymentAmountMultiplier',
       )
+      .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect((subQuery) => {
         return this.customDataSubQuery(subQuery);
       }, 'customData')
@@ -1000,6 +1008,11 @@ export class RegistrationsService {
         RegistrationStatusChangeEntity,
         RegistrationStatusEnum.deleted,
         `registration.id = ${RegistrationStatusEnum.deleted}.registrationId AND ${RegistrationStatusEnum.deleted}.registrationStatus = '${RegistrationStatusEnum.deleted}'`,
+      )
+      .leftJoin(
+        RegistrationStatusChangeEntity,
+        RegistrationStatusEnum.completed,
+        `registration.id = ${RegistrationStatusEnum.completed}.registrationId AND ${RegistrationStatusEnum.completed}.registrationStatus = '${RegistrationStatusEnum.completed}'`,
       );
   }
 
@@ -1011,6 +1024,7 @@ export class RegistrationsService {
         qb
           .from(TransactionEntity, 'transactions')
           .select('MAX("payment")', 'payment')
+          .addSelect('COUNT(DISTINCT(payment))', 'nrPayments')
           .addSelect('"registrationId"', 'registrationId')
           .groupBy('"registrationId"'),
       'transaction_max_payment',
@@ -1060,6 +1074,7 @@ export class RegistrationsService {
         'transaction.amount AS "transactionAmount"',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
+        'transaction_max_payment."nrPayments" as "nrPayments"',
       ]);
     return q;
   }
@@ -1131,6 +1146,8 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.registeredWhileNoLongerEligibleDate;
       case RegistrationStatusEnum.deleted:
         return RegistrationStatusTimestampField.deleteDate;
+      case RegistrationStatusEnum.completed:
+        return RegistrationStatusTimestampField.completedDate;
     }
   }
 
@@ -1157,7 +1174,8 @@ export class RegistrationsService {
 
     if (
       attribute !== Attributes.paymentAmountMultiplier &&
-      attribute !== Attributes.preferredLanguage
+      attribute !== Attributes.preferredLanguage &&
+      attribute !== Attributes.maxPayments
     ) {
       try {
         await registration.saveData(value, { name: attribute });

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.77.2...master)
 
 ---
+
 ## [1.77.2](https://github.com/global-121/121-platform/compare/v1.77.1...v1.77.2) - 2023-01-19
 
 ### Fixed
@@ -31,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Improvements to the payment phase by changing the way transactions are handled
 - Upgraded NestJS to version 8
-- Upgraded Typeorm to version 0.3.6
+- Upgraded TypeORM to version 0.3.6
 - Upgraded Typescript to version 4.7.4
 
 ### Removed

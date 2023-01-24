@@ -28,10 +28,12 @@ export class Person {
   hasPhoneNumber?: boolean;
   fsp?: string;
   paymentAmountMultiplier?: number;
+  maxPayments?: number;
   preferredLanguage?: LanguageEnum;
   paTableAttributes?: Attribute[];
   registrationProgramId: number;
   payment?: number;
+  nrPayments?: number;
   paymentDate?: string;
   transactionAmount?: number;
   transactionStatus?: string;
@@ -64,6 +66,8 @@ export class PersonRow {
   phoneNumber?: string | null;
   fsp?: string | null;
   paymentAmountMultiplier?: string | null;
+  maxPayments?: string | null;
+  paymentsLeft?: number | null;
   preferredLanguage?: string | null;
   paTableAttributes?: Person['paTableAttributes'];
   paymentHistory?: PaymentColumnDetail;
@@ -113,9 +117,11 @@ export const PA_STATUS_ORDER = [
   { id: 9, name: RegistrationStatus.rejected },
   { id: 10, name: RegistrationStatus.noLongerEligible },
   { id: 11, name: RegistrationStatus.registeredWhileNoLongerEligible },
+  { id: 12, name: RegistrationStatus.completed },
 ];
 
 export enum PersonDefaultAttributes {
   paymentAmountMultiplier = 'paymentAmountMultiplier',
   phoneNumber = 'phoneNumber',
+  maxPayments = 'maxPayments',
 }
