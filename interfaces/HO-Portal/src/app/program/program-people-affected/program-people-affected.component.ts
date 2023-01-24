@@ -1597,7 +1597,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           this.phaseEnum.inclusion,
         ].includes(this.thisPhase)
       ) {
-        attributesToExport.push('paymentHistoryColumn');
+        attributesToExport.push('inclusionScore');
       }
 
       if (this.thisPhase === this.phaseEnum.payment) {
