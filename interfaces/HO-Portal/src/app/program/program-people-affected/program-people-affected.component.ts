@@ -56,6 +56,7 @@ import {
 } from '../../models/message.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
+import { arrayToXlsx } from '../../shared/array-to-xlsx';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
 import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-history-popup.component';
@@ -1552,5 +1553,41 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       MessageStatus.read,
       MessageStatus.sent,
     ].includes(messageStatus);
+  }
+
+  public exportTableView() {
+    try {
+      const attributesToExport = ['pa', ...this.columns.map((c) => c.prop)];
+      if (
+        this.showInclusionScore() &&
+        [
+          this.phaseEnum.registrationValidation,
+          this.phaseEnum.inclusion,
+        ].includes(this.thisPhase)
+      ) {
+        attributesToExport.push('paymentHistoryColumn');
+      }
+
+      if (this.thisPhase === this.phaseEnum.payment) {
+        attributesToExport.push('paymentHistoryColumn');
+      }
+
+      const filtered = this.visiblePeopleAffected.map((person) => {
+        return Object.keys(person)
+          .filter((k) => attributesToExport.includes(k))
+          .reduce((res, k) => Object.assign(res, { [k]: person[k] }), {});
+      });
+
+      arrayToXlsx(filtered, `${this.thisPhase}-table`);
+
+      this.actionResult(
+        this.translate.instant(
+          'page.program.program-people-affected.export-list.success-message',
+        ),
+      );
+    } catch (error) {
+      console.log('error: ', error);
+      this.actionResult(this.translate.instant('common.export-error'));
+    }
   }
 }

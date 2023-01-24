@@ -110,6 +110,20 @@
           currentSelection: tableFilter.paStatus.selected
         }"
       ></app-table-filter>
+
+      <ion-button
+        (click)="exportTableView()"
+        [disabled]="visiblePeopleAffected.length === 0"
+      >
+        <ion-icon
+          name="download"
+          slot="start"
+        ></ion-icon>
+        {{
+          'page.program.program-people-affected.export-list.button-label'
+            | translate
+        }}</ion-button
+      >
     </ion-row>
   </div>
 </ion-row>
