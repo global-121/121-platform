@@ -42,13 +42,14 @@ export class InstanceService {
   public async updateMonitoringQuestion(
     updateMonitoringQuestion: UpdateMonitoringQuestionDto,
   ): Promise<MonitoringQuestionEntity> {
-    const instance = await this.instanceRepository.findOne({
+    const instances = await this.instanceRepository.find({
       relations: ['monitoringQuestion'],
     });
-    if (!instance) {
+    if (!instances || instances.length === 0) {
       const errors = `No instance found`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+    const instance = instances[0];
 
     for (const attribute in updateMonitoringQuestion) {
       if (attribute !== 'id' && attribute !== 'name') {

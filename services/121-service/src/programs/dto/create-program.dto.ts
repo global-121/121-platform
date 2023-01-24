@@ -13,12 +13,12 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import {
   CreateProgramCustomAttributeDto,
   CustomAttributeType,
 } from './create-program-custom-attribute.dto';
 import { CreateProgramQuestionDto } from './create-program-question.dto';
+import { SetRelationsDto } from './set-relations.dto';
 
 export class CreateProgramDto {
   @ApiProperty()
@@ -86,8 +86,8 @@ export class CreateProgramDto {
   @IsArray()
   @ValidateNested()
   @IsDefined()
-  @Type(() => FinancialServiceProviderEntity)
-  public readonly financialServiceProviders: FinancialServiceProviderEntity[];
+  @Type(() => SetRelationsDto)
+  public readonly financialServiceProviders: SetRelationsDto[];
 
   @ApiProperty({ example: 'minimumScore' })
   @IsIn(['minimumScore', 'highestScoresX'])
@@ -217,8 +217,10 @@ export class CreateProgramDto {
   public readonly programQuestions: CreateProgramQuestionDto[];
 
   @ApiProperty({ example: { en: 'description' } })
+  @IsOptional()
   public readonly description: JSON;
 
   @ApiProperty({ example: { en: 'descCashType' } })
+  @IsOptional()
   public readonly descCashType: JSON;
 }

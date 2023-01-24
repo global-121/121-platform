@@ -88,8 +88,10 @@ export class TwilioStatusCallbackDto {
   @IsOptional()
   public ErrorCode: string;
 
+  @IsOptional()
   public SmsSid: string;
 
+  @IsOptional()
   public To: string;
 }
 
