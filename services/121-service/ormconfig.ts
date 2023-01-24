@@ -10,9 +10,6 @@ export const ORMConfig = {
   subscribers: ['src/**/**.subscriber.ts'],
   migrationsTableName: 'custom_migration_table',
   migrations: ['migration/*.ts'],
-  cli: {
-    migrationsDir: 'migration',
-  },
   dropSchema: false,
   synchronize: false,
 };

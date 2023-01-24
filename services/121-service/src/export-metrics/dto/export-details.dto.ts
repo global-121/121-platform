@@ -7,6 +7,7 @@ export enum ExportType {
   payment = 'payment',
   selectedForValidation = 'selected-for-validation',
   unusedVouchers = 'unused-vouchers',
+  vouchersWithBalance = 'vouchers-with-balance',
   toCancelVouchers = 'to-cancel-vouchers',
   duplicates = 'duplicates',
 }

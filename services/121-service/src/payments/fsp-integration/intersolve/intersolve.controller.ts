@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Post,
   Res,
   UploadedFile,
@@ -27,6 +28,7 @@ import { PermissionEnum } from '../../../user/permission.enum';
 import { AdminAuthGuard } from './../../../guards/admin.guard';
 import { IMAGE_UPLOAD_API_FORMAT } from './../../../shared/file-upload-api-format';
 import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
+import { InersolveJobDetails } from './dto/job-details.dto';
 import { IntersolveService } from './intersolve.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
@@ -106,5 +108,22 @@ export class IntersolveController {
     @UploadedFile() instructionsFileBlob,
   ): Promise<void> {
     await this.intersolveService.postInstruction(instructionsFileBlob);
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary: 'Start a job to update all voucher balances of a program',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({ status: 200, description: 'Voucher update job started' })
+  @Post('/programs/:programId/payments/intersolve/batch-jobs')
+  public async createJob(
+    @Body() jobDetails: InersolveJobDetails,
+    @Param() param,
+  ): Promise<void> {
+    await this.intersolveService.updateVoucherBalanceJob(
+      Number(param.programId),
+      jobDetails.name,
+    );
   }
 }

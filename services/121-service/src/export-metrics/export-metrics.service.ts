@@ -80,6 +80,9 @@ export class ExportMetricsService {
       case ExportType.unusedVouchers: {
         return this.getUnusedVouchers(programId);
       }
+      case ExportType.vouchersWithBalance: {
+        return this.getVouchersWithBalance(programId);
+      }
       case ExportType.duplicates: {
         return this.getDuplicates(programId);
       }
@@ -302,6 +305,16 @@ export class ExportMetricsService {
       data: unusedVouchers,
     };
 
+    return response;
+  }
+
+  private async getVouchersWithBalance(programId: number): Promise<FileDto> {
+    const vouchersWithBalance =
+      await this.paymentsService.getVouchersWithBalance(programId);
+    const response = {
+      fileName: ExportType.vouchersWithBalance,
+      data: vouchersWithBalance,
+    };
     return response;
   }
 

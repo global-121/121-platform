@@ -741,6 +741,8 @@ export class RegistrationsService {
       q = this.includeTransactionData(q);
     }
 
+    q = this.includeLastMessage(q);
+
     q = q
       .addSelect('registration.registrationProgramId', 'registrationProgramId')
       .distinctOn(['registration.registrationProgramId'])
@@ -759,15 +761,6 @@ export class RegistrationsService {
       }, 'customData')
       .addSelect('registration.phoneNumber', 'phoneNumber')
       .addSelect('data.value', 'data')
-      .leftJoin('registration.twilioMessages', 'twilioMessages')
-      .leftJoin(
-        'registration.twilioMessages',
-        'nextTwilioMessages',
-        'twilioMessages.created < nextTwilioMessages.created',
-      )
-      .addSelect('"twilioMessages".status', 'lastMessageStatus')
-      .addSelect('"twilioMessages".type', 'lastMessageType')
-      .andWhere('nextTwilioMessages.id IS NULL')
       .leftJoin('registration.data', 'data')
       .leftJoin('data.programQuestion', 'programQuestion')
       .leftJoin('registration.fsp', 'fsp');
@@ -801,7 +794,6 @@ export class RegistrationsService {
         referenceId: referenceId,
       });
     }
-
     if (!includePersonalData) {
       const rows = await q.getRawMany();
       const responseRows = [];
@@ -850,6 +842,31 @@ export class RegistrationsService {
       responseRows.push(row);
     }
     return responseRows;
+  }
+
+  private includeLastMessage(
+    q: SelectQueryBuilder<RegistrationEntity>,
+  ): SelectQueryBuilder<RegistrationEntity> {
+    q.leftJoin(
+      (qb) =>
+        qb
+          .from(TwilioMessageEntity, 'messages')
+          .select('MAX("created")', 'created')
+          .addSelect('"registrationId"', 'registrationId')
+          .groupBy('"registrationId"'),
+      'messages_max_created',
+      'messages_max_created."registrationId" = registration.id',
+    )
+      .leftJoin(
+        'registration.twilioMessages',
+        'twilioMessages',
+        `twilioMessages.created = messages_max_created.created`,
+      )
+      .addSelect([
+        '"twilioMessages"."status" AS "lastMessageStatus"',
+        '"twilioMessages"."type" AS "lastMessageType"',
+      ]);
+    return q;
   }
 
   private addStatusChangeToQuery(
@@ -1022,9 +1039,7 @@ export class RegistrationsService {
             .addSelect('"transactionStep"', 'transactionStep')
             .addGroupBy('"transactionStep"')
             .addSelect('"registrationId"', 'registrationId')
-            .addGroupBy('"registrationId"')
-            .addSelect('"id"', 'id')
-            .addGroupBy('"id"'),
+            .addGroupBy('"registrationId"'),
         'transaction_max_created',
         `transaction_max_created."registrationId" = registration.id
       AND transaction_max_created.payment = transaction_max_payment.payment
@@ -1033,7 +1048,10 @@ export class RegistrationsService {
       .leftJoin(
         'registration.transactions',
         'transaction',
-        `transaction.id = transaction_max_created.id`,
+        `transaction."registrationId" = transaction_max_created."registrationId"
+      AND transaction.payment = transaction_max_created.payment
+      AND transaction."transactionStep" = transaction_max_created."transactionStep"
+      AND transaction."created" = transaction_max_created."created"`,
       )
       .addSelect([
         'transaction.created AS "paymentDate"',
