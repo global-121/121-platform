@@ -1,5 +1,4 @@
 const XLSX = require('xlsx');
-const fs = require('fs');
 const portalEn = require('../../../HO-Portal/src/assets/i18n/en.json');
 
 // Contains a list of custom Commands
@@ -194,6 +193,7 @@ Cypress.Commands.add('readXlsx', (fileName: string, sheet: string) => {
   });
 });
 
+/* eslint-disable no-unused-vars -- Only allow these unused vars in this declaration (for now) */
 // <reference types="cypress" />
 declare namespace Cypress {
   interface Chainable<Subject> {
@@ -233,3 +233,4 @@ declare namespace Cypress {
     ): void;
   }
 }
+/* eslint-enable no-unused-vars */

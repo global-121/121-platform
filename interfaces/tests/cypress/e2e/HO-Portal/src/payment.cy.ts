@@ -34,7 +34,7 @@ describe("'Do Payment #1' bulk action", () => {
     cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
     cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
     cy.importRegistrations(programId);
-    const [arr, registrations] = includeAllRegistrations(programId);
+    const [arr] = includeAllRegistrations(programId);
 
     cy.fixture('payment').then((page) => {
       selectPaymentAction(page, page.payment);
@@ -68,7 +68,7 @@ describe("'Do Payment #1' bulk action", () => {
     cy.fixture('registration-nlrc-max-payment').then(
       (registrationMaxPayment) => {
         cy.importRegistrations(1, [registrationMaxPayment]);
-        const [arr, registrations] = includeAllRegistrations(programId);
+        const [arr] = includeAllRegistrations(programId);
         cy.fixture('payment').then((page) => {
           selectPaymentAction(page, page.payment);
           selectPaAndApply();
@@ -91,7 +91,7 @@ describe("'Do Payment #1' bulk action", () => {
     cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
     cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
     cy.importRegistrations(programId);
-    const [arr, registrations] = includeAllRegistrations(programId);
+    const [registrations] = includeAllRegistrations(programId);
     cy.fixture('payment').then((page) => {
       selectPaymentAction(page, page.payment);
       selectPaAndApply();
@@ -114,7 +114,7 @@ describe("'Do Payment #1' bulk action", () => {
     cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
     cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
     cy.importRegistrations(programId);
-    const [arr, registrations] = includeAllRegistrations(programId);
+    const [registrations] = includeAllRegistrations(programId);
     cy.fixture('payment').then((page) => {
       selectPaymentAction(page, page.payment);
       selectPaAndApply();
@@ -143,7 +143,7 @@ describe("'Do Payment #1' bulk action", () => {
     cy.fixture('registration-nlrc-max-payment').then(
       (registrationMaxPayment) => {
         cy.importRegistrations(1, [registrationMaxPayment]);
-        const [arr, registrations] = includeAllRegistrations(programId);
+        const [arr] = includeAllRegistrations(programId);
         cy.fixture('payment').then((page) => {
           selectPaymentAction(page, page.payment);
           selectPaAndApply();
@@ -173,7 +173,7 @@ describe("'Do Payment #1' bulk action", () => {
     cy.fixture('registration-nlrc-max-payment').then(
       (registrationMaxPayment) => {
         cy.importRegistrations(1, [registrationMaxPayment]);
-        const [arr, registrations] = includeAllRegistrations(programId);
+        const [arr] = includeAllRegistrations(programId);
         cy.fixture('payment').then((page) => {
           selectPaymentAction(page, page.payment);
           selectPaAndApply();
