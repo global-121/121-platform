@@ -413,14 +413,19 @@ export class IntersolveService {
   public async exportVouchers(
     referenceId: string,
     payment: number,
+    programId: number,
   ): Promise<any> {
-    const voucher = await this.getVoucher(referenceId, payment);
+    const voucher = await this.getVoucher(referenceId, payment, programId);
     return voucher.image;
   }
 
-  private async getVoucher(referenceId: string, payment: number): Promise<any> {
+  private async getVoucher(
+    referenceId: string,
+    payment: number,
+    programId: number,
+  ): Promise<any> {
     const registration = await this.registrationRepository.findOne({
-      where: { referenceId: referenceId },
+      where: { referenceId: referenceId, programId: programId },
       relations: ['images', 'images.barcode'],
     });
     if (!registration) {
@@ -484,8 +489,9 @@ export class IntersolveService {
   public async getVoucherBalance(
     referenceId: string,
     payment: number,
+    programId: number,
   ): Promise<number> {
-    const voucher = await this.getVoucher(referenceId, payment);
+    const voucher = await this.getVoucher(referenceId, payment, programId);
     return await this.getBalance(voucher.barcode);
   }
 

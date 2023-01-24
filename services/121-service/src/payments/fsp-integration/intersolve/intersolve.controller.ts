@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Post,
   Res,
   UploadedFile,
@@ -43,12 +44,14 @@ export class IntersolveController {
   @ApiResponse({ status: 200, description: 'Vouchers exported' })
   @Post('programs/:programId/payments/intersolve/export-voucher')
   public async exportVouchers(
+    @Param() params,
     @Body() identifyVoucherDto: IdentifyVoucherDto,
     @Res() response: Response,
   ): Promise<void> {
     const blob = await this.intersolveService.exportVouchers(
       identifyVoucherDto.referenceId,
       identifyVoucherDto.payment,
+      params.programId,
     );
     const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
@@ -66,11 +69,13 @@ export class IntersolveController {
   @ApiResponse({ status: 200, description: 'Vouchers balance retrieved' })
   @Post('programs/:programId/payments/intersolve/balance')
   public async getBalance(
+    @Param() params,
     @Body() identifyVoucherDto: IdentifyVoucherDto,
   ): Promise<number> {
     return await this.intersolveService.getVoucherBalance(
       identifyVoucherDto.referenceId,
       identifyVoucherDto.payment,
+      params.programId,
     );
   }
 
