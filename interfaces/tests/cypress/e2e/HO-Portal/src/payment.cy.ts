@@ -4,6 +4,7 @@ import programLVV from '../../../../../../services/121-service/seed-data/program
 
 describe("'Do Payment #1' bulk action", () => {
   beforeEach(() => {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(4000);
     cy.seedDatabase();
     cy.loginApi();

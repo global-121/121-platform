@@ -22,6 +22,7 @@ describe('Registration phase', () => {
 
   it('Export with a PA with 2 payments', function () {
     // Wait for the twilio mock to fake an incomming message
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000);
     cy.fixture('pa-export').then((page) => {
       cy.setHoPortal();

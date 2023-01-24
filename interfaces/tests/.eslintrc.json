@@ -17,6 +17,6 @@
   },
   "plugins": ["cypress"],
   "rules": {
-    "cypress/no-unnecessary-waiting": "off"
+    "cypress/no-unnecessary-waiting": "warn"
   }
 }
