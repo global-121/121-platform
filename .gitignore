@@ -1,6 +1,6 @@
 
 # IDE / Editor configurations
-.vscode/*
+.vscode/
 !.vscode/extensions.json
 
 # Third-party code

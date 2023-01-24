@@ -197,5 +197,6 @@
     "pt_BR": "Este <strong>programa de auxílio da Cruz Vermelha</strong>foi criado para apoiar as pessoas que necessitam de ajuda alimentar e que ainda não recebem esta ajuda de outra organização. Trabalhamos em conjunto com as seguintes organizações parceiras: <ul class='ion-padding-start'><li>Loket for Shelter em Amsterdã, para a lista de espera da LVV</li><li>Aanmeldloket Utrecht, para a lista de espera da LVV</li><li>STIL Utrecht</li><li>ROS Rotterdam</li><li>Pauluskerk (Rotterdam)</li></ul> <br><br> O <strong>programa de auxílio da Cruz Vermelha</strong> visa ajudá-lo: <ul class='ion-padding-start'><li> Até que você receba ajuda de outra organização </li><li> Até que você não esteja mais registrado em nenhuma das organizações acima </li><li> Até receber a quantidade máxima de vouchers que foi acordada no início do apoio.</li> <li> Ou até o final do projeto (você será informado com duas semanas de antecedência). </li></ul> <br> O <strong>programa de auxílio da Cruz Vermelha</strong> irá ajudá-lo com o seguinte: <ul class='ion-padding-start'><li> Voucher semanal de 35 € para o supermercado Albert Heijn<br> O WhatsApp será usado para enviar seu voucher de supermercado. Caso não consiga receber o voucher do supermercado no WhatsApp, enviaremos um SMS e você poderá ir até o Loket para buscá-lo. </li></ul>"
   },
   "fullnameNamingConvention": ["nameFirst", "nameLast"],
-  "languages": ["ar", "en", "es", "fr", "nl", "pt_BR"]
+  "languages": ["ar", "en", "es", "fr", "nl", "pt_BR"],
+  "enableMaxPayments": true
 }

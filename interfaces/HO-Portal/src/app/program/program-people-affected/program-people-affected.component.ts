@@ -173,7 +173,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         'page.program.program-people-affected.actions.include',
       ),
       permissions: [Permission.RegistrationStatusIncludedUPDATE],
-      phases: [ProgramPhase.inclusion],
+      phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         checkbox: this.translate.instant(
@@ -511,6 +511,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         width: this.columnWidthPerType[AnswerType.Number],
       },
       {
+        prop: 'maxPayments',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.maxPayments',
+        ),
+        ...this.columnDefaults,
+        minWidth: this.columnWidthPerType[AnswerType.Number],
+        width: this.columnWidthPerType[AnswerType.Number],
+      },
+      {
         prop: 'fsp',
         name: this.translate.instant(
           'page.program.program-people-affected.column.fsp',
@@ -707,7 +716,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           this.programId,
           column.permissions,
         ) &&
-        this.checkValidationColumnOrAction(column)
+        this.checkValidationColumnOrAction(column) &&
+        this.showMaxPaymentsColumn(column)
       ) {
         this.columns.push(column);
       }
@@ -753,6 +763,13 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     return (
       (columnOrAction.showIfNoValidation && !this.program.validation) ||
       this.program.validation
+    );
+  }
+
+  private showMaxPaymentsColumn(column: PersonTableColumn): boolean {
+    return (
+      column.prop !== 'maxPayments' ||
+      (column.prop === 'maxPayments' && this.program.enableMaxPayments)
     );
   }
 
@@ -870,7 +887,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ];
         break;
       case ProgramPhase.payment:
-        this.tableFilter.paStatus.selected = [RegistrationStatus.included];
+        this.tableFilter.paStatus.selected = [
+          RegistrationStatus.included,
+          RegistrationStatus.completed,
+        ];
         break;
     }
 
@@ -969,6 +989,18 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       paymentAmountMultiplier: person.paymentAmountMultiplier
         ? `${person.paymentAmountMultiplier}×`
         : '',
+      paymentsLeft: person.maxPayments - person.nrPayments,
+      maxPayments: person.maxPayments
+        ? `${person.maxPayments} ${
+            this.thisPhase === ProgramPhase.payment
+              ? `(${
+                  person.maxPayments - person.nrPayments
+                } ${this.translate.instant(
+                  'page.program.program-people-affected.max-payments.left',
+                )})`
+              : ''
+          }`
+        : '',
       fsp: person.fsp,
       lastMessageStatus: person.lastMessageStatus,
       messages: person.lastMessageStatus
@@ -1032,7 +1064,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     } = lastPaymentInfo;
 
     let paymentColumnValue = new PaymentColumnDetail();
-    paymentColumnValue.payments = [];
 
     const columnKey = 'paymentHistoryColumn';
 
@@ -1149,6 +1180,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,
         canViewMessageHistory: this.canViewMessageHistory,
+        canViewPaymentData: this.canViewPaymentData,
       },
     });
 

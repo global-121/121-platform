@@ -1,18 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import {
-  IsArray,
   IsBoolean,
   IsDateString,
-  IsDefined,
   IsIn,
   IsNumber,
   IsOptional,
   IsString,
   Length,
-  ValidateNested,
 } from 'class-validator';
-import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 
 export class UpdateProgramDto {
   @ApiProperty()
@@ -74,23 +69,6 @@ export class UpdateProgramDto {
   @IsOptional()
   @IsString()
   public readonly paymentAmountMultiplierFormula: string;
-
-  @ApiProperty({
-    example: [
-      {
-        id: 1,
-      },
-      {
-        id: 2,
-      },
-    ],
-  })
-  @IsOptional()
-  @IsArray()
-  @ValidateNested()
-  @IsDefined()
-  @Type(() => FinancialServiceProviderEntity)
-  public readonly financialServiceProviders: FinancialServiceProviderEntity[];
 
   @ApiProperty({ example: 'minimumScore' })
   @IsOptional()

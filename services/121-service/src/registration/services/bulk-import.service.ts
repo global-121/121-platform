@@ -122,6 +122,9 @@ export class BulkImportService {
         newRegistration.paymentAmountMultiplier =
           record.paymentAmountMultiplier;
       }
+      if (program.enableMaxPayments) {
+        newRegistration.maxPayments = record.maxPayments;
+      }
       newRegistration.program = program;
 
       const savedRegistration = await newRegistration.save();
@@ -199,6 +202,7 @@ export class BulkImportService {
       genericAttributes = [
         GenericAttributes.phoneNumber,
         GenericAttributes.paymentAmountMultiplier,
+        GenericAttributes.maxPayments,
         GenericAttributes.preferredLanguage,
       ].map((item) => String(item));
       dynamicAttributes = (
@@ -206,14 +210,21 @@ export class BulkImportService {
       ).map((d) => d.name);
     }
 
-    // If paymentAmountMultiplier automatic, then drop from template
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
+    // If paymentAmountMultiplier automatic, then drop from template
     if (!!program.paymentAmountMultiplierFormula) {
       const index = genericAttributes.indexOf(
         GenericAttributes.paymentAmountMultiplier,
       );
+      if (index > -1) {
+        genericAttributes.splice(index, 1);
+      }
+    }
+    // If maxPayments not enabled, then drop from template
+    if (!program.enableMaxPayments) {
+      const index = genericAttributes.indexOf(GenericAttributes.maxPayments);
       if (index > -1) {
         genericAttributes.splice(index, 1);
       }
@@ -252,6 +263,9 @@ export class BulkImportService {
       const customData = {};
       if (!program.paymentAmountMultiplierFormula) {
         registration.paymentAmountMultiplier = record.paymentAmountMultiplier;
+      }
+      if (program.enableMaxPayments) {
+        registration.maxPayments = record.maxPayments;
       }
 
       for await (const att of dynamicAttributes) {
@@ -436,7 +450,12 @@ export class BulkImportService {
         ? row.preferredLanguage
         : LanguageEnum.en;
       if (!program.paymentAmountMultiplierFormula) {
-        importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
+        importRecord.paymentAmountMultiplier = row.paymentAmountMultiplier
+          ? +row.paymentAmountMultiplier
+          : null;
+      }
+      if (program.enableMaxPayments) {
+        importRecord.maxPayments = row.maxPayments ? +row.maxPayments : null;
       }
       for await (const att of programCustomAttributes) {
         if (
@@ -543,7 +562,12 @@ export class BulkImportService {
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;
       if (!program.paymentAmountMultiplierFormula) {
-        importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
+        importRecord.paymentAmountMultiplier = row.paymentAmountMultiplier
+          ? +row.paymentAmountMultiplier
+          : null;
+      }
+      if (program.enableMaxPayments) {
+        importRecord.maxPayments = row.maxPayments ? +row.maxPayments : null;
       }
       for await (const att of dynamicAttributes) {
         if (att.type === AnswerTypes.tel && row[att.name]) {

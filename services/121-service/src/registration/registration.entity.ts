@@ -92,6 +92,12 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column()
   public registrationProgramId: number;
 
+  @Column({ nullable: true })
+  @IsInt()
+  @IsPositive()
+  @IsOptional()
+  public maxPayments: number;
+
   @OneToMany(
     (_type) => TransactionEntity,
     (transactions) => transactions.registration,

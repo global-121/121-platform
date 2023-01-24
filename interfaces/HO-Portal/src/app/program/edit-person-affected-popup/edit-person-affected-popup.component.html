@@ -51,12 +51,40 @@
             | translate
         "
         [value]="attributeValues?.paymentAmountMultiplier"
-        (updated)="updatePaAttribute('paymentAmountMultiplier', +$event, false)"
+        (updated)="updatePaAttribute('paymentAmountMultiplier', $event, false)"
         [inProgress]="inProgress?.paymentAmountMultiplier || false"
         [isDisabled]="readOnly || program?.paymentAmountMultiplierFormula"
         [showSubmit]="!readOnly && !program?.paymentAmountMultiplierFormula"
+        prop="paymentAmountMultiplier"
         class="ion-margin-vertical"
       ></app-update-property-item>
+
+      <ng-container *ngIf="showMaxPaymentsField()">
+        <app-update-property-item
+          type="number"
+          [label]="
+            canViewPaymentData
+              ? ('page.program.program-people-affected.edit-person-affected-popup.properties.maxPayments.label-payments'
+                | translate
+                  : {
+                      alreadyReceivedPayments: person?.nrPayments || 0
+                    })
+              : ('page.program.program-people-affected.edit-person-affected-popup.properties.maxPayments.label-no-payments'
+                | translate)
+          "
+          [explanation]="
+            'page.program.program-people-affected.edit-person-affected-popup.properties.maxPayments.explanation'
+              | translate
+          "
+          [value]="attributeValues?.maxPayments"
+          (updated)="updatePaAttribute('maxPayments', $event, false)"
+          [inProgress]="inProgress?.maxPayments || false"
+          [isDisabled]="readOnly"
+          [showSubmit]="!readOnly"
+          prop="maxPayments"
+          class="ion-margin-vertical"
+        ></app-update-property-item>
+      </ng-container>
 
       <app-update-property-item
         *ngIf="canViewPersonalData"

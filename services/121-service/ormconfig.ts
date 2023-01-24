@@ -1,4 +1,6 @@
-export const ORMConfig = {
+import { DataSourceOptions } from 'typeorm';
+
+export const ORMConfig: DataSourceOptions = {
   type: 'postgres',
   host: '121db',
   port: 5432,

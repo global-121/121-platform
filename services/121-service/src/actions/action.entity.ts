@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../base.entity';
-import { ExportType } from '../export-metrics/dto/export-details';
+import { ExportType } from '../export-metrics/dto/export-details.dto';
 import { ProgramEntity } from '../programs/program.entity';
 import { UserEntity } from '../user/user.entity';
 

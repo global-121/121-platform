@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { PermissionEnum } from '../permission.enum';
 
 export class CreateUserRoleDto {
@@ -27,5 +27,6 @@ export class UpdateUserRoleDto {
     enum: PermissionEnum,
     example: Object.values(PermissionEnum),
   })
+  @IsArray()
   public readonly permissions: PermissionEnum[];
 }
