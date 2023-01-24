@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { ExportType } from '../../export-metrics/dto/export-details';
+import { ExportType } from '../../export-metrics/dto/export-details.dto';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 
 export class FspAttributeDto {

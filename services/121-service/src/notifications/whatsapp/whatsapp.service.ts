@@ -212,7 +212,10 @@ export class WhatsappService {
       }
     }
     await this.twilioMessageRepository.update(
-      { sid: callbackData.MessageSid, status: Not(TwilioStatus.read) },
+      {
+        sid: callbackData.MessageSid,
+        status: Not(In([TwilioStatus.read, TwilioStatus.failed])),
+      },
       {
         status: callbackData.MessageStatus,
         errorCode: callbackData.ErrorCode,

@@ -76,9 +76,11 @@ export class AfricasTalkingNotificationDto {
   public readonly description: string;
 
   @ApiProperty({ example: {} })
+  @IsOptional()
   public readonly requestMetadata: JSON;
 
   @ApiProperty({ example: {} })
+  @IsOptional()
   public readonly providerMetadata: JSON;
 
   @ApiProperty({ example: '2020-09-02' })

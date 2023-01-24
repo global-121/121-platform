@@ -20,7 +20,7 @@ import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
 import { Admin } from './../guards/admin.decorator';
-import { ExportDetails } from './dto/export-details';
+import { ExportDetailsDto } from './dto/export-details.dto';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { ProgramStats } from './dto/program-stats.dto';
 import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
@@ -49,7 +49,7 @@ export class ExportMetricsController {
   })
   @Post('programs/:programId/export-metrics/export-list')
   public async getExportList(
-    @Body() data: ExportDetails,
+    @Body() data: ExportDetailsDto,
     @Param('programId') programId,
     @User('id') userId: number,
   ): Promise<any> {

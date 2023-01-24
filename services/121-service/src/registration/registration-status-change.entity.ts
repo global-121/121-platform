@@ -6,7 +6,7 @@ import { RegistrationEntity } from './registration.entity';
 @Entity('registration_status_change')
 export class RegistrationStatusChangeEntity extends Base121Entity {
   @ManyToOne(
-    (_type) => RegistrationEntity,
+    () => RegistrationEntity,
     (registration) => registration.statusChanges,
   )
   @JoinColumn({ name: 'registrationId' })
