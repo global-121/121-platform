@@ -75,15 +75,20 @@ describe("'Do Payment #1' bulk action", () => {
       (registrationMaxPayment) => {
         cy.importRegistrations(1, [registrationMaxPayment]);
         const [arr] = includeAllRegistrations(programId);
+
         cy.fixture('payment').then((page) => {
           selectPaymentAction(page, page.payment);
           selectPaAndApply();
           confirmPaymentPopupt(arr.length);
+
+          // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed
+          cy.wait(2000);
+
           cy.get('[data-cy="payment-history-button"]').contains(
             portalEn.page.program['program-people-affected'].transaction
               .success,
           );
-          cy.find('.datatable-body-cell-label > span').contains(
+          cy.get('.datatable-body-cell-label > span').contains(
             portalEn.page.program['program-people-affected'].status.completed,
           );
         });
