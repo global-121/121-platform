@@ -5,6 +5,7 @@ export enum ActionType {
   paymentStarted = 'payment-started',
   exportFspInstructions = 'export-fsp-instructions',
   importFspReconciliation = 'import-fsp-reconciliation',
+  exportTableView = 'export-table-view',
 }
 
 export class LatestAction {

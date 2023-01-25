@@ -50,6 +50,7 @@ import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
+import { ActionType } from '../../models/actions.model';
 import {
   MessageStatus,
   MessageStatusMapping,
@@ -1622,6 +1623,11 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       });
 
       arrayToXlsx(filtered, `${this.thisPhase}-table`);
+
+      this.programsService.saveAction(
+        ActionType.exportTableView,
+        this.programId,
+      );
 
       this.actionResult(
         this.translate.instant(
