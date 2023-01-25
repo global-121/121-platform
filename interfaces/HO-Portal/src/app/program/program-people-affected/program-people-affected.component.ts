@@ -988,7 +988,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       paymentAmountMultiplier: person.paymentAmountMultiplier
         ? `${person.paymentAmountMultiplier}×`
         : '',
-      paymentsLeft: person.maxPayments - person.nrPayments,
+      paymentsLeft: person.maxPayments
+        ? person.maxPayments - person.nrPayments
+        : null,
       maxPayments: person.maxPayments
         ? `${person.maxPayments} ${
             this.thisPhase === ProgramPhase.payment
