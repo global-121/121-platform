@@ -1590,7 +1590,24 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   public exportTableView() {
     try {
-      let attributesToExport = [...this.columns.map((c) => c.prop)];
+      const columnsToExport = [
+        ...this.mapColumsForExport(true),
+        ...this.mapColumsForExport(false),
+      ];
+
+      columnsToExport.unshift({
+        prop: 'hasNote',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.hasNote',
+        ),
+      });
+      columnsToExport.unshift({
+        prop: 'pa',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.person',
+        ),
+      });
+
       if (
         this.showInclusionScore() &&
         [
@@ -1598,29 +1615,31 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           this.phaseEnum.inclusion,
         ].includes(this.thisPhase)
       ) {
-        attributesToExport.push('inclusionScore');
+        columnsToExport.push({
+          prop: 'inclusionScore',
+          name: this.translate.instant(
+            'page.program.program-people-affected.column.inclusion-score',
+          ),
+        });
       }
 
       if (this.thisPhase === this.phaseEnum.payment) {
-        attributesToExport.push('paymentHistoryColumn');
+        {
+          columnsToExport.push({
+            prop: 'paymentHistoryColumn',
+            name: this.paymentHistoryColumn.name || '',
+          });
+        }
       }
 
-      const standardOrder = this.standardColumns.map((c) => c.prop);
-      attributesToExport = attributesToExport.sort(
-        (a, b) => standardOrder.indexOf(a) - standardOrder.indexOf(b),
-      );
-
-      attributesToExport.unshift('hasNote');
-      attributesToExport.unshift('pa');
-
-      const filtered = this.visiblePeopleAffected.map((person) => {
-        return attributesToExport.reduce((res, k) => {
-          const value = this.processExportTableViewValue(person[k]);
-          return Object.assign(res, { [k]: value });
+      const xlsxContent = this.visiblePeopleAffected.reverse().map((person) => {
+        return columnsToExport.reduce((res, col) => {
+          const value = this.processExportTableViewValue(person[col.prop]);
+          return Object.assign(res, { [col.name]: value });
         }, {});
       });
 
-      arrayToXlsx(filtered, `${this.thisPhase}-table`);
+      arrayToXlsx(xlsxContent, `${this.thisPhase}-table`);
 
       this.programsService.saveAction(
         ActionType.exportTableView,
@@ -1636,6 +1655,14 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       console.log('error: ', error);
       this.actionResult(this.translate.instant('common.export-error'));
     }
+  }
+
+  private mapColumsForExport(
+    frozenLeft: boolean,
+  ): { prop: string; name: string }[] {
+    return this.columns
+      .filter((c) => c.frozenLeft === frozenLeft)
+      .map((col) => ({ prop: col.prop, name: col.name }));
   }
 
   private processExportTableViewValue(value) {

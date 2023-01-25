@@ -293,7 +293,8 @@
           "custom-attribute-true": "Yes",
           "custom-attribute-false": "No",
           "payment-history": "Payment history",
-          "last-message-status": "Messages"
+          "last-message-status": "Messages",
+          "hasNote": "Has Note"
         },
         "language": {
           "en": "English",
