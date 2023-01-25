@@ -76,7 +76,7 @@ export class UserController {
     return await this.userService.deleteUserRole(params.userRoleId);
   }
 
-  @Throttle(5, 60)
+  @Throttle(10, 60)
   @ApiOperation({ summary: 'Sign-up new Aid Worker user' })
   @Post('user/aidworker')
   public async createAw(
@@ -85,7 +85,7 @@ export class UserController {
     return this.userService.createAidWorker(userData);
   }
 
-  @Throttle(5, 60)
+  @Throttle(10, 60)
   @ApiOperation({ summary: 'Sign-up new Person Affected user' })
   @Post('user/person-affected')
   public async createPA(
@@ -124,7 +124,7 @@ export class UserController {
     }
   }
 
-  @Throttle(5, 60)
+  @Throttle(10, 60)
   @ApiOperation({ summary: 'Log in existing user' })
   @Post('user/login')
   public async login(
