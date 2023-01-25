@@ -5,11 +5,11 @@ export enum ExportType {
   allPeopleAffected = 'all-people-affected',
   included = 'included',
   payment = 'payment',
-  selectedForValidation = 'selected-for-validation',
   unusedVouchers = 'unused-vouchers',
   vouchersWithBalance = 'vouchers-with-balance',
   toCancelVouchers = 'to-cancel-vouchers',
   duplicates = 'duplicates',
+  exportTableView = 'export-table-view',
 }
 
 export class ExportDetailsDto {
