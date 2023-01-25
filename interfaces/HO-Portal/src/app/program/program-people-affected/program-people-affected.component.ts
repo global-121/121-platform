@@ -1589,7 +1589,11 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   public exportTableView() {
     try {
-      const attributesToExport = ['pa', ...this.columns.map((c) => c.prop)];
+      const attributesToExport = [
+        'pa',
+        'hasNote',
+        ...this.columns.map((c) => c.prop),
+      ];
       if (
         this.showInclusionScore() &&
         [
