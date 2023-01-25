@@ -2,6 +2,7 @@ import {
   HttpClient,
   HttpErrorResponse,
   HttpHeaders,
+  HttpStatusCode,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
@@ -15,6 +16,7 @@ import { User } from '../models/user.model';
 })
 export class ApiService {
   private userKey = 'logged-in-user-HO';
+  private isRateLimitErrorShown = false;
 
   constructor(private http: HttpClient) {}
 
@@ -182,6 +184,15 @@ export class ApiService {
         return of('Token expired');
       }
       return of('Not authorized');
+    }
+    if (
+      error.status === HttpStatusCode.TooManyRequests &&
+      !this.isRateLimitErrorShown
+    ) {
+      this.isRateLimitErrorShown = true;
+      window.alert('Rate limit exceeded. Please try again later.');
+      this.isRateLimitErrorShown = false;
+      return of('Rate limit exceeded');
     }
     return of(error);
   }
