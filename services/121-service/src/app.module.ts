@@ -45,8 +45,8 @@ import { UserModule } from './user/user.module';
       dest: './files',
     }),
     ThrottlerModule.forRoot({
-      ttl: 60,
-      limit: 10,
+      ttl: +process.env.THROTTLING_TTL || 60,
+      limit: +process.env.THROTTLING_LIMIT || 100,
     }),
   ],
   controllers: [AppController],
