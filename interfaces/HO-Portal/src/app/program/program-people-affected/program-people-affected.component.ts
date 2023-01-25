@@ -1589,11 +1589,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   public exportTableView() {
     try {
-      const attributesToExport = [
-        'pa',
-        'hasNote',
-        ...this.columns.map((c) => c.prop),
-      ];
+      let attributesToExport = [...this.columns.map((c) => c.prop)];
       if (
         this.showInclusionScore() &&
         [
@@ -1608,10 +1604,21 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         attributesToExport.push('paymentHistoryColumn');
       }
 
+      const standardOrder = this.standardColumns.map((c) => c.prop);
+      attributesToExport = attributesToExport.sort(
+        (a, b) => standardOrder.indexOf(a) - standardOrder.indexOf(b),
+      );
+
+      attributesToExport.unshift('pa');
+      attributesToExport.push('hasNote');
+
       const filtered = this.visiblePeopleAffected.map((person) => {
         return Object.keys(person)
           .filter((k) => attributesToExport.includes(k))
-          .reduce((res, k) => Object.assign(res, { [k]: person[k] }), {});
+          .reduce((res, k) => {
+            const value = this.processExportTableViewValue(person[k]);
+            return Object.assign(res, { [k]: value });
+          }, {});
       });
 
       arrayToXlsx(filtered, `${this.thisPhase}-table`);
@@ -1625,5 +1632,17 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       console.log('error: ', error);
       this.actionResult(this.translate.instant('common.export-error'));
     }
+  }
+
+  private processExportTableViewValue(value) {
+    if (typeof value === 'boolean') {
+      return value ? 'yes' : 'no';
+    }
+
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+
+    return value;
   }
 }
