@@ -46,7 +46,7 @@ describe("'Do Payment #1' bulk action", () => {
       cy.get('.buttons-last-slot > .ion-color-primary').click();
       cy.get('#alert-3-msg').contains('Successfully');
       cy.get('#alert-3-msg').contains(String(arr.length));
-      cy.find('.alert-button').click();
+      cy.get('.alert-button', { timeout: 6000 }).click();
       cy.get('[data-cy="payment-history-button"]').contains(
         portalEn.page.program['program-people-affected'].transaction.success,
       );
@@ -151,7 +151,9 @@ describe("'Do Payment #1' bulk action", () => {
             portalEn.page.program['program-people-affected'].transaction
               .success,
           );
-          cy.find('.datatable-body-cell-label > span').contains(
+          cy.get('.datatable-body-cell-label > span', {
+            timeout: 6000,
+          }).contains(
             portalEn.page.program['program-people-affected'].status.completed,
           );
           selectPaymentAction(page, page.nextPayment);
@@ -180,10 +182,12 @@ describe("'Do Payment #1' bulk action", () => {
             portalEn.page.program['program-people-affected'].transaction
               .success,
           );
-          cy.find('.datatable-body-cell-label > span').contains(
+          cy.get('.datatable-body-cell-label > span', {
+            timeout: 6000,
+          }).contains(
             portalEn.page.program['program-people-affected'].status.completed,
           );
-          cy.find('[data-cy="select-action"]').select(
+          cy.get('[data-cy="select-action"]').select(
             `${portalEn.page.program['program-people-affected'].actions['include']}`,
           );
           cy.get('#alert-1-msg').contains('no People');
@@ -199,14 +203,14 @@ describe("'Do Payment #1' bulk action", () => {
     cy.get('.buttons-last-slot > .ion-color-primary').click();
     cy.get('#alert-3-msg').contains('Successfully');
     cy.get('#alert-3-msg').contains(String(nrOfPa));
-    cy.find('.alert-button').click();
+    cy.get('.alert-button', { timeout: 6000 }).click();
   };
 
   const selectPaymentAction = (fixture: any, payment: number) => {
     cy.setHoPortal();
     cy.visit(fixture.url);
     cy.url().should('include', 'payment');
-    cy.find('[data-cy="select-action"]').select(
+    cy.get('[data-cy="select-action"]', { timeout: 6000 }).select(
       `${portalEn.page.program['program-people-affected'].actions['do-payment']} #${payment}`,
     );
   };
