@@ -80,19 +80,18 @@ describe('Registration phase', () => {
     cy.importRegistrations(1); // Register 2nd PA
     // Wait for the twilio mock to fake an incomming message
     cy.wait(2000);
-    cy.fixture('pa-export').then(() => {
+    cy.fixture('pa-export').then((page) => {
       cy.setHoPortal();
-      cy.visit('/program/1/payment');
+      cy.visit(page.url);
       cy.get('[data-cy="table-text-filter"]').type('PA #1');
       cy.wait(2000) // wait for filtering to take effect
       cy.get('[data-cy="export-table-view"]').click();
       const date = new Date();
-      const filename = `payment-table-${date.getFullYear()}-${
+      const filename = `registrationValidation-table-${date.getFullYear()}-${
         date.getMonth() + 1
       }-${date.getDate()}.xlsx`;
       cy.verifyDownload(filename, { contains: true });
       cy.readXlsx(filename, 'data').then((excelData) => {
-        console.log('excelData: ', excelData);
         expect(excelData.length).to.equal(1);
       });
     });
@@ -102,9 +101,9 @@ describe('Registration phase', () => {
     cy.importRegistrations(1); // Register 2nd PA
     // Wait for the twilio mock to fake an incomming message
     cy.wait(2000);
-    cy.fixture('pa-export').then(() => {
+    cy.fixture('pa-export').then((page) => {
       cy.setHoPortal();
-      cy.visit('/program/1/payment');
+      cy.visit(page.url);
       cy.get('[data-cy="table-text-filter"]').type('PA #3');
       cy.wait(2000) // wait for filtering to take effect
       cy.get('[data-cy="export-table-view"]').should('have.class','button-disabled');
