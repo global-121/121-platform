@@ -4,7 +4,7 @@ import programLVV from '../../../../../../services/121-service/seed-data/program
 
 describe("'Do Payment #1' bulk action", () => {
   beforeEach(() => {
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for any previous status-callbacks to finish
     cy.wait(4000);
     cy.seedDatabase();
     cy.loginApi();
@@ -44,9 +44,15 @@ describe("'Do Payment #1' bulk action", () => {
         'app-make-payment > .ion-align-items-center > confirm-prompt > .md',
       ).click();
       cy.get('.buttons-last-slot > .ion-color-primary').click();
+
       cy.get('#alert-3-msg').contains('Successfully');
       cy.get('#alert-3-msg').contains(String(arr.length));
-      cy.get('.alert-button', { timeout: 6000 }).click();
+
+      // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed
+      cy.wait(2000);
+
+      cy.get('.alert-button').click();
+
       cy.get('[data-cy="payment-history-button"]').contains(
         portalEn.page.program['program-people-affected'].transaction.success,
       );
@@ -141,22 +147,24 @@ describe("'Do Payment #1' bulk action", () => {
     cy.importRegistrations(programId);
     cy.fixture('registration-nlrc-max-payment').then(
       (registrationMaxPayment) => {
-        cy.importRegistrations(1, [registrationMaxPayment]);
+        cy.importRegistrations(programId, [registrationMaxPayment]);
         const [arr] = includeAllRegistrations(programId);
+
         cy.fixture('payment').then((page) => {
           selectPaymentAction(page, page.payment);
           selectPaAndApply();
           confirmPaymentPopupt(arr.length);
+
           cy.get('[data-cy="payment-history-button"]').contains(
             portalEn.page.program['program-people-affected'].transaction
               .success,
           );
-          cy.get('.datatable-body-cell-label > span', {
-            timeout: 6000,
-          }).contains(
+          cy.get('.datatable-body-cell-label > span').contains(
             portalEn.page.program['program-people-affected'].status.completed,
           );
+
           selectPaymentAction(page, page.nextPayment);
+
           cy.get('.datatable-body-cell-label > input')
             .click()
             .should('length', 1);
@@ -178,15 +186,15 @@ describe("'Do Payment #1' bulk action", () => {
           selectPaymentAction(page, page.payment);
           selectPaAndApply();
           confirmPaymentPopupt(arr.length);
+
           cy.get('[data-cy="payment-history-button"]').contains(
             portalEn.page.program['program-people-affected'].transaction
               .success,
           );
-          cy.get('.datatable-body-cell-label > span', {
-            timeout: 6000,
-          }).contains(
+          cy.get('.datatable-body-cell-label > span').contains(
             portalEn.page.program['program-people-affected'].status.completed,
           );
+
           cy.get('[data-cy="select-action"]').select(
             `${portalEn.page.program['program-people-affected'].actions['include']}`,
           );
@@ -201,16 +209,21 @@ describe("'Do Payment #1' bulk action", () => {
       'app-make-payment > .ion-align-items-center > confirm-prompt > .md',
     ).click();
     cy.get('.buttons-last-slot > .ion-color-primary').click();
+
     cy.get('#alert-3-msg').contains('Successfully');
     cy.get('#alert-3-msg').contains(String(nrOfPa));
-    cy.get('.alert-button', { timeout: 6000 }).click();
+    cy.get('.alert-button').click();
   };
 
   const selectPaymentAction = (fixture: any, payment: number) => {
     cy.setHoPortal();
     cy.visit(fixture.url);
     cy.url().should('include', 'payment');
-    cy.get('[data-cy="select-action"]', { timeout: 6000 }).select(
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for Bulk-actions to be populated
+    cy.wait(2000);
+
+    cy.get('[data-cy="select-action"]').select(
       `${portalEn.page.program['program-people-affected'].actions['do-payment']} #${payment}`,
     );
   };
