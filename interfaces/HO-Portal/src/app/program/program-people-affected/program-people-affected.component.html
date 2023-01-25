@@ -75,6 +75,7 @@
         [value]="filterRowsVisibleQuery"
         [clearInput]="true"
         class="filter-input"
+        data-cy="table-text-filter"
       >
         <ion-icon
           name="funnel"
@@ -114,6 +115,7 @@
       <ion-button
         (click)="exportTableView()"
         [disabled]="visiblePeopleAffected.length === 0"
+        data-cy="export-table-view"
       >
         <ion-icon
           name="download"
