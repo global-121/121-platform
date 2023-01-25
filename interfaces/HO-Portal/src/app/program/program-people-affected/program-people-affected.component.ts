@@ -1610,16 +1610,14 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         (a, b) => standardOrder.indexOf(a) - standardOrder.indexOf(b),
       );
 
+      attributesToExport.unshift('hasNote');
       attributesToExport.unshift('pa');
-      attributesToExport.push('hasNote');
 
       const filtered = this.visiblePeopleAffected.map((person) => {
-        return Object.keys(person)
-          .filter((k) => attributesToExport.includes(k))
-          .reduce((res, k) => {
-            const value = this.processExportTableViewValue(person[k]);
-            return Object.assign(res, { [k]: value });
-          }, {});
+        return attributesToExport.reduce((res, k) => {
+          const value = this.processExportTableViewValue(person[k]);
+          return Object.assign(res, { [k]: value });
+        }, {});
       });
 
       arrayToXlsx(filtered, `${this.thisPhase}-table`);
