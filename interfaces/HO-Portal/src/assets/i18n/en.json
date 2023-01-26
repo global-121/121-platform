@@ -480,7 +480,7 @@
         },
         "export-list": {
           "button-label": "Export list",
-          "success-message": "Export list successful. You can find the xlsx file in the downloads"
+          "success-message": "Export list successful. You can find the Excel file in the downloads folder."
         }
       },
       "program-modal": {
