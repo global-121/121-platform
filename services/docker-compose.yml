@@ -1,6 +1,6 @@
 services:
   121db:
-    image: 'postgres:9.6'
+    image: 'postgres:14'
     init: true
     container_name: 121db
     environment:
