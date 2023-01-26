@@ -189,3 +189,6 @@ Feature: View and manage people affected (generic features)
 
   Scenario: View Message History
   >> This is tested with Cypress. See message-history.cy.ts 
+
+  Scenario: Export current PA Table view
+  >> This is tested with Cypress. See pa-export.cy.ts 

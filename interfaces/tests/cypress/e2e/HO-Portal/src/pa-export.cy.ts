@@ -1,26 +1,27 @@
 import { ProgramPhase } from '../../../../../../services/121-service/src/shared/enum/program-phase.model';
 
+const programId = 1;
+
 describe('Registration phase', () => {
   beforeEach(() => {
-    const programId = 1;
     cy.seedDatabase();
     cy.loginApi();
     cy.loginPortal();
-    cy.moveToSpecifiedPhase(1, ProgramPhase.registrationValidation);
-    cy.moveToSpecifiedPhase(1, ProgramPhase.payment);
-    cy.importRegistrations(1);
+    cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
+    cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
+  });
+
+  it('Export full PA list with 1 PA with 2 payments', function () {
+    cy.importRegistrations(programId);
     let arr = [];
     cy.getAllPeopleAffected(programId).then((response) => {
       for (const pa of response.body) {
         arr.push(pa.referenceId);
       }
       cy.includePeopleAffected(programId, arr);
-      cy.doPayment(1, arr, 1, 10);
-      cy.doPayment(1, arr, 2, 10);
+      cy.doPayment(programId, arr, 1, 10);
+      cy.doPayment(programId, arr, 2, 10);
     });
-  });
-
-  it('Export with a PA with 2 payments', function () {
     // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for the Twilio-mock to fake an incomming message
     cy.wait(2000);
     cy.fixture('pa-export').then((page) => {
@@ -72,6 +73,42 @@ describe('Registration phase', () => {
           }
         });
       });
+    });
+  });
+
+  it('Export current PA table view after filtering', function () {
+    cy.importRegistrations(programId);
+    cy.importRegistrations(programId);
+    // Wait for the twilio mock to fake an incomming message
+    cy.wait(2000);
+    cy.fixture('pa-export').then((page) => {
+      cy.setHoPortal();
+      cy.visit(page.url);
+      cy.get('[data-cy="table-text-filter"]').type('PA #1');
+      cy.wait(2000) // wait for filtering to take effect
+      cy.get('[data-cy="export-table-view"]').click();
+      const date = new Date();
+      const filename = `registrationValidation-table-${date.getFullYear()}-${
+        date.getMonth() + 1
+      }-${date.getDate()}.xlsx`;
+      cy.verifyDownload(filename, { contains: true });
+      cy.readXlsx(filename, 'data').then((excelData) => {
+        expect(excelData.length).to.equal(1);
+      });
+    });
+  });
+
+  it('Export current PA table view without records after filtering', function () {
+    cy.importRegistrations(programId);
+    cy.importRegistrations(programId);
+    // Wait for the twilio mock to fake an incomming message
+    cy.wait(2000);
+    cy.fixture('pa-export').then((page) => {
+      cy.setHoPortal();
+      cy.visit(page.url);
+      cy.get('[data-cy="table-text-filter"]').type('PA #3');
+      cy.wait(2000) // wait for filtering to take effect
+      cy.get('[data-cy="export-table-view"]').should('have.class','button-disabled');
     });
   });
 });
