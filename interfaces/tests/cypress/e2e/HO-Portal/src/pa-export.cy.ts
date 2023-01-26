@@ -10,6 +10,10 @@ describe('Registration phase', () => {
     cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
     cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
   });
+  afterEach(() => {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for the Twilio-mock to fake an incoming status callback
+    cy.wait(4000);
+  });
 
   it('Export full PA list with 1 PA with 2 payments', function () {
     cy.importRegistrations(programId);
@@ -22,8 +26,8 @@ describe('Registration phase', () => {
       cy.doPayment(programId, arr, 1, 10);
       cy.doPayment(programId, arr, 2, 10);
     });
-    // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for the Twilio-mock to fake an incomming message
-    cy.wait(2000);
+    // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for the Twilio-mock to fake an incoming message
+    cy.wait(4000);
     cy.fixture('pa-export').then((page) => {
       cy.setHoPortal();
       cy.visit(page.url);
@@ -79,13 +83,14 @@ describe('Registration phase', () => {
   it('Export current PA table view after filtering', function () {
     cy.importRegistrations(programId);
     cy.importRegistrations(programId);
-    // Wait for the twilio mock to fake an incomming message
+    // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for the Twilio-mock to fake an incoming message
     cy.wait(2000);
     cy.fixture('pa-export').then((page) => {
       cy.setHoPortal();
       cy.visit(page.url);
       cy.get('[data-cy="table-text-filter"]').type('PA #1');
-      cy.wait(2000) // wait for filtering to take effect
+      // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for filtering to take effect
+      cy.wait(2000);
       cy.get('[data-cy="export-table-view"]').click();
       const date = new Date();
       const filename = `registrationValidation-table-${date.getFullYear()}-${
@@ -101,14 +106,18 @@ describe('Registration phase', () => {
   it('Export current PA table view without records after filtering', function () {
     cy.importRegistrations(programId);
     cy.importRegistrations(programId);
-    // Wait for the twilio mock to fake an incomming message
+    // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for the Twilio-mock to fake an incoming message
     cy.wait(2000);
     cy.fixture('pa-export').then((page) => {
       cy.setHoPortal();
       cy.visit(page.url);
       cy.get('[data-cy="table-text-filter"]').type('PA #3');
-      cy.wait(2000) // wait for filtering to take effect
-      cy.get('[data-cy="export-table-view"]').should('have.class','button-disabled');
+      // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for filtering to take effect
+      cy.wait(2000);
+      cy.get('[data-cy="export-table-view"]').should(
+        'have.class',
+        'button-disabled',
+      );
     });
   });
 });
