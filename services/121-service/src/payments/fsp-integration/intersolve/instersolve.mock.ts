@@ -14,7 +14,7 @@ export class IntersolveMockService {
         GetCardResponse: {
           ResultDescription: { _text: 'mock' },
           Card: {
-            Balance: { _text: '100' },
+            Balance: { _text: '125' },
             BalanceFactor: { _text: '10' },
             Status: { _text: 'mock' },
           },

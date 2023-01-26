@@ -692,6 +692,7 @@ export class IntersolveService {
         id += 1000;
       }
     }
+    console.log('Finished: ', jobName);
   }
 
   public async getVouchersWithBalance(
