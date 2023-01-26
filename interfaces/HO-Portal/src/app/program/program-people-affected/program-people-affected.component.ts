@@ -1634,13 +1634,18 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         }
       }
 
-      const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-      const xlsxContent = this.visiblePeopleAffected.sort((a, b) => collator.compare(a.pa, b.pa)).map((person) => {
-        return columnsToExport.reduce((res, col) => {
-          const value = this.processExportTableViewValue(person[col.prop]);
-          return Object.assign(res, { [col.name]: value });
-        }, {});
+      const collator = new Intl.Collator(undefined, {
+        numeric: true,
+        sensitivity: 'base',
       });
+      const xlsxContent = this.visiblePeopleAffected
+        .sort((a, b) => collator.compare(a.pa, b.pa))
+        .map((person) => {
+          return columnsToExport.reduce((res, col) => {
+            const value = this.processExportTableViewValue(person[col.prop]);
+            return Object.assign(res, { [col.name]: value });
+          }, {});
+        });
 
       arrayToXlsx(xlsxContent, `${this.thisPhase}-table`);
 
