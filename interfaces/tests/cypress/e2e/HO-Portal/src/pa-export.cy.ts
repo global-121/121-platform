@@ -1,18 +1,18 @@
 import { ProgramPhase } from '../../../../../../services/121-service/src/shared/enum/program-phase.model';
 
+const programId = 1;
+
 describe('Registration phase', () => {
   beforeEach(() => {
-    const programId = 1;
     cy.seedDatabase();
     cy.loginApi();
     cy.loginPortal();
     cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
     cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
-    cy.importRegistrations(programId);
   });
 
   it('Export full PA list with 1 PA with 2 payments', function () {
-    const programId = 1;
+    cy.importRegistrations(programId);
     let arr = [];
     cy.getAllPeopleAffected(programId).then((response) => {
       for (const pa of response.body) {
@@ -22,7 +22,7 @@ describe('Registration phase', () => {
       cy.doPayment(programId, arr, 1, 10);
       cy.doPayment(programId, arr, 2, 10);
     });
-    // Wait for the twilio mock to fake an incomming message
+    // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for the Twilio-mock to fake an incomming message
     cy.wait(2000);
     cy.fixture('pa-export').then((page) => {
       cy.setHoPortal();
@@ -77,7 +77,8 @@ describe('Registration phase', () => {
   });
 
   it('Export current PA table view after filtering', function () {
-    cy.importRegistrations(1); // Register 2nd PA
+    cy.importRegistrations(programId);
+    cy.importRegistrations(programId);
     // Wait for the twilio mock to fake an incomming message
     cy.wait(2000);
     cy.fixture('pa-export').then((page) => {
@@ -98,7 +99,8 @@ describe('Registration phase', () => {
   });
 
   it('Export current PA table view without records after filtering', function () {
-    cy.importRegistrations(1); // Register 2nd PA
+    cy.importRegistrations(programId);
+    cy.importRegistrations(programId);
     // Wait for the twilio mock to fake an incomming message
     cy.wait(2000);
     cy.fixture('pa-export').then((page) => {
