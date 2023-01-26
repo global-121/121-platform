@@ -3,5 +3,6 @@ export enum ExportType {
   duplicates = 'duplicates',
   included = 'included',
   payment = 'payment',
+  selectedForValidation = 'selected-for-validation',
   unusedVouchers = 'unused-vouchers',
 }

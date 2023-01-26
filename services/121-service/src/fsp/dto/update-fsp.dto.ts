@@ -42,7 +42,11 @@ export class FspAttributeDto {
   public options: JSON;
 
   @ApiProperty({
-    example: [ExportType.allPeopleAffected, ExportType.included],
+    example: [
+      ExportType.allPeopleAffected,
+      ExportType.included,
+      ExportType.selectedForValidation,
+    ],
   })
   @IsOptional()
   public export: JSON;
