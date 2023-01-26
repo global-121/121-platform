@@ -76,10 +76,6 @@ export class UserController {
     return await this.userService.deleteUserRole(params.userRoleId);
   }
 
-  @Throttle(
-    +process.env.HIGH_THROTTLING_LIMIT || 12,
-    +process.env.HIGH_THROTTLING_TTL || 60,
-  )
   @ApiOperation({ summary: 'Sign-up new Aid Worker user' })
   @Post('user/aidworker')
   public async createAw(
@@ -88,10 +84,6 @@ export class UserController {
     return this.userService.createAidWorker(userData);
   }
 
-  @Throttle(
-    +process.env.HIGH_THROTTLING_LIMIT || 12,
-    +process.env.HIGH_THROTTLING_TTL || 60,
-  )
   @ApiOperation({ summary: 'Sign-up new Person Affected user' })
   @Post('user/person-affected')
   public async createPA(
@@ -131,7 +123,7 @@ export class UserController {
   }
 
   @Throttle(
-    +process.env.HIGH_THROTTLING_LIMIT || 12,
+    +process.env.HIGH_THROTTLING_LIMIT || 30,
     +process.env.HIGH_THROTTLING_TTL || 60,
   )
   @ApiOperation({ summary: 'Log in existing user' })
