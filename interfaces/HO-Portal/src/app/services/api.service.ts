@@ -163,6 +163,15 @@ export class ApiService {
   }
 
   handleError(error: HttpErrorResponse, anonymous: boolean) {
+    if (
+      error.status === HttpStatusCode.TooManyRequests &&
+      !this.isRateLimitErrorShown
+    ) {
+      this.isRateLimitErrorShown = true;
+      window.alert('Rate limit exceeded. Please try again later.');
+      this.isRateLimitErrorShown = false;
+      return of('Rate limit exceeded');
+    }
     if (anonymous === true) {
       return of(error);
     }
@@ -184,15 +193,6 @@ export class ApiService {
         return of('Token expired');
       }
       return of('Not authorized');
-    }
-    if (
-      error.status === HttpStatusCode.TooManyRequests &&
-      !this.isRateLimitErrorShown
-    ) {
-      this.isRateLimitErrorShown = true;
-      window.alert('Rate limit exceeded. Please try again later.');
-      this.isRateLimitErrorShown = false;
-      return of('Rate limit exceeded');
     }
     return of(error);
   }
