@@ -515,8 +515,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           'page.program.program-people-affected.column.maxPayments',
         ),
         ...this.columnDefaults,
-        minWidth: this.columnWidthPerType[AnswerType.Number],
-        width: this.columnWidthPerType[AnswerType.Number],
+        minWidth: 150,
+        width: 150,
       },
       {
         prop: 'fsp',

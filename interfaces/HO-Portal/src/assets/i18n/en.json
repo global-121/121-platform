@@ -265,7 +265,7 @@
           "message-status": "Last message:"
         },
         "max-payments": {
-          "left": "left"
+          "left": "remaining"
         },
         "column": {
           "select": "Select",
