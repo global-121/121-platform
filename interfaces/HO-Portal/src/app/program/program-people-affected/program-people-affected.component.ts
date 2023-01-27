@@ -304,10 +304,12 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     {
       prop: 'paymentsLeft',
       type: this.tableFilterType.multipleChoice,
+      description: 'remaining-payment-description',
     },
     {
       prop: 'paStatus',
       type: this.tableFilterType.multipleChoice,
+      description: 'multiple-choice-hidden-options',
     },
   ];
   public tableFilterState = {

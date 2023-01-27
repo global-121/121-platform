@@ -259,7 +259,8 @@
             "paymentsLeft": "Remaining payments"
           },
           "empty-selection-alert-message": "Please select at least one option",
-          "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"
+          "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected",
+          "remaining-payment-description": "Select to see only People Affected with 1, 2 and/or 3 payments remaining"
         },
         "last-message": {
           "no-message": "No messages yet",

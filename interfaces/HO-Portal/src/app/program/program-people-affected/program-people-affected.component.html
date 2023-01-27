@@ -105,6 +105,10 @@
               tableFilter.prop | translate
           "
           [type]="tableFilter.type"
+          [description]="
+            'page.program.program-people-affected.filter-btn.' +
+              tableFilter.description | translate
+          "
           (filter)="applyTableFilter(tableFilter.prop, $event)"
           [filterProps]="{
             allOptions: tableFilterState[tableFilter.prop]?.visible,

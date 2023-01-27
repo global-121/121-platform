@@ -20,6 +20,9 @@ export class TableFilterPopoverComponent implements OnInit {
   @Input()
   public filterProps: TableFilterMultipleChoiceProps;
 
+  @Input()
+  public description: string;
+
   public state: { [filterType: string]: TableFilterMultipleChoiceState };
 
   public tableFilterType = TableFilterType;
