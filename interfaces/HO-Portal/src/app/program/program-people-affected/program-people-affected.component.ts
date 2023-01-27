@@ -50,12 +50,14 @@ import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
+import { ActionType } from '../../models/actions.model';
 import {
   MessageStatus,
   MessageStatusMapping,
 } from '../../models/message.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
+import { arrayToXlsx } from '../../shared/array-to-xlsx';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
 import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-history-popup.component';
@@ -1673,5 +1675,100 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       MessageStatus.read,
       MessageStatus.sent,
     ].includes(messageStatus);
+  }
+
+  public exportTableView() {
+    try {
+      const columnsToExport = [
+        ...this.mapColumsForExport(true),
+        ...this.mapColumsForExport(false),
+      ];
+
+      columnsToExport.unshift({
+        prop: 'hasNote',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.hasNote',
+        ),
+      });
+      columnsToExport.unshift({
+        prop: 'pa',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.person',
+        ),
+      });
+
+      if (
+        this.showInclusionScore() &&
+        [
+          this.phaseEnum.registrationValidation,
+          this.phaseEnum.inclusion,
+        ].includes(this.thisPhase)
+      ) {
+        columnsToExport.push({
+          prop: 'inclusionScore',
+          name: this.translate.instant(
+            'page.program.program-people-affected.column.inclusion-score',
+          ),
+        });
+      }
+
+      if (this.thisPhase === this.phaseEnum.payment) {
+        {
+          columnsToExport.push({
+            prop: 'paymentHistoryColumn',
+            name: this.paymentHistoryColumn.name || '',
+          });
+        }
+      }
+
+      const collator = new Intl.Collator(undefined, {
+        numeric: true,
+        sensitivity: 'base',
+      });
+      const xlsxContent = this.visiblePeopleAffected
+        .sort((a, b) => collator.compare(a.pa, b.pa))
+        .map((person) => {
+          return columnsToExport.reduce((res, col) => {
+            const value = this.processExportTableViewValue(person[col.prop]);
+            return Object.assign(res, { [col.name]: value });
+          }, {});
+        });
+
+      arrayToXlsx(xlsxContent, `${this.thisPhase}-table`);
+
+      this.programsService.saveAction(
+        ActionType.exportTableView,
+        this.programId,
+      );
+
+      this.actionResult(
+        this.translate.instant(
+          'page.program.program-people-affected.export-list.success-message',
+        ),
+      );
+    } catch (error) {
+      console.log('error: ', error);
+      this.actionResult(this.translate.instant('common.export-error'));
+    }
+  }
+
+  private mapColumsForExport(
+    frozenLeft: boolean,
+  ): { prop: string; name: string }[] {
+    return this.columns
+      .filter((c) => c.frozenLeft === frozenLeft)
+      .map((col) => ({ prop: col.prop, name: col.name }));
+  }
+
+  private processExportTableViewValue(value) {
+    if (typeof value === 'boolean') {
+      return value ? 'yes' : 'no';
+    }
+
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+
+    return value;
   }
 }

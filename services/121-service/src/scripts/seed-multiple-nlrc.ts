@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-no-whatsapp.json';
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
 import instanceLVV from '../../seed-data/instance/instance-pilot-nl.json';
+import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
 import programPV from '../../seed-data/program/program-pilot-nl-2.json';
 import programLVV from '../../seed-data/program/program-pilot-nl.json';
 import { InterfaceScript } from './scripts.module';
@@ -46,6 +47,16 @@ export class SeedMultipleNLRC implements InterfaceScript {
 
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.seedHelper.addDefaultUsers(programEntityPV, true);
+
+    // ************************
+    // ***** Program OCW *****
+    // ************************
+
+    // ***** CREATE PROGRAM *****
+    const programEntityOCW = await this.seedHelper.addProgram(programOCW);
+
+    // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
+    await this.seedHelper.addDefaultUsers(programEntityOCW, true);
   }
 }
 

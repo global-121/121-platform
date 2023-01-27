@@ -30,7 +30,7 @@ export class IntersolveBarcodeEntity extends Base121Entity {
 
   // The last known balance we got from intersolve
   @Index()
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true, default: null, type: 'real' })
   public lastRequestedBalance: number;
 
   @Column({ nullable: true, default: null })
