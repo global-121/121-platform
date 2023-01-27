@@ -255,7 +255,8 @@
             "apply-btn": "Apply"
           },
           "btn-label": {
-            "status": "Status"
+            "paStatus": "Status",
+            "paymentsLeft": "Remaining payments"
           },
           "empty-selection-alert-message": "Please select at least one option",
           "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"

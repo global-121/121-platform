@@ -106,18 +106,18 @@ export class PersonTableColumn {
 }
 
 export const PA_STATUS_ORDER = [
-  { id: 1, name: RegistrationStatus.startedRegistration },
-  { id: 2, name: RegistrationStatus.imported },
-  { id: 3, name: RegistrationStatus.invited },
-  { id: 4, name: RegistrationStatus.registered },
-  { id: 5, name: RegistrationStatus.selectedForValidation },
-  { id: 6, name: RegistrationStatus.validated },
-  { id: 7, name: RegistrationStatus.included },
-  { id: 8, name: RegistrationStatus.inclusionEnded },
-  { id: 9, name: RegistrationStatus.rejected },
-  { id: 10, name: RegistrationStatus.noLongerEligible },
-  { id: 11, name: RegistrationStatus.registeredWhileNoLongerEligible },
-  { id: 12, name: RegistrationStatus.completed },
+  { id: 1, value: RegistrationStatus.startedRegistration },
+  { id: 2, value: RegistrationStatus.imported },
+  { id: 3, value: RegistrationStatus.invited },
+  { id: 4, value: RegistrationStatus.registered },
+  { id: 5, value: RegistrationStatus.selectedForValidation },
+  { id: 6, value: RegistrationStatus.validated },
+  { id: 7, value: RegistrationStatus.included },
+  { id: 8, value: RegistrationStatus.inclusionEnded },
+  { id: 9, value: RegistrationStatus.rejected },
+  { id: 10, value: RegistrationStatus.noLongerEligible },
+  { id: 11, value: RegistrationStatus.registeredWhileNoLongerEligible },
+  { id: 12, value: RegistrationStatus.completed },
 ];
 
 export enum PersonDefaultAttributes {

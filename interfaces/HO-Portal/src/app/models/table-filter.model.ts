@@ -8,7 +8,7 @@ export class TableFilterMultipleChoiceProps {
 }
 
 export class TableFilterMultipleChoiceOption {
-  name: string;
+  value: string | number;
   label: string;
   count?: number;
 }
@@ -20,4 +20,4 @@ export class TableFilterMultipleChoiceState {
 }
 
 export type TableFilterMultipleChoiceOutput =
-  TableFilterMultipleChoiceOption['name'][];
+  TableFilterMultipleChoiceOption['value'][];
