@@ -299,12 +299,30 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private pubSubSubscription: Subscription;
 
   public isStatusFilterPopoverOpen = false;
-
-  private tableFilter = {
+  private PAYMENTS_LEFT_ORDER = [0, 1, 2, 3, -1, -2];
+  public tableFilters = [
+    {
+      prop: 'paymentsLeft',
+      type: this.tableFilterType.multipleChoice,
+      description: 'remaining-payment-description',
+    },
+    {
+      prop: 'paStatus',
+      type: this.tableFilterType.multipleChoice,
+      description: 'multiple-choice-hidden-options',
+    },
+  ];
+  public tableFilterState = {
     text: '',
     paStatus: {
       default: [],
       selected: [],
+      visible: [],
+    },
+    paymentsLeft: {
+      default: [],
+      selected: [],
+      visible: [],
     },
   };
 
@@ -517,8 +535,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           'page.program.program-people-affected.column.maxPayments',
         ),
         ...this.columnDefaults,
-        minWidth: this.columnWidthPerType[AnswerType.Number],
-        width: this.columnWidthPerType[AnswerType.Number],
+        minWidth: 150,
+        width: 150,
       },
       {
         prop: 'fsp',
@@ -862,43 +880,13 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     }
 
     this.allPeopleAffected = this.createTableData(this.allPeopleData);
+    this.setDefaultTableFilterOptions();
     this.filterPeopleAffectedByPhase();
   }
 
   private filterPeopleAffectedByPhase() {
-    switch (this.thisPhase) {
-      case ProgramPhase.registrationValidation:
-        this.tableFilter.paStatus.selected = [
-          RegistrationStatus.imported,
-          RegistrationStatus.invited,
-          RegistrationStatus.startedRegistration,
-          RegistrationStatus.selectedForValidation,
-          RegistrationStatus.registered,
-          RegistrationStatus.noLongerEligible,
-          RegistrationStatus.registeredWhileNoLongerEligible,
-        ];
-        break;
-      case ProgramPhase.inclusion:
-        this.tableFilter.paStatus.selected = [
-          RegistrationStatus.validated,
-          RegistrationStatus.registered,
-          RegistrationStatus.selectedForValidation,
-          RegistrationStatus.rejected,
-          RegistrationStatus.inclusionEnded,
-        ];
-        break;
-      case ProgramPhase.payment:
-        this.tableFilter.paStatus.selected = [
-          RegistrationStatus.included,
-          RegistrationStatus.completed,
-        ];
-        break;
-    }
-
-    this.tableFilter.paStatus.default = [...this.tableFilter.paStatus.selected];
-
     this.phaseSpecificPeopleAffected = this.allPeopleAffected.filter((pa) =>
-      this.tableFilter.paStatus.default.includes(pa.status),
+      this.tableFilterState.paStatus.default.includes(pa.status),
     );
     this.initialVisiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
     this.visiblePeopleAffected = [...this.phaseSpecificPeopleAffected];
@@ -1473,7 +1461,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private setTextFieldFilter(value: string) {
-    this.tableFilter.text = value;
+    this.tableFilterState.text = value;
   }
 
   public applyTextFieldFilter(value: string) {
@@ -1514,14 +1502,63 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       );
   }
 
-  public getPaStatusesFilterOptions(): TableFilterMultipleChoiceOption[] {
-    return PA_STATUS_ORDER.map(({ name }) => {
+  private setDefaultTableFilterOptions() {
+    // pa status
+    const paStatusDefaults = {
+      [ProgramPhase.registrationValidation]: [
+        RegistrationStatus.imported,
+        RegistrationStatus.invited,
+        RegistrationStatus.startedRegistration,
+        RegistrationStatus.selectedForValidation,
+        RegistrationStatus.registered,
+        RegistrationStatus.noLongerEligible,
+        RegistrationStatus.registeredWhileNoLongerEligible,
+      ],
+      [ProgramPhase.inclusion]: [
+        RegistrationStatus.validated,
+        RegistrationStatus.registered,
+        RegistrationStatus.selectedForValidation,
+        RegistrationStatus.rejected,
+        RegistrationStatus.inclusionEnded,
+      ],
+      [ProgramPhase.payment]: [
+        RegistrationStatus.included,
+        RegistrationStatus.completed,
+      ],
+    };
+    this.tableFilterState.paStatus.default = paStatusDefaults[this.thisPhase];
+    this.tableFilterState.paStatus.visible =
+      this.setTableFilterVisibleOptions('paStatus');
+    this.tableFilterState.paStatus.selected = [
+      ...this.tableFilterState.paStatus.default,
+    ];
+
+    // payments left
+    this.tableFilterState.paymentsLeft.default = this.PAYMENTS_LEFT_ORDER;
+    this.tableFilterState.paymentsLeft.visible =
+      this.setTableFilterVisibleOptions('paymentsLeft');
+    this.tableFilterState.paymentsLeft.selected = [
+      ...this.tableFilterState.paymentsLeft.default,
+    ];
+  }
+
+  public setTableFilterVisibleOptions(prop): TableFilterMultipleChoiceOption[] {
+    switch (prop) {
+      case 'paStatus':
+        return this.getPaStatusVisibleOptions();
+      case 'paymentsLeft':
+        return this.getPaymentsLeftVisibleOptions();
+    }
+  }
+
+  public getPaStatusVisibleOptions(): TableFilterMultipleChoiceOption[] {
+    return PA_STATUS_ORDER.map(({ value }) => {
       const option: TableFilterMultipleChoiceOption = {
-        name,
+        value,
         label: this.translate.instant(
-          'page.program.program-people-affected.status.' + name,
+          'page.program.program-people-affected.status.' + value,
         ),
-        count: this.getPaStatusCount(name),
+        count: this.getPaStatusCount(value),
       };
       return option;
     }).filter((o) => o.count > 0);
@@ -1531,17 +1568,69 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     return this.allPeopleAffected.filter((pa) => pa.status === paStatus).length;
   }
 
-  private setPaStatusFilter(filter: RegistrationStatus[]) {
-    if (this.tableFilter.paStatus.selected === filter) {
+  public getPaymentsLeftVisibleOptions(): TableFilterMultipleChoiceOption[] {
+    const otherLabels = {
+      '-2': 'No maximum',
+      '-1': '> 3 remaining',
+    };
+
+    return this.PAYMENTS_LEFT_ORDER.map((value) => ({
+      value,
+      label: value < 0 ? otherLabels[value] : `${value} remaining`,
+      count: this.getPaymentsLeftCount(value),
+    })).filter((o) => o.count > 0);
+  }
+
+  private getPaymentsLeftCount(value): number {
+    return this.allPeopleAffected.filter((pa) => {
+      if (value === -2) {
+        return !pa.paymentsLeft && pa.maxPayments === '';
+      }
+      if (value === -1) {
+        return pa.paymentsLeft > 3;
+      }
+      return pa.paymentsLeft === value;
+    }).length;
+  }
+
+  private paPaymentsLeftValue(paymentsLeft, maxPayments): number {
+    if (!paymentsLeft && maxPayments === '') {
+      return -2;
+    }
+
+    if (paymentsLeft > 3) {
+      return -1;
+    }
+    return paymentsLeft;
+  }
+
+  public applyTableFilter(prop, filter) {
+    if (!filter) {
       return;
     }
-    this.tableFilter.paStatus.selected = filter;
+
+    if (prop === 'paymentsLeft') {
+      filter = filter.map((option) => Number(option));
+    }
+
+    if (this.tableFilterState[prop].selected === filter) {
+      return;
+    }
+
+    this.tableFilterState[prop].selected = filter;
+    this.updateVisiblePeopleAffectedByFilter();
   }
 
   private updateVisiblePeopleAffectedByFilter() {
-    const filteredPeopleAffected = this.allPeopleAffected.filter((pa) =>
-      this.tableFilter.paStatus.selected.includes(pa.status),
-    );
+    const filteredPeopleAffected = this.allPeopleAffected
+      .filter((pa) =>
+        this.tableFilterState.paStatus.selected.includes(pa.status),
+      )
+      .filter((pa) =>
+        this.tableFilterState.paymentsLeft.selected.includes(
+          this.paPaymentsLeftValue(pa.paymentsLeft, pa.maxPayments),
+        ),
+      );
     this.initialVisiblePeopleAffected = [...filteredPeopleAffected];
 
     const rowsVisible = this.initialVisiblePeopleAffected.filter(
@@ -1551,10 +1640,11 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           try {
             const columnValue = row[key].toLowerCase();
             const includeRow =
-              columnValue.indexOf(this.tableFilter.text) !== -1 || // check literal values
-              columnValue.replace(/\s/g, '').indexOf(this.tableFilter.text) !==
-                -1 || // check also with spaces removed
-              !this.tableFilter.text;
+              columnValue.indexOf(this.tableFilterState.text) !== -1 || // check literal values
+              columnValue
+                .replace(/\s/g, '')
+                .indexOf(this.tableFilterState.text) !== -1 || // check also with spaces removed
+              !this.tableFilterState.text;
             if (includeRow) {
               return includeRow;
             }
@@ -1569,13 +1659,12 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.updateProxyScrollbarSize();
   }
 
-  public applyPaStatusFilter($event: RegistrationStatus[]) {
-    if (!$event) {
-      return;
+  public showTableFilter(prop): boolean {
+    if (prop !== 'paymentsLeft' || this.thisPhase === this.phaseEnum.payment) {
+      return true;
     }
 
-    this.setPaStatusFilter($event);
-    this.updateVisiblePeopleAffectedByFilter();
+    return false;
   }
 
   public hasMessageError(messageStatus): boolean {
