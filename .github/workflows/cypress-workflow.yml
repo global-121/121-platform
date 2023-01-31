@@ -48,7 +48,6 @@ jobs:
         /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example
         /bin/sed -i '/^ENV_NAME=/s/=.*/=Cypress/' ./services/.env.example
         /bin/sed -i '/^RESET_SECRET=/s/=.*/=password/' ./services/.env.example
-        /bin/sed -i '/^ORMCONFIG_121_SERVICE_PASSWORD=/s/=.*/=global121/' ./services/.env.example
         /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example
         /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example
         /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example

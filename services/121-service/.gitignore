@@ -16,3 +16,6 @@ swagger-spec.json
 
 #IDEs
 .idea
+
+# certificates
+cert/DigiCertGlobalRootCA.crt.pem

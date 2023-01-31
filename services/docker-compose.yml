@@ -1,27 +1,4 @@
 services:
-  121db:
-    image: 'postgres:9.6'
-    init: true
-    container_name: 121db
-    environment:
-      - POSTGRES_USER=global121
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=global121
-    volumes:
-      - './postgresql.conf:/etc/postgresql.conf'
-      - './init.sql:/docker-entrypoint-initdb.d/init.sql'
-    ports:
-      - '5438:5432'
-    restart: unless-stopped
-    healthcheck:
-      test:
-        [
-          'CMD-SHELL',
-          "sh -c 'pg_isready -U global121 -d global121'",
-        ]
-      interval: 10s
-      timeout: 3s
-      retries: 3
 
   121-service:
     build:
@@ -37,7 +14,4 @@ services:
       - '${PORT_121_SERVICE}:${PORT_121_SERVICE}'
     stdin_open: true
     tty: true
-    depends_on:
-      121db:
-        condition: service_healthy
     restart: on-failure

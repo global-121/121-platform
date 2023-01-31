@@ -13,6 +13,30 @@
 #
 
 services:
+  121db:
+    image: 'postgres:14'
+    init: true
+    container_name: 121db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DBNAME}
+    volumes:
+      - './postgresql.conf:/etc/postgresql.conf'
+      - './init.sql:/docker-entrypoint-initdb.d/init.sql'
+    ports:
+      - '5438:5432'
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DBNAME}'",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      
   121-service:
     build:
       target: development

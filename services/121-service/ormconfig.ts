@@ -1,12 +1,13 @@
+import fs from 'fs';
 import { DataSourceOptions } from 'typeorm';
 
 export const ORMConfig: DataSourceOptions = {
   type: 'postgres',
-  host: '121db',
+  host: process.env.POSTGRES_HOST,
   port: 5432,
-  username: process.env.ORMCONFIG_121_SERVICE_USERNAME,
-  password: process.env.ORMCONFIG_121_SERVICE_PASSWORD,
-  database: 'global121',
+  username: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DBNAME,
   schema: '121-service',
   entities: ['src/**/**.entity.ts'],
   subscribers: ['src/**/**.subscriber.ts'],
@@ -14,4 +15,7 @@ export const ORMConfig: DataSourceOptions = {
   migrations: ['migration/*.ts'],
   dropSchema: false,
   synchronize: false,
+  ssl: {
+    ca: fs.readFileSync('cert/DigiCertGlobalRootCA.crt.pem').toString(),
+  },
 };
