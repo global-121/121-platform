@@ -45,6 +45,7 @@ function generateModuleDependencyGraph(app: INestApplication): void {
     'TypeOrmCoreModule',
     'TypeOrmModule',
     'UserModule',
+    'ThrottlerModule',
   ];
   const mermaidEdges = edges
     .filter(

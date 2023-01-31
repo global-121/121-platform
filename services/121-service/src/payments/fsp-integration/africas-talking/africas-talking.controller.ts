@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 import { AfricasTalkingService } from './africas-talking.service';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
@@ -9,6 +10,7 @@ import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dt
 export class AfricasTalkingController {
   public constructor(private africasTalkingService: AfricasTalkingService) {}
 
+  @SkipThrottle()
   @ApiOperation({
     summary:
       'Validation callback used by Africas Talking to request validity of payment to us.',
@@ -23,6 +25,7 @@ export class AfricasTalkingController {
     );
   }
 
+  @SkipThrottle()
   @ApiOperation({
     summary:
       'Notification callback used by Africas Talking to notify status of payment to us.',
