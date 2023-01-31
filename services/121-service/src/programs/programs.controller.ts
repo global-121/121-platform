@@ -72,8 +72,9 @@ export class ProgramController {
   @Post()
   public async create(
     @Body() programData: CreateProgramDto,
+    @User('id') userId: number,
   ): Promise<ProgramEntity> {
-    return this.programService.create(programData);
+    return this.programService.create(programData, userId);
   }
 
   @Permissions(PermissionEnum.ProgramPhaseUPDATE)

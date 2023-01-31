@@ -32,6 +32,7 @@ export class ProgramCustomAttributeEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'programId' })
   public program: ProgramEntity;
+
   @Column()
   public programId: number;
 
