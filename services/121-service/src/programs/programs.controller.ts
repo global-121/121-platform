@@ -3,8 +3,10 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -12,6 +14,7 @@ import { Admin } from '../guards/admin.decorator';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { Attribute } from '../registration/enum/custom-data-attributes';
+import { SecretDto } from '../scripts/scripts.controller';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
 import { AdminAuthGuard } from './../guards/admin.guard';
@@ -74,6 +77,32 @@ export class ProgramController {
     @Body() programData: CreateProgramDto,
   ): Promise<ProgramEntity> {
     return this.programService.create(programData);
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary:
+      'Delete program and all related data. ONLY USE THIS IF YOU KNOW WHAT YOU ARE DOING!',
+  })
+  @ApiResponse({
+    status: 202,
+    description: 'The program has been successfully deleted.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @Delete(':programId')
+  public async delete(
+    @Param() param,
+    @Body() body: SecretDto,
+    @Res() res,
+  ): Promise<void> {
+    if (body.secret !== process.env.RESET_SECRET) {
+      return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
+    }
+    await this.programService.deleteProgram(param.programId);
+    return res
+      .status(HttpStatus.ACCEPTED)
+      .send('The program has been successfully deleted.');
   }
 
   @Permissions(PermissionEnum.ProgramPhaseUPDATE)
