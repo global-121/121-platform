@@ -22,6 +22,7 @@ import { FspService } from './fsp.service';
 export class FspController {
   public constructor(private readonly fspService: FspService) {}
 
+  @Admin()
   @ApiOperation({ summary: 'Get all fsps' })
   @ApiResponse({
     status: 200,
