@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 export const ORMConfig = {
   type: 'postgres',
   host: process.env.POSTGRES_HOST,
@@ -12,4 +14,7 @@ export const ORMConfig = {
   migrations: ['migration/*.ts'],
   dropSchema: false,
   synchronize: false,
+  ssl: {
+    ca: fs.readFileSync('cert/DigiCertGlobalRootCA.crt.pem').toString(),
+  },
 };
