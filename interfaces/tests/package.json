@@ -27,7 +27,7 @@
   "dependencies": {
     "@typescript-eslint/parser": "^5.49.0",
     "cy-verify-downloads": "^0.1.11",
-    "cypress": "^12.3.0",
+    "cypress": "^12.4.1",
     "dotenv": "^16.0.3",
     "eslint": "^8.32.0",
     "eslint-config-prettier": "^8.6.0",
