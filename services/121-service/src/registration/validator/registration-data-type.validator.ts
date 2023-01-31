@@ -79,6 +79,8 @@ export class RegistrationDataTypeValidator
       isValid = this.multiSelectIsValid(value, options);
     } else if (type === AnswerTypes.numeric) {
       isValid = !isNaN(+value);
+    } else if (type === AnswerTypes.numericNullable) {
+      isValid = !isNaN(+value) || null;
     } else if (type === AnswerTypes.tel) {
       // Potential refactor: put lookup code here
       isValid = !!value.length && value.length >= 8 && value.length <= 17;

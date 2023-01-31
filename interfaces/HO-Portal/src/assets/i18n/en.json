@@ -264,6 +264,9 @@
           "no-message": "No messages yet",
           "message-status": "Last message:"
         },
+        "max-payments": {
+          "left": "left"
+        },
         "column": {
           "select": "Select",
           "person": "Person Affected",
@@ -285,11 +288,13 @@
           "whatsappPhoneNumber": "WhatsApp nr.",
           "preferredLanguage": "Preferred language",
           "paymentAmountMultiplier": "Transfer value(s)",
+          "maxPayments": "Max payments",
           "fsp": "Financial Service Provider",
           "custom-attribute-true": "Yes",
           "custom-attribute-false": "No",
           "payment-history": "Payment history",
-          "last-message-status": "Messages"
+          "last-message-status": "Messages",
+          "hasNote": "Has Note"
         },
         "language": {
           "en": "English",
@@ -312,7 +317,8 @@
           "validated": "Validated",
           "included": "Included",
           "inclusionEnded": "Inclusion ended",
-          "rejected": "Rejected"
+          "rejected": "Rejected",
+          "completed": "Completed"
         },
         "actions": {
           "invite": "Invite for registration",
@@ -353,7 +359,10 @@
           "properties": {
             "paymentAmountMultiplier": {
               "label": "Transfer value multiplier",
-              "explanation": "The transfer value will be multiplied by this number for this Person Affected"
+              "explanation": "The transfer value will be multiplied by this number for this Person Affected",
+              "error": {
+                "not-an-integer": "Input should be an integer"
+              }
             },
             "phoneNumber": {
               "label": "Phone number",
@@ -380,6 +389,15 @@
             },
             "preferredLanguage": {
               "label": "Preferred language"
+            },
+            "maxPayments": {
+              "label-payments": "Max payments ({{alreadyReceivedPayments}} already sent)",
+              "label-no-payments": "Max payments",
+              "explanation": "The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.",
+              "error": {
+                "not-an-integer": "Input should be an integer",
+                "too-low": "Input should be higher than the number of payments that have already been sent"
+              }
             }
           },
           "fspChangeWarning": "Selecting this FSP will delete the following attributes related to the old FSP:",
@@ -459,6 +477,10 @@
         "pa-moved-phase": "These People Affected might be visible in another phase after this status change.",
         "payment-history-popup": {
           "title": "Payment history"
+        },
+        "export-list": {
+          "button-label": "Export list",
+          "success-message": "Export list successful. You can find the Excel file in the downloads folder."
         }
       },
       "program-modal": {

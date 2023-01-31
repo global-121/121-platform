@@ -54,6 +54,7 @@ const programsArray: Program[] = [
       },
     ],
     languages: [LanguageEnum.en],
+    enableMaxPayments: true,
   },
 ];
 // Copy 2:

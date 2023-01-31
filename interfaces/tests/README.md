@@ -6,8 +6,8 @@ We use Cypress(<https://www.cypress.io/>) for integration tests and writing end-
 
 ### Run tests with Github Actions
 
-- On each Pull Request to `master` and each push to a `release/*`-branch the Cypress Integration Tests are run.
-- This means that tests are started on each new commit in a PR to master.
+- On each Pull Request(PR) to `master` and each push to a `release/*`-branch the "Cypress Full Integration Tests" are run.
+- This means that tests are started on each new commit in a PR to `master`.
 - Results can be seen in the [Actions page on GitHub](https://github.com/global-121/121-platform/actions/workflows/cypress-workflow.yml)
 
 ### Start test locally
@@ -17,7 +17,6 @@ We use Cypress(<https://www.cypress.io/>) for integration tests and writing end-
    - `npm run start:services`
    - `npm run start:interfaces`
 3. Start with: `npm run start:cypress`
-
    - This will open up a window, where you can choose your preferred browser first in which the tests will run
    - Click one of the test files to start running all the tests in that file
 
@@ -62,18 +61,18 @@ Get a basic idea about stubbing network requests and when they can be useful:
 1. Test a URL address:
    A URL address for the current page can be tested by using:
 
-```ts
-cy.url().should('include', '/home');
-```
+   ```ts
+   cy.url().should('include', '/home');
+   ```
 
-Above tests for the URL to include the substring `/home`
+   Above tests for the URL to include the substring `/home`
 
 2. Test an HTML element
    An Html element can be simply extracted by `cy.get('<selector>')`. In order to check whether they contain a text:
 
-```ts
-cy.get('<selector>').contains('<some text>');
-```
+   ```ts
+   cy.get('<selector>').contains('<some text>');
+   ```
 
 3. Simulate typing:
    If it is an input field, a `.type("some text")` can be used to simulate typing information.
@@ -81,12 +80,12 @@ cy.get('<selector>').contains('<some text>');
 4. Network Stubbing
    If we want to stub network to bypass certain screens, we should use `cy.route()` to create a fake API response. This lets us define responses that might let us bypass certain pages without having to go through all the steps within UI.
 
-```ts
-cy.route({
-  method: 'GET',
-  url: '*/programs*',
-  response: {},
-}).as('programs');
-```
+   ```ts
+   cy.route({
+     method: 'GET',
+     url: '*/programs*',
+     response: {},
+   }).as('programs');
+   ```
 
 After the above stub, we should also wait for the code to be executed by `cy.wait('@programs')`, This will remove possibilities for conflicts due to execution order.

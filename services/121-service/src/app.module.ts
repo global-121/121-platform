@@ -1,7 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ActionModule } from './actions/action.module';
 import { AppController } from './app.controller';
 import { CronjobModule } from './cronjob/cronjob.module';
@@ -42,8 +44,17 @@ import { UserModule } from './user/user.module';
     MulterModule.register({
       dest: './files',
     }),
+    ThrottlerModule.forRoot({
+      ttl: +process.env.GENERIC_THROTTLING_TTL || 60,
+      limit: +process.env.GENERIC_THROTTLING_LIMIT || 300,
+    }),
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class ApplicationModule {}

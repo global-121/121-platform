@@ -141,11 +141,16 @@ export class ProgramEntity extends CascadeDeleteEntity {
   @Column('json', { default: [] })
   public languages: JSON;
 
+  @Column({ default: false })
+  public enableMaxPayments: boolean;
+
   public async getValidationInfoForQuestionName(
     name: string,
   ): Promise<ValidationInfo> {
     if (name === Attributes.paymentAmountMultiplier) {
       return { type: AnswerTypes.numeric };
+    } else if (name === Attributes.maxPayments) {
+      return { type: AnswerTypes.numericNullable };
     } else if (name === Attributes.phoneNumber) {
       return { type: AnswerTypes.tel };
     } else if (name === Attributes.preferredLanguage) {

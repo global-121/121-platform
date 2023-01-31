@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 import { BelcashService } from './belcash.service';
 import { BelcashPaymentStatusDto } from './dto/belcash-payment-status.dto';
 
@@ -8,6 +9,7 @@ import { BelcashPaymentStatusDto } from './dto/belcash-payment-status.dto';
 export class BelcashController {
   public constructor(private belcashService: BelcashService) {}
 
+  @SkipThrottle()
   @ApiOperation({
     summary:
       'Notification callback used by Belcash to notify status of payment to us.',

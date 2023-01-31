@@ -50,12 +50,14 @@ import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { MessageHistoryPopupComponent } from '../../components/message-history-popup/message-history-popup.component';
 import RegistrationStatus from '../../enums/registration-status.enum';
+import { ActionType } from '../../models/actions.model';
 import {
   MessageStatus,
   MessageStatusMapping,
 } from '../../models/message.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
+import { arrayToXlsx } from '../../shared/array-to-xlsx';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
 import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-history-popup.component';
@@ -172,7 +174,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         'page.program.program-people-affected.actions.include',
       ),
       permissions: [Permission.RegistrationStatusIncludedUPDATE],
-      phases: [ProgramPhase.inclusion],
+      phases: [ProgramPhase.inclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
         checkbox: this.translate.instant(
@@ -510,6 +512,15 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         width: this.columnWidthPerType[AnswerType.Number],
       },
       {
+        prop: 'maxPayments',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.maxPayments',
+        ),
+        ...this.columnDefaults,
+        minWidth: this.columnWidthPerType[AnswerType.Number],
+        width: this.columnWidthPerType[AnswerType.Number],
+      },
+      {
         prop: 'fsp',
         name: this.translate.instant(
           'page.program.program-people-affected.column.fsp',
@@ -706,7 +717,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           this.programId,
           column.permissions,
         ) &&
-        this.checkValidationColumnOrAction(column)
+        this.checkValidationColumnOrAction(column) &&
+        this.showMaxPaymentsColumn(column)
       ) {
         this.columns.push(column);
       }
@@ -752,6 +764,13 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     return (
       (columnOrAction.showIfNoValidation && !this.program.validation) ||
       this.program.validation
+    );
+  }
+
+  private showMaxPaymentsColumn(column: PersonTableColumn): boolean {
+    return (
+      column.prop !== 'maxPayments' ||
+      (column.prop === 'maxPayments' && this.program.enableMaxPayments)
     );
   }
 
@@ -869,7 +888,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ];
         break;
       case ProgramPhase.payment:
-        this.tableFilter.paStatus.selected = [RegistrationStatus.included];
+        this.tableFilter.paStatus.selected = [
+          RegistrationStatus.included,
+          RegistrationStatus.completed,
+        ];
         break;
     }
 
@@ -968,6 +990,20 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       paymentAmountMultiplier: person.paymentAmountMultiplier
         ? `${person.paymentAmountMultiplier}×`
         : '',
+      paymentsLeft: person.maxPayments
+        ? person.maxPayments - person.nrPayments
+        : null,
+      maxPayments: person.maxPayments
+        ? `${person.maxPayments} ${
+            this.thisPhase === ProgramPhase.payment
+              ? `(${
+                  person.maxPayments - person.nrPayments
+                } ${this.translate.instant(
+                  'page.program.program-people-affected.max-payments.left',
+                )})`
+              : ''
+          }`
+        : '',
       fsp: person.fsp,
       lastMessageStatus: person.lastMessageStatus,
       messages: person.lastMessageStatus
@@ -1031,7 +1067,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     } = lastPaymentInfo;
 
     let paymentColumnValue = new PaymentColumnDetail();
-    paymentColumnValue.payments = [];
 
     const columnKey = 'paymentHistoryColumn';
 
@@ -1148,6 +1183,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,
         canViewMessageHistory: this.canViewMessageHistory,
+        canViewPaymentData: this.canViewPaymentData,
       },
     });
 
@@ -1552,5 +1588,100 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       MessageStatus.read,
       MessageStatus.sent,
     ].includes(messageStatus);
+  }
+
+  public exportTableView() {
+    try {
+      const columnsToExport = [
+        ...this.mapColumsForExport(true),
+        ...this.mapColumsForExport(false),
+      ];
+
+      columnsToExport.unshift({
+        prop: 'hasNote',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.hasNote',
+        ),
+      });
+      columnsToExport.unshift({
+        prop: 'pa',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.person',
+        ),
+      });
+
+      if (
+        this.showInclusionScore() &&
+        [
+          this.phaseEnum.registrationValidation,
+          this.phaseEnum.inclusion,
+        ].includes(this.thisPhase)
+      ) {
+        columnsToExport.push({
+          prop: 'inclusionScore',
+          name: this.translate.instant(
+            'page.program.program-people-affected.column.inclusion-score',
+          ),
+        });
+      }
+
+      if (this.thisPhase === this.phaseEnum.payment) {
+        {
+          columnsToExport.push({
+            prop: 'paymentHistoryColumn',
+            name: this.paymentHistoryColumn.name || '',
+          });
+        }
+      }
+
+      const collator = new Intl.Collator(undefined, {
+        numeric: true,
+        sensitivity: 'base',
+      });
+      const xlsxContent = this.visiblePeopleAffected
+        .sort((a, b) => collator.compare(a.pa, b.pa))
+        .map((person) => {
+          return columnsToExport.reduce((res, col) => {
+            const value = this.processExportTableViewValue(person[col.prop]);
+            return Object.assign(res, { [col.name]: value });
+          }, {});
+        });
+
+      arrayToXlsx(xlsxContent, `${this.thisPhase}-table`);
+
+      this.programsService.saveAction(
+        ActionType.exportTableView,
+        this.programId,
+      );
+
+      this.actionResult(
+        this.translate.instant(
+          'page.program.program-people-affected.export-list.success-message',
+        ),
+      );
+    } catch (error) {
+      console.log('error: ', error);
+      this.actionResult(this.translate.instant('common.export-error'));
+    }
+  }
+
+  private mapColumsForExport(
+    frozenLeft: boolean,
+  ): { prop: string; name: string }[] {
+    return this.columns
+      .filter((c) => c.frozenLeft === frozenLeft)
+      .map((col) => ({ prop: col.prop, name: col.name }));
+  }
+
+  private processExportTableViewValue(value) {
+    if (typeof value === 'boolean') {
+      return value ? 'yes' : 'no';
+    }
+
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+
+    return value;
   }
 }

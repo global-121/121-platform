@@ -35,6 +35,7 @@ export class Program {
   editableAttributes?: Attribute[];
   notifications: string | TranslatableString;
   languages: LanguageEnum[];
+  enableMaxPayments: boolean;
 }
 
 export class ProgramStats {

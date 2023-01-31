@@ -11,6 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { Admin } from '../guards/admin.decorator';
 import { AdminAuthGuard } from '../guards/admin.guard';
 import { Permissions } from '../guards/permissions.decorator';
@@ -121,6 +122,10 @@ export class UserController {
     }
   }
 
+  @Throttle(
+    +process.env.HIGH_THROTTLING_LIMIT || 30,
+    +process.env.HIGH_THROTTLING_TTL || 60,
+  )
   @ApiOperation({ summary: 'Log in existing user' })
   @Post('user/login')
   public async login(

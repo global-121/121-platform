@@ -10,6 +10,7 @@ export enum ExportType {
   vouchersWithBalance = 'vouchers-with-balance',
   toCancelVouchers = 'to-cancel-vouchers',
   duplicates = 'duplicates',
+  exportTableView = 'export-table-view',
 }
 
 export class ExportDetailsDto {

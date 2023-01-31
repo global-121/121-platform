@@ -1,6 +1,7 @@
 import fs from 'fs';
+import { DataSourceOptions } from 'typeorm';
 
-export const ORMConfig = {
+export const ORMConfig: DataSourceOptions = {
   type: 'postgres',
   host: process.env.POSTGRES_HOST,
   port: 5432,

@@ -426,7 +426,7 @@ export class RegistrationsController {
   })
   @Get('/registrations')
   public async searchRegistration(
-    @Query('phonenumber') phonenumber,
+    @Query('phonenumber') phonenumber: string,
     @User('id') userId: number,
   ): Promise<RegistrationResponse[]> {
     return await this.registrationsService.searchRegistration(

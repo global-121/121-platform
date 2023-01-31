@@ -52,6 +52,10 @@ jobs:
         /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example
         /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
         /bin/sed -i '/^EXTERNAL_121_SERVICE_URL=/s/=.*/=http:\/\/localhost:3000\//' ./services/.env.example
+        /bin/sed -i '/^GENERIC_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
+        /bin/sed -i '/^GENERIC_THROTTLING_LIMIT=/s/=.*/=1200/' ./services/.env.example
+        /bin/sed -i '/^HIGH_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
+        /bin/sed -i '/^HIGH_THROTTLING_LIMIT=/s/=.*/=100/' ./services/.env.example
         cp ./services/.env.example services/.env
 
     - name: Install interfaces

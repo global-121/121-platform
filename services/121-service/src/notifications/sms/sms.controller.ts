@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 import { SmsService } from './sms.service';
 
 @ApiTags('notifications')
@@ -10,6 +11,7 @@ export class SmsController {
     this.smsService = smsService;
   }
 
+  @SkipThrottle()
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Post('status')
   public async statusCallback(@Body() callbackData: any): Promise<void> {
