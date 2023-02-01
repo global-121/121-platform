@@ -1,4 +1,11 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import {
+  BeforeRemove,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+} from 'typeorm';
 import { AppDataSource } from '../../appdatasource';
 import { ActionEntity } from '../actions/action.entity';
 import { CascadeDeleteEntity } from '../base.entity';
@@ -143,6 +150,36 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @Column({ default: false })
   public enableMaxPayments: boolean;
+
+  @BeforeRemove()
+  public async cascadeDelete(): Promise<void> {
+    await this.deleteAllOneToMany([
+      {
+        entityClass: ProgramAidworkerAssignmentEntity,
+        columnName: 'program',
+      },
+      {
+        entityClass: ActionEntity,
+        columnName: 'program',
+      },
+      {
+        entityClass: ProgramQuestionEntity,
+        columnName: 'program',
+      },
+      {
+        entityClass: ProgramCustomAttributeEntity,
+        columnName: 'program',
+      },
+      {
+        entityClass: TransactionEntity,
+        columnName: 'program',
+      },
+      {
+        entityClass: RegistrationEntity,
+        columnName: 'program',
+      },
+    ]);
+  }
 
   public async getValidationInfoForQuestionName(
     name: string,

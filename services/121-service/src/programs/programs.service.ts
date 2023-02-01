@@ -190,6 +190,11 @@ export class ProgramService {
     return newProgram;
   }
 
+  public async deleteProgram(programId: number): Promise<void> {
+    const program = await this.findProgramOrThrow(programId);
+    await this.programRepository.remove(program);
+  }
+
   public async updateProgram(
     programId: number,
     updateProgramDto: UpdateProgramDto,

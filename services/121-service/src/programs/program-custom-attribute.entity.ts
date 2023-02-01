@@ -1,4 +1,5 @@
 import {
+  BeforeRemove,
   Column,
   Entity,
   JoinColumn,
@@ -6,14 +7,14 @@ import {
   OneToMany,
   Unique,
 } from 'typeorm';
-import { Base121Entity } from '../base.entity';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
+import { CascadeDeleteEntity } from './../base.entity';
 import { CustomAttributeType } from './dto/create-program-custom-attribute.dto';
 import { ProgramEntity } from './program.entity';
 
 @Unique('programCustomAttributeUnique', ['name', 'programId'])
 @Entity('program_custom_attribute')
-export class ProgramCustomAttributeEntity extends Base121Entity {
+export class ProgramCustomAttributeEntity extends CascadeDeleteEntity {
   @Column()
   public name: string;
 
@@ -38,7 +39,17 @@ export class ProgramCustomAttributeEntity extends Base121Entity {
 
   @OneToMany(
     () => RegistrationDataEntity,
-    (registrationData) => registrationData.programQuestion,
+    (registrationData) => registrationData.programCustomAttribute,
   )
   public registrationData: RegistrationDataEntity[];
+
+  @BeforeRemove()
+  public async cascadeDelete(): Promise<void> {
+    await this.deleteAllOneToMany([
+      {
+        entityClass: RegistrationDataEntity,
+        columnName: 'programCustomAttributeId',
+      },
+    ]);
+  }
 }

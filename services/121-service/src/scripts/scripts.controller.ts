@@ -28,7 +28,7 @@ enum SeedScript {
   nlrcMultiple = 'nlrc-multiple',
 }
 
-class ResetDto {
+export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })
   @IsNotEmpty()
   @IsString()
@@ -49,7 +49,7 @@ export class ScriptsController {
   @ApiOperation({ summary: 'Reset database' })
   @Post('/reset')
   public async resetDb(
-    @Body() body: ResetDto,
+    @Body() body: SecretDto,
     @Query('script') script: SeedScript,
     @Res() res,
   ): Promise<string> {
