@@ -5,11 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.79.3...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.79.4...master)
 
 ---
 
-## [1.79.3](https://github.com/global-121/121-platform/compare/v1.79.1...v1.79.3) - 2023-01-31
+## [1.79.4](https://github.com/global-121/121-platform/compare/v1.79.3...v1.79.4) - 2023-02-01
+
+### Fixed
+
+- Sanitize phonenumber with substring instead of substr
+
+
+## [1.79.3](https://github.com/global-121/121-platform/compare/v1.79.2...v1.79.3) - 2023-01-31
 
 ### Changed
 
