@@ -129,6 +129,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       valueToStore = Number(value);
     }
 
+    if (attribute === PersonDefaultAttributes.phoneNumber) {
+      valueToStore = value;
+    }
+
     if (attribute === PersonDefaultAttributes.maxPayments) {
       if (!Number.isInteger(Number(value))) {
         this.showAttributeErrorAlert('not-an-integer', attribute);
@@ -149,6 +153,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         valueToStore = Number(value);
       }
     }
+
+
 
     this.programsService
       .updatePaAttribute(
