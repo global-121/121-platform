@@ -5,9 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.79.4...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.79.5...master)
 
 ---
+## [1.79.5](https://github.com/global-121/121-platform/compare/v1.79.4...v1.79.5) - 2023-02-01
+
+### Fixed
+
+- Fix: Update phonenumber in PA-popup
 
 ## [1.79.4](https://github.com/global-121/121-platform/compare/v1.79.3...v1.79.4) - 2023-02-01
 
