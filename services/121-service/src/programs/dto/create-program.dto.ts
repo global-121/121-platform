@@ -6,7 +6,6 @@ import {
   IsDateString,
   IsDefined,
   IsEnum,
-  IsIn,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -63,10 +62,6 @@ export class CreateProgramDto {
   @IsOptional()
   public readonly description: JSON;
 
-  @ApiProperty({ example: { en: 'descCashType' } })
-  @IsOptional()
-  public readonly descCashType: JSON;
-
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
   @IsDateString()
@@ -118,17 +113,9 @@ export class CreateProgramDto {
   @Type(() => SetFspDto)
   public readonly financialServiceProviders: SetFspDto[];
 
-  @ApiProperty({ example: 'minimumScore' })
-  @IsIn(['minimumScore', 'highestScoresX'])
-  public readonly inclusionCalculationType: string;
-
-  @ApiProperty({ example: 25 })
-  @IsNumber()
-  public readonly minimumScore: number;
-
   @ApiProperty({ example: 250 })
   @IsNumber()
-  public readonly highestScoresX: number;
+  public readonly targetNrRegistrations: number;
 
   @ApiProperty({ example: true })
   @IsBoolean()

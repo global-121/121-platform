@@ -13,13 +13,10 @@ export class Program {
   titlePaApp: string | TranslatableString;
   description: string | TranslatableString;
   location: string | TranslatableString;
-  descCashType?: string | TranslatableString;
   currency: string;
   fixedTransferValue: number;
   paymentAmountMultiplierFormula?: string;
-  inclusionCalculationType: InclusionCalculationType;
-  highestScoresX?: number;
-  minimumScore?: number;
+  targetNrRegistrations?: number;
   distributionDuration: number;
   distributionFrequency: DistributionFrequency;
   meetingDocuments?: string | TranslatableString;
@@ -44,11 +41,6 @@ export class ProgramStats {
   includedPeople: number;
   totalBudget: number;
   spentMoney: number;
-}
-
-export enum InclusionCalculationType {
-  highestScoresX = 'highestScoresX',
-  minimumScore = 'minimumScore',
 }
 
 export enum DistributionFrequency {

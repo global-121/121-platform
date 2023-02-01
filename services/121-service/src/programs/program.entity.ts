@@ -71,13 +71,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public financialServiceProviders: FinancialServiceProviderEntity[];
 
   @Column({ nullable: true })
-  public inclusionCalculationType: string;
-
-  @Column({ nullable: true })
-  public minimumScore: number;
-
-  @Column({ nullable: true })
-  public highestScoresX: number;
+  public targetNrRegistrations: number;
 
   @Column('json', { nullable: true })
   public meetingDocuments: JSON;
@@ -90,9 +84,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @Column('json', { nullable: true })
   public description: JSON;
-
-  @Column('json', { nullable: true })
-  public descCashType: JSON;
 
   @Column({ default: false })
   public published: boolean;

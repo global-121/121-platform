@@ -128,7 +128,6 @@ export class ProgramService {
     program.titlePortal = programData.titlePortal;
     program.titlePaApp = programData.titlePaApp;
     program.description = programData.description;
-    program.descCashType = programData.descCashType;
     program.startDate = programData.startDate;
     program.endDate = programData.endDate;
     program.currency = programData.currency;
@@ -137,9 +136,7 @@ export class ProgramService {
     program.fixedTransferValue = programData.fixedTransferValue;
     program.paymentAmountMultiplierFormula =
       programData.paymentAmountMultiplierFormula;
-    program.inclusionCalculationType = programData.inclusionCalculationType;
-    program.minimumScore = programData.minimumScore;
-    program.highestScoresX = programData.highestScoresX;
+    program.targetNrRegistrations = programData.targetNrRegistrations;
     program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
     program.meetingDocuments = programData.meetingDocuments;
     program.notifications = programData.notifications;

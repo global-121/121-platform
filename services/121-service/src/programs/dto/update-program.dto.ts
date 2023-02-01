@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsDateString,
-  IsIn,
   IsNumber,
   IsOptional,
   IsString,
@@ -70,20 +69,10 @@ export class UpdateProgramDto {
   @IsString()
   public readonly paymentAmountMultiplierFormula: string;
 
-  @ApiProperty({ example: 'minimumScore' })
-  @IsOptional()
-  @IsIn(['minimumScore', 'highestScoresX'])
-  public readonly inclusionCalculationType: string;
-
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  public readonly minimumScore: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  public readonly highestScoresX: number;
+  public readonly targetNrRegistrations: number;
 
   @ApiProperty()
   @IsOptional()
@@ -120,8 +109,4 @@ export class UpdateProgramDto {
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
   public readonly description: JSON;
-
-  @ApiProperty({ example: { en: 'descCashType' } })
-  @IsOptional()
-  public readonly descCashType: JSON;
 }

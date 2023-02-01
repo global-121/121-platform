@@ -119,14 +119,6 @@ export class MetricsComponent implements OnChanges {
         (value) => value.length,
       ),
     });
-    this.metricsMap.set(`${group}.descCashType`, {
-      group,
-      icon: 'card',
-      label: 'page.program.program-details.descCashType',
-      value: getValueOrEmpty(this.program.descCashType, (value) =>
-        this.translatableString.get(value),
-      ),
-    });
     this.metricsMap.set(`${group}.distributionFrequency`, {
       group,
       icon: 'repeat',
@@ -167,7 +159,7 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'locate',
       label: 'page.program.metrics.pa.targeted',
-      value: getValueOrEmpty(this.program.highestScoresX),
+      value: getValueOrEmpty(this.program.targetNrRegistrations),
     });
   }
 

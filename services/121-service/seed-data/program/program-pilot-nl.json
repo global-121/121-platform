@@ -17,10 +17,6 @@
     "en": "",
     "pt_BR": ""
   },
-  "descCashType": {
-    "en": "Unconditional multi-purpose",
-    "pt_BR": "Multiuso incondicional"
-  },
   "startDate": "2020-01-01T12:00:00Z",
   "endDate": "2022-12-31T12:00:00Z",
   "currency": "EUR",
@@ -35,9 +31,7 @@
       "fsp": "Intersolve-no-whatsapp"
     }
   ],
-  "inclusionCalculationType": "highestScoresX",
-  "minimumScore": 0,
-  "highestScoresX": 250,
+  "targetNrRegistrations": 250,
   "tryWhatsAppFirst": true,
   "meetingDocuments": {
     "en": "",
