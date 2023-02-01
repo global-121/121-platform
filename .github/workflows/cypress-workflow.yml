@@ -29,59 +29,61 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version-file: '.node-version'
-        cache: 'npm'
-        cache-dependency-path: |
-          interfaces/HO-Portal/package-lock.json
-          interfaces/AW-App/package-lock.json
-          interfaces/PA-App/package-lock.json
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+          cache-dependency-path: |
+            interfaces/HO-Portal/package-lock.json
+            interfaces/AW-App/package-lock.json
+            interfaces/PA-App/package-lock.json
 
-    - name: Create .env variables file
-      run: |
-        /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example
-        /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example
-        /bin/sed -i '/^ENV_NAME=/s/=.*/=Cypress/' ./services/.env.example
-        /bin/sed -i '/^RESET_SECRET=/s/=.*/=password/' ./services/.env.example
-        /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example
-        /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example
-        /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
-        /bin/sed -i '/^EXTERNAL_121_SERVICE_URL=/s/=.*/=http:\/\/localhost:3000\//' ./services/.env.example
-        /bin/sed -i '/^GENERIC_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
-        /bin/sed -i '/^GENERIC_THROTTLING_LIMIT=/s/=.*/=1200/' ./services/.env.example
-        /bin/sed -i '/^HIGH_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
-        /bin/sed -i '/^HIGH_THROTTLING_LIMIT=/s/=.*/=100/' ./services/.env.example
-        cp ./services/.env.example services/.env
+      - name: Create .env variables file
+        run: |
+          /bin/sed -i '/^POSTGRES_HOST=/s/=.*/=121db/' ./services/.env.example
+          /bin/sed -i '/^POSTGRES_USER=/s/=.*/=global121/' ./services/.env.example
+          /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example
+          /bin/sed -i '/^POSTGRES_DBNAME=/s/=.*/=global121/' ./services/.env.example
+          /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example
+          /bin/sed -i '/^ENV_NAME=/s/=.*/=Cypress/' ./services/.env.example
+          /bin/sed -i '/^RESET_SECRET=/s/=.*/=password/' ./services/.env.example
+          /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example
+          /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example
+          /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
+          /bin/sed -i '/^EXTERNAL_121_SERVICE_URL=/s/=.*/=http:\/\/localhost:3000\//' ./services/.env.example
+          /bin/sed -i '/^GENERIC_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
+          /bin/sed -i '/^GENERIC_THROTTLING_LIMIT=/s/=.*/=1200/' ./services/.env.example
+          /bin/sed -i '/^HIGH_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
+          /bin/sed -i '/^HIGH_THROTTLING_LIMIT=/s/=.*/=100/' ./services/.env.example
+          cp ./services/.env.example services/.env
 
-    - name: Install interfaces
-      run: |
-        npm ci --no-audit --no-fund --prefix interfaces/AW-App/
-        npm ci --no-audit --no-fund --prefix interfaces/PA-App/
-        npm ci --no-audit --no-fund --prefix interfaces/HO-Portal/
+      - name: Install interfaces
+        run: |
+          npm ci --no-audit --no-fund --prefix interfaces/AW-App/
+          npm ci --no-audit --no-fund --prefix interfaces/PA-App/
+          npm ci --no-audit --no-fund --prefix interfaces/HO-Portal/
 
-    - name: Install services
-      run: npm run install:services
+      - name: Install services
+        run: npm run install:services
 
-    - name: Run integration tests with Cypress
-      # See documentation: https://github.com/cypress-io/github-action/#readme
-      uses: cypress-io/github-action@v5
-      env:
-        BROWSERSLIST_ENV: 'ci'
-      with:
-        browser: chrome
-        working-directory: ./interfaces/tests
-        start: |
-          npm run start:services:ci
-          npm run start:interfaces -- --configuration=ci
-        wait-on-timeout: 900
-        wait-on: 'http://localhost:3000/api/health/health, http://localhost:8008/, http://localhost:8080/, http://localhost:8888/'
+      - name: Run integration tests with Cypress
+        # See documentation: https://github.com/cypress-io/github-action/#readme
+        uses: cypress-io/github-action@v5
+        env:
+          BROWSERSLIST_ENV: 'ci'
+        with:
+          browser: chrome
+          working-directory: ./interfaces/tests
+          start: |
+            npm run start:services
+            npm run start:interfaces -- --configuration=ci
+          wait-on-timeout: 900
+          wait-on: 'http://localhost:3000/api/health/health, http://localhost:8008/, http://localhost:8080/, http://localhost:8888/'
 
-
-    - name: Dump docker logs on failure
-      if: failure()
-      uses: jwalton/gh-docker-logs@v2
+      - name: Dump docker logs on failure
+        if: failure()
+        uses: jwalton/gh-docker-logs@v2
