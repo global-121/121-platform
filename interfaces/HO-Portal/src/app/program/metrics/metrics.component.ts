@@ -1,5 +1,5 @@
 import { formatCurrency, formatDate } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { MetricGroup, MetricRow } from 'src/app/models/program-metrics.model';
@@ -10,19 +10,21 @@ import {
   getValueOrUnknown,
 } from 'src/app/shared/get-value-helpers';
 import { environment } from 'src/environments/environment';
+import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 
 @Component({
   selector: 'app-metrics',
   templateUrl: './metrics.component.html',
   styleUrls: ['./metrics.component.scss'],
 })
-export class MetricsComponent implements OnChanges {
+export class MetricsComponent {
   @Input()
-  private program: Program;
+  private programId: number;
 
   @Input()
   public isCollapsed: boolean;
 
+  private program: Program;
   private locale: string;
   private metricsMap: Map<string, MetricRow> = new Map();
 
@@ -32,17 +34,17 @@ export class MetricsComponent implements OnChanges {
   constructor(
     public translate: TranslateService,
     private translatableString: TranslatableStringService,
+    private programsService: ProgramsServiceApiService,
   ) {
     this.locale = environment.defaultLocale;
   }
 
-  public async ngOnChanges(changes: SimpleChanges) {
-    if (changes.program && typeof changes.program.currentValue === 'object') {
-      this.update();
-    }
+  public async ngOnInit() {
+    this.update();
   }
 
   public async update() {
+    this.program = await this.programsService.getProgramById(this.programId);
     this.renderUpdated();
 
     // The order of these methods, define the order of the metricMap/List:
