@@ -85,7 +85,7 @@ export class CreateProgramDto {
   })
   public readonly currency: string;
 
-  @ApiProperty({ example: 'week' })
+  @ApiProperty({ example: 'week', enum: ['week', 'month'] })
   @IsString()
   public readonly distributionFrequency: string;
 
@@ -110,6 +110,7 @@ export class CreateProgramDto {
         fsp: 'Intersolve-no-whatsapp',
       },
     ],
+    description: 'Use the GET /fsp endpoint to find valid fspNames.',
   })
   @IsArray()
   @ValidateNested()
@@ -265,7 +266,10 @@ export class CreateProgramDto {
   @IsNotEmpty()
   public readonly aboutProgram: JSON;
 
-  @ApiProperty({ example: ['nameFirst', 'nameLast'] })
+  @ApiProperty({
+    example: ['nameFirst', 'nameLast'],
+    description: 'Should be array of name-related program-questions.',
+  })
   @IsArray()
   public readonly fullnameNamingConvention: JSON;
 
