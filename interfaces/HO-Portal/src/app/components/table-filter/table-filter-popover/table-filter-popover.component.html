@@ -1,5 +1,5 @@
 <ng-container [ngSwitch]="type">
-  <ng-container *ngSwitchCase="tableFilterType.multipleChoice">
+  <ng-container *ngSwitchCase="tableFilterType?.multipleChoice">
     <ion-grid
       class="ion-padding ion-no-margin table-filter-popover--multiple-choice--list"
     >
@@ -14,7 +14,7 @@
         </div>
         <div class="ion-margin-start">
           <ion-row class="ion-justify-content-end">
-            <ion-label color="medium">{{ state[type].totalCount }}</ion-label>
+            <ion-label color="medium">{{ state[type]?.totalCount }}</ion-label>
             <ion-checkbox
               [(ngModel)]="state[type].selectAll"
               (ionChange)="onSelectAll()"
@@ -25,7 +25,7 @@
         </div>
       </ion-row>
       <ion-row
-        *ngFor="let option of filterProps.allOptions"
+        *ngFor="let option of filterProps?.allOptions"
         lines="none"
         class="ion-justify-content-between ion-align-items-center table-filter-popover--multiple-choice--item"
       >
@@ -33,17 +33,18 @@
           size="7"
           class="ion-no-padding"
         >
-          <ion-label class="ion-text-wrap">{{ option.label }}</ion-label>
+          <ion-label class="ion-text-wrap">{{ option?.label }}</ion-label>
         </ion-col>
         <ion-col
           size="4"
           class="ion-no-padding"
         >
           <ion-row class="ion-justify-content-end">
-            <ion-label color="medium">{{ option.count }}</ion-label>
+            <ion-label color="medium">{{ option?.count }}</ion-label>
             <ion-checkbox
-              [(ngModel)]="state[type].options[option.name]"
+              [(ngModel)]="state[type].options[option?.value]"
               class="ion-margin-start"
+              [data-cy]="option?.label"
             ></ion-checkbox>
           </ion-row>
         </ion-col>
@@ -54,10 +55,9 @@
         color="medium"
         class="ion-text-wrap"
       >
-        <small>{{
-          'page.program.program-people-affected.filter-btn.multiple-choice-hidden-options'
-            | translate
-        }}</small>
+        <small>
+          {{ description }}
+        </small>
       </ion-label>
     </div>
   </ng-container>

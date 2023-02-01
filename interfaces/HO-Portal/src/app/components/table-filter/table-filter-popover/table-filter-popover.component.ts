@@ -20,6 +20,9 @@ export class TableFilterPopoverComponent implements OnInit {
   @Input()
   public filterProps: TableFilterMultipleChoiceProps;
 
+  @Input()
+  public description: string;
+
   public state: { [filterType: string]: TableFilterMultipleChoiceState };
 
   public tableFilterType = TableFilterType;
@@ -46,12 +49,12 @@ export class TableFilterPopoverComponent implements OnInit {
 
   private initMultipleChoiceState(): TableFilterMultipleChoiceState {
     return {
-      options: this.filterProps?.allOptions.reduce(
+      options: this.filterProps?.allOptions?.reduce(
         (optionsObject, currentOption) => {
           return (optionsObject = {
             ...optionsObject,
-            [currentOption.name]: this.filterProps?.currentSelection.includes(
-              currentOption.name,
+            [currentOption.value]: this.filterProps?.currentSelection?.includes(
+              currentOption.value,
             ),
           });
         },
@@ -59,7 +62,7 @@ export class TableFilterPopoverComponent implements OnInit {
       ),
       selectAll: this.initSelectAll(),
       totalCount: this.filterProps?.allOptions
-        .map((o) => o.count)
+        ?.map((o) => o.count)
         .reduce((sum, count) => sum + count, 0),
     };
   }
@@ -67,7 +70,7 @@ export class TableFilterPopoverComponent implements OnInit {
   public initSelectAll(): boolean {
     return (
       this.filterProps?.allOptions?.filter((o) =>
-        this.filterProps?.currentSelection?.includes(o.name),
+        this.filterProps?.currentSelection?.includes(o.value),
       )?.length === 0
     );
   }

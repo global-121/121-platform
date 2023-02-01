@@ -4,11 +4,14 @@ import programLVV from '../../../../../../services/121-service/seed-data/program
 
 describe("'Do Payment #1' bulk action", () => {
   beforeEach(() => {
-    // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for any previous status-callbacks to finish
-    cy.wait(4000);
     cy.seedDatabase();
     cy.loginApi();
     cy.loginPortal();
+  });
+
+  afterEach(() => {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for any previous status-callbacks to finish
+    cy.wait(4500);
   });
 
   it(
@@ -204,6 +207,38 @@ describe("'Do Payment #1' bulk action", () => {
             `${portalEn.page.program['program-people-affected'].actions['include']}`,
           );
           cy.get('#alert-1-msg').contains('no People');
+        });
+      },
+    );
+  });
+
+  it(`should filter PA table view on: 0 payment remaining`, function () {
+    const programId = 1;
+    cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
+    cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
+    cy.importRegistrations(programId);
+    cy.fixture('registration-nlrc-max-payment').then(
+      (registrationMaxPayment) => {
+        cy.importRegistrations(1, [registrationMaxPayment]);
+        const [arr] = includeAllRegistrations(programId);
+        cy.fixture('payment').then((page) => {
+          selectPaymentAction(page, page.payment);
+          selectPaAndApply();
+          confirmPaymentPopupt(arr.length);
+
+          // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed and incoming whatsapp message
+          cy.wait(500);
+          cy.reload();
+
+          cy.get('[data-cy="table-filter-paymentsLeft"]').click();
+
+          // This should really be: cy.get('[data-cy="0 remaining"]').click();
+          // But that doesn't work for some reason (probably because of the 0)
+          cy.get(
+            ':nth-child(2) > [size="4"] > .ion-justify-content-end > .ion-margin-start',
+          ).click();
+          cy.get('.ion-text-end > .ion-margin-start').click();
+          cy.get('datatable-row-wrapper').should('have.length', 1);
         });
       },
     );
