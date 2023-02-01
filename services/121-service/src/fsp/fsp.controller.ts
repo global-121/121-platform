@@ -23,17 +23,17 @@ export class FspController {
   public constructor(private readonly fspService: FspService) {}
 
   @Admin()
-  @ApiOperation({ summary: 'Get all fsps' })
+  @ApiOperation({ summary: 'Get all Financial Service Providers' })
   @ApiResponse({
     status: 200,
-    description: 'All fsps with attributes',
+    description: 'All Financial Service Providers with attributes',
   })
-  @Get('all')
+  @Get()
   public async getAllFsps(): Promise<FinancialServiceProviderEntity[]> {
     return await this.fspService.getAllFsps();
   }
 
-  @ApiOperation({ summary: 'Get fsp' })
+  @ApiOperation({ summary: 'Get Financial Service Provider (FSP) by fspId' })
   @ApiParam({ name: 'fspId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
