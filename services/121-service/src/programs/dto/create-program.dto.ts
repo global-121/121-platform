@@ -179,11 +179,11 @@ export class CreateProgramDto {
   @ApiProperty({
     example: [
       {
-        name: 'id_number',
+        name: 'nameFirst',
         label: {
-          en: 'What is your id number?',
+          en: 'What is your first name?',
         },
-        answerType: 'numeric',
+        answerType: 'text',
         questionType: 'standard',
         options: null,
         persistence: true,
@@ -193,6 +193,23 @@ export class CreateProgramDto {
         editableInPortal: false,
         shortLabel: {
           en: 'First Name',
+        },
+      },
+      {
+        name: 'nameLast',
+        label: {
+          en: 'What is your last name?',
+        },
+        answerType: 'text',
+        questionType: 'standard',
+        options: null,
+        persistence: true,
+        export: ['all-people-affected', 'included', 'selected-for-validation'],
+        scoring: {},
+        phases: [],
+        editableInPortal: false,
+        shortLabel: {
+          en: 'Last Name',
         },
       },
       {

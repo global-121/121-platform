@@ -115,10 +115,21 @@ export class ProgramService {
     return { programs, programsCount };
   }
 
+  private validateProgram(programData: CreateProgramDto): void {
+    for (const name of Object.values(programData.fullnameNamingConvention)) {
+      if (!programData.programQuestions.map((q) => q.name).includes(name)) {
+        const errors = `Element '${name}' of fullnameNamingConvention is not found in program questions`;
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
+    }
+  }
+
   public async create(
     programData: CreateProgramDto,
     userId: number,
   ): Promise<ProgramEntity> {
+    this.validateProgram(programData);
+
     const program = new ProgramEntity();
     program.published = programData.published;
     program.validation = programData.validation;
