@@ -171,7 +171,6 @@ export class ProgramService {
     savedProgram.financialServiceProviders = [];
     for (const fspItem of programData.financialServiceProviders) {
       const fsp = await this.financialServiceProviderRepository.findOne({
-        relations: ['program'],
         where: { fsp: fspItem.fsp },
       });
       if (!fsp) {
