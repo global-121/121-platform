@@ -79,7 +79,7 @@ jobs:
           browser: chrome
           working-directory: ./interfaces/tests
           start: |
-            npm run start:services
+            npm run start:services:ci
             npm run start:interfaces -- --configuration=ci
           wait-on-timeout: 900
           wait-on: 'http://localhost:3000/api/health/health, http://localhost:8008/, http://localhost:8080/, http://localhost:8888/'
