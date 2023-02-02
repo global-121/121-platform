@@ -7,7 +7,9 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
+import { DefaultUserRole } from '../user/user-role.enum';
 import { UserEntity } from '../user/user.entity';
+import { UserService } from '../user/user.service';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
@@ -35,7 +37,10 @@ export class ProgramService {
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
 
-  public constructor(private readonly dataSource: DataSource) {}
+  public constructor(
+    private readonly dataSource: DataSource,
+    private readonly userService: UserService,
+  ) {}
 
   public async findOne(programId: number): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne({
@@ -110,12 +115,30 @@ export class ProgramService {
     return { programs, programsCount };
   }
 
-  public async create(programData: CreateProgramDto): Promise<ProgramEntity> {
+  private validateProgram(programData: CreateProgramDto): void {
+    for (const name of Object.values(programData.fullnameNamingConvention)) {
+      if (!programData.programQuestions.map((q) => q.name).includes(name)) {
+        const errors = `Element '${name}' of fullnameNamingConvention is not found in program questions`;
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
+    }
+  }
+
+  public async create(
+    programData: CreateProgramDto,
+    userId: number,
+  ): Promise<ProgramEntity> {
+    this.validateProgram(programData);
+
     const program = new ProgramEntity();
+    program.published = programData.published;
+    program.validation = programData.validation;
+    program.phase = programData.phase;
     program.location = programData.location;
     program.ngo = programData.ngo;
     program.titlePortal = programData.titlePortal;
     program.titlePaApp = programData.titlePaApp;
+    program.description = programData.description;
     program.startDate = programData.startDate;
     program.endDate = programData.endDate;
     program.currency = programData.currency;
@@ -124,44 +147,59 @@ export class ProgramService {
     program.fixedTransferValue = programData.fixedTransferValue;
     program.paymentAmountMultiplierFormula =
       programData.paymentAmountMultiplierFormula;
-    program.inclusionCalculationType = programData.inclusionCalculationType;
-    program.minimumScore = programData.minimumScore;
-    program.highestScoresX = programData.highestScoresX;
+    program.targetNrRegistrations = programData.targetNrRegistrations;
+    program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
     program.meetingDocuments = programData.meetingDocuments;
     program.notifications = programData.notifications;
     program.phoneNumberPlaceholder = programData.phoneNumberPlaceholder;
-    program.description = programData.description;
-    program.descCashType = programData.descCashType;
-    program.validation = programData.validation;
-    program.programQuestions = [];
-    program.financialServiceProviders = [];
+    program.aboutProgram = programData.aboutProgram;
+    program.fullnameNamingConvention = programData.fullnameNamingConvention;
+    program.languages = programData.languages;
+    program.enableMaxPayments = programData.enableMaxPayments;
 
+    const savedProgram = await this.programRepository.save(program);
+
+    savedProgram.programCustomAttributes = [];
     for (const customAttribute of programData.programCustomAttributes) {
+      customAttribute['programId'] = savedProgram.id;
       const customAttributeReturn =
         await this.programCustomAttributeRepository.save(customAttribute);
-      program.programCustomAttributes.push(customAttributeReturn);
+      savedProgram.programCustomAttributes.push(customAttributeReturn);
     }
+
+    savedProgram.programQuestions = [];
     for (const programQuestion of programData.programQuestions) {
+      programQuestion['programId'] = savedProgram.id;
       const programQuestionReturn = await this.programQuestionRepository.save(
         programQuestion,
       );
-      program.programQuestions.push(programQuestionReturn);
-    }
-    for (const item of programData.financialServiceProviders) {
-      const fsp = await this.financialServiceProviderRepository.findOne({
-        relations: ['program'],
-        where: { id: item.id },
-      });
-      if (!fsp) {
-        const errors = `No fsp found with id ${item.id}`;
-        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-      }
-      fsp.program.push(program);
-      await this.financialServiceProviderRepository.save(fsp);
+      savedProgram.programQuestions.push(programQuestionReturn);
     }
 
-    const newProgram = await this.programRepository.save(program);
+    savedProgram.financialServiceProviders = [];
+    for (const fspItem of programData.financialServiceProviders) {
+      const fsp = await this.financialServiceProviderRepository.findOne({
+        where: { fsp: fspItem.fsp },
+      });
+      if (!fsp) {
+        const errors = `No fsp found with name ${fspItem.fsp}`;
+        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      }
+      savedProgram.financialServiceProviders.push(fsp);
+    }
+
+    await this.userService.assigAidworkerToProgram(savedProgram.id, userId, {
+      roles: [DefaultUserRole.ProgramAdmin],
+    });
+
+    const newProgram = await this.programRepository.save(savedProgram);
+
     return newProgram;
+  }
+
+  public async deleteProgram(programId: number): Promise<void> {
+    const program = await this.findProgramOrThrow(programId);
+    await this.programRepository.remove(program);
   }
 
   public async updateProgram(

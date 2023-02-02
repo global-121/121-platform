@@ -1179,7 +1179,7 @@ export class ExportMetricsService {
       await this.programRepository.findOneBy({
         id: programId,
       })
-    ).highestScoresX;
+    ).targetNrRegistrations;
 
     const registrations = await this.registrationRepository.find({
       where: {

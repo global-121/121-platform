@@ -15,9 +15,6 @@
   "description": {
     "en": ""
   },
-  "descCashType": {
-    "en": "Conditional livelihood"
-  },
   "startDate": "2021-12-01T12:00:00Z",
   "endDate": "2022-03-31T12:00:00Z",
   "currency": "ETB",
@@ -29,9 +26,7 @@
       "fsp": "BelCash"
     }
   ],
-  "inclusionCalculationType": "highestScoresX",
-  "minimumScore": 0,
-  "highestScoresX": 55,
+  "targetNrRegistrations": 55,
   "meetingDocuments": {
     "en": "Photo; National ID card",
     "am_ET": "ፎቶ; መታወቂያ "

@@ -1,7 +1,6 @@
 import { LanguageEnum } from '../models/person.model';
 import {
   DistributionFrequency,
-  InclusionCalculationType,
   Program,
   ProgramPhase,
 } from '../models/program.model';
@@ -19,7 +18,6 @@ const programsArray: Program[] = [
     distributionFrequency: DistributionFrequency.month,
     distributionDuration: getRandomInt(1, 12),
     fixedTransferValue: getRandomInt(10, 1000),
-    inclusionCalculationType: InclusionCalculationType.highestScoresX,
     created: '1970-01-01T01:01:01Z',
     updated: '1970-01-01T01:01:01Z',
     phase: ProgramPhase.design,

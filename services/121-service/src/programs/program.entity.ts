@@ -1,4 +1,11 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import {
+  BeforeRemove,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+} from 'typeorm';
 import { AppDataSource } from '../../appdatasource';
 import { ActionEntity } from '../actions/action.entity';
 import { CascadeDeleteEntity } from '../base.entity';
@@ -64,13 +71,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public financialServiceProviders: FinancialServiceProviderEntity[];
 
   @Column({ nullable: true })
-  public inclusionCalculationType: string;
-
-  @Column({ nullable: true })
-  public minimumScore: number;
-
-  @Column({ nullable: true })
-  public highestScoresX: number;
+  public targetNrRegistrations: number;
 
   @Column('json', { nullable: true })
   public meetingDocuments: JSON;
@@ -83,9 +84,6 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @Column('json', { nullable: true })
   public description: JSON;
-
-  @Column('json', { nullable: true })
-  public descCashType: JSON;
 
   @Column({ default: false })
   public published: boolean;
@@ -143,6 +141,36 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @Column({ default: false })
   public enableMaxPayments: boolean;
+
+  @BeforeRemove()
+  public async cascadeDelete(): Promise<void> {
+    await this.deleteAllOneToMany([
+      {
+        entityClass: ProgramAidworkerAssignmentEntity,
+        columnName: 'program',
+      },
+      {
+        entityClass: ActionEntity,
+        columnName: 'program',
+      },
+      {
+        entityClass: ProgramQuestionEntity,
+        columnName: 'program',
+      },
+      {
+        entityClass: ProgramCustomAttributeEntity,
+        columnName: 'program',
+      },
+      {
+        entityClass: TransactionEntity,
+        columnName: 'program',
+      },
+      {
+        entityClass: RegistrationEntity,
+        columnName: 'program',
+      },
+    ]);
+  }
 
   public async getValidationInfoForQuestionName(
     name: string,
