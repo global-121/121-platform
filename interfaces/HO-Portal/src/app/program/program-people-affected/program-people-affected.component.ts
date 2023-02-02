@@ -585,7 +585,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     this.paymentInProgress =
       await this.pastPaymentsService.checkPaymentInProgress(this.programId);
 
-    await this.refreshData();
+    await this.refreshData(true);
 
     this.activePhase = this.program.phase;
 
@@ -615,9 +615,11 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         },
       );
     }
+
+    this.updateProxyScrollbarSize();
   }
 
-  private async refreshData() {
+  private async refreshData(refresh: boolean = false) {
     this.isLoading = true;
     await this.loadProgram();
     await this.loadPermissions();
@@ -626,7 +628,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         this.programId,
       );
     }
-    await this.loadData();
+    await this.loadData(refresh);
+    await this.resetBulkAction();
     this.updateProxyScrollbarSize();
     this.isLoading = false;
   }
@@ -868,7 +871,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     return enabledActions.length > 0;
   }
 
-  private async loadData() {
+  private async loadData(refresh: boolean = false) {
     this.allPeopleData = await this.programsService.getPeopleAffected(
       this.programId,
       this.canUpdatePersonalData,
@@ -880,8 +883,14 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     }
 
     this.allPeopleAffected = this.createTableData(this.allPeopleData);
-    this.setDefaultTableFilterOptions();
-    this.filterPeopleAffectedByPhase();
+
+    if (refresh) {
+      this.setDefaultTableFilterOptions();
+      this.filterPeopleAffectedByPhase();
+      return;
+    }
+
+    this.updateVisiblePeopleAffectedByFilter();
   }
 
   private filterPeopleAffectedByPhase() {
@@ -1275,14 +1284,14 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     });
   }
 
-  private resetBulkAction() {
-    this.loadData();
+  private async resetBulkAction() {
+    this.isInProgress = true;
     this.action = BulkActionId.chooseAction;
     this.applyBtnDisabled = true;
     this.toggleHeaderCheckbox();
     this.headerChecked = false;
     this.selectedPeople = [];
-    this.resetFilterRowsVisible();
+    this.isInProgress = false;
   }
 
   private toggleHeaderCheckbox() {
@@ -1385,13 +1394,13 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
   public async applyAction(confirmInput?: string) {
     this.isInProgress = true;
-    await this.bulkActionService
+    this.bulkActionService
       .applyAction(this.action, this.programId, this.selectedPeople, {
         message: confirmInput,
       })
-      .then(() => {
+      .then(async () => {
         if (this.action === BulkActionId.sendMessage) {
-          window.location.reload();
+          this.pubSub.publish(PubSubEvent.dataRegistrationChanged);
           return;
         }
 
@@ -1405,36 +1414,32 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           [BulkActionId.markNoLongerEligible]:
             RegistrationStatus.noLongerEligible,
         };
+        if (!actionStatus[this.action]) {
+          return;
+        }
 
-        if (actionStatus[this.action]) {
-          this.actionResult(
-            `<p>${this.translate.instant(
-              'page.program.program-people-affected.status-changed',
-              {
-                pastatus: this.translate
-                  .instant(
-                    'page.program.program-people-affected.status.' +
-                      actionStatus[this.action],
-                  )
-                  .toLowerCase(),
-                panumber: this.selectedPeople.length,
-              },
-            )}
+        await this.actionResult(
+          `<p>${this.translate.instant(
+            'page.program.program-people-affected.status-changed',
+            {
+              pastatus: this.translate
+                .instant(
+                  'page.program.program-people-affected.status.' +
+                    actionStatus[this.action],
+                )
+                .toLowerCase(),
+              panumber: this.selectedPeople.length,
+            },
+          )}
               <p>${this.translate.instant(
                 'page.program.program-people-affected.pa-moved-phase',
               )}</p>`,
-            true,
-          );
-        }
+        );
       })
       .catch((error) => {
         console.log('Error:', error);
         this.actionResult(error.error.errors.join('<br><br>'));
       });
-
-    this.isInProgress = false;
-
-    this.resetBulkAction();
   }
 
   private async actionResult(resultMessage: string, refresh: boolean = false) {
@@ -1445,6 +1450,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           text: this.translate.instant('common.ok'),
           handler: () => {
             alert.dismiss(true);
+            this.pubSub.publish(PubSubEvent.dataRegistrationChanged);
             if (refresh) {
               window.location.reload();
             }
@@ -1454,10 +1460,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     });
 
     await alert.present();
-  }
-
-  private resetFilterRowsVisible() {
-    this.filterRowsVisibleQuery = '';
   }
 
   private setTextFieldFilter(value: string) {
@@ -1503,6 +1505,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private setDefaultTableFilterOptions() {
+    // text
+    this.filterRowsVisibleQuery = '';
+    this.tableFilterState.text = '';
     // pa status
     const paStatusDefaults = {
       [ProgramPhase.registrationValidation]: [
