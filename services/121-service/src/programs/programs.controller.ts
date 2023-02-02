@@ -6,10 +6,17 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Admin } from '../guards/admin.decorator';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
@@ -40,10 +47,24 @@ export class ProgramController {
 
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiQuery({
+    name: 'formatCreateProgramDto',
+    required: false,
+    type: 'boolean',
+  })
   @ApiResponse({ status: 200, description: 'Return program by id.' })
   @Get(':programId')
-  public async findOne(@Param() params): Promise<ProgramEntity> {
-    return await this.programService.findOne(Number(params.programId));
+  public async findOne(
+    @Param() params,
+    @Query() queryParams,
+  ): Promise<ProgramEntity | CreateProgramDto> {
+    const formatCreateProgramDto =
+      queryParams.formatCreateProgramDto === 'true';
+    if (formatCreateProgramDto) {
+      return this.programService.getCreateProgramDto(params.programId);
+    } else {
+      return await this.programService.findOne(Number(params.programId));
+    }
   }
 
   @ApiOperation({ summary: 'Get published programs' })

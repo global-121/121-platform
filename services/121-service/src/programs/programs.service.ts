@@ -10,6 +10,7 @@ import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
+import { FspName } from './../fsp/financial-service-provider.entity';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
@@ -61,6 +62,75 @@ export class ProgramService {
       );
     }
     return program;
+  }
+
+  public async getCreateProgramDto(
+    programId: number,
+  ): Promise<CreateProgramDto> {
+    const programEntity = await this.findOne(programId);
+    return {
+      published: programEntity.published,
+      validation: programEntity.validation,
+      phase: programEntity.phase,
+      location: programEntity.location,
+      ngo: programEntity.ngo,
+      titlePortal: programEntity.titlePortal,
+      titlePaApp: programEntity.titlePaApp,
+      description: programEntity.description,
+      descCashType: programEntity.descCashType,
+      startDate: programEntity.startDate,
+      endDate: programEntity.endDate,
+      currency: programEntity.currency,
+      distributionFrequency: programEntity.distributionFrequency,
+      distributionDuration: programEntity.distributionDuration,
+      fixedTransferValue: programEntity.fixedTransferValue,
+      paymentAmountMultiplierFormula:
+        programEntity.paymentAmountMultiplierFormula,
+      financialServiceProviders: programEntity.financialServiceProviders.map(
+        (fsp) => {
+          return {
+            fsp: fsp.fsp as FspName,
+          };
+        },
+      ),
+      inclusionCalculationType: programEntity.inclusionCalculationType,
+      minimumScore: programEntity.minimumScore,
+      highestScoresX: programEntity.highestScoresX,
+      tryWhatsAppFirst: programEntity.tryWhatsAppFirst,
+      meetingDocuments: programEntity.meetingDocuments,
+      notifications: programEntity.notifications,
+      phoneNumberPlaceholder: programEntity.phoneNumberPlaceholder,
+      programCustomAttributes: programEntity.programCustomAttributes.map(
+        (programCustomAttribute) => {
+          return {
+            name: programCustomAttribute.name,
+            type: programCustomAttribute.type,
+            label: programCustomAttribute.label,
+            phases: programCustomAttribute.phases,
+          };
+        },
+      ),
+      programQuestions: programEntity.programQuestions.map(
+        (programQuestion) => {
+          return {
+            name: programQuestion.name,
+            label: programQuestion.label,
+            answerType: programQuestion.answerType,
+            questionType: programQuestion.questionType,
+            options: programQuestion.options,
+            scoring: programQuestion.scoring,
+            persistence: programQuestion.persistence,
+            pattern: programQuestion.pattern,
+            phases: programQuestion.phases,
+            editableInPortal: programQuestion.editableInPortal,
+          };
+        },
+      ),
+      aboutProgram: programEntity.aboutProgram,
+      fullnameNamingConvention: programEntity.fullnameNamingConvention,
+      languages: programEntity.languages,
+      enableMaxPayments: programEntity.enableMaxPayments,
+    };
   }
 
   public async getPublishedPrograms(): Promise<ProgramsRO> {
