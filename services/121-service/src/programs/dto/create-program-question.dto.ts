@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsDefined,
   IsIn,
   IsNotEmpty,
@@ -76,4 +77,8 @@ export class CreateProgramQuestionDto {
   @IsNotEmpty()
   @IsOptional()
   public readonly editableInPortal: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  duplicateCheck: boolean;
 }
