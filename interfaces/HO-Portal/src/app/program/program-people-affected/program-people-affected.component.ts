@@ -1574,14 +1574,20 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   public getPaymentsLeftVisibleOptions(): TableFilterMultipleChoiceOption[] {
-    const otherLabels = {
-      '-2': 'No maximum',
-      '-1': '> 3 remaining',
+    const labelPrefix =
+      'page.program.program-people-affected.filter-btn.payments-left-option.';
+
+    const otherKeys = {
+      '-2': 'no-maximum',
+      '-1': 'more-than-three',
     };
 
     return this.PAYMENTS_LEFT_ORDER.map((value) => ({
       value,
-      label: value < 0 ? otherLabels[value] : `${value} remaining`,
+      label:
+        value < 0
+          ? this.translate.instant(`${labelPrefix}${otherKeys[value]}`)
+          : value + this.translate.instant(`${labelPrefix}zero-three`),
       count: this.getPaymentsLeftCount(value),
     })).filter((o) => o.count > 0);
   }
