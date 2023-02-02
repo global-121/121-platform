@@ -77,7 +77,6 @@ export class ProgramService {
       titlePortal: programEntity.titlePortal,
       titlePaApp: programEntity.titlePaApp,
       description: programEntity.description,
-      descCashType: programEntity.descCashType,
       startDate: programEntity.startDate,
       endDate: programEntity.endDate,
       currency: programEntity.currency,
@@ -93,9 +92,7 @@ export class ProgramService {
           };
         },
       ),
-      inclusionCalculationType: programEntity.inclusionCalculationType,
-      minimumScore: programEntity.minimumScore,
-      highestScoresX: programEntity.highestScoresX,
+      targetNrRegistrations: programEntity.targetNrRegistrations,
       tryWhatsAppFirst: programEntity.tryWhatsAppFirst,
       meetingDocuments: programEntity.meetingDocuments,
       notifications: programEntity.notifications,
