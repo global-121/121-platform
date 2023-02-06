@@ -120,6 +120,10 @@ export class ProgramService {
             pattern: programQuestion.pattern,
             phases: programQuestion.phases,
             editableInPortal: programQuestion.editableInPortal,
+            export: programQuestion.export,
+            shortLabel: programQuestion.shortLabel,
+            duplicateCheck: programQuestion.duplicateCheck,
+            placeholder: programQuestion.placeholder,
           };
         },
       ),
