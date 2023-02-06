@@ -1,0 +1,14 @@
+{
+  "url": "/program/1/registrationValidation",
+  "registration": {
+    "namePartnerOrganization": "ABC",
+    "preferredLanguage": "en",
+    "paymentAmountMultiplier": 1,
+    "nameFirst": "John",
+    "nameLast": "Smith",
+    "phoneNumber": 14155238886,
+    "fspName": "Intersolve-whatsapp",
+    "whatsappPhoneNumber": 14155238886,
+    "status": "registered"
+  }
+}
