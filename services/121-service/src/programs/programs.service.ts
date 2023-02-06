@@ -199,6 +199,8 @@ export class ProgramService {
     programData: CreateProgramDto,
     userId: number,
   ): Promise<ProgramEntity> {
+    let newProgram;
+
     this.validateProgram(programData);
 
     const program = new ProgramEntity();
@@ -228,43 +230,67 @@ export class ProgramService {
     program.languages = programData.languages;
     program.enableMaxPayments = programData.enableMaxPayments;
 
-    const savedProgram = await this.programRepository.save(program);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
 
-    savedProgram.programCustomAttributes = [];
-    for (const customAttribute of programData.programCustomAttributes) {
-      customAttribute['programId'] = savedProgram.id;
-      const customAttributeReturn =
-        await this.programCustomAttributeRepository.save(customAttribute);
-      savedProgram.programCustomAttributes.push(customAttributeReturn);
-    }
+    // Make sure to use these repositories in this transaction else save will be part of another transacion
+    // This can lead to duplication of data
+    const programRepository = queryRunner.manager.getRepository(ProgramEntity);
+    const programQuestionRepository = queryRunner.manager.getRepository(
+      ProgramQuestionEntity,
+    );
+    const programCustomAttributeRepository = queryRunner.manager.getRepository(
+      ProgramCustomAttributeEntity,
+    );
 
-    savedProgram.programQuestions = [];
-    for (const programQuestion of programData.programQuestions) {
-      programQuestion['programId'] = savedProgram.id;
-      const programQuestionReturn = await this.programQuestionRepository.save(
-        programQuestion,
-      );
-      savedProgram.programQuestions.push(programQuestionReturn);
-    }
+    try {
+      const savedProgram = await programRepository.save(program);
 
-    savedProgram.financialServiceProviders = [];
-    for (const fspItem of programData.financialServiceProviders) {
-      const fsp = await this.financialServiceProviderRepository.findOne({
-        where: { fsp: fspItem.fsp },
-      });
-      if (!fsp) {
-        const errors = `No fsp found with name ${fspItem.fsp}`;
-        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      savedProgram.programCustomAttributes = [];
+      for (const customAttribute of programData.programCustomAttributes) {
+        customAttribute['programId'] = savedProgram.id;
+        const customAttributeReturn =
+          await programCustomAttributeRepository.save(customAttribute);
+        savedProgram.programCustomAttributes.push(customAttributeReturn);
       }
-      savedProgram.financialServiceProviders.push(fsp);
-    }
 
-    await this.userService.assigAidworkerToProgram(savedProgram.id, userId, {
+      savedProgram.programQuestions = [];
+      for (const programQuestion of programData.programQuestions) {
+        programQuestion['programId'] = savedProgram.id;
+        const programQuestionReturn = await programQuestionRepository.save(
+          programQuestion,
+        );
+        savedProgram.programQuestions.push(programQuestionReturn);
+      }
+
+      savedProgram.financialServiceProviders = [];
+      for (const fspItem of programData.financialServiceProviders) {
+        const fsp = await this.financialServiceProviderRepository.findOne({
+          where: { fsp: fspItem.fsp },
+        });
+        if (!fsp) {
+          const errors = `Create program error: No fsp found with name ${fspItem.fsp}`;
+          queryRunner.rollbackTransaction();
+          throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+        }
+        savedProgram.financialServiceProviders.push(fsp);
+      }
+
+      newProgram = await programRepository.save(savedProgram);
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      console.log('Error creating new program ', err);
+      queryRunner.rollbackTransaction();
+      throw new HttpException(
+        'Error creating new program',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } finally {
+      queryRunner.release();
+    }
+    await this.userService.assigAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.ProgramAdmin],
     });
-
-    const newProgram = await this.programRepository.save(savedProgram);
-
     return newProgram;
   }
 
