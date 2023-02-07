@@ -1,3 +1,4 @@
+import { CreateProgramDto } from './../../../../../../services/121-service/src/programs/dto/create-program.dto';
 import programLVV from '../../../../../../services/121-service/seed-data/program/program-pilot-nl.json';
 
 describe("'Create program API endpoint", () => {
@@ -23,20 +24,19 @@ describe("'Create program API endpoint", () => {
         }).then(function (response) {
           const programLvvObj = JSON.parse(JSON.stringify(programLVV));
           const respObj = JSON.parse(JSON.stringify(response.body));
-
-          expect(respObj.ngo).to.be.equal(programLvvObj.ngo);
-          expect(respObj.aboutProgram).to.be.deep.equal(
-            programLvvObj.aboutProgram,
-          );
-          expect(respObj.programQuestions).to.have.lengthOf(
-            programLvvObj.programQuestions.length,
-          );
-          expect(respObj.fullnameNamingConvention).to.have.lengthOf(
-            programLvvObj.fullnameNamingConvention.length,
-          );
-          expect(respObj.programCustomAttributes).to.have.lengthOf(
-            programLvvObj.programCustomAttributes.length,
-          );
+          for (const key of Object.keys(programLVV)) {
+            if (
+              typeof programLVV[key] === 'number' ||
+              typeof programLVV[key] === 'string' ||
+              typeof programLVV[key] === 'boolean'
+            ) {
+              expect(programLVV[key]).to.be.equal(respObj[key]);
+            } else if (Array.isArray(programLVV[key])) {
+              expect(respObj[key]).to.have.lengthOf(programLvvObj[key].length);
+            } else {
+              expect(respObj[key]).to.be.deep.equal(programLvvObj[key]);
+            }
+          }
           expect(respObj.financialServiceProviders).to.be.deep.equal(
             programLvvObj.financialServiceProviders,
           );
