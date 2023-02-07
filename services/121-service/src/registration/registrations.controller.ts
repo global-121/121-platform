@@ -429,6 +429,12 @@ export class RegistrationsController {
     @Query('phonenumber') phonenumber: string,
     @User('id') userId: number,
   ): Promise<RegistrationResponse[]> {
+    if (typeof phonenumber !== 'string') {
+      throw new HttpException(
+        'phonenumber is not a string',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.registrationsService.searchRegistration(
       phonenumber,
       userId,
