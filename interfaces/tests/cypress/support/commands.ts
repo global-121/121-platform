@@ -3,16 +3,16 @@ const portalEn = require('../../../HO-Portal/src/assets/i18n/en.json');
 
 // Contains a list of custom Commands
 Cypress.Commands.add('setHoPortal', () => {
-  Cypress.config('baseUrl', Cypress.env('baseUrl-HO' as any));
+  Cypress.config('baseUrl', Cypress.env('baseUrl-HO'));
 });
 Cypress.Commands.add('setAwApp', () => {
-  Cypress.config('baseUrl', Cypress.env('baseUrl-AW' as any));
+  Cypress.config('baseUrl', Cypress.env('baseUrl-AW'));
 });
 Cypress.Commands.add('setPaApp', () => {
-  Cypress.config('baseUrl', Cypress.env('baseUrl-PA' as any));
+  Cypress.config('baseUrl', Cypress.env('baseUrl-PA'));
 });
 Cypress.Commands.add('setServer', () => {
-  Cypress.config('baseUrl', Cypress.env('baseUrl-server' as any));
+  Cypress.config('baseUrl', Cypress.env('baseUrl-server'));
 });
 
 Cypress.Commands.add('seedDatabase', () => {
