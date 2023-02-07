@@ -16,6 +16,9 @@ export class TableFilterComponent implements OnInit {
   public buttonLabel: string;
 
   @Input()
+  public description: string;
+
+  @Input()
   public type: string;
 
   @Input()
@@ -42,6 +45,7 @@ export class TableFilterComponent implements OnInit {
       componentProps: {
         type: this.type,
         filterProps: this.filterProps,
+        description: this.description,
       },
       event: e,
       cssClass: `table-filter-popover ${cssTypeClass[this.type]}`,

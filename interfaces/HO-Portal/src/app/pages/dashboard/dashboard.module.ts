@@ -6,7 +6,6 @@ import { IonicModule } from '@ionic/angular';
 import { MetricsStatesOverTimeComponent } from 'src/app/program/metrics-states-over-time/metrics-states-over-time.component';
 import { MetricsStatesComponent } from 'src/app/program/metrics-states/metrics-states.component';
 import { MetricsTotalsComponent } from 'src/app/program/metrics-totals/metrics-totals.component';
-import { MetricsComponent } from 'src/app/program/metrics/metrics.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { DashboardPage } from './dashboard.page';
 
@@ -27,7 +26,6 @@ const routes: Routes = [
   ],
   declarations: [
     DashboardPage,
-    MetricsComponent,
     MetricsStatesComponent,
     MetricsStatesOverTimeComponent,
     MetricsTotalsComponent,

@@ -3,15 +3,25 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Post,
+  Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Admin } from '../guards/admin.decorator';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { Attribute } from '../registration/enum/custom-data-attributes';
+import { SecretDto } from '../scripts/scripts.controller';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
 import { AdminAuthGuard } from './../guards/admin.guard';
@@ -37,10 +47,24 @@ export class ProgramController {
 
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiQuery({
+    name: 'formatCreateProgramDto',
+    required: false,
+    type: 'boolean',
+  })
   @ApiResponse({ status: 200, description: 'Return program by id.' })
   @Get(':programId')
-  public async findOne(@Param() params): Promise<ProgramEntity> {
-    return await this.programService.findOne(Number(params.programId));
+  public async findOne(
+    @Param() params,
+    @Query() queryParams,
+  ): Promise<ProgramEntity | CreateProgramDto> {
+    const formatCreateProgramDto =
+      queryParams.formatCreateProgramDto === 'true';
+    if (formatCreateProgramDto) {
+      return this.programService.getCreateProgramDto(params.programId);
+    } else {
+      return await this.programService.findOne(Number(params.programId));
+    }
   }
 
   @ApiOperation({ summary: 'Get published programs' })
@@ -72,8 +96,35 @@ export class ProgramController {
   @Post()
   public async create(
     @Body() programData: CreateProgramDto,
+    @User('id') userId: number,
   ): Promise<ProgramEntity> {
-    return this.programService.create(programData);
+    return this.programService.create(programData, userId);
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary:
+      'Delete program and all related data. ONLY USE THIS IF YOU KNOW WHAT YOU ARE DOING!',
+  })
+  @ApiResponse({
+    status: 202,
+    description: 'The program has been successfully deleted.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @Delete(':programId')
+  public async delete(
+    @Param() param,
+    @Body() body: SecretDto,
+    @Res() res,
+  ): Promise<void> {
+    if (body.secret !== process.env.RESET_SECRET) {
+      return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
+    }
+    await this.programService.deleteProgram(param.programId);
+    return res
+      .status(HttpStatus.ACCEPTED)
+      .send('The program has been successfully deleted.');
   }
 
   @Permissions(PermissionEnum.ProgramPhaseUPDATE)

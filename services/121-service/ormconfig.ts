@@ -15,7 +15,10 @@ export const ORMConfig: DataSourceOptions = {
   migrations: ['migration/*.ts'],
   dropSchema: false,
   synchronize: false,
-  ssl: {
-    ca: fs.readFileSync('cert/DigiCertGlobalRootCA.crt.pem').toString(),
-  },
+  ssl:
+    process.env.NODE_ENV === 'development'
+      ? null
+      : {
+          ca: fs.readFileSync('cert/DigiCertGlobalRootCA.crt.pem').toString(),
+        },
 };

@@ -97,20 +97,26 @@
         }}
       </ion-label>
 
-      <app-table-filter
-        [buttonLabel]="
-          'page.program.program-people-affected.filter-btn.btn-label.status'
-            | translate
-        "
-        [type]="tableFilterType.multipleChoice"
-        [optionsList]="getPaStatusesFilterOptions()"
-        [optionsSelectedByDefault]="tableFilter.paStatus.default"
-        (filter)="applyPaStatusFilter($event)"
-        [filterProps]="{
-          allOptions: getPaStatusesFilterOptions(),
-          currentSelection: tableFilter.paStatus.selected
-        }"
-      ></app-table-filter>
+      <ng-container *ngFor="let tableFilter of tableFilters">
+        <app-table-filter
+          *ngIf="showTableFilter(tableFilter.prop)"
+          [attr.data-cy]="'table-filter-' + tableFilter.prop"
+          [buttonLabel]="
+            'page.program.program-people-affected.filter-btn.btn-label.' +
+              tableFilter.prop | translate
+          "
+          [type]="tableFilter.type"
+          [description]="
+            'page.program.program-people-affected.filter-btn.' +
+              tableFilter.description | translate
+          "
+          (filter)="applyTableFilter(tableFilter.prop, $event)"
+          [filterProps]="{
+            allOptions: tableFilterState[tableFilter.prop]?.visible,
+            currentSelection: tableFilterState[tableFilter.prop]?.selected
+          }"
+        ></app-table-filter>
+      </ng-container>
 
       <ion-button
         (click)="exportTableView()"

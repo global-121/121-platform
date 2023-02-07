@@ -176,37 +176,16 @@
       },
       "program-details": {
         "section-title": "Program Details",
-        "all": "All details",
-        "id": "ID",
         "location": "Location",
         "titlePortal": "Title portal",
         "titlePaApp": "Title PA-app",
-        "ngo": "NGO",
-        "contactDetails": "Contact details",
         "startDate": "Start date",
         "endDate": "End date",
-        "currency": "Currency",
         "distributionFrequency": "Distribution frequency",
         "distributionDuration": "Distribution duration",
         "fixedTransferValue": "Transfer Value",
-        "paymentAmountMultiplierFormula": "Formula for transfer value multiplier",
-        "inclusionCalculationType": "Inclusion calculation type",
-        "minimumScore": "Minimum score needed",
-        "highestScoresX": "Top X highest scores included",
-        "meetingDocuments": "Meeting documents",
-        "notifications": "Notification messages",
-        "phoneNumberPlaceholder": "Notification-number example value",
-        "description": "Description: general",
-        "descCashType": "Description: Cash Type",
-        "published": "Published",
-        "phase": "Current program phase",
-        "created": "Program created at",
-        "updated": "Program last updated at",
-        "programQuestions": "Inclusion criteria",
         "aidworkerAssignments": "Assigned aidworkers",
-        "financialServiceProviders": "Financial Service-providers",
-        "validation": "Program includes validation",
-        "programCustomAttributes": "Program custom attributes"
+        "financialServiceProviders": "Financial Service-providers"
       },
       "program-payout": {
         "payment-nr": "Payment #{{number}}",
@@ -255,17 +234,19 @@
             "apply-btn": "Apply"
           },
           "btn-label": {
-            "status": "Status"
+            "paStatus": "Status",
+            "paymentsLeft": "Remaining payments"
           },
           "empty-selection-alert-message": "Please select at least one option",
-          "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected"
+          "multiple-choice-hidden-options": "Above list only shows a status if assigned to at least one Person Affected",
+          "remaining-payment-description": "Select to filter People Affected by payments remaining"
         },
         "last-message": {
           "no-message": "No messages yet",
           "message-status": "Last message:"
         },
         "max-payments": {
-          "left": "left"
+          "left": "remaining"
         },
         "column": {
           "select": "Select",

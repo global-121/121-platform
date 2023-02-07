@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { Program } from 'src/app/models/program.model';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { MetricsComponent } from './metrics.component';
 
@@ -22,7 +23,10 @@ describe('MetricsComponent', () => {
       declarations: [MetricsComponent, TestHostComponent],
       imports: [TranslateModule.forRoot()],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(TranslatableStringService)],
+      providers: [
+        provideMagicalMock(TranslatableStringService),
+        provideMagicalMock(ProgramsServiceApiService),
+      ],
     }).compileComponents();
   }));
 

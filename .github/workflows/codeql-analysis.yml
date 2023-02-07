@@ -4,6 +4,7 @@ name: "CodeQL"
 # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning
 
 on:
+  workflow_dispatch:
   push:
     branches:
     - 'release/*'
