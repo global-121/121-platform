@@ -358,7 +358,7 @@ export class UserService {
     if (user.programAssignments && user.programAssignments[0]) {
       for (const programAssignment of user.programAssignments) {
         const programRoles = programAssignment.roles.map((role) => role.role);
-        roles[`${programAssignment.program.id}`] = programRoles;
+        roles[`${programAssignment.programId}`] = programRoles;
       }
     }
 
