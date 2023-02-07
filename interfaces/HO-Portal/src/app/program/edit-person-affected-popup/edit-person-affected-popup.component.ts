@@ -154,8 +154,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       }
     }
 
-
-
     this.programsService
       .updatePaAttribute(
         this.programId,
