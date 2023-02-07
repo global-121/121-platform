@@ -24,25 +24,138 @@ on:
       - '!**.md'
 
 jobs:
+  build_interface_aw:
+    runs-on: ubuntu-latest
+    name: 'Build Interface: AW-App'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check build cache for AW-App
+        uses: actions/cache@v3
+        id: cache_build_interface_aw
+        with:
+          path: interfaces/AW-App
+          key: ${{ runner.os }}-interface-aw-${{ hashFiles('interfaces/AW-App') }}
+
+      - name: Use Node.js
+        if: steps.cache_build_interface_aw.outputs.cache-hit != 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+          cache-dependency-path: interfaces/AW-App/package-lock.json
+
+      - name: Build Angular app
+        if: steps.cache_build_interface_aw.outputs.cache-hit != 'true'
+        working-directory: ./interfaces/AW-App
+        env:
+          BROWSERSLIST_ENV: 'ci'
+          NG_URL_121_SERVICE_API: http://localhost:3000/api
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build:prod
+
+  build_interface_pa:
+    runs-on: ubuntu-latest
+    name: 'Build Interface: PA-App'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check build cache for PA-App
+        uses: actions/cache@v3
+        id: cache_build_interface_pa
+        with:
+          path: interfaces/PA-App
+          key: ${{ runner.os }}-interface-pa-${{ hashFiles('interfaces/PA-App') }}
+
+      - name: Use Node.js
+        if: steps.cache_build_interface_pa.outputs.cache-hit != 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+          cache-dependency-path: interfaces/PA-App/package-lock.json
+
+      - name: Build Angular app
+        if: steps.cache_build_interface_pa.outputs.cache-hit != 'true'
+        working-directory: ./interfaces/PA-App
+        env:
+          BROWSERSLIST_ENV: 'ci'
+          NG_URL_121_SERVICE_API: http://localhost:3000/api
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build:prod
+
+  build_interface_ho:
+    runs-on: ubuntu-latest
+    name: 'Build Interface: HO-Portal'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check build cache for HO-Portal
+        uses: actions/cache@v3
+        id: cache_build_interface_ho
+        with:
+          path: interfaces/HO-Portal
+          key: ${{ runner.os }}-interface-ho-${{ hashFiles('interfaces/HO-Portal') }}
+
+      - name: Use Node.js
+        if: steps.cache_build_interface_ho.outputs.cache-hit != 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+          cache-dependency-path: interfaces/HO-Portal/package-lock.json
+
+      - name: Build Angular app
+        if: steps.cache_build_interface_ho.outputs.cache-hit != 'true'
+        working-directory: ./interfaces/HO-Portal
+        env:
+          BROWSERSLIST_ENV: 'ci'
+          NG_URL_121_SERVICE_API: http://localhost:3000/api
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build:prod
+
   test:
+    needs:
+      - build_interface_aw
+      - build_interface_pa
+      - build_interface_ho
     name: Run Cypress Tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
+      - name: Check build cache for AW-App
+        uses: actions/cache@v3
         with:
-          node-version-file: '.node-version'
-          cache: 'npm'
-          cache-dependency-path: |
-            interfaces/HO-Portal/package-lock.json
-            interfaces/AW-App/package-lock.json
-            interfaces/PA-App/package-lock.json
+          path: interfaces/AW-App
+          key: ${{ runner.os }}-interface-aw-${{ hashFiles('interfaces/AW-App') }}
+
+      - name: Check build cache for PA-App
+        uses: actions/cache@v3
+        with:
+          path: interfaces/PA-App
+          key: ${{ runner.os }}-interface-pa-${{ hashFiles('interfaces/PA-App') }}
+
+      - name: Check build cache for HO-Portal
+        uses: actions/cache@v3
+        with:
+          path: interfaces/HO-Portal
+          key: ${{ runner.os }}-interface-ho-${{ hashFiles('interfaces/HO-Portal') }}
+
+      - name: Build services
+        uses: actions/cache@v3
+        id: cache_build_services
+        with:
+          path: services
+          key: ${{ runner.os }}-services-${{ hashFiles('services') }}
 
       - name: Create .env variables file
+        if: steps.cache_build_services.outputs.cache-hit != 'true'
         run: |
           /bin/sed -i '/^POSTGRES_HOST=/s/=.*/=121db/' ./services/.env.example
           /bin/sed -i '/^POSTGRES_USER=/s/=.*/=global121/' ./services/.env.example
@@ -61,26 +174,29 @@ jobs:
           /bin/sed -i '/^HIGH_THROTTLING_LIMIT=/s/=.*/=100/' ./services/.env.example
           cp ./services/.env.example services/.env
 
-      - name: Install interfaces
-        run: |
-          npm ci --no-audit --no-fund --prefix interfaces/AW-App/
-          npm ci --no-audit --no-fund --prefix interfaces/PA-App/
-          npm ci --no-audit --no-fund --prefix interfaces/HO-Portal/
+      - name: Build containers
+        if: steps.cache_build_services.outputs.cache-hit != 'true'
+        working-directory: ./services
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml build
 
-      - name: Install services
-        run: npm run install:services
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: 'interfaces/tests/.node-version'
+          cache: 'npm'
+          cache-dependency-path: interfaces/tests/package-lock.json
 
       - name: Run integration tests with Cypress
         # See documentation: https://github.com/cypress-io/github-action/#readme
         uses: cypress-io/github-action@v5
-        env:
-          BROWSERSLIST_ENV: 'ci'
         with:
           browser: chrome
           working-directory: ./interfaces/tests
           start: |
+            npx http-server ../AW-App/www/    --silent -c0 --port 8080 --proxy http://localhost:8080/?
+            npx http-server ../PA-App/www/    --silent -c0 --port 8008 --proxy http://localhost:8008/?
+            npx http-server ../HO-Portal/www/ --silent -c0 --port 8888 --proxy http://localhost:8888/?
             npm run start:services:ci
-            npm run start:interfaces -- --configuration=ci
           wait-on-timeout: 900
           wait-on: 'http://localhost:3000/api/health/health, http://localhost:8008/, http://localhost:8080/, http://localhost:8888/'
 
