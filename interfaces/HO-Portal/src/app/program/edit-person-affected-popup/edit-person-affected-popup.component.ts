@@ -115,6 +115,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   ): Promise<void> {
     let valueToStore;
 
+    valueToStore = value;
+
     if (isPaTableAttribute && !Array.isArray(value)) {
       valueToStore = String(value);
     }
