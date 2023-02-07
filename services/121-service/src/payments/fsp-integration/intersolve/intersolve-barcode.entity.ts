@@ -36,6 +36,7 @@ export class IntersolveBarcodeEntity extends Base121Entity {
   @Column({ nullable: true, default: null })
   public updatedLastRequestedBalance: Date;
 
+  @Index()
   @Column({ nullable: true, default: 0 })
   public reminderCount: number;
 
