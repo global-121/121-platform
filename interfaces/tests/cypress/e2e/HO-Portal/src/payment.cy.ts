@@ -274,8 +274,8 @@ describe("'Do Payment #1' bulk action", () => {
   };
 
   const includeAllRegistrations = (programId: number) => {
-    let arr = [];
-    let registrations = [];
+    const arr = [];
+    const registrations = [];
     cy.getAllPeopleAffected(programId).then((response) => {
       for (const pa of response.body) {
         arr.push(pa.referenceId);
