@@ -16,7 +16,7 @@ describe('Personal Page', () => {
       programPV.languages,
     );
     cy.fixture('pa-home').then((pa) => {
-      cy.visit(pa.portal);
+      cy.visit(pa.start);
       for (const l of languagesFromBothPrograms) {
         const languageString = paEn.personal['select-language'].language[l];
         cy.get('ion-radio-group').contains(languageString);
@@ -29,7 +29,7 @@ describe('Personal Page', () => {
       programPV.languages,
     );
     cy.fixture('pa-home').then((pa) => {
-      cy.visit(pa.portal);
+      cy.visit(pa.start);
       cy.get('ion-radio-group').contains('English');
       for (const l of languagesFromBothPrograms) {
         if (l !== 'en') {
@@ -66,7 +66,7 @@ describe('Personal Page', () => {
     cy.publishProgram(2);
     cy.setPaApp();
     cy.fixture('pa-home').then((pa) => {
-      cy.visit(pa.portal);
+      cy.visit(pa.start);
       cy.get('ion-radio-group').contains('English');
       for (const l of programLVV.languages) {
         // Languages not included in LVV but included in PV
