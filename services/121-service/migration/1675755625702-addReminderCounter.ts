@@ -5,7 +5,7 @@ export class addReminderCounter1675755625702 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "121-service"."intersolve_barcode" ADD "reminderCount" integer`,
+      `ALTER TABLE "121-service"."intersolve_barcode" ADD "reminderCount" integer DEFAULT 0`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration_status_change" DROP CONSTRAINT "FK_dde01a7a751285564545fe8ac50"`,

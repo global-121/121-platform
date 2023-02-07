@@ -36,7 +36,7 @@ export class IntersolveBarcodeEntity extends Base121Entity {
   @Column({ nullable: true, default: null })
   public updatedLastRequestedBalance: Date;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: 0 })
   public reminderCount: number;
 
   @OneToMany((_type) => ImageCodeExportVouchersEntity, (image) => image.barcode)
