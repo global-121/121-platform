@@ -80,6 +80,9 @@ export class CronjobService {
     const sixteenHoursAgo = new Date(Date.now() - sixteenHours);
     const programs = await this.programRepository.find();
     for (const program of programs) {
+      const intersolveBarcodeRepository = this.dataSource.getRepository(
+        IntersolveBarcodeEntity,
+      );
       // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
       const lastPayment = await this.transactionRepository
         .createQueryBuilder('transaction')
@@ -90,13 +93,14 @@ export class CronjobService {
         .getRawOne();
       const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
 
-      const unsentIntersolveBarcodes = await await this.dataSource
-        .getRepository(IntersolveBarcodeEntity)
+      const unsentIntersolveBarcodes = await intersolveBarcodeRepository
         .createQueryBuilder('barcode')
         .select([
+          'barcode.id as id',
           '"whatsappPhoneNumber"',
           'registration."referenceId" AS "referenceId"',
           'amount',
+          '"reminderCount"',
         ])
         .leftJoin('barcode.image', 'image')
         .leftJoin('image.registration', 'registration')
@@ -111,9 +115,10 @@ export class CronjobService {
         .andWhere('registration.programId = :programId', {
           programId: program.id,
         })
+        .andWhere('barcode."reminderCount" < 3')
         .getRawMany();
 
-      unsentIntersolveBarcodes.forEach(async (unsentIntersolveBarcode) => {
+      for (const unsentIntersolveBarcode of unsentIntersolveBarcodes) {
         const referenceId = unsentIntersolveBarcode.referenceId;
         const registration = await this.registrationRepository.findOne({
           where: { referenceId: referenceId },
@@ -142,7 +147,13 @@ export class CronjobService {
           null,
           MessageContentType.paymentReminder,
         );
-      });
+        const reminderBarcode = await intersolveBarcodeRepository.findOne({
+          where: { id: unsentIntersolveBarcode.id },
+        });
+
+        reminderBarcode.reminderCount += 1;
+        intersolveBarcodeRepository.save(reminderBarcode);
+      }
 
       console.log(
         `cronSendWhatsappReminders: ${unsentIntersolveBarcodes.length} unsent Intersolve barcodes for program: ${program.id}`,
