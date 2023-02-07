@@ -22,6 +22,7 @@ import {
   ImportResult,
   ImportStatus,
 } from '../dto/bulk-import.dto';
+import { AdditionalAttributes } from '../dto/update-attribute.dto';
 import {
   AnswerTypes,
   Attribute,
@@ -440,15 +441,30 @@ export class BulkImportService {
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
+    const languageMapping = this.createLanguageMapping(
+      program.languages as unknown as string[],
+    );
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
       }
       const importRecord = new BulkImportDto();
       importRecord.phoneNumber = row.phoneNumber;
-      importRecord.preferredLanguage = row.preferredLanguage
-        ? row.preferredLanguage
-        : LanguageEnum.en;
+      const langResult = this.checkAndUpdateLanguage(
+        row.preferredLanguage,
+        languageMapping,
+      );
+      if (langResult.error) {
+        const errorObj = {
+          lineNumber: i + 1,
+          column: AdditionalAttributes.preferredLanguage,
+          value: row.preferredLanguage,
+          error: langResult.error,
+        };
+        errors.push(errorObj);
+      } else {
+        importRecord.preferredLanguage = langResult.value;
+      }
       if (!program.paymentAmountMultiplierFormula) {
         importRecord.paymentAmountMultiplier = row.paymentAmountMultiplier
           ? +row.paymentAmountMultiplier
@@ -553,12 +569,29 @@ export class BulkImportService {
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
+    const languageMapping = this.createLanguageMapping(
+      program.languages as unknown as string[],
+    );
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
       }
       const importRecord = new ImportRegistrationsDto();
-      importRecord.preferredLanguage = row.preferredLanguage;
+      const langResult = this.checkAndUpdateLanguage(
+        row.preferredLanguage,
+        languageMapping,
+      );
+      if (langResult.error) {
+        const errorObj = {
+          lineNumber: i + 1,
+          column: AdditionalAttributes.preferredLanguage,
+          value: row.preferredLanguage,
+          error: langResult.error,
+        };
+        errors.push(errorObj);
+      } else {
+        importRecord.preferredLanguage = langResult.value;
+      }
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;
       if (!program.paymentAmountMultiplierFormula) {
@@ -615,5 +648,51 @@ export class BulkImportService {
       validatatedArray.push(importRecord);
     }
     return validatatedArray;
+  }
+
+  private createLanguageMapping(programLanguages: string[]): object {
+    const languageNamesApi = new Intl.DisplayNames(['en'], {
+      type: 'language',
+    });
+    const mapping = {};
+    for (const languageAbbr of programLanguages) {
+      const fullNameLanguage = languageNamesApi.of(
+        languageAbbr.substring(0, 2),
+      );
+      const cleanedFullNameLanguage = fullNameLanguage.trim().toLowerCase();
+      mapping[cleanedFullNameLanguage] = languageAbbr;
+    }
+    return mapping;
+  }
+
+  private checkAndUpdateLanguage(
+    inPreferredLanguage: string,
+    allowedLanguagesProgram: object,
+  ): {
+    error: any;
+    value: LanguageEnum;
+  } {
+    const result = { error: null, value: null };
+    const cleanedPreferredLanguage =
+      typeof inPreferredLanguage === 'string'
+        ? inPreferredLanguage.trim().toLowerCase()
+        : inPreferredLanguage;
+    /// If preferredLanguage column does not exist or has no value set language to English
+    if (!cleanedPreferredLanguage) {
+      result.value = LanguageEnum.en;
+    } else if (
+      Object.keys(allowedLanguagesProgram).includes(cleanedPreferredLanguage)
+    ) {
+      result.value = allowedLanguagesProgram[cleanedPreferredLanguage];
+    } else if (
+      Object.values(allowedLanguagesProgram).includes(cleanedPreferredLanguage)
+    ) {
+      result.value = cleanedPreferredLanguage;
+    } else {
+      result.error = `Language error: Allowed values of this program for preferredLanguage: ${Object.values(
+        allowedLanguagesProgram,
+      ).join(', ')}, ${Object.keys(allowedLanguagesProgram).join(', ')}`;
+    }
+    return result;
   }
 }
