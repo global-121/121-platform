@@ -667,7 +667,7 @@ export class BulkImportService {
 
   private checkAndUpdateLanguage(
     inPreferredLanguage: string,
-    allowedLanguagesProgram: object,
+    programLanguageMapping: object,
   ): {
     error: any;
     value: LanguageEnum;
@@ -681,17 +681,23 @@ export class BulkImportService {
     if (!cleanedPreferredLanguage) {
       result.value = LanguageEnum.en;
     } else if (
-      Object.keys(allowedLanguagesProgram).includes(cleanedPreferredLanguage)
+      Object.keys(programLanguageMapping).includes(cleanedPreferredLanguage)
     ) {
-      result.value = allowedLanguagesProgram[cleanedPreferredLanguage];
+      result.value = programLanguageMapping[cleanedPreferredLanguage];
     } else if (
-      Object.values(allowedLanguagesProgram).includes(cleanedPreferredLanguage)
+      Object.values(programLanguageMapping).some(
+        (x) => x.toLowerCase() == cleanedPreferredLanguage.toLowerCase(),
+      )
     ) {
-      result.value = cleanedPreferredLanguage;
+      for (const value of Object.values(programLanguageMapping)) {
+        if (value.toLowerCase() === cleanedPreferredLanguage) {
+          result.value = value;
+        }
+      }
     } else {
       result.error = `Language error: Allowed values of this program for preferredLanguage: ${Object.values(
-        allowedLanguagesProgram,
-      ).join(', ')}, ${Object.keys(allowedLanguagesProgram).join(', ')}`;
+        programLanguageMapping,
+      ).join(', ')}, ${Object.keys(programLanguageMapping).join(', ')}`;
     }
     return result;
   }
