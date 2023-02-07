@@ -446,6 +446,10 @@ This follows the same process as a regular release + deployment. With some small
 
 ## Deployment
 
+### Database
+
+If you deploy the 121-platform to a server for the first time it is recommended to setup a seperate Posgres database server. The connection to this database can be made by editing the `POSTGRES_*` variables in `services/.env`.
+
 ### To "test" environment
 
 - Merged PR's to the branch `master` are automatically deployed to the test-server. (via [webhook](tools/webhook.service), see: [/tools#GitHub-webhook](tools/README.md#github-webhook))
