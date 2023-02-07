@@ -90,9 +90,7 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "app:build:production",
-              "commonChunk": true,
-              "vendorChunk": true
+              "browserTarget": "app:build:production"
             },
             "ci": {
               "browserTarget": "app:build:ci",
@@ -125,13 +123,6 @@
               "watch": false,
               "browsers": "ChromeHeadless"
             }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**"]
           }
         }
       }
