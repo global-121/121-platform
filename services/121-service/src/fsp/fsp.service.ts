@@ -23,6 +23,16 @@ export class FspService {
     return fsp;
   }
 
+  public async getAllFsps(): Promise<FinancialServiceProviderEntity[]> {
+    const fsps = await this.financialServiceProviderRepository.find({
+      relations: ['questions'],
+    });
+    for (const fsp of fsps) {
+      fsp.editableAttributes = await this.getPaEditableAttributesFsp(fsp.id);
+    }
+    return fsps;
+  }
+
   private async getPaEditableAttributesFsp(fspId): Promise<Attribute[]> {
     return (
       await this.fspAttributeRepository.find({

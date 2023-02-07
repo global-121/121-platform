@@ -5,7 +5,7 @@ import {
   IsBoolean,
   IsDateString,
   IsDefined,
-  IsIn,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -13,18 +13,42 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
+import { FspName } from '../../fsp/financial-service-provider.entity';
+import { ProgramPhase } from '../../shared/enum/program-phase.model';
 import {
   CreateProgramCustomAttributeDto,
   CustomAttributeType,
 } from './create-program-custom-attribute.dto';
 import { CreateProgramQuestionDto } from './create-program-question.dto';
-import { SetRelationsDto } from './set-relations.dto';
+
+export class SetFspDto {
+  @ApiProperty()
+  @IsEnum(FspName)
+  fsp: FspName;
+}
 
 export class CreateProgramDto {
-  @ApiProperty()
+  @ApiProperty({ example: false })
+  @IsBoolean()
+  public readonly published: boolean;
+
+  @ApiProperty({ example: false })
+  @IsBoolean()
+  public readonly validation: boolean;
+
+  @ApiProperty({ example: ProgramPhase.design })
+  @IsEnum(ProgramPhase)
+  public readonly phase: ProgramPhase;
+
+  @ApiProperty({ example: 'Nederland' })
   @IsNotEmpty()
   @IsString()
   public readonly location: string;
+
+  @ApiProperty({ example: 'NLRC' })
+  @IsNotEmpty()
+  @IsString()
+  public readonly ngo: string;
 
   @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
@@ -34,10 +58,9 @@ export class CreateProgramDto {
   @IsNotEmpty()
   public readonly titlePaApp: JSON;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  public readonly ngo: string;
+  @ApiProperty({ example: { en: 'description' } })
+  @IsOptional()
+  public readonly description: JSON;
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
@@ -57,11 +80,11 @@ export class CreateProgramDto {
   })
   public readonly currency: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'week', enum: ['week', 'month'] })
   @IsString()
   public readonly distributionFrequency: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 10 })
   @IsNumber()
   public readonly distributionDuration: number;
 
@@ -76,34 +99,27 @@ export class CreateProgramDto {
   @ApiProperty({
     example: [
       {
-        id: 1,
+        fsp: 'Intersolve-whatsapp',
       },
       {
-        id: 2,
+        fsp: 'Intersolve-no-whatsapp',
       },
     ],
+    description: 'Use the GET /fsp endpoint to find valid fspNames.',
   })
   @IsArray()
   @ValidateNested()
   @IsDefined()
-  @Type(() => SetRelationsDto)
-  public readonly financialServiceProviders: SetRelationsDto[];
+  @Type(() => SetFspDto)
+  public readonly financialServiceProviders: SetFspDto[];
 
-  @ApiProperty({ example: 'minimumScore' })
-  @IsIn(['minimumScore', 'highestScoresX'])
-  public readonly inclusionCalculationType: string;
-
-  @ApiProperty()
+  @ApiProperty({ example: 250 })
   @IsNumber()
-  public readonly minimumScore: number;
+  public readonly targetNrRegistrations: number;
 
-  @ApiProperty()
-  @IsNumber()
-  public readonly highestScoresX: number;
-
-  @ApiProperty()
+  @ApiProperty({ example: true })
   @IsBoolean()
-  public readonly validation: boolean;
+  public readonly tryWhatsAppFirst: boolean;
 
   @ApiProperty({
     example: { en: 'Identity card;Health Insurance;Proof of children' },
@@ -113,13 +129,10 @@ export class CreateProgramDto {
   @ApiProperty({
     example: {
       en: {
-        included: 'You have been included in this program.',
-        rejected:
-          'Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us.',
+        registered: 'You have been successfully registered for the program.',
       },
       nl: {
-        included: 'Je zit wel in het programma',
-        rejected: 'Je zit niet in het programma',
+        included: 'Je bent succesvol geregistreerd voor het programma.',
       },
     },
   })
@@ -134,10 +147,26 @@ export class CreateProgramDto {
       {
         name: 'nameParterOrganization',
         type: CustomAttributeType.text,
+        label: { en: 'Name partner organization' },
+        export: [
+          'all-people-affected',
+          'included',
+          'selected-for-validation',
+          'payment',
+        ],
+        phases: ['registrationValidation', 'inclusion', 'payment'],
       },
       {
         name: 'exampleBoolean',
         type: CustomAttributeType.boolean,
+        label: { en: 'Example boolean' },
+        export: [
+          'all-people-affected',
+          'included',
+          'selected-for-validation',
+          'payment',
+        ],
+        phases: ['registrationValidation', 'inclusion', 'payment'],
       },
     ],
   })
@@ -150,17 +179,38 @@ export class CreateProgramDto {
   @ApiProperty({
     example: [
       {
-        name: 'id_number',
+        name: 'nameFirst',
         label: {
-          en: 'What is your id number?',
+          en: 'What is your first name?',
         },
-        answerType: 'numeric',
+        answerType: 'text',
         questionType: 'standard',
         options: null,
         persistence: true,
-        editableInPortal: false,
-        phases: [],
+        export: ['all-people-affected', 'included', 'selected-for-validation'],
         scoring: {},
+        phases: [],
+        editableInPortal: false,
+        shortLabel: {
+          en: 'First Name',
+        },
+      },
+      {
+        name: 'nameLast',
+        label: {
+          en: 'What is your last name?',
+        },
+        answerType: 'text',
+        questionType: 'standard',
+        options: null,
+        persistence: true,
+        export: ['all-people-affected', 'included', 'selected-for-validation'],
+        scoring: {},
+        phases: [],
+        editableInPortal: false,
+        shortLabel: {
+          en: 'Last Name',
+        },
       },
       {
         name: 'nr_of_children',
@@ -185,28 +235,28 @@ export class CreateProgramDto {
         },
         answerType: 'dropdown',
         questionType: 'standard',
-        options: {
-          options: [
-            {
-              id: 0,
-              option: 'steel',
-              name: {
-                en: 'steel',
-              },
+        options: [
+          {
+            id: 0,
+            option: 'steel',
+            label: {
+              en: 'Steel',
             },
-            {
-              id: 1,
-              option: 'tiles',
-              name: {
-                en: 'tiles',
-              },
+          },
+          {
+            id: 1,
+            option: 'tiles',
+            label: {
+              en: 'Tiles',
             },
-          ],
-        },
+          },
+        ],
         scoring: {
           '0': 3,
           '1': 6,
         },
+        phases: [],
+        editableInPortal: true,
       },
     ],
   })
@@ -216,11 +266,22 @@ export class CreateProgramDto {
   @Type(() => CreateProgramQuestionDto)
   public readonly programQuestions: CreateProgramQuestionDto[];
 
-  @ApiProperty({ example: { en: 'description' } })
-  @IsOptional()
-  public readonly description: JSON;
+  @ApiProperty({ example: { en: 'about program' } })
+  @IsNotEmpty()
+  public readonly aboutProgram: JSON;
 
-  @ApiProperty({ example: { en: 'descCashType' } })
-  @IsOptional()
-  public readonly descCashType: JSON;
+  @ApiProperty({
+    example: ['nameFirst', 'nameLast'],
+    description: 'Should be array of name-related program-questions.',
+  })
+  @IsArray()
+  public readonly fullnameNamingConvention: JSON;
+
+  @ApiProperty({ example: ['en', 'nl'] })
+  @IsArray()
+  public readonly languages: JSON;
+
+  @ApiProperty({ example: true })
+  @IsBoolean()
+  public readonly enableMaxPayments: boolean;
 }

@@ -39,6 +39,7 @@ import { ProgramService } from './programs.service';
     FspModule,
     HttpModule,
     LookupModule,
+    UserModule,
   ],
   providers: [ProgramService],
   controllers: [ProgramController],

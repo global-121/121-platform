@@ -14,11 +14,6 @@
   "description": {
     "en": ""
   },
-  "descCashType": {
-    "en": "Unconditional multi-purpose",
-    "es": "Multipropósito incondicional",
-    "fr": "Inconditionnel polyvalent"
-  },
   "startDate": "2021-01-11T12:00:00Z",
   "endDate": "2022-12-31T12:00:00Z",
   "currency": "EUR",
@@ -33,9 +28,7 @@
       "fsp": "Intersolve-no-whatsapp"
     }
   ],
-  "inclusionCalculationType": "highestScoresX",
-  "minimumScore": 0,
-  "highestScoresX": 250,
+  "targetNrRegistrations": 250,
   "tryWhatsAppFirst": true,
   "meetingDocuments": {
     "en": ""
@@ -128,6 +121,7 @@
       },
       "answerType": "text",
       "questionType": "standard",
+      "pattern": null,
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
@@ -151,6 +145,7 @@
       },
       "answerType": "text",
       "questionType": "standard",
+      "pattern": null,
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
@@ -177,6 +172,7 @@
       },
       "answerType": "tel",
       "questionType": "standard",
+      "pattern": null,
       "options": null,
       "persistence": true,
       "export": [],
