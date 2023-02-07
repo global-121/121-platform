@@ -25,7 +25,7 @@
     "fix:syntax": "npm run lint:code -- --fix && npm run lint:syntax -- --write"
   },
   "dependencies": {
-    "@typescript-eslint/parser": "^5.49.0",
+    "@typescript-eslint/parser": "^5.51.0",
     "cy-verify-downloads": "^0.1.11",
     "cypress": "^12.4.1",
     "dotenv": "^16.0.3",
