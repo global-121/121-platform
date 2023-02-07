@@ -115,6 +115,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   ): Promise<void> {
     let valueToStore;
 
+    valueToStore = value;
+
     if (isPaTableAttribute && !Array.isArray(value)) {
       valueToStore = String(value);
     }
@@ -127,6 +129,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       }
 
       valueToStore = Number(value);
+    }
+
+    if (attribute === PersonDefaultAttributes.phoneNumber) {
+      valueToStore = value;
     }
 
     if (attribute === PersonDefaultAttributes.maxPayments) {

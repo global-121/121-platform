@@ -31,9 +31,11 @@ Cypress.Commands.add('seedDatabase', () => {
   });
 });
 
-Cypress.Commands.add('loginApi', () => {
+Cypress.Commands.add('loginApi', (admin?) => {
+  const fixture = admin ? 'admin' : 'portal-login';
   cy.setServer();
-  cy.fixture('portal-login').then((credentials) => {
+  cy.fixture(fixture).then((credentials) => {
+    console.log('credentials: ', credentials);
     cy.setServer();
     cy.request({
       method: 'POST',
@@ -204,7 +206,7 @@ declare namespace Cypress {
       data?: any,
     ): Cypress.Chainable<Cypress.Response<any>>;
     importRegistrationsCsv(programId: number, fileName: string): void;
-    loginApi(): void;
+    loginApi(admin?: boolean): void;
     loginPortal(): void;
     seedDatabase(): void;
     setAwApp(): void;
