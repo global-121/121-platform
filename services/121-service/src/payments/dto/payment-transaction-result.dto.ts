@@ -1,5 +1,5 @@
 import { StatusEnum } from 'src/shared/enum/status.enum';
-import { FspName } from "../../fsp/enum/fsp-name.enum";
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 
 export class FspTransactionResultDto {
   public fspName: FspName;

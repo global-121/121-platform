@@ -1,4 +1,5 @@
 import { ProgramPhase } from '../../../../../../services/121-service/src/shared/enum/program-phase.model';
+import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 
 describe('Edit person affect pop-up', () => {
   beforeEach(() => {
@@ -27,7 +28,10 @@ describe('Edit person affect pop-up', () => {
       });
 
       cy.get('app-update-fsp').click();
-      cy.contains('.select-interface-option', 'Intersolve-no-whatsapp').click();
+      cy.contains(
+        '.select-interface-option',
+        FspName.intersolveNoWhatsapp,
+      ).click();
       clickSaveAndConfirm('Financial Service Provider');
     });
   });
