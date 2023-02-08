@@ -38,6 +38,7 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
 export enum FspName {
   intersolve = 'Intersolve-whatsapp',
   intersolveNoWhatsapp = 'Intersolve-no-whatsapp',
+  intersolveVisa = 'Intersolve-visa',
   africasTalking = 'Africas-talking',
   belcash = 'BelCash',
   vodacash = 'VodaCash',

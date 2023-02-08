@@ -26,6 +26,9 @@
     },
     {
       "fsp": "Intersolve-no-whatsapp"
+    },
+    {
+      "fsp": "Intersolve-visa"
     }
   ],
   "targetNrRegistrations": 10000,

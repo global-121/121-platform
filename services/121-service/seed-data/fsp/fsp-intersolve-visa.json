@@ -1,0 +1,8 @@
+{
+  "fsp": "Intersolve-visa",
+  "integrationType": "api",
+  "fspDisplayName": {
+    "en": "Visa V-Pay"
+  },
+  "notifyOnTransaction": true
+}
