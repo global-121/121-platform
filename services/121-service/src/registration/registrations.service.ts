@@ -8,6 +8,7 @@ import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { MessageContentType } from '../notifications/message-type.enum';
+import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
@@ -20,9 +21,7 @@ import { ProgramService } from '../programs/programs.service';
 import { PermissionEnum } from '../user/permission.enum';
 import { UserEntity } from '../user/user.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
-import { SmsService } from './../notifications/sms/sms.service';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
-import { WhatsappService } from './../notifications/whatsapp/whatsapp.service';
 import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
@@ -83,12 +82,9 @@ export class RegistrationsService {
   @InjectRepository(IntersolveBarcodeEntity)
   private readonly intersolveBarcodeRepo: Repository<IntersolveBarcodeEntity>;
 
-  private readonly fallbackLanguage = 'en';
-
   public constructor(
     private readonly lookupService: LookupService,
-    private readonly smsService: SmsService,
-    private readonly whatsappService: WhatsappService,
+    private readonly messageService: MessageService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly bulkImportService: BulkImportService,
     private readonly programService: ProgramService,
@@ -559,7 +555,7 @@ export class RegistrationsService {
 
     this.inclusionScoreService.calculateInclusionScore(referenceId);
 
-    this.sendTextMessage(
+    this.messageService.sendTextMessage(
       registration,
       registration.program.id,
       null,
@@ -1261,7 +1257,7 @@ export class RegistrationsService {
             registrationStatus === RegistrationStatusEnum.invited
               ? program.tryWhatsAppFirst
               : false;
-          this.sendTextMessage(
+          this.messageService.sendTextMessage(
             updatedRegistration,
             programId,
             message,
@@ -1274,108 +1270,6 @@ export class RegistrationsService {
     } else {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-  }
-
-  private async sendTextMessage(
-    registration: RegistrationEntity,
-    programId: number,
-    message?: string,
-    key?: string,
-    tryWhatsApp = false,
-    messageContentType?: MessageContentType,
-  ): Promise<void> {
-    if (!message && !key) {
-      throw new HttpException(
-        'A message or a key should be supplied.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    try {
-      const whatsappNumber = await registration.getRegistrationDataValueByName(
-        CustomDataAttributes.whatsappPhoneNumber,
-      );
-
-      const messageText = message
-        ? message
-        : await this.getNotificationText(
-            registration.preferredLanguage,
-            key,
-            programId,
-          );
-      if (whatsappNumber) {
-        this.whatsappService.queueMessageSendTemplate(
-          messageText,
-          whatsappNumber,
-          null,
-          null,
-          registration.id,
-          messageContentType,
-        );
-      } else if (tryWhatsApp && registration.phoneNumber) {
-        this.tryWhatsapp(registration, messageText, messageContentType);
-      } else if (registration.phoneNumber) {
-        this.smsService.sendSms(
-          messageText,
-          registration.phoneNumber,
-          registration.id,
-          messageContentType,
-        );
-      } else {
-        throw new HttpException(
-          'A recipientPhoneNr should be supplied.',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    } catch (error) {
-      console.log('error: ', error);
-      throw error;
-    }
-  }
-
-  private async tryWhatsapp(
-    registration: RegistrationEntity,
-    messageText,
-    messageContentType?: MessageContentType,
-  ): Promise<void> {
-    this.whatsappService
-      .queueMessageSendTemplate(
-        messageText,
-        registration.phoneNumber,
-        null,
-        null,
-        registration.id,
-        messageContentType,
-      )
-      .then((result) => {
-        // Store the sid of a whatsapp message of which we do not know if the receiver registered on whatsapp
-        const tryWhatsapp = {
-          sid: result,
-          registration,
-        };
-        this.tryWhatsappRepository.save(tryWhatsapp);
-      });
-  }
-
-  public async getNotificationText(
-    language: string,
-    key: string,
-    programId: number,
-  ): Promise<string> {
-    const program = await this.dataSource
-      .getRepository(ProgramEntity)
-      .findOneBy({
-        id: programId,
-      });
-    const fallbackNotifications = program.notifications[this.fallbackLanguage];
-    let notifications = fallbackNotifications;
-
-    if (program.notifications[language]) {
-      notifications = program.notifications[language];
-    }
-    if (notifications[key]) {
-      return notifications[key];
-    }
-    return fallbackNotifications[key] ? fallbackNotifications[key] : '';
   }
 
   public async searchRegistration(
@@ -1843,7 +1737,7 @@ export class RegistrationsService {
       validRegistrations.push(registration);
     }
     for (const validRegistration of validRegistrations) {
-      this.sendTextMessage(
+      this.messageService.sendTextMessage(
         validRegistration,
         validRegistration.program.id,
         message,

@@ -7,10 +7,9 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspModule } from '../fsp/fsp.module';
 import { LookupModule } from '../notifications/lookup/lookup.module';
-import { SmsModule } from '../notifications/sms/sms.module';
+import { MessageModule } from '../notifications/message.module';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
-import { WhatsappModule } from '../notifications/whatsapp/whatsapp.module';
 import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
@@ -54,11 +53,12 @@ import { InclusionScoreService } from './services/inclusion-score.service';
     UserModule,
     HttpModule,
     LookupModule,
-    SmsModule,
+    // SmsModule,
     ActionModule,
     ProgramModule,
     FspModule,
-    WhatsappModule,
+    MessageModule,
+    // WhatsappModule,
   ],
   providers: [RegistrationsService, BulkImportService, InclusionScoreService],
   controllers: [RegistrationsController],

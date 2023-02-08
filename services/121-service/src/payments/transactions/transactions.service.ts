@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { MessageContentType } from '../../notifications/message-type.enum';
+import { MessageService } from '../../notifications/message.service';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../../registration/registration.entity';
+import { StatusEnum } from '../../shared/enum/status.enum';
 import { PaTransactionResultDto } from '../dto/payment-transaction-result.dto';
 import {
   GetTransactionDto,
@@ -22,6 +25,11 @@ export class TransactionsService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
+
+  public constructor(
+    @Inject(forwardRef(() => MessageService))
+    private readonly messageService: MessageService,
+  ) {}
 
   public async getTransactions(
     programId: number,
@@ -178,8 +186,23 @@ export class TransactionsService {
     transaction.transactionStep = transactionStep || 1;
 
     await this.transactionRepository.save(transaction);
+
     if (program.enableMaxPayments && registration.maxPayments) {
       await this.checkAndUpdateMaxPaymentRegistration(registration);
+    }
+
+    if (
+      transactionResponse.status === StatusEnum.success &&
+      fsp.notifyOnTransaction
+    ) {
+      await this.messageService.sendTextMessage(
+        registration,
+        program.id,
+        'test', // here could go transactionResopnse.customData['messageText'] that would be filled from intersolve-visa.service.ts
+        null,
+        false,
+        MessageContentType.payment,
+      );
     }
   }
 
