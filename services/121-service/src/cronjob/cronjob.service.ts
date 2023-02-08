@@ -143,8 +143,6 @@ export class CronjobService {
           IntersolvePayoutStatus.InitialMessage,
           null,
           registration.id,
-          null,
-          null,
           MessageContentType.paymentReminder,
         );
         const reminderBarcode = await intersolveBarcodeRepository.findOne({
