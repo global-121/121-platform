@@ -74,11 +74,11 @@ Cypress.Commands.add('publishProgram', (programId: number) => {
 
 Cypress.Commands.add('loginPortal', () => {
   cy.setHoPortal();
-  cy.fixture('portal-login').then((login) => {
+  cy.fixture('portal-login').then((fixture) => {
     cy.setHoPortal();
-    cy.visit(login.portal);
-    cy.get('input[name="email"]').type(login.username);
-    cy.get('input[name="password"]').type(login.password);
+    cy.visit(fixture.loginPath);
+    cy.get('input[name="email"]').type(fixture.username);
+    cy.get('input[name="password"]').type(fixture.password);
     cy.get('*[type="submit"]').click();
   });
 });

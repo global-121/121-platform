@@ -37,20 +37,19 @@
             color="warning"
             [ngSwitch]="errorStatusCode"
           >
-            <ion-text *ngSwitchCase="401"
-              ><small
-                ><strong
-                  >{{ 'page.login.form.error-messages.401'|translate }}</strong
-                ></small
-              ></ion-text
-            >
-            <ion-text *ngSwitchCase="500"
-              ><small
-                ><strong
-                  >{{ 'page.login.form.error-messages.500'|translate }}</strong
-                ></small
-              ></ion-text
-            >
+            <small>
+              <strong>
+                <ion-text *ngSwitchCase="401">
+                  {{ 'page.login.form.error-messages.401'|translate }}
+                </ion-text>
+                <ion-text *ngSwitchCase="500">
+                  {{ 'page.login.form.error-messages.500'|translate }}
+                </ion-text>
+                <ion-text *ngSwitchDefault>
+                  {{ 'common.unknown-error'|translate }}
+                </ion-text>
+              </strong>
+            </small>
           </ng-container>
         </ion-item>
         <div class="ion-padding auth-form-container">
@@ -59,6 +58,7 @@
             #loginForm="ngForm"
             (ngSubmit)="doLogin()"
             (keyup.enter)="doLogin()"
+            data-cy="login-form"
           >
             <div class="input-item auth-item ion-margin-bottom">
               <label
