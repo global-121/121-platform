@@ -4,7 +4,7 @@ import { In, Repository } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionService } from '../actions/action.service';
 import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
-import { FspName } from '../fsp/financial-service-provider.entity';
+import { FspName } from "../fsp/enum/fsp-name.enum";
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';

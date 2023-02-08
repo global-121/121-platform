@@ -27,7 +27,7 @@ import {
   TwilioStatusCallbackDto,
 } from '../twilio.dto';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
-import { FspName } from './../../fsp/financial-service-provider.entity';
+import { FspName } from "../../fsp/enum/fsp-name.enum";
 import { SmsService } from './../sms/sms.service';
 import { TryWhatsappEntity } from './try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';

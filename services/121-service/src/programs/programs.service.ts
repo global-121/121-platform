@@ -10,7 +10,7 @@ import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
-import { FspName } from './../fsp/financial-service-provider.entity';
+import { FspName } from "../fsp/enum/fsp-name.enum";
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';

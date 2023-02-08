@@ -1,4 +1,4 @@
-import { FspName } from '../../fsp/financial-service-provider.entity';
+import { FspName } from "../../fsp/enum/fsp-name.enum";
 
 export class PaPaymentDataDto {
   public referenceId: string;
