@@ -4,5 +4,6 @@
   "fspDisplayName": {
     "en": "Visa V-Pay"
   },
-  "notifyOnTransaction": true
+  "notifyOnTransaction": true,
+  "questions": []
 }

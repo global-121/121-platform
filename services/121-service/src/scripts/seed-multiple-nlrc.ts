@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-no-whatsapp.json';
+import fspIntersolveVisa from '../../seed-data/fsp/fsp-intersolve-visa.json';
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
 import instanceLVV from '../../seed-data/instance/instance-pilot-nl.json';
 import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
@@ -23,6 +24,7 @@ export class SeedMultipleNLRC implements InterfaceScript {
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
     await this.seedHelper.addFsp(fspIntersolveNoWhatsapp);
+    await this.seedHelper.addFsp(fspIntersolveVisa);
 
     // ************************
     // ***** Program LVV *****
