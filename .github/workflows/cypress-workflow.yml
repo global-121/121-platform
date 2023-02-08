@@ -191,6 +191,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           browser: chrome
+          config: 'video=false,screenshotOnRunFailure=false'
           working-directory: ./interfaces/tests
           start: |
             npx http-server ../AW-App/www/    --silent -c0 --port 8080 --proxy http://localhost:8080/?
