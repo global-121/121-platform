@@ -186,6 +186,10 @@ jobs:
           cache: 'npm'
           cache-dependency-path: interfaces/tests/package-lock.json
 
+      - name: Prepare test environment
+        run: |
+          npm install http-server --global --no-save --no-audit --no-fund
+
       - name: Run integration tests with Cypress
         # See documentation: https://github.com/cypress-io/github-action/#readme
         uses: cypress-io/github-action@v5
