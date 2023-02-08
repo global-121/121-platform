@@ -60,6 +60,12 @@
       *ngIf="program"
       class="ion-align-items-center"
     >
+      <ion-button
+        class="ion-padding-end"
+        (click)="refreshData()"
+      >
+        <ion-icon name="refresh"></ion-icon>
+      </ion-button>
       <ion-input
         [placeholder]="
           'page.program.program-people-affected.filter-placeholder' | translate

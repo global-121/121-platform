@@ -32,6 +32,7 @@ Feature: Claim digital vouchers
     Then a reminder is send out the next day at noon
     And the same scenarios as above are followed
     And a PA without WhatsApp should not get a reminder
+    And a PA should not be reminded more than 3 times
 
   Scenario: PA claims digital voucher with other programs that have more payments
     Given there is another program that has 3+ more payments
