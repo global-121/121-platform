@@ -1,0 +1,5 @@
+namePartnerOrganization,preferredLanguage,paymentAmountMultiplier,maxPayments,phoneNumber
+ABC,fr,1,3,31600000000
+ABC,  pt_BR ,1,3,31600000001
+ABC,   Spanish  ,1,3,31600000002
+ABC,   ,1,3,31600000003

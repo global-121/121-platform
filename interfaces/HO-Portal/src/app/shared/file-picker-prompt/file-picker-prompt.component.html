@@ -79,6 +79,7 @@
       (dragleave)="isDraggedOver = false"
       [title]="'file-picker.label' | translate"
       [attr.aria-label]="'file-picker.label' | translate"
+      data-cy="file-picker-input"
     ></ion-input>
   </div>
 </ion-content>
@@ -98,6 +99,7 @@
         color="primary"
         (click)="submitConfirm()"
         [disabled]="checkOkDisabled()"
+        data-cy="file-picker-confirm-button"
       >
         {{ 'common.ok' | translate }}
       </ion-button>
