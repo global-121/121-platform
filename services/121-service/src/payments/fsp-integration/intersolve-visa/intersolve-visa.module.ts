@@ -1,0 +1,39 @@
+import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from '../../../user/user.entity';
+import { UserModule } from '../../../user/user.module';
+import { TransactionsModule } from '../../transactions/transactions.module';
+import { RegistrationEntity } from './../../../registration/registration.entity';
+import { IntersolveIssueTokenRequestEntity } from './intersolve-issue-token-request.entity';
+import { IntersolveLoadRequestEntity } from './intersolve-load-request.entity';
+import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.services';
+import { IntersolveVisaApiService } from './intersolve-visa.api.service';
+import { IntersolveVisaService } from './intersolve-visa.service';
+import { IntersolveVisaCardEntity } from './inversolve-visa-card.entity';
+
+@Module({
+  imports: [
+    HttpModule,
+    TypeOrmModule.forFeature([
+      IntersolveVisaCardEntity,
+      IntersolveIssueTokenRequestEntity,
+      UserEntity,
+      IntersolveLoadRequestEntity,
+      RegistrationEntity,
+    ]),
+    UserModule,
+    TransactionsModule,
+  ],
+  providers: [
+    IntersolveVisaService,
+    IntersolveVisaApiService,
+    IntersolveVisaApiMockService,
+  ],
+  exports: [
+    IntersolveVisaService,
+    IntersolveVisaApiService,
+    IntersolveVisaApiMockService,
+  ],
+})
+export class IntersolveVisaModule {}

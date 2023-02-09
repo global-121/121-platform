@@ -25,6 +25,8 @@ graph LR
   ExportMetricsModule-->PaymentsModule
   PaymentsModule-->FspModule
   PaymentsModule-->IntersolveModule
+  PaymentsModule-->IntersolveVisaModule
+  IntersolveVisaModule-->TransactionsModule
   PaymentsModule-->AfricasTalkingModule
   AfricasTalkingModule-->TransactionsModule
   PaymentsModule-->BelcashModule

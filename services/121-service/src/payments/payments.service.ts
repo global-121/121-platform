@@ -26,6 +26,7 @@ import { VoucherWithBalanceDto } from './dto/voucher-with-balance.dto';
 import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
 import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
+import { IntersolveVisaService } from './fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveRequestEntity } from './fsp-integration/intersolve/intersolve-request.entity';
 import { IntersolveService } from './fsp-integration/intersolve/intersolve.service';
 import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service';
@@ -47,6 +48,7 @@ export class PaymentsService {
     private readonly fspService: FspService,
     private readonly transactionService: TransactionsService,
     private readonly intersolveService: IntersolveService,
+    private readonly intersolveVisaService: IntersolveVisaService,
     private readonly africasTalkingService: AfricasTalkingService,
     private readonly belcashService: BelcashService,
     private readonly bobFinanceService: BobFinanceService,
@@ -152,6 +154,7 @@ export class PaymentsService {
   ): SplitPaymentListDto {
     const intersolvePaPayment = [];
     const intersolveNoWhatsappPaPayment = [];
+    const intersolveVisaPaPayment = [];
     const africasTalkingPaPayment = [];
     const belcashPaPayment = [];
     const bobFinancePaPayment = [];
@@ -162,6 +165,8 @@ export class PaymentsService {
         intersolvePaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.intersolveNoWhatsapp) {
         intersolveNoWhatsappPaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === FspName.intersolveVisa) {
+        intersolveVisaPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.africasTalking) {
         africasTalkingPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.belcash) {
@@ -180,6 +185,7 @@ export class PaymentsService {
     return {
       intersolvePaPayment,
       intersolveNoWhatsappPaPayment,
+      intersolveVisaPaPayment,
       africasTalkingPaPayment,
       belcashPaPayment,
       bobFinancePaPayment,
@@ -208,6 +214,15 @@ export class PaymentsService {
         false,
         amount,
         payment,
+      );
+    }
+
+    if (paLists.intersolveVisaPaPayment) {
+      await this.intersolveVisaService.sendPayment(
+        paLists.intersolveVisaPaPayment,
+        programId,
+        payment,
+        amount,
       );
     }
 
