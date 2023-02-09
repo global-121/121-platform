@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.80.0...master)
 
 ---
+## [1.80.1](https://github.com/global-121/121-platform/compare/v1.80.0...v1.80.1) - 2023-02-01
+
+### Fixed
+
+- Fix: Don't filter on paymentsLeft outside payment phase
+
 ## [1.80.0](https://github.com/global-121/121-platform/compare/v1.79.54...v1.80.0) - 2023-02-09
 
 ### Added
