@@ -8,7 +8,11 @@ import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
-import { PaTransactionResultDto } from '../dto/payment-transaction-result.dto';
+import {
+  PaTransactionResultDto,
+  TransactionNotificationObject,
+} from '../dto/payment-transaction-result.dto';
+import { LanguageEnum } from './../../registration/enum/language.enum';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
@@ -193,17 +197,49 @@ export class TransactionsService {
 
     if (
       transactionResponse.status === StatusEnum.success &&
-      fsp.notifyOnTransaction
+      fsp.notifyOnTransaction &&
+      transactionResponse.notificationObjects &&
+      transactionResponse.notificationObjects.length > 0
     ) {
-      await this.messageService.sendTextMessage(
-        registration,
-        program.id,
-        'test', // here could go transactionResopnse.customData['messageText'] that would be filled from intersolve-visa.service.ts
-        null,
-        false,
-        MessageContentType.payment,
-      );
+      // loop over notification objects and send a message for each
+
+      for (const transactionNotifcation of transactionResponse.notificationObjects) {
+        const message = this.getMessageText(
+          registration.preferredLanguage,
+          program.notifications,
+          transactionNotifcation,
+        );
+        await this.messageService.sendTextMessage(
+          registration,
+          program.id,
+          message, // here could go transactionResopnse.customData['messageText'] that would be filled from intersolve-visa.service.ts
+          null,
+          false,
+          MessageContentType.payment,
+        );
+      }
     }
+  }
+
+  private getMessageText(
+    language: LanguageEnum,
+    programNotifications: object,
+    transactionNotification: TransactionNotificationObject,
+  ): string {
+    let message =
+      programNotifications[language][transactionNotification.notificationKey];
+    if (transactionNotification.dynamicContent.length > 0) {
+      for (const [
+        i,
+        dynamicContent,
+      ] of transactionNotification.dynamicContent.entries()) {
+        const replaceString = `{{${i + 1}}}`;
+        if (message.includes(replaceString)) {
+          message = message.replace(replaceString, dynamicContent);
+        }
+      }
+    }
+    return message;
   }
 
   private async checkAndUpdateMaxPaymentRegistration(

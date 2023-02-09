@@ -8,6 +8,7 @@ import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
+  TransactionNotificationObject,
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { RegistrationEntity } from './../../../registration/registration.entity';
@@ -69,6 +70,8 @@ export class IntersolveVisaService {
     paymentNr: number,
     calculatedAmount: number,
   ): Promise<PaTransactionResultDto> {
+    const transactionNotifications = [];
+
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: paymentData.referenceId },
     });
@@ -77,6 +80,7 @@ export class IntersolveVisaService {
       const issueCardResult = await this.issueVisaCard(registration);
       if (issueCardResult.succes) {
         tokenCode = issueCardResult.tokenCode;
+        transactionNotifications.push(this.buildNotificaitonObjectIssueCard());
       } else {
         return {
           referenceId: paymentData.referenceId,
@@ -94,7 +98,9 @@ export class IntersolveVisaService {
       registration.referenceId,
       paymentNr,
     );
-
+    transactionNotifications.push(
+      this.buildNotificaitonObjectLoad(calculatedAmount),
+    );
     return {
       referenceId: paymentData.referenceId,
       status: topupResult.status,
@@ -102,6 +108,23 @@ export class IntersolveVisaService {
       date: new Date(),
       calculatedAmount: calculatedAmount,
       fspName: FspName.intersolveVisa,
+      notificationObjects: transactionNotifications,
+    };
+  }
+
+  private buildNotificaitonObjectIssueCard(): TransactionNotificationObject {
+    return {
+      notificationKey: 'visaCardCreated',
+      dynamicContent: [],
+    };
+  }
+
+  private buildNotificaitonObjectLoad(
+    amount: number,
+  ): TransactionNotificationObject {
+    return {
+      notificationKey: 'visaLoad',
+      dynamicContent: [String(amount)],
     };
   }
 
