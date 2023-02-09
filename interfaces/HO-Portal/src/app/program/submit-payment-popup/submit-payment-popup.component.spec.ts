@@ -7,9 +7,7 @@ import { SubmitPaymentPopupComponent } from './submit-payment-popup.component';
 
 const modalSpy = jasmine.createSpyObj('Modal', ['present']);
 const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-modalCtrlSpy.create.and.callFake(() => {
-  return modalSpy;
-});
+modalCtrlSpy.create.and.callFake(() => modalSpy);
 
 describe('SubmitPaymentPopupComponent', () => {
   let component: SubmitPaymentPopupComponent;

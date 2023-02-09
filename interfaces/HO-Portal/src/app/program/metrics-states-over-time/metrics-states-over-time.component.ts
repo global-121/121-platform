@@ -59,25 +59,21 @@ export class MetricsStatesOverTimeComponent implements OnChanges, OnInit {
     const pastPayments =
       await this.pastPaymentsService.getPaymentsWithStateSums(this.program.id);
 
-    const chartData = pastPayments.map((payment) => {
-      return {
-        name: `#${payment.id}`,
-        series: [
-          {
-            name: this.translate.instant(
-              'page.program.metrics.over-time.pa.pre-existing',
-            ),
-            value: payment.values['pre-existing'],
-          },
-          {
-            name: this.translate.instant(
-              'page.program.metrics.over-time.pa.new',
-            ),
-            value: payment.values.new,
-          },
-        ],
-      };
-    });
+    const chartData = pastPayments.map((payment) => ({
+      name: `#${payment.id}`,
+      series: [
+        {
+          name: this.translate.instant(
+            'page.program.metrics.over-time.pa.pre-existing',
+          ),
+          value: payment.values['pre-existing'],
+        },
+        {
+          name: this.translate.instant('page.program.metrics.over-time.pa.new'),
+          value: payment.values.new,
+        },
+      ],
+    }));
 
     return chartData;
   }

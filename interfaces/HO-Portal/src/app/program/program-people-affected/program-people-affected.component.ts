@@ -761,7 +761,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ...this.columnDefaults,
         permissions: [Permission.RegistrationPersonalREAD],
         phases: colPerPhase.phases,
-        headerClass: `ion-align-self-end header-overflow-ellipsis`,
+        headerClass: 'ion-align-self-end header-overflow-ellipsis',
       };
       if (!!this.columnWidthPerType[colPerPhase.type]) {
         addCol.minWidth = this.columnWidthPerType[colPerPhase.type];
@@ -1266,13 +1266,13 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         )
       ).map((r) => r.referenceId);
     }
-    return people.map((person) => {
-      return this.bulkActionService.updateCheckbox(
+    return people.map((person) =>
+      this.bulkActionService.updateCheckbox(
         action,
         person,
         payment ? registrationsWithPayment.includes(person.referenceId) : null,
-      );
-    });
+      ),
+    );
   }
 
   private resetBulkAction() {
@@ -1729,12 +1729,12 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       });
       const xlsxContent = this.visiblePeopleAffected
         .sort((a, b) => collator.compare(a.pa, b.pa))
-        .map((person) => {
-          return columnsToExport.reduce((res, col) => {
+        .map((person) =>
+          columnsToExport.reduce((res, col) => {
             const value = this.processExportTableViewValue(person[col.prop]);
             return Object.assign(res, { [col.name]: value });
-          }, {});
-        });
+          }, {}),
+        );
 
       arrayToXlsx(xlsxContent, `${this.thisPhase}-table`);
 

@@ -50,14 +50,13 @@ export class TableFilterPopoverComponent implements OnInit {
   private initMultipleChoiceState(): TableFilterMultipleChoiceState {
     return {
       options: this.filterProps?.allOptions?.reduce(
-        (optionsObject, currentOption) => {
-          return (optionsObject = {
+        (optionsObject, currentOption) =>
+          (optionsObject = {
             ...optionsObject,
             [currentOption.value]: this.filterProps?.currentSelection?.includes(
               currentOption.value,
             ),
-          });
-        },
+          }),
         {},
       ),
       selectAll: this.initSelectAll(),

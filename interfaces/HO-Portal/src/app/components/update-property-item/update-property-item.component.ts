@@ -78,12 +78,10 @@ export class UpdatePropertyItemComponent implements OnInit {
   }
 
   public translatedOptions() {
-    return this.options.map(({ option, label }) => {
-      return {
-        option,
-        label: this.translate.get(label),
-      };
-    });
+    return this.options.map(({ option, label }) => ({
+      option,
+      label: this.translate.get(label),
+    }));
   }
 
   private isValidDate(): boolean {

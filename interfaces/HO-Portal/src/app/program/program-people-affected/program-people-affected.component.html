@@ -32,7 +32,7 @@
           </option>
         </ng-container>
       </select>
-      <confirm-prompt
+      <app-confirm-prompt
         data-cy="apply-action"
         [disabled]="applyBtnDisabled"
         (confirm)="applyAction($event)"
@@ -46,7 +46,7 @@
         class="ion-float-end"
       >
         {{ 'page.program.program-people-affected.apply-action' | translate }}
-      </confirm-prompt>
+      </app-confirm-prompt>
 
       <ion-spinner
         *ngIf="isInProgress"
