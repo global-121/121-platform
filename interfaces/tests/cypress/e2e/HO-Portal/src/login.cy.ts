@@ -40,7 +40,7 @@ describe('Login Page', () => {
       cy.get('[data-cy="login-form"]')
         .get('input[name="password"]')
         .type('wrongpassword');
-      cy.get('[data-cy="login-form"]').get('button[type="submit"]').click();
+      cy.get('[data-cy="login-form"]').get('ion-button[type="submit"]').click();
 
       cy.get('.login-notification').contains(
         portalText.common['unknown-error'],
