@@ -1633,16 +1633,21 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private updateVisiblePeopleAffectedByFilter() {
-    const filteredPeopleAffected = this.allPeopleAffected
-      .filter((pa) =>
-        this.tableFilterState.paStatus.selected.includes(pa.status),
-      )
-      .filter((pa) =>
-        this.tableFilterState.paymentsLeft.selected.includes(
-          this.paPaymentsLeftValue(pa.paymentsLeft, pa.maxPayments),
-        ),
-      );
-    this.initialVisiblePeopleAffected = [...filteredPeopleAffected];
+    const filteredPeopleAffectedByStatus = this.allPeopleAffected.filter((pa) =>
+      this.tableFilterState.paStatus.selected.includes(pa.status),
+    );
+    const filteredPeopleAffectedByPaymentsLeft =
+      this.thisPhase === this.phaseEnum.payment
+        ? filteredPeopleAffectedByStatus.filter((pa) =>
+            this.tableFilterState.paymentsLeft.selected.includes(
+              this.paPaymentsLeftValue(pa.paymentsLeft, pa.maxPayments),
+            ),
+          )
+        : filteredPeopleAffectedByStatus;
+
+    this.initialVisiblePeopleAffected = [
+      ...filteredPeopleAffectedByPaymentsLeft,
+    ];
 
     const rowsVisible = this.initialVisiblePeopleAffected.filter(
       (row: PersonRow) => {
