@@ -5,9 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.79.5...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.80.0...master)
 
 ---
+## [1.80.0](https://github.com/global-121/121-platform/compare/v1.79.54...v1.80.0) - 2023-02-09
+
+### Added
+
+- Advance filter: Add filter on "x to last payment"
+- Create and overwrite program via JSON in 121 Portal
+- Empty content of Design phase
+- Remember filter options after closing pop-up
+- Import People Affected with "title" preferred language
+- Send voucher collect reminders max 3 times
+
 ## [1.79.5](https://github.com/global-121/121-platform/compare/v1.79.4...v1.79.5) - 2023-02-01
 
 ### Fixed
