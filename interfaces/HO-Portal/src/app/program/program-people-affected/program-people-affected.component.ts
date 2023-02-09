@@ -1671,7 +1671,11 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   public showTableFilter(prop): boolean {
-    if (prop !== 'paymentsLeft' || this.thisPhase === this.phaseEnum.payment) {
+    if (
+      prop !== 'paymentsLeft' ||
+      (this.thisPhase === this.phaseEnum.payment &&
+        this.program.enableMaxPayments)
+    ) {
       return true;
     }
 
