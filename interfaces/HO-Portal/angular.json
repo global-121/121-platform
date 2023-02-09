@@ -41,7 +41,9 @@
               }
             ],
             "scripts": [],
-            "allowedCommonJsDependencies": ["file-saver"],
+            "allowedCommonJsDependencies": [
+              "file-saver"
+            ],
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,
@@ -124,12 +126,21 @@
               "browsers": "ChromeHeadless"
             }
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "cli": {
-    "defaultCollection": "@ionic/angular-toolkit",
+    "defaultCollection": "@angular-eslint/schematics",
     "analytics": false
   },
   "schematics": {
