@@ -53,6 +53,18 @@ class IntersolveIssueTokenResponseAssetDto {
   public expiresAt: string;
   public conversions: IntersolveIssueTokenResponseConversionDto[];
   public images: IntersolveIssueTokenResponseImageDto[];
+  public vatRegulation: IntersolveIssueTokenResponseVatRegulationDto;
+  public termsAndConditions: IntersolveIssueTokenResponseTermsAndConditionsDto;
+  public amount: number;
+  public currency: string;
+  public articleCode: string;
+  public percentage: number;
+  public rank: number;
+  public unit: string;
+  public promotionCode: string;
+  public ticket: string;
+  public chargeRestrictions: IntersolveIssueTokenResponseChargeRestrictionsDto;
+  public allowedMethods: IntersolveIssueTokenResponseMethodMetadataDto[];
 }
 
 class IntersolveIssueTokenResponseIdentityDto {
@@ -69,9 +81,41 @@ class IntersolveIssueTokenResponseConversionDto {
 }
 
 class IntersolveIssueTokenResponseImageDto {
+  public code: string;
   public type: string;
   public url: string;
   public description: string;
+}
+
+class IntersolveIssueTokenResponseVatRegulationDto {
+  public code: string;
+  public value: number;
+}
+
+class IntersolveIssueTokenResponseTermsAndConditionsDto {
+  public url: string;
+  public text: string;
+}
+
+class IntersolveIssueTokenResponseChargeRestrictionsDto {
+  public product: IntersolveIssueTokenResponseIncludesExcludesDto;
+  public productGroup: IntersolveIssueTokenResponseIncludesExcludesDto;
+}
+
+class IntersolveIssueTokenResponseIncludesExcludesDto {
+  public includes: string[];
+  public excludes: string[];
+}
+
+class IntersolveIssueTokenResponseMethodMetadataDto {
+  code: string;
+  period: { start: string; end: string };
+  securityCodeInfo: IntersolveIssueTokenResponseSecurityCodeMetadataDto;
+}
+
+class IntersolveIssueTokenResponseSecurityCodeMetadataDto {
+  required: boolean;
+  format: string;
 }
 
 export class IntersolveReponseErrorDto {
