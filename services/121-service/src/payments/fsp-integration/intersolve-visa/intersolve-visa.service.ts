@@ -80,7 +80,7 @@ export class IntersolveVisaService {
       const issueCardResult = await this.issueVisaCard(registration);
       if (issueCardResult.succes) {
         tokenCode = issueCardResult.tokenCode;
-        transactionNotifications.push(this.buildNotificaitonObjectIssueCard());
+        transactionNotifications.push(this.buildNotificationObjectIssueCard());
       } else {
         return {
           referenceId: paymentData.referenceId,
@@ -99,7 +99,7 @@ export class IntersolveVisaService {
       paymentNr,
     );
     transactionNotifications.push(
-      this.buildNotificaitonObjectLoad(calculatedAmount),
+      this.buildNotificationObjectLoad(calculatedAmount),
     );
     return {
       referenceId: paymentData.referenceId,
@@ -112,14 +112,14 @@ export class IntersolveVisaService {
     };
   }
 
-  private buildNotificaitonObjectIssueCard(): TransactionNotificationObject {
+  private buildNotificationObjectIssueCard(): TransactionNotificationObject {
     return {
       notificationKey: 'visaCardCreated',
       dynamicContent: [],
     };
   }
 
-  private buildNotificaitonObjectLoad(
+  private buildNotificationObjectLoad(
     amount: number,
   ): TransactionNotificationObject {
     return {
