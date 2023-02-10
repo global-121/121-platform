@@ -5,7 +5,7 @@ export class IntersolveIssueTokenResponseDto {
 
 class IntersolveIssueTokenBodyDto {
   public success: boolean;
-  public errors: IntesolveReponseErrorDto[];
+  public errors: IntersolveReponseErrorDto[];
   public code: string;
   public correlationId: string;
   public data: IntersolveIssueTokenResponseDataDto;
@@ -74,7 +74,7 @@ class IntersolveIssueTokenResponseImageDto {
   public description: string;
 }
 
-export class IntesolveReponseErrorDto {
+export class IntersolveReponseErrorDto {
   public code: string;
   public field: string;
   public description: string;

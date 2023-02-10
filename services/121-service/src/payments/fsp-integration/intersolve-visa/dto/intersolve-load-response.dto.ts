@@ -1,4 +1,4 @@
-import { IntesolveReponseErrorDto } from './intersolve-issue-token-response.dto';
+import { IntersolveReponseErrorDto } from './intersolve-issue-token-response.dto';
 
 export class IntersolveLoadResponseDto {
   public body: IntersolveLoadBodyDto;
@@ -7,7 +7,7 @@ export class IntersolveLoadResponseDto {
 
 class IntersolveLoadBodyDto {
   public success: boolean;
-  public errors: IntesolveReponseErrorDto[];
+  public errors: IntersolveReponseErrorDto[];
   public code: string;
   public correlationId: string;
   public data: IntersolveLoadResponseDataDto;

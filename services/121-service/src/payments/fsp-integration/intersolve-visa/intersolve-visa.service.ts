@@ -12,7 +12,7 @@ import {
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { RegistrationEntity } from './../../../registration/registration.entity';
-import { IntesolveReponseErrorDto } from './dto/intersolve-issue-token-response.dto';
+import { IntersolveReponseErrorDto } from './dto/intersolve-issue-token-response.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { MessageStatus as MessageStatusDto } from './dto/message-status.dto';
 import { IntersolveIssueTokenRequestEntity } from './intersolve-issue-token-request.entity';
@@ -170,7 +170,7 @@ export class IntersolveVisaService {
       tokenCode: issueTokenResult.body.data.token.code,
       message: issueTokenResult.body.success
         ? null
-        : `CARD CREATION ERROR: ${this.intesolveErrorToMessage(
+        : `CARD CREATION ERROR: ${this.intersolveErrorToMessage(
             issueTokenResult.body.errors,
           )}`,
     };
@@ -211,13 +211,15 @@ export class IntersolveVisaService {
       status: topUpResult.body.success ? StatusEnum.success : StatusEnum.error,
       message: topUpResult.body.success
         ? null
-        : `TOP UP ERROR: ${this.intesolveErrorToMessage(
+        : `TOP UP ERROR: ${this.intersolveErrorToMessage(
             topUpResult.body.errors,
           )}`,
     };
   }
 
-  private intesolveErrorToMessage(errors: IntesolveReponseErrorDto[]): string {
+  private intersolveErrorToMessage(
+    errors: IntersolveReponseErrorDto[],
+  ): string {
     let allMessages = '';
     for (const [i, error] of errors.entries()) {
       const newLine = i < errors.length - 1 ? '\n' : '';
