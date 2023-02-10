@@ -3,7 +3,7 @@ export class IntersolveIssueTokenResponseDto {
   public statusCode: number;
 }
 
-class IntersolveIssueTokenBodyDto {
+export class IntersolveIssueTokenBodyDto {
   public success: boolean;
   public errors: IntersolveReponseErrorDto[];
   public code: string;
@@ -11,11 +11,11 @@ class IntersolveIssueTokenBodyDto {
   public data: IntersolveIssueTokenResponseDataDto;
 }
 
-class IntersolveIssueTokenResponseDataDto {
+export class IntersolveIssueTokenResponseDataDto {
   public token: IntersolveIssueTokenResponseTokenDto;
 }
 
-class IntersolveIssueTokenResponseTokenDto {
+export class IntersolveIssueTokenResponseTokenDto {
   public code: string;
   public blocked: boolean;
   public blockReasonCode: string;

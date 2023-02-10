@@ -2,7 +2,12 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
-import { IntersolveIssueTokenResponseDto } from './dto/intersolve-issue-token-response.dto';
+import {
+  IntersolveIssueTokenBodyDto,
+  IntersolveIssueTokenResponseDataDto,
+  IntersolveIssueTokenResponseDto,
+  IntersolveIssueTokenResponseTokenDto,
+} from './dto/intersolve-issue-token-response.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 
 @Injectable()
@@ -11,6 +16,9 @@ export class IntersolveVisaApiMockService {
 
   public issueTokenMock(): IntersolveIssueTokenResponseDto {
     const response = new IntersolveIssueTokenResponseDto();
+    response.body = new IntersolveIssueTokenBodyDto();
+    response.body.data = new IntersolveIssueTokenResponseDataDto();
+    response.body.data.token = new IntersolveIssueTokenResponseTokenDto();
     response.body.success = true;
     response.body.errors = [];
     response.body.code = 'string';
