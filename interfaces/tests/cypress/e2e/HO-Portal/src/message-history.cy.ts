@@ -11,6 +11,13 @@ describe('Check message history', () => {
   });
 
   it('Send 1 whatsapp message', function () {
+    const messageText =
+      programLVV.notifications.en.whatsappGenericMessage;
+    const label =
+      portalEn.page.program['program-people-affected'][
+        'message-history-popup'
+      ]['content-type']['generic-templated'];
+
     cy.importRegistrations(1);
     cy.moveToSpecifiedPhase(1, ProgramPhase.registrationValidation);
     cy.fixture('message-history').then((fixture) => {
@@ -21,27 +28,22 @@ describe('Check message history', () => {
       );
 
       cy.setHoPortal();
-      cy.visit(fixture.url);
-      cy.sendBulkMessage(fixture.messageText);
+      cy.visit(fixture.url).then(() => {
+        cy.sendBulkMessage(fixture.messageText).then(() => {
+          // Check PA-table
+          checkPATable(fixture, MessageStatus.delivered, 'WHATSAPP');
 
-      // Check PA-table
-
-      checkPATable(fixture, MessageStatus.delivered, 'WHATSAPP');
-
-      // Check Message History Popup
-      const messageText = programLVV.notifications.en.whatsappGenericMessage;
-      const label =
-        portalEn.page.program['program-people-affected'][
-          'message-history-popup'
-        ]['content-type']['generic-templated'];
-      cy.fixture('registration-nlrc').then((registration) => {
-        checkMessageHistoryPopup(
-          registration,
-          label,
-          messageText,
-          'whatsapp',
-          MessageStatus.delivered,
-        );
+          cy.fixture('registration-nlrc').then((registration) => {
+            // Check Message History Popup
+            checkMessageHistoryPopup(
+              registration,
+              label,
+              messageText,
+              'whatsapp',
+              MessageStatus.delivered,
+            );
+          });
+        });
       });
     });
   });
@@ -134,56 +136,58 @@ describe('Check message history', () => {
           );
 
           cy.setHoPortal();
-          cy.visit(fixture.url);
+          cy.visit(fixture.url).then(() => {
+            cy.sendBulkMessage(fixture.messageText).then(() => {
+              cy.getAllPeopleAffected(programId).then((response) => {
+                for (const pa of response.body) {
+                  cy.editPaAttribute(
+                    programId,
+                    pa.referenceId,
+                    'phoneNumber',
+                    '15005550001',
+                  );
+                }
 
-          cy.sendBulkMessage(fixture.messageText);
-          cy.getAllPeopleAffected(programId).then((response) => {
-            for (const pa of response.body) {
-              cy.editPaAttribute(
-                programId,
-                pa.referenceId,
-                'phoneNumber',
-                '15005550001',
-              );
-            }
+                cy.setHoPortal();
+                const interceptIdMessage2 = 'textmessage2';
+                cy.intercept({ method: 'POST', url: '**/text-message' }).as(
+                  interceptIdMessage2,
+                );
+                cy.sendBulkMessage(fixture.messageText).then(() => {
+                  // // Check PA-table
+                  checkPATable(
+                    fixture,
+                    MessageStatus.failed,
+                    'SMS',
+                    interceptIdMessage2,
+                  );
 
-            cy.setHoPortal();
-            const interceptIdMessage2 = 'textmessage2';
-            cy.intercept({ method: 'POST', url: '**/text-message' }).as(
-              interceptIdMessage2,
-            );
-            cy.sendBulkMessage(fixture.messageText);
-
-            // // Check PA-table
-            checkPATable(
-              fixture,
-              MessageStatus.failed,
-              'SMS',
-              interceptIdMessage2,
-            );
-
-            // Check Message History Popup
-            const customLabel =
-              portalEn.page.program['program-people-affected'][
-                'message-history-popup'
-              ]['content-type'].custom;
-            checkMessageHistoryPopup(
-              registrationNoWhatsapp,
-              customLabel,
-              fixture.messageText,
-              'sms',
-              MessageStatus.failed,
-              0,
-            );
-            cy.visit(fixture.url);
-            checkMessageHistoryPopup(
-              registrationNoWhatsapp,
-              customLabel,
-              fixture.messageText,
-              'sms',
-              MessageStatus.sent,
-              1,
-            );
+                  // Check Message History Popup
+                  const customLabel =
+                    portalEn.page.program['program-people-affected'][
+                      'message-history-popup'
+                    ]['content-type'].custom;
+                  checkMessageHistoryPopup(
+                    registrationNoWhatsapp,
+                    customLabel,
+                    fixture.messageText,
+                    'sms',
+                    MessageStatus.failed,
+                    0,
+                  );
+                  cy.visit(fixture.url).then(() => {
+                    checkMessageHistoryPopup(
+                      registrationNoWhatsapp,
+                      customLabel,
+                      fixture.messageText,
+                      'sms',
+                      MessageStatus.sent,
+                      1,
+                    );
+                  });
+                });
+              });
+            });
           });
         });
       },
@@ -198,16 +202,17 @@ describe('Check message history', () => {
   ) => {
     cy.wait(`@${interceptId}`); // Wait for textmessage cy intercept to complete
     cy.setHoPortal();
-    cy.visit(fixture.url);
-    cy.get('.proxy-scrollbar').scrollTo('right', {
-      easing: 'linear',
-      duration: 100,
-    });
-    cy.get('[data-cy="message-history-button"]').contains(messageType, {
-      matchCase: false,
-    });
-    cy.get('[data-cy="message-history-button"]').contains(messageStatus, {
-      matchCase: false,
+    cy.visit(fixture.url).then(() => {
+      cy.get('.proxy-scrollbar').scrollTo('right', {
+        easing: 'linear',
+        duration: 100,
+      });
+      cy.get('[data-cy="message-history-button"]').contains(messageType, {
+        matchCase: false,
+      });
+      cy.get('[data-cy="message-history-button"]').contains(messageStatus, {
+        matchCase: false,
+      });
     });
   };
 
