@@ -1,4 +1,4 @@
-const portalEn = require('../../../HO-Portal/src/assets/i18n/en.json');
+import { BulkActionId } from '../../../HO-Portal/src/app/models/bulk-actions.models';
 import XLSX from 'xlsx';
 
 // Contains a list of custom Commands
@@ -180,11 +180,11 @@ Cypress.Commands.add('getAllPeopleAffected', (programId: number) => {
 });
 
 Cypress.Commands.add('sendBulkMessage', (messageText: string) => {
-  const dropdownText =
-    portalEn.page.program['program-people-affected'].actions['send-message'];
-  cy.get(
-    '.ion-justify-content-between > :nth-child(1) > ion-row.md > .styled-select',
-  ).select(dropdownText);
+  cy.get('app-program-people-affected').should('be.visible');
+  cy.get('app-program-people-affected')
+    .get('[data-cy="select-action"]')
+    .select(BulkActionId.sendMessage);
+
   cy.get('label > input').click();
   cy.get('[data-cy="apply-action"]').click();
   cy.get('[data-cy="input-props-textarea"]').type(messageText, { delay: 1 });
