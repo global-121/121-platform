@@ -53,7 +53,7 @@ export class FindByPhoneComponent implements ValidationComponent {
     private storage: Storage,
   ) {}
 
-  async ngOnInit() {}
+  ngOnInit: () => void;
 
   public async findPaByPhone() {
     const cleanedPhoneNr = this.cleanPhoneNumber();

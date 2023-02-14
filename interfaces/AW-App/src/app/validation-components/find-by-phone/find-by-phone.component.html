@@ -1,14 +1,14 @@
 <section>
-  <dialogue-turn [isSpoken]="true">
+  <app-dialogue-turn [isSpoken]="true">
     {{ 'validation.find-by-phone.introduction' | translate }}
-  </dialogue-turn>
+  </app-dialogue-turn>
 
-  <dialogue-turn
+  <app-dialogue-turn
     actor="self"
     [isSpoken]="true"
   >
     <p>{{ 'validation.find-by-phone.enter-phone' | translate }}</p>
-    <phone-number-input
+    <app-phone-number-input
       #phoneNumberInput
       ngDefaultControl
       [(ngModel)]="inputPhonenumber"
@@ -19,7 +19,7 @@
         0 || paDataResult || returnMainMenu || peopleAffectedFound.length > 1
       "
       (ionChange)="changePhoneNumber()"
-    ></phone-number-input>
+    ></app-phone-number-input>
 
     <br />
 
@@ -42,20 +42,20 @@
     >
       {{ 'validation.find-by-phone.main-menu' | translate }}
     </ion-button>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     *ngIf="noPeopleAffectedFound"
     [isSpoken]="noPeopleAffectedFound"
     [isConnected]="true"
   >
     {{ 'validation.find-by-phone.error' | translate }}
-  </dialogue-turn>
+  </app-dialogue-turn>
 
   <ng-container *ngIf="peopleAffectedFound.length">
-    <dialogue-turn [isSpoken]="true">
+    <app-dialogue-turn [isSpoken]="true">
       {{ 'validation.find-by-phone.multiple-found' | translate }}
-    </dialogue-turn>
-    <dialogue-turn
+    </app-dialogue-turn>
+    <app-dialogue-turn
       actor="self"
       [isSpoken]="true"
     >
@@ -106,14 +106,14 @@
           </ion-button>
         </ion-row>
       </form>
-    </dialogue-turn>
+    </app-dialogue-turn>
   </ng-container>
 
-  <dialogue-turn
+  <app-dialogue-turn
     *ngIf="paDataResult"
     [isSpoken]="paDataResult"
     [isConnected]="true"
   >
     {{ 'validation.find-by-phone.conclusion' | translate }}
-  </dialogue-turn>
+  </app-dialogue-turn>
 </section>

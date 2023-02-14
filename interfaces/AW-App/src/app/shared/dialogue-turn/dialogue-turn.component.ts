@@ -14,7 +14,7 @@ enum Actor {
 }
 
 @Component({
-  selector: 'dialogue-turn',
+  selector: 'app-dialogue-turn',
   templateUrl: './dialogue-turn.component.html',
   styleUrls: ['./dialogue-turn.component.scss'],
   encapsulation: ViewEncapsulation.None, // Disabled to use the 'host-context'-level for `[dir='rtl']`-selector
