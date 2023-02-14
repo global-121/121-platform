@@ -1,6 +1,5 @@
-/// <reference types="Cypress" />
-const XLSX = require('xlsx');
 const portalEn = require('../../../HO-Portal/src/assets/i18n/en.json');
+import XLSX from 'xlsx';
 
 // Contains a list of custom Commands
 Cypress.Commands.add('setHoPortal', () => {
@@ -97,7 +96,7 @@ Cypress.Commands.add('importRegistrationsCsv', (programId, fileName) => {
   const folderPath = '../../../../features/test-registration-data';
   const filePath = `${folderPath}/${fileName}`;
   const url =
-    Cypress.config('baseUrl-server' as any) +
+    Cypress.env('baseUrl-server') +
     `/programs/${programId}/registrations/import-registrations`;
 
   cy.fixture(filePath, 'binary').then((csvBin) => {
@@ -108,7 +107,7 @@ Cypress.Commands.add('importRegistrationsCsv', (programId, fileName) => {
   });
 });
 
-Cypress.Commands.add('importRegistrations', (programId, body) => {
+Cypress.Commands.add('importRegistrations', (programId: number, body?: any) => {
   cy.setServer();
   cy.fixture('registration-nlrc').then((registration) => {
     if (!body) {
@@ -155,7 +154,12 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'editPaAttribute',
-  (programId: number, referenceId: string, attribute: string, value: any) => {
+  (
+    programId: number,
+    referenceId: string,
+    attribute: string,
+    value: string | number,
+  ) => {
     cy.setServer();
     cy.loginApi();
     return cy.request({
