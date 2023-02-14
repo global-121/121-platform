@@ -1,14 +1,14 @@
 <section #selectLanguage>
-  <dialogue-turn>
+  <app-dialogue-turn>
     <p *ngFor="let language of languages">
-      <play-text-audio
+      <app-play-text-audio
         [key]="language.introductionKey"
         class="ion-float-start ion-margin-end"
-      ></play-text-audio>
+      ></app-play-text-audio>
       {{ language.introduction | translate }}
     </p>
-  </dialogue-turn>
-  <dialogue-turn actor="self">
+  </app-dialogue-turn>
+  <app-dialogue-turn actor="self">
     <form (submit)="submitLanguage()">
       <ion-radio-group
         (ionChange)="changeLanguage($event)"
@@ -21,11 +21,11 @@
           lines="full"
           class="ion-no-padding"
         >
-          <play-text-audio
+          <app-play-text-audio
             [key]="language.languageKey"
             slot="start"
             class="ion-no-margin ion-margin-end"
-          ></play-text-audio>
+          ></app-play-text-audio>
           <ion-item
             lines="none"
             color="light"
@@ -46,10 +46,10 @@
         *ngIf="languageChoice && !isDisabled"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio
+        <app-play-text-audio
           key="shared.submit-button"
           size="default"
-        ></play-text-audio>
+        ></app-play-text-audio>
         <ion-button
           type="submit"
           expand="block"
@@ -59,16 +59,16 @@
         </ion-button>
       </ion-row>
     </form>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     *ngIf="isDisabled"
     [isSpoken]="isDisabled"
   >
     <p>
-      <play-text-audio
+      <app-play-text-audio
         key="personal.select-language.result"
         class="ion-float-start ion-margin-end"
-      ></play-text-audio>
+      ></app-play-text-audio>
       <span
         [innerHTML]="
           'personal.select-language.result'
@@ -77,5 +77,5 @@
         "
       ></span>
     </p>
-  </dialogue-turn>
+  </app-dialogue-turn>
 </section>
