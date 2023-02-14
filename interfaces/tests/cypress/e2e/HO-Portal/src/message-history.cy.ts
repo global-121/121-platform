@@ -33,7 +33,6 @@ describe('Check message history', () => {
       cy.sendBulkMessage(fixture.messageText);
       cy.wait('@textmessage');
 
-      // Check PA-table
       checkPATable(fixture, MessageStatus.delivered, 'WHATSAPP');
 
       cy.fixture('registration-nlrc').then((registration) => {
@@ -69,7 +68,6 @@ describe('Check message history', () => {
           cy.sendBulkMessage(fixture.messageText);
           cy.wait('@textmessage');
 
-          // Check PA-table
           checkPATable(fixture, MessageStatus.sent, 'SMS');
 
           // Check Message History Popup
@@ -110,7 +108,6 @@ describe('Check message history', () => {
           cy.sendBulkMessage(fixture.messageText);
           cy.wait('@textmessage');
 
-          // Check PA-table
           checkPATable(fixture, MessageStatus.failed, 'SMS');
 
           // Check Message History Popup
@@ -142,6 +139,7 @@ describe('Check message history', () => {
       (registrationNoWhatsapp) => {
         cy.importRegistrations(programId, [registrationNoWhatsapp]);
         cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
+
         cy.fixture('message-history').then((fixture) => {
           cy.setHoPortal();
           cy.visit(fixture.url);
@@ -164,7 +162,6 @@ describe('Check message history', () => {
             cy.sendBulkMessage(fixture.messageText);
             cy.wait('@textmessage');
 
-            // // Check PA-table
             checkPATable(fixture, MessageStatus.failed, 'SMS');
 
             // Check Message History Popup
