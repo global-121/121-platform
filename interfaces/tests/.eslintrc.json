@@ -7,6 +7,8 @@
   },
   "extends": [
     "eslint:recommended",
+    "plugin:@typescript-eslint/base",
+    // "plugin:@typescript-eslint/recommended", // TODO: To replace the "base" set, but too many issues for now.
     "plugin:prettier/recommended",
     "plugin:cypress/recommended"
   ],

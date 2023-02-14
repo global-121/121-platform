@@ -1,18 +1,19 @@
+/// <reference types="Cypress" />
 const XLSX = require('xlsx');
 const portalEn = require('../../../HO-Portal/src/assets/i18n/en.json');
 
 // Contains a list of custom Commands
 Cypress.Commands.add('setHoPortal', () => {
-  Cypress.config('baseUrl', Cypress.env('baseUrl-HO' as any));
+  Cypress.config('baseUrl', Cypress.env('baseUrl-HO'));
 });
 Cypress.Commands.add('setAwApp', () => {
-  Cypress.config('baseUrl', Cypress.env('baseUrl-AW' as any));
+  Cypress.config('baseUrl', Cypress.env('baseUrl-AW'));
 });
 Cypress.Commands.add('setPaApp', () => {
-  Cypress.config('baseUrl', Cypress.env('baseUrl-PA' as any));
+  Cypress.config('baseUrl', Cypress.env('baseUrl-PA'));
 });
 Cypress.Commands.add('setServer', () => {
-  Cypress.config('baseUrl', Cypress.env('baseUrl-server' as any));
+  Cypress.config('baseUrl', Cypress.env('baseUrl-server'));
 });
 
 Cypress.Commands.add('seedDatabase', () => {
@@ -74,11 +75,11 @@ Cypress.Commands.add('publishProgram', (programId: number) => {
 
 Cypress.Commands.add('loginPortal', () => {
   cy.setHoPortal();
-  cy.fixture('portal-login').then((login) => {
+  cy.fixture('portal-login').then((fixture) => {
     cy.setHoPortal();
-    cy.visit(login.portal);
-    cy.get('input[name="email"]').type(login.username);
-    cy.get('input[name="password"]').type(login.password);
+    cy.visit(fixture.loginPath);
+    cy.get('input[name="email"]').type(fixture.username);
+    cy.get('input[name="password"]').type(fixture.password);
     cy.get('*[type="submit"]').click();
   });
 });
@@ -196,7 +197,6 @@ Cypress.Commands.add('readXlsx', (fileName: string, sheet: string) => {
 });
 
 /* eslint-disable no-unused-vars -- Only allow these unused vars in this declaration (for now) */
-// <reference types="cypress" />
 declare namespace Cypress {
   interface Chainable<Subject> {
     form_request(method: string, url: string, formData: any): void;

@@ -1,4 +1,3 @@
-import { CreateProgramDto } from './../../../../../../services/121-service/src/programs/dto/create-program.dto';
 import programLVV from '../../../../../../services/121-service/seed-data/program/program-pilot-nl.json';
 
 describe("'Create program API endpoint", () => {

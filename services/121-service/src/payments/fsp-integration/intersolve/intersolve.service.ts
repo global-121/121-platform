@@ -8,7 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { DataSource, IsNull, Not, Repository } from 'typeorm';
-import { FspName } from '../../../fsp/financial-service-provider.entity';
+import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../../../notifications/message-type.enum';
 import {
   TwilioStatus,

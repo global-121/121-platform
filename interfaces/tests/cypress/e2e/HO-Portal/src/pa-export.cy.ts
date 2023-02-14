@@ -17,7 +17,7 @@ describe('Registration phase', () => {
 
   it('Export full PA list with 1 PA with 2 payments', function () {
     cy.importRegistrations(programId);
-    let arr = [];
+    const arr = [];
     cy.getAllPeopleAffected(programId).then((response) => {
       for (const pa of response.body) {
         arr.push(pa.referenceId);

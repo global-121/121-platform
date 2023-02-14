@@ -186,11 +186,16 @@ jobs:
           cache: 'npm'
           cache-dependency-path: interfaces/tests/package-lock.json
 
+      - name: Prepare test environment
+        run: |
+          npm install http-server --global --no-save --no-audit --no-fund
+
       - name: Run integration tests with Cypress
         # See documentation: https://github.com/cypress-io/github-action/#readme
         uses: cypress-io/github-action@v5
         with:
           browser: chrome
+          config: 'video=false,screenshotOnRunFailure=false,defaultCommandTimeout=10000,requestTimeout=10000'
           working-directory: ./interfaces/tests
           start: |
             npx http-server ../AW-App/www/    --silent -c0 --port 8080 --proxy http://localhost:8080/?

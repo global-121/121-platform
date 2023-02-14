@@ -1,7 +1,6 @@
 import { defineConfig } from 'cypress';
 import { readFileSync } from 'fs';
-
-const { verifyDownloadTasks } = require('cy-verify-downloads');
+import dotenv from 'dotenv';
 
 module.exports = defineConfig({
   env: {
@@ -14,9 +13,8 @@ module.exports = defineConfig({
   viewportHeight: 1080,
   e2e: {
     setupNodeEvents(on, config) {
-      on('task', verifyDownloadTasks);
       on('task', {
-        readFile: ({ fileName }): any[] => {
+        readFile: ({ fileName }): string[] => {
           // there is a name and arguments for a task
           const folderPath = '../../features/test-registration-data';
           const filePath = `${folderPath}/${fileName}`;
@@ -27,7 +25,7 @@ module.exports = defineConfig({
           const headers = lines[0].split(',');
 
           for (let i = 1; i < lines.length; i++) {
-            let obj = {};
+            const obj = {};
             const currentline = lines[i].split(',');
             for (let j = 0; j < headers.length; j++) {
               obj[headers[j]] = currentline[j];
@@ -38,7 +36,7 @@ module.exports = defineConfig({
         },
       });
 
-      require('dotenv').config({ path: '../../services/.env' });
+      dotenv.config({ path: '../../services/.env' });
       if (process.env.NODE_ENV === 'development') {
         config.env.RESET_SECRET = process.env.RESET_SECRET;
       }

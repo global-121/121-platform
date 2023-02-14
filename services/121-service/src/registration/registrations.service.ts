@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { FspName } from '../fsp/financial-service-provider.entity';
+import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { LookupService } from '../notifications/lookup/lookup.service';
