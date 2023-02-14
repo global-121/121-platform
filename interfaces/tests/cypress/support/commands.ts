@@ -1,3 +1,4 @@
+/// <reference types="Cypress" />
 const XLSX = require('xlsx');
 const portalEn = require('../../../HO-Portal/src/assets/i18n/en.json');
 
@@ -196,7 +197,6 @@ Cypress.Commands.add('readXlsx', (fileName: string, sheet: string) => {
 });
 
 /* eslint-disable no-unused-vars -- Only allow these unused vars in this declaration (for now) */
-// <reference types="cypress" />
 declare namespace Cypress {
   interface Chainable<Subject> {
     form_request(method: string, url: string, formData: any): void;
