@@ -304,8 +304,6 @@ export class IntersolveService {
         IntersolvePayoutStatus.InitialMessage,
         null,
         registration.id,
-        null,
-        null,
         MessageContentType.paymentTemplated,
       )
       .then(
