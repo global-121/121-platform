@@ -1,14 +1,14 @@
 import { ProgramPhase } from '../../../../../../services/121-service/src/shared/enum/program-phase.model';
 import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 
-describe('Edit person affect pop-up', () => {
+describe('Edit PA details in pop-up', () => {
   beforeEach(() => {
     cy.seedDatabase();
     cy.loginApi();
     cy.loginPortal();
   });
 
-  it('Should edit person affect in pop-up', function () {
+  it('Should show and edit PA details in pop-up', function () {
     const programId = 1;
     cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
 

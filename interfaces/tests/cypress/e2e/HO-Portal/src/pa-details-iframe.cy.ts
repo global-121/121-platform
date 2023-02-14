@@ -1,7 +1,7 @@
 import programLVV from '../../../../../../services/121-service/seed-data/program/program-pilot-nl.json';
 import portalEn from '../../../../../../interfaces/HO-Portal/src/assets/i18n/en.json';
 
-describe('Pa details iframe page', () => {
+describe('PA details iframe page', () => {
   beforeEach(() => {
     cy.seedDatabase();
     cy.loginApi();
