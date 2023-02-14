@@ -8,33 +8,34 @@ declare namespace Cypress {
     setServer(): Chainable<any>;
     seedDatabase(): Chainable<any>;
     loginApi(admin?: boolean): Chainable<any>;
-    moveToSpecifiedPhase(
-      programIdundefined: number,
-      phaseundefined: string,
-    ): Chainable<any>;
-    publishProgram(programIdundefined: number): Chainable<any>;
+    moveToSpecifiedPhase(programId: number, phase: string): Chainable<any>;
+    publishProgram(programId: number): Chainable<any>;
     loginPortal(): Chainable<any>;
-    form_request(method: any, url: any, formData: any): Chainable<any>;
-    importRegistrationsCsv(programId: any, fileName: any): Chainable<any>;
-    importRegistrations(programId: any, body?: any): Chainable<any>;
+    form_request(
+      method: string,
+      url: string,
+      formData: FormData,
+    ): Chainable<any>;
+    importRegistrationsCsv(programId: number, fileName: string): Chainable<any>;
+    importRegistrations(programId: number, body?: any): Chainable<any>;
     includePeopleAffected(
-      programIdundefined: number,
-      referenceIdsundefined: string[],
+      programId: number,
+      referenceIds: string[],
     ): Chainable<any>;
     doPayment(
-      programIdundefined: number,
-      referenceIdsundefined: string[],
-      paymentundefined: number,
-      amountundefined: number,
+      programId: number,
+      referenceIds: string[],
+      payment: number,
+      amount: number,
     ): Chainable<any>;
     editPaAttribute(
-      programIdundefined: number,
-      referenceIdundefined: string,
-      attributeundefined: string,
-      valueundefined: any,
+      programId: number,
+      referenceId: string,
+      attribute: string,
+      value: any,
     ): Chainable<any>;
-    getAllPeopleAffected(programIdundefined: number): Chainable<any>;
-    sendBulkMessage(messageTextundefined: string): Chainable<any>;
-    readXlsx(fileNameundefined: string, sheetundefined: string): Chainable<any>;
+    getAllPeopleAffected(programId: number): Chainable<any>;
+    sendBulkMessage(messageText: string): Chainable<any>;
+    readXlsx(fileName: string, sheet: string): Chainable<any>;
   }
 }

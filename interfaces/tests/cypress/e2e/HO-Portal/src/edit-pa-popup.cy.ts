@@ -25,8 +25,8 @@ describe('Edit PA details in pop-up', () => {
       cy.get('app-edit-person-affected-popup')
         .get('app-update-property-item')
         .each(($el) => {
-          const type = $el.attr('ng-reflect-type');
-          const label = $el.attr('ng-reflect-label');
+          const type = $el.attr('ng-reflect-type') || '';
+          const label = $el.attr('ng-reflect-label') || '';
           validateInput(type, label);
         });
 

@@ -196,7 +196,7 @@ describe('Check message history', () => {
   });
 
   const checkPATable = (
-    fixture: any,
+    fixture,
     messageStatus: string,
     messageType: string,
   ) => {
@@ -216,7 +216,7 @@ describe('Check message history', () => {
   };
 
   const checkMessageHistoryPopup = (
-    registration: any,
+    registration,
     customLabel: string,
     messageText: string,
     messageType: string,

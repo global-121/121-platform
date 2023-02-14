@@ -18,14 +18,16 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       on('task', verifyDownloadTasks);
       on('task', {
-        readFile: ({ fileName }): string[] => {
+        readFile: ({ fileName }): object[] => {
           // there is a name and arguments for a task
           const folderPath = '../../features/test-registration-data';
           const filePath = `${folderPath}/${fileName}`;
           const csv = readFileSync(filePath, 'utf8');
           const lines = csv.split('\n');
-          const result = [];
-          // NOTE: If your columns contain commas in their values, you'll need  // to deal with those before doing the next step   // (you might convert them to &&& or something, then covert them back later)  // jsfiddle showing the issue https://jsfiddle.net/
+          const result: Array<object> = [];
+          // NOTE: If your columns contain commas in their values, you'll need
+          // to deal with those before doing the next step
+          // (you might convert them to &&& or something, then covert them back later)
           const headers = lines[0].split(',');
 
           for (let i = 1; i < lines.length; i++) {
