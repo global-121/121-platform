@@ -73,7 +73,6 @@ Cypress.Commands.add('publishProgram', (programId: number) => {
 });
 
 Cypress.Commands.add('loginPortal', () => {
-  cy.setHoPortal();
   cy.fixture('portal-login').then((fixture) => {
     cy.setHoPortal();
     cy.visit(fixture.loginPath);

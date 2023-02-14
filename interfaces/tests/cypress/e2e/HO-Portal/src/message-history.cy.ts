@@ -252,7 +252,6 @@ describe('Check message history', () => {
           typeLabel = messageHistoryEn.type.sms;
         }
         const messageTextSub = messageText.substring(0, 20);
-        // cy.get('[data-cy="message-history-row"]').contains(typeLabel)
 
         // Checks row
         if (isFinite(nEntry)) {
