@@ -88,10 +88,10 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/assigned/all')
       .then((response) => {
-        if (response) {
+        if (response && response.programs) {
           return response.programs;
         }
-        return null;
+        return [];
       });
   }
 
