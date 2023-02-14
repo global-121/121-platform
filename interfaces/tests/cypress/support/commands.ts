@@ -1,5 +1,5 @@
 import { BulkActionId } from '../../../HO-Portal/src/app/models/bulk-actions.models';
-import XLSX from 'xlsx';
+import * as XLSX from 'xlsx';
 
 // Contains a list of custom Commands
 Cypress.Commands.add('setHoPortal', () => {
