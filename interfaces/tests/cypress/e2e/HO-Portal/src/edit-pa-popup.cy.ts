@@ -15,7 +15,10 @@ describe('Edit PA details in pop-up', () => {
     cy.fixture('edit-pa-popup').then((fixture) => {
       cy.importRegistrations(programId, [fixture.registration]);
       cy.setHoPortal();
+
       cy.visit(fixture.url);
+
+      cy.get('app-program-people-affected').should('be.visible');
 
       cy.get('[data-cy="pa-edit-button"]', { timeout: 8000 }).click();
 
