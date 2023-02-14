@@ -32,7 +32,7 @@ Cypress.Commands.add('seedDatabase', () => {
   });
 });
 
-Cypress.Commands.add('loginApi', (admin?) => {
+Cypress.Commands.add('loginApi', (admin?: boolean) => {
   const fixture = admin ? 'admin' : 'portal-login';
   cy.setServer();
   cy.fixture(fixture).then((credentials) => {
@@ -195,44 +195,3 @@ Cypress.Commands.add('readXlsx', (fileName: string, sheet: string) => {
     return rows;
   });
 });
-
-/* eslint-disable no-unused-vars -- Only allow these unused vars in this declaration (for now) */
-declare namespace Cypress {
-  interface Chainable<Subject> {
-    form_request(method: string, url: string, formData: any): void;
-    generateToken({ secret }): void;
-    importRegistrations(
-      programId: number,
-      data?: any,
-    ): Cypress.Chainable<Cypress.Response<any>>;
-    importRegistrationsCsv(programId: number, fileName: string): void;
-    loginApi(admin?: boolean): void;
-    loginPortal(): void;
-    seedDatabase(): void;
-    setAwApp(): void;
-    setHoPortal(): void;
-    setPaApp(): void;
-    setServer(): void;
-    sendBulkMessage(messageText: string): void;
-    publishProgram(programId: number): void;
-    moveToSpecifiedPhase(programId: number, phase: string): void;
-    getAllPeopleAffected(
-      programId: number,
-    ): Cypress.Chainable<Cypress.Response<any>>;
-    includePeopleAffected(programId: number, referenceIds: string[]): void;
-    doPayment(
-      programId: number,
-      referenceIds: string[],
-      payment: number,
-      amount: number,
-    ): void;
-    readXlsx(filename: string, sheet: string): any;
-    editPaAttribute(
-      programId: number,
-      referenceId: string,
-      attribute: string,
-      value: any,
-    ): void;
-  }
-}
-/* eslint-enable no-unused-vars */
