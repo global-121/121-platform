@@ -10,7 +10,7 @@ describe('Check message history', () => {
     cy.loginPortal();
   });
 
-  it('Send 1 whatsapp message', function () {
+  it('Send 1 WhatsApp message', function () {
     const programId = 1;
     const messageText = programLVV.notifications.en.whatsappGenericMessage;
     const label =

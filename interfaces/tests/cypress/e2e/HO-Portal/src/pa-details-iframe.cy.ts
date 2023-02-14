@@ -40,7 +40,7 @@ describe('Pa details iframe page', () => {
     });
   });
 
-  it('Visits the PA details iframe page and finds 1 PA on whatsapp number', function () {
+  it('Visits the PA details iframe page and finds 1 PA on WhatsApp number', function () {
     cy.fixture('registration-nlrc').then((registration) => {
       const whatsappPhoneNumber = 14155238887;
       registration.whatsappPhoneNumber = whatsappPhoneNumber;
