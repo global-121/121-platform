@@ -204,7 +204,7 @@ describe('Check message history', () => {
     cy.visit(fixture.url).then(() => {
       cy.get('.proxy-scrollbar').scrollTo('right', {
         easing: 'linear',
-        duration: 100,
+        duration: 16,
       });
       cy.get('[data-cy="message-history-button"]').contains(messageType, {
         matchCase: false,
@@ -227,7 +227,7 @@ describe('Check message history', () => {
     cy.get('.proxy-scrollbar')
       .scrollTo('right', {
         easing: 'linear',
-        duration: 100,
+        duration: 16,
       })
       .then(() => {
         cy.get('[data-cy="message-history-button"]').should('be.visible');
