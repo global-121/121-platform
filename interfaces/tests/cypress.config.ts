@@ -2,6 +2,8 @@ import { defineConfig } from 'cypress';
 import { readFileSync } from 'fs';
 import dotenv from 'dotenv';
 
+const { verifyDownloadTasks } = require('cy-verify-downloads');
+
 module.exports = defineConfig({
   env: {
     'baseUrl-PA': 'http://localhost:8008',
@@ -13,6 +15,7 @@ module.exports = defineConfig({
   viewportHeight: 1080,
   e2e: {
     setupNodeEvents(on, config) {
+      on('task', verifyDownloadTasks);
       on('task', {
         readFile: ({ fileName }): string[] => {
           // there is a name and arguments for a task
