@@ -26,6 +26,10 @@ export class LoginPage {
   public invalidEmail = false;
   public emptyPassword = false;
 
+  public inputType: 'password' | 'text' = 'password';
+  public labelShow = 'Show password';
+  public labelHide = 'Hide password';
+
   constructor(private authService: AuthService) {}
 
   ionViewWillLeave(): void {
@@ -75,5 +79,13 @@ export class LoginPage {
 
   private checkEmptyPassword() {
     this.emptyPassword = this.password === '';
+  }
+
+  isPassword() {
+    return this.inputType === 'password';
+  }
+
+  toggleInputType() {
+    this.inputType = this.isPassword() ? 'text' : 'password';
   }
 }

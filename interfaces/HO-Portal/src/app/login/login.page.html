@@ -115,7 +115,7 @@
               <div class="input-item--contents">
                 <ion-input
                   #passwordInput
-                  type="password"
+                  [type]="inputType"
                   autocomplete="current-password"
                   autocapitalize="off"
                   clearInput="false"
@@ -127,7 +127,31 @@
                   class="ion-margin-vertical"
                   [ngClass]="{ 'invalid-border': showLoginFail.password || emptyPassword}"
                   (ionBlur)="onPasswordBlur()"
-                ></ion-input>
+                >
+                  <ion-button
+                    type="button"
+                    color="secondary"
+                    fill="clear"
+                    size="small"
+                    (click)="toggleInputType()"
+                    [title]="isPassword() ? this.labelShow : this.labelHide"
+                    [attr.aria-label]="isPassword() ? this.labelShow : this.labelHide"
+                    style="position: absolute; right: 0px"
+                  >
+                    <ion-icon
+                      *ngIf="isPassword()"
+                      slot="icon-only"
+                      name="eye"
+                      aria-hidden="true"
+                    ></ion-icon>
+                    <ion-icon
+                      *ngIf="!isPassword()"
+                      slot="icon-only"
+                      name="eye-off"
+                      aria-hidden="true"
+                    ></ion-icon>
+                  </ion-button>
+                </ion-input>
               </div>
               <div class="validation-message">
                 <ion-text
