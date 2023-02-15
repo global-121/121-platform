@@ -44,6 +44,7 @@ export class LoginPage {
     this.errorStatusCode = 0;
     this.showLoginFail.email = false;
     this.showLoginFail.password = false;
+    this.inputType = 'password';
 
     this.authService
       .login(this.email, this.password)
