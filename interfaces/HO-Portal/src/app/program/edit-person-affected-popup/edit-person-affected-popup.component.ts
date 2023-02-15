@@ -189,7 +189,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     errorType: string,
     attribute: PersonDefaultAttributes,
   ) {
-    const errorKeyPrefix = `page.program.program-people-affected.edit-person-affected-popup.properties`;
+    const errorKeyPrefix =
+      'page.program.program-people-affected.edit-person-affected-popup.properties';
     const errorMessage = this.translate.instant('common.update-error', {
       error: this.translate.instant(
         `${errorKeyPrefix}.${attribute}.error.${errorType}`,
@@ -321,14 +322,12 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   }
 
   private getAvailableLanguages(): object[] {
-    return this.program.languages.map((key) => {
-      return {
-        option: key,
-        label: this.translate.instant(
-          'page.program.program-people-affected.language.' + key,
-        ),
-      };
-    });
+    return this.program.languages.map((key) => ({
+      option: key,
+      label: this.translate.instant(
+        'page.program.program-people-affected.language.' + key,
+      ),
+    }));
   }
 
   public showMaxPaymentsField() {

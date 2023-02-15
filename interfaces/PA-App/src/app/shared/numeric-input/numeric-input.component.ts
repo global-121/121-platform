@@ -8,7 +8,7 @@ import {
 import { NgModel } from '@angular/forms';
 
 @Component({
-  selector: 'numeric-input',
+  selector: 'app-numeric-input',
   templateUrl: './numeric-input.component.html',
   styleUrls: ['./numeric-input.component.scss'],
 })

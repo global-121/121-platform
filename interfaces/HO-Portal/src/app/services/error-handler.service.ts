@@ -68,9 +68,9 @@ export class ErrorHandlerService extends ErrorHandler {
 
   private replaceErrorMessages(errorMessage: string): string {
     if (
-      errorMessage.includes(`The value '[]' given for the attribute '`) &&
+      errorMessage.includes("The value '[]' given for the attribute '") &&
       errorMessage.includes(
-        `' does not have the correct format for type 'multi-select'`,
+        "' does not have the correct format for type 'multi-select'",
       )
     ) {
       return this.translate.instant('common.answer-is-required');

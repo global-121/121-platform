@@ -2,7 +2,7 @@
   style="display: inline-flex"
   class="ion-align-items-center"
 >
-  <confirm-prompt
+  <app-confirm-prompt
     [disabled]="disabled || isInProgress"
     (confirm)="importFspReconciliation($event)"
     [subHeader]="subHeader"
@@ -15,7 +15,7 @@
       aria-hidden="true"
     ></ion-icon>
     {{ btnText }}
-  </confirm-prompt>
+  </app-confirm-prompt>
   <ion-spinner
     *ngIf="isInProgress"
     color="primary"

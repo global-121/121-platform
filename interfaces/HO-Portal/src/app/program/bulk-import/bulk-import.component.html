@@ -1,6 +1,6 @@
 <ion-row>
   <div class="ion-no-padding ion-margin-end">
-    <confirm-prompt
+    <app-confirm-prompt
       [disabled]="isInProgress"
       (confirm)="importPeopleAffected($event, RegistrationStatus.imported)"
       [subHeader]="
@@ -15,10 +15,10 @@
         aria-hidden="true"
       ></ion-icon>
       {{ 'page.program.bulk-import.imported.btn-text' | translate }}
-    </confirm-prompt>
+    </app-confirm-prompt>
   </div>
   <div class="ion-no-padding">
-    <confirm-prompt
+    <app-confirm-prompt
       [disabled]="isInProgress"
       (confirm)="importPeopleAffected($event, RegistrationStatus.registered)"
       [subHeader]="
@@ -33,7 +33,7 @@
         aria-hidden="true"
       ></ion-icon>
       {{ 'page.program.bulk-import.registered.btn-text' | translate }}
-    </confirm-prompt>
+    </app-confirm-prompt>
   </div>
   <ion-spinner
     *ngIf="isInProgress"

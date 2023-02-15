@@ -8,7 +8,7 @@ import {
 import { NgModel } from '@angular/forms';
 
 @Component({
-  selector: 'date-input',
+  selector: 'app-date-input',
   templateUrl: './date-input.component.html',
   styleUrls: ['./date-input.component.scss'],
 })

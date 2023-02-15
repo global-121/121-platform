@@ -25,7 +25,7 @@ export interface DuplicateAttributesProps {
 }
 
 @Component({
-  selector: 'confirm-prompt',
+  selector: 'app-confirm-prompt',
   templateUrl: './confirm-prompt.component.html',
   styleUrls: ['./confirm-prompt.component.scss'],
 })

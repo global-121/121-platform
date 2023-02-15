@@ -1,14 +1,14 @@
 <section>
-  <dialogue-turn>
+  <app-dialogue-turn>
     <p>
-      <play-text-audio
+      <app-play-text-audio
         key="personal.select-fsp.introduction"
         class="ion-float-start ion-margin-end"
-      ></play-text-audio>
+      ></app-play-text-audio>
       {{ 'personal.select-fsp.introduction' | translate }}
     </p>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     actor="self"
     *ngIf="!!fsps"
     [isSpoken]="!!fsps"
@@ -38,10 +38,10 @@
         *ngIf="fspChoice && !fspSubmitted"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio
+        <app-play-text-audio
           key="shared.submit-button"
           size="default"
-        ></play-text-audio>
+        ></app-play-text-audio>
         <ion-button
           type="submit"
           [disabled]="fspSubmitted || isDisabled"
@@ -52,16 +52,16 @@
         </ion-button>
       </ion-row>
     </form>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     *ngIf="fspSubmitted"
     [isSpoken]="fspSubmitted"
   >
     <p>
-      <play-text-audio
+      <app-play-text-audio
         key="personal.select-fsp.conclusion"
         class="ion-float-start ion-margin-end"
-      ></play-text-audio>
+      ></app-play-text-audio>
       <span
         [innerHTML]="
           'personal.select-fsp.conclusion'
@@ -70,54 +70,54 @@
         "
       ></span>
     </p>
-  </dialogue-turn>
+  </app-dialogue-turn>
 
   <form *ngIf="questions?.length">
-    <dialogue-turn
+    <app-dialogue-turn
       [isConnected]="true"
       [isSpoken]="true"
     >
       <p>
-        <play-text-audio
+        <app-play-text-audio
           key="personal.select-fsp.attributes.introduction"
           class="ion-float-start ion-margin-end"
-        ></play-text-audio>
+        ></app-play-text-audio>
         {{ 'personal.select-fsp.attributes.introduction' | translate }}
       </p>
-    </dialogue-turn>
+    </app-dialogue-turn>
 
-    <q-and-a-set
+    <app-q-and-a-set
       [questions]="questions"
       [answers]="customAttributeAnswers"
       [(isSubmitted)]="isSubmitted"
       [(isEditing)]="isEditing"
-      (submit)="submitCustomAttributes($event)"
+      (submitAction)="submitCustomAttributes($event)"
       submitLabel="shared.submit-button"
-    ></q-and-a-set>
+    ></app-q-and-a-set>
 
-    <dialogue-turn
+    <app-dialogue-turn
       *ngIf="showResultSuccess"
       [isSpoken]="showResultSuccess"
     >
       <p>
-        <play-text-audio
+        <app-play-text-audio
           key="personal.select-fsp.attributes.success"
           class="ion-float-start ion-margin-end"
-        ></play-text-audio>
+        ></app-play-text-audio>
         {{ 'personal.select-fsp.attributes.success' | translate }}
       </p>
-    </dialogue-turn>
-    <dialogue-turn
+    </app-dialogue-turn>
+    <app-dialogue-turn
       *ngIf="showResultError"
       [isSpoken]="showResultError"
     >
       <p>
-        <play-text-audio
+        <app-play-text-audio
           key="personal.select-fsp.attributes.error"
           class="ion-float-start ion-margin-end"
-        ></play-text-audio>
+        ></app-play-text-audio>
         {{ 'personal.select-fsp.attributes.error' | translate }}
       </p>
-    </dialogue-turn>
+    </app-dialogue-turn>
   </form>
 </section>

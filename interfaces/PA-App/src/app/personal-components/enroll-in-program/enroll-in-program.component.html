@@ -1,41 +1,41 @@
 <section>
-  <dialogue-turn>
+  <app-dialogue-turn>
     <p>
-      <play-text-audio
+      <app-play-text-audio
         key="personal.enroll-in-program.introduction-information"
         class="ion-float-start ion-margin-end"
-      ></play-text-audio>
+      ></app-play-text-audio>
       <span
         [innerHTML]="
           'personal.enroll-in-program.introduction-information' | translate
         "
       ></span>
     </p>
-  </dialogue-turn>
+  </app-dialogue-turn>
 
-  <q-and-a-set
+  <app-q-and-a-set
     [questions]="questions"
     [answers]="answers"
     [(isSubmitted)]="hasAnswered"
     [(isEditing)]="hasChangedAnswers"
     [allQuestionsShown]="allQuestionsShown"
-    (submit)="submit($event)"
+    (submitAction)="submit($event)"
     submitLabel="shared.submit-button"
-  ></q-and-a-set>
+  ></app-q-and-a-set>
 
-  <dialogue-turn
+  <app-dialogue-turn
     *ngIf="hasAnswered"
     [isSpoken]="hasAnswered"
   >
     <p>
-      <play-text-audio
+      <app-play-text-audio
         key="personal.enroll-in-program.please-confirm"
         class="ion-float-start ion-margin-end"
-      ></play-text-audio>
+      ></app-play-text-audio>
       {{ 'personal.enroll-in-program.please-confirm' | translate }}
     </p>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     actor="self"
     *ngIf="hasAnswered"
     [isSpoken]="hasAnswered"
@@ -62,11 +62,11 @@
           lines="full"
           class="ion-no-padding"
         >
-          <play-text-audio
+          <app-play-text-audio
             key="personal.enroll-in-program.submit-confirm"
             slot="start"
             class="ion-no-margin ion-margin-end"
-          ></play-text-audio>
+          ></app-play-text-audio>
           <ion-item
             lines="none"
             color="light"
@@ -87,11 +87,11 @@
           class="ion-no-padding"
           lines="full"
         >
-          <play-text-audio
+          <app-play-text-audio
             key="personal.enroll-in-program.change"
             slot="start"
             class="ion-no-margin ion-margin-end"
-          ></play-text-audio>
+          ></app-play-text-audio>
           <ion-item
             lines="none"
             color="light"
@@ -112,10 +112,10 @@
         *ngIf="submitChoice && !isDisabled"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio
+        <app-play-text-audio
           key="shared.submit-button"
           size="default"
-        ></play-text-audio>
+        ></app-play-text-audio>
         <ion-button
           type="button"
           (click)="doSubmitAction()"
@@ -127,5 +127,5 @@
         </ion-button>
       </ion-row>
     </div>
-  </dialogue-turn>
+  </app-dialogue-turn>
 </section>

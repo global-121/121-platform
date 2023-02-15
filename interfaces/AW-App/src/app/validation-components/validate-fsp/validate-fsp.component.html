@@ -1,48 +1,48 @@
 <section #startMeeting>
   <form *ngIf="questions?.length">
-    <dialogue-turn [isSpoken]="true">
+    <app-dialogue-turn [isSpoken]="true">
       <p>
         {{ 'validation.validate-fsp.introduction' | translate }}
       </p>
-    </dialogue-turn>
+    </app-dialogue-turn>
 
-    <q-and-a-set
+    <app-q-and-a-set
       [questions]="questions"
       [answers]="customAttributeAnswers"
       [(isSubmitted)]="isSubmitted"
       [(isEditing)]="isEditing"
       [allQuestionsShown]="true"
-      (submit)="saveCustomAttributes($event)"
+      (submitAction)="saveCustomAttributes($event)"
       submitLabel="validation.validate-fsp.submit"
-    ></q-and-a-set>
+    ></app-q-and-a-set>
 
-    <dialogue-turn
+    <app-dialogue-turn
       *ngIf="showResultSuccess"
       [isSpoken]="showResultSuccess"
     >
       <p>
         {{ 'validation.validate-fsp.conclusion' | translate }}
       </p>
-    </dialogue-turn>
-    <dialogue-turn
+    </app-dialogue-turn>
+    <app-dialogue-turn
       *ngIf="showResultError"
       [isSpoken]="showResultError"
     >
       <p>
         {{ 'validation.validate-fsp.generic-error' | translate }}
       </p>
-    </dialogue-turn>
+    </app-dialogue-turn>
   </form>
 
-  <dialogue-turn
+  <app-dialogue-turn
     *ngIf="!fspQuestionAvailable"
     [isSpoken]="!fspQuestionAvailable"
   >
     <p>
       {{ 'validation.validate-fsp.no-fsp' | translate }}
     </p>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     actor="self"
     *ngIf="backToMainMenu"
     [isSpoken]="backToMainMenu"
@@ -55,5 +55,5 @@
     >
       {{ 'validation.validate-fsp.back-menu' | translate }}
     </ion-button>
-  </dialogue-turn>
+  </app-dialogue-turn>
 </section>

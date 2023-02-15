@@ -20,7 +20,7 @@ export interface InputProps {
 }
 
 @Component({
-  selector: 'input-prompt',
+  selector: 'app-input-prompt',
   templateUrl: './input-prompt.component.html',
   styleUrls: ['./input-prompt.component.scss'],
 })

@@ -8,7 +8,7 @@ import { TranslatableStringService } from 'src/app/services/translatable-string.
 import { MetricsComponent } from './metrics.component';
 
 @Component({
-  template: `<app-metrics [program]="program"></app-metrics>`,
+  template: '<app-metrics [program]="program"></app-metrics>',
 })
 class TestHostComponent {
   program: Program | any;

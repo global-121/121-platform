@@ -1,28 +1,28 @@
 <section #startMeeting>
   <br />
-  <dialogue-turn [isSpoken]="true">
+  <app-dialogue-turn [isSpoken]="true">
     {{ 'validation.validate-program.introduction' | translate }}
-  </dialogue-turn>
+  </app-dialogue-turn>
 
-  <q-and-a-set
+  <app-q-and-a-set
     [questions]="questions"
     [answers]="answers"
     [(isSubmitted)]="hasAnswered"
     [(isEditing)]="hasChangedAnswers"
     [allQuestionsShown]="true"
-    (submit)="submit()"
+    (submitAction)="submit()"
     submitLabel="validation.validate-program.submit"
-  ></q-and-a-set>
+  ></app-q-and-a-set>
 
-  <dialogue-turn
+  <app-dialogue-turn
     *ngIf="hasAnswered || programAttributesValidated"
     [isSpoken]="hasAnswered || programAttributesValidated"
   >
     <p>
       {{ 'validation.validate-program.please-confirm' | translate }}
     </p>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     actor="self"
     *ngIf="hasAnswered"
     [isSpoken]="hasAnswered"
@@ -53,11 +53,11 @@
         {{ 'validation.validate-program.change' | translate }}
       </ion-button>
     </p>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     *ngIf="programAttributesValidated"
     [isSpoken]="programAttributesValidated"
   >
     {{ 'validation.validate-program.conclusion' | translate }}
-  </dialogue-turn>
+  </app-dialogue-turn>
 </section>

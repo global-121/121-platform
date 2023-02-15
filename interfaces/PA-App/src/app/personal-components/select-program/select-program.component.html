@@ -1,18 +1,18 @@
 <section #selectProgram>
-  <dialogue-turn
+  <app-dialogue-turn
     *ngIf="programs?.length > 0"
     [isSpoken]="programs?.length > 0"
     [isConnected]="true"
   >
     <p>
-      <play-text-audio
+      <app-play-text-audio
         key="personal.select-program.introduction"
         class="ion-float-start ion-margin-end"
-      ></play-text-audio>
+      ></app-play-text-audio>
       {{ 'personal.select-program.introduction' | translate }}
     </p>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     actor="self"
     *ngIf="programs?.length > 0"
     [isSpoken]="programs?.length > 0"
@@ -69,10 +69,10 @@
         *ngIf="programChoice && !isDisabled"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio
+        <app-play-text-audio
           key="shared.submit-button"
           size="default"
-        ></play-text-audio>
+        ></app-play-text-audio>
         <ion-button
           type="submit"
           expand="block"
@@ -82,17 +82,17 @@
         </ion-button>
       </ion-row>
     </form>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     *ngIf="!programs?.length"
     [isSpoken]="!programs?.length"
   >
     <p>
-      <play-text-audio
+      <app-play-text-audio
         key="personal.select-program.no-published-programs"
         class="ion-float-start ion-margin-end"
-      ></play-text-audio>
+      ></app-play-text-audio>
       {{ 'personal.select-program.no-published-programs' | translate }}
     </p>
-  </dialogue-turn>
+  </app-dialogue-turn>
 </section>

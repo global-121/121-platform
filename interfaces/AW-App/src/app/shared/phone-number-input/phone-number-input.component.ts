@@ -9,7 +9,7 @@ import { NgModel } from '@angular/forms';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
-  selector: 'phone-number-input',
+  selector: 'app-phone-number-input',
   templateUrl: './phone-number-input.component.html',
   styleUrls: ['./phone-number-input.component.scss'],
 })

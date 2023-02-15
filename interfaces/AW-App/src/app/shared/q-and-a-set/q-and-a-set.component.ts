@@ -19,7 +19,7 @@ import {
 import { DialogueTurnComponent } from '../dialogue-turn/dialogue-turn.component';
 
 @Component({
-  selector: 'q-and-a-set',
+  selector: 'app-q-and-a-set',
   templateUrl: './q-and-a-set.component.html',
   styleUrls: ['./q-and-a-set.component.scss'],
 })
@@ -44,7 +44,7 @@ export class QAndASetComponent implements OnChanges {
   public isEditingChange = new EventEmitter<boolean>();
 
   @Output()
-  public submit = new EventEmitter<any>();
+  public submitAction = new EventEmitter<any>();
 
   @Input()
   public submitLabel = 'Submit';
@@ -232,6 +232,6 @@ export class QAndASetComponent implements OnChanges {
     this.isSubmittedChange.emit(this.isSubmitted);
     this.isEditing = false;
     this.isEditingChange.emit(this.isEditing);
-    this.submit.emit(this.answers);
+    this.submitAction.emit(this.answers);
   }
 }

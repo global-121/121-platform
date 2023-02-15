@@ -5,7 +5,7 @@
   <ng-container
     *ngFor="let question of questions; let i = index; first as isFirst"
   >
-    <dialogue-turn
+    <app-dialogue-turn
       actor="self"
       [isConnected]="!isFirst"
       [isSpoken]="isFirst || isSubmitted || isEditing"
@@ -59,7 +59,7 @@
           </div>
         </div>
         <div *ngSwitchCase="answerType.Number">
-          <numeric-input
+          <app-numeric-input
             #numInput
             ngDefaultControl
             [(ngModel)]="theFormModels[question.code]"
@@ -75,10 +75,10 @@
                 numInput.isValid
               )
             "
-          ></numeric-input>
+          ></app-numeric-input>
         </div>
         <div *ngSwitchCase="answerType.Date">
-          <date-input
+          <app-date-input
             #dateInput
             ngDefaultControl
             [(ngModel)]="theFormModels[question.code]"
@@ -92,10 +92,10 @@
                 dateInput.isValid
               )
             "
-          ></date-input>
+          ></app-date-input>
         </div>
         <div *ngSwitchCase="answerType.PhoneNumber">
-          <phone-number-input
+          <app-phone-number-input
             #phoneNumberInput
             ngDefaultControl
             [(ngModel)]="theFormModels[question.code]"
@@ -110,7 +110,7 @@
                 phoneNumberInput.isValid
               )
             "
-          ></phone-number-input>
+          ></app-phone-number-input>
         </div>
         <div *ngSwitchCase="answerType.Email">
           <ion-input
@@ -161,12 +161,12 @@
           ></ion-input>
         </div>
       </div>
-    </dialogue-turn>
+    </app-dialogue-turn>
     <div
       *ngIf="checkValidationError(question.code) && !isSubmitted"
       class="ion-margin-bottom ion-padding-bottom"
     >
-      <dialogue-turn [isSpoken]="checkValidationError(question.code)">
+      <app-dialogue-turn [isSpoken]="checkValidationError(question.code)">
         <p *ngIf="question.answerType === answerType.PhoneNumber">
           {{ 'q-and-a-set.validation.phone-number' | translate }}
         </p>
@@ -187,11 +187,11 @@
         >
           {{ 'q-and-a-set.validation.required' | translate }}
         </p>
-      </dialogue-turn>
+      </app-dialogue-turn>
     </div>
   </ng-container>
 
-  <dialogue-turn
+  <app-dialogue-turn
     *ngIf="
       ((theForm.invalid && (theForm.dirty || theForm.touched)) ||
         checkValidationErrors()) &&
@@ -208,9 +208,9 @@
     <p>
       {{ 'q-and-a-set.validation.generic-error' | translate }}
     </p>
-  </dialogue-turn>
+  </app-dialogue-turn>
 
-  <dialogue-turn
+  <app-dialogue-turn
     actor="self"
     [isConnected]="true"
     *ngIf="theForm.valid && !checkValidationErrors() && allQuestionsShown"
@@ -227,5 +227,5 @@
         {{ submitLabel | translate }}
       </ion-button>
     </ion-row>
-  </dialogue-turn>
+  </app-dialogue-turn>
 </form>
