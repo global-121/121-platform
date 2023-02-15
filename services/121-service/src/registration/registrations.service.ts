@@ -1219,10 +1219,17 @@ export class RegistrationsService {
     registration: RegistrationEntity,
     attribute: string,
   ): Promise<boolean> {
-    const registrationDataRelation = await registration.getRelationForName(
-      attribute,
-    );
-    return !!registrationDataRelation.programCustomAttributeId;
+    try {
+      const registrationDataRelation = await registration.getRelationForName(
+        attribute,
+      );
+      return !!registrationDataRelation.programCustomAttributeId;
+    } catch (error) {
+      // Don't throw error on attributes that are changed which are not program/fsp/custom/monitoring type
+      if (error.name !== 'RegistrationDataSaveError') {
+        throw error;
+      }
+    }
   }
 
   public async updateNote(referenceId: string, note: string): Promise<NoteDto> {
