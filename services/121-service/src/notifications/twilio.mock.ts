@@ -83,12 +83,10 @@ export class TwilioClientMock {
       console.log('TwilioClientMock create(): response:', response);
       this.sendStatusResponse121(twilioMessagesCreateDto, messageSid);
 
-      await new Promise((resolve) => setTimeout(resolve, 100));
       if (
         twilioMessagesCreateDto.messageType ===
         IntersolvePayoutStatus.InitialMessage
       ) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
         this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid);
       }
       return response;
@@ -116,7 +114,6 @@ export class TwilioClientMock {
         twilioMessagesCreateDto.from &&
         twilioMessagesCreateDto.from.includes('whatsapp')
       ) {
-        await new Promise((r) => setTimeout(r, 500));
         const request = new TwilioStatusCallbackDto();
         request.MessageSid = messageSid;
         request.MessageStatus = TwilioStatus.delivered;
@@ -149,7 +146,7 @@ export class TwilioClientMock {
         twilioMessagesCreateDto.from &&
         twilioMessagesCreateDto.from.includes('whatsapp')
       ) {
-        await new Promise((r) => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 300));
         const request = new TwilioIncomingCallbackDto();
         request.MessageSid = messageSid;
         request.From = twilioMessagesCreateDto.to.replace('whatsapp:', '');
