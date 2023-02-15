@@ -27,7 +27,7 @@ jobs:
   build_interface_aw:
     runs-on: ubuntu-latest
     name: 'Build Interface: AW-App'
-    if: github.event.pull_request.draft === false
+    if: github.event.pull_request.draft == false
     steps:
       - uses: actions/checkout@v3
 
@@ -59,7 +59,7 @@ jobs:
   build_interface_pa:
     runs-on: ubuntu-latest
     name: 'Build Interface: PA-App'
-    if: github.event.pull_request.draft === false
+    if: github.event.pull_request.draft == false
     steps:
       - uses: actions/checkout@v3
 
@@ -91,7 +91,7 @@ jobs:
   build_interface_ho:
     runs-on: ubuntu-latest
     name: 'Build Interface: HO-Portal'
-    if: github.event.pull_request.draft === false
+    if: github.event.pull_request.draft == false
     steps:
       - uses: actions/checkout@v3
 
@@ -127,7 +127,7 @@ jobs:
       - build_interface_ho
     name: Run Cypress Tests
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft === false
+    if: github.event.pull_request.draft == false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
