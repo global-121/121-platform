@@ -16,4 +16,7 @@ export class IntersolveLoadRequestEntity extends Base121Entity {
 
   @Column()
   public quantityValue: number;
+
+  @Column({ nullable: true })
+  public statusCode: number;
 }

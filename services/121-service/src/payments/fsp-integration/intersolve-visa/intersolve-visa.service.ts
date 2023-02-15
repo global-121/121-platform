@@ -211,6 +211,12 @@ export class IntersolveVisaService {
       tokenCode,
       payload,
     );
+
+    interSolveLoadRequestEntity.statusCode = topUpResult.statusCode;
+    await this.intersolveLoadRequestRepository.save(
+      interSolveLoadRequestEntity,
+    );
+
     return {
       status: topUpResult.body.success ? StatusEnum.success : StatusEnum.error,
       message: topUpResult.body.success

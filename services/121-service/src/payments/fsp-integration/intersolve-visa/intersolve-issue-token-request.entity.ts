@@ -8,7 +8,7 @@ export class IntersolveIssueTokenRequestEntity extends Base121Entity {
   public reference: string;
 
   @Column({ nullable: true })
-  public correlationId: string;
+  public saleId: string;
 
   @Column({ nullable: true })
   public statusCode: number;
