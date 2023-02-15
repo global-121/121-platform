@@ -356,7 +356,7 @@
             },
             "whatsappPhoneNumber": {
               "label": "WhatsApp number",
-              "explanation": "This value is required for a 'WhatsApp-enabled' FSP only."
+              "explanation": "The required format is: ONLY numbers, including country-code."
             },
             "accountId": {
               "label": "Account ID"

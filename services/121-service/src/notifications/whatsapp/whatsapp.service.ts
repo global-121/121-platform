@@ -553,9 +553,10 @@ export class WhatsappService {
       this.sendPendingWhatsappMessages(registrationsWithPendingMessage);
     }
   }
-  private sendPendingWhatsappMessages(
+
+  private async sendPendingWhatsappMessages(
     registrationsWithPendingMessage: RegistrationEntity[],
-  ): void {
+  ): Promise<void> {
     for (const registration of registrationsWithPendingMessage) {
       if (registration.whatsappPendingMessages) {
         for (const message of registration.whatsappPendingMessages) {
@@ -573,6 +574,7 @@ export class WhatsappService {
           ).then(() => {
             this.whatsappPendingMessageRepo.remove(message);
           });
+          await new Promise((resolve) => setTimeout(resolve, 2000));
         }
       }
     }
