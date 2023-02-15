@@ -5,6 +5,8 @@ name: 'Cypress Full Integration Tests'
 on:
   workflow_dispatch:
   pull_request:
+    types:
+      - 'ready_for_review'
     branches:
       - 'master'
     paths:
