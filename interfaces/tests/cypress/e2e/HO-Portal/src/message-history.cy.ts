@@ -231,6 +231,8 @@ describe('Check message history', () => {
       easing: 'linear',
       duration: 100,
     });
+    cy.get('[data-cy="message-history-button"]').should('be.visible');
+    cy.get('[data-cy="message-history-button"]').should('not.be.disabled');
     cy.get('[data-cy="message-history-button"]').click();
     cy.get('.toolbar-title-default > .ion-color').contains(
       registration.nameFirst,
