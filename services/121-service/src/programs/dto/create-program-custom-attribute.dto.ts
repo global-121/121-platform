@@ -6,6 +6,7 @@ import { ProgramPhase } from '../../shared/enum/program-phase.model';
 export enum CustomAttributeType {
   text = 'text',
   boolean = 'boolean',
+  tel = 'tel',
 }
 
 export class CreateProgramCustomAttributeDto {

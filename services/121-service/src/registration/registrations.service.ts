@@ -1156,6 +1156,20 @@ export class RegistrationsService {
       referenceId,
       ['program'],
     );
+
+    // If registration is a custom attribute and the value is empty delete it instead of updating
+    if (
+      value === '' &&
+      (await this.registrationDataIsCustomAttribute(registration, attribute))
+    ) {
+      const registrationDataByNameDto =
+        await registration.getRegistrationDataByName(attribute);
+      await this.registrationDataRepository.delete(
+        registrationDataByNameDto.id,
+      );
+      return this.getRegistrationFromReferenceId(registration.referenceId);
+    }
+
     value = await this.cleanCustomDataIfPhoneNr(attribute, value);
 
     if (typeof registration[attribute] !== 'undefined') {
@@ -1199,6 +1213,16 @@ export class RegistrationsService {
       );
     }
     return this.getRegistrationFromReferenceId(savedRegistration.referenceId);
+  }
+
+  private async registrationDataIsCustomAttribute(
+    registration: RegistrationEntity,
+    attribute: string,
+  ): Promise<boolean> {
+    const registrationDataRelation = await registration.getRelationForName(
+      attribute,
+    );
+    return !!registrationDataRelation.programCustomAttributeId;
   }
 
   public async updateNote(referenceId: string, note: string): Promise<NoteDto> {

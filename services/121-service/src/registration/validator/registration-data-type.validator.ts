@@ -83,7 +83,7 @@ export class RegistrationDataTypeValidator
       isValid = !isNaN(+value) || null;
     } else if (type === AnswerTypes.tel) {
       // Potential refactor: put lookup code here
-      isValid = !!value.length && value.length >= 8 && value.length <= 17;
+      isValid = this.phoneNumberIsValid(value);
     } else if (type === AnswerTypes.text || type === CustomAttributeType.text) {
       isValid = typeof value === 'string';
     } else if (type === CustomAttributeType.boolean) {
@@ -109,6 +109,16 @@ export class RegistrationDataTypeValidator
       }
     }
     return true;
+  }
+
+  private phoneNumberIsValid(value: any): boolean {
+    if (value === '') {
+      return true;
+    } else if (!!value && value.length >= 8 && value.length <= 17) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   private optionIsValid(value: any, options: any[]): boolean {

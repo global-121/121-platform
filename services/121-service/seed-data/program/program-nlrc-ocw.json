@@ -22,12 +22,6 @@
   "fixedTransferValue": 44,
   "financialServiceProviders": [
     {
-      "fsp": "Intersolve-whatsapp"
-    },
-    {
-      "fsp": "Intersolve-no-whatsapp"
-    },
-    {
       "fsp": "Intersolve-visa"
     }
   ],
@@ -70,6 +64,21 @@
         "selected-for-validation",
         "payment"
       ],
+      "phases": ["registrationValidation", "inclusion", "payment"]
+    },
+    {
+      "label": {
+        "en": "WhatsApp Nr."
+      },
+      "name": "whatsappPhoneNumber",
+      "type": "tel",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ],
+      "duplicateCheck": true,
       "phases": ["registrationValidation", "inclusion", "payment"]
     }
   ],
