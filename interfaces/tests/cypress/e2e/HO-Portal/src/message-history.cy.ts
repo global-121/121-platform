@@ -227,59 +227,68 @@ describe('Check message history', () => {
     nEntry?: number,
   ) => {
     // Check headers
-    cy.get('.proxy-scrollbar').scrollTo('right', {
-      easing: 'linear',
-      duration: 100,
-    });
-    cy.get('[data-cy="message-history-button"]').should('be.visible');
-    cy.get('[data-cy="message-history-button"]').should('not.be.disabled');
-    cy.get('[data-cy="message-history-button"]').click();
-    cy.get('.toolbar-title-default > .ion-color').contains(
-      registration.nameFirst,
-    );
-    cy.get('.toolbar-title-default > .ion-color').contains(
-      registration.nameLast,
-    );
+    cy.get('.proxy-scrollbar')
+      .scrollTo('right', {
+        easing: 'linear',
+        duration: 100,
+      })
+      .then(() => {
+        cy.get('[data-cy="message-history-button"]').should('be.visible');
+        cy.get('[data-cy="message-history-button"]').should('not.be.disabled');
+        cy.get('[data-cy="message-history-button"]').click();
+        cy.get('.toolbar-title-default > .ion-color').contains(
+          registration.nameFirst,
+        );
+        cy.get('.toolbar-title-default > .ion-color').contains(
+          registration.nameLast,
+        );
 
-    // Set labels
-    const messageHistoryEn =
-      portalEn.page.program['program-people-affected']['message-history-popup'];
-    let typeLabel;
-    if (messageType === 'whatsapp') {
-      typeLabel = messageHistoryEn.type.whatsapp;
-    } else {
-      typeLabel = messageHistoryEn.type.sms;
-    }
-    const messageTextSub = messageText.substring(0, 20);
-    // cy.get('[data-cy="message-history-row"]').contains(typeLabel)
+        // Set labels
+        const messageHistoryEn =
+          portalEn.page.program['program-people-affected'][
+            'message-history-popup'
+          ];
+        let typeLabel;
+        if (messageType === 'whatsapp') {
+          typeLabel = messageHistoryEn.type.whatsapp;
+        } else {
+          typeLabel = messageHistoryEn.type.sms;
+        }
+        const messageTextSub = messageText.substring(0, 20);
+        // cy.get('[data-cy="message-history-row"]').contains(typeLabel)
 
-    // Checks row
-    if (isFinite(nEntry)) {
-      cy.get('[data-cy="message-history-row"]')
-        .eq(nEntry)
-        .contains(customLabel);
-      cy.get('[data-cy="message-history-row"]').eq(nEntry).contains(typeLabel);
-      cy.get('[data-cy="message-history-row"]')
-        .eq(nEntry)
-        .contains(messageStatus, { matchCase: false });
-      cy.get('[data-cy="message-history-accordion"]')
-        .eq(nEntry)
-        .contains(messageTextSub);
-      cy.get('[data-cy="message-history-accordion"]').eq(nEntry).click();
-      cy.get('[data-cy="message-history-accordion"]')
-        .eq(nEntry)
-        .contains(messageText.replace(/\n/g, ''));
-    } else {
-      cy.get('[data-cy="message-history-row"]').contains(customLabel);
-      cy.get('[data-cy="message-history-row"]').contains(typeLabel);
-      cy.get('[data-cy="message-history-row"]').contains(messageStatus, {
-        matchCase: false,
+        // Checks row
+        if (isFinite(nEntry)) {
+          cy.get('[data-cy="message-history-row"]')
+            .eq(nEntry)
+            .contains(customLabel);
+          cy.get('[data-cy="message-history-row"]')
+            .eq(nEntry)
+            .contains(typeLabel);
+          cy.get('[data-cy="message-history-row"]')
+            .eq(nEntry)
+            .contains(messageStatus, { matchCase: false });
+          cy.get('[data-cy="message-history-accordion"]')
+            .eq(nEntry)
+            .contains(messageTextSub);
+          cy.get('[data-cy="message-history-accordion"]').eq(nEntry).click();
+          cy.get('[data-cy="message-history-accordion"]')
+            .eq(nEntry)
+            .contains(messageText.replace(/\n/g, ''));
+        } else {
+          cy.get('[data-cy="message-history-row"]').contains(customLabel);
+          cy.get('[data-cy="message-history-row"]').contains(typeLabel);
+          cy.get('[data-cy="message-history-row"]').contains(messageStatus, {
+            matchCase: false,
+          });
+          cy.get('[data-cy="message-history-accordion"]').contains(
+            messageTextSub,
+          );
+          cy.get('[data-cy="message-history-accordion"]').click();
+          cy.get('[data-cy="message-history-accordion"]').contains(
+            messageText.replace(/\n/g, ''),
+          );
+        }
       });
-      cy.get('[data-cy="message-history-accordion"]').contains(messageTextSub);
-      cy.get('[data-cy="message-history-accordion"]').click();
-      cy.get('[data-cy="message-history-accordion"]').contains(
-        messageText.replace(/\n/g, ''),
-      );
-    }
   };
 });
