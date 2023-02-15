@@ -11,58 +11,63 @@ describe('Check message history', () => {
   });
 
   it('Send 1 whatsapp message', function () {
-    const messageText =
-      programLVV.notifications.en.whatsappGenericMessage;
+    const programId = 1;
+    const messageText = programLVV.notifications.en.whatsappGenericMessage;
     const label =
-      portalEn.page.program['program-people-affected'][
-        'message-history-popup'
-      ]['content-type']['generic-templated'];
+      portalEn.page.program['program-people-affected']['message-history-popup'][
+        'content-type'
+      ]['generic-templated'];
+    cy.intercept({
+      method: 'GET',
+      url: '**/programs/' + programId + '/*',
+    }).as('getProgram');
+    cy.intercept({ method: 'POST', url: '**/text-message' }).as('textmessage');
 
-    cy.importRegistrations(1);
-    cy.moveToSpecifiedPhase(1, ProgramPhase.registrationValidation);
+    cy.importRegistrations(programId);
+    cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
     cy.fixture('message-history').then((fixture) => {
-      // Send message
-      // Monitor text message request
-      cy.intercept({ method: 'POST', url: '**/text-message' }).as(
-        'textmessage',
-      );
-
       cy.setHoPortal();
-      cy.visit(fixture.url).then(() => {
-        cy.sendBulkMessage(fixture.messageText).then(() => {
-          // Check PA-table
-          checkPATable(fixture, MessageStatus.delivered, 'WHATSAPP');
+      cy.visit(fixture.url);
+      cy.wait('@getProgram');
 
-          cy.fixture('registration-nlrc').then((registration) => {
-            // Check Message History Popup
-            checkMessageHistoryPopup(
-              registration,
-              label,
-              messageText,
-              'whatsapp',
-              MessageStatus.delivered,
-            );
-          });
-        });
+      cy.sendBulkMessage(fixture.messageText);
+      cy.wait('@textmessage');
+
+      // Check PA-table
+      checkPATable(fixture, MessageStatus.delivered, 'WHATSAPP');
+
+      cy.fixture('registration-nlrc').then((registration) => {
+        // Check Message History Popup
+        checkMessageHistoryPopup(
+          registration,
+          label,
+          messageText,
+          'whatsapp',
+          MessageStatus.delivered,
+        );
       });
     });
   });
 
   it('Send 1 sms message', function () {
+    const programId = 1;
+    cy.intercept({
+      method: 'GET',
+      url: '**/programs/' + programId + '/*',
+    }).as('getProgram');
+    cy.intercept({ method: 'POST', url: '**/text-message' }).as('textmessage');
+
     cy.fixture('registration-nlrc-no-whatsapp').then(
       (registrationNoWhatsapp) => {
-        cy.importRegistrations(1, [registrationNoWhatsapp]);
-        cy.moveToSpecifiedPhase(1, ProgramPhase.registrationValidation);
+        cy.importRegistrations(programId, [registrationNoWhatsapp]);
+        cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
         cy.fixture('message-history').then((fixture) => {
-          // Send message
-          // Monitor text message request
-          cy.intercept({ method: 'POST', url: '**/text-message' }).as(
-            'textmessage',
-          );
-
           cy.setHoPortal();
           cy.visit(fixture.url);
+          cy.wait('@getProgram');
+
           cy.sendBulkMessage(fixture.messageText);
+          cy.wait('@textmessage');
 
           // Check PA-table
           checkPATable(fixture, MessageStatus.sent, 'SMS');
@@ -85,22 +90,25 @@ describe('Check message history', () => {
   });
 
   it('Send 1 failed sms message', function () {
+    const programId = 1;
+    cy.intercept({
+      method: 'GET',
+      url: '**/programs/' + programId + '/*',
+    }).as('getProgram');
+    cy.intercept({ method: 'POST', url: '**/text-message' }).as('textmessage');
+
     cy.fixture('registration-nlrc-no-whatsapp').then(
       (registrationNoWhatsapp) => {
         registrationNoWhatsapp.phoneNumber = '15005550001';
-        cy.importRegistrations(1, [registrationNoWhatsapp]);
-        cy.moveToSpecifiedPhase(1, ProgramPhase.registrationValidation);
+        cy.importRegistrations(programId, [registrationNoWhatsapp]);
+        cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
         cy.fixture('message-history').then((fixture) => {
-          // Send message
-          // Monitor text message request
-          cy.intercept({ method: 'POST', url: '**/text-message' }).as(
-            'textmessage',
-          );
-
           cy.setHoPortal();
           cy.visit(fixture.url);
+          cy.wait('@getProgram');
 
           cy.sendBulkMessage(fixture.messageText);
+          cy.wait('@textmessage');
 
           // Check PA-table
           checkPATable(fixture, MessageStatus.failed, 'SMS');
@@ -124,70 +132,66 @@ describe('Check message history', () => {
 
   it('Send 1 succes message than 1 failed sms message', function () {
     const programId = 1;
+    cy.intercept({
+      method: 'GET',
+      url: '**/programs/' + programId + '/*',
+    }).as('getProgram');
+    cy.intercept({ method: 'POST', url: '**/text-message' }).as('textmessage');
+
     cy.fixture('registration-nlrc-no-whatsapp').then(
       (registrationNoWhatsapp) => {
-        cy.importRegistrations(1, [registrationNoWhatsapp]);
-        cy.moveToSpecifiedPhase(1, ProgramPhase.registrationValidation);
+        cy.importRegistrations(programId, [registrationNoWhatsapp]);
+        cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
         cy.fixture('message-history').then((fixture) => {
-          // Send message
-          // Monitor text message request
-          cy.intercept({ method: 'POST', url: '**/text-message' }).as(
-            'textmessage',
-          );
-
           cy.setHoPortal();
-          cy.visit(fixture.url).then(() => {
-            cy.sendBulkMessage(fixture.messageText).then(() => {
-              cy.getAllPeopleAffected(programId).then((response) => {
-                for (const pa of response.body) {
-                  cy.editPaAttribute(
-                    programId,
-                    pa.referenceId,
-                    'phoneNumber',
-                    '15005550001',
-                  );
-                }
+          cy.visit(fixture.url);
+          cy.wait('@getProgram');
 
-                cy.setHoPortal();
-                const interceptIdMessage2 = 'textmessage2';
-                cy.intercept({ method: 'POST', url: '**/text-message' }).as(
-                  interceptIdMessage2,
-                );
-                cy.sendBulkMessage(fixture.messageText).then(() => {
-                  // // Check PA-table
-                  checkPATable(
-                    fixture,
-                    MessageStatus.failed,
-                    'SMS',
-                    interceptIdMessage2,
-                  );
+          cy.sendBulkMessage(fixture.messageText);
+          cy.wait('@textmessage');
 
-                  // Check Message History Popup
-                  const customLabel =
-                    portalEn.page.program['program-people-affected'][
-                      'message-history-popup'
-                    ]['content-type'].custom;
-                  checkMessageHistoryPopup(
-                    registrationNoWhatsapp,
-                    customLabel,
-                    fixture.messageText,
-                    'sms',
-                    MessageStatus.failed,
-                    0,
-                  );
-                  cy.visit(fixture.url).then(() => {
-                    checkMessageHistoryPopup(
-                      registrationNoWhatsapp,
-                      customLabel,
-                      fixture.messageText,
-                      'sms',
-                      MessageStatus.sent,
-                      1,
-                    );
-                  });
-                });
-              });
-            });
+          cy.getAllPeopleAffected(programId).then((response) => {
+            for (const pa of response.body) {
+              cy.editPaAttribute(
+                programId,
+                pa.referenceId,
+                'phoneNumber',
+                '15005550001',
+              );
+            }
+
+            cy.setHoPortal();
+            cy.sendBulkMessage(fixture.messageText);
+            cy.wait('@textmessage');
+
+            // // Check PA-table
+            checkPATable(fixture, MessageStatus.failed, 'SMS');
+
+            // Check Message History Popup
+            const customLabel =
+              portalEn.page.program['program-people-affected'][
+                'message-history-popup'
+              ]['content-type'].custom;
+            checkMessageHistoryPopup(
+              registrationNoWhatsapp,
+              customLabel,
+              fixture.messageText,
+              'sms',
+              MessageStatus.failed,
+              0,
+            );
+
+            cy.visit(fixture.url);
+            cy.wait('@getProgram');
+
+            checkMessageHistoryPopup(
+              registrationNoWhatsapp,
+              customLabel,
+              fixture.messageText,
+              'sms',
+              MessageStatus.sent,
+              1,
+            );
           });
         });
       },
@@ -198,9 +202,7 @@ describe('Check message history', () => {
     fixture: any,
     messageStatus: string,
     messageType: string,
-    interceptId = 'textmessage',
   ) => {
-    cy.wait(`@${interceptId}`); // Wait for textmessage cy intercept to complete
     cy.setHoPortal();
     cy.visit(fixture.url).then(() => {
       cy.get('.proxy-scrollbar').scrollTo('right', {

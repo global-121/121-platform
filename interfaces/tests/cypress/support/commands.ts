@@ -213,7 +213,7 @@ declare namespace Cypress {
     setHoPortal(): void;
     setPaApp(): void;
     setServer(): void;
-    sendBulkMessage(messageText: string): Cypress.Chainable<Cypress.Response<any>>;
+    sendBulkMessage(messageText: string): void;
     publishProgram(programId: number): void;
     moveToSpecifiedPhase(programId: number, phase: string): void;
     getAllPeopleAffected(
