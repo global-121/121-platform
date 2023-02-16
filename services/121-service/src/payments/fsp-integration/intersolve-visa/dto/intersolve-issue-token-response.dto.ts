@@ -1,9 +1,6 @@
-export class IntersolveIssueTokenResponseDto {
-  public body: IntersolveIssueTokenBodyDto;
-  public statusCode: number;
-}
+import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
 
-export class IntersolveIssueTokenBodyDto {
+export class IntersolveIssueTokenResponseDto {
   public success: boolean;
   public errors: IntersolveReponseErrorDto[];
   public code: string;
@@ -116,10 +113,4 @@ class IntersolveIssueTokenResponseMethodMetadataDto {
 class IntersolveIssueTokenResponseSecurityCodeMetadataDto {
   required: boolean;
   format: string;
-}
-
-export class IntersolveReponseErrorDto {
-  public code: string;
-  public field: string;
-  public description: string;
 }

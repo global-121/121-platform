@@ -3,7 +3,6 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import {
-  IntersolveIssueTokenBodyDto,
   IntersolveIssueTokenResponseDataDto,
   IntersolveIssueTokenResponseDto,
   IntersolveIssueTokenResponseTokenDto,
@@ -15,24 +14,23 @@ export class IntersolveVisaApiMockService {
   public constructor(private readonly httpService: HttpService) {}
 
   public issueTokenMock(): IntersolveIssueTokenResponseDto {
-    const response = new IntersolveIssueTokenResponseDto();
-    response.body = new IntersolveIssueTokenBodyDto();
-    response.body.data = new IntersolveIssueTokenResponseDataDto();
-    response.body.data.token = new IntersolveIssueTokenResponseTokenDto();
-    response.body.success = true;
-    response.body.errors = [];
-    response.body.code = 'string';
-    response.body.correlationId = 'string';
-    response.body.data.token.code = `tokencode-${uuid()}`;
-    response.body.data.token.blocked = false;
-    response.body.data.token.blockReasonCode = 'string';
-    response.body.data.token.type = 'string';
-    response.body.data.token.tier = 'string';
-    response.body.data.token.brandTypeCode = 'string';
-    response.body.data.token.expiresAt = '2023-02-08T14:36:05.816Z';
-    response.body.data.token.status = 'string';
-    response.body.data.token.holderId = 'string';
-    response.body.data.token.balances = [
+    const body = new IntersolveIssueTokenResponseDto();
+    body.data = new IntersolveIssueTokenResponseDataDto();
+    body.data.token = new IntersolveIssueTokenResponseTokenDto();
+    body.success = true;
+    body.errors = [];
+    body.code = 'string';
+    body.correlationId = 'string';
+    body.data.token.code = `tokencode-${uuid()}`;
+    body.data.token.blocked = false;
+    body.data.token.blockReasonCode = 'string';
+    body.data.token.type = 'string';
+    body.data.token.tier = 'string';
+    body.data.token.brandTypeCode = 'string';
+    body.data.token.expiresAt = '2023-02-08T14:36:05.816Z';
+    body.data.token.status = 'string';
+    body.data.token.holderId = 'string';
+    body.data.token.balances = [
       {
         quantity: {
           assetCode: 'string',
@@ -43,7 +41,7 @@ export class IntersolveVisaApiMockService {
         lastChangedAt: '2023-02-08T14:36:05.816Z',
       },
     ];
-    response.body.data.token.assets = [
+    body.data.token.assets = [
       {
         identity: {
           type: 'string',
@@ -115,9 +113,8 @@ export class IntersolveVisaApiMockService {
         ],
       },
     ];
-    response.statusCode = 200;
 
-    return response;
+    return body;
   }
 
   public topUpCardMock(amountInCents: number): IntersolveLoadResponseDto {

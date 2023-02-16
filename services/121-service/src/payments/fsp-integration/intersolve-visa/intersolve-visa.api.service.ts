@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
+import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-custom-respose.dto';
+import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveIssueTokenResponseDto } from './dto/intersolve-issue-token-response.dto';
 import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
@@ -41,6 +43,42 @@ export class IntersolveVisaApiService {
     }
   }
 
+  public async createCustomer(
+    payload: IntersolveCreateCustomerDto,
+  ): Promise<IntersolveCreateCustomerResponseBodyDto> {
+    if (process.env.MOCK_INTERSOLVE) {
+      return; // To be create
+    } else {
+      console.log('payload: ', payload);
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/customer/v1/customers/create-individual`;
+      return await this.httpService.post<IntersolveCreateCustomerResponseBodyDto>(
+        url,
+        payload,
+        authToken,
+      );
+    }
+  }
+
+  public async registerHolder(
+    payload: {
+      holderId: string;
+    },
+    tokenCode: string,
+  ): Promise<IntersolveCreateCustomerResponseBodyDto> {
+    if (process.env.MOCK_INTERSOLVE) {
+      return; // To be create
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/tokens/${tokenCode}/register-holder`;
+      return await this.httpService.post<IntersolveCreateCustomerResponseBodyDto>(
+        url,
+        payload,
+        authToken,
+      );
+    }
+  }
+
   public async issueToken(
     payload: IntersolveIssueTokenDto,
   ): Promise<IntersolveIssueTokenResponseDto> {
@@ -49,7 +87,8 @@ export class IntersolveVisaApiService {
     } else {
       const authToken = await this.getAuthenticationToken();
       const brandCode = process.env.INTERSOLVE_VISA_BRAND_CODE;
-      const url = `${intersolveVisaApiUrl}/brand-types/${brandCode}/issue-token`;
+      const url = `${intersolveVisaApiUrl}/pointofsale/v1/brand-types/${brandCode}/issue-token`;
+      console.log('url: ', url);
       return await this.httpService.post<IntersolveIssueTokenResponseDto>(
         url,
         payload,
