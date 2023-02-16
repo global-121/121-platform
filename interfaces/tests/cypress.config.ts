@@ -12,6 +12,10 @@ module.exports = defineConfig({
     'baseUrl-HO': 'http://localhost:8888',
     'baseUrl-server': 'http://localhost:3000/api',
   },
+  retries: {
+    runMode: 2,
+    openMode: 2,
+  },
   viewportWidth: 1920,
   viewportHeight: 1080,
   e2e: {
