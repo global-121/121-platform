@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Issuer } from 'openid-client';
+import { Issuer, TokenSet } from 'openid-client';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { IntersolveIssueTokenResponseDto } from './dto/intersolve-issue-token-response.dto';
 import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
@@ -11,23 +11,42 @@ const intersolveVisaApiUrl = process.env.INTERSOLVE_VISA_API_URL;
 
 @Injectable()
 export class IntersolveVisaApiService {
+  public tokenSet: TokenSet;
+
   public constructor(
     private readonly httpService: CustomHttpService,
     private readonly intersolveVisaApiMockService: IntersolveVisaApiMockService,
   ) {}
 
   public async getAuthenticationToken(): Promise<string> {
-    const trustIssuer = await Issuer.discover(
-      `${process.env.INTERSOLVE_VISA_OIDC_ISSUER}/.well-known/openid-configuration`,
-    );
-    const client = new trustIssuer.Client({
-      client_id: process.env.INTERSOLVE_VISA_CLIENT_ID,
-      client_secret: process.env.INTERSOLVE_VISA_CLIENT_SECRET,
-    });
-    const tokenSet = await client.grant({
-      grant_type: 'client_credentials',
-    });
-    return tokenSet.access_token;
+    // Check expires_at
+    if (this.tokenSet && this.tokenSet.expires_at > Date.now() - 60000) {
+      // Return cached token
+      console.log(
+        'this.tokenSet.access_token CACHED: ',
+        this.tokenSet.access_token,
+      );
+      return this.tokenSet.access_token;
+    } else {
+      // If not valid, request new token
+      const trustIssuer = await Issuer.discover(
+        `${process.env.INTERSOLVE_VISA_OIDC_ISSUER}/.well-known/openid-configuration`,
+      );
+      const client = new trustIssuer.Client({
+        client_id: process.env.INTERSOLVE_VISA_CLIENT_ID,
+        client_secret: process.env.INTERSOLVE_VISA_CLIENT_SECRET,
+      });
+      const tokenSet = await client.grant({
+        grant_type: 'client_credentials',
+      });
+      // Cache tokenSet
+      this.tokenSet = tokenSet;
+      console.log(
+        'this.tokenSet.access_token NOT CACHED: ',
+        this.tokenSet.access_token,
+      );
+      return tokenSet.access_token;
+    }
   }
 
   public async issueToken(
