@@ -22,10 +22,6 @@ export class IntersolveVisaApiService {
     // Check expires_at
     if (this.tokenSet && this.tokenSet.expires_at > Date.now() - 60000) {
       // Return cached token
-      console.log(
-        'this.tokenSet.access_token CACHED: ',
-        this.tokenSet.access_token,
-      );
       return this.tokenSet.access_token;
     } else {
       // If not valid, request new token
@@ -41,10 +37,6 @@ export class IntersolveVisaApiService {
       });
       // Cache tokenSet
       this.tokenSet = tokenSet;
-      console.log(
-        'this.tokenSet.access_token NOT CACHED: ',
-        this.tokenSet.access_token,
-      );
       return tokenSet.access_token;
     }
   }
