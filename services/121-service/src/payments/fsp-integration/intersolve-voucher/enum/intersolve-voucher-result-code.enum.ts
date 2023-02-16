@@ -1,4 +1,4 @@
-export enum IntersolveResultCode {
+export enum IntersolveVoucherResultCode {
   Ok = 0,
   AuthorizationFailed = 3,
   InvalidParameters = 5,

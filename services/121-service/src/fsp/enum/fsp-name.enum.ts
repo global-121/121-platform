@@ -1,6 +1,6 @@
 export enum FspName {
-  intersolve = 'Intersolve-whatsapp',
-  intersolveNoWhatsapp = 'Intersolve-no-whatsapp',
+  intersolveVoucherWhatsapp = 'Intersolve-voucher-whatsapp',
+  intersolveVoucherPaper = 'Intersolve-voucher-paper',
   intersolveVisa = 'Intersolve-visa',
   africasTalking = 'Africas-talking',
   belcash = 'BelCash',

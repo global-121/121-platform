@@ -3,7 +3,7 @@ Feature: Send reminder message for unclaimed vouchers
 
   Background:
     Given a program with "Intersolve" FSP
-    Given a PA has chosen FSP "Intersolve-whatsapp"
+    Given a PA has chosen FSP "Intersolve-voucher-whatsapp"
     Given a payment has been made to this PA
     Given the PA has received the initial WhatsApp-message
 

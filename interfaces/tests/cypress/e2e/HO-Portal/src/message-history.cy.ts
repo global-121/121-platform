@@ -56,7 +56,7 @@ describe('Check message history', () => {
     }).as('getProgram');
     cy.intercept({ method: 'POST', url: '**/text-message' }).as('textmessage');
 
-    cy.fixture('registration-nlrc-no-whatsapp').then(
+    cy.fixture('registration-nlrc-paper').then(
       (registrationNoWhatsapp) => {
         cy.importRegistrations(programId, [registrationNoWhatsapp]);
         cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
@@ -70,21 +70,20 @@ describe('Check message history', () => {
 
           checkPATable(fixture, MessageStatus.sent, 'SMS');
 
-          // Check Message History Popup
-          const customLabel =
-            portalEn.page.program['program-people-affected'][
-              'message-history-popup'
-            ]['content-type'].custom;
-          checkMessageHistoryPopup(
-            registrationNoWhatsapp,
-            customLabel,
-            fixture.messageText,
-            'sms',
-            MessageStatus.sent,
-          );
-        });
-      },
-    );
+        // Check Message History Popup
+        const customLabel =
+          portalEn.page.program['program-people-affected'][
+            'message-history-popup'
+          ]['content-type'].custom;
+        checkMessageHistoryPopup(
+          registrationNoWhatsapp,
+          customLabel,
+          fixture.messageText,
+          'sms',
+          MessageStatus.sent,
+        );
+      });
+    });
   });
 
   it('Send 1 failed sms message', function () {
@@ -95,7 +94,7 @@ describe('Check message history', () => {
     }).as('getProgram');
     cy.intercept({ method: 'POST', url: '**/text-message' }).as('textmessage');
 
-    cy.fixture('registration-nlrc-no-whatsapp').then(
+    cy.fixture('registration-nlrc-paper').then(
       (registrationNoWhatsapp) => {
         registrationNoWhatsapp.phoneNumber = '15005550001';
         cy.importRegistrations(programId, [registrationNoWhatsapp]);
@@ -121,6 +120,7 @@ describe('Check message history', () => {
             fixture.messageText,
             'sms',
             MessageStatus.failed,
+            0,
           );
         });
       },
@@ -135,7 +135,7 @@ describe('Check message history', () => {
     }).as('getProgram');
     cy.intercept({ method: 'POST', url: '**/text-message' }).as('textmessage');
 
-    cy.fixture('registration-nlrc-no-whatsapp').then(
+    cy.fixture('registration-nlrc-paper').then(
       (registrationNoWhatsapp) => {
         cy.importRegistrations(programId, [registrationNoWhatsapp]);
         cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
@@ -191,8 +191,8 @@ describe('Check message history', () => {
             );
           });
         });
-      },
-    );
+      });
+    });
   });
 
   const checkPATable = (

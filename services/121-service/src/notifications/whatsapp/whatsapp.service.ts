@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
-import { IntersolvePayoutStatus } from '../../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
+import { IntersolveVoucherPayoutStatus } from '../../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { MessageContentType } from '../message-type.enum';
@@ -32,10 +32,12 @@ export class WhatsappService {
     'whatsappGenericMessage',
   ];
 
+  public constructor() {}
+
   public async sendWhatsapp(
     message: string,
     recipientPhoneNr: string,
-    messageType: null | IntersolvePayoutStatus,
+    messageType: null | IntersolveVoucherPayoutStatus,
     mediaUrl: null | string,
     registrationId?: number,
     messageContentType?: MessageContentType,
@@ -73,7 +75,7 @@ export class WhatsappService {
   public async queueMessageSendTemplate(
     message: string,
     recipientPhoneNr: string,
-    messageType: null | IntersolvePayoutStatus,
+    messageType: null | IntersolveVoucherPayoutStatus,
     mediaUrl: null | string,
     registrationId: number,
     messageContentType: MessageContentType,

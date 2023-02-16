@@ -11,7 +11,7 @@ import { MessageContentType } from '../notifications/message-type.enum';
 import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
-import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
+import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
@@ -79,8 +79,8 @@ export class RegistrationsService {
   private readonly whatsappPendingMessageRepository: Repository<WhatsappPendingMessageEntity>;
   @InjectRepository(ImageCodeExportVouchersEntity)
   private readonly imageCodeExportVouchersRepo: Repository<ImageCodeExportVouchersEntity>;
-  @InjectRepository(IntersolveBarcodeEntity)
-  private readonly intersolveBarcodeRepo: Repository<IntersolveBarcodeEntity>;
+  @InjectRepository(IntersolveVoucherEntity)
+  private readonly intersolveVoucherRepo: Repository<IntersolveVoucherEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -408,7 +408,7 @@ export class RegistrationsService {
       return;
     }
 
-    // Remove old attributes (only relevant in edge case where Intersolve-whatsapp is stored as fsp, because of try-whatsapp-via-invitation scenario)
+    // Remove old attributes (only relevant in edge case where Intersolve-voucher-whatsapp is stored as fsp, because of try-whatsapp-via-invitation scenario)
     const oldFsp = importedRegistration.fsp;
     if (oldFsp) {
       for (const attribute of oldFsp?.questions) {
@@ -1549,14 +1549,14 @@ export class RegistrationsService {
 
       const voucherImages = await this.imageCodeExportVouchersRepo.find({
         where: { registrationId: registration.id },
-        relations: ['barcode'],
+        relations: ['voucher'],
       });
-      for await (const voucher of voucherImages) {
-        const barcode = await this.intersolveBarcodeRepo.findOne({
-          where: { id: voucher.barcode.id },
+      for await (const voucherImage of voucherImages) {
+        const voucher = await this.intersolveVoucherRepo.findOne({
+          where: { id: voucherImage.voucher.id },
         });
-        barcode.whatsappPhoneNumber = null;
-        await this.intersolveBarcodeRepo.save(barcode);
+        voucher.whatsappPhoneNumber = null;
+        await this.intersolveVoucherRepo.save(voucher);
       }
 
       // not done, but should: clean up pii fields in at_notification + belcash_request

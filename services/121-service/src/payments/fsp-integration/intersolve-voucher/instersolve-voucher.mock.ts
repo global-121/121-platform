@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
+import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
 
 @Injectable()
-export class IntersolveMockService {
+export class IntersolveVoucherMockService {
   public post(payload: any): Promise<any> {
     const soapBody = payload.elements[0].elements.find(
       (e) => e.name === 'soap:Body',
@@ -18,7 +18,7 @@ export class IntersolveMockService {
             BalanceFactor: { _text: '10' },
             Status: { _text: 'mock' },
           },
-          ResultCode: { _text: String(IntersolveResultCode.Ok) },
+          ResultCode: { _text: String(IntersolveVoucherResultCode.Ok) },
         },
       };
     } else {
@@ -40,7 +40,7 @@ export class IntersolveMockService {
           _attributes: {
             xmlns: 'http://www.loyaltyinabox.com/giftcard_6_8/',
           },
-          ResultCode: { _text: String(IntersolveResultCode.Ok) },
+          ResultCode: { _text: String(IntersolveVoucherResultCode.Ok) },
           ResultDescription: { _text: 'Ok' },
           CardId: { _text: String(cardId) },
           PIN: { _text: String(pin) },

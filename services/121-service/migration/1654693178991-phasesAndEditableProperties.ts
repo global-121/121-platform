@@ -1,12 +1,13 @@
+import fs from 'fs';
+import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
+import { ProgramCustomAttributeEntity } from '../src/programs/program-custom-attribute.entity';
+import { ProgramEntity } from '../src/programs/program.entity';
 import { FspQuestionEntity } from './../src/fsp/fsp-question.entity';
 import { ProgramQuestionEntity } from './../src/programs/program-question.entity';
-import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
-import { ProgramEntity } from '../src/programs/program.entity';
-import fs from 'fs';
-import { ProgramCustomAttributeEntity } from '../src/programs/program-custom-attribute.entity';
 
 export class PhasesAndEditableProperties1654693178991
-  implements MigrationInterface {
+  implements MigrationInterface
+{
   name = 'PhasesAndEditableProperties1654693178991';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -59,9 +60,9 @@ export class PhasesAndEditableProperties1654693178991
       programPilotNL2 = JSON.parse(
         fs.readFileSync('seed-data/program/program-pilot-nl-2.json', 'utf8'),
       );
-      fspIntersolve = JSON.parse(
-        fs.readFileSync('seed-data/fsp/fsp-intersolve.json', 'utf8'),
-      );
+      // fspIntersolve = JSON.parse(
+      //   fs.readFileSync('seed-data/fsp/fsp-intersolve.json', 'utf8'),
+      // );
     } catch {
       console.log(
         'NLRC programs not found. Not migrating phases and editable properties for NLRC program',
@@ -69,9 +70,7 @@ export class PhasesAndEditableProperties1654693178991
     }
     if (programPilotNL && programPilotNL2 && fspIntersolve) {
       const programRepo = manager.getRepository(ProgramEntity);
-      const programQuestionsRepo = manager.getRepository(
-        ProgramQuestionEntity,
-      );
+      const programQuestionsRepo = manager.getRepository(ProgramQuestionEntity);
       const customAttributesRepo = manager.getRepository(
         ProgramCustomAttributeEntity,
       );
@@ -102,7 +101,7 @@ export class PhasesAndEditableProperties1654693178991
         }
         for (const q of program.programQuestions) {
           const qJson = programJson.programQuestions.find(
-            qJson => qJson.name === q.name,
+            (qJson) => qJson.name === q.name,
           );
           q.phases = qJson.phases;
           q.editableInPortal = qJson.editableInPortal;
@@ -110,7 +109,7 @@ export class PhasesAndEditableProperties1654693178991
         }
         for (const ca of program.programCustomAttributes) {
           const caJson = programJson.programCustomAttributes.find(
-            caJson => caJson.name === ca.name,
+            (caJson) => caJson.name === ca.name,
           );
           ca.phases = caJson.phases;
           await customAttributesRepo.save(ca);

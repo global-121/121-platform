@@ -3,7 +3,7 @@ Feature: Claim digital vouchers
 
   Background:
     Given a program with "Intersolve" FSP
-    And a PA has chosen FSP "Intersolve-whatsapp"
+    And a PA has chosen FSP "Intersolve-voucher-whatsapp"
     And a payment has been made to this PA
     And the PA has received the initial WhatsApp-message
 

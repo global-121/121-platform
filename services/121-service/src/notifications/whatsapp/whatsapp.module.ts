@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { API_PATHS } from '../../config';
-import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
 import { ImageCodeModule } from '../../payments/imagecode/image-code.module';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
@@ -25,7 +24,6 @@ import { WhatsappService } from './whatsapp.service';
   imports: [
     TypeOrmModule.forFeature([
       TwilioMessageEntity,
-      IntersolveBarcodeEntity,
       TransactionEntity,
       ProgramEntity,
       RegistrationEntity,

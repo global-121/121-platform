@@ -5,7 +5,7 @@ import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
 import { DataSource, In, Repository } from 'typeorm';
 import { ActionService } from '../actions/action.service';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
-import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
+import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { PaymentsService } from '../payments/payments.service';
 import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
@@ -362,8 +362,8 @@ export class ExportMetricsService {
     transactions: any[],
   ): Promise<void> {
     const voucherStatuses = [
-      IntersolvePayoutStatus.InitialMessage,
-      IntersolvePayoutStatus.VoucherSent,
+      IntersolveVoucherPayoutStatus.InitialMessage,
+      IntersolveVoucherPayoutStatus.VoucherSent,
     ];
     for await (const payment of payments) {
       const transaction = {};
@@ -376,9 +376,9 @@ export class ExportMetricsService {
         );
       }
       let creationTransaction: GetTransactionOutputDto;
-      if (transaction[IntersolvePayoutStatus.InitialMessage]) {
+      if (transaction[IntersolveVoucherPayoutStatus.InitialMessage]) {
         creationTransaction =
-          transaction[IntersolvePayoutStatus.InitialMessage];
+          transaction[IntersolveVoucherPayoutStatus.InitialMessage];
       } else {
         creationTransaction = transactions.find(
           (t) =>
@@ -391,9 +391,9 @@ export class ExportMetricsService {
       row[`payment${payment}_amount`] = creationTransaction?.amount;
       row[`payment${payment}_date`] = creationTransaction?.paymentDate;
       row[`payment${payment}_voucherClaimed_date`] =
-        transaction[IntersolvePayoutStatus.VoucherSent]?.status ===
+        transaction[IntersolveVoucherPayoutStatus.VoucherSent]?.status ===
         StatusEnum.success
-          ? transaction[IntersolvePayoutStatus.VoucherSent]?.paymentDate
+          ? transaction[IntersolveVoucherPayoutStatus.VoucherSent]?.paymentDate
           : null;
     }
   }

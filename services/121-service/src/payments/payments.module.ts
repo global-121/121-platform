@@ -20,7 +20,7 @@ import { AfricasTalkingModule } from './fsp-integration/africas-talking/africas-
 import { BelcashModule } from './fsp-integration/belcash/belcash.module';
 import { BobFinanceModule } from './fsp-integration/bob-finance/bob-finance.module';
 import { IntersolveVisaModule } from './fsp-integration/intersolve-visa/intersolve-visa.module';
-import { IntersolveModule } from './fsp-integration/intersolve/intersolve.module';
+import { IntersolveVoucherModule } from './fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { UkrPoshtaModule } from './fsp-integration/ukrposhta/ukrposhta.module';
 import { VodacashModule } from './fsp-integration/vodacash/vodacash.module';
 import { PaymentsController } from './payments.controller';
@@ -45,7 +45,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     HttpModule,
     ActionModule,
     FspModule,
-    IntersolveModule,
+    IntersolveVoucherModule,
     IntersolveVisaModule,
     AfricasTalkingModule,
     BelcashModule,

@@ -78,7 +78,7 @@ describe('PA details iframe page', () => {
 
   it('Visits the PA details iframe page and finds 2 PAs in 2 different programs', function () {
     cy.fixture('registration-nlrc').then((registration1) => {
-      cy.fixture('registration-nlrc-no-whatsapp').then((registration2) => {
+      cy.fixture('registration-nlrc-paper').then((registration2) => {
         registration2.phoneNumber = registration1.phoneNumber;
         cy.importRegistrations(1, [registration1]);
         cy.importRegistrations(2, [registration2]);

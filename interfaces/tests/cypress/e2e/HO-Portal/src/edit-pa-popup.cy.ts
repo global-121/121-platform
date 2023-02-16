@@ -32,7 +32,7 @@ describe('Edit PA details in pop-up', () => {
 
       cy.get('app-update-fsp').click();
       cy.get('ion-popover')
-        .contains('.select-interface-option', FspName.intersolveNoWhatsapp)
+        .contains('.select-interface-option', FspName.intersolveVoucherPaper)
         .click();
 
       clickSaveAndConfirm('Financial Service Provider');

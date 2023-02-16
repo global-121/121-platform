@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
+import fspIntersolve from '../../seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
 import instanceDemo from '../../seed-data/instance/instance-demo.json';
 import programDemo from '../../seed-data/program/program-demo.json';
 import { InterfaceScript } from './scripts.module';

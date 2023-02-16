@@ -211,7 +211,10 @@ export class PaymentHistoryPopupComponent implements OnInit {
   }
 
   public hasVoucherSupport(fsp: string): boolean {
-    const voucherFsps = ['Intersolve-no-whatsapp', 'Intersolve-whatsapp'];
+    const voucherFsps = [
+      'Intersolve-voucher-paper',
+      'Intersolve-voucher-whatsapp',
+    ];
     return voucherFsps.includes(fsp);
   }
 

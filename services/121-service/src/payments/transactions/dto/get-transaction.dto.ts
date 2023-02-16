@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
 import { StatusEnum } from '../../../shared/enum/status.enum';
-import { IntersolvePayoutStatus } from '../../fsp-integration/intersolve/enum/intersolve-payout-status.enum';
+import { IntersolveVoucherPayoutStatus } from '../../fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 
 export class GetTransactionDto {
   @ApiProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
@@ -14,7 +14,7 @@ export class GetTransactionDto {
   @ApiProperty({ example: 'IntersolvePayoutStatus' })
   @IsString()
   public readonly customDataKey?: string;
-  @ApiProperty({ example: IntersolvePayoutStatus.InitialMessage })
+  @ApiProperty({ example: IntersolveVoucherPayoutStatus.InitialMessage })
   @IsString()
   public readonly customDataValue?: string;
 }

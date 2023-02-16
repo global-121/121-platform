@@ -18,36 +18,36 @@ import {
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
 import { UnusedVoucherDto } from '../../dto/unused-voucher.dto';
+import { VoucherWithBalanceDto } from '../../dto/voucher-with-balance.dto';
 import { ImageCodeService } from '../../imagecode/image-code.service';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
-import { VoucherWithBalanceDto } from './../../dto/voucher-with-balance.dto';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
 import { IntersolveJobName } from './dto/job-details.dto';
-import { IntersolvePayoutStatus } from './enum/intersolve-payout-status.enum';
-import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
-import { IntersolveApiService } from './instersolve.api.service';
-import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
-import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
-import { IntersolveRequestEntity } from './intersolve-request.entity';
+import { IntersolveVoucherPayoutStatus } from './enum/intersolve-voucher-payout-status.enum';
+import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
+import { IntersolveVoucherApiService } from './instersolve-voucher.api.service';
+import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-request.entity';
+import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instructions.entity';
+import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 
 @Injectable()
-export class IntersolveService {
+export class IntersolveVoucherService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(IntersolveBarcodeEntity)
-  private readonly intersolveBarcodeRepository: Repository<IntersolveBarcodeEntity>;
-  @InjectRepository(IntersolveInstructionsEntity)
-  private readonly intersolveInstructionsRepository: Repository<IntersolveInstructionsEntity>;
-  @InjectRepository(IntersolveRequestEntity)
-  private readonly intersolveRequestRepository: Repository<IntersolveRequestEntity>;
+  @InjectRepository(IntersolveVoucherEntity)
+  private readonly intersolveVoucherRepository: Repository<IntersolveVoucherEntity>;
+  @InjectRepository(IntersolveVoucherInstructionsEntity)
+  private readonly intersolveInstructionsRepository: Repository<IntersolveVoucherInstructionsEntity>;
+  @InjectRepository(IntersolveIssueVoucherRequestEntity)
+  private readonly intersolveVoucherRequestRepository: Repository<IntersolveIssueVoucherRequestEntity>;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
 
   public constructor(
-    private readonly intersolveApiService: IntersolveApiService,
+    private readonly intersolveApiService: IntersolveVoucherApiService,
     private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
@@ -140,7 +140,7 @@ export class IntersolveService {
       );
       voucherInfo.refPos = intersolveRefPos;
 
-      if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
+      if (voucherInfo.resultCode == IntersolveVoucherResultCode.Ok) {
         voucherInfo.voucher = await this.storeVoucher(
           voucherInfo,
           paymentInfo,
@@ -183,28 +183,28 @@ export class IntersolveService {
   private async getReusableVoucher(
     referenceId: string,
     payment: number,
-  ): Promise<IntersolveBarcodeEntity> {
-    const rawBarcode = await this.registrationRepository
+  ): Promise<IntersolveVoucherEntity> {
+    const rawVoucher = await this.registrationRepository
       .createQueryBuilder('registration')
-      //The .* is to prevent the raw query from prefixing with barcode_
-      .select('barcode.*')
+      //The .* is to prevent the raw query from prefixing with voucher_
+      .select('voucher.*')
       .leftJoin('registration.images', 'images')
-      .leftJoin('images.barcode', 'barcode')
+      .leftJoin('images.voucher', 'voucher')
       .where('registration.referenceId = :referenceId', {
         referenceId: referenceId,
       })
-      .andWhere('barcode.payment = :payment', {
+      .andWhere('voucher.payment = :payment', {
         payment: payment,
       })
       .getRawOne();
-    if (!rawBarcode) {
+    if (!rawVoucher) {
       return;
     }
-    const barcode: IntersolveBarcodeEntity =
-      this.intersolveBarcodeRepository.create(
-        rawBarcode as IntersolveBarcodeEntity,
+    const voucher: IntersolveVoucherEntity =
+      this.intersolveVoucherRepository.create(
+        rawVoucher as IntersolveVoucherEntity,
       );
-    return await this.intersolveBarcodeRepository.save(barcode);
+    return await this.intersolveVoucherRepository.save(voucher);
   }
 
   private async issueVoucher(
@@ -223,8 +223,8 @@ export class IntersolveService {
     paPaymentData: PaPaymentDataDto,
     payment: number,
     amount: number,
-  ): Promise<IntersolveBarcodeEntity> {
-    const barcodeData = await this.storeBarcodeData(
+  ): Promise<IntersolveVoucherEntity> {
+    const voucherData = await this.storeVoucherData(
       voucherInfo.cardId,
       voucherInfo.pin,
       paPaymentData.paymentAddress,
@@ -232,12 +232,12 @@ export class IntersolveService {
       amount,
     );
 
-    await this.imageCodeService.createBarcodeExportVouchers(
-      barcodeData,
+    await this.imageCodeService.createVoucherExportVouchers(
+      voucherData,
       paPaymentData.referenceId,
     );
 
-    return barcodeData;
+    return voucherData;
   }
 
   private async sendWhatsapp(
@@ -294,7 +294,7 @@ export class IntersolveService {
       .sendWhatsapp(
         whatsappPayment,
         paymentInfo.paymentAddress,
-        IntersolvePayoutStatus.InitialMessage,
+        IntersolveVoucherPayoutStatus.InitialMessage,
         null,
         registration.id,
         MessageContentType.paymentTemplated,
@@ -316,7 +316,8 @@ export class IntersolveService {
           result.status = StatusEnum.waiting;
           result.customData = {
             messageSid: messageSid,
-            IntersolvePayoutStatus: IntersolvePayoutStatus.InitialMessage,
+            IntersolvePayoutStatus:
+              IntersolveVoucherPayoutStatus.InitialMessage,
           };
         },
         (error) => {
@@ -340,21 +341,21 @@ export class IntersolveService {
     );
   }
 
-  private async storeBarcodeData(
+  private async storeVoucherData(
     cardNumber: string,
     pin: string,
     phoneNumber: string,
     payment: number,
     amount: number,
-  ): Promise<IntersolveBarcodeEntity> {
-    const barcodeData = new IntersolveBarcodeEntity();
-    barcodeData.barcode = cardNumber;
-    barcodeData.pin = pin.toString();
-    barcodeData.whatsappPhoneNumber = phoneNumber;
-    barcodeData.send = false;
-    barcodeData.payment = payment;
-    barcodeData.amount = amount;
-    return this.intersolveBarcodeRepository.save(barcodeData);
+  ): Promise<IntersolveVoucherEntity> {
+    const voucherData = new IntersolveVoucherEntity();
+    voucherData.barcode = cardNumber;
+    voucherData.pin = pin.toString();
+    voucherData.whatsappPhoneNumber = phoneNumber;
+    voucherData.send = false;
+    voucherData.payment = payment;
+    voucherData.amount = amount;
+    return this.intersolveVoucherRepository.save(voucherData);
   }
 
   public async processStatus(
@@ -419,7 +420,7 @@ export class IntersolveService {
   ): Promise<any> {
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId, programId: programId },
-      relations: ['images', 'images.barcode'],
+      relations: ['images', 'images.voucher'],
     });
     if (!registration) {
       throw new HttpException(
@@ -429,7 +430,7 @@ export class IntersolveService {
     }
 
     const voucher = registration.images.find(
-      (image) => image.barcode.payment === payment,
+      (image) => image.voucher.payment === payment,
     );
     if (!voucher) {
       throw new HttpException(
@@ -459,7 +460,7 @@ export class IntersolveService {
       await this.intersolveInstructionsRepository.find();
 
     if (!intersolveInstructionsEntity) {
-      intersolveInstructionsEntity = new IntersolveInstructionsEntity();
+      intersolveInstructionsEntity = new IntersolveVoucherInstructionsEntity();
     }
 
     intersolveInstructionsEntity.image = instructionsFileBlob.buffer;
@@ -489,26 +490,30 @@ export class IntersolveService {
   }
 
   private async getBalance(
-    intersolveBarcode: IntersolveBarcodeEntity,
+    intersolveVoucher: IntersolveVoucherEntity,
   ): Promise<number> {
     const getCard = await this.intersolveApiService.getCard(
-      intersolveBarcode.barcode,
-      intersolveBarcode.pin,
+      intersolveVoucher.barcode,
+      intersolveVoucher.pin,
     );
     const realBalance = getCard.balance / getCard.balanceFactor;
 
-    intersolveBarcode.lastRequestedBalance = realBalance;
-    intersolveBarcode.updatedLastRequestedBalance = new Date();
-    await this.intersolveBarcodeRepository.save(intersolveBarcode);
+    intersolveVoucher.lastRequestedBalance = realBalance;
+    intersolveVoucher.updatedLastRequestedBalance = new Date();
+    await this.intersolveVoucherRepository.save(intersolveVoucher);
     return realBalance;
   }
 
-  public async getToCancelVouchers(): Promise<IntersolveRequestEntity[]> {
-    const toCancelVouchers = await this.intersolveRequestRepository.find({
-      where: {
-        toCancel: true,
+  public async getToCancelVouchers(): Promise<
+    IntersolveIssueVoucherRequestEntity[]
+  > {
+    const toCancelVouchers = await this.intersolveVoucherRequestRepository.find(
+      {
+        where: {
+          toCancel: true,
+        },
       },
-    });
+    );
 
     return toCancelVouchers;
   }
@@ -517,10 +522,10 @@ export class IntersolveService {
     programId?: number,
   ): Promise<UnusedVoucherDto[]> {
     const maxId = (
-      await this.intersolveBarcodeRepository
-        .createQueryBuilder('barcode')
-        .select('MAX(barcode.id)', 'max')
-        .leftJoin('barcode.image', 'image')
+      await this.intersolveVoucherRepository
+        .createQueryBuilder('voucher')
+        .select('MAX(voucher.id)', 'max')
+        .leftJoin('voucher.image', 'image')
         .leftJoin('image.registration', 'registration')
         .where('registration.programId = :programId', {
           programId: programId,
@@ -533,12 +538,12 @@ export class IntersolveService {
 
     // Run this in batches of 1,000 as it is performance-heavy
     while (id <= maxId) {
-      const previouslyUnusedVouchers = await this.intersolveBarcodeRepository
-        .createQueryBuilder('barcode')
-        .leftJoinAndSelect('barcode.image', 'image')
+      const previouslyUnusedVouchers = await this.intersolveVoucherRepository
+        .createQueryBuilder('voucher')
+        .leftJoinAndSelect('voucher.image', 'image')
         .leftJoinAndSelect('image.registration', 'registration')
-        .where('barcode.balanceUsed = false')
-        .andWhere(`barcode.id BETWEEN :id AND (:id + 1000 - 1)`, {
+        .where('voucher.balanceUsed = false')
+        .andWhere(`voucher.id BETWEEN :id AND (:id + 1000 - 1)`, {
           id: id,
         })
         .andWhere('registration.programId = :programId', {
@@ -558,7 +563,7 @@ export class IntersolveService {
         } else {
           voucher.balanceUsed = true;
           voucher.send = true;
-          this.intersolveBarcodeRepository.save(voucher);
+          this.intersolveVoucherRepository.save(voucher);
         }
       }
 
@@ -617,20 +622,20 @@ export class IntersolveService {
     if (messageSid) {
       transactionResult.customData['messageSid'] = messageSid;
     }
-    if (registration.fsp.fsp === FspName.intersolve) {
+    if (registration.fsp.fsp === FspName.intersolveVoucherWhatsapp) {
       transactionResult.customData['IntersolvePayoutStatus'] =
         transactionStep === 1
-          ? IntersolvePayoutStatus.InitialMessage
-          : IntersolvePayoutStatus.VoucherSent;
+          ? IntersolveVoucherPayoutStatus.InitialMessage
+          : IntersolveVoucherPayoutStatus.VoucherSent;
     }
 
     transactionResult.status = status;
 
-    if (registration.fsp.fsp === FspName.intersolve) {
-      transactionResult.fspName = FspName.intersolve;
+    if (registration.fsp.fsp === FspName.intersolveVoucherWhatsapp) {
+      transactionResult.fspName = FspName.intersolveVoucherWhatsapp;
     }
-    if (registration.fsp.fsp === FspName.intersolveNoWhatsapp) {
-      transactionResult.fspName = FspName.intersolveNoWhatsapp;
+    if (registration.fsp.fsp === FspName.intersolveVoucherPaper) {
+      transactionResult.fspName = FspName.intersolveVoucherPaper;
     }
     return transactionResult;
   }
@@ -641,10 +646,10 @@ export class IntersolveService {
   ): Promise<void> {
     if (jobName === IntersolveJobName.getLastestVoucherBalance) {
       const maxId = (
-        await this.intersolveBarcodeRepository
-          .createQueryBuilder('barcode')
-          .select('MAX(barcode.id)', 'max')
-          .leftJoin('barcode.image', 'image')
+        await this.intersolveVoucherRepository
+          .createQueryBuilder('voucher')
+          .select('MAX(voucher.id)', 'max')
+          .leftJoin('voucher.image', 'image')
           .leftJoin('image.registration', 'registration')
           .where('registration.programId = :programId', {
             programId: programId,
@@ -658,12 +663,12 @@ export class IntersolveService {
         // Query gets all voouher that need to be checked these can be:
         // 1) Vouchers  with null (which have never been checked)
         // 2) Voucher with a balance 0 (which could have been used more in the meantime)
-        const q = await this.intersolveBarcodeRepository
-          .createQueryBuilder('barcode')
-          .leftJoinAndSelect('barcode.image', 'image')
+        const q = await this.intersolveVoucherRepository
+          .createQueryBuilder('voucher')
+          .leftJoinAndSelect('voucher.image', 'image')
           .leftJoinAndSelect('image.registration', 'registration')
-          .where('barcode.lastRequestedBalance IS DISTINCT from 0')
-          .andWhere(`barcode.id BETWEEN :id AND (:id + 1000 - 1)`, {
+          .where('voucher.lastRequestedBalance IS DISTINCT from 0')
+          .andWhere(`voucher.id BETWEEN :id AND (:id + 1000 - 1)`, {
             id: id,
           })
           .andWhere('registration.programId = :programId', {
@@ -677,7 +682,7 @@ export class IntersolveService {
           if (balance !== voucher.amount) {
             voucher.balanceUsed = true;
             voucher.send = true;
-            await this.intersolveBarcodeRepository.save(voucher);
+            await this.intersolveVoucherRepository.save(voucher);
           }
         }
         id += 1000;
@@ -690,11 +695,11 @@ export class IntersolveService {
     programId: number,
   ): Promise<VoucherWithBalanceDto[]> {
     const vouchersWithBalance: VoucherWithBalanceDto[] = [];
-    const voucherWithBalanceRaw = await this.intersolveBarcodeRepository
-      .createQueryBuilder('barcode')
-      .leftJoinAndSelect('barcode.image', 'image')
+    const voucherWithBalanceRaw = await this.intersolveVoucherRepository
+      .createQueryBuilder('voucher')
+      .leftJoinAndSelect('voucher.image', 'image')
       .leftJoinAndSelect('image.registration', 'registration')
-      .where('barcode.lastRequestedBalance > 0')
+      .where('voucher.lastRequestedBalance > 0')
       .andWhere('registration.programId = :programId', {
         programId: programId,
       })
@@ -709,7 +714,7 @@ export class IntersolveService {
   }
 
   private async createVoucherWithBalanceDto(
-    voucher: IntersolveBarcodeEntity,
+    voucher: IntersolveVoucherEntity,
   ): Promise<VoucherWithBalanceDto> {
     const voucherWithBalance = new VoucherWithBalanceDto();
     voucherWithBalance.paNumber =
