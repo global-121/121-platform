@@ -60,15 +60,15 @@
             (keyup.enter)="doLogin()"
             data-cy="login-form"
           >
-            <div class="input-item auth-item ion-margin-bottom">
+            <div class="auth-item ion-margin-bottom email-field">
               <label
                 color="medium"
-                class="input-item--label auth-label"
+                class="auth-label"
                 (click)="emailInput.setFocus()"
               >
                 {{ 'page.login.form.email.label'|translate }}
               </label>
-              <div class="input-item--contents">
+              <div>
                 <ion-input
                   #emailInput
                   type="email"
@@ -103,31 +103,36 @@
               </div>
             </div>
             <div
-              class="input-item auth-item ion-margin-bottom ion-padding-bottom"
+              class="auth-item ion-margin-bottom ion-padding-bottom password-field"
             >
               <label
                 color="medium"
-                class="input-item--label auth-label"
+                class="auth-label"
                 (click)="passwordInput.setFocus()"
               >
                 {{ 'page.login.form.password.label'|translate }}
               </label>
-              <div class="input-item--contents">
-                <ion-input
-                  #passwordInput
-                  [type]="inputType"
-                  autocomplete="current-password"
-                  autocapitalize="off"
-                  clearInput="false"
-                  clearOnEdit="false"
-                  required
-                  name="password"
-                  [(ngModel)]="password"
-                  ngDefaultControl
-                  class="ion-margin-vertical"
-                  [ngClass]="{ 'invalid-border': showLoginFail.password || emptyPassword}"
-                  (ionBlur)="onPasswordBlur()"
-                >
+              <ion-item
+                class="ion-no-padding"
+                lines="none"
+                [ngClass]="{ 'invalid-border': showLoginFail.password || emptyPassword}"
+              >
+                <ion-row>
+                  <ion-input
+                    #passwordInput
+                    [type]="inputType"
+                    autocomplete="current-password"
+                    autocapitalize="off"
+                    clearInput="false"
+                    clearOnEdit="false"
+                    required
+                    name="password"
+                    [(ngModel)]="password"
+                    ngDefaultControl
+                    class="ion-margin-vertical"
+                    (ionBlur)="onPasswordBlur()"
+                  >
+                  </ion-input>
                   <ion-button
                     type="button"
                     color="secondary"
@@ -136,7 +141,7 @@
                     (click)="toggleInputType()"
                     [title]="isPassword() ? this.labelShow : this.labelHide"
                     [attr.aria-label]="isPassword() ? this.labelShow : this.labelHide"
-                    style="position: absolute; right: 0px"
+                    style="position: absolute; right: 0"
                   >
                     <ion-icon
                       *ngIf="isPassword()"
@@ -151,8 +156,8 @@
                       aria-hidden="true"
                     ></ion-icon>
                   </ion-button>
-                </ion-input>
-              </div>
+                </ion-row>
+              </ion-item>
               <div class="validation-message">
                 <ion-text
                   *ngIf="emptyPassword"
