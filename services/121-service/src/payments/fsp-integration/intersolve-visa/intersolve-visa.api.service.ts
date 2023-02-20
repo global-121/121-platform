@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
+import { IntersolveActivateTokenRequestDto } from './dto/intersolve-activate-token-request.dto';
+import { IntersolveActivateTokenResponseDto } from './dto/intersolve-activate-token-response.dto';
 import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-custom-respose.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveIssueTokenResponseDto } from './dto/intersolve-issue-token-response.dto';
@@ -105,6 +107,23 @@ export class IntersolveVisaApiService {
       const authToken = await this.getAuthenticationToken();
       const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/load`;
       return await this.httpService.post<IntersolveLoadResponseDto>(
+        url,
+        payload,
+        authToken,
+      );
+    }
+  }
+
+  public async activateToken(
+    tokenCode: string,
+    payload: IntersolveActivateTokenRequestDto,
+  ): Promise<IntersolveActivateTokenResponseDto> {
+    if (process.env.MOCK_INTERSOLVE) {
+      return; // TODO: Create mock for this
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/activate`;
+      return await this.httpService.post<IntersolveActivateTokenResponseDto>(
         url,
         payload,
         authToken,

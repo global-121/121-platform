@@ -12,6 +12,7 @@ import {
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { RegistrationEntity } from './../../../registration/registration.entity';
+import { IntersolveActivateTokenRequestDto } from './dto/intersolve-activate-token-request.dto';
 import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-custom-respose.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import {
@@ -22,10 +23,9 @@ import {
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { MessageStatus as MessageStatusDto } from './dto/message-status.dto';
-import { IntersolveIssueTokenRequestEntity } from './intersolve-issue-token-request.entity';
-import { IntersolveLoadRequestEntity } from './intersolve-load-request.entity';
 import { IntersolveVisaCardEntity } from './intersolve-visa-card.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
+import { IntersolveVisaRequestEntity } from './intersolve-visa-request.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 
 @Injectable()
@@ -36,10 +36,8 @@ export class IntersolveVisaService {
   public intersolveVisaCustomerRepo: Repository<IntersolveVisaCustomerEntity>;
   @InjectRepository(IntersolveVisaCardEntity)
   public intersolveVisaCardRepository: Repository<IntersolveVisaCardEntity>;
-  @InjectRepository(IntersolveIssueTokenRequestEntity)
-  public intersolveIssueTokenRequestRepository: Repository<IntersolveIssueTokenRequestEntity>;
-  @InjectRepository(IntersolveLoadRequestEntity)
-  public intersolveLoadRequestRepository: Repository<IntersolveLoadRequestEntity>;
+  @InjectRepository(IntersolveVisaRequestEntity)
+  public intersolveVisaRequestRepository: Repository<IntersolveVisaRequestEntity>;
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
@@ -90,7 +88,7 @@ export class IntersolveVisaService {
         this.buildNotificationObjectIssueCard(getTokenResult.tokenCode),
       );
     } else {
-      return {
+      const res = {
         referenceId: paymentData.referenceId,
         status: StatusEnum.error,
         message: getTokenResult.message,
@@ -98,6 +96,8 @@ export class IntersolveVisaService {
         calculatedAmount: calculatedAmount,
         fspName: FspName.intersolveVisa,
       };
+      console.log('res: ', res);
+      return res;
     }
     const topupResult = await this.topUpVisaCard(
       getTokenResult.tokenCode,
@@ -163,6 +163,7 @@ export class IntersolveVisaService {
           message: registerResult.message,
         };
       }
+      await this.activateToken(visaCardEntity.tokenCode);
     }
 
     return {
@@ -203,25 +204,23 @@ export class IntersolveVisaService {
 
     if (!visaCardNumber) {
       // There is no imported visa card number, so we need to issue a new one
+      // TODO: THIS IS AN UNTESTED FLOW
       console.log('ISSUEING NEW CARD');
 
       const reference = uuid();
-      const issueTokenRequest = {
-        reference: reference,
-        saleId: registration.referenceId,
-      };
+      const issueTokenRequest = new IntersolveVisaRequestEntity();
+      issueTokenRequest.reference = reference;
+      issueTokenRequest.saleId = registration.referenceId;
+      // TODO: Make this an enum that's imported from the intersolve API service
+      issueTokenRequest.endpoint = 'issue-token';
       const issueTokenRequestEntity =
-        await this.intersolveIssueTokenRequestRepository.save(
-          issueTokenRequest,
-        );
+        await this.intersolveVisaRequestRepository.save(issueTokenRequest);
       const issueTokenResult = await this.intersolveVisaApiService.issueToken(
         issueTokenRequest,
       );
       console.log('issueTokenResult: ', issueTokenResult);
       // issueTokenRequestEntity.statusCode = issueTokenResult.statusCode;
-      await this.intersolveIssueTokenRequestRepository.save(
-        issueTokenRequestEntity,
-      );
+      await this.intersolveVisaRequestRepository.save(issueTokenRequestEntity);
 
       if (!issueTokenResult.success) {
         return {
@@ -316,8 +315,9 @@ export class IntersolveVisaService {
         },
         tokenCode,
       );
+
     console.log('registerHolderResult: ', registerHolderResult);
-    if (!registerHolderResult.data.success) {
+    if (registerHolderResult.data.success === false) {
       return {
         success: registerHolderResult.data.success,
         message: registerHolderResult.data.success
@@ -368,13 +368,20 @@ export class IntersolveVisaService {
     payment: number,
   ): Promise<MessageStatusDto> {
     const amountInCents = calculatedAmount * 100;
-    const interSolveLoadRequest = new IntersolveLoadRequestEntity();
-    interSolveLoadRequest.tokenCode = tokenCode;
-    interSolveLoadRequest.quantityValue = amountInCents;
+    const interSolveLoadRequest = new IntersolveVisaRequestEntity();
     interSolveLoadRequest.reference = uuid();
+    // TODO: Make this an enum that's imported from the intersolve API service
+    interSolveLoadRequest.endpoint = 'load';
     interSolveLoadRequest.saleId = `${referenceId}-${payment}`;
+    interSolveLoadRequest.metadata = JSON.parse(
+      JSON.stringify({ tokenCode: tokenCode, quantityValue: amountInCents }),
+    );
     const interSolveLoadRequestEntity =
-      await this.intersolveLoadRequestRepository.save(interSolveLoadRequest);
+      await this.intersolveVisaRequestRepository.save(interSolveLoadRequest);
+    console.log(
+      'BEFORE interSolveLoadRequestEntity: ',
+      interSolveLoadRequestEntity,
+    );
 
     const payload: IntersolveLoadDto = {
       reference: interSolveLoadRequestEntity.reference,
@@ -394,7 +401,11 @@ export class IntersolveVisaService {
     );
 
     interSolveLoadRequestEntity.statusCode = topUpResult.status;
-    await this.intersolveLoadRequestRepository.save(
+    await this.intersolveVisaRequestRepository.save(
+      interSolveLoadRequestEntity,
+    );
+    console.log(
+      'AFTER interSolveLoadRequestEntity: ',
       interSolveLoadRequestEntity,
     );
 
@@ -408,6 +419,37 @@ export class IntersolveVisaService {
           )}`
         : `TOP UP ERROR: ${topUpResult.status} - ${topUpResult.statusText}`,
     };
+  }
+
+  private async activateToken(tokenCode: string): Promise<any> {
+    const intersolveVisaRequest = new IntersolveVisaRequestEntity();
+    intersolveVisaRequest.reference = uuid();
+    intersolveVisaRequest.metadata = JSON.parse(
+      JSON.stringify({ tokenCode: tokenCode }),
+    );
+    // TODO: Make this an enum that's imported from the intersolve API service
+    intersolveVisaRequest.endpoint = 'activate';
+    const intersolveVisaRequestEntity =
+      await this.intersolveVisaRequestRepository.save(intersolveVisaRequest);
+    console.log(
+      'BEFORE intersolveVisaRequestEntity: ',
+      intersolveVisaRequestEntity,
+    );
+    const payload: IntersolveActivateTokenRequestDto = {
+      reference: intersolveVisaRequestEntity.reference,
+    };
+    const activateResult = await this.intersolveVisaApiService.activateToken(
+      tokenCode,
+      payload,
+    );
+    intersolveVisaRequestEntity.statusCode = activateResult.status;
+    await this.intersolveVisaRequestRepository.save(
+      intersolveVisaRequestEntity,
+    );
+    console.log(
+      'AFTER intersolveVisaRequestEntity: ',
+      intersolveVisaRequestEntity,
+    );
   }
 
   private intersolveErrorToMessage(

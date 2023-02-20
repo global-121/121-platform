@@ -1,8 +1,8 @@
 import { Column, Entity, Index } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
 
-@Entity('intersolve_load_request')
-export class IntersolveLoadRequestEntity extends Base121Entity {
+@Entity('intersolve_visa_request')
+export class IntersolveVisaRequestEntity extends Base121Entity {
   @Index()
   @Column()
   public reference: string;
@@ -12,11 +12,11 @@ export class IntersolveLoadRequestEntity extends Base121Entity {
 
   @Index()
   @Column({ nullable: true })
-  public tokenCode: string;
-
-  @Column()
-  public quantityValue: number;
+  public endpoint: string;
 
   @Column({ nullable: true })
   public statusCode: number;
+
+  @Column('json', { nullable: true })
+  public metadata: JSON;
 }
