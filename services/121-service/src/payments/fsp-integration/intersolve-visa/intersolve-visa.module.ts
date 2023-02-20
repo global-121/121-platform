@@ -9,10 +9,10 @@ import { RegistrationEntity } from './../../../registration/registration.entity'
 import { IntersolveIssueTokenRequestEntity } from './intersolve-issue-token-request.entity';
 import { IntersolveLoadRequestEntity } from './intersolve-load-request.entity';
 import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.services';
+import { IntersolveVisaCardEntity } from './intersolve-visa-card.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { IntersolveVisaService } from './intersolve-visa.service';
-import { IntersolveVisaCardEntity } from './inversolve-visa-card.entity';
 
 @Module({
   imports: [

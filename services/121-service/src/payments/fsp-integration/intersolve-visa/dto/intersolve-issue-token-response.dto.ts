@@ -2,9 +2,9 @@ import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
 
 export class IntersolveIssueTokenResponseDto {
   public success: boolean;
-  public errors: IntersolveReponseErrorDto[];
-  public code: string;
-  public correlationId: string;
+  public errors?: IntersolveReponseErrorDto[];
+  public code?: string;
+  public correlationId?: string;
   public data: IntersolveIssueTokenResponseDataDto;
 }
 
@@ -14,16 +14,16 @@ export class IntersolveIssueTokenResponseDataDto {
 
 export class IntersolveIssueTokenResponseTokenDto {
   public code: string;
-  public blocked: boolean;
-  public blockReasonCode: string;
-  public type: string;
-  public tier: string;
-  public brandTypeCode: string;
-  public expiresAt: string;
-  public status: string;
-  public holderId: string;
-  public balances: IntersolveIssueTokenResponseBalanceDto[];
-  public assets: IntersolveIssueTokenResponseAssetDto[];
+  public blocked?: boolean;
+  public blockReasonCode?: string;
+  public type?: string;
+  public tier?: string;
+  public brandTypeCode?: string;
+  public expiresAt?: string;
+  public status?: string;
+  public holderId?: string;
+  public balances?: IntersolveIssueTokenResponseBalanceDto[];
+  public assets?: IntersolveIssueTokenResponseAssetDto[];
 }
 
 class IntersolveIssueTokenResponseBalanceDto {

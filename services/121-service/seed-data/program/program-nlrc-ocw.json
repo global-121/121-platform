@@ -80,6 +80,20 @@
       ],
       "duplicateCheck": true,
       "phases": ["registrationValidation", "inclusion", "payment"]
+    },
+    {
+      "label": {
+        "en": "Visa Card Nr."
+      },
+      "name": "visaCardNumber",
+      "type": "text",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ],
+      "phases": ["registrationValidation", "inclusion", "payment"]
     }
   ],
   "programQuestions": [

@@ -2,11 +2,13 @@ import { IntersolveContactInfoDto } from './intersolve-create-customer.dto';
 import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
 
 export class IntersolveCreateCustomerResponseBodyDto {
-  public success: boolean;
-  public errors: IntersolveReponseErrorDto[];
-  public code: string;
-  public correlationId: string;
-  public data: CreateCustomerResponseDataDto;
+  public data: {
+    success: boolean;
+    errors: IntersolveReponseErrorDto[];
+    code: string;
+    correlationId: string;
+    data: CreateCustomerResponseDataDto;
+  };
 }
 
 class CreateCustomerResponseDataDto {

@@ -1,7 +1,7 @@
 export class IntersolveCreateCustomerDto {
   public externalReference: string;
   public individual: IntersolveIndividualDto;
-  public contactInfo: IntersolveContactInfoDto;
+  public contactInfo?: IntersolveContactInfoDto;
 }
 
 class IntersolveIndividualDto {

@@ -47,9 +47,8 @@ export class IntersolveVisaApiService {
     payload: IntersolveCreateCustomerDto,
   ): Promise<IntersolveCreateCustomerResponseBodyDto> {
     if (process.env.MOCK_INTERSOLVE) {
-      return; // To be create
+      return; // TODO: Create mock for this
     } else {
-      console.log('payload: ', payload);
       const authToken = await this.getAuthenticationToken();
       const url = `${intersolveVisaApiUrl}/customer/v1/customers/create-individual`;
       return await this.httpService.post<IntersolveCreateCustomerResponseBodyDto>(
@@ -65,17 +64,14 @@ export class IntersolveVisaApiService {
       holderId: string;
     },
     tokenCode: string,
-  ): Promise<IntersolveCreateCustomerResponseBodyDto> {
+  ): Promise<any> {
     if (process.env.MOCK_INTERSOLVE) {
-      return; // To be create
+      return; // TODO: Create mock for this
     } else {
       const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/tokens/${tokenCode}/register-holder`;
-      return await this.httpService.post<IntersolveCreateCustomerResponseBodyDto>(
-        url,
-        payload,
-        authToken,
-      );
+      const url = `${intersolveVisaApiUrl}/wallet/v1/tokens/${tokenCode}/register-holder`;
+      // On success this returns a 204 No Content
+      return await this.httpService.post<any>(url, payload, authToken);
     }
   }
 
