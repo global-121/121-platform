@@ -8,7 +8,7 @@ export class IntersolveVisaCardEntity extends Base121Entity {
   public success: boolean;
 
   @Index()
-  @Column({ nullable: true })
+  @Column({ unique: true, nullable: true })
   public tokenCode: string;
 
   @Column({ nullable: true })

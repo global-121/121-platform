@@ -11,6 +11,12 @@ export class IntersolveCreateCustomerResponseBodyDto {
   };
 }
 
+export class IntersolveGetCustomerResponseBodyDto {
+  public data: {
+    success: boolean;
+  };
+}
+
 class CreateCustomerResponseDataDto {
   public id: string;
   public externalReference: string;

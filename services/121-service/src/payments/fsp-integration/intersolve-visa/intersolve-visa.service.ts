@@ -205,7 +205,7 @@ export class IntersolveVisaService {
     if (!visaCardNumber) {
       // There is no imported visa card number, so we need to issue a new one
       // TODO: THIS IS AN UNTESTED FLOW
-      console.log('ISSUEING NEW CARD');
+      console.log('ISSUING NEW CARD');
 
       const reference = uuid();
       const issueTokenRequest = new IntersolveVisaRequestEntity();
@@ -270,31 +270,66 @@ export class IntersolveVisaService {
     registration: RegistrationEntity,
     issueTokenResult: IntersolveIssueTokenResponseDto,
   ): Promise<any> {
-    const intersolveVisaCard = new IntersolveVisaCardEntity();
-    const visaCustomer = new IntersolveVisaCustomerEntity();
-    visaCustomer.registration = registration;
-    const createCustomerResult = await this.createIndividual(registration);
-    if (!createCustomerResult.data.success) {
-      return {
-        success: createCustomerResult.data.success,
-        message: createCustomerResult.data.success
-          ? null
-          : `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
-              createCustomerResult.data.errors,
-            )}`,
-      };
+    const customerEntity = await this.intersolveVisaCustomerRepo.findOne({
+      where: { registrationId: registration.id },
+    });
+    if (customerEntity) {
+      const getCustomerResult = await this.intersolveVisaApiService.getCustomer(
+        customerEntity.holderId,
+      );
+      if (getCustomerResult.data?.success) {
+        console.log(
+          'referenceId already exists with Intersolve > do not create again',
+        );
+      } else {
+        const createCustomerResult = await this.createIndividual(registration);
+        if (!createCustomerResult.data.success) {
+          return {
+            success: createCustomerResult.data.success,
+            message: createCustomerResult.data.success
+              ? null
+              : `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
+                  createCustomerResult.data.errors,
+                )}`,
+          };
+        }
+        customerEntity.holderId = createCustomerResult.data.data.id;
+        customerEntity.blocked = createCustomerResult.data.data.blocked;
+        await this.intersolveVisaCustomerRepo.save(customerEntity);
+      }
+    } else {
+      const createCustomerResult = await this.createIndividual(registration);
+      if (!createCustomerResult.data.success) {
+        return {
+          success: createCustomerResult.data.success,
+          message: createCustomerResult.data.success
+            ? null
+            : `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
+                createCustomerResult.data.errors,
+              )}`,
+        };
+      }
+      const visaCustomer = new IntersolveVisaCustomerEntity();
+      visaCustomer.registration = registration;
+      visaCustomer.holderId = createCustomerResult.data.data.id;
+      visaCustomer.blocked = createCustomerResult.data.data.blocked;
+      await this.intersolveVisaCustomerRepo.save(visaCustomer);
     }
-    visaCustomer.holderId = createCustomerResult.data.data.id;
-    visaCustomer.blocked = createCustomerResult.data.data.blocked;
 
-    intersolveVisaCard.success = issueTokenResult.success;
-    intersolveVisaCard.tokenCode = issueTokenResult.data.token.code;
-    intersolveVisaCard.tokenBlocked = issueTokenResult.data.token.blocked;
-    intersolveVisaCard.expiresAt = issueTokenResult.data.token.expiresAt;
-    intersolveVisaCard.status = issueTokenResult.data.token.status;
+    let intersolveVisaCard = await this.intersolveVisaCardRepository.findOne({
+      where: { tokenCode: issueTokenResult.data.token.code },
+    });
 
-    await this.intersolveVisaCustomerRepo.save(visaCustomer);
-    await this.intersolveVisaCardRepository.save(intersolveVisaCard);
+    if (!intersolveVisaCard) {
+      intersolveVisaCard = new IntersolveVisaCardEntity();
+      intersolveVisaCard.success = issueTokenResult.success;
+      intersolveVisaCard.tokenCode = issueTokenResult.data.token.code;
+      intersolveVisaCard.tokenBlocked = issueTokenResult.data.token.blocked;
+      intersolveVisaCard.expiresAt = issueTokenResult.data.token.expiresAt;
+      intersolveVisaCard.status = issueTokenResult.data.token.status;
+
+      await this.intersolveVisaCardRepository.save(intersolveVisaCard);
+    }
   }
 
   private async registerCustomerHolderToWallet(
@@ -319,10 +354,10 @@ export class IntersolveVisaService {
     console.log('registerHolderResult: ', registerHolderResult);
     if (registerHolderResult.data.success === false) {
       return {
-        success: registerHolderResult.data.success,
-        message: registerHolderResult.data.success
+        success: registerHolderResult.data?.success,
+        message: registerHolderResult.data?.success
           ? null
-          : `LINK CUSTOMER ERROR: ${registerHolderResult.code}`,
+          : `LINK CUSTOMER ERROR: ${registerHolderResult.data?.code}`,
       };
     }
 

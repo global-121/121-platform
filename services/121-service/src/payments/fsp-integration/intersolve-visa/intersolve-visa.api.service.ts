@@ -3,7 +3,10 @@ import { Issuer, TokenSet } from 'openid-client';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { IntersolveActivateTokenRequestDto } from './dto/intersolve-activate-token-request.dto';
 import { IntersolveActivateTokenResponseDto } from './dto/intersolve-activate-token-response.dto';
-import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-custom-respose.dto';
+import {
+  IntersolveCreateCustomerResponseBodyDto,
+  IntersolveGetCustomerResponseBodyDto,
+} from './dto/intersolve-create-custom-respose.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveIssueTokenResponseDto } from './dto/intersolve-issue-token-response.dto';
 import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
@@ -42,6 +45,21 @@ export class IntersolveVisaApiService {
       // Cache tokenSet
       this.tokenSet = tokenSet;
       return tokenSet.access_token;
+    }
+  }
+
+  public async getCustomer(
+    holderId: string,
+  ): Promise<IntersolveGetCustomerResponseBodyDto> {
+    if (process.env.MOCK_INTERSOLVE) {
+      return; // TODO: Create mock for this
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/customer/v1/customers/${holderId}/individual`;
+      return await this.httpService.get<IntersolveGetCustomerResponseBodyDto>(
+        url,
+        authToken,
+      );
     }
   }
 
@@ -86,7 +104,6 @@ export class IntersolveVisaApiService {
       const authToken = await this.getAuthenticationToken();
       const brandCode = process.env.INTERSOLVE_VISA_BRAND_CODE;
       const url = `${intersolveVisaApiUrl}/pointofsale/v1/brand-types/${brandCode}/issue-token`;
-      console.log('url: ', url);
       return await this.httpService.post<IntersolveIssueTokenResponseDto>(
         url,
         payload,
