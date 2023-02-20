@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import {
@@ -11,8 +10,6 @@ import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 
 @Injectable()
 export class IntersolveVisaApiMockService {
-  public constructor(private readonly httpService: HttpService) {}
-
   public issueTokenMock(): IntersolveIssueTokenResponseDto {
     const body = new IntersolveIssueTokenResponseDto();
     body.data = new IntersolveIssueTokenResponseDataDto();
@@ -119,7 +116,7 @@ export class IntersolveVisaApiMockService {
 
   public topUpCardMock(amountInCents: number): IntersolveLoadResponseDto {
     const response = {
-      body: {
+      data: {
         success: true,
         errors: [],
         code: 'string',
@@ -138,16 +135,18 @@ export class IntersolveVisaApiMockService {
           ],
         },
       },
-      statusCode: 200,
+      status: 200,
+      statusText: 'OK',
     };
     if (amountInCents === 9900) {
-      response.body.success = false;
-      response.body.errors.push({
+      response.data.success = false;
+      response.data.errors.push({
         code: 'BALANCE_TOO_HIGH',
         field: 'mock field',
         description: 'We mocked a balance is too high',
       });
-      response.statusCode = 405;
+      response.status = 405;
+      response.statusText = 'METHOD NOT ALLOWED';
     }
     return response;
   }

@@ -103,7 +103,7 @@ export class IntersolveVisaApiService {
       );
     } else {
       const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/tokens/${tokenCode}/transfers`;
+      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/load`;
       return await this.httpService.post<IntersolveLoadResponseDto>(
         url,
         payload,

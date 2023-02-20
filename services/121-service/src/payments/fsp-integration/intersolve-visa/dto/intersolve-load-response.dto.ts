@@ -1,8 +1,9 @@
 import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
 
 export class IntersolveLoadResponseDto {
-  public body: IntersolveLoadBodyDto;
-  public statusCode: number;
+  public data: IntersolveLoadBodyDto;
+  public status: number;
+  public statusText?: string;
 }
 
 class IntersolveLoadBodyDto {
