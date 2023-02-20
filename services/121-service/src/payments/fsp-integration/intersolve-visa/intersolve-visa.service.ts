@@ -317,16 +317,15 @@ export class IntersolveVisaService {
         tokenCode,
       );
     console.log('registerHolderResult: ', registerHolderResult);
-    // if (!registerHolderResult.data.success) {
-    //   return {
-    //     success: registerHolderResult.data.success,
-    //     message: registerHolderResult.data.success
-    //       ? null
-    //       : `LINK CUSTOMER ERROR: ${this.intersolveErrorToMessage(
-    //           registerHolderResult.data.errors,
-    //         )}`,
-    //   };
-    // }
+    if (!registerHolderResult.data.success) {
+      return {
+        success: registerHolderResult.data.success,
+        message: registerHolderResult.data.success
+          ? null
+          : `LINK CUSTOMER ERROR: ${registerHolderResult.code}`,
+      };
+    }
+
     const visaCard = await this.intersolveVisaCardRepository.findOne({
       where: { tokenCode: tokenCode },
     });
