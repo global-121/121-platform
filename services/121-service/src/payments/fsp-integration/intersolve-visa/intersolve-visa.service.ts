@@ -12,24 +12,32 @@ import {
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { RegistrationEntity } from './../../../registration/registration.entity';
-import { IntersolveReponseErrorDto } from './dto/intersolve-issue-token-response.dto';
+import { IntersolveActivateTokenRequestDto } from './dto/intersolve-activate-token-request.dto';
+import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-custom-respose.dto';
+import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
+import {
+  IntersolveIssueTokenResponseDataDto,
+  IntersolveIssueTokenResponseDto,
+  IntersolveIssueTokenResponseTokenDto,
+} from './dto/intersolve-issue-token-response.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
+import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { MessageStatus as MessageStatusDto } from './dto/message-status.dto';
-import { IntersolveIssueTokenRequestEntity } from './intersolve-issue-token-request.entity';
-import { IntersolveLoadRequestEntity } from './intersolve-load-request.entity';
+import { IntersolveVisaCardEntity } from './intersolve-visa-card.entity';
+import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
+import { IntersolveVisaRequestEntity } from './intersolve-visa-request.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
-import { IntersolveVisaCardEntity } from './inversolve-visa-card.entity';
 
 @Injectable()
 export class IntersolveVisaService {
   @InjectRepository(RegistrationEntity)
   public registrationRepository: Repository<RegistrationEntity>;
+  @InjectRepository(IntersolveVisaCustomerEntity)
+  public intersolveVisaCustomerRepo: Repository<IntersolveVisaCustomerEntity>;
   @InjectRepository(IntersolveVisaCardEntity)
   public intersolveVisaCardRepository: Repository<IntersolveVisaCardEntity>;
-  @InjectRepository(IntersolveIssueTokenRequestEntity)
-  public intersolveIssueTokenRequestRepository: Repository<IntersolveIssueTokenRequestEntity>;
-  @InjectRepository(IntersolveLoadRequestEntity)
-  public intersolveLoadRequestRepository: Repository<IntersolveLoadRequestEntity>;
+  @InjectRepository(IntersolveVisaRequestEntity)
+  public intersolveVisaRequestRepository: Repository<IntersolveVisaRequestEntity>;
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
@@ -44,7 +52,6 @@ export class IntersolveVisaService {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.intersolveVisa;
-
     for (const paymentData of paymentList) {
       const calculatedAmount =
         amount * (paymentData.paymentAmountMultiplier || 1);
@@ -75,27 +82,25 @@ export class IntersolveVisaService {
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: paymentData.referenceId },
     });
-    let tokenCode = await this.getExistingTokenCode(registration.id);
-    if (!tokenCode) {
-      const issueCardResult = await this.issueVisaCard(registration);
-      if (issueCardResult.succes) {
-        tokenCode = issueCardResult.tokenCode;
-        transactionNotifications.push(
-          this.buildNotificationObjectIssueCard(tokenCode),
-        );
-      } else {
-        return {
-          referenceId: paymentData.referenceId,
-          status: StatusEnum.error,
-          message: issueCardResult.message,
-          date: new Date(),
-          calculatedAmount: calculatedAmount,
-          fspName: FspName.intersolveVisa,
-        };
-      }
+    const getTokenResult = await this.getOrIssueWalletToken(registration);
+    if (getTokenResult.success) {
+      transactionNotifications.push(
+        this.buildNotificationObjectIssueCard(getTokenResult.tokenCode),
+      );
+    } else {
+      const res = {
+        referenceId: paymentData.referenceId,
+        status: StatusEnum.error,
+        message: getTokenResult.message,
+        date: new Date(),
+        calculatedAmount: calculatedAmount,
+        fspName: FspName.intersolveVisa,
+      };
+      console.log('res: ', res);
+      return res;
     }
     const topupResult = await this.topUpVisaCard(
-      tokenCode,
+      getTokenResult.tokenCode,
       calculatedAmount,
       registration.referenceId,
       paymentNr,
@@ -132,52 +137,228 @@ export class IntersolveVisaService {
     };
   }
 
-  private async getExistingTokenCode(registrationId: number): Promise<string> {
-    const visaCard = await this.intersolveVisaCardRepository.findOne({
+  private async getOrIssueWalletToken(
+    registration: RegistrationEntity,
+  ): Promise<{ success: boolean; tokenCode?: string; message?: string }> {
+    let visaCardEntity = await this.getExistingLinkedWallet(registration.id);
+    if (!visaCardEntity) {
+      const issueTokenResult = await this.issueToken(registration);
+      if (issueTokenResult.success) {
+        visaCardEntity = issueTokenResult.visaCard;
+      } else {
+        return {
+          success: false,
+          message: issueTokenResult.message,
+        };
+      }
+    }
+    if (!visaCardEntity.intersolveVisaCustomer) {
+      const registerResult = await this.registerCustomerHolderToWallet(
+        registration,
+        visaCardEntity.tokenCode,
+      );
+      if (!registerResult.success) {
+        return {
+          success: false,
+          message: registerResult.message,
+        };
+      }
+      await this.activateToken(visaCardEntity.tokenCode);
+    }
+
+    return {
+      success: true,
+      tokenCode: visaCardEntity.tokenCode,
+    };
+  }
+
+  private async getExistingLinkedWallet(
+    registrationId: number,
+  ): Promise<IntersolveVisaCardEntity> {
+    const visaCustomer = await this.intersolveVisaCustomerRepo.findOne({
       where: { registrationId: registrationId },
-      select: ['tokenCode'],
+      relations: ['visaCard', 'visaCard.intersolveVisaCustomer'],
     });
-    if (visaCard && visaCard.tokenCode) {
-      return visaCard.tokenCode;
+    if (visaCustomer && visaCustomer.visaCard) {
+      return visaCustomer.visaCard;
     }
   }
 
-  private async issueVisaCard(registration: RegistrationEntity): Promise<{
-    succes: boolean;
-    tokenCode: string;
-    message: string;
+  private async getWalletByTokenCode(
+    tokenCode: string,
+  ): Promise<IntersolveVisaCardEntity> {
+    const visaCard = await this.intersolveVisaCardRepository.findOne({
+      where: { tokenCode: tokenCode },
+    });
+    return visaCard;
+  }
+
+  private async issueToken(registration: RegistrationEntity): Promise<{
+    success: boolean;
+    visaCard?: IntersolveVisaCardEntity;
+    message?: string;
   }> {
-    const reference = uuid();
-    const issueTokenRequest = {
-      reference: reference,
-      saleId: registration.referenceId,
-    };
-    const issueTokenRequestEntity =
-      await this.intersolveIssueTokenRequestRepository.save(issueTokenRequest);
-    const issueTokenResult = await this.intersolveVisaApiService.issueToken(
-      issueTokenRequest,
+    const visaCardNumber = await registration.getRegistrationDataValueByName(
+      'visaCardNumber',
     );
-    issueTokenRequestEntity.statusCode = issueTokenResult.statusCode;
-    await this.intersolveIssueTokenRequestRepository.save(
-      issueTokenRequestEntity,
-    );
+
+    if (!visaCardNumber) {
+      // There is no imported visa card number, so we need to issue a new one
+      // TODO: THIS IS AN UNTESTED FLOW
+      console.log('ISSUEING NEW CARD');
+
+      const reference = uuid();
+      const issueTokenRequest = new IntersolveVisaRequestEntity();
+      issueTokenRequest.reference = reference;
+      issueTokenRequest.saleId = registration.referenceId;
+      // TODO: Make this an enum that's imported from the intersolve API service
+      issueTokenRequest.endpoint = 'issue-token';
+      const issueTokenRequestEntity =
+        await this.intersolveVisaRequestRepository.save(issueTokenRequest);
+      const issueTokenResult = await this.intersolveVisaApiService.issueToken(
+        issueTokenRequest,
+      );
+      console.log('issueTokenResult: ', issueTokenResult);
+      // issueTokenRequestEntity.statusCode = issueTokenResult.statusCode;
+      await this.intersolveVisaRequestRepository.save(issueTokenRequestEntity);
+
+      if (!issueTokenResult.success) {
+        return {
+          success: issueTokenResult.success,
+          message: issueTokenResult.success
+            ? null
+            : `CARD CREATION ERROR: ${this.intersolveErrorToMessage(
+                issueTokenResult.errors,
+              )}`,
+        };
+      } else {
+        await this.createIntersolveVisaEntities(registration, issueTokenResult);
+        return {
+          success: issueTokenResult.success,
+          visaCard: await this.getWalletByTokenCode(
+            issueTokenResult.data.token.code,
+          ),
+          message: issueTokenResult.success
+            ? null
+            : `CARD CREATION ERROR: ${this.intersolveErrorToMessage(
+                issueTokenResult.errors,
+              )}`,
+        };
+      }
+    } else {
+      // There IS an imported visa card number, so we don't need to issue a new one but we need to create the entities
+      console.log('ONLY CREATE THE ENTITIES');
+
+      const issueTokenResult = new IntersolveIssueTokenResponseDto();
+      issueTokenResult.data = new IntersolveIssueTokenResponseDataDto();
+      issueTokenResult.data.token = new IntersolveIssueTokenResponseTokenDto();
+      issueTokenResult.success = true;
+      issueTokenResult.data.token.code = visaCardNumber;
+
+      await this.createIntersolveVisaEntities(registration, issueTokenResult);
+      const visaCard = await this.getWalletByTokenCode(
+        issueTokenResult.data.token.code,
+      );
+      return {
+        success: issueTokenResult.success,
+        visaCard: visaCard,
+      };
+    }
+  }
+
+  private async createIntersolveVisaEntities(
+    registration: RegistrationEntity,
+    issueTokenResult: IntersolveIssueTokenResponseDto,
+  ): Promise<any> {
     const intersolveVisaCard = new IntersolveVisaCardEntity();
-    intersolveVisaCard.registration = registration;
-    intersolveVisaCard.success = issueTokenResult.body.success;
-    intersolveVisaCard.tokenCode = issueTokenResult.body.data.token.code;
-    intersolveVisaCard.tokenBlocked = issueTokenResult.body.data.token.blocked;
-    intersolveVisaCard.expiresAt = issueTokenResult.body.data.token.expiresAt;
-    intersolveVisaCard.status = issueTokenResult.body.data.token.status;
+    const visaCustomer = new IntersolveVisaCustomerEntity();
+    visaCustomer.registration = registration;
+    const createCustomerResult = await this.createIndividual(registration);
+    if (!createCustomerResult.data.success) {
+      return {
+        success: createCustomerResult.data.success,
+        message: createCustomerResult.data.success
+          ? null
+          : `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
+              createCustomerResult.data.errors,
+            )}`,
+      };
+    }
+    visaCustomer.holderId = createCustomerResult.data.data.id;
+    visaCustomer.blocked = createCustomerResult.data.data.blocked;
+
+    intersolveVisaCard.success = issueTokenResult.success;
+    intersolveVisaCard.tokenCode = issueTokenResult.data.token.code;
+    intersolveVisaCard.tokenBlocked = issueTokenResult.data.token.blocked;
+    intersolveVisaCard.expiresAt = issueTokenResult.data.token.expiresAt;
+    intersolveVisaCard.status = issueTokenResult.data.token.status;
+
+    await this.intersolveVisaCustomerRepo.save(visaCustomer);
     await this.intersolveVisaCardRepository.save(intersolveVisaCard);
+  }
+
+  private async registerCustomerHolderToWallet(
+    registration: RegistrationEntity,
+    tokenCode: string,
+  ): Promise<{
+    success: boolean;
+    holderId?: string;
+    message?: string;
+  }> {
+    const customerEntity = await this.intersolveVisaCustomerRepo.findOne({
+      where: { registrationId: registration.id },
+    });
+    const registerHolderResult =
+      await this.intersolveVisaApiService.registerHolder(
+        {
+          holderId: customerEntity.holderId,
+        },
+        tokenCode,
+      );
+
+    console.log('registerHolderResult: ', registerHolderResult);
+    if (registerHolderResult.data.success === false) {
+      return {
+        success: registerHolderResult.data.success,
+        message: registerHolderResult.data.success
+          ? null
+          : `LINK CUSTOMER ERROR: ${registerHolderResult.code}`,
+      };
+    }
+
+    const visaCard = await this.intersolveVisaCardRepository.findOne({
+      where: { tokenCode: tokenCode },
+    });
+    visaCard.intersolveVisaCustomer = customerEntity;
+    customerEntity.visaCard = visaCard;
+    await this.intersolveVisaCardRepository.save(visaCard);
+    await this.intersolveVisaCustomerRepo.save(customerEntity);
+
     return {
-      succes: issueTokenResult.body.success,
-      tokenCode: issueTokenResult.body.data.token.code,
-      message: issueTokenResult.body.success
-        ? null
-        : `CARD CREATION ERROR: ${this.intersolveErrorToMessage(
-            issueTokenResult.body.errors,
-          )}`,
+      success: true,
+      holderId: customerEntity.holderId,
     };
+  }
+
+  private async createIndividual(
+    registration: RegistrationEntity,
+  ): Promise<IntersolveCreateCustomerResponseBodyDto> {
+    // TODO: Find a better way to make this less hardcoded
+    const lastName = await registration.getRegistrationDataValueByName(
+      'nameLast',
+    );
+    const createCustomerRequest: IntersolveCreateCustomerDto = {
+      externalReference: registration.referenceId,
+      individual: {
+        firstName: 'TODO first name',
+        lastName: lastName,
+        // TODO: Find a better number for this (calculation?)
+        estimatedAnnualPaymentVolumeMajorUnit: 1500,
+      },
+    };
+    return await this.intersolveVisaApiService.createCustomer(
+      createCustomerRequest,
+    );
   }
 
   private async topUpVisaCard(
@@ -187,13 +368,20 @@ export class IntersolveVisaService {
     payment: number,
   ): Promise<MessageStatusDto> {
     const amountInCents = calculatedAmount * 100;
-    const interSolveLoadRequest = new IntersolveLoadRequestEntity();
-    interSolveLoadRequest.tokenCode = tokenCode;
-    interSolveLoadRequest.quantityValue = amountInCents;
+    const interSolveLoadRequest = new IntersolveVisaRequestEntity();
     interSolveLoadRequest.reference = uuid();
+    // TODO: Make this an enum that's imported from the intersolve API service
+    interSolveLoadRequest.endpoint = 'load';
     interSolveLoadRequest.saleId = `${referenceId}-${payment}`;
+    interSolveLoadRequest.metadata = JSON.parse(
+      JSON.stringify({ tokenCode: tokenCode, quantityValue: amountInCents }),
+    );
     const interSolveLoadRequestEntity =
-      await this.intersolveLoadRequestRepository.save(interSolveLoadRequest);
+      await this.intersolveVisaRequestRepository.save(interSolveLoadRequest);
+    console.log(
+      'BEFORE interSolveLoadRequestEntity: ',
+      interSolveLoadRequestEntity,
+    );
 
     const payload: IntersolveLoadDto = {
       reference: interSolveLoadRequestEntity.reference,
@@ -201,8 +389,8 @@ export class IntersolveVisaService {
       quantities: [
         {
           quantity: {
-            value: amountInCents, // We thinks this needs to be in cents
-            assetCode: 'NEED TO GET THIS FROM INTERSOLVE',
+            value: amountInCents,
+            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
           },
         },
       ],
@@ -212,19 +400,56 @@ export class IntersolveVisaService {
       payload,
     );
 
-    interSolveLoadRequestEntity.statusCode = topUpResult.statusCode;
-    await this.intersolveLoadRequestRepository.save(
+    interSolveLoadRequestEntity.statusCode = topUpResult.status;
+    await this.intersolveVisaRequestRepository.save(
+      interSolveLoadRequestEntity,
+    );
+    console.log(
+      'AFTER interSolveLoadRequestEntity: ',
       interSolveLoadRequestEntity,
     );
 
     return {
-      status: topUpResult.body.success ? StatusEnum.success : StatusEnum.error,
-      message: topUpResult.body.success
+      status: topUpResult.data?.success ? StatusEnum.success : StatusEnum.error,
+      message: topUpResult.data?.success
         ? null
-        : `TOP UP ERROR: ${this.intersolveErrorToMessage(
-            topUpResult.body.errors,
-          )}`,
+        : topUpResult.data?.errors?.length
+        ? `TOP UP ERROR: ${this.intersolveErrorToMessage(
+            topUpResult.data?.errors,
+          )}`
+        : `TOP UP ERROR: ${topUpResult.status} - ${topUpResult.statusText}`,
     };
+  }
+
+  private async activateToken(tokenCode: string): Promise<any> {
+    const intersolveVisaRequest = new IntersolveVisaRequestEntity();
+    intersolveVisaRequest.reference = uuid();
+    intersolveVisaRequest.metadata = JSON.parse(
+      JSON.stringify({ tokenCode: tokenCode }),
+    );
+    // TODO: Make this an enum that's imported from the intersolve API service
+    intersolveVisaRequest.endpoint = 'activate';
+    const intersolveVisaRequestEntity =
+      await this.intersolveVisaRequestRepository.save(intersolveVisaRequest);
+    console.log(
+      'BEFORE intersolveVisaRequestEntity: ',
+      intersolveVisaRequestEntity,
+    );
+    const payload: IntersolveActivateTokenRequestDto = {
+      reference: intersolveVisaRequestEntity.reference,
+    };
+    const activateResult = await this.intersolveVisaApiService.activateToken(
+      tokenCode,
+      payload,
+    );
+    intersolveVisaRequestEntity.statusCode = activateResult.status;
+    await this.intersolveVisaRequestRepository.save(
+      intersolveVisaRequestEntity,
+    );
+    console.log(
+      'AFTER intersolveVisaRequestEntity: ',
+      intersolveVisaRequestEntity,
+    );
   }
 
   private intersolveErrorToMessage(
@@ -233,6 +458,7 @@ export class IntersolveVisaService {
     let allMessages = '';
     for (const [i, error] of errors.entries()) {
       const newLine = i < errors.length - 1 ? '\n' : '';
+      console.log(`${error.code}: ${error.description} Field: ${error.field}`);
       allMessages = `${allMessages}${error.code}: ${error.description} Field: ${error.field}${newLine}`;
     }
     return allMessages;

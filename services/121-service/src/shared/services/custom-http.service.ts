@@ -50,6 +50,8 @@ export class CustomHttpService {
     };
     if (authorizationToken) {
       headers['Authorization'] = `Bearer ${authorizationToken}`;
+      // TODO: find a better way to add this header
+      headers['Tenant-ID'] = 'REDCROSS';
     }
     return headers;
   }

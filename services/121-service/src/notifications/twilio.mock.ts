@@ -8,7 +8,6 @@ import {
   TwilioMessagesCreateDto,
   TwilioStatus,
   TwilioStatusCallbackDto,
-  TwilioValidateRequestDto,
 } from './twilio.dto';
 
 class PhoneNumbers {
@@ -47,7 +46,7 @@ export class TwilioClientMock {
     public async create(
       twilioMessagesCreateDto: TwilioMessagesCreateDto,
     ): Promise<object> {
-      console.log('TwilioClientMock: create():', twilioMessagesCreateDto);
+      // console.log('TwilioClientMock: create():', twilioMessagesCreateDto);
 
       const messageSid = 'SM' + this.createRandomHexaDecimalString(32);
 
@@ -80,7 +79,7 @@ export class TwilioClientMock {
         response.errorCode = '1';
         response.errorMessage = 'Magic fail';
       }
-      console.log('TwilioClientMock create(): response:', response);
+      // console.log('TwilioClientMock create(): response:', response);
       this.sendStatusResponse121(twilioMessagesCreateDto, messageSid);
 
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -169,13 +168,12 @@ export class TwilioClientMock {
     }
   };
 
-  public validateRequest(
-    twilioValidateRequestDto: TwilioValidateRequestDto,
-  ): boolean {
-    console.log(
-      'TwilioClientMock: validateRequest():',
-      twilioValidateRequestDto,
-    );
+  public validateRequest(): // twilioValidateRequestDto: TwilioValidateRequestDto,
+  boolean {
+    // console.log(
+    //   'TwilioClientMock: validateRequest():',
+    //   twilioValidateRequestDto,
+    // );
     return true;
   }
 }

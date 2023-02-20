@@ -80,6 +80,20 @@
       ],
       "duplicateCheck": true,
       "phases": ["registrationValidation", "inclusion", "payment"]
+    },
+    {
+      "label": {
+        "en": "Visa Card Nr."
+      },
+      "name": "visaCardNumber",
+      "type": "text",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ],
+      "phases": ["registrationValidation", "inclusion", "payment"]
     }
   ],
   "programQuestions": [
@@ -99,24 +113,6 @@
       "editableInPortal": false,
       "shortLabel": {
         "en": "First Name"
-      }
-    },
-    {
-      "name": "nameLast",
-      "label": {
-        "en": "Please enter your last name:",
-        "nl": "Vul je achternaam in:"
-      },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "Last Name"
       }
     },
     {

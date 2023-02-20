@@ -5,5 +5,23 @@
     "en": "Visa V-Pay"
   },
   "notifyOnTransaction": true,
-  "questions": []
+  "questions": [
+    {
+      "name": "nameLast",
+      "label": {
+        "ar": "الرجاء إدخال اسم العائلة:",
+        "en": "Please enter your last name:",
+        "nl": "Vul je achternaam in:",
+        "fr": "Remplissez votre nom, s'il vous plaît:",
+        "es": "Por favor introduzca su apellido:",
+        "pt_BR": "Por favor, digite seu sobrenome:"
+      },
+      "answerType": "text",
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "phases": ["registrationValidation", "inclusion", "payment"],
+      "shortLabel": {
+        "en": "Last name"
+      }
+    }
+  ]
 }
