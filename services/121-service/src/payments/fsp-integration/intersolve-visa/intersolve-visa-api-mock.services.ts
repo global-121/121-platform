@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import {
@@ -12,8 +11,6 @@ import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 
 @Injectable()
 export class IntersolveVisaApiMockService {
-  public constructor(private readonly httpService: HttpService) {}
-
   public issueTokenMock(): IntersolveIssueTokenResponseDto {
     const response = new IntersolveIssueTokenResponseDto();
     response.body = new IntersolveIssueTokenBodyDto();
