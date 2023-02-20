@@ -119,7 +119,7 @@ export class IntersolveVisaApiMockService {
 
   public topUpCardMock(amountInCents: number): IntersolveLoadResponseDto {
     const response = {
-      body: {
+      data: {
         success: true,
         errors: [],
         code: 'string',
@@ -138,16 +138,18 @@ export class IntersolveVisaApiMockService {
           ],
         },
       },
-      statusCode: 200,
+      status: 200,
+      statusText: 'OK',
     };
     if (amountInCents === 9900) {
-      response.body.success = false;
-      response.body.errors.push({
+      response.data.success = false;
+      response.data.errors.push({
         code: 'BALANCE_TOO_HIGH',
         field: 'mock field',
         description: 'We mocked a balance is too high',
       });
-      response.statusCode = 405;
+      response.status = 405;
+      response.statusText = 'METHOD NOT ALLOWED';
     }
     return response;
   }

@@ -201,8 +201,8 @@ export class IntersolveVisaService {
       quantities: [
         {
           quantity: {
-            value: amountInCents, // We thinks this needs to be in cents
-            assetCode: 'NEED TO GET THIS FROM INTERSOLVE',
+            value: amountInCents,
+            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
           },
         },
       ],
@@ -212,18 +212,20 @@ export class IntersolveVisaService {
       payload,
     );
 
-    interSolveLoadRequestEntity.statusCode = topUpResult.statusCode;
+    interSolveLoadRequestEntity.statusCode = topUpResult.status;
     await this.intersolveLoadRequestRepository.save(
       interSolveLoadRequestEntity,
     );
 
     return {
-      status: topUpResult.body.success ? StatusEnum.success : StatusEnum.error,
-      message: topUpResult.body.success
+      status: topUpResult.data?.success ? StatusEnum.success : StatusEnum.error,
+      message: topUpResult.data?.success
         ? null
-        : `TOP UP ERROR: ${this.intersolveErrorToMessage(
-            topUpResult.body.errors,
-          )}`,
+        : topUpResult.data?.errors?.length
+        ? `TOP UP ERROR: ${this.intersolveErrorToMessage(
+            topUpResult.data?.errors,
+          )}`
+        : `TOP UP ERROR: ${topUpResult.status} - ${topUpResult.statusText}`,
     };
   }
 
