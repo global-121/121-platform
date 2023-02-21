@@ -7,7 +7,7 @@
   "notifyOnTransaction": true,
   "questions": [
     {
-      "name": "nameLast",
+      "name": "lastName",
       "label": {
         "ar": "الرجاء إدخال اسم العائلة:",
         "en": "Please enter your last name:",

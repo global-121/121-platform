@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsIn, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 
 export enum CustomAttributeType {
@@ -18,7 +18,7 @@ export class CreateProgramCustomAttributeDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  @IsIn([CustomAttributeType.text, CustomAttributeType.boolean])
+  @IsEnum(CustomAttributeType)
   public readonly type: CustomAttributeType;
 
   @ApiProperty()

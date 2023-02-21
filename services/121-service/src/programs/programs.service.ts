@@ -186,10 +186,28 @@ export class ProgramService {
     return { programs, programsCount };
   }
 
-  private validateProgram(programData: CreateProgramDto): void {
+  private async validateProgram(programData: CreateProgramDto): Promise<void> {
     for (const name of Object.values(programData.fullnameNamingConvention)) {
-      if (!programData.programQuestions.map((q) => q.name).includes(name)) {
-        const errors = `Element '${name}' of fullnameNamingConvention is not found in program questions`;
+      const fspAttributes = [];
+      for (const fsp of programData.financialServiceProviders) {
+        const fspEntity = await this.financialServiceProviderRepository.findOne(
+          {
+            where: { fsp: fsp.fsp },
+            relations: ['questions'],
+          },
+        );
+        for (const question of fspEntity.questions) {
+          fspAttributes.push(question.name);
+        }
+      }
+      if (
+        !programData.programQuestions.map((q) => q.name).includes(name) &&
+        !programData.programCustomAttributes
+          .map((ca) => ca.name)
+          .includes(name) &&
+        !fspAttributes.includes(name)
+      ) {
+        const errors = `Element '${name}' of fullnameNamingConvention is not found in program questions or custom attributes`;
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
     }
