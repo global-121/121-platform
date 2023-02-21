@@ -84,9 +84,11 @@ export class IntersolveVisaService {
     });
     const getTokenResult = await this.getOrIssueWalletToken(registration);
     if (getTokenResult.success) {
-      transactionNotifications.push(
-        this.buildNotificationObjectIssueCard(getTokenResult.tokenCode),
-      );
+      if (getTokenResult.newCardMessage) {
+        transactionNotifications.push(
+          this.buildNotificationObjectIssueCard(getTokenResult.tokenCode),
+        );
+      }
     } else {
       const res = {
         referenceId: paymentData.referenceId,
@@ -139,12 +141,19 @@ export class IntersolveVisaService {
 
   private async getOrIssueWalletToken(
     registration: RegistrationEntity,
-  ): Promise<{ success: boolean; tokenCode?: string; message?: string }> {
+  ): Promise<{
+    success: boolean;
+    newCardMessage?: boolean;
+    tokenCode?: string;
+    message?: string;
+  }> {
+    let newCardMessage = false;
     let visaCardEntity = await this.getExistingLinkedWallet(registration.id);
     if (!visaCardEntity) {
       const issueTokenResult = await this.issueToken(registration);
       if (issueTokenResult.success) {
         visaCardEntity = issueTokenResult.visaCard;
+        newCardMessage = true;
       } else {
         return {
           success: false,
@@ -167,10 +176,12 @@ export class IntersolveVisaService {
         visaCardEntity.tokenCode,
         registration.referenceId,
       );
+      newCardMessage = true;
     }
 
     return {
       success: true,
+      newCardMessage,
       tokenCode: visaCardEntity.tokenCode,
     };
   }
