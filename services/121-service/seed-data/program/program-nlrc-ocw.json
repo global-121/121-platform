@@ -88,27 +88,24 @@
         "payment"
       ],
       "phases": ["registrationValidation", "inclusion", "payment"]
-    }
-  ],
-  "programQuestions": [
+    },
     {
-      "name": "nameFirst",
+      "name": "firstName",
       "label": {
         "en": "Please enter your first name:",
         "nl": "Vul je voornaam in:"
       },
-      "answerType": "text",
-      "questionType": "standard",
-      "options": null,
-      "persistence": true,
-      "export": ["all-people-affected", "included", "selected-for-validation"],
-      "scoring": {},
-      "phases": [],
-      "editableInPortal": false,
-      "shortLabel": {
-        "en": "First Name"
-      }
-    },
+      "type": "text",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ],
+      "phases": []
+    }
+  ],
+  "programQuestions": [
     {
       "name": "phoneNumber",
       "label": {
@@ -136,7 +133,7 @@
     "en": "This is a draft text for the new OCW program.",
     "nl": "Dit is een draft tekst voor het nieuwe OCW programma."
   },
-  "fullnameNamingConvention": ["nameFirst", "nameLast"],
+  "fullnameNamingConvention": ["firstName", "lastName"],
   "languages": ["en", "nl"],
   "enableMaxPayments": true
 }

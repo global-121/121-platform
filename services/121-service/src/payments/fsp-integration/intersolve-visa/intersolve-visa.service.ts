@@ -393,14 +393,12 @@ export class IntersolveVisaService {
   private async createIndividual(
     registration: RegistrationEntity,
   ): Promise<IntersolveCreateCustomerResponseBodyDto> {
-    // TODO: Find a better way to make this less hardcoded
     const lastName = await registration.getRegistrationDataValueByName(
-      'nameLast',
+      'lastName',
     );
     const createCustomerRequest: IntersolveCreateCustomerDto = {
       externalReference: registration.referenceId,
       individual: {
-        firstName: 'TODO first name',
         lastName: lastName,
         // TODO: Find a better number for this (calculation?)
         estimatedAnnualPaymentVolumeMajorUnit: 1500,
