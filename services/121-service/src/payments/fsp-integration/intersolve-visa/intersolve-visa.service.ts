@@ -99,7 +99,6 @@ export class IntersolveVisaService {
         calculatedAmount: calculatedAmount,
         fspName: FspName.intersolveVisa,
       };
-      console.log('res: ', res);
       return res;
     }
     const topupResult = await this.topUpVisaCard(
@@ -208,7 +207,6 @@ export class IntersolveVisaService {
     if (!visaCardNumber) {
       // There is no imported visa card number, so we need to issue a new one
       // TODO: THIS IS AN UNTESTED FLOW
-      console.log('ISSUEING NEW CARD');
 
       const reference = uuid();
       const issueTokenRequest = new IntersolveVisaRequestEntity();
@@ -220,7 +218,6 @@ export class IntersolveVisaService {
       const issueTokenResult = await this.intersolveVisaApiService.issueToken(
         issueTokenRequest,
       );
-      console.log('issueTokenResult: ', issueTokenResult);
       // issueTokenRequestEntity.statusCode = issueTokenResult.statusCode;
       await this.intersolveVisaRequestRepository.save(issueTokenRequestEntity);
 
@@ -249,8 +246,6 @@ export class IntersolveVisaService {
       }
     } else {
       // There IS an imported visa card number, so we don't need to issue a new one but we need to create the entities
-      console.log('ONLY CREATE THE ENTITIES');
-
       const issueTokenResult = new IntersolveIssueTokenResponseDto();
       issueTokenResult.data = new IntersolveIssueTokenResponseDataDto();
       issueTokenResult.data.token = new IntersolveIssueTokenResponseTokenDto();
@@ -377,10 +372,6 @@ export class IntersolveVisaService {
     );
     const interSolveLoadRequestEntity =
       await this.intersolveVisaRequestRepository.save(interSolveLoadRequest);
-    console.log(
-      'BEFORE interSolveLoadRequestEntity: ',
-      interSolveLoadRequestEntity,
-    );
 
     const payload: IntersolveLoadDto = {
       reference: interSolveLoadRequestEntity.reference,
@@ -401,10 +392,6 @@ export class IntersolveVisaService {
 
     interSolveLoadRequestEntity.statusCode = topUpResult.status;
     await this.intersolveVisaRequestRepository.save(
-      interSolveLoadRequestEntity,
-    );
-    console.log(
-      'AFTER interSolveLoadRequestEntity: ',
       interSolveLoadRequestEntity,
     );
 
@@ -429,10 +416,7 @@ export class IntersolveVisaService {
     intersolveVisaRequest.endpoint = IntersolveEndpoints.ACTIVATE;
     const intersolveVisaRequestEntity =
       await this.intersolveVisaRequestRepository.save(intersolveVisaRequest);
-    console.log(
-      'BEFORE intersolveVisaRequestEntity: ',
-      intersolveVisaRequestEntity,
-    );
+
     const payload: IntersolveActivateTokenRequestDto = {
       reference: intersolveVisaRequestEntity.reference,
     };
@@ -442,10 +426,6 @@ export class IntersolveVisaService {
     );
     intersolveVisaRequestEntity.statusCode = activateResult.status;
     await this.intersolveVisaRequestRepository.save(
-      intersolveVisaRequestEntity,
-    );
-    console.log(
-      'AFTER intersolveVisaRequestEntity: ',
       intersolveVisaRequestEntity,
     );
   }
