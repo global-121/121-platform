@@ -7,19 +7,21 @@ import {
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { API_PATHS } from '../../config';
 import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
+import { IntersolveModule } from '../../payments/fsp-integration/intersolve/intersolve.module';
 import { ImageCodeModule } from '../../payments/imagecode/image-code.module';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
+import { ProgramEntity } from '../../programs/program.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
+import { UserModule } from '../../user/user.module';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
+import { SmsService } from '../sms/sms.service';
 import { TwilioMessageEntity } from '../twilio.entity';
-import { ProgramEntity } from './../../programs/program.entity';
-import { RegistrationEntity } from './../../registration/registration.entity';
-import { UserModule } from './../../user/user.module';
-import { SmsService } from './../sms/sms.service';
 import { TryWhatsappEntity } from './try-whatsapp.entity';
+import { WhatsappIncomingController } from './whatsapp-incoming.controller';
+import { WhatsappIncomingService } from './whatsapp-incoming.service';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { WhatsappTemplateTestEntity } from './whatsapp-template-test.entity';
-import { WhatsappController } from './whatsapp.controller';
-import { WhatsappService } from './whatsapp.service';
+import { WhatsappModule } from './whatsapp.module';
 
 @Module({
   imports: [
@@ -37,12 +39,14 @@ import { WhatsappService } from './whatsapp.service';
     ]),
     ImageCodeModule,
     UserModule,
+    IntersolveModule,
+    WhatsappModule,
   ],
-  providers: [WhatsappService, SmsService],
-  controllers: [WhatsappController],
-  exports: [WhatsappService],
+  providers: [WhatsappIncomingService, SmsService],
+  controllers: [WhatsappIncomingController],
+  exports: [WhatsappIncomingService],
 })
-export class WhatsappModule implements NestModule {
+export class WhatsappIncomingModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
     consumer.apply(AuthMiddlewareTwilio).forRoutes(
       {

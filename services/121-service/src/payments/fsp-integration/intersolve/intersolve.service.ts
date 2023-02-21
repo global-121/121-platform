@@ -1,10 +1,4 @@
-import {
-  forwardRef,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { DataSource, IsNull, Not, Repository } from 'typeorm';
@@ -54,7 +48,6 @@ export class IntersolveService {
 
   public constructor(
     private readonly intersolveApiService: IntersolveApiService,
-    @Inject(forwardRef(() => WhatsappService))
     private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
