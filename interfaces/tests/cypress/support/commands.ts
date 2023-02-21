@@ -1,6 +1,5 @@
-/// <reference types="Cypress" />
-const XLSX = require('xlsx');
-const portalEn = require('../../../HO-Portal/src/assets/i18n/en.json');
+import { BulkActionId } from '../../../HO-Portal/src/app/models/bulk-actions.models';
+import * as XLSX from 'xlsx';
 
 // Contains a list of custom Commands
 Cypress.Commands.add('setHoPortal', () => {
@@ -32,7 +31,7 @@ Cypress.Commands.add('seedDatabase', () => {
   });
 });
 
-Cypress.Commands.add('loginApi', (admin?) => {
+Cypress.Commands.add('loginApi', (admin?: boolean) => {
   const fixture = admin ? 'admin' : 'portal-login';
   cy.setServer();
   cy.fixture(fixture).then((credentials) => {
@@ -74,7 +73,6 @@ Cypress.Commands.add('publishProgram', (programId: number) => {
 });
 
 Cypress.Commands.add('loginPortal', () => {
-  cy.setHoPortal();
   cy.fixture('portal-login').then((fixture) => {
     cy.setHoPortal();
     cy.visit(fixture.loginPath);
@@ -86,18 +84,21 @@ Cypress.Commands.add('loginPortal', () => {
 
 // Performs an XMLHttpRequest instead of a cy.request (able to send data as
 // FormData - multipart/form-data)
-Cypress.Commands.add('form_request', (method, url, formData) => {
-  const xhr = new XMLHttpRequest();
-  xhr.open(method, url);
-  xhr.withCredentials = true;
-  xhr.send(formData);
-});
+Cypress.Commands.add(
+  'form_request',
+  (method: string, url: string, formData: FormData) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.withCredentials = true;
+    xhr.send(formData);
+  },
+);
 
 Cypress.Commands.add('importRegistrationsCsv', (programId, fileName) => {
   const folderPath = '../../../../features/test-registration-data';
   const filePath = `${folderPath}/${fileName}`;
   const url =
-    Cypress.config('baseUrl-server' as any) +
+    Cypress.env('baseUrl-server') +
     `/programs/${programId}/registrations/import-registrations`;
 
   cy.fixture(filePath, 'binary').then((csvBin) => {
@@ -108,7 +109,7 @@ Cypress.Commands.add('importRegistrationsCsv', (programId, fileName) => {
   });
 });
 
-Cypress.Commands.add('importRegistrations', (programId, body) => {
+Cypress.Commands.add('importRegistrations', (programId: number, body?) => {
   cy.setServer();
   cy.fixture('registration-nlrc').then((registration) => {
     if (!body) {
@@ -155,7 +156,12 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'editPaAttribute',
-  (programId: number, referenceId: string, attribute: string, value: any) => {
+  (
+    programId: number,
+    referenceId: string,
+    attribute: string,
+    value: string | number,
+  ) => {
     cy.setServer();
     cy.loginApi();
     return cy.request({
@@ -176,11 +182,11 @@ Cypress.Commands.add('getAllPeopleAffected', (programId: number) => {
 });
 
 Cypress.Commands.add('sendBulkMessage', (messageText: string) => {
-  const dropdownText =
-    portalEn.page.program['program-people-affected'].actions['send-message'];
-  cy.get(
-    '.ion-justify-content-between > :nth-child(1) > ion-row.md > .styled-select',
-  ).select(dropdownText);
+  cy.get('app-program-people-affected').should('be.visible');
+  cy.get('app-program-people-affected')
+    .get('[data-cy="select-action"]')
+    .select(BulkActionId.sendMessage);
+
   cy.get('label > input').click();
   cy.get('[data-cy="apply-action"]').click();
   cy.get('[data-cy="input-props-textarea"]').type(messageText, { delay: 1 });
@@ -189,50 +195,10 @@ Cypress.Commands.add('sendBulkMessage', (messageText: string) => {
 
 Cypress.Commands.add('readXlsx', (fileName: string, sheet: string) => {
   const filePath = `cypress/downloads/${fileName}`;
+
   cy.readFile(filePath, null).then((text) => {
     const workbook = XLSX.read(text, { type: 'buffer' });
     const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
     return rows;
   });
 });
-
-/* eslint-disable no-unused-vars -- Only allow these unused vars in this declaration (for now) */
-declare namespace Cypress {
-  interface Chainable<Subject> {
-    form_request(method: string, url: string, formData: any): void;
-    generateToken({ secret }): void;
-    importRegistrations(
-      programId: number,
-      data?: any,
-    ): Cypress.Chainable<Cypress.Response<any>>;
-    importRegistrationsCsv(programId: number, fileName: string): void;
-    loginApi(admin?: boolean): void;
-    loginPortal(): void;
-    seedDatabase(): void;
-    setAwApp(): void;
-    setHoPortal(): void;
-    setPaApp(): void;
-    setServer(): void;
-    sendBulkMessage(messageText: string): void;
-    publishProgram(programId: number): void;
-    moveToSpecifiedPhase(programId: number, phase: string): void;
-    getAllPeopleAffected(
-      programId: number,
-    ): Cypress.Chainable<Cypress.Response<any>>;
-    includePeopleAffected(programId: number, referenceIds: string[]): void;
-    doPayment(
-      programId: number,
-      referenceIds: string[],
-      payment: number,
-      amount: number,
-    ): void;
-    readXlsx(filename: string, sheet: string): any;
-    editPaAttribute(
-      programId: number,
-      referenceId: string,
-      attribute: string,
-      value: any,
-    ): void;
-  }
-}
-/* eslint-enable no-unused-vars */

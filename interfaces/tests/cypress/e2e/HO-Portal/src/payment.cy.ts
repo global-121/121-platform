@@ -226,7 +226,7 @@ describe("'Do Payment #1' bulk action", () => {
           selectPaAndApply();
           confirmPaymentPopupt(arr.length);
 
-          // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed and incoming whatsapp message
+          // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed and incoming WhatsApp message
           cy.wait(500);
           cy.reload();
 

@@ -10,7 +10,7 @@ describe('Check message history', () => {
     cy.loginPortal();
   });
 
-  it('Send 1 whatsapp message', function () {
+  it('Send 1 WhatsApp message', function () {
     const programId = 1;
     const messageText = programLVV.notifications.en.whatsappGenericMessage;
     const label =
@@ -33,7 +33,6 @@ describe('Check message history', () => {
       cy.sendBulkMessage(fixture.messageText);
       cy.wait('@textmessage');
 
-      // Check PA-table
       checkPATable(fixture, MessageStatus.delivered, 'WHATSAPP');
 
       cy.fixture('registration-nlrc').then((registration) => {
@@ -69,7 +68,6 @@ describe('Check message history', () => {
           cy.sendBulkMessage(fixture.messageText);
           cy.wait('@textmessage');
 
-          // Check PA-table
           checkPATable(fixture, MessageStatus.sent, 'SMS');
 
           // Check Message History Popup
@@ -110,7 +108,6 @@ describe('Check message history', () => {
           cy.sendBulkMessage(fixture.messageText);
           cy.wait('@textmessage');
 
-          // Check PA-table
           checkPATable(fixture, MessageStatus.failed, 'SMS');
 
           // Check Message History Popup
@@ -142,6 +139,7 @@ describe('Check message history', () => {
       (registrationNoWhatsapp) => {
         cy.importRegistrations(programId, [registrationNoWhatsapp]);
         cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
+
         cy.fixture('message-history').then((fixture) => {
           cy.setHoPortal();
           cy.visit(fixture.url);
@@ -164,7 +162,6 @@ describe('Check message history', () => {
             cy.sendBulkMessage(fixture.messageText);
             cy.wait('@textmessage');
 
-            // // Check PA-table
             checkPATable(fixture, MessageStatus.failed, 'SMS');
 
             // Check Message History Popup
@@ -199,7 +196,7 @@ describe('Check message history', () => {
   });
 
   const checkPATable = (
-    fixture: any,
+    fixture,
     messageStatus: string,
     messageType: string,
   ) => {
@@ -207,7 +204,7 @@ describe('Check message history', () => {
     cy.visit(fixture.url).then(() => {
       cy.get('.proxy-scrollbar').scrollTo('right', {
         easing: 'linear',
-        duration: 100,
+        duration: 16,
       });
       cy.get('[data-cy="message-history-button"]').contains(messageType, {
         matchCase: false,
@@ -219,7 +216,7 @@ describe('Check message history', () => {
   };
 
   const checkMessageHistoryPopup = (
-    registration: any,
+    registration,
     customLabel: string,
     messageText: string,
     messageType: string,
@@ -230,7 +227,7 @@ describe('Check message history', () => {
     cy.get('.proxy-scrollbar')
       .scrollTo('right', {
         easing: 'linear',
-        duration: 100,
+        duration: 16,
       })
       .then(() => {
         cy.get('[data-cy="message-history-button"]').should('be.visible');
@@ -255,7 +252,6 @@ describe('Check message history', () => {
           typeLabel = messageHistoryEn.type.sms;
         }
         const messageTextSub = messageText.substring(0, 20);
-        // cy.get('[data-cy="message-history-row"]').contains(typeLabel)
 
         // Checks row
         if (isFinite(nEntry)) {

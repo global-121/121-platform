@@ -43,7 +43,7 @@ describe('Login Page', () => {
       cy.get('[data-cy="login-form"]').get('ion-button[type="submit"]').click();
 
       cy.get('.login-notification').contains(
-        portalText.common['unknown-error'],
+        portalText.page.login.form['error-messages'][401],
       );
     });
   });

@@ -1,29 +1,32 @@
 import { ProgramPhase } from '../../../../../../services/121-service/src/shared/enum/program-phase.model';
 import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 
-describe('Edit person affect pop-up', () => {
+describe('Edit PA details in pop-up', () => {
   beforeEach(() => {
     cy.seedDatabase();
     cy.loginApi();
     cy.loginPortal();
   });
 
-  it('Should edit person affect in pop-up', function () {
+  it('Should show and edit PA details in pop-up', function () {
     const programId = 1;
     cy.moveToSpecifiedPhase(programId, ProgramPhase.registrationValidation);
 
     cy.fixture('edit-pa-popup').then((fixture) => {
       cy.importRegistrations(programId, [fixture.registration]);
       cy.setHoPortal();
+
       cy.visit(fixture.url);
+
+      cy.get('app-program-people-affected').should('be.visible');
 
       cy.get('[data-cy="pa-edit-button"]', { timeout: 8000 }).click();
 
       cy.get('app-edit-person-affected-popup')
         .get('app-update-property-item')
         .each(($el) => {
-          const type = $el.attr('ng-reflect-type');
-          const label = $el.attr('ng-reflect-label');
+          const type = $el.attr('ng-reflect-type') || '';
+          const label = $el.attr('ng-reflect-label') || '';
           validateInput(type, label);
         });
 
