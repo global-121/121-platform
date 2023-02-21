@@ -14,7 +14,7 @@ class IntersolveIndividualDto {
   public countryOfBirth?: string;
   public nationality?: string;
   public culture?: string;
-  public estimatedAnnualPaymentVolumeMajorUnit?: number;
+  public estimatedAnnualPaymentVolumeMajorUnit: number;
 }
 
 export class IntersolveContactInfoDto {

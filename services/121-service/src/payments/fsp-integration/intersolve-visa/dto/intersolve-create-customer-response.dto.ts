@@ -23,10 +23,10 @@ class CreateCustomerResponseDataDto {
   public blocked: boolean;
   public unblockable: boolean;
   public createdAt: string;
-  public type: string;
-  public organization: CreateCustomerResponseOrganizationDto;
-  public individual: CreateCustomerResponseIndividualDto;
-  public contactInfo: IntersolveContactInfoDto;
+  public type?: string;
+  public organization?: CreateCustomerResponseOrganizationDto;
+  public individual?: CreateCustomerResponseIndividualDto;
+  public contactInfo?: IntersolveContactInfoDto;
 }
 
 class CreateCustomerResponseOrganizationDto {
