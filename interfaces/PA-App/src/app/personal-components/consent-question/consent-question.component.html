@@ -1,9 +1,9 @@
-<dialogue-turn>
+<app-dialogue-turn>
   <p>
-    <play-text-audio
+    <app-play-text-audio
       key="personal.consent-question.question"
       class="ion-float-start ion-margin-end"
-    ></play-text-audio>
+    ></app-play-text-audio>
     <span
       [innerHTML]="
         'personal.consent-question.question'
@@ -15,19 +15,19 @@
     ></span>
   </p>
 
-  <more-info-button
+  <app-more-info-button
     *ngIf="instanceInformation?.dataPolicy"
     buttonKey="personal.consent-question.more-info-personal-information"
     [message]="instanceInformation?.dataPolicy"
     headingKey="personal.consent-question.more-info-personal-information"
-  ></more-info-button>
-</dialogue-turn>
-<dialogue-turn actor="self">
+  ></app-more-info-button>
+</app-dialogue-turn>
+<app-dialogue-turn actor="self">
   <p>
-    <play-text-audio
+    <app-play-text-audio
       key="personal.consent-question.answer"
       class="ion-float-start ion-margin-end"
-    ></play-text-audio>
+    ></app-play-text-audio>
     <span [innerHTML]="'personal.consent-question.answer' | translate"></span>
   </p>
   <ion-radio-group
@@ -45,11 +45,11 @@
       lines="full"
       class="ion-no-padding"
     >
-      <play-text-audio
+      <app-play-text-audio
         key="personal.consent-question.agree"
         slot="start"
         class="ion-no-margin ion-margin-end"
-      ></play-text-audio>
+      ></app-play-text-audio>
       <ion-item
         lines="none"
         color="light"
@@ -70,11 +70,11 @@
       class="ion-no-padding"
       lines="full"
     >
-      <play-text-audio
+      <app-play-text-audio
         key="personal.consent-question.disagree"
         slot="start"
         class="ion-no-margin ion-margin-end"
-      ></play-text-audio>
+      ></app-play-text-audio>
       <ion-item
         lines="none"
         color="light"
@@ -95,10 +95,10 @@
     *ngIf="(consentChoice || userConsent) && !isDisabled"
     class="ion-nowrap ion-align-items-center ion-margin-top"
   >
-    <play-text-audio
+    <app-play-text-audio
       key="shared.submit-button"
       size="default"
-    ></play-text-audio>
+    ></app-play-text-audio>
     <ion-button
       type="button"
       (click)="submitConsent()"
@@ -109,4 +109,4 @@
       {{ 'shared.submit-button' | translate }}
     </ion-button>
   </ion-row>
-</dialogue-turn>
+</app-dialogue-turn>

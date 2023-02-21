@@ -88,10 +88,10 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/assigned/all')
       .then((response) => {
-        if (response) {
+        if (response && response.programs) {
           return response.programs;
         }
-        return null;
+        return [];
       });
   }
 
@@ -175,18 +175,19 @@ export class ProgramsServiceApiService {
   getPastPayments(programId: number | string): Promise<PaymentData[]> {
     return this.apiService
       .get(environment.url_121_service_api, `/programs/${programId}/payments`)
-      .then((response) => {
-        return response
+      .then((response) =>
+        response
           .map((element) => {
             // Remap `payment`-property to `id`:
             element.id = element.payment;
             return element;
           })
-          .sort((a: PaymentData, b: PaymentData) => {
-            // Sort by payment-id (as the back-end doesn't do that)
-            return a.id - b.id;
-          });
-      });
+          .sort(
+            (a: PaymentData, b: PaymentData) =>
+              // Sort by payment-id (as the back-end doesn't do that)
+              a.id - b.id,
+          ),
+      );
   }
 
   getTransactions(
@@ -344,9 +345,7 @@ export class ProgramsServiceApiService {
             return resolve(response);
           }
         })
-        .catch((err) => {
-          return reject(err);
-        });
+        .catch((err) => reject(err));
     });
   }
 
@@ -388,9 +387,7 @@ export class ProgramsServiceApiService {
             return resolve(response);
           }
         })
-        .catch((err) => {
-          return reject(err);
-        });
+        .catch((err) => reject(err));
     });
   }
 
@@ -573,7 +570,7 @@ export class ProgramsServiceApiService {
   addUser(email: string, password: string): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
-      `/user/aidworker`,
+      '/user/aidworker',
       {
         email,
         password,

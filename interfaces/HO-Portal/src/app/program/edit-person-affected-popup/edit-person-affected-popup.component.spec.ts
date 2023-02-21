@@ -11,9 +11,7 @@ import { EditPersonAffectedPopupComponent } from './edit-person-affected-popup.c
 
 const modalSpy = jasmine.createSpyObj('Modal', ['present']);
 const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-modalCtrlSpy.create.and.callFake(() => {
-  return modalSpy;
-});
+modalCtrlSpy.create.and.callFake(() => modalSpy);
 
 describe('EditPersonAffectedPopupComponent', () => {
   let component: EditPersonAffectedPopupComponent;

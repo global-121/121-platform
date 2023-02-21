@@ -1,8 +1,8 @@
 <section #mainMenu>
-  <dialogue-turn [isSpoken]="true">
+  <app-dialogue-turn [isSpoken]="true">
     {{ 'validation.main-menu.introduction' | translate }}
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     actor="self"
     [isSpoken]="true"
   >
@@ -39,5 +39,5 @@
     >
       {{ 'shared.submit-button' | translate }}
     </ion-button>
-  </dialogue-turn>
+  </app-dialogue-turn>
 </section>

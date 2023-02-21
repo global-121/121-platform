@@ -13,15 +13,11 @@ import { ProgramPeopleAffectedComponent } from './program-people-affected.compon
 
 const modalSpy = jasmine.createSpyObj('Modal', ['present']);
 const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-modalCtrlSpy.create.and.callFake(() => {
-  return modalSpy;
-});
+modalCtrlSpy.create.and.callFake(() => modalSpy);
 
 const popoverSpy = jasmine.createSpyObj('Popover', ['present']);
 const popoverCtrlSpy = jasmine.createSpyObj('PopoverController', ['create']);
-popoverCtrlSpy.create.and.callFake(() => {
-  return popoverSpy;
-});
+popoverCtrlSpy.create.and.callFake(() => popoverSpy);
 
 describe('ProgramPeopleAffectedComponent', () => {
   let component: ProgramPeopleAffectedComponent;

@@ -137,7 +137,7 @@
         ></ion-input>
       </ion-item>
 
-      <confirm-prompt
+      <app-confirm-prompt
         [disabled]="isInProgress"
         (confirm)="singlePayment()"
         (cancel)="resetProgress()"
@@ -145,7 +145,7 @@
         [message]="totalAmountMessage"
       >
         {{ singlePaymentPayout }}
-      </confirm-prompt>
+      </app-confirm-prompt>
     </ion-row>
   </div>
 </ion-content>

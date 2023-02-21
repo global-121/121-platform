@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../app/auth/auth.service';
@@ -13,7 +13,7 @@ import { FilePickerProps } from '../../shared/file-picker-prompt/file-picker-pro
   templateUrl: './import-fsp-reconciliation.component.html',
   styleUrls: ['./import-fsp-reconciliation.component.scss'],
 })
-export class ImportFspReconciliationComponent implements OnChanges {
+export class ImportFspReconciliationComponent implements OnChanges, OnInit {
   @Input()
   public programId: number;
 

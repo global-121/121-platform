@@ -102,7 +102,7 @@
       {{ 'page.program.program-payout.last-payment.error' | translate }}:
       <strong>{{ lastPaymentResults.error }}</strong>
     </p>
-    <confirm-prompt
+    <app-confirm-prompt
       *ngIf="lastPaymentResults?.error > 0"
       (confirm)="retryLastPayment()"
       [subHeader]="
@@ -122,6 +122,6 @@
         'page.program.program-payout.last-payment.retry-all'
           | translate : { number: lastPaymentResults?.error }
       }}
-    </confirm-prompt>
+    </app-confirm-prompt>
   </ion-col>
 </ion-row>

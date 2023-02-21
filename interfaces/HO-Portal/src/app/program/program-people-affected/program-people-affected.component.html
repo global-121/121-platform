@@ -32,7 +32,7 @@
           </option>
         </ng-container>
       </select>
-      <confirm-prompt
+      <app-confirm-prompt
         data-cy="apply-action"
         [disabled]="applyBtnDisabled"
         (confirm)="applyAction($event)"
@@ -46,7 +46,7 @@
         class="ion-float-end"
       >
         {{ 'page.program.program-people-affected.apply-action' | translate }}
-      </confirm-prompt>
+      </app-confirm-prompt>
 
       <ion-spinner
         *ngIf="isInProgress"
@@ -234,9 +234,9 @@
       >
         <button
           *ngIf="canViewPersonalData"
-          id="edit-button"
           type="button"
           class="ion-no-padding popup-button"
+          data-cy="pa-edit-button"
           (click)="editPersonAffectedPopup(row, programId)"
           [attr.title]="
             ('page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'

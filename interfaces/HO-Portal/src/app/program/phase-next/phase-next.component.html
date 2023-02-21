@@ -7,7 +7,7 @@
     color="primary"
   ></ion-spinner>
 
-  <confirm-prompt
+  <app-confirm-prompt
     *ngIf="btnAvailable"
     [disabled]="checkDisabled()"
     (confirm)="advancePhase()"
@@ -15,5 +15,5 @@
     class="ion-margin-start"
   >
     {{ btnText }}
-  </confirm-prompt>
+  </app-confirm-prompt>
 </div>

@@ -2,7 +2,7 @@
   <ion-toolbar color="dark">
     <ion-title> {{ 'tabs.user'|translate }} </ion-title>
     <ion-buttons slot="end">
-      <connection-indicator></connection-indicator>
+      <app-connection-indicator></app-connection-indicator>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -11,19 +11,19 @@
   color="medium"
   class="ion-padding-vertical"
 >
-  <dialogue-turn
+  <app-dialogue-turn
     *ngIf="!isLoggedIn"
     [isSpoken]="!isLoggedIn"
   >
     {{ 'account.introduction'|translate }}
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     *ngIf="isLoggedIn"
     [isSpoken]="isLoggedIn"
   >
     {{ 'account.conclusion'|translate }}
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     actor="self"
     [isSpoken]="true"
   >
@@ -92,8 +92,8 @@
     >
       {{ 'account.change-password'|translate }}
     </ion-button>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     actor="self"
     [isConnected]="true"
     *ngIf="changePasswordForm"
@@ -153,5 +153,5 @@
         {{ 'account.close-change-password'|translate }}
       </ion-button>
     </form>
-  </dialogue-turn>
+  </app-dialogue-turn>
 </ion-content>

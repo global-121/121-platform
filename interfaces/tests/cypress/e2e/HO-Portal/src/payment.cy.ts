@@ -44,7 +44,7 @@ describe("'Do Payment #1' bulk action", () => {
       selectPaymentAction(page, page.payment);
       selectPaAndApply();
       cy.get(
-        'app-make-payment > .ion-align-items-center > confirm-prompt > .md',
+        'app-make-payment > .ion-align-items-center > app-confirm-prompt > .md',
       ).click();
       cy.get('.buttons-last-slot > .ion-color-primary').click();
 
@@ -109,7 +109,7 @@ describe("'Do Payment #1' bulk action", () => {
       selectPaymentAction(page, page.payment);
       selectPaAndApply();
       cy.get(
-        'app-make-payment > .ion-align-items-center > confirm-prompt > .md',
+        'app-make-payment > .ion-align-items-center > app-confirm-prompt > .md',
       ).click();
       const sum = registrations.reduce(function (a, b) {
         return a + (b['paymentAmountMultiplier'] || 1);
@@ -136,7 +136,7 @@ describe("'Do Payment #1' bulk action", () => {
         .find('input')
         .type(String(newFixedTransferValue), { force: true });
       cy.get(
-        'app-make-payment > .ion-align-items-center > confirm-prompt > .md',
+        'app-make-payment > .ion-align-items-center > app-confirm-prompt > .md',
       ).click();
       const sum = registrations.reduce(function (a, b) {
         return a + (b['paymentAmountMultiplier'] || 1);
@@ -226,7 +226,7 @@ describe("'Do Payment #1' bulk action", () => {
           selectPaAndApply();
           confirmPaymentPopupt(arr.length);
 
-          // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed and incoming whatsapp message
+          // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed and incoming WhatsApp message
           cy.wait(500);
           cy.reload();
 
@@ -246,7 +246,7 @@ describe("'Do Payment #1' bulk action", () => {
 
   const confirmPaymentPopupt = (nrOfPa: number) => {
     cy.get(
-      'app-make-payment > .ion-align-items-center > confirm-prompt > .md',
+      'app-make-payment > .ion-align-items-center > app-confirm-prompt > .md',
     ).click();
     cy.get('.buttons-last-slot > .ion-color-primary').click();
 
@@ -274,8 +274,8 @@ describe("'Do Payment #1' bulk action", () => {
   };
 
   const includeAllRegistrations = (programId: number) => {
-    let arr = [];
-    let registrations = [];
+    const arr = [];
+    const registrations = [];
     cy.getAllPeopleAffected(programId).then((response) => {
       for (const pa of response.body) {
         arr.push(pa.referenceId);

@@ -7,6 +7,7 @@
   },
   "extends": [
     "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
     "plugin:cypress/recommended"
   ],
@@ -15,8 +16,9 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": ["cypress"],
+  "plugins": ["@typescript-eslint", "cypress", "prettier"],
   "rules": {
-    "cypress/no-unnecessary-waiting": "warn"
+    "cypress/no-unnecessary-waiting": "warn",
+    "@typescript-eslint/no-explicit-any": "warn"
   }
 }

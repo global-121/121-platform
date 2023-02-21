@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import * as convert from 'xml-js';
-import { FspName } from '../../../fsp/financial-service-provider.entity';
+import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ImportFspReconciliationResult } from '../../../registration/dto/bulk-import.dto';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
