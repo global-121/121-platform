@@ -99,10 +99,10 @@ export class CreateProgramDto {
   @ApiProperty({
     example: [
       {
-        fsp: 'Intersolve-voucher-whatsapp',
+        fsp: FspName.intersolveVoucherWhatsapp,
       },
       {
-        fsp: 'Intersolve-voucher-paper',
+        fsp: FspName.intersolveVoucherPaper,
       },
     ],
     description: 'Use the GET /fsp endpoint to find valid fspNames.',
