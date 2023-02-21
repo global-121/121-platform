@@ -175,7 +175,11 @@ export class IntersolveVisaApiMockService {
   }
 
   public registerHolderMock(): object {
-    return {};
+    return {
+      status: 204,
+      statusText: 'No Content',
+      data: {},
+    };
   }
 
   public activateCardMock(): IntersolveActivateTokenResponseDto {
