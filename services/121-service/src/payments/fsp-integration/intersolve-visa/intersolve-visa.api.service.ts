@@ -3,7 +3,10 @@ import { Issuer, TokenSet } from 'openid-client';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { IntersolveActivateTokenRequestDto } from './dto/intersolve-activate-token-request.dto';
 import { IntersolveActivateTokenResponseDto } from './dto/intersolve-activate-token-response.dto';
-import { IntersolveCreateCustomerResponseBodyDto, IntersolveGetCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
+import {
+  IntersolveCreateCustomerResponseBodyDto,
+  IntersolveGetCustomerResponseBodyDto,
+} from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveIssueTokenResponseDto } from './dto/intersolve-issue-token-response.dto';
 import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';

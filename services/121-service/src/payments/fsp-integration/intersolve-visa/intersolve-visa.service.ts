@@ -339,7 +339,8 @@ export class IntersolveVisaService {
       intersolveVisaCard = new IntersolveVisaCardEntity();
       intersolveVisaCard.success = issueTokenResult.data.success;
       intersolveVisaCard.tokenCode = issueTokenResult.data.data.token.code;
-      intersolveVisaCard.tokenBlocked = issueTokenResult.data.data.token.blocked;
+      intersolveVisaCard.tokenBlocked =
+        issueTokenResult.data.data.token.blocked;
       intersolveVisaCard.expiresAt = issueTokenResult.data.data.token.expiresAt;
       intersolveVisaCard.status = issueTokenResult.data.data.token.status;
 
