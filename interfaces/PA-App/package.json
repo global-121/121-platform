@@ -49,7 +49,7 @@
     "@angular/platform-browser-dynamic": "^13.3.12",
     "@angular/router": "^13.3.12",
     "@angular/service-worker": "^13.3.12",
-    "@ionic/angular": "^6.5.2",
+    "@ionic/angular": "^6.5.5",
     "@ionic/cli": "^6.20.3",
     "@microsoft/applicationinsights-web": "^2.8.10",
     "@ngx-translate/core": "^13.0.0",
