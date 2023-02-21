@@ -3,7 +3,7 @@ import { Issuer, TokenSet } from 'openid-client';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { IntersolveActivateTokenRequestDto } from './dto/intersolve-activate-token-request.dto';
 import { IntersolveActivateTokenResponseDto } from './dto/intersolve-activate-token-response.dto';
-import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-custom-respose.dto';
+import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveIssueTokenResponseDto } from './dto/intersolve-issue-token-response.dto';
 import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
@@ -61,7 +61,7 @@ export class IntersolveVisaApiService {
       const url = `${intersolveVisaApiUrl}/customer/v1/customers/create-individual`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
-        { name: 'Tenant-ID', value: 'REDCROSS' },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
       ];
       return await this.httpService.post<IntersolveCreateCustomerResponseBodyDto>(
         url,
@@ -84,7 +84,7 @@ export class IntersolveVisaApiService {
       const url = `${intersolveVisaApiUrl}/wallet/v1/tokens/${tokenCode}/register-holder`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
-        { name: 'Tenant-ID', value: 'REDCROSS' },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
       ];
       // On success this returns a 204 No Content
       return await this.httpService.post<any>(url, payload, headers);
@@ -102,7 +102,7 @@ export class IntersolveVisaApiService {
       const url = `${intersolveVisaApiUrl}/pointofsale/v1/brand-types/${brandCode}/issue-token`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
-        { name: 'Tenant-ID', value: 'REDCROSS' },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
       ];
       return await this.httpService.post<IntersolveIssueTokenResponseDto>(
         url,
@@ -125,7 +125,7 @@ export class IntersolveVisaApiService {
       const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/load`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
-        { name: 'Tenant-ID', value: 'REDCROSS' },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
       ];
       return await this.httpService.post<IntersolveLoadResponseDto>(
         url,
@@ -146,7 +146,7 @@ export class IntersolveVisaApiService {
       const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/activate`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
-        { name: 'Tenant-ID', value: 'REDCROSS' },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
       ];
       return await this.httpService.post<IntersolveActivateTokenResponseDto>(
         url,
