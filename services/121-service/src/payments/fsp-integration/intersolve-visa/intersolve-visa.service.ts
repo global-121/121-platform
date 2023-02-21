@@ -163,7 +163,10 @@ export class IntersolveVisaService {
           message: registerResult.message,
         };
       }
-      await this.activateToken(visaCardEntity.tokenCode);
+      await this.activateToken(
+        visaCardEntity.tokenCode,
+        registration.referenceId,
+      );
     }
 
     return {
@@ -204,7 +207,7 @@ export class IntersolveVisaService {
 
     if (!visaCardNumber) {
       // There is no imported visa card number, so we need to issue a new one
-      // TODO: THIS IS AN UNTESTED FLOW
+      // TODO: THIS IS AN UNTESTED FLOW FOR DIGITAL VISACARD i/o PHYSICAL
       console.log('ISSUING NEW CARD');
 
       const reference = uuid();
@@ -246,6 +249,7 @@ export class IntersolveVisaService {
         };
       }
     } else {
+      // This scenario is the 1st Visa integration scenario where physical card numbers are imported via EspoCRM
       // There IS an imported visa card number, so we don't need to issue a new one but we need to create the entities
       console.log('ONLY CREATE THE ENTITIES');
 
@@ -456,12 +460,16 @@ export class IntersolveVisaService {
     };
   }
 
-  private async activateToken(tokenCode: string): Promise<any> {
+  private async activateToken(
+    tokenCode: string,
+    referenceId: string,
+  ): Promise<any> {
     const intersolveVisaRequest = new IntersolveVisaRequestEntity();
     intersolveVisaRequest.reference = uuid();
     intersolveVisaRequest.metadata = JSON.parse(
       JSON.stringify({ tokenCode: tokenCode }),
     );
+    intersolveVisaRequest.saleId = referenceId;
     // TODO: Make this an enum that's imported from the intersolve API service
     intersolveVisaRequest.endpoint = 'activate';
     const intersolveVisaRequestEntity =
