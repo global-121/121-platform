@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
+import { IntersolveActivateTokenResponseDto } from './dto/intersolve-activate-token-response.dto';
+import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-custom-respose.dto';
+import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import {
   IntersolveIssueTokenResponseDataDto,
   IntersolveIssueTokenResponseDto,
@@ -18,7 +21,7 @@ export class IntersolveVisaApiMockService {
     body.errors = [];
     body.code = 'string';
     body.correlationId = 'string';
-    body.data.token.code = `tokencode-${uuid()}`;
+    body.data.token.code = `mock-token-${uuid()}`;
     body.data.token.blocked = false;
     body.data.token.blockReasonCode = 'string';
     body.data.token.type = 'string';
@@ -149,5 +152,42 @@ export class IntersolveVisaApiMockService {
       response.statusText = 'METHOD NOT ALLOWED';
     }
     return response;
+  }
+
+  public createIndividualMock(
+    payload: IntersolveCreateCustomerDto,
+  ): IntersolveCreateCustomerResponseBodyDto {
+    const res = new IntersolveCreateCustomerResponseBodyDto();
+    res.data = {
+      success: true,
+      errors: [],
+      code: 'string',
+      correlationId: 'string',
+      data: {
+        id: uuid(),
+        externalReference: payload.externalReference,
+        blocked: false,
+        unblockable: false,
+        createdAt: '2023-02-08T14:36:05.816Z',
+      },
+    };
+    return res;
+  }
+
+  public registerHolderMock(): object {
+    return {};
+  }
+
+  public activateCardMock(): IntersolveActivateTokenResponseDto {
+    const res = new IntersolveActivateTokenResponseDto();
+    res.status = 200;
+    res.statusText = 'OK';
+    res.data = {
+      success: true,
+      errors: [],
+      code: 'string',
+      data: {},
+    };
+    return res;
   }
 }

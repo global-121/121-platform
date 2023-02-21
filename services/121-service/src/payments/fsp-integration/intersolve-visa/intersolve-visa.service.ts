@@ -26,7 +26,10 @@ import { MessageStatus as MessageStatusDto } from './dto/message-status.dto';
 import { IntersolveVisaCardEntity } from './intersolve-visa-card.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaRequestEntity } from './intersolve-visa-request.entity';
-import { IntersolveVisaApiService } from './intersolve-visa.api.service';
+import {
+  IntersolveEndpoints,
+  IntersolveVisaApiService,
+} from './intersolve-visa.api.service';
 
 @Injectable()
 export class IntersolveVisaService {
@@ -211,8 +214,7 @@ export class IntersolveVisaService {
       const issueTokenRequest = new IntersolveVisaRequestEntity();
       issueTokenRequest.reference = reference;
       issueTokenRequest.saleId = registration.referenceId;
-      // TODO: Make this an enum that's imported from the intersolve API service
-      issueTokenRequest.endpoint = 'issue-token';
+      issueTokenRequest.endpoint = IntersolveEndpoints.ISSUE_TOKEN;
       const issueTokenRequestEntity =
         await this.intersolveVisaRequestRepository.save(issueTokenRequest);
       const issueTokenResult = await this.intersolveVisaApiService.issueToken(
@@ -316,7 +318,6 @@ export class IntersolveVisaService {
         tokenCode,
       );
 
-    console.log('registerHolderResult: ', registerHolderResult);
     if (registerHolderResult.data.success === false) {
       return {
         success: registerHolderResult.data.success,
@@ -352,8 +353,7 @@ export class IntersolveVisaService {
       individual: {
         firstName: 'TODO first name',
         lastName: lastName,
-        // TODO: Find a better number for this (calculation?)
-        estimatedAnnualPaymentVolumeMajorUnit: 1500,
+        estimatedAnnualPaymentVolumeMajorUnit: 12 * 44, // This is assuming 44 euro per month for a year
       },
     };
     return await this.intersolveVisaApiService.createCustomer(
@@ -370,8 +370,7 @@ export class IntersolveVisaService {
     const amountInCents = calculatedAmount * 100;
     const interSolveLoadRequest = new IntersolveVisaRequestEntity();
     interSolveLoadRequest.reference = uuid();
-    // TODO: Make this an enum that's imported from the intersolve API service
-    interSolveLoadRequest.endpoint = 'load';
+    interSolveLoadRequest.endpoint = IntersolveEndpoints.LOAD;
     interSolveLoadRequest.saleId = `${referenceId}-${payment}`;
     interSolveLoadRequest.metadata = JSON.parse(
       JSON.stringify({ tokenCode: tokenCode, quantityValue: amountInCents }),
@@ -427,8 +426,7 @@ export class IntersolveVisaService {
     intersolveVisaRequest.metadata = JSON.parse(
       JSON.stringify({ tokenCode: tokenCode }),
     );
-    // TODO: Make this an enum that's imported from the intersolve API service
-    intersolveVisaRequest.endpoint = 'activate';
+    intersolveVisaRequest.endpoint = IntersolveEndpoints.ACTIVATE;
     const intersolveVisaRequestEntity =
       await this.intersolveVisaRequestRepository.save(intersolveVisaRequest);
     console.log(
