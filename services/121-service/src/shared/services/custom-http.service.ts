@@ -2,15 +2,20 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
+class Header {
+  public name: string;
+  public value: string;
+}
+
 @Injectable()
 export class CustomHttpService {
   public constructor(private readonly httpService: HttpService) {}
 
-  public async get<T>(url: string, authorizationToken?: string): Promise<T> {
+  public async get<T>(url: string, headers?: Header[]): Promise<T> {
     return await lastValueFrom(
       this.httpService
         .get(url, {
-          headers: this.createHeaders(authorizationToken),
+          headers: this.createHeaders(headers),
         })
         .pipe(
           map((response) => {
@@ -26,12 +31,12 @@ export class CustomHttpService {
   public async post<T>(
     url: string,
     payload: any,
-    authorizationToken?: string,
+    headers?: Header[],
   ): Promise<T> {
     return await lastValueFrom(
       this.httpService
         .post(url, payload, {
-          headers: this.createHeaders(authorizationToken),
+          headers: this.createHeaders(headers),
         })
         .pipe(
           map((response) => {
@@ -44,15 +49,15 @@ export class CustomHttpService {
     );
   }
 
-  private createHeaders(authorizationToken?: string): object {
-    const headers = {
+  private createHeaders(headers?: Header[]): object {
+    const returnHeaders = {
       'Content-Type': 'application/json',
     };
-    if (authorizationToken) {
-      headers['Authorization'] = `Bearer ${authorizationToken}`;
-      // TODO: find a better way to add this header
-      headers['Tenant-ID'] = 'REDCROSS';
+    if (headers) {
+      for (const header of headers) {
+        returnHeaders[header.name] = header.value;
+      }
     }
-    return headers;
+    return returnHeaders;
   }
 }
