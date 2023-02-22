@@ -32,8 +32,6 @@ export class WhatsappService {
     'whatsappGenericMessage',
   ];
 
-  public constructor() {}
-
   public async sendWhatsapp(
     message: string,
     recipientPhoneNr: string,
