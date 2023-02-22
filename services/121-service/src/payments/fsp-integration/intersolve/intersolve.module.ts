@@ -1,5 +1,5 @@
 import { HttpModule } from '@nestjs/axios';
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WhatsappModule } from '../../../notifications/whatsapp/whatsapp.module';
 import { ProgramEntity } from '../../../programs/program.entity';
@@ -33,7 +33,7 @@ import { SoapService } from './soap.service';
     ImageCodeModule,
     UserModule,
     TransactionsModule,
-    forwardRef(() => WhatsappModule),
+    WhatsappModule,
   ],
   providers: [
     IntersolveService,

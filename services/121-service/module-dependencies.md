@@ -8,14 +8,13 @@ graph LR
   ProgramModule-->LookupModule
   CronjobModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
-  WhatsappModule-->IntersolveModule
+  CronjobModule-->IntersolveModule
   IntersolveModule-->ImageCodeModule
   IntersolveModule-->TransactionsModule
   TransactionsModule-->MessageModule
   MessageModule-->WhatsappModule
   MessageModule-->SmsModule
   IntersolveModule-->WhatsappModule
-  CronjobModule-->IntersolveModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
@@ -40,4 +39,7 @@ graph LR
   VodacashModule-->TransactionsModule
   PaymentsModule-->RegistrationsModule
   ExportMetricsModule-->TransactionsModule
+  WhatsappIncomingModule-->ImageCodeModule
+  WhatsappIncomingModule-->IntersolveModule
+  WhatsappIncomingModule-->WhatsappModule
 ```

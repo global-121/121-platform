@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageService } from './message.service';
 import { SmsModule } from './sms/sms.module';
@@ -8,7 +8,7 @@ import { WhatsappModule } from './whatsapp/whatsapp.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([TryWhatsappEntity]),
-    forwardRef(() => WhatsappModule),
+    WhatsappModule,
     SmsModule,
   ],
   providers: [MessageService],

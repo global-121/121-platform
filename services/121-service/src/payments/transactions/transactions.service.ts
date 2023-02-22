@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
@@ -32,10 +32,7 @@ export class TransactionsService {
 
   private readonly fallbackLanguage = 'en';
 
-  public constructor(
-    @Inject(forwardRef(() => MessageService))
-    private readonly messageService: MessageService,
-  ) {}
+  public constructor(private readonly messageService: MessageService) {}
 
   public async getTransactions(
     programId: number,
