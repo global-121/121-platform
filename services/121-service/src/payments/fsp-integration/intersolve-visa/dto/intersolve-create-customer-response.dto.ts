@@ -9,6 +9,8 @@ export class IntersolveCreateCustomerResponseBodyDto {
     correlationId: string;
     data: CreateCustomerResponseDataDto;
   };
+  public status: number;
+  public statusText: string;
 }
 
 export class IntersolveGetCustomerResponseBodyDto {
@@ -49,4 +51,14 @@ class CreateCustomerResponseIndividualDto {
 class CreateCustomerResponseExtensionDto {
   public type: string;
   public value: string;
+}
+
+export class IntersolveRegisterHolderResponseDto {
+  public data: {
+    success?: boolean;
+    errors?: IntersolveReponseErrorDto[];
+    code?: string;
+  };
+  public status: number;
+  public statusText: string;
 }

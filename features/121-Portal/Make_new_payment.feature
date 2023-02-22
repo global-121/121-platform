@@ -126,10 +126,25 @@ Feature: Make a new payment
     When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
     Then the Person Affected receives 1 notifications (WhatsApp or SMS) via generic send message feature "./Send_message_to_people_affected.feature"
     And the notification is about the topup of their Visa card
+
+  Scenario: Unsuccessfully send payment instructions for payment #1 with Financial Service Provider "Intersolve-visa"
+    Given PAs are registerd with test-file '121-import-test-registrations-OCW.csv'
+    Given Intersolve is in MOCK mode
+    When executing payment 1 for all PAs
+    Then PA #1 succeeds and the other ones fail for various reasons
+    And the reason can be found in the PA payment status popup
+  
+  Scenario: Unsuccessfully send payment instructions with Financial Service Provider "Intersolve-visa"
+    Given Intersolve is in MOCK mode
+    When executing a payment for a PA with amount 999 euros
+    Then the payment fails because of a BALANCE_TOO_HIGH error
+
+
+
       """
     ------------------------------------------------------------------------------------------------------------------------------------
 
-    See the 'Send payments instructions diagram' at './wiki/Send-payment-instructions' for more info, oriented at Financial Service Provider: Intersolve.
+    See the 'Send payments instructions diagram' at './wiki/Send-payment-instructions' for more info, oriented at Financial Service Provider: "Intersolve-voucher".
 
     ------------------------------------------------------------------------------------------------------------------------------------
 

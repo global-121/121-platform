@@ -5,6 +5,7 @@ import { IntersolveActivateTokenResponseDto } from './dto/intersolve-activate-to
 import {
   IntersolveCreateCustomerResponseBodyDto,
   IntersolveGetCustomerResponseBodyDto,
+  IntersolveRegisterHolderResponseDto,
 } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import {
@@ -17,6 +18,92 @@ import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 
 @Injectable()
 export class IntersolveVisaApiMockService {
+  public getCustomerMock(): IntersolveGetCustomerResponseBodyDto {
+    const res = new IntersolveGetCustomerResponseBodyDto();
+    res.data = {
+      success: false, // This reflects the situation where no customer is found already, which is the happy flow
+    };
+    return res;
+  }
+
+  public createCustomerMock(
+    payload: IntersolveCreateCustomerDto,
+  ): IntersolveCreateCustomerResponseBodyDto {
+    const res = new IntersolveCreateCustomerResponseBodyDto();
+    res.data = {
+      success: true,
+      errors: [],
+      code: 'string',
+      correlationId: 'string',
+      data: {
+        id: `mock-${uuid()}`,
+        externalReference: payload.externalReference,
+        blocked: false,
+        unblockable: false,
+        createdAt: '2023-02-08T14:36:05.816Z',
+      },
+    };
+
+    if (
+      payload.individual.lastName.toLowerCase().includes('mock-fail-create')
+    ) {
+      res.data.success = false;
+      res.data.errors.push({
+        code: 'NOT_FOUND',
+        field: 'mock field',
+        description: 'We mocked that creating customer failed',
+      });
+      res.status = 404;
+      res.statusText = 'NOT_FOUND';
+    }
+    return res;
+  }
+
+  public registerHolderMock(tokenCode: string): object {
+    const res: IntersolveRegisterHolderResponseDto = {
+      status: 204,
+      statusText: 'No Content',
+      data: {},
+    };
+    if (tokenCode.toLowerCase().includes('mock-fail-register')) {
+      res.data.success = false;
+      res.data.errors = [];
+      res.data.errors.push({
+        code: 'NOT_FOUND',
+        field: 'mock field',
+        description: 'We mocked that registering customer to token failed',
+      });
+      res.status = 404;
+      res.statusText = 'NOT_FOUND';
+    }
+    return res;
+  }
+
+  public activateCardMock(
+    tokenCode: string,
+  ): IntersolveActivateTokenResponseDto {
+    const res = new IntersolveActivateTokenResponseDto();
+    res.status = 200;
+    res.statusText = 'OK';
+    res.data = {
+      success: true,
+      errors: [],
+      code: 'string',
+      data: {},
+    };
+    if (tokenCode.toLowerCase().includes('mock-fail-activate')) {
+      res.data.success = false;
+      res.data.errors.push({
+        code: 'NOT_FOUND',
+        field: 'mock field',
+        description: 'We mocked that activating token failed',
+      });
+      res.status = 404;
+      res.statusText = 'NOT_FOUND';
+    }
+    return res;
+  }
+
   public issueTokenMock(): IntersolveIssueTokenResponseDto {
     const response = new IntersolveIssueTokenResponseDto();
     response.status = 200;
@@ -150,7 +237,7 @@ export class IntersolveVisaApiMockService {
       status: 200,
       statusText: 'OK',
     };
-    if (amountInCents === 9900) {
+    if (amountInCents === 99900) {
       response.data.success = false;
       response.data.errors.push({
         code: 'BALANCE_TOO_HIGH',
@@ -161,54 +248,5 @@ export class IntersolveVisaApiMockService {
       response.statusText = 'METHOD NOT ALLOWED';
     }
     return response;
-  }
-
-  public getCustomerMock(): IntersolveGetCustomerResponseBodyDto {
-    const res = new IntersolveGetCustomerResponseBodyDto();
-    res.data = {
-      success: false, // This reflects the situation where no customer is found already, which is the happy flow
-    };
-    return res;
-  }
-
-  public createCustomerMock(
-    payload: IntersolveCreateCustomerDto,
-  ): IntersolveCreateCustomerResponseBodyDto {
-    const res = new IntersolveCreateCustomerResponseBodyDto();
-    res.data = {
-      success: true,
-      errors: [],
-      code: 'string',
-      correlationId: 'string',
-      data: {
-        id: uuid(),
-        externalReference: payload.externalReference,
-        blocked: false,
-        unblockable: false,
-        createdAt: '2023-02-08T14:36:05.816Z',
-      },
-    };
-    return res;
-  }
-
-  public registerHolderMock(): object {
-    return {
-      status: 204,
-      statusText: 'No Content',
-      data: {},
-    };
-  }
-
-  public activateCardMock(): IntersolveActivateTokenResponseDto {
-    const res = new IntersolveActivateTokenResponseDto();
-    res.status = 200;
-    res.statusText = 'OK';
-    res.data = {
-      success: true,
-      errors: [],
-      code: 'string',
-      data: {},
-    };
-    return res;
   }
 }

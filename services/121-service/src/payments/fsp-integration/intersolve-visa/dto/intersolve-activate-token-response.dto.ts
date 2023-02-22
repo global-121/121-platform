@@ -1,3 +1,5 @@
+import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
+
 export class IntersolveActivateTokenResponseDto {
   public data: IntersolveActivateTokenDataDto;
   public status: number;
@@ -6,7 +8,7 @@ export class IntersolveActivateTokenResponseDto {
 
 class IntersolveActivateTokenDataDto {
   public success: boolean;
-  public errors?: [];
+  public errors?: IntersolveReponseErrorDto[];
   public code?: string;
   public data?: {
     balances?: [];

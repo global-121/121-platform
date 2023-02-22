@@ -12,7 +12,7 @@ import { IntersolveIssueTokenResponseDto } from './dto/intersolve-issue-token-re
 import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
-import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.services';
+import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service';
 
 export enum IntersolveEndpoints {
   LOAD = 'load',
@@ -100,7 +100,7 @@ export class IntersolveVisaApiService {
     tokenCode: string,
   ): Promise<any> {
     if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.registerHolderMock();
+      return this.intersolveVisaApiMockService.registerHolderMock(tokenCode);
     } else {
       const authToken = await this.getAuthenticationToken();
       const url = `${intersolveVisaApiUrl}/wallet/v1/tokens/${tokenCode}/register-holder`;
@@ -162,7 +162,7 @@ export class IntersolveVisaApiService {
     payload: IntersolveActivateTokenRequestDto,
   ): Promise<IntersolveActivateTokenResponseDto> {
     if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.activateCardMock();
+      return this.intersolveVisaApiMockService.activateCardMock(tokenCode);
     } else {
       const authToken = await this.getAuthenticationToken();
       const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/activate`;

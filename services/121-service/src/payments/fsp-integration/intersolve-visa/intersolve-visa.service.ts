@@ -173,10 +173,13 @@ export class IntersolveVisaService {
           message: registerResult.message,
         };
       }
-      await this.activateToken(
+      const activateResult = await this.activateToken(
         visaCardEntity.tokenCode,
         registration.referenceId,
       );
+      if (!activateResult.success) {
+        return activateResult;
+      }
       newCardMessage = true;
     }
 
@@ -236,15 +239,24 @@ export class IntersolveVisaService {
 
       if (!issueTokenResult.data.success) {
         return {
-          success: issueTokenResult.data.success,
-          message: issueTokenResult.data.success
-            ? null
-            : `CARD CREATION ERROR: ${this.intersolveErrorToMessage(
+          success: false,
+          message: issueTokenResult.data.errors.length
+            ? `CARD CREATION ERROR: ${this.intersolveErrorToMessage(
                 issueTokenResult.data.errors,
-              )}`,
+              )}`
+            : `CARD CREATION ERROR: ${issueTokenResult.status} - ${issueTokenResult.statusText}`,
         };
       } else {
-        await this.createIntersolveVisaEntities(registration, issueTokenResult);
+        const createEntitiesResult = await this.createIntersolveVisaEntities(
+          registration,
+          issueTokenResult,
+        );
+        if (!createEntitiesResult.success) {
+          return {
+            success: false,
+            message: createEntitiesResult.message,
+          };
+        }
         return {
           success: issueTokenResult.data.success,
           visaCard: await this.getWalletByTokenCode(
@@ -268,7 +280,16 @@ export class IntersolveVisaService {
       issueTokenResult.data.success = true;
       issueTokenResult.data.data.token.code = visaCardNumber;
 
-      await this.createIntersolveVisaEntities(registration, issueTokenResult);
+      const createEntitiesResult = await this.createIntersolveVisaEntities(
+        registration,
+        issueTokenResult,
+      );
+      if (!createEntitiesResult.success) {
+        return {
+          success: false,
+          message: createEntitiesResult.message,
+        };
+      }
       const visaCard = await this.getWalletByTokenCode(
         issueTokenResult.data.data.token.code,
       );
@@ -282,7 +303,7 @@ export class IntersolveVisaService {
   private async createIntersolveVisaEntities(
     registration: RegistrationEntity,
     issueTokenResult: IntersolveIssueTokenResponseDto,
-  ): Promise<any> {
+  ): Promise<{ success: boolean; message?: string }> {
     const customerEntity = await this.intersolveVisaCustomerRepo.findOne({
       where: { registrationId: registration.id },
     });
@@ -299,12 +320,12 @@ export class IntersolveVisaService {
         const createCustomerResult = await this.createCustomer(registration);
         if (!createCustomerResult.data.success) {
           return {
-            success: createCustomerResult.data.success,
-            message: createCustomerResult.data.success
-              ? null
-              : `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
+            success: false,
+            message: createCustomerResult.data.errors.length
+              ? `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
                   createCustomerResult.data.errors,
-                )}`,
+                )}`
+              : `CREATE CUSTOMER ERROR: ${createCustomerResult.status} - ${createCustomerResult.statusText}`,
           };
         }
         customerEntity.holderId = createCustomerResult.data.data.id;
@@ -315,12 +336,12 @@ export class IntersolveVisaService {
       const createCustomerResult = await this.createCustomer(registration);
       if (!createCustomerResult.data.success) {
         return {
-          success: createCustomerResult.data.success,
-          message: createCustomerResult.data.success
-            ? null
-            : `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
+          success: false,
+          message: createCustomerResult.data.errors.length
+            ? `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
                 createCustomerResult.data.errors,
-              )}`,
+              )}`
+            : `CREATE CUSTOMER ERROR: ${createCustomerResult.status} - ${createCustomerResult.statusText}`,
         };
       }
       const visaCustomer = new IntersolveVisaCustomerEntity();
@@ -345,6 +366,9 @@ export class IntersolveVisaService {
 
       await this.intersolveVisaCardRepository.save(intersolveVisaCard);
     }
+    return {
+      success: true,
+    };
   }
 
   private async registerCustomerToWallet(
@@ -368,10 +392,12 @@ export class IntersolveVisaService {
 
     if (registerHolderResult.data.success === false) {
       return {
-        success: registerHolderResult.data?.success,
-        message: registerHolderResult.data?.success
-          ? null
-          : `LINK CUSTOMER ERROR: ${registerHolderResult.data?.code}`,
+        success: false,
+        message: registerHolderResult.data.errors.length
+          ? `LINK CUSTOMER ERROR: ${this.intersolveErrorToMessage(
+              registerHolderResult.data.errors,
+            )}`
+          : `LINK CUSTOMER ERROR: ${registerHolderResult.status} - ${registerHolderResult.statusText}`,
       };
     }
 
@@ -461,7 +487,7 @@ export class IntersolveVisaService {
   private async activateToken(
     tokenCode: string,
     referenceId: string,
-  ): Promise<any> {
+  ): Promise<{ success: boolean; message?: string }> {
     const intersolveVisaRequest = new IntersolveVisaRequestEntity();
     intersolveVisaRequest.reference = uuid();
     intersolveVisaRequest.metadata = JSON.parse(
@@ -479,10 +505,23 @@ export class IntersolveVisaService {
       tokenCode,
       payload,
     );
+    if (!activateResult.data?.success) {
+      return {
+        success: false,
+        message: activateResult.data?.errors?.length
+          ? `ACTIVATE CARD ERROR: ${this.intersolveErrorToMessage(
+              activateResult.data?.errors,
+            )}`
+          : `ACTIVATE CARD ERROR: ${activateResult.status} - ${activateResult.statusText}`,
+      };
+    }
     intersolveVisaRequestEntity.statusCode = activateResult.status;
     await this.intersolveVisaRequestRepository.save(
       intersolveVisaRequestEntity,
     );
+    return {
+      success: true,
+    };
   }
 
   private intersolveErrorToMessage(
