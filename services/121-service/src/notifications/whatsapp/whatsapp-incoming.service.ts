@@ -214,7 +214,7 @@ export class WhatsappIncomingService {
     const registrationIds = registrations.map((c) => c.id);
     const registrationWithVouchers = await this.registrationRepository.find({
       where: { id: In(registrationIds) },
-      relations: ['images', 'images.barcode'],
+      relations: ['images', 'images.voucher'],
     });
 
     const filteredRegistrations: RegistrationEntity[] = [];
@@ -267,7 +267,7 @@ export class WhatsappIncomingService {
     const registrationsWithOpenVouchers =
       await this.getRegistrationsWithOpenVouchers(registrationsWithPhoneNumber);
 
-    // If no registrations with outstanding barcodes or messages: send auto-reply
+    // If no registrations with outstanding vouchers or messages: send auto-reply
     if (
       registrationsWithOpenVouchers.length === 0 &&
       registrationsWithPendingMessage.length === 0
@@ -325,7 +325,7 @@ export class WhatsappIncomingService {
     // Start loop over (potentially) multiple PA's
     let firstVoucherSent = false;
     for await (const registration of registrationsWithOpenVouchers) {
-      const intersolveBarcodesPerPa = registration.images.map(
+      const intersolveVouchersPerPa = registration.images.map(
         (image) => image.voucher,
       );
       const program = await this.dataSource
@@ -335,10 +335,10 @@ export class WhatsappIncomingService {
         });
       const language = registration.preferredLanguage || this.fallbackLanguage;
 
-      // Loop over current and (potentially) old barcodes per PA
-      for await (const intersolveBarcode of intersolveBarcodesPerPa) {
+      // Loop over current and (potentially) old vouchers per PA
+      for await (const intersolveVoucher of intersolveVouchersPerPa) {
         const mediaUrl = await this.imageCodeService.createVoucherUrl(
-          intersolveBarcode,
+          intersolveVoucher,
         );
 
         // Only include text with first voucher (across PA's and payments)
@@ -348,7 +348,7 @@ export class WhatsappIncomingService {
           ? program.notifications[language]['whatsappVoucherMultiple'] ||
             program.notifications[language]['whatsappVoucher']
           : program.notifications[language]['whatsappVoucher'];
-        message = message.split('{{1}}').join(intersolveBarcode.amount);
+        message = message.split('{{1}}').join(intersolveVoucher.amount);
         await this.whatsappService.sendWhatsapp(
           message,
           fromNumber,
@@ -360,11 +360,11 @@ export class WhatsappIncomingService {
         firstVoucherSent = true;
 
         // Save results
-        intersolveBarcode.send = true;
-        await this.intersolveVoucherRepository.save(intersolveBarcode);
+        intersolveVoucher.send = true;
+        await this.intersolveVoucherRepository.save(intersolveVoucher);
         await this.intersolveVoucherService.storeTransactionResult(
-          intersolveBarcode.payment,
-          intersolveBarcode.amount,
+          intersolveVoucher.payment,
+          intersolveVoucher.amount,
           registration.id,
           2,
           StatusEnum.success,
