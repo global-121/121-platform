@@ -1,13 +1,13 @@
 @portal
 Feature: Make a new payment
 
-  >> These scenarios are also (partly) with Cypress. See: payment.cy.ts
+  >> These scenarios are also (partly) done with Cypress. See: payment.cy.ts
 
   Background:
     Given a logged-in user with the "PaymentCREATE" permission
     And the user views the "payment" page
 
-  Scenario: Show total amount
+  Scenario: Show maximum total amount
     Given a new payment is possible on the program
     Given the number of "PA included" is more then "0"
     Given the generic "select bulk action" scenario (see View_and_Manage_people_affected.feature)
@@ -15,31 +15,30 @@ Feature: Make a new payment
     Then a "row checkbox" appears in the "select" column for eligible rows
     When the user selects 1 or more PA's
     Then the "apply action" button is enabled
-    And the pop-up "Do payment" is shown
+    When clicking the "apply action" button
+    Then the pop-up "Do payment" is shown
     And the "Transfer Value" is filled in with the program's default value
     When the user clicks the button "start payout now"
     Then the pop-up "Are you sure?" is shown
     And the pop-up shows the number of PAs to pay out to
-    And it shows the total amount to pay out
+    And it shows the maximum total amount to pay out
     And this total amount reflects that some PAs may receive more than the supplied "Transfer Value" because of a "paymentAmountMultiplier" greater than 1
+    And this total amount is a maximum because some transactions might fail
 
   Scenario: Send payment instructions with changed transfer value
     Given the "Do payment" prompt is open
     Given the user changes the Transfer value to "20"
     And the user clicks the button "start payout now"
     And the pop-up "Are you sure?" is shown
+    And the total maximum amount reflects the changed amount per PA
     When the user clicks the button "OK"
     Then the payment instructions list is sent to the Financial Service Provider
     And the payment instructions for each PA contain the transfer value "20" times the PA's "paymentAmountMultiplier"
-    And the message is shown according to the success of the transactions
+    And a popup shows for how many PAs the instructions were successfully sent
 
   Scenario: Send payment instructions
     Given this is not the last payment for the program
-    And the user selects the "Do payment" action
-    And the user clicks the button "apply action"
-    And the user clicks the button "start payout now"
-    And the pop-up "Are you sure?" is shown
-    When the user clicks the button "OK"
+    When the user confirms the payout
     Then the payment instructions list is sent to the Financial Service Provider
     And the payment instructions for each PA contain the transfer value times the PA's "paymentAmountMultiplier"
     And the message "Payout request successfully sent to X PAs" is shown
@@ -50,13 +49,14 @@ Feature: Make a new payment
     And the "export payment data" component now has the next payment enabled
     And the "bulk action" dropdown list now shows the next available payment to do
     And the "PA-table" now shows the payment just completed in the "Payment History" column for all PAs that were selected
-    And it opens the payment history when clicked
+    When clicking
+    Then the payment history popup opens
     And it shows the payment number, the payment state, the payment date+time and the transaction amount
     And the payment state shows 'Success' when the payment went through
     And it shows 'Failed' for failed transactions
     And it shows 'Waiting' for waiting transactions
     And - for successful transactions - the PA receives (notification about) voucher/cash depending on the FSP
-    And the 'Export people affected' in the 'Registration' phase now contains 4 new columns for the new payment: status, amount, date and 'voucher-claimed-date'
+    And the 'Export people affected' in the 'Registration' phase now contains 3 new columns for the new payment: status, amount, date
 
   Scenario: Send payment instructions for 5000 PAs
     Given there are 5000 PAs in the system
@@ -84,17 +84,18 @@ Feature: Make a new payment
     When the user refreshes the page again
     Then eventually all 'waiting' PAs have upgraded to 'success' or 'error' (unless some status callback fails for some reason)
 
-  Scenario: retry failed payment for 1 PA
+  Scenario: Retry failed payment for 1 PA
     Given the payment has failed for a PA
     When the user clicks the "Payment #x failed" button for this PA
     Then the "Payment History" popup appears
     And it shows all payments for this PA
     And the failed payment button shows the date and is red
     When the user clicks the button a new popup shows
+    And it contains the error message and a retry-button
     Then the user clicks the retry-button
     And a normal payment scenario is started for this 1 PA only (see other scenario)
 
-  Scenario: retry payment for all failed payments of PAs
+  Scenario: Retry payment for all failed payments of PAs
     Given the payment has failed for more than 1 PA
     Then the user sees the "Retry all failed" button above the bulk action dropdown
     When the user clicks it
@@ -111,7 +112,7 @@ Feature: Make a new payment
     When the Person Affected replies 'yes' (or anything else)
     Then the Person Affected receives a voucher image
     And it is accompanied by text that explains what is sent
-    And a separate "explanation" image is sent that explains how to use the voucher in the store
+    And a separate "explanation" image is sent that explains how to use the voucher in the store (only if instruction-image is uploaded)
     And a separate voucher image is sent for any old uncollected vouchers or for any other registrations on the same "whatsappPhoneNumber"
 
   Scenario: Send first payment instructions to a Person Affected with Financial Service Provider "Intersolve-visa"
@@ -133,7 +134,7 @@ Feature: Make a new payment
     When executing payment 1 for all PAs
     Then PA #1 succeeds and the other ones fail for various reasons
     And the reason can be found in the PA payment status popup
-  
+
   Scenario: Unsuccessfully send payment instructions with Financial Service Provider "Intersolve-visa"
     Given Intersolve is in MOCK mode
     When executing a payment for a PA with amount 999 euros
