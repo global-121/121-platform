@@ -2,7 +2,10 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { IntersolveActivateTokenResponseDto } from './dto/intersolve-activate-token-response.dto';
-import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
+import {
+  IntersolveCreateCustomerResponseBodyDto,
+  IntersolveGetCustomerResponseBodyDto,
+} from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import {
   IntersolveIssueTokenResponseBodyDto,
@@ -160,7 +163,15 @@ export class IntersolveVisaApiMockService {
     return response;
   }
 
-  public createIndividualMock(
+  public getCustomerMock(): IntersolveGetCustomerResponseBodyDto {
+    const res = new IntersolveGetCustomerResponseBodyDto();
+    res.data = {
+      success: false, // This reflects the situation where no customer is found already, which is the happy flow
+    };
+    return res;
+  }
+
+  public createCustomerMock(
     payload: IntersolveCreateCustomerDto,
   ): IntersolveCreateCustomerResponseBodyDto {
     const res = new IntersolveCreateCustomerResponseBodyDto();

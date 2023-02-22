@@ -58,7 +58,7 @@ export class IntersolveVisaApiService {
     holderId: string,
   ): Promise<IntersolveGetCustomerResponseBodyDto> {
     if (process.env.MOCK_INTERSOLVE) {
-      return; // TODO: Create mock for this
+      return this.intersolveVisaApiMockService.getCustomerMock();
     } else {
       const authToken = await this.getAuthenticationToken();
       const url = `${intersolveVisaApiUrl}/customer/v1/customers/${holderId}/individual`;
@@ -77,7 +77,7 @@ export class IntersolveVisaApiService {
     payload: IntersolveCreateCustomerDto,
   ): Promise<IntersolveCreateCustomerResponseBodyDto> {
     if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.createIndividualMock(payload);
+      return this.intersolveVisaApiMockService.createCustomerMock(payload);
     } else {
       const authToken = await this.getAuthenticationToken();
       const url = `${intersolveVisaApiUrl}/customer/v1/customers/create-individual`;
