@@ -5,6 +5,11 @@ name: 'Cypress Full Integration Tests'
 on:
   workflow_dispatch:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
     branches:
       - 'master'
     paths:
@@ -27,6 +32,7 @@ jobs:
   build_interface_aw:
     runs-on: ubuntu-latest
     name: 'Build Interface: AW-App'
+    if: github.event.pull_request.draft != true
     steps:
       - uses: actions/checkout@v3
 
@@ -58,6 +64,7 @@ jobs:
   build_interface_pa:
     runs-on: ubuntu-latest
     name: 'Build Interface: PA-App'
+    if: github.event.pull_request.draft != true
     steps:
       - uses: actions/checkout@v3
 
@@ -89,6 +96,7 @@ jobs:
   build_interface_ho:
     runs-on: ubuntu-latest
     name: 'Build Interface: HO-Portal'
+    if: github.event.pull_request.draft != true
     steps:
       - uses: actions/checkout@v3
 
@@ -124,7 +132,7 @@ jobs:
       - build_interface_ho
     name: Run Cypress Tests
     runs-on: ubuntu-latest
-
+    if: github.event.pull_request.draft != true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -186,11 +194,16 @@ jobs:
           cache: 'npm'
           cache-dependency-path: interfaces/tests/package-lock.json
 
+      - name: Prepare test environment
+        run: |
+          npm install http-server --global --no-save --no-audit --no-fund
+
       - name: Run integration tests with Cypress
         # See documentation: https://github.com/cypress-io/github-action/#readme
         uses: cypress-io/github-action@v5
         with:
           browser: chrome
+          config: 'video=false,screenshotOnRunFailure=false,defaultCommandTimeout=30000,requestTimeout=30000'
           working-directory: ./interfaces/tests
           start: |
             npx http-server ../AW-App/www/    --silent -c0 --port 8080 --proxy http://localhost:8080/?

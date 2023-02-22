@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, DataSource, In, Not, Repository } from 'typeorm';
 import { EXTERNAL_API } from '../../config';
-import { FspName } from '../../fsp/financial-service-provider.entity';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { IntersolvePayoutStatus } from '../../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
 import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
 import { IntersolveService } from '../../payments/fsp-integration/intersolve/intersolve.service';
@@ -259,39 +259,6 @@ export class WhatsappIncomingService {
     const registrationsWithPhoneNumber =
       await this.getRegistrationsWithPhoneNumber(fromNumber);
 
-    // This is a temporary hack that will be removed after the transition period
-    const nlrcPvNumber = 'whatsapp:+3197010253925';
-    // const nlrcPvNumber = 'whatsapp:+14155238886'; // use sandbox-number for debugging
-    if (callbackData.To === nlrcPvNumber) {
-      const nlrcPvTempAutoReply = {
-        en: 'This is an automatic message from the Red Cross. This number is not used anymore. We now send the vouchers from this number: +3197010253442. Do you want to receive the vouchers that we have sent to you before? Send a message to the new number by clicking on this link: https://wa.me/3197010253442. For questions or help, please contact our WhatsApp Helpdesk: https://wa.me/31614458781.',
-        es: 'Este es un mensaje automático de la Cruz Roja. Este número ya no se usa. Ahora enviamos los vales desde este número: +3197010253442. ¿Quieres recibir los vales que te hemos enviado anteriormente? Envía un mensaje al nuevo número haciendo clic en este enlace: https://wa.me/3197010253442. Para preguntas o ayuda, comuníquese con nuestro servicio de asistencia de WhatsApp: https://wa.me/31614458781.',
-        nl: 'Dit is een automatisch bericht van het Rode Kruis. Dit nummer wordt niet meer gebruikt. We versturen de vouchers nu vanaf dit nummer: +3197010253442. Wil je de vouchers ontvangen die we je eerder hebben gestuurd? Stuur een bericht naar het nieuwe nummer door op deze link te klikken: https://wa.me/3197010253442. Neem voor vragen of hulp contact op met onze WhatsApp Helpdesk: https://wa.me/31614458781.',
-        ['pt_BR']:
-          'Esta é uma mensagem automática da Cruz Vermelha. Este número não é mais usado. Agora enviamos os vouchers a partir deste número: +3197010253442. Deseja receber os vouchers que lhe enviamos anteriormente? Envie uma mensagem para o novo número clicando neste link: https://wa.me/3197010253442. Para dúvidas ou ajuda, entre em contato com nosso WhatsApp Helpdesk: https://wa.me/31614458781.',
-        tl: 'Ito ay isang awtomatikong mensahe mula sa Red Cross. Hindi na ginagamit ang numerong ito. Ipinapadala na namin ngayon ang mga voucher mula sa numerong ito: +3197010253442. Gusto mo bang matanggap ang mga voucher na ipinadala namin sa iyo noon? Magpadala ng mensahe sa bagong numero sa pamamagitan ng pag-click sa link na ito: https://wa.me/3197010253442. Para sa mga katanungan o tulong, mangyaring makipag-ugnayan sa aming WhatsApp Helpdesk: https://wa.me/31614458781.',
-        in: 'Ini adalah pesan otomatis dari Red Cross. Nomor ini sudah tidak digunakan lagi. Kami sekarang mengirimkan voucher dari nomor ini: +3197010253442. Apakah Anda ingin menerima voucher yang telah kami kirimkan kepada Anda sebelumnya? Kirim pesan ke nomor baru dengan klik link ini : https://wa.me/3197010253442. Untuk pertanyaan atau bantuan, silakan hubungi Helpdesk WhatsApp kami: https://wa.me/31614458781.',
-        fr: `Ceci est un message automatique de la Croix-Rouge. Ce numéro n'est plus utilisé. Nous envoyons maintenant les bons à partir de ce numéro : +3197010253442. Voulez-vous recevoir les bons que nous vous avons déjà envoyés? Envoyez un message au nouveau numéro en cliquant sur ce lien : https://wa.me/3197010253442. Pour toute question ou aide, veuillez contacter notre service d'assistance WhatsApp : https://wa.me/31614458781.`,
-      };
-
-      const language =
-        registrationsWithPhoneNumber[0]?.preferredLanguage ||
-        this.fallbackLanguage;
-      const message = nlrcPvTempAutoReply[language];
-      await this.whatsappService.sendWhatsapp(
-        message,
-        fromNumber,
-        null,
-        null,
-        null,
-        nlrcPvNumber,
-        process.env.TWILIO_MESSAGING_SID_PV,
-        MessageContentType.defaultReply,
-      );
-      return;
-    }
-    // end of temporary hack
-
     const registrationsWithPendingMessage = registrationsWithPhoneNumber.filter(
       (registration: RegistrationEntity) =>
         registration.whatsappPendingMessages.length > 0,
@@ -338,8 +305,6 @@ export class WhatsappIncomingService {
           null,
           null,
           null,
-          null,
-          null,
           MessageContentType.defaultReply,
         );
         return;
@@ -348,8 +313,6 @@ export class WhatsappIncomingService {
         await this.whatsappService.sendWhatsapp(
           this.genericDefaultReplies[this.fallbackLanguage],
           fromNumber,
-          null,
-          null,
           null,
           null,
           null,
@@ -392,8 +355,6 @@ export class WhatsappIncomingService {
           IntersolvePayoutStatus.VoucherSent,
           mediaUrl,
           registration.id,
-          null,
-          null,
           MessageContentType.payment,
         );
         firstVoucherSent = true;
@@ -423,8 +384,6 @@ export class WhatsappIncomingService {
           null,
           EXTERNAL_API.voucherInstructionsUrl,
           registration.id,
-          null,
-          null,
           MessageContentType.paymentInstructions,
         );
       }
@@ -452,8 +411,6 @@ export class WhatsappIncomingService {
                 : null,
               message.mediaUrl,
               message.registrationId,
-              null,
-              null,
               message.contentType,
             )
             .then(() => {

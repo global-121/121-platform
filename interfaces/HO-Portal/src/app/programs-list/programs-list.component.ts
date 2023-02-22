@@ -22,9 +22,9 @@ export class ProgramsListComponent implements OnInit {
     this.programStats = await this.programsService.getAllProgramsStats(
       programs.map((p) => p.id),
     );
-    this.items = this.translateProperties(programs).sort((a, b) => {
-      return a.created <= b.created ? -1 : 1;
-    });
+    this.items = this.translateProperties(programs).sort((a, b) =>
+      a.created <= b.created ? -1 : 1,
+    );
   }
 
   private translateProperties(programs: Program[]): Program[] {

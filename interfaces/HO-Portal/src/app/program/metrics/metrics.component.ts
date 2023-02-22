@@ -1,5 +1,5 @@
 import { formatCurrency, formatDate } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { MetricGroup, MetricRow } from 'src/app/models/program-metrics.model';
@@ -17,7 +17,7 @@ import { ProgramsServiceApiService } from '../../services/programs-service-api.s
   templateUrl: './metrics.component.html',
   styleUrls: ['./metrics.component.scss'],
 })
-export class MetricsComponent {
+export class MetricsComponent implements OnInit {
   @Input()
   private programId: number;
 

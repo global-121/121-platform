@@ -5,9 +5,7 @@ import { DataSource, Repository } from 'typeorm';
 import { MessageContentType } from '../notifications/message-type.enum';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
-import { IntersolveApiService } from '../payments/fsp-integration/intersolve/instersolve.api.service';
 import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
-import { IntersolveRequestEntity } from '../payments/fsp-integration/intersolve/intersolve-request.entity';
 import { IntersolveService } from '../payments/fsp-integration/intersolve/intersolve.service';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
@@ -16,20 +14,17 @@ import { RegistrationEntity } from '../registration/registration.entity';
 
 @Injectable()
 export class CronjobService {
-  @InjectRepository(IntersolveRequestEntity)
-  private readonly intersolveRequestRepository: Repository<IntersolveRequestEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
-
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
+  private readonly fallbackLanguage = 'en';
+
   public constructor(
     private whatsappService: WhatsappService,
-    private readonly intersolveApiService: IntersolveApiService,
     private readonly intersolveService: IntersolveService,
     private readonly dataSource: DataSource,
   ) {}
@@ -37,8 +32,6 @@ export class CronjobService {
   private async getLanguageForRegistration(
     referenceId: string,
   ): Promise<string> {
-    const fallbackLanguage = 'en';
-
     const registration = await this.registrationRepository.findOneBy({
       referenceId: referenceId,
     });
@@ -46,7 +39,7 @@ export class CronjobService {
     if (registration && registration.preferredLanguage) {
       return registration.preferredLanguage;
     }
-    return fallbackLanguage;
+    return this.fallbackLanguage;
   }
 
   private getNotificationText(
@@ -54,15 +47,13 @@ export class CronjobService {
     type: string,
     language?: string,
   ): string {
-    const fallbackLanguage = 'en';
-
     if (
       program.notifications[language] &&
       program.notifications[language][type]
     ) {
       return program.notifications[language][type];
     }
-    return program.notifications[fallbackLanguage][type];
+    return program.notifications[this.fallbackLanguage][type];
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM)
@@ -143,8 +134,6 @@ export class CronjobService {
           IntersolvePayoutStatus.InitialMessage,
           null,
           registration.id,
-          null,
-          null,
           MessageContentType.paymentReminder,
         );
         const reminderBarcode = await intersolveBarcodeRepository.findOne({

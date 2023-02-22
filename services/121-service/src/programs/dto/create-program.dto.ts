@@ -13,7 +13,7 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { FspName } from '../../fsp/financial-service-provider.entity';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 import {
   CreateProgramCustomAttributeDto,

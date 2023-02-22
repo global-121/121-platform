@@ -211,7 +211,7 @@ export class TransactionsService {
         await this.messageService.sendTextMessage(
           registration,
           program.id,
-          message, // here could go transactionResopnse.customData['messageText'] that would be filled from intersolve-visa.service.ts
+          message,
           null,
           false,
           MessageContentType.payment,
@@ -225,8 +225,10 @@ export class TransactionsService {
     programNotifications: object,
     transactionNotification: TransactionNotificationObject,
   ): string {
+    const key = transactionNotification.notificationKey;
     let message =
-      programNotifications[language][transactionNotification.notificationKey];
+      programNotifications[language][key] ||
+      programNotifications[this.fallbackLanguage][key];
     if (transactionNotification.dynamicContent.length > 0) {
       for (const [
         i,

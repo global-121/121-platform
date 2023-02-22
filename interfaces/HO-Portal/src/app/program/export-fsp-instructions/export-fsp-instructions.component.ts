@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -16,7 +16,7 @@ import { ExportFileType } from './../../../../../../services/121-service/src/pay
   templateUrl: './export-fsp-instructions.component.html',
   styleUrls: ['./export-fsp-instructions.component.scss'],
 })
-export class ExportFspInstructionsComponent implements OnChanges {
+export class ExportFspInstructionsComponent implements OnChanges, OnInit {
   @Input()
   public programId: number;
 

@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
 import { ActionEntity } from '../actions/action.entity';
+import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
@@ -10,7 +11,6 @@ import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
-import { FspName } from './../fsp/financial-service-provider.entity';
 import { CreateProgramCustomAttributesDto } from './dto/create-program-custom-attribute.dto';
 import { CreateProgramDto } from './dto/create-program.dto';
 import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
@@ -186,10 +186,28 @@ export class ProgramService {
     return { programs, programsCount };
   }
 
-  private validateProgram(programData: CreateProgramDto): void {
+  private async validateProgram(programData: CreateProgramDto): Promise<void> {
     for (const name of Object.values(programData.fullnameNamingConvention)) {
-      if (!programData.programQuestions.map((q) => q.name).includes(name)) {
-        const errors = `Element '${name}' of fullnameNamingConvention is not found in program questions`;
+      const fspAttributes = [];
+      for (const fsp of programData.financialServiceProviders) {
+        const fspEntity = await this.financialServiceProviderRepository.findOne(
+          {
+            where: { fsp: fsp.fsp },
+            relations: ['questions'],
+          },
+        );
+        for (const question of fspEntity.questions) {
+          fspAttributes.push(question.name);
+        }
+      }
+      if (
+        !programData.programQuestions.map((q) => q.name).includes(name) &&
+        !programData.programCustomAttributes
+          .map((ca) => ca.name)
+          .includes(name) &&
+        !fspAttributes.includes(name)
+      ) {
+        const errors = `Element '${name}' of fullnameNamingConvention is not found in program questions or custom attributes`;
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
     }

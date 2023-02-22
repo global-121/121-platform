@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NoConnectionService } from 'src/app/services/no-connection.service';
 
 @Component({
-  selector: 'connection-indicator',
+  selector: 'app-connection-indicator',
   templateUrl: './connection-indicator.component.html',
   styleUrls: ['./connection-indicator.component.scss'],
 })

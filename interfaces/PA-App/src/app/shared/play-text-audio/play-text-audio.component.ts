@@ -17,7 +17,7 @@ const enum PlayerState {
 }
 
 @Component({
-  selector: 'play-text-audio',
+  selector: 'app-play-text-audio',
   templateUrl: './play-text-audio.component.html',
   styleUrls: ['./play-text-audio.component.scss'],
 })

@@ -119,12 +119,10 @@ export class UpdateFspComponent implements OnInit {
 
       if (selectedFsp) {
         this.selectedFspAttributes = selectedFsp.editableAttributes.map(
-          (attr) => {
-            return {
-              ...attr,
-              shortLabel: this.translatableString.get(attr.shortLabel),
-            };
-          },
+          (attr) => ({
+            ...attr,
+            shortLabel: this.translatableString.get(attr.shortLabel),
+          }),
         );
       }
 

@@ -27,7 +27,7 @@
     ></ion-input>
   </ion-item>
 
-  <confirm-prompt
+  <app-confirm-prompt
     [disabled]="!isEnabled || isInProgress"
     (confirm)="performPayment()"
     (cancel)="resetProgress()"
@@ -35,7 +35,7 @@
     [message]="totalAmountMessage"
   >
     {{ 'page.program.program-payout.start-payout' | translate }}
-  </confirm-prompt>
+  </app-confirm-prompt>
   <div
     *ngIf="paymentInProgress"
     class="ion-margin-start ion-align-items-center"

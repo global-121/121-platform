@@ -38,18 +38,12 @@ export class WhatsappService {
     messageType: null | IntersolvePayoutStatus,
     mediaUrl: null | string,
     registrationId?: number,
-    whatsappNumber?: string,
-    messagingServiceSid?: string,
     messageContentType?: MessageContentType,
   ): Promise<any> {
     const payload = {
       body: message,
-      messagingServiceSid: messagingServiceSid
-        ? messagingServiceSid
-        : process.env.TWILIO_MESSAGING_SID,
-      from: whatsappNumber
-        ? whatsappNumber
-        : 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
+      messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+      from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
       statusCallback: EXTERNAL_API.whatsAppStatus,
       to: 'whatsapp:' + recipientPhoneNr,
     };
@@ -108,8 +102,6 @@ export class WhatsappService {
       messageType,
       mediaUrl,
       registrationId,
-      null,
-      null,
       MessageContentType.genericTemplated,
     );
   }

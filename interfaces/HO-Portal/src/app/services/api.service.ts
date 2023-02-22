@@ -59,13 +59,14 @@ export class ApiService {
               `ApiService GET: ${security} ${endpoint}${path}${
                 params ? `\nParams ${params}` : ''
               }`,
-              `\nResponse:`,
+              '\nResponse:',
               response,
             ),
           ),
-          catchError((error: HttpErrorResponse): Observable<any> => {
-            return this.handleError(error, anonymous);
-          }),
+          catchError(
+            (error: HttpErrorResponse): Observable<any> =>
+              this.handleError(error, anonymous),
+          ),
         )
         .toPromise()
         .then((response) => {
@@ -74,9 +75,7 @@ export class ApiService {
           }
           return resolve(response);
         })
-        .catch((err) => {
-          return reject(err);
-        }),
+        .catch((err) => reject(err)),
     );
   }
 
@@ -103,13 +102,14 @@ export class ApiService {
             console.log(
               `ApiService POST: ${security} ${endpoint}${path}:`,
               body,
-              `\nResponse:`,
+              '\nResponse:',
               response,
             ),
           ),
-          catchError((error: HttpErrorResponse): Observable<any> => {
-            return this.handleError(error, anonymous);
-          }),
+          catchError(
+            (error: HttpErrorResponse): Observable<any> =>
+              this.handleError(error, anonymous),
+          ),
         )
         .toPromise()
         .then((response) => {
@@ -118,9 +118,7 @@ export class ApiService {
           }
           return resolve(response);
         })
-        .catch((err) => {
-          return reject(err);
-        }),
+        .catch((err) => reject(err)),
     );
   }
 
@@ -141,13 +139,14 @@ export class ApiService {
           tap((response) =>
             console.log(
               `ApiService DELETE: ${security} ${endpoint}${path}`,
-              `\nResponse:`,
+              '\nResponse:',
               response,
             ),
           ),
-          catchError((error: HttpErrorResponse): Observable<any> => {
-            return this.handleError(error, anonymous);
-          }),
+          catchError(
+            (error: HttpErrorResponse): Observable<any> =>
+              this.handleError(error, anonymous),
+          ),
         )
         .toPromise()
         .then((response) => {
@@ -156,9 +155,7 @@ export class ApiService {
           }
           return resolve(response);
         })
-        .catch((err) => {
-          return reject(err);
-        }),
+        .catch((err) => reject(err)),
     );
   }
 

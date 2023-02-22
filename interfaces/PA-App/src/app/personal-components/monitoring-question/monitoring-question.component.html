@@ -1,8 +1,8 @@
 <section *ngIf="isCanceled === false">
-  <dialogue-turn>
+  <app-dialogue-turn>
     <p [innerHTML]="monitoringQuestion?.intro"></p>
-  </dialogue-turn>
-  <dialogue-turn actor="self">
+  </app-dialogue-turn>
+  <app-dialogue-turn actor="self">
     <ion-radio-group
       (ionChange)="changeMonitoringChoice($event.detail.value)"
       [value]="monitoringChoice"
@@ -27,10 +27,10 @@
       *ngIf="monitoringChoice && !monitoringSubmitted"
       class="ion-nowrap ion-align-items-center ion-margin-top"
     >
-      <play-text-audio
+      <app-play-text-audio
         key="shared.submit-button"
         size="default"
-      ></play-text-audio>
+      ></app-play-text-audio>
       <ion-button
         type="button"
         (click)="submitMonitoringAnswer()"
@@ -41,11 +41,11 @@
         {{ 'shared.submit-button' | translate }}
       </ion-button>
     </ion-row>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     *ngIf="monitoringSubmitted"
     [isSpoken]="monitoringSubmitted"
   >
     <p [innerHTML]="monitoringQuestion?.conclusion"></p>
-  </dialogue-turn>
+  </app-dialogue-turn>
 </section>

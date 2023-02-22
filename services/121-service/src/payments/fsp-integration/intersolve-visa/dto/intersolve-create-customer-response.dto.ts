@@ -11,16 +11,22 @@ export class IntersolveCreateCustomerResponseBodyDto {
   };
 }
 
+export class IntersolveGetCustomerResponseBodyDto {
+  public data: {
+    success: boolean;
+  };
+}
+
 class CreateCustomerResponseDataDto {
   public id: string;
   public externalReference: string;
   public blocked: boolean;
   public unblockable: boolean;
   public createdAt: string;
-  public type: string;
-  public organization: CreateCustomerResponseOrganizationDto;
-  public individual: CreateCustomerResponseIndividualDto;
-  public contactInfo: IntersolveContactInfoDto;
+  public type?: string;
+  public organization?: CreateCustomerResponseOrganizationDto;
+  public individual?: CreateCustomerResponseIndividualDto;
+  public contactInfo?: IntersolveContactInfoDto;
 }
 
 class CreateCustomerResponseOrganizationDto {

@@ -764,7 +764,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         ...this.columnDefaults,
         permissions: [Permission.RegistrationPersonalREAD],
         phases: colPerPhase.phases,
-        headerClass: `ion-align-self-end header-overflow-ellipsis`,
+        headerClass: 'ion-align-self-end header-overflow-ellipsis',
       };
       if (!!this.columnWidthPerType[colPerPhase.type]) {
         addCol.minWidth = this.columnWidthPerType[colPerPhase.type];
@@ -1275,13 +1275,13 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         )
       ).map((r) => r.referenceId);
     }
-    return people.map((person) => {
-      return this.bulkActionService.updateCheckbox(
+    return people.map((person) =>
+      this.bulkActionService.updateCheckbox(
         action,
         person,
         payment ? registrationsWithPayment.includes(person.referenceId) : null,
-      );
-    });
+      ),
+    );
   }
 
   private async resetBulkAction() {
@@ -1633,16 +1633,21 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   private updateVisiblePeopleAffectedByFilter() {
-    const filteredPeopleAffected = this.allPeopleAffected
-      .filter((pa) =>
-        this.tableFilterState.paStatus.selected.includes(pa.status),
-      )
-      .filter((pa) =>
-        this.tableFilterState.paymentsLeft.selected.includes(
-          this.paPaymentsLeftValue(pa.paymentsLeft, pa.maxPayments),
-        ),
-      );
-    this.initialVisiblePeopleAffected = [...filteredPeopleAffected];
+    const filteredPeopleAffectedByStatus = this.allPeopleAffected.filter((pa) =>
+      this.tableFilterState.paStatus.selected.includes(pa.status),
+    );
+    const filteredPeopleAffectedByPaymentsLeft =
+      this.thisPhase === this.phaseEnum.payment
+        ? filteredPeopleAffectedByStatus.filter((pa) =>
+            this.tableFilterState.paymentsLeft.selected.includes(
+              this.paPaymentsLeftValue(pa.paymentsLeft, pa.maxPayments),
+            ),
+          )
+        : filteredPeopleAffectedByStatus;
+
+    this.initialVisiblePeopleAffected = [
+      ...filteredPeopleAffectedByPaymentsLeft,
+    ];
 
     const rowsVisible = this.initialVisiblePeopleAffected.filter(
       (row: PersonRow) => {
@@ -1671,7 +1676,11 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   public showTableFilter(prop): boolean {
-    if (prop !== 'paymentsLeft' || this.thisPhase === this.phaseEnum.payment) {
+    if (
+      prop !== 'paymentsLeft' ||
+      (this.thisPhase === this.phaseEnum.payment &&
+        this.program.enableMaxPayments)
+    ) {
       return true;
     }
 
@@ -1740,12 +1749,12 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       });
       const xlsxContent = this.visiblePeopleAffected
         .sort((a, b) => collator.compare(a.pa, b.pa))
-        .map((person) => {
-          return columnsToExport.reduce((res, col) => {
+        .map((person) =>
+          columnsToExport.reduce((res, col) => {
             const value = this.processExportTableViewValue(person[col.prop]);
             return Object.assign(res, { [col.name]: value });
-          }, {});
-        });
+          }, {}),
+        );
 
       arrayToXlsx(xlsxContent, `${this.thisPhase}-table`);
 

@@ -4,9 +4,9 @@
 ></app-refresh-data>
 
 <div class="chart-container">
-  <tooltip
+  <app-tooltip
     [value]="'page.program.metrics.over-time.tooltip' | translate"
-  ></tooltip>
+  ></app-tooltip>
   <ngx-charts-bar-vertical-stacked
     [scheme]="'ocean'"
     [results]="chartData"
