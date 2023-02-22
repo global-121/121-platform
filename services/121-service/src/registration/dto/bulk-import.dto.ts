@@ -9,7 +9,7 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
-import { FspName } from '../../fsp/financial-service-provider.entity';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ImportFspReconciliationArrayDto } from '../../payments/dto/import-fsp-reconciliation.dto';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';

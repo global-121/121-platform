@@ -1,12 +1,12 @@
-<dialogue-turn
+<app-dialogue-turn
   *ngIf="showSomethingWentWrong === true"
   [isSpoken]="showSomethingWentWrong === true"
 >
   <p>
-    <play-text-audio
+    <app-play-text-audio
       key="connection.error-retry"
       class="ion-float-start ion-margin-end"
-    ></play-text-audio>
+    ></app-play-text-audio>
     <span [innerHTML]="'connection.error-retry' | translate"></span>
   </p>
   <p>
@@ -17,35 +17,35 @@
       {{ 'shared.retry' | translate }}
     </ion-button>
   </p>
-</dialogue-turn>
+</app-dialogue-turn>
 <section *ngIf="registrationStatus === true">
-  <dialogue-turn
+  <app-dialogue-turn
     *ngIf="validation"
     [isSpoken]="validation"
   >
     <p>
-      <play-text-audio
+      <app-play-text-audio
         key="personal.registration-summary.validation-conclusion"
         class="ion-float-start ion-margin-end"
-      ></play-text-audio>
+      ></app-play-text-audio>
       <span
         [innerHTML]="
           'personal.registration-summary.validation-conclusion' | translate
         "
       ></span>
     </p>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     [isConnected]="true"
     *ngIf="validation && meetingDocuments?.length > 0"
     [isSpoken]="validation && meetingDocuments?.length > 0"
   >
     <p>
-      <play-text-audio
+      <app-play-text-audio
         key="personal.registration-summary.documents"
         class="ion-float-start ion-margin-end"
       >
-      </play-text-audio>
+      </app-play-text-audio>
       {{ 'personal.registration-summary.documents' | translate }}
     </p>
     <ul class="ion-no-padding ion-padding-start">
@@ -53,21 +53,21 @@
         {{ document }}
       </li>
     </ul>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     *ngIf="!validation && !!registrationStatus"
     [isSpoken]="!validation && !!registrationStatus"
   >
     <p>
-      <play-text-audio
+      <app-play-text-audio
         key="personal.registration-summary.no-validation-conclusion"
         class="ion-float-start ion-margin-end"
-      ></play-text-audio>
+      ></app-play-text-audio>
       <span
         [innerHTML]="
           'personal.registration-summary.no-validation-conclusion' | translate
         "
       ></span>
     </p>
-  </dialogue-turn>
+  </app-dialogue-turn>
 </section>

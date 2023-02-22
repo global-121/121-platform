@@ -1,3 +1,4 @@
+/// <reference types="cy-verify-downloads" />
 import { ProgramPhase } from '../../../../../../services/121-service/src/shared/enum/program-phase.model';
 
 const programId = 1;
@@ -17,7 +18,7 @@ describe('Registration phase', () => {
 
   it('Export full PA list with 1 PA with 2 payments', function () {
     cy.importRegistrations(programId);
-    let arr = [];
+    const arr: string[] = [];
     cy.getAllPeopleAffected(programId).then((response) => {
       for (const pa of response.body) {
         arr.push(pa.referenceId);

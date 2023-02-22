@@ -205,13 +205,11 @@ export class MetricsStatesComponent implements OnChanges {
       this.program.id,
     );
 
-    this.pastPayments = pastPayments.map((payment) => {
-      return {
-        id: payment.id,
-        date: payment.date,
-        value: 'payment=' + payment.id,
-      };
-    });
+    this.pastPayments = pastPayments.map((payment) => ({
+      id: payment.id,
+      date: payment.date,
+      value: 'payment=' + payment.id,
+    }));
 
     if (this.pastPayments.length) {
       this.chosenPayment = this.pastPayments[0].value;

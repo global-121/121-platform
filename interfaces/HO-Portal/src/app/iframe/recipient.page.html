@@ -1,6 +1,6 @@
 <ion-content>
   <app-header [isIframeHeader]="true"></app-header>
-  <ng-container *ngIf="recipients?.length == 0 && queryParamPhonenumber">
+  <ng-container *ngIf="recipients?.length === 0 && queryParamPhonenumber">
     <div class="ion-padding">
       <h4>{{"page.iframe.recipient.no-recipients-found" | translate}}</h4>
     </div>

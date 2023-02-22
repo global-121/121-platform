@@ -19,7 +19,7 @@ export interface FilePickerProps {
 }
 
 @Component({
-  selector: 'file-picker-prompt',
+  selector: 'app-file-picker-prompt',
   templateUrl: './file-picker-prompt.component.html',
   styleUrls: ['./file-picker-prompt.component.scss'],
 })

@@ -63,13 +63,14 @@ export abstract class PersonalDirective
   /**
    * Angular default component initialisation
    */
-  ngOnInit() {}
+
+  abstract ngOnInit(): void;
 
   ngAfterViewInit() {
     this.setupTurns();
   }
 
-  ngAfterContentInit() {}
+  ngAfterContentInit: () => void;
 
   /**
    * Initialize the component for the first time

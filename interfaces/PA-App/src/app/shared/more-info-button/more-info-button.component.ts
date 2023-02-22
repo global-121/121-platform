@@ -8,7 +8,7 @@ import { LoggingService } from 'src/app/services/logging.service';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 
 @Component({
-  selector: 'more-info-button',
+  selector: 'app-more-info-button',
   templateUrl: './more-info-button.component.html',
   styleUrls: ['./more-info-button.component.scss'],
 })
@@ -33,7 +33,7 @@ export class MoreInfoButtonComponent implements OnInit {
     private logger: LoggingService,
   ) {}
 
-  ngOnInit() {}
+  ngOnInit: () => void;
 
   public async openInfoPopup() {
     const infoPopup = await this.modalController.create({

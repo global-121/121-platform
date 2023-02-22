@@ -28,7 +28,7 @@
       ngx-datatable-cell-template
     >
       <ng-container *ngIf="column.prop === 'delete'; else elseBlock">
-        <confirm-prompt
+        <app-confirm-prompt
           (confirm)="removeFieldvalidatorFromProgram(row)"
           [message]="'page.program.manage-aidworkers.column-delete' | translate"
           [disabled]="disableDelete(row)"
@@ -40,7 +40,7 @@
             slot="icon-only"
             name="trash"
           ></ion-icon>
-        </confirm-prompt>
+        </app-confirm-prompt>
       </ng-container>
       <ng-template #elseBlock>
         {{ value }}
@@ -70,7 +70,7 @@
         required
       ></ion-input>
     </ion-item>
-    <password-toggle-input
+    <app-password-toggle-input
       name="passwordAidworker"
       [(ngModel)]="passwordAidworker"
       ngDefaultControl
@@ -82,7 +82,7 @@
         'page.program.manage-aidworkers.create-password'
           | translate : { minimalLength: passwordMinLength }
       "
-    ></password-toggle-input>
+    ></app-password-toggle-input>
     <ion-button type="submit">
       <ion-icon
         name="person-add"

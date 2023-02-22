@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 
 @Component({
-  selector: 'password-toggle-input',
+  selector: 'app-password-toggle-input',
   templateUrl: './password-toggle-input.component.html',
   styleUrls: ['./password-toggle-input.component.scss'],
 })

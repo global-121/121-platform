@@ -1,10 +1,10 @@
 <section>
-  <dialogue-turn
+  <app-dialogue-turn
     *ngIf="!downloadReady && !downloadAborted"
     [isSpoken]="!downloadReady && !downloadAborted"
   >
     {{ 'validation.download-data.downloading' | translate }}
-  </dialogue-turn>
+  </app-dialogue-turn>
   <div
     class="loading-indicator"
     [hidden]="downloadReady || downloadAborted"
@@ -15,7 +15,7 @@
     >
     </ion-spinner>
   </div>
-  <dialogue-turn
+  <app-dialogue-turn
     *ngIf="downloadReady"
     [isSpoken]="downloadReady"
   >
@@ -27,11 +27,11 @@
       "
       class="ion-margin-bottom"
     ></div>
-  </dialogue-turn>
-  <dialogue-turn
+  </app-dialogue-turn>
+  <app-dialogue-turn
     *ngIf="downloadAborted"
     [isSpoken]="downloadAborted"
   >
     {{ 'validation.download-data.download-aborted' | translate }}
-  </dialogue-turn>
+  </app-dialogue-turn>
 </section>

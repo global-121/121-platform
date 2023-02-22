@@ -137,9 +137,7 @@ export class AuthService {
   public async setPassword(newPassword: string): Promise<any> {
     return new Promise<void>((resolve, reject) => {
       this.programsService.changePassword(newPassword).then(
-        () => {
-          return resolve();
-        },
+        () => resolve(),
         (error) => {
           console.error('AuthService: change-password error: ', error);
           return reject(error);

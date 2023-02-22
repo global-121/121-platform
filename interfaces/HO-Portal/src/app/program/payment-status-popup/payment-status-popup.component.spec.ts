@@ -9,9 +9,7 @@ import { PaymentStatusPopupComponent } from './payment-status-popup.component';
 
 const modalSpy = jasmine.createSpyObj('Modal', ['present']);
 const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-modalCtrlSpy.create.and.callFake(() => {
-  return modalSpy;
-});
+modalCtrlSpy.create.and.callFake(() => modalSpy);
 
 describe('PaymentStatusPopupComponent', () => {
   let component: PaymentStatusPopupComponent;

@@ -13,7 +13,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { MetricsStatesComponent } from './metrics-states.component';
 
 @Component({
-  template: `<app-metrics-states [program]="program"></app-metrics-states>`,
+  template: '<app-metrics-states [program]="program"></app-metrics-states>',
 })
 class TestHostComponent {
   program: Program | any;
@@ -36,12 +36,10 @@ describe('MetricsStatesComponent', () => {
     },
   ];
 
-  const mockPastPaymentsWithDates = mockPastPayments.map((payment) => {
-    return {
-      id: payment.id,
-      date: payment.paymentDate,
-    };
-  });
+  const mockPastPaymentsWithDates = mockPastPayments.map((payment) => ({
+    id: payment.id,
+    date: payment.paymentDate,
+  }));
 
   const fixtureProgram = apiProgramsMock.programs[0];
   const mockProgramMetrics: ProgramMetrics = apiProgramMetricsMock;

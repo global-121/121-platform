@@ -1,4 +1,4 @@
-import { FspName } from '../../fsp/financial-service-provider.entity';
+import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 
 export class RegistrationResponse {

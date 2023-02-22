@@ -37,12 +37,10 @@ export class PastPaymentsService {
     const payments = await this.programsService.getPastPayments(programId);
     return payments
       .sort((a, b) => (a.id < b.id ? 1 : -1))
-      .map((payment) => {
-        return {
-          id: payment.id,
-          date: payment.paymentDate,
-        };
-      });
+      .map((payment) => ({
+        id: payment.id,
+        date: payment.paymentDate,
+      }));
   }
 
   public async getPaymentYearMonths(programId: number): Promise<
@@ -63,11 +61,10 @@ export class PastPaymentsService {
       return yearMonth;
     });
     // Filter for only unique months
-    return yearMonths.filter((value, index, self) => {
-      return (
-        self.indexOf(self.find((item) => item.label === value.label)) === index
-      );
-    });
+    return yearMonths.filter(
+      (value, index, self) =>
+        self.indexOf(self.find((item) => item.label === value.label)) === index,
+    );
   }
 
   public async getPaymentsWithStateSums(programId: number): Promise<

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FspName } from '../../../fsp/financial-service-provider.entity';
+import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';

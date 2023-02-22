@@ -118,7 +118,7 @@ export class ValidationPage implements OnInit {
           allPermissions += `${user.permissions[programId].sort().join('\n')}`;
           allPermissions += `\n${user.permissions[programId].length} permissons for program: ${programId}\n\n`;
         });
-        // tslint:disable:no-console
+        /* eslint-disable no-console */
         console.info(allPermissions);
         window.alert(allPermissions);
       })

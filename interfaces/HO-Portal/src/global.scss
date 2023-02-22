@@ -81,9 +81,26 @@ ion-button {
       }
     }
   }
+  .validation-message {
+    min-height: 36px;
+  }
+}
 
-  &.auth-item {
+.auth-item {
+  &.email-field {
     ion-input {
+      border: 1px solid #b3bcd0;
+      border-radius: 5px;
+      margin-top: 8px;
+
+      input {
+        --padding-start: 8px;
+        --padding-end: 8px;
+      }
+    }
+
+    ion-input {
+      height: 50px;
       &.valid-border {
         border-color: var(--ion-color-success);
       }
@@ -91,9 +108,38 @@ ion-button {
         border-color: var(--ion-color-danger);
       }
     }
+    .validation-message {
+      min-height: 36px;
+    }
   }
-  .validation-message {
-    min-height: 36px;
+
+  &.password-field {
+    ion-item {
+      border: 1px solid #b3bcd0;
+      border-radius: 5px;
+      margin-top: 8px;
+      padding: 0;
+
+      ion-input {
+        margin: 0;
+
+        input {
+          width: 250px;
+          --padding-start: 8px;
+          --padding-end: 8px;
+        }
+      }
+      &.valid-border {
+        border-color: var(--ion-color-success);
+      }
+      &.invalid-border {
+        border-color: var(--ion-color-danger);
+      }
+    }
+
+    .validation-message {
+      min-height: 36px;
+    }
   }
 }
 
