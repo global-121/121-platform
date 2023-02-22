@@ -6,8 +6,7 @@ import {
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { API_PATHS } from '../../config';
-import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
-import { IntersolveModule } from '../../payments/fsp-integration/intersolve/intersolve.module';
+import { IntersolveVoucherEntity } from '../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { ImageCodeModule } from '../../payments/imagecode/image-code.module';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../../programs/program.entity';
@@ -16,6 +15,7 @@ import { UserModule } from '../../user/user.module';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import { SmsService } from '../sms/sms.service';
 import { TwilioMessageEntity } from '../twilio.entity';
+import { IntersolveVoucherModule } from './../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { TryWhatsappEntity } from './try-whatsapp.entity';
 import { WhatsappIncomingController } from './whatsapp-incoming.controller';
 import { WhatsappIncomingService } from './whatsapp-incoming.service';
@@ -27,7 +27,7 @@ import { WhatsappModule } from './whatsapp.module';
   imports: [
     TypeOrmModule.forFeature([
       TwilioMessageEntity,
-      IntersolveBarcodeEntity,
+      IntersolveVoucherEntity,
       TransactionEntity,
       ProgramEntity,
       RegistrationEntity,
@@ -39,7 +39,7 @@ import { WhatsappModule } from './whatsapp.module';
     ]),
     ImageCodeModule,
     UserModule,
-    IntersolveModule,
+    IntersolveVoucherModule,
     WhatsappModule,
   ],
   providers: [WhatsappIncomingService, SmsService],

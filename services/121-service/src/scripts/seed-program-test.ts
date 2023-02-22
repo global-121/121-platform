@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
 import fspBank from '../../seed-data/fsp/fsp-bank.json';
-import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
+import fspIntersolve from '../../seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
 import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
 import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
 import fspVodaCash from '../../seed-data/fsp/fsp-vodacash.json';

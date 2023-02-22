@@ -4,9 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { MessageContentType } from '../notifications/message-type.enum';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
-import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
-import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
-import { IntersolveService } from '../payments/fsp-integration/intersolve/intersolve.service';
+import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
+import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
@@ -25,7 +25,7 @@ export class CronjobService {
 
   public constructor(
     private whatsappService: WhatsappService,
-    private readonly intersolveService: IntersolveService,
+    private readonly intersolveService: IntersolveVoucherService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -71,8 +71,8 @@ export class CronjobService {
     const sixteenHoursAgo = new Date(Date.now() - sixteenHours);
     const programs = await this.programRepository.find();
     for (const program of programs) {
-      const intersolveBarcodeRepository = this.dataSource.getRepository(
-        IntersolveBarcodeEntity,
+      const intersolveVoucherRepository = this.dataSource.getRepository(
+        IntersolveVoucherEntity,
       );
       // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
       const lastPayment = await this.transactionRepository
@@ -84,33 +84,33 @@ export class CronjobService {
         .getRawOne();
       const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
 
-      const unsentIntersolveBarcodes = await intersolveBarcodeRepository
-        .createQueryBuilder('barcode')
+      const unsentIntersolveVouchers = await intersolveVoucherRepository
+        .createQueryBuilder('voucher')
         .select([
-          'barcode.id as id',
+          'voucher.id as id',
           '"whatsappPhoneNumber"',
           'registration."referenceId" AS "referenceId"',
           'amount',
           '"reminderCount"',
         ])
-        .leftJoin('barcode.image', 'image')
+        .leftJoin('voucher.image', 'image')
         .leftJoin('image.registration', 'registration')
         .where('send = false')
-        .andWhere('barcode.created < :sixteenHoursAgo', {
+        .andWhere('voucher.created < :sixteenHoursAgo', {
           sixteenHoursAgo: sixteenHoursAgo,
         })
         .andWhere('"whatsappPhoneNumber" is not NULL')
-        .andWhere('barcode.payment >= :minimumPayment', {
+        .andWhere('voucher.payment >= :minimumPayment', {
           minimumPayment: minimumPayment,
         })
         .andWhere('registration.programId = :programId', {
           programId: program.id,
         })
-        .andWhere('barcode."reminderCount" < 3')
+        .andWhere('voucher."reminderCount" < 3')
         .getRawMany();
 
-      for (const unsentIntersolveBarcode of unsentIntersolveBarcodes) {
-        const referenceId = unsentIntersolveBarcode.referenceId;
+      for (const unsentIntersolveVoucher of unsentIntersolveVouchers) {
+        const referenceId = unsentIntersolveVoucher.referenceId;
         const registration = await this.registrationRepository.findOne({
           where: { referenceId: referenceId },
           relations: ['program'],
@@ -126,26 +126,26 @@ export class CronjobService {
         );
         whatsappPayment = whatsappPayment
           .split('{{1}}')
-          .join(unsentIntersolveBarcode.amount);
+          .join(unsentIntersolveVoucher.amount);
 
         await this.whatsappService.sendWhatsapp(
           whatsappPayment,
           fromNumber,
-          IntersolvePayoutStatus.InitialMessage,
+          IntersolveVoucherPayoutStatus.InitialMessage,
           null,
           registration.id,
           MessageContentType.paymentReminder,
         );
-        const reminderBarcode = await intersolveBarcodeRepository.findOne({
-          where: { id: unsentIntersolveBarcode.id },
+        const reminderVoucher = await intersolveVoucherRepository.findOne({
+          where: { id: unsentIntersolveVoucher.id },
         });
 
-        reminderBarcode.reminderCount += 1;
-        intersolveBarcodeRepository.save(reminderBarcode);
+        reminderVoucher.reminderCount += 1;
+        intersolveVoucherRepository.save(reminderVoucher);
       }
 
       console.log(
-        `cronSendWhatsappReminders: ${unsentIntersolveBarcodes.length} unsent Intersolve barcodes for program: ${program.id}`,
+        `cronSendWhatsappReminders: ${unsentIntersolveVouchers.length} unsent Intersolve vouchers for program: ${program.id}`,
       );
     }
     console.log('CronjobService - Complete: cronSendWhatsappReminders');

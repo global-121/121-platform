@@ -2,8 +2,8 @@ import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
 import { ImageCodeExportVouchersEntity } from '../../imagecode/image-code-export-vouchers.entity';
 
-@Entity('intersolve_barcode')
-export class IntersolveBarcodeEntity extends Base121Entity {
+@Entity('intersolve_voucher')
+export class IntersolveVoucherEntity extends Base121Entity {
   @Column({ nullable: true })
   public payment: number;
 
@@ -40,6 +40,6 @@ export class IntersolveBarcodeEntity extends Base121Entity {
   @Column({ nullable: true, default: 0 })
   public reminderCount: number;
 
-  @OneToMany((_type) => ImageCodeExportVouchersEntity, (image) => image.barcode)
+  @OneToMany((_type) => ImageCodeExportVouchersEntity, (image) => image.voucher)
   public image: ImageCodeExportVouchersEntity[];
 }

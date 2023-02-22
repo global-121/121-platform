@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WhatsappModule } from '../notifications/whatsapp/whatsapp.module';
-import { IntersolveBarcodeEntity } from '../payments/fsp-integration/intersolve/intersolve-barcode.entity';
-import { IntersolveRequestEntity } from '../payments/fsp-integration/intersolve/intersolve-request.entity';
-import { IntersolveModule } from '../payments/fsp-integration/intersolve/intersolve.module';
+import { IntersolveIssueVoucherRequestEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
+import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { IntersolveVoucherModule } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
@@ -12,14 +12,14 @@ import { CronjobService } from './cronjob.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      IntersolveBarcodeEntity,
+      IntersolveVoucherEntity,
       ProgramEntity,
-      IntersolveRequestEntity,
+      IntersolveIssueVoucherRequestEntity,
       RegistrationEntity,
       TransactionEntity,
     ]),
     WhatsappModule,
-    IntersolveModule,
+    IntersolveVoucherModule,
   ],
   providers: [CronjobService],
   controllers: [],

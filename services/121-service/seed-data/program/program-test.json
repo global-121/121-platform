@@ -22,7 +22,7 @@
   "paymentAmountMultiplierFormula": "1 + 1 * dragon",
   "financialServiceProviders": [
     {
-      "fsp": "Intersolve-whatsapp"
+      "fsp": "Intersolve-voucher-whatsapp"
     },
     {
       "fsp": "Africas-talking"

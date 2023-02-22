@@ -3,9 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, DataSource, In, Not, Repository } from 'typeorm';
 import { EXTERNAL_API } from '../../config';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
-import { IntersolvePayoutStatus } from '../../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
-import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
-import { IntersolveService } from '../../payments/fsp-integration/intersolve/intersolve.service';
 import { ImageCodeService } from '../../payments/imagecode/image-code.service';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../../programs/program.entity';
@@ -21,14 +18,17 @@ import {
   TwilioStatusCallbackDto,
 } from '../twilio.dto';
 import { TwilioMessageEntity } from '../twilio.entity';
+import { IntersolveVoucherPayoutStatus } from './../../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
+import { IntersolveVoucherEntity } from './../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { IntersolveVoucherService } from './../../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { TryWhatsappEntity } from './try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from './whatsapp-pending-message.entity';
 import { WhatsappService } from './whatsapp.service';
 
 @Injectable()
 export class WhatsappIncomingService {
-  @InjectRepository(IntersolveBarcodeEntity)
-  private readonly intersolveBarcodeRepository: Repository<IntersolveBarcodeEntity>;
+  @InjectRepository(IntersolveVoucherEntity)
+  private readonly intersolveVoucherRepository: Repository<IntersolveVoucherEntity>;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(RegistrationEntity)
@@ -49,7 +49,7 @@ export class WhatsappIncomingService {
 
   public constructor(
     private readonly imageCodeService: ImageCodeService,
-    private readonly intersolveService: IntersolveService,
+    private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly whatsappService: WhatsappService,
     private readonly smsService: SmsService,
     private readonly dataSource: DataSource,
@@ -113,7 +113,7 @@ export class WhatsappIncomingService {
       TwilioStatus.undelivered,
     ];
     if (statuses.includes(callbackData.MessageStatus)) {
-      await this.intersolveService.processStatus(callbackData);
+      await this.intersolveVoucherService.processStatus(callbackData);
     }
   }
 
@@ -155,7 +155,7 @@ export class WhatsappIncomingService {
       });
       const fspIntersolveWhatsapp = program.financialServiceProviders.find(
         (fsp) => {
-          return (fsp.fsp = FspName.intersolve);
+          return (fsp.fsp = FspName.intersolveVoucherWhatsapp);
         },
       );
       tryWhatsapp.registration.fsp = fspIntersolveWhatsapp;
@@ -214,7 +214,7 @@ export class WhatsappIncomingService {
     const registrationIds = registrations.map((c) => c.id);
     const registrationWithVouchers = await this.registrationRepository.find({
       where: { id: In(registrationIds) },
-      relations: ['images', 'images.barcode'],
+      relations: ['images', 'images.voucher'],
     });
 
     const filteredRegistrations: RegistrationEntity[] = [];
@@ -231,7 +231,7 @@ export class WhatsappIncomingService {
 
       r.images = r.images.filter(
         (image) =>
-          !image.barcode.send && image.barcode.payment >= minimumPayment,
+          !image.voucher.send && image.voucher.payment >= minimumPayment,
       );
       if (r.images.length > 0) {
         filteredRegistrations.push(r);
@@ -267,7 +267,7 @@ export class WhatsappIncomingService {
     const registrationsWithOpenVouchers =
       await this.getRegistrationsWithOpenVouchers(registrationsWithPhoneNumber);
 
-    // If no registrations with outstanding barcodes or messages: send auto-reply
+    // If no registrations with outstanding vouchers or messages: send auto-reply
     if (
       registrationsWithOpenVouchers.length === 0 &&
       registrationsWithPendingMessage.length === 0
@@ -325,8 +325,8 @@ export class WhatsappIncomingService {
     // Start loop over (potentially) multiple PA's
     let firstVoucherSent = false;
     for await (const registration of registrationsWithOpenVouchers) {
-      const intersolveBarcodesPerPa = registration.images.map(
-        (image) => image.barcode,
+      const intersolveVouchersPerPa = registration.images.map(
+        (image) => image.voucher,
       );
       const program = await this.dataSource
         .getRepository(ProgramEntity)
@@ -335,10 +335,10 @@ export class WhatsappIncomingService {
         });
       const language = registration.preferredLanguage || this.fallbackLanguage;
 
-      // Loop over current and (potentially) old barcodes per PA
-      for await (const intersolveBarcode of intersolveBarcodesPerPa) {
+      // Loop over current and (potentially) old vouchers per PA
+      for await (const intersolveVoucher of intersolveVouchersPerPa) {
         const mediaUrl = await this.imageCodeService.createVoucherUrl(
-          intersolveBarcode,
+          intersolveVoucher,
         );
 
         // Only include text with first voucher (across PA's and payments)
@@ -348,11 +348,11 @@ export class WhatsappIncomingService {
           ? program.notifications[language]['whatsappVoucherMultiple'] ||
             program.notifications[language]['whatsappVoucher']
           : program.notifications[language]['whatsappVoucher'];
-        message = message.split('{{1}}').join(intersolveBarcode.amount);
+        message = message.split('{{1}}').join(intersolveVoucher.amount);
         await this.whatsappService.sendWhatsapp(
           message,
           fromNumber,
-          IntersolvePayoutStatus.VoucherSent,
+          IntersolveVoucherPayoutStatus.VoucherSent,
           mediaUrl,
           registration.id,
           MessageContentType.payment,
@@ -360,11 +360,11 @@ export class WhatsappIncomingService {
         firstVoucherSent = true;
 
         // Save results
-        intersolveBarcode.send = true;
-        await this.intersolveBarcodeRepository.save(intersolveBarcode);
-        await this.intersolveService.storeTransactionResult(
-          intersolveBarcode.payment,
-          intersolveBarcode.amount,
+        intersolveVoucher.send = true;
+        await this.intersolveVoucherRepository.save(intersolveVoucher);
+        await this.intersolveVoucherService.storeTransactionResult(
+          intersolveVoucher.payment,
+          intersolveVoucher.amount,
           registration.id,
           2,
           StatusEnum.success,
@@ -407,7 +407,7 @@ export class WhatsappIncomingService {
               message.body,
               message.to,
               message.messageType
-                ? (message.messageType as IntersolvePayoutStatus)
+                ? (message.messageType as IntersolveVoucherPayoutStatus)
                 : null,
               message.mediaUrl,
               message.registrationId,

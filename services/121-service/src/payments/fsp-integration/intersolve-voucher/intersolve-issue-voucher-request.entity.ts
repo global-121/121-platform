@@ -1,9 +1,9 @@
 import { Column, Entity } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
-import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
+import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
 
-@Entity('intersolve_request')
-export class IntersolveRequestEntity extends Base121Entity {
+@Entity('intersolve_issue_voucher_request')
+export class IntersolveIssueVoucherRequestEntity extends Base121Entity {
   @Column({ type: 'bigint' })
   public refPos: number;
 
@@ -17,7 +17,7 @@ export class IntersolveRequestEntity extends Base121Entity {
   public clientReference: number;
 
   @Column({ nullable: true })
-  public resultCodeIssueCard: IntersolveResultCode;
+  public resultCodeIssueCard: IntersolveVoucherResultCode;
 
   @Column({ nullable: true })
   public cardId: string;
@@ -41,10 +41,10 @@ export class IntersolveRequestEntity extends Base121Entity {
   public cancellationAttempts: number;
 
   @Column({ nullable: true })
-  public cancelByRefPosResultCode: IntersolveResultCode;
+  public cancelByRefPosResultCode: IntersolveVoucherResultCode;
 
   @Column({ nullable: true })
-  public cancelResultCode: IntersolveResultCode;
+  public cancelResultCode: IntersolveVoucherResultCode;
 
   @Column({ default: false })
   public toCancel: boolean;

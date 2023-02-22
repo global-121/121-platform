@@ -27,8 +27,8 @@ import { AfricasTalkingService } from './fsp-integration/africas-talking/africas
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
 import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
 import { IntersolveVisaService } from './fsp-integration/intersolve-visa/intersolve-visa.service';
-import { IntersolveRequestEntity } from './fsp-integration/intersolve/intersolve-request.entity';
-import { IntersolveService } from './fsp-integration/intersolve/intersolve.service';
+import { IntersolveIssueVoucherRequestEntity } from './fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
+import { IntersolveVoucherService } from './fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service';
 import { VodacashService } from './fsp-integration/vodacash/vodacash.service';
 import { TransactionEntity } from './transactions/transaction.entity';
@@ -47,7 +47,7 @@ export class PaymentsService {
     private readonly actionService: ActionService,
     private readonly fspService: FspService,
     private readonly transactionService: TransactionsService,
-    private readonly intersolveService: IntersolveService,
+    private readonly intersolveService: IntersolveVoucherService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly africasTalkingService: AfricasTalkingService,
     private readonly belcashService: BelcashService,
@@ -161,9 +161,9 @@ export class PaymentsService {
     const ukrPoshtaPaPayment = [];
     const vodacashPaPayment = [];
     for (const paPaymentData of paPaymentDataList) {
-      if (paPaymentData.fspName === FspName.intersolve) {
+      if (paPaymentData.fspName === FspName.intersolveVoucherWhatsapp) {
         intersolvePaPayment.push(paPaymentData);
-      } else if (paPaymentData.fspName === FspName.intersolveNoWhatsapp) {
+      } else if (paPaymentData.fspName === FspName.intersolveVoucherPaper) {
         intersolveNoWhatsappPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.intersolveVisa) {
         intersolveVisaPaPayment.push(paPaymentData);
@@ -380,7 +380,9 @@ export class PaymentsService {
     return this.intersolveService.getVouchersWithBalance(programId);
   }
 
-  public async getToCancelVouchers(): Promise<IntersolveRequestEntity[]> {
+  public async getToCancelVouchers(): Promise<
+    IntersolveIssueVoucherRequestEntity[]
+  > {
     return this.intersolveService.getToCancelVouchers();
   }
 

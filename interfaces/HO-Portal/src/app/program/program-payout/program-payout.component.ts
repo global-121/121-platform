@@ -39,7 +39,7 @@ export class ProgramPayoutComponent implements OnInit {
 
   public program: Program;
   public payments: Payment[];
-  public isIntersolve: boolean;
+  public programHasVoucherSupport: boolean;
   public hasFspWithExportFileIntegration: boolean;
   public hasFspWithReconciliation: boolean;
   public fspIdsWithReconciliation: number[];
@@ -72,7 +72,7 @@ export class ProgramPayoutComponent implements OnInit {
 
     this.program = await this.programsService.getProgramById(this.programId);
 
-    this.isIntersolve = this.checkIntersolve(
+    this.programHasVoucherSupport = this.checkProgramHasVoucherSupport(
       this.program.financialServiceProviders,
     );
     this.hasFspWithExportFileIntegration = this.checkFspIntegrationType(
@@ -290,9 +290,15 @@ export class ProgramPayoutComponent implements OnInit {
     }
   }
 
-  private checkIntersolve(fsps: Program['financialServiceProviders']): boolean {
+  private checkProgramHasVoucherSupport(
+    fsps: Program['financialServiceProviders'],
+  ): boolean {
+    const voucherFsps = [
+      'Intersolve-voucher-paper',
+      'Intersolve-voucher-whatsapp',
+    ];
     for (const fsp of fsps || []) {
-      if (fsp && fsp.fsp.toLowerCase().includes('intersolve')) {
+      if (fsp && voucherFsps.includes(fsp.fsp)) {
         return true;
       }
     }

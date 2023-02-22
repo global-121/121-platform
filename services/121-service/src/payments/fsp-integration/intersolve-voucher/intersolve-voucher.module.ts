@@ -9,22 +9,22 @@ import { UserModule } from '../../../user/user.module';
 import { ImageCodeModule } from '../../imagecode/image-code.module';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsModule } from '../../transactions/transactions.module';
-import { IntersolveApiService } from './instersolve.api.service';
-import { IntersolveMockService } from './instersolve.mock';
-import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
-import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
-import { IntersolveRequestEntity } from './intersolve-request.entity';
-import { IntersolveController } from './intersolve.controller';
-import { IntersolveService } from './intersolve.service';
+import { IntersolveVoucherApiService } from './instersolve-voucher.api.service';
+import { IntersolveVoucherMockService } from './instersolve-voucher.mock';
+import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-request.entity';
+import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instructions.entity';
+import { IntersolveVoucherController } from './intersolve-voucher.controller';
+import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
+import { IntersolveVoucherService } from './intersolve-voucher.service';
 import { SoapService } from './soap.service';
 
 @Module({
   imports: [
     HttpModule,
     TypeOrmModule.forFeature([
-      IntersolveBarcodeEntity,
-      IntersolveRequestEntity,
-      IntersolveInstructionsEntity,
+      IntersolveVoucherEntity,
+      IntersolveIssueVoucherRequestEntity,
+      IntersolveVoucherInstructionsEntity,
       RegistrationEntity,
       TransactionEntity,
       ProgramEntity,
@@ -36,17 +36,17 @@ import { SoapService } from './soap.service';
     WhatsappModule,
   ],
   providers: [
-    IntersolveService,
-    IntersolveApiService,
+    IntersolveVoucherService,
+    IntersolveVoucherApiService,
     SoapService,
-    IntersolveMockService,
+    IntersolveVoucherMockService,
   ],
-  controllers: [IntersolveController],
+  controllers: [IntersolveVoucherController],
   exports: [
-    IntersolveService,
-    IntersolveApiService,
+    IntersolveVoucherService,
+    IntersolveVoucherApiService,
     SoapService,
-    IntersolveMockService,
+    IntersolveVoucherMockService,
   ],
 })
-export class IntersolveModule {}
+export class IntersolveVoucherModule {}

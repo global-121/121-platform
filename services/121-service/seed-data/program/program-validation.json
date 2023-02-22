@@ -23,10 +23,10 @@
   "fixedTransferValue": 10,
   "financialServiceProviders": [
     {
-      "fsp": "Intersolve-whatsapp"
+      "fsp": "Intersolve-voucher-whatsapp"
     },
     {
-      "fsp": "Intersolve-no-whatsapp"
+      "fsp": "Intersolve-voucher-paper"
     }
   ],
   "targetNrRegistrations": 250,

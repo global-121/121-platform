@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-no-whatsapp.json';
-import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
+import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-voucher-paper.json';
+import fspIntersolve from '../../seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
 import instancePilotNL from '../../seed-data/instance/instance-pilot-nl.json';
 import programPilotNL from '../../seed-data/program/program-pilot-nl.json';
 import { InterfaceScript } from './scripts.module';

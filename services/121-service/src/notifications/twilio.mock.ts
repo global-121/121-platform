@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
-import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
+import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { API_PATHS, EXTERNAL_API } from './../config';
 import {
   TwilioIncomingCallbackDto,
@@ -84,7 +84,7 @@ export class TwilioClientMock {
 
       if (
         twilioMessagesCreateDto.messageType ===
-        IntersolvePayoutStatus.InitialMessage
+        IntersolveVoucherPayoutStatus.InitialMessage
       ) {
         this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid);
       }
