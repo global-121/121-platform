@@ -103,7 +103,7 @@ Feature: Make a new payment
     When the user clicks 'OK'
     And a normal payment scenario is started for this all the PAs  (see other scenario)
 
-  Scenario: Send payment instructions to a Person Affected with Financial Service Provider "Intersolve"
+  Scenario: Send payment instructions to a Person Affected with Financial Service Provider "Intersolve-voucher"
     Given the Person Affected has chosen the option "receive voucher via whatsApp"
     When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
     Then the Person Affected receives a whatsApp message
@@ -114,38 +114,50 @@ Feature: Make a new payment
     And a separate "explanation" image is sent that explains how to use the voucher in the store
     And a separate voucher image is sent for any old uncollected vouchers or for any other registrations on the same "whatsappPhoneNumber"
 
+  Scenario: Send first payment instructions to a Person Affected with Financial Service Provider "Intersolve-visa"
+    Given the Person Affected has been imported as registered with a "visaCardNumber"
+    When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then the Person Affected receives 2 notifications (WhatsApp or SMS) via generic send message feature "./Send_message_to_people_affected.feature"
+    And the first notification is about the activation of their Visa card
+    And the second notification is about the topup of their Visa card
+
+  Scenario: Send 2nd or higher payment instructions to a Person Affected with Financial Service Provider "Intersolve-visa"
+    Given the Person Affected has been imported as registered with a "visaCardNumber"
+    When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then the Person Affected receives 1 notifications (WhatsApp or SMS) via generic send message feature "./Send_message_to_people_affected.feature"
+    And the notification is about the topup of their Visa card
       """
-------------------------------------------------------------------------------------------------------------------------------------
+    ------------------------------------------------------------------------------------------------------------------------------------
 
-See the 'Send payments instructions diagram' at './wiki/Send-payment-instructions' for more info, oriented at Financial Service Provider: Intersolve.
+    See the 'Send payments instructions diagram' at './wiki/Send-payment-instructions' for more info, oriented at Financial Service Provider: Intersolve.
 
-------------------------------------------------------------------------------------------------------------------------------------
+    ------------------------------------------------------------------------------------------------------------------------------------
 
-One or multiple registrations with the same payment-address(phone-number)
+    One or multiple registrations with the same payment-address(phone-number)
 
-1. There is maximum one registration per payment-address.
-  - Payment succeeds for all People Affected
-  - Person Affected receives initial WhatsApp message about receiving one voucher (+ any older uncollected vouchers)
-  - If replied "_yes_", the Person Affected receives:
+    1. There is maximum one registration per payment-address.
+    - Payment succeeds for all People Affected
+    - Person Affected receives initial WhatsApp message about receiving one voucher (+ any older uncollected vouchers)
+    - If replied "_yes_", the Person Affected receives:
     * a WhatsApp message about receiving one voucher (incl. the voucher image)
     * ... + any older uncollected vouchers (without text)
     * ... + one explanation image
 
-2. There is 1 rejected and 1 included registration on one payment-address.
-  - Works exactly as (1)
+    2. There is 1 rejected and 1 included registration on one payment-address.
+    - Works exactly as (1)
 
-3. There are 2 or more _included_ registrations on one payment-address.
-  - Payment succeeds
-  - All Persons Affected receive (on the same phonenumber) the same initial WhatsApp message about receiving one voucher for this week + also any older uncollected vouchers
-  - If replied 'yes' just once, all Persons Affected receive together:
+    3. There are 2 or more _included_ registrations on one payment-address.
+    - Payment succeeds
+    - All Persons Affected receive (on the same phonenumber) the same initial WhatsApp message about receiving one voucher for this week + also any older uncollected vouchers
+    - If replied 'yes' just once, all Persons Affected receive together:
     * a WhatsApp message about receiving multiple vouchers (incl. the first voucher image)
     * ... + any additional vouchers for this week (without text)
     * ... + any older uncollected vouchers (without text)
     * ... + one explanation image per Person Affected (without text)
 
-4. There are 2 (or more) included registrations on one payment address at moment of payout. But before "_yes_" reply, 1 (or more) are rejected.
-  - Works exactly as (3)
-  - The status at moment of payout is relevant, not the status at the moment of the "_yes_" reply.
-  - This specifically enables to immediately end inclusion for People Affected after their last payout, without having to wait for their reply.
+      4. There are 2 (or more) included registrations on one payment address at moment of payout. But before "_yes_" reply, 1 (or more) are rejected.
+      - Works exactly as (3)
+      - The status at moment of payout is relevant, not the status at the moment of the "_yes_" reply.
+      - This specifically enables to immediately end inclusion for People Affected after their last payout, without having to wait for their reply.
 
       """
