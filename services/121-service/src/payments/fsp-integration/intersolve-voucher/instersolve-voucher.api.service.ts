@@ -3,20 +3,20 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IntersolveGetCardResponse } from './dto/intersolve-get-card-response.dto';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
-import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
 import { IntersolveSoapElements } from './enum/intersolve-soap.enum';
-import { IntersolveMockService } from './instersolve.mock';
-import { IntersolveRequestEntity } from './intersolve-request.entity';
+import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
+import { IntersolveVoucherMockService } from './instersolve-voucher.mock';
+import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-request.entity';
 import { SoapService } from './soap.service';
 
 @Injectable()
-export class IntersolveApiService {
-  @InjectRepository(IntersolveRequestEntity)
-  private readonly intersolveRequestRepository: Repository<IntersolveRequestEntity>;
+export class IntersolveVoucherApiService {
+  @InjectRepository(IntersolveIssueVoucherRequestEntity)
+  private readonly intersolveVoucherRequestRepo: Repository<IntersolveIssueVoucherRequestEntity>;
 
   public constructor(
     private readonly soapService: SoapService,
-    private intersolveMock: IntersolveMockService,
+    private intersolveMock: IntersolveVoucherMockService,
   ) {}
 
   public async issueCard(
@@ -45,7 +45,7 @@ export class IntersolveApiService {
       String(refPos),
     );
 
-    const intersolveRequest = new IntersolveRequestEntity();
+    const intersolveRequest = new IntersolveIssueVoucherRequestEntity();
     intersolveRequest.refPos = refPos;
     intersolveRequest.EAN = process.env.INTERSOLVE_EAN;
     intersolveRequest.value = amount;
@@ -70,13 +70,14 @@ export class IntersolveApiService {
       intersolveRequest.PIN = parseInt(result.pin) || null;
       intersolveRequest.balance = result.balance || null;
       intersolveRequest.transactionId = parseInt(result.transactionId) || null;
-      intersolveRequest.toCancel = result.resultCode != IntersolveResultCode.Ok;
+      intersolveRequest.toCancel =
+        result.resultCode != IntersolveVoucherResultCode.Ok;
     } catch (Error) {
       console.log('Error: ', Error);
       intersolveRequest.toCancel = true;
       result.resultDescription = Error;
     }
-    await this.intersolveRequestRepository.save(intersolveRequest);
+    await this.intersolveVoucherRequestRepo.save(intersolveRequest);
     return result;
   }
 
@@ -116,13 +117,15 @@ export class IntersolveApiService {
   }
 
   public async markAsToCancelByRefPos(refPos: number): Promise<void> {
-    const intersolveRequest = await this.intersolveRequestRepository.findOneBy({
-      refPos: refPos,
-    });
+    const intersolveRequest = await this.intersolveVoucherRequestRepo.findOneBy(
+      {
+        refPos: refPos,
+      },
+    );
     intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled = false;
     intersolveRequest.toCancel = true;
-    await this.intersolveRequestRepository.save(intersolveRequest);
+    await this.intersolveVoucherRequestRepo.save(intersolveRequest);
   }
 
   public async markAsToCancel(
@@ -130,13 +133,15 @@ export class IntersolveApiService {
     transactionIdString: string,
   ): Promise<void> {
     const transactionId = Number(transactionIdString);
-    const intersolveRequest = await this.intersolveRequestRepository.findOneBy({
-      cardId: cardId,
-      transactionId: transactionId,
-    });
+    const intersolveRequest = await this.intersolveVoucherRequestRepo.findOneBy(
+      {
+        cardId: cardId,
+        transactionId: transactionId,
+      },
+    );
     intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled = false;
     intersolveRequest.toCancel = true;
-    await this.intersolveRequestRepository.save(intersolveRequest);
+    await this.intersolveVoucherRequestRepo.save(intersolveRequest);
   }
 }

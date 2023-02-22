@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
-import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
+import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 
 export enum TwilioStatus {
   delivered = 'delivered',
@@ -36,7 +36,7 @@ export class TwilioMessagesCreateDto {
   @IsOptional()
   public readonly mediaUrl: string;
 
-  @ApiProperty({ example: IntersolvePayoutStatus.InitialMessage })
+  @ApiProperty({ example: IntersolveVoucherPayoutStatus.InitialMessage })
   @IsString()
   @IsOptional()
   public readonly messageType: string;

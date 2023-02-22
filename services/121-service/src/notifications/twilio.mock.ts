@@ -1,14 +1,13 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
-import { IntersolvePayoutStatus } from '../payments/fsp-integration/intersolve/enum/intersolve-payout-status.enum';
+import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { API_PATHS, EXTERNAL_API } from './../config';
 import {
   TwilioIncomingCallbackDto,
   TwilioMessagesCreateDto,
   TwilioStatus,
   TwilioStatusCallbackDto,
-  TwilioValidateRequestDto,
 } from './twilio.dto';
 
 class PhoneNumbers {
@@ -47,7 +46,7 @@ export class TwilioClientMock {
     public async create(
       twilioMessagesCreateDto: TwilioMessagesCreateDto,
     ): Promise<object> {
-      console.log('TwilioClientMock: create():', twilioMessagesCreateDto);
+      // console.log('TwilioClientMock: create():', twilioMessagesCreateDto);
 
       const messageSid = 'SM' + this.createRandomHexaDecimalString(32);
 
@@ -80,12 +79,12 @@ export class TwilioClientMock {
         response.errorCode = '1';
         response.errorMessage = 'Magic fail';
       }
-      console.log('TwilioClientMock create(): response:', response);
+      // console.log('TwilioClientMock create(): response:', response);
       this.sendStatusResponse121(twilioMessagesCreateDto, messageSid);
 
       if (
         twilioMessagesCreateDto.messageType ===
-        IntersolvePayoutStatus.InitialMessage
+        IntersolveVoucherPayoutStatus.InitialMessage
       ) {
         this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid);
       }
@@ -166,13 +165,12 @@ export class TwilioClientMock {
     }
   };
 
-  public validateRequest(
-    twilioValidateRequestDto: TwilioValidateRequestDto,
-  ): boolean {
-    console.log(
-      'TwilioClientMock: validateRequest():',
-      twilioValidateRequestDto,
-    );
+  public validateRequest(): // twilioValidateRequestDto: TwilioValidateRequestDto,
+  boolean {
+    // console.log(
+    //   'TwilioClientMock: validateRequest():',
+    //   twilioValidateRequestDto,
+    // );
     return true;
   }
 }

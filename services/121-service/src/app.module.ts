@@ -12,8 +12,10 @@ import { FspModule } from './fsp/fsp.module';
 import { HealthModule } from './health.module';
 import { InstanceModule } from './instance/instance.module';
 import { LookupModule } from './notifications/lookup/lookup.module';
+import { MessageModule } from './notifications/message.module';
 import { SmsModule } from './notifications/sms/sms.module';
 import { VoiceModule } from './notifications/voice/voice.module';
+import { WhatsappIncomingModule } from './notifications/whatsapp/whatsapp-incoming.module';
 import { WhatsappModule } from './notifications/whatsapp/whatsapp.module';
 import { PeopleAffectedModule } from './people-affected/people-affected.module';
 import { ProgramModule } from './programs/programs.module';
@@ -38,8 +40,10 @@ import { UserModule } from './user/user.module';
     FspModule,
     InstanceModule,
     RegistrationsModule,
+    MessageModule,
     ExportMetricsModule,
     WhatsappModule,
+    WhatsappIncomingModule,
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',

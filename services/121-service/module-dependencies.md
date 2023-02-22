@@ -8,21 +8,24 @@ graph LR
   ProgramModule-->LookupModule
   CronjobModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
-  WhatsappModule-->IntersolveModule
-  IntersolveModule-->ImageCodeModule
-  IntersolveModule-->TransactionsModule
-  IntersolveModule-->WhatsappModule
-  CronjobModule-->IntersolveModule
+  CronjobModule-->IntersolveVoucherModule
+  IntersolveVoucherModule-->ImageCodeModule
+  IntersolveVoucherModule-->TransactionsModule
+  TransactionsModule-->MessageModule
+  MessageModule-->WhatsappModule
+  MessageModule-->SmsModule
+  IntersolveVoucherModule-->WhatsappModule
   RegistrationsModule-->LookupModule
-  RegistrationsModule-->SmsModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
-  RegistrationsModule-->WhatsappModule
+  RegistrationsModule-->MessageModule
   ExportMetricsModule-->ProgramModule
   ExportMetricsModule-->RegistrationsModule
   ExportMetricsModule-->PaymentsModule
   PaymentsModule-->FspModule
-  PaymentsModule-->IntersolveModule
+  PaymentsModule-->IntersolveVoucherModule
+  PaymentsModule-->IntersolveVisaModule
+  IntersolveVisaModule-->TransactionsModule
   PaymentsModule-->AfricasTalkingModule
   AfricasTalkingModule-->TransactionsModule
   PaymentsModule-->BelcashModule
@@ -36,4 +39,7 @@ graph LR
   VodacashModule-->TransactionsModule
   PaymentsModule-->RegistrationsModule
   ExportMetricsModule-->TransactionsModule
+  WhatsappIncomingModule-->ImageCodeModule
+  WhatsappIncomingModule-->IntersolveVoucherModule
+  WhatsappIncomingModule-->WhatsappModule
 ```

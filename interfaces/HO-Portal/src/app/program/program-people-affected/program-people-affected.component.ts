@@ -544,8 +544,8 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           'page.program.program-people-affected.column.fsp',
         ),
         ...this.columnDefaults,
-        minWidth: 150,
-        width: 150,
+        minWidth: 220,
+        width: 220,
       },
       {
         prop: 'messages',
@@ -1129,7 +1129,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   }
 
   public hasVoucherSupport(fsp: string): boolean {
-    const voucherFsps = ['Intersolve-no-whatsapp', 'Intersolve-whatsapp'];
+    const voucherFsps = [
+      'Intersolve-voucher-paper',
+      'Intersolve-voucher-whatsapp',
+    ];
     return voucherFsps.includes(fsp);
   }
 

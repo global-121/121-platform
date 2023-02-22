@@ -22,20 +22,20 @@ import {
 import { Response } from 'express-serve-static-core';
 import stream from 'stream';
 import { Admin } from '../../../guards/admin.decorator';
+import { AdminAuthGuard } from '../../../guards/admin.guard';
 import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionsGuard } from '../../../guards/permissions.guard';
+import { IMAGE_UPLOAD_API_FORMAT } from '../../../shared/file-upload-api-format';
 import { PermissionEnum } from '../../../user/permission.enum';
-import { AdminAuthGuard } from './../../../guards/admin.guard';
-import { IMAGE_UPLOAD_API_FORMAT } from './../../../shared/file-upload-api-format';
 import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
 import { InersolveJobDetails } from './dto/job-details.dto';
-import { IntersolveService } from './intersolve.service';
+import { IntersolveVoucherService } from './intersolve-voucher.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
 @ApiTags('payments/intersolve')
 @Controller()
-export class IntersolveController {
-  public constructor(private intersolveService: IntersolveService) {}
+export class IntersolveVoucherController {
+  public constructor(private intersolveService: IntersolveVoucherService) {}
 
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({

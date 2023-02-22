@@ -6,7 +6,7 @@ import Jimp from 'jimp';
 import { Repository } from 'typeorm';
 import { EXTERNAL_API } from '../../config';
 import { RegistrationEntity } from '../../registration/registration.entity';
-import { IntersolveBarcodeEntity } from '../fsp-integration/intersolve/intersolve-barcode.entity';
+import { IntersolveVoucherEntity } from '../fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { ImageCodeExportVouchersEntity } from './image-code-export-vouchers.entity';
 import { ImageCodeEntity } from './image-code.entity';
 
@@ -20,39 +20,42 @@ export class ImageCodeService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public async createVoucherUrl(
-    barcodeData: IntersolveBarcodeEntity,
+    voucherData: IntersolveVoucherEntity,
   ): Promise<string> {
-    const barcode = new ImageCodeEntity();
-    barcode.secret = crypto.randomBytes(100).toString('hex');
-    barcode.image = await this.generateVoucherImage({
-      dateTime: barcodeData.created,
-      amount: barcodeData.amount,
-      code: barcodeData.barcode,
-      pin: barcodeData.pin,
+    const imageCodeEntity = new ImageCodeEntity();
+    imageCodeEntity.secret = crypto.randomBytes(100).toString('hex');
+    imageCodeEntity.image = await this.generateVoucherImage({
+      dateTime: voucherData.created,
+      amount: voucherData.amount,
+      code: voucherData.barcode,
+      pin: voucherData.pin,
     });
-    await this.imageRepository.save(barcode);
+    await this.imageRepository.save(imageCodeEntity);
 
-    return EXTERNAL_API.imageCodeUrl + barcode.secret;
+    return EXTERNAL_API.imageCodeUrl + imageCodeEntity.secret;
   }
 
-  public async createBarcodeExportVouchers(
-    barcodeData: IntersolveBarcodeEntity,
+  public async createVoucherExportVouchers(
+    intersolveVoucherEntity: IntersolveVoucherEntity,
     referenceId: string,
   ): Promise<ImageCodeExportVouchersEntity> {
-    const barcode = new ImageCodeExportVouchersEntity();
+    const imageCodeExportVouchersEntity = new ImageCodeExportVouchersEntity();
 
-    barcode.registration = await this.registrationRepository.findOne({
-      where: { referenceId: referenceId },
+    imageCodeExportVouchersEntity.registration =
+      await this.registrationRepository.findOne({
+        where: { referenceId: referenceId },
+      });
+    imageCodeExportVouchersEntity.image = await this.generateVoucherImage({
+      dateTime: intersolveVoucherEntity.created,
+      amount: intersolveVoucherEntity.amount,
+      code: intersolveVoucherEntity.barcode,
+      pin: intersolveVoucherEntity.pin,
     });
-    barcode.image = await this.generateVoucherImage({
-      dateTime: barcodeData.created,
-      amount: barcodeData.amount,
-      code: barcodeData.barcode,
-      pin: barcodeData.pin,
-    });
-    barcode.barcode = barcodeData;
+    imageCodeExportVouchersEntity.voucher = intersolveVoucherEntity;
 
-    return this.imageExportVouchersRepository.save(barcode);
+    return this.imageExportVouchersRepository.save(
+      imageCodeExportVouchersEntity,
+    );
   }
 
   public async removeImageExportVoucher(
@@ -61,7 +64,7 @@ export class ImageCodeService {
     await this.imageExportVouchersRepository.remove(image);
   }
 
-  private async generateBarCode(code: string): Promise<Buffer> {
+  private async generateBarCodeImage(code: string): Promise<Buffer> {
     const bwipjs = require('bwip-js');
     return await bwipjs.toBuffer({
       bcid: 'code128',
@@ -121,7 +124,7 @@ export class ImageCodeService {
     pin: string;
   }): Promise<Buffer> {
     const voucherBaseFile = './seed-data/voucher/ah-voucher_base.png';
-    const barcodeImage = await this.generateBarCode(voucherData.code);
+    const barcodeImage = await this.generateBarCodeImage(voucherData.code);
 
     // See Jimp documentation: https://www.npmjs.com/package/jimp/v/0.16.1
     const voucher = await Jimp.read(voucherBaseFile).then(async (image) => {

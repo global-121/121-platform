@@ -1,5 +1,4 @@
 import {
-  forwardRef,
   MiddlewareConsumer,
   Module,
   NestModule,
@@ -7,8 +6,6 @@ import {
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { API_PATHS } from '../../config';
-import { IntersolveBarcodeEntity } from '../../payments/fsp-integration/intersolve/intersolve-barcode.entity';
-import { IntersolveModule } from '../../payments/fsp-integration/intersolve/intersolve.module';
 import { ImageCodeModule } from '../../payments/imagecode/image-code.module';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
@@ -27,7 +24,6 @@ import { WhatsappService } from './whatsapp.service';
   imports: [
     TypeOrmModule.forFeature([
       TwilioMessageEntity,
-      IntersolveBarcodeEntity,
       TransactionEntity,
       ProgramEntity,
       RegistrationEntity,
@@ -39,7 +35,6 @@ import { WhatsappService } from './whatsapp.service';
     ]),
     ImageCodeModule,
     UserModule,
-    forwardRef(() => IntersolveModule),
   ],
   providers: [WhatsappService, SmsService],
   controllers: [WhatsappController],

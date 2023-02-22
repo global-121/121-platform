@@ -2,10 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { MessageContentType } from '../../notifications/message-type.enum';
+import { MessageService } from '../../notifications/message.service';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../../registration/registration.entity';
-import { PaTransactionResultDto } from '../dto/payment-transaction-result.dto';
+import { StatusEnum } from '../../shared/enum/status.enum';
+import {
+  PaTransactionResultDto,
+  TransactionNotificationObject,
+} from '../dto/payment-transaction-result.dto';
+import { LanguageEnum } from './../../registration/enum/language.enum';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
@@ -22,6 +29,10 @@ export class TransactionsService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
+
+  private readonly fallbackLanguage = 'en';
+
+  public constructor(private readonly messageService: MessageService) {}
 
   public async getTransactions(
     programId: number,
@@ -178,9 +189,58 @@ export class TransactionsService {
     transaction.transactionStep = transactionStep || 1;
 
     await this.transactionRepository.save(transaction);
+
     if (program.enableMaxPayments && registration.maxPayments) {
       await this.checkAndUpdateMaxPaymentRegistration(registration);
     }
+
+    if (
+      transactionResponse.status === StatusEnum.success &&
+      fsp.notifyOnTransaction &&
+      transactionResponse.notificationObjects &&
+      transactionResponse.notificationObjects.length > 0
+    ) {
+      // loop over notification objects and send a message for each
+
+      for (const transactionNotifcation of transactionResponse.notificationObjects) {
+        const message = this.getMessageText(
+          registration.preferredLanguage,
+          program.notifications,
+          transactionNotifcation,
+        );
+        await this.messageService.sendTextMessage(
+          registration,
+          program.id,
+          message,
+          null,
+          false,
+          MessageContentType.payment,
+        );
+      }
+    }
+  }
+
+  private getMessageText(
+    language: LanguageEnum,
+    programNotifications: object,
+    transactionNotification: TransactionNotificationObject,
+  ): string {
+    const key = transactionNotification.notificationKey;
+    let message =
+      programNotifications[language][key] ||
+      programNotifications[this.fallbackLanguage][key];
+    if (transactionNotification.dynamicContent.length > 0) {
+      for (const [
+        i,
+        dynamicContent,
+      ] of transactionNotification.dynamicContent.entries()) {
+        const replaceString = `{{${i + 1}}}`;
+        if (message.includes(replaceString)) {
+          message = message.replace(replaceString, dynamicContent);
+        }
+      }
+    }
+    return message;
   }
 
   private async checkAndUpdateMaxPaymentRegistration(

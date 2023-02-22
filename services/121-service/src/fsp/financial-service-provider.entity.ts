@@ -17,6 +17,9 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   @Column({ default: FspIntegrationType.api })
   public integrationType: FspIntegrationType;
 
+  @Column({ default: false })
+  public notifyOnTransaction: boolean;
+
   @OneToMany((_type) => FspQuestionEntity, (questions) => questions.fsp)
   public questions: FspQuestionEntity[];
 

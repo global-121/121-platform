@@ -3,38 +3,14 @@ import { ApiConsumes, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Admin } from '../../guards/admin.decorator';
 import { AdminAuthGuard } from '../../guards/admin.guard';
-import {
-  TwilioIncomingCallbackDto,
-  TwilioStatusCallbackDto,
-} from '../twilio.dto';
+import { TwilioStatusCallbackDto } from '../twilio.dto';
 import { WhatsappService } from './whatsapp.service';
 
 @UseGuards(AdminAuthGuard)
 @ApiTags('notifications')
 @Controller('notifications/whatsapp')
 export class WhatsappController {
-  private readonly whatsappService: WhatsappService;
-  public constructor(whatsappService: WhatsappService) {
-    this.whatsappService = whatsappService;
-  }
-
-  @SkipThrottle()
-  @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
-  @Post('status')
-  public async statusCallback(
-    @Body() callbackData: TwilioStatusCallbackDto,
-  ): Promise<void> {
-    return await this.whatsappService.statusCallback(callbackData);
-  }
-
-  @SkipThrottle()
-  @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
-  @Post('incoming')
-  public async incoming(
-    @Body() callbackData: TwilioIncomingCallbackDto,
-  ): Promise<void> {
-    return await this.whatsappService.handleIncoming(callbackData);
-  }
+  public constructor(private readonly whatsappService: WhatsappService) {}
 
   @Admin()
   @ApiOperation({

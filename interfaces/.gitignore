@@ -17,6 +17,7 @@ www/
 ## Temporary/Generated code/files:
 *.js.map
 coverage/
+.angular/
 
 # IDE / Editor configurations
 .vscode/*
