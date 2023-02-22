@@ -48,20 +48,6 @@
   "programCustomAttributes": [
     {
       "label": {
-        "en": "Partner Organization"
-      },
-      "name": "namePartnerOrganization",
-      "type": "text",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
-      "phases": ["registrationValidation", "inclusion", "payment"]
-    },
-    {
-      "label": {
         "en": "WhatsApp Nr."
       },
       "name": "whatsappPhoneNumber",
@@ -87,13 +73,27 @@
         "selected-for-validation",
         "payment"
       ],
+      "duplicateCheck": true,
       "phases": ["registrationValidation", "inclusion", "payment"]
     },
     {
       "name": "firstName",
       "label": {
-        "en": "Please enter your first name:",
-        "nl": "Vul je voornaam in:"
+        "en": "First name"
+      },
+      "type": "text",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ],
+      "phases": []
+    },
+    {
+      "name": "documentId",
+      "label": {
+        "en": "Document ID"
       },
       "type": "text",
       "export": [
