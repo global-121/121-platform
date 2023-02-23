@@ -6,7 +6,6 @@ import {
   HttpStatus,
   Param,
   ParseArrayPipe,
-  Patch,
   Post,
   Query,
   UploadedFile,
@@ -40,7 +39,6 @@ import { DownloadData } from './dto/download-data.interface';
 import { MessageHistoryDto } from './dto/message-history.dto';
 import { MessageDto } from './dto/message.dto';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
-import { PatchRegistrationDto } from './dto/patch-registration.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { RegistrationResponse } from './dto/registration-response.model';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
@@ -79,20 +77,6 @@ export class RegistrationsController {
       Number(programId),
       userId,
     );
-  }
-
-  @ApiOperation({ summary: 'Updated a registration' })
-  @ApiResponse({ status: 200, description: 'Created registration' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  @Patch('programs/:programId/registrations/:referenceId')
-  public async patch(
-    @Body() createRegistrationDto: PatchRegistrationDto,
-    @Param('programId') programId,
-    @Param('referenceId') referenceId,
-    @User('id') userId: number,
-  ): Promise<void> {
-    console.log(createRegistrationDto, programId, userId, referenceId);
   }
 
   @PersonAffectedAuth()
