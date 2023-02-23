@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.80.0...master)
 
 ---
+## [1.81.0](https://github.com/global-121/121-platform/compare/v1.80.1...v1.81.0) - 2023-02-01
+
+### Added
+
+- Button in login page to see password while typing
+- Visa V-Pay integration with Intersolve FSP
+
 ## [1.80.1](https://github.com/global-121/121-platform/compare/v1.80.0...v1.80.1) - 2023-02-01
 
 ### Fixed
