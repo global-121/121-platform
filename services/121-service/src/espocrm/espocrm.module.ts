@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { RegistrationEntity } from '../registration/registration.entity';
-import { RegistrationsService } from '../registration/registrations.service';
+import { RegistrationsModule } from '../registration/registrations.module';
 import { EspocrmController } from './espocrm.controller';
 import { EspocrmService } from './espocrm.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RegistrationEntity])],
+  imports: [RegistrationsModule],
   controllers: [EspocrmController],
-  providers: [EspocrmService, RegistrationsService],
+  providers: [EspocrmService],
 })
 export class EspocrmModule {}
