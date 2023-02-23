@@ -272,6 +272,29 @@ When new Node.js dependencies are added to a service since it is last build on y
   - Unit-tests and UI-tests for all interfaces; Run with `npm test` in each `interfaces/*`-folder.
   - Unit-tests and integration-tests for all services; Run with `npm test` in each `services/*`-folder.
 
+### When to use a Cypress E2E Integration test?
+- Is the feature/component part of the essential happy-flow of the 121-platform?
+- Is it not already covered by other tests?
+- Are we still within the limit of +/- 10 tests?
+- Example scenarios:
+  - Import/invite PAs, Include them, make payment
+  - Not log-in: can be API-test + component-test
+
+### When to use an API-test? (back-end + db? only)
+- Is it to test query-magic?
+- Is it to test essential endpoints (FSP/EspoCRM integrations) and import/exports/etc?
+- Often used (with different parameters) endpoints: /update-attribute etc.
+- Is there actual business-logic performed?
+- Not necessary:
+  - Change program-status (already covered by Cypress)
+  - update single (program) properties?
+- Examples:
+  - import registrations -> change PA-status (with list of refIds) -> export included PAs
+  - update PA attributes: all different content-types + possible values (including edge cases)
+
+#### Notes
+These tests are still expensive (to bootstrap app + database)
+
 ### Unit Tests
 
 #### Why?
