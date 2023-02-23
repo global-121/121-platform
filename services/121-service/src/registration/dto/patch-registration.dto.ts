@@ -1,18 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsOptional, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class PatchRegistrationDto {
-  @ApiProperty({ example: 'en' })
+  @ApiProperty({ example: '10d169fd-8da4-4acc-88fb-e1139bbbde6c' })
+  @IsString()
+  @IsNotEmpty()
+  public readonly id: string;
+  @ApiProperty({ example: 'value' })
   @IsString()
   @IsOptional()
-  @Length(2, 6)
-  public readonly preferredLanguage: string;
-  @ApiProperty({ example: 1 })
-  @IsInt()
-  @IsOptional()
-  public readonly paymentAmountMultiplier: number;
-  @ApiProperty({ example: 1 })
-  @IsInt()
-  @IsOptional()
-  public readonly maxPayments: number;
+  public readonly key: string;
 }
