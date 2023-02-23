@@ -257,7 +257,7 @@ export class BulkImportService {
     const dynamicAttributes = await this.getDynamicAttributes(program.id);
     for await (const record of validatedImportRecords) {
       const registration = new RegistrationEntity();
-      registration.referenceId = uuid();
+      registration.referenceId = record.referenceId || uuid();
       registration.phoneNumber = record.phoneNumber;
       registration.preferredLanguage = record.preferredLanguage;
       registration.program = program;
@@ -565,6 +565,20 @@ export class BulkImportService {
   ): Promise<ImportRegistrationsDto[]> {
     const errors = [];
     const validatatedArray = [];
+
+    const allReferenceIds = csvArray
+      .filter((row) => row.referenceId)
+      .map((row) => row.referenceId);
+    const uniqueReferenceIds = [...new Set(allReferenceIds)];
+    if (uniqueReferenceIds.length < allReferenceIds.length) {
+      const errorObj = {
+        column: GenericAttributes.referenceId,
+        error: 'Duplicate referenceIds in import set',
+      };
+      errors.push(errorObj);
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+
     const dynamicAttributes = await this.getDynamicAttributes(programId);
     const program = await this.programRepository.findOneBy({
       id: programId,
@@ -592,6 +606,24 @@ export class BulkImportService {
       } else {
         importRecord.preferredLanguage = langResult.value;
       }
+
+      if (row.referenceId) {
+        const registration = await this.registrationRepository.findOne({
+          where: { referenceId: row.referenceId },
+        });
+        if (registration) {
+          const errorObj = {
+            lineNumber: i + 1,
+            column: GenericAttributes.referenceId,
+            value: row.referenceId,
+            error: 'referenceId already exists in database',
+          };
+          errors.push(errorObj);
+        } else {
+          importRecord.referenceId = row.referenceId;
+        }
+      }
+
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;
       if (!program.paymentAmountMultiplierFormula) {

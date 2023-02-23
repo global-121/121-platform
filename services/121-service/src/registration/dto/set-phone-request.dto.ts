@@ -11,7 +11,7 @@ import { LanguageEnum } from '../../registration/enum/language.enum';
 
 export class SetPhoneRequestDto {
   @ApiProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
-  @Length(29, 36)
+  @Length(5, 200)
   public readonly referenceId: string;
   @ApiProperty({ example: '31600000000' })
   @ValidateIf((o) => o.phonenumber)
@@ -30,7 +30,7 @@ export class SetPhoneRequestDto {
 
 export class UpdatePhoneRequestDto {
   @ApiProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
-  @Length(29, 36)
+  @Length(5, 200)
   public readonly referenceId: string;
   @ApiProperty({ example: '31600000000' })
   @ValidateIf((o) => o.phonenumber)
