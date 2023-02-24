@@ -50,7 +50,7 @@
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "@popperjs/core": "~2.11.5",
-    "@swimlane/ngx-charts": "^19.0.0",
+    "@swimlane/ngx-charts": "^20.1.2",
     "@swimlane/ngx-datatable": "^20.0.0",
     "core-js": "2.6.8",
     "file-saver": "^2.0.2",
