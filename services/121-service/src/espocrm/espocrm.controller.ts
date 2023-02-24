@@ -8,7 +8,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../guards/admin.decorator';
 import { DeleteRegistrationDto } from '../registration/dto/delete-registration.dto';
-import { PatchRegistrationDto } from '../registration/dto/patch-registration.dto';
+import { UpdateRegistrationDto } from '../registration/dto/update-registration.dto';
 import { EspocrmWebhookDto } from './dto/espocrm-webhook.dto';
 import { EspocrmActionTypeEnum } from './espocrm-action-type.enum';
 import { EspocrEntityTypeEnum } from './espocrm-entity-type';
@@ -26,20 +26,21 @@ export class EspocrmController {
   @ApiOperation({ summary: 'Update a registration via a EspoCRM webhook' })
   @ApiResponse({ status: 200, description: 'Updated registration' })
   @Post('update-registration')
-  public async patchRegistration(
-    @Body(new ParseArrayPipe({ items: PatchRegistrationDto }))
-    patchRegistrationDto: PatchRegistrationDto[],
+  public async updateRegistration(
+    @Body(new ParseArrayPipe({ items: UpdateRegistrationDto }))
+    updateRegistrationsDto: UpdateRegistrationDto[],
   ): Promise<void> {
-    this.espocrmService.patchRegistration(patchRegistrationDto);
+    this.espocrmService.updateRegistrations(updateRegistrationsDto);
   }
 
+  @Espocrm(EspocrmActionTypeEnum.delete, EspocrEntityTypeEnum.registration)
   @ApiOperation({ summary: 'Delete a registration via a EspoCRM webhook' })
   @ApiResponse({ status: 200, description: 'Deleted registration' })
   @Post('delete-registration')
   public async deleteRegistration(
-    @Body() deleteRegistrationDto: DeleteRegistrationDto[],
+    @Body() deleteRegistrationsDto: DeleteRegistrationDto[],
   ): Promise<void> {
-    console.log(deleteRegistrationDto);
+    this.espocrmService.deleteRegistrations(deleteRegistrationsDto);
   }
 
   @Admin()

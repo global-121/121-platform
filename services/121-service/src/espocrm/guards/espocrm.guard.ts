@@ -7,26 +7,29 @@ import { EspocrmService } from './../espocrm.service';
 export class EspocrmGuard implements CanActivate {
   public constructor(
     private readonly reflector: Reflector,
-    private readonly espocemService: EspocrmService,
+    private readonly espocrmService: EspocrmService,
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
-    const headerKey = 'x-signature';
-    const request = context.switchToHttp().getRequest();
-    const requestSignature = request.headers[headerKey];
-    const espormControllerSettings = this.reflector.get<any>(
+    const espocrmControllerSettings = this.reflector.get<any>(
       'espocrm',
       context.getHandler(),
     );
+    if (!espocrmControllerSettings) {
+      return true;
+    }
 
+    const headerKey = 'x-signature';
+    const request = context.switchToHttp().getRequest();
+    const requestSignature = request.headers[headerKey];
     // Missing signature -> no access
     if (!requestSignature) {
       return false;
     }
 
-    const webhook = await this.espocemService.getWebhook(
-      espormControllerSettings[0],
-      espormControllerSettings[1],
+    const webhook = await this.espocrmService.getWebhook(
+      espocrmControllerSettings[0],
+      espocrmControllerSettings[1],
     );
 
     // Check if the signature is valid for the given programIds

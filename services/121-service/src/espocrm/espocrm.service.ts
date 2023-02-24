@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PatchRegistrationDto } from '../registration/dto/patch-registration.dto';
+import { DeleteRegistrationDto } from '../registration/dto/delete-registration.dto';
+import { UpdateRegistrationDto } from '../registration/dto/update-registration.dto';
+import { RegistrationsService } from '../registration/registrations.service';
 import { EspocrmWebhookDto } from './dto/espocrm-webhook.dto';
 import { EspocrmActionTypeEnum } from './espocrm-action-type.enum';
 import { EspocrEntityTypeEnum } from './espocrm-entity-type';
@@ -12,15 +14,45 @@ export class EspocrmService {
   @InjectRepository(EspocrmWebhookEntity)
   private readonly espocrmWebhookRepository: Repository<EspocrmWebhookEntity>;
 
-  public async patchRegistration(
-    patchRegistrations: PatchRegistrationDto[],
+  public constructor(
+    private readonly registrationsService: RegistrationsService,
+  ) {}
+
+  public async updateRegistrations(
+    updateRegistrations: UpdateRegistrationDto[],
   ): Promise<void> {
-    console.log('patchRegistrations: ', patchRegistrations);
+    for (const updateRegistration of updateRegistrations) {
+      const referenceId = updateRegistration.id;
+      for (const key in updateRegistration) {
+        if (key !== 'id') {
+          const value = updateRegistration[key];
+          try {
+            await this.registrationsService.setAttribute(
+              referenceId,
+              key,
+              value,
+            );
+          } catch (error) {
+            if (error.name !== 'RegistrationDataSaveError') {
+              console.warn('Unknown error: ', error);
+              console.log(
+                `Failed updating '${key}' with value: ${value} (referenceId: ${referenceId})`,
+              );
+            }
+          }
+        }
+      }
+    }
     return;
   }
 
-  public async deleteRegistration(): Promise<void> {
-    return;
+  public async deleteRegistrations(
+    deleteRegistrationsDto: DeleteRegistrationDto[],
+  ): Promise<void> {
+    for (const deleteRegistration of deleteRegistrationsDto) {
+      const referenceId = deleteRegistration.id;
+      console.log('referenceId to delete: ', referenceId);
+    }
   }
 
   public async getWebhook(

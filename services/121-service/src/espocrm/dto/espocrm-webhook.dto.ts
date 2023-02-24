@@ -8,7 +8,7 @@ export class EspocrmWebhookDto {
     example: '63f77488410458465',
   })
   @IsString()
-  public referenceid: string;
+  public referenceId: string;
 
   @ApiProperty({
     enum: EspocrmActionTypeEnum,
