@@ -1,7 +1,7 @@
 import { Body, Controller, ParseArrayPipe, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeleteRegistrationDto } from '../registration/dto/delete-registration.dto';
-import { PatchRegistrationDto } from '../registration/dto/patch-registration.dto';
+import { UpdateRegistrationDto } from '../registration/dto/update-registration.dto';
 import { EspocrmService } from './espocrm.service';
 
 @ApiTags('espocrm')
@@ -12,11 +12,11 @@ export class EspocrmController {
   @ApiOperation({ summary: 'Update a registration via a EspoCRM webhook' })
   @ApiResponse({ status: 200, description: 'Updated registration' })
   @Post('update-registration')
-  public async patchRegistration(
-    @Body(new ParseArrayPipe({ items: PatchRegistrationDto }))
-    patchRegistrationDto: PatchRegistrationDto[],
+  public async updateRegistration(
+    @Body(new ParseArrayPipe({ items: UpdateRegistrationDto }))
+    updateRegistrationDto: UpdateRegistrationDto[],
   ): Promise<void> {
-    this.espocrmService.patchRegistration(patchRegistrationDto);
+    this.espocrmService.updateRegistration(updateRegistrationDto);
   }
 
   @ApiOperation({ summary: 'Delete a registration via a EspoCRM webhook' })

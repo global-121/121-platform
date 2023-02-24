@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PatchRegistrationDto } from '../registration/dto/patch-registration.dto';
+import { UpdateRegistrationDto } from '../registration/dto/update-registration.dto';
 import { RegistrationsService } from '../registration/registrations.service';
 
 @Injectable()
@@ -8,21 +8,25 @@ export class EspocrmService {
     private readonly registrationsService: RegistrationsService,
   ) {}
 
-  public async patchRegistration(
-    patchRegistrations: PatchRegistrationDto[],
+  public async updateRegistration(
+    updateRegistrations: UpdateRegistrationDto[],
   ): Promise<void> {
-    for (const patchRegistration of patchRegistrations) {
-      const refId = patchRegistration.id;
-      for (const key in patchRegistration) {
+    for (const updateRegistration of updateRegistrations) {
+      const referenceId = updateRegistration.id;
+      for (const key in updateRegistration) {
         if (key !== 'id') {
-          const value = patchRegistration[key];
+          const value = updateRegistration[key];
           try {
-            await this.registrationsService.setAttribute(refId, key, value);
+            await this.registrationsService.setAttribute(
+              referenceId,
+              key,
+              value,
+            );
           } catch (error) {
             if (error.name !== 'RegistrationDataSaveError') {
               console.warn('Unknown error: ', error);
               console.log(
-                `Failed updating '${key}' with value: ${value} (referenceId: ${refId})`,
+                `Failed updating '${key}' with value: ${value} (referenceId: ${referenceId})`,
               );
             }
           }
