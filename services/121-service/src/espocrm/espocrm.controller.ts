@@ -1,30 +1,55 @@
-import { Body, Controller, ParseArrayPipe, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ParseArrayPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Admin } from '../guards/admin.decorator';
 import { DeleteRegistrationDto } from '../registration/dto/delete-registration.dto';
 import { UpdateRegistrationDto } from '../registration/dto/update-registration.dto';
+import { EspocrmWebhookDto } from './dto/espocrm-webhook.dto';
+import { EspocrmActionTypeEnum } from './espocrm-action-type.enum';
+import { EspocrEntityTypeEnum } from './espocrm-entity-type';
 import { EspocrmService } from './espocrm.service';
+import { Espocrm } from './guards/espocrm.decorator';
+import { EspocrmGuard } from './guards/espocrm.guard';
 
+@UseGuards(EspocrmGuard)
 @ApiTags('espocrm')
 @Controller('espocrm')
 export class EspocrmController {
   public constructor(private readonly espocrmService: EspocrmService) {}
 
+  @Espocrm(EspocrmActionTypeEnum.update, EspocrEntityTypeEnum.registration)
   @ApiOperation({ summary: 'Update a registration via a EspoCRM webhook' })
   @ApiResponse({ status: 200, description: 'Updated registration' })
   @Post('update-registration')
   public async updateRegistration(
     @Body(new ParseArrayPipe({ items: UpdateRegistrationDto }))
-    updateRegistrationDto: UpdateRegistrationDto[],
+    updateRegistrationsDto: UpdateRegistrationDto[],
   ): Promise<void> {
-    this.espocrmService.updateRegistration(updateRegistrationDto);
+    this.espocrmService.updateRegistrations(updateRegistrationsDto);
   }
 
+  @Espocrm(EspocrmActionTypeEnum.delete, EspocrEntityTypeEnum.registration)
   @ApiOperation({ summary: 'Delete a registration via a EspoCRM webhook' })
   @ApiResponse({ status: 200, description: 'Deleted registration' })
   @Post('delete-registration')
   public async deleteRegistration(
-    @Body() deleteRegistrationDto: DeleteRegistrationDto[],
+    @Body() deleteRegistrationsDto: DeleteRegistrationDto[],
   ): Promise<void> {
-    console.log(deleteRegistrationDto);
+    this.espocrmService.deleteRegistrations(deleteRegistrationsDto);
+  }
+
+  @Admin()
+  @ApiOperation({ summary: 'Post webhook integration EspoCRM webhook' })
+  @ApiResponse({ status: 200, description: 'Posted webhook integration' })
+  @Post('webhooks')
+  public async postWebhookIntegration(
+    @Body() data: EspocrmWebhookDto,
+  ): Promise<void> {
+    this.espocrmService.postWebhookIntegration(data);
   }
 }
