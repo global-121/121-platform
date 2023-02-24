@@ -53,7 +53,7 @@ import { UserModule } from './user/user.module';
       ttl: +process.env.GENERIC_THROTTLING_TTL || 60,
       limit: +process.env.GENERIC_THROTTLING_LIMIT || 300,
     }),
-    EspocrmModule
+    EspocrmModule,
   ],
   controllers: [AppController],
   providers: [

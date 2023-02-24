@@ -5,6 +5,12 @@ import { EspocrEntityTypeEnum } from './../espocrm-entity-type';
 
 export class EspocrmWebhookDto {
   @ApiProperty({
+    example: '63f77488410458465',
+  })
+  @IsString()
+  public referenceid: string;
+
+  @ApiProperty({
     enum: EspocrmActionTypeEnum,
     example: EspocrmActionTypeEnum.update,
   })

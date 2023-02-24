@@ -23,15 +23,15 @@ export class EspocrmService {
     return;
   }
 
-  public async getSignature(
+  public async getWebhook(
     actionType: EspocrmActionTypeEnum,
     entityType: EspocrEntityTypeEnum,
-  ): Promise<string> {
+  ): Promise<EspocrmWebhookEntity> {
     const espocrmWebhook = await this.espocrmWebhookRepository.findOne({
       where: { actionType: actionType, entityType: entityType },
     });
     if (espocrmWebhook) {
-      return espocrmWebhook.secretKey;
+      return espocrmWebhook;
     }
   }
 

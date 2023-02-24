@@ -6,6 +6,9 @@ import { EspocrEntityTypeEnum } from './espocrm-entity-type';
 @Entity('espocrm_webhook')
 export class EspocrmWebhookEntity extends CascadeDeleteEntity {
   @Column()
+  public referenceId: string;
+
+  @Column()
   public actionType: EspocrmActionTypeEnum;
 
   @Column()
