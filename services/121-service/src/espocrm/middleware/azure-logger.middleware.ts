@@ -16,21 +16,23 @@ export class AzureLoggerMiddleware implements NestMiddleware {
   }
 
   use(request: Request, response: Response, next: NextFunction): void {
-    const ip = request.headers['x-forwarded-for'];
-    const body = request.body;
-    const { method, path: url } = request;
+    if (this.defaultClient) {
+      const ip = request.headers['x-forwarded-for'];
+      const body = request.body;
+      const { method, path: url } = request;
 
-    response.on('close', () => {
-      const { statusCode, statusMessage } = response;
-      const requestLog = `Request: ${method} ${url} from: ${ip}. Request body: ${JSON.stringify(
-        body,
-      )}`;
-      const responseLog = `Response: ${statusCode} ${statusMessage}`;
-      this.defaultClient.trackTrace({
-        message: `${requestLog} - ${responseLog}}`,
+      response.on('close', () => {
+        const { statusCode, statusMessage } = response;
+        const requestLog = `Request: ${method} ${url} from: ${ip}. Request body: ${JSON.stringify(
+          body,
+        )}`;
+        const responseLog = `Response: ${statusCode} ${statusMessage}`;
+        this.defaultClient.trackTrace({
+          message: `${requestLog} - ${responseLog}}`,
+        });
+        this.defaultClient.flush();
       });
-      this.defaultClient.flush();
-    });
+    }
 
     next();
   }
