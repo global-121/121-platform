@@ -5,7 +5,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../guards/admin.decorator';
 import { DeleteRegistrationDto } from '../registration/dto/delete-registration.dto';
 import { UpdateRegistrationDto } from '../registration/dto/update-registration.dto';
@@ -25,6 +25,7 @@ export class EspocrmController {
   @Espocrm(EspocrmActionTypeEnum.update, EspocrEntityTypeEnum.registration)
   @ApiOperation({ summary: 'Update a registration via a EspoCRM webhook' })
   @ApiResponse({ status: 200, description: 'Updated registration' })
+  @ApiBody({ isArray: true, type: UpdateRegistrationDto })
   @Post('update-registration')
   public async updateRegistration(
     @Body(new ParseArrayPipe({ items: UpdateRegistrationDto }))
@@ -36,6 +37,7 @@ export class EspocrmController {
   @Espocrm(EspocrmActionTypeEnum.delete, EspocrEntityTypeEnum.registration)
   @ApiOperation({ summary: 'Delete a registration via a EspoCRM webhook' })
   @ApiResponse({ status: 200, description: 'Deleted registration' })
+  @ApiBody({ isArray: true, type: DeleteRegistrationDto })
   @Post('delete-registration')
   public async deleteRegistration(
     @Body() deleteRegistrationsDto: DeleteRegistrationDto[],

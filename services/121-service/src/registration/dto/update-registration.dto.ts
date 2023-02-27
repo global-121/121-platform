@@ -6,7 +6,11 @@ export class UpdateRegistrationDto {
   @IsString()
   @IsNotEmpty()
   public readonly id: string;
-  @ApiProperty({ example: 'value' })
+
+  @ApiProperty({
+    description: 'This can be any key and any value. ',
+    example: 'value',
+  })
   @IsString()
   @IsOptional()
   public readonly key: string;
