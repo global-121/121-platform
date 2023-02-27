@@ -47,7 +47,10 @@ export class EspocrmController {
 
   @Admin()
   @ApiOperation({ summary: 'Post webhook integration EspoCRM webhook' })
-  @ApiResponse({ status: 200, description: 'Posted webhook integration' })
+  @ApiResponse({
+    status: 200,
+    description: 'Saving of the webhook was successful',
+  })
   @Post('webhooks')
   public async postWebhookIntegration(
     @Body() data: EspocrmWebhookDto,
