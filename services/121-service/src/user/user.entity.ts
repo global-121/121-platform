@@ -25,7 +25,10 @@ export class UserEntity extends CascadeDeleteEntity {
 
   @BeforeInsert()
   public hashPassword(): any {
-    this.password = crypto.createHmac('sha256', this.password).digest('hex');
+    this.salt = crypto.randomBytes(16).toString('hex');
+    this.password = crypto
+      .pbkdf2Sync(this.password, this.salt, 1, 32, 'sha256')
+      .toString('hex');
   }
 
   @OneToMany(
@@ -73,4 +76,7 @@ export class UserEntity extends CascadeDeleteEntity {
       },
     ]);
   }
+
+  @Column({ nullable: true })
+  public salt: string;
 }
