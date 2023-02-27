@@ -16,13 +16,19 @@ import { EspocrmService } from './espocrm.service';
 import { Espocrm } from './guards/espocrm.decorator';
 import { EspocrmGuard } from './guards/espocrm.guard';
 
+const espocrmIp = process.env.ESPOCRM_IP;
+
 @UseGuards(EspocrmGuard)
 @ApiTags('espocrm')
 @Controller('espocrm')
 export class EspocrmController {
   public constructor(private readonly espocrmService: EspocrmService) {}
 
-  @Espocrm(EspocrmActionTypeEnum.update, EspocrEntityTypeEnum.registration)
+  @Espocrm(
+    EspocrmActionTypeEnum.update,
+    EspocrEntityTypeEnum.registration,
+    espocrmIp,
+  )
   @ApiOperation({ summary: 'Update a registration via a EspoCRM webhook' })
   @ApiResponse({ status: 200, description: 'Updated registration' })
   @ApiBody({ isArray: true, type: UpdateRegistrationDto })
@@ -34,7 +40,11 @@ export class EspocrmController {
     this.espocrmService.updateRegistrations(updateRegistrationsDto);
   }
 
-  @Espocrm(EspocrmActionTypeEnum.delete, EspocrEntityTypeEnum.registration)
+  @Espocrm(
+    EspocrmActionTypeEnum.delete,
+    EspocrEntityTypeEnum.registration,
+    espocrmIp,
+  )
   @ApiOperation({ summary: 'Delete a registration via a EspoCRM webhook' })
   @ApiResponse({ status: 200, description: 'Deleted registration' })
   @ApiBody({ isArray: true, type: DeleteRegistrationDto })

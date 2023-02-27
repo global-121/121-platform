@@ -11,6 +11,8 @@ export class EspocrmGuard implements CanActivate {
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
+    const signatureHeaderKey = 'x-signature';
+    const ipHeaderKey = 'x-forwarded-for';
     const espocrmControllerSettings = this.reflector.get<any>(
       'espocrm',
       context.getHandler(),
@@ -19,9 +21,14 @@ export class EspocrmGuard implements CanActivate {
       return true;
     }
 
-    const headerKey = 'x-signature';
     const request = context.switchToHttp().getRequest();
-    const requestSignature = request.headers[headerKey];
+    const requestSignature = request.headers[signatureHeaderKey];
+    const requestIp = request.headers[ipHeaderKey];
+
+    // Non-whitelist IP -> no access
+    if (requestIp !== espocrmControllerSettings[2]) {
+      return false;
+    }
     // Missing signature -> no access
     if (!requestSignature) {
       return false;
