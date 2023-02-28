@@ -344,9 +344,6 @@ export class WhatsappIncomingService {
         // Only include text with first voucher (across PA's and payments)
         let message = firstVoucherSent
           ? ''
-          : registrationsWithOpenVouchers.length > 1
-          ? program.notifications[language]['whatsappVoucherMultiple'] ||
-            program.notifications[language]['whatsappVoucher']
           : program.notifications[language]['whatsappVoucher'];
         message = message.split('{{1}}').join(intersolveVoucher.amount);
         await this.whatsappService.sendWhatsapp(
