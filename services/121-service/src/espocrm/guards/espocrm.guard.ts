@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import crypto from 'crypto';
+import { DEBUG } from '../../config';
 import { EspocrmService } from './../espocrm.service';
 
 @Injectable()
@@ -11,6 +12,12 @@ export class EspocrmGuard implements CanActivate {
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
+    // Do not enforce guard in debug-mode
+    // If you want to specifically develop/test the guard then comment out these lines
+    if (DEBUG) {
+      return true;
+    }
+
     const signatureHeaderKey = 'x-signature';
     const ipHeaderKey = 'x-forwarded-for';
     const espocrmControllerSettings = this.reflector.get<any>(
