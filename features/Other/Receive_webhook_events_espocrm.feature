@@ -1,6 +1,9 @@
 @espocrm-webhook
 Feature: Receive webhook events from EspoCRM
 
+  Background:
+    Given an environment not in DEBUG-mode
+
   Scenario: Successfully receive 'update' event
     Given a 'x-signature' header is provided
     And the IP address which is in the 'x-forwarded-for' header is whitelisted
@@ -22,4 +25,4 @@ Feature: Receive webhook events from EspoCRM
     Then a 403 status code is returned
 
   Scenario: Successfully receive 'delete' event
-    TODO: This will be implemented in the future.
+TODO: This will be implemented in the future.
