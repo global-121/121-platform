@@ -29,11 +29,15 @@ export class EspocrmController {
     EspocrEntityTypeEnum.registration,
     espocrmIp,
   )
-  @ApiOperation({ summary: 'Update a registration via a EspoCRM webhook' })
-  @ApiResponse({ status: 200, description: 'Updated registration' })
+  @ApiOperation({ summary: 'Update registration(s) via a EspoCRM webhook' })
+  @ApiResponse({ status: 201, description: 'Updated registration(s)' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden. Signature not correct or IP not whitelisted.',
+  })
   @ApiBody({ isArray: true, type: UpdateRegistrationDto })
   @Post('update-registration')
-  public async updateRegistration(
+  public async updateRegistrations(
     @Body(new ParseArrayPipe({ items: UpdateRegistrationDto }))
     updateRegistrationsDto: UpdateRegistrationDto[],
   ): Promise<void> {
@@ -45,11 +49,15 @@ export class EspocrmController {
     EspocrEntityTypeEnum.registration,
     espocrmIp,
   )
-  @ApiOperation({ summary: 'Delete a registration via a EspoCRM webhook' })
-  @ApiResponse({ status: 200, description: 'Deleted registration' })
+  @ApiOperation({ summary: 'Delete registration(s) via a EspoCRM webhook' })
+  @ApiResponse({ status: 201, description: 'Deleted registration(s)' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden. Signature not correct or IP not whitelisted.',
+  })
   @ApiBody({ isArray: true, type: DeleteRegistrationDto })
   @Post('delete-registration')
-  public async deleteRegistration(
+  public async deleteRegistrations(
     @Body() deleteRegistrationsDto: DeleteRegistrationDto[],
   ): Promise<void> {
     this.espocrmService.deleteRegistrations(deleteRegistrationsDto);
@@ -58,7 +66,7 @@ export class EspocrmController {
   @Admin()
   @ApiOperation({ summary: 'Post webhook integration EspoCRM webhook' })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Saving of the webhook was successful',
   })
   @Post('webhooks')

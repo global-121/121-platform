@@ -11,7 +11,7 @@ export class UpdateRegistrationDto {
   public readonly id: string;
 
   @ApiProperty({
-    description: 'This can be any key and any value. ',
+    description: `Also 'key' itself can be replaced by any key. Additional key-value pairs can also be added within the same object.`,
     example: 'value',
   })
   @IsString()
