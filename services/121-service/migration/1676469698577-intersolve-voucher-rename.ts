@@ -103,13 +103,13 @@ export class intersolveVoucherRename1676469698577
       `ALTER TABLE "121-service"."imagecode_export_vouchers" ADD CONSTRAINT "FK_e64e394d9af2d9096bd29732ab6" FOREIGN KEY ("voucherId") REFERENCES "121-service"."intersolve_voucher"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `SELECT setval("121-service"."intersolve_issue_voucher_request_id_seq", (SELECT MAX(id) FROM "121-service"."intersolve_issue_voucher_request")+ 1)`,
+      `SELECT setval('121-service.intersolve_issue_voucher_request_id_seq', (SELECT MAX(id) FROM "121-service"."intersolve_issue_voucher_request")+ 1)`,
     );
     await queryRunner.query(
-      `SELECT setval("121-service"."intersolve_voucher_id_seq", (SELECT MAX(id) FROM "121-service"."intersolve_voucher")+ 1)`,
+      `SELECT setval('121-service.intersolve_voucher_id_seq', (SELECT MAX(id) FROM "121-service"."intersolve_voucher")+ 1)`,
     );
     await queryRunner.query(
-      `SELECT setval("121-service"."intersolve_voucher_instruction_id_seq", (SELECT MAX(id) FROM "121-service"."intersolve_voucher_instruction")+ 1)`,
+      `SELECT setval('121-service.intersolve_voucher_instruction_id_seq', (SELECT MAX(id) FROM "121-service"."intersolve_voucher_instruction")+ 1)`,
     );
   }
 
