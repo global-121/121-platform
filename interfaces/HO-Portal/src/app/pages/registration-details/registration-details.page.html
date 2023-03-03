@@ -5,5 +5,31 @@
 <app-program-navigation></app-program-navigation>
 <ion-content class="ion-padding">
   <h1>Program {{ programId }}</h1>
+  <ion-card
+    *ngIf="person"
+    style="max-width: 300px"
+  >
+    <ion-card-header>
+      <ion-card-title> {{ person.name }} </ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="ion-no-padding">
+      <ion-list
+        class="ion-no-padding"
+        lines="full"
+      >
+        <ion-item
+          *ngFor="let info of personalInfoTable"
+          class="ion-justify-content-between"
+          style="font-size: 14px"
+        >
+          <ion-label>{{ info.label }}</ion-label>
+          <ion-label class="ion-text-end"
+            ><strong>{{ info.value }}</strong></ion-label
+          >
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
   <pre>{{ person | json }}</pre>
 </ion-content>
