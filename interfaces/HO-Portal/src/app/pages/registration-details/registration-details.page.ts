@@ -27,7 +27,7 @@ export class RegistrationDetailsPage implements OnInit {
       return;
     }
 
-    const referenceId = await this.programsService.getReferenceId(
+    const { referenceId } = await this.programsService.getReferenceId(
       this.programId,
       this.paId,
     );
@@ -51,6 +51,7 @@ export class RegistrationDetailsPage implements OnInit {
         this.programId,
         canUpdatePersonalData,
         canViewPaymentData,
+        referenceId,
       )
     )[0];
   }

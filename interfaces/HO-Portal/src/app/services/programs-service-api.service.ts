@@ -664,7 +664,10 @@ export class ProgramsServiceApiService {
     );
   }
 
-  async getReferenceId(programId: number, paId: number): Promise<string> {
+  async getReferenceId(
+    programId: number,
+    paId: number,
+  ): Promise<{ referenceId: string }> {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/referenceid/${paId}`,
