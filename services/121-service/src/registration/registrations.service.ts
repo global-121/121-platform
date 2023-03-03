@@ -222,7 +222,7 @@ export class RegistrationsService {
       relations: relations,
     });
     if (!registration) {
-      const errors = 'This referenceId is not known.';
+      const errors = `ReferenceId ${referenceId} is not known.`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     registration['customData'] = await this.getCustomDataForReferenceId(
