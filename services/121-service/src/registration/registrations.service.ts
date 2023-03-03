@@ -1833,4 +1833,13 @@ export class RegistrationsService {
     const registration = await this.getRegistrationFromReferenceId(referenceId);
     return registration.registrationStatus;
   }
+
+  public async getReferenceId(programId: number, paId: number): Promise<any> {
+    const q = await this.registrationRepository.findOne({
+      select: { referenceId: true },
+      where: { programId: programId, registrationProgramId: paId },
+    });
+
+    return q;
+  }
 }
