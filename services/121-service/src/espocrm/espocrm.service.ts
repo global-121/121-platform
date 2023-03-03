@@ -22,6 +22,7 @@ export class EspocrmService {
   public async updateRegistrations(
     updateRegistrations: UpdateRegistrationDto[],
   ): Promise<void> {
+    const errors = [];
     for (const updateRegistration of updateRegistrations) {
       const referenceId = updateRegistration.id;
       for (const key in updateRegistration) {
@@ -37,15 +38,17 @@ export class EspocrmService {
             if (error.name === ErrorEnum.RegistrationDataError) {
               continue; // ignore unknown fieldnames
             } else {
-              console.warn('Unknown error: ', error);
               console.log(
-                `Failed updating '${key}' with value: ${value} (referenceId: ${referenceId})`,
+                `Failed updating '${key}' with value: ${value} (referenceId: ${referenceId}). Error: ${error}`,
               );
-              throw error;
+              errors.push(error);
             }
           }
         }
       }
+    }
+    if (errors.length > 0) {
+      throw errors[0];
     }
     return;
   }
