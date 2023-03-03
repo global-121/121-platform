@@ -11,7 +11,7 @@ export class IntersolveIssueTokenResponseBodyDto {
   public errors?: IntersolveReponseErrorDto[];
   public code?: string;
   public correlationId?: string;
-  public data: IntersolveIssueTokenResponseDataDto;
+  public data: IntersolveIssueTokenResponseTokenDto;
 }
 
 export class IntersolveIssueTokenResponseDataDto {
