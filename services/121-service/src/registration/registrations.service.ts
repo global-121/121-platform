@@ -45,6 +45,7 @@ import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
+import { ErrorEnum } from './errors/registration-data.error';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -1226,7 +1227,7 @@ export class RegistrationsService {
       return !!registrationDataRelation.programCustomAttributeId;
     } catch (error) {
       // Don't throw error on attributes that are changed which are not program/fsp/custom/monitoring type
-      if (error.name !== 'RegistrationDataSaveError') {
+      if (error.name !== ErrorEnum.RegistrationDataError) {
         throw error;
       }
     }

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DeleteRegistrationDto } from '../registration/dto/delete-registration.dto';
 import { UpdateRegistrationDto } from '../registration/dto/update-registration.dto';
+import { ErrorEnum } from '../registration/errors/registration-data.error';
 import { RegistrationsService } from '../registration/registrations.service';
 import { EspocrmWebhookDto } from './dto/espocrm-webhook.dto';
 import { EspocrmActionTypeEnum } from './espocrm-action-type.enum';
@@ -33,11 +34,14 @@ export class EspocrmService {
               value,
             );
           } catch (error) {
-            if (error.name !== 'RegistrationDataSaveError') {
+            if (error.name === ErrorEnum.RegistrationDataError) {
+              continue; // ignore unknown fieldnames
+            } else {
               console.warn('Unknown error: ', error);
               console.log(
                 `Failed updating '${key}' with value: ${value} (referenceId: ${referenceId})`,
               );
+              throw error;
             }
           }
         }

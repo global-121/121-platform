@@ -41,7 +41,9 @@ export class EspocrmController {
     @Body(new ParseArrayPipe({ items: UpdateRegistrationDto }))
     updateRegistrationsDto: UpdateRegistrationDto[],
   ): Promise<void> {
-    this.espocrmService.updateRegistrations(updateRegistrationsDto);
+    return await this.espocrmService.updateRegistrations(
+      updateRegistrationsDto,
+    );
   }
 
   @Espocrm(

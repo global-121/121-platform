@@ -30,6 +30,7 @@ import {
 } from '../enum/custom-data-attributes';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
+import { ErrorEnum } from '../errors/registration-data.error';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationDataEntity } from './../registration-data.entity';
 import { InclusionScoreService } from './inclusion-score.service';
@@ -340,7 +341,7 @@ export class BulkImportService {
         });
       } catch (error) {
         // Skip data that is not relevant PA like fsp question of FSP for which they are not registered
-        if (error.name !== 'RegistrationDataSaveError') {
+        if (error.name !== ErrorEnum.RegistrationDataError) {
           throw error;
         }
       }
