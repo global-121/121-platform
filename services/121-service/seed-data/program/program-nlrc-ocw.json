@@ -103,6 +103,20 @@
         "payment"
       ],
       "phases": []
+    },
+    {
+      "label": {
+        "en": "Physical card"
+      },
+      "name": "physicalCard",
+      "type": "boolean",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ],
+      "phases": ["registrationValidation", "inclusion", "payment"]
     }
   ],
   "programQuestions": [
