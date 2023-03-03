@@ -278,7 +278,7 @@ export class IntersolveVisaService {
       issueTokenResult.data.data.token =
         new IntersolveIssueTokenResponseTokenDto();
       issueTokenResult.data.success = true;
-      issueTokenResult.data.data.token.code = visaCardNumber;
+      issueTokenResult.data.data.token.type = 'STANDARD'; // Intersolve-type for physical card
 
       const createEntitiesResult = await this.createIntersolveVisaEntities(
         registration,
@@ -363,6 +363,7 @@ export class IntersolveVisaService {
         issueTokenResult.data.data.token.blocked;
       intersolveVisaCard.expiresAt = issueTokenResult.data.data.token.expiresAt;
       intersolveVisaCard.status = issueTokenResult.data.data.token.status;
+      intersolveVisaCard.type = issueTokenResult.data.data.token.type;
 
       await this.intersolveVisaCardRepository.save(intersolveVisaCard);
     }
