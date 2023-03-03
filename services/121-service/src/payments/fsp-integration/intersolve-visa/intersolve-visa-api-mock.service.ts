@@ -10,7 +10,6 @@ import {
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import {
   IntersolveIssueTokenResponseBodyDto,
-  IntersolveIssueTokenResponseDataDto,
   IntersolveIssueTokenResponseDto,
   IntersolveIssueTokenResponseTokenDto,
 } from './dto/intersolve-issue-token-response.dto';
@@ -115,18 +114,17 @@ export class IntersolveVisaApiMockService {
     response.data.code = 'string';
     response.data.correlationId = 'string';
 
-    response.data.data = new IntersolveIssueTokenResponseDataDto();
-    response.data.data.token = new IntersolveIssueTokenResponseTokenDto();
-    response.data.data.token.code = `mock-token-${uuid()}`;
-    response.data.data.token.blocked = false;
-    response.data.data.token.blockReasonCode = 'string';
-    response.data.data.token.type = 'string';
-    response.data.data.token.tier = 'string';
-    response.data.data.token.brandTypeCode = 'string';
-    response.data.data.token.expiresAt = '2023-02-08T14:36:05.816Z';
-    response.data.data.token.status = 'string';
-    response.data.data.token.holderId = 'string';
-    response.data.data.token.balances = [
+    response.data.data = new IntersolveIssueTokenResponseTokenDto();
+    response.data.data.code = `mock-token-${uuid()}`;
+    response.data.data.blocked = false;
+    response.data.data.blockReasonCode = 'string';
+    response.data.data.type = 'string';
+    response.data.data.tier = 'string';
+    response.data.data.brandTypeCode = 'string';
+    response.data.data.expiresAt = '2023-02-08T14:36:05.816Z';
+    response.data.data.status = 'string';
+    response.data.data.holderId = 'string';
+    response.data.data.balances = [
       {
         quantity: {
           assetCode: 'string',
@@ -137,7 +135,7 @@ export class IntersolveVisaApiMockService {
         lastChangedAt: '2023-02-08T14:36:05.816Z',
       },
     ];
-    response.data.data.token.assets = [
+    response.data.data.assets = [
       {
         identity: {
           type: 'string',

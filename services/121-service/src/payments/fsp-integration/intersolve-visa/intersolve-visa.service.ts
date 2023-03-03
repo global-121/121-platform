@@ -17,10 +17,10 @@ import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import {
   IntersolveIssueTokenResponseBodyDto,
-  IntersolveIssueTokenResponseDataDto,
   IntersolveIssueTokenResponseDto,
   IntersolveIssueTokenResponseTokenDto,
 } from './dto/intersolve-issue-token-response.dto';
+import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { MessageStatus as MessageStatusDto } from './dto/message-status.dto';
@@ -223,7 +223,6 @@ export class IntersolveVisaService {
     if (!tokenCode) {
       // There is no imported visa card number, so we need to issue a new one
       // TODO: THIS IS AN UNTESTED FLOW FOR DIGITAL VISACARD i/o PHYSICAL
-
       const reference = uuid();
       const issueTokenRequest = new IntersolveVisaRequestEntity();
       issueTokenRequest.reference = reference;
@@ -231,8 +230,11 @@ export class IntersolveVisaService {
       issueTokenRequest.endpoint = IntersolveVisaEndpoints.ISSUE_TOKEN;
       const issueTokenRequestEntity =
         await this.intersolveVisaRequestRepository.save(issueTokenRequest);
+
+      const issueTokenPayload = new IntersolveIssueTokenDto();
+      issueTokenPayload.holderId = null;
       const issueTokenResult = await this.intersolveVisaApiService.issueToken(
-        issueTokenRequest,
+        issueTokenPayload,
       );
       issueTokenRequestEntity.statusCode = issueTokenResult.status;
       await this.intersolveVisaRequestRepository.save(issueTokenRequestEntity);
@@ -260,7 +262,7 @@ export class IntersolveVisaService {
         return {
           success: issueTokenResult.data.success,
           visaCard: await this.getWalletByTokenCode(
-            issueTokenResult.data.data.token.code,
+            issueTokenResult.data.data.code,
           ),
           message: issueTokenResult.data.success
             ? null
@@ -274,12 +276,10 @@ export class IntersolveVisaService {
       // There IS an imported visa card number, so we don't need to issue a new one but we need to create the entities
       const issueTokenResult = new IntersolveIssueTokenResponseDto();
       issueTokenResult.data = new IntersolveIssueTokenResponseBodyDto();
-      issueTokenResult.data.data = new IntersolveIssueTokenResponseDataDto();
-      issueTokenResult.data.data.token =
-        new IntersolveIssueTokenResponseTokenDto();
+      issueTokenResult.data.data = new IntersolveIssueTokenResponseTokenDto();
       issueTokenResult.data.success = true;
-      issueTokenResult.data.data.token.code = tokenCode;
-      issueTokenResult.data.data.token.type = 'STANDARD'; // Intersolve-type for physical card
+      issueTokenResult.data.data.code = tokenCode;
+      issueTokenResult.data.data.type = 'STANDARD'; // Intersolve-type for physical card
 
       const createEntitiesResult = await this.createIntersolveVisaEntities(
         registration,
@@ -292,7 +292,7 @@ export class IntersolveVisaService {
         };
       }
       const visaCard = await this.getWalletByTokenCode(
-        issueTokenResult.data.data.token.code,
+        issueTokenResult.data.data.code,
       );
       return {
         success: issueTokenResult.data.success,
@@ -353,18 +353,17 @@ export class IntersolveVisaService {
     }
 
     let intersolveVisaCard = await this.intersolveVisaCardRepository.findOne({
-      where: { tokenCode: issueTokenResult.data.data.token.code },
+      where: { tokenCode: issueTokenResult.data.data.code },
     });
 
     if (!intersolveVisaCard) {
       intersolveVisaCard = new IntersolveVisaCardEntity();
       intersolveVisaCard.success = issueTokenResult.data.success;
-      intersolveVisaCard.tokenCode = issueTokenResult.data.data.token.code;
-      intersolveVisaCard.tokenBlocked =
-        issueTokenResult.data.data.token.blocked;
-      intersolveVisaCard.expiresAt = issueTokenResult.data.data.token.expiresAt;
-      intersolveVisaCard.status = issueTokenResult.data.data.token.status;
-      intersolveVisaCard.type = issueTokenResult.data.data.token.type;
+      intersolveVisaCard.tokenCode = issueTokenResult.data.data.code;
+      intersolveVisaCard.tokenBlocked = issueTokenResult.data.data.blocked;
+      intersolveVisaCard.expiresAt = issueTokenResult.data.data.expiresAt;
+      intersolveVisaCard.status = issueTokenResult.data.data.status;
+      intersolveVisaCard.type = issueTokenResult.data.data.type;
 
       await this.intersolveVisaCardRepository.save(intersolveVisaCard);
     }
