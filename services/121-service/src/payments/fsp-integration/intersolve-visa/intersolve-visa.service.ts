@@ -216,11 +216,11 @@ export class IntersolveVisaService {
     visaCard?: IntersolveVisaCardEntity;
     message?: string;
   }> {
-    const visaCardNumber = await registration.getRegistrationDataValueByName(
-      'visaCardNumber',
+    const tokenCode = await registration.getRegistrationDataValueByName(
+      'visaTokenCode',
     );
 
-    if (!visaCardNumber) {
+    if (!tokenCode) {
       // There is no imported visa card number, so we need to issue a new one
       // TODO: THIS IS AN UNTESTED FLOW FOR DIGITAL VISACARD i/o PHYSICAL
 
@@ -278,6 +278,7 @@ export class IntersolveVisaService {
       issueTokenResult.data.data.token =
         new IntersolveIssueTokenResponseTokenDto();
       issueTokenResult.data.success = true;
+      issueTokenResult.data.data.token.code = tokenCode;
       issueTokenResult.data.data.token.type = 'STANDARD'; // Intersolve-type for physical card
 
       const createEntitiesResult = await this.createIntersolveVisaEntities(

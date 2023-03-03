@@ -77,9 +77,9 @@
     },
     {
       "label": {
-        "en": "Visa Card Nr."
+        "en": "Visa-card token code"
       },
-      "name": "visaCardNumber",
+      "name": "tokenCodeVisa",
       "type": "text",
       "export": [
         "all-people-affected",
@@ -106,9 +106,9 @@
     },
     {
       "label": {
-        "en": "Physical card"
+        "en": "Visa-card physical"
       },
-      "name": "physicalCard",
+      "name": "isPhysicalCardVisa",
       "type": "boolean",
       "export": [
         "all-people-affected",
