@@ -451,11 +451,15 @@ export class ProgramsServiceApiService {
     programId: number | string,
     personalData: boolean,
     paymentData: boolean,
+    referenceId?: string,
     filterOnPayment?: number,
   ): Promise<Person[]> {
     let params = new HttpParams();
     params = params.append('personalData', personalData);
     params = params.append('paymentData', paymentData);
+    if (referenceId) {
+      params = params.append('referenceId', referenceId);
+    }
     if (filterOnPayment) {
       params = params.append('filterOnPayment', filterOnPayment);
     }
@@ -656,6 +660,14 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/registrations/?phonenumber=${phoneNumber}`,
+      false,
+    );
+  }
+
+  async getReferenceId(programId: number, paId: number): Promise<string> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/registrations/referenceid/${paId}`,
       false,
     );
   }

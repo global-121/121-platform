@@ -105,6 +105,13 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
+        path: 'registration/:paId',
+        loadChildren: () =>
+          import(
+            './pages/registration-details/registration-details.page.module'
+          ).then((m) => m.RegistrationDetailsModule),
+      },
+      {
         // Fallback for change in url, from old to new syntax:
         path: 'registration-validation',
         pathMatch: 'full',
