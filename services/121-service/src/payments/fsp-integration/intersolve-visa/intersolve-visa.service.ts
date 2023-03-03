@@ -28,8 +28,8 @@ import { IntersolveVisaCardEntity } from './intersolve-visa-card.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaRequestEntity } from './intersolve-visa-request.entity';
 import {
-  IntersolveEndpoints,
   IntersolveVisaApiService,
+  IntersolveVisaEndpoints,
 } from './intersolve-visa.api.service';
 
 @Injectable()
@@ -228,7 +228,7 @@ export class IntersolveVisaService {
       const issueTokenRequest = new IntersolveVisaRequestEntity();
       issueTokenRequest.reference = reference;
       issueTokenRequest.saleId = registration.referenceId;
-      issueTokenRequest.endpoint = IntersolveEndpoints.ISSUE_TOKEN;
+      issueTokenRequest.endpoint = IntersolveVisaEndpoints.ISSUE_TOKEN;
       const issueTokenRequestEntity =
         await this.intersolveVisaRequestRepository.save(issueTokenRequest);
       const issueTokenResult = await this.intersolveVisaApiService.issueToken(
@@ -442,7 +442,7 @@ export class IntersolveVisaService {
     const amountInCents = calculatedAmount * 100;
     const interSolveLoadRequest = new IntersolveVisaRequestEntity();
     interSolveLoadRequest.reference = uuid();
-    interSolveLoadRequest.endpoint = IntersolveEndpoints.LOAD;
+    interSolveLoadRequest.endpoint = IntersolveVisaEndpoints.LOAD;
     interSolveLoadRequest.saleId = `${referenceId}-${payment}`;
     interSolveLoadRequest.metadata = JSON.parse(
       JSON.stringify({ tokenCode: tokenCode, quantityValue: amountInCents }),
@@ -494,7 +494,7 @@ export class IntersolveVisaService {
       JSON.stringify({ tokenCode: tokenCode }),
     );
     intersolveVisaRequest.saleId = referenceId;
-    intersolveVisaRequest.endpoint = IntersolveEndpoints.ACTIVATE;
+    intersolveVisaRequest.endpoint = IntersolveVisaEndpoints.ACTIVATE;
     const intersolveVisaRequestEntity =
       await this.intersolveVisaRequestRepository.save(intersolveVisaRequest);
 
