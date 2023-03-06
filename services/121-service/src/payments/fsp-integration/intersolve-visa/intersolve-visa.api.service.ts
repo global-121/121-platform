@@ -14,7 +14,7 @@ import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service';
 
-export enum IntersolveEndpoints {
+export enum IntersolveVisaEndpoints {
   LOAD = 'load',
   ACTIVATE = 'activate',
   ISSUE_TOKEN = 'issue-token',
