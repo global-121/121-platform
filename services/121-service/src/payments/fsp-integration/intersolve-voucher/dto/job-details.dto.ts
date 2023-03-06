@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum } from 'class-validator';
 
-export enum IntersolveJobName {
+export enum IntersolveVoucherJobName {
   getLastestVoucherBalance = 'get-latest-voucher-balance',
 }
-export class InersolveJobDetails {
-  @ApiProperty({ example: IntersolveJobName.getLastestVoucherBalance })
-  @IsEnum(IntersolveJobName)
-  public readonly name: IntersolveJobName;
+export class IntersolveVoucherJobDetails {
+  @ApiProperty({ example: IntersolveVoucherJobName.getLastestVoucherBalance })
+  @IsEnum(IntersolveVoucherJobName)
+  public readonly name: IntersolveVoucherJobName;
 }

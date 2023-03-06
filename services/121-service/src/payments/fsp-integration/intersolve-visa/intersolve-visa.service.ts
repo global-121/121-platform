@@ -28,8 +28,8 @@ import { IntersolveVisaCardEntity } from './intersolve-visa-card.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaRequestEntity } from './intersolve-visa-request.entity';
 import {
-  IntersolveEndpoints,
   IntersolveVisaApiService,
+  IntersolveVisaEndpoints,
 } from './intersolve-visa.api.service';
 
 @Injectable()
@@ -216,18 +216,18 @@ export class IntersolveVisaService {
     visaCard?: IntersolveVisaCardEntity;
     message?: string;
   }> {
-    const visaCardNumber = await registration.getRegistrationDataValueByName(
-      'visaCardNumber',
+    const tokenCode = await registration.getRegistrationDataValueByName(
+      'visaTokenCode',
     );
 
-    if (!visaCardNumber) {
+    if (!tokenCode) {
       // There is no imported visa card number, so we need to issue a new one
       // TODO: THIS IS AN UNTESTED FLOW FOR DIGITAL VISACARD i/o PHYSICAL
       const reference = uuid();
       const issueTokenRequest = new IntersolveVisaRequestEntity();
       issueTokenRequest.reference = reference;
       issueTokenRequest.saleId = registration.referenceId;
-      issueTokenRequest.endpoint = IntersolveEndpoints.ISSUE_TOKEN;
+      issueTokenRequest.endpoint = IntersolveVisaEndpoints.ISSUE_TOKEN;
       const issueTokenRequestEntity =
         await this.intersolveVisaRequestRepository.save(issueTokenRequest);
 
@@ -278,7 +278,8 @@ export class IntersolveVisaService {
       issueTokenResult.data = new IntersolveIssueTokenResponseBodyDto();
       issueTokenResult.data.data = new IntersolveIssueTokenResponseTokenDto();
       issueTokenResult.data.success = true;
-      issueTokenResult.data.data.code = visaCardNumber;
+      issueTokenResult.data.data.code = tokenCode;
+      issueTokenResult.data.data.type = 'STANDARD'; // Intersolve-type for physical card
 
       const createEntitiesResult = await this.createIntersolveVisaEntities(
         registration,
@@ -362,6 +363,7 @@ export class IntersolveVisaService {
       intersolveVisaCard.tokenBlocked = issueTokenResult.data.data.blocked;
       intersolveVisaCard.expiresAt = issueTokenResult.data.data.expiresAt;
       intersolveVisaCard.status = issueTokenResult.data.data.status;
+      intersolveVisaCard.type = issueTokenResult.data.data.type;
 
       await this.intersolveVisaCardRepository.save(intersolveVisaCard);
     }
@@ -441,7 +443,7 @@ export class IntersolveVisaService {
     const amountInCents = calculatedAmount * 100;
     const interSolveLoadRequest = new IntersolveVisaRequestEntity();
     interSolveLoadRequest.reference = uuid();
-    interSolveLoadRequest.endpoint = IntersolveEndpoints.LOAD;
+    interSolveLoadRequest.endpoint = IntersolveVisaEndpoints.LOAD;
     interSolveLoadRequest.saleId = `${referenceId}-${payment}`;
     interSolveLoadRequest.metadata = JSON.parse(
       JSON.stringify({ tokenCode: tokenCode, quantityValue: amountInCents }),
@@ -493,7 +495,7 @@ export class IntersolveVisaService {
       JSON.stringify({ tokenCode: tokenCode }),
     );
     intersolveVisaRequest.saleId = referenceId;
-    intersolveVisaRequest.endpoint = IntersolveEndpoints.ACTIVATE;
+    intersolveVisaRequest.endpoint = IntersolveVisaEndpoints.ACTIVATE;
     const intersolveVisaRequestEntity =
       await this.intersolveVisaRequestRepository.save(intersolveVisaRequest);
 

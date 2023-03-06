@@ -1,4 +1,4 @@
-referenceId,namePartnerOrganization,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,lastName,phoneNumber,fspName,whatsappPhoneNumber,visaCardNumber,physicalCard
+referenceId,namePartnerOrganization,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,lastName,phoneNumber,fspName,whatsappPhoneNumber,tokenCodeVisa,isPhysicalCardVisa
 63e62864557597e0d,ABC,en,1,,Test,Test,14155238886,Intersolve-visa,14155238886,6375100999150000001,true
 63e61bf6594d2dc61,ABC,en,1,,Test,mock-fail-create,14155238886,Intersolve-visa,14155238886,test,true
 63e618f6907aca315,ABC,en,1,,Test,Test,14155238886,Intersolve-visa,14155238886,mock-fail-register,true

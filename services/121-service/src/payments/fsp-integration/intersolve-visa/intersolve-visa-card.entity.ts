@@ -12,6 +12,9 @@ export class IntersolveVisaCardEntity extends Base121Entity {
   public tokenCode: string;
 
   @Column({ nullable: true })
+  public type: string;
+
+  @Column({ nullable: true })
   public tokenBlocked: boolean;
 
   @Column({ nullable: true })
