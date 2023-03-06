@@ -24,6 +24,7 @@ import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { MessageStatus as MessageStatusDto } from './dto/message-status.dto';
+import { IntersolveVisaTokenStatus } from './enum/intersolve-visa-token-status.enum';
 import { IntersolveVisaCardEntity } from './intersolve-visa-card.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaRequestEntity } from './intersolve-visa-request.entity';
@@ -173,12 +174,14 @@ export class IntersolveVisaService {
           message: registerResult.message,
         };
       }
-      const activateResult = await this.activateToken(
-        visaCardEntity.tokenCode,
-        registration.referenceId,
-      );
-      if (!activateResult.success) {
-        return activateResult;
+      if (visaCardEntity.status === IntersolveVisaTokenStatus.INACTIVE) {
+        const activateResult = await this.activateToken(
+          visaCardEntity.tokenCode,
+          registration.referenceId,
+        );
+        if (!activateResult.success) {
+          return activateResult;
+        }
       }
       newCardMessage = true;
     }
@@ -312,7 +315,7 @@ export class IntersolveVisaService {
         customerEntity.holderId,
       );
       if (getCustomerResult.data?.success) {
-        // TODO refactor this if-construction
+        // TODO: refactor this if-construction
         console.log(
           'referenceId already exists with Intersolve > do not create again',
         );
@@ -446,6 +449,7 @@ export class IntersolveVisaService {
     interSolveLoadRequest.metadata = JSON.parse(
       JSON.stringify({ tokenCode: tokenCode, quantityValue: amountInCents }),
     );
+    // TODO: Why save already here?
     const interSolveLoadRequestEntity =
       await this.intersolveVisaRequestRepository.save(interSolveLoadRequest);
 

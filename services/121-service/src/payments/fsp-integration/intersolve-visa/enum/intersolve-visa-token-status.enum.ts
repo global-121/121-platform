@@ -1,0 +1,8 @@
+export enum IntersolveVisaTokenStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  EXPIRED = 'EXPIRED',
+  REDEEMED = 'REDEEMED',
+  DISABLED = 'DISABLED',
+  SUBSTITUTED = 'SUBSTITUTED',
+}

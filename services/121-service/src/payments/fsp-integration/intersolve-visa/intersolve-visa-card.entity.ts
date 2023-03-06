@@ -1,5 +1,6 @@
 import { Column, Entity, Index, OneToOne } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
+import { IntersolveVisaTokenStatus } from './enum/intersolve-visa-token-status.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 
 @Entity('intersolve_visa_card')
@@ -18,7 +19,7 @@ export class IntersolveVisaCardEntity extends Base121Entity {
   public expiresAt: string;
 
   @Column({ nullable: true })
-  public status: string;
+  public status: IntersolveVisaTokenStatus;
 
   @OneToOne(
     () => IntersolveVisaCustomerEntity,
