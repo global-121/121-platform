@@ -35,6 +35,7 @@ export enum GenericAttributes {
   fspName = 'fspName',
   paymentAmountMultiplier = 'paymentAmountMultiplier',
   maxPayments = 'maxPayments',
+  referenceId = 'referenceId',
 }
 
 export class Attribute {

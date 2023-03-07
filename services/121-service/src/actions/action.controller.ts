@@ -41,7 +41,7 @@ export class ActionController {
 
   @Permissions(PermissionEnum.ActionCREATE)
   @ApiOperation({ summary: 'Save action by id' })
-  @ApiResponse({ status: 200, description: 'Action saved' })
+  @ApiResponse({ status: 201, description: 'Action saved' })
   @ApiParam({
     name: 'programId',
     required: true,

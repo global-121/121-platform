@@ -65,7 +65,7 @@ export class TransactionsController {
   @ApiOperation({ summary: 'Get a single transaction' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: 201,
   })
   @Post('programs/:programId/payments/transactions/one')
   public async getTransaction(

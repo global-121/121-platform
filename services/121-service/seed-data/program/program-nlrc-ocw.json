@@ -14,8 +14,8 @@
   "description": {
     "en": ""
   },
-  "startDate": "2023-03-01T12:00:00Z",
-  "endDate": "2023-12-31T12:00:00Z",
+  "startDate": "2023-03-01T12:00:00.000Z",
+  "endDate": "2023-12-31T12:00:00.000Z",
   "currency": "EUR",
   "distributionFrequency": "month",
   "distributionDuration": 50,
@@ -48,20 +48,6 @@
   "programCustomAttributes": [
     {
       "label": {
-        "en": "Partner Organization"
-      },
-      "name": "namePartnerOrganization",
-      "type": "text",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
-      "phases": ["registrationValidation", "inclusion", "payment"]
-    },
-    {
-      "label": {
         "en": "WhatsApp Nr."
       },
       "name": "whatsappPhoneNumber",
@@ -87,13 +73,27 @@
         "selected-for-validation",
         "payment"
       ],
+      "duplicateCheck": true,
       "phases": ["registrationValidation", "inclusion", "payment"]
     },
     {
       "name": "firstName",
       "label": {
-        "en": "Please enter your first name:",
-        "nl": "Vul je voornaam in:"
+        "en": "First name"
+      },
+      "type": "text",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ],
+      "phases": []
+    },
+    {
+      "name": "documentId",
+      "label": {
+        "en": "Document ID"
       },
       "type": "text",
       "export": [
