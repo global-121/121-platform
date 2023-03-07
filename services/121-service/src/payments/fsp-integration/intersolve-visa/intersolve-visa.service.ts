@@ -15,6 +15,7 @@ import { RegistrationEntity } from './../../../registration/registration.entity'
 import { IntersolveActivateTokenRequestDto } from './dto/intersolve-activate-token-request.dto';
 import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
+import { IntersolveCreateVirtualCardDto } from './dto/intersolve-create-virtual-card.dto';
 import {
   IntersolveIssueTokenResponseBodyDto,
   IntersolveIssueTokenResponseDto,
@@ -225,7 +226,6 @@ export class IntersolveVisaService {
 
     if (!tokenCode) {
       // There is no imported visa card number, so we need to issue a new one
-      // TODO: THIS IS AN UNTESTED FLOW FOR DIGITAL VISACARD i/o PHYSICAL
       const reference = uuid();
       const issueTokenRequest = new IntersolveVisaRequestEntity();
       issueTokenRequest.reference = reference;
@@ -241,6 +241,8 @@ export class IntersolveVisaService {
       );
       issueTokenRequestEntity.statusCode = issueTokenResult.status;
       await this.intersolveVisaRequestRepository.save(issueTokenRequestEntity);
+
+      // TODO: Save issued token in CA of PA
 
       if (!issueTokenResult.data.success) {
         return {
@@ -262,6 +264,16 @@ export class IntersolveVisaService {
             message: createEntitiesResult.message,
           };
         }
+
+        const createVirtualCardPayload = new IntersolveCreateVirtualCardDto();
+        createVirtualCardPayload.brand = 'VISA_CARD';
+        await this.intersolveVisaApiService.createVirtualCard(
+          issueTokenResult.data.data.code,
+          createVirtualCardPayload,
+        );
+
+        // TODO: Get virtual card details to send URL and code to PA
+
         return {
           success: issueTokenResult.data.success,
           visaCard: await this.getWalletByTokenCode(
@@ -282,6 +294,7 @@ export class IntersolveVisaService {
       issueTokenResult.data.data = new IntersolveIssueTokenResponseTokenDto();
       issueTokenResult.data.success = true;
       issueTokenResult.data.data.code = tokenCode;
+      issueTokenResult.data.data.status = IntersolveVisaTokenStatus.INACTIVE;
       issueTokenResult.data.data.type = 'STANDARD'; // Intersolve-type for physical card
 
       const createEntitiesResult = await this.createIntersolveVisaEntities(

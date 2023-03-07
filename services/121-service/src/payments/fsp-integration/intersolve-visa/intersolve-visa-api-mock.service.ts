@@ -248,4 +248,9 @@ export class IntersolveVisaApiMockService {
     }
     return response;
   }
+
+  public createVirtualCardMock(): void {
+    //TODO: Implement this
+    console.log('createVirtualCardMock TO BE IMPLEMENTED');
+  }
 }
