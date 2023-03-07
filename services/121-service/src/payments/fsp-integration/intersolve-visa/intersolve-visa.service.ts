@@ -101,9 +101,12 @@ export class IntersolveVisaService {
     if (customer) {
       // checks wallet entity
       if (!customer.visaCard) {
+        // TO DO: this can happen quite easily if previous attempt quit halfway because of some error..
         response.status = StatusEnum.error;
         response.message = 'Visa customer exists, but wallet does not.';
         return response;
+      } else {
+        tokenCode = customer.visaCard.tokenCode;
       }
     } else {
       // create customer (this assumes a customer with 121's referenceId does not exist yet with Intersolve)
@@ -133,8 +136,8 @@ export class IntersolveVisaService {
       if (tokenCode) {
         // link tokenCode to customer
         const registerResult = await this.registerCustomerToWallet(
-          registration,
           tokenCode,
+          visaCustomer,
         );
         if (!registerResult.success) {
           response.status = StatusEnum.error;
@@ -149,7 +152,9 @@ export class IntersolveVisaService {
         intersolveVisaWallet.expiresAt = null;
         intersolveVisaWallet.status = IntersolveVisaWalletStatus.INACTIVE;
         intersolveVisaWallet.type = IntersolveVisaWalletType.STANDARD;
+        intersolveVisaWallet.intersolveVisaCustomer = visaCustomer;
 
+        // store wallet data
         await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
 
         // activate wallet
@@ -195,9 +200,9 @@ export class IntersolveVisaService {
         });
         tokenCode = issueTokenResult.data.data.code;
 
-        if (!issueTokenResult.data.success) {
+        if (!issueTokenResult.data?.success) {
           response.status = StatusEnum.error;
-          response.message = issueTokenResult.data.errors.length
+          response.message = issueTokenResult.data?.errors?.length
             ? `CARD CREATION ERROR: ${this.intersolveErrorToMessage(
                 issueTokenResult.data.errors,
               )}`
@@ -533,16 +538,12 @@ export class IntersolveVisaService {
   // }
 
   private async registerCustomerToWallet(
-    registration: RegistrationEntity,
     tokenCode: string,
+    customerEntity: IntersolveVisaCustomerEntity,
   ): Promise<{
     success: boolean;
-    holderId?: string;
     message?: string;
   }> {
-    const customerEntity = await this.intersolveVisaCustomerRepo.findOne({
-      where: { registrationId: registration.id },
-    });
     const registerHolderResult =
       await this.intersolveVisaApiService.registerHolder(
         {
@@ -551,28 +552,20 @@ export class IntersolveVisaService {
         tokenCode,
       );
 
-    if (registerHolderResult.data.success === false) {
+    if (registerHolderResult.status !== 204) {
       return {
         success: false,
-        message: registerHolderResult.data.errors.length
+        message: registerHolderResult.data?.errors?.length
           ? `LINK CUSTOMER ERROR: ${this.intersolveErrorToMessage(
               registerHolderResult.data.errors,
             )}`
-          : `LINK CUSTOMER ERROR: ${registerHolderResult.status} - ${registerHolderResult.statusText}`,
+          : registerHolderResult.data?.code ||
+            `LINK CUSTOMER ERROR: ${registerHolderResult.status} - ${registerHolderResult.statusText}`,
       };
     }
 
-    const visaCard = await this.intersolveVisaWalletRepository.findOne({
-      where: { tokenCode: tokenCode },
-    });
-    visaCard.intersolveVisaCustomer = customerEntity;
-    customerEntity.visaCard = visaCard;
-    await this.intersolveVisaWalletRepository.save(visaCard);
-    await this.intersolveVisaCustomerRepo.save(customerEntity);
-
     return {
       success: true,
-      holderId: customerEntity.holderId,
     };
   }
 
