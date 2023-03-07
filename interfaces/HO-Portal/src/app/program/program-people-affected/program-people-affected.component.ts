@@ -1402,7 +1402,10 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         message: confirmInput,
       })
       .then(async () => {
-        if (this.action === BulkActionId.sendMessage) {
+        if (
+          this.action === BulkActionId.sendMessage ||
+          this.action === BulkActionId.deletePa
+        ) {
           this.pubSub.publish(PubSubEvent.dataRegistrationChanged);
           return;
         }
@@ -1442,6 +1445,9 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       .catch((error) => {
         console.log('Error:', error);
         this.actionResult(error.error.errors.join('<br><br>'));
+      })
+      .finally(() => {
+        this.isInProgress = false;
       });
   }
 
