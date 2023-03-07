@@ -7,7 +7,7 @@
   <h1>Program {{ programId }}</h1>
   <ion-card
     *ngIf="person"
-    style="max-width: 300px"
+    style="max-width: 320px"
   >
     <ion-card-header>
       <ion-card-title> {{ person.name }} </ion-card-title>
@@ -22,7 +22,7 @@
           class="ion-justify-content-between"
           style="font-size: 14px"
         >
-          <ion-label>{{ info.label }}</ion-label>
+          <ion-label [innerHTML]="info.label"></ion-label>
           <ion-label class="ion-text-end"
             ><strong>{{ info.value }}</strong></ion-label
           >

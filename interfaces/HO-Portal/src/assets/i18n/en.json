@@ -633,6 +633,18 @@
     "name": "Name",
     "statusText": "Status: <b> {{status}} </b>"
   },
+  "registration-details": {
+    "personal-information-table": {
+      "status": "Status: <b>{{status}}</b>",
+      "registeredDate": "Registered",
+      "lastUpdateDate": "Last Update",
+      "partnerOrganization": "Partner Organization",
+      "paymentsDone": "Payments Done",
+      "primaryLanguage": "Primary language",
+      "phone": "Phone",
+      "whatsappNumber": "whatsApp Number"
+    }
+  },
   "refresh-data": {
     "last-updated": "Last updated: {{date}}"
   },

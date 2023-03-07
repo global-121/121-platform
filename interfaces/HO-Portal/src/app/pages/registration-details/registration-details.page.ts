@@ -6,7 +6,6 @@ import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
-import { TranslatableStringService } from '../../services/translatable-string.service';
 
 @Component({
   selector: 'app-registration-details',
@@ -26,7 +25,6 @@ export class RegistrationDetailsPage implements OnInit {
     private programsService: ProgramsServiceApiService,
     private authService: AuthService,
     private translate: TranslateService,
-    private translatableString: TranslatableStringService,
   ) {}
 
   async ngOnInit() {
@@ -72,33 +70,33 @@ export class RegistrationDetailsPage implements OnInit {
   }
 
   private initPersonalInfoTable() {
-    const columnLabel = (col: string) =>
-      this.translate.instant(
-        `page.program.program-people-affected.column.${col}`,
-      );
-    const customAttribute = (ca: string) => ({
-      label: this.translatableString.get(
-        this.program.programCustomAttributes.find((attr) => attr.name === ca)
-          ?.label,
-      ),
-      value: this.person.paTableAttributes[ca].value,
-    });
+    const translatePrefix = 'registration-details.personal-information-table.';
+
+    const label = (key: string, interpolateParams?): string =>
+      this.translate.instant(translatePrefix + key, interpolateParams);
+    const customAttribute = (ca: string) =>
+      this.person.paTableAttributes[ca].value;
 
     this.personalInfoTable = [
       {
-        label: columnLabel('status'),
+        label: label('status', {
+          status: this.translate.instant(
+            'page.program.program-people-affected.status.' + this.person.status,
+          ),
+        }),
         value: this.getStatusDate(this.person.status),
       },
       {
-        label: this.translate.instant(
-          'page.program.program-people-affected.status.registered',
-        ),
+        label: label('registeredDate'),
         value: this.getStatusDate('registered'),
       },
-      { label: 'Last Update', value: null },
-      { ...customAttribute('namePartnerOrganization') },
+      { label: label('lastUpdateDate'), value: null },
       {
-        label: 'Payments Done',
+        label: label('partnerOrganization'),
+        value: customAttribute('namePartnerOrganization'),
+      },
+      {
+        label: label('paymentsDone'),
         value: `${this.person.nrPayments || 0}${
           this.person.maxPayments
             ? ' (out of ' + this.person.maxPayments + ')'
@@ -106,15 +104,15 @@ export class RegistrationDetailsPage implements OnInit {
         }`,
       },
       {
-        label: columnLabel('preferredLanguage'),
+        label: label('primaryLanguage'),
         value: this.translate.instant(
           `page.program.program-people-affected.language.${this.person.preferredLanguage}`,
         ),
       },
-      { label: columnLabel('phone-number'), value: this.person.phoneNumber },
+      { label: label('phone'), value: this.person.phoneNumber },
       {
-        label: columnLabel('whatsappPhoneNumber'),
-        value: customAttribute('whatsappPhoneNumber').value,
+        label: label('whatsappNumber'),
+        value: customAttribute('whatsappPhoneNumber'),
       },
     ];
   }
