@@ -3,13 +3,13 @@ import { Issuer, TokenSet } from 'openid-client';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { IntersolveActivateTokenRequestDto } from './dto/intersolve-activate-token-request.dto';
 import { IntersolveActivateTokenResponseDto } from './dto/intersolve-activate-token-response.dto';
-import {
-  IntersolveCreateCustomerResponseBodyDto,
-  IntersolveGetCustomerResponseBodyDto,
-} from './dto/intersolve-create-customer-response.dto';
+import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveCreateVirtualCardDto } from './dto/intersolve-create-virtual-card.dto';
-import { IntersolveIssueTokenResponseDto } from './dto/intersolve-issue-token-response.dto';
+import {
+  IntersolveGetTokenResponseDto,
+  IntersolveIssueTokenResponseDto,
+} from './dto/intersolve-issue-token-response.dto';
 import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
@@ -55,25 +55,6 @@ export class IntersolveVisaApiService {
     }
   }
 
-  public async getCustomer(
-    holderId: string,
-  ): Promise<IntersolveGetCustomerResponseBodyDto> {
-    if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.getCustomerMock();
-    } else {
-      const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/customer/v1/customers/${holderId}/individual`;
-      const headers = [
-        { name: 'Authorization', value: `Bearer ${authToken}` },
-        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-      ];
-      return await this.httpService.get<IntersolveGetCustomerResponseBodyDto>(
-        url,
-        headers,
-      );
-    }
-  }
-
   public async createCustomer(
     payload: IntersolveCreateCustomerDto,
   ): Promise<IntersolveCreateCustomerResponseBodyDto> {
@@ -111,6 +92,25 @@ export class IntersolveVisaApiService {
       ];
       // On success this returns a 204 No Content
       return await this.httpService.post<any>(url, payload, headers);
+    }
+  }
+
+  public async getToken(
+    tokenCode: string,
+  ): Promise<IntersolveGetTokenResponseDto> {
+    if (process.env.MOCK_INTERSOLVE) {
+      return this.intersolveVisaApiMockService.getToken(tokenCode);
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
+      return await this.httpService.get<IntersolveGetTokenResponseDto>(
+        url,
+        headers,
+      );
     }
   }
 

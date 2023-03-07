@@ -17,7 +17,7 @@ export class addIntersolveVisaFsp1676992303536 implements MigrationInterface {
       `CREATE INDEX "IDX_98ffc5f840df6cfb2b02bf2600" ON "121-service"."intersolve_visa_request" ("endpoint") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "121-service"."intersolve_visa_wallet" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "tokenCode" character varying, "tokenBlocked" boolean, "expiresAt" character varying, "status" character varying, "type" character varying, CONSTRAINT "UQ_5859fe005b0a7fb606f6f191c50" UNIQUE ("tokenCode"), CONSTRAINT "PK_ad0d5b893e3726602f7822c6f29" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "121-service"."intersolve_visa_wallet" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "tokenCode" character varying, "tokenBlocked" boolean, "status" character varying, "type" character varying, CONSTRAINT "UQ_5859fe005b0a7fb606f6f191c50" UNIQUE ("tokenCode"), CONSTRAINT "PK_ad0d5b893e3726602f7822c6f29" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_571e8d4fb00bd19be71ec359c9" ON "121-service"."intersolve_visa_wallet" ("created") `,

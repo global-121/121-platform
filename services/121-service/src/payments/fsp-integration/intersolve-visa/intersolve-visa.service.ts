@@ -20,10 +20,7 @@ import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { MessageStatus as MessageStatusDto } from './dto/message-status.dto';
-import {
-  IntersolveVisaWalletStatus,
-  IntersolveVisaWalletType,
-} from './enum/intersolve-visa-token-status.enum';
+import { IntersolveVisaWalletStatus } from './enum/intersolve-visa-token-status.enum';
 import { IntersolveVisaWalletEntity } from './intersolve-visa-card.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaRequestEntity } from './intersolve-visa-request.entity';
@@ -145,16 +142,16 @@ export class IntersolveVisaService {
           return response;
         }
 
-        // get wallet data (TO DO: For now still fill in manually)
-        const intersolveVisaWallet = new IntersolveVisaWalletEntity();
-        intersolveVisaWallet.tokenCode = tokenCode;
-        intersolveVisaWallet.tokenBlocked = false;
-        intersolveVisaWallet.expiresAt = null;
-        intersolveVisaWallet.status = IntersolveVisaWalletStatus.INACTIVE;
-        intersolveVisaWallet.type = IntersolveVisaWalletType.STANDARD;
-        intersolveVisaWallet.intersolveVisaCustomer = visaCustomer;
+        // get wallet data
+        const token = await this.intersolveVisaApiService.getToken(tokenCode);
 
         // store wallet data
+        const intersolveVisaWallet = new IntersolveVisaWalletEntity();
+        intersolveVisaWallet.tokenCode = token.data.data.code;
+        intersolveVisaWallet.tokenBlocked = token.data.data.blocked;
+        intersolveVisaWallet.status = token.data.data.status;
+        intersolveVisaWallet.type = token.data.data.type;
+        intersolveVisaWallet.intersolveVisaCustomer = visaCustomer;
         await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
 
         // activate wallet
@@ -214,7 +211,6 @@ export class IntersolveVisaService {
         const intersolveVisaWallet = new IntersolveVisaWalletEntity();
         intersolveVisaWallet.tokenCode = issueTokenResult.data.data.code;
         intersolveVisaWallet.tokenBlocked = issueTokenResult.data.data.blocked;
-        intersolveVisaWallet.expiresAt = issueTokenResult.data.data.expiresAt;
         intersolveVisaWallet.status = issueTokenResult.data.data.status;
         intersolveVisaWallet.type = issueTokenResult.data.data.type;
         intersolveVisaWallet.intersolveVisaCustomer = visaCustomer;
