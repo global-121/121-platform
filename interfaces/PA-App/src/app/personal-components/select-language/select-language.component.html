@@ -3,7 +3,6 @@
     <p *ngFor="let language of languages">
       <app-play-text-audio
         [key]="language.introductionKey"
-        class="ion-float-start ion-margin-end"
       ></app-play-text-audio>
       {{ language.introduction | translate }}
     </p>

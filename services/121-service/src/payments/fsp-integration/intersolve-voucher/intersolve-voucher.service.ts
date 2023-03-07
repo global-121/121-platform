@@ -486,7 +486,7 @@ export class IntersolveVoucherService {
     programId: number,
   ): Promise<number> {
     const voucher = await this.getVoucher(referenceId, payment, programId);
-    return await this.getBalance(voucher.barcode);
+    return await this.getBalance(voucher.voucher);
   }
 
   private async getBalance(
