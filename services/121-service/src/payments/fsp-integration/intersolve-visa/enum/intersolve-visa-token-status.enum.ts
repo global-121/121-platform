@@ -6,3 +6,8 @@ export enum IntersolveVisaWalletStatus {
   DISABLED = 'DISABLED',
   SUBSTITUTED = 'SUBSTITUTED',
 }
+
+export enum IntersolveVisaWalletType {
+  STANDARD = 'STANDARD',
+  DIGITAL = 'DIGITAL',
+}

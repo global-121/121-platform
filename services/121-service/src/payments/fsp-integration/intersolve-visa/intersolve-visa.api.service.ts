@@ -182,7 +182,7 @@ export class IntersolveVisaApiService {
   public async createVirtualCard(
     tokenCode: string,
     payload: IntersolveCreateVirtualCardDto,
-  ): Promise<void> {
+  ): Promise<any> {
     if (process.env.MOCK_INTERSOLVE) {
       return this.intersolveVisaApiMockService.createVirtualCardMock();
     } else {

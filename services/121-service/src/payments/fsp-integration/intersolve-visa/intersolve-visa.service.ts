@@ -16,17 +16,15 @@ import { IntersolveActivateTokenRequestDto } from './dto/intersolve-activate-tok
 import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveCreateVirtualCardDto } from './dto/intersolve-create-virtual-card.dto';
-import {
-  IntersolveIssueTokenResponseBodyDto,
-  IntersolveIssueTokenResponseDto,
-  IntersolveIssueTokenResponseTokenDto,
-} from './dto/intersolve-issue-token-response.dto';
 import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { MessageStatus as MessageStatusDto } from './dto/message-status.dto';
-import { IntersolveVisaWalletStatus } from './enum/intersolve-visa-token-status.enum';
-import { IntersolveVisaCardEntity } from './intersolve-visa-card.entity';
+import {
+  IntersolveVisaWalletStatus,
+  IntersolveVisaWalletType,
+} from './enum/intersolve-visa-token-status.enum';
+import { IntersolveVisaWalletEntity } from './intersolve-visa-card.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaRequestEntity } from './intersolve-visa-request.entity';
 import {
@@ -40,8 +38,8 @@ export class IntersolveVisaService {
   public registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(IntersolveVisaCustomerEntity)
   public intersolveVisaCustomerRepo: Repository<IntersolveVisaCustomerEntity>;
-  @InjectRepository(IntersolveVisaCardEntity)
-  public intersolveVisaCardRepository: Repository<IntersolveVisaCardEntity>;
+  @InjectRepository(IntersolveVisaWalletEntity)
+  public intersolveVisaWalletRepository: Repository<IntersolveVisaWalletEntity>;
   @InjectRepository(IntersolveVisaRequestEntity)
   public intersolveVisaRequestRepository: Repository<IntersolveVisaRequestEntity>;
   public constructor(
@@ -83,31 +81,166 @@ export class IntersolveVisaService {
     paymentNr: number,
     calculatedAmount: number,
   ): Promise<PaTransactionResultDto> {
+    const response = new PaTransactionResultDto();
+    response.referenceId = paymentData.referenceId;
+    response.date = new Date();
+    response.calculatedAmount = calculatedAmount;
+    response.fspName = FspName.intersolveVisa;
+
     const transactionNotifications = [];
 
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: paymentData.referenceId },
     });
-    const getTokenResult = await this.getOrIssueToken(registration);
-    if (getTokenResult.success) {
-      if (getTokenResult.newCardMessage) {
-        transactionNotifications.push(
-          this.buildNotificationObjectIssueCard(getTokenResult.tokenCode),
-        );
+
+    const customer = await this.getCustomerEntity(registration.id);
+
+    let tokenCode;
+
+    // checks customer entity
+    if (customer) {
+      // checks wallet entity
+      if (!customer.visaCard) {
+        response.status = StatusEnum.error;
+        response.message = 'Visa customer exists, but wallet does not.';
+        return response;
       }
     } else {
-      const res = {
-        referenceId: paymentData.referenceId,
-        status: StatusEnum.error,
-        message: getTokenResult.message,
-        date: new Date(),
-        calculatedAmount: calculatedAmount,
-        fspName: FspName.intersolveVisa,
-      };
-      return res;
+      // create customer (this assumes a customer with 121's referenceId does not exist yet with Intersolve)
+      const createCustomerResult = await this.createCustomer(registration);
+      if (!createCustomerResult.data.success) {
+        response.status = StatusEnum.error;
+        response.message = createCustomerResult.data.errors.length
+          ? `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
+              createCustomerResult.data.errors,
+            )}`
+          : `CREATE CUSTOMER ERROR: ${createCustomerResult.status} - ${createCustomerResult.statusText}`;
+        return response;
+      }
+
+      // store customer
+      const visaCustomer = new IntersolveVisaCustomerEntity();
+      visaCustomer.registration = registration;
+      visaCustomer.holderId = createCustomerResult.data.data.id;
+      visaCustomer.blocked = createCustomerResult.data.data.blocked;
+      await this.intersolveVisaCustomerRepo.save(visaCustomer);
+
+      // check for custom attribute wallet token code
+      tokenCode = await registration.getRegistrationDataValueByName(
+        'tokenCodeVisa',
+      );
+
+      if (tokenCode) {
+        // link tokenCode to customer
+        const registerResult = await this.registerCustomerToWallet(
+          registration,
+          tokenCode,
+        );
+        if (!registerResult.success) {
+          response.status = StatusEnum.error;
+          response.message = registerResult.message;
+          return response;
+        }
+
+        // get wallet data (TO DO: For now still fill in manually)
+        const intersolveVisaWallet = new IntersolveVisaWalletEntity();
+        intersolveVisaWallet.tokenCode = tokenCode;
+        intersolveVisaWallet.tokenBlocked = false;
+        intersolveVisaWallet.expiresAt = null;
+        intersolveVisaWallet.status = IntersolveVisaWalletStatus.INACTIVE;
+        intersolveVisaWallet.type = IntersolveVisaWalletType.STANDARD;
+
+        await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
+
+        // activate wallet
+        if (
+          intersolveVisaWallet.status === IntersolveVisaWalletStatus.INACTIVE
+        ) {
+          const activateResult = await this.activateToken(
+            intersolveVisaWallet.tokenCode,
+            registration.referenceId,
+          );
+          if (!activateResult.success) {
+            response.status = StatusEnum.error;
+            response.message = activateResult.message;
+            return response;
+          }
+
+          // store activated status
+          intersolveVisaWallet.status = IntersolveVisaWalletStatus.ACTIVE;
+          await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
+        }
+      } else {
+        // create wallet
+        const reference = uuid();
+        const issueTokenRequest = new IntersolveVisaRequestEntity();
+        issueTokenRequest.reference = reference;
+        issueTokenRequest.saleId = registration.referenceId;
+        issueTokenRequest.endpoint = IntersolveVisaEndpoints.ISSUE_TOKEN;
+        const issueTokenRequestEntity =
+          await this.intersolveVisaRequestRepository.save(issueTokenRequest);
+
+        const issueTokenPayload = new IntersolveIssueTokenDto();
+        issueTokenPayload.holderId = null;
+        const issueTokenResult = await this.intersolveVisaApiService.issueToken(
+          issueTokenPayload,
+        );
+        issueTokenRequestEntity.statusCode = issueTokenResult.status;
+        await this.intersolveVisaRequestRepository.save(
+          issueTokenRequestEntity,
+        );
+
+        registration.saveData(issueTokenResult.data.data.code, {
+          name: 'tokenCodeVisa',
+        });
+        tokenCode = issueTokenResult.data.data.code;
+
+        if (!issueTokenResult.data.success) {
+          response.status = StatusEnum.error;
+          response.message = issueTokenResult.data.errors.length
+            ? `CARD CREATION ERROR: ${this.intersolveErrorToMessage(
+                issueTokenResult.data.errors,
+              )}`
+            : `CARD CREATION ERROR: ${issueTokenResult.status} - ${issueTokenResult.statusText}`;
+          return response;
+        }
+
+        // store wallet data
+        const intersolveVisaWallet = new IntersolveVisaWalletEntity();
+        intersolveVisaWallet.tokenCode = issueTokenResult.data.data.code;
+        intersolveVisaWallet.tokenBlocked = issueTokenResult.data.data.blocked;
+        intersolveVisaWallet.expiresAt = issueTokenResult.data.data.expiresAt;
+        intersolveVisaWallet.status = issueTokenResult.data.data.status;
+        intersolveVisaWallet.type = issueTokenResult.data.data.type;
+        await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
+
+        // create virtual card
+        const createVirtualCardPayload = new IntersolveCreateVirtualCardDto();
+        createVirtualCardPayload.brand = 'VISA_CARD';
+        const createVirtualCardResult =
+          await this.intersolveVisaApiService.createVirtualCard(
+            issueTokenResult.data.data.code,
+            createVirtualCardPayload,
+          );
+        if (!createVirtualCardResult.success) {
+          response.status = StatusEnum.error;
+          response.message = createVirtualCardResult.message;
+          return response;
+        }
+
+        // store virtual data
+        // TO DO: get this data from Intersolve
+
+        transactionNotifications.push(
+          this.buildNotificationObjectIssueCard(tokenCode),
+        );
+      }
     }
+
+    // const getTokenResult = await this.getOrIssueToken(registration);
+
     const topupResult = await this.topUpVisaCard(
-      getTokenResult.tokenCode,
+      tokenCode,
       calculatedAmount,
       registration.referenceId,
       paymentNr,
@@ -124,6 +257,15 @@ export class IntersolveVisaService {
       fspName: FspName.intersolveVisa,
       notificationObjects: transactionNotifications,
     };
+  }
+
+  private async getCustomerEntity(
+    registrationId: number,
+  ): Promise<IntersolveVisaCustomerEntity> {
+    return await this.intersolveVisaCustomerRepo.findOne({
+      where: { registrationId: registrationId },
+      relations: ['visaCard'],
+    });
   }
 
   private buildNotificationObjectIssueCard(
@@ -144,251 +286,251 @@ export class IntersolveVisaService {
     };
   }
 
-  private async getOrIssueToken(registration: RegistrationEntity): Promise<{
-    success: boolean;
-    newCardMessage?: boolean;
-    tokenCode?: string;
-    message?: string;
-  }> {
-    let newCardMessage = false;
-    let visaCardEntity = await this.getExistingLinkedWallet(registration.id);
-    if (!visaCardEntity) {
-      const issueTokenResult = await this.issueToken(registration);
-      if (issueTokenResult.success) {
-        visaCardEntity = issueTokenResult.visaCard;
-        newCardMessage = true;
-      } else {
-        return {
-          success: false,
-          message: issueTokenResult.message,
-        };
-      }
-    }
-    if (!visaCardEntity.intersolveVisaCustomer) {
-      const registerResult = await this.registerCustomerToWallet(
-        registration,
-        visaCardEntity.tokenCode,
-      );
-      if (!registerResult.success) {
-        return {
-          success: false,
-          message: registerResult.message,
-        };
-      }
-      if (visaCardEntity.status === IntersolveVisaWalletStatus.INACTIVE) {
-        const activateResult = await this.activateToken(
-          visaCardEntity.tokenCode,
-          registration.referenceId,
-        );
-        if (!activateResult.success) {
-          return activateResult;
-        }
-      }
-      newCardMessage = true;
-    }
+  // private async getOrIssueToken(registration: RegistrationEntity): Promise<{
+  //   success: boolean;
+  //   newCardMessage?: boolean;
+  //   tokenCode?: string;
+  //   message?: string;
+  // }> {
+  //   let newCardMessage = false;
+  //   let visaCardEntity = await this.getExistingLinkedWallet(registration.id);
+  //   if (!visaCardEntity) {
+  //     const issueTokenResult = await this.issueToken(registration);
+  //     if (issueTokenResult.success) {
+  //       visaCardEntity = issueTokenResult.visaCard;
+  //       newCardMessage = true;
+  //     } else {
+  //       return {
+  //         success: false,
+  //         message: issueTokenResult.message,
+  //       };
+  //     }
+  //   }
+  //   if (!visaCardEntity.intersolveVisaCustomer) {
+  //     const registerResult = await this.registerCustomerToWallet(
+  //       registration,
+  //       visaCardEntity.tokenCode,
+  //     );
+  //     if (!registerResult.success) {
+  //       return {
+  //         success: false,
+  //         message: registerResult.message,
+  //       };
+  //     }
+  //     if (visaCardEntity.status === IntersolveVisaWalletStatus.INACTIVE) {
+  //       const activateResult = await this.activateToken(
+  //         visaCardEntity.tokenCode,
+  //         registration.referenceId,
+  //       );
+  //       if (!activateResult.success) {
+  //         return activateResult;
+  //       }
+  //     }
+  //     newCardMessage = true;
+  //   }
 
-    return {
-      success: true,
-      newCardMessage,
-      tokenCode: visaCardEntity.tokenCode,
-    };
-  }
+  //   return {
+  //     success: true,
+  //     newCardMessage,
+  //     tokenCode: visaCardEntity.tokenCode,
+  //   };
+  // }
 
-  private async getExistingLinkedWallet(
-    registrationId: number,
-  ): Promise<IntersolveVisaCardEntity> {
-    const visaCustomer = await this.intersolveVisaCustomerRepo.findOne({
-      where: { registrationId: registrationId },
-      relations: ['visaCard', 'visaCard.intersolveVisaCustomer'],
-    });
-    if (visaCustomer && visaCustomer.visaCard) {
-      return visaCustomer.visaCard;
-    }
-  }
+  // private async getExistingLinkedWallet(
+  //   registrationId: number,
+  // ): Promise<IntersolveVisaWalletEntity> {
+  //   const visaCustomer = await this.intersolveVisaCustomerRepo.findOne({
+  //     where: { registrationId: registrationId },
+  //     relations: ['visaCard', 'visaCard.intersolveVisaCustomer'],
+  //   });
+  //   if (visaCustomer && visaCustomer.visaCard) {
+  //     return visaCustomer.visaCard;
+  //   }
+  // }
 
-  private async getWalletByTokenCode(
-    tokenCode: string,
-  ): Promise<IntersolveVisaCardEntity> {
-    const visaCard = await this.intersolveVisaCardRepository.findOne({
-      where: { tokenCode: tokenCode },
-    });
-    return visaCard;
-  }
+  // private async getWalletByTokenCode(
+  //   tokenCode: string,
+  // ): Promise<IntersolveVisaWalletEntity> {
+  //   const visaCard = await this.intersolveVisaWalletRepository.findOne({
+  //     where: { tokenCode: tokenCode },
+  //   });
+  //   return visaCard;
+  // }
 
-  private async issueToken(registration: RegistrationEntity): Promise<{
-    success: boolean;
-    visaCard?: IntersolveVisaCardEntity;
-    message?: string;
-  }> {
-    const tokenCode = await registration.getRegistrationDataValueByName(
-      'visaTokenCode',
-    );
+  // private async issueToken(registration: RegistrationEntity): Promise<{
+  //   success: boolean;
+  //   visaCard?: IntersolveVisaWalletEntity;
+  //   message?: string;
+  // }> {
+  //   const tokenCode = await registration.getRegistrationDataValueByName(
+  //     'tokenCodeVisa',
+  //   );
 
-    if (!tokenCode) {
-      // There is no imported visa card number, so we need to issue a new one
-      const reference = uuid();
-      const issueTokenRequest = new IntersolveVisaRequestEntity();
-      issueTokenRequest.reference = reference;
-      issueTokenRequest.saleId = registration.referenceId;
-      issueTokenRequest.endpoint = IntersolveVisaEndpoints.ISSUE_TOKEN;
-      const issueTokenRequestEntity =
-        await this.intersolveVisaRequestRepository.save(issueTokenRequest);
+  //   if (!tokenCode) {
+  //     // There is no imported visa card number, so we need to issue a new one
+  //     const reference = uuid();
+  //     const issueTokenRequest = new IntersolveVisaRequestEntity();
+  //     issueTokenRequest.reference = reference;
+  //     issueTokenRequest.saleId = registration.referenceId;
+  //     issueTokenRequest.endpoint = IntersolveVisaEndpoints.ISSUE_TOKEN;
+  //     const issueTokenRequestEntity =
+  //       await this.intersolveVisaRequestRepository.save(issueTokenRequest);
 
-      const issueTokenPayload = new IntersolveIssueTokenDto();
-      issueTokenPayload.holderId = null;
-      const issueTokenResult = await this.intersolveVisaApiService.issueToken(
-        issueTokenPayload,
-      );
-      issueTokenRequestEntity.statusCode = issueTokenResult.status;
-      await this.intersolveVisaRequestRepository.save(issueTokenRequestEntity);
+  //     const issueTokenPayload = new IntersolveIssueTokenDto();
+  //     issueTokenPayload.holderId = null;
+  //     const issueTokenResult = await this.intersolveVisaApiService.issueToken(
+  //       issueTokenPayload,
+  //     );
+  //     issueTokenRequestEntity.statusCode = issueTokenResult.status;
+  //     await this.intersolveVisaRequestRepository.save(issueTokenRequestEntity);
 
-      registration.saveData(issueTokenResult.data.data.code, {
-        name: 'tokenCodeVisa',
-      });
+  //     registration.saveData(issueTokenResult.data.data.code, {
+  //       name: 'tokenCodeVisa',
+  //     });
 
-      if (!issueTokenResult.data.success) {
-        return {
-          success: false,
-          message: issueTokenResult.data.errors.length
-            ? `CARD CREATION ERROR: ${this.intersolveErrorToMessage(
-                issueTokenResult.data.errors,
-              )}`
-            : `CARD CREATION ERROR: ${issueTokenResult.status} - ${issueTokenResult.statusText}`,
-        };
-      } else {
-        const createEntitiesResult = await this.createIntersolveVisaEntities(
-          registration,
-          issueTokenResult,
-        );
-        if (!createEntitiesResult.success) {
-          return {
-            success: false,
-            message: createEntitiesResult.message,
-          };
-        }
+  //     if (!issueTokenResult.data.success) {
+  //       return {
+  //         success: false,
+  //         message: issueTokenResult.data.errors.length
+  //           ? `CARD CREATION ERROR: ${this.intersolveErrorToMessage(
+  //               issueTokenResult.data.errors,
+  //             )}`
+  //           : `CARD CREATION ERROR: ${issueTokenResult.status} - ${issueTokenResult.statusText}`,
+  //       };
+  //     } else {
+  //       const createEntitiesResult = await this.createIntersolveVisaEntities(
+  //         registration,
+  //         issueTokenResult,
+  //       );
+  //       if (!createEntitiesResult.success) {
+  //         return {
+  //           success: false,
+  //           message: createEntitiesResult.message,
+  //         };
+  //       }
 
-        const createVirtualCardPayload = new IntersolveCreateVirtualCardDto();
-        createVirtualCardPayload.brand = 'VISA_CARD';
-        await this.intersolveVisaApiService.createVirtualCard(
-          issueTokenResult.data.data.code,
-          createVirtualCardPayload,
-        );
+  //       const createVirtualCardPayload = new IntersolveCreateVirtualCardDto();
+  //       createVirtualCardPayload.brand = 'VISA_CARD';
+  //       await this.intersolveVisaApiService.createVirtualCard(
+  //         issueTokenResult.data.data.code,
+  //         createVirtualCardPayload,
+  //       );
 
-        // TODO: Get virtual card details to send URL and code to PA
+  //       // TODO: Get virtual card details to send URL and code to PA
 
-        return {
-          success: issueTokenResult.data.success,
-          visaCard: await this.getWalletByTokenCode(
-            issueTokenResult.data.data.code,
-          ),
-          message: issueTokenResult.data.success
-            ? null
-            : `CARD CREATION ERROR: ${this.intersolveErrorToMessage(
-                issueTokenResult.data.errors,
-              )}`,
-        };
-      }
-    } else {
-      // This scenario is the 1st Visa integration scenario where physical card numbers are imported via EspoCRM
-      // There IS an imported visa card number, so we don't need to issue a new one but we need to create the entities
-      const issueTokenResult = new IntersolveIssueTokenResponseDto();
-      issueTokenResult.data = new IntersolveIssueTokenResponseBodyDto();
-      issueTokenResult.data.data = new IntersolveIssueTokenResponseTokenDto();
-      issueTokenResult.data.success = true;
-      issueTokenResult.data.data.code = tokenCode;
-      issueTokenResult.data.data.status = IntersolveVisaWalletStatus.INACTIVE;
-      issueTokenResult.data.data.type = 'STANDARD'; // Intersolve-type for physical card
+  //       return {
+  //         success: issueTokenResult.data.success,
+  //         visaCard: await this.getWalletByTokenCode(
+  //           issueTokenResult.data.data.code,
+  //         ),
+  //         message: issueTokenResult.data.success
+  //           ? null
+  //           : `CARD CREATION ERROR: ${this.intersolveErrorToMessage(
+  //               issueTokenResult.data.errors,
+  //             )}`,
+  //       };
+  //     }
+  //   } else {
+  //     // This scenario is the 1st Visa integration scenario where physical card numbers are imported via EspoCRM
+  //     // There IS an imported visa card number, so we don't need to issue a new one but we need to create the entities
+  //     const issueTokenResult = new IntersolveIssueTokenResponseDto();
+  //     issueTokenResult.data = new IntersolveIssueTokenResponseBodyDto();
+  //     issueTokenResult.data.data = new IntersolveIssueTokenResponseTokenDto();
+  //     issueTokenResult.data.success = true;
+  //     issueTokenResult.data.data.code = tokenCode;
+  //     issueTokenResult.data.data.status = IntersolveVisaWalletStatus.INACTIVE;
+  //     issueTokenResult.data.data.type = 'STANDARD'; // Intersolve-type for physical card
 
-      const createEntitiesResult = await this.createIntersolveVisaEntities(
-        registration,
-        issueTokenResult,
-      );
-      if (!createEntitiesResult.success) {
-        return {
-          success: false,
-          message: createEntitiesResult.message,
-        };
-      }
-      const visaCard = await this.getWalletByTokenCode(
-        issueTokenResult.data.data.code,
-      );
-      return {
-        success: issueTokenResult.data.success,
-        visaCard: visaCard,
-      };
-    }
-  }
+  //     const createEntitiesResult = await this.createIntersolveVisaEntities(
+  //       registration,
+  //       issueTokenResult,
+  //     );
+  //     if (!createEntitiesResult.success) {
+  //       return {
+  //         success: false,
+  //         message: createEntitiesResult.message,
+  //       };
+  //     }
+  //     const visaCard = await this.getWalletByTokenCode(
+  //       issueTokenResult.data.data.code,
+  //     );
+  //     return {
+  //       success: issueTokenResult.data.success,
+  //       visaCard: visaCard,
+  //     };
+  //   }
+  // }
 
-  private async createIntersolveVisaEntities(
-    registration: RegistrationEntity,
-    issueTokenResult: IntersolveIssueTokenResponseDto,
-  ): Promise<{ success: boolean; message?: string }> {
-    const customerEntity = await this.intersolveVisaCustomerRepo.findOne({
-      where: { registrationId: registration.id },
-    });
-    if (customerEntity) {
-      const getCustomerResult = await this.intersolveVisaApiService.getCustomer(
-        customerEntity.holderId,
-      );
-      if (getCustomerResult.data?.success) {
-        // TODO: refactor this if-construction
-        console.log(
-          'referenceId already exists with Intersolve > do not create again',
-        );
-      } else {
-        const createCustomerResult = await this.createCustomer(registration);
-        if (!createCustomerResult.data.success) {
-          return {
-            success: false,
-            message: createCustomerResult.data.errors.length
-              ? `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
-                  createCustomerResult.data.errors,
-                )}`
-              : `CREATE CUSTOMER ERROR: ${createCustomerResult.status} - ${createCustomerResult.statusText}`,
-          };
-        }
-        customerEntity.holderId = createCustomerResult.data.data.id;
-        customerEntity.blocked = createCustomerResult.data.data.blocked;
-        await this.intersolveVisaCustomerRepo.save(customerEntity);
-      }
-    } else {
-      const createCustomerResult = await this.createCustomer(registration);
-      if (!createCustomerResult.data.success) {
-        return {
-          success: false,
-          message: createCustomerResult.data.errors.length
-            ? `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
-                createCustomerResult.data.errors,
-              )}`
-            : `CREATE CUSTOMER ERROR: ${createCustomerResult.status} - ${createCustomerResult.statusText}`,
-        };
-      }
-      const visaCustomer = new IntersolveVisaCustomerEntity();
-      visaCustomer.registration = registration;
-      visaCustomer.holderId = createCustomerResult.data.data.id;
-      visaCustomer.blocked = createCustomerResult.data.data.blocked;
-      await this.intersolveVisaCustomerRepo.save(visaCustomer);
-    }
+  // private async createIntersolveVisaEntities(
+  //   registration: RegistrationEntity,
+  //   issueTokenResult: IntersolveIssueTokenResponseDto,
+  // ): Promise<{ success: boolean; message?: string }> {
+  //   const customerEntity = await this.intersolveVisaCustomerRepo.findOne({
+  //     where: { registrationId: registration.id },
+  //   });
+  //   if (customerEntity) {
+  //     const getCustomerResult = await this.intersolveVisaApiService.getCustomer(
+  //       customerEntity.holderId,
+  //     );
+  //     if (getCustomerResult.data?.success) {
+  //       // TODO: refactor this if-construction
+  //       console.log(
+  //         'referenceId already exists with Intersolve > do not create again',
+  //       );
+  //     } else {
+  //       const createCustomerResult = await this.createCustomer(registration);
+  //       if (!createCustomerResult.data.success) {
+  //         return {
+  //           success: false,
+  //           message: createCustomerResult.data.errors.length
+  //             ? `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
+  //                 createCustomerResult.data.errors,
+  //               )}`
+  //             : `CREATE CUSTOMER ERROR: ${createCustomerResult.status} - ${createCustomerResult.statusText}`,
+  //         };
+  //       }
+  //       customerEntity.holderId = createCustomerResult.data.data.id;
+  //       customerEntity.blocked = createCustomerResult.data.data.blocked;
+  //       await this.intersolveVisaCustomerRepo.save(customerEntity);
+  //     }
+  //   } else {
+  //     const createCustomerResult = await this.createCustomer(registration);
+  //     if (!createCustomerResult.data.success) {
+  //       return {
+  //         success: false,
+  //         message: createCustomerResult.data.errors.length
+  //           ? `CREATE CUSTOMER ERROR: ${this.intersolveErrorToMessage(
+  //               createCustomerResult.data.errors,
+  //             )}`
+  //           : `CREATE CUSTOMER ERROR: ${createCustomerResult.status} - ${createCustomerResult.statusText}`,
+  //       };
+  //     }
+  //     const visaCustomer = new IntersolveVisaCustomerEntity();
+  //     visaCustomer.registration = registration;
+  //     visaCustomer.holderId = createCustomerResult.data.data.id;
+  //     visaCustomer.blocked = createCustomerResult.data.data.blocked;
+  //     await this.intersolveVisaCustomerRepo.save(visaCustomer);
+  //   }
 
-    let intersolveVisaCard = await this.intersolveVisaCardRepository.findOne({
-      where: { tokenCode: issueTokenResult.data.data.code },
-    });
+  //   let intersolveVisaCard = await this.intersolveVisaWalletRepository.findOne({
+  //     where: { tokenCode: issueTokenResult.data.data.code },
+  //   });
 
-    if (!intersolveVisaCard) {
-      intersolveVisaCard = new IntersolveVisaCardEntity();
-      intersolveVisaCard.success = issueTokenResult.data.success;
-      intersolveVisaCard.tokenCode = issueTokenResult.data.data.code;
-      intersolveVisaCard.tokenBlocked = issueTokenResult.data.data.blocked;
-      intersolveVisaCard.expiresAt = issueTokenResult.data.data.expiresAt;
-      intersolveVisaCard.status = issueTokenResult.data.data.status;
-      intersolveVisaCard.type = issueTokenResult.data.data.type;
+  //   if (!intersolveVisaCard) {
+  //     intersolveVisaCard = new IntersolveVisaWalletEntity();
+  //     intersolveVisaCard.success = issueTokenResult.data.success;
+  //     intersolveVisaCard.tokenCode = issueTokenResult.data.data.code;
+  //     intersolveVisaCard.tokenBlocked = issueTokenResult.data.data.blocked;
+  //     intersolveVisaCard.expiresAt = issueTokenResult.data.data.expiresAt;
+  //     intersolveVisaCard.status = issueTokenResult.data.data.status;
+  //     intersolveVisaCard.type = issueTokenResult.data.data.type;
 
-      await this.intersolveVisaCardRepository.save(intersolveVisaCard);
-    }
-    return {
-      success: true,
-    };
-  }
+  //     await this.intersolveVisaWalletRepository.save(intersolveVisaCard);
+  //   }
+  //   return {
+  //     success: true,
+  //   };
+  // }
 
   private async registerCustomerToWallet(
     registration: RegistrationEntity,
@@ -420,12 +562,12 @@ export class IntersolveVisaService {
       };
     }
 
-    const visaCard = await this.intersolveVisaCardRepository.findOne({
+    const visaCard = await this.intersolveVisaWalletRepository.findOne({
       where: { tokenCode: tokenCode },
     });
     visaCard.intersolveVisaCustomer = customerEntity;
     customerEntity.visaCard = visaCard;
-    await this.intersolveVisaCardRepository.save(visaCard);
+    await this.intersolveVisaWalletRepository.save(visaCard);
     await this.intersolveVisaCustomerRepo.save(customerEntity);
 
     return {

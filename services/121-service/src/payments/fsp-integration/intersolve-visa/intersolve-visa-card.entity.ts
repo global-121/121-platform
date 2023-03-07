@@ -3,11 +3,8 @@ import { Base121Entity } from '../../../base.entity';
 import { IntersolveVisaWalletStatus } from './enum/intersolve-visa-token-status.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 
-@Entity('intersolve_visa_card')
-export class IntersolveVisaCardEntity extends Base121Entity {
-  @Column({ nullable: true })
-  public success: boolean;
-
+@Entity('intersolve_visa_wallet')
+export class IntersolveVisaWalletEntity extends Base121Entity {
   @Index()
   @Column({ unique: true, nullable: true })
   public tokenCode: string;
