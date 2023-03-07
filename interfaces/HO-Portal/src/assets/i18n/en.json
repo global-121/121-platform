@@ -634,7 +634,9 @@
     "statusText": "Status: <b> {{status}} </b>"
   },
   "registration-details": {
+    "show-all": "Show All",
     "personal-information-table": {
+      "subtitle": "Personal Information",
       "status": "Status: <b>{{status}}</b>",
       "registeredDate": "Registered",
       "lastUpdateDate": "Last Update",

@@ -14,6 +14,22 @@
     >
       <ion-card-header>
         <ion-card-title> {{ person.name }} </ion-card-title>
+        <ion-card-subtitle>
+          <ion-row class="ion-justify-content-between">
+            <ion-note
+              >{{ 'registration-details.personal-information-table.subtitle' |
+              translate }}</ion-note
+            >
+            <ion-button
+              fill="outline"
+              color="primary"
+              size="small"
+              shape="round"
+              (click)="editPersonAffectedPopup()"
+              >{{ 'registration-details.show-all' | translate }}</ion-button
+            >
+          </ion-row>
+        </ion-card-subtitle>
       </ion-card-header>
       <ion-card-content class="ion-no-padding">
         <ion-list
