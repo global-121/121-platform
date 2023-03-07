@@ -217,6 +217,7 @@ export class IntersolveVisaService {
         intersolveVisaWallet.expiresAt = issueTokenResult.data.data.expiresAt;
         intersolveVisaWallet.status = issueTokenResult.data.data.status;
         intersolveVisaWallet.type = issueTokenResult.data.data.type;
+        intersolveVisaWallet.intersolveVisaCustomer = visaCustomer;
         await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
 
         // create virtual card
@@ -227,7 +228,7 @@ export class IntersolveVisaService {
             issueTokenResult.data.data.code,
             createVirtualCardPayload,
           );
-        if (!createVirtualCardResult.success) {
+        if (createVirtualCardResult.status !== 200) {
           response.status = StatusEnum.error;
           response.message = createVirtualCardResult.message;
           return response;
