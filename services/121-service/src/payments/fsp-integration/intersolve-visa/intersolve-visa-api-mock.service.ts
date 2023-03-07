@@ -8,13 +8,17 @@ import {
   IntersolveRegisterHolderResponseDto,
 } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
+import { IntersolveCreateVirtualCardResponseDto } from './dto/intersolve-create-virtual-card.dto';
 import {
   IntersolveIssueTokenResponseBodyDto,
   IntersolveIssueTokenResponseDto,
   IntersolveIssueTokenResponseTokenDto,
 } from './dto/intersolve-issue-token-response.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
-import { IntersolveVisaWalletStatus } from './enum/intersolve-visa-token-status.enum';
+import {
+  IntersolveVisaWalletStatus,
+  IntersolveVisaWalletType,
+} from './enum/intersolve-visa-token-status.enum';
 
 @Injectable()
 export class IntersolveVisaApiMockService {
@@ -45,7 +49,23 @@ export class IntersolveVisaApiMockService {
     };
 
     if (
-      payload.individual.lastName.toLowerCase().includes('mock-fail-create')
+      payload.individual.lastName
+        .toLowerCase()
+        .includes('mock-fail-issue-token')
+    ) {
+      // pass different holderId to be later used again in mock issue-token call
+      res.data.data.id = 'mock-fail-issue-token';
+    } else if (
+      payload.individual.lastName
+        .toLowerCase()
+        .includes('mock-fail-create-virtual-card')
+    ) {
+      // pass different holderId to be later used again in mock create-virtual-card call
+      res.data.data.id = 'mock-fail-create-virtual-card';
+    } else if (
+      payload.individual.lastName
+        .toLowerCase()
+        .includes('mock-fail-create-customer')
     ) {
       res.data.success = false;
       res.data.errors.push({
@@ -59,7 +79,9 @@ export class IntersolveVisaApiMockService {
     return res;
   }
 
-  public registerHolderMock(tokenCode: string): object {
+  public registerHolderMock(
+    tokenCode: string,
+  ): IntersolveRegisterHolderResponseDto {
     const res: IntersolveRegisterHolderResponseDto = {
       status: 204,
       statusText: 'No Content',
@@ -104,7 +126,7 @@ export class IntersolveVisaApiMockService {
     return res;
   }
 
-  public issueTokenMock(): IntersolveIssueTokenResponseDto {
+  public issueTokenMock(holderId: string): IntersolveIssueTokenResponseDto {
     const response = new IntersolveIssueTokenResponseDto();
     response.status = 200;
     response.statusText = 'OK';
@@ -119,7 +141,7 @@ export class IntersolveVisaApiMockService {
     response.data.data.code = `mock-token-${uuid()}`;
     response.data.data.blocked = false;
     response.data.data.blockReasonCode = 'string';
-    response.data.data.type = 'string';
+    response.data.data.type = IntersolveVisaWalletType.DIGITAL;
     response.data.data.tier = 'string';
     response.data.data.brandTypeCode = 'string';
     response.data.data.expiresAt = '2023-02-08T14:36:05.816Z';
@@ -209,6 +231,23 @@ export class IntersolveVisaApiMockService {
       },
     ];
 
+    if (holderId.toLowerCase().includes('mock-fail-create-virtual-card')) {
+      // pass different holderId to be later used again in mock issue-token call
+      response.data.data.code = 'mock-fail-create-virtual-card';
+    }
+
+    if (holderId.toLowerCase().includes('mock-fail-issue-token')) {
+      response.data.success = false;
+      response.data.errors = [];
+      response.data.errors.push({
+        code: 'NOT_FOUND',
+        field: 'mock field',
+        description: 'We mocked that issuing token failed',
+      });
+      response.status = 404;
+      response.statusText = 'NOT_FOUND';
+    }
+
     return response;
   }
 
@@ -249,8 +288,25 @@ export class IntersolveVisaApiMockService {
     return response;
   }
 
-  public createVirtualCardMock(): void {
-    //TODO: Implement this
-    console.log('createVirtualCardMock TO BE IMPLEMENTED');
+  public createVirtualCardMock(
+    tokenCode: string,
+  ): IntersolveCreateVirtualCardResponseDto {
+    const res: IntersolveCreateVirtualCardResponseDto = {
+      status: 200,
+      statusText: 'OK',
+      data: {},
+    };
+    if (tokenCode.toLowerCase().includes('mock-fail-create-virtual-card')) {
+      res.data.success = false;
+      res.data.errors = [];
+      res.data.errors.push({
+        code: 'NOT_FOUND',
+        field: 'mock field',
+        description: 'We mocked that creating virtual card failed',
+      });
+      res.status = 404;
+      res.statusText = 'NOT_FOUND';
+    }
+    return res;
   }
 }

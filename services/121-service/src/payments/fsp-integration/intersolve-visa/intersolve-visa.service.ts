@@ -186,7 +186,7 @@ export class IntersolveVisaService {
           await this.intersolveVisaRequestRepository.save(issueTokenRequest);
 
         const issueTokenPayload = new IntersolveIssueTokenDto();
-        issueTokenPayload.holderId = null;
+        issueTokenPayload.holderId = visaCustomer.holderId;
         const issueTokenResult = await this.intersolveVisaApiService.issueToken(
           issueTokenPayload,
         );
@@ -203,10 +203,10 @@ export class IntersolveVisaService {
         if (!issueTokenResult.data?.success) {
           response.status = StatusEnum.error;
           response.message = issueTokenResult.data?.errors?.length
-            ? `CARD CREATION ERROR: ${this.intersolveErrorToMessage(
+            ? `ISSUE TOKEN ERROR: ${this.intersolveErrorToMessage(
                 issueTokenResult.data.errors,
               )}`
-            : `CARD CREATION ERROR: ${issueTokenResult.status} - ${issueTokenResult.statusText}`;
+            : `ISSUE TOKEN ERROR: ${issueTokenResult.status} - ${issueTokenResult.statusText}`;
           return response;
         }
 
@@ -230,7 +230,11 @@ export class IntersolveVisaService {
           );
         if (createVirtualCardResult.status !== 200) {
           response.status = StatusEnum.error;
-          response.message = createVirtualCardResult.message;
+          response.message = createVirtualCardResult.data?.errors?.length
+            ? `CREATE VIRTUAL CARD ERROR: ${this.intersolveErrorToMessage(
+                createVirtualCardResult.data.errors,
+              )}`
+            : `CREATE VIRTUAL CARD ERROR: ${createVirtualCardResult.status} - ${createVirtualCardResult.statusText}`;
           return response;
         }
 

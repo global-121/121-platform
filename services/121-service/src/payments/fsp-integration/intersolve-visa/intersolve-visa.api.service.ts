@@ -118,7 +118,7 @@ export class IntersolveVisaApiService {
     payload: IntersolveIssueTokenDto,
   ): Promise<IntersolveIssueTokenResponseDto> {
     if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.issueTokenMock();
+      return this.intersolveVisaApiMockService.issueTokenMock(payload.holderId);
     } else {
       const authToken = await this.getAuthenticationToken();
       const brandCode = process.env.INTERSOLVE_VISA_BRAND_CODE;
@@ -184,7 +184,7 @@ export class IntersolveVisaApiService {
     payload: IntersolveCreateVirtualCardDto,
   ): Promise<any> {
     if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.createVirtualCardMock();
+      return this.intersolveVisaApiMockService.createVirtualCardMock(tokenCode);
     } else {
       const authToken = await this.getAuthenticationToken();
       const url = `${intersolveVisaApiUrl}/paymentinstrument/v1/tokens/${tokenCode}/create-virtual-card`;
