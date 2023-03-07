@@ -14,7 +14,7 @@ import {
   IntersolveIssueTokenResponseTokenDto,
 } from './dto/intersolve-issue-token-response.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
-import { IntersolveVisaTokenStatus } from './enum/intersolve-visa-token-status.enum';
+import { IntersolveVisaWalletStatus } from './enum/intersolve-visa-token-status.enum';
 
 @Injectable()
 export class IntersolveVisaApiMockService {
@@ -123,7 +123,7 @@ export class IntersolveVisaApiMockService {
     response.data.data.tier = 'string';
     response.data.data.brandTypeCode = 'string';
     response.data.data.expiresAt = '2023-02-08T14:36:05.816Z';
-    response.data.data.status = IntersolveVisaTokenStatus.ACTIVE;
+    response.data.data.status = IntersolveVisaWalletStatus.ACTIVE;
     response.data.data.holderId = 'string';
     response.data.data.balances = [
       {

@@ -1,4 +1,4 @@
-export enum IntersolveVisaTokenStatus {
+export enum IntersolveVisaWalletStatus {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE',
   EXPIRED = 'EXPIRED',

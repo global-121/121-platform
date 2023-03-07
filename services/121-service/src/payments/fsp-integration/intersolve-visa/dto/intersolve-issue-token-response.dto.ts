@@ -1,4 +1,4 @@
-import { IntersolveVisaTokenStatus } from '../enum/intersolve-visa-token-status.enum';
+import { IntersolveVisaWalletStatus } from '../enum/intersolve-visa-token-status.enum';
 import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
 
 export class IntersolveIssueTokenResponseDto {
@@ -27,7 +27,7 @@ export class IntersolveIssueTokenResponseTokenDto {
   public tier?: string;
   public brandTypeCode?: string;
   public expiresAt?: string;
-  public status?: IntersolveVisaTokenStatus;
+  public status?: IntersolveVisaWalletStatus;
   public holderId?: string;
   public balances?: IntersolveIssueTokenResponseBalanceDto[];
   public assets?: IntersolveIssueTokenResponseAssetDto[];

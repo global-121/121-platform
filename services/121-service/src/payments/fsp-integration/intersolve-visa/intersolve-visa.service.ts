@@ -25,7 +25,7 @@ import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { MessageStatus as MessageStatusDto } from './dto/message-status.dto';
-import { IntersolveVisaTokenStatus } from './enum/intersolve-visa-token-status.enum';
+import { IntersolveVisaWalletStatus } from './enum/intersolve-visa-token-status.enum';
 import { IntersolveVisaCardEntity } from './intersolve-visa-card.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaRequestEntity } from './intersolve-visa-request.entity';
@@ -175,7 +175,7 @@ export class IntersolveVisaService {
           message: registerResult.message,
         };
       }
-      if (visaCardEntity.status === IntersolveVisaTokenStatus.INACTIVE) {
+      if (visaCardEntity.status === IntersolveVisaWalletStatus.INACTIVE) {
         const activateResult = await this.activateToken(
           visaCardEntity.tokenCode,
           registration.referenceId,
@@ -242,7 +242,9 @@ export class IntersolveVisaService {
       issueTokenRequestEntity.statusCode = issueTokenResult.status;
       await this.intersolveVisaRequestRepository.save(issueTokenRequestEntity);
 
-      // TODO: Save issued token in CA of PA
+      registration.saveData(issueTokenResult.data.data.code, {
+        name: 'tokenCodeVisa',
+      });
 
       if (!issueTokenResult.data.success) {
         return {
@@ -294,7 +296,7 @@ export class IntersolveVisaService {
       issueTokenResult.data.data = new IntersolveIssueTokenResponseTokenDto();
       issueTokenResult.data.success = true;
       issueTokenResult.data.data.code = tokenCode;
-      issueTokenResult.data.data.status = IntersolveVisaTokenStatus.INACTIVE;
+      issueTokenResult.data.data.status = IntersolveVisaWalletStatus.INACTIVE;
       issueTokenResult.data.data.type = 'STANDARD'; // Intersolve-type for physical card
 
       const createEntitiesResult = await this.createIntersolveVisaEntities(
