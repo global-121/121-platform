@@ -20,6 +20,8 @@ export class RegistrationDetailsPage implements OnInit {
   public person: Person;
   public personalInfoTable: {}[];
 
+  public loading = true;
+
   constructor(
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
@@ -29,17 +31,26 @@ export class RegistrationDetailsPage implements OnInit {
 
   async ngOnInit() {
     if (!this.programId || !this.paId) {
+      this.loading = false;
       return;
     }
 
     this.program = await this.programsService.getProgramById(this.programId);
 
-    const { referenceId } = await this.programsService.getReferenceId(
-      this.programId,
-      this.paId,
-    );
+    let referenceId: string = null;
+
+    try {
+      referenceId = (
+        await this.programsService.getReferenceId(this.programId, this.paId)
+      ).referenceId;
+    } catch (error) {
+      console.log(error);
+      this.loading = false;
+      return;
+    }
 
     if (!referenceId || !this.program) {
+      this.loading = false;
       return;
     }
 
@@ -63,10 +74,12 @@ export class RegistrationDetailsPage implements OnInit {
     )[0];
 
     if (!this.person) {
+      this.loading = false;
       return;
     }
 
     this.initPersonalInfoTable();
+    this.loading = false;
   }
 
   private initPersonalInfoTable() {
