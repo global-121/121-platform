@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import fspBelcash from '../../seed-data/fsp/fsp-belcash.json';
 import instancePilotEth from '../../seed-data/instance/instance-pilot-eth.json';
 import programPilotEth from '../../seed-data/program/program-pilot-eth.json';
 import { ProgramEntity } from '../programs/program.entity';
@@ -20,9 +19,6 @@ export class SeedProgramEth implements InterfaceScript {
   public async run(): Promise<void> {
     const seedInit = await new SeedInit(this.dataSource);
     await seedInit.run();
-
-    // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
-    await this.seedHelper.addFsp(fspBelcash);
 
     // ***** CREATE PROGRAM *****
     const program = await this.seedHelper.addProgram(programPilotEth);
