@@ -1,7 +1,7 @@
 import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
-import { IntersolveVisaWalletEntity } from './intersolve-visa-card.entity';
+import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 
 @Entity('intersolve_visa_customer')
 export class IntersolveVisaCustomerEntity extends Base121Entity {

@@ -9,6 +9,7 @@ import {
 } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveCreateVirtualCardDto } from './dto/intersolve-create-virtual-card.dto';
+import { IntersolveGetVirtualCardResponseDto } from './dto/intersolve-get-virtual-card-response.dto';
 import { IntersolveIssueTokenResponseDto } from './dto/intersolve-issue-token-response.dto';
 import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
@@ -194,6 +195,23 @@ export class IntersolveVisaApiService {
       ];
       // On success this returns a 200 without content
       return await this.httpService.post<void>(url, payload, headers);
+    }
+  }
+
+  public async getVirtualCard(tokenCode: string) {
+    if (process.env.MOCK_INTERSOLVE) {
+      return this.intersolveVisaApiMockService.getVirtualCardMock(tokenCode);
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/paymentinstrument/v1/tokens/${tokenCode}/card-data`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
+      return await this.httpService.get<IntersolveGetVirtualCardResponseDto>(
+        url,
+        headers,
+      );
     }
   }
 }

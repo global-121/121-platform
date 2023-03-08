@@ -9,6 +9,7 @@ import {
 } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveCreateVirtualCardResponseDto } from './dto/intersolve-create-virtual-card.dto';
+import { IntersolveGetVirtualCardResponseDto } from './dto/intersolve-get-virtual-card-response.dto';
 import {
   IntersolveIssueTokenResponseBodyDto,
   IntersolveIssueTokenResponseDto,
@@ -306,6 +307,32 @@ export class IntersolveVisaApiMockService {
       });
       res.status = 404;
       res.statusText = 'NOT_FOUND';
+    }
+    return res;
+  }
+
+  public getVirtualCardMock(tokenCode: string) {
+    const res: IntersolveGetVirtualCardResponseDto = {
+      status: 200,
+      statusText: 'OK',
+      data: {},
+    };
+    if (tokenCode.toLowerCase().includes('mock-fail-get-virtual-card')) {
+      res.status = 404;
+      res.statusText = 'NOT_FOUND';
+      res.data.success = false;
+      res.data.errors = [];
+      res.data.errors.push({
+        code: 'NOT_FOUND',
+        field: 'mock field',
+        description: 'We mocked that getting the virtual card failed',
+      });
+    } else {
+      res.data.success = true;
+      res.data.data = {
+        carddataurl: 'https://test-vm.121.global/',
+        controltoken: 'super_secret_token',
+      };
     }
     return res;
   }

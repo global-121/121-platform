@@ -21,6 +21,12 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
   @Column({ nullable: true })
   public status: IntersolveVisaWalletStatus;
 
+  @Column({ nullable: true })
+  public cardUrl: string;
+
+  @Column({ nullable: true })
+  public controlToken: string;
+
   @OneToOne(
     () => IntersolveVisaCustomerEntity,
     (intersolveVisaCustomer) => intersolveVisaCustomer.visaCard,

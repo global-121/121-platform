@@ -24,7 +24,7 @@ import {
   IntersolveVisaWalletStatus,
   IntersolveVisaWalletType,
 } from './enum/intersolve-visa-token-status.enum';
-import { IntersolveVisaWalletEntity } from './intersolve-visa-card.entity';
+import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaRequestEntity } from './intersolve-visa-request.entity';
 import {
@@ -175,6 +175,10 @@ export class IntersolveVisaService {
           intersolveVisaWallet.status = IntersolveVisaWalletStatus.ACTIVE;
           await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
         }
+
+        transactionNotifications.push(
+          this.buildNotificationObjectIssuePhysicalCard(tokenCode),
+        );
       } else {
         // create wallet
         const reference = uuid();
@@ -239,10 +243,15 @@ export class IntersolveVisaService {
         }
 
         // store virtual data
-        // TO DO: get this data from Intersolve
+        const getVirtualCardResult =
+          await this.intersolveVisaApiService.getVirtualCard(tokenCode);
 
         transactionNotifications.push(
-          this.buildNotificationObjectIssueCard(tokenCode),
+          this.buildNotificationObjectIssueDigitalCard(
+            tokenCode,
+            getVirtualCardResult.data.data.carddataurl,
+            getVirtualCardResult.data.data.controltoken,
+          ),
         );
       }
     }
@@ -276,12 +285,23 @@ export class IntersolveVisaService {
     });
   }
 
-  private buildNotificationObjectIssueCard(
+  private buildNotificationObjectIssuePhysicalCard(
     token: string,
   ): TransactionNotificationObject {
     return {
-      notificationKey: 'visaCardCreated',
+      notificationKey: 'physicalVisaCardCreated',
       dynamicContent: [token],
+    };
+  }
+
+  private buildNotificationObjectIssueDigitalCard(
+    token: string,
+    url: string,
+    controltoken: string,
+  ): TransactionNotificationObject {
+    return {
+      notificationKey: 'digitalVisaCardCreated',
+      dynamicContent: [token, url, controltoken],
     };
   }
 
