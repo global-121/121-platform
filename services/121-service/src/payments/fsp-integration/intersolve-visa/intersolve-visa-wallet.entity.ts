@@ -16,9 +16,6 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
   public tokenBlocked: boolean;
 
   @Column({ nullable: true })
-  public expiresAt: string;
-
-  @Column({ nullable: true })
   public status: IntersolveVisaWalletStatus;
 
   @Column({ nullable: true })

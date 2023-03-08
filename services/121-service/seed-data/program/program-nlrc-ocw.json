@@ -36,7 +36,7 @@
       "whatsappGenericMessage": "This is a message from the Red Cross.\n\nThere is a message waiting for you. Please reply “yes” to this message to receive it.",
       "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781",
       "physicalVisaCardCreated": "This is a message from the Red Cross.\n\nWe have created a VISA card for you with card number {{1}}\n\nYou can activate it by doing this and this.",
-      "digitalVisaCardCreated": "This is a message from the Red Cross.\n\nWe have created a digital VISA card for you with card number {{1}}\n\nYou can activate it by clicking the following link: {{2}}.",
+      "digitalVisaCardCreated": "This is a message from the Red Cross.\n\nWe have created a digital VISA card for you with card number {{1}}\n\nYou can activate it by clicking the following link: {{2}}. When asked to enter a token code, enter {{3}}.",
       "visaLoad": "This is a message from the Red Cross.\n\nWe increased the funds on your VISA card with {{1}}."
     },
     "nl": {

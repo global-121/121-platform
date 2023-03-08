@@ -4,13 +4,13 @@ import { v4 as uuid } from 'uuid';
 import { IntersolveActivateTokenResponseDto } from './dto/intersolve-activate-token-response.dto';
 import {
   IntersolveCreateCustomerResponseBodyDto,
-  IntersolveGetCustomerResponseBodyDto,
   IntersolveRegisterHolderResponseDto,
 } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveCreateVirtualCardResponseDto } from './dto/intersolve-create-virtual-card.dto';
 import { IntersolveGetVirtualCardResponseDto } from './dto/intersolve-get-virtual-card-response.dto';
 import {
+  IntersolveGetTokenResponseDto,
   IntersolveIssueTokenResponseBodyDto,
   IntersolveIssueTokenResponseDto,
   IntersolveIssueTokenResponseTokenDto,
@@ -23,14 +23,6 @@ import {
 
 @Injectable()
 export class IntersolveVisaApiMockService {
-  public getCustomerMock(): IntersolveGetCustomerResponseBodyDto {
-    const res = new IntersolveGetCustomerResponseBodyDto();
-    res.data = {
-      success: false, // This reflects the situation where no customer is found already, which is the happy flow
-    };
-    return res;
-  }
-
   public createCustomerMock(
     payload: IntersolveCreateCustomerDto,
   ): IntersolveCreateCustomerResponseBodyDto {
@@ -145,7 +137,6 @@ export class IntersolveVisaApiMockService {
     response.data.data.type = IntersolveVisaWalletType.DIGITAL;
     response.data.data.tier = 'string';
     response.data.data.brandTypeCode = 'string';
-    response.data.data.expiresAt = '2023-02-08T14:36:05.816Z';
     response.data.data.status = IntersolveVisaWalletStatus.ACTIVE;
     response.data.data.holderId = 'string';
     response.data.data.balances = [
@@ -173,7 +164,6 @@ export class IntersolveVisaApiMockService {
         status: 'string',
         minorUnit: 0,
         tags: ['string'],
-        expiresAt: '2023-02-08T14:36:05.816Z',
         conversions: [
           {
             toAssetCode: 'string',
@@ -311,29 +301,47 @@ export class IntersolveVisaApiMockService {
     return res;
   }
 
-  public getVirtualCardMock(tokenCode: string) {
+  public getVirtualCardMock(
+    tokenCode: string,
+  ): IntersolveGetVirtualCardResponseDto {
     const res: IntersolveGetVirtualCardResponseDto = {
       status: 200,
       statusText: 'OK',
-      data: {},
     };
     if (tokenCode.toLowerCase().includes('mock-fail-get-virtual-card')) {
       res.status = 404;
       res.statusText = 'NOT_FOUND';
-      res.data.success = false;
-      res.data.errors = [];
       res.data.errors.push({
         code: 'NOT_FOUND',
         field: 'mock field',
         description: 'We mocked that getting the virtual card failed',
       });
     } else {
-      res.data.success = true;
-      res.data.data = {
+      res.data = {
         carddataurl: 'https://test-vm.121.global/',
         controltoken: 'super_secret_token',
       };
     }
+    return res;
+  }
+
+  public getToken(tokenCode: string): IntersolveGetTokenResponseDto {
+    const res: IntersolveGetTokenResponseDto = {
+      status: 200,
+      statusText: 'OK',
+      data: {
+        data: {
+          code: tokenCode,
+          blocked: false,
+          type: IntersolveVisaWalletType.STANDARD,
+          status: IntersolveVisaWalletStatus.INACTIVE,
+        },
+        success: true,
+        errors: [],
+        code: 'OK',
+      },
+    };
+    // No mock fail option added here, that is only done for POST Api calls
     return res;
   }
 }
