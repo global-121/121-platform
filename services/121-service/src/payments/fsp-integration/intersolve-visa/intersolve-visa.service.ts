@@ -97,8 +97,15 @@ export class IntersolveVisaService {
     if (customer) {
       // checks wallet entity
       if (customer.visaCard) {
-        // check if 'inactive' (if so, activate first)
-        if (customer.visaCard.status === IntersolveVisaWalletStatus.INACTIVE) {
+        // check if active
+        if (customer.visaCard.status === IntersolveVisaWalletStatus.ACTIVE) {
+          // continue with top-up
+          tokenCode = customer.visaCard.tokenCode;
+        } else if (
+          // check if inactive
+          customer.visaCard.status === IntersolveVisaWalletStatus.INACTIVE
+        ) {
+          // activate
           const activateResult = await this.activateToken(
             registration.referenceId,
             customer.visaCard,
@@ -108,9 +115,13 @@ export class IntersolveVisaService {
             response.message = activateResult.message;
             return response;
           }
+          tokenCode = customer.visaCard.tokenCode;
+        } else {
+          // other statuses should not happen within current scope. So if they do, an exception is thrown.
+          response.status = StatusEnum.error;
+          response.message = `Card status is neither 'active' nor 'inactive'.`;
+          return response;
         }
-        // continue with top-up (this assumes that 'not inactive' implies 'active' for now)
-        tokenCode = customer.visaCard.tokenCode;
       } else {
         // start create wallet flow
         const createWalletResult = await this.createWallet(
@@ -379,7 +390,7 @@ export class IntersolveVisaService {
       externalReference: registration.referenceId,
       individual: {
         lastName: lastName,
-        estimatedAnnualPaymentVolumeMajorUnit: 12 * 44, // This is assuming 44 euro per month for a year
+        estimatedAnnualPaymentVolumeMajorUnit: 12 * 44, // This is assuming 44 euro per month for a year for 1 child
       },
     };
     return await this.intersolveVisaApiService.createCustomer(
