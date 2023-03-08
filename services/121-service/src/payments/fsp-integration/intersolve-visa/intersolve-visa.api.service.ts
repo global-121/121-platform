@@ -136,12 +136,12 @@ export class IntersolveVisaApiService {
     }
   }
 
-  public async topUpCard(
+  public async loadBalanceCard(
     tokenCode: string,
     payload: IntersolveLoadDto,
   ): Promise<IntersolveLoadResponseDto> {
     if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.topUpCardMock(
+      return this.intersolveVisaApiMockService.loadBalanceCardMock(
         payload.quantities[0].quantity.value,
       );
     } else {

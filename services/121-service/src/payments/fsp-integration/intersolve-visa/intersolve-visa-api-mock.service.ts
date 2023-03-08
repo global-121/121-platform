@@ -242,7 +242,7 @@ export class IntersolveVisaApiMockService {
     return response;
   }
 
-  public topUpCardMock(amountInCents: number): IntersolveLoadResponseDto {
+  public loadBalanceCardMock(amountInCents: number): IntersolveLoadResponseDto {
     const response = {
       data: {
         success: true,
