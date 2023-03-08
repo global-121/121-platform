@@ -197,7 +197,6 @@ export class SeedInit implements InterfaceScript {
   }
 
   private async seedFsp(): Promise<void> {
-    // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolveVoucher);
     await this.seedHelper.addFsp(fspIntersolveVoucherPaper);
     await this.seedHelper.addFsp(fspIntersolveVisa);
