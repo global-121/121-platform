@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
@@ -96,11 +97,8 @@ export class IntersolveVisaService {
     if (customer) {
       // checks wallet entity
       if (customer.visaCard) {
-        // check if not 'inactive' (assume this means 'active' for now)
-        if (customer.visaCard.status !== IntersolveVisaWalletStatus.INACTIVE) {
-          // continue with top-up
-          tokenCode = customer.visaCard.tokenCode;
-        } else {
+        // check if 'inactive' (if so, activate first)
+        if (customer.visaCard.status === IntersolveVisaWalletStatus.INACTIVE) {
           const activateResult = await this.activateToken(
             registration.referenceId,
             customer.visaCard,
@@ -111,6 +109,8 @@ export class IntersolveVisaService {
             return response;
           }
         }
+        // continue with top-up (this assumes that 'not inactive' implies 'active' for now)
+        tokenCode = customer.visaCard.tokenCode;
       } else {
         // start create wallet flow
         const createWalletResult = await this.createWallet(
@@ -150,7 +150,7 @@ export class IntersolveVisaService {
       // start create wallet flow
       const createWalletResult = await this.createWallet(
         registration,
-        customer,
+        visaCustomer,
         response,
         transactionNotifications,
       );
@@ -195,7 +195,7 @@ export class IntersolveVisaService {
   }> {
     // check for custom attribute wallet token code
     let tokenCode = await registration.getRegistrationDataValueByName(
-      'tokenCodeVisa',
+      CustomDataAttributes.tokenCodeVisa,
     );
 
     if (tokenCode) {
@@ -256,11 +256,6 @@ export class IntersolveVisaService {
       issueTokenRequestEntity.statusCode = issueTokenResult.status;
       await this.intersolveVisaRequestRepository.save(issueTokenRequestEntity);
 
-      registration.saveData(issueTokenResult.data.data.code, {
-        name: 'tokenCodeVisa',
-      });
-      tokenCode = issueTokenResult.data.data.code;
-
       if (!issueTokenResult.data?.success) {
         response.status = StatusEnum.error;
         response.message = issueTokenResult.data?.errors?.length
@@ -279,6 +274,12 @@ export class IntersolveVisaService {
       intersolveVisaWallet.type = issueTokenResult.data.data.type;
       intersolveVisaWallet.intersolveVisaCustomer = visaCustomer;
       await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
+
+      // also store as custom attribute
+      registration.saveData(issueTokenResult.data.data.code, {
+        name: CustomDataAttributes.tokenCodeVisa,
+      });
+      tokenCode = issueTokenResult.data.data.code;
 
       // create virtual card
       const createVirtualCardPayload = new IntersolveCreateVirtualCardDto();
@@ -300,13 +301,13 @@ export class IntersolveVisaService {
 
       // store virtual data
       // TO DO: get this data from Intersolve
-
-      transactionNotifications.push(
-        this.buildNotificationObjectIssueCard(tokenCode),
-      );
-
-      return { tokenCode, transactionNotifications };
     }
+
+    transactionNotifications.push(
+      this.buildNotificationObjectIssueCard(tokenCode),
+    );
+
+    return { tokenCode, transactionNotifications };
   }
 
   private async getCustomerEntity(
@@ -372,7 +373,7 @@ export class IntersolveVisaService {
     registration: RegistrationEntity,
   ): Promise<IntersolveCreateCustomerResponseBodyDto> {
     const lastName = await registration.getRegistrationDataValueByName(
-      'lastName',
+      CustomDataAttributes.lastName,
     );
     const createCustomerRequest: IntersolveCreateCustomerDto = {
       externalReference: registration.referenceId,

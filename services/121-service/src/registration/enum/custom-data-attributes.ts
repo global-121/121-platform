@@ -27,6 +27,7 @@ export enum CustomDataAttributes {
   transferCosts = 'transferCosts',
   transferTrackNr = 'transferTrackNr',
   householdCount = 'householdCount',
+  tokenCodeVisa = 'tokenCodeVisa',
 }
 
 export enum GenericAttributes {
