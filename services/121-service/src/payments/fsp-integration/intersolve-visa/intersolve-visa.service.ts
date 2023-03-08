@@ -99,7 +99,7 @@ export class IntersolveVisaService {
       if (customer.visaCard) {
         // check if active
         if (customer.visaCard.status === IntersolveVisaWalletStatus.ACTIVE) {
-          // continue with top-up
+          // continue with load balance
           tokenCode = customer.visaCard.tokenCode;
         } else if (
           // check if inactive
@@ -174,7 +174,7 @@ export class IntersolveVisaService {
       transactionNotifications = createWalletResult.transactionNotifications;
     }
 
-    const topupResult = await this.topUpVisaCard(
+    const loadBalanceResult = await this.loadBalanceVisaCard(
       tokenCode,
       calculatedAmount,
       registration.referenceId,
@@ -185,8 +185,8 @@ export class IntersolveVisaService {
     );
     return {
       referenceId: paymentData.referenceId,
-      status: topupResult.status,
-      message: topupResult.message,
+      status: loadBalanceResult.status,
+      message: loadBalanceResult.message,
       date: new Date(),
       calculatedAmount: calculatedAmount,
       fspName: FspName.intersolveVisa,
@@ -398,7 +398,7 @@ export class IntersolveVisaService {
     );
   }
 
-  private async topUpVisaCard(
+  private async loadBalanceVisaCard(
     tokenCode: string,
     calculatedAmount: number,
     referenceId: string,
@@ -427,25 +427,25 @@ export class IntersolveVisaService {
         },
       ],
     };
-    const topUpResult = await this.intersolveVisaApiService.topUpCard(
-      tokenCode,
-      payload,
-    );
+    const loadBalanceResult =
+      await this.intersolveVisaApiService.loadBalanceCard(tokenCode, payload);
 
-    interSolveLoadRequestEntity.statusCode = topUpResult.status;
+    interSolveLoadRequestEntity.statusCode = loadBalanceResult.status;
     await this.intersolveVisaRequestRepository.save(
       interSolveLoadRequestEntity,
     );
 
     return {
-      status: topUpResult.data?.success ? StatusEnum.success : StatusEnum.error,
-      message: topUpResult.data?.success
+      status: loadBalanceResult.data?.success
+        ? StatusEnum.success
+        : StatusEnum.error,
+      message: loadBalanceResult.data?.success
         ? null
-        : topUpResult.data?.errors?.length
-        ? `TOP UP ERROR: ${this.intersolveErrorToMessage(
-            topUpResult.data?.errors,
+        : loadBalanceResult.data?.errors?.length
+        ? `LOAD BALANCE ERROR: ${this.intersolveErrorToMessage(
+            loadBalanceResult.data?.errors,
           )}`
-        : `TOP UP ERROR: ${topUpResult.status} - ${topUpResult.statusText}`,
+        : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`,
     };
   }
 
