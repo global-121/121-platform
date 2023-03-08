@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Espocrm webhook integration
 - Angular v14
-- Intersolve vis digital card flow
+- Salt passwords
 
 ---
 ## [1.81.1](https://github.com/global-121/121-platform/compare/v1.81.0...v1.81.1) - 2023-02-24
