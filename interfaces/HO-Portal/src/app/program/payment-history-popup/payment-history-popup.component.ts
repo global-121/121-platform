@@ -8,7 +8,7 @@ import {
   PopupPayoutDetails,
   SinglePayoutDetails,
 } from 'src/app/models/payment.model';
-import { Person, PersonRow } from 'src/app/models/person.model';
+import { Person } from 'src/app/models/person.model';
 import { Program } from 'src/app/models/program.model';
 import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
@@ -26,7 +26,6 @@ import { StatusEnum } from './../../models/status.enum';
 })
 export class PaymentHistoryPopupComponent implements OnInit {
   public person: Person;
-  public personRow: PersonRow;
   public programId: number;
   public program: Program;
   private locale: string;
@@ -128,7 +127,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
         index,
         this.person.referenceId,
       );
-
       let paymentRowValue: PaymentRowDetail = {
         paymentIndex: index,
         text: '',
@@ -166,7 +164,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
       }
       if (
         paymentRowValue.transaction ||
-        this.enableSinglePayment(this.personRow, paymentRowValue)
+        this.enableSinglePayment(paymentRowValue)
       ) {
         this.paymentRows.push(paymentRowValue);
       }
@@ -188,12 +186,12 @@ export class PaymentHistoryPopupComponent implements OnInit {
     return false;
   }
 
-  public enableSinglePayment(
-    personRow: PersonRow,
-    paymentRow: PaymentRowDetail,
-  ): boolean {
+  public enableSinglePayment(paymentRow: PaymentRowDetail): boolean {
+    if (!paymentRow) {
+      return false;
+    }
     const permission = this.canDoSinglePayment;
-    const included = personRow.status === RegistrationStatus.included;
+    const included = this.person.status === RegistrationStatus.included;
     const noPaymentDone = !paymentRow.transaction;
     const noFuturePayment = paymentRow.paymentIndex <= this.lastPaymentId;
     // Note, the number 5 is the same as allowed for the bulk payment as set in program-people-affected.component
@@ -226,10 +224,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
     let paymentDetails: PopupPayoutDetails = null;
     const hasWaiting = this.hasWaiting(paymentRow);
     const hasError = this.hasError(paymentRow);
-    const isSinglePayment = this.enableSinglePayment(
-      this.personRow,
-      paymentRow,
-    );
+    const isSinglePayment = this.enableSinglePayment(paymentRow);
 
     if (
       !this.hasVoucherSupport(paymentRow.fsp) &&
@@ -259,12 +254,12 @@ export class PaymentHistoryPopupComponent implements OnInit {
 
     if (
       this.canViewVouchers &&
-      this.hasVoucherSupport(this.personRow.fsp) &&
+      this.hasVoucherSupport(this.person.fsp) &&
       !!paymentRow.transaction
     ) {
       await this.programsService
         .exportVoucher(
-          this.personRow.referenceId,
+          this.person.referenceId,
           paymentRow.paymentIndex,
           this.programId,
         )
@@ -291,15 +286,15 @@ export class PaymentHistoryPopupComponent implements OnInit {
     if (this.canDoSinglePayment) {
       showRetryButton = !hasWaiting && hasError;
       doSinglePaymentDetails = {
-        paNr: this.personRow.pa,
+        paNr: this.person.id,
         amount: this.program.fixedTransferValue,
         currency: this.program.currency,
-        multiplier: this.personRow.paymentAmountMultiplier
-          ? Number(this.personRow.paymentAmountMultiplier.substr(0, 1))
+        multiplier: this.person.paymentAmountMultiplier
+          ? this.person.paymentAmountMultiplier
           : 1,
         programId: this.programId,
         payment: paymentRow.paymentIndex,
-        referenceId: this.personRow.referenceId,
+        referenceId: this.person.referenceId,
       };
     }
     const titleError = hasError

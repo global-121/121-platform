@@ -6,50 +6,88 @@
 <ion-content class="ion-padding">
   <ion-spinner *ngIf="loading"></ion-spinner>
   <ng-container *ngIf="!loading">
-    <h1>Program {{ programId }}</h1>
+    <h1 class="ion-padding">Program {{ programId }}</h1>
     <ion-text *ngIf="!person">Person not found</ion-text>
-    <ion-card
-      *ngIf="person"
-      style="max-width: 320px"
-    >
-      <ion-card-header>
-        <ion-card-title> {{ person.name }} </ion-card-title>
-        <ion-card-subtitle>
-          <ion-row class="ion-justify-content-between">
-            <ion-note
-              >{{ 'registration-details.personal-information-table.subtitle' |
-              translate }}</ion-note
-            >
-            <ion-button
-              fill="outline"
-              color="primary"
-              size="small"
-              shape="round"
-              (click)="editPersonAffectedPopup()"
-              >{{ 'registration-details.show-all' | translate }}</ion-button
-            >
-          </ion-row>
-        </ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content class="ion-no-padding">
-        <ion-list
-          class="ion-no-padding"
-          lines="full"
-        >
-          <ion-item
-            *ngFor="let info of personalInfoTable"
-            class="ion-justify-content-between"
-            style="font-size: 14px"
+    <ng-container *ngIf="person">
+      <ion-card style="max-width: 320px">
+        <ion-card-header>
+          <ion-card-title> {{ person.name }} </ion-card-title>
+          <ion-card-subtitle>
+            <ion-row class="ion-justify-content-between">
+              <ion-note
+                >{{ 'registration-details.personal-information-table.subtitle' |
+                translate }}</ion-note
+              >
+              <ion-button
+                fill="outline"
+                color="primary"
+                size="small"
+                shape="round"
+                (click)="editPersonAffectedPopup()"
+                >{{ 'registration-details.show-all' | translate }}</ion-button
+              >
+            </ion-row>
+          </ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content class="ion-no-padding">
+          <ion-list
+            class="ion-no-padding"
+            lines="full"
           >
-            <ion-label [innerHTML]="info.label"></ion-label>
-            <ion-label class="ion-text-end"
-              ><strong>{{ info.value }}</strong></ion-label
+            <ion-item
+              *ngFor="let item of personalInfoTable"
+              class="ion-justify-content-between"
+              style="font-size: 14px"
             >
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
+              <ion-label [innerHTML]="item.label"></ion-label>
+              <ion-label class="ion-text-end"
+                ><strong>{{ item.value }}</strong></ion-label
+              >
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
 
-    <pre>{{ person | json }}</pre>
+      <ion-card style="max-width: 320px">
+        <ion-card-header>
+          <ion-card-title>
+            {{ 'registration-details.payment-overview.title' | translate }}
+          </ion-card-title>
+          <ion-card-subtitle>
+            <ion-row class="ion-justify-content-between">
+              <ion-note
+                >{{ 'registration-details.payment-overview.subtitle' | translate
+                }}</ion-note
+              >
+              <ion-button
+                fill="outline"
+                color="primary"
+                size="small"
+                shape="round"
+                (click)="paymentHistoryPopup()"
+                >{{ 'registration-details.show-all' | translate }}</ion-button
+              >
+            </ion-row>
+          </ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content class="ion-no-padding">
+          <ion-list
+            class="ion-no-padding"
+            lines="full"
+          >
+            <ion-item
+              *ngFor="let item of paymentsTable"
+              class="ion-justify-content-between"
+              style="font-size: 14px"
+            >
+              <ion-label [innerHTML]="item.label"></ion-label>
+              <ion-label class="ion-text-end"
+                ><strong>{{ item.value }}</strong></ion-label
+              >
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </ng-container>
   </ng-container>
 </ion-content>

@@ -1198,7 +1198,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       component: PaymentHistoryPopupComponent,
       componentProps: {
         person,
-        personRow,
         programId,
         program: this.program,
         readOnly: !this.canUpdatePaData,

@@ -336,7 +336,9 @@
           "no-payment-yet": "No payment yet",
           "show-status": "Show status",
           "do-single-payment": "Do single payment",
-          "payment-number": "Payment #"
+          "payment-number": "Payment #",
+          "pending": "Pending",
+          "above": "Above limit"
         },
         "edit-person-affected-popup": {
           "edit-icon-title": "Edit information of Person Affected",
@@ -455,7 +457,7 @@
           "download-voucher": "Download voucher",
           "single-payment": {
             "intro": "Do payment for 1 PA only",
-            "start-payout": "Start payout now for {{paNr}}",
+            "start-payout": "Start payout now for PA #{{paNr}}",
             "total-amount": "Total amount: {{cost}} * multiplier of {{multiplier}} = <strong>{{totalCost}}</strong>"
           }
         },
@@ -636,7 +638,7 @@
   "registration-details": {
     "show-all": "Show All",
     "personal-information-table": {
-      "subtitle": "Personal Information",
+      "subtitle": "Personal information",
       "status": "Status: <b>{{status}}</b>",
       "registeredDate": "Registered",
       "lastUpdateDate": "Last Update",
@@ -644,7 +646,12 @@
       "paymentsDone": "Payments Done",
       "primaryLanguage": "Primary language",
       "phone": "Phone",
-      "whatsappNumber": "whatsApp Number"
+      "whatsappNumber": "WhatsApp Number"
+    },
+    "payment-overview": {
+      "title": "Payment overview",
+      "subtitle": "Payment information",
+      "paymentLabel": "Payment #{{paymentNumber}}"
     }
   },
   "refresh-data": {
