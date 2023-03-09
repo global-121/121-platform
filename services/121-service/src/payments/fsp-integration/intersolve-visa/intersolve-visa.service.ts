@@ -50,7 +50,7 @@ export class IntersolveVisaService {
     programId: number,
     paymentNr: number,
     amount: number,
-  ): Promise<FspTransactionResultDto> {
+  ): Promise<void> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.intersolveVisa;
@@ -64,14 +64,12 @@ export class IntersolveVisaService {
         calculatedAmount,
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
+      await this.transactionsService.storeTransactionUpdateStatus(
+        paymentRequestResultPerPa,
+        programId,
+        paymentNr,
+      );
     }
-    this.transactionsService.storeAllTransactions(
-      fspTransactionResult,
-      programId,
-      paymentNr,
-    );
-
-    return fspTransactionResult;
   }
 
   private async sendPaymentToPa(
