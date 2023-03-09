@@ -305,10 +305,12 @@ export class IntersolveVisaApiMockService {
     const res: IntersolveGetVirtualCardResponseDto = {
       status: 200,
       statusText: 'OK',
+      data: {},
     };
     if (tokenCode.toLowerCase().includes('mock-fail-get-virtual-card')) {
       res.status = 404;
       res.statusText = 'NOT_FOUND';
+      res.data.errors = [];
       res.data.errors.push({
         code: 'NOT_FOUND',
         field: 'mock field',

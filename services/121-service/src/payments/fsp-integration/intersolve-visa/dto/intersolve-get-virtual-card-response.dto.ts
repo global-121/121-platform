@@ -6,7 +6,7 @@ export class IntersolveGetVirtualCardResponseDto {
   public statusText: string;
 }
 export class IntersolveGetVirtualCardResponseDataDto {
-  carddataurl: string;
-  controltoken: string;
+  carddataurl?: string;
+  controltoken?: string;
   errors?: IntersolveReponseErrorDto[];
 }
