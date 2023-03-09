@@ -50,6 +50,9 @@ export class IntersolveVisaApiMockService {
     } else if (lastName.includes('mock-fail-create-virtual-card')) {
       // pass different holderId to be later used again in mock create-virtual-card call
       res.data.data.id = 'mock-fail-create-virtual-card';
+    } else if (lastName.includes('mock-fail-get-virtual-card')) {
+      // pass different holderId to be later used again in mock get-virtual-card call
+      res.data.data.id = 'mock-fail-get-virtual-card';
     } else if (lastName.includes('mock-fail-create-customer')) {
       res.data.success = false;
       res.data.errors.push({
@@ -214,8 +217,12 @@ export class IntersolveVisaApiMockService {
     ];
 
     if (holderId.toLowerCase().includes('mock-fail-create-virtual-card')) {
-      // pass different holderId to be later used again in mock issue-token call
+      // pass different token to be later used again in mock create-virtual-card call
       response.data.data.code = 'mock-fail-create-virtual-card';
+    }
+    if (holderId.toLowerCase().includes('mock-fail-get-virtual-card')) {
+      // pass different token to be later used again in mock get-virtual-card call
+      response.data.data.code = 'mock-fail-get-virtual-card';
     }
 
     if (holderId.toLowerCase().includes('mock-fail-issue-token')) {

@@ -5,3 +5,4 @@ referenceId,namePartnerOrganization,preferredLanguage,paymentAmountMultiplier,ma
 64d618f6906acb341,ABC,en,1,,Test,Test,14155238886,Intersolve-visa,14155238886,mock-fail-activate,true
 64d618f6906acb342,ABC,en,1,,Test,mock-fail-issue-token,14155238886,Intersolve-visa,14155238886,,false
 64d618f6906acb343,ABC,en,1,,Test,mock-fail-create-virtual-card,14155238886,Intersolve-visa,14155238886,,false
+64d618f6906acb344,ABC,en,1,,Test,mock-fail-get-virtual-card,14155238886,Intersolve-visa,14155238886,,false
