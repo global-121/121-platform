@@ -77,6 +77,13 @@ export class EspocrmService {
   public async postWebhookIntegration(
     data: EspocrmWebhookDto,
   ): Promise<EspocrmWebhookEntity> {
-    return await this.espocrmWebhookRepository.save(data);
+    const webhook = await this.getWebhook(data.actionType, data.entityType);
+    if (webhook) {
+      webhook.secretKey = data.secretKey;
+      webhook.referenceId = data.referenceId;
+      return await this.espocrmWebhookRepository.save(webhook);
+    } else {
+      return await this.espocrmWebhookRepository.save(data);
+    }
   }
 }
