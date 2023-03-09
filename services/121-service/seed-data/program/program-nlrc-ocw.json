@@ -49,20 +49,6 @@
   "programCustomAttributes": [
     {
       "label": {
-        "en": "Partner Organization"
-      },
-      "name": "namePartnerOrganization",
-      "type": "text",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
-      "phases": ["registrationValidation", "inclusion", "payment"]
-    },
-    {
-      "label": {
         "en": "WhatsApp Nr."
       },
       "name": "whatsappPhoneNumber",
