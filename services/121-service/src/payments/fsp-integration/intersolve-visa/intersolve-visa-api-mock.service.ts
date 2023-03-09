@@ -40,26 +40,17 @@ export class IntersolveVisaApiMockService {
         createdAt: '2023-02-08T14:36:05.816Z',
       },
     };
+    const lastName = payload.individual.lastName
+      ? payload.individual.lastName.toLowerCase()
+      : '';
 
-    if (
-      payload.individual.lastName
-        .toLowerCase()
-        .includes('mock-fail-issue-token')
-    ) {
+    if (lastName.includes('mock-fail-issue-token')) {
       // pass different holderId to be later used again in mock issue-token call
       res.data.data.id = 'mock-fail-issue-token';
-    } else if (
-      payload.individual.lastName
-        .toLowerCase()
-        .includes('mock-fail-create-virtual-card')
-    ) {
+    } else if (lastName.includes('mock-fail-create-virtual-card')) {
       // pass different holderId to be later used again in mock create-virtual-card call
       res.data.data.id = 'mock-fail-create-virtual-card';
-    } else if (
-      payload.individual.lastName
-        .toLowerCase()
-        .includes('mock-fail-create-customer')
-    ) {
+    } else if (lastName.includes('mock-fail-create-customer')) {
       res.data.success = false;
       res.data.errors.push({
         code: 'NOT_FOUND',
