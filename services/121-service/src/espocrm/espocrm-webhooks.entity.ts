@@ -1,8 +1,9 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Unique } from 'typeorm';
 import { CascadeDeleteEntity } from '../base.entity';
 import { EspocrmActionTypeEnum } from './espocrm-action-type.enum';
 import { EspocrEntityTypeEnum } from './espocrm-entity-type';
 
+@Unique('espocrmWebhookActionTypeEnityType', ['actionType', 'entityType'])
 @Entity('espocrm_webhook')
 export class EspocrmWebhookEntity extends CascadeDeleteEntity {
   @Column()
