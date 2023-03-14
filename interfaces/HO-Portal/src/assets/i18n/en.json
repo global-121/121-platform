@@ -337,7 +337,7 @@
           "show-status": "Show status",
           "do-single-payment": "Do single payment",
           "payment-number": "Payment #",
-          "pending": "Pending",
+          "planned": "Planned",
           "above": "Above limit"
         },
         "edit-person-affected-popup": {

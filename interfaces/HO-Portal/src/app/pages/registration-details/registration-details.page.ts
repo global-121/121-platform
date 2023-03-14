@@ -259,7 +259,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
         value =
           this.person.maxPayments && paymentNumber > this.person.maxPayments
             ? itemValue('above')
-            : itemValue('pending');
+            : itemValue('planned');
       } else {
         label = itemLabel(payments[i].payment);
         value = itemValue(payments[i].status);
