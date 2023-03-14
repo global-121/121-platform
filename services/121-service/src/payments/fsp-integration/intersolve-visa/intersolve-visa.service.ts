@@ -180,7 +180,7 @@ export class IntersolveVisaService {
       paymentNr,
     );
     transactionNotifications.push(
-      this.buildNotificationObjectLoad(calculatedAmount),
+      this.buildNotificationObjectLoadBalance(calculatedAmount),
     );
     return {
       referenceId: paymentData.referenceId,
@@ -246,6 +246,8 @@ export class IntersolveVisaService {
           return { response };
         }
       }
+
+      // add message for 'created physical card'
       transactionNotifications.push(
         this.buildNotificationObjectIssuePhysicalCard(tokenCode),
       );
@@ -312,6 +314,7 @@ export class IntersolveVisaService {
         return { response };
       }
 
+      // get and store virtual card details
       const getVirtualCardResult =
         await this.intersolveVisaApiService.getVirtualCard(tokenCode);
 
@@ -331,6 +334,7 @@ export class IntersolveVisaService {
 
       await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
 
+      // add message for 'created digital card'
       transactionNotifications.push(
         this.buildNotificationObjectIssueDigitalCard(
           tokenCode,
@@ -372,7 +376,7 @@ export class IntersolveVisaService {
     };
   }
 
-  private buildNotificationObjectLoad(
+  private buildNotificationObjectLoadBalance(
     amount: number,
   ): TransactionNotificationObject {
     return {
