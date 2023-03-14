@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProgramEntity } from '../../../programs/program.entity';
+import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
 import { TransactionsModule } from '../../transactions/transactions.module';
@@ -17,7 +18,7 @@ import { BelcashService } from './belcash.service';
     UserModule,
     TransactionsModule,
   ],
-  providers: [BelcashService, BelcashApiService],
+  providers: [BelcashService, BelcashApiService, CustomHttpService],
   controllers: [BelcashController],
   exports: [BelcashService, BelcashApiService],
 })
