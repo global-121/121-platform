@@ -1,4 +1,5 @@
 export class IntersolveIssueTokenDto {
-  public reference: string;
-  public saleId: string;
+  public holderId?: string;
+  public securityCode?: string;
+  public description?: string;
 }

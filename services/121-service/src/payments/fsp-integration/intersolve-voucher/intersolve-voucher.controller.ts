@@ -28,7 +28,7 @@ import { PermissionsGuard } from '../../../guards/permissions.guard';
 import { IMAGE_UPLOAD_API_FORMAT } from '../../../shared/file-upload-api-format';
 import { PermissionEnum } from '../../../user/permission.enum';
 import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
-import { InersolveJobDetails } from './dto/job-details.dto';
+import { IntersolveVoucherJobDetails } from './dto/job-details.dto';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
@@ -122,7 +122,7 @@ export class IntersolveVoucherController {
   @ApiResponse({ status: 201, description: 'Voucher update job started' })
   @Post('/programs/:programId/payments/intersolve/batch-jobs')
   public async createJob(
-    @Body() jobDetails: InersolveJobDetails,
+    @Body() jobDetails: IntersolveVoucherJobDetails,
     @Param() param,
   ): Promise<void> {
     await this.intersolveService.updateVoucherBalanceJob(
