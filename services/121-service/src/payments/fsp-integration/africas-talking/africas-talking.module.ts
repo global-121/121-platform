@@ -1,6 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AzureLoggerMiddleware } from '../../../shared/middleware/azure-logger.middleware';
 import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
 import { TransactionsModule } from '../../transactions/transactions.module';
@@ -20,4 +21,8 @@ import { AfricasTalkingService } from './africas-talking.service';
   controllers: [AfricasTalkingController],
   exports: [AfricasTalkingService, AfricasTalkingApiService],
 })
-export class AfricasTalkingModule {}
+export class AfricasTalkingModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(AzureLoggerMiddleware).forRoutes(AfricasTalkingController);
+  }
+}
