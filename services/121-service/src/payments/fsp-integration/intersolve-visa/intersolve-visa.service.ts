@@ -98,10 +98,7 @@ export class IntersolveVisaService {
           customer.visaCard.status === IntersolveVisaWalletStatus.INACTIVE
         ) {
           // activate
-          const activateResult = await this.activateToken(
-            registration.referenceId,
-            customer.visaCard,
-          );
+          const activateResult = await this.activateToken(customer.visaCard);
           if (!activateResult.success) {
             response.status = StatusEnum.error;
             response.message = activateResult.message;
@@ -230,10 +227,7 @@ export class IntersolveVisaService {
 
       // activate wallet and store status
       if (intersolveVisaWallet.status === IntersolveVisaWalletStatus.INACTIVE) {
-        const activateResult = await this.activateToken(
-          registration.referenceId,
-          intersolveVisaWallet,
-        );
+        const activateResult = await this.activateToken(intersolveVisaWallet);
         if (!activateResult.success) {
           response.status = StatusEnum.error;
           response.message = activateResult.message;
@@ -459,7 +453,6 @@ export class IntersolveVisaService {
   }
 
   private async activateToken(
-    referenceId: string,
     intersolveVisaWallet: IntersolveVisaWalletEntity,
   ): Promise<{ success: boolean; message?: string }> {
     const reference = uuid();
