@@ -34,7 +34,7 @@
     "test:watchall": "npm test -- --watchAll",
     "test:coverage": "npm test -- --coverage --coverageDirectory=coverage",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "migration:create": "npm run typeorm migration:create -- -d ./appdatasource.ts",
+    "migration:create": "npm run typeorm migration:create --",
     "migration:generate": "npm run typeorm migration:generate -- -d ./appdatasource.ts",
     "migration:run": "npm run typeorm migration:run -- -d ./appdatasource.ts",
     "migration:revert": "npm run typeorm migration:revert -- -d ./appdatasource.ts"

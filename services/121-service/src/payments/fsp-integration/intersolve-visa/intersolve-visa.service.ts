@@ -23,12 +23,8 @@ import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { MessageStatus as MessageStatusDto } from './dto/message-status.dto';
 import { IntersolveVisaWalletStatus } from './enum/intersolve-visa-token-status.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
-import { IntersolveVisaRequestEntity } from './intersolve-visa-request.entity';
 import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
-import {
-  IntersolveVisaApiService,
-  IntersolveVisaEndpoints,
-} from './intersolve-visa.api.service';
+import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 
 @Injectable()
 export class IntersolveVisaService {
@@ -38,8 +34,6 @@ export class IntersolveVisaService {
   public intersolveVisaCustomerRepo: Repository<IntersolveVisaCustomerEntity>;
   @InjectRepository(IntersolveVisaWalletEntity)
   public intersolveVisaWalletRepository: Repository<IntersolveVisaWalletEntity>;
-  @InjectRepository(IntersolveVisaRequestEntity)
-  public intersolveVisaRequestRepository: Repository<IntersolveVisaRequestEntity>;
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
@@ -104,10 +98,7 @@ export class IntersolveVisaService {
           customer.visaCard.status === IntersolveVisaWalletStatus.INACTIVE
         ) {
           // activate
-          const activateResult = await this.activateToken(
-            registration.referenceId,
-            customer.visaCard,
-          );
+          const activateResult = await this.activateToken(customer.visaCard);
           if (!activateResult.success) {
             response.status = StatusEnum.error;
             response.message = activateResult.message;
@@ -236,10 +227,7 @@ export class IntersolveVisaService {
 
       // activate wallet and store status
       if (intersolveVisaWallet.status === IntersolveVisaWalletStatus.INACTIVE) {
-        const activateResult = await this.activateToken(
-          registration.referenceId,
-          intersolveVisaWallet,
-        );
+        const activateResult = await this.activateToken(intersolveVisaWallet);
         if (!activateResult.success) {
           response.status = StatusEnum.error;
           response.message = activateResult.message;
@@ -255,21 +243,11 @@ export class IntersolveVisaService {
       // DIGITAL CARD FLOW
 
       // create wallet
-      const reference = uuid();
-      const issueTokenRequest = new IntersolveVisaRequestEntity();
-      issueTokenRequest.reference = reference;
-      issueTokenRequest.saleId = registration.referenceId;
-      issueTokenRequest.endpoint = IntersolveVisaEndpoints.ISSUE_TOKEN;
-      const issueTokenRequestEntity =
-        await this.intersolveVisaRequestRepository.save(issueTokenRequest);
-
       const issueTokenPayload = new IntersolveIssueTokenDto();
       issueTokenPayload.holderId = visaCustomer.holderId;
       const issueTokenResult = await this.intersolveVisaApiService.issueToken(
         issueTokenPayload,
       );
-      issueTokenRequestEntity.statusCode = issueTokenResult.status;
-      await this.intersolveVisaRequestRepository.save(issueTokenRequestEntity);
 
       if (!issueTokenResult.data?.success) {
         response.status = StatusEnum.error;
@@ -442,19 +420,12 @@ export class IntersolveVisaService {
     payment: number,
   ): Promise<MessageStatusDto> {
     const amountInCents = calculatedAmount * 100;
-    const interSolveLoadRequest = new IntersolveVisaRequestEntity();
-    interSolveLoadRequest.reference = uuid();
-    interSolveLoadRequest.endpoint = IntersolveVisaEndpoints.LOAD;
-    interSolveLoadRequest.saleId = `${referenceId}-${payment}`;
-    interSolveLoadRequest.metadata = JSON.parse(
-      JSON.stringify({ tokenCode: tokenCode, quantityValue: amountInCents }),
-    );
-    const interSolveLoadRequestEntity =
-      await this.intersolveVisaRequestRepository.save(interSolveLoadRequest);
+    const reference = uuid();
+    const saleId = `${referenceId}-${payment}`;
 
     const payload: IntersolveLoadDto = {
-      reference: interSolveLoadRequestEntity.reference,
-      saleId: interSolveLoadRequestEntity.saleId,
+      reference: reference,
+      saleId: saleId,
       quantities: [
         {
           quantity: {
@@ -466,11 +437,6 @@ export class IntersolveVisaService {
     };
     const loadBalanceResult =
       await this.intersolveVisaApiService.loadBalanceCard(tokenCode, payload);
-
-    interSolveLoadRequestEntity.statusCode = loadBalanceResult.status;
-    await this.intersolveVisaRequestRepository.save(
-      interSolveLoadRequestEntity,
-    );
 
     return {
       status: loadBalanceResult.data?.success
@@ -487,21 +453,12 @@ export class IntersolveVisaService {
   }
 
   private async activateToken(
-    referenceId: string,
     intersolveVisaWallet: IntersolveVisaWalletEntity,
   ): Promise<{ success: boolean; message?: string }> {
-    const intersolveVisaRequest = new IntersolveVisaRequestEntity();
-    intersolveVisaRequest.reference = uuid();
-    intersolveVisaRequest.metadata = JSON.parse(
-      JSON.stringify({ tokenCode: intersolveVisaWallet.tokenCode }),
-    );
-    intersolveVisaRequest.saleId = referenceId;
-    intersolveVisaRequest.endpoint = IntersolveVisaEndpoints.ACTIVATE;
-    const intersolveVisaRequestEntity =
-      await this.intersolveVisaRequestRepository.save(intersolveVisaRequest);
+    const reference = uuid();
 
     const payload: IntersolveActivateTokenRequestDto = {
-      reference: intersolveVisaRequestEntity.reference,
+      reference: reference,
     };
     const activateResult = await this.intersolveVisaApiService.activateToken(
       intersolveVisaWallet.tokenCode,
@@ -517,10 +474,6 @@ export class IntersolveVisaService {
           : `ACTIVATE CARD ERROR: ${activateResult.status} - ${activateResult.statusText}`,
       };
     }
-    intersolveVisaRequestEntity.statusCode = activateResult.status;
-    await this.intersolveVisaRequestRepository.save(
-      intersolveVisaRequestEntity,
-    );
 
     // store activated status
     intersolveVisaWallet.status = IntersolveVisaWalletStatus.ACTIVE;
