@@ -8,7 +8,7 @@ import { FspQuestionEntity } from './fsp-question.entity';
 
 @Entity('fsp')
 export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
-  @Column()
+  @Column({ unique: true })
   public fsp: string;
 
   @Column('json', { nullable: true })

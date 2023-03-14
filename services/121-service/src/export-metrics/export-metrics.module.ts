@@ -5,6 +5,7 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { PaymentsModule } from '../payments/payments.module';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { TransactionsModule } from '../payments/transactions/transactions.module';
+import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramModule } from '../programs/programs.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
@@ -21,6 +22,7 @@ import { ExportMetricsService } from './export-metrics.service';
   imports: [
     TypeOrmModule.forFeature([
       ProgramQuestionEntity,
+      ProgramCustomAttributeEntity,
       FinancialServiceProviderEntity,
       FspQuestionEntity,
       RegistrationEntity,

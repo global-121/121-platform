@@ -96,6 +96,7 @@ async function bootstrap(): Promise<void> {
       persistAuthorization: true,
       tagsSorter: 'alpha',
       operationsSorter: 'alpha',
+      defaultModelExpandDepth: 10,
     },
   });
   app.useGlobalPipes(

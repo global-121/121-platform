@@ -50,6 +50,10 @@ export class UserService {
       .where({ username: loginUserDto.username })
       .getOne();
 
+    if (!saltCheck) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
     const userSalt = saltCheck.salt;
 
     const findOneOptions = {

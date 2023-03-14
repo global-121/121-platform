@@ -1,4 +1,8 @@
-export class RegistrationDataSaveError {
+export enum ErrorEnum {
+  RegistrationDataError = 'RegistrationDataError',
+}
+
+export class RegistrationDataError {
   public constructor(message: string) {
     const error = Error(message);
 
@@ -10,11 +14,11 @@ export class RegistrationDataSaveError {
     });
     Object.defineProperty(error, 'name', {
       get() {
-        return 'RegistrationDataSaveError';
+        return ErrorEnum.RegistrationDataError;
       },
     });
     // capture where error occured
-    Error.captureStackTrace(error, RegistrationDataSaveError);
+    Error.captureStackTrace(error, RegistrationDataError);
     return error;
   }
 }

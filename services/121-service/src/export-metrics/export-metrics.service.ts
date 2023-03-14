@@ -43,6 +43,8 @@ export class ExportMetricsService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
+  @InjectRepository(ProgramCustomAttributeEntity)
+  private readonly programCustomAttributeRepository: Repository<ProgramCustomAttributeEntity>;
   @InjectRepository(FspQuestionEntity)
   private readonly fspQuestionRepository: Repository<FspQuestionEntity>;
   @InjectRepository(TransactionEntity)
@@ -268,6 +270,7 @@ export class ExportMetricsService {
 
   private getRelationOptionsForDuplicates(
     programQuestions: ProgramQuestionEntity[],
+    programCustomAttributes: ProgramCustomAttributeEntity[],
     fspQuestions: FspQuestionEntity[],
   ): RegistrationDataOptions[] {
     const relationOptions = [];
@@ -275,6 +278,15 @@ export class ExportMetricsService {
       const relationOption = new RegistrationDataOptions();
       relationOption.name = programQuestion.name;
       relationOption.relation = { programQuestionId: programQuestion.id };
+      relationOptions.push(relationOption);
+    }
+
+    for (const programCustomAttribute of programCustomAttributes) {
+      const relationOption = new RegistrationDataOptions();
+      relationOption.name = programCustomAttribute.name;
+      relationOption.relation = {
+        programCustomAttributeId: programCustomAttribute.id,
+      };
       relationOptions.push(relationOption);
     }
 
@@ -603,6 +615,18 @@ export class ExportMetricsService {
     const programQuestionIds = programQuestions.map((question) => {
       return question.id;
     });
+    const programCustomAttributes =
+      await this.programCustomAttributeRepository.find({
+        where: {
+          program: {
+            id: programId,
+          },
+          duplicateCheck: true,
+        },
+      });
+    const programCustomAttributeIds = programCustomAttributes.map((att) => {
+      return att.id;
+    });
     const fspQuestions = await this.fspQuestionRepository.find({
       relations: ['fsp'],
       where: {
@@ -612,23 +636,31 @@ export class ExportMetricsService {
     const fspQuestionIds = fspQuestions.map((fspQuestion) => {
       return fspQuestion.id;
     });
+
     const program = await this.programRepository.findOne({
       where: { id: programId },
     });
     const nameRelations = await this.getNameRelationsByProgram(programId);
     const duplicateRelationOptions = this.getRelationOptionsForDuplicates(
       programQuestions,
+      programCustomAttributes,
       fspQuestions,
     );
     const relationOptions = [...nameRelations, ...duplicateRelationOptions];
 
     const whereOptions = [];
-    if (fspQuestionIds.length > 0) {
-      whereOptions.push({ fspQuestionId: In(fspQuestionIds) });
-    }
     if (programQuestionIds.length > 0) {
       whereOptions.push({ programQuestionId: In(programQuestionIds) });
     }
+    if (programCustomAttributeIds.length > 0) {
+      whereOptions.push({
+        programCustomAttributeId: In(programCustomAttributeIds),
+      });
+    }
+    if (fspQuestionIds.length > 0) {
+      whereOptions.push({ fspQuestionId: In(fspQuestionIds) });
+    }
+
     const query = this.registrationDataRepository
       .createQueryBuilder('registration_data')
       .select(

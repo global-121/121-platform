@@ -39,8 +39,6 @@ export class SecretDto {
 export class ScriptsController {
   public constructor(private dataSource: DataSource) {}
 
-  // private dataSource = new DataSource(ORMConfig as DataSourceOptions)
-  // public constructor() { }
   @ApiQuery({
     name: 'script',
     enum: SeedScript,

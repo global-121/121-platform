@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import fspIntersolve from '../../seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
 import instanceDemo from '../../seed-data/instance/instance-demo.json';
 import programDemo from '../../seed-data/program/program-demo.json';
 import { InterfaceScript } from './scripts.module';
@@ -16,9 +15,6 @@ export class SeedDemoProgram implements InterfaceScript {
   public async run(): Promise<void> {
     const seedInit = await new SeedInit(this.dataSource);
     await seedInit.run();
-
-    // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
-    await this.seedHelper.addFsp(fspIntersolve);
 
     // ***** CREATE PROGRAM *****
     const program = await this.seedHelper.addProgram(programDemo);

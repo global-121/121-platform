@@ -8,6 +8,7 @@ import {
   IsOptional,
   IsPositive,
   IsString,
+  Length,
 } from 'class-validator';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ImportFspReconciliationArrayDto } from '../../payments/dto/import-fsp-reconciliation.dto';
@@ -90,4 +91,10 @@ export class ImportRegistrationsDto extends BulkImportDto {
   })
   @IsIn(fspArray)
   public fspName: FspName;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Length(5, 200)
+  public referenceId: string;
 }
