@@ -1796,4 +1796,13 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
 
     return value;
   }
+
+  public getProfilePageUrl(personRow: PersonRow): string {
+    if (!personRow) {
+      return '';
+    }
+    return `/program/${this.programId}/registration/${Number(
+      personRow.pa.split('#')[1],
+    )}`;
+  }
 }

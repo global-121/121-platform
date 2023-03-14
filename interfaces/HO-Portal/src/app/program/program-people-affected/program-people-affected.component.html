@@ -232,46 +232,7 @@
         class="ion-align-items-center"
         style="display: flex"
       >
-        <button
-          *ngIf="canViewPersonalData"
-          type="button"
-          class="ion-no-padding popup-button"
-          data-cy="pa-edit-button"
-          (click)="editPersonAffectedPopup(row, programId)"
-          [attr.title]="
-            ('page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'
-              | translate) +
-            (row.hasNote
-              ? ' - ' +
-                ('page.program.program-people-affected.edit-person-affected-popup.has-notes-title'
-                  | translate)
-              : '')
-          "
-          [attr.aria-label]="
-            ('page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'
-              | translate) +
-            (row.hasNote
-              ? ' - ' +
-                ('page.program.program-people-affected.edit-person-affected-popup.has-notes-title'
-                  | translate)
-              : '')
-          "
-        >
-          <ion-icon
-            name="information"
-            size="small"
-            aria-hidden="true"
-          ></ion-icon>
-          <ion-icon
-            *ngIf="row.hasNote"
-            name="document"
-            color="warning"
-            size="small"
-            aria-hidden="true"
-          ></ion-icon>
-        </button>
-        &nbsp;&nbsp;
-        <span>{{ value }}</span>
+        <a [routerLink]="getProfilePageUrl(row)">{{ value }}</a>
       </div>
     </ng-template>
   </ngx-datatable-column>
@@ -321,7 +282,8 @@
           value !== true &&
           value !== false &&
           value &&
-          column.prop !== 'messages'
+          column.prop !== 'messages' &&
+          column.prop !== 'name'
         "
       >
         <span [attr.title]="value"> {{ value }} </span>
@@ -341,6 +303,29 @@
         <span *ngIf="!row.lastMessageStatus">
           {{ value }}
         </span>
+      </ng-container>
+      <ng-container *ngIf="column.prop === 'name'">
+        <div
+          class="ion-align-items-center ion-justify-content-between"
+          style="display: flex"
+        >
+          <a
+            style="
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            "
+            [routerLink]="getProfilePageUrl(row)"
+            >{{ value }}</a
+          >
+          <ion-icon
+            *ngIf="row?.hasNote"
+            name="document"
+            color="warning"
+            size="small"
+            aria-hidden="true"
+          ></ion-icon>
+        </div>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>
