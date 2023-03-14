@@ -1,5 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
+import { TelemetryClient } from 'applicationinsights';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
 class Header {
@@ -7,9 +9,23 @@ class Header {
   public value: string;
 }
 
+class Request {
+  public headers: Header[];
+  public url: string;
+  public payload: any;
+}
+
 @Injectable()
 export class CustomHttpService {
-  public constructor(private readonly httpService: HttpService) {}
+  defaultClient: TelemetryClient;
+
+  public constructor(private readonly httpService: HttpService) {
+    if (process.env.APPLICATION_INSIGHT_IKEY) {
+      this.defaultClient = new TelemetryClient(
+        process.env.APPLICATION_INSIGHT_IKEY,
+      );
+    }
+  }
 
   public async get<T>(url: string, headers?: Header[]): Promise<T> {
     return await lastValueFrom(
@@ -19,9 +35,11 @@ export class CustomHttpService {
         })
         .pipe(
           map((response) => {
+            this._logMessage({ headers, url, payload: null }, response);
             return response;
           }),
           catchError((err) => {
+            this._logError({ headers, url, payload: null }, err.response);
             return of(err.response);
           }),
         ),
@@ -40,9 +58,11 @@ export class CustomHttpService {
         })
         .pipe(
           map((response) => {
+            this._logMessage({ headers, url, payload: payload }, response);
             return response;
           }),
           catchError((err) => {
+            this._logError({ headers, url, payload: payload }, err.response);
             return of(err.response);
           }),
         ),
@@ -59,5 +79,35 @@ export class CustomHttpService {
       }
     }
     return returnHeaders;
+  }
+
+  private _logMessage(request: Request, response: AxiosResponse): void {
+    if (this.defaultClient) {
+      const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
+        request.payload,
+      )}`;
+      const responseContent = `Response: ${response.status} ${
+        response.statusText
+      } - Body: ${JSON.stringify(response.data)}`;
+      this.defaultClient.trackTrace({
+        message: `${requestContent} - ${responseContent}`,
+      });
+      this.defaultClient.flush();
+    }
+  }
+
+  private _logError(request: Request, error: AxiosResponse): void {
+    if (this.defaultClient) {
+      const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
+        request.payload,
+      )}`;
+      const responseContent = `Response error: ${error.status} ${
+        error.statusText
+      } - Body: ${JSON.stringify(error.data)}`;
+      this.defaultClient.trackException({
+        exception: new Error(`${requestContent} - ${responseContent}}`),
+      });
+      this.defaultClient.flush();
+    }
   }
 }
