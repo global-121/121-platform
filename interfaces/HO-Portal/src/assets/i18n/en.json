@@ -640,13 +640,13 @@
     "personal-information-table": {
       "subtitle": "Personal information",
       "status": "Status: <b>{{status}}</b>",
-      "registeredDate": "Registered",
-      "lastUpdateDate": "Last Update",
-      "partnerOrganization": "Partner Organization",
-      "paymentsDone": "Payments Done",
+      "registeredDate": "Registered date",
+      "lastUpdateDate": "Last update",
+      "partnerOrganization": "Partner organization",
+      "paymentsDone": "Payments done",
       "primaryLanguage": "Primary language",
-      "phone": "Phone",
-      "whatsappNumber": "WhatsApp Number"
+      "phone": "Phone number",
+      "whatsappNumber": "WhatsApp number"
     },
     "payment-overview": {
       "title": "Payment overview",
