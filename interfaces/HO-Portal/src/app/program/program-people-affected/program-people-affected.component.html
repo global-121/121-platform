@@ -232,7 +232,7 @@
         class="ion-align-items-center"
         style="display: flex"
       >
-        <a [routerLink]="getProfilePageUrl(row)">{{ value }}</a>
+        {{ value }}
       </div>
     </ng-template>
   </ngx-datatable-column>
@@ -314,6 +314,7 @@
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
+              color: #000;
             "
             [routerLink]="getProfilePageUrl(row)"
             >{{ value }}</a
