@@ -99,7 +99,7 @@ export class PaymentsController {
   @ApiParam({ name: 'payment', required: true, type: 'integer' })
   @ApiQuery({ name: 'fspIds', required: true, type: 'string' })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Uploaded payment reconciliation data',
   })
   @Post('programs/:programId/payments/:payment/fsp-reconciliation')

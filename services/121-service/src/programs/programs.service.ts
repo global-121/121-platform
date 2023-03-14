@@ -104,6 +104,7 @@ export class ProgramService {
             type: programCustomAttribute.type,
             label: programCustomAttribute.label,
             phases: programCustomAttribute.phases,
+            duplicateCheck: programCustomAttribute.duplicateCheck,
           };
         },
       ),

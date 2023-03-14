@@ -1,19 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator';
-import { RegistrationStatusEnum } from '../enum/registration-status.enum';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateRegistrationDto {
-  @ApiProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
-  @Length(29, 36)
+  @ApiProperty({
+    description: 'ID of the updated entity',
+    example: '10d169fd-8da4-4acc-88fb-e1139bbbde6c',
+  })
   @IsString()
-  public readonly referenceId: string;
+  @IsNotEmpty()
+  public readonly id: string;
 
   @ApiProperty({
-    enum: RegistrationStatusEnum,
-    example: RegistrationStatusEnum.registered,
+    description: `Also 'key' itself can be replaced by any key. Additional key-value pairs can also be added within the same object.`,
+    example: 'value',
   })
-  @IsNotEmpty()
   @IsString()
-  @IsEnum(RegistrationStatusEnum)
-  public readonly registrationStatus: RegistrationStatusEnum;
+  @IsOptional()
+  public readonly key: string;
 }

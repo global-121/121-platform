@@ -1,6 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource } from 'typeorm';
+import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
+import fspBank from '../../seed-data/fsp/fsp-bank.json';
+import fspBelcash from '../../seed-data/fsp/fsp-belcash.json';
+import fspBob from '../../seed-data/fsp/fsp-bob.json';
+import fspIntersolveVisa from '../../seed-data/fsp/fsp-intersolve-visa.json';
+import fspIntersolveVoucherPaper from '../../seed-data/fsp/fsp-intersolve-voucher-paper.json';
+import fspIntersolveVoucher from '../../seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
+import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
+import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
+import fspUkrPoshta from '../../seed-data/fsp/fsp-ukrposhta.json';
+import fspVodaCash from '../../seed-data/fsp/fsp-vodacash.json';
 import { PermissionEnum } from '../user/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
 import { UserRoleEntity } from '../user/user-role.entity';
@@ -8,10 +19,13 @@ import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 import { InterfaceScript } from './scripts.module';
+import { SeedHelper } from './seed-helper';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {
   public constructor(private dataSource: DataSource) {}
+
+  private readonly seedHelper = new SeedHelper(this.dataSource);
 
   public async run(): Promise<void> {
     await this.dropAll();
@@ -19,6 +33,7 @@ export class SeedInit implements InterfaceScript {
     const permissions = await this.addPermissions();
     await this.createDefaultRoles(permissions);
     await this.createAdminUser();
+    await this.seedFsp();
   }
 
   private async addPermissions(): Promise<PermissionEntity[]> {
@@ -179,6 +194,20 @@ export class SeedInit implements InterfaceScript {
     await this.dataSource.runMigrations({
       transaction: 'all',
     });
+  }
+
+  private async seedFsp(): Promise<void> {
+    await this.seedHelper.addFsp(fspIntersolveVoucher);
+    await this.seedHelper.addFsp(fspIntersolveVoucherPaper);
+    await this.seedHelper.addFsp(fspIntersolveVisa);
+    await this.seedHelper.addFsp(fspAfricasTalking);
+    await this.seedHelper.addFsp(fspVodaCash);
+    await this.seedHelper.addFsp(fspBob);
+    await this.seedHelper.addFsp(fspBelcash);
+    await this.seedHelper.addFsp(fspBank);
+    await this.seedHelper.addFsp(fspMixedAttributes);
+    await this.seedHelper.addFsp(fspNoAttributes);
+    await this.seedHelper.addFsp(fspUkrPoshta);
   }
 }
 

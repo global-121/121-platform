@@ -64,7 +64,7 @@ export class RegistrationsController {
   }
 
   @ApiOperation({ summary: 'Create registration' })
-  @ApiResponse({ status: 200, description: 'Created registration' })
+  @ApiResponse({ status: 201, description: 'Created registration' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations')
   public async create(
@@ -81,7 +81,7 @@ export class RegistrationsController {
 
   @PersonAffectedAuth()
   @ApiOperation({ summary: 'Set Financial Service Provider (FSP)' })
-  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: 201 })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/fsp')
   public async addFsp(@Body() setFsp: SetFspDto): Promise<RegistrationEntity> {
@@ -96,7 +96,7 @@ export class RegistrationsController {
     summary: 'Set custom data for registration (Used by Person Affected)',
   })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Custom data set for registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -112,7 +112,7 @@ export class RegistrationsController {
 
   @PersonAffectedAuth()
   @ApiOperation({ summary: 'Set phone number' })
-  @ApiResponse({ status: 200, description: 'Phone set for registration' })
+  @ApiResponse({ status: 201, description: 'Phone set for registration' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/phone')
   public async addPhone(
@@ -132,7 +132,7 @@ export class RegistrationsController {
       'Person Affected switches from started registration to registered for program',
   })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description:
       'Person Affected switched from started registration to registered for program',
   })
@@ -230,7 +230,7 @@ export class RegistrationsController {
   @ApiQuery({ name: 'paymentData', required: true, type: 'boolean' })
   @ApiQuery({ name: 'filterOnPayment', required: false, type: 'number' })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Got all People Affected for program EXCLUDING personal data',
   })
   @Get('programs/:programId/registrations')
@@ -271,7 +271,7 @@ export class RegistrationsController {
     summary: 'Update attribute for registration (Used by Aidworker)',
   })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Updated attribute for registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -288,7 +288,7 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
   @ApiOperation({ summary: 'Update note for registration' })
-  @ApiResponse({ status: 200, description: 'Update note for registration' })
+  @ApiResponse({ status: 201, description: 'Update note for registration' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/note')
   public async updateNote(@Body() updateNote: UpdateNoteDto): Promise<NoteDto> {
@@ -447,7 +447,7 @@ export class RegistrationsController {
       'Update chosen FSP and attributes. This will delete any custom data field related to the old FSP!',
   })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Updated fsp and attributes',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
@@ -508,7 +508,7 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationFspREAD)
   @ApiOperation({ summary: 'Find FSP and attributes' })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Found fsp and attributes',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
