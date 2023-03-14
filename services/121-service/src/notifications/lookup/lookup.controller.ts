@@ -12,7 +12,7 @@ export class LookupController {
   }
 
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Succesfully looked up telephone number',
   })
   @Post()

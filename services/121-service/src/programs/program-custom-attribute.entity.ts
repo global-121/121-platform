@@ -27,6 +27,9 @@ export class ProgramCustomAttributeEntity extends CascadeDeleteEntity {
   @Column('json', { default: [] })
   public phases: JSON;
 
+  @Column({ default: false })
+  public duplicateCheck: boolean;
+
   @ManyToOne(
     (_type) => ProgramEntity,
     (program) => program.programCustomAttributes,

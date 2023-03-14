@@ -28,7 +28,7 @@ import { PermissionsGuard } from '../../../guards/permissions.guard';
 import { IMAGE_UPLOAD_API_FORMAT } from '../../../shared/file-upload-api-format';
 import { PermissionEnum } from '../../../user/permission.enum';
 import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
-import { InersolveJobDetails } from './dto/job-details.dto';
+import { IntersolveVoucherJobDetails } from './dto/job-details.dto';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
 
 @UseGuards(PermissionsGuard, AdminAuthGuard)
@@ -42,7 +42,7 @@ export class IntersolveVoucherController {
     summary: 'Export Intersolve vouchers',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({ status: 200, description: 'Vouchers exported' })
+  @ApiResponse({ status: 201, description: 'Vouchers exported' })
   @Post('programs/:programId/payments/intersolve/export-voucher')
   public async exportVouchers(
     @Param() params,
@@ -67,7 +67,7 @@ export class IntersolveVoucherController {
     summary: 'Get Intersolve voucher balance',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({ status: 200, description: 'Vouchers balance retrieved' })
+  @ApiResponse({ status: 201, description: 'Vouchers balance retrieved' })
   @Post('programs/:programId/payments/intersolve/balance')
   public async getBalance(
     @Param() params,
@@ -105,7 +105,7 @@ export class IntersolveVoucherController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiConsumes('multipart/form-data')
   @ApiBody(IMAGE_UPLOAD_API_FORMAT)
-  @ApiResponse({ status: 200, description: 'Post intersolve instructions' })
+  @ApiResponse({ status: 201, description: 'Post intersolve instructions' })
   @Post('/payments/intersolve/instruction')
   @UseInterceptors(FileInterceptor('image'))
   public async postIntersolveInstructions(
@@ -119,10 +119,10 @@ export class IntersolveVoucherController {
     summary: 'Start a job to update all voucher balances of a program',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({ status: 200, description: 'Voucher update job started' })
+  @ApiResponse({ status: 201, description: 'Voucher update job started' })
   @Post('/programs/:programId/payments/intersolve/batch-jobs')
   public async createJob(
-    @Body() jobDetails: InersolveJobDetails,
+    @Body() jobDetails: IntersolveVoucherJobDetails,
     @Param() param,
   ): Promise<void> {
     await this.intersolveService.updateVoucherBalanceJob(

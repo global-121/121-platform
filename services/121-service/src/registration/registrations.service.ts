@@ -45,6 +45,7 @@ import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
+import { ErrorEnum } from './errors/registration-data.error';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -221,7 +222,7 @@ export class RegistrationsService {
       relations: relations,
     });
     if (!registration) {
-      const errors = 'This referenceId is not known.';
+      const errors = `ReferenceId ${referenceId} is not known.`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     registration['customData'] = await this.getCustomDataForReferenceId(
@@ -1226,7 +1227,7 @@ export class RegistrationsService {
       return !!registrationDataRelation.programCustomAttributeId;
     } catch (error) {
       // Don't throw error on attributes that are changed which are not program/fsp/custom/monitoring type
-      if (error.name !== 'RegistrationDataSaveError') {
+      if (error.name !== ErrorEnum.RegistrationDataError) {
         throw error;
       }
     }

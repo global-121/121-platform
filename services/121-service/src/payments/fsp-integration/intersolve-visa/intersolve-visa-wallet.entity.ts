@@ -1,24 +1,28 @@
 import { Column, Entity, Index, OneToOne } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
+import { IntersolveVisaWalletStatus } from './enum/intersolve-visa-token-status.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 
-@Entity('intersolve_visa_card')
-export class IntersolveVisaCardEntity extends Base121Entity {
-  @Column({ nullable: true })
-  public success: boolean;
-
+@Entity('intersolve_visa_wallet')
+export class IntersolveVisaWalletEntity extends Base121Entity {
   @Index()
   @Column({ unique: true, nullable: true })
   public tokenCode: string;
 
   @Column({ nullable: true })
+  public type: string;
+
+  @Column({ nullable: true })
   public tokenBlocked: boolean;
 
   @Column({ nullable: true })
-  public expiresAt: string;
+  public status: IntersolveVisaWalletStatus;
 
   @Column({ nullable: true })
-  public status: string;
+  public cardUrl: string;
+
+  @Column({ nullable: true })
+  public controlToken: string;
 
   @OneToOne(
     () => IntersolveVisaCustomerEntity,
