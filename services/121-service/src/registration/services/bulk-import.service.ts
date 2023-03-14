@@ -168,7 +168,9 @@ export class BulkImportService {
       return string;
     }
     if (string === undefined) {
-      return defaultValue || undefined;
+      return this.isValueUdefinedOrNull(defaultValue)
+        ? undefined
+        : defaultValue;
     }
     switch (string.toLowerCase().trim()) {
       case 'true':
@@ -182,8 +184,14 @@ export class BulkImportService {
       case null:
         return false;
       default:
-        return defaultValue || undefined;
+        return this.isValueUdefinedOrNull(defaultValue)
+          ? undefined
+          : defaultValue;
     }
+  }
+
+  private isValueUdefinedOrNull(value: any): boolean {
+    return value === undefined || value === null;
   }
 
   public async getImportRegistrationsTemplate(
