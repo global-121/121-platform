@@ -7,7 +7,9 @@
   <ion-spinner *ngIf="loading"></ion-spinner>
   <ng-container *ngIf="!loading">
     <h1 class="ion-padding">Program {{ programId }}</h1>
-    <ion-text *ngIf="!person">Person not found</ion-text>
+    <ion-text *ngIf="!person"
+      >{{ 'registration-details.error' | translate}}</ion-text
+    >
     <ion-grid *ngIf="person">
       <ion-row>
         <ion-col size="4">

@@ -652,7 +652,8 @@
       "title": "Payment overview",
       "subtitle": "Payment information",
       "paymentLabel": "Payment #{{paymentNumber}}"
-    }
+    },
+    "error": "Person not found"
   },
   "refresh-data": {
     "last-updated": "Last updated: {{date}}"
