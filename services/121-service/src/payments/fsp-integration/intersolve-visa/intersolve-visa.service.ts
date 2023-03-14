@@ -490,7 +490,6 @@ export class IntersolveVisaService {
     let allMessages = '';
     for (const [i, error] of errors.entries()) {
       const newLine = i < errors.length - 1 ? '\n' : '';
-      console.log(`${error.code}: ${error.description} Field: ${error.field}`);
       allMessages = `${allMessages}${error.code}: ${error.description} Field: ${error.field}${newLine}`;
     }
     return allMessages;
