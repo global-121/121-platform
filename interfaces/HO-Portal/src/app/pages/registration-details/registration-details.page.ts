@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
@@ -15,6 +16,21 @@ import { PubSubEvent, PubSubService } from '../../services/pub-sub.service';
 class TableItem {
   label: string;
   value: string;
+}
+
+class ActivityOverviewItem {
+  type: string;
+  label: string;
+  date: Date;
+  description: string;
+}
+
+enum ActivityOverviewType {
+  message = 'message',
+  note = 'note',
+  payment = 'payment',
+  status = 'status',
+  file = 'file',
 }
 @Component({
   selector: 'app-registration-details',
@@ -29,6 +45,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
   public person: Person;
   public personalInfoTable: TableItem[];
   public paymentsTable: TableItem[];
+  public activityOverview: ActivityOverviewItem[];
   private referenceId: string;
 
   public loading = true;
@@ -44,6 +61,20 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
   private pubSubSubscription: Subscription;
 
   private PAYMENTS_TABLE_LENGTH = 4;
+
+  private statusDateKey = {
+    imported: 'importedDate',
+    invited: 'invitedDate',
+    noLongerEligible: 'noLongerEligibleDate',
+    startedRegistration: 'startedRegistrationDate',
+    registered: 'registeredDate',
+    registeredWhileNoLongerEligible: 'registeredWhileNoLongerEligibleDate',
+    selectedForValidation: 'selectedForValidationDate',
+    validated: 'validationDate',
+    included: 'inclusionDate',
+    inclusionEnded: 'inclusionEndDate',
+    rejected: 'rejectionDate',
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -101,6 +132,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
 
     this.fillPersonalInfoTable();
     this.fillPaymentsTable();
+    this.fillActivityOverview();
 
     this.loading = false;
   }
@@ -129,6 +161,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
       this.translate.instant(translatePrefix + key, interpolateParams);
     const customAttribute = (ca: string) =>
       this.person.paTableAttributes[ca].value;
+    const dateString = (date: Date) => date.toLocaleString().split(',')[0];
 
     this.personalInfoTable = [
       {
@@ -137,11 +170,11 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
             'page.program.program-people-affected.status.' + this.person.status,
           ),
         }),
-        value: this.getStatusDate(this.person.status),
+        value: dateString(this.getStatusDate(this.person.status)),
       },
       {
         label: label('registeredDate'),
-        value: this.getStatusDate('registered'),
+        value: dateString(this.getStatusDate('registered')),
       },
       { label: label('lastUpdateDate'), value: null },
       {
@@ -170,25 +203,8 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     ];
   }
 
-  private getStatusDate(status: string): string {
-    const statusDateKey = {
-      imported: 'importedDate',
-      invited: 'invitedDate',
-      noLongerEligible: 'noLongerEligibleDate',
-      startedRegistration: 'startedRegistrationDate',
-      registered: 'registeredDate',
-      registeredWhileNoLongerEligible: 'registeredWhileNoLongerEligibleDate',
-      selectedForValidation: 'selectedForValidationDate',
-      validated: 'validationDate',
-      included: 'inclusionDate',
-      inclusionEnded: 'inclusionEndDate',
-      rejected: 'rejectionDate',
-      completed: null,
-    };
-
-    return new Date(this.person[statusDateKey[status]])
-      .toLocaleString()
-      .split(',')[0];
+  private getStatusDate(status: string): Date {
+    return new Date(this.person[this.statusDateKey[status]]);
   }
 
   private loadPermissions() {
@@ -306,5 +322,107 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
       },
     });
     await modal.present();
+  }
+
+  private async fillActivityOverview() {
+    this.activityOverview = [];
+
+    const messageHistory = await this.programsService.retrieveMsgHistory(
+      this.programId,
+      this.referenceId,
+    );
+
+    for (const message of messageHistory) {
+      this.activityOverview.push({
+        type: ActivityOverviewType.message,
+        label: 'Message',
+        date: new Date(message.created),
+        description: message.body,
+      });
+    }
+
+    const note = await this.programsService.retrieveNote(
+      this.programId,
+      this.referenceId,
+    );
+
+    this.activityOverview.push({
+      type: ActivityOverviewType.note,
+      label: 'Note',
+      date: new Date(note.noteUpdated),
+      description: note.note,
+    });
+
+    const payments = await this.programsService.getTransactions(
+      this.programId,
+      1,
+      this.referenceId,
+    );
+
+    for (const payment of payments) {
+      this.activityOverview.push({
+        type: ActivityOverviewType.payment,
+        label: `Payment #${payment.payment}`,
+        date: new Date(payment.paymentDate),
+        description: `Payment #${payment.payment} is ${this.translate.instant(
+          'page.program.program-people-affected.transaction.' + payment.status,
+        )}`,
+      });
+    }
+
+    for (const statusDate of this.getStatusDateList()) {
+      this.activityOverview.push({
+        type: ActivityOverviewType.status,
+        label: 'Status Update',
+        date: statusDate.date,
+        description: `Person affected status changed to ${this.translate.instant(
+          'page.program.program-people-affected.status.' + statusDate.status,
+        )}`,
+      });
+    }
+
+    this.activityOverview.sort((a, b) => {
+      if (b.date > a.date) {
+        return 1;
+      }
+      return -1;
+    });
+  }
+
+  public getIconName(type: ActivityOverviewType): string {
+    const map = {
+      [ActivityOverviewType.message]: 'mail-outline',
+      [ActivityOverviewType.note]: 'clipboard-outline',
+      [ActivityOverviewType.payment]: 'cash-outline',
+      [ActivityOverviewType.status]: 'reload-circle-outline',
+      [ActivityOverviewType.file]: '',
+    };
+    return map[type];
+  }
+
+  private getStatusDateList(): { status: string; date: Date }[] {
+    const statusDates = [];
+    for (const status of Object.keys(this.statusDateKey)) {
+      const statusDateString = this.statusDateKey[status];
+      if (this.person[statusDateString]) {
+        statusDates.push({
+          status,
+          date: new Date(this.person[statusDateString]),
+        });
+      }
+    }
+
+    return statusDates;
+  }
+
+  public showPaymentOverview(): boolean {
+    if (
+      this.person.status === RegistrationStatusEnum.included &&
+      this.canViewPaymentData
+    ) {
+      return true;
+    }
+
+    return false;
   }
 }
