@@ -100,19 +100,33 @@
           </ion-card>
         </ion-col>
         <ion-col size="8">
+          <ion-text>
+            <h1>
+              {{ 'registration-details.activity-overview.title' | translate }}
+            </h1>
+          </ion-text>
+          <ion-row>
+            <ion-button
+              *ngFor="let filter of activityOverviewButtons"
+              (click)="activityOverviewFilter = filter"
+              fill="clear"
+              size="small"
+              [color]="activityOverviewFilter === filter ? 'primary' : 'secondary'"
+              [style]="activityOverviewFilter === filter ? 'box-shadow: 0px 2px var(--ion-color-primary); --ripple-color: #fff' : '--ripple-color: #fff'"
+            >
+              {{ 'registration-details.activity-overview.filterButton.' + filter
+              | translate }}
+            </ion-button>
+          </ion-row>
+
           <ion-card>
-            <ion-card-header>
-              <ion-card-title>
-                {{ 'registration-details.activity-overview.title' | translate }}
-              </ion-card-title>
-            </ion-card-header>
             <ion-card-content class="ion-no-padding">
               <ion-list
                 class="ion-no-padding"
                 lines="full"
               >
                 <ion-item
-                  *ngFor="let item of activityOverview"
+                  *ngFor="let item of getFilteredActivityOverview()"
                   style="font-size: 14px"
                 >
                   <ion-grid>

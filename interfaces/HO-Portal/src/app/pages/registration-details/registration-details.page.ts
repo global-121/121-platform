@@ -26,11 +26,11 @@ class ActivityOverviewItem {
 }
 
 enum ActivityOverviewType {
-  message = 'message',
   note = 'note',
-  payment = 'payment',
+  message = 'message',
   status = 'status',
   file = 'file',
+  payment = 'payment',
 }
 @Component({
   selector: 'app-registration-details',
@@ -62,6 +62,8 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
 
   private PAYMENTS_TABLE_LENGTH = 4;
 
+  public activityOverviewFilter: string = null;
+
   private statusDateKey = {
     imported: 'importedDate',
     invited: 'invitedDate',
@@ -75,6 +77,8 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     inclusionEnded: 'inclusionEndDate',
     rejected: 'rejectionDate',
   };
+
+  public activityOverviewButtons = [null, 'note', 'message', 'status', 'file'];
 
   constructor(
     private route: ActivatedRoute,
@@ -449,5 +453,15 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     }
 
     return false;
+  }
+
+  public getFilteredActivityOverview(): ActivityOverviewItem[] {
+    if (!this.activityOverviewFilter) {
+      return this.activityOverview;
+    }
+
+    return this.activityOverview.filter(
+      (item) => item.type === this.activityOverviewFilter,
+    );
   }
 }
