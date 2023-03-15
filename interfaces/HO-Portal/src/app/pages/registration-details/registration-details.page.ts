@@ -96,6 +96,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
           this.person = await this.loadPerson();
           this.fillPersonalInfoTable();
           this.fillPaymentsTable();
+          this.fillActivityOverview();
           this.loading = false;
         },
       );
@@ -189,16 +190,19 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
       });
     }
 
-    this.personalInfoTable = [
-      ...this.personalInfoTable,
-      {
+    if (this.showPaymentInfo()) {
+      this.personalInfoTable.push({
         label: label('paymentsDone'),
         value: `${this.person.nrPayments || 0}${
           this.person.maxPayments
             ? ' (out of ' + this.person.maxPayments + ')'
             : ''
         }`,
-      },
+      });
+    }
+
+    this.personalInfoTable = [
+      ...this.personalInfoTable,
       {
         label: label('primaryLanguage'),
         value: this.translate.instant(
@@ -368,12 +372,14 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
       this.referenceId,
     );
 
-    this.activityOverview.push({
-      type: ActivityOverviewType.note,
-      label: 'Note',
-      date: new Date(note.noteUpdated),
-      description: note.note,
-    });
+    if (note.note) {
+      this.activityOverview.push({
+        type: ActivityOverviewType.note,
+        label: 'Note',
+        date: new Date(note.noteUpdated),
+        description: note.note,
+      });
+    }
 
     const payments = await this.programsService.getTransactions(
       this.programId,
@@ -437,7 +443,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     return statusDates;
   }
 
-  public showPaymentOverview(): boolean {
+  public showPaymentInfo(): boolean {
     const acceptedStatuses = [
       RegistrationStatusEnum.included,
       RegistrationStatusEnum.completed,
@@ -459,9 +465,15 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     if (!this.activityOverviewFilter) {
       return this.activityOverview;
     }
-
     return this.activityOverview.filter(
       (item) => item.type === this.activityOverviewFilter,
     );
+  }
+
+  public getFilterCount(filter: string | null): number {
+    if (!filter) {
+      return this.activityOverview.length;
+    }
+    return this.activityOverview.filter((item) => item.type === filter).length;
   }
 }
