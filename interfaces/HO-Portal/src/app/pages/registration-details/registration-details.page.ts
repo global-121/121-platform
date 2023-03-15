@@ -201,13 +201,22 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
           `page.program.program-people-affected.language.${this.person.preferredLanguage}`,
         ),
       },
-      { label: label('phone'), value: `+${this.person.phoneNumber}` },
+      {
+        label: label('phone'),
+        value:
+          this.person.phoneNumber === ''
+            ? this.person.phoneNumber
+            : `+${this.person.phoneNumber}`,
+      },
     ];
 
     if (tableAttribute('whatsappPhoneNumber')) {
       this.personalInfoTable.push({
         label: label('whatsappPhoneNumber'),
-        value: `+${tableAttribute('whatsappPhoneNumber').value}`,
+        value:
+          tableAttribute('whatsappPhoneNumber').value === ''
+            ? tableAttribute('whatsappPhoneNumber').value
+            : `+${tableAttribute('whatsappPhoneNumber').value}`,
       });
     }
   }
