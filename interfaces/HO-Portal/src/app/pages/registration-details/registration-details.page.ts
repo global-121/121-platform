@@ -434,8 +434,15 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
   }
 
   public showPaymentOverview(): boolean {
+    const acceptedStatuses = [
+      RegistrationStatusEnum.included,
+      RegistrationStatusEnum.completed,
+      RegistrationStatusEnum.inclusionEnded,
+      RegistrationStatusEnum.rejected,
+    ];
+
     if (
-      this.person.status === RegistrationStatusEnum.included &&
+      acceptedStatuses.includes(this.person.status) &&
       this.canViewPaymentData
     ) {
       return true;
