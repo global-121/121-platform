@@ -657,10 +657,8 @@
       "title": "Activity overview",
       "filterButton": {
         "null": "All",
-        "note": "Notes",
         "message": "Messages",
-        "status": "Status history",
-        "file": "Files"
+        "status": "Status history"
       }
     },
     "error": "Person not found"

@@ -26,10 +26,8 @@ class ActivityOverviewItem {
 }
 
 enum ActivityOverviewType {
-  note = 'note',
   message = 'message',
   status = 'status',
-  file = 'file',
   payment = 'payment',
 }
 @Component({
@@ -78,7 +76,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     rejected: 'rejectionDate',
   };
 
-  public activityOverviewButtons = [null, 'note', 'message', 'status', 'file'];
+  public activityOverviewButtons = [null, 'message', 'status'];
 
   constructor(
     private route: ActivatedRoute,
@@ -176,28 +174,12 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
         }),
         value: dateString(this.getStatusDate(this.person.status)),
       },
-      {
-        label: label('registeredDate'),
-        value: dateString(this.getStatusDate('registered')),
-      },
-      { label: label('lastUpdateDate'), value: null },
     ];
 
     if (tableAttribute('partnerOrganization')) {
       this.personalInfoTable.push({
         label: label('partnerOrganization'),
         value: tableAttribute('partnerOrganization').value,
-      });
-    }
-
-    if (this.showPaymentInfo()) {
-      this.personalInfoTable.push({
-        label: label('paymentsDone'),
-        value: `${this.person.nrPayments || 0}${
-          this.person.maxPayments
-            ? ' (out of ' + this.person.maxPayments + ')'
-            : ''
-        }`,
       });
     }
 
@@ -297,11 +279,14 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
       let value: string;
       if (!payments[i]) {
         const paymentNumber = minPayment + i;
+        if (
+          this.person.maxPayments &&
+          paymentNumber > this.person.maxPayments
+        ) {
+          break;
+        }
         label = itemLabel(paymentNumber);
-        value =
-          this.person.maxPayments && paymentNumber > this.person.maxPayments
-            ? itemValue('above')
-            : itemValue('planned');
+        value = itemValue('planned');
       } else {
         label = itemLabel(payments[i].payment);
         value = itemValue(payments[i].status);
@@ -367,20 +352,6 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
       });
     }
 
-    const note = await this.programsService.retrieveNote(
-      this.programId,
-      this.referenceId,
-    );
-
-    if (note.note) {
-      this.activityOverview.push({
-        type: ActivityOverviewType.note,
-        label: 'Note',
-        date: new Date(note.noteUpdated),
-        description: note.note,
-      });
-    }
-
     const payments = await this.programsService.getTransactions(
       this.programId,
       1,
@@ -420,10 +391,8 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
   public getIconName(type: ActivityOverviewType): string {
     const map = {
       [ActivityOverviewType.message]: 'mail-outline',
-      [ActivityOverviewType.note]: 'clipboard-outline',
       [ActivityOverviewType.payment]: 'cash-outline',
       [ActivityOverviewType.status]: 'reload-circle-outline',
-      [ActivityOverviewType.file]: '',
     };
     return map[type];
   }
