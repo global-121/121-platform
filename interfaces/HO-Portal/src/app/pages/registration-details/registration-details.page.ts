@@ -159,8 +159,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
 
     const label = (key: string, interpolateParams?): string =>
       this.translate.instant(translatePrefix + key, interpolateParams);
-    const customAttribute = (ca: string) =>
-      this.person.paTableAttributes[ca].value;
+    const tableAttribute = (ca: string) => this.person.paTableAttributes[ca];
     const dateString = (date: Date) => date.toLocaleString().split(',')[0];
 
     this.personalInfoTable = [
@@ -177,10 +176,17 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
         value: dateString(this.getStatusDate('registered')),
       },
       { label: label('lastUpdateDate'), value: null },
-      {
+    ];
+
+    if (tableAttribute('partnerOrganization')) {
+      this.personalInfoTable.push({
         label: label('partnerOrganization'),
-        value: customAttribute('namePartnerOrganization'),
-      },
+        value: tableAttribute('partnerOrganization').value,
+      });
+    }
+
+    this.personalInfoTable = [
+      ...this.personalInfoTable,
       {
         label: label('paymentsDone'),
         value: `${this.person.nrPayments || 0}${
@@ -196,11 +202,14 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
         ),
       },
       { label: label('phone'), value: this.person.phoneNumber },
-      {
-        label: label('whatsappNumber'),
-        value: customAttribute('whatsappPhoneNumber'),
-      },
     ];
+
+    if (tableAttribute('whatsappPhoneNumber')) {
+      this.personalInfoTable.push({
+        label: label('whatsappPhoneNumber'),
+        value: tableAttribute('whatsappPhoneNumber').value,
+      });
+    }
   }
 
   private getStatusDate(status: string): Date {
