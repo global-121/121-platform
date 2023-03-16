@@ -8,6 +8,7 @@ import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
+import { AnswerTypes } from '../registration/enum/custom-data-attributes';
 import { UserRoleEntity } from '../user/user-role.entity';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserType } from '../user/user-type-enum';
@@ -130,14 +131,14 @@ export class SeedHelper {
     const programQuestions = program.programQuestions;
     program.programQuestions = [];
     for (const question of programQuestions) {
-      if (question.answerType === 'dropdown') {
+      if (question.answerType === AnswerTypes.dropdown) {
         const scoringKeys = Object.keys(question.scoring);
         if (scoringKeys.length > 0) {
           const optionKeys = question.options.map(({ option }) => option);
-          const areOptionScoriingEqual =
+          const areOptionScoringEqual =
             JSON.stringify(scoringKeys.sort()) ==
             JSON.stringify(optionKeys.sort());
-          if (!areOptionScoriingEqual) {
+          if (!areOptionScoringEqual) {
             throw new HttpException(
               'Option and scoring is not equal of question  ' + question.name,
               404,
