@@ -25,7 +25,7 @@
     "fix:syntax": "npm run lint:code -- --fix && npm run lint:syntax -- --write"
   },
   "dependencies": {
-    "cy-verify-downloads": "^0.1.11",
+    "cy-verify-downloads": "^0.1.13",
     "cypress": "^12.6.0",
     "dotenv": "^16.0.3",
     "typescript": "^4.9.5",
