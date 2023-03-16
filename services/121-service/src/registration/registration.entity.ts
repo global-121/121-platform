@@ -29,7 +29,7 @@ import {
 } from './dto/registration-data-relation.model';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
-import { RegistrationDataSaveError } from './errors/registration-data.error';
+import { RegistrationDataError } from './errors/registration-data.error';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 
@@ -525,8 +525,8 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       result.monitoringQuestionId = resultMonitoringQuestion.id;
       return result;
     }
-    const errorMessage = `Cannot save registration data, name: '${name}' not found (In program questions, fsp questions, monitoring questions and program custom attributes)`;
-    throw new RegistrationDataSaveError(errorMessage);
+    const errorMessage = `Cannot find registration data, name: '${name}' not found (In program questions, fsp questions, monitoring questions and program custom attributes)`;
+    throw new RegistrationDataError(errorMessage);
   }
 
   public async save(retryCount?: number): Promise<RegistrationEntity> {

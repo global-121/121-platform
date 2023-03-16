@@ -27,6 +27,7 @@ export enum CustomDataAttributes {
   transferCosts = 'transferCosts',
   transferTrackNr = 'transferTrackNr',
   householdCount = 'householdCount',
+  tokenCodeVisa = 'tokenCodeVisa',
 }
 
 export enum GenericAttributes {
@@ -35,6 +36,7 @@ export enum GenericAttributes {
   fspName = 'fspName',
   paymentAmountMultiplier = 'paymentAmountMultiplier',
   maxPayments = 'maxPayments',
+  referenceId = 'referenceId',
 }
 
 export class Attribute {

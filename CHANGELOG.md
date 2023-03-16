@@ -5,9 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.80.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.82.0...master)
+
+## [1.82.0](https://github.com/global-121/121-platform/compare/v1.81.1...v1.82.0) - 2023-03-08
+
+### Added
+
+- Espocrm webhook integration
+- Angular v14
+- Salt passwords
 
 ---
+## [1.81.1](https://github.com/global-121/121-platform/compare/v1.81.0...v1.81.1) - 2023-02-24
+
+### Fixed
+
+- Get balance voucher
+
+## [1.81.0](https://github.com/global-121/121-platform/compare/v1.80.1...v1.81.0) - 2023-02-23
+
+### Added
+
+- Button in login page to see password while typing
+- Visa V-Pay integration with Intersolve FSP
+
 ## [1.80.1](https://github.com/global-121/121-platform/compare/v1.80.0...v1.80.1) - 2023-02-01
 
 ### Fixed

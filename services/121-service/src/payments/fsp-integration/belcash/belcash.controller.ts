@@ -14,7 +14,7 @@ export class BelcashController {
     summary:
       'Notification callback used by Belcash to notify status of payment to us.',
   })
-  @ApiResponse({ status: 200, description: 'Notified' })
+  @ApiResponse({ status: 201, description: 'Notified' })
   @Post('payment-status')
   public async notificationCallback(
     @Body() belcashCallbackData: BelcashPaymentStatusDto,

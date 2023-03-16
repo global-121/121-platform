@@ -39,7 +39,7 @@ export class ExportMetricsController {
     summary: 'Get an exported list of people',
   })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'List of people exported',
   })
   @ApiParam({
@@ -67,7 +67,7 @@ export class ExportMetricsController {
     summary: 'Get list of to cancel vouchers only used by admin',
   })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Get list of to cancel vouchers only used by admin',
   })
   @Post('export-metrics/to-cancel-vouchers')
@@ -162,7 +162,7 @@ export class ExportMetricsController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Total number of included per program',
   })
   @Post('programs/:programId/export-metrics/total-transfer-amounts')

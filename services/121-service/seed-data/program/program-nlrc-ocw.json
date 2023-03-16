@@ -14,8 +14,8 @@
   "description": {
     "en": ""
   },
-  "startDate": "2023-03-01T12:00:00Z",
-  "endDate": "2023-12-31T12:00:00Z",
+  "startDate": "2023-03-01T12:00:00.000Z",
+  "endDate": "2023-12-31T12:00:00.000Z",
   "currency": "EUR",
   "distributionFrequency": "month",
   "distributionDuration": 50,
@@ -35,7 +35,8 @@
       "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS or WhatsApp message with more information within 1 week.",
       "whatsappGenericMessage": "This is a message from the Red Cross.\n\nThere is a message waiting for you. Please reply “yes” to this message to receive it.",
       "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781",
-      "visaCardCreated": "This is a message from the Red Cross.\n\nWe have created a VISA card for you with card number {{1}}\n\nYou can activate it by doing this and this.",
+      "physicalVisaCardCreated": "This is a message from the Red Cross.\n\nWe have created a VISA card for you with card number {{1}}\n\nYou can activate it by doing this and this.",
+      "digitalVisaCardCreated": "This is a message from the Red Cross.\n\nWe have created a digital VISA card for you with card number {{1}}\n\nYou can activate it by clicking the following link: {{2}}. When asked to enter a token code, enter {{3}}.",
       "visaLoad": "This is a message from the Red Cross.\n\nWe increased the funds on your VISA card with {{1}}."
     },
     "nl": {
@@ -46,20 +47,6 @@
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
   "programCustomAttributes": [
-    {
-      "label": {
-        "en": "Partner Organization"
-      },
-      "name": "namePartnerOrganization",
-      "type": "text",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
-      "phases": ["registrationValidation", "inclusion", "payment"]
-    },
     {
       "label": {
         "en": "WhatsApp Nr."
@@ -77,9 +64,9 @@
     },
     {
       "label": {
-        "en": "Visa Card Nr."
+        "en": "Visa-card token code"
       },
-      "name": "visaCardNumber",
+      "name": "tokenCodeVisa",
       "type": "text",
       "export": [
         "all-people-affected",
@@ -87,13 +74,13 @@
         "selected-for-validation",
         "payment"
       ],
+      "duplicateCheck": true,
       "phases": ["registrationValidation", "inclusion", "payment"]
     },
     {
       "name": "firstName",
       "label": {
-        "en": "Please enter your first name:",
-        "nl": "Vul je voornaam in:"
+        "en": "First name"
       },
       "type": "text",
       "export": [
@@ -103,6 +90,34 @@
         "payment"
       ],
       "phases": []
+    },
+    {
+      "name": "documentId",
+      "label": {
+        "en": "Document ID"
+      },
+      "type": "text",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ],
+      "phases": []
+    },
+    {
+      "label": {
+        "en": "Visa-card physical"
+      },
+      "name": "isPhysicalCardVisa",
+      "type": "boolean",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ],
+      "phases": ["registrationValidation", "inclusion", "payment"]
     }
   ],
   "programQuestions": [

@@ -22,6 +22,9 @@
   "financialServiceProviders": [
     {
       "fsp": "Intersolve-voucher-whatsapp"
+    },
+    {
+      "fsp": "Africas-talking"
     }
   ],
   "targetNrRegistrations": 870,
@@ -393,7 +396,7 @@
       "label": {
         "en": "14. What are special characteristics of the head of your household (if any)?"
       },
-      "answerType": "dropdown",
+      "answerType": "multi-select",
       "questionType": "standard",
       "options": [
         {

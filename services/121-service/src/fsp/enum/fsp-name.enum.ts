@@ -11,5 +11,4 @@ export enum FspName {
   fspAllAttributes = 'FSP - all attributes',
   fspNoAttributes = 'FSP - no attributes',
   bankA = 'Bank A',
-  mobileMoneyProviderB = 'Mobile Money Provider B',
 }

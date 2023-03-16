@@ -7,9 +7,8 @@ import { UserModule } from '../../../user/user.module';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { RegistrationEntity } from './../../../registration/registration.entity';
 import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service';
-import { IntersolveVisaCardEntity } from './intersolve-visa-card.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
-import { IntersolveVisaRequestEntity } from './intersolve-visa-request.entity';
+import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { IntersolveVisaService } from './intersolve-visa.service';
 
@@ -17,11 +16,10 @@ import { IntersolveVisaService } from './intersolve-visa.service';
   imports: [
     HttpModule,
     TypeOrmModule.forFeature([
-      IntersolveVisaCardEntity,
+      IntersolveVisaWalletEntity,
       UserEntity,
       RegistrationEntity,
       IntersolveVisaCustomerEntity,
-      IntersolveVisaRequestEntity,
     ]),
     UserModule,
     TransactionsModule,

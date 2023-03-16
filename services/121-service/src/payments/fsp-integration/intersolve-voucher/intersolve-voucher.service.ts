@@ -23,7 +23,7 @@ import { ImageCodeService } from '../../imagecode/image-code.service';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
-import { IntersolveJobName } from './dto/job-details.dto';
+import { IntersolveVoucherJobName } from './dto/job-details.dto';
 import { IntersolveVoucherPayoutStatus } from './enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
 import { IntersolveVoucherApiService } from './instersolve-voucher.api.service';
@@ -486,7 +486,7 @@ export class IntersolveVoucherService {
     programId: number,
   ): Promise<number> {
     const voucher = await this.getVoucher(referenceId, payment, programId);
-    return await this.getBalance(voucher.barcode);
+    return await this.getBalance(voucher.voucher);
   }
 
   private async getBalance(
@@ -642,9 +642,9 @@ export class IntersolveVoucherService {
 
   public async updateVoucherBalanceJob(
     programId: number,
-    jobName: IntersolveJobName,
+    jobName: IntersolveVoucherJobName,
   ): Promise<void> {
-    if (jobName === IntersolveJobName.getLastestVoucherBalance) {
+    if (jobName === IntersolveVoucherJobName.getLastestVoucherBalance) {
       const maxId = (
         await this.intersolveVoucherRepository
           .createQueryBuilder('voucher')
