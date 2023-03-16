@@ -31,7 +31,7 @@
     "seed:program-pilot-lbn": "ts-node src/scripts seed-program-lbn",
     "pretest": "npm run lint",
     "test": "echo 'No tests defined. Run `npm run test:e2e` to run API-tests locally.' && exit 0",
-    "test:e2e": "jest",
+    "test:e2e": "jest --runInBand",
     "test:watch": "npm run test:e2e -- --watchAll",
     "test:coverage": "npm run test:e2e -- --coverage --coverageDirectory=coverage",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
