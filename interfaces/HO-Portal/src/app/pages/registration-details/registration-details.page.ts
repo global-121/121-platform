@@ -7,11 +7,16 @@ import { RegistrationStatusEnum } from '../../../../../../services/121-service/s
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
-import { Program } from '../../models/program.model';
+import {
+  PaTableAttribute,
+  Program,
+  ProgramPhase,
+} from '../../models/program.model';
 import { EditPersonAffectedPopupComponent } from '../../program/edit-person-affected-popup/edit-person-affected-popup.component';
 import { PaymentHistoryPopupComponent } from '../../program/payment-history-popup/payment-history-popup.component';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from '../../services/pub-sub.service';
+import { TranslatableStringService } from '../../services/translatable-string.service';
 
 class TableItem {
   label: string;
@@ -45,6 +50,11 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
   public paymentsTable: TableItem[];
   public activityOverview: ActivityOverviewItem[];
   private referenceId: string;
+  private tableAttributes: PaTableAttribute[];
+  private tableAttributesToShow = [
+    'namePartnerOrganization',
+    'whatsappPhoneNumber',
+  ];
 
   public loading = true;
 
@@ -85,6 +95,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     private translate: TranslateService,
     private modalController: ModalController,
     private pubSub: PubSubService,
+    private translatableString: TranslatableStringService,
   ) {
     if (!this.pubSubSubscription) {
       this.pubSubSubscription = this.pubSub.subscribe(
@@ -108,6 +119,11 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     }
 
     this.program = await this.programsService.getProgramById(this.programId);
+
+    this.tableAttributes = await this.programsService.getPaTableAttributes(
+      this.programId,
+      ProgramPhase.registrationValidation,
+    );
 
     try {
       this.referenceId = (
@@ -162,7 +178,6 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
 
     const label = (key: string, interpolateParams?): string =>
       this.translate.instant(translatePrefix + key, interpolateParams);
-    const tableAttribute = (ca: string) => this.person.paTableAttributes[ca];
     const dateString = (date: Date) => date.toLocaleString().split(',')[0];
 
     this.personalInfoTable = [
@@ -174,17 +189,6 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
         }),
         value: dateString(this.getStatusDate(this.person.status)),
       },
-    ];
-
-    if (tableAttribute('partnerOrganization')) {
-      this.personalInfoTable.push({
-        label: label('partnerOrganization'),
-        value: tableAttribute('partnerOrganization').value,
-      });
-    }
-
-    this.personalInfoTable = [
-      ...this.personalInfoTable,
       {
         label: label('primaryLanguage'),
         value: this.translate.instant(
@@ -200,13 +204,21 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
       },
     ];
 
-    if (tableAttribute('whatsappPhoneNumber')) {
+    for (const ta of this.tableAttributes) {
+      if (!this.tableAttributesToShow.includes(ta.name)) {
+        continue;
+      }
+
+      const labelToTranslate = ta.shortLabel || ta.label;
+
+      let value = this.person.paTableAttributes[ta.name].value;
+      if (ta.type === 'tel') {
+        value = value === '' ? value : `+${value}`;
+      }
+
       this.personalInfoTable.push({
-        label: label('whatsappPhoneNumber'),
-        value:
-          tableAttribute('whatsappPhoneNumber').value === ''
-            ? tableAttribute('whatsappPhoneNumber').value
-            : `+${tableAttribute('whatsappPhoneNumber').value}`,
+        label: this.translatableString.get(labelToTranslate),
+        value,
       });
     }
   }

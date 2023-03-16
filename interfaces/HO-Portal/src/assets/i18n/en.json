@@ -642,7 +642,7 @@
       "status": "Status: <b>{{status}}</b>",
       "registeredDate": "Registered date",
       "lastUpdateDate": "Last update",
-      "partnerOrganization": "Partner organization",
+      "namePartnerOrganization": "Partner organization",
       "paymentsDone": "Payments done",
       "primaryLanguage": "Primary language",
       "phone": "Phone number",
