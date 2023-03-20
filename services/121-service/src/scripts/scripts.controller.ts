@@ -1,7 +1,6 @@
 import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiQuery } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { performance } from 'perf_hooks';
 import { DataSource } from 'typeorm';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
 import { SeedDemoProgram } from './seed-program-demo';
@@ -52,7 +51,6 @@ export class ScriptsController {
     @Query('script') script: SeedScript,
     @Res() res,
   ): Promise<string> {
-    const startTime = performance.now();
     if (body.secret !== process.env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
     }
@@ -83,8 +81,6 @@ export class ScriptsController {
       return res.status(HttpStatus.BAD_REQUEST).send('Not a known program');
     }
     await seed.run();
-    const endTime = performance.now();
-    console.log(`Call to doSomething took ${endTime - startTime} milliseconds`);
     return res
       .status(HttpStatus.ACCEPTED)
       .send('Request received. Database should be reset.');
