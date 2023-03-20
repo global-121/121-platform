@@ -36,10 +36,6 @@
     "start:debug-production": "npm run build:debug && npm run serve:static"
   },
   "private": true,
-  "engines": {
-    "node": ">=14",
-    "npm": "^6"
-  },
   "engineStrict": true,
   "dependencies": {
     "@angular/common": "^14.2.12",
@@ -52,8 +48,8 @@
     "@ionic/angular": "^6.6.1",
     "@ionic/cli": "^6.20.3",
     "@microsoft/applicationinsights-web": "^2.8.10",
-    "@ngx-translate/core": "^13.0.0",
-    "@ngx-translate/http-loader": "^6.0.0",
+    "@ngx-translate/core": "^14.0.0",
+    "@ngx-translate/http-loader": "^7.0.0",
     "core-js": "2.6.8",
     "howler": "^2.2.3",
     "rxjs": "^6.6.2",
@@ -75,7 +71,7 @@
     "@angular/compiler-cli": "^14.2.12",
     "@angular/language-service": "^14.2.12",
     "@types/jasmine": "^4.0.2",
-    "@types/node": "^14.x",
+    "@types/node": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "5.27.1",
     "@typescript-eslint/parser": "5.55.0",
     "dotenv": "^16.0.3",
@@ -94,6 +90,6 @@
     "prettier": "2.8.3",
     "prettier-plugin-organize-imports": "^3.2.2",
     "shx": "^0.3.4",
-    "typescript": "~4.6.4"
+    "typescript": "^4.8.0"
   }
 }
