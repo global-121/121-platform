@@ -65,7 +65,7 @@ jobs:
         run: docker --log-level 'warn' compose -f docker-compose.yml -f docker-compose.ci.yml up -d --quiet-pull --no-recreate --no-build
 
       - name: Wait for healthchecks
-        run: timeout 60s sh -c 'until docker ps | grep 121-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 2; done'
+        run: timeout 60s sh -c 'until docker ps | grep 121-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 5; done'
 
       - name: Run API tests with Jest
         working-directory: ./services

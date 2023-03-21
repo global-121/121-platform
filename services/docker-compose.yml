@@ -19,5 +19,5 @@ services:
       test: curl --fail http://localhost:3000/api/instance || exit 1
       interval: 2s
       retries: 10
-      start_period: 10s
+      start_period: 30s
       timeout: 10s
