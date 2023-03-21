@@ -314,11 +314,9 @@ export class RegistrationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/select-validation')
   public async selectForValidation(
-    @Param() params,
     @Body() referenceIdsData: ReferenceIdsDto,
   ): Promise<void> {
     await this.registrationsService.updateRegistrationStatusBatch(
-      params.programId,
       referenceIdsData,
       RegistrationStatusEnum.selectedForValidation,
     );
@@ -329,11 +327,9 @@ export class RegistrationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/no-longer-eligible')
   public async markNoLongerEligible(
-    @Param() params,
     @Body() referenceIdsData: ReferenceIdsDto,
   ): Promise<void> {
     await this.registrationsService.updateRegistrationStatusBatch(
-      Number(params.programId),
       referenceIdsData,
       RegistrationStatusEnum.noLongerEligible,
     );
@@ -344,12 +340,10 @@ export class RegistrationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/include')
   public async include(
-    @Param() params,
     @Body() referenceIdsData: ReferenceIdsDto,
     @Body() messageData: MessageDto,
   ): Promise<void> {
     await this.registrationsService.updateRegistrationStatusBatch(
-      Number(params.programId),
       referenceIdsData,
       RegistrationStatusEnum.included,
       messageData.message,
@@ -362,12 +356,10 @@ export class RegistrationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/end')
   public async end(
-    @Param() params,
     @Body() referenceIdsData: ReferenceIdsDto,
     @Body() messageData: MessageDto,
   ): Promise<void> {
     await this.registrationsService.updateRegistrationStatusBatch(
-      Number(params.programId),
       referenceIdsData,
       RegistrationStatusEnum.inclusionEnded,
       messageData.message,
@@ -380,12 +372,10 @@ export class RegistrationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/reject')
   public async reject(
-    @Param() params,
     @Body() referenceIdsData: ReferenceIdsDto,
     @Body() messageData: MessageDto,
   ): Promise<void> {
     await this.registrationsService.updateRegistrationStatusBatch(
-      Number(params.programId),
       referenceIdsData,
       RegistrationStatusEnum.rejected,
       messageData.message,
@@ -398,12 +388,10 @@ export class RegistrationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/invite')
   public async invite(
-    @Param() params,
     @Body() referenceIdsData: ReferenceIdsDto,
     @Body() messageData: MessageDto,
   ): Promise<void> {
     await this.registrationsService.updateRegistrationStatusBatch(
-      Number(params.programId),
       referenceIdsData,
       RegistrationStatusEnum.invited,
       messageData.message,
@@ -469,12 +457,8 @@ export class RegistrationsController {
   @Post('programs/:programId/registrations/delete')
   public async delete(
     @Body() referenceIdsData: ReferenceIdsDto,
-    @Param() params,
   ): Promise<void> {
-    await this.registrationsService.deleteBatch(
-      Number(params.programId),
-      referenceIdsData,
-    );
+    await this.registrationsService.deleteBatch(referenceIdsData);
   }
 
   // There's no permission check here because there's a check included in the queries done to fetch data.
