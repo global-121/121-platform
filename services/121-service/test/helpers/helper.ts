@@ -78,6 +78,13 @@ export function createEspoSignature(
   return base64encodedString;
 }
 
+export function getRegistration(
+  referenceId: string,
+): Promise<request.Response> {
+  const server = getServer();
+  return server.get(`/registrations/get/${referenceId}`);
+}
+
 function encodeBase64(data): string {
   return Buffer.from(data, 'binary').toString('base64');
 }

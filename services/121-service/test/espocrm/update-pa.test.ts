@@ -2,6 +2,7 @@ import {
   createEspoSignature,
   deleteRegistrations,
   getIsDebug,
+  getRegistration,
   getServer,
   importRegistrations,
   login,
@@ -87,10 +88,11 @@ describe('Webhook integration with espocrm', () => {
     });
 
     it('should succesfully update', async () => {
+      const updatedName = 'UpdatedName';
       const updateBody = [
         {
           id: referenceId,
-          firstName: 'UpdatedName',
+          firstName: updatedName,
         },
       ];
       const signature = createEspoSignature(
@@ -104,6 +106,9 @@ describe('Webhook integration with espocrm', () => {
         .set('x-signature', signature)
         .send(updateBody)
         .expect(201);
+
+      const getRegistrationRes = await getRegistration(referenceId);
+      expect(getRegistrationRes.body.customData.firstName).toBe(updatedName);
     });
   });
 });
