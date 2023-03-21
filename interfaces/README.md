@@ -76,10 +76,10 @@ All interfaces use a common set of dependencies/frameworks/libraries.
   - Website: <http://www.ngx-translate.com/>
   - API Documentation: <https://github.com/ngx-translate/core/tree/v12.1.2#api>
 
-- [`ngx-translate-lint` v1.13.2](https://www.npmjs.com/package/ngx-translate-lint/v/1.13.2)  
+- [`ngx-translate-lint` v1.20.7](https://www.npmjs.com/package/ngx-translate-lint/v/1.20.7)  
    A lint-tool to check for missing or unused translations or typos in keys.
 
-  - GitHub: <https://github.com/svoboda-rabstvo/ngx-translate-lint/tree/v1.13.2#readme>
+  - GitHub: <https://github.com/svoboda-rabstvo/ngx-translate-lint/tree/v1.20.7#readme>
 
 - [`gzipper`](https://www.npmjs.com/package/gzipper)
   To compress all assets of the interfaces after the build.
