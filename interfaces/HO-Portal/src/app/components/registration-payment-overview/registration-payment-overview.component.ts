@@ -135,6 +135,10 @@ export class RegistrationPaymentOverviewComponent implements OnInit {
       RegistrationStatusEnum.rejected,
     ];
 
+    if (!this.person) {
+      return false;
+    }
+
     if (
       acceptedStatuses.includes(this.person.status) &&
       this.canViewPaymentData

@@ -149,6 +149,9 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   }
 
   public getFilterCount(filter: string | null): number {
+    if (!this.activityOverview) {
+      return 0;
+    }
     if (!filter) {
       return this.activityOverview.length;
     }

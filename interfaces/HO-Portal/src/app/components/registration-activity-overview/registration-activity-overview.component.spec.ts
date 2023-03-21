@@ -1,5 +1,6 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TranslateModule } from '@ngx-translate/core';
 import { RegistrationActivityOverviewComponent } from './registration-activity-overview.component';
 
 describe('RegistrationActivityOverviewComponent', () => {
@@ -8,9 +9,9 @@ describe('RegistrationActivityOverviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RegistrationActivityOverviewComponent ]
-    })
-    .compileComponents();
+      declarations: [RegistrationActivityOverviewComponent],
+      imports: [HttpClientTestingModule, TranslateModule.forRoot()],
+    }).compileComponents();
   });
 
   beforeEach(() => {
