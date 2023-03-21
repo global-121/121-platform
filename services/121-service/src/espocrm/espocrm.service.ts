@@ -56,10 +56,24 @@ export class EspocrmService {
   public async deleteRegistrations(
     deleteRegistrationsDto: DeleteRegistrationDto[],
   ): Promise<void> {
+    const errors = [];
     for (const deleteRegistration of deleteRegistrationsDto) {
       const referenceId = deleteRegistration.id;
-      console.log('referenceId to delete: ', referenceId);
+      try {
+        await this.registrationsService.deleteBatch({
+          referenceIds: [referenceId],
+        });
+      } catch (error) {
+        console.log(
+          `Failed deleting registration with referenceId: ${referenceId}. Error: ${error}`,
+        );
+        errors.push(error);
+      }
     }
+    if (errors.length > 0) {
+      throw errors[0];
+    }
+    return;
   }
 
   public async getWebhook(

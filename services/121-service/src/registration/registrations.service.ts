@@ -1253,17 +1253,15 @@ export class RegistrationsService {
   }
 
   public async updateRegistrationStatusBatch(
-    programId: number,
     referenceIdsDto: ReferenceIdsDto,
     registrationStatus: RegistrationStatusEnum,
     message?: string,
     messageContentType?: MessageContentType,
   ): Promise<void> {
-    const program = await this.findProgramOrThrow(programId);
     const errors = [];
     for (const referenceId of referenceIdsDto.referenceIds) {
       const registrationToUpdate = await this.registrationRepository.findOne({
-        where: { referenceId: referenceId, programId: programId },
+        where: { referenceId: referenceId },
       });
       if (!registrationToUpdate) {
         errors.push(`Registration '${referenceId}' is not found`);
@@ -1279,12 +1277,21 @@ export class RegistrationsService {
       }
     }
     if (errors.length === 0) {
+      let programId;
+      let program;
       for (const referenceId of referenceIdsDto.referenceIds) {
         const updatedRegistration = await this.setRegistrationStatus(
           referenceId,
           registrationStatus,
         );
         if (message) {
+          if (updatedRegistration.programId !== programId) {
+            programId = updatedRegistration.programId;
+            // avoid a query per PA if not necessary
+            program = await this.programRepository.findOne({
+              where: { id: programId },
+            });
+          }
           const tryWhatsappFirst =
             registrationStatus === RegistrationStatusEnum.invited
               ? program.tryWhatsAppFirst
@@ -1507,13 +1514,9 @@ export class RegistrationsService {
     return await this.registrationRepository.save(updatedRegistration);
   }
 
-  public async deleteBatch(
-    programId: number,
-    referenceIdsDto: ReferenceIdsDto,
-  ): Promise<void> {
+  public async deleteBatch(referenceIdsDto: ReferenceIdsDto): Promise<void> {
     // Do this first, so that error is already thrown if a PA cannot be changed to deleted, before removing any data below
     await this.updateRegistrationStatusBatch(
-      programId,
       referenceIdsDto,
       RegistrationStatusEnum.deleted,
     );

@@ -57,12 +57,18 @@ export class EspocrmController {
     status: 403,
     description: 'Forbidden. Signature not correct or IP not whitelisted.',
   })
+  @ApiResponse({
+    status: 404,
+    description: `Registration(s) not found or already on status 'deleted'`,
+  })
   @ApiBody({ isArray: true, type: DeleteRegistrationDto })
   @Post('delete-registration')
   public async deleteRegistrations(
     @Body() deleteRegistrationsDto: DeleteRegistrationDto[],
   ): Promise<void> {
-    this.espocrmService.deleteRegistrations(deleteRegistrationsDto);
+    return await this.espocrmService.deleteRegistrations(
+      deleteRegistrationsDto,
+    );
   }
 
   @Admin()
