@@ -11,6 +11,7 @@ import { HeaderComponent } from '../components/header/header.component';
 import { MessageHistoryPopupComponent } from '../components/message-history-popup/message-history-popup.component';
 import { ProgramCardComponent } from '../components/program-card/program-card.component';
 import { ProgramNavigationComponent } from '../components/program-navigation/program-navigation.component';
+import { RegistrationActivityOverviewComponent } from '../components/registration-activity-overview/registration-activity-overview.component';
 import { RegistrationPageTableComponent } from '../components/registration-page-table/registration-page-table.component';
 import { RegistrationPaymentOverviewComponent } from '../components/registration-payment-overview/registration-payment-overview.component';
 import { RegistrationPersonalInformationComponent } from '../components/registration-personal-information/registration-personal-information.component';
@@ -70,6 +71,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     RegistrationPersonalInformationComponent,
     RegistrationPageTableComponent,
     RegistrationPaymentOverviewComponent,
+    RegistrationActivityOverviewComponent,
   ],
   imports: [
     CommonModule,
@@ -116,6 +118,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     RegistrationPersonalInformationComponent,
     RegistrationPageTableComponent,
     RegistrationPaymentOverviewComponent,
+    RegistrationActivityOverviewComponent,
   ],
 })
 export class SharedModule {}
