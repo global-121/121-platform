@@ -9,7 +9,7 @@ describe('AuthGuard', () => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
+        RouterModule.forRoot([], {}),
         HttpClientTestingModule,
       ],
       providers: [AuthGuard],
