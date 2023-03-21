@@ -292,8 +292,8 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
       if (!payments[i]) {
         const paymentNumber = minPayment + i;
         if (
-          this.person.maxPayments &&
-          paymentNumber > this.person.maxPayments
+          this.person.status !== RegistrationStatusEnum.included ||
+          (this.person.maxPayments && paymentNumber > this.person.maxPayments)
         ) {
           break;
         }
