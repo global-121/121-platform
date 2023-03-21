@@ -4,185 +4,115 @@
 ></app-header>
 <app-program-navigation></app-program-navigation>
 <ion-content class="ion-padding">
-  <ion-spinner *ngIf="loading"></ion-spinner>
+  <ion-spinner
+    color="primary"
+    *ngIf="loading"
+  ></ion-spinner>
   <ng-container *ngIf="!loading">
-    <ion-text *ngIf="!person"
-      >{{ 'registration-details.error' | translate}}</ion-text
-    >
-    <ng-container *ngIf="person">
+    <ion-text *ngIf="!person">
+      {{ 'registration-details.error' | translate}}
+    </ion-text>
+    <ion-grid *ngIf="person">
       <ion-row>
-        <div>
-          <ion-col>
-            <ion-card style="width: 320px">
-              <ion-card-header>
-                <ion-card-title> {{ person.name }} </ion-card-title>
-                <ion-card-subtitle>
-                  <ion-row class="ion-justify-content-between">
-                    <ion-note
-                      >{{
-                      'registration-details.personal-information-table.subtitle'
-                      | translate }}</ion-note
-                    >
-                    <ion-button
-                      fill="outline"
-                      color="primary"
-                      size="small"
-                      shape="round"
-                      (click)="editPersonAffectedPopup()"
-                      >{{ 'registration-details.show-all' | translate
-                      }}</ion-button
-                    >
-                  </ion-row>
-                </ion-card-subtitle>
-              </ion-card-header>
-              <ion-card-content class="ion-no-padding">
-                <ion-list
-                  class="ion-no-padding"
-                  lines="full"
-                >
-                  <ion-item
-                    *ngFor="let item of personalInfoTable"
-                    class="ion-justify-content-between"
-                    style="font-size: 14px"
-                  >
-                    <ion-label [innerHTML]="item.label"></ion-label>
-                    <ion-label class="ion-text-end"
-                      ><strong>{{ item.value }}</strong></ion-label
-                    >
-                  </ion-item>
-                </ion-list>
-              </ion-card-content>
-            </ion-card>
+        <ion-col
+          [size]="12"
+          [sizeMd]="5"
+          [sizeLg]="4"
+        >
+          <app-registration-personal-information
+            [person]="person"
+            [programId]="programId"
+          ></app-registration-personal-information>
 
-            <ion-card
-              *ngIf="showPaymentInfo()"
-              style="width: 320px"
+          <app-registration-payment-overview
+            [person]="person"
+            [program]="program"
+          ></app-registration-payment-overview>
+        </ion-col>
+        <ion-col
+          [size]="12"
+          [sizeMd]="7"
+          [sizeLg]="8"
+        >
+          <ion-text>
+            <h1>
+              {{ 'registration-details.activity-overview.title' | translate }}
+            </h1>
+          </ion-text>
+
+          <ion-card>
+            <ion-item
+              color="light"
+              lines="none"
             >
-              <ion-card-header>
-                <ion-card-title>
-                  {{ 'registration-details.payment-overview.title' | translate
-                  }}
-                </ion-card-title>
-                <ion-card-subtitle>
-                  <ion-row class="ion-justify-content-between">
-                    <ion-note
-                      >{{ 'registration-details.payment-overview.subtitle' |
-                      translate }}</ion-note
-                    >
-                    <ion-button
-                      fill="outline"
-                      color="primary"
-                      size="small"
-                      shape="round"
-                      (click)="paymentHistoryPopup()"
-                      >{{ 'registration-details.show-all' | translate
-                      }}</ion-button
-                    >
-                  </ion-row>
-                </ion-card-subtitle>
-              </ion-card-header>
-              <ion-card-content class="ion-no-padding">
-                <ion-list
-                  class="ion-no-padding"
-                  lines="full"
+              <ion-row>
+                <ion-button
+                  *ngFor="let filter of activityOverviewButtons"
+                  (click)="activityOverviewFilter = filter"
+                  fill="clear"
+                  size="small"
+                  [color]="activityOverviewFilter === filter ? 'primary' : 'secondary'"
+                  [style]="activityOverviewFilter === filter ? 'box-shadow: 0px 2px var(--ion-color-primary); --ripple-color: #fff' : '--ripple-color: #fff'"
                 >
-                  <ion-item
-                    *ngFor="let item of paymentsTable"
-                    class="ion-justify-content-between"
-                    style="font-size: 14px"
-                  >
-                    <ion-label [innerHTML]="item.label"></ion-label>
-                    <ion-label class="ion-text-end"
-                      ><strong>{{ item.value }}</strong></ion-label
-                    >
-                  </ion-item>
-                </ion-list>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </div>
-        <div>
-          <div style="width: 640px">
-            <ion-text>
-              <h1>
-                {{ 'registration-details.activity-overview.title' | translate }}
-              </h1>
-            </ion-text>
-
-            <ion-card>
-              <ion-item
-                color="light"
-                lines="none"
+                  {{ ('registration-details.activity-overview.filterButton.' +
+                  filter | translate) + ' (' + getFilterCount(filter) + ")" }}
+                </ion-button>
+              </ion-row>
+            </ion-item>
+            <ion-card-content class="ion-no-padding">
+              <ion-list
+                class="ion-no-padding"
+                lines="full"
               >
-                <ion-row>
-                  <ion-button
-                    *ngFor="let filter of activityOverviewButtons"
-                    (click)="activityOverviewFilter = filter"
-                    fill="clear"
-                    size="small"
-                    [color]="activityOverviewFilter === filter ? 'primary' : 'secondary'"
-                    [style]="activityOverviewFilter === filter ? 'box-shadow: 0px 2px var(--ion-color-primary); --ripple-color: #fff' : '--ripple-color: #fff'"
-                  >
-                    {{ ('registration-details.activity-overview.filterButton.' +
-                    filter | translate) + ' (' + getFilterCount(filter) + ")" }}
-                  </ion-button>
-                </ion-row>
-              </ion-item>
-              <ion-card-content class="ion-no-padding">
-                <ion-list
-                  class="ion-no-padding"
-                  lines="full"
+                <ion-item
+                  *ngFor="let item of getFilteredActivityOverview()"
+                  style="font-size: 14px; --padding-start: 0"
                 >
-                  <ion-item
-                    *ngFor="let item of getFilteredActivityOverview()"
-                    style="font-size: 14px; --padding-start: 0"
-                  >
-                    <ion-grid>
-                      <ion-row>
-                        <ion-col size="1">
-                          <div
-                            style="
-                              height: 100%;
-                              display: flex;
-                              align-items: center;
-                            "
-                          >
-                            <ion-icon
-                              [name]="getIconName(item.type)"
-                              size="large"
-                            ></ion-icon>
-                          </div>
-                        </ion-col>
-                        <ion-col size="11">
-                          <ion-row class="ion-justify-content-between">
-                            <ion-row class="ion-margin-bottom">
-                              <ion-label class="ion-margin-end"
-                                ><strong
-                                  >{{item.label | uppercase}}</strong
-                                ></ion-label
-                              >
-                              <ion-note
-                                ><small>
-                                  {{ item.date | date: 'dd-MM-yyyy HH:mm' }}
-                                </small>
-                              </ion-note>
-                            </ion-row>
-                          </ion-row>
-                          <div>
-                            <ion-text class="ion-text-end"
-                              >{{ item.description }}</ion-text
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col size="1">
+                        <div
+                          style="
+                            height: 100%;
+                            display: flex;
+                            align-items: center;
+                          "
+                        >
+                          <ion-icon
+                            [name]="getIconName(item.type)"
+                            size="large"
+                          ></ion-icon>
+                        </div>
+                      </ion-col>
+                      <ion-col size="11">
+                        <ion-row class="ion-justify-content-between">
+                          <ion-row class="ion-margin-bottom">
+                            <ion-label class="ion-margin-end"
+                              ><strong
+                                >{{item.label | uppercase}}</strong
+                              ></ion-label
                             >
-                          </div>
-                        </ion-col>
-                      </ion-row>
-                    </ion-grid>
-                  </ion-item>
-                </ion-list>
-              </ion-card-content>
-            </ion-card>
-          </div>
-        </div>
+                            <ion-note
+                              ><small>
+                                {{ item.date | date: 'dd-MM-yyyy HH:mm' }}
+                              </small>
+                            </ion-note>
+                          </ion-row>
+                        </ion-row>
+                        <div>
+                          <ion-text class="ion-text-end"
+                            >{{ item.description }}</ion-text
+                          >
+                        </div>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-item>
+              </ion-list>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
       </ion-row>
-    </ng-container>
+    </ion-grid>
   </ng-container>
 </ion-content>

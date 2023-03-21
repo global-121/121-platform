@@ -9,7 +9,7 @@ const modalSpy = jasmine.createSpyObj('Modal', ['present']);
 const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
 modalCtrlSpy.create.and.callFake(() => modalSpy);
 
-describe('RegistrationDetailsComponent', () => {
+describe('RegistrationDetailsPage', () => {
   let component: RegistrationDetailsPage;
   let fixture: ComponentFixture<RegistrationDetailsPage>;
 
