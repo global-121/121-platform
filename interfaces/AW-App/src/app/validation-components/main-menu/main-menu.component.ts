@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,7 +17,7 @@ import { ValidationComponent } from '../validation-components.interface';
   templateUrl: './main-menu.component.html',
   styleUrls: ['./main-menu.component.scss'],
 })
-export class MainMenuComponent implements ValidationComponent {
+export class MainMenuComponent implements ValidationComponent, OnInit {
   public menuOptions: any;
   public optionChoice: string;
   public optionSelected: boolean;

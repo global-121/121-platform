@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import {
@@ -13,7 +13,7 @@ import { ValidationComponent } from '../validation-components.interface';
   templateUrl: './download-data.component.html',
   styleUrls: ['./download-data.component.scss'],
 })
-export class DownloadDataComponent implements ValidationComponent {
+export class DownloadDataComponent implements ValidationComponent, OnInit {
   public downloadReady = false;
   public downloadAborted = false;
   public nrDownloaded: number;
