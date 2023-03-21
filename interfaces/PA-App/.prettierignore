@@ -3,7 +3,8 @@
 # See .gitignore
 coverage/
 
-# Ionic related files
+# Angular/Ionic related files
+.angular/
 www/
 dist/
 platforms/
