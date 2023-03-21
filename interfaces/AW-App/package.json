@@ -25,7 +25,7 @@
     "start:debug-production": "npm run build:debug && npm run serve:static",
     "test": "ng test --configuration=ci",
     "test:dev": "ng test",
-    "lint:syntax": "npx prettier --check \"**/*.{md,js,ts,scss,html}\"",
+    "lint:syntax": "npx prettier --check \"**/*.{md,js,json,ts,scss,html}\"",
     "lint": "npm run lint:syntax && ng lint",
     "fix:syntax": "npm run lint:syntax -- --write"
   },
