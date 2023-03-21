@@ -1,0 +1,19 @@
+<ion-list
+  *ngIf="itemList"
+  class="ion-no-padding"
+  lines="full"
+>
+  <ion-item
+    *ngFor="let item of itemList"
+    style="font-size: 0.875rem"
+  >
+    <ion-label
+      [innerHTML]="item.label"
+      slot="start"
+      class="ion-text-wrap"
+    ></ion-label>
+    <ion-label class="ion-text-end ion-text-wrap"
+      ><strong>{{ item.value }}</strong></ion-label
+    >
+  </ion-item>
+</ion-list>
