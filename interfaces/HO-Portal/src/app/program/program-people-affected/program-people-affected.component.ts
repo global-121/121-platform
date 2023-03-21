@@ -9,7 +9,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { NavigationEnd, Router, RoutesRecognized } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import {
   AlertController,
   ModalController,
@@ -17,7 +17,7 @@ import {
   PopoverController,
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, pairwise, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
@@ -297,7 +297,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   private canDoSinglePayment: boolean;
   private routerSubscription: Subscription;
   private pubSubSubscription: Subscription;
-  private urlSubscription: Subscription;
 
   public isStatusFilterPopoverOpen = false;
   private PAYMENTS_LEFT_ORDER = [0, 1, 2, 3, -1, -2];
@@ -352,19 +351,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         }
       }
     });
-
-    this.urlSubscription = this.router.events
-      .pipe(
-        filter((evt: any) => evt instanceof RoutesRecognized),
-        pairwise(),
-      )
-      .subscribe((events: RoutesRecognized[]) => {
-        if (events[0].urlAfterRedirects.includes('/registration/')) {
-          console.log('=== GET local');
-        } else {
-          console.log('=== RESET local');
-        }
-      });
 
     this.submitWarning = {
       message: '',
@@ -583,10 +569,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     }
     if (this.pubSubSubscription) {
       this.pubSubSubscription.unsubscribe();
-    }
-
-    if (this.urlSubscription) {
-      this.urlSubscription.unsubscribe();
     }
   }
 
