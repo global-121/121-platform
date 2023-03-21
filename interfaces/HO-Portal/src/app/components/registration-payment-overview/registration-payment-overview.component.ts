@@ -85,9 +85,12 @@ export class RegistrationPaymentOverviewComponent implements OnInit {
       let value: string;
       if (!payments[i]) {
         const paymentNumber = minPayment + i;
+        const paymentSuccessionNr = paymentNumber - minPayment + 1;
+        const paymentsRemaining =
+          this.person.maxPayments - this.person.nrPayments;
         if (
           this.person.status !== RegistrationStatusEnum.included ||
-          (this.person.maxPayments && paymentNumber > this.person.maxPayments)
+          (this.person.maxPayments && paymentSuccessionNr > paymentsRemaining)
         ) {
           break;
         }

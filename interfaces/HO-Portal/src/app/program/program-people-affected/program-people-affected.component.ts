@@ -1093,7 +1093,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         );
       } else {
         paymentColumnValue.text = this.translate.instant(
-          'page.program.program-people-affected.transaction.failed',
+          'page.program.program-people-affected.transaction.error',
         );
       }
       personRow[columnKey] =

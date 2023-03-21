@@ -329,7 +329,7 @@
         "submit-warning": "You are about to:",
         "submit-warning-people-affected": "People Affected",
         "transaction": {
-          "failed": "Failed",
+          "error": "Failed",
           "waiting": "Waiting",
           "waiting-message": "Still waiting for status update on this transaction. Refresh the page for the latest status.",
           "success": "Success",
