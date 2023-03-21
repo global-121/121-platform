@@ -271,14 +271,15 @@ When new Node.js dependencies are added to a service since it is last build on y
 - Each component has its own individual tests:
   - Unit-tests and UI-tests for all interfaces; Run with `npm test` in each `interfaces/*`-folder.
   - Unit-tests and integration-tests for all services; Run with `npm test` in each `services/*`-folder.
+- Integration (API) tests to test the endpoints of the 121-service; Run with `docker exec 121-service npm run test:e2e` `services/121-service`-folder.
 
 ### When to use a Cypress E2E Integration test?
 - Is the feature/component part of the essential happy-flow of the 121-platform?
 - Is it not already covered by other tests?
 - Are we still within the limit of +/- 10 tests?
 - Example scenarios:
-  - Import/invite PAs, Include them, make payment
-  - Not log-in: can be API-test + component-test
+  - DO: Import/invite PAs, Include them, make payment
+  - DON'T: log-in. Reason: can be API-test + component-test
 
 ### When to use an API-test? (back-end + db? only)
 - Is it to test query-magic?
