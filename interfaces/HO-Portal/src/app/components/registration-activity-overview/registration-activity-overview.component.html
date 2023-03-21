@@ -9,27 +9,37 @@
     color="light"
     lines="none"
   >
-    <ion-row>
-      <ion-button
-        *ngFor="let filter of activityOverviewButtons"
-        (click)="activityOverviewFilter = filter"
-        fill="clear"
-        size="small"
-        [color]="activityOverviewFilter === filter ? 'primary' : 'secondary'"
-        [style]="
-          activityOverviewFilter === filter
-            ? 'box-shadow: 0px 2px var(--ion-color-primary); --ripple-color: #fff'
-            : '--ripple-color: #fff'
-        "
+    <ion-row style="width: 100%">
+      <ion-col
+        [sizeXs]="12"
+        [sizeLg]="9"
+        class="horizontal-scroll-container"
       >
-        {{
-          ('registration-details.activity-overview.filterButton.' + filter
-            | translate) +
-            ' (' +
-            getFilterCount(filter) +
-            ')'
-        }}
-      </ion-button>
+        <div class="ion-text-nowrap">
+          <ion-button
+            *ngFor="let filter of activityOverviewButtons"
+            (click)="activityOverviewFilter = filter"
+            fill="clear"
+            size="small"
+            [color]="
+              activityOverviewFilter === filter ? 'primary' : 'secondary'
+            "
+            [style]="
+              activityOverviewFilter === filter
+                ? 'box-shadow: 0px 2px var(--ion-color-primary); --ripple-color: #fff'
+                : '--ripple-color: #fff'
+            "
+          >
+            {{
+              ('registration-details.activity-overview.filterButton.' + filter
+                | translate) +
+                ' (' +
+                getFilterCount(filter) +
+                ')'
+            }}
+          </ion-button>
+        </div>
+      </ion-col>
     </ion-row>
   </ion-item>
   <ion-card-content class="ion-no-padding">
