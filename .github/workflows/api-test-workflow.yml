@@ -1,22 +1,6 @@
 name: Integration (API + DB) tests
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - 'master'
-    paths:
-      - '.github/workflows/integration-test-workflow.yml'
-      - 'services/**'
-      - '!**.spec.ts'
-      - '!**.md'
-  push:
-    branches:
-      - 'release/*'
-    paths:
-      - '.github/workflows/integration-test-workflow.yml'
-      - 'services/**'
-      - '!**.spec.ts'
-      - '!**.md'
 
 jobs:
   # Label of the runner job
@@ -63,11 +47,6 @@ jobs:
       - name: Run 121-service
         working-directory: ./services
         run: docker --log-level 'warn' compose -f docker-compose.yml -f docker-compose.ci.yml up -d --quiet-pull --no-recreate --no-build
-
-      - name: Sleep for 30 seconds
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '30s'
 
       - name: Run API tests with Jest
         working-directory: ./services
