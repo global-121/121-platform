@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 
@@ -7,13 +7,11 @@ import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.c
   templateUrl: './submit-payment-popup.component.html',
   styleUrls: ['./submit-payment-popup.component.scss'],
 })
-export class SubmitPaymentPopupComponent implements OnInit {
+export class SubmitPaymentPopupComponent {
   @Input()
   public submitPaymentProps: SubmitPaymentProps;
 
   constructor(private modalController: ModalController) {}
-
-  async ngOnInit() {}
 
   public closeModal() {
     this.modalController.dismiss();

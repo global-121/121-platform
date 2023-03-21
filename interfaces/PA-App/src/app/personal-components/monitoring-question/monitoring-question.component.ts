@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MonitoringInfo } from 'src/app/models/instance.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { InstanceService } from 'src/app/services/instance.service';
@@ -13,7 +13,10 @@ import { PersonalComponents } from '../personal-components.enum';
   templateUrl: './monitoring-question.component.html',
   styleUrls: ['./monitoring-question.component.scss'],
 })
-export class MonitoringQuestionComponent extends PersonalDirective {
+export class MonitoringQuestionComponent
+  extends PersonalDirective
+  implements OnInit
+{
   public isCanceled = false;
   public monitoringQuestion: MonitoringInfo;
 
@@ -30,7 +33,7 @@ export class MonitoringQuestionComponent extends PersonalDirective {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     if (this.data) {
       this.initHistory();
       return;

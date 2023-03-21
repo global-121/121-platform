@@ -5,7 +5,6 @@ import {
   EventEmitter,
   Input,
   OnDestroy,
-  OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
@@ -67,7 +66,7 @@ import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-h
   templateUrl: './program-people-affected.component.html',
   styleUrls: ['./program-people-affected.component.scss'],
 })
-export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
+export class ProgramPeopleAffectedComponent implements OnDestroy {
   @ViewChild('proxyScrollbar')
   private proxyScrollbar: ElementRef;
 
@@ -571,8 +570,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       this.pubSubSubscription.unsubscribe();
     }
   }
-
-  async ngOnInit() {}
 
   async initComponent() {
     this.isLoading = true;

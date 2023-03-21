@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Permission from 'src/app/auth/permission.enum';
 import { ProgramPhase } from 'src/app/models/program.model';
@@ -8,7 +8,7 @@ import { ProgramPhase } from 'src/app/models/program.model';
   templateUrl: './inclusion.page.html',
   styleUrls: ['./inclusion.page.scss'],
 })
-export class InclusionPage implements OnInit {
+export class InclusionPage {
   public Permission = Permission;
 
   public programId = this.route.snapshot.params.id;
@@ -16,8 +16,6 @@ export class InclusionPage implements OnInit {
   public isReady: boolean;
 
   constructor(private route: ActivatedRoute) {}
-
-  ngOnInit() {}
 
   public onReady(state: boolean) {
     this.isReady = state;
