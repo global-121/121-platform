@@ -24,27 +24,6 @@ jobs:
     # You must use a Linux environment when using service containers or container jobs
     runs-on: ubuntu-latest
 
-    # Service containers to run with `runner-job`
-    services:
-      # Label used to access the service container
-      postgres:
-        # Docker Hub image
-        image: postgres:14
-        # Provide the password for postgres
-        env:
-          POSTGRES_USER: global121
-          POSTGRES_PASSWORD: global121
-          POSTGRES_DB: global121
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          # Maps tcp port 5432 on service container to the host
-          - 5432:5432
-
     steps:
       # Downloads a copy of the code in your repository before running CI tests
       - name: Check out repository code
@@ -79,11 +58,11 @@ jobs:
       - name: Build containers
         if: steps.cache_build_services.outputs.cache-hit != 'true'
         working-directory: ./services
-        run: docker compose -f docker-compose.yml build
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml build
 
       - name: Run 121-service
         working-directory: ./services
-        run: docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --no-recreate --no-build
+        run: docker --log-level 'warn' compose -f docker-compose.yml -f docker-compose.ci.yml up -d --quiet-pull --no-recreate --no-build
 
       - name: Run API tests with Jest
         working-directory: ./services
