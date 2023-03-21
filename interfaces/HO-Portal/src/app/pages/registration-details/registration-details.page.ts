@@ -86,7 +86,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     rejected: 'rejectionDate',
   };
 
-  public activityOverviewButtons = [null, 'message', 'status'];
+  public activityOverviewButtons = [null, 'message', 'status', 'payment'];
 
   constructor(
     private route: ActivatedRoute,

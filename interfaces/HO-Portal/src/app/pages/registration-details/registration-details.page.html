@@ -6,7 +6,6 @@
 <ion-content class="ion-padding">
   <ion-spinner *ngIf="loading"></ion-spinner>
   <ng-container *ngIf="!loading">
-    <h1 class="ion-padding">Program {{ programId }}</h1>
     <ion-text *ngIf="!person"
       >{{ 'registration-details.error' | translate}}</ion-text
     >

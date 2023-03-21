@@ -658,7 +658,8 @@
       "filterButton": {
         "null": "All",
         "message": "Messages",
-        "status": "Status history"
+        "status": "Status history",
+        "payment": "Payments"
       }
     },
     "error": "Person not found"
