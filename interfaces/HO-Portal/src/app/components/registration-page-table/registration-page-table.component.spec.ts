@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { RegistrationPageTableComponent } from './registration-page-table.component';
 
 describe('RegistrationPageTableComponent', () => {
@@ -8,9 +7,8 @@ describe('RegistrationPageTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RegistrationPageTableComponent ]
-    })
-    .compileComponents();
+      declarations: [RegistrationPageTableComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
