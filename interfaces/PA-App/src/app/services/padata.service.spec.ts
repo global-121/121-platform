@@ -17,6 +17,7 @@ describe('PaDataService', () => {
 
   it('should create', () => {
     const service: PaDataService = TestBed.inject(PaDataService);
+
     expect(service).toBeTruthy();
   });
 });

@@ -114,6 +114,7 @@ describe('OnlyAllowedInputDirective', () => {
           getData: getDataSpy,
         },
       });
+
       expect(pasteSpy).toHaveBeenCalledWith('insertText', false, test.output);
     });
   });
