@@ -9,8 +9,6 @@
     "directory": "interfaces/HO-Portal"
   },
   "scripts": {
-    "ionic": "ionic",
-    "ng": "ng",
     "start": "ng serve --port 0",
     "set-env-variables": "node ./_set-env-variables.js",
     "prebuild": "npm run set-env-variables",
@@ -30,8 +28,8 @@
   },
   "private": true,
   "engines": {
-    "node": ">=14",
-    "npm": "^6"
+    "node": ">=18",
+    "npm": ">=9"
   },
   "engineStrict": true,
   "dependencies": {
