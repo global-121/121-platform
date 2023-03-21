@@ -24,7 +24,7 @@ describe('GetValue-Helpers', () => {
       expect(transformFunction).not.toHaveBeenCalled();
     });
 
-    it('should return the value for valid inputs', () => {
+    it('should return the value for valid inputs (getValueOrEmpty)', () => {
       const input = [null, 0, -1, 1, 'a', 'test', 'undefined'];
 
       input.forEach((item, index) => {
@@ -34,7 +34,7 @@ describe('GetValue-Helpers', () => {
       });
     });
 
-    it('should return the transformed value using the provided function', () => {
+    it('should return the transformed value using the provided function  (getValueOrEmpty)', () => {
       const returnValue = 'TEST';
       const transformFunction = jasmine
         .createSpy()
@@ -46,7 +46,7 @@ describe('GetValue-Helpers', () => {
         const output = getValueOrEmpty(item, transformFunction);
 
         expect(output).toBe(returnValue);
-        expect(transformFunction).toHaveBeenCalled();
+        expect(transformFunction).toHaveBeenCalledWith(item);
       });
     });
   });
@@ -70,7 +70,7 @@ describe('GetValue-Helpers', () => {
       expect(transformFunction).not.toHaveBeenCalled();
     });
 
-    it('should return the value for valid inputs', () => {
+    it('should return the value for valid inputs (getValueOrUnknown)', () => {
       const input = [null, 0, -1, 1, 'a', 'test', 'undefined'];
 
       input.forEach((item, index) => {
@@ -80,7 +80,7 @@ describe('GetValue-Helpers', () => {
       });
     });
 
-    it('should return the transformed value using the provided function', () => {
+    it('should return the transformed value using the provided function (getValueOrUnknown)', () => {
       const returnValue = 'TEST';
       const transformFunction = jasmine
         .createSpy()
@@ -92,7 +92,7 @@ describe('GetValue-Helpers', () => {
         const output = getValueOrUnknown(item, transformFunction);
 
         expect(output).toBe(returnValue);
-        expect(transformFunction).toHaveBeenCalled();
+        expect(transformFunction).toHaveBeenCalledWith(item);
       });
     });
   });
@@ -122,7 +122,7 @@ describe('GetValue-Helpers', () => {
       expect(transformFunction).not.toHaveBeenCalled();
     });
 
-    it('should return the value for valid inputs', () => {
+    it('should return the value for valid inputs (getValueOrFallback)', () => {
       const fallbackValue = '*';
       const input = [null, 0, -1, 1, 'a', 'test', 'undefined'];
 
@@ -133,7 +133,7 @@ describe('GetValue-Helpers', () => {
       });
     });
 
-    it('should return the transformed value using the provided function', () => {
+    it('should return the transformed value using the provided function (getValueOrFallback)', () => {
       const returnValue = 'TEST';
       const transformFunction = jasmine
         .createSpy()
@@ -150,7 +150,7 @@ describe('GetValue-Helpers', () => {
         );
 
         expect(output).toBe(returnValue);
-        expect(transformFunction).toHaveBeenCalled();
+        expect(transformFunction).toHaveBeenCalledWith(item);
       });
     });
   });

@@ -117,6 +117,7 @@ describe('MetricsStatesComponent', () => {
     expect(mockPastPaymentsService.getPaymentsWithDates).toHaveBeenCalledWith(
       fixtureProgram.id,
     );
+
     expect(mockPastPaymentsService.getPaymentYearMonths).toHaveBeenCalledWith(
       fixtureProgram.id,
     );

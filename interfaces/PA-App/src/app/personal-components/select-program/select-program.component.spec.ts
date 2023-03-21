@@ -16,13 +16,13 @@ describe('SelectProgramComponent', () => {
   let component: SelectProgramComponent;
   let fixture: ComponentFixture<SelectProgramComponent>;
 
-  const modalSpy = jasmine.createSpyObj('Modal', ['present']);
-  const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-  modalCtrlSpy.create.and.callFake(() => {
-    return modalSpy;
-  });
-
   beforeEach(waitForAsync(() => {
+    const modalSpy = jasmine.createSpyObj('Modal', ['present']);
+    const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+    modalCtrlSpy.create.and.callFake(() => {
+      return modalSpy;
+    });
+
     TestBed.configureTestingModule({
       declarations: [SelectProgramComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
