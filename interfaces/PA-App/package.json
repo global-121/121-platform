@@ -25,7 +25,7 @@
     "lint:translations": "ngx-translate-lint --config=ngx-translate-lint.config.json",
     "lint:syntax": "npx prettier --check \"**/*.{md,js,json,ts,scss,html}\"",
     "lint": "npm run lint:syntax && ng lint && npm run lint:translations",
-    "fix:syntax": "npm run lint:syntax -- --write",
+    "fix": " ng lint --fix && npm run lint:syntax -- --write",
     "install-dependencies-audio": "ffbinaries ffmpeg --output=node_modules/ffbinaries/",
     "postinstall": "npm run install-dependencies-audio",
     "upgrade:angular": "ng update @angular/core @angular/cli @angular-eslint/schematics --create-commits",
