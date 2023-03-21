@@ -113,13 +113,13 @@ export class MainMenuComponent implements ValidationComponent, OnInit {
       myPrograms = programs;
       this.storage.set(IonicStorageTypes.myPrograms, myPrograms);
     } else {
-      this.refreshAllAssignedPrograms();
+      await this.refreshAllAssignedPrograms();
     }
     return myPrograms;
   }
 
-  private refreshAllAssignedPrograms(): void {
-    this.programsServiceApiService
+  private refreshAllAssignedPrograms(): Promise<void> {
+    return this.programsServiceApiService
       .getAllAssignedPrograms()
       .then((programDto) => {
         this.storage.set(IonicStorageTypes.myPrograms, programDto.programs);
