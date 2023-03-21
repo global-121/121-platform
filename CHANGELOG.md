@@ -27,11 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Espocrm webhook integration
+- EspoCRM webhook integration
 - Angular v14
 - Salt passwords
 
----
 ## [1.81.1](https://github.com/global-121/121-platform/compare/v1.81.0...v1.81.1) - 2023-02-24
 
 ### Fixed
@@ -72,7 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Sanitize phonenumber with substring instead of substr
+- Sanitize phonenumber with `substring` instead of `substr`
 
 
 ## [1.79.3](https://github.com/global-121/121-platform/compare/v1.79.2...v1.79.3) - 2023-01-31
