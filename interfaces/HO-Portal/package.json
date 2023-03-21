@@ -46,7 +46,7 @@
     "@angular/service-worker": "^14.2.12",
     "@ionic/angular": "^6.6.1",
     "@ionic/cli": "^6.20.3",
-    "@microsoft/applicationinsights-web": "^2.8.10",
+    "@microsoft/applicationinsights-web": "^2.8.11",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "@popperjs/core": "~2.11.5",
