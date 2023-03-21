@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {
   AlertController,
   LoadingController,
@@ -18,7 +18,7 @@ import { ConversationService } from '../services/conversation.service';
   templateUrl: './user-menu.component.html',
   styleUrls: ['./user-menu.component.scss'],
 })
-export class UserMenuComponent {
+export class UserMenuComponent implements OnDestroy {
   public isLoggedIn = false;
   public username: string;
   private loadingDelete: HTMLIonLoadingElement;
@@ -92,7 +92,7 @@ export class UserMenuComponent {
     await alert.present();
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     window.removeEventListener('online', () => this.goOnline());
     window.removeEventListener('offline', () => this.goOffline());
   }

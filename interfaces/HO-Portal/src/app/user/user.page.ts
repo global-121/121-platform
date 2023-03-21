@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 
@@ -7,7 +7,7 @@ import { AuthService } from '../auth/auth.service';
   templateUrl: './user.page.html',
   styleUrls: ['./user.page.scss'],
 })
-export class UserPage implements OnInit {
+export class UserPage {
   @ViewChild('newPasswordForm')
   public newPasswordForm: NgForm;
 
@@ -29,8 +29,6 @@ export class UserPage implements OnInit {
   public confirmPasswordBorder = this.borderValues.normal;
 
   constructor(private authService: AuthService) {}
-
-  ngOnInit() {}
 
   public updatePassword() {
     if (!this.newPasswordForm.form.valid) {

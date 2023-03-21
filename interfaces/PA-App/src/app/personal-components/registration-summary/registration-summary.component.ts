@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Program } from 'src/app/models/program.model';
@@ -17,7 +17,10 @@ import { PersonalComponents } from '../personal-components.enum';
   templateUrl: './registration-summary.component.html',
   styleUrls: ['./registration-summary.component.scss'],
 })
-export class RegistrationSummaryComponent extends PersonalDirective {
+export class RegistrationSummaryComponent
+  extends PersonalDirective
+  implements OnInit
+{
   @Input()
   public data: any;
 
@@ -51,7 +54,7 @@ export class RegistrationSummaryComponent extends PersonalDirective {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     if (this.data) {
       this.initHistory();
       return;

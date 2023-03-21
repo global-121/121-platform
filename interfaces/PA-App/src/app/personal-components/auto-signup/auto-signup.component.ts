@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { createRandomString } from 'src/app/helpers/createRandomString';
 import {
   LoggingEvent,
@@ -16,7 +16,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   templateUrl: './auto-signup.component.html',
   styleUrls: ['./auto-signup.component.scss'],
 })
-export class AutoSignupComponent extends PersonalDirective {
+export class AutoSignupComponent extends PersonalDirective implements OnInit {
   @Input()
   public data: any;
 
