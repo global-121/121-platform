@@ -1,4 +1,4 @@
-name: Integration (API + DB) tests with supertest
+name: Integration (API + DB) tests
 on:
   workflow_dispatch:
   pull_request:
@@ -20,7 +20,7 @@ on:
 
 jobs:
   # Label of the runner job
-  runner-job:
+  api-test:
     # You must use a Linux environment when using service containers or container jobs
     runs-on: ubuntu-latest
 
@@ -77,13 +77,14 @@ jobs:
       - name: Build containers
         if: steps.cache_build_services.outputs.cache-hit != 'true'
         working-directory: ./services
-        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml build
+        run: docker compose -f docker-compose.yml build
 
       - name: Run 121-service
         working-directory: ./services
-        run: docker --log-level 'warn' compose -f docker-compose.yml -f docker-compose.ci.yml up -d --quiet-pull --no-recreate --no-build
+        run: docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --no-recreate --no-build
 
       - name: Run API tests with Jest
+        working-directory: ./services
         run: |
           echo 'Wait for 121-service to be up...'
           docker compose exec 121-service npm run test:e2e
