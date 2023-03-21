@@ -9,8 +9,6 @@
     "directory": "interfaces/AW-App"
   },
   "scripts": {
-    "ionic": "ionic",
-    "ng": "ng",
     "start": "ng serve --port 0",
     "set-env-variables": "node ./_set-env-variables.js",
     "prebuild": "npm run set-env-variables",
@@ -23,6 +21,7 @@
     "postbuild:debug": "shx cp www/index.html www/404.html && shx mv www \"aw-app\" && shx mkdir www && shx mv \"aw-app\" www/",
     "serve:static": "npx http-server ./www/ -c3600 --gzip --brotli --port 8088 --proxy http://localhost:8088/aw-app/?",
     "start:debug-production": "npm run build:debug && npm run serve:static",
+    "upgrade:angular": "ng update @angular/core @angular/cli @angular-eslint/schematics --create-commits",
     "test": "ng test --configuration=ci",
     "test:dev": "ng test",
     "lint:syntax": "npx prettier --check \"**/*.{md,js,json,ts,scss,html}\"",
@@ -30,6 +29,10 @@
     "fix:syntax": "npm run lint:syntax -- --write"
   },
   "private": true,
+  "engines": {
+    "node": ">=18",
+    "npm": ">=9"
+  },
   "engineStrict": true,
   "dependencies": {
     "@angular/common": "^15.2.3",
