@@ -32,7 +32,9 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
+          POSTGRES_USER: global121
           POSTGRES_PASSWORD: global121
+          POSTGRES_DB: global121
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
