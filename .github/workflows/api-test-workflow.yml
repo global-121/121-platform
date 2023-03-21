@@ -62,7 +62,12 @@ jobs:
 
       - name: Run 121-service
         working-directory: ./services
-        run: docker --log-level 'warn' compose -f docker-compose.yml -f docker-compose.ci.yml up -d --quiet-pull --no-recreate --no-build   &
+        run: docker --log-level 'warn' compose -f docker-compose.yml -f docker-compose.ci.yml up -d --quiet-pull --no-recreate --no-build
+
+      - name: Sleep for 30 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '30s'
 
       - name: Run API tests with Jest
         working-directory: ./services
