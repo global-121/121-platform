@@ -1,9 +1,10 @@
 {
   "fsp": "Intersolve-visa",
   "integrationType": "api",
-  "fspDisplayName": {
+  "fspDisplayNamePaApp": {
     "en": "Visa V-Pay"
   },
+  "fspDisplayNamePortal": "Visa V-Pay",
   "notifyOnTransaction": true,
   "questions": [
     {

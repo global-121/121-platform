@@ -1,9 +1,10 @@
 {
   "fsp": "FSP - all attributes",
   "integrationType": "api",
-  "fspDisplayName": {
+  "fspDisplayNamePaApp": {
     "en": "FSP - all attributes"
   },
+  "fspDisplayNamePortal": "FSP - all attributes",
   "questions": [
     {
       "name": "phoneNumber",

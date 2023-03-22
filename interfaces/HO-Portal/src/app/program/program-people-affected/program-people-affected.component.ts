@@ -539,7 +539,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         width: 150,
       },
       {
-        prop: 'fsp',
+        prop: 'fspDisplayNamePortal',
         name: this.translate.instant(
           'page.program.program-people-affected.column.fsp',
         ),
@@ -1002,6 +1002,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           }`
         : '',
       fsp: person.fsp,
+      fspDisplayNamePortal: person.fspDisplayNamePortal,
       lastMessageStatus: person.lastMessageStatus,
       messages: person.lastMessageStatus
         ? `${this.translate.instant(

@@ -756,6 +756,7 @@ export class RegistrationsService {
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
       .addSelect('registration.inclusionScore', 'inclusionScore')
       .addSelect('fsp.fsp', 'fsp')
+      .addSelect('fsp.fspDisplayNamePortal', 'fspDisplayNamePortal')
       .addSelect(
         'registration.paymentAmountMultiplier',
         'paymentAmountMultiplier',

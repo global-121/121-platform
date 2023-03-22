@@ -26,6 +26,9 @@
     },
     {
       "fsp": "Intersolve-jumbo-physical"
+    },
+    {
+      "fsp": "Intersolve-voucher-whatsapp"
     }
   ],
   "targetNrRegistrations": 10000,
