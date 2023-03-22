@@ -40,12 +40,14 @@
       "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781",
       "physicalVisaCardCreated": "This is a message from the Red Cross.\n\nWe have created a VISA card for you with card number {{1}}\n\nYou can activate it by doing this and this.",
       "digitalVisaCardCreated": "This is a message from the Red Cross.\n\nWe have created a digital VISA card for you with card number {{1}}\n\nYou can activate it by clicking the following link: {{2}}. When asked to enter a token code, enter {{3}}.",
-      "visaLoad": "This is a message from the Red Cross.\n\nWe increased the funds on your VISA card with {{1}}."
+      "visaLoad": "This is a message from the Red Cross.\n\nWe increased the funds on your VISA card with {{1}}.",
+      "jumboCardSent": "This is a message from the Red Cross.\n\nWe have sent {{1}} Jumbo cards of €{{2}} each to the provided address."
     },
     "nl": {
       "registered": "Dit is een bericht van het Rode Kruis.\n\nWe hebben je aanmelding voor hulp ontvangen.\n\nJe ontvangt binnen 1 week een volgende SMS of WhatsApp bericht met meer informatie.",
       "whatsappGenericMessage": "Dit is een bericht van het Rode Kruis.\n\nEr staat een bericht klaar voor je. Antwoord met “ja” op dit bericht om het te ontvangen.",
-      "whatsappReply": "Dit is een geautomatiseerd bericht, voor vragen neem contact op met de Rode Kruis Helpdesk via WhatsApp: +31614458781"
+      "whatsappReply": "Dit is een geautomatiseerd bericht, voor vragen neem contact op met de Rode Kruis Helpdesk via WhatsApp: +31614458781",
+      "jumboCardSent": "Dit is een bericht van het Rode Kruis.\n\nWe hebben {{1}} Jumbo kaarten van €{{2}} elk naar het opgegeven adres verstuurd."
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
