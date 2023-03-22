@@ -22,7 +22,8 @@
     "lint:code": "eslint \"cypress/**/*.ts\"",
     "fix:code": "npm run lint:code -- --fix",
     "lint:syntax": "prettier --check \"**/*.{md,ts,js,json,yml}\"",
-    "fix:syntax": "npm run lint:code -- --fix && npm run lint:syntax -- --write"
+    "fix:syntax": "npm run lint:syntax -- --write",
+    "fix": "npm run fix:code && npm run fix:syntax"
   },
   "dependencies": {
     "cy-verify-downloads": "^0.1.13",
