@@ -128,6 +128,15 @@ export class RegistrationPersonalInformationComponent implements OnInit {
         value,
       });
     }
+
+    if (!this.person.fsp) {
+      return;
+    }
+
+    this.personalInfoTable.push({
+      label: label('fsp'),
+      value: this.person.fsp,
+    });
   }
 
   private getStatusDate(status: string): Date {

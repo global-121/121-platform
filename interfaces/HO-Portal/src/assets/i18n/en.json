@@ -646,7 +646,8 @@
       "paymentsDone": "Payments done",
       "primaryLanguage": "Primary language",
       "phone": "Phone number",
-      "whatsappPhoneNumber": "WhatsApp number"
+      "whatsappPhoneNumber": "WhatsApp number",
+      "fsp": "Financial Service Provider"
     },
     "payment-overview": {
       "title": "Payment overview",
