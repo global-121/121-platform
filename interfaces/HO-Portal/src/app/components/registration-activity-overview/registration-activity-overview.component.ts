@@ -19,7 +19,7 @@ enum ActivityOverviewType {
 @Component({
   selector: 'app-registration-activity-overview',
   templateUrl: './registration-activity-overview.component.html',
-  styleUrls: ['./registration-activity-overview.component.css'],
+  styleUrls: ['./registration-activity-overview.component.scss'],
 })
 export class RegistrationActivityOverviewComponent implements OnInit {
   @Input()

@@ -17,7 +17,7 @@ class TableItem {
 @Component({
   selector: 'app-registration-payment-overview',
   templateUrl: './registration-payment-overview.component.html',
-  styleUrls: ['./registration-payment-overview.component.css'],
+  styleUrls: ['./registration-payment-overview.component.scss'],
 })
 export class RegistrationPaymentOverviewComponent implements OnInit {
   @Input()

@@ -17,7 +17,7 @@ class TableItem {
 @Component({
   selector: 'app-registration-personal-information',
   templateUrl: './registration-personal-information.component.html',
-  styleUrls: ['./registration-personal-information.component.css'],
+  styleUrls: ['./registration-personal-information.component.scss'],
 })
 export class RegistrationPersonalInformationComponent implements OnInit {
   @Input()

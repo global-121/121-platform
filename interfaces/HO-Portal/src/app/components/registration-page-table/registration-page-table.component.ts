@@ -8,7 +8,7 @@ class TableItem {
 @Component({
   selector: 'app-registration-page-table',
   templateUrl: './registration-page-table.component.html',
-  styleUrls: ['./registration-page-table.component.css'],
+  styleUrls: ['./registration-page-table.component.scss'],
 })
 export class RegistrationPageTableComponent implements OnInit {
   @Input()
