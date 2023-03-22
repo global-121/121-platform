@@ -636,6 +636,7 @@
     "statusText": "Status: <b> {{status}} </b>"
   },
   "registration-details": {
+    "pageTitle": "Registration details",
     "show-all": "Show All",
     "personal-information-table": {
       "subtitle": "Personal information",
