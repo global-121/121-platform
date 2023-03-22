@@ -7,20 +7,38 @@
   "notifyOnTransaction": true,
   "questions": [
     {
-      "name": "lastName",
+      "name": "tokenCodeVisa",
       "label": {
-        "ar": "الرجاء إدخال اسم العائلة:",
-        "en": "Please enter your last name:",
-        "nl": "Vul je achternaam in:",
-        "fr": "Remplissez votre nom, s'il vous plaît:",
-        "es": "Por favor introduzca su apellido:",
-        "pt_BR": "Por favor, digite seu sobrenome:"
+        "en": "Visa-card token code"
       },
       "answerType": "text",
-      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ],
+      "duplicateCheck": true,
       "phases": [],
       "shortLabel": {
-        "en": "Last name"
+        "en": "Visa-card token code"
+      }
+    },
+    {
+      "name": "isPhysicalCardVisa",
+      "label": {
+        "en": "Visa-card physical"
+      },
+      "answerType": "boolean",
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation",
+        "payment"
+      ],
+      "phases": [],
+      "shortLabel": {
+        "en": "Visa-card physical"
       }
     }
   ]

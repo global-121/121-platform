@@ -5,6 +5,7 @@ import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
 import fspBank from '../../seed-data/fsp/fsp-bank.json';
 import fspBelcash from '../../seed-data/fsp/fsp-belcash.json';
 import fspBob from '../../seed-data/fsp/fsp-bob.json';
+import fspIntersolveJumboPhysical from '../../seed-data/fsp/fsp-intersolve-jumbo-physical.json';
 import fspIntersolveVisa from '../../seed-data/fsp/fsp-intersolve-visa.json';
 import fspIntersolveVoucherPaper from '../../seed-data/fsp/fsp-intersolve-voucher-paper.json';
 import fspIntersolveVoucher from '../../seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
@@ -200,6 +201,7 @@ export class SeedInit implements InterfaceScript {
     await this.seedHelper.addFsp(fspIntersolveVoucher);
     await this.seedHelper.addFsp(fspIntersolveVoucherPaper);
     await this.seedHelper.addFsp(fspIntersolveVisa);
+    await this.seedHelper.addFsp(fspIntersolveJumboPhysical);
     await this.seedHelper.addFsp(fspAfricasTalking);
     await this.seedHelper.addFsp(fspVodaCash);
     await this.seedHelper.addFsp(fspBob);

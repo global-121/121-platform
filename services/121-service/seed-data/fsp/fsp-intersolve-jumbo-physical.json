@@ -1,0 +1,22 @@
+{
+  "fsp": "Intersolve-jumbo-physical",
+  "integrationType": "api",
+  "fspDisplayName": {
+    "en": "Jumbo physical card"
+  },
+  "notifyOnTransaction": true,
+  "questions": [
+    {
+      "name": "addressLine",
+      "label": {
+        "en": "Address"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "phases": [],
+      "shortLabel": {
+        "en": "Address"
+      }
+    }
+  ]
+}
