@@ -585,6 +585,9 @@ export class RegistrationsController {
   @ApiParam({ name: 'paId', required: true, type: 'integer' })
   @Get('programs/:programId/registrations/referenceid/:paId')
   public async getReferenceId(@Param() params): Promise<any> {
+    if (isNaN(params.paId)) {
+      throw new HttpException('paId is not a number', HttpStatus.BAD_REQUEST);
+    }
     return await this.registrationsService.getReferenceId(
       params.programId,
       params.paId,

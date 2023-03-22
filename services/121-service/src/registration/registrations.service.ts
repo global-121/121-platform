@@ -1835,7 +1835,10 @@ export class RegistrationsService {
     return registration.registrationStatus;
   }
 
-  public async getReferenceId(programId: number, paId: number): Promise<any> {
+  public async getReferenceId(
+    programId: number,
+    paId: number,
+  ): Promise<RegistrationEntity> {
     const q = await this.registrationRepository.findOne({
       select: { referenceId: true },
       where: { programId: programId, registrationProgramId: paId },
