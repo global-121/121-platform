@@ -23,6 +23,9 @@
   "financialServiceProviders": [
     {
       "fsp": "Intersolve-visa"
+    },
+    {
+      "fsp": "Intersolve-jumbo-physical"
     }
   ],
   "targetNrRegistrations": 10000,
@@ -63,10 +66,10 @@
       "phases": ["registrationValidation", "inclusion", "payment"]
     },
     {
+      "name": "firstName",
       "label": {
-        "en": "Visa-card token code"
+        "en": "First name"
       },
-      "name": "tokenCodeVisa",
       "type": "text",
       "export": [
         "all-people-affected",
@@ -74,13 +77,12 @@
         "selected-for-validation",
         "payment"
       ],
-      "duplicateCheck": true,
-      "phases": ["registrationValidation", "inclusion", "payment"]
+      "phases": []
     },
     {
-      "name": "firstName",
+      "name": "lastName",
       "label": {
-        "en": "First name"
+        "en": "Last name"
       },
       "type": "text",
       "export": [
@@ -104,20 +106,6 @@
         "payment"
       ],
       "phases": []
-    },
-    {
-      "label": {
-        "en": "Visa-card physical"
-      },
-      "name": "isPhysicalCardVisa",
-      "type": "boolean",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
-      "phases": ["registrationValidation", "inclusion", "payment"]
     }
   ],
   "programQuestions": [
