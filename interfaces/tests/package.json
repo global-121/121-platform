@@ -22,11 +22,12 @@
     "lint:code": "eslint \"cypress/**/*.ts\"",
     "fix:code": "npm run lint:code -- --fix",
     "lint:syntax": "prettier --check \"**/*.{md,ts,js,json,yml}\"",
-    "fix:syntax": "npm run lint:code -- --fix && npm run lint:syntax -- --write"
+    "fix:syntax": "npm run lint:syntax -- --write",
+    "fix": "npm run fix:code && npm run fix:syntax"
   },
   "dependencies": {
     "cy-verify-downloads": "^0.1.13",
-    "cypress": "^12.7.0",
+    "cypress": "^12.8.1",
     "dotenv": "^16.0.3",
     "typescript": "^4.9.5",
     "xlsx": "^0.18.5"
@@ -34,11 +35,11 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
-    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint": "^8.36.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.8.3"
+    "prettier": "^2.8.6"
   }
 }
