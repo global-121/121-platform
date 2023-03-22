@@ -7,15 +7,63 @@
   "notifyOnTransaction": true,
   "questions": [
     {
-      "name": "addressLine",
+      "name": "addressStreet",
       "label": {
-        "en": "Address"
+        "en": "Address street"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
       "phases": [],
       "shortLabel": {
-        "en": "Address"
+        "en": "Address street"
+      }
+    },
+    {
+      "name": "addressHouseNumber",
+      "label": {
+        "en": "Address house number"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "phases": [],
+      "shortLabel": {
+        "en": "Address house number"
+      }
+    },
+    {
+      "name": "addressHouseNumberAddition",
+      "label": {
+        "en": "Address house number addition"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "phases": [],
+      "shortLabel": {
+        "en": "Address house number addition"
+      }
+    },
+    {
+      "name": "addressPostalCode",
+      "label": {
+        "en": "Address postal code"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "phases": [],
+      "shortLabel": {
+        "en": "Address postal code"
+      }
+    },
+    {
+      "name": "addressCity",
+      "label": {
+        "en": "Address city"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "phases": [],
+      "shortLabel": {
+        "en": "Address city"
       }
     }
   ]
