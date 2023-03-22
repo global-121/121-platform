@@ -153,11 +153,6 @@ ion-button {
   height: 100%;
 }
 
-// Hide tooltip of ion-icon title
-ion-icon {
-  pointer-events: none;
-}
-
 #portal-title {
   display: flex;
   flex-direction: row;
@@ -264,16 +259,5 @@ ion-icon {
 
   .alert-message {
     max-height: none;
-  }
-}
-
-.registration-detais-link {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: #000;
-
-  &:hover {
-    font-weight: bold;
   }
 }

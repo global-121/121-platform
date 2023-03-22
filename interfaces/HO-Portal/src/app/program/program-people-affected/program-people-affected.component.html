@@ -345,10 +345,11 @@
       </ng-container>
       <ng-container *ngIf="column.prop === 'name'">
         <a
-          class="registration-detais-link"
-          [routerLink]="getProfilePageUrl(row)"
-          >{{ value }}</a
+          class="registration-details-link ion-text-nowrap"
+          [routerLink]="['..', 'registration', row.id]"
         >
+          {{ value }}
+        </a>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>
