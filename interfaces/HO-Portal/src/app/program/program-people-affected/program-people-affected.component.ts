@@ -926,6 +926,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       : person.registeredWhileNoLongerEligibleDate;
 
     let personRow: PersonRow = {
+      id: person.id,
       referenceId: person.referenceId,
       checkboxVisible: false,
       pa: `PA #${String(person.registrationProgramId)}`,
@@ -1801,14 +1802,5 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     }
 
     return value;
-  }
-
-  public getProfilePageUrl(personRow: PersonRow): string {
-    if (!personRow) {
-      return '';
-    }
-    return `/program/${this.programId}/registration/${Number(
-      personRow.pa.split('#')[1],
-    )}`;
   }
 }

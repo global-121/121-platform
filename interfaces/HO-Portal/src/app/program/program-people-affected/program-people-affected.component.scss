@@ -29,6 +29,15 @@
 /*
  * table-contents
  ***************************************************************************/
+.registration-details-link {
+  color: #000;
+
+  &:hover,
+  &:focus {
+    font-weight: bold;
+  }
+}
+
 .popup-button {
   padding: 0.2em 0.4em;
   font-family: var(--ion-font-family);
