@@ -926,7 +926,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       : person.registeredWhileNoLongerEligibleDate;
 
     let personRow: PersonRow = {
-      id: person.id,
+      id: person.registrationProgramId,
       referenceId: person.referenceId,
       checkboxVisible: false,
       pa: `PA #${String(person.registrationProgramId)}`,
