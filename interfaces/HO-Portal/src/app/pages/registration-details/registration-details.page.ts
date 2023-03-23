@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
@@ -87,7 +88,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
   }
 
   private async loadPerson(): Promise<Person> {
-    return (
+    const person = (
       await this.programsService.getPeopleAffected(
         this.programId,
         this.canViewPersonalData,
@@ -95,6 +96,12 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
         this.referenceId,
       )
     )[0];
+
+    if (person.status === RegistrationStatusEnum.deleted) {
+      return null;
+    }
+
+    return person;
   }
 
   private loadPermissions() {
