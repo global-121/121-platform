@@ -1,0 +1,6 @@
+<soap:Header>
+    <tns:authentication>
+        <username>exampleUser</username>
+        <password>examplePassword</password>
+    </tns:authentication>
+</soap:Header>

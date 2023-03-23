@@ -2,19 +2,27 @@ import { Injectable } from '@nestjs/common';
 import soapRequest from 'easy-soap-request';
 import fs from 'fs';
 import * as convert from 'xml-js';
+import { IntersolveSoapElements } from './intersolve-soap.enum';
 
 @Injectable()
 export class SoapService {
-  public async post(payload: any): Promise<any> {
-    payload = await this.setSoapHeader(payload);
+  public async post(
+    payload: any,
+    headerFile: IntersolveSoapElements,
+    username: string,
+    password: string,
+    url: string,
+  ): Promise<any> {
+    payload = await this.setSoapHeader(payload, headerFile, username, password);
     const xml = convert.js2xml(payload);
+    console.log('xml: ', xml);
     const headersIntersolve = {
       'user-agent': 'sampleTest',
       'Content-Type': 'text/xml;charset=UTF-8',
     };
     const { response } = await soapRequest({
       headers: headersIntersolve,
-      url: process.env.INTERSOLVE_URL,
+      url: url,
       xml: xml,
       timeout: 30000,
     });
@@ -23,28 +31,22 @@ export class SoapService {
     return jsonResponse['soap:Envelope']['soap:Body'];
   }
 
-  private async setSoapHeader(payload: any): Promise<any> {
-    const header = await this.readXmlAsJs('header');
+  private async setSoapHeader(
+    payload: any,
+    headerFile: IntersolveSoapElements,
+    username: string,
+    password: string,
+  ): Promise<any> {
+    const header = await this.readXmlAsJs(headerFile);
     let headerPart = this.getChild(header, 0);
-    headerPart = this.setValue(
-      headerPart,
-      [0, 0, 0],
-      process.env.INTERSOLVE_USERNAME,
-    );
-    headerPart = this.setValue(
-      headerPart,
-      [0, 1, 0],
-      process.env.INTERSOLVE_PASSWORD,
-    );
+    headerPart = this.setValue(headerPart, [0, 0, 0], username);
+    headerPart = this.setValue(headerPart, [0, 1, 0], password);
     payload['elements'][0]['elements'].unshift(headerPart);
     return payload;
   }
 
-  public async readXmlAsJs(xmlName: string): Promise<any> {
-    const path =
-      './src/payments/fsp-integration/intersolve-voucher/xml/' +
-      xmlName +
-      '.xml';
+  public async readXmlAsJs(xmlName: IntersolveSoapElements): Promise<any> {
+    const path = './src/shared/xml/' + xmlName + '.xml';
     const xml = fs.readFileSync(path, 'utf-8');
     const jsObject = convert.xml2js(xml);
     return jsObject;

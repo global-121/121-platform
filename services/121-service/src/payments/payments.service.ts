@@ -26,6 +26,7 @@ import { VoucherWithBalanceDto } from './dto/voucher-with-balance.dto';
 import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
 import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
+import { IntersolveJumboService } from './fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
 import { IntersolveVisaService } from './fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveIssueVoucherRequestEntity } from './fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherService } from './fsp-integration/intersolve-voucher/intersolve-voucher.service';
@@ -49,6 +50,7 @@ export class PaymentsService {
     private readonly transactionService: TransactionsService,
     private readonly intersolveService: IntersolveVoucherService,
     private readonly intersolveVisaService: IntersolveVisaService,
+    private readonly intersolveJumboService: IntersolveJumboService,
     private readonly africasTalkingService: AfricasTalkingService,
     private readonly belcashService: BelcashService,
     private readonly bobFinanceService: BobFinanceService,
@@ -155,18 +157,22 @@ export class PaymentsService {
     const intersolvePaPayment = [];
     const intersolveNoWhatsappPaPayment = [];
     const intersolveVisaPaPayment = [];
+    const intersolveJumboPhysicalPaPayment = [];
     const africasTalkingPaPayment = [];
     const belcashPaPayment = [];
     const bobFinancePaPayment = [];
     const ukrPoshtaPaPayment = [];
     const vodacashPaPayment = [];
     for (const paPaymentData of paPaymentDataList) {
+      console.log('paPaymentData: split ', paPaymentData);
       if (paPaymentData.fspName === FspName.intersolveVoucherWhatsapp) {
         intersolvePaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.intersolveVoucherPaper) {
         intersolveNoWhatsappPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.intersolveVisa) {
         intersolveVisaPaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === FspName.intersolveJumboPhysical) {
+        intersolveJumboPhysicalPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.africasTalking) {
         africasTalkingPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.belcash) {
@@ -186,6 +192,7 @@ export class PaymentsService {
       intersolvePaPayment,
       intersolveNoWhatsappPaPayment,
       intersolveVisaPaPayment,
+      intersolveJumboPhysicalPaPayment,
       africasTalkingPaPayment,
       belcashPaPayment,
       bobFinancePaPayment,
@@ -220,6 +227,16 @@ export class PaymentsService {
     if (paLists.intersolveVisaPaPayment) {
       await this.intersolveVisaService.sendPayment(
         paLists.intersolveVisaPaPayment,
+        programId,
+        payment,
+        amount,
+      );
+    }
+
+    console.log('paLists: ', paLists);
+    if (paLists.intersolveJumboPhysicalPaPayment) {
+      await this.intersolveJumboService.sendPayment(
+        paLists.intersolveJumboPhysicalPaPayment,
         programId,
         payment,
         amount,

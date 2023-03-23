@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { IntersolveSoapElements } from '../../../utils/soap/intersolve-soap.enum';
+import { SoapService } from '../../../utils/soap/soap.service';
 import { IntersolveGetCardResponse } from './dto/intersolve-get-card-response.dto';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
-import { IntersolveSoapElements } from './enum/intersolve-soap.enum';
 import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
 import { IntersolveVoucherMockService } from './instersolve-voucher.mock';
 import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-request.entity';
-import { SoapService } from './soap.service';
 
 @Injectable()
 export class IntersolveVoucherApiService {
@@ -54,7 +54,13 @@ export class IntersolveVoucherApiService {
     try {
       const responseBody = !!process.env.MOCK_INTERSOLVE
         ? await this.intersolveMock.post(payload)
-        : await this.soapService.post(payload);
+        : await this.soapService.post(
+            payload,
+            IntersolveSoapElements.LoyaltyHeader,
+            process.env.INTERSOLVE_USERNAME,
+            process.env.INTERSOLVE_PASSWORD,
+            process.env.INTERSOLVE_URL,
+          );
       result = {
         resultCode: responseBody.IssueCardResponse.ResultCode._text,
         resultDescription:
@@ -103,7 +109,13 @@ export class IntersolveVoucherApiService {
 
     const responseBody = !!process.env.MOCK_INTERSOLVE
       ? await this.intersolveMock.post(payload)
-      : await this.soapService.post(payload);
+      : await this.soapService.post(
+          payload,
+          IntersolveSoapElements.LoyaltyHeader,
+          process.env.INTERSOLVE_USERNAME,
+          process.env.INTERSOLVE_PASSWORD,
+          process.env.INTERSOLVE_URL,
+        );
     const result = {
       resultCode: responseBody.GetCardResponse.ResultCode._text,
       resultDescription: responseBody.GetCardResponse.ResultDescription._text,

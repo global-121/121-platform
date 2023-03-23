@@ -499,6 +499,9 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       .andWhere('question.name = :name', { name: name })
       .select('"question".id', 'id')
       .getRawOne();
+    console.log('this.id: ', this.id);
+    console.log('name: ', name);
+    console.log('resultFspQuestion: ', resultFspQuestion);
     if (resultFspQuestion) {
       result.fspQuestionId = resultFspQuestion.id;
       return result;

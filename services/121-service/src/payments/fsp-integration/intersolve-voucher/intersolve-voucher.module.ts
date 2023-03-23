@@ -6,6 +6,7 @@ import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
+import { SoapService } from '../../../utils/soap/soap.service';
 import { ImageCodeModule } from '../../imagecode/image-code.module';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsModule } from '../../transactions/transactions.module';
@@ -16,7 +17,6 @@ import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instru
 import { IntersolveVoucherController } from './intersolve-voucher.controller';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
-import { SoapService } from './soap.service';
 
 @Module({
   imports: [
@@ -45,7 +45,6 @@ import { SoapService } from './soap.service';
   exports: [
     IntersolveVoucherService,
     IntersolveVoucherApiService,
-    SoapService,
     IntersolveVoucherMockService,
   ],
 })

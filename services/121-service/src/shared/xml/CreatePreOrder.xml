@@ -1,0 +1,30 @@
+<soap:Envelope
+xmlns:tns="http://localhost:8011" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <soap:Body>
+        <tns:CreatePreOrder>
+            <CustomerNr>0</CustomerNr>
+            <NewOrder>
+                <ExpectedDeliveryDate>exampleString</ExpectedDeliveryDate>
+                <OrderLine>
+                    <OrderImportLine>
+                        <ProductCode>exampleString</ProductCode>
+                        <ProductValue>44</ProductValue>
+                        <PackageCode>exampleString</PackageCode>
+                        <Amount>1</Amount>
+                        <CustomShipToAddress>true</CustomShipToAddress>
+                        <CustomShipToLastName>exampleString</CustomShipToLastName>
+                        <CustomShipToStreet>exampleString</CustomShipToStreet>
+                        <CustomShipToHouseNr>0</CustomShipToHouseNr>
+                        <CustomShipToHouseNrAddition>exampleString</CustomShipToHouseNrAddition>
+                        <CustomShipToZipCode>exampleString</CustomShipToZipCode>
+                        <CustomShipToCity>exampleString</CustomShipToCity>
+                        <CustomShipToFirstName>exampleString</CustomShipToFirstName>
+                        <Custom1>exampleString</Custom1>
+                        <Custom2>exampleString</Custom2>
+                    </OrderImportLine>
+                </OrderLine>
+            </NewOrder>
+            <CustomerType>Business</CustomerType>
+        </tns:CreatePreOrder>
+    </soap:Body>
+</soap:Envelope>
