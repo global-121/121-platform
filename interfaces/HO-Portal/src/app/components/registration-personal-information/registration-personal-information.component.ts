@@ -111,22 +111,24 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       },
     ];
 
-    for (const ta of this.tableAttributes) {
-      if (!this.tableAttributesToShow.includes(ta.name)) {
-        continue;
+    if (this.person.paTableAttributes) {
+      for (const ta of this.tableAttributes) {
+        if (!this.tableAttributesToShow.includes(ta.name)) {
+          continue;
+        }
+
+        const labelToTranslate = ta.shortLabel || ta.label;
+
+        let value = this.person.paTableAttributes[ta.name].value;
+        if (ta.type === 'tel') {
+          value = value === '' ? value : `+${value}`;
+        }
+
+        this.personalInfoTable.push({
+          label: this.translatableString.get(labelToTranslate),
+          value,
+        });
       }
-
-      const labelToTranslate = ta.shortLabel || ta.label;
-
-      let value = this.person.paTableAttributes[ta.name].value;
-      if (ta.type === 'tel') {
-        value = value === '' ? value : `+${value}`;
-      }
-
-      this.personalInfoTable.push({
-        label: this.translatableString.get(labelToTranslate),
-        value,
-      });
     }
 
     if (!this.person.fsp) {

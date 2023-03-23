@@ -23,7 +23,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
 
   public loading = true;
 
-  private canUpdatePersonalData: boolean;
+  public canViewPersonalData: boolean;
   private canViewPaymentData: boolean;
 
   private pubSubSubscription: Subscription;
@@ -90,7 +90,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     return (
       await this.programsService.getPeopleAffected(
         this.programId,
-        this.canUpdatePersonalData,
+        this.canViewPersonalData,
         this.canViewPaymentData,
         this.referenceId,
       )
@@ -98,9 +98,9 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
   }
 
   private loadPermissions() {
-    this.canUpdatePersonalData = this.authService.hasAllPermissions(
+    this.canViewPersonalData = this.authService.hasAllPermissions(
       this.programId,
-      [Permission.RegistrationPersonalUPDATE],
+      [Permission.RegistrationPersonalREAD],
     );
 
     this.canViewPaymentData = this.authService.hasAllPermissions(
