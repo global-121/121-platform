@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import * as convert from 'xml-js';
 import { IntersolveSoapElements } from '../../../utils/soap/intersolve-soap.enum';
 import { SoapService } from '../../../utils/soap/soap.service';
 import { PreOrderInfoDto } from './dto/pre-order-info.dto';
-import { IntersolveJumboMockService } from './instersolve-jumbo.mock';
+import { IntersolveJumboMockService } from './intersolve-jumbo.mock';
 
 @Injectable()
 export class IntersolveJumboApiService {
@@ -16,8 +15,6 @@ export class IntersolveJumboApiService {
     preOrderDto: PreOrderInfoDto,
     payment: number,
   ): Promise<any> {
-    console.log('preOrderDto: ', preOrderDto);
-
     let payload = await this.soapService.readXmlAsJs(
       IntersolveSoapElements.CreatePreOrder,
     );
@@ -28,7 +25,6 @@ export class IntersolveJumboApiService {
       ['CustomerNr'],
       process.env.INTERSOLVE_JUMBO_CUSTOMER_ID,
     );
-    console.log('payload: afterfirst ', payload);
 
     const newOrderEnvMapping = {
       ProductCode: 'INTERSOLVE_JUMBO_PRODUCT_CODE',
@@ -43,6 +39,10 @@ export class IntersolveJumboApiService {
         process.env[value],
       );
     }
+    console.log(
+      'payload newOrderEnvMapping: ',
+      JSON.stringify(payload.elements[0].elements),
+    );
 
     payload = this.soapService.changeSoapBody(
       payload,
@@ -76,14 +76,12 @@ export class IntersolveJumboApiService {
       String(payment),
     );
 
-    const xml = convert.js2xml(payload);
-    console.log('xml: ', xml);
     return await this.soapService.post(
       payload,
       IntersolveSoapElements.TradeHeader,
       process.env.INTERSOLVE_JUMBO_USERNAME,
       process.env.INTERSOLVE_JUMBO_PASSWORD,
-      `${process.env.INTERSOLVE_JUMBO_URL}/CreatePreOrder`,
+      process.env.INTERSOLVE_JUMBO_URL,
     );
   }
 

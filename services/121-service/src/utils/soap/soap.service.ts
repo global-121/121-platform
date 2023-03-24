@@ -15,7 +15,6 @@ export class SoapService {
   ): Promise<any> {
     payload = await this.setSoapHeader(payload, headerFile, username, password);
     const xml = convert.js2xml(payload);
-    console.log('xml: ', xml);
     const headersIntersolve = {
       'user-agent': 'sampleTest',
       'Content-Type': 'text/xml;charset=UTF-8',

@@ -10,8 +10,8 @@ import { ImageCodeModule } from '../../imagecode/image-code.module';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { SoapService } from './../../../utils/soap/soap.service';
-import { IntersolveJumboApiService } from './instersolve-jumbo.api.service';
-import { IntersolveJumboMockService } from './instersolve-jumbo.mock';
+import { IntersolveJumboApiService } from './intersolve-jumbo.api.service';
+import { IntersolveJumboMockService } from './intersolve-jumbo.mock';
 import { IntersolveJumboService } from './intersolve-jumbo.service';
 
 @Module({

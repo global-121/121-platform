@@ -1,4 +1,4 @@
-import { IntersolveJumboResultCode } from './../enum/intersolve-jumbo-result-code.enum';
+import { IntersolveJumboResultCode } from '../enum/intersolve-jumbo-result-code.enum';
 
 export class IntersolveGetCardResponse {
   public readonly resultCode: IntersolveJumboResultCode;

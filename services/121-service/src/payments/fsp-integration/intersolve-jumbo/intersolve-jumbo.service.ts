@@ -19,13 +19,13 @@ import {
 import { TransactionsService } from '../../transactions/transactions.service';
 import { PreOrderInfoDto } from './dto/pre-order-info.dto';
 import { JumboPaymentInfoEnum } from './enum/jumbo-payment-info.enum';
-import { IntersolveJumboApiService } from './instersolve-jumbo.api.service';
+import { IntersolveJumboApiService } from './intersolve-jumbo.api.service';
 
 @Injectable()
 export class IntersolveJumboService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-  private readonly allowedEuroPerCard = 44;
+  private readonly allowedEuroPerCard = 22;
   private readonly maxPaymentAmountMultiplier = 3;
   public constructor(
     private readonly intersolveJumboApiService: IntersolveJumboApiService,
@@ -111,7 +111,6 @@ export class IntersolveJumboService {
     }
 
     const jumboAdressInfoDtoArray = await query.getRawMany();
-    console.log('jumboAdressInfoDtoArray: ', jumboAdressInfoDtoArray);
     return jumboAdressInfoDtoArray;
   }
 
@@ -174,6 +173,7 @@ export class IntersolveJumboService {
     paymentInfo: PreOrderInfoDto,
     payment: number,
   ): Promise<PaTransactionResultDto> {
+    console.log('paymentInfo: ', paymentInfo);
     const result = new PaTransactionResultDto();
     result.referenceId = paymentInfo.referenceId;
     result.calculatedAmount =
@@ -190,7 +190,7 @@ export class IntersolveJumboService {
           paymentInfo,
           payment,
         );
-      console.log('preOrderResult: ', preOrderResult);
+      console.log('preOrderResult: ', JSON.stringify(preOrderResult));
       return result;
     }
   }
