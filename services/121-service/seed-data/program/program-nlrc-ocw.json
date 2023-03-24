@@ -17,18 +17,18 @@
   "startDate": "2023-03-01T12:00:00.000Z",
   "endDate": "2023-12-31T12:00:00.000Z",
   "currency": "EUR",
-  "distributionFrequency": "month",
-  "distributionDuration": 50,
-  "fixedTransferValue": 44,
+  "distributionFrequency": "2 weekly",
+  "distributionDuration": 20,
+  "fixedTransferValue": 22,
   "financialServiceProviders": [
     {
-      "fsp": "Intersolve-visa"
+      "fsp": "Intersolve-voucher-whatsapp"
     },
     {
       "fsp": "Intersolve-jumbo-physical"
     }
   ],
-  "targetNrRegistrations": 10000,
+  "targetNrRegistrations": 100000,
   "tryWhatsAppFirst": true,
   "meetingDocuments": {
     "en": ""
@@ -94,20 +94,6 @@
         "payment"
       ],
       "phases": []
-    },
-    {
-      "name": "documentId",
-      "label": {
-        "en": "Document ID"
-      },
-      "type": "text",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
-      "phases": []
     }
   ],
   "programQuestions": [
@@ -140,5 +126,5 @@
   },
   "fullnameNamingConvention": ["firstName", "lastName"],
   "languages": ["en", "nl"],
-  "enableMaxPayments": true
+  "enableMaxPayments": false
 }
