@@ -71,7 +71,7 @@ export class RegistrationPaymentOverviewComponent implements OnInit {
       this.translate.instant(
         'registration-details.payment-overview.paymentLabel',
         {
-          paymentNumber: paymentNumber,
+          number: paymentNumber,
         },
       );
 

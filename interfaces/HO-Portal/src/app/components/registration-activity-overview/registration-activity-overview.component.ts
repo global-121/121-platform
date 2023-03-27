@@ -37,7 +37,12 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   public DateFormat = DateFormat;
   public activityOverview: ActivityOverviewItem[];
   public activityOverviewFilter: string = null;
-  public activityOverviewButtons = [null, 'message', 'status', 'payment'];
+  public activityOverviewButtons = [
+    null,
+    ActivityOverviewType.message,
+    ActivityOverviewType.status,
+    ActivityOverviewType.payment,
+  ];
 
   private canViewPersonalData: boolean;
   private canViewMessageHistory: boolean;
@@ -85,7 +90,9 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       for (const message of messageHistory) {
         this.activityOverview.push({
           type: ActivityOverviewType.message,
-          label: 'Message',
+          label: this.translate.instant(
+            'registration-details.activity-overview.activities.message.label',
+          ),
           date: new Date(message.created),
           description: message.body,
         });
@@ -102,12 +109,21 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       for (const payment of payments) {
         this.activityOverview.push({
           type: ActivityOverviewType.payment,
-          label: `Payment #${payment.payment}`,
+          label: this.translate.instant(
+            'registration-details.activity-overview.activities.payment.label',
+            { number: payment.payment },
+          ),
           date: new Date(payment.paymentDate),
-          description: `Payment #${payment.payment} is ${this.translate.instant(
-            'page.program.program-people-affected.transaction.' +
-              payment.status,
-          )}`,
+          description: this.translate.instant(
+            'registration-details.activity-overview.activities.payment.description',
+            {
+              number: payment.payment,
+              status: this.translate.instant(
+                'page.program.program-people-affected.transaction.' +
+                  payment.status,
+              ),
+            },
+          ),
         });
       }
     }
@@ -116,21 +132,24 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       for (const statusDate of this.getStatusDateList()) {
         this.activityOverview.push({
           type: ActivityOverviewType.status,
-          label: 'Status Update',
+          label: this.translate.instant(
+            'registration-details.activity-overview.activities.status.label',
+          ),
           date: statusDate.date,
-          description: `Person affected status changed to ${this.translate.instant(
-            'page.program.program-people-affected.status.' + statusDate.status,
-          )}`,
+          description: this.translate.instant(
+            'registration-details.activity-overview.activities.status.description',
+            {
+              status: this.translate.instant(
+                'page.program.program-people-affected.status.' +
+                  statusDate.status,
+              ),
+            },
+          ),
         });
       }
     }
 
-    this.activityOverview.sort((a, b) => {
-      if (b.date > a.date) {
-        return 1;
-      }
-      return -1;
-    });
+    this.activityOverview.sort((a, b) => (b.date > a.date ? 1 : -1));
   }
 
   public getIconName(type: ActivityOverviewType): string {

@@ -495,7 +495,6 @@
           "confirm-message": "The system will create 'registered' People Affected."
         }
       },
-      "disable-registration": {},
       "export-list": {
         "timestamp": "Latest export has been done on: {{dateTime}}",
         "no-data": "There are currently no People Affected to download",
@@ -653,15 +652,29 @@
     "payment-overview": {
       "title": "Payment overview",
       "subtitle": "Payment information",
-      "paymentLabel": "Payment #{{paymentNumber}}"
+      "paymentLabel": "Payment #{{number}}"
     },
     "activity-overview": {
       "title": "Activity overview",
-      "filterButton": {
+      "filters": {
         "null": "All",
         "message": "Messages",
         "status": "Status history",
         "payment": "Payments"
+      },
+      "activities": {
+        "status": {
+          "label": "Status update",
+          "description": "Person affected status changed to: {{status}}."
+        },
+        "message": {
+          "label": "Message",
+          "description": ""
+        },
+        "payment": {
+          "label": "Payment #{{number}}",
+          "description": "Payment #{{number}} is {{status}}."
+        }
       }
     },
     "error": "Person not found"
