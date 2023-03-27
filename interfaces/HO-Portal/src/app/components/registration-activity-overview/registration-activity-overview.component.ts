@@ -116,19 +116,19 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     }
 
     if (this.canViewPersonalData) {
-      for (const statusDate of this.getStatusDateList()) {
+      for (const statusChange of this.getStatusChanges()) {
         this.activityOverview.push({
           type: ActivityOverviewType.status,
           label: this.translate.instant(
             'registration-details.activity-overview.activities.status.label',
           ),
-          date: statusDate.date,
+          date: statusChange.date,
           description: this.translate.instant(
             'registration-details.activity-overview.activities.status.description',
             {
               status: this.translate.instant(
                 'page.program.program-people-affected.status.' +
-                  statusDate.status,
+                  statusChange.status,
               ),
             },
           ),
@@ -148,18 +148,19 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     return map[type];
   }
 
-  private getStatusDateList(): { status: string; date: Date }[] {
-    const statusDates = [];
+  private getStatusChanges(): { status: string; date: Date }[] {
+    const statusChanges = [];
     for (const status of Object.keys(StatusDate)) {
-      if (StatusDate[status]) {
-        statusDates.push({
+      const statusChangeDateValue = this.person[StatusDate[status]];
+      if (statusChangeDateValue) {
+        statusChanges.push({
           status,
-          date: new Date(StatusDate[status]),
+          date: new Date(statusChangeDateValue),
         });
       }
     }
 
-    return statusDates;
+    return statusChanges;
   }
 
   public getFilteredActivityOverview(): ActivityOverviewItem[] {
