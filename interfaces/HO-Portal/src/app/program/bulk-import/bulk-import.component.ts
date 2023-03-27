@@ -2,6 +2,7 @@ import { formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import { ActionType } from 'src/app/models/actions.model';
 import { ImportType } from 'src/app/models/import-type.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -59,7 +60,6 @@ export class BulkImportComponent implements OnInit {
   };
 
   private locale: string;
-  private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -207,7 +207,7 @@ export class BulkImportComponent implements OnInit {
     return this.translate.instant('page.program.bulk-import.timestamp', {
       dateTime: formatDate(
         new Date(latestAction.created),
-        this.dateFormat,
+        DateFormat.dateOnly,
         this.locale,
       ),
     });

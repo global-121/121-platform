@@ -2,6 +2,7 @@ import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import {
   PaymentColumnDetail,
   PaymentRowDetail,
@@ -29,7 +30,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
   public programId: number;
   public program: Program;
   private locale: string;
-  private dateFormat = 'yyyy-MM-dd, HH:mm';
   private pastTransactions: Transaction[] = [];
   public firstPaymentToShow = 1;
   public lastPaymentId: number;
@@ -147,7 +147,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
         };
         paymentRowValue.text = formatDate(
           transaction.paymentDate,
-          this.dateFormat,
+          DateFormat.dayAndTime,
           this.locale,
         );
         if (transaction.status === StatusEnum.success) {

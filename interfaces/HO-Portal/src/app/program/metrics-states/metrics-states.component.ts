@@ -284,7 +284,7 @@ export class MetricsStatesComponent implements OnChanges {
     if (chosenMonthObject && chosenMonthObject.date) {
       chosenMonthString = formatDate(
         chosenMonthObject.date,
-        'yyyy-MM',
+        DateFormat.monthOnly,
         environment.defaultLocale,
       );
     }
@@ -296,7 +296,7 @@ export class MetricsStatesComponent implements OnChanges {
     if (chosenPaymentObject && chosenPaymentObject.date) {
       chosenPaymentString = `${chosenPaymentObject.id} - ${formatDate(
         chosenPaymentObject.date,
-        'yyyy-MM-dd',
+        DateFormat.dateOnly,
         environment.defaultLocale,
       )}`;
     }
