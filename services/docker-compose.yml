@@ -16,8 +16,8 @@ services:
     tty: true
     restart: on-failure
     healthcheck:
-      test: curl --fail http://localhost:3000/api/instance || exit 1
-      interval: 2s
+      test: curl --fail http://localhost:${PORT_121_SERVICE}/api/instance || exit 1
+      interval: 3s
       retries: 10
       start_period: 30s
       timeout: 10s
