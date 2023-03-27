@@ -5,7 +5,7 @@ on:
     branches:
       - 'master'
     paths:
-      - '.github/workflows/integration-test-workflow.yml'
+      - '.github/workflows/api-test-workflow.yml'
       - 'services/**'
       - '!**.spec.ts'
       - '!**.md'
@@ -13,7 +13,7 @@ on:
     branches:
       - 'release/*'
     paths:
-      - '.github/workflows/integration-test-workflow.yml'
+      - '.github/workflows/api-test-workflow.yml'
       - 'services/**'
       - '!**.spec.ts'
       - '!**.md'
