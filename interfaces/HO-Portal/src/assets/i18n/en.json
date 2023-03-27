@@ -668,8 +668,7 @@
           "description": "Person affected status changed to: {{status}}."
         },
         "message": {
-          "label": "Message",
-          "description": ""
+          "label": "Message"
         },
         "payment": {
           "label": "Payment #{{number}}",
