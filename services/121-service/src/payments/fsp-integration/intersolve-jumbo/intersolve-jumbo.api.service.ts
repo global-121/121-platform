@@ -26,23 +26,21 @@ export class IntersolveJumboApiService {
       process.env.INTERSOLVE_JUMBO_CUSTOMER_ID,
     );
 
-    const newOrderEnvMapping = {
-      ProductCode: 'INTERSOLVE_JUMBO_PRODUCT_CODE',
-      PackageCode: 'INTERSOLVE_JUMBO_PACKAGE_CODE',
+    const newOrderProductMapping = {
+      ProductCode: process.env.INTERSOLVE_JUMBO_PRODUCT_CODE,
+      PackageCode: process.env.INTERSOLVE_JUMBO_PACKAGE_CODE,
+      ProductValue: '22',
+      Amount: String(preOrderDto.paymentAmountMultiplier),
     };
 
-    for (const [key, value] of Object.entries(newOrderEnvMapping)) {
+    for (const [key, value] of Object.entries(newOrderProductMapping)) {
       payload = this.soapService.changeSoapBody(
         payload,
         mainElem,
         ['NewOrder', 'OrderLine', 'OrderImportLine', key],
-        process.env[value],
+        value,
       );
     }
-    console.log(
-      'payload newOrderEnvMapping: ',
-      JSON.stringify(payload.elements[0].elements),
-    );
 
     payload = this.soapService.changeSoapBody(
       payload,

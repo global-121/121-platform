@@ -17,7 +17,9 @@ import {
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { IntersolveCreatePreOrderResponse } from './dto/intersolve-create-pre-order-response.dto';
 import { PreOrderInfoDto } from './dto/pre-order-info.dto';
+import { IntersolveJumboResultCode } from './enum/intersolve-jumbo-result-code.enum';
 import { JumboPaymentInfoEnum } from './enum/jumbo-payment-info.enum';
 import { IntersolveJumboApiService } from './intersolve-jumbo.api.service';
 
@@ -42,7 +44,6 @@ export class IntersolveJumboService {
     result.paList = [];
     console.log('amount: ', amountOfEuro);
     this.checkAmount(amountOfEuro);
-    console.log('paPaymentList: ', paPaymentList);
     const jumboAddressInfoArray = await this.getPaymentInfoJumbo(
       paPaymentList.map((pa) => pa.referenceId),
     );
@@ -185,12 +186,21 @@ export class IntersolveJumboService {
       result.message = `Payment amount multiplier is higher than ${this.maxPaymentAmountMultiplier}`;
       return result;
     } else {
-      const preOrderResult =
+      // Create pre-order
+      const preOrderResult: IntersolveCreatePreOrderResponse =
         await this.intersolveJumboApiService.createPreOrder(
           paymentInfo,
           payment,
         );
       console.log('preOrderResult: ', JSON.stringify(preOrderResult));
+      if (preOrderResult.resultCode !== IntersolveJumboResultCode.Ok) {
+        result.status = StatusEnum.error;
+        result.message = `Something went wrong when creating pre-order: ${preOrderResult.resultCode} - ${preOrderResult.resultDescription}`;
+        return result;
+      }
+
+      // TODO: Approve pre-order
+
       return result;
     }
   }
