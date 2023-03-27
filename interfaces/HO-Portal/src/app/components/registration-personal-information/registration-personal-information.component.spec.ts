@@ -4,15 +4,15 @@ import { ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { RegistrationPersonalInformationComponent } from './registration-personal-information.component';
 
-const modalSpy = jasmine.createSpyObj('Modal', ['present']);
-const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-modalCtrlSpy.create.and.callFake(() => modalSpy);
-
 describe('RegistrationPersonalInformationComponent', () => {
   let component: RegistrationPersonalInformationComponent;
   let fixture: ComponentFixture<RegistrationPersonalInformationComponent>;
 
   beforeEach(async () => {
+    const modalSpy = jasmine.createSpyObj('Modal', ['present']);
+    const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+    modalCtrlSpy.create.and.callFake(() => modalSpy);
+
     await TestBed.configureTestingModule({
       declarations: [RegistrationPersonalInformationComponent],
       imports: [HttpClientTestingModule, TranslateModule.forRoot()],
