@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import {
   AnswerType,
   Fsp,
@@ -46,6 +47,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   @Input()
   public canViewPaymentData = false;
 
+  public DateFormat = DateFormat;
   public program: Program;
   private paTableAttributesInput: Program['editableAttributes'];
 

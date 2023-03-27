@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import { AnswerType } from 'src/app/models/fsp.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -35,7 +36,7 @@ export class RecipientDetailsComponent implements OnInit {
   public transactions: Transaction[] = [];
   public translationPrefix = 'recipient-details.';
   public statusText = '';
-  private formatString = 'yyyy-MM-dd, HH:mm';
+  public DateFormat = DateFormat;
   private locale = environment.defaultLocale;
   private keysToExclude = [
     'id',
@@ -159,7 +160,7 @@ export class RecipientDetailsComponent implements OnInit {
     type?: AnswerType,
   ): RecipientDetail {
     if (RegistrationStatusTimestampField[key] || type === AnswerType.Date) {
-      value = this.convertDate(value);
+      value = this.datePipe.transform(value, this.DateFormat.dayAndTime);
     }
     if (this.valueTranslators[key]) {
       value = this.translateValue(key, value);
@@ -220,11 +221,7 @@ export class RecipientDetailsComponent implements OnInit {
     return transactionsResult.reverse();
   }
 
-  private convertDate(value) {
-    return this.datePipe.transform(value, this.formatString);
-  }
-
-  private translateValue(key, value) {
+  private translateValue(key: string, value: string) {
     return this.translate.instant(`${this.valueTranslators[key]}.${value}`);
   }
 
@@ -315,7 +312,7 @@ export class RecipientDetailsComponent implements OnInit {
           this.hasError(transaction) || this.hasWaiting(transaction)
             ? `${transaction.payment}: ${this.datePipe.transform(
                 transaction.paymentDate,
-                this.formatString,
+                this.DateFormat.dayAndTime,
                 this.locale,
               )}`
             : null,

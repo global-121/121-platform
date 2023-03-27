@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
@@ -33,6 +34,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   @Input()
   private referenceId: string;
 
+  public DateFormat = DateFormat;
   public activityOverview: ActivityOverviewItem[];
   public activityOverviewFilter: string = null;
   public activityOverviewButtons = [null, 'message', 'status', 'payment'];

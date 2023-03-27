@@ -64,12 +64,12 @@
             <ion-col>
               <ion-row class="ion-justify-content-between">
                 <ion-row class="ion-margin-bottom">
-                  <ion-label class="ion-margin-end"
-                    ><strong>{{ item.label | uppercase }}</strong></ion-label
-                  >
-                  <ion-note
-                    ><small>
-                      {{ item.date | date : 'dd-MM-yyyy HH:mm' }}
+                  <ion-label class="ion-margin-end">
+                    <strong>{{ item.label | uppercase }}</strong>
+                  </ion-label>
+                  <ion-note>
+                    <small>
+                      {{ item.date | date : DateFormat.dayAndTime }}
                     </small>
                   </ion-note>
                 </ion-row>
