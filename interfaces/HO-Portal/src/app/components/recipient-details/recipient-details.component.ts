@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -20,6 +20,7 @@ class RecipientDetail {
   label: string;
   value: any;
 }
+
 @Component({
   selector: 'app-recipient-details',
   templateUrl: './recipient-details.component.html',
@@ -77,7 +78,6 @@ export class RecipientDetailsComponent implements OnInit {
 
   constructor(
     private programsServiceApiService: ProgramsServiceApiService,
-    private datePipe: DatePipe,
     private modalController: ModalController,
     private translate: TranslateService,
     private translatableString: TranslatableStringService,
@@ -89,7 +89,9 @@ export class RecipientDetailsComponent implements OnInit {
     this.transactions = await this.getTransactions();
     this.statusText = this.translate.instant(
       this.translationPrefix + 'statusText',
-      { status: this.translateValue('status', this.recipient?.status) },
+      {
+        status: this.translateValue('status', this.recipient?.status),
+      },
     );
   }
 
@@ -160,7 +162,7 @@ export class RecipientDetailsComponent implements OnInit {
     type?: AnswerType,
   ): RecipientDetail {
     if (RegistrationStatusTimestampField[key] || type === AnswerType.Date) {
-      value = this.datePipe.transform(value, this.DateFormat.dayAndTime);
+      value = formatDate(value, DateFormat.dayAndTime, this.locale);
     }
     if (this.valueTranslators[key]) {
       value = this.translateValue(key, value);
@@ -310,9 +312,9 @@ export class RecipientDetailsComponent implements OnInit {
       componentProps: {
         titleError:
           this.hasError(transaction) || this.hasWaiting(transaction)
-            ? `${transaction.payment}: ${this.datePipe.transform(
+            ? `${transaction.payment}: ${formatDate(
                 transaction.paymentDate,
-                this.DateFormat.dayAndTime,
+                DateFormat.dayAndTime,
                 this.locale,
               )}`
             : null,
