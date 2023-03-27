@@ -17,7 +17,6 @@ import {
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
-import { IntersolveCreatePreOrderResponse } from './dto/intersolve-create-pre-order-response.dto';
 import { PreOrderInfoDto } from './dto/pre-order-info.dto';
 import { IntersolveJumboResultCode } from './enum/intersolve-jumbo-result-code.enum';
 import { JumboPaymentInfoEnum } from './enum/jumbo-payment-info.enum';
@@ -56,7 +55,22 @@ export class IntersolveJumboService {
       if (!paResult) {
         continue;
       }
+      result.paList.push(paResult);
+      const registration = await this.registrationRepository.findOne({
+        select: ['id', 'programId'],
+        where: { referenceId: paResult.referenceId },
+      });
+      await this.storeTransactionResult(
+        payment,
+        paResult.calculatedAmount,
+        registration.id,
+        1,
+        paResult.message,
+        registration.programId,
+      );
     }
+    result.fspName = paPaymentList[0].fspName;
+    return result;
   }
 
   private checkAmount(amountOfEuro: number): void {
@@ -65,27 +79,6 @@ export class IntersolveJumboService {
       throw new HttpException(e, HttpStatus.BAD_REQUEST);
     }
   }
-
-  // result.paList.push(paResult);
-  // // If 'waiting' then transaction is stored already earlier, to make sure it's there before status-callback comes in
-  // if (paResult.status !== StatusEnum.waiting) {
-  //   const registration = await this.registrationRepository.findOne({
-  //     select: ['id', 'programId'],
-  //     where: { referenceId: paResult.referenceId },
-  //   });
-  // await this.storeTransactionResult(
-  //   payment,
-  //   paResult.calculatedAmount,
-  //   registration.id,
-  //   1,
-  //   paResult.status,
-  //   paResult.message,
-  //   registration.programId,
-  // );
-  //   }
-  // }
-  // result.fspName = paPaymentList[0].fspName;
-  // return result;
 
   private async getPaymentInfoJumbo(
     referenceIds: string[],
@@ -187,19 +180,31 @@ export class IntersolveJumboService {
       return result;
     } else {
       // Create pre-order
-      const preOrderResult: IntersolveCreatePreOrderResponse =
+      const preOrderResult =
         await this.intersolveJumboApiService.createPreOrder(
           paymentInfo,
           payment,
         );
-      console.log('preOrderResult: ', JSON.stringify(preOrderResult));
-      if (preOrderResult.resultCode !== IntersolveJumboResultCode.Ok) {
+      if (
+        preOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
+          .ResultCode._cdata !== IntersolveJumboResultCode.Ok
+      ) {
         result.status = StatusEnum.error;
-        result.message = `Something went wrong when creating pre-order: ${preOrderResult.resultCode} - ${preOrderResult.resultDescription}`;
+        result.message = `Something went wrong while creating pre-order: ${preOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest.ResultCode._cdata} - ${preOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest.ResultDescription._cdata}`;
         return result;
       }
 
-      // TODO: Approve pre-order
+      // Approve pre-order
+      const approvePreOrderResult =
+        await this.intersolveJumboApiService.approvePreOrder(preOrderResult);
+      if (
+        approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest
+          .ResultCode._cdata !== IntersolveJumboResultCode.Ok
+      ) {
+        result.status = StatusEnum.error;
+        result.message = `Something went wrong while approving pre-order: ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultCode._cdata} - ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultDescription._cdata}`;
+        return result;
+      }
 
       return result;
     }
@@ -237,11 +242,13 @@ export class IntersolveJumboService {
     });
 
     const transactionResult = new PaTransactionResultDto();
+    transactionResult.referenceId = registration.referenceId;
+    transactionResult.status = StatusEnum.success;
+    transactionResult.message = errorMessage;
     transactionResult.calculatedAmount = amount;
     transactionResult.date = new Date();
-    transactionResult.referenceId = registration.referenceId;
+    transactionResult.fspName = FspName.intersolveJumboPhysical;
 
-    transactionResult.message = errorMessage;
     return transactionResult;
   }
 }

@@ -1,0 +1,12 @@
+<soap:Envelope xmlns:tns="http://localhost:8011"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <soap:Body>
+        <tns:ApprovePreOrder>
+            <OrderNr>0</OrderNr>
+            <PrePaid>true</PrePaid>
+            <TransactionInfo>TransactionInfoPlaceholder</TransactionInfo>
+        </tns:ApprovePreOrder>
+    </soap:Body>
+</soap:Envelope>

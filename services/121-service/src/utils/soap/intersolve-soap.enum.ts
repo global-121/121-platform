@@ -3,6 +3,7 @@ export enum IntersolveSoapElements {
   IssueCard = 'IssueCard',
   Purchase = 'Purchase',
   CreatePreOrder = 'CreatePreOrder',
+  ApprovePreOrder = 'ApprovePreOrder',
   LoyaltyHeader = 'LoyaltyHeader',
   TradeHeader = 'TradeHeader',
 }

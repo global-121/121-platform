@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IntersolveSoapElements } from '../../../utils/soap/intersolve-soap.enum';
 import { SoapService } from '../../../utils/soap/soap.service';
+import { IntersolveCreatePreOrderResponse } from './dto/intersolve-create-pre-order-response.dto';
 import { PreOrderInfoDto } from './dto/pre-order-info.dto';
 import { IntersolveJumboMockService } from './intersolve-jumbo.mock';
 
@@ -83,38 +84,39 @@ export class IntersolveJumboApiService {
     );
   }
 
-  // public async getCard(
-  //   cardId: string,
-  //   pin: string,
-  // ): Promise<IntersolveGetCardResponse> {
-  //   let payload = await this.soapService.readXmlAsJs(
-  //     IntersolveSoapElements.GetCard,
-  //   );
-  //   payload = this.soapService.changeSoapBody(
-  //     payload,
-  //     IntersolveSoapElements.GetCard,
-  //     ['CardId'],
-  //     cardId,
-  //   );
-  //   payload = this.soapService.changeSoapBody(
-  //     payload,
-  //     IntersolveSoapElements.GetCard,
-  //     ['PIN'],
-  //     pin,
-  //   );
+  public async approvePreOrder(
+    createPreOrder: IntersolveCreatePreOrderResponse,
+  ): Promise<any> {
+    let payload = await this.soapService.readXmlAsJs(
+      IntersolveSoapElements.ApprovePreOrder,
+    );
+    const mainElem = `tns:${IntersolveSoapElements.ApprovePreOrder}`;
+    payload = this.soapService.changeSoapBody(
+      payload,
+      mainElem,
+      ['OrderNr'],
+      createPreOrder['tns:CreatePreOrderResponse'].WebserviceRequest.ReturnId
+        ._cdata,
+    );
+    payload = this.soapService.changeSoapBody(
+      payload,
+      mainElem,
+      ['PrePaid'],
+      'true',
+    );
+    payload = this.soapService.changeSoapBody(
+      payload,
+      mainElem,
+      ['TransactionInfo'],
+      'TransactionInfoPlaceholder',
+    );
 
-  //   const responseBody = !!process.env.MOCK_INTERSOLVE
-  //     ? await this.intersolveMock.post(payload)
-  //     : await this.soapService.post(payload);
-  //   const result = {
-  //     resultCode: responseBody.GetCardResponse.ResultCode._text,
-  //     resultDescription: responseBody.GetCardResponse.ResultDescription._text,
-  //     status: responseBody.GetCardResponse.Card?.Status?._text,
-  //     balance: parseInt(responseBody.GetCardResponse.Card?.Balance?._text),
-  //     balanceFactor: parseInt(
-  //       responseBody.GetCardResponse.Card?.BalanceFactor?._text,
-  //     ),
-  //   };
-  //   return result;
-  // }
+    return await this.soapService.post(
+      payload,
+      IntersolveSoapElements.TradeHeader,
+      process.env.INTERSOLVE_JUMBO_USERNAME,
+      process.env.INTERSOLVE_JUMBO_PASSWORD,
+      process.env.INTERSOLVE_JUMBO_URL,
+    );
+  }
 }
