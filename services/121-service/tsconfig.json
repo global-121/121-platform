@@ -20,11 +20,10 @@
     "checkJs": true,
     "incremental": true,
     "outDir": "./dist",
-    "types": ["jest", "express", "node"],
+    "types": ["express", "node"],
     "resolveJsonModule": true,
     "baseUrl": "./"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"],
-  "types": ["jest"]
+  "exclude": ["node_modules", "test", "**/*.spec.ts"]
 }

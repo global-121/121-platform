@@ -255,7 +255,7 @@ describe("'Do Payment #1' bulk action", () => {
     cy.get('.alert-button').click();
   };
 
-  const selectPaymentAction = (fixture: any, payment: number) => {
+  const selectPaymentAction = (fixture: { url: string }, payment: number) => {
     cy.setHoPortal();
     cy.visit(fixture.url);
     cy.url().should('include', 'payment');
