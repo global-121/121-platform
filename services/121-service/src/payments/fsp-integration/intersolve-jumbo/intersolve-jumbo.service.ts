@@ -67,6 +67,7 @@ export class IntersolveJumboService {
         1,
         paResult.message,
         registration.programId,
+        paResult.status,
       );
     }
     result.fspName = paPaymentList[0].fspName;
@@ -217,11 +218,13 @@ export class IntersolveJumboService {
     transactionStep: number,
     errorMessage: string,
     programId: number,
+    status?: StatusEnum,
   ): Promise<void> {
     const transactionResultDto = await this.createTransactionResult(
       amount,
       registrationId,
       errorMessage,
+      status,
     );
     this.transactionsService.storeTransactionUpdateStatus(
       transactionResultDto,
@@ -235,6 +238,7 @@ export class IntersolveJumboService {
     amount: number,
     registrationId: number,
     errorMessage: string,
+    status?: StatusEnum,
   ): Promise<PaTransactionResultDto> {
     const registration = await this.registrationRepository.findOne({
       where: { id: registrationId },
@@ -243,7 +247,7 @@ export class IntersolveJumboService {
 
     const transactionResult = new PaTransactionResultDto();
     transactionResult.referenceId = registration.referenceId;
-    transactionResult.status = StatusEnum.success;
+    transactionResult.status = status ? status : StatusEnum.success;
     transactionResult.message = errorMessage;
     transactionResult.calculatedAmount = amount;
     transactionResult.date = new Date();
