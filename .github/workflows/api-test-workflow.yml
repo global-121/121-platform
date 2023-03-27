@@ -5,7 +5,7 @@ on:
     branches:
       - 'master'
     paths:
-      - '.github/workflows/integration-test-workflow.yml'
+      - '.github/workflows/api-test-workflow.yml'
       - 'services/**'
       - '!**.spec.ts'
       - '!**.md'
@@ -13,7 +13,7 @@ on:
     branches:
       - 'release/*'
     paths:
-      - '.github/workflows/integration-test-workflow.yml'
+      - '.github/workflows/api-test-workflow.yml'
       - 'services/**'
       - '!**.spec.ts'
       - '!**.md'
@@ -29,15 +29,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
-      - name: Build services
-        uses: actions/cache@v3
-        id: cache_build_services
-        with:
-          path: services
-          key: ${{ runner.os }}-services-${{ hashFiles('services') }}
-
       - name: Create .env variables file
-        if: steps.cache_build_services.outputs.cache-hit != 'true'
         run: |
           /bin/sed -i '/^POSTGRES_HOST=/s/=.*/=121db/' ./services/.env.example
           /bin/sed -i '/^POSTGRES_USER=/s/=.*/=global121/' ./services/.env.example
@@ -56,7 +48,6 @@ jobs:
           cp ./services/.env.example services/.env
 
       - name: Build containers
-        if: steps.cache_build_services.outputs.cache-hit != 'true'
         working-directory: ./services
         run: docker compose -f docker-compose.yml -f docker-compose.ci.yml build
 
