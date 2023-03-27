@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-class TableItem {
+export class TableItem {
   label: string;
   value: string;
 }

@@ -1,18 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
+import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
 import { PaymentHistoryPopupComponent } from '../../program/payment-history-popup/payment-history-popup.component';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
-
-class TableItem {
-  label: string;
-  value: string;
-}
+import { TableItem } from '../registration-page-table/registration-page-table.component';
 
 @Component({
   selector: 'app-registration-payment-overview',
@@ -83,13 +79,14 @@ export class RegistrationPaymentOverviewComponent implements OnInit {
     for (let i = 0; i < this.PAYMENTS_TABLE_LENGTH; i++) {
       let label: string;
       let value: string;
+
       if (!payments[i]) {
         const paymentNumber = minPayment + i;
         const paymentSuccessionNr = paymentNumber - minPayment + 1;
         const paymentsRemaining =
           this.person.maxPayments - this.person.nrPayments;
         if (
-          this.person.status !== RegistrationStatusEnum.included ||
+          this.person.status !== RegistrationStatus.included ||
           (this.person.maxPayments && paymentSuccessionNr > paymentsRemaining)
         ) {
           break;
@@ -129,10 +126,10 @@ export class RegistrationPaymentOverviewComponent implements OnInit {
 
   public showPaymentInfo(): boolean {
     const acceptedStatuses = [
-      RegistrationStatusEnum.included,
-      RegistrationStatusEnum.completed,
-      RegistrationStatusEnum.inclusionEnded,
-      RegistrationStatusEnum.rejected,
+      RegistrationStatus.included,
+      RegistrationStatus.completed,
+      RegistrationStatus.inclusionEnded,
+      RegistrationStatus.rejected,
     ];
 
     if (!this.person) {

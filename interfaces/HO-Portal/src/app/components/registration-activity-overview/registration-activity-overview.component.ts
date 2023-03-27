@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
+import { StatusDate } from 'src/app/enums/status-dates.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
@@ -47,20 +48,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   private canViewPersonalData: boolean;
   private canViewMessageHistory: boolean;
   private canViewPaymentData: boolean;
-
-  private statusDateKey = {
-    imported: 'importedDate',
-    invited: 'invitedDate',
-    noLongerEligible: 'noLongerEligibleDate',
-    startedRegistration: 'startedRegistrationDate',
-    registered: 'registeredDate',
-    registeredWhileNoLongerEligible: 'registeredWhileNoLongerEligibleDate',
-    selectedForValidation: 'selectedForValidationDate',
-    validated: 'validationDate',
-    included: 'inclusionDate',
-    inclusionEnded: 'inclusionEndDate',
-    rejected: 'rejectionDate',
-  };
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -163,12 +150,11 @@ export class RegistrationActivityOverviewComponent implements OnInit {
 
   private getStatusDateList(): { status: string; date: Date }[] {
     const statusDates = [];
-    for (const status of Object.keys(this.statusDateKey)) {
-      const statusDateString = this.statusDateKey[status];
-      if (this.person[statusDateString]) {
+    for (const status of Object.keys(StatusDate)) {
+      if (StatusDate[status]) {
         statusDates.push({
           status,
-          date: new Date(this.person[statusDateString]),
+          date: new Date(StatusDate[status]),
         });
       }
     }

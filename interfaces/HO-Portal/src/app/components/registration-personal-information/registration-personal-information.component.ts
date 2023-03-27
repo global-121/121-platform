@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { StatusDate } from 'src/app/enums/status-dates.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
@@ -38,20 +39,6 @@ export class RegistrationPersonalInformationComponent implements OnInit {
   private canUpdatePersonalData: boolean;
   private canViewMessageHistory: boolean;
   private canViewPaymentData: boolean;
-
-  private statusDateKey = {
-    imported: 'importedDate',
-    invited: 'invitedDate',
-    noLongerEligible: 'noLongerEligibleDate',
-    startedRegistration: 'startedRegistrationDate',
-    registered: 'registeredDate',
-    registeredWhileNoLongerEligible: 'registeredWhileNoLongerEligibleDate',
-    selectedForValidation: 'selectedForValidationDate',
-    validated: 'validationDate',
-    included: 'inclusionDate',
-    inclusionEnded: 'inclusionEndDate',
-    rejected: 'rejectionDate',
-  };
 
   constructor(
     private translate: TranslateService,
@@ -142,7 +129,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
   }
 
   private getStatusDate(status: string): Date {
-    return new Date(this.person[this.statusDateKey[status]]);
+    return new Date(this.person[StatusDate[status]]);
   }
 
   public async editPersonAffectedPopup() {
