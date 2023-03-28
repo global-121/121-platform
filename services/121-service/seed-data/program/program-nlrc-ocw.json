@@ -17,7 +17,7 @@
   "startDate": "2023-03-01T12:00:00.000Z",
   "endDate": "2023-12-31T12:00:00.000Z",
   "currency": "EUR",
-  "distributionFrequency": "2 weekly",
+  "distributionFrequency": "2-weeks",
   "distributionDuration": 20,
   "fixedTransferValue": 22,
   "financialServiceProviders": [

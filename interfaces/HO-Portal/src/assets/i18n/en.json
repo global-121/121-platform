@@ -126,6 +126,7 @@
         "units": {
           "frequency": {
             "month": "monthly",
+            "weeks2": "2 weekly",
             "week": "weekly"
           },
           "duration": {
