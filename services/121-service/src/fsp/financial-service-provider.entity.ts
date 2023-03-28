@@ -12,7 +12,10 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   public fsp: string;
 
   @Column('json', { nullable: true })
-  public fspDisplayName: JSON;
+  public fspDisplayNamePaApp: JSON;
+
+  @Column({ nullable: true })
+  public fspDisplayNamePortal: string;
 
   @Column({ default: FspIntegrationType.api })
   public integrationType: FspIntegrationType;

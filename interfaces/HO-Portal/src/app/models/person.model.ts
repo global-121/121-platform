@@ -27,6 +27,7 @@ export class Person {
   hasNote?: boolean;
   hasPhoneNumber?: boolean;
   fsp?: string;
+  fspDisplayNamePortal?: string;
   paymentAmountMultiplier?: number;
   maxPayments?: number;
   preferredLanguage?: LanguageEnum;
@@ -65,6 +66,7 @@ export class PersonRow {
   name?: string | null;
   phoneNumber?: string | null;
   fsp?: string | null;
+  fspDisplayNamePortal?: string | null;
   paymentAmountMultiplier?: string | null;
   maxPayments?: string | null;
   paymentsLeft?: number | null;

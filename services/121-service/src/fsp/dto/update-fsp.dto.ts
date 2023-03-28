@@ -72,7 +72,11 @@ export class UpdateFspDto {
   @IsString()
   public readonly fsp: string;
 
-  @ApiProperty({ example: { en: 'FSP display name' } })
+  @ApiProperty({ example: { en: 'FSP PA-app display name' } })
   @IsOptional()
-  public readonly fspDisplayName: JSON;
+  public readonly fspDisplayNamePaApp: JSON;
+
+  @ApiProperty({ example: 'FSP portal display name' })
+  @IsOptional()
+  public readonly fspDisplayNamePortal: string;
 }
