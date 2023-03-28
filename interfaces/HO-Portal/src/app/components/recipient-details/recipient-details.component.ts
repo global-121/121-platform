@@ -50,6 +50,8 @@ export class RecipientDetailsComponent implements OnInit {
     'programId',
     'phone-number',
     'status',
+    'lastMessageStatus',
+    'lastMessageType',
   ];
 
   private questionKeysToInclude = [
