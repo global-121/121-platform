@@ -7,8 +7,8 @@ import { RegistrationsModule } from '../../../registration/registrations.module'
 import { UserModule } from '../../../user/user.module';
 import { TransactionsModule } from '../../transactions/transactions.module';
 import { SoapService } from './../../../utils/soap/soap.service';
+import { IntersolveJumboApiMockService } from './intersolve-jumbo.api-mock.service';
 import { IntersolveJumboApiService } from './intersolve-jumbo.api.service';
-import { IntersolveJumboMockService } from './intersolve-jumbo.mock';
 import { IntersolveJumboService } from './intersolve-jumbo.service';
 
 @Module({
@@ -22,7 +22,7 @@ import { IntersolveJumboService } from './intersolve-jumbo.service';
   providers: [
     IntersolveJumboService,
     IntersolveJumboApiService,
-    IntersolveJumboMockService,
+    IntersolveJumboApiMockService,
     SoapService,
   ],
   exports: [IntersolveJumboService],
