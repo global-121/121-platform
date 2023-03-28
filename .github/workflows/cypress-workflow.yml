@@ -46,7 +46,6 @@ jobs:
         if: steps.cache_build_interface_aw.outputs.cache-hit != 'true'
         working-directory: ./interfaces/AW-App
         env:
-          BROWSERSLIST_ENV: 'ci'
           NG_URL_121_SERVICE_API: http://localhost:3000/api
         run: |
           npm ci --no-audit --no-fund
@@ -78,7 +77,6 @@ jobs:
         if: steps.cache_build_interface_pa.outputs.cache-hit != 'true'
         working-directory: ./interfaces/PA-App
         env:
-          BROWSERSLIST_ENV: 'ci'
           NG_URL_121_SERVICE_API: http://localhost:3000/api
         run: |
           npm ci --no-audit --no-fund
@@ -110,7 +108,6 @@ jobs:
         if: steps.cache_build_interface_ho.outputs.cache-hit != 'true'
         working-directory: ./interfaces/HO-Portal
         env:
-          BROWSERSLIST_ENV: 'ci'
           NG_URL_121_SERVICE_API: http://localhost:3000/api
         run: |
           npm ci --no-audit --no-fund
