@@ -15,8 +15,8 @@ import {
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { PreOrderInfoDto } from './dto/pre-order-info.dto';
+import { IntersolveJumboPaymentInfoEnum } from './enum/intersolve-jumbo-payment-info.enum';
 import { IntersolveJumboResultCode } from './enum/intersolve-jumbo-result-code.enum';
-import { JumboPaymentInfoEnum } from './enum/jumbo-payment-info.enum';
 import { IntersolveJumboApiService } from './intersolve-jumbo.api.service';
 
 @Injectable()
@@ -119,7 +119,7 @@ export class IntersolveJumboService {
       where: { referenceId: referenceId },
     });
     const registrationDataOptions: RegistrationDataOptions[] = [];
-    for (const attr of Object.values(JumboPaymentInfoEnum)) {
+    for (const attr of Object.values(IntersolveJumboPaymentInfoEnum)) {
       const relation = await registration.getRelationForName(attr);
       const registrationDataOption = {
         name: attr,

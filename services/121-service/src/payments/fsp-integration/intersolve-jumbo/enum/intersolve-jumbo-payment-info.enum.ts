@@ -1,4 +1,4 @@
-export enum JumboPaymentInfoEnum {
+export enum IntersolveJumboPaymentInfoEnum {
   firstName = 'firstName',
   lastName = 'lastName',
   addressStreet = 'addressStreet',
