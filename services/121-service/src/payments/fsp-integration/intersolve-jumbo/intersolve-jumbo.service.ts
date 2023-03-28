@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import {
-  RegistrationDataOptions,
-  RegistrationDataRelation,
-} from '../../../registration/dto/registration-data-relation.model';
+import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { GenericAttributes } from '../../../registration/enum/custom-data-attributes';
-import { RegistrationDataEntity } from '../../../registration/registration-data.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
+import { RegistrationsService } from '../../../registration/registrations.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
@@ -28,6 +24,7 @@ export class IntersolveJumboService {
   public constructor(
     private readonly intersolveJumboApiService: IntersolveJumboApiService,
     private readonly transactionsService: TransactionsService,
+    private readonly registrationsService: RegistrationsService,
   ) {}
 
   public async sendPayment(
@@ -89,7 +86,10 @@ export class IntersolveJumboService {
       });
     for (const r of relationOptions) {
       query.select((subQuery) => {
-        return this.customDataEntrySubQuery(subQuery, r.relation);
+        return this.registrationsService.customDataEntrySubQuery(
+          subQuery,
+          r.relation,
+        );
       }, r.name);
     }
 
@@ -114,38 +114,6 @@ export class IntersolveJumboService {
       registrationDataOptions.push(registrationDataOption);
     }
     return registrationDataOptions;
-  }
-
-  private customDataEntrySubQuery(
-    subQuery: SelectQueryBuilder<any>,
-    relation: RegistrationDataRelation,
-  ): SelectQueryBuilder<any> {
-    const uniqueSubQueryId = uuid().replace(/-/g, '').toLowerCase();
-    subQuery = subQuery
-      .where(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
-      .from(RegistrationDataEntity, uniqueSubQueryId);
-    if (relation.programQuestionId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."programQuestionId" = ${relation.programQuestionId}`,
-      );
-    } else if (relation.monitoringQuestionId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."monitoringQuestionId" = ${relation.monitoringQuestionId}`,
-      );
-    } else if (relation.programCustomAttributeId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."programCustomAttributeId" = ${relation.programCustomAttributeId}`,
-      );
-    } else if (relation.fspQuestionId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."fspQuestionId" = ${relation.fspQuestionId}`,
-      );
-    }
-    // Because of string_agg no distinction between multi-select and other is needed
-    subQuery.addSelect(
-      `string_agg("${uniqueSubQueryId}".value,'|' order by value)`,
-    );
-    return subQuery;
   }
 
   public async sendIndividualPayment(

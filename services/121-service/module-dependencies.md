@@ -27,9 +27,8 @@ graph LR
   PaymentsModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
   PaymentsModule-->IntersolveJumboModule
-  IntersolveJumboModule-->ImageCodeModule
   IntersolveJumboModule-->TransactionsModule
-  IntersolveJumboModule-->WhatsappModule
+  IntersolveJumboModule-->RegistrationsModule
   PaymentsModule-->AfricasTalkingModule
   AfricasTalkingModule-->TransactionsModule
   PaymentsModule-->BelcashModule
