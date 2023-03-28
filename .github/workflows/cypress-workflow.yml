@@ -9,11 +9,15 @@ on:
       - 'master'
     paths:
       - '.github/workflows/cypress-workflow.yml'
+      - 'interfaces/tests/*'
+      - '!*.md'
   push:
     branches:
       - 'release/*'
     paths:
       - '.github/workflows/cypress-workflow.yml'
+      - 'interfaces/tests/*'
+      - '!*.md'
 
 jobs:
   build_interface_aw:
