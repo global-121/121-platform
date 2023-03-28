@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppRoutes } from 'src/app/app-routes.enum';
@@ -9,7 +10,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, IonicModule, TranslateModule],
+  imports: [CommonModule, IonicModule, TranslateModule, RouterModule],
   selector: 'app-user-state',
   templateUrl: './user-state.component.html',
   styleUrls: ['./user-state.component.scss'],
