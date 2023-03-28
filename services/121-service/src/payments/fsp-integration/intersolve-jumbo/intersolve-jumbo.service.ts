@@ -65,14 +65,10 @@ export class IntersolveJumboService {
         paResult.referenceId = jumboAddressInfo.referenceId;
       }
 
-      const registration = await this.registrationRepository.findOne({
-        select: ['id'],
-        where: { referenceId: paResult.referenceId },
-      });
       await this.storeTransactionResult(
         payment,
         paResult.calculatedAmount,
-        registration.id,
+        paResult.referenceId,
         1,
         paResult.message,
         programId,
@@ -174,22 +170,23 @@ export class IntersolveJumboService {
         return result;
       }
 
+      result.status = StatusEnum.success;
       return result;
     }
   }
 
-  public async storeTransactionResult(
+  private async storeTransactionResult(
     paymentNr: number,
     amount: number,
-    registrationId: number,
+    referenceId: string,
     transactionStep: number,
     errorMessage: string,
     programId: number,
-    status?: StatusEnum,
+    status: StatusEnum,
   ): Promise<void> {
     const transactionResultDto = await this.createTransactionResult(
       amount,
-      registrationId,
+      referenceId,
       errorMessage,
       status,
     );
@@ -201,19 +198,14 @@ export class IntersolveJumboService {
     );
   }
 
-  public async createTransactionResult(
+  private async createTransactionResult(
     amount: number,
-    registrationId: number,
+    referenceId: string,
     errorMessage: string,
-    status?: StatusEnum,
+    status: StatusEnum,
   ): Promise<PaTransactionResultDto> {
-    const registration = await this.registrationRepository.findOne({
-      where: { id: registrationId },
-      relations: ['fsp', 'program'],
-    });
-
     const transactionResult = new PaTransactionResultDto();
-    transactionResult.referenceId = registration.referenceId;
+    transactionResult.referenceId = referenceId;
     transactionResult.status = status ? status : StatusEnum.success;
     transactionResult.message = errorMessage;
     transactionResult.calculatedAmount = amount;
