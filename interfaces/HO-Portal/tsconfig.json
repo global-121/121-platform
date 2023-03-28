@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "incremental": true,
-    "lib": ["es2020", "DOM"],
+    "lib": ["es2022", "DOM"],
     "module": "es2020",
     "moduleResolution": "node",
     "noUnusedLocals": true,

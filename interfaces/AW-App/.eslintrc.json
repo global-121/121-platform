@@ -47,6 +47,16 @@
       "plugins": ["jasmine"],
       "extends": ["plugin:jasmine/recommended"],
       "rules": {}
+    },
+    {
+      "files": ["*.js"],
+      "env": {
+        "node": true
+      },
+      "parserOptions": {
+        "ecmaVersion": 2022
+      },
+      "rules": {}
     }
   ]
 }
