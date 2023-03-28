@@ -63,7 +63,9 @@ export class SelectFspComponent extends PersonalDirective {
     this.fsps = this.program.financialServiceProviders;
     this.fsps.forEach(
       (fsp) =>
-        (fsp.fspDisplayNamePaApp = this.translatableString.get(fsp.fspDisplayNamePaApp)),
+        (fsp.fspDisplayNamePaApp = this.translatableString.get(
+          fsp.fspDisplayNamePaApp,
+        )),
     );
     this.referenceId = await this.paData.getReferenceId();
     this.conversationService.stopLoading();
