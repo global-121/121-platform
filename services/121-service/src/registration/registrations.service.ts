@@ -371,7 +371,22 @@ export class RegistrationsService {
       answersTypeTel.push(question.name);
     }
     if (answersTypeTel.includes(customDataKey)) {
-      return await this.lookupService.lookupAndCorrect(String(customDataValue));
+      if (customDataKey === CustomDataAttributes.phoneNumber) {
+        // phoneNumber cannot be empty, and must always be checked
+        return await this.lookupService.lookupAndCorrect(
+          String(customDataValue),
+        );
+      } else {
+        if (customDataValue) {
+          // other tel-types (e.g. whatsappPhoneNumber) are only checked if not empty
+          return await this.lookupService.lookupAndCorrect(
+            String(customDataValue),
+          );
+        } else {
+          // allow empty values for other tel-types
+          return customDataValue;
+        }
+      }
     } else {
       return customDataValue;
     }
