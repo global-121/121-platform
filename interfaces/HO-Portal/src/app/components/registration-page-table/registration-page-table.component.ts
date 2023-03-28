@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 export class TableItem {
   label: string;
@@ -10,11 +10,9 @@ export class TableItem {
   templateUrl: './registration-page-table.component.html',
   styleUrls: ['./registration-page-table.component.scss'],
 })
-export class RegistrationPageTableComponent implements OnInit {
+export class RegistrationPageTableComponent {
   @Input()
   public itemList: TableItem[] = [];
 
   constructor() {}
-
-  ngOnInit(): void {}
 }
