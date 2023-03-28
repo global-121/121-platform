@@ -2,25 +2,24 @@ import { Injectable } from '@nestjs/common';
 import soapRequest from 'easy-soap-request';
 import fs from 'fs';
 import * as convert from 'xml-js';
-import { IntersolveSoapElements } from './intersolve-soap.enum';
 
 @Injectable()
 export class SoapService {
   public async post(
     payload: any,
-    headerFile: IntersolveSoapElements,
+    headerFile: string,
     username: string,
     password: string,
     url: string,
   ): Promise<any> {
     payload = await this.setSoapHeader(payload, headerFile, username, password);
     const xml = convert.js2xml(payload);
-    const headersIntersolve = {
+    const headers = {
       'user-agent': 'sampleTest',
       'Content-Type': 'text/xml;charset=UTF-8',
     };
     const { response } = await soapRequest({
-      headers: headersIntersolve,
+      headers: headers,
       url: url,
       xml: xml,
       timeout: 30000,
@@ -32,7 +31,7 @@ export class SoapService {
 
   private async setSoapHeader(
     payload: any,
-    headerFile: IntersolveSoapElements,
+    headerFile: string,
     username: string,
     password: string,
   ): Promise<any> {
@@ -44,7 +43,7 @@ export class SoapService {
     return payload;
   }
 
-  public async readXmlAsJs(xmlName: IntersolveSoapElements): Promise<any> {
+  public async readXmlAsJs(xmlName: string): Promise<any> {
     const path = './src/shared/xml/' + xmlName + '.xml';
     const xml = fs.readFileSync(path, 'utf-8');
     const jsObject = convert.xml2js(xml);

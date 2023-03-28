@@ -35,7 +35,9 @@ import { IntersolveVoucherService } from './intersolve-voucher.service';
 @ApiTags('payments/intersolve')
 @Controller()
 export class IntersolveVoucherController {
-  public constructor(private intersolveService: IntersolveVoucherService) {}
+  public constructor(
+    private intersolveVoucherService: IntersolveVoucherService,
+  ) {}
 
   @Permissions(PermissionEnum.PaymentVoucherREAD)
   @ApiOperation({
@@ -49,7 +51,7 @@ export class IntersolveVoucherController {
     @Body() identifyVoucherDto: IdentifyVoucherDto,
     @Res() response: Response,
   ): Promise<void> {
-    const blob = await this.intersolveService.exportVouchers(
+    const blob = await this.intersolveVoucherService.exportVouchers(
       identifyVoucherDto.referenceId,
       identifyVoucherDto.payment,
       params.programId,
@@ -73,7 +75,7 @@ export class IntersolveVoucherController {
     @Param() params,
     @Body() identifyVoucherDto: IdentifyVoucherDto,
   ): Promise<number> {
-    return await this.intersolveService.getVoucherBalance(
+    return await this.intersolveVoucherService.getVoucherBalance(
       identifyVoucherDto.referenceId,
       identifyVoucherDto.payment,
       params.programId,
@@ -89,7 +91,7 @@ export class IntersolveVoucherController {
   public async intersolveInstructions(
     @Res() response: Response,
   ): Promise<void> {
-    const blob = await this.intersolveService.getInstruction();
+    const blob = await this.intersolveVoucherService.getInstruction();
     const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
     response.writeHead(HttpStatus.OK, {
@@ -111,7 +113,7 @@ export class IntersolveVoucherController {
   public async postIntersolveInstructions(
     @UploadedFile() instructionsFileBlob,
   ): Promise<void> {
-    await this.intersolveService.postInstruction(instructionsFileBlob);
+    await this.intersolveVoucherService.postInstruction(instructionsFileBlob);
   }
 
   @Admin()
@@ -125,7 +127,7 @@ export class IntersolveVoucherController {
     @Body() jobDetails: IntersolveVoucherJobDetails,
     @Param() param,
   ): Promise<void> {
-    await this.intersolveService.updateVoucherBalanceJob(
+    await this.intersolveVoucherService.updateVoucherBalanceJob(
       Number(param.programId),
       jobDetails.name,
     );

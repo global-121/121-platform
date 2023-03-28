@@ -45,6 +45,7 @@ export class ProgramStats {
 
 export enum DistributionFrequency {
   week = 'week',
+  weeks2 = '2-weeks',
   month = 'month',
 }
 

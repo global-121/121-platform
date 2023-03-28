@@ -131,6 +131,11 @@ export class MetricsComponent implements OnInit {
             'page.program.metrics.units.frequency.week',
           );
         }
+        if (value === DistributionFrequency.weeks2) {
+          return this.translate.instant(
+            'page.program.metrics.units.frequency.weeks2',
+          );
+        }
         if (value === DistributionFrequency.month) {
           return this.translate.instant(
             'page.program.metrics.units.frequency.month',

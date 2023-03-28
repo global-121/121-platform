@@ -25,7 +25,7 @@ export class CronjobService {
 
   public constructor(
     private whatsappService: WhatsappService,
-    private readonly intersolveService: IntersolveVoucherService,
+    private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -60,7 +60,7 @@ export class CronjobService {
   private async cacheUnusedVouchers(): Promise<void> {
     const programs = await this.programRepository.find();
     for (const program of programs) {
-      this.intersolveService.getUnusedVouchers(program.id);
+      this.intersolveVoucherService.getUnusedVouchers(program.id);
     }
   }
 
