@@ -235,6 +235,7 @@ export class PaymentsService {
     if (paLists.intersolveJumboPhysicalPaPayment) {
       await this.intersolveJumboService.sendPayment(
         paLists.intersolveJumboPhysicalPaPayment,
+        programId,
         payment,
         amount,
       );

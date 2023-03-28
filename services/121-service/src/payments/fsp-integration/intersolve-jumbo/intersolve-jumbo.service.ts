@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { GenericAttributes } from '../../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../../registration/registration.entity';
@@ -19,8 +20,11 @@ import { IntersolveJumboApiService } from './intersolve-jumbo.api.service';
 export class IntersolveJumboService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-  private readonly allowedEuroPerCard = 22;
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
+
   private readonly maxPaymentAmountMultiplier = 3;
+
   public constructor(
     private readonly intersolveJumboApiService: IntersolveJumboApiService,
     private readonly transactionsService: TransactionsService,
@@ -29,30 +33,40 @@ export class IntersolveJumboService {
 
   public async sendPayment(
     paPaymentList: PaPaymentDataDto[],
+    programId: number,
     payment: number,
-    amountOfEuro: number,
+    amount: number,
   ): Promise<void> {
     const jumboAddressInfoArray = await this.getPaymentInfoJumbo(
       paPaymentList.map((pa) => pa.referenceId),
     );
 
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+    });
+    const allowedEuroPerCard = program.fixedTransferValue;
+
     for (const jumboAddressInfo of jumboAddressInfoArray) {
       let paResult;
-      if (amountOfEuro === this.allowedEuroPerCard) {
-        paResult = await this.sendIndividualPayment(jumboAddressInfo, payment);
+      if (amount === allowedEuroPerCard) {
+        paResult = await this.sendIndividualPayment(
+          jumboAddressInfo,
+          payment,
+          amount,
+        );
         if (!paResult) {
           continue;
         }
       } else {
         paResult = new PaTransactionResultDto();
         paResult.status = StatusEnum.error;
-        paResult.message = `Amount ${amountOfEuro} is not allowed. It should be ${this.allowedEuroPerCard}. The amount of this payment has been automatically adjusted to the correct amount. You can now retry the payment either for this PA only, or for all failed ones.`;
-        paResult.calculatedAmount = this.allowedEuroPerCard;
+        paResult.message = `Amount ${amount} is not allowed. It should be ${allowedEuroPerCard}. The amount of this payment has been automatically adjusted to the correct amount. You can now retry the payment either for this PA only, or for all failed ones.`;
+        paResult.calculatedAmount = amount;
         paResult.referenceId = jumboAddressInfo.referenceId;
       }
 
       const registration = await this.registrationRepository.findOne({
-        select: ['id', 'programId'],
+        select: ['id'],
         where: { referenceId: paResult.referenceId },
       });
       await this.storeTransactionResult(
@@ -61,7 +75,7 @@ export class IntersolveJumboService {
         registration.id,
         1,
         paResult.message,
-        registration.programId,
+        programId,
         paResult.status,
       );
     }
@@ -119,16 +133,17 @@ export class IntersolveJumboService {
   public async sendIndividualPayment(
     paymentInfo: PreOrderInfoDto,
     payment: number,
+    amount: number,
   ): Promise<PaTransactionResultDto> {
     const result = new PaTransactionResultDto();
     result.referenceId = paymentInfo.referenceId;
-    result.calculatedAmount =
-      paymentInfo.paymentAmountMultiplier * this.allowedEuroPerCard;
+    result.calculatedAmount = paymentInfo.paymentAmountMultiplier * amount;
     result.fspName = FspName.intersolveJumboPhysical;
 
     if (paymentInfo.paymentAmountMultiplier > this.maxPaymentAmountMultiplier) {
       result.status = StatusEnum.error;
       result.message = `Payment amount multiplier is higher than ${this.maxPaymentAmountMultiplier}`;
+      result.calculatedAmount = amount;
       return result;
     } else {
       // Create pre-order
@@ -136,7 +151,7 @@ export class IntersolveJumboService {
         await this.intersolveJumboApiService.createPreOrder(
           paymentInfo,
           payment,
-          this.allowedEuroPerCard,
+          amount,
         );
       if (
         preOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
