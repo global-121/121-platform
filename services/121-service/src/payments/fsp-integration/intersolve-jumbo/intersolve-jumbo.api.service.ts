@@ -15,6 +15,7 @@ export class IntersolveJumboApiService {
   public async createPreOrder(
     preOrderDto: PreOrderInfoDto,
     payment: number,
+    amount: number,
   ): Promise<any> {
     let payload = await this.soapService.readXmlAsJs(
       IntersolveSoapElements.CreatePreOrder,
@@ -30,7 +31,7 @@ export class IntersolveJumboApiService {
     const newOrderProductMapping = {
       ProductCode: process.env.INTERSOLVE_JUMBO_PRODUCT_CODE,
       PackageCode: process.env.INTERSOLVE_JUMBO_PACKAGE_CODE,
-      ProductValue: '22',
+      ProductValue: String(amount),
       Amount: String(preOrderDto.paymentAmountMultiplier),
     };
 

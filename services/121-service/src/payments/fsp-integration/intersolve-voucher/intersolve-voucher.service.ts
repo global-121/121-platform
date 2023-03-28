@@ -13,10 +13,7 @@ import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import {
-  FspTransactionResultDto,
-  PaTransactionResultDto,
-} from '../../dto/payment-transaction-result.dto';
+import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
 import { UnusedVoucherDto } from '../../dto/unused-voucher.dto';
 import { VoucherWithBalanceDto } from '../../dto/voucher-with-balance.dto';
 import { ImageCodeService } from '../../imagecode/image-code.service';
@@ -59,10 +56,7 @@ export class IntersolveVoucherService {
     useWhatsapp: boolean,
     amount: number,
     payment: number,
-  ): Promise<FspTransactionResultDto> {
-    const result = new FspTransactionResultDto();
-    result.paList = [];
-
+  ): Promise<void> {
     for (const paymentInfo of paPaymentList) {
       const paResult = await this.sendIndividualPayment(
         paymentInfo,
@@ -74,7 +68,6 @@ export class IntersolveVoucherService {
         continue;
       }
 
-      result.paList.push(paResult);
       // If 'waiting' then transaction is stored already earlier, to make sure it's there before status-callback comes in
       if (paResult.status !== StatusEnum.waiting) {
         const registration = await this.registrationRepository.findOne({
@@ -92,8 +85,6 @@ export class IntersolveVoucherService {
         );
       }
     }
-    result.fspName = paPaymentList[0].fspName;
-    return result;
   }
 
   private getMultipliedAmount(amount: number, multiplier: number): number {

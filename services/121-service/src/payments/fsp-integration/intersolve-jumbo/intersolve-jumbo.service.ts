@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -12,10 +12,7 @@ import { RegistrationDataEntity } from '../../../registration/registration-data.
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import {
-  FspTransactionResultDto,
-  PaTransactionResultDto,
-} from '../../dto/payment-transaction-result.dto';
+import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { PreOrderInfoDto } from './dto/pre-order-info.dto';
 import { IntersolveJumboResultCode } from './enum/intersolve-jumbo-result-code.enum';
@@ -35,27 +32,28 @@ export class IntersolveJumboService {
 
   public async sendPayment(
     paPaymentList: PaPaymentDataDto[],
-    programId: number,
     payment: number,
     amountOfEuro: number,
-  ): Promise<any> {
-    const result = new FspTransactionResultDto();
-    result.paList = [];
-    console.log('amount: ', amountOfEuro);
-    this.checkAmount(amountOfEuro);
+  ): Promise<void> {
     const jumboAddressInfoArray = await this.getPaymentInfoJumbo(
       paPaymentList.map((pa) => pa.referenceId),
     );
 
     for (const jumboAddressInfo of jumboAddressInfoArray) {
-      const paResult = await this.sendIndividualPayment(
-        jumboAddressInfo,
-        payment,
-      );
-      if (!paResult) {
-        continue;
+      let paResult;
+      if (amountOfEuro === this.allowedEuroPerCard) {
+        paResult = await this.sendIndividualPayment(jumboAddressInfo, payment);
+        if (!paResult) {
+          continue;
+        }
+      } else {
+        paResult = new PaTransactionResultDto();
+        paResult.status = StatusEnum.error;
+        paResult.message = `Amount ${amountOfEuro} is not allowed. It should be ${this.allowedEuroPerCard}. The amount of this payment has been automatically adjusted to the correct amount. You can now retry the payment either for this PA only, or for all failed ones.`;
+        paResult.calculatedAmount = this.allowedEuroPerCard;
+        paResult.referenceId = jumboAddressInfo.referenceId;
       }
-      result.paList.push(paResult);
+
       const registration = await this.registrationRepository.findOne({
         select: ['id', 'programId'],
         where: { referenceId: paResult.referenceId },
@@ -70,21 +68,11 @@ export class IntersolveJumboService {
         paResult.status,
       );
     }
-    result.fspName = paPaymentList[0].fspName;
-    return result;
-  }
-
-  private checkAmount(amountOfEuro: number): void {
-    if (amountOfEuro !== this.allowedEuroPerCard) {
-      const e = `Amount of euro (${amountOfEuro}) is not allowed ${this.allowedEuroPerCard}`;
-      throw new HttpException(e, HttpStatus.BAD_REQUEST);
-    }
   }
 
   private async getPaymentInfoJumbo(
     referenceIds: string[],
   ): Promise<PreOrderInfoDto[]> {
-    console.log('referenceIds: ', referenceIds);
     const relationOptions = await this.getRelationOptionsForJumbo(
       referenceIds[0],
     );
@@ -94,7 +82,7 @@ export class IntersolveJumboService {
         `registration.referenceId as "referenceId"`,
         `registration."${GenericAttributes.phoneNumber}"`,
         `registration."${GenericAttributes.preferredLanguage}"`,
-        `registration."${GenericAttributes.paymentAmountMultiplier}"`,
+        `coalesce(registration."${GenericAttributes.paymentAmountMultiplier}",1) as "paymentAmountMultiplier"`,
       ])
       .where(`registration.referenceId IN (:...referenceIds)`, {
         referenceIds,
@@ -116,13 +104,9 @@ export class IntersolveJumboService {
       select: ['id', 'programId'],
       where: { referenceId: referenceId },
     });
-    console.log('registration: ', registration);
     const registrationDataOptions: RegistrationDataOptions[] = [];
     for (const attr of Object.values(JumboPaymentInfoEnum)) {
-      console.log('attr: ', attr);
       const relation = await registration.getRelationForName(attr);
-
-      console.log('relation: ', relation);
       const registrationDataOption = {
         name: attr,
         relation: relation,
@@ -168,14 +152,13 @@ export class IntersolveJumboService {
     paymentInfo: PreOrderInfoDto,
     payment: number,
   ): Promise<PaTransactionResultDto> {
-    console.log('paymentInfo: ', paymentInfo);
     const result = new PaTransactionResultDto();
     result.referenceId = paymentInfo.referenceId;
     result.calculatedAmount =
       paymentInfo.paymentAmountMultiplier * this.allowedEuroPerCard;
     result.fspName = FspName.intersolveJumboPhysical;
 
-    if (paymentInfo.paymentAmountMultiplier > 3) {
+    if (paymentInfo.paymentAmountMultiplier > this.maxPaymentAmountMultiplier) {
       result.status = StatusEnum.error;
       result.message = `Payment amount multiplier is higher than ${this.maxPaymentAmountMultiplier}`;
       return result;
@@ -185,6 +168,7 @@ export class IntersolveJumboService {
         await this.intersolveJumboApiService.createPreOrder(
           paymentInfo,
           payment,
+          this.allowedEuroPerCard,
         );
       if (
         preOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest

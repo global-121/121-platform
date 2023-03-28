@@ -48,7 +48,7 @@ export class PaymentsService {
     private readonly actionService: ActionService,
     private readonly fspService: FspService,
     private readonly transactionService: TransactionsService,
-    private readonly intersolveService: IntersolveVoucherService,
+    private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly intersolveJumboService: IntersolveJumboService,
     private readonly africasTalkingService: AfricasTalkingService,
@@ -164,7 +164,6 @@ export class PaymentsService {
     const ukrPoshtaPaPayment = [];
     const vodacashPaPayment = [];
     for (const paPaymentData of paPaymentDataList) {
-      console.log('paPaymentData: split ', paPaymentData);
       if (paPaymentData.fspName === FspName.intersolveVoucherWhatsapp) {
         intersolvePaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.intersolveVoucherPaper) {
@@ -208,7 +207,7 @@ export class PaymentsService {
     amount: number,
   ): Promise<any> {
     if (paLists.intersolvePaPayment.length) {
-      await this.intersolveService.sendPayment(
+      await this.intersolveVoucherService.sendPayment(
         paLists.intersolvePaPayment,
         true,
         amount,
@@ -216,7 +215,7 @@ export class PaymentsService {
       );
     }
     if (paLists.intersolveNoWhatsappPaPayment.length) {
-      await this.intersolveService.sendPayment(
+      await this.intersolveVoucherService.sendPayment(
         paLists.intersolveNoWhatsappPaPayment,
         false,
         amount,
@@ -233,11 +232,9 @@ export class PaymentsService {
       );
     }
 
-    console.log('paLists: ', paLists);
     if (paLists.intersolveJumboPhysicalPaPayment) {
       await this.intersolveJumboService.sendPayment(
         paLists.intersolveJumboPhysicalPaPayment,
-        programId,
         payment,
         amount,
       );
@@ -388,19 +385,19 @@ export class PaymentsService {
   public async getUnusedVouchers(
     programId?: number,
   ): Promise<UnusedVoucherDto[]> {
-    return this.intersolveService.getUnusedVouchers(programId);
+    return this.intersolveVoucherService.getUnusedVouchers(programId);
   }
 
   public async getVouchersWithBalance(
     programId: number,
   ): Promise<VoucherWithBalanceDto[]> {
-    return this.intersolveService.getVouchersWithBalance(programId);
+    return this.intersolveVoucherService.getVouchersWithBalance(programId);
   }
 
   public async getToCancelVouchers(): Promise<
     IntersolveIssueVoucherRequestEntity[]
   > {
-    return this.intersolveService.getToCancelVouchers();
+    return this.intersolveVoucherService.getToCancelVouchers();
   }
 
   public async getFspInstructions(
