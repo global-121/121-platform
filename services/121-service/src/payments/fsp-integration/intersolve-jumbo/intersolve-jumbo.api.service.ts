@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { IntersolveSoapElements } from '../../../utils/soap/intersolve-soap.enum';
 import { SoapService } from '../../../utils/soap/soap.service';
 import { IntersolveCreatePreOrderResponse } from './dto/intersolve-create-pre-order-response.dto';
 import { PreOrderInfoDto } from './dto/pre-order-info.dto';
+import { IntersolveJumboSoapElements } from './enum/intersolve-jumbo-soap.enum';
 import { IntersolveJumboMockService } from './intersolve-jumbo.mock';
 
 @Injectable()
@@ -18,9 +18,9 @@ export class IntersolveJumboApiService {
     amount: number,
   ): Promise<any> {
     let payload = await this.soapService.readXmlAsJs(
-      IntersolveSoapElements.CreatePreOrder,
+      IntersolveJumboSoapElements.CreatePreOrder,
     );
-    const mainElem = `tns:${IntersolveSoapElements.CreatePreOrder}`;
+    const mainElem = `tns:${IntersolveJumboSoapElements.CreatePreOrder}`;
     payload = this.soapService.changeSoapBody(
       payload,
       mainElem,
@@ -78,7 +78,7 @@ export class IntersolveJumboApiService {
 
     return await this.soapService.post(
       payload,
-      IntersolveSoapElements.TradeHeader,
+      IntersolveJumboSoapElements.TradeHeader,
       process.env.INTERSOLVE_JUMBO_USERNAME,
       process.env.INTERSOLVE_JUMBO_PASSWORD,
       process.env.INTERSOLVE_JUMBO_URL,
@@ -89,9 +89,9 @@ export class IntersolveJumboApiService {
     createPreOrder: IntersolveCreatePreOrderResponse,
   ): Promise<any> {
     let payload = await this.soapService.readXmlAsJs(
-      IntersolveSoapElements.ApprovePreOrder,
+      IntersolveJumboSoapElements.ApprovePreOrder,
     );
-    const mainElem = `tns:${IntersolveSoapElements.ApprovePreOrder}`;
+    const mainElem = `tns:${IntersolveJumboSoapElements.ApprovePreOrder}`;
     payload = this.soapService.changeSoapBody(
       payload,
       mainElem,
@@ -114,7 +114,7 @@ export class IntersolveJumboApiService {
 
     return await this.soapService.post(
       payload,
-      IntersolveSoapElements.TradeHeader,
+      IntersolveJumboSoapElements.TradeHeader,
       process.env.INTERSOLVE_JUMBO_USERNAME,
       process.env.INTERSOLVE_JUMBO_PASSWORD,
       process.env.INTERSOLVE_JUMBO_URL,
