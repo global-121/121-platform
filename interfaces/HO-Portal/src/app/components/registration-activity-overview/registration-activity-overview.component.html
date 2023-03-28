@@ -1,0 +1,85 @@
+<ion-text>
+  <h1 class="ion-padding-start">
+    {{ 'registration-details.activity-overview.title' | translate }}
+  </h1>
+</ion-text>
+
+<ion-card>
+  <ion-item
+    color="light"
+    lines="none"
+  >
+    <ion-row style="width: 100%">
+      <ion-col
+        [sizeXs]="12"
+        [sizeLg]="9"
+        class="horizontal-scroll-container"
+      >
+        <div class="ion-text-nowrap">
+          <ion-button
+            *ngFor="let filter of activityOverviewButtons"
+            (click)="activityOverviewFilter = filter"
+            fill="clear"
+            size="small"
+            [disabled]="getFilterCount(filter) === 0"
+            [color]="
+              activityOverviewFilter === filter ? 'primary' : 'secondary'
+            "
+            [ngClass]="{
+              'is-active': activityOverviewFilter === filter,
+              'activity-overview--button': true
+            }"
+          >
+            {{
+              'registration-details.activity-overview.filters.' + filter
+                | translate
+            }}
+            ({{ getFilterCount(filter) }})
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-item>
+  <ion-card-content class="ion-no-padding">
+    <ion-list
+      class="ion-no-padding"
+      lines="full"
+    >
+      <ion-item
+        *ngFor="let item of getFilteredActivityOverview()"
+        style="font-size: 14px; --padding-start: 0"
+      >
+        <ion-grid>
+          <ion-row>
+            <div class="ion-padding-horizontal">
+              <div style="height: 100%; display: flex; align-items: center">
+                <ion-icon
+                  [name]="getIconName(item.type)"
+                  size="large"
+                  [attr.aria-hidden]="true"
+                ></ion-icon>
+              </div>
+            </div>
+            <ion-col>
+              <ion-row class="ion-justify-content-between">
+                <ion-row class="ion-margin-bottom">
+                  <ion-label class="ion-margin-end">
+                    <strong>{{ item.label | uppercase }}</strong>
+                  </ion-label>
+                  <ion-note>
+                    <small>
+                      {{ item.date | date : DateFormat.dayAndTime }}
+                    </small>
+                  </ion-note>
+                </ion-row>
+              </ion-row>
+              <div>
+                <ion-text class="ion-text-end">{{ item.description }}</ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>

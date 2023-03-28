@@ -1,0 +1,7 @@
+.activity-overview--button {
+  --ripple-color: #fff;
+
+  &.is-active {
+    box-shadow: 0px 2px var(--ion-color-primary);
+  }
+}

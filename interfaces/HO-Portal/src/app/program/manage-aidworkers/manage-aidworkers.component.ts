@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
@@ -47,7 +48,6 @@ export class ManageAidworkersComponent implements OnInit {
   public isLoading: boolean;
 
   private locale: string;
-  private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   constructor(
     public translate: TranslateService,
@@ -78,7 +78,11 @@ export class ManageAidworkersComponent implements OnInit {
       this.aidworkers.forEach((aidworker) => {
         aidworker.email = aidworker.user ? aidworker.user.username : null;
         aidworker.created = aidworker.user
-          ? formatDate(aidworker.user.created, this.dateFormat, this.locale)
+          ? formatDate(
+              aidworker.user.created,
+              DateFormat.dayAndTime,
+              this.locale,
+            )
           : null;
       });
     }

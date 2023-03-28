@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import { Program, ProgramStats } from 'src/app/models/program.model';
 import {
   Phase,
@@ -17,6 +18,7 @@ export class ProgramCardComponent implements OnInit {
   @Input()
   programStats: ProgramStats;
 
+  public DateFormat = DateFormat;
   public progress = 0;
   private programPhases: Phase[];
 

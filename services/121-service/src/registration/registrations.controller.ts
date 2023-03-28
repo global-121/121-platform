@@ -228,6 +228,7 @@ export class RegistrationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'personalData', required: true, type: 'boolean' })
   @ApiQuery({ name: 'paymentData', required: true, type: 'boolean' })
+  @ApiQuery({ name: 'referenceId', required: false, type: 'string' })
   @ApiQuery({ name: 'filterOnPayment', required: false, type: 'number' })
   @ApiResponse({
     status: 201,
@@ -261,7 +262,7 @@ export class RegistrationsController {
       personalData,
       paymentData,
       true,
-      null,
+      queryParams.referenceId,
       queryParams.filterOnPayment,
     );
   }
@@ -576,5 +577,20 @@ export class RegistrationsController {
     );
 
     return { status };
+  }
+
+  @Permissions(PermissionEnum.RegistrationREAD)
+  @ApiOperation({ summary: 'Get Person Affected referenceId' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'paId', required: true, type: 'integer' })
+  @Get('programs/:programId/registrations/referenceid/:paId')
+  public async getReferenceId(@Param() params): Promise<any> {
+    if (isNaN(params.paId)) {
+      throw new HttpException('paId is not a number', HttpStatus.BAD_REQUEST);
+    }
+    return await this.registrationsService.getReferenceId(
+      params.programId,
+      params.paId,
+    );
   }
 }
