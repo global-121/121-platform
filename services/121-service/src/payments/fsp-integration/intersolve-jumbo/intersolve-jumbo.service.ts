@@ -9,7 +9,10 @@ import { RegistrationEntity } from '../../../registration/registration.entity';
 import { RegistrationsService } from '../../../registration/registrations.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
-import { PaTransactionResultDto } from '../../dto/payment-transaction-result.dto';
+import {
+  PaTransactionResultDto,
+  TransactionNotificationObject,
+} from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { PreOrderInfoDto } from './dto/pre-order-info.dto';
 import { IntersolveJumboResultCode } from './enum/intersolve-jumbo-result-code.enum';
@@ -73,6 +76,7 @@ export class IntersolveJumboService {
         paResult.message,
         programId,
         paResult.status,
+        paResult.notificationObjects,
       );
     }
   }
@@ -131,6 +135,7 @@ export class IntersolveJumboService {
     payment: number,
     amount: number,
   ): Promise<PaTransactionResultDto> {
+    const transactionNotifications = [];
     const result = new PaTransactionResultDto();
     result.referenceId = paymentInfo.referenceId;
     result.calculatedAmount = paymentInfo.paymentAmountMultiplier * amount;
@@ -170,6 +175,15 @@ export class IntersolveJumboService {
         return result;
       }
 
+      transactionNotifications.push({
+        notificationKey: 'jumboCardSent',
+        dynamicContent: [
+          String(paymentInfo.paymentAmountMultiplier),
+          String(amount),
+        ],
+      });
+      result.notificationObjects = transactionNotifications;
+
       result.status = StatusEnum.success;
       return result;
     }
@@ -183,12 +197,14 @@ export class IntersolveJumboService {
     errorMessage: string,
     programId: number,
     status: StatusEnum,
+    notificationObjects?: TransactionNotificationObject[],
   ): Promise<void> {
     const transactionResultDto = await this.createTransactionResult(
       amount,
       referenceId,
       errorMessage,
       status,
+      notificationObjects,
     );
     this.transactionsService.storeTransactionUpdateStatus(
       transactionResultDto,
@@ -203,6 +219,7 @@ export class IntersolveJumboService {
     referenceId: string,
     errorMessage: string,
     status: StatusEnum,
+    notificationObjects?: TransactionNotificationObject[],
   ): Promise<PaTransactionResultDto> {
     const transactionResult = new PaTransactionResultDto();
     transactionResult.referenceId = referenceId;
@@ -211,6 +228,7 @@ export class IntersolveJumboService {
     transactionResult.calculatedAmount = amount;
     transactionResult.date = new Date();
     transactionResult.fspName = FspName.intersolveJumboPhysical;
+    transactionResult.notificationObjects = notificationObjects;
 
     return transactionResult;
   }
