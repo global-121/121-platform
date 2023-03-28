@@ -80,7 +80,7 @@
     "@typescript-eslint/parser": "5.55.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.36.0",
-    "ffbinaries": "^1.1.4",
+    "ffbinaries": "^1.1.5",
     "gzipper": "^7.2.0",
     "http-server": "^14.1.0",
     "jasmine-core": "^3.99.1",
