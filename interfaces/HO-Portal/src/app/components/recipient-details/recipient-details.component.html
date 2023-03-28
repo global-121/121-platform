@@ -70,8 +70,8 @@
                   'page.program.program-people-affected.transaction.' +
                     transaction.status | translate
                 }}
-                {{ transaction.paymentDate | date : formatString }}</strong
-              >
+                {{ transaction.paymentDate | date : DateFormat.dayAndTime }}
+              </strong>
               <ion-icon
                 *ngIf="enableMessageSentIcon(transaction)"
                 name="mail"

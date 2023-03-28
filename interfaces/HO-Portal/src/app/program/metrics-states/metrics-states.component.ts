@@ -2,6 +2,7 @@ import { formatDate } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { saveAs } from 'file-saver';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import { ProgramMetrics } from 'src/app/models/program-metrics.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -47,6 +48,7 @@ export class MetricsStatesComponent implements OnChanges {
   public chosenMonth: any;
 
   private programMetrics: ProgramMetrics;
+  public DateFormat = DateFormat;
 
   constructor(
     private translate: TranslateService,
@@ -282,7 +284,7 @@ export class MetricsStatesComponent implements OnChanges {
     if (chosenMonthObject && chosenMonthObject.date) {
       chosenMonthString = formatDate(
         chosenMonthObject.date,
-        'yyyy-MM',
+        DateFormat.monthOnly,
         environment.defaultLocale,
       );
     }
@@ -294,7 +296,7 @@ export class MetricsStatesComponent implements OnChanges {
     if (chosenPaymentObject && chosenPaymentObject.date) {
       chosenPaymentString = `${chosenPaymentObject.id} - ${formatDate(
         chosenPaymentObject.date,
-        'yyyy-MM-dd',
+        DateFormat.dateOnly,
         environment.defaultLocale,
       )}`;
     }

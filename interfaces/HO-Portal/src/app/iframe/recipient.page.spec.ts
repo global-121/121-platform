@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { BannerComponent } from '../components/banner/banner.component';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { SharedModule } from '../shared/shared.module';
 import { IframeModule } from './iframe.module';
 import { RecipientPage } from './recipient.page';
 
@@ -21,6 +22,7 @@ describe('Recipient.PageComponent', () => {
         TranslateModule.forRoot(),
         HttpClientTestingModule,
         IframeModule,
+        SharedModule,
       ],
       providers: [ProgramsServiceApiService],
     }).compileComponents();

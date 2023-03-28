@@ -321,7 +321,8 @@
           value !== true &&
           value !== false &&
           value &&
-          column.prop !== 'messages'
+          column.prop !== 'messages' &&
+          column.prop !== 'name'
         "
       >
         <span [attr.title]="value"> {{ value }} </span>
@@ -341,6 +342,14 @@
         <span *ngIf="!row.lastMessageStatus">
           {{ value }}
         </span>
+      </ng-container>
+      <ng-container *ngIf="column.prop === 'name'">
+        <a
+          class="registration-details-link ion-text-nowrap"
+          [routerLink]="['..', 'registration', row.id]"
+        >
+          {{ value }}
+        </a>
       </ng-container>
     </ng-template>
   </ngx-datatable-column>

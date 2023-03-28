@@ -43,7 +43,7 @@ export class PopupPayoutDetails {
 }
 
 export class SinglePayoutDetails {
-  paNr: string;
+  paNr: number;
   amount: number;
   currency: string;
   multiplier: number;

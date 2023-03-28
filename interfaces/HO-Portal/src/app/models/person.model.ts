@@ -44,6 +44,7 @@ export class Person {
 
 // Model for display (in table)
 export class PersonRow {
+  id: number;
   referenceId: string;
   checkboxVisible: boolean;
   pa: string; // Display label

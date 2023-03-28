@@ -82,7 +82,7 @@
           </button>
         </ng-container>
 
-        <ng-container *ngIf="enableSinglePayment(personRow, paymentRow)">
+        <ng-container *ngIf="enableSinglePayment(paymentRow)">
           <button
             type="button"
             (click)="rowClick(paymentRow)"

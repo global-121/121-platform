@@ -1,0 +1,69 @@
+name: Integration (API + DB) tests
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - 'master'
+    paths:
+      - '.github/workflows/api-test-workflow.yml'
+      - 'services/**'
+      - '!**.spec.ts'
+      - '!**.md'
+  push:
+    branches:
+      - 'release/*'
+    paths:
+      - '.github/workflows/api-test-workflow.yml'
+      - 'services/**'
+      - '!**.spec.ts'
+      - '!**.md'
+
+jobs:
+  # Label of the runner job
+  api-test:
+    # You must use a Linux environment when using service containers or container jobs
+    runs-on: ubuntu-latest
+
+    steps:
+      # Downloads a copy of the code in your repository before running CI tests
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Create .env variables file
+        run: |
+          /bin/sed -i '/^POSTGRES_HOST=/s/=.*/=121db/' ./services/.env.example
+          /bin/sed -i '/^POSTGRES_USER=/s/=.*/=global121/' ./services/.env.example
+          /bin/sed -i '/^POSTGRES_PASSWORD=/s/=.*/=global121/' ./services/.env.example
+          /bin/sed -i '/^POSTGRES_DBNAME=/s/=.*/=global121/' ./services/.env.example
+          /bin/sed -i '/^NODE_ENV=/s/=.*/=development/' ./services/.env.example
+          /bin/sed -i '/^RESET_SECRET=/s/=.*/=password/' ./services/.env.example
+          /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example
+          /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example
+          /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
+          /bin/sed -i '/^EXTERNAL_121_SERVICE_URL=/s/=.*/=http:\/\/localhost:3000\//' ./services/.env.example
+          /bin/sed -i '/^GENERIC_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
+          /bin/sed -i '/^GENERIC_THROTTLING_LIMIT=/s/=.*/=1200/' ./services/.env.example
+          /bin/sed -i '/^HIGH_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
+          /bin/sed -i '/^HIGH_THROTTLING_LIMIT=/s/=.*/=100/' ./services/.env.example
+          cp ./services/.env.example services/.env
+
+      - name: Build containers
+        working-directory: ./services
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml build
+
+      - name: Run 121-service
+        working-directory: ./services
+        run: docker --log-level 'warn' compose -f docker-compose.yml -f docker-compose.ci.yml up -d --quiet-pull --no-recreate --no-build
+
+      - name: Wait for healthchecks
+        run: timeout 90s sh -c 'until docker ps | grep 121-service | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 5; done'
+
+      - name: Run API tests with Jest
+        working-directory: ./services
+        run: |
+          echo 'Wait for 121-service to be up...'
+          docker compose exec 121-service npm run test:e2e
+
+      - name: Dump docker logs on failure
+        if: failure()
+        uses: jwalton/gh-docker-logs@v2
