@@ -223,7 +223,7 @@ export class PaymentsService {
       );
     }
 
-    if (paLists.intersolveVisaPaPayment) {
+    if (paLists.intersolveVisaPaPayment.length) {
       await this.intersolveVisaService.sendPayment(
         paLists.intersolveVisaPaPayment,
         programId,
@@ -232,7 +232,7 @@ export class PaymentsService {
       );
     }
 
-    if (paLists.intersolveJumboPhysicalPaPayment) {
+    if (paLists.intersolveJumboPhysicalPaPayment.length) {
       await this.intersolveJumboService.sendPayment(
         paLists.intersolveJumboPhysicalPaPayment,
         programId,
