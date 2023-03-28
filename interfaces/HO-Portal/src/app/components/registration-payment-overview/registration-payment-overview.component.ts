@@ -1,6 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
+import { IonicModule, ModalController } from '@ionic/angular';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import RegistrationStatus from 'src/app/enums/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
@@ -8,9 +9,19 @@ import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
 import { PaymentHistoryPopupComponent } from '../../program/payment-history-popup/payment-history-popup.component';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
-import { TableItem } from '../registration-page-table/registration-page-table.component';
+import {
+  RegistrationPageTableComponent,
+  TableItem,
+} from '../registration-page-table/registration-page-table.component';
 
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    IonicModule,
+    TranslateModule,
+    RegistrationPageTableComponent,
+  ],
   selector: 'app-registration-payment-overview',
   templateUrl: './registration-payment-overview.component.html',
   styleUrls: ['./registration-payment-overview.component.scss'],

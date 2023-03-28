@@ -1,5 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { IonicModule } from '@ionic/angular';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { StatusDate } from 'src/app/enums/status-dates.enum';
 import { AuthService } from '../../auth/auth.service';
@@ -21,6 +23,8 @@ enum ActivityOverviewType {
 }
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, IonicModule, TranslateModule],
   selector: 'app-registration-activity-overview',
   templateUrl: './registration-activity-overview.component.html',
   styleUrls: ['./registration-activity-overview.component.scss'],

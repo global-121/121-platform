@@ -1,15 +1,36 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
+import { HeaderComponent } from '../../components/header/header.component';
+import { ProgramNavigationComponent } from '../../components/program-navigation/program-navigation.component';
+import { RegistrationActivityOverviewComponent } from '../../components/registration-activity-overview/registration-activity-overview.component';
+import { RegistrationPaymentOverviewComponent } from '../../components/registration-payment-overview/registration-payment-overview.component';
+import { RegistrationPersonalInformationComponent } from '../../components/registration-personal-information/registration-personal-information.component';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from '../../services/pub-sub.service';
 
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    HeaderComponent,
+    TranslateModule,
+    ProgramNavigationComponent,
+    RegistrationPersonalInformationComponent,
+    RegistrationPaymentOverviewComponent,
+    RegistrationActivityOverviewComponent,
+  ],
   selector: 'app-registration-details',
   templateUrl: './registration-details.page.html',
   styleUrls: ['./registration-details.page.scss'],

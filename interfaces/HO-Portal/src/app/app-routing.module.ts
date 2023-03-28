@@ -106,10 +106,10 @@ const routes: Routes = [
       },
       {
         path: 'registration/:paId',
-        loadChildren: () =>
-          import(
-            './pages/registration-details/registration-details.page.module'
-          ).then((m) => m.RegistrationDetailsModule),
+        loadComponent: () =>
+          import('./pages/registration-details/registration-details.page').then(
+            (m) => m.RegistrationDetailsPage,
+          ),
       },
       {
         // Fallback for change in url, from old to new syntax:
