@@ -14,7 +14,6 @@ describe('RegistrationPersonalInformationComponent', () => {
     modalCtrlSpy.create.and.callFake(() => modalSpy);
 
     await TestBed.configureTestingModule({
-      declarations: [RegistrationPersonalInformationComponent],
       imports: [HttpClientTestingModule, TranslateModule.forRoot()],
       providers: [
         {

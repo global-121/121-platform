@@ -14,7 +14,6 @@ describe('RegistrationPaymentOverviewComponent', () => {
     modalCtrlSpy.create.and.callFake(() => modalSpy);
 
     await TestBed.configureTestingModule({
-      declarations: [RegistrationPaymentOverviewComponent],
       imports: [HttpClientTestingModule, TranslateModule.forRoot()],
       providers: [
         {

@@ -1,8 +1,8 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { of } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
@@ -15,14 +15,13 @@ describe('HeaderComponent', () => {
   let fixture: ComponentFixture<HeaderComponent>;
 
   let mockProgramsApi: jasmine.SpyObj<any>;
+  let mockAuthService: jasmine.SpyObj<any>;
 
   const mockProgramId = 1;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HeaderComponent],
       imports: [TranslateModule.forRoot(), RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: ActivatedRoute,
@@ -44,6 +43,8 @@ describe('HeaderComponent', () => {
     mockProgramsApi.getProgramById.and.returnValue(
       new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
     );
+    mockAuthService = TestBed.inject(AuthService);
+    mockAuthService.authenticationState$ = of(null);
 
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
