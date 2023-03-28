@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import { StatusDate } from 'src/app/enums/status-dates.enum';
+import StatusDate from 'src/app/enums/status-dates.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
