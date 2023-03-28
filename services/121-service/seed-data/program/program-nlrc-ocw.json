@@ -46,7 +46,7 @@
       "physicalVisaCardCreated": "This is a message from the Red Cross.\n\nWe have created a VISA card for you with card number {{1}}\n\nYou can activate it by doing this and this.",
       "digitalVisaCardCreated": "This is a message from the Red Cross.\n\nWe have created a digital VISA card for you with card number {{1}}\n\nYou can activate it by clicking the following link: {{2}}. When asked to enter a token code, enter {{3}}.",
       "visaLoad": "This is a message from the Red Cross.\n\nWe increased the funds on your VISA card with {{1}}.",
-      "jumboCardSent": "This is a message from the Red Cross.\n\nWe have sent {{1}} Jumbo cards of €{{2}} each to the provided address."
+      "jumboCardSent": "This is a message from the Red Cross.\n\nWe have sent {{1}} Jumbo card(s) of €{{2}} per card to the provided address."
     },
     "nl": {
       "registered": "Dit is een bericht van het Rode Kruis.\n\nWe hebben je aanmelding voor hulp ontvangen.\n\nJe ontvangt binnen 1 week een volgende SMS of WhatsApp bericht met meer informatie.",
@@ -54,7 +54,7 @@
       "whatsappReply": "Dit is een geautomatiseerd bericht, voor vragen neem contact op met de Rode Kruis Helpdesk via WhatsApp: +31614458781",
       "whatsappPayment": "Dit is een bericht van het Rode Kruis.\n\nJe Albert Heijn supermarkt voucher is klaar om verzonden te worden.\n\nAntwoord met \"ja\" op dit bericht om het volgende te ontvangen:\n1. De voucher van deze week.\n2. Vorige vouchers die je nog niet hebt ontvangen.",
       "whatsappVoucher": "Dit is een bericht van het Rode Kruis.\n\nMet dit bericht ontvang je:\n1. Een Albert Heijn supermarkt voucher - dit is de foto met de barcode.\n2. Een uitleg van hoe je de voucher moet gebruiken in de Albert Heijn. \n\nAls je meer dan één voucher ontvangt, komt dit doordat je geen vouchers hebt ontvangen van de voorgaande weken. \n\nDe waarde van elke voucher staat geschreven op de hoek van de voucher.\nJe kan de voucher gebruiken in elke Albert Heijn in Nederland.\n\nJe hoeft niet alles in één keer te gebruiken. Dus bewaar de vouchers en gebruik de voucher opnieuw totdat het hele bedrag op is. \n\nJe zal je Albert Heijn voucher elke week ontvangen op dinsdag. Wanneer we de voucherhulp stoppen sturen wij jou een bericht. In dat bericht leggen wij uit wanneer de hulp stopt en waarom.\n\nHeb je vragen? Stuur ons een bericht op WhatsApp: https://wa.me/31614458781",
-      "jumboCardSent": "Dit is een bericht van het Rode Kruis.\n\nWe hebben {{1}} Jumbo kaarten van €{{2}} elk naar het opgegeven adres verstuurd."
+      "jumboCardSent": "Dit is een bericht van het Rode Kruis.\n\nWe hebben {{1}} Jumbo kaart(en) van €{{2}} per kaart naar het opgegeven adres verstuurd."
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
