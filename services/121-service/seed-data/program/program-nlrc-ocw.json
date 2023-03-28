@@ -26,9 +26,6 @@
     },
     {
       "fsp": "Intersolve-jumbo-physical"
-    },
-    {
-      "fsp": "Intersolve-voucher-whatsapp"
     }
   ],
   "targetNrRegistrations": 100000,
@@ -55,21 +52,6 @@
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
   "programCustomAttributes": [
-    {
-      "label": {
-        "en": "WhatsApp Nr."
-      },
-      "name": "whatsappPhoneNumber",
-      "type": "tel",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
-      "duplicateCheck": true,
-      "phases": ["registrationValidation", "inclusion", "payment"]
-    },
     {
       "name": "firstName",
       "label": {

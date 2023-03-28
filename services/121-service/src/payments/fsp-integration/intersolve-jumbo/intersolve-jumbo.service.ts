@@ -15,6 +15,7 @@ import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
+  TransactionNotificationObject,
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { PreOrderInfoDto } from './dto/pre-order-info.dto';
@@ -68,6 +69,7 @@ export class IntersolveJumboService {
         paResult.message,
         registration.programId,
         paResult.status,
+        paResult.notificationObjects,
       );
     }
     result.fspName = paPaymentList[0].fspName;
@@ -169,6 +171,7 @@ export class IntersolveJumboService {
     payment: number,
   ): Promise<PaTransactionResultDto> {
     console.log('paymentInfo: ', paymentInfo);
+    const transactionNotifications = [];
     const result = new PaTransactionResultDto();
     result.referenceId = paymentInfo.referenceId;
     result.calculatedAmount =
@@ -207,6 +210,15 @@ export class IntersolveJumboService {
         return result;
       }
 
+      transactionNotifications.push({
+        notificationKey: 'jumboCardSent',
+        dynamicContent: [
+          String(paymentInfo.paymentAmountMultiplier),
+          String(this.allowedEuroPerCard),
+        ],
+      });
+      result.notificationObjects = transactionNotifications;
+
       return result;
     }
   }
@@ -219,12 +231,14 @@ export class IntersolveJumboService {
     errorMessage: string,
     programId: number,
     status?: StatusEnum,
+    notificationObjects?: TransactionNotificationObject[],
   ): Promise<void> {
     const transactionResultDto = await this.createTransactionResult(
       amount,
       registrationId,
       errorMessage,
       status,
+      notificationObjects,
     );
     this.transactionsService.storeTransactionUpdateStatus(
       transactionResultDto,
@@ -239,6 +253,7 @@ export class IntersolveJumboService {
     registrationId: number,
     errorMessage: string,
     status?: StatusEnum,
+    notificationObjects?: TransactionNotificationObject[],
   ): Promise<PaTransactionResultDto> {
     const registration = await this.registrationRepository.findOne({
       where: { id: registrationId },
@@ -252,6 +267,7 @@ export class IntersolveJumboService {
     transactionResult.calculatedAmount = amount;
     transactionResult.date = new Date();
     transactionResult.fspName = FspName.intersolveJumboPhysical;
+    transactionResult.notificationObjects = notificationObjects;
 
     return transactionResult;
   }
