@@ -41,7 +41,7 @@ export enum RegistrationStatusDateMap {
   included = RegistrationStatusTimestampField.inclusionDate,
   rejected = RegistrationStatusTimestampField.rejectionDate,
   noLongerEligible = RegistrationStatusTimestampField.noLongerEligibleDate,
-  registeredWhileNoLongerEligible = RegistrationStatusTimestampField.registeredDate,
+  registeredWhileNoLongerEligible = RegistrationStatusTimestampField.registeredWhileNoLongerEligibleDate,
   inclusionEnded = RegistrationStatusTimestampField.inclusionEndDate,
   deleted = RegistrationStatusTimestampField.deleteDate,
   completed = RegistrationStatusTimestampField.completedDate,
