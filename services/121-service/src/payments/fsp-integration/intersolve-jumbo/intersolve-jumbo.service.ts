@@ -63,14 +63,15 @@ export class IntersolveJumboService {
       } else {
         paResult = new PaTransactionResultDto();
         paResult.status = StatusEnum.error;
-        paResult.message = `Amount ${amount} is not allowed. It should be ${allowedEuroPerCard}. The amount of this payment has been automatically adjusted to the correct amount. You can now retry the payment either for this PA only, or for all failed ones.`;
-        paResult.calculatedAmount = amount;
+        paResult.message = `Amount ${amount} is not allowed. It should be ${allowedEuroPerCard}. The amount of this payment has been automatically adjusted to the correct amount. You can now retry the payment.`;
+        paResult.calculatedAmount = allowedEuroPerCard; // set amount to return to allowed amount
         paResult.referenceId = jumboAddressInfo.referenceId;
       }
-
       await this.storeTransactionResult(
         payment,
-        paResult.calculatedAmount,
+        paResult.status === StatusEnum.error && !paResult.calculatedAmount // if error, take original amount, except if calculatedAmount is specifically set, which otherwise only happens for success-transactions
+          ? amount
+          : paResult.calculatedAmount,
         paResult.referenceId,
         1,
         paResult.message,
@@ -138,13 +139,11 @@ export class IntersolveJumboService {
     const transactionNotifications = [];
     const result = new PaTransactionResultDto();
     result.referenceId = paymentInfo.referenceId;
-    result.calculatedAmount = paymentInfo.paymentAmountMultiplier * amount;
     result.fspName = FspName.intersolveJumboPhysical;
 
     if (paymentInfo.paymentAmountMultiplier > this.maxPaymentAmountMultiplier) {
       result.status = StatusEnum.error;
-      result.message = `Payment amount multiplier is higher than ${this.maxPaymentAmountMultiplier}`;
-      result.calculatedAmount = amount;
+      result.message = `Payment amount multiplier is higher than ${this.maxPaymentAmountMultiplier}. Adjust it, and retry this payment.`;
       return result;
     } else {
       // Create pre-order
@@ -185,6 +184,7 @@ export class IntersolveJumboService {
       result.notificationObjects = transactionNotifications;
 
       result.status = StatusEnum.success;
+      result.calculatedAmount = paymentInfo.paymentAmountMultiplier * amount;
       return result;
     }
   }
