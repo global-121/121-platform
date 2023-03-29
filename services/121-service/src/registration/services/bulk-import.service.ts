@@ -315,10 +315,12 @@ export class BulkImportService {
       await this.inclusionScoreService.calculateInclusionScore(
         registration.referenceId,
       );
-      await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-        program.id,
-        registration.referenceId,
-      );
+      if (program.paymentAmountMultiplierFormula) {
+        await this.inclusionScoreService.calculatePaymentAmountMultiplier(
+          program.paymentAmountMultiplierFormula,
+          registration.referenceId,
+        );
+      }
 
       countImported += 1;
     }

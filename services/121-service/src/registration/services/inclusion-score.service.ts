@@ -14,20 +14,14 @@ export class InclusionScoreService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public async calculatePaymentAmountMultiplier(
-    programId: number,
+    paymentAmountMultiplierFormula: string,
     referenceId: string,
   ): Promise<RegistrationEntity> {
-    const program = await this.programRepository.findOneBy({
-      id: programId,
-    });
-    if (!program.paymentAmountMultiplierFormula) {
-      return;
-    }
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['data'],
     });
-    const formulaParts = program.paymentAmountMultiplierFormula
+    const formulaParts = paymentAmountMultiplierFormula
       .replace(/\s/g, '')
       .split('+');
     const constant = Number(formulaParts[0]);
