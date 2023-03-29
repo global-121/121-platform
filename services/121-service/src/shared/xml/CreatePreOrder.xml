@@ -13,26 +13,7 @@
 				<FulfillmentInstructions></FulfillmentInstructions>
 				<PersonalCardText></PersonalCardText>
 				<CustomInvoiceAddress>false</CustomInvoiceAddress>
-				<OrderLine>
-					<OrderImportLine>
-						<ProductCode>exampleString</ProductCode>
-						<ProductValue>0</ProductValue>
-						<PackageCode>exampleString</PackageCode>
-						<Amount>0</Amount>
-						<ExtItemReference></ExtItemReference>
-						<CustomShipToAddress>true</CustomShipToAddress>
-						<CustomShipToLastName>Test</CustomShipToLastName>
-						<CustomShipToStreet>Straat</CustomShipToStreet>
-						<CustomShipToHouseNr>1</CustomShipToHouseNr>
-						<CustomShipToHouseNrAddition>A</CustomShipToHouseNrAddition>
-						<CustomShipToZipCode>1234AB</CustomShipToZipCode>
-						<CustomShipToCity>Stad</CustomShipToCity>
-						<CustomShipToCountry>NL</CustomShipToCountry>
-						<CustomShipToFirstName>exampleString</CustomShipToFirstName>
-						<Custom1>exampleString</Custom1>
-						<Custom2>1</Custom2>
-					</OrderImportLine>
-				</OrderLine>
+				<OrderLine></OrderLine>
 			</NewOrder>
 			<CustomerType>BusinessCustomer</CustomerType>
 		</tns:CreatePreOrder>

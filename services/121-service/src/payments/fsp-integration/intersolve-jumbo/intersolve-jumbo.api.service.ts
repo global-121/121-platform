@@ -13,13 +13,15 @@ export class IntersolveJumboApiService {
   ) {}
 
   public async createPreOrder(
-    preOrderDto: PreOrderInfoDto,
+    preOrderDtoBatch: PreOrderInfoDto[],
     payment: number,
     amount: number,
+    individualValidation: boolean,
   ): Promise<any> {
     if (process.env.MOCK_INTERSOLVE) {
       return this.intersolveJumboApiMockService.createPreOrder(
-        preOrderDto.lastName,
+        // pass the first PA only here. This works for the individual pre-validation calls, so filters out the mock failed transactions. For the remaining succeeding transactions, this mock just returns a general OK anyway.
+        preOrderDtoBatch[0].lastName,
       );
     } else {
       let payload = await this.soapService.readXmlAsJs(
@@ -33,22 +35,6 @@ export class IntersolveJumboApiService {
         process.env.INTERSOLVE_JUMBO_CUSTOMER_ID,
       );
 
-      const newOrderProductMapping = {
-        ProductCode: process.env.INTERSOLVE_JUMBO_PRODUCT_CODE,
-        PackageCode: process.env.INTERSOLVE_JUMBO_PACKAGE_CODE,
-        ProductValue: String(amount),
-        Amount: String(preOrderDto.paymentAmountMultiplier),
-      };
-
-      for (const [key, value] of Object.entries(newOrderProductMapping)) {
-        payload = this.soapService.changeSoapBody(
-          payload,
-          mainElem,
-          ['NewOrder', 'OrderLine', 'OrderImportLine', key],
-          value,
-        );
-      }
-
       payload = this.soapService.changeSoapBody(
         payload,
         mainElem,
@@ -56,30 +42,61 @@ export class IntersolveJumboApiService {
         new Date().toISOString(),
       );
 
-      const newOrderDtoMapping = {
-        CustomShipToLastName: 'lastName',
-        CustomShipToStreet: 'addressStreet',
-        CustomShipToHouseNr: 'addressHouseNumber',
-        CustomShipToHouseNrAddition: 'addressHouseNumberAddition',
-        CustomShipToZipCode: 'addressPostalCode',
-        CustomShipToCity: 'addressCity',
-        Custom1: 'referenceId',
-        Custom2: 'payment',
-      };
-      for (const [key, value] of Object.entries(newOrderDtoMapping)) {
-        payload = this.soapService.changeSoapBody(
-          payload,
-          mainElem,
-          ['NewOrder', 'OrderLine', 'OrderImportLine', key],
-          preOrderDto[value],
-        );
+      for (const preOrderDto of preOrderDtoBatch) {
+        let orderImportLinePayload = (
+          await this.soapService.readXmlAsJs(
+            IntersolveJumboSoapElements.OrderImportLine,
+          )
+        ).elements[0];
+        const newOrderProductMapping = {
+          ProductCode: process.env.INTERSOLVE_JUMBO_PRODUCT_CODE,
+          PackageCode: process.env.INTERSOLVE_JUMBO_PACKAGE_CODE,
+          ProductValue: String(amount),
+          Amount: String(preOrderDto.paymentAmountMultiplier),
+          Custom2: String(payment),
+          Custom3: individualValidation ? 'individual' : 'batch',
+        };
+
+        for (const [key, value] of Object.entries(newOrderProductMapping)) {
+          orderImportLinePayload = this.soapService.setValueByName(
+            orderImportLinePayload,
+            key,
+            value,
+          );
+        }
+
+        const newOrderDtoMapping = {
+          CustomShipToLastName: 'lastName',
+          CustomShipToStreet: 'addressStreet',
+          CustomShipToHouseNr: 'addressHouseNumber',
+          CustomShipToHouseNrAddition: 'addressHouseNumberAddition',
+          CustomShipToZipCode: 'addressPostalCode',
+          CustomShipToCity: 'addressCity',
+          Custom1: 'referenceId',
+        };
+        for (const [key, value] of Object.entries(newOrderDtoMapping)) {
+          orderImportLinePayload = this.soapService.setValueByName(
+            orderImportLinePayload,
+            key,
+            preOrderDto[value],
+          );
+        }
+
+        // find right place to insert orderImportLine
+        const orderLine = payload['elements'][0]['elements']
+          .find((e) => e.name === 'soap:Body')
+          ['elements'].find((e) => e.name === 'tns:CreatePreOrder')
+          ['elements'].find((e) => e.name === 'NewOrder')
+          ['elements'].find((e) => e.name === 'OrderLine');
+
+        // create empty array for 1st orderImportLine in batch
+        if (!orderLine['elements']) {
+          orderLine['elements'] = [];
+        }
+
+        // insert orderImportLine
+        orderLine['elements'].push(orderImportLinePayload);
       }
-      payload = this.soapService.changeSoapBody(
-        payload,
-        mainElem,
-        ['NewOrder', 'OrderLine', 'OrderImportLine', 'Custom2'],
-        String(payment),
-      );
 
       return await this.soapService.post(
         payload,

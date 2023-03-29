@@ -100,4 +100,13 @@ export class SoapService {
     }
     return xml;
   }
+
+  public setValueByName(xml: any, attributeName: string, value: string): any {
+    for (const el of xml.elements) {
+      if (el.name === attributeName) {
+        el.elements[0].text = value;
+      }
+    }
+    return xml;
+  }
 }
