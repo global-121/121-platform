@@ -71,7 +71,7 @@ export class PaymentsService {
       .select('payment')
       .addSelect('MIN(transaction.created)', 'paymentDate')
       .addSelect(
-        'MIN(transaction.amount / coalesce(r.paymentAmountMultiplier, 1) )',
+        `MIN(CASE WHEN transaction.status = 'error' THEN transaction.amount ELSE transaction.amount / coalesce(r.paymentAmountMultiplier, 1) END )`,
         'amount',
       )
       .leftJoin('transaction.registration', 'r')
