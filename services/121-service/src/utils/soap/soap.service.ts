@@ -2,31 +2,61 @@ import { Injectable } from '@nestjs/common';
 import soapRequest from 'easy-soap-request';
 import fs from 'fs';
 import * as convert from 'xml-js';
+import { CustomHttpService } from '../../shared/services/custom-http.service';
 
 @Injectable()
 export class SoapService {
+  public constructor(private readonly httpService: CustomHttpService) {}
+
   public async post(
-    payload: any,
+    soapBodyPayload: any,
     headerFile: string,
     username: string,
     password: string,
     url: string,
   ): Promise<any> {
-    payload = await this.setSoapHeader(payload, headerFile, username, password);
+    const payload = await this.setSoapHeader(
+      soapBodyPayload,
+      headerFile,
+      username,
+      password,
+    );
     const xml = convert.js2xml(payload);
     const headers = {
       'user-agent': 'sampleTest',
       'Content-Type': 'text/xml;charset=UTF-8',
     };
-    const { response } = await soapRequest({
+    return soapRequest({
       headers: headers,
       url: url,
       xml: xml,
       timeout: 30000,
-    });
-    const { body } = response;
-    const jsonResponse = convert.xml2js(body, { compact: true });
-    return jsonResponse['soap:Envelope']['soap:Body'];
+    })
+      .then((rawResponse: any) => {
+        const response = rawResponse.response;
+        this.httpService.logMessage(
+          { url, payload: convert.js2xml(soapBodyPayload) },
+          {
+            status: response.statusCode,
+            statusText: null,
+            data: response.body,
+          },
+        );
+        const { body } = response;
+        const jsonResponse = convert.xml2js(body, { compact: true });
+        return jsonResponse['soap:Envelope']['soap:Body'];
+      })
+      .catch((err: any) => {
+        this.httpService.logError(
+          { url, payload: convert.js2xml(soapBodyPayload) },
+          {
+            status: null,
+            statusText: null,
+            data: { error: err },
+          },
+        );
+        return err;
+      });
   }
 
   private async setSoapHeader(

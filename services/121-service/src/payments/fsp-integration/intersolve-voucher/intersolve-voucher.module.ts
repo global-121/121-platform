@@ -10,6 +10,7 @@ import { SoapService } from '../../../utils/soap/soap.service';
 import { ImageCodeModule } from '../../imagecode/image-code.module';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsModule } from '../../transactions/transactions.module';
+import { CustomHttpService } from './../../../shared/services/custom-http.service';
 import { IntersolveVoucherApiService } from './instersolve-voucher.api.service';
 import { IntersolveVoucherMockService } from './instersolve-voucher.mock';
 import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-request.entity';
@@ -40,6 +41,7 @@ import { IntersolveVoucherService } from './intersolve-voucher.service';
     IntersolveVoucherApiService,
     SoapService,
     IntersolveVoucherMockService,
+    CustomHttpService,
   ],
   controllers: [IntersolveVoucherController],
   exports: [
