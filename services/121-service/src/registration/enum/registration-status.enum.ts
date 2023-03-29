@@ -30,3 +30,19 @@ export enum RegistrationStatusTimestampField {
   deleteDate = 'deleteDate',
   completedDate = 'completedDate',
 }
+
+export enum RegistrationStatusDateMap {
+  imported = RegistrationStatusTimestampField.importedDate,
+  invited = RegistrationStatusTimestampField.invitedDate,
+  startedRegistration = RegistrationStatusTimestampField.startedRegistrationDate,
+  registered = RegistrationStatusTimestampField.registeredDate,
+  selectedForValidation = RegistrationStatusTimestampField.selectedForValidationDate,
+  validated = RegistrationStatusTimestampField.validationDate,
+  included = RegistrationStatusTimestampField.inclusionDate,
+  rejected = RegistrationStatusTimestampField.rejectionDate,
+  noLongerEligible = RegistrationStatusTimestampField.noLongerEligibleDate,
+  registeredWhileNoLongerEligible = RegistrationStatusTimestampField.registeredDate,
+  inclusionEnded = RegistrationStatusTimestampField.inclusionEndDate,
+  deleted = RegistrationStatusTimestampField.deleteDate,
+  completed = RegistrationStatusTimestampField.completedDate,
+}
