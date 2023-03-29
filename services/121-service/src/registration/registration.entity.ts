@@ -236,7 +236,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     value: string | number | boolean,
     relation: RegistrationDataRelation,
   ): Promise<void> {
-    value = String(value);
+    value = value ? String(value) : '';
     if (relation.programQuestionId) {
       await this.saveProgramQuestionData(value, relation.programQuestionId);
     }
