@@ -9,7 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "incremental": true,
-    "lib": ["es2022", "DOM"],
+    "lib": ["ES2021", "DOM"],
     "module": "es2020",
     "moduleResolution": "node",
     "noUnusedLocals": true,
@@ -18,7 +18,7 @@
     "removeComments": true,
     "sourceMap": true,
     "strict": false,
-    "target": "ES2022",
+    "target": "ES2021",
     "typeRoots": ["node_modules/@types"],
     "useDefineForClassFields": false
   },

@@ -12,13 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade AW-App to Angular v15
 - Upgrade PA-App to Angular v15
 - Upgrade HO-Portal to Angular v15
-- Upgrade interfaces to use Node.js v18 LTS  
+- Upgrade interfaces to use Node.js v16 LTS  
   Make sure to run these commands from the root-folder of the repository:
 
   - `fnm install` or `nvm install`
   - Verify that:  
-    `node --version` shows `v18.*`
-    `npm --version` shows `v9.*`
+    `node --version` shows `v16.*`
+    `npm --version` shows `v8.*`
   - Run: `npm ci --prefix=interfaces/PA-app && npm ci --prefix=interfaces/AW-app && npm ci --prefix=interfaces/HO-Portal`
 
 ---

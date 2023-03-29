@@ -29,8 +29,8 @@
   },
   "private": true,
   "engines": {
-    "node": ">=18",
-    "npm": ">=9"
+    "node": ">=16",
+    "npm": ">=8"
   },
   "engineStrict": true,
   "dependencies": {
@@ -74,10 +74,9 @@
     "@ionic/angular-toolkit": "^8.0.0",
     "@types/file-saver": "^2.0.5",
     "@types/jasmine": "^4.3.1",
-    "@types/node": "^18.15.10",
+    "@types/node": "^16.11.7",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
-    "codelyzer": "^6.0.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.8.0",
