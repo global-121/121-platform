@@ -173,9 +173,8 @@ describe("'Do Payment #1' bulk action", () => {
 
           selectPaymentAction(page, page.nextPayment);
 
-          cy.get('.datatable-body-cell-label > input')
-            .click()
-            .should('length', 1);
+          cy.get('.datatable-body-cell-label > input').should('length', 1);
+          cy.get('.datatable-body-cell-label > input').click();
         });
       },
     );

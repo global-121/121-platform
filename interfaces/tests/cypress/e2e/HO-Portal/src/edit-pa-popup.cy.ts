@@ -84,13 +84,14 @@ describe('Edit PA details in pop-up', () => {
   }
 
   function clickSaveAndConfirm(label: string) {
-    cy.intercept('**/attribute').as('updateAttribute');
+    cy.intercept('**/attribute', {
+      statusCode: 201,
+    }).as('updateAttribute');
 
     cy.get(`[ng-reflect-label="${label}"] ion-button[type="submit"]`).click();
 
-    cy.wait('@updateAttribute')
-      .its('response.statusCode')
-      .should('not.be.oneOf', [400, 500]);
+    cy.wait('@updateAttribute');
+    cy.its('response.statusCode').should('not.be.oneOf', [400, 500]);
 
     cy.get('button.alert-button', { timeout: 5000 }).click();
   }
