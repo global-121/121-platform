@@ -68,7 +68,7 @@
                   "output": "assets"
                 },
                 {
-                  "glob": "**/{alert,arrow-down-circle-outline,arrow-undo,chatbubbles,close,cloud-download,color-fill,construct,download,hourglass,information,log-out,nuclear,pause,people,person,refresh,resize,trash}.svg",
+                  "glob": "**/{alert,arrow-down-circle-outline,arrow-undo,chatbubbles,close,cloud-download,color-fill,construct,download,hourglass,information,log-out,nuclear,pause,people,person,pin,refresh,resize,trash}.svg",
                   "input": "node_modules/ionicons/dist/ionicons/svg",
                   "output": "./svg"
                 },
@@ -145,10 +145,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
@@ -156,9 +153,7 @@
   },
   "cli": {
     "analytics": false,
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ]
+    "schematicCollections": ["@angular-eslint/schematics"]
   },
   "schematics": {
     "@ionic/angular-toolkit:component": {
@@ -166,6 +161,12 @@
     },
     "@ionic/angular-toolkit:page": {
       "styleext": "scss"
+    },
+    "@angular-eslint/schematics:application": {
+      "setParserOptionsProject": true
+    },
+    "@angular-eslint/schematics:library": {
+      "setParserOptionsProject": true
     }
   }
 }

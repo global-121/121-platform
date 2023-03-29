@@ -1,9 +1,9 @@
-import { formatDate } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
+import { IonicModule, ModalController } from '@ionic/angular';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import { StatusDate } from 'src/app/enums/status-dates.enum';
+import StatusDate from 'src/app/enums/status-dates.enum';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
@@ -12,6 +12,7 @@ import { PaTableAttribute, ProgramPhase } from '../../models/program.model';
 import { EditPersonAffectedPopupComponent } from '../../program/edit-person-affected-popup/edit-person-affected-popup.component';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
+import { RegistrationPageTableComponent } from '../registration-page-table/registration-page-table.component';
 
 class TableItem {
   label: string;
@@ -19,6 +20,13 @@ class TableItem {
 }
 
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    IonicModule,
+    TranslateModule,
+    RegistrationPageTableComponent,
+  ],
   selector: 'app-registration-personal-information',
   templateUrl: './registration-personal-information.component.html',
   styleUrls: ['./registration-personal-information.component.scss'],

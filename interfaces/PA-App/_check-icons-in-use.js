@@ -38,7 +38,6 @@ function checkIfUsed(filePath, _fileName) {
 
   iconList.forEach((icon, index, iconList) => {
     if (
-      data.includes(`["name","${icon.iconName}"]`) || // for Angular 8 / view engine
       data.includes(`"name","${icon.iconName}"`) || // for Angular 9+ / ivy
       data.includes(`name:"${icon.iconName}"`) ||
       data.includes(`icon:"${icon.iconName}"`) ||

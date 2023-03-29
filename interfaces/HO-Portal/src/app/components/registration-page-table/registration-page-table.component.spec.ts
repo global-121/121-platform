@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
 import { RegistrationPageTableComponent } from './registration-page-table.component';
 
 describe('RegistrationPageTableComponent', () => {
@@ -7,10 +6,7 @@ describe('RegistrationPageTableComponent', () => {
   let fixture: ComponentFixture<RegistrationPageTableComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [IonicModule.forRoot()],
-      declarations: [RegistrationPageTableComponent],
-    }).compileComponents();
+    await TestBed.configureTestingModule({}).compileComponents();
   });
 
   beforeEach(() => {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PersonalDirective } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
@@ -11,7 +11,10 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   templateUrl: './set-notification-number.component.html',
   styleUrls: ['./set-notification-number.component.scss'],
 })
-export class SetNotificationNumberComponent extends PersonalDirective {
+export class SetNotificationNumberComponent
+  extends PersonalDirective
+  implements OnInit
+{
   @Input()
   public data: any;
 
@@ -37,7 +40,7 @@ export class SetNotificationNumberComponent extends PersonalDirective {
     this.languageCode = this.translate.currentLang;
   }
 
-  async ngOnInit() {
+  public async ngOnInit() {
     if (this.data) {
       this.initHistory();
       return;

@@ -3,9 +3,11 @@
   "project": "./src/app/**/*.{html,ts}",
   "languages": "./src/assets/i18n/en.json",
   "rules": {
-    "views": "warning",
-    "zombies": "error",
-    "misprint": "warning",
+    "keysOnViews": "warning",
+    "zombieKeys": "error",
+    "misprintKeys": "warning",
+    "emptyKeys": "warning",
+    "deepSearch": "enable",
     "maxWarning": "0",
     "misprintCoefficient": "0.9",
     "ignoredKeys": [
@@ -27,9 +29,6 @@
       "personal.select-language.language.pt_BR",
       "personal.select-language.language.tl"
     ],
-    "ignoredMisprintKeys": [],
-    "ast": {
-      "isNgsTranslateImported": "error"
-    }
+    "ignoredMisprintKeys": []
   }
 }

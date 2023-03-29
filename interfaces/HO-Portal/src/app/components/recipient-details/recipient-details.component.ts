@@ -3,10 +3,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
+import StatusDate from 'src/app/enums/status-dates.enum';
 import { AnswerType } from 'src/app/models/fsp.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { RegistrationStatusTimestampField } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { environment } from '../../../environments/environment';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
@@ -50,6 +50,8 @@ export class RecipientDetailsComponent implements OnInit {
     'programId',
     'phone-number',
     'status',
+    'lastMessageStatus',
+    'lastMessageType',
   ];
 
   private questionKeysToInclude = [
@@ -161,7 +163,7 @@ export class RecipientDetailsComponent implements OnInit {
     value: any,
     type?: AnswerType,
   ): RecipientDetail {
-    if (RegistrationStatusTimestampField[key] || type === AnswerType.Date) {
+    if (StatusDate[key] || type === AnswerType.Date) {
       value = formatDate(value, DateFormat.dayAndTime, this.locale);
     }
     if (this.valueTranslators[key]) {
@@ -175,10 +177,10 @@ export class RecipientDetailsComponent implements OnInit {
   }
 
   private getColumn(key: string): { columnName: string; index: number } {
-    if (RegistrationStatusTimestampField[key]) {
+    if (StatusDate[key]) {
       return {
         columnName: 'columnStatusHistory',
-        index: Object.keys(RegistrationStatusTimestampField).indexOf(key),
+        index: Object.keys(StatusDate).indexOf(key),
       };
     }
     const defaultColumnName = 'columnPersonalInformation';
@@ -256,7 +258,7 @@ export class RecipientDetailsComponent implements OnInit {
 
   private sortStatusHistory() {
     const columnNameStatusHistory = 'columnStatusHistory';
-    const statusOrder = Object.values(RegistrationStatusTimestampField);
+    const statusOrder = Object.values(StatusDate);
     const toBeSorted = [...this.columns[columnNameStatusHistory]];
     this.columns[columnNameStatusHistory] = toBeSorted.sort(
       (a, b) => statusOrder.indexOf(a.key) - statusOrder.indexOf(b.key),

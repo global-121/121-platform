@@ -1,11 +1,23 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { PhaseNavigationComponent } from '../../program/phase-navigation/phase-navigation.component';
 
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    IonicModule,
+    TranslateModule,
+    RouterModule,
+    PhaseNavigationComponent,
+  ],
   selector: 'app-program-navigation',
   templateUrl: './program-navigation.component.html',
   styleUrls: ['./program-navigation.component.scss'],

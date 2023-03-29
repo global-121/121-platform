@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { FspAnswer, ValidatedPaData } from 'src/app/models/pa-data.model';
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -13,7 +13,7 @@ import { ProgramsServiceApiService } from './../../services/programs-service-api
   templateUrl: './upload-data.component.html',
   styleUrls: ['./upload-data.component.scss'],
 })
-export class UploadDataComponent implements ValidationComponent {
+export class UploadDataComponent implements ValidationComponent, OnInit {
   public uploadReady = false;
   public uploadAborted = false;
   public uploadDataStored: boolean;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Permission from 'src/app/auth/permission.enum';
 import { ProgramPhase } from 'src/app/models/program.model';
@@ -9,7 +9,7 @@ import { ExportType } from '../../models/export-type.model';
   templateUrl: './payment.page.html',
   styleUrls: ['./payment.page.scss'],
 })
-export class PaymentPage implements OnInit {
+export class PaymentPage {
   public Permission = Permission;
 
   public programId = this.route.snapshot.params.id;
@@ -19,8 +19,6 @@ export class PaymentPage implements OnInit {
   public enumExportType = ExportType;
 
   constructor(private route: ActivatedRoute) {}
-
-  ngOnInit() {}
 
   public onReady(state: boolean) {
     this.isReady = state;

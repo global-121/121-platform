@@ -1,6 +1,5 @@
 import {
   Component,
-  ComponentFactoryResolver,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -89,7 +88,6 @@ export class PersonalPage implements OnInit, OnDestroy {
 
   constructor(
     public conversationService: ConversationService,
-    private resolver: ComponentFactoryResolver,
     public translate: TranslateService,
     private paDataService: PaDataService,
     private menu: MenuController,
@@ -326,10 +324,6 @@ export class PersonalPage implements OnInit, OnDestroy {
     });
   }
 
-  private getComponentFactory(name: string) {
-    return this.resolver.resolveComponentFactory(this.availableSections[name]);
-  }
-
   public insertSection(
     name: string,
     options: { animate: boolean } = { animate: environment.useAnimation },
@@ -341,7 +335,7 @@ export class PersonalPage implements OnInit, OnDestroy {
     }
 
     const componentRef = this.container.createComponent(
-      this.getComponentFactory(name),
+      this.availableSections[name],
     );
     const componentInstance: any | PersonalDirective = componentRef.instance;
 

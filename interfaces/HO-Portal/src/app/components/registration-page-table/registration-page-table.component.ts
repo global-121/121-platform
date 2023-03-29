@@ -1,4 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
 
 export class TableItem {
   label: string;
@@ -6,15 +8,15 @@ export class TableItem {
 }
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, IonicModule],
   selector: 'app-registration-page-table',
   templateUrl: './registration-page-table.component.html',
   styleUrls: ['./registration-page-table.component.scss'],
 })
-export class RegistrationPageTableComponent implements OnInit {
+export class RegistrationPageTableComponent {
   @Input()
   public itemList: TableItem[] = [];
 
   constructor() {}
-
-  ngOnInit(): void {}
 }

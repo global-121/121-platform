@@ -3,21 +3,24 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import RegistrationStatus from '../../enums/registration-status.enum';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { EditPersonAffectedPopupComponent } from './edit-person-affected-popup.component';
 
-const modalSpy = jasmine.createSpyObj('Modal', ['present']);
-const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-modalCtrlSpy.create.and.callFake(() => modalSpy);
-
 describe('EditPersonAffectedPopupComponent', () => {
   let component: EditPersonAffectedPopupComponent;
   let fixture: ComponentFixture<EditPersonAffectedPopupComponent>;
 
+  const mockProgramId = 1;
+
   beforeEach(waitForAsync(() => {
+    const modalSpy = jasmine.createSpyObj('Modal', ['present']);
+    const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+    modalCtrlSpy.create.and.callFake(() => modalSpy);
+
     TestBed.configureTestingModule({
       declarations: [EditPersonAffectedPopupComponent],
       imports: [TranslateModule.forRoot(), HttpClientTestingModule],
@@ -37,6 +40,9 @@ describe('EditPersonAffectedPopupComponent', () => {
 
   beforeEach(() => {
     mockProgramsApi = TestBed.inject(ProgramsServiceApiService);
+    mockProgramsApi.getProgramById.and.returnValue(
+      new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
+    );
     mockProgramsApi.retrieveNote.and.returnValue(
       new Promise((r) =>
         r({

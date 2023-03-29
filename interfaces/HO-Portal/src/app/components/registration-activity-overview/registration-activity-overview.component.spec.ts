@@ -9,7 +9,6 @@ describe('RegistrationActivityOverviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [RegistrationActivityOverviewComponent],
       imports: [HttpClientTestingModule, TranslateModule.forRoot()],
     }).compileComponents();
   });

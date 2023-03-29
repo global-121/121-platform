@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,7 +10,7 @@ import { ProgramsServiceApiService } from '../services/programs-service-api.serv
   templateUrl: 'account.page.html',
   styleUrls: ['account.page.scss'],
 })
-export class AccountPage {
+export class AccountPage implements OnInit {
   public isLoggedIn: boolean;
   public changePasswordForm = false;
 

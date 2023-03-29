@@ -6,6 +6,7 @@ describe('PubSubService', () => {
 
   it('should be created', () => {
     const service: PubSubService = TestBed.inject(PubSubService);
+
     expect(service).toBeTruthy();
   });
 
