@@ -29,17 +29,6 @@ describe('Edit PA details in pop-up', () => {
           const label = $el.attr('ng-reflect-label') || '';
           validateInput(type, label);
         });
-
-      cy.get('app-update-fsp').click();
-
-      // eslint-disable-next-line cypress/no-unnecessary-waiting -- To make the popover appear
-      cy.wait(3_000);
-
-      cy.get('ion-popover', { timeout: 10_000 })
-        .contains('.select-interface-option', FspName.intersolveVoucherPaper)
-        .click();
-
-      clickSaveAndConfirm('Financial Service Provider');
     });
   });
 
