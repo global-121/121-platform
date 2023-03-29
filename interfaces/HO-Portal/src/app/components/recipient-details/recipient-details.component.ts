@@ -3,11 +3,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import StatusDate from 'src/app/enums/status-dates.enum';
 import { AnswerType } from 'src/app/models/fsp.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { environment } from '../../../environments/environment';
+import StatusDate from '../../enums/status-dates.enum';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
 import { StatusEnum } from '../../models/status.enum';
@@ -77,6 +77,8 @@ export class RecipientDetailsComponent implements OnInit {
     preferredLanguage: 'page.program.program-people-affected.language',
     status: 'page.program.program-people-affected.status',
   };
+
+  private readonly timestampKeys = Object.values(StatusDate);
 
   constructor(
     private programsServiceApiService: ProgramsServiceApiService,
@@ -163,7 +165,7 @@ export class RecipientDetailsComponent implements OnInit {
     value: any,
     type?: AnswerType,
   ): RecipientDetail {
-    if (StatusDate[key] || type === AnswerType.Date) {
+    if (this.timestampKeys.includes(key) || type === AnswerType.Date) {
       value = formatDate(value, DateFormat.dayAndTime, this.locale);
     }
     if (this.valueTranslators[key]) {
@@ -177,10 +179,10 @@ export class RecipientDetailsComponent implements OnInit {
   }
 
   private getColumn(key: string): { columnName: string; index: number } {
-    if (StatusDate[key]) {
+    if (this.timestampKeys.includes(key)) {
       return {
         columnName: 'columnStatusHistory',
-        index: Object.keys(StatusDate).indexOf(key),
+        index: this.timestampKeys.indexOf(key),
       };
     }
     const defaultColumnName = 'columnPersonalInformation';
@@ -258,10 +260,11 @@ export class RecipientDetailsComponent implements OnInit {
 
   private sortStatusHistory() {
     const columnNameStatusHistory = 'columnStatusHistory';
-    const statusOrder = Object.values(StatusDate);
-    const toBeSorted = [...this.columns[columnNameStatusHistory]];
-    this.columns[columnNameStatusHistory] = toBeSorted.sort(
-      (a, b) => statusOrder.indexOf(a.key) - statusOrder.indexOf(b.key),
+    this.columns[columnNameStatusHistory] = this.columns[
+      columnNameStatusHistory
+    ].sort(
+      (a, b) =>
+        this.timestampKeys.indexOf(a.key) - this.timestampKeys.indexOf(b.key),
     );
   }
 
