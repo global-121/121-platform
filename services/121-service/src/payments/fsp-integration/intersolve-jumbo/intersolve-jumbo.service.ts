@@ -50,7 +50,18 @@ export class IntersolveJumboService {
     });
     const allowedEuroPerCard = program.fixedTransferValue;
 
-    // split into batches
+    // If amount is not allowed store failed transactions for all PA's
+    if (amount !== allowedEuroPerCard) {
+      return await this.storeFailedTransactionsInvalidAmount(
+        jumboAddressInfoArray,
+        payment,
+        amount,
+        programId,
+        allowedEuroPerCard,
+      );
+    }
+
+    // Split into batches
     const batches = [];
     for (let i = 0; i < jumboAddressInfoArray.length; i += this.apiBatchSize) {
       const batch = jumboAddressInfoArray.slice(i, i + this.apiBatchSize);
@@ -59,34 +70,16 @@ export class IntersolveJumboService {
 
     for (const batch of batches) {
       let batchResult = [];
-      if (amount === allowedEuroPerCard) {
-        batchResult = await this.sendBatchPayment(batch, payment, amount);
-        if (!batchResult) {
-          continue;
-        }
-      } else {
-        for (const paymentInfo of batch) {
-          const paResult = new PaTransactionResultDto();
-          paResult.status = StatusEnum.error;
-          paResult.message = `Amount ${amount} is not allowed. It should be ${allowedEuroPerCard}. The amount of this payment has been automatically adjusted to the correct amount. You can now retry the payment.`;
-          paResult.calculatedAmount = allowedEuroPerCard; // set amount to return to allowed amount
-          paResult.referenceId = paymentInfo.referenceId;
-          batchResult.push(paResult);
-        }
-      }
-
+      batchResult = await this.sendBatchPayment(batch, payment, amount);
       for (const paResult of batchResult) {
         await this.storeTransactionResult(
+          paResult,
           payment,
           paResult.status === StatusEnum.error && !paResult.calculatedAmount // if error, take original amount, except if calculatedAmount is specifically set, which otherwise only happens for success-transactions
             ? amount
             : paResult.calculatedAmount,
-          paResult.referenceId,
           1,
-          paResult.message,
           programId,
-          paResult.status,
-          paResult.notificationObjects,
         );
       }
     }
@@ -247,22 +240,42 @@ export class IntersolveJumboService {
     return batchResult;
   }
 
+  private async storeFailedTransactionsInvalidAmount(
+    jumboAddressInfoArray: PreOrderInfoDto[],
+    payment: number,
+    amount: number,
+    programId: number,
+    allowedEuroPerCard: number,
+  ): Promise<void> {
+    for (const paymentInfo of jumboAddressInfoArray) {
+      const paResult = new PaTransactionResultDto();
+      paResult.status = StatusEnum.error;
+      paResult.message = `Amount ${amount} is not allowed. It should be ${allowedEuroPerCard}. The amount of this payment has been automatically adjusted to the correct amount. You can now retry the payment.`;
+      paResult.calculatedAmount = allowedEuroPerCard; // set amount to return to allowed amount
+      paResult.referenceId = paymentInfo.referenceId;
+      this.storeTransactionResult(
+        paResult,
+        payment,
+        paResult.calculatedAmount,
+        1,
+        programId,
+      );
+    }
+  }
+
   private async storeTransactionResult(
+    paTransactionResult: PaTransactionResultDto,
     paymentNr: number,
     amount: number,
-    referenceId: string,
     transactionStep: number,
-    errorMessage: string,
     programId: number,
-    status: StatusEnum,
-    notificationObjects?: TransactionNotificationObject[],
   ): Promise<void> {
     const transactionResultDto = await this.createTransactionResult(
       amount,
-      referenceId,
-      errorMessage,
-      status,
-      notificationObjects,
+      paTransactionResult.referenceId,
+      paTransactionResult.message,
+      paTransactionResult.status,
+      paTransactionResult.notificationObjects,
     );
     this.transactionsService.storeTransactionUpdateStatus(
       transactionResultDto,
