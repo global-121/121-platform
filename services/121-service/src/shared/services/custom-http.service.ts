@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { TelemetryClient } from 'applicationinsights';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
@@ -10,9 +9,15 @@ class Header {
 }
 
 class Request {
-  public headers: Header[];
+  public headers?: Header[];
   public url: string;
   public payload: any;
+}
+
+class Response {
+  public status: number;
+  public statusText: string;
+  public data: any;
 }
 
 @Injectable()
@@ -35,11 +40,11 @@ export class CustomHttpService {
         })
         .pipe(
           map((response) => {
-            this._logMessage({ headers, url, payload: null }, response);
+            this.logMessage({ headers, url, payload: null }, response);
             return response;
           }),
           catchError((err) => {
-            this._logError({ headers, url, payload: null }, err.response);
+            this.logError({ headers, url, payload: null }, err.response);
             return of(err.response);
           }),
         ),
@@ -58,11 +63,11 @@ export class CustomHttpService {
         })
         .pipe(
           map((response) => {
-            this._logMessage({ headers, url, payload: payload }, response);
+            this.logMessage({ headers, url, payload: payload }, response);
             return response;
           }),
           catchError((err) => {
-            this._logError({ headers, url, payload: payload }, err.response);
+            this.logError({ headers, url, payload: payload }, err.response);
             return of(err.response);
           }),
         ),
@@ -81,7 +86,7 @@ export class CustomHttpService {
     return returnHeaders;
   }
 
-  private _logMessage(request: Request, response: AxiosResponse): void {
+  public logMessage(request: Request, response: Response): void {
     if (this.defaultClient) {
       const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
         request.payload,
@@ -96,7 +101,7 @@ export class CustomHttpService {
     }
   }
 
-  private _logError(request: Request, error: AxiosResponse): void {
+  public logError(request: Request, error: Response): void {
     if (this.defaultClient) {
       const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
         request.payload,
