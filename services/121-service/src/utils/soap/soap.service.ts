@@ -15,6 +15,7 @@ export class SoapService {
     password: string,
     url: string,
   ): Promise<any> {
+    const jsonSoapBody = convert.js2xml(soapBodyPayload);
     const payload = await this.setSoapHeader(
       soapBodyPayload,
       headerFile,
@@ -35,7 +36,7 @@ export class SoapService {
       .then((rawResponse: any) => {
         const response = rawResponse.response;
         this.httpService.logMessage(
-          { url, payload: convert.js2xml(soapBodyPayload) },
+          { url, payload: jsonSoapBody },
           {
             status: response.statusCode,
             statusText: null,
@@ -48,7 +49,7 @@ export class SoapService {
       })
       .catch((err: any) => {
         this.httpService.logError(
-          { url, payload: convert.js2xml(soapBodyPayload) },
+          { url, payload: jsonSoapBody },
           {
             status: null,
             statusText: null,
