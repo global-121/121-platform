@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { getServer, resetDB } from '../helpers/helper';
+import { getServer, resetDB } from '../helpers/utility.helper';
 
 const server = getServer();
 
