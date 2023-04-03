@@ -1,10 +1,4 @@
-import {
-  Component,
-  ComponentFactoryResolver,
-  OnInit,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { environment } from 'src/environments/environment';
@@ -52,7 +46,6 @@ export class ValidationPage implements OnInit {
   constructor(
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
-    private resolver: ComponentFactoryResolver,
     private storage: Storage,
     private authService: AuthService,
   ) {
@@ -86,10 +79,6 @@ export class ValidationPage implements OnInit {
     }
   }
 
-  private getComponentFactory(name: string) {
-    return this.resolver.resolveComponentFactory(this.availableSections[name]);
-  }
-
   public insertSection(name: string) {
     if (!name) {
       return;
@@ -99,7 +88,7 @@ export class ValidationPage implements OnInit {
 
     this.scrollDown();
 
-    this.container.createComponent(this.getComponentFactory(name));
+    this.container.createComponent(this.availableSections[name]);
   }
 
   public scrollDown() {

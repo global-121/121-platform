@@ -4,6 +4,20 @@ name: 'Cypress Full Integration Tests'
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      - 'master'
+    paths:
+      - '.github/workflows/cypress-workflow.yml'
+      - 'interfaces/tests/*'
+      - '!*.md'
+  push:
+    branches:
+      - 'release/*'
+    paths:
+      - '.github/workflows/cypress-workflow.yml'
+      - 'interfaces/tests/*'
+      - '!*.md'
 
 jobs:
   build_interface_aw:
@@ -24,7 +38,7 @@ jobs:
         if: steps.cache_build_interface_aw.outputs.cache-hit != 'true'
         uses: actions/setup-node@v3
         with:
-          node-version-file: '.node-version'
+          node-version-file: 'interfaces/AW-App/.node-version'
           cache: 'npm'
           cache-dependency-path: interfaces/AW-App/package-lock.json
 
@@ -32,7 +46,6 @@ jobs:
         if: steps.cache_build_interface_aw.outputs.cache-hit != 'true'
         working-directory: ./interfaces/AW-App
         env:
-          BROWSERSLIST_ENV: 'ci'
           NG_URL_121_SERVICE_API: http://localhost:3000/api
         run: |
           npm ci --no-audit --no-fund
@@ -56,7 +69,7 @@ jobs:
         if: steps.cache_build_interface_pa.outputs.cache-hit != 'true'
         uses: actions/setup-node@v3
         with:
-          node-version-file: '.node-version'
+          node-version-file: 'interfaces/PA-App/.node-version'
           cache: 'npm'
           cache-dependency-path: interfaces/PA-App/package-lock.json
 
@@ -64,7 +77,6 @@ jobs:
         if: steps.cache_build_interface_pa.outputs.cache-hit != 'true'
         working-directory: ./interfaces/PA-App
         env:
-          BROWSERSLIST_ENV: 'ci'
           NG_URL_121_SERVICE_API: http://localhost:3000/api
         run: |
           npm ci --no-audit --no-fund
@@ -88,7 +100,7 @@ jobs:
         if: steps.cache_build_interface_ho.outputs.cache-hit != 'true'
         uses: actions/setup-node@v3
         with:
-          node-version-file: '.node-version'
+          node-version-file: 'interfaces/HO-Portal/.node-version'
           cache: 'npm'
           cache-dependency-path: interfaces/HO-Portal/package-lock.json
 
@@ -96,7 +108,6 @@ jobs:
         if: steps.cache_build_interface_ho.outputs.cache-hit != 'true'
         working-directory: ./interfaces/HO-Portal
         env:
-          BROWSERSLIST_ENV: 'ci'
           NG_URL_121_SERVICE_API: http://localhost:3000/api
         run: |
           npm ci --no-audit --no-fund

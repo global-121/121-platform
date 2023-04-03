@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   Program,
   ProgramAttribute,
@@ -29,7 +29,10 @@ export enum SubmitActions {
   templateUrl: './enroll-in-program.component.html',
   styleUrls: ['./enroll-in-program.component.scss'],
 })
-export class EnrollInProgramComponent extends PersonalDirective {
+export class EnrollInProgramComponent
+  extends PersonalDirective
+  implements OnInit
+{
   @Input()
   public data: any;
 
@@ -59,7 +62,7 @@ export class EnrollInProgramComponent extends PersonalDirective {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     if (this.data) {
       this.initHistory();
       return;

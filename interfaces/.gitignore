@@ -10,11 +10,9 @@ environment.prod.ts
 node_modules/
 
 
-# Ionic related files
+## Temporary/Generated code/files:
 .ionic/
 www/
-
-## Temporary/Generated code/files:
 *.js.map
 coverage/
 .angular/
@@ -27,6 +25,3 @@ coverage/
 *.sublime-project
 *.sublime-workspace
 .idea/
-.angular/
-
-tests/cypress/downloads/

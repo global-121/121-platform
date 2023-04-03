@@ -40,7 +40,7 @@
           <small>
             <strong>
               {{ 'page.programs-list.card.updated' | translate }}
-              {{ program.updated | date : 'yyyy-MM-dd, HH:mm' }}
+              {{ program.updated | date : DateFormat.dayAndTime }}
             </strong>
           </small>
         </ion-card-subtitle>

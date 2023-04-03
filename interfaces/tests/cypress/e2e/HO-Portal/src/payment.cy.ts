@@ -173,9 +173,8 @@ describe("'Do Payment #1' bulk action", () => {
 
           selectPaymentAction(page, page.nextPayment);
 
-          cy.get('.datatable-body-cell-label > input')
-            .click()
-            .should('length', 1);
+          cy.get('.datatable-body-cell-label > input').should('length', 1);
+          cy.get('.datatable-body-cell-label > input').click();
         });
       },
     );
@@ -255,7 +254,7 @@ describe("'Do Payment #1' bulk action", () => {
     cy.get('.alert-button').click();
   };
 
-  const selectPaymentAction = (fixture: any, payment: number) => {
+  const selectPaymentAction = (fixture: { url: string }, payment: number) => {
     cy.setHoPortal();
     cy.visit(fixture.url);
     cy.url().should('include', 'payment');

@@ -7,15 +7,15 @@ import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentStatusPopupComponent } from './payment-status-popup.component';
 
-const modalSpy = jasmine.createSpyObj('Modal', ['present']);
-const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-modalCtrlSpy.create.and.callFake(() => modalSpy);
-
 describe('PaymentStatusPopupComponent', () => {
   let component: PaymentStatusPopupComponent;
   let fixture: ComponentFixture<PaymentStatusPopupComponent>;
 
   beforeEach(waitForAsync(() => {
+    const modalSpy = jasmine.createSpyObj('Modal', ['present']);
+    const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+    modalCtrlSpy.create.and.callFake(() => modalSpy);
+
     TestBed.configureTestingModule({
       declarations: [PaymentStatusPopupComponent],
       imports: [TranslateModule.forRoot(), HttpClientTestingModule],

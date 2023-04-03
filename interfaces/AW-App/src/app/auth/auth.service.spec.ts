@@ -9,7 +9,7 @@ describe('AuthService', () => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
+        RouterModule.forRoot([], {}),
         HttpClientTestingModule,
       ],
       providers: [],
@@ -18,6 +18,7 @@ describe('AuthService', () => {
 
   it('should be created', () => {
     const service: AuthService = TestBed.inject(AuthService);
+
     expect(service).toBeTruthy();
   });
 });

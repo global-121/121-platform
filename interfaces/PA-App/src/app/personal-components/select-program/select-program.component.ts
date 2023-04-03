@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -20,7 +20,10 @@ import { PersonalComponents } from '../personal-components.enum';
   templateUrl: './select-program.component.html',
   styleUrls: ['./select-program.component.scss'],
 })
-export class SelectProgramComponent extends PersonalDirective {
+export class SelectProgramComponent
+  extends PersonalDirective
+  implements OnInit
+{
   @Input()
   public data;
 
@@ -39,7 +42,7 @@ export class SelectProgramComponent extends PersonalDirective {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     if (this.data) {
       this.initHistory();
       return;

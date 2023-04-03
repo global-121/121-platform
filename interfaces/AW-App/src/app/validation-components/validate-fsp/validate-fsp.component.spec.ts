@@ -25,9 +25,9 @@ describe('ValidateFspComponent', () => {
       },
     );
 
-    const ionContentMock = jasmine.createSpyObj('IonContent', [
-      'scrollToBottom',
-    ]);
+    const ionContentMock = jasmine.createSpyObj('IonContent', {
+      scrollToBottom: () => {},
+    });
 
     const ionicStorageMock = {
       get: (type: IonicStorageTypes) =>

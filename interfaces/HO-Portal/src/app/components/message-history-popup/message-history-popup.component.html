@@ -60,7 +60,7 @@
                 class="ion-text-end"
                 style="font-weight: 400"
               >
-                {{ message.created | date : 'dd-MM-yyyy HH:mm' }}</ion-note
+                {{ message.created | date : DateFormat.dayAndTime }}</ion-note
               >
             </div>
           </ion-col>
@@ -129,6 +129,7 @@
             }}<a
               [href]="errorCodeUrl + message.errorCode"
               target="_blank"
+              rel="external noopener noreferrer"
               >{{ message.errorCode }}</a
             ></ion-note
           >

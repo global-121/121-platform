@@ -8,15 +8,15 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { NoConnectionService } from 'src/app/services/no-connection.service';
 import { MainMenuComponent } from './main-menu.component';
 
-const storageIonicMock: any = {
-  get: () => new Promise<any>((resolve) => resolve('1')),
-};
-
 describe('MainMenuComponent', () => {
   let component: MainMenuComponent;
   let fixture: ComponentFixture<MainMenuComponent>;
 
   beforeEach(waitForAsync(() => {
+    const storageIonicMock: any = {
+      get: () => new Promise<any>((resolve) => resolve('1')),
+    };
+
     TestBed.configureTestingModule({
       declarations: [MainMenuComponent],
       imports: [

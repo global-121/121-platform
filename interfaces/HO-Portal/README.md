@@ -12,11 +12,11 @@ Some specific information need to be configured before use:
 
 Next to the 'generic' dependencies/libraries/components used by all interfaces, the HO-portal also uses:
 
-- [`@swimlane/ngx-datatable` v19](https://www.npmjs.com/package/@swimlane/ngx-datatable/v/19.0.0)  
+- [`@swimlane/ngx-datatable` v20](https://www.npmjs.com/package/@swimlane/ngx-datatable/v/20.1.0)  
   A component to render rows and columns of generic data and add basic functionalities like sorting, selecting, filtering, etc.
 
   \- Documentation (latest only!): <https://swimlane.gitbook.io/ngx-datatable/>
-  \- GitHub Docs: <https://github.com/swimlane/ngx-datatable/tree/19.0.0/docs>
+  \- GitHub Docs: <https://github.com/swimlane/ngx-datatable/tree/20.1.0/docs>
 
 - [`ngx-popperjs` v11](https://www.npmjs.com/package/ngx-popperjs/v/11.0.0)  
   A component to add explanations to buttons, headers, labels, etc.

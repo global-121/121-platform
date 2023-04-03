@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import {
   PopupPayoutDetails,
   SinglePayoutDetails,
@@ -27,7 +28,6 @@ export class PaymentStatusPopupComponent implements OnInit {
   public titleSinglePayment: string;
 
   private locale: string;
-  private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   public title: string;
   public content: any;
@@ -140,7 +140,11 @@ export class PaymentStatusPopupComponent implements OnInit {
     }
 
     if (transaction.status === StatusEnum.success) {
-      return formatDate(transaction.paymentDate, this.dateFormat, this.locale);
+      return formatDate(
+        transaction.paymentDate,
+        DateFormat.dayAndTime,
+        this.locale,
+      );
     }
   }
 
@@ -237,7 +241,11 @@ export class PaymentStatusPopupComponent implements OnInit {
             'page.program.program-people-affected.payment-status-popup.current-balance',
             {
               currentBalance: this.formatCurrency(response),
-              timestamp: formatDate(new Date(), this.dateFormat, this.locale),
+              timestamp: formatDate(
+                new Date(),
+                DateFormat.dayAndTime,
+                this.locale,
+              ),
             },
           );
           this.actionResult(message);

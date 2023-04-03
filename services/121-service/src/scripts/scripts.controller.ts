@@ -83,6 +83,6 @@ export class ScriptsController {
     await seed.run();
     return res
       .status(HttpStatus.ACCEPTED)
-      .send('Request received. The reset can take a minute.');
+      .send('Request received. Database should be reset.');
   }
 }

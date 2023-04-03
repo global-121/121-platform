@@ -1,10 +1,4 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  ViewChild,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-tooltip',
@@ -12,7 +6,7 @@ import {
   styleUrls: ['./tooltip.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class TooltipComponent implements OnInit {
+export class TooltipComponent {
   @Input()
   public value: string;
 
@@ -20,8 +14,6 @@ export class TooltipComponent implements OnInit {
   private button: any;
 
   constructor() {}
-
-  ngOnInit() {}
 
   public toggle() {
     this.button.el.click();

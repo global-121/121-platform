@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
@@ -23,7 +23,7 @@ import { ValidationComponent } from '../validation-components.interface';
   templateUrl: './validate-fsp.component.html',
   styleUrls: ['./validate-fsp.component.scss'],
 })
-export class ValidateFspComponent implements ValidationComponent {
+export class ValidateFspComponent implements ValidationComponent, OnInit {
   public referenceId: string;
   public programId: number;
 

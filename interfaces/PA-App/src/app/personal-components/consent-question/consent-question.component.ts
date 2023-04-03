@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { InstanceInformation } from 'src/app/models/instance.model';
 import { PersonalDirective } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
@@ -15,7 +15,10 @@ export enum ConsentChoices {
   templateUrl: './consent-question.component.html',
   styleUrls: ['./consent-question.component.scss'],
 })
-export class ConsentQuestionComponent extends PersonalDirective {
+export class ConsentQuestionComponent
+  extends PersonalDirective
+  implements OnInit
+{
   @Input()
   public data: any;
 
@@ -32,7 +35,7 @@ export class ConsentQuestionComponent extends PersonalDirective {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.getInstanceInformation();
 
     if (this.data) {

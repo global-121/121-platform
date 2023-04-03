@@ -60,6 +60,7 @@ CUSTOM-CONTENT`;
     expect(
       fixture.nativeElement.querySelector('ion-content').innerHTML,
     ).toContain(customContent);
+
     expect(
       fixture.nativeElement.querySelector('ion-content').innerText,
     ).toContain(customContentRendered);
