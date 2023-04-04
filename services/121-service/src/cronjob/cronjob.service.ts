@@ -118,6 +118,13 @@ export class CronjobService {
         const fromNumber = await registration.getRegistrationDataValueByName(
           CustomDataAttributes.whatsappPhoneNumber,
         );
+        if (!fromNumber) {
+          // This can represent the case where a PA was switched from AH-voucher-whatsapp to AH-voucher-paper. But also otherwise it makes no sense to continue.
+          console.log(
+            `Registration ${referenceId} has no current whatsappPhoneNumber to send reminder message to.`,
+          );
+          continue;
+        }
         const language = await this.getLanguageForRegistration(referenceId);
         let whatsappPayment = this.getNotificationText(
           registration.program,
