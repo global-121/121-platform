@@ -64,9 +64,8 @@ export class IntersolveJumboService {
       let batchResult: PaTransactionResultDto[] = [];
       batchResult = await this.sendBatchPayment(batch, payment, amount);
       for (const paResult of batchResult) {
-        // TODO: Evaluate if this is still needed, since the calculatedAmount is now always set.
         paResult.calculatedAmount =
-          paResult.status === StatusEnum.error && !paResult.calculatedAmount // if error, take original amount, except if calculatedAmount is specifically set, which otherwise only happens for success-transactions
+          paResult.status === StatusEnum.error // if error, take original amount
             ? amount
             : paResult.calculatedAmount;
         await this.storeTransactionResult(paResult, payment, 1, programId);
@@ -229,12 +228,13 @@ export class IntersolveJumboService {
         return batchResult;
       } else {
         // Approve adjusted pre-order
-        return await this.approvePreorder(
+        const approvePreorderResult = await this.approvePreorder(
           retryBatchPreOrderResult,
           paymentDetailsArray,
           batchResult,
           amount,
         );
+        return approvePreorderResult;
       }
     }
   }
