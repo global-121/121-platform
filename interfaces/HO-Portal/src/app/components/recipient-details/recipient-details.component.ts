@@ -218,13 +218,18 @@ export class RecipientDetailsComponent implements OnInit {
     if (!this.program) {
       return [];
     }
-    const transactionsResult =
-      await this.programsServiceApiService.getTransactions(
-        this.program.id,
-        null,
-        this.recipient.referenceId,
+    let transactions = await this.programsServiceApiService.getTransactions(
+      this.program.id,
+      null,
+      this.recipient.referenceId,
+    );
+
+    transactions = transactions.sort((a: Transaction, b: Transaction) => {
+      return (
+        (Date.parse(b.paymentDate) || 0) - (Date.parse(a.paymentDate) || 0)
       );
-    return transactionsResult.reverse();
+    });
+    return transactions;
   }
 
   private translateValue(key: string, value: string) {
