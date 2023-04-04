@@ -1,14 +1,16 @@
+import { publishProgram } from '../helpers/program.helper';
+import {
+  deleteRegistrations,
+  getRegistration,
+  importRegistrations,
+} from '../helpers/registration.helper';
 import {
   createEspoSignature,
-  deleteRegistrations,
   getIsDebug,
-  getRegistration,
   getServer,
-  importRegistrations,
   login,
-  publishProgram,
   resetDB,
-} from '../helpers/helper';
+} from '../helpers/utility.helper';
 
 const server = getServer();
 const ip = '127.0.0.1';
@@ -18,8 +20,8 @@ const registration = {
   referenceId: referenceId,
   preferredLanguage: 'en',
   paymentAmountMultiplier: 1,
-  nameFirst: 'John',
-  nameLast: 'Smith',
+  firstName: 'John',
+  lastName: 'Smith',
   phoneNumber: 14155238886,
   fspName: 'Intersolve-visa',
   whatsappPhoneNumber: 14155238886,

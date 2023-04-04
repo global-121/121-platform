@@ -25,7 +25,7 @@
         "en": "Address house number"
       },
       "export": ["all-people-affected", "included", "selected-for-validation"],
-      "answerType": "text",
+      "answerType": "numeric",
       "phases": [],
       "shortLabel": {
         "en": "Address house number"
