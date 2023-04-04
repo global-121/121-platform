@@ -150,93 +150,78 @@ export class IntersolveJumboService {
       }
     }
 
-    // Create pre-order for the whole batch
-    const batchPreOrderResult =
-      await this.intersolveJumboApiService.createPreOrder(
+    let preOrderResultFinished = false;
+    let preOrderResult;
+    while (preOrderResultFinished === false) {
+      // Create pre-order
+      preOrderResult = await this.intersolveJumboApiService.createPreOrder(
         paymentDetailsArray,
         payment,
         amount,
-        false,
       );
-
-    if (
-      batchPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
-        .ResultCode._cdata === IntersolveJumboResultCode.Ok
-    ) {
-      // Creating pre-order for the whole batch was successful, so approve call can be made
-      const approvePreorderResult = await this.approvePreorder(
-        batchPreOrderResult,
-        paymentDetailsArray,
-        batchResult,
-        amount,
-      );
-      return approvePreorderResult;
-    } else {
-      // Loop over paymentDetailsArray and try to create pre-order for each PA individually
-      for (const [index, paymentDetails] of paymentDetailsArray.entries()) {
-        const retryPreOrderResult =
-          await this.intersolveJumboApiService.createPreOrder(
-            [paymentDetails],
-            payment,
-            amount,
-            false,
-          );
-        // If that fails, create failed transaction and splice from paymentDetailsArray
-        if (
-          retryPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
-            .ResultCode._cdata !== IntersolveJumboResultCode.Ok
-        ) {
-          // Create failed transaction
-          const transactionResult = this.createTransactionResult(
-            this.fixedPaymentAmount,
-            paymentDetails.referenceId,
-            `Something went wrong while creating pre-order: ${retryPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest.ResultCode._cdata} - ${retryPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest.ResultDescription._cdata}`,
-            StatusEnum.error,
-          );
-          batchResult.push(transactionResult);
-          // Remove PA from batch
-          paymentDetailsArray.splice(index, 1);
-        }
-      }
-
-      if (paymentDetailsArray.length === 0) {
-        return batchResult;
-      }
-
-      // When done with loop call createPreOrder and approvePreorder again
-      const retryBatchPreOrderResult =
-        await this.intersolveJumboApiService.createPreOrder(
-          paymentDetailsArray,
-          payment,
-          amount,
-          false,
-        );
-
-      if (
-        retryBatchPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
-          .ResultCode._cdata !== IntersolveJumboResultCode.Ok
-      ) {
-        for (const paymentDetails of paymentDetailsArray) {
-          const transactionResult = this.createTransactionResult(
-            this.fixedPaymentAmount,
-            paymentDetails.referenceId,
-            'Something went wrong while creating batch pre-order. This is not related to any individual PA.',
-            StatusEnum.error,
-          );
-          batchResult.push(transactionResult);
-        }
-        return batchResult;
+      const resultCode =
+        preOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
+          .ResultCode._cdata;
+      if (resultCode === IntersolveJumboResultCode.Ok) {
+        // if OK, skip out of while loop
+        preOrderResultFinished = true;
       } else {
-        // Approve adjusted pre-order
-        const approvePreorderResult = await this.approvePreorder(
-          retryBatchPreOrderResult,
-          paymentDetailsArray,
-          batchResult,
-          amount,
-        );
-        return approvePreorderResult;
+        // if not OK
+        const resultDescription =
+          preOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
+            .ResultDescription._cdata;
+        const errorMessage = `Something went wrong while creating pre-order: ${resultCode} - ${resultDescription}`;
+        if (resultCode === IntersolveJumboResultCode.InvalidOrderLine) {
+          // if due to invalid order line, get error line number
+          const errorLineNumber = resultDescription
+            .split(':')[0]
+            .split('OrderLine ')[1];
+          const errorIndex = Number(errorLineNumber) - 1;
+
+          // Create failed transaction for this PA
+          const transactionResult = this.createTransactionResult(
+            this.fixedPaymentAmount,
+            paymentDetailsArray[errorIndex].referenceId,
+            errorMessage,
+            StatusEnum.error,
+          );
+          batchResult.push(transactionResult);
+
+          // Remove PA from batch and start while loop from the top to retry
+          paymentDetailsArray.splice(errorIndex, 1);
+        } else {
+          // if another error than invalidOrderLine, then we cannot fix it per PA, skip out of while loop
+          preOrderResultFinished = true;
+
+          // .. and create failed transactions for remaining PAs
+          for (const paymentDetails of paymentDetailsArray) {
+            const transactionResult = this.createTransactionResult(
+              this.fixedPaymentAmount,
+              paymentDetails.referenceId,
+              errorMessage,
+              StatusEnum.error,
+            );
+            batchResult.push(transactionResult);
+          }
+          // .. and return early
+          return batchResult;
+        }
       }
     }
+
+    // if nothing left to approve, then return early
+    if (paymentDetailsArray.length === 0) {
+      return batchResult;
+    }
+
+    // Approve pre-order
+    const approvePreorderResult = await this.approvePreorder(
+      preOrderResult,
+      paymentDetailsArray,
+      batchResult,
+      amount,
+    );
+    return approvePreorderResult;
   }
 
   private async approvePreorder(
@@ -245,7 +230,6 @@ export class IntersolveJumboService {
     batchResult: PaTransactionResultDto[],
     amount: number,
   ): Promise<PaTransactionResultDto[]> {
-    // Approve pre-order
     const approvePreOrderResult =
       await this.intersolveJumboApiService.approvePreOrder(batchPreOrderResult);
     if (

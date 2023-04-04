@@ -16,7 +16,6 @@ export class IntersolveJumboApiService {
     preOrderDtoBatch: PreOrderInfoDto[],
     payment: number,
     amount: number,
-    individualValidation: boolean,
   ): Promise<any> {
     if (process.env.MOCK_INTERSOLVE) {
       return this.intersolveJumboApiMockService.createPreOrder(
@@ -54,7 +53,6 @@ export class IntersolveJumboApiService {
           ProductValue: String(amount),
           Amount: String(preOrderDto.paymentAmountMultiplier),
           Custom2: String(payment),
-          Custom3: individualValidation ? 'individual' : 'batch',
         };
 
         for (const [key, value] of Object.entries(newOrderProductMapping)) {
