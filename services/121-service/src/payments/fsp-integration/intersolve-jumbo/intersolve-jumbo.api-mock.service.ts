@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { IntersolveCreatePreOrderResponse } from './dto/intersolve-create-pre-order-response.dto';
+import { PreOrderInfoDto } from './dto/pre-order-info.dto';
 import { IntersolveJumboResultCode } from './enum/intersolve-jumbo-result-code.enum';
 
 @Injectable()
 export class IntersolveJumboApiMockService {
-  private mockApproveFailCode = 'make-mock-approve-fail';
-
-  public createPreOrder(lastName: string): object {
+  public createPreOrder(preOrderDtoBatch: PreOrderInfoDto[]): object {
     const response = {
       'tns:CreatePreOrderResponse': {
         WebserviceRequest: {
@@ -19,26 +17,37 @@ export class IntersolveJumboApiMockService {
         },
       },
     };
-    if (lastName.toLowerCase().includes('mock-fail-create-order')) {
-      response[
-        'tns:CreatePreOrderResponse'
-      ].WebserviceRequest.ResultCode._cdata =
-        IntersolveJumboResultCode.OrderNotValid;
-      response[
-        'tns:CreatePreOrderResponse'
-      ].WebserviceRequest.ResultDescription._cdata =
-        'Mock failed the create-pre-order step';
-    } else if (lastName.toLowerCase().includes('mock-fail-approve-order')) {
-      response[
-        'tns:CreatePreOrderResponse'
-      ].WebserviceRequest.ResultDescription._cdata = this.mockApproveFailCode;
+    for (const [index, element] of preOrderDtoBatch.entries()) {
+      if (!element.addressCity) {
+        response[
+          'tns:CreatePreOrderResponse'
+        ].WebserviceRequest.ResultCode._cdata =
+          IntersolveJumboResultCode.InvalidOrderLine;
+        response[
+          'tns:CreatePreOrderResponse'
+        ].WebserviceRequest.ResultDescription._cdata = `Error found in OrderLine ${
+          index + 1
+        }: Geconstateerde fouten: -STAD ongeldig! (Stad is niet ingevuld).`;
+        return response;
+      } else if (
+        element.lastName.toLowerCase().includes('mock-fail-create-order')
+      ) {
+        response[
+          'tns:CreatePreOrderResponse'
+        ].WebserviceRequest.ResultCode._cdata =
+          IntersolveJumboResultCode.InvalidOrderLine;
+        response[
+          'tns:CreatePreOrderResponse'
+        ].WebserviceRequest.ResultDescription._cdata = `Error found in OrderLine ${
+          index + 1
+        }: Mock failed the create-pre-order step`;
+        return response;
+      }
     }
     return response;
   }
 
-  public approvePreOrder(
-    createPreOrder: IntersolveCreatePreOrderResponse,
-  ): object {
+  public approvePreOrder(): object {
     const response = {
       'tns:ApprovePreOrderResponse': {
         WebserviceRequest: {
@@ -51,19 +60,6 @@ export class IntersolveJumboApiMockService {
         },
       },
     };
-    if (
-      createPreOrder['tns:CreatePreOrderResponse'].WebserviceRequest
-        .ResultDescription._cdata === this.mockApproveFailCode
-    ) {
-      response[
-        'tns:ApprovePreOrderResponse'
-      ].WebserviceRequest.ResultCode._cdata =
-        IntersolveJumboResultCode.OrderNotValid;
-      response[
-        'tns:ApprovePreOrderResponse'
-      ].WebserviceRequest.ResultDescription._cdata =
-        'Mock failed the approve-pre-order step';
-    }
     return response;
   }
 }
