@@ -13,6 +13,7 @@ import {
 } from '../helpers/registration.helper';
 import { login, resetDB } from '../helpers/utility.helper';
 
+const seedScript = 'nlrc-multiple';
 const programId = 3;
 const referenceId = '63e62864557597e0d';
 const registration = {
@@ -34,10 +35,10 @@ const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
 let access_token: string;
 
-describe('Do payment', () => {
-  describe('Jumbo physical card', () => {
+describe('Do payment to 1 PA', () => {
+  describe('with FSP: Intersolve Jumbo physical', () => {
     beforeEach(async () => {
-      await resetDB();
+      await resetDB(seedScript);
       const loginResponse = await login();
       access_token = loginResponse.headers['set-cookie'][0].split(';')[0];
       await changePhase(
@@ -111,7 +112,7 @@ describe('Do payment', () => {
     });
   });
 
-  describe('AH digital voucher', () => {});
+  describe('with FSP: Intersolve AH digital voucher', () => {});
 
-  describe('Visa v-pay', () => {});
+  describe('with FSP: Intersolve Visa V-pay', () => {});
 });
