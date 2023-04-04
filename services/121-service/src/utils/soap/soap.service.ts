@@ -31,7 +31,7 @@ export class SoapService {
       headers: headers,
       url: url,
       xml: xml,
-      timeout: 30000,
+      timeout: 150000,
     })
       .then((rawResponse: any) => {
         const response = rawResponse.response;

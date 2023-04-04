@@ -24,10 +24,10 @@ export class IntersolveJumboApiService {
         preOrderDtoBatch[0].lastName,
       );
     } else {
+      const mainElem = `tns:${IntersolveJumboSoapElements.CreatePreOrder}`;
       let payload = await this.soapService.readXmlAsJs(
         IntersolveJumboSoapElements.CreatePreOrder,
       );
-      const mainElem = `tns:${IntersolveJumboSoapElements.CreatePreOrder}`;
       payload = this.soapService.changeSoapBody(
         payload,
         mainElem,

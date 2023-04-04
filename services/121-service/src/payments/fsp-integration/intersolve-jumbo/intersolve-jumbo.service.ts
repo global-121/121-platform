@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { GenericAttributes } from '../../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../../registration/registration.entity';
@@ -23,10 +22,10 @@ import { IntersolveJumboApiService } from './intersolve-jumbo.api.service';
 export class IntersolveJumboService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
 
   private readonly maxPaymentAmountMultiplier = 3;
+  // Hardcoding this to 22, because this would not work with any other number. And for the future when the fixedTransferValue can be changed in the program edit page.
+  private readonly fixedPaymentAmount = 22;
   private readonly apiBatchSize = 500;
 
   public constructor(
@@ -36,55 +35,46 @@ export class IntersolveJumboService {
   ) {}
 
   public async sendPayment(
-    paPaymentList: PaPaymentDataDto[],
+    paPaymentArray: PaPaymentDataDto[],
     programId: number,
     payment: number,
     amount: number,
   ): Promise<void> {
-    const jumboAddressInfoArray = await this.getPaymentInfoJumbo(
-      paPaymentList.map((pa) => pa.referenceId),
-    );
-
-    const program = await this.programRepository.findOne({
-      where: { id: programId },
-    });
-    const allowedEuroPerCard = program.fixedTransferValue;
-
     // If amount is not allowed store failed transactions for all PA's
-    if (amount !== allowedEuroPerCard) {
+    if (amount !== this.fixedPaymentAmount) {
       return await this.storeFailedTransactionsInvalidAmount(
-        jumboAddressInfoArray,
+        paPaymentArray,
         payment,
         amount,
         programId,
-        allowedEuroPerCard,
+        this.fixedPaymentAmount,
       );
     }
 
     // Split into batches
-    const batches = [];
-    for (let i = 0; i < jumboAddressInfoArray.length; i += this.apiBatchSize) {
-      const batch = jumboAddressInfoArray.slice(i, i + this.apiBatchSize);
+    const batches: PaPaymentDataDto[][] = [];
+    for (let i = 0; i < paPaymentArray.length; i += this.apiBatchSize) {
+      const batch: PaPaymentDataDto[] = paPaymentArray.slice(
+        i,
+        i + this.apiBatchSize,
+      );
       batches.push(batch);
     }
     for (const batch of batches) {
-      let batchResult = [];
+      let batchResult: PaTransactionResultDto[] = [];
       batchResult = await this.sendBatchPayment(batch, payment, amount);
       for (const paResult of batchResult) {
-        await this.storeTransactionResult(
-          paResult,
-          payment,
+        // TODO: Evaluate if this is still needed, since the calculatedAmount is now always set.
+        paResult.calculatedAmount =
           paResult.status === StatusEnum.error && !paResult.calculatedAmount // if error, take original amount, except if calculatedAmount is specifically set, which otherwise only happens for success-transactions
             ? amount
-            : paResult.calculatedAmount,
-          1,
-          programId,
-        );
+            : paResult.calculatedAmount;
+        await this.storeTransactionResult(paResult, payment, 1, programId);
       }
     }
   }
 
-  private async getPaymentInfoJumbo(
+  private async getPaPaymentDetails(
     referenceIds: string[],
   ): Promise<PreOrderInfoDto[]> {
     const relationOptions = await this.getRelationOptionsForJumbo(
@@ -134,33 +124,37 @@ export class IntersolveJumboService {
   }
 
   private async sendBatchPayment(
-    paymentInfoBatch: PreOrderInfoDto[],
+    paPaymentArray: PaPaymentDataDto[],
     payment: number,
     amount: number,
   ): Promise<PaTransactionResultDto[]> {
     const batchResult: PaTransactionResultDto[] = [];
-    const includeInBatchApiCall: PreOrderInfoDto[] = [];
+    const paymentDetailsArray = await this.getPaPaymentDetails(
+      paPaymentArray.map((pa) => pa.referenceId),
+    );
 
     // Filter out orderlines/PA of which maxPaymentAmountMultiplier is exceeded
-    for (const paymentInfo of paymentInfoBatch) {
+    for (const [index, paymentDetails] of paymentDetailsArray.entries()) {
       if (
-        paymentInfo.paymentAmountMultiplier > this.maxPaymentAmountMultiplier
+        paymentDetails.paymentAmountMultiplier > this.maxPaymentAmountMultiplier
       ) {
-        const result = new PaTransactionResultDto();
-        result.referenceId = paymentInfo.referenceId;
-        result.fspName = FspName.intersolveJumboPhysical;
-        result.status = StatusEnum.error;
-        result.message = `Payment amount multiplier is higher than ${this.maxPaymentAmountMultiplier}. Adjust it, and retry this payment.`;
-        batchResult.push(result);
-      } else {
-        includeInBatchApiCall.push(paymentInfo);
+        const transactionResult = this.createTransactionResult(
+          this.fixedPaymentAmount,
+          paymentDetails.referenceId,
+          `Payment amount multiplier is higher than ${this.maxPaymentAmountMultiplier}. Adjust it, and retry this payment.`,
+          StatusEnum.error,
+        );
+        batchResult.push(transactionResult);
+
+        // Remove PA from this batch
+        paymentDetailsArray.splice(index, 1);
       }
     }
 
     // Create pre-order for the whole batch
     const batchPreOrderResult =
       await this.intersolveJumboApiService.createPreOrder(
-        includeInBatchApiCall,
+        paymentDetailsArray,
         payment,
         amount,
         false,
@@ -170,89 +164,78 @@ export class IntersolveJumboService {
       batchPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
         .ResultCode._cdata === IntersolveJumboResultCode.Ok
     ) {
-      return await this.approvePreorder(
+      // Creating pre-order for the whole batch was successful, so approve call can be made
+      const approvePreorderResult = await this.approvePreorder(
         batchPreOrderResult,
-        includeInBatchApiCall,
+        paymentDetailsArray,
         batchResult,
         amount,
       );
+      return approvePreorderResult;
     } else {
-      return await this.retryFilterBatchPayment(
-        includeInBatchApiCall,
-        batchResult,
-        amount,
-        payment,
-      );
-    }
-  }
+      // Loop over paymentDetailsArray and try to create pre-order for each PA individually
+      for (const [index, paymentDetails] of paymentDetailsArray.entries()) {
+        const retryPreOrderResult =
+          await this.intersolveJumboApiService.createPreOrder(
+            [paymentDetails],
+            payment,
+            amount,
+            false,
+          );
+        // If that fails, create failed transaction and splice from paymentDetailsArray
+        if (
+          retryPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
+            .ResultCode._cdata !== IntersolveJumboResultCode.Ok
+        ) {
+          // Create failed transaction
+          const transactionResult = this.createTransactionResult(
+            this.fixedPaymentAmount,
+            paymentDetails.referenceId,
+            `Something went wrong while creating pre-order: ${retryPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest.ResultCode._cdata} - ${retryPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest.ResultDescription._cdata}`,
+            StatusEnum.error,
+          );
+          batchResult.push(transactionResult);
+          // Remove PA from batch
+          paymentDetailsArray.splice(index, 1);
+        }
+      }
 
-  private async retryFilterBatchPayment(
-    paymentInfoBatch: PreOrderInfoDto[],
-    batchResult: PaTransactionResultDto[],
-    amount: number,
-    payment: number,
-  ): Promise<PaTransactionResultDto[]> {
-    const includeInBatchApiCall: PreOrderInfoDto[] = [];
-    // Since the complete batch went wrong, we need to do individual pre-orders to see which orderline are faulty
-    for (const paymentInfo of paymentInfoBatch) {
-      // Create individual pre-orderto validate > this one won't be approved
-      const individualPreOrderResult =
+      if (paymentDetailsArray.length === 0) {
+        return batchResult;
+      }
+
+      // When done with loop call createPreOrder and approvePreorder again
+      const retryBatchPreOrderResult =
         await this.intersolveJumboApiService.createPreOrder(
-          [paymentInfo],
+          paymentDetailsArray,
           payment,
           amount,
-          true,
+          false,
         );
+
       if (
-        individualPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
+        retryBatchPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
           .ResultCode._cdata !== IntersolveJumboResultCode.Ok
       ) {
-        const result = new PaTransactionResultDto();
-        result.referenceId = paymentInfo.referenceId;
-        result.fspName = FspName.intersolveJumboPhysical;
-        result.status = StatusEnum.error;
-        result.message = `Something went wrong while creating pre-order: ${individualPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest.ResultCode._cdata} - ${individualPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest.ResultDescription._cdata}`;
-        batchResult.push(result);
+        for (const paymentDetails of paymentDetailsArray) {
+          const transactionResult = this.createTransactionResult(
+            this.fixedPaymentAmount,
+            paymentDetails.referenceId,
+            'Something went wrong while creating batch pre-order. This is not related to any individual PA.',
+            StatusEnum.error,
+          );
+          batchResult.push(transactionResult);
+        }
+        return batchResult;
       } else {
-        includeInBatchApiCall.push(paymentInfo);
+        // Approve adjusted pre-order
+        return await this.approvePreorder(
+          retryBatchPreOrderResult,
+          paymentDetailsArray,
+          batchResult,
+          amount,
+        );
       }
-    }
-
-    if (includeInBatchApiCall.length === 0) {
-      return batchResult;
-    }
-
-    // Create pre-order
-    const retryBatchPreOrderResult =
-      await this.intersolveJumboApiService.createPreOrder(
-        includeInBatchApiCall,
-        payment,
-        amount,
-        false,
-      );
-
-    if (
-      retryBatchPreOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
-        .ResultCode._cdata !== IntersolveJumboResultCode.Ok
-    ) {
-      for (const paymentInfo of includeInBatchApiCall) {
-        const result = new PaTransactionResultDto();
-        result.referenceId = paymentInfo.referenceId;
-        result.fspName = FspName.intersolveJumboPhysical;
-        result.status = StatusEnum.error;
-        result.message =
-          'Something went wrong while creating batch pre-order. This is not related to any individual PA.';
-        batchResult.push(result);
-      }
-      return batchResult;
-    } else {
-      // Approve adjusted pre-order
-      return await this.approvePreorder(
-        retryBatchPreOrderResult,
-        includeInBatchApiCall,
-        batchResult,
-        amount,
-      );
     }
   }
 
@@ -270,21 +253,17 @@ export class IntersolveJumboService {
         .ResultCode._cdata !== IntersolveJumboResultCode.Ok
     ) {
       for (const paymentInfo of preOrderInfoArray) {
-        const result = new PaTransactionResultDto();
-        result.referenceId = paymentInfo.referenceId;
-        result.fspName = FspName.intersolveJumboPhysical;
-        result.status = StatusEnum.error;
-        result.message = `Something went wrong while approving pre-order: ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultCode._cdata} - ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultDescription._cdata}`;
-        batchResult.push(result);
+        const transactionResult = this.createTransactionResult(
+          this.fixedPaymentAmount,
+          paymentInfo.referenceId,
+          `Something went wrong while approving pre-order: ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultCode._cdata} - ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultDescription._cdata}`,
+          StatusEnum.error,
+        );
+        batchResult.push(transactionResult);
       }
       return batchResult;
     } else {
       for (const paymentInfo of preOrderInfoArray) {
-        const result = new PaTransactionResultDto();
-        result.referenceId = paymentInfo.referenceId;
-        result.fspName = FspName.intersolveJumboPhysical;
-        result.status = StatusEnum.success;
-        result.calculatedAmount = paymentInfo.paymentAmountMultiplier * amount;
         const transactionNotification = {
           notificationKey: 'jumboCardSent',
           dynamicContent: [
@@ -292,65 +271,59 @@ export class IntersolveJumboService {
             String(amount),
           ],
         };
-        result.notificationObjects = [transactionNotification];
-        batchResult.push(result);
+        const transactionResult = this.createTransactionResult(
+          paymentInfo.paymentAmountMultiplier * amount,
+          paymentInfo.referenceId,
+          null,
+          StatusEnum.success,
+          [transactionNotification],
+        );
+
+        batchResult.push(transactionResult);
       }
       return batchResult;
     }
   }
 
   private async storeFailedTransactionsInvalidAmount(
-    jumboAddressInfoArray: PreOrderInfoDto[],
+    paPaymentArray: PaPaymentDataDto[],
     payment: number,
     amount: number,
     programId: number,
     allowedEuroPerCard: number,
   ): Promise<void> {
-    for (const paymentInfo of jumboAddressInfoArray) {
-      const paResult = new PaTransactionResultDto();
-      paResult.status = StatusEnum.error;
-      paResult.message = `Amount ${amount} is not allowed. It should be ${allowedEuroPerCard}. The amount of this payment has been automatically adjusted to the correct amount. You can now retry the payment.`;
-      paResult.calculatedAmount = allowedEuroPerCard; // set amount to return to allowed amount
-      paResult.referenceId = paymentInfo.referenceId;
-      this.storeTransactionResult(
-        paResult,
-        payment,
-        paResult.calculatedAmount,
-        1,
-        programId,
+    for (const paPayment of paPaymentArray) {
+      const transactionResult = this.createTransactionResult(
+        allowedEuroPerCard,
+        paPayment.referenceId,
+        `Amount ${amount} is not allowed. It should be ${allowedEuroPerCard}. The amount of this payment has been automatically adjusted to the correct amount. You can now retry the payment.`,
+        StatusEnum.error,
       );
+      this.storeTransactionResult(transactionResult, payment, 1, programId);
     }
   }
 
   private async storeTransactionResult(
     paTransactionResult: PaTransactionResultDto,
     paymentNr: number,
-    amount: number,
     transactionStep: number,
     programId: number,
   ): Promise<void> {
-    const transactionResultDto = await this.createTransactionResult(
-      amount,
-      paTransactionResult.referenceId,
-      paTransactionResult.message,
-      paTransactionResult.status,
-      paTransactionResult.notificationObjects,
-    );
     this.transactionsService.storeTransactionUpdateStatus(
-      transactionResultDto,
+      paTransactionResult,
       programId,
       paymentNr,
       transactionStep,
     );
   }
 
-  private async createTransactionResult(
+  private createTransactionResult(
     amount: number,
     referenceId: string,
     errorMessage: string,
     status: StatusEnum,
     notificationObjects?: TransactionNotificationObject[],
-  ): Promise<PaTransactionResultDto> {
+  ): PaTransactionResultDto {
     const transactionResult = new PaTransactionResultDto();
     transactionResult.referenceId = referenceId;
     transactionResult.status = status ? status : StatusEnum.success;
