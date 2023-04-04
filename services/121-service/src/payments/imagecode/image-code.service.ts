@@ -154,19 +154,6 @@ export class ImageCodeService {
         image.print(font, 225, 800, voucherData.code); // Barcode numbers
       });
 
-      // Add a 'scaled' amount to the title of the voucher
-      const titleAmount = new Jimp(100, 50);
-      await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK).then((font) => {
-        titleAmount.print(
-          font,
-          0,
-          0,
-          this.formatDecimals(String(voucherData.amount), false),
-        );
-      });
-      titleAmount.scale(0.7);
-      image.composite(titleAmount, 583, 138);
-
       return image;
     });
 
