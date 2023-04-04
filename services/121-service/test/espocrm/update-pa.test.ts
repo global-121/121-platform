@@ -14,6 +14,7 @@ import {
 
 const server = getServer();
 const ip = '127.0.0.1';
+const seedScript = 'nlrc-multiple';
 const programId = 3;
 const referenceId = '63e62864557597e0d';
 const registration = {
@@ -38,7 +39,7 @@ let access_token: string;
 
 describe('Webhook integration with espocrm', () => {
   beforeEach(async () => {
-    await resetDB();
+    await resetDB(seedScript);
     const loginResponse = await login();
     access_token = loginResponse.headers['set-cookie'][0].split(';')[0];
     await publishProgram(programId);

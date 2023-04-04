@@ -12,7 +12,7 @@ describe('Authentication', () => {
     };
 
     beforeAll(async () => {
-      await resetDB();
+      await resetDB('nlrc-multiple');
     });
 
     it('should log-in with valid credentials', async () => {

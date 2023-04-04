@@ -14,15 +14,12 @@ export function getIsDebug(): boolean {
   return DEBUG;
 }
 
-export async function resetDB(): Promise<void> {
+export async function resetDB(script: string): Promise<void> {
   const server = getServer();
   const resetBody = {
     secret: process.env.RESET_SECRET,
   };
-  await server
-    .post('/scripts/reset')
-    .query({ script: 'nlrc-multiple' })
-    .send(resetBody);
+  await server.post('/scripts/reset').query({ script: script }).send(resetBody);
 }
 
 export async function login(): Promise<request.Response> {
