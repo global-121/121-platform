@@ -23,7 +23,7 @@
     "lint": "npm run lint:syntax && ng lint && npm run lint:translations",
     "postbuild:debug": "shx mv www \"pa-app\" && shx mkdir www && shx mv \"pa-app\" www/",
     "postbuild:prod": "npm run check:icons-in-use && npm run compress",
-    "postinstall": "npm run install-dependencies-audio",
+    "postinstall": "npm run install-dependencies-audio || exit 0",
     "prebuild": "npm run set-env-variables && npm run check-assets-translations && npm run generate-assets-audio",
     "serve:static": "npx http-server ./www/ -c-1 --gzip --brotli --port 8088 --proxy http://localhost:8088/pa-app/?",
     "set-env-variables": "node ./_set-env-variables.js",
