@@ -14,10 +14,6 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     const twilioSignature = req.headers['x-twilio-signature'];
 
     if (DEBUG) {
-      console.info(
-        'AuthMiddlewareTwilio: Skipped request validation in DEBUG-mode for:',
-        req.path,
-      );
       return next();
     }
 
