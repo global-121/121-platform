@@ -257,7 +257,7 @@ export class RegistrationsService {
     await this.storePhoneNumberInRegistration(programAnswers, referenceId);
     await this.inclusionScoreService.calculateInclusionScore(referenceId);
     await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-      programId,
+      registration.program,
       referenceId,
     );
   }
@@ -1205,7 +1205,7 @@ export class RegistrationsService {
     );
     const calculatedRegistration =
       await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-        registration.program.id,
+        registration.program,
         referenceId,
       );
     if (calculatedRegistration) {
