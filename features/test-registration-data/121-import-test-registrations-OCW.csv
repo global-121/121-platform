@@ -1,7 +1,7 @@
 referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,lastName,phoneNumber,fspName,whatsappPhoneNumber,tokenCodeVisa,isPhysicalCardVisa,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
 ,en,1,,Test,succeed,14155238886,Intersolve-jumbo-physical,14155238886,,,Straat,1,A,1234AB,Den Haag
 ,en,1,,Test,mock-fail-create-order,14155238886,Intersolve-jumbo-physical,14155238886,,,Straat,1,A,1234AB,Den Haag
-,en,1,,Test,mock-fail-approve-order,14155238886,Intersolve-jumbo-physical,14155238886,,,Straat,1,A,1234AB,Den Haag
+,en,1,,Test,mock-address-city-fail,14155238886,Intersolve-jumbo-physical,14155238886,,,Straat,1,A,1234AB,
 ,en,1,,Test,succeed,14155238886,Intersolve-visa,14155238886,6375100999150000001,TRUE,,,,,
 ,en,1,,Test,mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,test,TRUE,,,,,
 ,en,1,,Test,mock-fail-register,14155238886,Intersolve-visa,14155238886,mock-fail-register,TRUE,,,,,

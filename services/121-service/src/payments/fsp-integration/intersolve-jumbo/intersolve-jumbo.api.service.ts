@@ -19,8 +19,7 @@ export class IntersolveJumboApiService {
   ): Promise<any> {
     if (process.env.MOCK_INTERSOLVE) {
       return this.intersolveJumboApiMockService.createPreOrder(
-        // pass the first PA only here. This works for the individual pre-validation calls, so filters out the mock failed transactions. For the remaining succeeding transactions, this mock just returns a general OK anyway.
-        preOrderDtoBatch[0].lastName,
+        preOrderDtoBatch,
       );
     } else {
       const mainElem = `tns:${IntersolveJumboSoapElements.CreatePreOrder}`;
@@ -110,7 +109,7 @@ export class IntersolveJumboApiService {
     createPreOrder: IntersolveCreatePreOrderResponse,
   ): Promise<any> {
     if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveJumboApiMockService.approvePreOrder(createPreOrder);
+      return this.intersolveJumboApiMockService.approvePreOrder();
     } else {
       let payload = await this.soapService.readXmlAsJs(
         IntersolveJumboSoapElements.ApprovePreOrder,

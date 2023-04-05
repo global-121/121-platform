@@ -16,6 +16,8 @@ import { login, resetDB } from '../helpers/utility.helper';
 const seedScript = 'nlrc-multiple';
 const programId = 3;
 const referenceId = '63e62864557597e0d';
+const payment = 1;
+const amount = 22;
 const registration = {
   referenceId: referenceId,
   preferredLanguage: 'en',
@@ -56,8 +58,8 @@ describe('Do payment to 1 PA', () => {
       const paymentReferenceIds = [referenceId];
       const doPaymentResponse = await doPayment(
         programId,
-        1,
-        22,
+        payment,
+        amount,
         paymentReferenceIds,
         access_token,
       );
@@ -86,8 +88,8 @@ describe('Do payment to 1 PA', () => {
       const paymentReferenceIds = [referenceId];
       const doPaymentResponse = await doPayment(
         programId,
-        1,
-        22,
+        payment,
+        amount,
         paymentReferenceIds,
         access_token,
       );
