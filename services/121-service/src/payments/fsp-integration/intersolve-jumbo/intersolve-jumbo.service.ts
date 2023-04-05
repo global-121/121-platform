@@ -160,7 +160,8 @@ export class IntersolveJumboService {
         amount,
       );
 
-      if (!preOrderResult['tns:CreatePreOrderResponse']) {
+      // If API-calls for general reason (e.g. timeout) return early with failed transactions
+      if (!preOrderResult || !preOrderResult['tns:CreatePreOrderResponse']) {
         console.log(
           'An error occured while doing the create pre-order request.',
         );
@@ -168,17 +169,16 @@ export class IntersolveJumboService {
           const transactionResult = this.createTransactionResult(
             this.fixedPaymentAmount,
             paymentDetails.referenceId,
-            `An error occured while creating batch pre-order.`,
+            `A general error occured while creating batch pre-order.`,
             StatusEnum.error,
           );
           batchResult.push(transactionResult);
         }
-        preOrderResultFinished = true;
-        break;
+        return batchResult;
       }
 
       const resultCode =
-        preOrderResult['tns:CreatePreOrderResponse']?.WebserviceRequest
+        preOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
           .ResultCode._cdata;
       if (resultCode === IntersolveJumboResultCode.Ok) {
         // if OK, skip out of while loop
@@ -186,7 +186,7 @@ export class IntersolveJumboService {
       } else {
         // if not OK
         const resultDescription =
-          preOrderResult['tns:CreatePreOrderResponse']?.WebserviceRequest
+          preOrderResult['tns:CreatePreOrderResponse'].WebserviceRequest
             .ResultDescription._cdata;
         const errorMessage = `Something went wrong while creating pre-order: ${resultCode} - ${resultDescription}`;
         if (resultCode === IntersolveJumboResultCode.InvalidOrderLine) {
@@ -232,13 +232,8 @@ export class IntersolveJumboService {
       return batchResult;
     }
 
-    if (!preOrderResult['tns:CreatePreOrderResponse']) {
-      console.log('An error occured while doing the create pre-order request.');
-      // Early return because the create pre-order request failed
-      return;
-    }
     // Approve pre-order
-    const approvePreorderResult = await this.approvePreorder(
+    const approvePreorderResult = await this.approvePreOrder(
       preOrderResult,
       paymentDetailsArray,
       batchResult,
@@ -247,7 +242,7 @@ export class IntersolveJumboService {
     return approvePreorderResult;
   }
 
-  private async approvePreorder(
+  private async approvePreOrder(
     batchPreOrderResult: any,
     preOrderInfoArray: PreOrderInfoDto[],
     batchResult: PaTransactionResultDto[],
@@ -256,20 +251,10 @@ export class IntersolveJumboService {
     const approvePreOrderResult =
       await this.intersolveJumboApiService.approvePreOrder(batchPreOrderResult);
     if (
+      approvePreOrderResult &&
       approvePreOrderResult['tns:ApprovePreOrderResponse']?.WebserviceRequest
-        .ResultCode._cdata !== IntersolveJumboResultCode.Ok
+        ?.ResultCode?._cdata === IntersolveJumboResultCode.Ok
     ) {
-      for (const paymentInfo of preOrderInfoArray) {
-        const transactionResult = this.createTransactionResult(
-          this.fixedPaymentAmount,
-          paymentInfo.referenceId,
-          `Something went wrong while approving pre-order: ${approvePreOrderResult['tns:ApprovePreOrderResponse']?.WebserviceRequest.ResultCode._cdata} - ${approvePreOrderResult['tns:ApprovePreOrderResponse']?.WebserviceRequest.ResultDescription._cdata}`,
-          StatusEnum.error,
-        );
-        batchResult.push(transactionResult);
-      }
-      return batchResult;
-    } else {
       for (const paymentInfo of preOrderInfoArray) {
         const transactionNotification = {
           notificationKey: 'jumboCardSent',
@@ -286,6 +271,22 @@ export class IntersolveJumboService {
           [transactionNotification],
         );
 
+        batchResult.push(transactionResult);
+      }
+      return batchResult;
+    } else {
+      const errorMessage =
+        !approvePreOrderResult ||
+        !approvePreOrderResult['tns:ApprovePreOrderResponse']
+          ? `A general error occured while approving pre-order.`
+          : `Something went wrong while approving pre-order: ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultCode._cdata} - ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultDescription._cdata}`;
+      for (const paymentInfo of preOrderInfoArray) {
+        const transactionResult = this.createTransactionResult(
+          this.fixedPaymentAmount,
+          paymentInfo.referenceId,
+          errorMessage,
+          StatusEnum.error,
+        );
         batchResult.push(transactionResult);
       }
       return batchResult;
