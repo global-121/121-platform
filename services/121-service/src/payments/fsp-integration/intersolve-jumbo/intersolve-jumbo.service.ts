@@ -161,7 +161,7 @@ export class IntersolveJumboService {
       );
 
       // If API-calls for general reason (e.g. timeout) return early with failed transactions
-      if (!preOrderResult || !preOrderResult['tns:CreatePreOrderResponse']) {
+      if (!preOrderResult?.['tns:CreatePreOrderResponse']) {
         console.log(
           'An error occured while doing the create pre-order request.',
         );
@@ -251,8 +251,7 @@ export class IntersolveJumboService {
     const approvePreOrderResult =
       await this.intersolveJumboApiService.approvePreOrder(batchPreOrderResult);
     if (
-      approvePreOrderResult &&
-      approvePreOrderResult['tns:ApprovePreOrderResponse']?.WebserviceRequest
+      approvePreOrderResult?.['tns:ApprovePreOrderResponse']?.WebserviceRequest
         ?.ResultCode?._cdata === IntersolveJumboResultCode.Ok
     ) {
       for (const paymentInfo of preOrderInfoArray) {
@@ -275,11 +274,11 @@ export class IntersolveJumboService {
       }
       return batchResult;
     } else {
-      const errorMessage =
-        !approvePreOrderResult ||
-        !approvePreOrderResult['tns:ApprovePreOrderResponse']
-          ? `A general error occured while approving pre-order.`
-          : `Something went wrong while approving pre-order: ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultCode._cdata} - ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultDescription._cdata}`;
+      const errorMessage = !approvePreOrderResult?.[
+        'tns:ApprovePreOrderResponse'
+      ]
+        ? `A general error occured while approving pre-order.`
+        : `Something went wrong while approving pre-order: ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultCode._cdata} - ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultDescription._cdata}`;
       for (const paymentInfo of preOrderInfoArray) {
         const transactionResult = this.createTransactionResult(
           this.fixedPaymentAmount,
