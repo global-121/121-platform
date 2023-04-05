@@ -6,6 +6,7 @@
 --     3. Do 1 payment for pa #1
 --     4. Run the below queries in dbeaver
 
+
 DO $$ DECLARE i record;
 
 BEGIN FOR i IN 1..10 LOOP
@@ -39,6 +40,37 @@ INSERT
 		"maxPayments"
 	FROM
 		"121-service".registration);
+END LOOP;
+END;
+
+$$ ;
+
+DO $$ DECLARE i record;
+
+BEGIN FOR i IN 1..10 LOOP
+INSERT
+	INTO
+	"121-service"."registration_data" (
+	SELECT
+		id + (
+		SELECT
+			max(id)
+		FROM
+			"121-service"."registration_data") AS id,
+		created,
+		"registrationId" + (
+		SELECT
+			max("registrationId")
+		FROM
+			"121-service"."registration_data") AS "registrationId",
+		"programQuestionId",
+		"fspQuestionId",
+		"programCustomAttributeId",
+		"monitoringQuestionId",
+		value,
+		updated
+	FROM
+		"121-service"."registration_data");
 END LOOP;
 END;
 
