@@ -85,11 +85,14 @@ export class IntersolveVoucherController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({ status: 200, description: 'Get intersolve instructions' })
-  @Get('/payments/intersolve/instruction')
+  @Get('programs/:programId/payments/intersolve/instruction')
   public async intersolveInstructions(
     @Res() response: Response,
+    @Param() params,
   ): Promise<void> {
-    const blob = await this.intersolveService.getInstruction();
+    const blob = await this.intersolveService.getInstruction(
+      Number(params.programId),
+    );
     const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
     response.writeHead(HttpStatus.OK, {
@@ -106,12 +109,16 @@ export class IntersolveVoucherController {
   @ApiConsumes('multipart/form-data')
   @ApiBody(IMAGE_UPLOAD_API_FORMAT)
   @ApiResponse({ status: 201, description: 'Post intersolve instructions' })
-  @Post('/payments/intersolve/instruction')
+  @Post('programs/:programId/payments/intersolve/instruction')
   @UseInterceptors(FileInterceptor('image'))
   public async postIntersolveInstructions(
     @UploadedFile() instructionsFileBlob,
+    @Param() params,
   ): Promise<void> {
-    await this.intersolveService.postInstruction(instructionsFileBlob);
+    await this.intersolveService.postInstruction(
+      Number(params.programId),
+      instructionsFileBlob,
+    );
   }
 
   @Admin()
