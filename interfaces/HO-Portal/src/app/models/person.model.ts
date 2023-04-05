@@ -91,6 +91,7 @@ export enum LanguageEnum {
   nl = 'nl',
   ptBR = 'pt_BR',
   tl = 'tl',
+  tr = 'tr',
 }
 
 export class PersonTableColumn {
