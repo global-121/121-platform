@@ -1,4 +1,4 @@
-import { IsInt, IsOptional, IsPositive } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsPositive } from 'class-validator';
 import {
   BeforeRemove,
   Brackets,
@@ -67,6 +67,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public phoneNumber: string;
 
   @Column({ nullable: true })
+  @IsEnum(LanguageEnum)
   public preferredLanguage: LanguageEnum;
 
   @Index({ unique: false })
