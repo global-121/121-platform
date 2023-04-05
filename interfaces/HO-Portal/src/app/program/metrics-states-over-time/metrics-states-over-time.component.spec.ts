@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
+import { TooltipService } from '@swimlane/ngx-charts';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { getRandomInt, provideMagicalMock } from 'src/app/mocks/helpers';
 import { Program } from 'src/app/models/program.model';
@@ -52,7 +53,12 @@ describe('MetricsStatesOverTimeComponent', () => {
         NoopAnimationsModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(PastPaymentsService)],
+      providers: [
+        provideMagicalMock(PastPaymentsService),
+        {
+          provide: TooltipService,
+        },
+      ],
     }).compileComponents();
   }));
 

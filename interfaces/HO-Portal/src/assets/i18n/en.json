@@ -336,7 +336,7 @@
           "no-payment-yet": "No payment yet",
           "show-status": "Show status",
           "do-single-payment": "Do single payment",
-          "payment-number": "Payment #",
+          "payment-number": "Payment #{{number}}",
           "planned": "Planned",
           "above": "Above limit"
         },
@@ -632,7 +632,11 @@
     "rejectionDate": "Rejected",
     "note": "Note",
     "name": "Name",
-    "statusText": "Status: <b> {{status}} </b>"
+    "statusText": "Status: <b> {{status}} </b>",
+    "payment-history": {
+      "message-sent": "Message sent",
+      "money-sent": "Money sent"
+    }
   },
   "registration-details": {
     "pageTitle": "Registration details",
