@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, DataSource, In, Not, Repository } from 'typeorm';
-import { EXTERNAL_API } from '../../config';
+import { API_PATHS, EXTERNAL_API } from '../../config';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ImageCodeService } from '../../payments/imagecode/image-code.service';
 import { TransactionEntity } from '../../payments/transactions/transaction.entity';
@@ -379,7 +379,7 @@ export class WhatsappIncomingService {
           '',
           fromNumber,
           null,
-          EXTERNAL_API.voucherInstructionsUrl,
+          `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
           registration.id,
           MessageContentType.paymentInstructions,
         );
