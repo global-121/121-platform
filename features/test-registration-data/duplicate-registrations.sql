@@ -6,6 +6,7 @@
 --     3. Do 1 payment for pa #1
 --     4. Run the below queries in dbeaver
 
+
 DO $$ DECLARE i record;
 
 BEGIN FOR i IN 1..10 LOOP
@@ -43,6 +44,43 @@ END LOOP;
 END;
 
 $$ ;
+
+DO $$ DECLARE i record;
+
+BEGIN FOR i IN 1..10 LOOP
+INSERT
+	INTO
+	"121-service"."registration_data" (
+	SELECT
+		id + (
+		SELECT
+			max(id)
+		FROM
+			"121-service"."registration_data") AS id,
+		created,
+		"registrationId" + (
+		SELECT
+			max("registrationId")
+		FROM
+			"121-service"."registration_data") AS "registrationId",
+		"programQuestionId",
+		"fspQuestionId",
+		"programCustomAttributeId",
+		"monitoringQuestionId",
+		value,
+		updated
+	FROM
+		"121-service"."registration_data");
+END LOOP;
+END;
+
+$$ ;
+
+-- Update phone numbers to be unique:
+update registration_data
+   set "value" = CAST(10000000000 + floor(random() * 90000000000) AS bigint)
+  WHERE "programQuestionId" IN (SELECT id FROM program_question WHERE "name" = 'phoneNumber') OR "fspQuestionId" IN (SELECT id FROM fsp_attribute WHERE "name" = 'whatsappPhoneNumber')
+
 
 DO $$ DECLARE i record;
 

@@ -2,49 +2,80 @@ import { Injectable } from '@nestjs/common';
 import soapRequest from 'easy-soap-request';
 import fs from 'fs';
 import * as convert from 'xml-js';
+import { CustomHttpService } from '../../shared/services/custom-http.service';
 
 @Injectable()
 export class SoapService {
-  public async post(payload: any): Promise<any> {
-    payload = await this.setSoapHeader(payload);
+  public constructor(private readonly httpService: CustomHttpService) {}
+
+  public async post(
+    soapBodyPayload: any,
+    headerFile: string,
+    username: string,
+    password: string,
+    url: string,
+  ): Promise<any> {
+    const jsonSoapBody = convert.js2xml(soapBodyPayload);
+    const payload = await this.setSoapHeader(
+      soapBodyPayload,
+      headerFile,
+      username,
+      password,
+    );
     const xml = convert.js2xml(payload);
-    const headersIntersolve = {
+    const headers = {
       'user-agent': 'sampleTest',
       'Content-Type': 'text/xml;charset=UTF-8',
     };
-    const { response } = await soapRequest({
-      headers: headersIntersolve,
-      url: process.env.INTERSOLVE_URL,
+    return soapRequest({
+      headers: headers,
+      url: url,
       xml: xml,
-      timeout: 30000,
-    });
-    const { body } = response;
-    const jsonResponse = convert.xml2js(body, { compact: true });
-    return jsonResponse['soap:Envelope']['soap:Body'];
+      timeout: 150000,
+    })
+      .then((rawResponse: any) => {
+        const response = rawResponse.response;
+        this.httpService.logMessage(
+          { url, payload: jsonSoapBody },
+          {
+            status: response.statusCode,
+            statusText: null,
+            data: response.body,
+          },
+        );
+        const { body } = response;
+        const jsonResponse = convert.xml2js(body, { compact: true });
+        return jsonResponse['soap:Envelope']['soap:Body'];
+      })
+      .catch((err: any) => {
+        this.httpService.logError(
+          { url, payload: jsonSoapBody },
+          {
+            status: null,
+            statusText: null,
+            data: { error: err },
+          },
+        );
+        return err;
+      });
   }
 
-  private async setSoapHeader(payload: any): Promise<any> {
-    const header = await this.readXmlAsJs('header');
+  private async setSoapHeader(
+    payload: any,
+    headerFile: string,
+    username: string,
+    password: string,
+  ): Promise<any> {
+    const header = await this.readXmlAsJs(headerFile);
     let headerPart = this.getChild(header, 0);
-    headerPart = this.setValue(
-      headerPart,
-      [0, 0, 0],
-      process.env.INTERSOLVE_USERNAME,
-    );
-    headerPart = this.setValue(
-      headerPart,
-      [0, 1, 0],
-      process.env.INTERSOLVE_PASSWORD,
-    );
+    headerPart = this.setValue(headerPart, [0, 0, 0], username);
+    headerPart = this.setValue(headerPart, [0, 1, 0], password);
     payload['elements'][0]['elements'].unshift(headerPart);
     return payload;
   }
 
   public async readXmlAsJs(xmlName: string): Promise<any> {
-    const path =
-      './src/payments/fsp-integration/intersolve-voucher/xml/' +
-      xmlName +
-      '.xml';
+    const path = './src/shared/xml/' + xmlName + '.xml';
     const xml = fs.readFileSync(path, 'utf-8');
     const jsObject = convert.xml2js(xml);
     return jsObject;
@@ -97,6 +128,15 @@ export class SoapService {
       );
     } else {
       xml['elements'][firstIndex]['text'] = value;
+    }
+    return xml;
+  }
+
+  public setValueByName(xml: any, attributeName: string, value: string): any {
+    for (const el of xml.elements) {
+      if (el.name === attributeName) {
+        el.elements[0].text = value;
+      }
     }
     return xml;
   }

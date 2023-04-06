@@ -426,7 +426,7 @@ export class ExportMetricsService {
         `registration."${GenericAttributes.phoneNumber}"`,
         `registration."${GenericAttributes.preferredLanguage}"`,
         `registration."${GenericAttributes.paymentAmountMultiplier}"`,
-        `fsp.fsp as financialServiceProvider`,
+        `fsp."fspDisplayNamePortal" as financialServiceProvider`,
         `registration."note"`,
         `registration."referenceId" as "referenceId"`,
       ])
@@ -476,7 +476,7 @@ export class ExportMetricsService {
       .select([
         `registration."registrationProgramId" AS "id"`,
         `registration."registrationStatus" AS status`,
-        `fsp.fsp AS fsp`,
+        `fsp."fspDisplayNamePortal" AS fsp`,
         `registration."${GenericAttributes.phoneNumber}"`,
       ])
       .andWhere({ programId: programId })

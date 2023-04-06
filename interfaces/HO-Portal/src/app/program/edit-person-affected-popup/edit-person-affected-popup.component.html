@@ -130,13 +130,13 @@
           }}:</strong
         >
         &nbsp;&nbsp;
-        <code>{{ person?.fsp }}</code>
+        <code>{{ person?.fspDisplayNamePortal }}</code>
       </div>
       <app-update-fsp
         *ngIf="!readOnly && fspList.length === programFspLength && person?.fsp"
         [fspList]="fspList"
         [label]="'page.program.program-people-affected.column.fsp' | translate"
-        [value]="person?.fsp"
+        [value]="person?.fspDisplayNamePortal"
         [referenceId]="person?.referenceId"
         [programId]="programId"
         class="ion-margin-vertical"

@@ -111,13 +111,13 @@ export class UpdateFspComponent implements OnInit {
   public getFspAttributes(fspString: string) {
     this.selectedFspAttributes = [];
     this.attributesToSave = {};
-    this.selectedFspName = fspString;
     if (this.fspList) {
       const selectedFsp = this.fspList.find(
-        (fspItem) => fspItem.fsp === this.selectedFspName,
+        (fspItem) => fspItem.fspDisplayNamePortal === fspString,
       );
 
       if (selectedFsp) {
+        this.selectedFspName = selectedFsp.fsp;
         this.selectedFspAttributes = selectedFsp.editableAttributes.map(
           (attr) => ({
             ...attr,

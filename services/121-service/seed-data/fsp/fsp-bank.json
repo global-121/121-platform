@@ -1,9 +1,10 @@
 {
   "fsp": "Bank A",
   "integrationType": "api",
-  "fspDisplayName": {
+  "fspDisplayNamePaApp": {
     "en": "Bank A"
   },
+  "fspDisplayNamePortal": "Bank A",
   "questions": [
     {
       "name": "personalId",

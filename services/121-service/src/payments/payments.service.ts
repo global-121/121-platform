@@ -26,6 +26,7 @@ import { VoucherWithBalanceDto } from './dto/voucher-with-balance.dto';
 import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
 import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
+import { IntersolveJumboService } from './fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
 import { IntersolveVisaService } from './fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveIssueVoucherRequestEntity } from './fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherService } from './fsp-integration/intersolve-voucher/intersolve-voucher.service';
@@ -47,8 +48,9 @@ export class PaymentsService {
     private readonly actionService: ActionService,
     private readonly fspService: FspService,
     private readonly transactionService: TransactionsService,
-    private readonly intersolveService: IntersolveVoucherService,
+    private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly intersolveVisaService: IntersolveVisaService,
+    private readonly intersolveJumboService: IntersolveJumboService,
     private readonly africasTalkingService: AfricasTalkingService,
     private readonly belcashService: BelcashService,
     private readonly bobFinanceService: BobFinanceService,
@@ -69,7 +71,7 @@ export class PaymentsService {
       .select('payment')
       .addSelect('MIN(transaction.created)', 'paymentDate')
       .addSelect(
-        'MIN(transaction.amount / coalesce(r.paymentAmountMultiplier, 1) )',
+        `MIN(CASE WHEN transaction.status = 'error' THEN transaction.amount ELSE transaction.amount / coalesce(r.paymentAmountMultiplier, 1) END )`,
         'amount',
       )
       .leftJoin('transaction.registration', 'r')
@@ -155,6 +157,7 @@ export class PaymentsService {
     const intersolvePaPayment = [];
     const intersolveNoWhatsappPaPayment = [];
     const intersolveVisaPaPayment = [];
+    const intersolveJumboPhysicalPaPayment = [];
     const africasTalkingPaPayment = [];
     const belcashPaPayment = [];
     const bobFinancePaPayment = [];
@@ -167,6 +170,8 @@ export class PaymentsService {
         intersolveNoWhatsappPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.intersolveVisa) {
         intersolveVisaPaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === FspName.intersolveJumboPhysical) {
+        intersolveJumboPhysicalPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.africasTalking) {
         africasTalkingPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.belcash) {
@@ -186,6 +191,7 @@ export class PaymentsService {
       intersolvePaPayment,
       intersolveNoWhatsappPaPayment,
       intersolveVisaPaPayment,
+      intersolveJumboPhysicalPaPayment,
       africasTalkingPaPayment,
       belcashPaPayment,
       bobFinancePaPayment,
@@ -201,7 +207,7 @@ export class PaymentsService {
     amount: number,
   ): Promise<any> {
     if (paLists.intersolvePaPayment.length) {
-      await this.intersolveService.sendPayment(
+      await this.intersolveVoucherService.sendPayment(
         paLists.intersolvePaPayment,
         true,
         amount,
@@ -209,7 +215,7 @@ export class PaymentsService {
       );
     }
     if (paLists.intersolveNoWhatsappPaPayment.length) {
-      await this.intersolveService.sendPayment(
+      await this.intersolveVoucherService.sendPayment(
         paLists.intersolveNoWhatsappPaPayment,
         false,
         amount,
@@ -217,9 +223,18 @@ export class PaymentsService {
       );
     }
 
-    if (paLists.intersolveVisaPaPayment) {
+    if (paLists.intersolveVisaPaPayment.length) {
       await this.intersolveVisaService.sendPayment(
         paLists.intersolveVisaPaPayment,
+        programId,
+        payment,
+        amount,
+      );
+    }
+
+    if (paLists.intersolveJumboPhysicalPaPayment.length) {
+      await this.intersolveJumboService.sendPayment(
+        paLists.intersolveJumboPhysicalPaPayment,
         programId,
         payment,
         amount,
@@ -371,19 +386,19 @@ export class PaymentsService {
   public async getUnusedVouchers(
     programId?: number,
   ): Promise<UnusedVoucherDto[]> {
-    return this.intersolveService.getUnusedVouchers(programId);
+    return this.intersolveVoucherService.getUnusedVouchers(programId);
   }
 
   public async getVouchersWithBalance(
     programId: number,
   ): Promise<VoucherWithBalanceDto[]> {
-    return this.intersolveService.getVouchersWithBalance(programId);
+    return this.intersolveVoucherService.getVouchersWithBalance(programId);
   }
 
   public async getToCancelVouchers(): Promise<
     IntersolveIssueVoucherRequestEntity[]
   > {
-    return this.intersolveService.getToCancelVouchers();
+    return this.intersolveVoucherService.getToCancelVouchers();
   }
 
   public async getFspInstructions(
