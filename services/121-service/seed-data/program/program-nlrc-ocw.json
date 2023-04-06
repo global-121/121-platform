@@ -119,6 +119,6 @@
     "nl": "Dit is een draft tekst voor het nieuwe OCW programma."
   },
   "fullnameNamingConvention": ["firstName", "lastName"],
-  "languages": ["en", "nl"],
+  "languages": ["en", "nl", "ar", "tr"],
   "enableMaxPayments": false
 }
