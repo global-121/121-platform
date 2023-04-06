@@ -76,6 +76,12 @@ END;
 
 $$ ;
 
+-- Update phone numbers to be unique:
+update registration_data
+   set "value" = CAST(10000000000 + floor(random() * 90000000000) AS bigint)
+  WHERE "programQuestionId" IN (SELECT id FROM program_question WHERE "name" = 'phoneNumber') OR "fspQuestionId" IN (SELECT id FROM fsp_attribute WHERE "name" = 'whatsappPhoneNumber')
+
+
 DO $$ DECLARE i record;
 
 BEGIN FOR i IN 1..10 LOOP
