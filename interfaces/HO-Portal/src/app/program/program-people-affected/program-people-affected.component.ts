@@ -1087,6 +1087,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         status: lastPaymentStatus,
         errorMessage: lastPaymentErrorMessage,
       };
+      console.log('paymentColumnValue: ', paymentColumnValue);
       if (lastPaymentStatus === StatusEnum.success) {
         paymentColumnValue.text = this.translate.instant(
           'page.program.program-people-affected.transaction.success',
@@ -1106,8 +1107,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       personRow[columnKey] =
         this.translate.instant(
           'page.program.program-people-affected.transaction.payment-number',
+          {
+            number: paymentColumnValue.paymentIndex,
+          },
         ) +
-        paymentColumnValue.paymentIndex +
         ' ' +
         paymentColumnValue.text;
     }
