@@ -1,12 +1,13 @@
-import { DatePipe } from '@angular/common';
+import { formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import { AnswerType } from 'src/app/models/fsp.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { RegistrationStatusTimestampField } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { environment } from '../../../environments/environment';
+import StatusDate from '../../enums/status-dates.enum';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
 import { StatusEnum } from '../../models/status.enum';
@@ -19,6 +20,7 @@ class RecipientDetail {
   label: string;
   value: any;
 }
+
 @Component({
   selector: 'app-recipient-details',
   templateUrl: './recipient-details.component.html',
@@ -35,7 +37,7 @@ export class RecipientDetailsComponent implements OnInit {
   public transactions: Transaction[] = [];
   public translationPrefix = 'recipient-details.';
   public statusText = '';
-  private formatString = 'yyyy-MM-dd, HH:mm';
+  public DateFormat = DateFormat;
   private locale = environment.defaultLocale;
   private keysToExclude = [
     'id',
@@ -48,6 +50,8 @@ export class RecipientDetailsComponent implements OnInit {
     'programId',
     'phone-number',
     'status',
+    'lastMessageStatus',
+    'lastMessageType',
   ];
 
   private questionKeysToInclude = [
@@ -74,9 +78,10 @@ export class RecipientDetailsComponent implements OnInit {
     status: 'page.program.program-people-affected.status',
   };
 
+  private readonly timestampKeys = Object.values(StatusDate);
+
   constructor(
     private programsServiceApiService: ProgramsServiceApiService,
-    private datePipe: DatePipe,
     private modalController: ModalController,
     private translate: TranslateService,
     private translatableString: TranslatableStringService,
@@ -88,7 +93,9 @@ export class RecipientDetailsComponent implements OnInit {
     this.transactions = await this.getTransactions();
     this.statusText = this.translate.instant(
       this.translationPrefix + 'statusText',
-      { status: this.translateValue('status', this.recipient?.status) },
+      {
+        status: this.translateValue('status', this.recipient?.status),
+      },
     );
   }
 
@@ -158,8 +165,8 @@ export class RecipientDetailsComponent implements OnInit {
     value: any,
     type?: AnswerType,
   ): RecipientDetail {
-    if (RegistrationStatusTimestampField[key] || type === AnswerType.Date) {
-      value = this.convertDate(value);
+    if (this.timestampKeys.includes(key) || type === AnswerType.Date) {
+      value = formatDate(value, DateFormat.dayAndTime, this.locale);
     }
     if (this.valueTranslators[key]) {
       value = this.translateValue(key, value);
@@ -172,10 +179,10 @@ export class RecipientDetailsComponent implements OnInit {
   }
 
   private getColumn(key: string): { columnName: string; index: number } {
-    if (RegistrationStatusTimestampField[key]) {
+    if (this.timestampKeys.includes(key)) {
       return {
         columnName: 'columnStatusHistory',
-        index: Object.keys(RegistrationStatusTimestampField).indexOf(key),
+        index: this.timestampKeys.indexOf(key),
       };
     }
     const defaultColumnName = 'columnPersonalInformation';
@@ -211,20 +218,21 @@ export class RecipientDetailsComponent implements OnInit {
     if (!this.program) {
       return [];
     }
-    const transactionsResult =
-      await this.programsServiceApiService.getTransactions(
-        this.program.id,
-        null,
-        this.recipient.referenceId,
+    let transactions = await this.programsServiceApiService.getTransactions(
+      this.program.id,
+      null,
+      this.recipient.referenceId,
+    );
+
+    transactions = transactions.sort((a: Transaction, b: Transaction) => {
+      return (
+        (Date.parse(b.paymentDate) || 0) - (Date.parse(a.paymentDate) || 0)
       );
-    return transactionsResult.reverse();
+    });
+    return transactions;
   }
 
-  private convertDate(value) {
-    return this.datePipe.transform(value, this.formatString);
-  }
-
-  private translateValue(key, value) {
+  private translateValue(key: string, value: string) {
     return this.translate.instant(`${this.valueTranslators[key]}.${value}`);
   }
 
@@ -257,10 +265,11 @@ export class RecipientDetailsComponent implements OnInit {
 
   private sortStatusHistory() {
     const columnNameStatusHistory = 'columnStatusHistory';
-    const statusOrder = Object.values(RegistrationStatusTimestampField);
-    const toBeSorted = [...this.columns[columnNameStatusHistory]];
-    this.columns[columnNameStatusHistory] = toBeSorted.sort(
-      (a, b) => statusOrder.indexOf(a.key) - statusOrder.indexOf(b.key),
+    this.columns[columnNameStatusHistory] = this.columns[
+      columnNameStatusHistory
+    ].sort(
+      (a, b) =>
+        this.timestampKeys.indexOf(a.key) - this.timestampKeys.indexOf(b.key),
     );
   }
 
@@ -313,9 +322,9 @@ export class RecipientDetailsComponent implements OnInit {
       componentProps: {
         titleError:
           this.hasError(transaction) || this.hasWaiting(transaction)
-            ? `${transaction.payment}: ${this.datePipe.transform(
+            ? `${transaction.payment}: ${formatDate(
                 transaction.paymentDate,
-                this.formatString,
+                DateFormat.dayAndTime,
                 this.locale,
               )}`
             : null,

@@ -26,22 +26,18 @@ updates:
       - dependency-name: '@ionic/storage'
         versions: ['>= 2.3.0']
       - dependency-name: '@ngx-translate/core'
-        versions: ['>= 14.0.0']
+        update-types: ['version-update:semver-major']
       - dependency-name: '@ngx-translate/http-loader'
-        versions: ['>= 7.0.0']
+        update-types: ['version-update:semver-major']
       - dependency-name: '@swimlane/ngx-charts'
-        versions: ['>= 15.0.0']
+        update-types: ['version-update:semver-major']
       - dependency-name: '@swimlane/ngx-datatable'
-        versions: ['>= 18.0.0']
+        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major', 'version-update:semver-patch']
-      - dependency-name: codelyzer
       - dependency-name: core-js
       - dependency-name: karma
-      - dependency-name: ngx-popperjs
-        versions: ['>= 13.0.0']
       - dependency-name: tslib
-      - dependency-name: tslint
       - dependency-name: typescript
       - dependency-name: rxjs
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
@@ -64,22 +60,18 @@ updates:
       - dependency-name: '@ionic/cli'
         update-types: ['version-update:semver-major', 'version-update:semver-patch']
       - dependency-name: '@ngx-translate/core'
-        versions: ['>= 14.0.0']
+        update-types: ['version-update:semver-major']
       - dependency-name: '@ngx-translate/http-loader'
-        versions: ['>= 7.0.0']
+        update-types: ['version-update:semver-major']
       - dependency-name: '@swimlane/ngx-charts'
-        versions: ['>= 15.0.0']
+        update-types: ['version-update:semver-major']
       - dependency-name: '@swimlane/ngx-datatable'
-        versions: ['>= 18.0.0']
+        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major', 'version-update:semver-patch']
-      - dependency-name: codelyzer
       - dependency-name: core-js
       - dependency-name: karma
-      - dependency-name: ngx-popperjs
-        versions: ['>= 13.0.0']
       - dependency-name: tslib
-      - dependency-name: tslint
       - dependency-name: typescript
       - dependency-name: rxjs
         update-types: ['version-update:semver-major', 'version-update:semver-minor']
@@ -102,24 +94,18 @@ updates:
       - dependency-name: '@ionic/cli'
         update-types: ['version-update:semver-major', 'version-update:semver-patch']
       - dependency-name: '@ngx-translate/core'
-        versions: ['>= 14.0.0']
+        update-types: ['version-update:semver-major']
       - dependency-name: '@ngx-translate/http-loader'
-        versions: ['>= 7.0.0']
-      - dependency-name: '@swimlane/ngx-charts'
-        versions: ['>= 15.0.0']
-      - dependency-name: '@swimlane/ngx-datatable'
-        versions: ['>= 18.0.0']
+        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major', 'version-update:semver-patch']
-      - dependency-name: codelyzer
       - dependency-name: core-js
       - dependency-name: karma
       - dependency-name: ngx-popperjs
-        versions: ['>= 13.0.0']
+        update-types: ['version-update:semver-major', 'version-update:semver-patch']
       - dependency-name: ngx-translate-lint
-        versions: ['>= 1.14.0']
+        update-types: ['version-update:semver-major', 'version-update:semver-patch']
       - dependency-name: tslib
-      - dependency-name: tslint
       - dependency-name: typescript
       - dependency-name: rxjs
         update-types: ['version-update:semver-major', 'version-update:semver-minor']

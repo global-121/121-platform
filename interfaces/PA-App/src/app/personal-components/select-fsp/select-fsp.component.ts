@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Fsp, FspQuestion, FspQuestionOption } from 'src/app/models/fsp.model';
 import { Program } from 'src/app/models/program.model';
 import {
@@ -19,7 +19,7 @@ import { PersonalDirective } from '../personal-component.class';
   templateUrl: './select-fsp.component.html',
   styleUrls: ['./select-fsp.component.scss'],
 })
-export class SelectFspComponent extends PersonalDirective {
+export class SelectFspComponent extends PersonalDirective implements OnInit {
   @Input()
   public data: any;
 
@@ -47,7 +47,7 @@ export class SelectFspComponent extends PersonalDirective {
     super();
   }
 
-  async ngOnInit() {
+  public async ngOnInit() {
     this.program = await this.paData.getCurrentProgram();
 
     if (this.data) {

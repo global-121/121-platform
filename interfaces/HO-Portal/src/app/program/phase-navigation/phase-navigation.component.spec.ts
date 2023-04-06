@@ -1,4 +1,3 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -27,13 +26,11 @@ describe('PhaseNavigationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [PhaseNavigationComponent],
       imports: [TranslateModule.forRoot(), RouterTestingModule],
       providers: [
         provideMagicalMock(ProgramsServiceApiService),
         provideMagicalMock(ProgramPhaseService),
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
 

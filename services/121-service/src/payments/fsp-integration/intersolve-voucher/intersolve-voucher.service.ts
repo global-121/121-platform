@@ -434,9 +434,11 @@ export class IntersolveVoucherService {
     return voucher;
   }
 
-  public async getInstruction(): Promise<any> {
-    const [intersolveInstructionsEntity] =
-      await this.intersolveInstructionsRepository.find();
+  public async getInstruction(programId: number): Promise<any> {
+    const intersolveInstructionsEntity =
+      await this.intersolveInstructionsRepository.findOne({
+        where: { programId: programId },
+      });
 
     if (!intersolveInstructionsEntity) {
       throw new HttpException(
@@ -448,15 +450,21 @@ export class IntersolveVoucherService {
     return intersolveInstructionsEntity.image;
   }
 
-  public async postInstruction(instructionsFileBlob): Promise<any> {
-    let [intersolveInstructionsEntity] =
-      await this.intersolveInstructionsRepository.find();
+  public async postInstruction(
+    programId: number,
+    instructionsFileBlob,
+  ): Promise<any> {
+    let intersolveInstructionsEntity =
+      await this.intersolveInstructionsRepository.findOne({
+        where: { programId: programId },
+      });
 
     if (!intersolveInstructionsEntity) {
       intersolveInstructionsEntity = new IntersolveVoucherInstructionsEntity();
     }
 
     intersolveInstructionsEntity.image = instructionsFileBlob.buffer;
+    intersolveInstructionsEntity.programId = programId;
 
     this.intersolveInstructionsRepository.save(intersolveInstructionsEntity);
   }

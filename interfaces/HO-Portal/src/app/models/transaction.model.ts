@@ -8,7 +8,7 @@ export class Transaction {
   referenceId: string;
   amount: number;
   status: StatusEnum;
-  paymentDate: Date;
+  paymentDate: string;
   errorMessage: string;
   customData?:
     | {

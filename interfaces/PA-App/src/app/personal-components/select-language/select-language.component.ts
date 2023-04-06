@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
   LoggingEvent,
@@ -27,7 +27,10 @@ class LanguageOption {
   templateUrl: './select-language.component.html',
   styleUrls: ['./select-language.component.scss'],
 })
-export class SelectLanguageComponent extends PersonalDirective {
+export class SelectLanguageComponent
+  extends PersonalDirective
+  implements OnInit
+{
   @Input()
   public data: any;
 
@@ -47,7 +50,7 @@ export class SelectLanguageComponent extends PersonalDirective {
     super();
   }
 
-  async ngOnInit() {
+  public async ngOnInit() {
     this.languages = await this.getEnabledLanguages();
 
     if (this.data) {

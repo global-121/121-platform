@@ -48,44 +48,75 @@
           </ion-item>
         </ng-container>
         <ng-container *ngIf="column === 'columnPaymentHistory'">
-          <ion-item
-            button
-            *ngFor="let transaction of transactions"
-            lines="none"
-            style="--min-height: 2rem"
-            (click)="buttonClick(recipient, program, transaction)"
-          >
-            <ion-label
-              color="secondary"
-              class="ion-no-margin"
-              style="text-decoration: underline"
-            >
-              {{
-                'page.program.program-people-affected.transaction.payment-number'
-                  | translate
-              }}{{ transaction.payment }}:
-              <strong>
-                {{ '€ ' + transaction.amount }}
-                {{
-                  'page.program.program-people-affected.transaction.' +
-                    transaction.status | translate
-                }}
-                {{ transaction.paymentDate | date : formatString }}</strong
+          <div class="ion-padding">
+            <table class="recipient-details--payment-history">
+              <tr
+                *ngFor="let transaction of transactions"
+                (click)="buttonClick(recipient, program, transaction)"
+                style="color: var(--ion-color-secondary)"
+                class="recipient-details--payment-history-detail-toggle"
               >
-              <ion-icon
-                *ngIf="enableMessageSentIcon(transaction)"
-                name="mail"
-                size="small"
-                aria-hidden="true"
-              ></ion-icon>
-              <ion-icon
-                *ngIf="enableMoneySentIconTable(transaction)"
-                name="cash"
-                size="small"
-                aria-hidden="true"
-              ></ion-icon>
-            </ion-label>
-          </ion-item>
+                <td>
+                  {{
+                    'page.program.program-people-affected.transaction.payment-number'
+                      | translate
+                        : {
+                            number: transaction.payment
+                          }
+                  }}:
+                </td>
+                <td class="ion-text-end">
+                  <strong>
+                    {{ '€ ' + (transaction.amount | number : '1.2-2') }}
+                  </strong>
+                </td>
+                <td>
+                  <strong>
+                    {{
+                      'page.program.program-people-affected.transaction.' +
+                        transaction.status | translate
+                    }}
+                  </strong>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="button-as-link"
+                  >
+                    {{ transaction.paymentDate | date : DateFormat.dayAndTime }}
+                  </button>
+                </td>
+                <td>
+                  <ion-icon
+                    *ngIf="enableMessageSentIcon(transaction)"
+                    name="mail"
+                    size="small"
+                    [attr.title]="
+                      'recipient-details.payment-history.message-sent'
+                        | translate
+                    "
+                    [attr.aria-label]="
+                      'recipient-details.payment-history.message-sent'
+                        | translate
+                    "
+                    style="vertical-align: text-top"
+                  ></ion-icon>
+                  <ion-icon
+                    *ngIf="enableMoneySentIconTable(transaction)"
+                    name="cash"
+                    size="small"
+                    [attr.title]="
+                      'recipient-details.payment-history.money-sent' | translate
+                    "
+                    [attr.aria-label]="
+                      'recipient-details.payment-history.money-sent' | translate
+                    "
+                    style="vertical-align: text-top"
+                  ></ion-icon>
+                </td>
+              </tr>
+            </table>
+          </div>
         </ng-container>
       </ion-col>
     </ion-row>

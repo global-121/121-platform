@@ -26,7 +26,7 @@ See the [/features/](../features/)-directory in this repository.
 ### Offline features
 
 For some 'offline' features it is required to run them in a specific way (i.e. to enable their service-worker) locally.  
-See the related Angular-documentation: <https://v12.angular.io/guide/service-worker-getting-started#serving-with-http-server>
+See the related Angular-documentation: <https://v15.angular.io/guide/service-worker-getting-started#serving-with-http-server>
 
 To use it locally:
 
@@ -64,25 +64,37 @@ All interfaces use a common set of dependencies/frameworks/libraries.
   - CSS Utilities: <https://ionicframework.com/docs/layout/css-utilities>
   - Icons: <https://ionicons.com/>
 
-- [Angular v12](https://v12.angular.io/docs)  
+- [Angular v15](https://v15.angular.io/docs)  
   This front-end framework gives us a structure to create components that can be connected, combined, share data and can be delivered as a web-app.
 
-  - API Documentation: <https://v12.angular.io/api>
+  - API Documentation: <https://v15.angular.io/api>
   - Used by Angular, RxJS: <https://v6.rxjs.dev/api>
 
-- [`ngx-translate` v13](https://www.npmjs.com/package/@ngx-translate/core/v/13.0.0)  
+- [`ngx-translate` v14](https://www.npmjs.com/package/@ngx-translate/core/v/14.0.0)  
   An Angular-service to handle internationalization(i18n) or translations.
 
   - Website: <http://www.ngx-translate.com/>
   - API Documentation: <https://github.com/ngx-translate/core/tree/v12.1.2#api>
 
-- [`ngx-translate-lint` v1.13.2](https://www.npmjs.com/package/ngx-translate-lint/v/1.13.2)  
+- [`ngx-translate-lint` v1.20.7](https://www.npmjs.com/package/ngx-translate-lint/v/1.20.7)  
    A lint-tool to check for missing or unused translations or typos in keys.
 
-  - GitHub: <https://github.com/svoboda-rabstvo/ngx-translate-lint/tree/v1.13.2#readme>
+  - GitHub: <https://github.com/svoboda-rabstvo/ngx-translate-lint/tree/v1.20.7#readme>
 
 - [`gzipper`](https://www.npmjs.com/package/gzipper)
   To compress all assets of the interfaces after the build.
+
+### Updating dependencies
+
+Most (development-)dependencies in this repository are monitored by the GitHub [Dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/about-dependabot-version-updates) service, to keep them up-to-date.  
+The configuration of these updates is in [`.github/dependabot.yml`](../.github/dependabot.yml).  
+Unfortunately most individual dependencies are 'linked' to related dependencies that need to stay 'in sync'.
+
+To update all Angular and ESLint related dependencies together, run (in each individual interface's directory):
+
+    npm run upgrade:angular
+
+All related changes will be handled by the Angular CLI, but need to be checked afterwards with `lint`, `test` commands.
 
 ### Continuous Integration (CI)
 

@@ -193,7 +193,7 @@
           'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'
             | translate
               : {
-                  timestamp: noteLastUpdate | date : 'yyyy-MM-dd, HH:mm'
+                  timestamp: noteLastUpdate | date : DateFormat.dayAndTime
                 }
         }}
       </ion-note>

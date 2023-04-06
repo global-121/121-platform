@@ -2,6 +2,7 @@ import { formatCurrency, formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import { MetricGroup, MetricRow } from 'src/app/models/program-metrics.model';
 import { DistributionFrequency, Program } from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -85,7 +86,7 @@ export class MetricsComponent implements OnInit {
       icon: 'calendar',
       label: 'page.program.program-details.startDate',
       value: getValueOrEmpty(this.program.startDate, (value) =>
-        formatDate(value, 'dd-MM-yyyy', this.locale),
+        formatDate(value, DateFormat.dateOnly, this.locale),
       ),
     });
     this.metricsMap.set(`${group}.endDate`, {
@@ -93,7 +94,7 @@ export class MetricsComponent implements OnInit {
       icon: 'calendar',
       label: 'page.program.program-details.endDate',
       value: getValueOrEmpty(this.program.endDate, (value) =>
-        formatDate(value, 'dd-MM-yyyy', this.locale),
+        formatDate(value, DateFormat.dateOnly, this.locale),
       ),
     });
     this.metricsMap.set(`${group}.location`, {

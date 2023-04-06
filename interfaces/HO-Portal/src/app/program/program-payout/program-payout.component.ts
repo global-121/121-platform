@@ -3,6 +3,7 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { Payment, PaymentData } from 'src/app/models/payment.model';
 import {
@@ -34,6 +35,7 @@ export class ProgramPayoutComponent implements OnInit {
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  public DateFormat = DateFormat;
   public enumExportType = ExportType;
   public exportType: ExportType = ExportType.payment;
 

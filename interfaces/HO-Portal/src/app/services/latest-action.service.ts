@@ -1,6 +1,7 @@
 import { formatDate } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
+import { DateFormat } from '../enums/date-format.enum';
 import { ActionType } from '../models/actions.model';
 import { ExportType } from '../models/export-type.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
@@ -10,7 +11,6 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 })
 export class LatestActionService {
   private locale: string;
-  private dateFormat = 'yyyy-MM-dd, HH:mm';
   constructor(private programsService: ProgramsServiceApiService) {
     this.locale = environment.defaultLocale;
   }
@@ -28,7 +28,7 @@ export class LatestActionService {
     }
     return formatDate(
       new Date(latestAction.created),
-      this.dateFormat,
+      DateFormat.dayAndTime,
       this.locale,
     );
   }

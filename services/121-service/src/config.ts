@@ -50,6 +50,7 @@ const rootUrl =
     ? `http://localhost:${PORT}/`
     : process.env.EXTERNAL_121_SERVICE_URL;
 export const EXTERNAL_API = {
+  baseApiUrl: baseApiUrl,
   root: rootUrl,
   rootApi: `${rootUrl}api`,
   smsStatus: baseApiUrl + API_PATHS.smsStatus,
@@ -60,7 +61,6 @@ export const EXTERNAL_API = {
   voiceXmlUrl: baseApiUrl + API_PATHS.voiceXml,
   voiceMp3Url: baseApiUrl + API_PATHS.voiceMp3,
   imageCodeUrl: baseApiUrl + API_PATHS.imageCode,
-  voucherInstructionsUrl: baseApiUrl + API_PATHS.voucherInstructions,
 };
 
 // Configure Public Twilio Setttings:

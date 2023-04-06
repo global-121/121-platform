@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
@@ -27,7 +27,7 @@ import { ValidationComponent } from '../validation-components.interface';
   templateUrl: './validate-program.component.html',
   styleUrls: ['./validate-program.component.scss'],
 })
-export class ValidateProgramComponent implements ValidationComponent {
+export class ValidateProgramComponent implements ValidationComponent, OnInit {
   public referenceId: string;
   public programId: number;
   private currentProgram: Program;

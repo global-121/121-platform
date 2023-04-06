@@ -15,7 +15,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { IframeModule } from './iframe/iframe.module';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { LoggingService } from './services/logging.service';
 
@@ -75,7 +74,6 @@ export function HttpLoaderFactory(http: HttpClient) {
       enabled: environment.useServiceWorker && environment.production,
     }),
     NoopAnimationsModule, // Disable animation as used by ngx-charts
-    IframeModule,
   ],
   exports: [TranslateModule],
   providers: [

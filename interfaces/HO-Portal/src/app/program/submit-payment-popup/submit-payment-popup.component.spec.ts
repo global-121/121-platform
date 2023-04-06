@@ -5,15 +5,15 @@ import { ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { SubmitPaymentPopupComponent } from './submit-payment-popup.component';
 
-const modalSpy = jasmine.createSpyObj('Modal', ['present']);
-const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-modalCtrlSpy.create.and.callFake(() => modalSpy);
-
 describe('SubmitPaymentPopupComponent', () => {
   let component: SubmitPaymentPopupComponent;
   let fixture: ComponentFixture<SubmitPaymentPopupComponent>;
 
   beforeEach(waitForAsync(() => {
+    const modalSpy = jasmine.createSpyObj('Modal', ['present']);
+    const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+    modalCtrlSpy.create.and.callFake(() => modalSpy);
+
     TestBed.configureTestingModule({
       declarations: [SubmitPaymentPopupComponent],
       imports: [TranslateModule.forRoot(), HttpClientTestingModule],

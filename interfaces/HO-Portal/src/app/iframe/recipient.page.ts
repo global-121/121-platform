@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
@@ -11,7 +11,7 @@ import { ProgramsServiceApiService } from '../services/programs-service-api.serv
   templateUrl: './recipient.page.html',
   styleUrls: ['./recipient.page.scss'],
 })
-export class RecipientPage implements OnInit, OnDestroy {
+export class RecipientPage implements OnDestroy {
   public recipients: Person[];
   public programsMap: { [programId: number]: Program };
   public queryParamPhonenumber = '';
@@ -34,8 +34,6 @@ export class RecipientPage implements OnInit, OnDestroy {
       },
     );
   }
-
-  async ngOnInit() {}
 
   ngOnDestroy(): void {
     this.paramsSubscription.unsubscribe();

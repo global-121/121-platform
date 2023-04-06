@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import { environment } from '../../../environments/environment';
 import { Message, MessageStatusMapping } from '../../models/message.model';
 import { Person } from '../../models/person.model';
@@ -17,6 +18,7 @@ export class MessageHistoryPopupComponent implements OnInit {
   @Input()
   public programId: number;
 
+  public DateFormat = DateFormat;
   public messageHistory: Message[];
   public historySize = 5;
   public trimBodyLength = 20;

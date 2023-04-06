@@ -11,14 +11,6 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramPeopleAffectedComponent } from './program-people-affected.component';
 
-const modalSpy = jasmine.createSpyObj('Modal', ['present']);
-const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-modalCtrlSpy.create.and.callFake(() => modalSpy);
-
-const popoverSpy = jasmine.createSpyObj('Popover', ['present']);
-const popoverCtrlSpy = jasmine.createSpyObj('PopoverController', ['create']);
-popoverCtrlSpy.create.and.callFake(() => popoverSpy);
-
 describe('ProgramPeopleAffectedComponent', () => {
   let component: ProgramPeopleAffectedComponent;
   let fixture: ComponentFixture<ProgramPeopleAffectedComponent>;
@@ -26,6 +18,16 @@ describe('ProgramPeopleAffectedComponent', () => {
   const mockProgramId = 1;
 
   beforeEach(waitForAsync(() => {
+    const modalSpy = jasmine.createSpyObj('Modal', ['present']);
+    const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+    modalCtrlSpy.create.and.callFake(() => modalSpy);
+
+    const popoverSpy = jasmine.createSpyObj('Popover', ['present']);
+    const popoverCtrlSpy = jasmine.createSpyObj('PopoverController', [
+      'create',
+    ]);
+    popoverCtrlSpy.create.and.callFake(() => popoverSpy);
+
     TestBed.configureTestingModule({
       declarations: [ProgramPeopleAffectedComponent],
       imports: [TranslateModule.forRoot(), FormsModule, RouterTestingModule],

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   LoggingEvent,
   LoggingEventCategory,
@@ -14,7 +14,7 @@ import { PersonalComponents } from '../personal-components.enum';
   templateUrl: './next-pa.component.html',
   styleUrls: ['./next-pa.component.scss'],
 })
-export class NextPaComponent extends PersonalDirective {
+export class NextPaComponent extends PersonalDirective implements OnInit {
   public isCanceled = false;
   public showSavePa = true;
   public disableSavePa = false;
@@ -34,7 +34,7 @@ export class NextPaComponent extends PersonalDirective {
     });
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     if (this.data) {
       this.initHistory();
       return;

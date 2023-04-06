@@ -9,7 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "incremental": true,
-    "lib": ["es2020", "DOM"],
+    "lib": ["ES2021", "DOM"],
     "module": "es2020",
     "moduleResolution": "node",
     "noUnusedLocals": true,
@@ -18,8 +18,9 @@
     "removeComments": true,
     "sourceMap": true,
     "strict": false,
-    "target": "es2020",
-    "typeRoots": ["node_modules/@types"]
+    "target": "ES2021",
+    "typeRoots": ["node_modules/@types"],
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "strictDomEventTypes": false,

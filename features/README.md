@@ -24,7 +24,7 @@
 
 ## All features / scenario's
 
-Features of the 121-platform are described in this folder in a standardizes way using the [Gherkin-language](https://cucumber.io/docs/gherkin/).
+Features of the 121-platform are described in this folder in a standardized way using the [Gherkin-language](https://cucumber.io/docs/gherkin/).
 
 ### For Aid Workers
 
@@ -56,7 +56,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - Get voucher balance
 - View/Download/Print voucher
 
-#### Generic 121-Portal components/features
+##### Generic 121-Portal components/features
 
 - Login
 - Logout
@@ -71,11 +71,16 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Validate Person Affected](AW-App/Validate_Person_Affected.feature)
 - [Upload validation data](AW-App/Upload_validation_data.feature)
 
-#### Generic AW-App components/features
+##### Generic AW-App components/features
 
 - Login
 - Logout
 - Change password
+
+### Using Redline WhatsApp Helpdesk
+
+- View iframe with PA details based on phone number: This is automatically tested via [Cypress](../interfaces/tests/cypress/e2e/HO-Portal/src/pa-details-iframe.cy.js) and therefore not also included here.
+
 
 ### For Person/People Affected
 

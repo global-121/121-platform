@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { DuplicateAttributesProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 
@@ -7,13 +7,11 @@ import { DuplicateAttributesProps } from '../../shared/confirm-prompt/confirm-pr
   templateUrl: './export-duplicates-popup.component.html',
   styleUrls: ['./export-duplicates-popup.component.scss'],
 })
-export class ExportDuplicatesPopupComponent implements OnInit {
+export class ExportDuplicatesPopupComponent {
   @Input()
   public duplicateAttributesProps: DuplicateAttributesProps;
 
   constructor(private modalController: ModalController) {}
-
-  ngOnInit() {}
 
   public submitConfirm() {
     this.modalController.dismiss(null, null);

@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import {
   PopupPayoutDetails,
   SinglePayoutDetails,
@@ -22,12 +23,12 @@ import { StatusEnum } from './../../models/status.enum';
 })
 export class PaymentStatusPopupComponent implements OnInit {
   public titleMessageIcon: string;
+  public moneyTime: Date | string = new Date();
   public titleMoneyIcon: string;
   public titleError: string;
   public titleSinglePayment: string;
 
   private locale: string;
-  private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   public title: string;
   public content: any;
@@ -36,6 +37,7 @@ export class PaymentStatusPopupComponent implements OnInit {
   public voucherButtons: boolean;
   public imageUrl: string;
   public sanitizedIimageUrl: string;
+  public imageFileName: string;
 
   public singlePaymentPayout: string;
   public singlePayoutDetails: SinglePayoutDetails;
@@ -70,6 +72,11 @@ export class PaymentStatusPopupComponent implements OnInit {
       this.sanitizedIimageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
         this.imageUrl,
       ) as string;
+      this.imageFileName = `voucher-${this.payoutDetails.payment}_${formatDate(
+        this.moneyTime,
+        DateFormat.dateOnly,
+        this.locale,
+      )}.png`;
     }
   }
 
@@ -99,6 +106,8 @@ export class PaymentStatusPopupComponent implements OnInit {
       IntersolvePayoutStatus.voucherSent,
     );
     if (intersolveMoneyTime) {
+      this.moneyTime = intersolveMoneyTime;
+
       return this.translate.instant(
         'page.program.program-people-affected.payment-status-popup.money-title',
         {
@@ -109,6 +118,8 @@ export class PaymentStatusPopupComponent implements OnInit {
     }
     const otherMoneyTime = await this.getTransactionTime('', '');
     if (otherMoneyTime) {
+      this.moneyTime = otherMoneyTime;
+
       return this.translate.instant(
         'page.program.program-people-affected.payment-status-popup.money-title',
         {
@@ -123,6 +134,7 @@ export class PaymentStatusPopupComponent implements OnInit {
         { payment: this.payoutDetails.payment, timestamp: '' },
       );
     }
+
     return '';
   }
 
@@ -140,7 +152,11 @@ export class PaymentStatusPopupComponent implements OnInit {
     }
 
     if (transaction.status === StatusEnum.success) {
-      return formatDate(transaction.paymentDate, this.dateFormat, this.locale);
+      return formatDate(
+        transaction.paymentDate,
+        DateFormat.dayAndTime,
+        this.locale,
+      );
     }
   }
 
@@ -237,7 +253,11 @@ export class PaymentStatusPopupComponent implements OnInit {
             'page.program.program-people-affected.payment-status-popup.current-balance',
             {
               currentBalance: this.formatCurrency(response),
-              timestamp: formatDate(new Date(), this.dateFormat, this.locale),
+              timestamp: formatDate(
+                new Date(),
+                DateFormat.dayAndTime,
+                this.locale,
+              ),
             },
           );
           this.actionResult(message);

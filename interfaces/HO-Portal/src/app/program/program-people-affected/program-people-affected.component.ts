@@ -5,7 +5,6 @@ import {
   EventEmitter,
   Input,
   OnDestroy,
-  OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
@@ -20,6 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
+import { DateFormat } from 'src/app/enums/date-format.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import { AnswerType } from 'src/app/models/fsp.model';
 import { PaymentColumnDetail } from 'src/app/models/payment.model';
@@ -67,7 +67,7 @@ import { PaymentHistoryPopupComponent } from '../payment-history-popup/payment-h
   templateUrl: './program-people-affected.component.html',
   styleUrls: ['./program-people-affected.component.scss'],
 })
-export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
+export class ProgramPeopleAffectedComponent implements OnDestroy {
   @ViewChild('proxyScrollbar')
   private proxyScrollbar: ElementRef;
 
@@ -85,7 +85,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
   public activePhase: ProgramPhase;
 
   private locale: string;
-  private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   public isLoading: boolean;
 
@@ -572,8 +571,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
     }
   }
 
-  async ngOnInit() {}
-
   async initComponent() {
     this.isLoading = true;
 
@@ -926,6 +923,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       : person.registeredWhileNoLongerEligibleDate;
 
     let personRow: PersonRow = {
+      id: person.registrationProgramId,
       referenceId: person.referenceId,
       checkboxVisible: false,
       pa: `PA #${String(person.registrationProgramId)}`,
@@ -934,25 +932,29 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         'page.program.program-people-affected.status.' + person.status,
       ),
       imported: person.importedDate
-        ? formatDate(person.importedDate, this.dateFormat, this.locale)
+        ? formatDate(person.importedDate, DateFormat.dayAndTime, this.locale)
         : null,
       invited: person.invitedDate
-        ? formatDate(person.invitedDate, this.dateFormat, this.locale)
+        ? formatDate(person.invitedDate, DateFormat.dayAndTime, this.locale)
         : null,
       markedNoLongerEligible: person.noLongerEligibleDate
-        ? formatDate(person.noLongerEligibleDate, this.dateFormat, this.locale)
+        ? formatDate(
+            person.noLongerEligibleDate,
+            DateFormat.dayAndTime,
+            this.locale,
+          )
         : null,
       digitalIdCreated: person.startedRegistrationDate
         ? formatDate(
             person.startedRegistrationDate,
-            this.dateFormat,
+            DateFormat.dayAndTime,
             this.locale,
           )
         : null,
       vulnerabilityAssessmentCompleted: vulnerabilityAssessmentCompleteTime
         ? formatDate(
             vulnerabilityAssessmentCompleteTime,
-            this.dateFormat,
+            DateFormat.dayAndTime,
             this.locale,
           )
         : null,
@@ -960,21 +962,25 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       selectedForValidation: person.selectedForValidationDate
         ? formatDate(
             person.selectedForValidationDate,
-            this.dateFormat,
+            DateFormat.dayAndTime,
             this.locale,
           )
         : null,
       vulnerabilityAssessmentValidated: person.validationDate
-        ? formatDate(person.validationDate, this.dateFormat, this.locale)
+        ? formatDate(person.validationDate, DateFormat.dayAndTime, this.locale)
         : null,
       included: person.inclusionDate
-        ? formatDate(person.inclusionDate, this.dateFormat, this.locale)
+        ? formatDate(person.inclusionDate, DateFormat.dayAndTime, this.locale)
         : null,
       rejected: person.rejectionDate
-        ? formatDate(person.rejectionDate, this.dateFormat, this.locale)
+        ? formatDate(person.rejectionDate, DateFormat.dayAndTime, this.locale)
         : null,
       inclusionEnded: person.inclusionEndDate
-        ? formatDate(person.inclusionEndDate, this.dateFormat, this.locale)
+        ? formatDate(
+            person.inclusionEndDate,
+            DateFormat.dayAndTime,
+            this.locale,
+          )
         : null,
       name: person.name,
       preferredLanguage: person.preferredLanguage
@@ -1094,7 +1100,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
         );
       } else {
         paymentColumnValue.text = this.translate.instant(
-          'page.program.program-people-affected.transaction.failed',
+          'page.program.program-people-affected.transaction.error',
         );
       }
       personRow[columnKey] =
@@ -1199,7 +1205,6 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
       component: PaymentHistoryPopupComponent,
       componentProps: {
         person,
-        personRow,
         programId,
         program: this.program,
         readOnly: !this.canUpdatePaData,
@@ -1275,6 +1280,7 @@ export class ProgramPeopleAffectedComponent implements OnInit, OnDestroy {
           this.programId,
           false,
           false,
+          null,
           payment,
         )
       ).map((r) => r.referenceId);
