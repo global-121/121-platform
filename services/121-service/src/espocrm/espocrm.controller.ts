@@ -10,8 +10,8 @@ import { Admin } from '../guards/admin.decorator';
 import { DeleteRegistrationDto } from '../registration/dto/delete-registration.dto';
 import { UpdateRegistrationDto } from '../registration/dto/update-registration.dto';
 import { EspocrmWebhookDto } from './dto/espocrm-webhook.dto';
-import { EspocrmActionTypeEnum } from './espocrm-action-type.enum';
-import { EspocrEntityTypeEnum } from './espocrm-entity-type';
+import { EspoCrmActionTypeEnum } from './espocrm-action-type.enum';
+import { EspoCrmEntityTypeEnum } from './espocrm-entity-type';
 import { EspocrmService } from './espocrm.service';
 import { Espocrm } from './guards/espocrm.decorator';
 import { EspocrmGuard } from './guards/espocrm.guard';
@@ -25,8 +25,8 @@ export class EspocrmController {
   public constructor(private readonly espocrmService: EspocrmService) {}
 
   @Espocrm(
-    EspocrmActionTypeEnum.update,
-    EspocrEntityTypeEnum.registration,
+    EspoCrmActionTypeEnum.update,
+    EspoCrmEntityTypeEnum.registration,
     espocrmIp,
   )
   @ApiOperation({ summary: 'Update registration(s) via a EspoCRM webhook' })
@@ -47,8 +47,8 @@ export class EspocrmController {
   }
 
   @Espocrm(
-    EspocrmActionTypeEnum.delete,
-    EspocrEntityTypeEnum.registration,
+    EspoCrmActionTypeEnum.delete,
+    EspoCrmEntityTypeEnum.registration,
     espocrmIp,
   )
   @ApiOperation({ summary: 'Delete registration(s) via a EspoCRM webhook' })

@@ -1,7 +1,7 @@
 import { Column, Entity, Unique } from 'typeorm';
 import { CascadeDeleteEntity } from '../base.entity';
-import { EspocrmActionTypeEnum } from './espocrm-action-type.enum';
-import { EspocrEntityTypeEnum } from './espocrm-entity-type';
+import { EspoCrmActionTypeEnum } from './espocrm-action-type.enum';
+import { EspoCrmEntityTypeEnum } from './espocrm-entity-type';
 
 @Unique('espocrmWebhookActionTypeEnityType', ['actionType', 'entityType'])
 @Entity('espocrm_webhook')
@@ -10,10 +10,10 @@ export class EspocrmWebhookEntity extends CascadeDeleteEntity {
   public referenceId: string;
 
   @Column()
-  public actionType: EspocrmActionTypeEnum;
+  public actionType: EspoCrmActionTypeEnum;
 
   @Column()
-  public entityType: EspocrEntityTypeEnum;
+  public entityType: EspoCrmEntityTypeEnum;
 
   @Column()
   public secretKey: string;

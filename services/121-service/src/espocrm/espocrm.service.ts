@@ -6,8 +6,8 @@ import { UpdateRegistrationDto } from '../registration/dto/update-registration.d
 import { ErrorEnum } from '../registration/errors/registration-data.error';
 import { RegistrationsService } from '../registration/registrations.service';
 import { EspocrmWebhookDto } from './dto/espocrm-webhook.dto';
-import { EspocrmActionTypeEnum } from './espocrm-action-type.enum';
-import { EspocrEntityTypeEnum } from './espocrm-entity-type';
+import { EspoCrmActionTypeEnum } from './espocrm-action-type.enum';
+import { EspoCrmEntityTypeEnum } from './espocrm-entity-type';
 import { EspocrmWebhookEntity } from './espocrm-webhooks.entity';
 
 @Injectable()
@@ -77,8 +77,8 @@ export class EspocrmService {
   }
 
   public async getWebhook(
-    actionType: EspocrmActionTypeEnum,
-    entityType: EspocrEntityTypeEnum,
+    actionType: EspoCrmActionTypeEnum,
+    entityType: EspoCrmEntityTypeEnum,
   ): Promise<EspocrmWebhookEntity> {
     const espocrmWebhook = await this.espocrmWebhookRepository.findOne({
       where: { actionType: actionType, entityType: entityType },
