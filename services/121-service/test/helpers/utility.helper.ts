@@ -11,9 +11,7 @@ export function getServer(): request.SuperAgentTest {
   return request.agent(getHostname());
 }
 
-export function getIsDebug(): boolean {
-  return DEBUG;
-}
+export const itSkipIfDebug = DEBUG ? it.skip : it;
 
 export function resetDB(seedScript: SeedScript): Promise<request.Response> {
   return getServer()

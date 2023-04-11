@@ -12,21 +12,21 @@ import {
   getRegistration,
   importRegistrations,
 } from '../helpers/registration.helper';
-import { getIsDebug, getServer, resetDB } from '../helpers/utility.helper';
+import { getServer, itSkipIfDebug, resetDB } from '../helpers/utility.helper';
 
-describe('Webhook integration with EspoCRM', () => {
+describe('Webhook integration with EspoCRM - Update PA', () => {
   const ip = '127.0.0.1';
   const programId = 3;
-  const referenceId = '63e62864557597e0d';
+  const referenceId = 'referenceId-for-update-pa-test';
   const registration = {
     referenceId: referenceId,
     preferredLanguage: 'en',
     paymentAmountMultiplier: 1,
     firstName: 'John',
     lastName: 'Smith',
-    phoneNumber: '14155238886',
+    phoneNumber: '15005550098',
     fspName: FspName.intersolveVisa,
-    whatsappPhoneNumber: '14155238886',
+    whatsappPhoneNumber: '15005550098',
     tokenCodeVisa: true,
     isPhysicalCardVisa: true,
   };
@@ -44,98 +44,97 @@ describe('Webhook integration with EspoCRM', () => {
     await resetDB(SeedScript.nlrcMultiple);
 
     accessToken = await setupEspoCrmWebhook(programId, webhookObject);
+
+    await importRegistrations(programId, [registration], accessToken);
   });
 
-  describe('Update PA', () => {
-    beforeEach(async () => {
-      await importRegistrations(programId, [registration], accessToken);
-    });
+  afterEach(async () => {
+    await deleteRegistrations(
+      programId,
+      { referenceIds: [referenceId] },
+      accessToken,
+    );
+  });
 
-    afterEach(async () => {
-      await deleteRegistrations(programId, { referenceIds: [referenceId] });
-    });
+  itSkipIfDebug('should not update without signature', async () => {
+    // Arrange
+    const signature = 'invalid';
+    const testName = 'UpdatedName';
 
-    it('should not update without signature', async () => {
-      // Arrange
-      const signature = 'invalid';
-
-      // Act
-      const response = await getServer()
-        .post(testEndpoint)
-        .set('x-forwarded-for', ip)
-        .set('x-signature', signature)
-        .send([
-          {
-            id: referenceId,
-            firstName: 'UpdatedName',
-          },
-        ])
-        .expect(getIsDebug() ? HttpStatus.CREATED : HttpStatus.FORBIDDEN);
-
-      // Assert
-      expect(response.statusCode).toBe(
-        getIsDebug() ? HttpStatus.CREATED : HttpStatus.FORBIDDEN,
-      );
-
-      const registration = await getRegistration(referenceId);
-
-      expect(registration.body.referenceId).toBe(referenceId);
-      expect(registration.body.firstName).not.toBe('UpdatedName ');
-    });
-
-    it('should not update unknown registrations', async () => {
-      // Arrange
-      const testBody = [
-        {
-          id: referenceId + '-fail-test',
-          firstName: 'UpdatedName',
-        },
-      ];
-      const signature = createEspoSignature(
-        testBody,
-        webhookObject.secretKey,
-        webhookObject.referenceId,
-      );
-
-      // Act
-      const response = await getServer()
-        .post(testEndpoint)
-        .set('x-forwarded-for', ip)
-        .set('x-signature', signature)
-        .send(testBody);
-
-      // Assert
-      expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
-    });
-
-    it('should succesfully update', async () => {
-      // Arrange
-      const updatedName = 'UpdatedName';
-      const testBody = [
+    // Act
+    const response = await getServer()
+      .post(testEndpoint)
+      .set('x-forwarded-for', ip)
+      .set('x-signature', signature)
+      .send([
         {
           id: referenceId,
-          firstName: updatedName,
+          firstName: testName,
         },
-      ];
-      const signature = createEspoSignature(
-        testBody,
-        webhookObject.secretKey,
-        webhookObject.referenceId,
-      );
+      ])
+      .expect(HttpStatus.FORBIDDEN);
 
-      // Act
-      const response = await getServer()
-        .post(testEndpoint)
-        .set('x-forwarded-for', ip)
-        .set('x-signature', signature)
-        .send(testBody);
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.FORBIDDEN);
 
-      // Assert
-      expect(response.statusCode).toBe(HttpStatus.CREATED);
+    const registration = await getRegistration(referenceId, accessToken);
 
-      const registration = await getRegistration(referenceId);
+    expect(registration.body.referenceId).toBe(referenceId);
+    expect(registration.body.firstName).not.toBe(testName);
+  });
 
-      expect(registration.body.customData.firstName).toBe(updatedName);
-    });
+  it('should not update unknown registrations', async () => {
+    // Arrange
+    const testBody = [
+      {
+        id: referenceId + '-fail-test',
+        firstName: 'UpdatedName',
+      },
+    ];
+    const signature = createEspoSignature(
+      testBody,
+      webhookObject.secretKey,
+      webhookObject.referenceId,
+    );
+
+    // Act
+    const response = await getServer()
+      .post(testEndpoint)
+      .set('x-forwarded-for', ip)
+      .set('x-signature', signature)
+      .send(testBody);
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
+  });
+
+  it('should succesfully update', async () => {
+    // Arrange
+    const updatedName = 'UpdatedName';
+    const testBody = [
+      {
+        id: referenceId,
+        firstName: updatedName,
+      },
+    ];
+    const signature = createEspoSignature(
+      testBody,
+      webhookObject.secretKey,
+      webhookObject.referenceId,
+    );
+
+    // Act
+    const response = await getServer()
+      .post(testEndpoint)
+      .set('x-forwarded-for', ip)
+      .set('x-signature', signature)
+      .send(testBody);
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.CREATED);
+
+    const registration = await getRegistration(referenceId, accessToken);
+
+    expect(registration.body.customData.firstName).toBe(updatedName);
   });
 });

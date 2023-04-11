@@ -1,41 +1,46 @@
 import * as request from 'supertest';
 import { getServer } from './utility.helper';
 
-export async function importRegistrations(
+export function importRegistrations(
   programId: number,
   registrations: object[],
-  access_token: string,
+  accessToken: string,
 ): Promise<request.Response> {
-  return await getServer()
+  return getServer()
     .post(`/programs/${programId}/registrations/import-registrations-cypress`)
-    .set('Cookie', [access_token])
+    .set('Cookie', [accessToken])
     .send(registrations);
 }
 
-export async function deleteRegistrations(
+export function deleteRegistrations(
   programId: number,
   registrationReferenceIds: { referenceIds: string[] },
+  accessToken: string,
 ): Promise<request.Response> {
-  return await getServer()
+  return getServer()
     .post(`/programs/${programId}/registrations/delete`)
+    .set('Cookie', [accessToken])
     .send(registrationReferenceIds);
 }
 
 export function getRegistration(
   referenceId: string,
+  accessToken: string,
 ): Promise<request.Response> {
-  return getServer().get(`/registrations/get/${referenceId}`);
+  return getServer()
+    .get(`/registrations/get/${referenceId}`)
+    .set('Cookie', [accessToken]);
 }
 
-export async function changePaStatus(
+export function changePaStatus(
   programId: number,
   registrations: string[],
   action: string,
-  access_token: string,
+  accessToken: string,
 ): Promise<request.Response> {
-  return await getServer()
+  return getServer()
     .post(`/programs/${programId}/registrations/${action}`)
-    .set('Cookie', [access_token])
+    .set('Cookie', [accessToken])
     .send({
       referenceIds: registrations,
       message: null,
