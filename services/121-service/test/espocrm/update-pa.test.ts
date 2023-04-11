@@ -1,5 +1,7 @@
+import { HttpStatus } from '@nestjs/common';
 import { EspoCrmActionTypeEnum } from '../../src/espocrm/espocrm-action-type.enum';
 import { EspoCrmEntityTypeEnum } from '../../src/espocrm/espocrm-entity-type';
+import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 import { SeedScript } from '../../src/scripts/scripts.controller';
 import {
   createEspoSignature,
@@ -23,7 +25,7 @@ describe('Webhook integration with EspoCRM', () => {
     firstName: 'John',
     lastName: 'Smith',
     phoneNumber: '14155238886',
-    fspName: 'Intersolve-visa',
+    fspName: FspName.intersolveVisa,
     whatsappPhoneNumber: '14155238886',
     tokenCodeVisa: true,
     isPhysicalCardVisa: true,
@@ -64,7 +66,7 @@ describe('Webhook integration with EspoCRM', () => {
             firstName: 'UpdatedName',
           },
         ])
-        .expect(getIsDebug() ? 201 : 403);
+        .expect(getIsDebug() ? HttpStatus.CREATED : HttpStatus.FORBIDDEN);
 
       const registration = await getRegistration(referenceId);
 
@@ -89,7 +91,7 @@ describe('Webhook integration with EspoCRM', () => {
         .set('x-forwarded-for', ip)
         .set('x-signature', signature)
         .send(testBody)
-        .expect(404);
+        .expect(HttpStatus.NOT_FOUND);
     });
 
     it('should succesfully update', async () => {
@@ -110,7 +112,7 @@ describe('Webhook integration with EspoCRM', () => {
         .set('x-forwarded-for', ip)
         .set('x-signature', signature)
         .send(testBody)
-        .expect(201);
+        .expect(HttpStatus.CREATED);
 
       const registration = await getRegistration(referenceId);
       expect(registration.body.customData.firstName).toBe(updatedName);

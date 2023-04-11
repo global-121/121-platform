@@ -1,7 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
+import { SeedScript } from '../../src/scripts/scripts.controller';
 import { getServer, resetDB } from '../helpers/utility.helper';
-
-const server = getServer();
 
 describe('Authentication', () => {
   describe('Login', () => {
@@ -12,7 +11,7 @@ describe('Authentication', () => {
     };
 
     beforeAll(async () => {
-      await resetDB('nlrc-multiple');
+      await resetDB(SeedScript.nlrcMultiple);
     });
 
     it('should log-in with valid credentials', async () => {
@@ -20,7 +19,7 @@ describe('Authentication', () => {
       const testUser = fixtureUser;
 
       // Act
-      const response = await server.post('/user/login').send(testUser);
+      const response = await getServer().post('/user/login').send(testUser);
 
       // Assert
       expect(response.status).toBe(HttpStatus.CREATED);
@@ -42,7 +41,7 @@ describe('Authentication', () => {
       };
 
       // Act
-      const response = await server.post('/user/login').send(testUser);
+      const response = await getServer().post('/user/login').send(testUser);
 
       // Assert
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
