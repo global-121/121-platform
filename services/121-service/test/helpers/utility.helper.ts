@@ -42,3 +42,7 @@ export async function getAccessToken(): Promise<string> {
 
   return accessToken;
 }
+
+export async function waitFor(timeInMs: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, timeInMs));
+}

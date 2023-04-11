@@ -13,9 +13,7 @@ import {
   changePaStatus,
   importRegistrations,
 } from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
-
-const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
 
 describe('Do payment to 1 PA', () => {
   const programId = 3;
@@ -77,7 +75,7 @@ describe('Do payment to 1 PA', () => {
         if (getTransactionsBody.length > 0) {
           break;
         }
-        await timer(2000);
+        await waitFor(2_000);
       }
 
       // Assert
@@ -108,7 +106,7 @@ describe('Do payment to 1 PA', () => {
         if (getTransactionsBody.length > 0) {
           break;
         }
-        await timer(2000);
+        await waitFor(2_000);
       }
 
       expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
