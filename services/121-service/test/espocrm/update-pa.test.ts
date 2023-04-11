@@ -1,57 +1,52 @@
-import { publishProgram } from '../helpers/program.helper';
+import { EspoCrmActionTypeEnum } from '../../src/espocrm/espocrm-action-type.enum';
+import { EspoCrmEntityTypeEnum } from '../../src/espocrm/espocrm-entity-type';
+import { SeedScript } from '../../src/scripts/scripts.controller';
+import {
+  createEspoSignature,
+  setupEspoCrmWebhook,
+} from '../helpers/espocrm.helper';
 import {
   deleteRegistrations,
   getRegistration,
   importRegistrations,
 } from '../helpers/registration.helper';
-import {
-  createEspoSignature,
-  getIsDebug,
-  getServer,
-  login,
-  resetDB,
-} from '../helpers/utility.helper';
+import { getIsDebug, getServer, resetDB } from '../helpers/utility.helper';
 
-const server = getServer();
-const ip = '127.0.0.1';
-const seedScript = 'nlrc-multiple';
-const programId = 3;
-const referenceId = '63e62864557597e0d';
-const registration = {
-  referenceId: referenceId,
-  preferredLanguage: 'en',
-  paymentAmountMultiplier: 1,
-  firstName: 'John',
-  lastName: 'Smith',
-  phoneNumber: 14155238886,
-  fspName: 'Intersolve-visa',
-  whatsappPhoneNumber: 14155238886,
-  tokenCodeVisa: true,
-  isPhysicalCardVisa: true,
-};
-const webhookObject = {
-  referenceId: '63f77488410458465',
-  actionType: 'update',
-  entityType: 'registration',
-  secretKey: 'secret-key',
-};
-let access_token: string;
+describe('Webhook integration with EspoCRM', () => {
+  const ip = '127.0.0.1';
+  const programId = 3;
+  const referenceId = '63e62864557597e0d';
+  const registration = {
+    referenceId: referenceId,
+    preferredLanguage: 'en',
+    paymentAmountMultiplier: 1,
+    firstName: 'John',
+    lastName: 'Smith',
+    phoneNumber: '14155238886',
+    fspName: 'Intersolve-visa',
+    whatsappPhoneNumber: '14155238886',
+    tokenCodeVisa: true,
+    isPhysicalCardVisa: true,
+  };
+  const webhookObject = {
+    referenceId: '63f77488410458465',
+    actionType: EspoCrmActionTypeEnum.update,
+    entityType: EspoCrmEntityTypeEnum.registration,
+    secretKey: 'secret-key',
+  };
+  let accessToken: string;
 
-describe('Webhook integration with espocrm', () => {
+  const testEndpoint = '/espocrm/update-registration';
+
   beforeEach(async () => {
-    await resetDB(seedScript);
-    const loginResponse = await login();
-    access_token = loginResponse.headers['set-cookie'][0].split(';')[0];
-    await publishProgram(programId);
-    await server
-      .post('/espocrm/webhooks')
-      .set('Cookie', [access_token])
-      .send(webhookObject);
+    await resetDB(SeedScript.nlrcMultiple);
+
+    accessToken = await setupEspoCrmWebhook(programId, webhookObject);
   });
 
   describe('Update PA', () => {
     beforeEach(async () => {
-      await importRegistrations(programId, [registration], access_token);
+      await importRegistrations(programId, [registration], accessToken);
     });
 
     afterEach(async () => {
@@ -59,59 +54,66 @@ describe('Webhook integration with espocrm', () => {
     });
 
     it('should not update without signature', async () => {
-      await server
-        .post('/espocrm/update-registration')
+      await getServer()
+        .post(testEndpoint)
+        .set('x-forwarded-for', ip)
+        .set('x-signature', 'invalid')
         .send([
           {
             id: referenceId,
             firstName: 'UpdatedName',
           },
         ])
-        .expect(getIsDebug ? 201 : 403);
+        .expect(getIsDebug() ? 201 : 403);
+
+      const registration = await getRegistration(referenceId);
+
+      expect(registration.body.referenceId).toBe(referenceId);
+      expect(registration.body.firstName).not.toBe('UpdatedName ');
     });
 
     it('should not update unknown registrations', async () => {
-      const updateBody = [
+      const testBody = [
         {
           id: referenceId + '-fail-test',
           firstName: 'UpdatedName',
         },
       ];
       const signature = createEspoSignature(
-        updateBody,
+        testBody,
         webhookObject.secretKey,
         webhookObject.referenceId,
       );
-      await server
-        .post('/espocrm/update-registration')
+      await getServer()
+        .post(testEndpoint)
         .set('x-forwarded-for', ip)
         .set('x-signature', signature)
-        .send(updateBody)
+        .send(testBody)
         .expect(404);
     });
 
     it('should succesfully update', async () => {
       const updatedName = 'UpdatedName';
-      const updateBody = [
+      const testBody = [
         {
           id: referenceId,
           firstName: updatedName,
         },
       ];
       const signature = createEspoSignature(
-        updateBody,
+        testBody,
         webhookObject.secretKey,
         webhookObject.referenceId,
       );
-      await server
-        .post('/espocrm/update-registration')
+      await getServer()
+        .post(testEndpoint)
         .set('x-forwarded-for', ip)
         .set('x-signature', signature)
-        .send(updateBody)
+        .send(testBody)
         .expect(201);
 
-      const getRegistrationRes = await getRegistration(referenceId);
-      expect(getRegistrationRes.body.customData.firstName).toBe(updatedName);
+      const registration = await getRegistration(referenceId);
+      expect(registration.body.customData.firstName).toBe(updatedName);
     });
   });
 });
