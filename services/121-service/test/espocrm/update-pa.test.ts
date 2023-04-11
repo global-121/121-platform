@@ -56,10 +56,14 @@ describe('Webhook integration with EspoCRM', () => {
     });
 
     it('should not update without signature', async () => {
-      await getServer()
+      // Arrange
+      const signature = 'invalid';
+
+      // Act
+      const response = await getServer()
         .post(testEndpoint)
         .set('x-forwarded-for', ip)
-        .set('x-signature', 'invalid')
+        .set('x-signature', signature)
         .send([
           {
             id: referenceId,
@@ -68,6 +72,11 @@ describe('Webhook integration with EspoCRM', () => {
         ])
         .expect(getIsDebug() ? HttpStatus.CREATED : HttpStatus.FORBIDDEN);
 
+      // Assert
+      expect(response.statusCode).toBe(
+        getIsDebug() ? HttpStatus.CREATED : HttpStatus.FORBIDDEN,
+      );
+
       const registration = await getRegistration(referenceId);
 
       expect(registration.body.referenceId).toBe(referenceId);
@@ -75,6 +84,7 @@ describe('Webhook integration with EspoCRM', () => {
     });
 
     it('should not update unknown registrations', async () => {
+      // Arrange
       const testBody = [
         {
           id: referenceId + '-fail-test',
@@ -86,15 +96,20 @@ describe('Webhook integration with EspoCRM', () => {
         webhookObject.secretKey,
         webhookObject.referenceId,
       );
-      await getServer()
+
+      // Act
+      const response = await getServer()
         .post(testEndpoint)
         .set('x-forwarded-for', ip)
         .set('x-signature', signature)
-        .send(testBody)
-        .expect(HttpStatus.NOT_FOUND);
+        .send(testBody);
+
+      // Assert
+      expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
     });
 
     it('should succesfully update', async () => {
+      // Arrange
       const updatedName = 'UpdatedName';
       const testBody = [
         {
@@ -107,14 +122,19 @@ describe('Webhook integration with EspoCRM', () => {
         webhookObject.secretKey,
         webhookObject.referenceId,
       );
-      await getServer()
+
+      // Act
+      const response = await getServer()
         .post(testEndpoint)
         .set('x-forwarded-for', ip)
         .set('x-signature', signature)
-        .send(testBody)
-        .expect(HttpStatus.CREATED);
+        .send(testBody);
+
+      // Assert
+      expect(response.statusCode).toBe(HttpStatus.CREATED);
 
       const registration = await getRegistration(referenceId);
+
       expect(registration.body.customData.firstName).toBe(updatedName);
     });
   });

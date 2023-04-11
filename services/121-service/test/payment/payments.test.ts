@@ -86,10 +86,13 @@ describe('Do payment to 1 PA', () => {
     });
 
     it('should give error about address', async () => {
+      // Arrange
       registration.addressCity = null;
       await importRegistrations(programId, [registration], accessToken);
       await changePaStatus(programId, [referenceId], 'include', accessToken);
       const paymentReferenceIds = [referenceId];
+
+      // Act
       const doPaymentResponse = await doPayment(
         programId,
         payment,
@@ -109,6 +112,7 @@ describe('Do payment to 1 PA', () => {
         await waitFor(2_000);
       }
 
+      // Assert
       expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
       expect(getTransactionsBody[0].status).toBe(StatusEnum.error);
@@ -118,7 +122,11 @@ describe('Do payment to 1 PA', () => {
     });
   });
 
-  describe.skip('with FSP: Intersolve AH digital voucher', () => {});
+  describe.skip('with FSP: Intersolve AH digital voucher', () => {
+    it('should succesfully pay-out', () => {});
+  });
 
-  describe.skip('with FSP: Intersolve Visa V-pay', () => {});
+  describe.skip('with FSP: Intersolve Visa V-pay', () => {
+    it('should succesfully pay-out', () => {});
+  });
 });
