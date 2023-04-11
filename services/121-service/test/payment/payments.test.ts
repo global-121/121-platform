@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { IntersolveJumboResultCode } from '../../src/payments/fsp-integration/intersolve-jumbo/enum/intersolve-jumbo-result-code.enum';
+import { SeedScript } from '../../src/scripts/scripts.controller';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { StatusEnum } from '../../src/shared/enum/status.enum';
 import {
@@ -11,9 +12,8 @@ import {
   changePaStatus,
   importRegistrations,
 } from '../helpers/registration.helper';
-import { login, resetDB } from '../helpers/utility.helper';
+import { getAccessToken, resetDB } from '../helpers/utility.helper';
 
-const seedScript = 'nlrc-multiple';
 const programId = 3;
 const referenceId = '63e62864557597e0d';
 const payment = 1;
@@ -24,9 +24,9 @@ const registration = {
   paymentAmountMultiplier: 1,
   firstName: 'John',
   lastName: 'Smith',
-  phoneNumber: 14155238886,
+  phoneNumber: '14155238886',
   fspName: 'Intersolve-jumbo-physical',
-  whatsappPhoneNumber: 14155238886,
+  whatsappPhoneNumber: '14155238886',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
   addressHouseNumberAddition: '',
@@ -40,9 +40,8 @@ let access_token: string;
 describe('Do payment to 1 PA', () => {
   describe('with FSP: Intersolve Jumbo physical', () => {
     beforeEach(async () => {
-      await resetDB(seedScript);
-      const loginResponse = await login();
-      access_token = loginResponse.headers['set-cookie'][0].split(';')[0];
+      await resetDB(SeedScript.nlrcMultiple);
+      access_token = await getAccessToken();
       await changePhase(
         programId,
         ProgramPhase.registrationValidation,

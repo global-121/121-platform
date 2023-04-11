@@ -6,8 +6,7 @@ export async function importRegistrations(
   registrations: object[],
   access_token: string,
 ): Promise<request.Response> {
-  const server = getServer();
-  return await server
+  return await getServer()
     .post(`/programs/${programId}/registrations/import-registrations-cypress`)
     .set('Cookie', [access_token])
     .send(registrations);
@@ -16,9 +15,8 @@ export async function importRegistrations(
 export async function deleteRegistrations(
   programId: number,
   registrationReferenceIds: { referenceIds: string[] },
-) {
-  const server = getServer();
-  await server
+): Promise<request.Response> {
+  return await getServer()
     .post(`/programs/${programId}/registrations/delete`)
     .send(registrationReferenceIds);
 }
@@ -26,8 +24,7 @@ export async function deleteRegistrations(
 export function getRegistration(
   referenceId: string,
 ): Promise<request.Response> {
-  const server = getServer();
-  return server.get(`/registrations/get/${referenceId}`);
+  return getServer().get(`/registrations/get/${referenceId}`);
 }
 
 export async function changePaStatus(
@@ -36,9 +33,11 @@ export async function changePaStatus(
   action: string,
   access_token: string,
 ): Promise<request.Response> {
-  const server = getServer();
-  return await server
+  return await getServer()
     .post(`/programs/${programId}/registrations/${action}`)
     .set('Cookie', [access_token])
-    .send({ referenceIds: registrations, message: null });
+    .send({
+      referenceIds: registrations,
+      message: null,
+    });
 }

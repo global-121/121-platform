@@ -14,7 +14,7 @@ import { SeedTestMultipleProgram } from './seed-program-test-multiple';
 import SeedProgramUkr from './seed-program-ukr';
 import { SeedProgramValidation } from './seed-program-validation';
 
-enum SeedScript {
+export enum SeedScript {
   pilotNL = 'pilot-nl',
   pilotNLPV = 'pilot-nl-pv',
   pilotETH = 'pilot-eth',

@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import * as request from 'supertest';
 import { DEBUG } from '../../src/config';
+import { SeedScript } from '../../src/scripts/scripts.controller';
 
 export function getHostname(): string {
   return 'http://localhost:3000/api';
@@ -14,23 +15,33 @@ export function getIsDebug(): boolean {
   return DEBUG;
 }
 
-export async function resetDB(script: string): Promise<void> {
-  const server = getServer();
-  const resetBody = {
-    secret: process.env.RESET_SECRET,
-  };
-  await server.post('/scripts/reset').query({ script: script }).send(resetBody);
+export async function resetDB(seedScript: SeedScript): Promise<void> {
+  await getServer()
+    .post('/scripts/reset')
+    .query({
+      script: seedScript,
+    })
+    .send({
+      secret: process.env.RESET_SECRET,
+    });
 }
 
-export async function login(): Promise<request.Response> {
-  const body = {
+export async function loginAsAdmin(): Promise<request.Response> {
+  return await getServer().post(`/user/login`).send({
     username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
     password: process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  };
-  const server = getServer();
-  return await server.post(`/user/login`).send(body);
+  });
 }
 
+export async function getAccessToken(): Promise<string> {
+  const login = await loginAsAdmin();
+  const cookies = login.headers['set-cookie'][0];
+  const accessToken = cookies
+    .split(';')
+    .find((cookie: string) => cookie.indexOf('access_token') !== -1);
+
+  return accessToken;
+}
 export function createEspoSignature(
   payload: any,
   secret: string,
