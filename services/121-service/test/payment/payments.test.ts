@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
+import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 import { IntersolveJumboResultCode } from '../../src/payments/fsp-integration/intersolve-jumbo/enum/intersolve-jumbo-result-code.enum';
-import { SeedScript } from '../../src/scripts/scripts.controller';
+import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { StatusEnum } from '../../src/shared/enum/status.enum';
 import {
@@ -14,59 +15,64 @@ import {
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 
-const programId = 3;
-const referenceId = '63e62864557597e0d';
-const payment = 1;
-const amount = 22;
-const registration = {
-  referenceId: referenceId,
-  preferredLanguage: 'en',
-  paymentAmountMultiplier: 1,
-  firstName: 'John',
-  lastName: 'Smith',
-  phoneNumber: '14155238886',
-  fspName: 'Intersolve-jumbo-physical',
-  whatsappPhoneNumber: '14155238886',
-  addressStreet: 'Teststraat',
-  addressHouseNumber: '1',
-  addressHouseNumberAddition: '',
-  addressPostalCode: '1234AB',
-  addressCity: 'Stad',
-};
 const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
-let access_token: string;
-
 describe('Do payment to 1 PA', () => {
+  const programId = 3;
+  const referenceId = '63e62864557597e0d';
+  const payment = 1;
+  const amount = 22;
+  const registration = {
+    referenceId: referenceId,
+    preferredLanguage: 'en',
+    paymentAmountMultiplier: 1,
+    firstName: 'John',
+    lastName: 'Smith',
+    phoneNumber: '14155238886',
+    fspName: FspName.intersolveJumboPhysical,
+    whatsappPhoneNumber: '14155238886',
+    addressStreet: 'Teststraat',
+    addressHouseNumber: '1',
+    addressHouseNumberAddition: '',
+    addressPostalCode: '1234AB',
+    addressCity: 'Stad',
+  };
+
   describe('with FSP: Intersolve Jumbo physical', () => {
+    let accessToken: string;
+
     beforeEach(async () => {
       await resetDB(SeedScript.nlrcMultiple);
-      access_token = await getAccessToken();
+      accessToken = await getAccessToken();
+
       await changePhase(
         programId,
         ProgramPhase.registrationValidation,
-        access_token,
+        accessToken,
       );
-      await changePhase(programId, ProgramPhase.inclusion, access_token);
-      await changePhase(programId, ProgramPhase.payment, access_token);
+      await changePhase(programId, ProgramPhase.inclusion, accessToken);
+      await changePhase(programId, ProgramPhase.payment, accessToken);
     });
 
     it('should succesfully pay-out', async () => {
-      await importRegistrations(programId, [registration], access_token);
-      await changePaStatus(programId, [referenceId], 'include', access_token);
+      // Arrange
+      await importRegistrations(programId, [registration], accessToken);
+      await changePaStatus(programId, [referenceId], 'include', accessToken);
       const paymentReferenceIds = [referenceId];
+
+      // Act
       const doPaymentResponse = await doPayment(
         programId,
         payment,
         amount,
         paymentReferenceIds,
-        access_token,
+        accessToken,
       );
 
       let getTransactionsBody = [];
       while (getTransactionsBody.length <= 0) {
         getTransactionsBody = (
-          await getTransactions(programId, 1, referenceId, access_token)
+          await getTransactions(programId, 1, referenceId, accessToken)
         ).body;
         if (getTransactionsBody.length > 0) {
           break;
@@ -74,6 +80,7 @@ describe('Do payment to 1 PA', () => {
         await timer(2000);
       }
 
+      // Assert
       expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
       expect(getTransactionsBody[0].status).toBe(StatusEnum.success);
@@ -82,21 +89,21 @@ describe('Do payment to 1 PA', () => {
 
     it('should give error about address', async () => {
       registration.addressCity = null;
-      await importRegistrations(programId, [registration], access_token);
-      await changePaStatus(programId, [referenceId], 'include', access_token);
+      await importRegistrations(programId, [registration], accessToken);
+      await changePaStatus(programId, [referenceId], 'include', accessToken);
       const paymentReferenceIds = [referenceId];
       const doPaymentResponse = await doPayment(
         programId,
         payment,
         amount,
         paymentReferenceIds,
-        access_token,
+        accessToken,
       );
 
       let getTransactionsBody = [];
       while (getTransactionsBody.length <= 0) {
         getTransactionsBody = (
-          await getTransactions(programId, 1, referenceId, access_token)
+          await getTransactions(programId, 1, referenceId, accessToken)
         ).body;
         if (getTransactionsBody.length > 0) {
           break;
@@ -113,7 +120,7 @@ describe('Do payment to 1 PA', () => {
     });
   });
 
-  describe('with FSP: Intersolve AH digital voucher', () => {});
+  describe.skip('with FSP: Intersolve AH digital voucher', () => {});
 
-  describe('with FSP: Intersolve Visa V-pay', () => {});
+  describe.skip('with FSP: Intersolve Visa V-pay', () => {});
 });

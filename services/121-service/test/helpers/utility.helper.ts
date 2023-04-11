@@ -1,6 +1,7 @@
 import * as request from 'supertest';
 import { DEBUG } from '../../src/config';
-import { SeedScript } from '../../src/scripts/scripts.controller';
+import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { CookieNames } from '../../src/shared/enum/cookie.enums';
 
 export function getHostname(): string {
   return 'http://localhost:3000/api';
@@ -14,8 +15,8 @@ export function getIsDebug(): boolean {
   return DEBUG;
 }
 
-export async function resetDB(seedScript: SeedScript): Promise<void> {
-  await getServer()
+export function resetDB(seedScript: SeedScript): Promise<request.Response> {
+  return getServer()
     .post('/scripts/reset')
     .query({
       script: seedScript,
@@ -25,8 +26,8 @@ export async function resetDB(seedScript: SeedScript): Promise<void> {
     });
 }
 
-export async function loginAsAdmin(): Promise<request.Response> {
-  return await getServer().post(`/user/login`).send({
+export function loginAsAdmin(): Promise<request.Response> {
+  return getServer().post(`/user/login`).send({
     username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
     password: process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
   });
@@ -34,10 +35,10 @@ export async function loginAsAdmin(): Promise<request.Response> {
 
 export async function getAccessToken(): Promise<string> {
   const login = await loginAsAdmin();
-  const cookies = login.headers['set-cookie'][0];
+  const cookies = login.get('Set-Cookie');
   const accessToken = cookies
-    .split(';')
-    .find((cookie: string) => cookie.indexOf('access_token') !== -1);
+    .find((cookie: string) => cookie.startsWith(CookieNames.general))
+    .split(';')[0];
 
   return accessToken;
 }

@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { EspoCrmActionTypeEnum } from '../../src/espocrm/espocrm-action-type.enum';
 import { EspoCrmEntityTypeEnum } from '../../src/espocrm/espocrm-entity-type';
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
-import { SeedScript } from '../../src/scripts/scripts.controller';
+import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   createEspoSignature,
   setupEspoCrmWebhook,
