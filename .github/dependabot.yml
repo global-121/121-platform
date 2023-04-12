@@ -118,6 +118,12 @@ updates:
       day: tuesday
     versioning-strategy: increase
     ignore:
+      - dependency-name: '*eslint*'
+        update-types: ['version-update:semver-patch']
+      - dependency-name: '@types/*'
+        update-types: ['version-update:semver-patch']
       - dependency-name: cypress
+        update-types: ['version-update:semver-major']
+      - dependency-name: typescript
         update-types: ['version-update:semver-major']
 
