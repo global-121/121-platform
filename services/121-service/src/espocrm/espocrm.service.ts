@@ -6,8 +6,8 @@ import { UpdateRegistrationDto } from '../registration/dto/update-registration.d
 import { ErrorEnum } from '../registration/errors/registration-data.error';
 import { RegistrationsService } from '../registration/registrations.service';
 import { EspocrmWebhookDto } from './dto/espocrm-webhook.dto';
-import { EspocrmActionTypeEnum } from './espocrm-action-type.enum';
-import { EspocrEntityTypeEnum } from './espocrm-entity-type';
+import { EspoCrmActionTypeEnum } from './espocrm-action-type.enum';
+import { EspoCrmEntityTypeEnum } from './espocrm-entity-type';
 import { EspocrmWebhookEntity } from './espocrm-webhooks.entity';
 
 @Injectable()
@@ -56,15 +56,29 @@ export class EspocrmService {
   public async deleteRegistrations(
     deleteRegistrationsDto: DeleteRegistrationDto[],
   ): Promise<void> {
+    const errors = [];
     for (const deleteRegistration of deleteRegistrationsDto) {
       const referenceId = deleteRegistration.id;
-      console.log('referenceId to delete: ', referenceId);
+      try {
+        await this.registrationsService.deleteBatch({
+          referenceIds: [referenceId],
+        });
+      } catch (error) {
+        console.log(
+          `Failed deleting registration with referenceId: ${referenceId}. Error: ${error}`,
+        );
+        errors.push(error);
+      }
     }
+    if (errors.length > 0) {
+      throw errors[0];
+    }
+    return;
   }
 
   public async getWebhook(
-    actionType: EspocrmActionTypeEnum,
-    entityType: EspocrEntityTypeEnum,
+    actionType: EspoCrmActionTypeEnum,
+    entityType: EspoCrmEntityTypeEnum,
   ): Promise<EspocrmWebhookEntity> {
     const espocrmWebhook = await this.espocrmWebhookRepository.findOne({
       where: { actionType: actionType, entityType: entityType },

@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { EspoCrmActionTypeEnum } from '../../src/espocrm/espocrm-action-type.enum';
 import { EspoCrmEntityTypeEnum } from '../../src/espocrm/espocrm-entity-type';
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import {
   createEspoSignature,
@@ -14,31 +15,31 @@ import {
 } from '../helpers/registration.helper';
 import { getServer, itSkipIfDebug, resetDB } from '../helpers/utility.helper';
 
-describe('Webhook integration with EspoCRM - Update PA', () => {
+describe('Webhook integration with EspoCRM - Delete PA', () => {
   const ip = '127.0.0.1';
   const programId = 3;
-  const referenceId = 'referenceId-for-update-pa-test';
+  const referenceId = 'referenceId-for-delete-pa-test';
   const registration = {
     referenceId: referenceId,
     preferredLanguage: 'en',
     paymentAmountMultiplier: 1,
     firstName: 'John',
     lastName: 'Smith',
-    phoneNumber: '15005550098',
+    phoneNumber: '15005550099',
     fspName: FspName.intersolveVisa,
-    whatsappPhoneNumber: '15005550098',
+    whatsappPhoneNumber: '15005550099',
     tokenCodeVisa: true,
     isPhysicalCardVisa: true,
   };
   const webhookObject = {
-    referenceId: '63f77488410458465',
-    actionType: EspoCrmActionTypeEnum.update,
+    referenceId: '63f77488410458466',
+    actionType: EspoCrmActionTypeEnum.delete,
     entityType: EspoCrmEntityTypeEnum.registration,
     secretKey: 'secret-key',
   };
   let accessToken: string;
 
-  const testEndpoint = '/espocrm/update-registration';
+  const testEndpoint = '/espocrm/delete-registration';
 
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
@@ -56,10 +57,9 @@ describe('Webhook integration with EspoCRM - Update PA', () => {
     );
   });
 
-  itSkipIfDebug('should not update without signature', async () => {
+  itSkipIfDebug('should not delete without signature', async () => {
     // Arrange
     const signature = 'invalid';
-    const testName = 'UpdatedName';
 
     // Act
     const response = await getServer()
@@ -69,10 +69,8 @@ describe('Webhook integration with EspoCRM - Update PA', () => {
       .send([
         {
           id: referenceId,
-          firstName: testName,
         },
-      ])
-      .expect(HttpStatus.FORBIDDEN);
+      ]);
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.FORBIDDEN);
@@ -80,15 +78,16 @@ describe('Webhook integration with EspoCRM - Update PA', () => {
     const registration = await getRegistration(referenceId, accessToken);
 
     expect(registration.body.referenceId).toBe(referenceId);
-    expect(registration.body.firstName).not.toBe(testName);
+    expect(registration.body.registrationStatus).not.toBe(
+      RegistrationStatusEnum.deleted,
+    );
   });
 
-  it('should not update unknown registrations', async () => {
+  it('should not delete unknown registrations', async () => {
     // Arrange
     const testBody = [
       {
         id: referenceId + '-fail-test',
-        firstName: 'UpdatedName',
       },
     ];
     const signature = createEspoSignature(
@@ -98,23 +97,22 @@ describe('Webhook integration with EspoCRM - Update PA', () => {
     );
 
     // Act
-    const response = await getServer()
+    const registration = await getServer()
       .post(testEndpoint)
       .set('x-forwarded-for', ip)
       .set('x-signature', signature)
       .send(testBody);
 
     // Assert
-    expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
+    expect(registration.statusCode).toBe(HttpStatus.NOT_FOUND);
+    expect(registration.body.errors.length).not.toBe(0);
   });
 
-  it('should succesfully update', async () => {
+  it('should succesfully delete', async () => {
     // Arrange
-    const updatedName = 'UpdatedName';
     const testBody = [
       {
         id: referenceId,
-        firstName: updatedName,
       },
     ];
     const signature = createEspoSignature(
@@ -135,6 +133,8 @@ describe('Webhook integration with EspoCRM - Update PA', () => {
 
     const registration = await getRegistration(referenceId, accessToken);
 
-    expect(registration.body.customData.firstName).toBe(updatedName);
+    expect(registration.body.registrationStatus).toBe(
+      RegistrationStatusEnum.deleted,
+    );
   });
 });
