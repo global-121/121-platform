@@ -6,13 +6,11 @@
   - [All features / scenario's](#all-features--scenarios)
     - [For Aid Workers](#for-aid-workers)
       - [Using 121-Portal](#using-121-portal)
-      - [Generic 121-Portal components/features](#generic-121-portal-componentsfeatures)
       - [Using AW-App](#using-aw-app)
-      - [Generic AW-App components/features](#generic-aw-app-componentsfeatures)
+      - [Using 3rd party systems](#using-3rd-party-systems)
     - [For Person/People Affected](#for-personpeople-affected)
-      - [Using external tools/applications](#using-external-toolsapplications)
       - [Using PA-App](#using-pa-app)
-      - [Generic PA-App components](#generic-pa-app-components)
+      - [Using external tools/applications](#using-external-toolsapplications)
     - [For Admin-user](#for-admin-user)
       - [Using Swagger UI](#using-swagger-ui)
     - [Automated processes (121-service)](#automated-processes-121-service)
@@ -55,14 +53,12 @@ Features of the 121-platform are described in this folder in a standardized way 
 - Retry individual/all payment(s)
 - Get voucher balance
 - View/Download/Print voucher
-
-##### Generic 121-Portal components/features
-
-- Login
-- Logout
-- Change password
-- [Navigate home and main menu](121-Portal/Navigate_home_and_main_menu.feature)
-- [Navigate program phases](121-Portal/Navigate_program_phases.feature)
+- Generic 121-Portal components/features
+  - Login
+  - Logout
+  - Change password
+  - [Navigate home and main menu](121-Portal/Navigate_home_and_main_menu.feature)
+  - [Navigate program phases](121-Portal/Navigate_program_phases.feature)
 
 #### Using AW-App
 
@@ -70,28 +66,23 @@ Features of the 121-platform are described in this folder in a standardized way 
 - [Get Person Affected validation data](AW-App/Get_Person_Affected_Validation_Data.feature)
 - [Validate Person Affected](AW-App/Validate_Person_Affected.feature)
 - [Upload validation data](AW-App/Upload_validation_data.feature)
+- Generic AW-App components/features
+  - Login
+  - Logout
+  - Change password
 
-##### Generic AW-App components/features
+#### Using 3rd party systems
 
-- Login
-- Logout
-- Change password
-
-### Using Redline WhatsApp Helpdesk
+Using Redline WhatsApp Helpdesk
 
 - View iframe with PA details based on phone number: This is automatically tested via [Cypress](../interfaces/tests/cypress/e2e/HO-Portal/src/pa-details-iframe.cy.js) and therefore not also included here.
 
+Using EspoCRM
+
+- Update PA details: This is automatically tested via [API-test](..\services\121-service\test\espocrm\update-pa.test.ts)
+- Delete PA: This is automatically tested via [API-test](..\services\121-service\test\espocrm\delete-pa.test.ts)
 
 ### For Person/People Affected
-
-#### Using external tools/applications
-
-- Send a WhatsApp message
-  - [Receive voucher](PA-App/Receive_Voucher.feature)
-  - [Claim digital voucher](Other/Claim_digital_voucher.feature)
-  - Read queued notification
-- View recipient details in portal through iframe in 3rd-party application (e.g. Redline)
-  >> This is tested with Cypress. See: pa-details-iframe.cy.ts
 
 #### Using PA-App
 
@@ -100,12 +91,17 @@ Features of the 121-platform are described in this folder in a standardized way 
 - [Answer program questions](PA-App/Answer_program_questions.feature)
 - [Fill payment details](PA-App/Fill_payment_details.feature)
 - Answer monitoring questions
+- Generic PA-App components
+  - [Listen to text in conversation-view](PA-App/Listen_to_text_in_conversation-view.feature)
+  - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
+  - Changes based on instance-configuration/values
 
-#### Generic PA-App components
+#### Using external tools/applications
 
-- [Listen to text in conversation-view](PA-App/Listen_to_text_in_conversation-view.feature)
-- [Verify phone number input](PA-App/Verify_phone_number_input.feature)
-- Changes based on instance-configuration/values
+- Send a WhatsApp message
+  - [Receive voucher](PA-App/Receive_Voucher.feature)
+  - [Claim digital voucher](Other/Claim_digital_voucher.feature)
+  - Read queued notification
 
 ### For Admin-user
 
