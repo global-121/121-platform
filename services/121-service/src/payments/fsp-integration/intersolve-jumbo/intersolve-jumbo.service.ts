@@ -207,6 +207,11 @@ export class IntersolveJumboService {
 
           // Remove PA from batch and start while loop from the top to retry
           paymentDetailsArray.splice(errorIndex, 1);
+
+          // except if nothing left in batch, then return early
+          if (paymentDetailsArray.length === 0) {
+            return batchResult;
+          }
         } else {
           // if another error than invalidOrderLine, then we cannot fix it per PA, skip out of while loop
           preOrderResultFinished = true;
@@ -225,11 +230,6 @@ export class IntersolveJumboService {
           return batchResult;
         }
       }
-    }
-
-    // if nothing left to approve, then return early
-    if (paymentDetailsArray.length === 0) {
-      return batchResult;
     }
 
     // Approve pre-order
