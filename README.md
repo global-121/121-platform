@@ -162,7 +162,7 @@ To start an individual interface/service in VS Code:
 
       npm run code:<package>
 
-## Re-use `node_modules` in your local IDE
+### Re-use `node_modules` in your local IDE
 
 If you want your IDE to (re-)use the (dev-)dependencies and tools installed in the container, you can copy them via a command from the root:
 
