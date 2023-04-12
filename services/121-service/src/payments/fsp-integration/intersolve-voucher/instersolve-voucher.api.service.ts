@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { SoapService } from '../../../utils/soap/soap.service';
 import { IntersolveGetCardResponse } from './dto/intersolve-get-card-response.dto';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
-import { IntersolveSoapElements } from './enum/intersolve-soap.enum';
 import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
+import { IntersolveVoucherSoapElements } from './enum/intersolve-voucher-soap.enum';
 import { IntersolveVoucherMockService } from './instersolve-voucher.mock';
 import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-request.entity';
-import { SoapService } from './soap.service';
 
 @Injectable()
 export class IntersolveVoucherApiService {
@@ -24,23 +24,23 @@ export class IntersolveVoucherApiService {
     refPos: number,
   ): Promise<IntersolveIssueCardResponse> {
     let payload = await this.soapService.readXmlAsJs(
-      IntersolveSoapElements.IssueCard,
+      IntersolveVoucherSoapElements.IssueCard,
     );
     payload = this.soapService.changeSoapBody(
       payload,
-      IntersolveSoapElements.IssueCard,
+      IntersolveVoucherSoapElements.IssueCard,
       ['Value'],
       String(amount),
     );
     payload = this.soapService.changeSoapBody(
       payload,
-      IntersolveSoapElements.IssueCard,
+      IntersolveVoucherSoapElements.IssueCard,
       ['EAN'],
       process.env.INTERSOLVE_EAN,
     );
     payload = this.soapService.changeSoapBody(
       payload,
-      IntersolveSoapElements.IssueCard,
+      IntersolveVoucherSoapElements.IssueCard,
       ['TransactionHeader', 'RefPos'],
       String(refPos),
     );
@@ -54,7 +54,13 @@ export class IntersolveVoucherApiService {
     try {
       const responseBody = !!process.env.MOCK_INTERSOLVE
         ? await this.intersolveMock.post(payload)
-        : await this.soapService.post(payload);
+        : await this.soapService.post(
+            payload,
+            IntersolveVoucherSoapElements.LoyaltyHeader,
+            process.env.INTERSOLVE_USERNAME,
+            process.env.INTERSOLVE_PASSWORD,
+            process.env.INTERSOLVE_URL,
+          );
       result = {
         resultCode: responseBody.IssueCardResponse.ResultCode._text,
         resultDescription:
@@ -86,24 +92,30 @@ export class IntersolveVoucherApiService {
     pin: string,
   ): Promise<IntersolveGetCardResponse> {
     let payload = await this.soapService.readXmlAsJs(
-      IntersolveSoapElements.GetCard,
+      IntersolveVoucherSoapElements.GetCard,
     );
     payload = this.soapService.changeSoapBody(
       payload,
-      IntersolveSoapElements.GetCard,
+      IntersolveVoucherSoapElements.GetCard,
       ['CardId'],
       cardId,
     );
     payload = this.soapService.changeSoapBody(
       payload,
-      IntersolveSoapElements.GetCard,
+      IntersolveVoucherSoapElements.GetCard,
       ['PIN'],
       pin,
     );
 
     const responseBody = !!process.env.MOCK_INTERSOLVE
       ? await this.intersolveMock.post(payload)
-      : await this.soapService.post(payload);
+      : await this.soapService.post(
+          payload,
+          IntersolveVoucherSoapElements.LoyaltyHeader,
+          process.env.INTERSOLVE_USERNAME,
+          process.env.INTERSOLVE_PASSWORD,
+          process.env.INTERSOLVE_URL,
+        );
     const result = {
       resultCode: responseBody.GetCardResponse.ResultCode._text,
       resultDescription: responseBody.GetCardResponse.ResultDescription._text,

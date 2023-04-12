@@ -1,10 +1,11 @@
 {
   "fsp": "UkrPoshta",
-  "fspDisplayName": {
+  "fspDisplayNamePaApp": {
     "en": "UkrPoshta",
     "uk": "Укрпошта",
     "ru": "Укр Почта"
   },
+  "fspDisplayNamePortal": "UkrPoshta",
   "integrationType": "csv",
   "questions": [
     {

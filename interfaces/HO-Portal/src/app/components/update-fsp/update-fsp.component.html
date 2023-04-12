@@ -23,9 +23,9 @@
           >
             <ion-select-option
               *ngFor="let fspItem of fspList"
-              value="{{ fspItem.fsp }}"
+              value="{{ fspItem.fspDisplayNamePortal }}"
             >
-              {{ fspItem.fsp }}
+              {{ fspItem.fspDisplayNamePortal }}
             </ion-select-option>
           </ion-select>
         </ion-item>
@@ -41,11 +41,7 @@
             <div>
               <ul>
                 <li *ngFor="let attr of attributeDifference">
-                  {{
-                    'page.program.program-people-affected.edit-person-affected-popup.properties.' +
-                      attr.name +
-                      '.label' | translate
-                  }}
+                  {{ attr.shortLabel | translate }}
                 </li>
               </ul>
             </div>

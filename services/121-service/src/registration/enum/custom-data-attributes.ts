@@ -31,12 +31,12 @@ export enum CustomDataAttributes {
 }
 
 export enum GenericAttributes {
+  referenceId = 'referenceId',
   phoneNumber = 'phoneNumber',
   preferredLanguage = 'preferredLanguage',
-  fspName = 'fspName',
   paymentAmountMultiplier = 'paymentAmountMultiplier',
+  fspName = 'fspName',
   maxPayments = 'maxPayments',
-  referenceId = 'referenceId',
 }
 
 export class Attribute {

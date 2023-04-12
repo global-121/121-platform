@@ -215,6 +215,9 @@ export class ProgramPayoutComponent implements OnInit {
         case DistributionFrequency.week:
           maxPaymentDate.setDate(maxPaymentDate.getDate() + 7);
           break;
+        case DistributionFrequency.weeks2:
+          maxPaymentDate.setDate(maxPaymentDate.getDate() + 14);
+          break;
         case DistributionFrequency.month:
         default:
           maxPaymentDate.setMonth(maxPaymentDate.getMonth() + 1);

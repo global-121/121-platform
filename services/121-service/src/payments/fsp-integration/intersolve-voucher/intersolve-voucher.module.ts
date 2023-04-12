@@ -6,9 +6,11 @@ import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { UserEntity } from '../../../user/user.entity';
 import { UserModule } from '../../../user/user.module';
+import { SoapService } from '../../../utils/soap/soap.service';
 import { ImageCodeModule } from '../../imagecode/image-code.module';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsModule } from '../../transactions/transactions.module';
+import { CustomHttpService } from './../../../shared/services/custom-http.service';
 import { IntersolveVoucherApiService } from './instersolve-voucher.api.service';
 import { IntersolveVoucherMockService } from './instersolve-voucher.mock';
 import { IntersolveIssueVoucherRequestEntity } from './intersolve-issue-voucher-request.entity';
@@ -16,7 +18,6 @@ import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instru
 import { IntersolveVoucherController } from './intersolve-voucher.controller';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
-import { SoapService } from './soap.service';
 
 @Module({
   imports: [
@@ -40,12 +41,12 @@ import { SoapService } from './soap.service';
     IntersolveVoucherApiService,
     SoapService,
     IntersolveVoucherMockService,
+    CustomHttpService,
   ],
   controllers: [IntersolveVoucherController],
   exports: [
     IntersolveVoucherService,
     IntersolveVoucherApiService,
-    SoapService,
     IntersolveVoucherMockService,
   ],
 })

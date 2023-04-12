@@ -1,8 +1,12 @@
-referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,lastName,phoneNumber,fspName,whatsappPhoneNumber,tokenCodeVisa,isPhysicalCardVisa
-63e62864557597e0d,en,1,,Test,Test,14155238886,Intersolve-visa,14155238886,6375100999150000001,true
-63e61bf6594d2dc61,en,1,,Test,mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,test,true
-63e618f6907aca315,en,1,,Test,Test,14155238886,Intersolve-visa,14155238886,mock-fail-register,true
-64d618f6906acb341,en,1,,Test,Test,14155238886,Intersolve-visa,14155238886,mock-fail-activate,true
-64d618f6906acb342,en,1,,Test,mock-fail-issue-token,14155238886,Intersolve-visa,14155238886,,false
-64d618f6906acb343,en,1,,Test,mock-fail-create-virtual-card,14155238886,Intersolve-visa,14155238886,,false
-64d618f6906acb344,en,1,,Test,mock-fail-get-virtual-card,14155238886,Intersolve-visa,14155238886,,false
+referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,lastName,phoneNumber,fspName,whatsappPhoneNumber,tokenCodeVisa,isPhysicalCardVisa,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
+,en,1,,Test,succeed,14155238886,Intersolve-jumbo-physical,14155238886,,,Straat,1,A,1234AB,Den Haag
+,en,1,,Test,mock-fail-create-order,14155238886,Intersolve-jumbo-physical,14155238886,,,Straat,1,A,1234AB,Den Haag
+,en,1,,Test,mock-address-city-fail,14155238886,Intersolve-jumbo-physical,14155238886,,,Straat,1,A,1234AB,
+,en,1,,Test,succeed,14155238886,Intersolve-visa,14155238886,6375100999150000001,TRUE,,,,,
+,en,1,,Test,mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,test,TRUE,,,,,
+,en,1,,Test,mock-fail-register,14155238886,Intersolve-visa,14155238886,mock-fail-register,TRUE,,,,,
+,en,1,,Test,mock-fail-activate,14155238886,Intersolve-visa,14155238886,mock-fail-activate,TRUE,,,,,
+,en,1,,Test,mock-fail-issue-token,14155238886,Intersolve-visa,14155238886,,FALSE,,,,,
+,en,1,,Test,mock-fail-create-virtual-card,14155238886,Intersolve-visa,14155238886,,FALSE,,,,,
+,en,1,,Test,mock-fail-get-virtual-card,14155238886,Intersolve-visa,14155238886,,FALSE,,,,,
+,en,1,,Test,succeed,14155238886,Intersolve-voucher-whatsapp,14155238886,,,,,,,

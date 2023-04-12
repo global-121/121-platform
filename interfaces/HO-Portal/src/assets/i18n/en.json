@@ -126,6 +126,7 @@
         "units": {
           "frequency": {
             "month": "monthly",
+            "weeks2": "2 weekly",
             "week": "weekly"
           },
           "duration": {
@@ -290,7 +291,8 @@
           "in": "Indonesian",
           "nl": "Dutch",
           "es": "Spanish",
-          "fr": "French"
+          "fr": "French",
+          "tr": "Turkish"
         },
         "status": {
           "imported": "Imported",

@@ -565,7 +565,7 @@ export class BulkImportService {
           type: c.answerType,
         };
       });
-    return [...attributes, ...programFspAttributes];
+    return [...attributes, ...programFspAttributes.reverse()];
   }
 
   private async validateRegistrationsCsvInput(

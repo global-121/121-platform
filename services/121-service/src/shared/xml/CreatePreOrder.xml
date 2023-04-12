@@ -1,0 +1,20 @@
+<soap:Envelope
+    xmlns:tns="http://localhost:8011"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<soap:Body>
+		<tns:CreatePreOrder>
+			<CustomerNr>0</CustomerNr>
+			<NewOrder>
+				<ExpectedDeliveryDate>2023-03-23T16:20:34.092Z</ExpectedDeliveryDate>
+				<ExtOrderReference></ExtOrderReference>
+				<ExtInvoiceReference></ExtInvoiceReference>
+				<FulfillmentInstructions></FulfillmentInstructions>
+				<PersonalCardText></PersonalCardText>
+				<CustomInvoiceAddress>false</CustomInvoiceAddress>
+				<OrderLine></OrderLine>
+			</NewOrder>
+			<CustomerType>BusinessCustomer</CustomerType>
+		</tns:CreatePreOrder>
+	</soap:Body>

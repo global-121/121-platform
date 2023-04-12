@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { getServer, resetDB } from '../helpers/helper';
+import { getServer, resetDB } from '../helpers/utility.helper';
 
 const server = getServer();
 
@@ -12,7 +12,7 @@ describe('Authentication', () => {
     };
 
     beforeAll(async () => {
-      await resetDB();
+      await resetDB('nlrc-multiple');
     });
 
     it('should log-in with valid credentials', async () => {

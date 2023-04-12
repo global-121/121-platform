@@ -1,8 +1,9 @@
 {
   "fsp": "FSP - no attributes",
   "integrationType": "api",
-  "fspDisplayName": {
+  "fspDisplayNamePaApp": {
     "en": "FSP - no attributes"
   },
+  "fspDisplayNamePortal": "FSP - no attributes",
   "questions": []
 }

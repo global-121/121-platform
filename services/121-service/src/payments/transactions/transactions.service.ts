@@ -227,7 +227,7 @@ export class TransactionsService {
   ): string {
     const key = transactionNotification.notificationKey;
     let message =
-      programNotifications[language][key] ||
+      programNotifications[language]?.[key] ||
       programNotifications[this.fallbackLanguage][key];
     if (transactionNotification.dynamicContent.length > 0) {
       for (const [
