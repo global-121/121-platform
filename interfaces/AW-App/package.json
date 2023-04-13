@@ -45,7 +45,7 @@
     "@ionic/angular": "^6.7.3",
     "@ionic/cli": "^6.20.9",
     "@ionic/storage": "2.2.0",
-    "@microsoft/applicationinsights-web": "^2.8.12",
+    "@microsoft/applicationinsights-web": "^3.0.0",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "core-js": "2.6.8",
