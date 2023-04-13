@@ -26,9 +26,6 @@
     },
     {
       "fsp": "Intersolve-jumbo-physical"
-    },
-    {
-      "fsp": "Intersolve-visa"
     }
   ],
   "targetNrRegistrations": 100000,
@@ -94,8 +91,7 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>",
-        "nl": "Geef het telefoonnummer waarop je een SMS kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+31 6 00 00 00 00</code>"
+        "en": "Phone number"
       },
       "placeholder": {
         "en": "+31 6 00 00 00 00"
@@ -115,8 +111,7 @@
     }
   ],
   "aboutProgram": {
-    "en": "This is a draft text for the new OCW program.",
-    "nl": "Dit is een draft tekst voor het nieuwe OCW programma."
+    "en": "This is the OCW program."
   },
   "fullnameNamingConvention": ["firstName", "lastName"],
   "languages": ["en", "nl", "ar", "tr"],
