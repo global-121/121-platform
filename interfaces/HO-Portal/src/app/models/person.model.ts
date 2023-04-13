@@ -23,6 +23,7 @@ export class Person {
   inclusionDate?: string;
   inclusionEndDate?: string;
   rejectionDate?: string;
+  completedDate?: string;
   status: RegistrationStatus;
   hasNote?: boolean;
   hasPhoneNumber?: boolean;
