@@ -5,9 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.83.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.84.0...master)
 
 ---
+
+## [1.84.0](https://github.com/global-121/121-platform/compare/v1.83.0...v1.84.0) - 2023-04-13
+
+### Added
+
+- EspoCRM delete webhook integration
+
+### Fixed
+
+- Several Jumbo intersolve bugs
+- Sorting of payments in recipient page
 
 ## [1.83.0](https://github.com/global-121/121-platform/compare/v1.82.0...v1.83.0) - 2023-04-06
 
@@ -30,8 +41,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     `node --version` shows `v16.*`
     `npm --version` shows `v8.*`
   - Run: `npm ci --prefix=interfaces/PA-app && npm ci --prefix=interfaces/AW-app && npm ci --prefix=interfaces/HO-Portal`
-
----
 
 ## [1.82.0](https://github.com/global-121/121-platform/compare/v1.81.1...v1.82.0) - 2023-03-08
 
