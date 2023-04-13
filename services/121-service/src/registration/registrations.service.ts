@@ -962,6 +962,11 @@ export class RegistrationsService {
         RegistrationStatusTimestampField.deleteDate,
       )
       .addOrderBy(`${RegistrationStatusEnum.deleted}.created`, 'DESC')
+      .addSelect(
+        `${RegistrationStatusEnum.completed}.created`,
+        RegistrationStatusTimestampField.completedDate,
+      )
+      .addOrderBy(`${RegistrationStatusEnum.completed}.created`, 'DESC')
       .leftJoin(
         RegistrationStatusChangeEntity,
         RegistrationStatusEnum.startedRegistration,
