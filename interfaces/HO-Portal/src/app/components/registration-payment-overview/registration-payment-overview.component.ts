@@ -87,29 +87,22 @@ export class RegistrationPaymentOverviewComponent implements OnInit {
         'page.program.program-people-affected.transaction.' + status,
       );
 
-    for (let i = 0; i < this.PAYMENTS_TABLE_LENGTH; i++) {
-      let label: string;
-      let value: string;
+    this.paymentsTable = payments.map((p) => ({
+      label: itemLabel(p.payment),
+      value: itemValue(p.status),
+    }));
 
-      if (!payments[i]) {
-        const paymentNumber = minPayment + i;
-        const paymentSuccessionNr = paymentNumber - minPayment + 1;
-        const paymentsRemaining =
-          this.person.maxPayments - this.person.nrPayments;
-        if (
-          this.person.status !== RegistrationStatus.included ||
-          (this.person.maxPayments && paymentSuccessionNr > paymentsRemaining)
-        ) {
-          break;
-        }
-        label = itemLabel(paymentNumber);
-        value = itemValue('planned');
-      } else {
-        label = itemLabel(payments[i].payment);
-        value = itemValue(payments[i].status);
+    for (let i = payments.length; i < this.PAYMENTS_TABLE_LENGTH; i++) {
+      const paymentNumber = minPayment + i;
+
+      if (this.person.maxPayments && paymentNumber > this.person.maxPayments) {
+        break;
       }
 
-      this.paymentsTable.push({ label, value });
+      this.paymentsTable.push({
+        label: itemLabel(paymentNumber),
+        value: itemValue('planned'),
+      });
     }
 
     const itemPaymentNumber = (s) => Number(s.split('#')[1]);
