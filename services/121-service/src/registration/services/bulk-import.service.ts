@@ -378,19 +378,21 @@ export class BulkImportService {
     dynamicAttributeRelations: RegistrationDataInfo[],
   ): Promise<void> {
     registration.registrationStatus = RegistrationStatusEnum.registered;
-    await this.registrationRepository.save(registration);
+    const registeredRegistration = await this.registrationRepository.save(
+      registration,
+    );
 
     await this.storeCustomRegistrationData(
-      registration,
+      registeredRegistration,
       customData,
       dynamicAttributeRelations,
     );
     await this.inclusionScoreService.calculateInclusionScore(
-      registration.referenceId,
+      registeredRegistration.referenceId,
     );
     await this.inclusionScoreService.calculatePaymentAmountMultiplier(
       programId,
-      registration.referenceId,
+      registeredRegistration.referenceId,
     );
   }
 
