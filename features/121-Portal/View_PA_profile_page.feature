@@ -37,7 +37,6 @@ Feature: View PA profile page
     When the user clicks on the "Show All" button
     Then the Payment History pupup opens
 
-
   Scenario: View Activity overview
     Given the user sees the "Activity overview" table
     And the user sees the "All" tab and the list of all available updates in the table
