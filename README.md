@@ -1,4 +1,4 @@
-# 121 platform
+# 121 platform fuck yeah
 
 121 is an open source platform for Cash based Aid built with Digital Account & Local/Global Financial service partners. -- Learn more about the platform: <https://www.121.global/>
 
