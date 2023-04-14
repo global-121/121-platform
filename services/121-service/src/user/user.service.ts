@@ -47,6 +47,7 @@ export class UserService {
     const saltCheck = await this.dataSource
       .getRepository(UserEntity)
       .createQueryBuilder('user')
+      .addSelect('user.salt')
       .where({ username: loginUserDto.username })
       .getOne();
 
