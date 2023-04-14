@@ -77,6 +77,6 @@ export class UserEntity extends CascadeDeleteEntity {
     ]);
   }
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, select: false })
   public salt: string;
 }
