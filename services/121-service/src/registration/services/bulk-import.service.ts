@@ -22,6 +22,7 @@ import {
   ImportResult,
   ImportStatus,
 } from '../dto/bulk-import.dto';
+import { RegistrationDataInfo } from '../dto/registration-data-relation.model';
 import { AdditionalAttributes } from '../dto/update-attribute.dto';
 import {
   AnswerTypes,
@@ -30,7 +31,6 @@ import {
 } from '../enum/custom-data-attributes';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
-import { ErrorEnum } from '../errors/registration-data.error';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationDataEntity } from './../registration-data.entity';
 import { InclusionScoreService } from './inclusion-score.service';
@@ -252,7 +252,11 @@ export class BulkImportService {
       csvFile,
       program.id,
     );
-    return this.importValidatedRegistrations(validatedImportRecords, program);
+    const r = await this.importValidatedRegistrations(
+      validatedImportRecords,
+      program,
+    );
+    return r;
   }
 
   public async importValidatedRegistrations(
@@ -299,40 +303,103 @@ export class BulkImportService {
       savedRegistrations.push(await registration.save());
     }
 
-    // Update status and save again (otherwise 'registration.subscriber' doesn't work)
-    savedRegistrations.forEach(
-      (r) => (r.registrationStatus = RegistrationStatusEnum.registered),
+    const dynamicAttributeRelations = await this.getAllRelationProgram(
+      program.id,
     );
-    await this.registrationRepository.save(savedRegistrations);
 
     for await (const [i, registration] of savedRegistrations.entries()) {
-      registration.registrationStatus = RegistrationStatusEnum.registered;
-      await this.storeRegistrationData(
+      this.storeRegistrationData(
         registration,
         program.id,
         customDataList[i],
+        dynamicAttributeRelations,
       );
-      await this.inclusionScoreService.calculateInclusionScore(
-        registration.referenceId,
-      );
-      await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-        program.id,
-        registration.referenceId,
-      );
-
       countImported += 1;
     }
-
     return { aggregateImportResult: { countImported } };
+  }
+
+  private async getAllRelationProgram(
+    programId: number,
+  ): Promise<RegistrationDataInfo[]> {
+    const relations: RegistrationDataInfo[] = [];
+    const programCustomAttributes =
+      await this.programCustomAttributeRepository.find({
+        where: { program: { id: programId } },
+      });
+    for (const attribute of programCustomAttributes) {
+      relations.push({
+        name: attribute.name,
+        type: attribute.type,
+        relation: {
+          programCustomAttributeId: attribute.id,
+        },
+      });
+    }
+
+    const programQuestions = await this.programQuestionRepository.find({
+      where: { program: { id: programId } },
+    });
+
+    for (const question of programQuestions) {
+      relations.push({
+        name: question.name,
+        type: question.answerType,
+        relation: {
+          programQuestionId: question.id,
+        },
+      });
+    }
+
+    const fspAttributes = await this.fspAttributeRepository.find({
+      relations: ['fsp', 'fsp.program'],
+    });
+    const programFspAttributes = fspAttributes.filter((a) =>
+      a.fsp.program.map((p) => p.id).includes(programId),
+    );
+
+    for (const attribute of programFspAttributes) {
+      relations.push({
+        name: attribute.name,
+        type: attribute.answerType,
+        relation: {
+          fspQuestionId: attribute.id,
+        },
+      });
+    }
+
+    return relations;
   }
 
   private async storeRegistrationData(
     registration: RegistrationEntity,
     programId: number,
     customData: object,
+    dynamicAttributeRelations: RegistrationDataInfo[],
   ): Promise<void> {
-    const dynamicAttributes = await this.getDynamicAttributes(programId);
-    for await (const att of dynamicAttributes) {
+    registration.registrationStatus = RegistrationStatusEnum.registered;
+    await this.registrationRepository.save(registration);
+
+    await this.storeCustomRegistrationData(
+      registration,
+      customData,
+      dynamicAttributeRelations,
+    );
+    await this.inclusionScoreService.calculateInclusionScore(
+      registration.referenceId,
+    );
+    await this.inclusionScoreService.calculatePaymentAmountMultiplier(
+      programId,
+      registration.referenceId,
+    );
+  }
+
+  private async storeCustomRegistrationData(
+    registration: RegistrationEntity,
+    customData: object,
+    dynamicAttributeRelations: RegistrationDataInfo[],
+  ): Promise<void> {
+    for await (const att of dynamicAttributeRelations) {
       let value;
       if (att.type === CustomAttributeType.boolean) {
         value = this.stringToBoolean(customData[att.name], false);
@@ -343,16 +410,15 @@ export class BulkImportService {
       } else {
         value = customData[att.name];
       }
-      try {
-        value = await registration.saveData(value, {
-          name: att.name,
-        });
-      } catch (error) {
-        // Skip data that is not relevant PA like fsp question of FSP for which they are not registered
-        if (error.name !== ErrorEnum.RegistrationDataError) {
-          throw error;
-        }
-      }
+      const registrationData = new RegistrationDataEntity();
+      registrationData.registration = registration;
+      registrationData.value = value;
+      registrationData.programCustomAttributeId =
+        att.relation.programCustomAttributeId;
+      registrationData.programQuestionId = att.relation.programQuestionId;
+      registrationData.fspQuestionId = att.relation.fspQuestionId;
+      // Insert is faster than save since it doesn't check for duplicates
+      await this.registrationDataRepository.insert(registrationData);
     }
   }
 
