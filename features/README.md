@@ -53,6 +53,7 @@ Features of the 121-platform are described in this folder in a standardized way 
 - Retry individual/all payment(s)
 - Get voucher balance
 - View/Download/Print voucher
+- [View PA profile page](121-portal/View_PA_profile_page.feature)
 - Generic 121-Portal components/features
   - Login
   - Logout
