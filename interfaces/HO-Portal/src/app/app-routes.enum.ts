@@ -4,4 +4,5 @@ export enum AppRoutes {
   user = 'user',
   help = 'help',
   iframe = 'iframe',
+  users = 'users',
 }
