@@ -566,6 +566,11 @@
       "user-manual": "User manual",
       "user-manual-content": "Needs to be added."
     },
+    "users": {
+      "pageTitle": "Users",
+      "title": "USERS PAGE",
+      "content": "users | roles"
+    },
     "user": {
       "pageTitle": "User",
       "change-password": {
