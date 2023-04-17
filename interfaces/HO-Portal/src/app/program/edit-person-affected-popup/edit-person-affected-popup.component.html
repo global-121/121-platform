@@ -100,8 +100,8 @@
         [value]="attributeValues?.phoneNumber"
         (updated)="updatePaAttribute('phoneNumber', $event, false)"
         [inProgress]="inProgress?.phoneNumber || false"
-        [isDisabled]="!canUpdatePersonalData"
-        [showSubmit]="canUpdatePersonalData"
+        [isDisabled]="readOnly || !canUpdatePersonalData"
+        [showSubmit]="!readOnly && canUpdatePersonalData"
         class="ion-margin-vertical"
       ></app-update-property-item>
 
@@ -115,6 +115,8 @@
           [value]="attributeValues.preferredLanguage"
           [options]="availableLanguages"
           (updated)="updatePaAttribute('preferredLanguage', $event, false)"
+          [isDisabled]="readOnly"
+          [showSubmit]="!readOnly"
           [inProgress]="inProgress?.preferredLanguage || false"
           class="ion-margin-vertical"
         ></app-update-property-item>
@@ -157,11 +159,13 @@
           [type]="paTableAttribute.type"
           [label]="paTableAttribute.label"
           [value]="attributeValues[paTableAttribute.name]"
+          [isDisabled]="readOnly || !canUpdatePersonalData"
+          [showSubmit]="!readOnly && canUpdatePersonalData"
           [options]="paTableAttribute.options"
+          [explanation]="paTableAttribute.explanation"
           (updated)="updatePaAttribute(paTableAttribute.name, $event, true)"
           class="ion-margin-vertical"
           [isFspAttribute]="paTableAttribute.isFspAttribute"
-          [explanation]="paTableAttribute.explanation"
         ></app-update-property-item>
       </ng-container>
     </div>
