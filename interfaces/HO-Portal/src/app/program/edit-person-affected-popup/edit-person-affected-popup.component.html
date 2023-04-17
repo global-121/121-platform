@@ -121,7 +121,11 @@
       </ng-container>
 
       <div
-        *ngIf="readOnly && fspList.length === programFspLength && person?.fsp"
+        *ngIf="
+          (!canUpdatePaFsp || readOnly) &&
+          fspList.length === programFspLength &&
+          person?.fsp
+        "
         class="ion-margin-vertical"
       >
         <strong
@@ -133,7 +137,12 @@
         <code>{{ person?.fspDisplayNamePortal }}</code>
       </div>
       <app-update-fsp
-        *ngIf="!readOnly && fspList.length === programFspLength && person?.fsp"
+        *ngIf="
+          canUpdatePaFsp &&
+          !readOnly &&
+          fspList.length === programFspLength &&
+          person?.fsp
+        "
         [fspList]="fspList"
         [label]="'page.program.program-people-affected.column.fsp' | translate"
         [value]="person?.fspDisplayNamePortal"

@@ -42,6 +42,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public canUpdatePersonalData = false;
 
   @Input()
+  public canUpdatePaFsp = false;
+
+  @Input()
   public canViewMessageHistory = false;
 
   @Input()

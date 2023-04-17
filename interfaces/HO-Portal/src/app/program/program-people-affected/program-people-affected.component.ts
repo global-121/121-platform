@@ -290,6 +290,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public canViewPersonalData: boolean;
   private canViewMessageHistory: boolean;
   private canUpdatePaData: boolean;
+  private canUpdatePaFsp: boolean;
   private canUpdatePersonalData: boolean;
   private canViewPaymentData: boolean;
   private canViewVouchers: boolean;
@@ -637,6 +638,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private async loadPermissions() {
     this.canUpdatePaData = this.authService.hasAllPermissions(this.programId, [
       Permission.RegistrationAttributeUPDATE,
+    ]);
+    this.canUpdatePaFsp = this.authService.hasAllPermissions(this.programId, [
+      Permission.RegistrationFspUPDATE,
     ]);
     this.canViewPersonalData = this.authService.hasAllPermissions(
       this.programId,
@@ -1192,6 +1196,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         readOnly: !this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,
+        canUpdatePaFsp: this.canUpdatePaFsp,
         canViewMessageHistory: this.canViewMessageHistory,
         canViewPaymentData: this.canViewPaymentData,
       },
