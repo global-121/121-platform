@@ -140,7 +140,6 @@ export class UserService {
       throw new HttpException('Role exists already', HttpStatus.BAD_REQUEST);
     }
 
-
     const userRoleEntity = new UserRoleEntity();
     userRoleEntity.role = userRoleData.role;
     userRoleEntity.label = userRoleData.label;
