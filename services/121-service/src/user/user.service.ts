@@ -125,7 +125,7 @@ export class UserService {
       relations: ['permissions'],
     });
   }
-  
+
   public async getUsers(): Promise<UserEntity[]> {
     return await this.userRepository.find();
   }
