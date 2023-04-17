@@ -125,6 +125,10 @@ export class UserService {
       relations: ['permissions'],
     });
   }
+  
+  public async getUsers(): Promise<UserEntity[]> {
+    return await this.userRepository.find();
+  }
 
   public async addUserRole(
     userRoleData: CreateUserRoleDto,
@@ -135,6 +139,7 @@ export class UserService {
     if (existingRole) {
       throw new HttpException('Role exists already', HttpStatus.BAD_REQUEST);
     }
+
 
     const userRoleEntity = new UserRoleEntity();
     userRoleEntity.role = userRoleData.role;

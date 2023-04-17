@@ -46,6 +46,13 @@ export class UserController {
   }
 
   @Admin()
+  @ApiOperation({ summary: 'Get all users' })
+  @Get('users')
+  public async getUsers(): Promise<UserEntity[]> {
+    return await this.userService.getUsers();
+  }
+  
+  @Admin()
   @ApiOperation({ summary: 'Create new user role' })
   @Post('roles')
   public async addUserRole(
