@@ -33,7 +33,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public programId: number;
 
   @Input()
-  public readOnly = false;
+  public canUpdatePaData = false;
 
   @Input()
   public canViewPersonalData = false;

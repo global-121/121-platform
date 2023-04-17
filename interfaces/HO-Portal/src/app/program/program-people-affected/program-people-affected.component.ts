@@ -1193,7 +1193,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       componentProps: {
         person,
         programId,
-        readOnly: !this.canUpdatePaData,
+        canUpdatePaData: this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,
         canUpdatePaFsp: this.canUpdatePaFsp,

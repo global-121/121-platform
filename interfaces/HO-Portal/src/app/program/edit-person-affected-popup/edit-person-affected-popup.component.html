@@ -53,8 +53,12 @@
         [value]="attributeValues?.paymentAmountMultiplier"
         (updated)="updatePaAttribute('paymentAmountMultiplier', $event, false)"
         [inProgress]="inProgress?.paymentAmountMultiplier || false"
-        [isDisabled]="readOnly || program?.paymentAmountMultiplierFormula"
-        [showSubmit]="!readOnly && !program?.paymentAmountMultiplierFormula"
+        [isDisabled]="
+          !canUpdatePaData || program?.paymentAmountMultiplierFormula
+        "
+        [showSubmit]="
+          canUpdatePaData && !program?.paymentAmountMultiplierFormula
+        "
         prop="paymentAmountMultiplier"
         class="ion-margin-vertical"
       ></app-update-property-item>
@@ -79,8 +83,8 @@
           [value]="attributeValues?.maxPayments"
           (updated)="updatePaAttribute('maxPayments', $event, false)"
           [inProgress]="inProgress?.maxPayments || false"
-          [isDisabled]="readOnly"
-          [showSubmit]="!readOnly"
+          [isDisabled]="!canUpdatePaData"
+          [showSubmit]="canUpdatePaData"
           prop="maxPayments"
           class="ion-margin-vertical"
         ></app-update-property-item>
@@ -100,8 +104,8 @@
         [value]="attributeValues?.phoneNumber"
         (updated)="updatePaAttribute('phoneNumber', $event, false)"
         [inProgress]="inProgress?.phoneNumber || false"
-        [isDisabled]="readOnly || !canUpdatePersonalData"
-        [showSubmit]="!readOnly && canUpdatePersonalData"
+        [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
+        [showSubmit]="canUpdatePaData && canUpdatePersonalData"
         class="ion-margin-vertical"
       ></app-update-property-item>
 
@@ -115,8 +119,8 @@
           [value]="attributeValues.preferredLanguage"
           [options]="availableLanguages"
           (updated)="updatePaAttribute('preferredLanguage', $event, false)"
-          [isDisabled]="readOnly"
-          [showSubmit]="!readOnly"
+          [isDisabled]="!canUpdatePaData"
+          [showSubmit]="canUpdatePaData"
           [inProgress]="inProgress?.preferredLanguage || false"
           class="ion-margin-vertical"
         ></app-update-property-item>
@@ -124,7 +128,7 @@
 
       <div
         *ngIf="
-          (!canUpdatePaFsp || readOnly) &&
+          (!canUpdatePaData || !canUpdatePaFsp) &&
           fspList.length === programFspLength &&
           person?.fsp
         "
@@ -140,8 +144,8 @@
       </div>
       <app-update-fsp
         *ngIf="
+          canUpdatePaData &&
           canUpdatePaFsp &&
-          !readOnly &&
           fspList.length === programFspLength &&
           person?.fsp
         "
@@ -159,8 +163,8 @@
           [type]="paTableAttribute.type"
           [label]="paTableAttribute.label"
           [value]="attributeValues[paTableAttribute.name]"
-          [isDisabled]="readOnly || !canUpdatePersonalData"
-          [showSubmit]="!readOnly && canUpdatePersonalData"
+          [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
+          [showSubmit]="canUpdatePaData && canUpdatePersonalData"
           [options]="paTableAttribute.options"
           [explanation]="paTableAttribute.explanation"
           (updated)="updatePaAttribute(paTableAttribute.name, $event, true)"

@@ -156,7 +156,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       componentProps: {
         person: this.person,
         programId: this.programId,
-        readOnly: !this.canUpdatePaData,
+        canUpdatePaData: this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,
         canUpdatePaFsp: this.canUpdatePaFsp,
