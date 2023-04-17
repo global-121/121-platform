@@ -424,7 +424,7 @@ When committing your changes, provide a commit message that starts with an appro
 
 Add an Azure DevOps task ID at the end of the commit message, for example "feat: new feature added to the profile page AB#123456".
 
-After pushing your changes to the branch you can create a PR on <https://github.com/global-121/121-platform>. Add adittional description for the PR if required.
+After pushing your changes to the branch you can create a PR on <https://github.com/global-121/121-platform>. Add additional description for the PR if required.
 
 ## Releases
 
