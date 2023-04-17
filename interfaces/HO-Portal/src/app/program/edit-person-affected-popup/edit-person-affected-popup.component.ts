@@ -51,16 +51,12 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public canViewPaymentData = false;
 
   public DateFormat = DateFormat;
-  public program: Program;
-  private paTableAttributesInput: Program['editableAttributes'];
-
   public inProgress: any = {};
+
+  public program: Program;
   public attributeValues: any = {};
-
-  public noteModel: string;
-  public noteLastUpdate: string;
-
   public paTableAttributes: {}[] = [];
+  private paTableAttributesInput: Program['editableAttributes'];
 
   public fspList: Fsp[] = [];
   public programFspLength = 0;
@@ -69,6 +65,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public availableLanguages = [];
 
   public alreadyReceivedPayments = 0;
+
+  public noteModel: string;
+  public noteLastUpdate: string;
 
   constructor(
     private modalController: ModalController,

@@ -38,9 +38,7 @@ export class RegistrationPaymentOverviewComponent implements OnInit {
 
   private PAYMENTS_TABLE_LENGTH = 4;
 
-  private canUpdatePaData: boolean;
   private canViewPersonalData: boolean;
-  private canUpdatePersonalData: boolean;
   private canViewPaymentData: boolean;
   private canViewVouchers: boolean;
   private canDoSinglePayment: boolean;
@@ -116,13 +114,11 @@ export class RegistrationPaymentOverviewComponent implements OnInit {
       component: PaymentHistoryPopupComponent,
       componentProps: {
         person: this.person,
-        programId: this.program.id,
         program: this.program,
-        readOnly: !this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
-        canUpdatePersonalData: this.canUpdatePersonalData,
-        canDoSinglePayment: this.canDoSinglePayment,
+        canViewPaymentData: this.canViewPaymentData,
         canViewVouchers: this.canViewVouchers,
+        canDoSinglePayment: this.canDoSinglePayment,
       },
     });
     await modal.present();
@@ -151,18 +147,10 @@ export class RegistrationPaymentOverviewComponent implements OnInit {
   }
 
   private loadPermissions() {
-    this.canUpdatePaData = this.authService.hasAllPermissions(this.program.id, [
-      Permission.RegistrationAttributeUPDATE,
-    ]);
     this.canViewPersonalData = this.authService.hasAllPermissions(
       this.program.id,
       [Permission.RegistrationPersonalREAD],
     );
-    this.canUpdatePersonalData = this.authService.hasAllPermissions(
-      this.program.id,
-      [Permission.RegistrationPersonalUPDATE],
-    );
-
     this.canViewPaymentData = this.authService.hasAllPermissions(
       this.program.id,
       [Permission.PaymentREAD, Permission.PaymentTransactionREAD],

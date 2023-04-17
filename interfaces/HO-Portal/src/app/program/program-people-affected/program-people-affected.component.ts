@@ -1205,7 +1205,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     await modal.present();
   }
 
-  public async paymentHistoryPopup(personRow: PersonRow, programId: number) {
+  public async paymentHistoryPopup(personRow: PersonRow) {
     const person = this.allPeopleData.find(
       (pa) => pa.referenceId === personRow.referenceId,
     );
@@ -1213,13 +1213,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       component: PaymentHistoryPopupComponent,
       componentProps: {
         person,
-        programId,
         program: this.program,
-        readOnly: !this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
-        canUpdatePersonalData: this.canUpdatePersonalData,
-        canDoSinglePayment: this.canDoSinglePayment,
+        canViewPaymentData: this.canViewPaymentData,
         canViewVouchers: this.canViewVouchers,
+        canDoSinglePayment: this.canDoSinglePayment,
       },
     });
     await modal.present();
