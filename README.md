@@ -411,7 +411,7 @@ it("XYZ", (done) => {
 
 ---
 
-## Committing and creating a Pull Request
+## Committing and creating a Pull Request (PR)
 
 When committing your changes, provide a commit message that starts with an appropriate keyword:
 - feat: (new feature for the user)
@@ -420,9 +420,11 @@ When committing your changes, provide a commit message that starts with an appro
 - style: (formatting, missing semi colons, etc; no production code change)
 - refactor: (refactoring production code, eg. renaming a variable)
 - test: (adding missing tests, refactoring tests; no production code change)
-- chore: (updating grunt tasks etc; no production code change)  
+- chore: (cleanups, version updates etc; no production code change)  
 
-After pushing your changes to the branch you can create a PR
+Add an Azure DevOps task ID at the end of the commit message, for example "feat: new feature added to the profile page AB#123456".
+
+After pushing your changes to the branch you can create a PR on <https://github.com/global-121/121-platform>. Add adittional description for the PR if required.
 
 ## Releases
 
