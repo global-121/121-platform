@@ -1466,7 +1466,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       });
   }
 
-  private async actionResult(resultMessage: string, refresh: boolean = false) {
+  private async actionResult(resultMessage: string) {
     const alert = await this.alertController.create({
       message: resultMessage,
       buttons: [
@@ -1475,9 +1475,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           handler: () => {
             alert.dismiss(true);
             this.pubSub.publish(PubSubEvent.dataRegistrationChanged);
-            if (refresh) {
-              window.location.reload();
-            }
           },
         },
       ],
