@@ -411,6 +411,19 @@ it("XYZ", (done) => {
 
 ---
 
+## Committing and creating a Pull Request
+
+When committing your changes, provide a commit message that starts with an appropriate keyword:
+- feat: (new feature for the user)
+- fix: (bug fix for the user)
+- docs: (changes to the documentation)
+- style: (formatting, missing semi colons, etc; no production code change)
+- refactor: (refactoring production code, eg. renaming a variable)
+- test: (adding missing tests, refactoring tests; no production code change)
+- chore: (updating grunt tasks etc; no production code change)  
+
+After pushing your changes to the branch you can create a PR
+
 ## Releases
 
 See notable changes and the currently release version in the [CHANGELOG](CHANGELOG.md).
