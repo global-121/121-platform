@@ -51,7 +51,7 @@ export class UserController {
   public async getUsers(): Promise<UserEntity[]> {
     return await this.userService.getUsers();
   }
-  
+
   @Admin()
   @ApiOperation({ summary: 'Create new user role' })
   @Post('roles')
