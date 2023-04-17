@@ -871,7 +871,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private async loadData(refresh: boolean = false) {
     this.allPeopleData = await this.programsService.getPeopleAffected(
       this.programId,
-      this.canUpdatePersonalData,
+      this.canViewPersonalData,
       this.canViewPaymentData && this.thisPhase === ProgramPhase.payment,
     );
 
