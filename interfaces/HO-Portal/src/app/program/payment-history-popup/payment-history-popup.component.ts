@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
@@ -26,9 +26,25 @@ import { StatusEnum } from './../../models/status.enum';
   styleUrls: ['./payment-history-popup.component.scss'],
 })
 export class PaymentHistoryPopupComponent implements OnInit {
+  @Input()
   public person: Person;
-  public programId: number;
+
+  @Input()
   public program: Program;
+
+  @Input()
+  private canViewPersonalData = false;
+
+  @Input()
+  private canViewPaymentData = false;
+
+  @Input()
+  private canViewVouchers = false;
+
+  @Input()
+  private canDoSinglePayment = false;
+
+  private programId: number;
   private locale: string;
   private pastTransactions: Transaction[] = [];
   public firstPaymentToShow = 1;
@@ -37,13 +53,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
   public content: any;
   public payoutDetails: PopupPayoutDetails;
   public paymentInProgress = false;
-
-  public readOnly = false;
-  public canViewPersonalData: boolean;
-  public canUpdatePersonalData = false;
-  public canViewPaymentData = true;
-  public canViewVouchers = true;
-  public canDoSinglePayment = true;
 
   public isInProgress = false;
   public paDisplayName: string;
@@ -58,9 +67,12 @@ export class PaymentHistoryPopupComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.canViewPersonalData
-      ? (this.paDisplayName = this.person?.name)
-      : (this.paDisplayName = `PA #${this.person?.registrationProgramId}`);
+    this.programId = this.program?.id;
+    this.paDisplayName = `PA #${this.person?.registrationProgramId}`;
+
+    if (this.canViewPersonalData) {
+      this.paDisplayName = this.person?.name;
+    }
 
     if (this.canViewPaymentData) {
       this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(

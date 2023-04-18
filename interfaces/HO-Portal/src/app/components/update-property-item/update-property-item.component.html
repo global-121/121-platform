@@ -8,6 +8,7 @@
       [placeholder]="placeholder"
       interface="popover"
       class="ion-margin-top"
+      [disabled]="isDisabled"
       [multiple]="type === answerType.MultiSelect"
     >
       <ion-select-option
@@ -93,6 +94,7 @@
                 name="propertyInput"
                 [checked]="value"
                 class="ion-margin-top"
+                [disabled]="isDisabled"
               ></ion-checkbox>
             </ng-container>
             <ng-container *ngSwitchDefault>

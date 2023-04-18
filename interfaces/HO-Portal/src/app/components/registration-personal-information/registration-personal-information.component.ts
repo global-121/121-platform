@@ -46,6 +46,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
   ];
 
   private canUpdatePaData: boolean;
+  private canUpdatePaFsp: boolean;
   private canViewPersonalData: boolean;
   private canUpdatePersonalData: boolean;
   private canViewMessageHistory: boolean;
@@ -155,9 +156,10 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       componentProps: {
         person: this.person,
         programId: this.programId,
-        readOnly: !this.canUpdatePaData,
+        canUpdatePaData: this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,
+        canUpdatePaFsp: this.canUpdatePaFsp,
         canViewMessageHistory: this.canViewMessageHistory,
         canViewPaymentData: this.canViewPaymentData,
       },
@@ -169,6 +171,9 @@ export class RegistrationPersonalInformationComponent implements OnInit {
   private loadPermissions() {
     this.canUpdatePaData = this.authService.hasAllPermissions(this.programId, [
       Permission.RegistrationAttributeUPDATE,
+    ]);
+    this.canUpdatePaFsp = this.authService.hasAllPermissions(this.programId, [
+      Permission.RegistrationFspUPDATE,
     ]);
     this.canViewPersonalData = this.authService.hasAllPermissions(
       this.programId,
