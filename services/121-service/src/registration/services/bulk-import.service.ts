@@ -316,7 +316,7 @@ export class BulkImportService {
         registration.referenceId,
       );
       await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-        program.id,
+        program,
         registration.referenceId,
       );
 
