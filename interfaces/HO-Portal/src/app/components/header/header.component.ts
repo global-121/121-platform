@@ -27,10 +27,16 @@ export class HeaderComponent implements OnInit {
   public title: string;
 
   @Input()
+  public showMenu = false;
+
+  @Input()
   public showHome = false;
 
   @Input()
   public showHelp = false;
+
+  @Input()
+  public showUsers = false;
 
   @Input()
   public isIframeHeader = false;

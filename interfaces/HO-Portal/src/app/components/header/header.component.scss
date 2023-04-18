@@ -1,6 +1,23 @@
 ion-header {
   border-bottom: 1px solid var(--ion-color-primary);
+
   &::after {
     background-image: none; //hide ion-header drop shadow
   }
 }
+
+ion-list-header {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 25px;
+  color: #0F1218;
+}
+
+.exit {
+  color: #0F1218;
+}
+
+.hamburger-menu {
+color: #0F1218;
+}
+
