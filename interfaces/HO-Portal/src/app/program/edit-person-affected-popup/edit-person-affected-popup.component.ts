@@ -33,7 +33,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public programId: number;
 
   @Input()
-  public readOnly = false;
+  public canUpdatePaData = false;
 
   @Input()
   public canViewPersonalData = false;
@@ -42,22 +42,21 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public canUpdatePersonalData = false;
 
   @Input()
+  public canUpdatePaFsp = false;
+
+  @Input()
   public canViewMessageHistory = false;
 
   @Input()
   public canViewPaymentData = false;
 
   public DateFormat = DateFormat;
-  public program: Program;
-  private paTableAttributesInput: Program['editableAttributes'];
-
   public inProgress: any = {};
+
+  public program: Program;
   public attributeValues: any = {};
-
-  public noteModel: string;
-  public noteLastUpdate: string;
-
   public paTableAttributes: {}[] = [];
+  private paTableAttributesInput: Program['editableAttributes'];
 
   public fspList: Fsp[] = [];
   public programFspLength = 0;
@@ -66,6 +65,9 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public availableLanguages = [];
 
   public alreadyReceivedPayments = 0;
+
+  public noteModel: string;
+  public noteLastUpdate: string;
 
   constructor(
     private modalController: ModalController,
@@ -80,6 +82,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
     this.availableLanguages = this.getAvailableLanguages();
+
     if (this.program && this.program.financialServiceProviders) {
       for (const fsp of this.program.financialServiceProviders) {
         this.fspList.push(await this.programsService.getFspById(fsp.id));
@@ -88,6 +91,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
     this.attributeValues.paymentAmountMultiplier =
       this.person?.paymentAmountMultiplier;
+
     if (this.showMaxPaymentsField()) {
       this.attributeValues.maxPayments = this.person?.maxPayments;
     }
@@ -96,6 +100,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
     if (this.program && this.program.editableAttributes) {
       this.paTableAttributesInput = this.program.editableAttributes;
+
       const fspObject = this.fspList.find((f) => f.fsp === this.person?.fsp);
       if (fspObject && fspObject.editableAttributes) {
         this.paTableAttributesInput = fspObject.editableAttributes.concat(
@@ -115,7 +120,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     value: string | number | string[],
     isPaTableAttribute: boolean,
   ): Promise<void> {
-    let valueToStore;
+    let valueToStore: string | number | string[];
 
     valueToStore = value;
 
@@ -252,14 +257,17 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     paTableAttribute: Attribute,
   ): FspAttributeOption[] | ProgramQuestionOption[] {
     if (this.isFspAttribute(paTableAttribute)) {
-      return this.personFsp.questions.find(
+      const fspQuestion = this.personFsp.questions.find(
         (attr: FspQuestion) => attr.name === paTableAttribute.name,
-      ).options;
+      );
+      return !!fspQuestion.options ? fspQuestion.options : [];
     }
 
-    return this.program.programQuestions.find(
+    const programQuestion = this.program.programQuestions.find(
       (question: ProgramQuestion) => question.name === paTableAttribute.name,
-    ).options;
+    );
+
+    return !!programQuestion.options ? programQuestion.options : [];
   }
 
   private async getNote() {
