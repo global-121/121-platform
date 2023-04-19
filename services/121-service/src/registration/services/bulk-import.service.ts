@@ -447,9 +447,7 @@ export class BulkImportService {
         att.relation.programCustomAttributeId;
       registrationData.programQuestionId = att.relation.programQuestionId;
       registrationData.fspQuestionId = att.relation.fspQuestionId;
-      // Insert is faster than save since it doesn't check for duplicates
       registrationDataArray.push(registrationData);
-      // await this.registrationDataRepository.insert(registrationData);
     }
     return registrationDataArray;
   }
