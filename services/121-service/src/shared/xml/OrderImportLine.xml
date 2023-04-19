@@ -1,7 +1,7 @@
 <OrderImportLine>
-	<ProductCode> </ProductCode>
+	<ProductCode>exampleString</ProductCode>
 	<ProductValue>0</ProductValue>
-	<PackageCode> </PackageCode>
+	<PackageCode>exampleString</PackageCode>
 	<Amount>0</Amount>
 	<ExtItemReference></ExtItemReference>
 	<CustomShipToAddress>true</CustomShipToAddress>
@@ -12,7 +12,7 @@
 	<CustomShipToZipCode>1234AB</CustomShipToZipCode>
 	<CustomShipToCity>Stad</CustomShipToCity>
 	<CustomShipToCountry>NL</CustomShipToCountry>
-	<CustomShipToFirstName> </CustomShipToFirstName>
-	<Custom1> </Custom1>
+	<CustomShipToFirstName>exampleString</CustomShipToFirstName>
+	<Custom1>exampleString</Custom1>
 	<Custom2>1</Custom2>
 </OrderImportLine>
