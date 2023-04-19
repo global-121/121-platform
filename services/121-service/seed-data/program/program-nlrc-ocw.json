@@ -26,9 +26,6 @@
     },
     {
       "fsp": "Intersolve-jumbo-physical"
-    },
-    {
-      "fsp": "Intersolve-visa"
     }
   ],
   "targetNrRegistrations": 100000,
@@ -39,22 +36,22 @@
   "notifications": {
     "en": {
       "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS or WhatsApp message with more information within 1 week.",
-      "whatsappGenericMessage": "This is a message from the Red Cross.\n\nThere is a message waiting for you. Please reply “yes” to this message to receive it.",
-      "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781",
-      "whatsappPayment": "This is a message from the Red Cross.\n\nYour Albert Heijn supermarket voucher is ready to be sent.\n\nPlease reply “yes” to this message in order to receive:\n1. This week's voucher.\n2. Any previous vouchers you haven't received yet.\n",
-      "whatsappVoucher": "This is a message from the Red Cross.\n\nWith this message you will receive:\n1. An Albert Heijn supermarket voucher (cadeaukaart) - this is the picture with the barcode.\n2. An explanation on how to use the voucher in Albert Heijn.\n\nIf you received more than one voucher this is because you had not yet received vouchers from previous weeks.\n\n The amount that you receive is written on the top of the voucher.\nYou can spend the vouchers at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep the vouchers and re-use them until the complete amount is finished.\n\nYou will receive your Albert Heijn voucher every week on Tuesday. When we end the support you will receive a message from us, explaining you when and why we end the support.\n\nDo you have questions? Send us a message on WhatsApp: https://wa.me/31614458781",
+      "whatsappGenericMessage": "There is a message waiting for you. Please reply “yes” to this message to receive it.\n\nKind regards, NL Red Cross / School Meals Programme",
+      "whatsappReply": "This is an automated message. Questions? Check www.schoolmaaltijden.nl, call, sms or WhatsApp 097 010 204 851, or send an email to info@schoolmaaltijden.nl.\n\nKind regards, NL Red Cross / School Meals Programme",
+      "whatsappPayment": "Dear parent/carer, we are ready to send you your Albert Heijn Gift Card on WhatsApp. Answer 'yes' to this message to receive your grocery voucher, Albert Heijn Gift Card.\n\nKind regards, NL Red Cross / School Meals Programme",
+      "whatsappVoucher": "Dear parent/carer, with this message you receive:\n- Your Albert Heijn Gift Card (the image with the barcode)\n- Instructions on how to use the Albert Heijn Gift Card\n\nThe grocery voucher is worth €22. You can use the gift card in all Albert Heijn supermarkts in the Netherlands and Belgium. You can use the gift card multiple times, as long as there is money left on it.\n\nQuestions? Please check www.schoolmaaltijden.nl, call, sms or WhatsApp 097 010 204 851, or send an email to info@schoolmaaltijden.nl.\n\nKind regards, NL Red Cross / School Meals Programme",
       "physicalVisaCardCreated": "This is a message from the Red Cross.\n\nWe have created a VISA card for you with card number {{1}}\n\nYou can activate it by doing this and this.",
       "digitalVisaCardCreated": "This is a message from the Red Cross.\n\nWe have created a digital VISA card for you with card number {{1}}\n\nYou can activate it by clicking the following link: {{2}}. When asked to enter a token code, enter {{3}}.",
       "visaLoad": "This is a message from the Red Cross.\n\nWe increased the funds on your VISA card with {{1}}.",
-      "jumboCardSent": "This is a message from the Red Cross.\n\nWe have sent {{1}} Jumbo card(s) of €{{2}} per card to the provided address."
+      "jumboCardSent": "Dear parent/carer, we have sent your Jumbo Gift Card by post. Within 3 days, you will receive {{1}} vouchers worth €{{2}},- at your address. The vouchers are sent in a white envelope.\n\n- You can use the gift card in all Jumbo supermarkets in the Netherlands.\n- You can use the gift card multiple times, as long as there is money on it.\n\nQuestions? Check www.schoolmaaltijden.nl, call, sms or WhatsApp 097 010 204 851, or send an email to info@schoolmaaltijden.nl.\n\nKind regards, NL Red Cross / School Meals Programme"
     },
     "nl": {
       "registered": "Dit is een bericht van het Rode Kruis.\n\nWe hebben je aanmelding voor hulp ontvangen.\n\nJe ontvangt binnen 1 week een volgende SMS of WhatsApp bericht met meer informatie.",
-      "whatsappGenericMessage": "Dit is een bericht van het Rode Kruis.\n\nEr staat een bericht klaar voor je. Antwoord met “ja” op dit bericht om het te ontvangen.",
-      "whatsappReply": "Dit is een geautomatiseerd bericht, voor vragen neem contact op met de Rode Kruis Helpdesk via WhatsApp: +31614458781",
-      "whatsappPayment": "Dit is een bericht van het Rode Kruis.\n\nJe Albert Heijn supermarkt voucher is klaar om verzonden te worden.\n\nAntwoord met \"ja\" op dit bericht om het volgende te ontvangen:\n1. De voucher van deze week.\n2. Vorige vouchers die je nog niet hebt ontvangen.",
-      "whatsappVoucher": "Dit is een bericht van het Rode Kruis.\n\nMet dit bericht ontvang je:\n1. Een Albert Heijn supermarkt voucher - dit is de foto met de barcode.\n2. Een uitleg van hoe je de voucher moet gebruiken in de Albert Heijn. \n\nAls je meer dan één voucher ontvangt, komt dit doordat je geen vouchers hebt ontvangen van de voorgaande weken. \n\nDe waarde van elke voucher staat geschreven op de hoek van de voucher.\nJe kan de voucher gebruiken in elke Albert Heijn in Nederland.\n\nJe hoeft niet alles in één keer te gebruiken. Dus bewaar de vouchers en gebruik de voucher opnieuw totdat het hele bedrag op is. \n\nJe zal je Albert Heijn voucher elke week ontvangen op dinsdag. Wanneer we de voucherhulp stoppen sturen wij jou een bericht. In dat bericht leggen wij uit wanneer de hulp stopt en waarom.\n\nHeb je vragen? Stuur ons een bericht op WhatsApp: https://wa.me/31614458781",
-      "jumboCardSent": "Dit is een bericht van het Rode Kruis.\n\nWe hebben {{1}} Jumbo kaart(en) van €{{2}} per kaart naar het opgegeven adres verstuurd."
+      "whatsappGenericMessage": "Er is een een bericht voor jou. Antwoord op dit bericht met 'ja' om het bericht te ontvangen.\n\nMvg, Rode Kruis/Programma Schoolmaaltijden",
+      "whatsappReply": "Dit is een automatisch bericht. Vragen? Check www.schoolmaaltijden.nl, bel, sms of WhatsApp 097 010 204 851 of per mail via info@schoolmaaltijden.nl.\n\nMvg, Rode Kruis/Programma Schoolmaaltijden",
+      "whatsappPayment": "Beste ouder/verzorger, we willen u uw Albert Heijn cadeaukaart sturen. Deze staat klaar om naar uw WhatsApp te worden gestuurd. Antwoord op dit bericht met 'ja' om uw kaart te ontvangen.\n\nMvg, Rode Kruis/Programma Schoolmaaltijden",
+      "whatsappVoucher": "Beste ouder/verzorger, hierbij ontvangt u:\n- Een Albert Heijn cadeaukaart. Dat is het plaatje met de barcode,\n- Uitleg over hoe u de Albert Heijn cadeaukaart kunt gebruiken.\n\nOp de Albert Heijn cadeaukaart staat een bedrag van € 22 euro. U kunt de kaart gebruiken in alle Albert Heijn supermarkten in Nederland en België. U kunt de kaart meerdere keren gebruiken, zolang er geld op staat.\n\nHeeft u vragen? Kijk op www.schoolmaaltijden.nl, bel 097 010 204 851, of mail info@schoolmaaltijden.nl.\n\nMvg, Rode Kruis/Programma Schoolmaaltijden",
+      "jumboCardSent": "Beste ouder/verzorger, we hebben uw Jumbo cadeaukaart op de post gedaan. U ontvangt binnen 3 dagen uw boodschappenkaart(en) van € 22,- op uw adres. De kaart zit in een witte envelop.\n- U kunt de kaart gebruiken in alle Jumbo supermarkten in Nederland.\n- U kunt de kaart meerdere keren gebruiken, zolang er geld op staat.\n\nHeeft u vragen? Kijk op www.schoolmaaltijden.nl, bel 097 010 204 851, of mail info@schoolmaaltijden.nl.\n\nMvg, Rode Kruis/Programma Schoolmaaltijden"
     },
     "ar": {},
     "tr": {}
@@ -94,8 +91,7 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>",
-        "nl": "Geef het telefoonnummer waarop je een SMS kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+31 6 00 00 00 00</code>"
+        "en": "Phone number"
       },
       "placeholder": {
         "en": "+31 6 00 00 00 00"
@@ -115,8 +111,7 @@
     }
   ],
   "aboutProgram": {
-    "en": "This is a draft text for the new OCW program.",
-    "nl": "Dit is een draft tekst voor het nieuwe OCW programma."
+    "en": "This is the OCW program."
   },
   "fullnameNamingConvention": ["firstName", "lastName"],
   "languages": ["en", "nl", "ar", "tr"],

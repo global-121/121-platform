@@ -349,7 +349,7 @@ export class BulkImportService {
       }
       if (program.paymentAmountMultiplierFormula) {
         await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-          program.id,
+          program,
           registration.referenceId,
         );
       }

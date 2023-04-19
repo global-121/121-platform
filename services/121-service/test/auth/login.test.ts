@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
+import { SeedScript } from '../../src/scripts/seed-script.enum';
+import { CookieNames } from '../../src/shared/enum/cookie.enums';
 import { getServer, resetDB } from '../helpers/utility.helper';
-
-const server = getServer();
 
 describe('Authentication', () => {
   describe('Login', () => {
@@ -12,7 +12,7 @@ describe('Authentication', () => {
     };
 
     beforeAll(async () => {
-      await resetDB('nlrc-multiple');
+      await resetDB(SeedScript.nlrcMultiple);
     });
 
     it('should log-in with valid credentials', async () => {
@@ -20,11 +20,15 @@ describe('Authentication', () => {
       const testUser = fixtureUser;
 
       // Act
-      const response = await server.post('/user/login').send(testUser);
+      const response = await getServer().post('/user/login').send(testUser);
 
       // Assert
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.headers['set-cookie'][0]).toMatch('access_token_');
+      expect(
+        response
+          .get('Set-Cookie')
+          .findIndex((cookie) => cookie.startsWith(CookieNames.general)),
+      ).not.toBe(-1);
       expect(response.body.username).toBe(testUser.username);
       expect(response.body.expires).toBeDefined();
       expect(Date.parse(response.body.expires)).not.toBeNaN();
@@ -42,7 +46,7 @@ describe('Authentication', () => {
       };
 
       // Act
-      const response = await server.post('/user/login').send(testUser);
+      const response = await getServer().post('/user/login').send(testUser);
 
       // Assert
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);

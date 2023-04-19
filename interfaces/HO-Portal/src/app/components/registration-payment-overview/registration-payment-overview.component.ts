@@ -38,9 +38,7 @@ export class RegistrationPaymentOverviewComponent implements OnInit {
 
   private PAYMENTS_TABLE_LENGTH = 4;
 
-  private canUpdatePaData: boolean;
   private canViewPersonalData: boolean;
-  private canUpdatePersonalData: boolean;
   private canViewPaymentData: boolean;
   private canViewVouchers: boolean;
   private canDoSinglePayment: boolean;
@@ -87,29 +85,22 @@ export class RegistrationPaymentOverviewComponent implements OnInit {
         'page.program.program-people-affected.transaction.' + status,
       );
 
-    for (let i = 0; i < this.PAYMENTS_TABLE_LENGTH; i++) {
-      let label: string;
-      let value: string;
+    this.paymentsTable = payments.map((p) => ({
+      label: itemLabel(p.payment),
+      value: itemValue(p.status),
+    }));
 
-      if (!payments[i]) {
-        const paymentNumber = minPayment + i;
-        const paymentSuccessionNr = paymentNumber - minPayment + 1;
-        const paymentsRemaining =
-          this.person.maxPayments - this.person.nrPayments;
-        if (
-          this.person.status !== RegistrationStatus.included ||
-          (this.person.maxPayments && paymentSuccessionNr > paymentsRemaining)
-        ) {
-          break;
-        }
-        label = itemLabel(paymentNumber);
-        value = itemValue('planned');
-      } else {
-        label = itemLabel(payments[i].payment);
-        value = itemValue(payments[i].status);
+    for (let i = payments.length; i < this.PAYMENTS_TABLE_LENGTH; i++) {
+      const paymentNumber = minPayment + i;
+
+      if (this.person.maxPayments && paymentNumber > this.person.maxPayments) {
+        break;
       }
 
-      this.paymentsTable.push({ label, value });
+      this.paymentsTable.push({
+        label: itemLabel(paymentNumber),
+        value: itemValue('planned'),
+      });
     }
 
     const itemPaymentNumber = (s) => Number(s.split('#')[1]);
@@ -123,13 +114,11 @@ export class RegistrationPaymentOverviewComponent implements OnInit {
       component: PaymentHistoryPopupComponent,
       componentProps: {
         person: this.person,
-        programId: this.program.id,
         program: this.program,
-        readOnly: !this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
-        canUpdatePersonalData: this.canUpdatePersonalData,
-        canDoSinglePayment: this.canDoSinglePayment,
+        canViewPaymentData: this.canViewPaymentData,
         canViewVouchers: this.canViewVouchers,
+        canDoSinglePayment: this.canDoSinglePayment,
       },
     });
     await modal.present();
@@ -158,18 +147,10 @@ export class RegistrationPaymentOverviewComponent implements OnInit {
   }
 
   private loadPermissions() {
-    this.canUpdatePaData = this.authService.hasAllPermissions(this.program.id, [
-      Permission.RegistrationAttributeUPDATE,
-    ]);
     this.canViewPersonalData = this.authService.hasAllPermissions(
       this.program.id,
       [Permission.RegistrationPersonalREAD],
     );
-    this.canUpdatePersonalData = this.authService.hasAllPermissions(
-      this.program.id,
-      [Permission.RegistrationPersonalUPDATE],
-    );
-
     this.canViewPaymentData = this.authService.hasAllPermissions(
       this.program.id,
       [Permission.PaymentREAD, Permission.PaymentTransactionREAD],

@@ -24,6 +24,7 @@
 
 <ion-content class="ion-padding">
   <h2 class="text-bold">{{ person?.name }}</h2>
+
   <section class="ion-margin-vertical ion-padding-bottom">
     <strong
       >{{
@@ -35,6 +36,7 @@
         | translate
     }}
   </section>
+
   <section
     style="max-width: 80%"
     class="ion-margin-vertical ion-padding-bottom"
@@ -53,8 +55,12 @@
         [value]="attributeValues?.paymentAmountMultiplier"
         (updated)="updatePaAttribute('paymentAmountMultiplier', $event, false)"
         [inProgress]="inProgress?.paymentAmountMultiplier || false"
-        [isDisabled]="readOnly || program?.paymentAmountMultiplierFormula"
-        [showSubmit]="!readOnly && !program?.paymentAmountMultiplierFormula"
+        [isDisabled]="
+          !canUpdatePaData || program?.paymentAmountMultiplierFormula
+        "
+        [showSubmit]="
+          canUpdatePaData && !program?.paymentAmountMultiplierFormula
+        "
         prop="paymentAmountMultiplier"
         class="ion-margin-vertical"
       ></app-update-property-item>
@@ -79,8 +85,8 @@
           [value]="attributeValues?.maxPayments"
           (updated)="updatePaAttribute('maxPayments', $event, false)"
           [inProgress]="inProgress?.maxPayments || false"
-          [isDisabled]="readOnly"
-          [showSubmit]="!readOnly"
+          [isDisabled]="!canUpdatePaData"
+          [showSubmit]="canUpdatePaData"
           prop="maxPayments"
           class="ion-margin-vertical"
         ></app-update-property-item>
@@ -100,8 +106,8 @@
         [value]="attributeValues?.phoneNumber"
         (updated)="updatePaAttribute('phoneNumber', $event, false)"
         [inProgress]="inProgress?.phoneNumber || false"
-        [isDisabled]="!canUpdatePersonalData"
-        [showSubmit]="canUpdatePersonalData"
+        [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
+        [showSubmit]="canUpdatePaData && canUpdatePersonalData"
         class="ion-margin-vertical"
       ></app-update-property-item>
 
@@ -115,13 +121,19 @@
           [value]="attributeValues.preferredLanguage"
           [options]="availableLanguages"
           (updated)="updatePaAttribute('preferredLanguage', $event, false)"
+          [isDisabled]="!canUpdatePaData"
+          [showSubmit]="canUpdatePaData"
           [inProgress]="inProgress?.preferredLanguage || false"
           class="ion-margin-vertical"
         ></app-update-property-item>
       </ng-container>
 
       <div
-        *ngIf="readOnly && fspList.length === programFspLength && person?.fsp"
+        *ngIf="
+          (!canUpdatePaData || !canUpdatePaFsp) &&
+          fspList.length === programFspLength &&
+          person?.fsp
+        "
         class="ion-margin-vertical"
       >
         <strong
@@ -133,7 +145,12 @@
         <code>{{ person?.fspDisplayNamePortal }}</code>
       </div>
       <app-update-fsp
-        *ngIf="!readOnly && fspList.length === programFspLength && person?.fsp"
+        *ngIf="
+          canUpdatePaData &&
+          canUpdatePaFsp &&
+          fspList.length === programFspLength &&
+          person?.fsp
+        "
         [fspList]="fspList"
         [label]="'page.program.program-people-affected.column.fsp' | translate"
         [value]="person?.fspDisplayNamePortal"
@@ -148,11 +165,12 @@
           [type]="paTableAttribute.type"
           [label]="paTableAttribute.label"
           [value]="attributeValues[paTableAttribute.name]"
+          [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
+          [showSubmit]="canUpdatePaData && canUpdatePersonalData"
           [options]="paTableAttribute.options"
+          [explanation]="paTableAttribute.explanation"
           (updated)="updatePaAttribute(paTableAttribute.name, $event, true)"
           class="ion-margin-vertical"
-          [isFspAttribute]="paTableAttribute.isFspAttribute"
-          [explanation]="paTableAttribute.explanation"
         ></app-update-property-item>
       </ng-container>
     </div>

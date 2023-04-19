@@ -2,9 +2,10 @@ import * as request from 'supertest';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { getServer } from './utility.helper';
 
-export async function publishProgram(programId: number): Promise<void> {
-  const server = getServer();
-  await server
+export async function publishProgram(
+  programId: number,
+): Promise<request.Response> {
+  return await getServer()
     .post(`/programs/${programId}/change-phase`)
     .send({ newPhase: 'registrationValidation' });
 }
@@ -14,8 +15,7 @@ export async function changePhase(
   newPhase: ProgramPhase,
   access_token: string,
 ): Promise<request.Response> {
-  const server = getServer();
-  return await server
+  return await getServer()
     .post(`/programs/${programId}/change-phase`)
     .set('Cookie', [access_token])
     .send({ newPhase: newPhase });
@@ -28,8 +28,7 @@ export async function doPayment(
   referenceIds: string[],
   access_token: string,
 ): Promise<request.Response> {
-  const server = getServer();
-  return await server
+  return await getServer()
     .post(`/programs/${programId}/payments`)
     .set('Cookie', [access_token])
     .send({
@@ -45,8 +44,7 @@ export async function getTransactions(
   referenceId: string,
   access_token: string,
 ): Promise<request.Response> {
-  const server = getServer();
-  return await server
+  return await getServer()
     .get(`/programs/${programId}/payments/transactions`)
     .set('Cookie', [access_token])
     .query({ minPayment: paymentNr, referenceId: referenceId });

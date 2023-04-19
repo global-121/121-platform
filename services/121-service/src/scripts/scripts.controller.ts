@@ -13,20 +13,7 @@ import { SeedTestProgram } from './seed-program-test';
 import { SeedTestMultipleProgram } from './seed-program-test-multiple';
 import SeedProgramUkr from './seed-program-ukr';
 import { SeedProgramValidation } from './seed-program-validation';
-
-enum SeedScript {
-  pilotNL = 'pilot-nl',
-  pilotNLPV = 'pilot-nl-pv',
-  pilotETH = 'pilot-eth',
-  pilotLBN = 'pilot-lbn',
-  pilotUKR = 'pilot-ukr',
-  DRC = 'drc',
-  demo = 'demo',
-  test = 'test',
-  validation = 'validation',
-  testMultiple = 'test-multiple',
-  nlrcMultiple = 'nlrc-multiple',
-}
+import { SeedScript } from './seed-script.enum';
 
 export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })

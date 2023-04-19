@@ -206,6 +206,15 @@ export class PaymentsService {
     payment: number,
     amount: number,
   ): Promise<any> {
+    if (paLists.intersolveJumboPhysicalPaPayment.length) {
+      await this.intersolveJumboService.sendPayment(
+        paLists.intersolveJumboPhysicalPaPayment,
+        programId,
+        payment,
+        amount,
+      );
+    }
+
     if (paLists.intersolvePaPayment.length) {
       await this.intersolveVoucherService.sendPayment(
         paLists.intersolvePaPayment,
@@ -226,15 +235,6 @@ export class PaymentsService {
     if (paLists.intersolveVisaPaPayment.length) {
       await this.intersolveVisaService.sendPayment(
         paLists.intersolveVisaPaPayment,
-        programId,
-        payment,
-        amount,
-      );
-    }
-
-    if (paLists.intersolveJumboPhysicalPaPayment.length) {
-      await this.intersolveJumboService.sendPayment(
-        paLists.intersolveJumboPhysicalPaPayment,
         programId,
         payment,
         amount,

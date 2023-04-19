@@ -52,6 +52,13 @@ To set up a local development-environment:
 - Install Docker
   - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
   - On Windows, install Docker Desktop: <https://docs.docker.com/docker-for-windows/install/>
+    
+    If there are issues running Docker on Windows, you _might_ need to do the following:
+    - Install WSL2 Linux kernel package. Check step 4 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
+    - Set WSL2 as default version in PowerShell
+      - wsl --set-default-version 2
+      - check step 5 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>   
+      <br />
   - On Linux, install Docker Engine + Compose plugin: <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
 
 With these tools in place you can checkout the code and start setting up:
@@ -116,15 +123,7 @@ To verify the successful installation and setup of services, access their Swagge
 
 Follow the "[Getting started / installation](interfaces/README.md#getting-started--installation)"-section in the [interfaces/README](interfaces/README.md)-file.
 
-Install dependencies for all the interfaces at once, run:
-
-    npm run install:interfaces
-
-Or to install 1 specific interface's dependencies, run: (where `<interface-name>` is one of `pa`, `aw`, `ho`)
-
-    npm run install:<interface-name>
-
-Or from each of the individual interface directories(`interfaces/*`) run:
+From each of the individual interface directories (`interfaces/*`) run:
 
     npm install
 
@@ -162,7 +161,7 @@ To start an individual interface/service in VS Code:
 
       npm run code:<package>
 
-## Re-use `node_modules` in your local IDE
+### Re-use `node_modules` in your local IDE
 
 If you want your IDE to (re-)use the (dev-)dependencies and tools installed in the container, you can copy them via a command from the root:
 
@@ -411,6 +410,21 @@ it("XYZ", (done) => {
 - HTML elements are tested by matching the `string` values, which is not very intuitive with `i18n` modules in use
 
 ---
+
+## Committing and creating a Pull Request (PR)
+
+When committing your changes, provide a commit message that starts with an appropriate keyword:
+- feat: (new feature for the user)
+- fix: (bug fix for the user)
+- docs: (changes to the documentation)
+- style: (formatting, missing semi colons, etc; no production code change)
+- refactor: (refactoring production code, eg. renaming a variable)
+- test: (adding missing tests, refactoring tests; no production code change)
+- chore: (cleanups, version updates etc; no production code change)  
+
+Add an Azure DevOps task ID at the end of the commit message, for example "feat: new feature added to the profile page AB#123456".
+
+After pushing your changes to the branch you can create a PR on <https://github.com/global-121/121-platform>. Add additional description for the PR if required.
 
 ## Releases
 

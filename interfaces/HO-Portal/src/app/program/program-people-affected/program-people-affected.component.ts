@@ -290,6 +290,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public canViewPersonalData: boolean;
   private canViewMessageHistory: boolean;
   private canUpdatePaData: boolean;
+  private canUpdatePaFsp: boolean;
   private canUpdatePersonalData: boolean;
   private canViewPaymentData: boolean;
   private canViewVouchers: boolean;
@@ -638,6 +639,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.canUpdatePaData = this.authService.hasAllPermissions(this.programId, [
       Permission.RegistrationAttributeUPDATE,
     ]);
+    this.canUpdatePaFsp = this.authService.hasAllPermissions(this.programId, [
+      Permission.RegistrationFspUPDATE,
+    ]);
     this.canViewPersonalData = this.authService.hasAllPermissions(
       this.programId,
       [Permission.RegistrationPersonalREAD],
@@ -871,7 +875,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   private async loadData(refresh: boolean = false) {
     this.allPeopleData = await this.programsService.getPeopleAffected(
       this.programId,
-      this.canUpdatePersonalData,
+      this.canViewPersonalData,
       this.canViewPaymentData && this.thisPhase === ProgramPhase.payment,
     );
 
@@ -1189,9 +1193,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       componentProps: {
         person,
         programId,
-        readOnly: !this.canUpdatePaData,
+        canUpdatePaData: this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,
+        canUpdatePaFsp: this.canUpdatePaFsp,
         canViewMessageHistory: this.canViewMessageHistory,
         canViewPaymentData: this.canViewPaymentData,
       },
@@ -1200,7 +1205,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     await modal.present();
   }
 
-  public async paymentHistoryPopup(personRow: PersonRow, programId: number) {
+  public async paymentHistoryPopup(personRow: PersonRow) {
     const person = this.allPeopleData.find(
       (pa) => pa.referenceId === personRow.referenceId,
     );
@@ -1208,13 +1213,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       component: PaymentHistoryPopupComponent,
       componentProps: {
         person,
-        programId,
         program: this.program,
-        readOnly: !this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
-        canUpdatePersonalData: this.canUpdatePersonalData,
-        canDoSinglePayment: this.canDoSinglePayment,
+        canViewPaymentData: this.canViewPaymentData,
         canViewVouchers: this.canViewVouchers,
+        canDoSinglePayment: this.canDoSinglePayment,
       },
     });
     await modal.present();
@@ -1461,7 +1464,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       });
   }
 
-  private async actionResult(resultMessage: string, refresh: boolean = false) {
+  private async actionResult(resultMessage: string) {
     const alert = await this.alertController.create({
       message: resultMessage,
       buttons: [
@@ -1470,9 +1473,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           handler: () => {
             alert.dismiss(true);
             this.pubSub.publish(PubSubEvent.dataRegistrationChanged);
-            if (refresh) {
-              window.location.reload();
-            }
           },
         },
       ],

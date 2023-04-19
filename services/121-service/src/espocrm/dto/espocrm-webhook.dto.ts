@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsString } from 'class-validator';
-import { EspocrmActionTypeEnum } from '../espocrm-action-type.enum';
-import { EspocrEntityTypeEnum } from './../espocrm-entity-type';
+import { EspoCrmActionTypeEnum } from '../espocrm-action-type.enum';
+import { EspoCrmEntityTypeEnum } from './../espocrm-entity-type';
 
 export class EspocrmWebhookDto {
   @ApiProperty({
@@ -14,19 +14,19 @@ export class EspocrmWebhookDto {
 
   @ApiProperty({
     description: 'The type of action that triggers this webhook.',
-    enum: EspocrmActionTypeEnum,
-    example: EspocrmActionTypeEnum.update,
+    enum: EspoCrmActionTypeEnum,
+    example: EspoCrmActionTypeEnum.update,
   })
-  @IsEnum(EspocrmActionTypeEnum)
-  public actionType: EspocrmActionTypeEnum;
+  @IsEnum(EspoCrmActionTypeEnum)
+  public actionType: EspoCrmActionTypeEnum;
 
   @ApiProperty({
     description: 'The entity type that triggers this webhook.',
-    enum: EspocrEntityTypeEnum,
-    example: EspocrEntityTypeEnum.registration,
+    enum: EspoCrmEntityTypeEnum,
+    example: EspoCrmEntityTypeEnum.registration,
   })
-  @IsEnum(EspocrEntityTypeEnum)
-  public entityType: EspocrEntityTypeEnum;
+  @IsEnum(EspoCrmEntityTypeEnum)
+  public entityType: EspoCrmEntityTypeEnum;
 
   @ApiProperty({
     description: 'The secret key that is used to verify the webhook.',

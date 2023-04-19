@@ -47,6 +47,7 @@ export class UserService {
     const saltCheck = await this.dataSource
       .getRepository(UserEntity)
       .createQueryBuilder('user')
+      .addSelect('user.salt')
       .where({ username: loginUserDto.username })
       .getOne();
 
@@ -123,6 +124,10 @@ export class UserService {
     return await this.userRoleRepository.find({
       relations: ['permissions'],
     });
+  }
+
+  public async getUsers(): Promise<UserEntity[]> {
+    return await this.userRepository.find();
   }
 
   public async addUserRole(
