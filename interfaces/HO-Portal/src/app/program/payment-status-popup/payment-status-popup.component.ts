@@ -72,11 +72,7 @@ export class PaymentStatusPopupComponent implements OnInit {
       this.sanitizedIimageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
         this.imageUrl,
       ) as string;
-      this.imageFileName = `voucher-${this.payoutDetails.payment}_${formatDate(
-        this.moneyTime,
-        DateFormat.dateOnly,
-        this.locale,
-      )}.png`;
+      this.imageFileName = `voucher-payment-${this.payoutDetails.payment}-PA-${this.singlePayoutDetails.paNr}.png`;
     }
   }
 

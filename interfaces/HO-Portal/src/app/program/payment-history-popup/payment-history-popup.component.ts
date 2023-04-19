@@ -298,7 +298,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
     if (this.canDoSinglePayment) {
       showRetryButton = !hasWaiting && hasError;
       doSinglePaymentDetails = {
-        paNr: this.person.id,
+        paNr: this.person.registrationProgramId,
         amount: this.program.fixedTransferValue,
         currency: this.program.currency,
         multiplier: this.person.paymentAmountMultiplier
