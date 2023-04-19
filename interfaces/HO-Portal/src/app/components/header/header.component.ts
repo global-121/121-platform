@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component,Input,OnInit } from '@angular/core';
-import { ActivatedRoute,RouterModule } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppRoutes } from 'src/app/app-routes.enum';

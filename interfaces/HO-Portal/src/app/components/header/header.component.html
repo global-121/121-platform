@@ -1,37 +1,76 @@
 <ion-header>
   <ion-grid>
     <ion-row>
-      <ion-col *ngIf="!isIframeHeader" size="1">
-        <ion-button [id]="'menu-trigger'+ menuId" fill="clear" size="large" color="medium">
-          <ion-icon class="hamburger-menu" name="menu-outline" slot="icon-only"></ion-icon>
+      <ion-col
+        *ngIf="!isIframeHeader"
+        size="1"
+      >
+        <ion-button
+          [id]="'menu-trigger' + menuId"
+          fill="clear"
+          size="large"
+          color="medium"
+        >
+          <ion-icon
+            class="hamburger-menu"
+            name="menu-outline"
+            slot="icon-only"
+          ></ion-icon>
         </ion-button>
-        <ion-popover [trigger]="'menu-trigger'+menuId" triggerAction="click" [dismissOnSelect]="true"
-          class="popover-menu">
+        <ion-popover
+          [trigger]="'menu-trigger' + menuId"
+          triggerAction="click"
+          [dismissOnSelect]="true"
+          class="popover-menu"
+        >
           <ng-template class="menu-list">
             <ion-content class="pop-over-container">
               <ion-list>
                 <ion-list-header lines="full">
-                  <ion-label class="title-label">{{ 'header.menu'|translate }}</ion-label>
-                  <ion-button fill="clear" size="large" color="medium">
-                    <ion-icon slot="icon-only" class="exit" name="close-outline" [dismissOnSelect]="true"></ion-icon>
+                  <ion-label class="title-label">{{
+                    'header.menu' | translate
+                  }}</ion-label>
+                  <ion-button
+                    fill="clear"
+                    size="large"
+                    color="medium"
+                  >
+                    <ion-icon
+                      slot="icon-only"
+                      class="exit"
+                      name="close-outline"
+                      [dismissOnSelect]="true"
+                    ></ion-icon>
                   </ion-button>
                 </ion-list-header>
-                <ion-item lines="full"
-                  [title]="'header.home' | translate" [attr.aria-label]="'header.home' | translate"
-                  [routerLink]="['/', appRoute.home]">
+                <ion-item
+                  lines="full"
+                  [title]="'header.home' | translate"
+                  [attr.aria-label]="'header.home' | translate"
+                  [routerLink]="['/', appRoute.home]"
+                >
                   <ion-label>Home</ion-label>
                 </ion-item>
-                <ion-item lines="full"
-                  [title]="'header.users' | translate" [attr.aria-label]="'header.users' | translate"
-                  [routerLink]="['/', appRoute.users]">
+                <ion-item
+                  lines="full"
+                  [title]="'header.users' | translate"
+                  [attr.aria-label]="'header.users' | translate"
+                  [routerLink]="['/', appRoute.users]"
+                >
                   <ion-label>Users</ion-label>
                 </ion-item>
-                <ion-item lines="full" disabled="true">
+                <ion-item
+                  lines="full"
+                  disabled="true"
+                >
                   <ion-label>Settings</ion-label>
                 </ion-item>
-                <ion-item lines="full"
-                  [title]="'header.help' | translate" [attr.aria-label]="'header.help' | translate"
-                  [routerLink]="['/', appRoute.help]">
+                <ion-item
+                  lines="full"
+                  [title]="'header.help' | translate"
+                  [attr.aria-label]="'header.help' | translate"
+                  [routerLink]="['/', appRoute.help]"
+                >
                   <ion-label>Help</ion-label>
                 </ion-item>
               </ion-list>
@@ -39,21 +78,28 @@
           </ng-template>
         </ion-popover>
       </ion-col>
-      <ion-col *ngIf="!isIframeHeader" size="4">
-        <h1 class="ion-no-margin">
-        </h1>
+      <ion-col
+        *ngIf="!isIframeHeader"
+        size="4"
+      >
+        <h1 class="ion-no-margin"></h1>
         <ion-note *ngIf="subtitle">
           &nbsp;
           <!-- 'placeholder' to reserve vertical space for async-loaded programTitlePortal -->
         </ion-note>
       </ion-col>
       <ion-col [size]="isIframeHeader ? '6' : '2'">
-        <ion-row [ngClass]="{
+        <ion-row
+          [ngClass]="{
             'ion-justify-content-center': !isIframeHeader,
             'ion-justify-content-start ion-align-items-center': isIframeHeader
-          }">
+          }"
+        >
           <div id="logo-container">
-            <img src="./assets/img/121-logo.png" alt="121" />
+            <img
+              src="./assets/img/121-logo.png"
+              alt="121"
+            />
           </div>
           <ng-container *ngIf="isIframeHeader">
             <ion-text color="secondary">
@@ -62,8 +108,13 @@
           </ng-container>
         </ion-row>
       </ion-col>
-      <ion-col [size]="isIframeHeader ? '6' : '5'" class="ion-text-end">
-        <app-user-state [showUserStateActions]="!isIframeHeader"></app-user-state>
+      <ion-col
+        [size]="isIframeHeader ? '6' : '5'"
+        class="ion-text-end"
+      >
+        <app-user-state
+          [showUserStateActions]="!isIframeHeader"
+        ></app-user-state>
       </ion-col>
     </ion-row>
   </ion-grid>
