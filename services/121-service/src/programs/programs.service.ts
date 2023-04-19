@@ -53,7 +53,7 @@ export class ProgramService {
       includeAidworkerAssignments = await this.checkPermission(
         userId,
         programId,
-        PermissionEnum.AidWorkerProgramUPDATE,
+        PermissionEnum.AidWorkerProgramREAD,
       );
     }
 
