@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Deployment workflow for HO-Portal to Azure Static Web App (test-environment)
 - Deployment workflow for PA-App to Azure Static Web App (test-environment)
+- Deployment workflow for AW-App to Azure Static Web App (test-environment)
 
 ---
 
