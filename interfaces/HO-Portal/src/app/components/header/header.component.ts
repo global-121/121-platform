@@ -7,7 +7,6 @@ import { AppRoutes } from 'src/app/app-routes.enum';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { v4 as uuid4 } from 'uuid';
 import { UserStateComponent } from '../user-state/user-state.component';
 
 @Component({
@@ -32,7 +31,7 @@ export class HeaderComponent implements OnInit {
 
   public appRoute = AppRoutes;
 
-  public menuId = uuid4();
+  public menuId = Math.floor(Math.random() * 100_000);
   public programId: number;
   private program: Program;
   public subtitle: string;

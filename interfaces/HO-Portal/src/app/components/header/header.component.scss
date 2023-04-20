@@ -6,8 +6,12 @@ ion-header {
   }
 }
 
+.menu-button {
+  --padding-start: 0;
+}
+
 .pop-over-container {
-  background: #ffffff;
+  background: var(--ion-color-primary-contrast);
 }
 
 .popover-menu {
@@ -20,16 +24,15 @@ ion-header {
 }
 
 .title-label {
-  font-weight: 700;
   font-size: 18px;
-  line-height: 25px;
+  line-height: 1.5;
 }
 
 ion-label {
   font-weight: 600;
   font-size: 16px;
-  line-height: 30px;
-  color: #0f1218;
+  line-height: 2;
+  color: var(--ion-color-dark);
 }
 
 ion-content {
@@ -37,9 +40,9 @@ ion-content {
 }
 
 .exit {
-  color: #0f1218;
+  color: var(--ion-color-dark);
 }
 
 .hamburger-menu {
-  color: #0f1218;
+  color: var(--ion-color-dark);
 }
