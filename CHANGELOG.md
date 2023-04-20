@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.84.3...master)
 
+### Added
+
+- Deployment workflow for HO-Portal to Azure Static Web App (test-environment)
+
 ---
+
 ## [1.84.3](https://github.com/global-121/121-platform/compare/v1.84.2...v1.84.3) - 2023-04-19
 
 ### Fixed
@@ -109,7 +114,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Sanitize phonenumber with `substring` instead of `substr`
-
 
 ## [1.79.3](https://github.com/global-121/121-platform/compare/v1.79.2...v1.79.3) - 2023-01-31
 
