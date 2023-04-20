@@ -1,6 +1,48 @@
 ion-header {
   border-bottom: 1px solid var(--ion-color-primary);
+
   &::after {
     background-image: none; //hide ion-header drop shadow
   }
+}
+
+.menu-button {
+  --padding-start: 0;
+}
+
+.pop-over-container {
+  background: var(--ion-color-primary-contrast);
+}
+
+.popover-menu {
+  --width: 332px;
+  --height: 100%;
+  --max-height: 100%;
+  --backdrop-opacity: 0%;
+  top: 16px;
+  left: -12px;
+}
+
+.title-label {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+ion-label {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 2;
+  color: var(--ion-color-dark);
+}
+
+ion-content {
+  --padding-start: 20px;
+}
+
+.exit {
+  color: var(--ion-color-dark);
+}
+
+.hamburger-menu {
+  color: var(--ion-color-dark);
 }

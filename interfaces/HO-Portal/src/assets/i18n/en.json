@@ -1,7 +1,9 @@
 {
   "header": {
     "home": "Home",
+    "menu": "Menu",
     "help": "Help",
+    "users": "Users",
     "dashboard": "Dashboard",
     "aid-workers": "Aid-workers",
     "phases": "Phases",

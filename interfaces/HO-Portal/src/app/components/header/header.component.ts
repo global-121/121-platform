@@ -27,16 +27,11 @@ export class HeaderComponent implements OnInit {
   public title: string;
 
   @Input()
-  public showHome = false;
-
-  @Input()
-  public showHelp = false;
-
-  @Input()
   public isIframeHeader = false;
 
   public appRoute = AppRoutes;
 
+  public menuId = Math.floor(Math.random() * 100_000);
   public programId: number;
   private program: Program;
   public subtitle: string;
