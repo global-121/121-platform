@@ -9,3 +9,9 @@ export class RegistrationDataOptions {
   public relation?: RegistrationDataRelation;
   public name?: string;
 }
+
+export class RegistrationDataInfo {
+  public name: string;
+  public relation: RegistrationDataRelation;
+  public type: string;
+}

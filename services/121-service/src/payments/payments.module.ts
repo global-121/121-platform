@@ -10,6 +10,7 @@ import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribu
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
+import { RegistrationStatusChangeEntity } from '../registration/registration-status-change.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationsModule } from '../registration/registrations.module';
 import { BulkImportService } from '../registration/services/bulk-import.service';
@@ -41,6 +42,7 @@ import { TransactionsModule } from './transactions/transactions.module';
       FinancialServiceProviderEntity,
       FspQuestionEntity,
       ProgramCustomAttributeEntity,
+      RegistrationStatusChangeEntity,
     ]),
     UserModule,
     HttpModule,

@@ -50,15 +50,18 @@ To set up a local development-environment:
     - [FNM](https://nodejs.org/en/download/package-manager/#fnm) (for Windows/macOS/Linux)
 
 - Install Docker
+
   - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
   - On Windows, install Docker Desktop: <https://docs.docker.com/docker-for-windows/install/>
-    
+
     If there are issues running Docker on Windows, you _might_ need to do the following:
+
     - Install WSL2 Linux kernel package. Check step 4 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
     - Set WSL2 as default version in PowerShell
       - wsl --set-default-version 2
-      - check step 5 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>   
-      <br />
+      - check step 5 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>  
+        <br />
+
   - On Linux, install Docker Engine + Compose plugin: <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
 
 With these tools in place you can checkout the code and start setting up:
@@ -123,9 +126,13 @@ To verify the successful installation and setup of services, access their Swagge
 
 Follow the "[Getting started / installation](interfaces/README.md#getting-started--installation)"-section in the [interfaces/README](interfaces/README.md)-file.
 
-From each of the individual interface directories (`interfaces/*`) run:
+Install dependencies for all the interfaces at once, run:
 
-    npm install
+    npm run install:interfaces
+
+Or from each of the individual interface directories(`interfaces/*`) run:
+
+    npm ci
 
 ## Start Interfaces
 
@@ -273,6 +280,7 @@ When new Node.js dependencies are added to a service since it is last build on y
 - Integration (API) tests to test the endpoints of the 121-service; Run with `docker exec 121-service npm run test:e2e` `services/121-service`-folder.
 
 ### When to use a Cypress E2E Integration test?
+
 - Is the feature/component part of the essential happy-flow of the 121-platform?
 - Is it not already covered by other tests?
 - Are we still within the limit of +/- 10 tests?
@@ -281,6 +289,7 @@ When new Node.js dependencies are added to a service since it is last build on y
   - DON'T: log-in. Reason: can be API-test + component-test
 
 ### When to use an API-test? (back-end + db? only)
+
 - Is it to test query-magic?
 - Is it to test essential endpoints (FSP/EspoCRM integrations) and import/exports/etc?
 - Often used (with different parameters) endpoints: /update-attribute etc.
@@ -293,6 +302,7 @@ When new Node.js dependencies are added to a service since it is last build on y
   - update PA attributes: all different content-types + possible values (including edge cases)
 
 #### Notes
+
 These tests are still expensive (to bootstrap app + database)
 
 ### Unit Tests
@@ -333,7 +343,7 @@ Keep the following points in mind while writing test cases:
 - There are several methods which serve the purpose of defining class wide variables, which we should also test and verify. One of the typical examples of one such method is `ngOnInit`
 
 ```ts
-it("ngOnInit: should set up variables", () => {
+it('ngOnInit: should set up variables', () => {
   expect(component.isLoggedIn).toBeDefined(); // check for class variables to be defined
   expect(component.someValye).toBeTruthy(); // check for a variable to be TRUE
   expect(component.someValye).toBeFalsy(); // check for a variable to be FALSE
@@ -377,8 +387,8 @@ it("Test when xyz !== 'some-value'", () => {});
 - Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
 
 ```ts
-let spy = spyOn(component.programsService, "changePassword").and.returnValue(
-  Promise.resolve(true)
+let spy = spyOn(component.programsService, 'changePassword').and.returnValue(
+  Promise.resolve(true),
 );
 ```
 
@@ -394,7 +404,7 @@ spy.calls.mostRecent().returnValue.then(() => {
 - Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
 
 ```ts
-it("XYZ", (done) => {
+it('XYZ', (done) => {
   // spies and stubs
 
   spy.calls.mostRecent().returnValue.then(() => {
@@ -413,18 +423,21 @@ it("XYZ", (done) => {
 
 ## Committing and creating a Pull Request (PR)
 
+We try to follow the "[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)" convention, combined with the "[Angular Commit Message format](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format)".  
 When committing your changes, provide a commit message that starts with an appropriate keyword:
+
 - feat: (new feature for the user)
 - fix: (bug fix for the user)
 - docs: (changes to the documentation)
 - style: (formatting, missing semi colons, etc; no production code change)
 - refactor: (refactoring production code, eg. renaming a variable)
 - test: (adding missing tests, refactoring tests; no production code change)
-- chore: (cleanups, version updates etc; no production code change)  
+- chore: (cleanups, version updates etc; no production code change)
 
-Add an Azure DevOps task ID at the end of the commit message, for example "feat: new feature added to the profile page AB#123456".
+Add an Azure DevOps task ID at the end of the commit message, for example "`feat: new feature added to the profile page AB#123456`".
 
-After pushing your changes to the branch you can create a PR on <https://github.com/global-121/121-platform>. Add additional description for the PR if required.
+After pushing your changes to the branch you can create a PR on <https://github.com/global-121/121-platform/pulls>.  
+Add additional description for the PR only if required.
 
 ## Releases
 
@@ -502,7 +515,7 @@ If you deploy the 121-platform to a server for the first time it is recommended 
   - [ ] Checkout code (of latest release)
   - [ ] Set secrets, configure ENV-variables (via all `.env`-files)
   - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):
-         Run: `sudo ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v1.0.0`
+        Run: `sudo ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v1.0.0`
 - [ ] Setup the web-server as described in [/tools > Hosting > Apache2](tools/README.md#apache2)
 - [ ] (Optional) Add data to the database using the available [seed-script](services/121-service/README.md#Seed-the-database)
 
