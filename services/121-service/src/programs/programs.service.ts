@@ -8,6 +8,7 @@ import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
+import { PermissionEnum } from '../user/permission.enum';
 import { DefaultUserRole } from '../user/user-role.enum';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -43,18 +44,37 @@ export class ProgramService {
     private readonly userService: UserService,
   ) {}
 
-  public async findOne(programId: number): Promise<ProgramEntity> {
-    const program = await this.programRepository.findOne({
-      where: { id: programId },
-      relations: [
-        'programQuestions',
+  public async findOne(
+    programId: number,
+    userId?: number,
+  ): Promise<ProgramEntity> {
+    let includeAidworkerAssignments = false;
+    if (userId) {
+      includeAidworkerAssignments = await this.checkPermission(
+        userId,
+        programId,
+        PermissionEnum.AidWorkerProgramREAD,
+      );
+    }
+
+    let relations = [
+      'programQuestions',
+      'financialServiceProviders',
+      'financialServiceProviders.questions',
+      'programCustomAttributes',
+    ];
+    if (includeAidworkerAssignments) {
+      const aidworkerAssignmentsRelations = [
         'aidworkerAssignments',
         'aidworkerAssignments.user',
         'aidworkerAssignments.roles',
-        'financialServiceProviders',
-        'financialServiceProviders.questions',
-        'programCustomAttributes',
-      ],
+      ];
+      relations = [...relations, ...aidworkerAssignmentsRelations];
+    }
+
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+      relations: relations,
     });
     if (program) {
       program.editableAttributes = await this.getPaEditableAttributes(
@@ -62,6 +82,34 @@ export class ProgramService {
       );
     }
     return program;
+  }
+
+  private async checkPermission(
+    userId: number,
+    programId: number,
+    permission: PermissionEnum,
+  ): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: [
+        'programAssignments',
+        'programAssignments.roles',
+        'programAssignments.roles.permissions',
+      ],
+    });
+    if (user) {
+      const programAssignment = user.programAssignments.find(
+        (p) => p.programId === programId,
+      );
+      if (programAssignment) {
+        for (const role of programAssignment.roles) {
+          if (role.permissions.map((p) => p.name).includes(permission)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   public async getCreateProgramDto(

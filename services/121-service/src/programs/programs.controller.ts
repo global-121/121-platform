@@ -57,13 +57,17 @@ export class ProgramController {
   public async findOne(
     @Param() params,
     @Query() queryParams,
+    @User('id') userId: number,
   ): Promise<ProgramEntity | CreateProgramDto> {
     const formatCreateProgramDto =
       queryParams.formatCreateProgramDto === 'true';
     if (formatCreateProgramDto) {
       return this.programService.getCreateProgramDto(params.programId);
     } else {
-      return await this.programService.findOne(Number(params.programId));
+      return await this.programService.findOne(
+        Number(params.programId),
+        userId,
+      );
     }
   }
 
