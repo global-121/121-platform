@@ -234,7 +234,7 @@ export class UserController {
   }
 
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
-  @ApiOperation({ summary: 'Assign Aidworker to program' })
+  @ApiOperation({ summary: 'Remove aidworker from program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @Delete('programs/:programId/users/:userId/assignments')
