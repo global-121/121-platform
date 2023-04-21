@@ -627,18 +627,22 @@ export class ExportMetricsService {
     const programCustomAttributeIds = programCustomAttributes.map((att) => {
       return att.id;
     });
+    const program = await this.programRepository.findOne({
+      relations: ['financialServiceProviders'],
+      where: { id: programId },
+    });
+    const fspIds = program.financialServiceProviders.map((fsp) => {
+      return fsp.id;
+    });
     const fspQuestions = await this.fspQuestionRepository.find({
       relations: ['fsp'],
       where: {
+        id: In(fspIds),
         duplicateCheck: true,
       },
     });
     const fspQuestionIds = fspQuestions.map((fspQuestion) => {
       return fspQuestion.id;
-    });
-
-    const program = await this.programRepository.findOne({
-      where: { id: programId },
     });
     const nameRelations = await this.getNameRelationsByProgram(programId);
     const duplicateRelationOptions = this.getRelationOptionsForDuplicates(
