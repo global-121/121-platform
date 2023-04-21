@@ -76,7 +76,7 @@ export class IntersolveJumboApiService {
           orderImportLinePayload = this.soapService.setValueByName(
             orderImportLinePayload,
             key,
-            preOrderDto[value],
+            preOrderDto[value] ? preOrderDto[value] : '',
           );
         }
 
