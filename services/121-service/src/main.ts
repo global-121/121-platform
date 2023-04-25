@@ -76,7 +76,7 @@ async function bootstrap(): Promise<void> {
   }
 
   app.enableCors({
-    origin: DEBUG ? '*' : corsAllowList || false,
+    origin: DEBUG ? true : corsAllowList || false,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
