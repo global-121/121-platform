@@ -30,7 +30,7 @@ export class IntersolveJumboApiMockService {
         }: Geconstateerde fouten: -STAD ongeldig! (Stad is niet ingevuld).`;
         return response;
       } else if (
-        element.lastName.toLowerCase().includes('mock-fail-create-order')
+        element.lastName?.toLowerCase().includes('mock-fail-create-order')
       ) {
         response[
           'tns:CreatePreOrderResponse'
