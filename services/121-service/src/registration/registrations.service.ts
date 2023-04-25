@@ -22,7 +22,7 @@ import { PermissionEnum } from '../user/permission.enum';
 import { UserEntity } from '../user/user.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
-import { ImportRegistrationsDto, ImportResult } from './dto/bulk-import.dto';
+import { ImportRegistrationsDto, ImportResult, AggregateImportResult, BulkImportDto } from './dto/bulk-import.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { CustomDataDto } from './dto/custom-data.dto';
 import { DownloadData } from './dto/download-data.interface';
@@ -602,6 +602,18 @@ export class RegistrationsService {
     return await this.bulkImportService.importBulk(csvFile, program, userId);
   }
 
+  // New 
+  public async importJSonRegistrations(
+    validatedJsonData: ImportRegistrationsDto[],
+    programId: number,
+  ): Promise<ImportRegistrationsDto[]> {
+    const program = await this.findProgramOrThrow(programId);
+    return await this.bulkImportService.validateRegistrationsCsvInput(
+      validatedJsonData,
+      programId,
+    );
+  }
+
   public async getImportRegistrationsTemplate(
     programId: number,
     type: ImportType,
@@ -633,6 +645,7 @@ export class RegistrationsService {
       program,
     );
   }
+
 
   private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne({

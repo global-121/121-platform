@@ -568,7 +568,7 @@ export class BulkImportService {
     return [...attributes, ...programFspAttributes.reverse()];
   }
 
-  private async validateRegistrationsCsvInput(
+  public async validateRegistrationsCsvInput(
     csvArray,
     programId: number,
   ): Promise<ImportRegistrationsDto[]> {

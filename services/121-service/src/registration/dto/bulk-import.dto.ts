@@ -50,6 +50,7 @@ export class BulkImportDto {
 }
 
 export class BulkImportResult extends BulkImportDto {
+  
   public importStatus: ImportStatus;
   public registrationStatus: RegistrationStatusEnum | string;
 }
@@ -97,4 +98,5 @@ export class ImportRegistrationsDto extends BulkImportDto {
   @IsString()
   @Length(5, 200)
   public referenceId: string;
+  public aggregateImportResult: AggregateImportResult;
 }

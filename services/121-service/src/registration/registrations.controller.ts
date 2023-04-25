@@ -49,6 +49,7 @@ import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsService } from './registrations.service';
+//import { validateRegistrationsCsvInput } from 'services/bulk-import.service';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
@@ -59,6 +60,7 @@ export class FileUploadDto {
 @Controller()
 export class RegistrationsController {
   private readonly registrationsService: RegistrationsService;
+  //validateRegistrationsCsvInput: any;
   public constructor(registrationsService: RegistrationsService) {
     this.registrationsService = registrationsService;
   }
@@ -203,22 +205,33 @@ export class RegistrationsController {
     summary: 'Import set of registered PAs, from JSON only used in testing ATM',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/import-registrations-cypress')
+  @Post('programs/:programId/registrations/import-registrations-pa')
   public async importRegistrationsJSON(
     @Body() data: ImportRegistrationsDto[],
     @Param() params,
-  ): Promise<ImportResult> {
-    if (process.env.NODE_ENV === 'development') {
-      return await this.registrationsService.importValidatedRegistrations(
-        data,
-        Number(params.programId),
-      );
-    } else {
-      throw new HttpException(
-        { errors: 'This endpoint only works in development' },
-        HttpStatus.NOT_FOUND,
-      );
-    }
+  ): Promise<ImportRegistrationsDto[]> {
+    //TODO incoming Validate Data
+    // const isValid =validate(data),
+    //return await this.validateRegistrationsCsvInput(data, params.programId)
+   // const validateData = this.validateRegistrationsCsvInput(data)
+   // console.log('validateData', data);
+    return await this.registrationsService.importJSonRegistrations(
+      data,
+      //console.log('validateData', data)
+      Number(params.programId)
+
+    )
+    // if (process.env.NODE_ENV === 'development') {
+    //   return await this.registrationsService.importValidatedRegistrations(
+    //     data,
+    //     Number(params.programId),
+    //   );
+    // } else {
+    //   throw new HttpException(
+    //     { errors: 'This endpoint only works in development' },
+    //     HttpStatus.NOT_FOUND,
+    //   );
+    // }
   }
 
   @Permissions(PermissionEnum.RegistrationREAD)
