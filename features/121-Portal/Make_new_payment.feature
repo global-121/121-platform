@@ -104,6 +104,8 @@ Feature: Make a new payment
     When the user clicks 'OK'
     And a normal payment scenario is started for this all the PAs  (see other scenario)
 
+  -- "Intersolve-voucher"
+
   Scenario: Send payment instructions to a Person Affected with Financial Service Provider "Intersolve-voucher"
     Given the Person Affected has chosen the option "receive voucher via whatsApp"
     When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
@@ -114,6 +116,8 @@ Feature: Make a new payment
     And it is accompanied by text that explains what is sent
     And a separate "explanation" image is sent that explains how to use the voucher in the store (only if instruction-image is uploaded)
     And a separate voucher image is sent for any old uncollected vouchers or for any other registrations on the same "whatsappPhoneNumber"
+
+  -- "Intersolve-visa"
 
   Scenario: Send first payment instructions to a Person Affected with Financial Service Provider "Intersolve-visa"
     Given the Person Affected has been imported as registered with a "tokenCodeVisa"
@@ -139,6 +143,48 @@ Feature: Make a new payment
     Given Intersolve is in MOCK mode
     When executing a payment for a PA with amount 999 euros
     Then the payment fails because of a BALANCE_TOO_HIGH error
+
+  -- "Intersolve-jumbo-physical"
+
+  Scenario: Send payment instructions to Persons Affected with Financial Service Provider "Intersolve-jumbo-physical"
+    Given all Persons Affected have been imported and included
+    Given all PAs have correctly filled "addressStreet", "addressHouseNumber", "addressPostalCode", "addressCity"
+    When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then a successful payment appears in the payment column and the payment history popup
+    And the amount of the payment is the multiplied amount (if a "paymentAmountMultiplier" > 1)
+    And the Person Affected receives a notification that the Jumbo cards are sent via post (via generic send message feature "./Send_message_to_people_affected.feature")
+    And if a "whatsappPhoneNumber" is known it is sent via WhatsApp and otherwise via SMS
+
+  Scenario: Unsuccessfully send payment instructions to a Person Affected with Financial Service Provider "Intersolve-jumbo-physical" with wrong amount
+    Given all Persons Affected have been imported and included
+    Given the amount of the payment is set to an amount other than 22
+    When payment instructions are sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then a failed payment appears for all PAs
+    And the status popup will contain an error message about what is missing
+    And the amount of the payment will be automatically set to 22 instead
+    And a retry can immediately be done (via 'retry all' or per PA)
+
+  Scenario: Unsuccessfully send payment instructions to a Person Affected with Financial Service Provider "Intersolve-jumbo-physical" with multiplier > 3
+    Given all Person Affected has been imported and included
+    Given at least 1 PA has a "paymentAmountMultiplier" > 3
+    When payment instructions are sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then a failed payment appears for the PA with the high multiplier
+    And the status popup will contain an error message indicating this
+    And the amount of the payment will be set to the unmultiplied amount, so that on retry it is not multiplied again (and again)
+    And after correcting the the multiplier (in Espo), the payment can be retried
+    And for all other PAs a successful payment appears and notifications are sent (see scenario above)
+
+  Scenario: Unsuccessfully send payment instructions to a Person Affected with Financial Service Provider "Intersolve-jumbo-physical" with missing data
+    Given all Person Affected has been imported as registered
+    Given an obligatory field is missing ("addressStreet", "addressHouseNumber", "addressPostalCode", "addressCity") for at least 1 PA
+    When payment instructions are sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then a failed payment appears for the PA with the missing data
+    And the status popup will contain an error message about the first field that is missing (except for "addressHouseNumber" where a more general error message is shown)
+    And the amount of the payment will be set to the unmultiplied amount, even with a "paymentAmountMultiplier" > 1, so that on retry it is not multiplied again (and again)
+    And after correcting the data, the payment can be retried
+    And for all other PAs a successful payment appears and notifications are sent (see scenario above)
+
+
 
 
 
