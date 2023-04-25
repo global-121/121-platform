@@ -1,3 +1,7 @@
+--------------------------------------------
+-- CREATE LARGE DATASETS FOR LOAD TESTING --
+--------------------------------------------
+-- This script can be used to quickly create large datasets for load testing.
 -- IMPORTANT: this query needs to be kept up-to-date with changes to the datamodel (registration + registration_data + transaction + twilio_message entities)
 
 -- PREREQUISITES
