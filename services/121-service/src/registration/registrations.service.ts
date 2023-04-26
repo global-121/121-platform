@@ -633,7 +633,6 @@ export class RegistrationsService {
     );
   }
 
-  // New 
   public async importJSonValidateRegistrations(
     validatedJsonData: ImportRegistrationsDto[],
     programId: number,
