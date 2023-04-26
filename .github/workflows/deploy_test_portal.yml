@@ -49,7 +49,7 @@ jobs:
     steps:
 
       - name: Build
-        uses: .github/workflows/_build_interface_portal.yml
+        uses: ./.github/workflows/_build_interface_portal.yml
         with:
           workingDirectory: ${{ env.workingDirectory }}
           NG_ENV_NAME: 'test'

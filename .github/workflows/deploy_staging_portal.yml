@@ -38,7 +38,7 @@ jobs:
 
       - name: Build
         id: build_portal
-        uses: .github/workflows/_build_interface.yml
+        uses: ./.github/workflows/_build_interface_portal.yml
         with:
           workingDirectory: ${{ env.workingDirectory }}
           NG_ENV_NAME: 'staging'
