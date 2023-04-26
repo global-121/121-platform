@@ -57,6 +57,9 @@ jobs:
         run: |
           npm prune --production
           rm -r test/
+          rm -r ./*.md
+          rm -r azure-pipelines.yml
+          rm -r jest.config.js
 
       - name: Deploy to Azure App Service
         id: deploy_to_aas
