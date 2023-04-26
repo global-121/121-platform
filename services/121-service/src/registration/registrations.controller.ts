@@ -203,22 +203,15 @@ export class RegistrationsController {
     summary: 'Import set of registered PAs, from JSON only used in testing ATM',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/import-registrations-cypress')
+  @Post('programs/:programId/registrations/import-registrations-pa')
   public async importRegistrationsJSON(
     @Body() data: ImportRegistrationsDto[],
     @Param() params,
   ): Promise<ImportResult> {
-    if (process.env.NODE_ENV === 'development') {
       return await this.registrationsService.importValidatedRegistrations(
         data,
         Number(params.programId),
       );
-    } else {
-      throw new HttpException(
-        { errors: 'This endpoint only works in development' },
-        HttpStatus.NOT_FOUND,
-      );
-    }
   }
 
   @Permissions(PermissionEnum.RegistrationREAD)
