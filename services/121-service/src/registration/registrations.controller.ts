@@ -208,10 +208,10 @@ export class RegistrationsController {
     @Body() data: ImportRegistrationsDto[],
     @Param() params,
   ): Promise<ImportResult> {
-      return await this.registrationsService.importValidatedRegistrations(
-        data,
-        Number(params.programId),
-      );
+    return await this.registrationsService.importValidatedRegistrations(
+      data,
+      Number(params.programId),
+    );
   }
 
   @Permissions(PermissionEnum.RegistrationREAD)
