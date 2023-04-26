@@ -24,6 +24,7 @@
     "set-env-variables": "node ./_set-env-variables.js",
     "start:debug-production": "npm run build:debug && npm run serve:static",
     "start": "ng serve --port 0",
+    "test:all": "npm run lint && npm test",
     "test:dev": "ng test",
     "test": "ng test --configuration=ci",
     "upgrade:angular": "ng update @angular/core @angular/cli @angular-eslint/schematics --create-commits"
