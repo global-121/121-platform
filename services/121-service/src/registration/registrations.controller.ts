@@ -208,17 +208,11 @@ export class RegistrationsController {
     @Body() data: ImportRegistrationsDto[],
     @Param() params,
   ): Promise<ImportResult> {
-    if (process.env.NODE_ENV === 'development') {
-      return await this.registrationsService.importValidatedRegistrations(
-        data,
-        Number(params.programId),
-      );
-    } else {
-      throw new HttpException(
-        { errors: 'This endpoint only works in development' },
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    const validateData = await this.registrationsService.importJSonValidateRegistrations(data, Number(params.programId))
+    return await this.registrationsService.importValidatedRegistrations(
+      validateData,
+      Number(params.programId),
+    );
   }
 
   @Permissions(PermissionEnum.RegistrationREAD)
