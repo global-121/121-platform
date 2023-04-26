@@ -42,6 +42,7 @@ import {
 } from './enum/custom-data-attributes';
 import { LanguageEnum } from './enum/language.enum';
 import {
+  RegistrationStatusDateMap,
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
@@ -704,20 +705,29 @@ export class RegistrationsService {
       );
   }
 
-  private buildCustomDataObject(input: {
-    values: string[];
-    keys: string[];
-    types: string[];
-  }): object {
+  private buildCustomDataObject(
+    input: {
+      values: string[];
+      keys: string[];
+      types: string[];
+    },
+    attributes?: string[],
+  ): object {
     const customData = {};
-    for (const i in input['keys']) {
+
+    let keys = input.keys;
+    if (attributes && attributes.length > 0) {
+      keys = keys.filter((k) => attributes.includes(k));
+    }
+
+    for (const i in keys) {
       if (input['types'][i] === AnswerTypes.multiSelect) {
-        if (customData[input['keys'][i]] === undefined) {
-          customData[input['keys'][i]] = [];
+        if (customData[keys[i]] === undefined) {
+          customData[keys[i]] = [];
         }
-        customData[input['keys'][i]].push(input['values'][i]);
+        customData[keys[i]].push(input['values'][i]);
       } else {
-        customData[input['keys'][i]] = input['values'][i];
+        customData[keys[i]] = input['values'][i];
       }
     }
     return customData;
@@ -727,7 +737,6 @@ export class RegistrationsService {
     referenceId: string,
   ): Promise<object> {
     const result = await this.registrationRepository
-
       .createQueryBuilder('registration')
       .select((subQuery) => {
         return this.customDataSubQuery(subQuery);
@@ -746,51 +755,90 @@ export class RegistrationsService {
     includeDeletedRegistrations: boolean,
     referenceId: string,
     filterOnPayment?: number,
+    attributes?: string[],
   ): Promise<RegistrationResponse[]> {
     let program: ProgramEntity;
     if (programId) {
       program = await this.programService.findProgramOrThrow(programId);
     }
+
     let q = await this.registrationRepository
       .createQueryBuilder('registration')
       .select('registration.id', 'id')
       .where('1 = 1');
-
-    if (includePaymentData) {
-      q = this.includeTransactionData(q);
-    }
-
-    q = this.includeLastMessage(q);
 
     q = q
       .addSelect('registration.registrationProgramId', 'registrationProgramId')
       .distinctOn(['registration.registrationProgramId'])
       .orderBy(`registration.registrationProgramId`, 'ASC')
       .addSelect('registration.referenceId', 'referenceId')
-      .addSelect('registration.registrationStatus', 'status')
-      .addSelect('registration.preferredLanguage', 'preferredLanguage')
-      .addSelect('registration.inclusionScore', 'inclusionScore')
       .addSelect('fsp.fsp', 'fsp')
       .addSelect('fsp.fspDisplayNamePortal', 'fspDisplayNamePortal')
-      .addSelect(
-        'registration.paymentAmountMultiplier',
-        'paymentAmountMultiplier',
-      )
+      .leftJoin('registration.fsp', 'fsp');
+
+    const nonStandardAttributes = [];
+
+    const registrationColumns =
+      this.registrationRepository.metadata.columns.map((c) => c.databaseName);
+
+    const attributeAlias = {
+      registrationStatus: 'status',
+    };
+
+    if (attributes && attributes.length > 0) {
+      for (const attribute of attributes) {
+        if (!registrationColumns.includes(attribute)) {
+          nonStandardAttributes.push(attribute);
+          continue;
+        }
+        q = q.addSelect(
+          `registration.${attribute}`,
+          attributeAlias[attribute] || attribute,
+        );
+      }
+    }
+
+    q = q
       .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect((subQuery) => {
         return this.customDataSubQuery(subQuery);
-      }, 'customData')
-      .addSelect('registration.phoneNumber', 'phoneNumber')
-      .addSelect('data.value', 'data')
-      .leftJoin('registration.data', 'data')
-      .leftJoin('data.programQuestion', 'programQuestion')
-      .leftJoin('registration.fsp', 'fsp');
+      }, 'customData');
 
-    if (programId) {
-      q.andWhere('registration.program.id = :programId', {
-        programId: programId,
-      });
-    }
+    // if (includePaymentData) {
+    //   q = this.includeTransactionData(q);
+    // }
+
+    // q = this.includeLastMessage(q);
+
+    // q = q
+    //   .addSelect('registration.registrationProgramId', 'registrationProgramId')
+    //   .distinctOn(['registration.registrationProgramId'])
+    //   .orderBy(`registration.registrationProgramId`, 'ASC')
+    //   .addSelect('registration.referenceId', 'referenceId')
+    //   .addSelect('registration.registrationStatus', 'status')
+    //   .addSelect('registration.preferredLanguage', 'preferredLanguage')
+    //   .addSelect('registration.inclusionScore', 'inclusionScore')
+    //   .addSelect('fsp.fsp', 'fsp')
+    //   .addSelect('fsp.fspDisplayNamePortal', 'fspDisplayNamePortal')
+    //   .addSelect(
+    //     'registration.paymentAmountMultiplier',
+    //     'paymentAmountMultiplier',
+    //   )
+    //   .addSelect('registration.maxPayments', 'maxPayments')
+    //   .addSelect((subQuery) => {
+    //     return this.customDataSubQuery(subQuery);
+    //   }, 'customData')
+    //   .addSelect('registration.phoneNumber', 'phoneNumber')
+    //   .addSelect('data.value', 'data')
+    //   .leftJoin('registration.data', 'data')
+    //   .leftJoin('data.programQuestion', 'programQuestion')
+    //   .leftJoin('registration.fsp', 'fsp');
+
+    // if (programId) {
+    //   q.andWhere('registration.program.id = :programId', {
+    //     programId: programId,
+    //   });
+    // }
 
     if (filterOnPayment) {
       q.leftJoin(
@@ -802,24 +850,27 @@ export class RegistrationsService {
       });
     }
 
-    this.addStatusChangeToQuery(q);
+    this.addStatusChangeToQuery(q, nonStandardAttributes);
     if (!includeDeletedRegistrations) {
       q.andWhere('registration.registrationStatus != :status', {
         status: RegistrationStatusEnum.deleted,
       });
     }
 
-    if (referenceId) {
-      q.addSelect('registration.programId', 'programId');
-      q.andWhere('registration.referenceId = :referenceId', {
-        referenceId: referenceId,
-      });
-    }
+    // if (referenceId) {
+    //   q.addSelect('registration.programId', 'programId');
+    //   q.andWhere('registration.referenceId = :referenceId', {
+    //     referenceId: referenceId,
+    //   });
+    // }
     if (!includePersonalData) {
       const rows = await q.getRawMany();
       const responseRows = [];
       for (const row of rows) {
-        row['customData'] = this.buildCustomDataObject(row['customData']);
+        row['customData'] = this.buildCustomDataObject(
+          row['customData'],
+          nonStandardAttributes,
+        );
         row['hasPhoneNumber'] = !!(
           row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber]
         );
@@ -830,7 +881,7 @@ export class RegistrationsService {
       return responseRows;
     }
 
-    q = q.addSelect('registration.note', 'note');
+    // q = q.addSelect('registration.note', 'note');
     const rows = await q.getRawMany();
 
     if (referenceId && rows.length === 1) {
@@ -838,9 +889,9 @@ export class RegistrationsService {
     }
 
     const responseRows = [];
-    const paTableAttributes = await this.programService.getPaTableAttributes(
-      program.id,
-    );
+    const paTableAttributes = (
+      await this.programService.getPaTableAttributes(program.id)
+    ).filter((a) => nonStandardAttributes.includes(a.name));
     for (const row of rows) {
       row['customData'] = this.buildCustomDataObject(row['customData']);
       row['name'] = this.getName(row.customData, program);
@@ -892,146 +943,57 @@ export class RegistrationsService {
 
   private addStatusChangeToQuery(
     q: SelectQueryBuilder<RegistrationEntity>,
+    attributes?: string[],
+  ): void {
+    const toQuery = [];
+
+    for (const status in RegistrationStatusEnum) {
+      const timestampField =
+        RegistrationStatusTimestampField[RegistrationStatusDateMap[status]];
+      if (
+        attributes &&
+        attributes.length > 0 &&
+        !attributes.includes(timestampField)
+      ) {
+        continue;
+      }
+
+      toQuery.push({ status, timestampField });
+    }
+
+    for (const item of toQuery) {
+      this.addRegistrationStatusChangeSelect(
+        item.status,
+        item.timestampField,
+        q,
+      );
+    }
+
+    for (const item of toQuery) {
+      this.addRegistrationStatusChangeLeftJoin(item.status, q);
+    }
+  }
+
+  private addRegistrationStatusChangeSelect(
+    registrationStatus: string,
+    registrationStatusDate: string,
+    q: SelectQueryBuilder<RegistrationEntity>,
   ): void {
     q.addSelect(
-      `${RegistrationStatusEnum.startedRegistration}.created`,
-      RegistrationStatusTimestampField.startedRegistrationDate,
-    )
-      .addOrderBy(
-        `${RegistrationStatusEnum.startedRegistration}.created`,
-        'DESC',
-      )
-      .addSelect(
-        `${RegistrationStatusEnum.imported}.created`,
-        RegistrationStatusTimestampField.importedDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.imported}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.invited}.created`,
-        RegistrationStatusTimestampField.invitedDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.invited}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.noLongerEligible}.created`,
-        RegistrationStatusTimestampField.noLongerEligibleDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.noLongerEligible}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.registeredWhileNoLongerEligible}.created`,
-        RegistrationStatusTimestampField.registeredWhileNoLongerEligibleDate,
-      )
-      .addOrderBy(
-        `${RegistrationStatusEnum.registeredWhileNoLongerEligible}.created`,
-        'DESC',
-      )
-      .addSelect(
-        `${RegistrationStatusEnum.registered}.created`,
-        RegistrationStatusTimestampField.registeredDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.registered}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.selectedForValidation}.created`,
-        RegistrationStatusTimestampField.selectedForValidationDate,
-      )
-      .addOrderBy(
-        `${RegistrationStatusEnum.selectedForValidation}.created`,
-        'DESC',
-      )
-      .addSelect(
-        `${RegistrationStatusEnum.validated}.created`,
-        RegistrationStatusTimestampField.validationDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.validated}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.included}.created`,
-        RegistrationStatusTimestampField.inclusionDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.included}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.inclusionEnded}.created`,
-        RegistrationStatusTimestampField.inclusionEndDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.inclusionEnded}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.rejected}.created`,
-        RegistrationStatusTimestampField.rejectionDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.rejected}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.deleted}.created`,
-        RegistrationStatusTimestampField.deleteDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.deleted}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.completed}.created`,
-        RegistrationStatusTimestampField.completedDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.completed}.created`, 'DESC')
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.startedRegistration,
-        `registration.id = ${RegistrationStatusEnum.startedRegistration}.registrationId AND ${RegistrationStatusEnum.startedRegistration}.registrationStatus = '${RegistrationStatusEnum.startedRegistration}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.imported,
-        `registration.id = ${RegistrationStatusEnum.imported}.registrationId AND ${RegistrationStatusEnum.imported}.registrationStatus = '${RegistrationStatusEnum.imported}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.invited,
-        `registration.id = ${RegistrationStatusEnum.invited}.registrationId AND ${RegistrationStatusEnum.invited}.registrationStatus = '${RegistrationStatusEnum.invited}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.noLongerEligible,
-        `registration.id = ${RegistrationStatusEnum.noLongerEligible}.registrationId AND ${RegistrationStatusEnum.noLongerEligible}.registrationStatus = '${RegistrationStatusEnum.noLongerEligible}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.registeredWhileNoLongerEligible,
-        `registration.id = ${RegistrationStatusEnum.registeredWhileNoLongerEligible}.registrationId AND ${RegistrationStatusEnum.registeredWhileNoLongerEligible}.registrationStatus = '${RegistrationStatusEnum.registeredWhileNoLongerEligible}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.registered,
-        `registration.id = ${RegistrationStatusEnum.registered}.registrationId AND ${RegistrationStatusEnum.registered}.registrationStatus = '${RegistrationStatusEnum.registered}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.selectedForValidation,
-        `registration.id = ${RegistrationStatusEnum.selectedForValidation}.registrationId AND ${RegistrationStatusEnum.selectedForValidation}.registrationStatus = '${RegistrationStatusEnum.selectedForValidation}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.validated,
-        `registration.id = ${RegistrationStatusEnum.validated}.registrationId AND ${RegistrationStatusEnum.validated}.registrationStatus = '${RegistrationStatusEnum.validated}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.included,
-        `registration.id = ${RegistrationStatusEnum.included}.registrationId AND ${RegistrationStatusEnum.included}.registrationStatus = '${RegistrationStatusEnum.included}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.inclusionEnded,
-        `registration.id = ${RegistrationStatusEnum.inclusionEnded}.registrationId AND ${RegistrationStatusEnum.inclusionEnded}.registrationStatus = '${RegistrationStatusEnum.inclusionEnded}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.rejected,
-        `registration.id = ${RegistrationStatusEnum.rejected}.registrationId AND ${RegistrationStatusEnum.rejected}.registrationStatus = '${RegistrationStatusEnum.rejected}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.deleted,
-        `registration.id = ${RegistrationStatusEnum.deleted}.registrationId AND ${RegistrationStatusEnum.deleted}.registrationStatus = '${RegistrationStatusEnum.deleted}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.completed,
-        `registration.id = ${RegistrationStatusEnum.completed}.registrationId AND ${RegistrationStatusEnum.completed}.registrationStatus = '${RegistrationStatusEnum.completed}'`,
-      );
+      `${registrationStatus}.created`,
+      registrationStatusDate,
+    ).addOrderBy(`${registrationStatus}.created`, 'DESC');
+  }
+
+  private addRegistrationStatusChangeLeftJoin(
+    registrationStatus: string,
+    q: SelectQueryBuilder<RegistrationEntity>,
+  ): void {
+    q.leftJoin(
+      RegistrationStatusChangeEntity,
+      registrationStatus,
+      `registration.id = ${registrationStatus}.registrationId AND ${registrationStatus}.registrationStatus = '${registrationStatus}'`,
+    );
   }
 
   private includeTransactionData(
