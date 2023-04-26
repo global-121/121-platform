@@ -1,0 +1,88 @@
+# More information on Static Web App workflow configurations,
+# See: https://aka.ms/swaworkflowconfig
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: '_ Build: Interface Portal'
+
+permissions:
+  actions: read
+
+on:
+  workflow_call:
+    inputs:
+      interfacePath:
+        required: true
+        type: string
+      NG_ENV_NAME:
+        required: false
+        type: string
+      NG_URL_121_SERVICE_API:
+        required: true
+        type: string
+      NG_AI_IKEY:
+        required: false
+        type: string
+      NG_AI_ENDPOINT:
+        required: false
+        type: string
+      APPLICATIONINSIGHTS_CONNECTION_STRING:
+        required: false
+        type: string
+    outputs:
+      build_version:
+        desciption: 'The version number of the build'
+        value: ${{ jobs.build.outputs.build_version }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '${{ inputs.interfacePath }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ inputs.interfacePath }}/package-lock.json'
+
+      - name: Install
+        working-directory: ${{ inputs.interfacePath }}
+        env:
+          HUSKY: 0
+        run: 'npm ci --omit=optional --no-fund --no-audit'
+
+      - name: Lint
+        working-directory: ${{ inputs.interfacePath }}
+        run: 'npm run lint'
+
+      - name: Test
+        working-directory: ${{ inputs.interfacePath }}
+        run: 'npm test'
+
+      - name: Set VERSION of build/deployment
+        run: 'echo "NG_BUILD_VERSION=$(git describe --tags --dirty --broken)" >> $GITHUB_ENV'
+
+      - name: Build
+        run: 'npm run build:prod'
+        env:
+          NG_PRODUCTION: 'true'
+          NG_USE_SERVICE_WORKER: 'true'
+          NG_ENV_NAME: ${{ inputs.NG_ENV_NAME }}
+          NG_URL_121_SERVICE_API: ${{ inputs.NG_URL_121_SERVICE_API }}
+          NG_TWILIO_ERROR_CODES_URL: 'https://www.twilio.com/docs/api/errors'
+          NG_AI_IKEY: ${{ inputs.NG_AI_IKEY }}
+          NG_AI_ENDPOINT: ${{ inputs.NG_AI_ENDPOINT }}
+          APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ inputs.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+
+      - name: Add VERSION to deployment
+        run: |
+          echo "${{ env.NG_BUILD_VERSION }}" >> www/VERSION.txt
+          echo "build_version=${{ env.NG_BUILD_VERSION }}" >> $GITHUB_OUTPUT
+
+      - name: Finish
+        run: |
+          echo "Build version: ${{ env.NG_BUILD_VERSION }}" >> $GITHUB_STEP_SUMMARY
