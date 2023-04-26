@@ -200,7 +200,7 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({
-    summary: 'Import set of registered PAs, from JSON only used in testing ATM',
+    summary: 'Import set of registered PAs, from JSON',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/import-registrations-pa')
