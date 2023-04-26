@@ -209,8 +209,9 @@ export class RegistrationsController {
     @Param() params,
   ): Promise<ImportResult> {
     const validateData = await this.registrationsService.importJSonValidateRegistrations(
-      data, 
-      Number(params.programId))
+      data,
+      Number(params.programId),
+      );
     return await this.registrationsService.importValidatedRegistrations(
       validateData,
       Number(params.programId),
