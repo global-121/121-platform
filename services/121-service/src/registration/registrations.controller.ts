@@ -203,17 +203,17 @@ export class RegistrationsController {
     summary: 'Import set of registered PAs, from JSON only used in testing ATM',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/import-registrations-cypress')
+  @Post('programs/:programId/registrations/import-registrations-pa')
   public async importRegistrationsJSON(
     @Body() data: ImportRegistrationsDto[],
     @Param() params,
   ): Promise<ImportResult> {
-    const validateData = await this.registrationsService.importJSonValidateRegistrations(
+    const validatedData = await this.registrationsService.importJSonValidateRegistrations(
       data,
       Number(params.programId),
-      );
+    );
     return await this.registrationsService.importValidatedRegistrations(
-      validateData,
+      validatedData,
       Number(params.programId),
     );
   }
