@@ -5,9 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.85.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.85.1...master)
 
 ---
+
+## [1.85.1](https://github.com/global-121/121-platform/compare/v1.85.0...v1.85.1) - 2023-04-26
+
+### Fixed
+
+- Crash on error in logError
+- Login permission issue
 
 ## [1.85.0](https://github.com/global-121/121-platform/compare/v1.84.3...v1.85.0) - 2023-04-26
 
