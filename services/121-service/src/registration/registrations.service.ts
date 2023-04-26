@@ -602,18 +602,6 @@ export class RegistrationsService {
     return await this.bulkImportService.importBulk(csvFile, program, userId);
   }
 
-  // New 
-  public async importJSonRegistrations(
-    validatedJsonData: ImportRegistrationsDto[],
-    programId: number,
-  ): Promise<ImportRegistrationsDto[]> {
-   // const program = await this.findProgramOrThrow(programId);
-    return await this.bulkImportService.validateRegistrationsCsvInput(
-      validatedJsonData,
-      programId,
-    );
-  }
-
   public async getImportRegistrationsTemplate(
     programId: number,
     type: ImportType,

@@ -199,7 +199,7 @@ export class RegistrationsController {
       Number(params.programId),
     );
   }
-
+  
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({
     summary: 'Import set of registered PAs, from JSON only used in testing ATM',
@@ -209,29 +209,11 @@ export class RegistrationsController {
   public async importRegistrationsJSON(
     @Body() data: ImportRegistrationsDto[],
     @Param() params,
-  ): Promise<ImportRegistrationsDto[]> {
-    //TODO incoming Validate Data
-    // const isValid =validate(data),
-    //return await this.validateRegistrationsCsvInput(data, params.programId)
-   // const validateData = this.validateRegistrationsCsvInput(data)
-   // console.log('validateData', data);
-    return await this.registrationsService.importJSonRegistrations(
-      data,
-      //console.log('validateData', data)
-      Number(params.programId)
-
-    )
-    // if (process.env.NODE_ENV === 'development') {
-    //   return await this.registrationsService.importValidatedRegistrations(
-    //     data,
-    //     Number(params.programId),
-    //   );
-    // } else {
-    //   throw new HttpException(
-    //     { errors: 'This endpoint only works in development' },
-    //     HttpStatus.NOT_FOUND,
-    //   );
-    // }
+  ): Promise<ImportResult> {
+      return await this.registrationsService.importValidatedRegistrations(
+        data,
+        Number(params.programId),
+      );
   }
 
   @Permissions(PermissionEnum.RegistrationREAD)
