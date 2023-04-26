@@ -453,6 +453,7 @@ export class ProgramsServiceApiService {
     paymentData: boolean,
     referenceId?: string,
     filterOnPayment?: number,
+    attributes?: string[],
   ): Promise<Person[]> {
     let params = new HttpParams();
     params = params.append('personalData', personalData);
@@ -462,6 +463,9 @@ export class ProgramsServiceApiService {
     }
     if (filterOnPayment) {
       params = params.append('filterOnPayment', filterOnPayment);
+    }
+    if (attributes) {
+      params = params.append('attributes', attributes.join());
     }
     return this.apiService.get(
       environment.url_121_service_api,

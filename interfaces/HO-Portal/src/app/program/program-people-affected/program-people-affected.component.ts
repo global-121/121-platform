@@ -575,6 +575,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   async initComponent() {
     this.isLoading = true;
 
+    await this.loadProgram();
+
+    await this.loadPermissions();
+
     this.paTableAttributes = await this.programsService.getPaTableAttributes(
       this.programId,
       this.thisPhase,
@@ -583,11 +587,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.paymentInProgress =
       await this.pastPaymentsService.checkPaymentInProgress(this.programId);
 
-    await this.refreshData(true);
-
     this.activePhase = this.program.phase;
 
     await this.loadColumns();
+
+    await this.refreshData(true);
 
     await this.updateBulkActions();
 
@@ -619,8 +623,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private async refreshData(refresh: boolean = false) {
     this.isLoading = true;
-    await this.loadProgram();
-    await this.loadPermissions();
     if (this.canViewPaymentData) {
       this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
         this.programId,
@@ -780,6 +782,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         this.columns.push(addCol);
       }
     }
+
+    if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
+      this.paymentHistoryColumn = this.createPaymentHistoryColumn();
+    }
   }
 
   private checkValidationColumnOrAction(columnOrAction) {
@@ -873,15 +879,23 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async loadData(refresh: boolean = false) {
+    const attributeNames = this.columns.map((c) => c.prop);
+    if (
+      [ProgramPhase.registrationValidation, ProgramPhase.inclusion].includes(
+        this.thisPhase,
+      )
+    ) {
+      attributeNames.push('inclusionScore');
+    }
+
     this.allPeopleData = await this.programsService.getPeopleAffected(
       this.programId,
       this.canViewPersonalData,
       this.canViewPaymentData && this.thisPhase === ProgramPhase.payment,
+      null,
+      null,
+      attributeNames,
     );
-
-    if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
-      this.paymentHistoryColumn = this.createPaymentHistoryColumn();
-    }
 
     this.allPeopleAffected = this.createTableData(this.allPeopleData);
 
