@@ -434,11 +434,11 @@ export class UserService {
         'programAssignments.program',
       ],
     });
-    let permissions = [];
 
     const permissionsObject = {};
     if (user.programAssignments && user.programAssignments[0]) {
       for (const programAssignment of user.programAssignments) {
+        let permissions = [];
         for (const role of programAssignment.roles) {
           const permissionNames = role.permissions.map((a) => a.name);
           permissions = [...new Set([...permissions, ...permissionNames])];
