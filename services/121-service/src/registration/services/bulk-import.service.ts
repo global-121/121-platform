@@ -644,12 +644,15 @@ export class BulkImportService {
         importRecord.maxPayments = row.maxPayments ? +row.maxPayments : null;
       }
       for await (const att of dynamicAttributes) {
+       
         if (att.type === AnswerTypes.tel && row[att.name]) {
+          console.log('test1', att.type,  row[att.name]);
           const sanitized = await this.lookupService.lookupAndCorrect(
             row[att.name],
             true,
           );
           if (!sanitized && !!row[att.name]) {
+            console.log('test2', att.type,  row[att.name]);
             const errorObj = {
               lineNumber: i + 1,
               column: att.name,
@@ -664,6 +667,7 @@ export class BulkImportService {
             row[att.name] &&
             this.stringToBoolean(row[att.name]) === undefined)
         ) {
+          console.log('test3', att.type,  row[att.name]);
           const errorObj = {
             lineNumber: i + 1,
             column: att.name,
