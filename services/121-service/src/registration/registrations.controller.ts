@@ -200,7 +200,7 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({
-    summary: 'Import set of registered PAs, from JSON only used in testing ATM',
+    summary: 'Import set of registered PAs from JSON ',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/import-registrations-pa')
@@ -208,10 +208,11 @@ export class RegistrationsController {
     @Body() data: ImportRegistrationsDto[],
     @Param() params,
   ): Promise<ImportResult> {
-    const validatedData = await this.registrationsService.importJSonValidateRegistrations(
-      data,
-      Number(params.programId),
-    );
+    const validatedData =
+      await this.registrationsService.importJSonValidateRegistrations(
+        data,
+        Number(params.programId),
+      );
     return await this.registrationsService.importValidatedRegistrations(
       validatedData,
       Number(params.programId),
