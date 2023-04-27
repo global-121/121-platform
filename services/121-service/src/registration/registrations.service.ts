@@ -633,7 +633,7 @@ export class RegistrationsService {
     );
   }
 
-  public async importJSonValidateRegistrations(
+  public async importJsonValidateRegistrations(
     validatedJsonData: ImportRegistrationsDto[],
     programId: number,
   ): Promise<ImportRegistrationsDto[]> {
