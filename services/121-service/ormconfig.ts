@@ -15,4 +15,10 @@ export const ORMConfig: DataSourceOptions = {
   migrationsRun: true,
   dropSchema: false,
   synchronize: false,
+  ssl:
+    process.env.NODE_ENV === 'development'
+      ? null
+      : {
+          ca: process.env.POSTGRES_SSL,
+        },
 };
