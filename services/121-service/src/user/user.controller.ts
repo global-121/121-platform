@@ -162,7 +162,7 @@ export class UserController {
       return res.send({
         username: loginResponse.userRo.user.username,
         permissions: loginResponse.userRo.user.permissions,
-        token: loginResponse.token,
+        acces_token_general: loginResponse.token,
         expires: loginResponse.cookieSettings.expires,
       });
     } catch (error) {
