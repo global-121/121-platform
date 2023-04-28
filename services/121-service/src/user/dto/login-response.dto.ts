@@ -11,4 +11,6 @@ export class LoginResponseDto {
   @ApiProperty({ example: '' })
   @IsNotEmpty()
   public readonly cookieSettings: CookieSettingsDto;
+
+  public readonly token: string;
 }
