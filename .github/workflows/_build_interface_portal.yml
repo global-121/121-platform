@@ -87,11 +87,15 @@ jobs:
           echo "${{ env.NG_BUILD_VERSION }}" >> www/VERSION.txt
           echo "build_version=${{ env.NG_BUILD_VERSION }}" >> $GITHUB_OUTPUT
 
-      - name: 'Upload build artifact: Interface Portal'
+      - name: Compress build artifact
+        run: |
+          zip "$RUNNER_TEMP/${{ inputs.artifactName }}.zip" "${{ inputs.interfacePath }}/www"
+
+      - name: 'Upload build artifact'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.artifactName }}
-          path: '${{ inputs.interfacePath }}/www'
+          path: ${{ runner.temp }}/${{ inputs.artifactName }}.zip
           if-no-files-found: error
 
       - name: Finish
