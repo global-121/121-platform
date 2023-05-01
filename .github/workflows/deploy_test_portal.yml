@@ -23,7 +23,6 @@ on:
       - '**/.vscode/*'
       - '!*.md'
       - '!*.yml'
-
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
