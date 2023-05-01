@@ -36,19 +36,13 @@ on:
       - '!*.yml'
 
 jobs:
-  variables_workaround:
-    runs-on: ubuntu-latest
-    steps: [run: echo]
-    outputs:
-      workingDirectory: ${{ env.workingDirectory }}
-
   build:
     name: Build
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
-    needs: variables_workaround
     uses: ./.github/workflows/_build_interface_portal.yml
     with:
-      interfacePath: ${{ needs.variables_workaround.outputs.workingDirectory }}
+      artifactName: artifact_interface_portal_test
+      interfacePath: interfaces/HO-Portal
       NG_ENV_NAME: 'test'
       NG_URL_121_SERVICE_API: 'https://test-vm.121.global/121-service/api'
       NG_AI_IKEY: ''
@@ -65,7 +59,7 @@ jobs:
       - name: 'Download build artifact: Interface Portal'
         uses: actions/download-artifact@v3
         with:
-          name: 'artifact-${{ env.workingDirectory }}'
+          name: artifact_interface_portal_test
           path: '${{ env.workingDirectory }}/www'
 
       - name: Deploy to Azure Static Web App

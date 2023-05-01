@@ -10,6 +10,9 @@ permissions:
 on:
   workflow_call:
     inputs:
+      artifactName:
+        required: true
+        type: string
       interfacePath:
         required: true
         type: string
@@ -87,7 +90,7 @@ jobs:
       - name: 'Upload build artifact: Interface Portal'
         uses: actions/upload-artifact@v3
         with:
-          name: 'artifact-${{ inputs.interfacePath }}'
+          name: ${{ inputs.artifactName }}
           path: '${{ inputs.interfacePath }}/www'
           if-no-files-found: error
 
