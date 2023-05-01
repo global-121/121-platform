@@ -52,7 +52,9 @@ export class MetricsComponent implements OnInit {
     this.renderProgramProperties();
     this.renderFinancialMetrics();
     this.renderPaMetrics();
-    this.renderAidWorkerMetrics();
+    if (this.program.validation === true) {
+      this.renderAidWorkerMetrics();
+    }
 
     // Convert to array, for use in template:
     this.metricList = Array.from(this.metricsMap.values());
