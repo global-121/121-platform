@@ -36,7 +36,7 @@ jobs:
     needs: variables_workaround
     uses: ./.github/workflows/_build_interface_portal.yml
     with:
-      workingDirectory: ${{ needs.variables_workaround.outputs.workingDirectory }}
+      interfacePath: ${{ needs.variables_workaround.outputs.workingDirectory }}
       NG_ENV_NAME: 'staging'
       NG_URL_121_SERVICE_API: 'https://staging.121.global/121-service/api'
       NG_AI_IKEY: ''
