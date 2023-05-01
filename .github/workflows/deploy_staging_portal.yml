@@ -33,6 +33,7 @@ jobs:
 
   build:
     name: Build
+    needs: variables_workaround
     uses: ./.github/workflows/_build_interface_portal.yml
     with:
       workingDirectory: ${{ needs.variables_workaround.outputs.workingDirectory }}
@@ -65,5 +66,5 @@ jobs:
 
       - name: Finish
         run: |
-          echo "Build version: ${{ steps.build_portal.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Build version: ${{ needs.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
           echo "Preview: <${{ steps.deploy_to_aswa.outputs.static_web_app_url }}>" >> $GITHUB_STEP_SUMMARY

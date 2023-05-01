@@ -30,7 +30,7 @@ on:
         type: string
     outputs:
       build_version:
-        desciption: 'The version number of the build'
+        description: 'The version number of the build'
         value: ${{ jobs.build.outputs.build_version }}
 
 jobs:
