@@ -1,0 +1,69 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Deploy [staging] Interface: Registration (PA)'
+
+env:
+  workingDirectory: interfaces/PA-App
+
+permissions:
+  actions: read
+  pull-requests: write
+
+on:
+  workflow_dispatch:
+  release:
+    types: [released]
+  push:
+    branches:
+      - release/*
+    paths:
+      - '!.github/**'
+      - '.github/workflows/deploy_staging_registration.yml'
+      - 'interfaces/PA-App/**'
+      - '**/.vscode/*'
+      - '!*.md'
+      - '!*.yml'
+
+jobs:
+  build_and_deploy:
+    name: Build and Deploy Job
+    runs-on: ubuntu-latest
+    environment: 'test'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Build Interface
+        id: build
+        uses: ./.github/actions/build-interface
+        with:
+          interfacePath: ${{ env.workingDirectory }}
+        env:
+          NG_ENV_NAME: 'staging'
+          NG_URL_121_SERVICE_API: 'https://staging.121.global/121-service/api'
+          NG_AI_IKEY: ''
+          NG_AI_ENDPOINT: ''
+          APPLICATIONINSIGHTS_CONNECTION_STRING: ''
+
+      # More information on Static Web App workflow configurations,
+      # See: https://aka.ms/swaworkflowconfig
+      - name: Deploy to Azure Static Web App
+        id: deploy_to_aswa
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          skip_deploy_on_missing_secrets: true
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_BAY_0AF9ABD03 }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: 'upload'
+          config_file_location: '${{ env.workingDirectory }}/'
+          app_location: '${{ env.workingDirectory }}/www'
+          output_location: ''
+          skip_app_build: true
+          skip_api_build: true
+          deployment_environment: 'staging'
+
+      - name: Finish
+        run: |
+          echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Preview: <${{ steps.deploy_to_aswa.outputs.static_web_app_url }}>" >> $GITHUB_STEP_SUMMARY
