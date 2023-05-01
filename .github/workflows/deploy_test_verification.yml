@@ -1,15 +1,9 @@
-# More information on Static Web App workflow configurations,
-# See: https://aka.ms/swaworkflowconfig
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Deploy [test] Interface: AW/Verification'
+name: 'Deploy [test] Interface: Verification (AW)'
 
 env:
   workingDirectory: interfaces/AW-App
-
-defaults:
-  run:
-    working-directory: interfaces/AW-App
 
 permissions:
   actions: read
@@ -27,7 +21,6 @@ on:
       - '**/.vscode/*'
       - '!*.md'
       - '!*.yml'
-
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
@@ -51,46 +44,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - name: Build Interface
+        id: build
+        uses: ./.github/actions/build-interface
         with:
-          node-version-file: '${{ env.workingDirectory }}/.node-version'
-          cache: 'npm'
-          cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
-
-      - name: Install
+          interfacePath: ${{ env.workingDirectory }}
         env:
-          HUSKY: 0
-        run: 'npm ci --omit=optional --no-fund --no-audit'
-
-      - name: Lint
-        run: 'npm run lint'
-
-      - name: Test
-        run: 'npm test'
-
-      - name: Set VERSION of build/deployment
-        run: |
-          echo "GLOBAL_121_VERSION=$(git describe --tags --dirty --broken)" >> $GITHUB_ENV
-
-      - name: Build
-        run: 'npm run build:prod'
-        env:
-          NG_PRODUCTION: 'true'
-          NG_IS_DEBUG: 'false'
-          NG_SHOW_DEBUG: 'false'
-          NG_USE_ANIMATION: 'true'
-          NG_USE_SERVICE_WORKER: 'true'
-          NG_ENV_NAME: 'test-${{ env.GLOBAL_121_VERSION }}'
+          NG_ENV_NAME: 'test'
           NG_URL_121_SERVICE_API: 'https://test-vm.121.global/121-service/api'
           NG_AI_IKEY: ''
           NG_AI_ENDPOINT: ''
           APPLICATIONINSIGHTS_CONNECTION_STRING: ''
 
-      - name: Add VERSION to deployment
-        run: |
-          echo "${{ env.GLOBAL_121_VERSION }}" >> www/VERSION.txt
-
+      # More information on Static Web App workflow configurations,
+      # See: https://aka.ms/swaworkflowconfig
       - name: Deploy to Azure Static Web App
         id: deploy_to_aswa
         uses: Azure/static-web-apps-deploy@v1
@@ -107,7 +74,7 @@ jobs:
 
       - name: Finish
         run: |
-          echo "Build version: ${{ env.GLOBAL_121_VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
           echo "Preview: <${{ steps.deploy_to_aswa.outputs.static_web_app_url }}>" >> $GITHUB_STEP_SUMMARY
 
   close_pull_request_job:
