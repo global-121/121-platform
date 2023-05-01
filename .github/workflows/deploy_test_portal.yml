@@ -62,6 +62,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: 'test'
     steps:
+      - name: 'Download build artifact: Interface Portal'
+        uses: actions/download-artifact@v3
+        with:
+          name: 'artifact-${{ env.workingDirectory }}'
+          path: '${{ env.workingDirectory }}/www'
+
       - name: Deploy to Azure Static Web App
         id: deploy_to_aswa
         uses: Azure/static-web-apps-deploy@v1

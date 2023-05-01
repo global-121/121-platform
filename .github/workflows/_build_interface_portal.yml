@@ -30,7 +30,6 @@ on:
         type: string
     outputs:
       build_version:
-        description: 'The version number of the build'
         value: ${{ jobs.build.outputs.build_version }}
 
 jobs:
@@ -84,6 +83,13 @@ jobs:
         run: |
           echo "${{ env.NG_BUILD_VERSION }}" >> www/VERSION.txt
           echo "build_version=${{ env.NG_BUILD_VERSION }}" >> $GITHUB_OUTPUT
+
+      - name: 'Upload build artifact: Interface Portal'
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'artifact-${{ inputs.interfacePath }}'
+          path: '${{ inputs.interfacePath }}/www'
+          if-no-files-found: error
 
       - name: Finish
         run: |
