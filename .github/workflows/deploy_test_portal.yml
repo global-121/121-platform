@@ -52,6 +52,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build
+        id: build_portal
         uses: ./.github/workflows/_build_interface_portal.yml
         with:
           workingDirectory: ${{ env.workingDirectory }}
@@ -77,7 +78,7 @@ jobs:
 
       - name: Finish
         run: |
-          echo "Build version: ${{ env.GLOBAL_121_VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "Build version: ${{ env.steps.build_portal.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
           echo "Preview: <${{ steps.deploy_to_aswa.outputs.static_web_app_url }}>" >> $GITHUB_STEP_SUMMARY
 
   close_pull_request_job:
