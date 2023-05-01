@@ -13,6 +13,8 @@ permissions:
 
 on:
   workflow_dispatch:
+  release:
+    types: [released]
   push:
     branches:
       - release/*
