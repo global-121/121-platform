@@ -649,11 +649,15 @@ export class ProgramsServiceApiService {
       .flat();
 
     const attributeNames: string[] = []
-      .concat(program.programQuestions, fspAttributes)
+      .concat(
+        program.programQuestions,
+        program.programCustomAttributes,
+        fspAttributes,
+      )
       .filter((attribute) => attribute.duplicateCheck === true)
       .map((attribute) => attribute.name);
 
-    return attributeNames;
+    return [...new Set(attributeNames)]; // Deduplicates attributeNames
   }
 
   getPaByPhoneNr(phoneNumber: string): Promise<Person[]> {
