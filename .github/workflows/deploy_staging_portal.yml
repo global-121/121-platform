@@ -7,10 +7,6 @@ name: 'Deploy [staging] Interface: Portal'
 env:
   workingDirectory: interfaces/HO-Portal
 
-defaults:
-  run:
-    working-directory: interfaces/HO-Portal
-
 permissions:
   actions: read
   pull-requests: write
@@ -29,11 +25,17 @@ on:
       - '!*.yml'
 
 jobs:
+  variables_workaround:
+    runs-on: ubuntu-latest
+    steps: [run: echo]
+    outputs:
+      workingDirectory: ${{ env.workingDirectory }}
+
   build:
     name: Build
     uses: ./.github/workflows/_build_interface_portal.yml
     with:
-      workingDirectory: ${{ env.workingDirectory }}
+      workingDirectory: ${{ needs.variables_workaround.outputs.workingDirectory }}
       NG_ENV_NAME: 'staging'
       NG_URL_121_SERVICE_API: 'https://staging.121.global/121-service/api'
       NG_AI_IKEY: ''
