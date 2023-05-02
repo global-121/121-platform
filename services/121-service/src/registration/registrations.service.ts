@@ -36,8 +36,6 @@ import { Attributes } from './dto/update-attribute.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import {
   AnswerTypes,
-  Attribute,
-  AttributeType,
   CustomDataAttributes,
   QuestionType,
 } from './enum/custom-data-attributes';
@@ -225,9 +223,6 @@ export class RegistrationsService {
       const errors = `ReferenceId ${referenceId} is not known.`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    registration['customData'] = await this.getCustomDataForReferenceId(
-      registration.referenceId,
-    );
     return registration;
   }
 
@@ -676,66 +671,6 @@ export class RegistrationsService {
       `string_agg("${uniqueSubQueryId}".value,'|' order by value)`,
     );
     return subQuery;
-  }
-
-  private customDataSubQuery(subQuery: SelectQueryBuilder<any>): any {
-    return subQuery
-      .where('rd."registrationId" = registration.id')
-      .from(RegistrationDataEntity, 'rd')
-      .leftJoin('rd.programQuestion', 'programQuestion')
-      .leftJoin('rd.fspQuestion', 'fspQuestion')
-      .leftJoin('rd.monitoringQuestion', 'monitoringQuestion')
-      .leftJoin('rd.programCustomAttribute', 'programCustomAttribute')
-      .addSelect(
-        `json_build_object(
-                'values', array_agg("rd"."value" order by "rd"."id"),
-                'keys', array_agg( CASE
-          WHEN ("programQuestion"."name" is not NULL) THEN "programQuestion"."name"
-          WHEN ("fspQuestion"."name" is not NULL) THEN "fspQuestion"."name"
-          WHEN ("monitoringQuestion"."name" is not NULL) THEN "monitoringQuestion"."name"
-          WHEN ("programCustomAttribute"."name" is not NULL) THEN "programCustomAttribute"."name"
-        END order by "rd"."id"),
-                'types', array_agg( CASE
-          WHEN ("programQuestion"."answerType" is not NULL) THEN "programQuestion"."answerType"
-          WHEN ("fspQuestion"."answerType" is not NULL) THEN "fspQuestion"."answerType"
-          ELSE NULL
-        END order by "rd"."id"))`,
-        'name',
-      );
-  }
-
-  private buildCustomDataObject(input: {
-    values: string[];
-    keys: string[];
-    types: string[];
-  }): object {
-    const customData = {};
-    for (const i in input['keys']) {
-      if (input['types'][i] === AnswerTypes.multiSelect) {
-        if (customData[input['keys'][i]] === undefined) {
-          customData[input['keys'][i]] = [];
-        }
-        customData[input['keys'][i]].push(input['values'][i]);
-      } else {
-        customData[input['keys'][i]] = input['values'][i];
-      }
-    }
-    return customData;
-  }
-
-  private async getCustomDataForReferenceId(
-    referenceId: string,
-  ): Promise<object> {
-    const result = await this.registrationRepository
-      .createQueryBuilder('registration')
-      .select((subQuery) => {
-        return this.customDataSubQuery(subQuery);
-      }, 'customData')
-      .where('registration."referenceId" = :referenceId', {
-        referenceId: referenceId,
-      })
-      .getRawOne();
-    return this.buildCustomDataObject(result['customData']);
   }
 
   public async getRegistrations(
@@ -1828,22 +1763,6 @@ export class RegistrationsService {
       return [];
     }
     return messageHistoryArray;
-  }
-
-  public mapAttributeByType(
-    attribute: Attribute,
-    customData: any,
-  ): string | number | boolean {
-    const value = customData[attribute.name];
-    switch (attribute.type) {
-      case AttributeType.numeric:
-        const number = Number(value);
-        return typeof number === 'number' ? number : undefined;
-      case AttributeType.boolean:
-        return value ? JSON.parse(value) : false;
-      default:
-        return value || '';
-    }
   }
 
   public async getRegistrationStatus(
