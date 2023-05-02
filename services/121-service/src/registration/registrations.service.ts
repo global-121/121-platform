@@ -41,6 +41,7 @@ import {
 } from './enum/custom-data-attributes';
 import { LanguageEnum } from './enum/language.enum';
 import {
+  RegistrationStatusDateMap,
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
@@ -852,145 +853,19 @@ export class RegistrationsService {
   private addStatusChangeToQuery(
     q: SelectQueryBuilder<RegistrationEntity>,
   ): void {
-    q.addSelect(
-      `${RegistrationStatusEnum.startedRegistration}.created`,
-      RegistrationStatusTimestampField.startedRegistrationDate,
-    )
-      .addOrderBy(
-        `${RegistrationStatusEnum.startedRegistration}.created`,
-        'DESC',
-      )
-      .addSelect(
-        `${RegistrationStatusEnum.imported}.created`,
-        RegistrationStatusTimestampField.importedDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.imported}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.invited}.created`,
-        RegistrationStatusTimestampField.invitedDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.invited}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.noLongerEligible}.created`,
-        RegistrationStatusTimestampField.noLongerEligibleDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.noLongerEligible}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.registeredWhileNoLongerEligible}.created`,
-        RegistrationStatusTimestampField.registeredWhileNoLongerEligibleDate,
-      )
-      .addOrderBy(
-        `${RegistrationStatusEnum.registeredWhileNoLongerEligible}.created`,
-        'DESC',
-      )
-      .addSelect(
-        `${RegistrationStatusEnum.registered}.created`,
-        RegistrationStatusTimestampField.registeredDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.registered}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.selectedForValidation}.created`,
-        RegistrationStatusTimestampField.selectedForValidationDate,
-      )
-      .addOrderBy(
-        `${RegistrationStatusEnum.selectedForValidation}.created`,
-        'DESC',
-      )
-      .addSelect(
-        `${RegistrationStatusEnum.validated}.created`,
-        RegistrationStatusTimestampField.validationDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.validated}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.included}.created`,
-        RegistrationStatusTimestampField.inclusionDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.included}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.inclusionEnded}.created`,
-        RegistrationStatusTimestampField.inclusionEndDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.inclusionEnded}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.rejected}.created`,
-        RegistrationStatusTimestampField.rejectionDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.rejected}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.deleted}.created`,
-        RegistrationStatusTimestampField.deleteDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.deleted}.created`, 'DESC')
-      .addSelect(
-        `${RegistrationStatusEnum.completed}.created`,
-        RegistrationStatusTimestampField.completedDate,
-      )
-      .addOrderBy(`${RegistrationStatusEnum.completed}.created`, 'DESC')
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.startedRegistration,
-        `registration.id = ${RegistrationStatusEnum.startedRegistration}.registrationId AND ${RegistrationStatusEnum.startedRegistration}.registrationStatus = '${RegistrationStatusEnum.startedRegistration}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.imported,
-        `registration.id = ${RegistrationStatusEnum.imported}.registrationId AND ${RegistrationStatusEnum.imported}.registrationStatus = '${RegistrationStatusEnum.imported}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.invited,
-        `registration.id = ${RegistrationStatusEnum.invited}.registrationId AND ${RegistrationStatusEnum.invited}.registrationStatus = '${RegistrationStatusEnum.invited}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.noLongerEligible,
-        `registration.id = ${RegistrationStatusEnum.noLongerEligible}.registrationId AND ${RegistrationStatusEnum.noLongerEligible}.registrationStatus = '${RegistrationStatusEnum.noLongerEligible}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.registeredWhileNoLongerEligible,
-        `registration.id = ${RegistrationStatusEnum.registeredWhileNoLongerEligible}.registrationId AND ${RegistrationStatusEnum.registeredWhileNoLongerEligible}.registrationStatus = '${RegistrationStatusEnum.registeredWhileNoLongerEligible}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.registered,
-        `registration.id = ${RegistrationStatusEnum.registered}.registrationId AND ${RegistrationStatusEnum.registered}.registrationStatus = '${RegistrationStatusEnum.registered}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.selectedForValidation,
-        `registration.id = ${RegistrationStatusEnum.selectedForValidation}.registrationId AND ${RegistrationStatusEnum.selectedForValidation}.registrationStatus = '${RegistrationStatusEnum.selectedForValidation}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.validated,
-        `registration.id = ${RegistrationStatusEnum.validated}.registrationId AND ${RegistrationStatusEnum.validated}.registrationStatus = '${RegistrationStatusEnum.validated}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.included,
-        `registration.id = ${RegistrationStatusEnum.included}.registrationId AND ${RegistrationStatusEnum.included}.registrationStatus = '${RegistrationStatusEnum.included}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.inclusionEnded,
-        `registration.id = ${RegistrationStatusEnum.inclusionEnded}.registrationId AND ${RegistrationStatusEnum.inclusionEnded}.registrationStatus = '${RegistrationStatusEnum.inclusionEnded}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.rejected,
-        `registration.id = ${RegistrationStatusEnum.rejected}.registrationId AND ${RegistrationStatusEnum.rejected}.registrationStatus = '${RegistrationStatusEnum.rejected}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.deleted,
-        `registration.id = ${RegistrationStatusEnum.deleted}.registrationId AND ${RegistrationStatusEnum.deleted}.registrationStatus = '${RegistrationStatusEnum.deleted}'`,
-      )
-      .leftJoin(
-        RegistrationStatusChangeEntity,
-        RegistrationStatusEnum.completed,
-        `registration.id = ${RegistrationStatusEnum.completed}.registrationId AND ${RegistrationStatusEnum.completed}.registrationStatus = '${RegistrationStatusEnum.completed}'`,
-      );
+    for (const registrationStatus in RegistrationStatusEnum) {
+      const timestampField =
+        RegistrationStatusTimestampField[
+          RegistrationStatusDateMap[registrationStatus]
+        ];
+      q.addSelect(`${registrationStatus}.created`, timestampField)
+        .addOrderBy(`${registrationStatus}.created`, 'DESC')
+        .leftJoin(
+          RegistrationStatusChangeEntity,
+          registrationStatus,
+          `registration.id = ${registrationStatus}.registrationId AND ${registrationStatus}.registrationStatus = '${registrationStatus}'`,
+        );
+    }
   }
 
   private includeTransactionData(
