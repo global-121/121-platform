@@ -107,7 +107,7 @@ export class IntersolveJumboService {
     referenceId: string,
   ): Promise<RegistrationDataOptions[]> {
     const registration = await this.registrationRepository.findOne({
-      select: ['id', 'programId'],
+      select: ['id', 'programId', 'fspId'],
       where: { referenceId: referenceId },
     });
     const registrationDataOptions: RegistrationDataOptions[] = [];
