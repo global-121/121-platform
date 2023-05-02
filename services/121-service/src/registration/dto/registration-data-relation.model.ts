@@ -14,4 +14,5 @@ export class RegistrationDataInfo {
   public name: string;
   public relation: RegistrationDataRelation;
   public type: string;
+  public fspId?: number;
 }

@@ -75,7 +75,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   public inclusionScore: number;
 
   @ManyToOne((_type) => FinancialServiceProviderEntity)
+  @JoinColumn({ name: 'fspId' })
   public fsp: FinancialServiceProviderEntity;
+  @Column({ nullable: true })
+  public fspId: number;
 
   @Column({ nullable: true })
   @IsInt()
@@ -184,7 +187,13 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       .andWhere(
         new Brackets((qb) => {
           qb.where(`programQuestion.name = :name`, { name: name })
-            .orWhere(`fspQuestion.name = :name`, { name: name })
+            .orWhere(
+              `(fspQuestion.name = :name AND "fspQuestion"."fspId" = :fsp)`,
+              {
+                name: name,
+                fsp: this.fspId,
+              },
+            )
             .orWhere(`monitoringQuestion.name = :name`, {
               name: name,
             })
@@ -499,6 +508,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       .leftJoin('fsp.questions', 'question')
       .where('registration.id = :registration', { registration: this.id })
       .andWhere('question.name = :name', { name: name })
+      .andWhere('question."fspId" = :fsp', { fsp: this.fspId })
       .select('"question".id', 'id')
       .getRawOne();
     if (resultFspQuestion) {
