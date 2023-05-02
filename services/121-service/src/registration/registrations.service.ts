@@ -738,7 +738,6 @@ export class RegistrationsService {
         .leftJoin('rd.programQuestion', 'programQuestion')
         .leftJoin('rd.programCustomAttribute', 'programCustomAttribute')
         .leftJoin('rd.fspQuestion', 'fspQuestion')
-        .leftJoin('rd.monitoringQuestion', 'monitoringQuestion') // TO DO: can this go?
         .select('"registrationId"')
         .groupBy('"registrationId"');
       for (const dynamicAttribute of dynamicAttributes) {
@@ -802,16 +801,16 @@ export class RegistrationsService {
         referenceId: referenceId,
       });
     }
+
+    const rows = await q.getRawMany();
+
     if (!includePersonalData) {
-      const rows = await q.getRawMany();
       for (const row of rows) {
         row['hasPhoneNumber'] = !!row.phoneNumber;
         delete row.phoneNumber;
       }
       return rows;
     }
-
-    const rows = await q.getRawMany();
 
     if (!program && referenceId && rows.length === 1) {
       program = await this.programService.findProgramOrThrow(rows[0].programId);
