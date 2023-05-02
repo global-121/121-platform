@@ -879,13 +879,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async loadData(refresh: boolean = false) {
-    const attributeNames = this.columns.map((c) => c.prop);
-    if (
-      [ProgramPhase.registrationValidation, ProgramPhase.inclusion].includes(
+    const attributeNames = (
+      await this.programsService.getPaTableAttributes(
+        this.programId,
         this.thisPhase,
       )
-    ) {
-      attributeNames.push('inclusionScore');
+    ).map((c) => c.name);
+    for (const nameElem of this.program.fullnameNamingConvention) {
+      attributeNames.push(nameElem);
     }
 
     this.allPeopleData = await this.programsService.getPeopleAffected(
@@ -1041,7 +1042,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           ),
       hasNote: !!person.hasNote,
       hasPhoneNumber: !!person.hasPhoneNumber,
-      paTableAttributes: person.paTableAttributes,
     };
 
     const lastPaymentInfo = {
@@ -1057,17 +1057,19 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     // Custom attributes can be personal data or not personal data
     // for now only users that view custom data can see it
-    if (this.canViewPersonalData && personRow.paTableAttributes !== undefined) {
-      personRow = this.fillPaTableAttributeRows(personRow);
+    if (this.canViewPersonalData) {
+      personRow = this.fillPaTableAttributeRows(person, personRow);
     }
 
     return personRow;
   }
 
-  private fillPaTableAttributeRows(personRow: PersonRow): PersonRow {
+  private fillPaTableAttributeRows(
+    person: Person,
+    personRow: PersonRow,
+  ): PersonRow {
     for (const paTableAttribute of this.paTableAttributes) {
-      personRow[paTableAttribute.name] =
-        personRow.paTableAttributes[paTableAttribute.name].value;
+      personRow[paTableAttribute.name] = person[paTableAttribute.name];
     }
     return personRow;
   }
@@ -1105,7 +1107,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         status: lastPaymentStatus,
         errorMessage: lastPaymentErrorMessage,
       };
-      console.log('paymentColumnValue: ', paymentColumnValue);
       if (lastPaymentStatus === StatusEnum.success) {
         paymentColumnValue.text = this.translate.instant(
           'page.program.program-people-affected.transaction.success',

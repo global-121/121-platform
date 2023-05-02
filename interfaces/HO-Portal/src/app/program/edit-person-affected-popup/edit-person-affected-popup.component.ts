@@ -218,7 +218,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.paTableAttributes = this.paTableAttributesInput.map(
       (paTableAttribute) => {
         this.attributeValues[paTableAttribute.name] =
-          this.person.paTableAttributes[paTableAttribute.name].value;
+          this.person[paTableAttribute.name];
 
         let options = null;
         if (
@@ -236,7 +236,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
           name: paTableAttribute.name,
           type: paTableAttribute.type,
           label,
-          value: this.person.paTableAttributes[paTableAttribute.name].value,
+          value: this.person[paTableAttribute.name],
           options,
           explanation: this.translate.instant(translationKey).explanation,
         };
