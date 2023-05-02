@@ -30,6 +30,16 @@ runs:
         HUSKY: 0
       run: 'npm ci --omit=optional --no-fund --no-audit'
 
+    - name: Lint
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: 'npm run lint'
+
+    - name: Test
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: 'npm test'
+
     - name: Set VERSION of build/deployment
       shell: bash
       run: |
