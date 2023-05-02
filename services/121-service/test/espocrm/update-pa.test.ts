@@ -110,10 +110,11 @@ describe('Webhook integration with EspoCRM - Update PA', () => {
 
   it('should succesfully update', async () => {
     // Arrange
+    const updatePhoneNumber = '15005550099';
     const testBody = [
       {
         id: referenceId,
-        phoneNumber: '15005550099',
+        phoneNumber: updatePhoneNumber,
       },
     ];
     const signature = createEspoSignature(
