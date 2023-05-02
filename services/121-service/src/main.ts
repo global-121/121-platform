@@ -67,6 +67,20 @@ function generateModuleDependencyGraph(app: INestApplication): void {
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);
 
+  let corsAllowList: string[] | RegExp[];
+
+  if (!!process.env.CORS_ALLOW_LIST) {
+    corsAllowList = process.env.CORS_ALLOW_LIST.split(',').map(
+      (origin) => new RegExp(origin),
+    );
+  }
+
+  app.enableCors({
+    origin: DEBUG ? true : corsAllowList || false,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
+
   if (DEBUG) {
     generateModuleDependencyGraph(app);
   }
@@ -75,13 +89,6 @@ async function bootstrap(): Promise<void> {
 
   app.getHttpAdapter().getInstance().disable('x-powered-by');
 
-  if (DEBUG) {
-    app.enableCors({
-      origin: true,
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-      credentials: true,
-    });
-  }
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
@@ -99,6 +106,7 @@ async function bootstrap(): Promise<void> {
       defaultModelExpandDepth: 10,
     },
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       forbidUnknownValues: true,
@@ -121,6 +129,7 @@ async function bootstrap(): Promise<void> {
     }),
   );
   app.use(cookieParser());
+
   const server = await app.listen(PORT);
   server.setTimeout(10 * 60 * 1000);
 }

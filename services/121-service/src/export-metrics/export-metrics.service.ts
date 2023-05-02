@@ -203,7 +203,6 @@ export class ExportMetricsService {
       if (addPaymentColumns) {
         await this.addPaymentFieldsToExport(row, payments, transactions);
       }
-      delete row['referenceId'];
       row['id'] = row['registrationProgramId'];
       delete row['registrationProgramId'];
     }
@@ -409,6 +408,7 @@ export class ExportMetricsService {
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
       .select([
+        `registration."referenceId" as "referenceId"`,
         `registration.id as id`,
         `registration."registrationProgramId"`,
         `registration."registrationStatus" as status`,
@@ -417,7 +417,6 @@ export class ExportMetricsService {
         `registration."${GenericAttributes.paymentAmountMultiplier}"`,
         `fsp."fspDisplayNamePortal" as financialServiceProvider`,
         `registration."note"`,
-        `registration."referenceId" as "referenceId"`,
       ])
       .andWhere({ programId: programId })
       .orderBy('"registration"."registrationProgramId"', 'ASC');
@@ -617,9 +616,10 @@ export class ExportMetricsService {
       return att.id;
     });
     const fspQuestions = await this.fspQuestionRepository.find({
-      relations: ['fsp'],
+      relations: ['fsp', 'fsp.program'],
       where: {
         duplicateCheck: true,
+        fsp: { program: { id: programId } },
       },
     });
     const fspQuestionIds = fspQuestions.map((fspQuestion) => {

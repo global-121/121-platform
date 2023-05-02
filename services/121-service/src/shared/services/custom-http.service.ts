@@ -88,31 +88,39 @@ export class CustomHttpService {
 
   public logMessage(request: Request, response: Response): void {
     if (this.defaultClient) {
-      const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
-        request.payload,
-      )}`;
-      const responseContent = `Response: ${response.status} ${
-        response.statusText
-      } - Body: ${JSON.stringify(response.data)}`;
-      this.defaultClient.trackTrace({
-        message: `${requestContent} - ${responseContent}`,
-      });
-      this.defaultClient.flush();
+      try {
+        const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
+          request.payload,
+        )}`;
+        const responseContent = `Response: ${response.status} ${
+          response.statusText
+        } - Body: ${JSON.stringify(response.data)}`;
+        this.defaultClient.trackTrace({
+          message: `${requestContent} - ${responseContent}`,
+        });
+        this.defaultClient.flush();
+      } catch (error) {
+        console.log('An error occured in logMessage: ', error);
+      }
     }
   }
 
   public logError(request: Request, error: Response): void {
     if (this.defaultClient) {
-      const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
-        request.payload,
-      )}`;
-      const responseContent = `Response error: ${error.status} ${
-        error.statusText
-      } - Body: ${JSON.stringify(error.data)}`;
-      this.defaultClient.trackException({
-        exception: new Error(`${requestContent} - ${responseContent}}`),
-      });
-      this.defaultClient.flush();
+      try {
+        const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
+          request.payload,
+        )}`;
+        const responseContent = `Response error: ${error.status} ${
+          error.statusText
+        } - Body: ${JSON.stringify(error.data)}`;
+        this.defaultClient.trackException({
+          exception: new Error(`${requestContent} - ${responseContent}}`),
+        });
+        this.defaultClient.flush();
+      } catch (error) {
+        console.log('An error occured in logError: ', error);
+      }
     }
   }
 }

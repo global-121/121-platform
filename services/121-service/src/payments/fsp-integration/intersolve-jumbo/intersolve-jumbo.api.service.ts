@@ -63,6 +63,7 @@ export class IntersolveJumboApiService {
         }
 
         const newOrderDtoMapping = {
+          CustomShipToFirstName: 'firstName',
           CustomShipToLastName: 'lastName',
           CustomShipToStreet: 'addressStreet',
           CustomShipToHouseNr: 'addressHouseNumber',

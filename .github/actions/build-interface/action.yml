@@ -1,0 +1,58 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Build: Interface'
+description: 'Builds an Angular interface.'
+
+inputs:
+  interfacePath:
+    description: Location of the interface code.
+    required: true
+
+outputs:
+  build_version:
+    description: Specific version of the build interface.
+    value: ${{ steps.version.outputs.build_version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js version
+      uses: actions/setup-node@v3
+      with:
+        node-version-file: '${{ inputs.interfacePath }}/.node-version'
+        cache: 'npm'
+        cache-dependency-path: '${{ inputs.interfacePath }}/package-lock.json'
+
+    - name: Install
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      env:
+        HUSKY: 0
+      run: 'npm ci --omit=optional --no-fund --no-audit'
+
+    - name: Set VERSION of build/deployment
+      shell: bash
+      run: |
+        echo "NG_BUILD_VERSION=$(git describe --tags --dirty --broken)" >> $GITHUB_ENV
+
+    - name: Build
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: 'npm run build:prod'
+      env:
+        NG_PRODUCTION: 'true'
+        NG_USE_SERVICE_WORKER: 'true'
+        NG_ENV_NAME: ${{ env.NG_ENV_NAME }}
+        NG_URL_121_SERVICE_API: ${{ env.NG_URL_121_SERVICE_API }}
+        NG_TWILIO_ERROR_CODES_URL: 'https://www.twilio.com/docs/api/errors'
+        NG_AI_IKEY: ${{ env.NG_AI_IKEY }}
+        NG_AI_ENDPOINT: ${{ env.NG_AI_ENDPOINT }}
+        APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ env.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+
+    - name: Add VERSION to deployment
+      id: version
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: |
+        echo "${{ env.NG_BUILD_VERSION }}" >> www/VERSION.txt
+        echo "build_version=${{ env.NG_BUILD_VERSION }}" >> $GITHUB_OUTPUT

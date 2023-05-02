@@ -46,7 +46,6 @@ import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
-import { ErrorEnum } from './errors/registration-data.error';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -1204,19 +1203,6 @@ export class RegistrationsService {
       ['program'],
     );
 
-    // If registration is a custom attribute and the value is empty delete it instead of updating
-    if (
-      value === '' &&
-      (await this.registrationDataIsCustomAttribute(registration, attribute))
-    ) {
-      const registrationDataByNameDto =
-        await registration.getRegistrationDataByName(attribute);
-      await this.registrationDataRepository.delete(
-        registrationDataByNameDto.id,
-      );
-      return this.getRegistrationFromReferenceId(registration.referenceId);
-    }
-
     value = await this.cleanCustomDataIfPhoneNr(attribute, value);
 
     if (typeof registration[attribute] !== 'undefined') {
@@ -1260,23 +1246,6 @@ export class RegistrationsService {
       );
     }
     return this.getRegistrationFromReferenceId(savedRegistration.referenceId);
-  }
-
-  private async registrationDataIsCustomAttribute(
-    registration: RegistrationEntity,
-    attribute: string,
-  ): Promise<boolean> {
-    try {
-      const registrationDataRelation = await registration.getRelationForName(
-        attribute,
-      );
-      return !!registrationDataRelation.programCustomAttributeId;
-    } catch (error) {
-      // Don't throw error on attributes that are changed which are not program/fsp/custom/monitoring type
-      if (error.name !== ErrorEnum.RegistrationDataError) {
-        throw error;
-      }
-    }
   }
 
   public async updateNote(referenceId: string, note: string): Promise<NoteDto> {

@@ -5,9 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.84.3...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.85.1...master)
 
 ---
+
+## [1.85.1](https://github.com/global-121/121-platform/compare/v1.85.0...v1.85.1) - 2023-04-26
+
+### Fixed
+
+- Crash on error in logError
+- Login permission issue
+
+## [1.85.0](https://github.com/global-121/121-platform/compare/v1.84.3...v1.85.0) - 2023-04-26
+
+### Added
+
+- Deployment workflow for HO-Portal to Azure Static Web App (test-environment)
+- Deployment workflow for PA-App to Azure Static Web App (test-environment)
+- Deployment workflow for AW-App to Azure Static Web App (test-environment)
+
+### Fixed
+
+- First name in Intersolve Trade request
+- Importing faster
+- PII in aidworker assignment
+- Readonly PA edit popup
+
 ## [1.84.3](https://github.com/global-121/121-platform/compare/v1.84.2...v1.84.3) - 2023-04-19
 
 ### Fixed
@@ -109,7 +132,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Sanitize phonenumber with `substring` instead of `substr`
-
 
 ## [1.79.3](https://github.com/global-121/121-platform/compare/v1.79.2...v1.79.3) - 2023-01-31
 
