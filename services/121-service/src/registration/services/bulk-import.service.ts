@@ -417,6 +417,7 @@ export class BulkImportService {
         relation: {
           fspQuestionId: attribute.id,
         },
+        fspId: attribute.fspId,
       });
     }
 
@@ -430,6 +431,9 @@ export class BulkImportService {
   ): RegistrationDataEntity[] {
     const registrationDataArray: RegistrationDataEntity[] = [];
     for (const att of dynamicAttributeRelations) {
+      if (att.relation.fspQuestionId && att.fspId !== registration.fspId) {
+        continue;
+      }
       let value;
       if (att.type === CustomAttributeType.boolean) {
         value = this.stringToBoolean(customData[att.name], false);

@@ -1,43 +1,34 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Deploy [test] Interface: Verification (AW)'
+name: 'Deploy [staging] Interface: Registration (PA)'
 
 env:
-  workingDirectory: interfaces/AW-App
+  workingDirectory: interfaces/PA-App
 
 permissions:
   actions: read
   pull-requests: write
 
 on:
+  workflow_call:
   workflow_dispatch:
+  release:
+    types: [released]
   push:
     branches:
-      - master
+      - release/*
     paths:
       - '!.github/**'
-      - '.github/workflows/deploy_test_verification.yml'
-      - 'interfaces/AW-App/**'
-      - '**/.vscode/*'
-      - '!*.md'
-      - '!*.yml'
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - master
-    paths:
-      - '!.github/**'
-      - '.github/workflows/deploy_test_verification.yml'
-      - 'interfaces/AW-App/**'
+      - '.github/workflows/deploy_staging_registration.yml'
+      - 'interfaces/PA-App/**'
       - '**/.vscode/*'
       - '!*.md'
       - '!*.yml'
 
 jobs:
-  build_and_deploy_job:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
-    runs-on: ubuntu-latest
+  build_and_deploy:
     name: Build and Deploy Job
+    runs-on: ubuntu-latest
     environment: 'test'
     steps:
       - uses: actions/checkout@v3
@@ -50,8 +41,8 @@ jobs:
         with:
           interfacePath: ${{ env.workingDirectory }}
         env:
-          NG_ENV_NAME: 'test'
-          NG_URL_121_SERVICE_API: 'https://test-vm.121.global/121-service/api'
+          NG_ENV_NAME: 'staging'
+          NG_URL_121_SERVICE_API: 'https://staging.121.global/121-service/api'
           NG_AI_IKEY: ''
           NG_AI_ENDPOINT: ''
           APPLICATIONINSIGHTS_CONNECTION_STRING: ''
@@ -63,7 +54,7 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           skip_deploy_on_missing_secrets: true
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_SAND_08D7E2903 }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_BAY_0AF9ABD03 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
           config_file_location: '${{ env.workingDirectory }}/'
@@ -71,20 +62,9 @@ jobs:
           output_location: ''
           skip_app_build: true
           skip_api_build: true
+          deployment_environment: 'staging'
 
       - name: Finish
         run: |
           echo "Build version: ${{ steps.build.outputs.build_version }}" >> $GITHUB_STEP_SUMMARY
           echo "Preview: <${{ steps.deploy_to_aswa.outputs.static_web_app_url }}>" >> $GITHUB_STEP_SUMMARY
-
-  close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    name: Close Pull Request Job
-    environment: 'test'
-    steps:
-      - name: 'Close Pull Request: Deploy to Azure Static Web App'
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_SAND_08D7E2903 }}
-          action: 'close'
