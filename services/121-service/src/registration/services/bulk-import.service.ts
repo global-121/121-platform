@@ -434,24 +434,26 @@ export class BulkImportService {
       if (att.relation.fspQuestionId && att.fspId !== registration.fspId) {
         continue;
       }
-      let value;
+      let values = [];
       if (att.type === CustomAttributeType.boolean) {
-        value = this.stringToBoolean(customData[att.name], false);
+        values.push(this.stringToBoolean(customData[att.name], false));
       } else if (att.type === CustomAttributeType.text) {
-        value = customData[att.name] ? customData[att.name] : '';
+        values.push(customData[att.name] ? customData[att.name] : '');
       } else if (att.type === AnswerTypes.multiSelect) {
-        value = customData[att.name].split('|');
+        values = customData[att.name].split('|');
       } else {
-        value = customData[att.name];
+        values.push(customData[att.name]);
       }
-      const registrationData = new RegistrationDataEntity();
-      registrationData.registration = registration;
-      registrationData.value = value;
-      registrationData.programCustomAttributeId =
-        att.relation.programCustomAttributeId;
-      registrationData.programQuestionId = att.relation.programQuestionId;
-      registrationData.fspQuestionId = att.relation.fspQuestionId;
-      registrationDataArray.push(registrationData);
+      for (const value of values) {
+        const registrationData = new RegistrationDataEntity();
+        registrationData.registration = registration;
+        registrationData.value = value;
+        registrationData.programCustomAttributeId =
+          att.relation.programCustomAttributeId;
+        registrationData.programQuestionId = att.relation.programQuestionId;
+        registrationData.fspQuestionId = att.relation.fspQuestionId;
+        registrationDataArray.push(registrationData);
+      }
     }
     return registrationDataArray;
   }
@@ -584,7 +586,7 @@ export class BulkImportService {
       }
       for await (const att of programCustomAttributes) {
         if (
-          (att.type === 'number' && isNaN(Number(row[att.name]))) ||
+          (att.type === AnswerTypes.numeric && isNaN(Number(row[att.name]))) ||
           (att.type === CustomAttributeType.boolean &&
             row[att.name] &&
             this.stringToBoolean(row[att.name]) === undefined)
@@ -759,7 +761,7 @@ export class BulkImportService {
           }
           row[att.name] = sanitized;
         } else if (
-          (att.type === 'number' && isNaN(Number(row[att.name]))) ||
+          (att.type === AnswerTypes.numeric && isNaN(Number(row[att.name]))) ||
           (att.type === CustomAttributeType.boolean &&
             row[att.name] &&
             this.stringToBoolean(row[att.name]) === undefined)

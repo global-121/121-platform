@@ -717,22 +717,21 @@ export class RegistrationsService {
       .addSelect('registration.note', 'note')
       .leftJoin('registration.fsp', 'fsp');
 
-    let dynamicAttributes = await this.programService.getPaTableAttributes(
-      programId,
-    );
-    dynamicAttributes = dynamicAttributes.filter(
-      (value, index, self) =>
-        index ===
-        self.findIndex(
-          (t) => t.name === value.name && t.questionType === value.questionType,
-        ),
-    );
+    if (includePersonalData && requestedDynamicAttributes?.length > 0) {
+      let dynamicAttributes = await this.programService.getPaTableAttributes(
+        programId,
+      );
+      dynamicAttributes = dynamicAttributes.filter(
+        (value, index, self) =>
+          index ===
+          self.findIndex(
+            (t) =>
+              t.name === value.name &&
+              t.questionType === value.questionType &&
+              t.type === value.type,
+          ),
+      ); // deduplicate attributes
 
-    if (
-      includePersonalData &&
-      requestedDynamicAttributes &&
-      requestedDynamicAttributes.length > 0
-    ) {
       const subquery = this.registrationDataRepository
         .createQueryBuilder('rd')
         .leftJoin('rd.programQuestion', 'programQuestion')
@@ -743,10 +742,18 @@ export class RegistrationsService {
       for (const dynamicAttribute of dynamicAttributes) {
         if (requestedDynamicAttributes.includes(dynamicAttribute.name)) {
           if (dynamicAttribute.questionType === QuestionType.programQuestion) {
-            subquery.addSelect(
-              `MAX(CASE WHEN programQuestion.name = '${dynamicAttribute.name}' THEN rd.value END)`,
-              dynamicAttribute.name,
-            );
+            if (dynamicAttribute.type === AnswerTypes.multiSelect) {
+              // Currently multi-select is only used for program-questions
+              subquery.addSelect(
+                `ARRAY_REMOVE(ARRAY_AGG(CASE WHEN programQuestion.name = '${dynamicAttribute.name}' THEN rd.value END),NULL)`,
+                dynamicAttribute.name,
+              );
+            } else {
+              subquery.addSelect(
+                `MAX(CASE WHEN programQuestion.name = '${dynamicAttribute.name}' THEN rd.value END)`,
+                dynamicAttribute.name,
+              );
+            }
           } else if (
             dynamicAttribute.questionType ===
             QuestionType.programCustomAttribute
