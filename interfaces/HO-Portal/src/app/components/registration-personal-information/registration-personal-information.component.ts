@@ -80,15 +80,6 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       return;
     }
 
-    this.person = (
-      await this.programsService.getPeopleAffected(
-        this.programId,
-        this.canViewPersonalData,
-        false,
-        this.person.referenceId,
-      )
-    )[0];
-
     this.fillPersonalInfoTable();
   }
 
@@ -138,6 +129,9 @@ export class RegistrationPersonalInformationComponent implements OnInit {
         const labelToTranslate = ta.shortLabel || ta.label;
 
         let value = this.person[ta.name];
+        if (value === null || value === undefined) {
+          continue;
+        }
         if (ta.type === 'tel') {
           value = value === '' ? value : `+${value}`;
         }
