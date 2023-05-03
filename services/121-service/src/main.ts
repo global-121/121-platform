@@ -75,7 +75,6 @@ async function bootstrap(): Promise<void> {
       (origin) => new RegExp(origin),
     );
   }
-  console.log('corsAllowList: ', corsAllowList);
 
   app.enableCors({
     origin: DEBUG ? true : corsAllowList || false,
