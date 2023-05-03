@@ -46,7 +46,8 @@ export class RecipientDetailsComponent implements OnInit {
     'name',
     'phoneNumber',
     'preferredLanguage',
-    'fsp',
+    'fspDisplayNamePortal',
+    'paymentAmountMultiplier',
     ...this.timestampKeys,
   ];
 
@@ -196,7 +197,7 @@ export class RecipientDetailsComponent implements OnInit {
         columnName: 'columnPersonalInformation',
         index: 5,
       },
-      fsp: { columnName: 'columnPaymentHistory', index: 0 },
+      fspDisplayNamePortal: { columnName: 'columnPaymentHistory', index: 0 },
       paymentAmountMultiplier: { columnName: 'columnPaymentHistory', index: 1 },
     };
 
