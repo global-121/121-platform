@@ -20,7 +20,7 @@ jobs:
   build_and_deploy:
     name: Build and Deploy Job
     runs-on: ubuntu-latest
-    environment: 'test'
+    environment: 'staging'
     steps:
       - uses: actions/checkout@v3
         with:
