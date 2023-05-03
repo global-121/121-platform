@@ -1,6 +1,5 @@
 import Permission from '../auth/permission.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
-import { Attribute } from './attribute.model';
 import { PaymentColumnDetail } from './payment.model';
 import { ProgramPhase } from './program.model';
 
@@ -32,7 +31,6 @@ export class Person {
   paymentAmountMultiplier?: number;
   maxPayments?: number;
   preferredLanguage?: LanguageEnum;
-  paTableAttributes?: Attribute[];
   registrationProgramId: number;
   payment?: number;
   nrPayments?: number;
@@ -73,7 +71,6 @@ export class PersonRow {
   maxPayments?: string | null;
   paymentsLeft?: number | null;
   preferredLanguage?: string | null;
-  paTableAttributes?: Person['paTableAttributes'];
   paymentHistory?: PaymentColumnDetail;
   lastMessageStatus?: string;
   messages?: string;
