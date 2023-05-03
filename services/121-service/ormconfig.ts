@@ -19,6 +19,6 @@ export const ORMConfig: DataSourceOptions = {
     process.env.NODE_ENV === 'development'
       ? null
       : {
-          ca: process.env.POSTGRES_SSL,
+          ca: 'BaltimoreCyberTrustRoot.crt.pem',
         },
 };
