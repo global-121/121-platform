@@ -1,0 +1,76 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# Also, see: https://github.com/Azure/actions-workflow-samples
+
+name: 'Deploy [staging] 121-service'
+
+env:
+  AZURE_WEBAPP_NAME: '121-test/staging'
+  AZURE_WEBAPP_PACKAGE_PATH: services/121-service
+
+defaults:
+  run:
+    working-directory: services/121-service
+
+permissions:
+  actions: read
+
+on:
+  release:
+    types: [published, prereleased]
+    paths:
+      - '!.github/**'
+      - '.github/workflows/deploy_test_service.yml'
+      - 'services/121-service/**'
+      - '**/.vscode/*'
+      - '!*.md'
+      - '!*.yml'
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    environment: 'staging'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Test
+        run: 'npm test'
+
+      - name: Set VERSION of build/deployment
+        run: 'echo "GLOBAL_121_VERSION=$(git describe --tags --dirty --broken)" >> $GITHUB_ENV'
+
+      - name: Reduce build package size
+        run: |
+          npm prune --production
+          rm -r test/
+          rm -r ./*.md
+          rm -r azure-pipelines.yml
+          rm -r jest.config.js
+
+      - name: Download database certificate
+        run: curl https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem --create-dirs -o ./cert/DigiCertGlobalRootCA.crt.pem
+
+      - name: Deploy to Azure App Service
+        id: deploy_to_aas
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: Finish
+        run: |
+           echo "Build version: ${{ env.GLOBAL_121_VERSION }}" >> $GITHUB_STEP_SUMMARY
+           echo "Preview: <${{ steps.deploy_to_aas.outputs.webapp-url }}>" >> $GITHUB_STEP_SUMMARY
