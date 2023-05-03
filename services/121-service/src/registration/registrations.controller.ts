@@ -258,9 +258,10 @@ export class RegistrationsController {
       );
     }
 
-    let attributes = [];
-    if (queryParams.attributes && queryParams.attributes !== '') {
-      attributes = queryParams.attributes.split(',');
+    let attributes: [];
+    if (queryParams.attributes) {
+      attributes =
+        queryParams.attributes === '' ? [] : queryParams.attributes.split(',');
     }
 
     return await this.registrationsService.getRegistrations(
