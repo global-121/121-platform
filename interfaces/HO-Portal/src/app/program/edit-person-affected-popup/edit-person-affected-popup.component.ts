@@ -33,9 +33,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public referenceId: string;
 
   @Input()
-  public fsp: string;
-
-  @Input()
   public canUpdatePaData = false;
 
   @Input()
@@ -100,7 +97,6 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         this.canViewPersonalData,
         false,
         this.referenceId,
-        undefined,
       )
     )[0];
 
@@ -116,7 +112,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     if (this.program && this.program.editableAttributes) {
       this.paTableAttributesInput = this.program.editableAttributes;
 
-      const fspObject = this.fspList.find((f) => f.fsp === this.fsp);
+      const fspObject = this.fspList.find((f) => f.fsp === this.person?.fsp);
       if (fspObject && fspObject.editableAttributes) {
         this.paTableAttributesInput = fspObject.editableAttributes.concat(
           this.paTableAttributesInput,

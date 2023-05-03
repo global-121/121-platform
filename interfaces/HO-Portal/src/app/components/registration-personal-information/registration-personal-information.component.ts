@@ -157,8 +157,8 @@ export class RegistrationPersonalInformationComponent implements OnInit {
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: EditPersonAffectedPopupComponent,
       componentProps: {
-        person: this.person,
         programId: this.programId,
+        referenceId: this.person?.referenceId,
         canUpdatePaData: this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,

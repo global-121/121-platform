@@ -1205,7 +1205,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       componentProps: {
         programId,
         referenceId: row.referenceId,
-        fsp: row.fsp,
         canUpdatePaData: this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,
