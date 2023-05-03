@@ -15,18 +15,6 @@ on:
       AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_ROCK_0411D2003:
         required: true
   workflow_dispatch:
-  release:
-    types: [released]
-  push:
-    branches:
-      - release/*
-    paths:
-      - '!.github/**'
-      - '.github/workflows/deploy_staging_portal.yml'
-      - 'interfaces/HO-Portal/**'
-      - '**/.vscode/*'
-      - '!*.md'
-      - '!*.yml'
 
 jobs:
   build_and_deploy:
