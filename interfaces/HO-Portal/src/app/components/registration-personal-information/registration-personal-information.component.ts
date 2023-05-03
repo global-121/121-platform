@@ -88,6 +88,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
         this.person.referenceId,
       )
     )[0];
+    console.log('this.person: ', this.person);
 
     this.fillPersonalInfoTable();
   }
@@ -138,6 +139,9 @@ export class RegistrationPersonalInformationComponent implements OnInit {
         const labelToTranslate = ta.shortLabel || ta.label;
 
         let value = this.person[ta.name];
+        if (!value) {
+          continue;
+        }
         if (ta.type === 'tel') {
           value = value === '' ? value : `+${value}`;
         }
