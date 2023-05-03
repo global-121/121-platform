@@ -127,13 +127,6 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getPaEditAttributes(programId: number | string): Promise<PaTableAttribute[]> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      `/programs/${programId}/pa-edit-attributes`,
-    );
-  }
-
   advancePhase(programId: number, newPhase: string): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,

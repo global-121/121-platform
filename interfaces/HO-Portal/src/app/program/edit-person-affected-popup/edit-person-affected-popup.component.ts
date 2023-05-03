@@ -109,6 +109,18 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       }
     }
 
+    const attr = this.paTableAttributesInput.map((a) => a.name);
+    this.person = (
+      await this.programsService.getPeopleAffected(
+        this.programId,
+        this.canViewPersonalData,
+        false,
+        this.person.referenceId,
+        undefined,
+        attr,
+      )
+    )[0];
+
     if (this.canViewPersonalData) {
       this.fillPaTableAttributes();
       this.getNote();
