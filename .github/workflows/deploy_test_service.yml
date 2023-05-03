@@ -62,7 +62,7 @@ jobs:
           rm -r jest.config.js
 
       - name: Download database certificate
-        run: wget https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem
+        run: curl https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem --create-dirs -o ./cert/DigiCertGlobalRootCA.crt.pem
 
       - name: Deploy to Azure App Service
         id: deploy_to_aas
