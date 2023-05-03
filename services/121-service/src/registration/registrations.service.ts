@@ -683,10 +683,6 @@ export class RegistrationsService {
     filterOnPayment?: number,
     requestedDynamicAttributes?: string[],
   ): Promise<RegistrationResponse[]> {
-    let program: ProgramEntity;
-    if (programId) {
-      program = await this.programService.findProgramOrThrow(programId);
-    }
     let q = this.registrationRepository
       .createQueryBuilder('registration')
       .select('registration.id', 'id')
@@ -717,7 +713,7 @@ export class RegistrationsService {
       .addSelect('registration.note', 'note')
       .leftJoin('registration.fsp', 'fsp');
 
-    if (includePersonalData && requestedDynamicAttributes?.length > 0) {
+    if (includePersonalData) {
       let dynamicAttributes = await this.programService.getPaTableAttributes(
         programId,
       );
@@ -740,7 +736,10 @@ export class RegistrationsService {
         .select('"registrationId"')
         .groupBy('"registrationId"');
       for (const dynamicAttribute of dynamicAttributes) {
-        if (requestedDynamicAttributes.includes(dynamicAttribute.name)) {
+        if (
+          !requestedDynamicAttributes || // if the param is not passed, then return all (instead of nothing)
+          requestedDynamicAttributes.includes(dynamicAttribute.name) // if someting passed, return only those
+        ) {
           if (dynamicAttribute.questionType === QuestionType.programQuestion) {
             if (dynamicAttribute.type === AnswerTypes.multiSelect) {
               // Currently multi-select is only used for program-questions
@@ -819,10 +818,7 @@ export class RegistrationsService {
       return rows;
     }
 
-    if (!program && referenceId && rows.length === 1) {
-      program = await this.programService.findProgramOrThrow(rows[0].programId);
-    }
-
+    const program = await this.programService.findProgramOrThrow(programId);
     for (const row of rows) {
       row['name'] = this.getName(row, program);
       row['hasNote'] = !!row.note;
@@ -1167,11 +1163,13 @@ export class RegistrationsService {
         rawPhoneNumber,
       );
 
-      const matchingReferenceIds = (
+      const matchingRegistrations = (
         await this.registrationRepository.find({
           where: { phoneNumber: phoneNumber },
         })
-      ).map((r) => r.referenceId);
+      ).map((r) => {
+        return { programId: r.programId, referenceId: r.referenceId };
+      });
 
       const matchingRegistrationData = await this.dataSource
         .getRepository(RegistrationDataEntity)
@@ -1187,14 +1185,27 @@ export class RegistrationsService {
       for (const d of matchingRegistrationData) {
         const dataName = await d.getDataName();
         if (customAttributesPhoneNumberNames.includes(dataName)) {
-          matchingReferenceIds.push(d.registration.referenceId);
+          matchingRegistrations.push({
+            programId: d.registration.programId,
+            referenceId: d.registration.referenceId,
+          });
         }
       }
 
-      const uniqueReferenceIds = [...new Set(matchingReferenceIds)];
-      for (const referenceId of uniqueReferenceIds) {
+      const uniqueRegistrations = matchingRegistrations.filter(
+        (value, index, self) =>
+          index === self.findIndex((t) => t.referenceId === value.referenceId),
+      );
+
+      for (const uniqueRegistration of uniqueRegistrations) {
         const registration = (
-          await this.getRegistrations(null, true, false, true, referenceId)
+          await this.getRegistrations(
+            uniqueRegistration.programId,
+            true,
+            false,
+            true,
+            uniqueRegistration.referenceId,
+          )
         )[0];
         registrations.push(registration);
       }
