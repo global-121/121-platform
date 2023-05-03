@@ -45,7 +45,7 @@
     "@angular/service-worker": "^15.2.5",
     "@ionic/angular": "^6.7.3",
     "@ionic/cli": "^6.20.9",
-    "@microsoft/applicationinsights-web": "^2.8.12",
+    "@microsoft/applicationinsights-web": "^2.8.13",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "@swimlane/ngx-charts": "^20.1.2",
