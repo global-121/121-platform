@@ -61,6 +61,9 @@ jobs:
           rm -r azure-pipelines.yml
           rm -r jest.config.js
 
+      - name: Download database certificate
+        run: curl https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem --create-dirs -o ./cert/DigiCertGlobalRootCA.crt.pem
+
       - name: Deploy to Azure App Service
         id: deploy_to_aas
         uses: azure/webapps-deploy@v2
