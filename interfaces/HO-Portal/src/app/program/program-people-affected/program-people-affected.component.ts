@@ -1519,8 +1519,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       .then(
         () => {
           row[column.prop] = value;
-          const valueKey = 'value';
-          row.paTableAttributes[column.prop][valueKey] = value;
           this.actionResult(this.translate.instant('common.update-success'));
         },
         (error) => {

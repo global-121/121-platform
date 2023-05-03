@@ -80,6 +80,16 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       return;
     }
 
+    this.person = (
+      await this.programsService.getPeopleAffected(
+        this.programId,
+        this.canViewPersonalData,
+        false,
+        this.person.referenceId,
+      )
+    )[0];
+    console.log('this.person: ', this.person);
+
     this.fillPersonalInfoTable();
   }
 
@@ -120,7 +130,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       },
     ];
 
-    if (this.person.paTableAttributes) {
+    if (this.person) {
       for (const ta of this.tableAttributes) {
         if (!this.tableAttributesToShow.includes(ta.name)) {
           continue;
@@ -128,7 +138,10 @@ export class RegistrationPersonalInformationComponent implements OnInit {
 
         const labelToTranslate = ta.shortLabel || ta.label;
 
-        let value = this.person.paTableAttributes[ta.name].value;
+        let value = this.person[ta.name];
+        if (!value) {
+          continue;
+        }
         if (ta.type === 'tel') {
           value = value === '' ? value : `+${value}`;
         }
