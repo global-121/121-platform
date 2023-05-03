@@ -627,9 +627,10 @@ export class ExportMetricsService {
       return att.id;
     });
     const fspQuestions = await this.fspQuestionRepository.find({
-      relations: ['fsp'],
+      relations: ['fsp', 'fsp.program'],
       where: {
         duplicateCheck: true,
+        fsp: { program: { id: programId } },
       },
     });
     const fspQuestionIds = fspQuestions.map((fspQuestion) => {
