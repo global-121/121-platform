@@ -15,15 +15,11 @@ permissions:
   actions: read
 
 on:
-  release:
-    types: [published, prereleased]
-    paths:
-      - '!.github/**'
-      - '.github/workflows/deploy_test_service.yml'
-      - 'services/121-service/**'
-      - '**/.vscode/*'
-      - '!*.md'
-      - '!*.yml'
+  workflow_call:
+    secrets:
+      AZURE_WEBAPP_PUBLISH_PROFILE:
+        required: true
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
