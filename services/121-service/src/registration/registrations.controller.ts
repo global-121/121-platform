@@ -259,7 +259,7 @@ export class RegistrationsController {
     }
 
     let attributes: [];
-    if (queryParams.attributes) {
+    if (queryParams.attributes || queryParams.attributes === '') {
       attributes =
         queryParams.attributes === '' ? [] : queryParams.attributes.split(',');
     }
