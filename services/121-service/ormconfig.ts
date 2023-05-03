@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { DataSourceOptions } from 'typeorm';
 
 export const ORMConfig: DataSourceOptions = {
@@ -19,6 +20,6 @@ export const ORMConfig: DataSourceOptions = {
     process.env.NODE_ENV === 'development'
       ? null
       : {
-          ca: 'BaltimoreCyberTrustRoot.crt.pem',
+          ca: fs.readFileSync('BaltimoreCyberTrustRoot.crt.pem').toString(),
         },
 };
