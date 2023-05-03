@@ -1200,14 +1200,12 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public async editPersonAffectedPopup(row: PersonRow, programId: number) {
-    const person = this.allPeopleData.find(
-      (pa) => pa.referenceId === row.referenceId,
-    );
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: EditPersonAffectedPopupComponent,
       componentProps: {
-        person,
         programId,
+        referenceId: row.referenceId,
+        fsp: row.fsp,
         canUpdatePaData: this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,

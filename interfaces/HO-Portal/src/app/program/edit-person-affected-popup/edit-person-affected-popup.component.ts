@@ -27,10 +27,13 @@ import { ErrorHandlerService } from '../../services/error-handler.service';
 })
 export class EditPersonAffectedPopupComponent implements OnInit {
   @Input()
-  public person: Person;
+  public programId: number;
 
   @Input()
-  public programId: number;
+  public referenceId: string;
+
+  @Input()
+  public fsp: string;
 
   @Input()
   public canUpdatePaData = false;
@@ -49,6 +52,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   @Input()
   public canViewPaymentData = false;
+
+  public person: Person;
 
   public DateFormat = DateFormat;
   public inProgress: any = {};
@@ -89,6 +94,16 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       }
     }
 
+    this.person = (
+      await this.programsService.getPeopleAffected(
+        this.programId,
+        this.canViewPersonalData,
+        false,
+        this.referenceId,
+        undefined,
+      )
+    )[0];
+
     this.attributeValues.paymentAmountMultiplier =
       this.person?.paymentAmountMultiplier;
 
@@ -101,22 +116,13 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     if (this.program && this.program.editableAttributes) {
       this.paTableAttributesInput = this.program.editableAttributes;
 
-      const fspObject = this.fspList.find((f) => f.fsp === this.person?.fsp);
+      const fspObject = this.fspList.find((f) => f.fsp === this.fsp);
       if (fspObject && fspObject.editableAttributes) {
         this.paTableAttributesInput = fspObject.editableAttributes.concat(
           this.paTableAttributesInput,
         );
       }
     }
-
-    this.person = (
-      await this.programsService.getPeopleAffected(
-        this.programId,
-        this.canViewPersonalData,
-        false,
-        this.person.referenceId,
-      )
-    )[0];
 
     if (this.canViewPersonalData) {
       this.fillPaTableAttributes();
