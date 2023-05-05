@@ -44,7 +44,7 @@ Features of the 121-platform are described in this folder in a standardized way 
 - [Export selected for validation list](121-Portal/Export_selected_for_validation_list.feature)
 - [Include people affected](121-Portal/Include_people_affected.feature)
 - [Reject or End Inclusion of people affected](121-Portal/Reject_or_End_inclusion_people_affected.feature)
-- [Export duplicate People Affected list](121-Portal/Export_duplicate_people_affected_List.feature)
+- [Export duplicate People Affected list](121-Portal/Export_duplicate_people_affected_list.feature)
 - [Make a new payment](121-Portal/Make_new_payment.feature)
 - [Export payment details](121-Portal/Export_Payment_Details.feature)
 - [Manage payment via import and export](121-Portal/Manage_payment_via_import_and_export)
