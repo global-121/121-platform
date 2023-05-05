@@ -37,6 +37,7 @@ import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import {
   AnswerTypes,
   CustomDataAttributes,
+  GenericAttributes,
   QuestionType,
 } from './enum/custom-data-attributes';
 import { LanguageEnum } from './enum/language.enum';
@@ -736,6 +737,9 @@ export class RegistrationsService {
         .select('"registrationId"')
         .groupBy('"registrationId"');
       for (const dynamicAttribute of dynamicAttributes) {
+        if (dynamicAttribute.name === GenericAttributes.phoneNumber) {
+          continue;
+        }
         if (
           !requestedDynamicAttributes || // if the param is not passed, then return all (instead of nothing)
           requestedDynamicAttributes.includes(dynamicAttribute.name) // if someting passed, return only those
