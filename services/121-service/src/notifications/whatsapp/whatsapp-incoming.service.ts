@@ -253,6 +253,10 @@ export class WhatsappIncomingService {
         HttpStatus.BAD_REQUEST,
       );
     }
+
+    // Wait for 5 seconds to allow Twilio to 'open the (message)window'.
+    await new Promise((res) => setTimeout(res, 5000));
+
     const fromNumber = this.cleanWhatsAppNr(callbackData.From);
 
     // Get (potentially multiple) registrations on incoming phonenumber
