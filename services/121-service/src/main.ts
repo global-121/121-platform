@@ -21,7 +21,6 @@ import {
   PORT,
   SWAGGER_CUSTOM_CSS,
 } from './config';
-import SeedProd from './scripts/seed-prod';
 import appInsights = require('applicationinsights');
 
 /**
@@ -133,9 +132,6 @@ async function bootstrap(): Promise<void> {
 
   const server = await app.listen(PORT);
   server.setTimeout(10 * 60 * 1000);
-
-  const seed = app.get(SeedProd);
-  seed.run();
 }
 bootstrap();
 
