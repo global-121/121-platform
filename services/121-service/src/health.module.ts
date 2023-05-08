@@ -21,6 +21,19 @@ export class HealthController {
       () => this.db.pingCheck('database', { timeout: 300 }),
     ]);
   }
+
+  @Get('version')
+  public version(): {
+    schemaVersion: number;
+    label: string;
+    message: string;
+  } {
+    return {
+      schemaVersion: 1,
+      label: 'build',
+      message: process.env.GLOBAL_121_VERSION,
+    };
+  }
 }
 
 @Module({
