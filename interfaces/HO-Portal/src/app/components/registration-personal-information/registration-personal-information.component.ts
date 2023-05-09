@@ -120,7 +120,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
       },
     ];
 
-    if (this.person.paTableAttributes) {
+    if (this.person) {
       for (const ta of this.tableAttributes) {
         if (!this.tableAttributesToShow.includes(ta.name)) {
           continue;
@@ -128,7 +128,10 @@ export class RegistrationPersonalInformationComponent implements OnInit {
 
         const labelToTranslate = ta.shortLabel || ta.label;
 
-        let value = this.person.paTableAttributes[ta.name].value;
+        let value = this.person[ta.name];
+        if (value === null || value === undefined) {
+          continue;
+        }
         if (ta.type === 'tel') {
           value = value === '' ? value : `+${value}`;
         }
@@ -146,7 +149,7 @@ export class RegistrationPersonalInformationComponent implements OnInit {
 
     this.personalInfoTable.push({
       label: this.getLabel('fsp'),
-      value: this.person.fsp,
+      value: this.person.fspDisplayNamePortal,
     });
   }
 
@@ -154,8 +157,8 @@ export class RegistrationPersonalInformationComponent implements OnInit {
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: EditPersonAffectedPopupComponent,
       componentProps: {
-        person: this.person,
         programId: this.programId,
+        referenceId: this.person?.referenceId,
         canUpdatePaData: this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,

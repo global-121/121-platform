@@ -33,6 +33,7 @@ export class Program {
   notifications: string | TranslatableString;
   languages: LanguageEnum[];
   enableMaxPayments: boolean;
+  fullnameNamingConvention: string[];
 }
 
 export class ProgramStats {

@@ -228,6 +228,7 @@ export class RegistrationsController {
   @ApiQuery({ name: 'paymentData', required: true, type: 'boolean' })
   @ApiQuery({ name: 'referenceId', required: false, type: 'string' })
   @ApiQuery({ name: 'filterOnPayment', required: false, type: 'number' })
+  @ApiQuery({ name: 'attributes', required: false, type: 'string' })
   @ApiResponse({
     status: 201,
     description: 'Got all People Affected for program EXCLUDING personal data',
@@ -255,6 +256,12 @@ export class RegistrationsController {
       );
     }
 
+    let attributes: [];
+    if (queryParams.attributes || queryParams.attributes === '') {
+      attributes =
+        queryParams.attributes === '' ? [] : queryParams.attributes.split(',');
+    }
+
     return await this.registrationsService.getRegistrations(
       Number(programId),
       personalData,
@@ -262,6 +269,7 @@ export class RegistrationsController {
       true,
       queryParams.referenceId,
       queryParams.filterOnPayment,
+      attributes,
     );
   }
 

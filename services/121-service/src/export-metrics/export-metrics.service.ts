@@ -220,13 +220,12 @@ export class ExportMetricsService {
       where: { id: programId },
       relations: [
         'programQuestions',
+        'programCustomAttributes',
         'financialServiceProviders',
         'financialServiceProviders.questions',
       ],
     });
-    const programCustomAttrs =
-      await this.getAllProgramCustomAttributesForExport(programId);
-    for (const programCustomAttr of programCustomAttrs) {
+    for (const programCustomAttr of program.programCustomAttributes) {
       const relationOption = new RegistrationDataOptions();
       relationOption.name = programCustomAttr.name;
       relationOption.relation = {
@@ -355,16 +354,6 @@ export class ExportMetricsService {
         );
     }
     return row;
-  }
-
-  private async getAllProgramCustomAttributesForExport(
-    programId: number,
-  ): Promise<ProgramCustomAttributeEntity[]> {
-    const program = await this.programRepository.findOne({
-      where: { id: programId },
-      relations: ['programCustomAttributes'],
-    });
-    return program.programCustomAttributes;
   }
 
   private async addPaymentFieldsToExport(

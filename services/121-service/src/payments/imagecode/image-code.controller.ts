@@ -1,6 +1,6 @@
 import { Controller, Get, HttpStatus, Param, Res } from '@nestjs/common';
 import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express-serve-static-core';
+import { Response } from 'express';
 import stream from 'stream';
 import { ImageCodeService } from './image-code.service';
 

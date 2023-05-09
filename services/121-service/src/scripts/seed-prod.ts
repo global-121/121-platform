@@ -9,7 +9,7 @@ export class SeedProd implements InterfaceScript {
   public constructor(private dataSource: DataSource) {}
 
   public async run(): Promise<void> {
-    console.log('run: SeedProd ');
+    console.log('----------------Running seed production------------------');
     const userRepository = this.dataSource.getRepository(UserEntity);
     if ((await userRepository.find({ take: 1 })).length === 0) {
       const seedInit = await new SeedInit(this.dataSource);
