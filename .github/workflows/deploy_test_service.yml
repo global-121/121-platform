@@ -56,10 +56,13 @@ jobs:
       - name: Reduce build package size
         run: |
           npm prune --production
+          rm -r .vscode/
           rm -r test/
           rm -r ./*.md
-          rm -r azure-pipelines.yml
-          rm -r jest.config.js
+          rm azure-pipelines.yml
+          rm .eslintrc.js
+          rm .prettier*
+          rm jest.config.js
 
       - name: Download database certificate
         run: curl https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem --create-dirs -o ./cert/DigiCertGlobalRootCA.crt.pem
