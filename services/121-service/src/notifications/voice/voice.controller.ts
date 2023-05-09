@@ -17,7 +17,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
-import { Response } from 'express-serve-static-core';
+import { Response } from 'express';
 import { Admin } from '../../guards/admin.decorator';
 import { AdminAuthGuard } from './../../guards/admin.guard';
 import { PermissionsGuard } from './../../guards/permissions.guard';

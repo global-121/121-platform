@@ -6,12 +6,7 @@ The 121-Service is the backend where 121-programs can be created and monitored, 
 
 ## Getting started / Installation
 
-See instructions to get started in the main [`README`](../../README.md).
-
-- `npm start` - Start application
-- `npm run start:watch` - Start application in watch mode
-- `npm run start:prod` - Build application
-- `npm test` - run Jest test runner
+See instructions to get started in the main [`README`](../../README.md#getting-started).
 
 ## API
 
@@ -50,7 +45,11 @@ If you want to revert one migration you can run:
 
 ### Seed the database
 
-Upon application start, automatically a basic seed-script is run which adds 1 `admin`-user. It will only do so, if no existing users are found. The password and e-mail for this user can be customized in centralized [`services/.env`](../.env.example) file.
+To create the database initially, you have to run a command once:
+
+    docker exex -it 121-service npm run setup
+
+This will add 1 `admin`-user. It will only do so, if no existing users are found. The password and e-mail for this user can be customized in centralized [`services/.env`](../.env.example) file.
 
 To seed the database with more data (e.g. programs) additional seed-scripts can be run manually.
 **NOTE:** These seed-scripts delete _all existing data_. They cannot be run on production; When run locally or on test-environment, you are prompted with '`Are you sure? (y/n)`'.

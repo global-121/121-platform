@@ -47,6 +47,9 @@ jobs:
       - name: Set VERSION of build/deployment
         run: 'echo "GLOBAL_121_VERSION=$(git describe --tags --dirty --broken)" >> $GITHUB_ENV'
 
+      - name: Add VERSION to deployment
+        run: 'echo "${{ env.GLOBAL_121_VERSION }}" >> ./VERSION.txt'
+
       - name: Reduce build package size
         run: |
           npm prune --production

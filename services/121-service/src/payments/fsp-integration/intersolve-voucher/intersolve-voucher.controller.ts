@@ -19,7 +19,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Response } from 'express-serve-static-core';
+import { Response } from 'express';
 import stream from 'stream';
 import { Admin } from '../../../guards/admin.decorator';
 import { AdminAuthGuard } from '../../../guards/admin.guard';
