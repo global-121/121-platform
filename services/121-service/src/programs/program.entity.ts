@@ -23,6 +23,7 @@ import {
 import { ValidationInfo } from './dto/validation-info.dto';
 import { ProgramAidworkerAssignmentEntity } from './program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
+import { ProgramFspConfigurationEntity } from './program-fsp-configuration.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 
 @Entity('program')
@@ -141,6 +142,12 @@ export class ProgramEntity extends CascadeDeleteEntity {
 
   @Column({ default: false })
   public enableMaxPayments: boolean;
+
+  @OneToMany(
+    () => ProgramQuestionEntity,
+    (programFspConfiguration) => programFspConfiguration.programId,
+  )
+  public programFspConfiguration: ProgramFspConfigurationEntity[];
 
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
