@@ -17,7 +17,6 @@ export enum RegistrationStatusEnum {
 export enum RegistrationStatusTimestampField {
   importedDate = 'importedDate',
   invitedDate = 'invitedDate',
-  accountCreatedDate = 'accountCreatedDate',
   startedRegistrationDate = 'startedRegistrationDate',
   registeredWhileNoLongerEligibleDate = 'registeredWhileNoLongerEligibleDate',
   registeredDate = 'registeredDate',

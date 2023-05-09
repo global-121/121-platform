@@ -3,7 +3,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
-import { AnswerType } from 'src/app/models/fsp.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { environment } from '../../../environments/environment';
@@ -39,25 +38,25 @@ export class RecipientDetailsComponent implements OnInit {
   public statusText = '';
   public DateFormat = DateFormat;
   private locale = environment.defaultLocale;
-  private keysToExclude = [
-    'id',
-    'data',
-    'paTableAttributes',
-    'hasPhoneNumber',
-    'hasNote',
-    'note',
-    'referenceId',
-    'programId',
-    'phone-number',
-    'status',
-    'lastMessageStatus',
-    'lastMessageType',
+
+  private readonly timestampKeys = Object.values(StatusDate);
+
+  private attributesToInclude = [
+    'registrationProgramId',
+    'name',
+    'phoneNumber',
+    'preferredLanguage',
+    'fspDisplayNamePortal',
+    'paymentAmountMultiplier',
+    ...this.timestampKeys,
   ];
 
   private questionKeysToInclude = [
     'whatsappPhoneNumber',
     'namePartnerOrganization',
   ];
+
+  private telKeys = ['phoneNumber', 'whatsappPhoneNumber'];
 
   public columns = {
     columnPersonalInformation: [],
@@ -77,8 +76,6 @@ export class RecipientDetailsComponent implements OnInit {
     preferredLanguage: 'page.program.program-people-affected.language',
     status: 'page.program.program-people-affected.status',
   };
-
-  private readonly timestampKeys = Object.values(StatusDate);
 
   constructor(
     private programsServiceApiService: ProgramsServiceApiService,
@@ -100,12 +97,12 @@ export class RecipientDetailsComponent implements OnInit {
   }
 
   private mapToKeyValue() {
-    if (!this.recipient || !this.recipient.paTableAttributes) {
+    if (!this.recipient) {
       return;
     }
 
     for (const key of Object.keys(this.recipient)) {
-      if (this.keysToExclude.includes(key)) {
+      if (!this.attributesToInclude.includes(key)) {
         continue;
       }
       if (!this.recipient[key]) {
@@ -124,11 +121,11 @@ export class RecipientDetailsComponent implements OnInit {
       );
     }
 
-    for (const key of Object.keys(this.recipient.paTableAttributes)) {
+    for (const key of Object.keys(this.recipient)) {
       if (!this.questionKeysToInclude.includes(key)) {
         continue;
       }
-      if (!this.recipient.paTableAttributes[key].value) {
+      if (!this.recipient[key]) {
         continue;
       }
       const column = this.getColumn(key);
@@ -151,8 +148,7 @@ export class RecipientDetailsComponent implements OnInit {
         this.getRecipientDetail(
           key,
           this.translatableString.get(shortLabel),
-          this.recipient.paTableAttributes[key].value,
-          this.recipient.paTableAttributes[key].type,
+          this.recipient[key],
         ),
       );
     }
@@ -163,15 +159,14 @@ export class RecipientDetailsComponent implements OnInit {
     key: string,
     label: string,
     value: any,
-    type?: AnswerType,
   ): RecipientDetail {
-    if (this.timestampKeys.includes(key) || type === AnswerType.Date) {
+    if (this.timestampKeys.includes(key)) {
       value = formatDate(value, DateFormat.dayAndTime, this.locale);
     }
     if (this.valueTranslators[key]) {
       value = this.translateValue(key, value);
     }
-    if (key === 'phoneNumber' || type === AnswerType.PhoneNumber) {
+    if (this.telKeys.includes(key) && value !== '') {
       value = '+' + value;
     }
 
@@ -202,7 +197,7 @@ export class RecipientDetailsComponent implements OnInit {
         columnName: 'columnPersonalInformation',
         index: 5,
       },
-      fsp: { columnName: 'columnPaymentHistory', index: 0 },
+      fspDisplayNamePortal: { columnName: 'columnPaymentHistory', index: 0 },
       paymentAmountMultiplier: { columnName: 'columnPaymentHistory', index: 1 },
     };
 

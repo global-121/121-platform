@@ -88,7 +88,7 @@ describe('Webhook integration with EspoCRM - Update PA', () => {
     const testBody = [
       {
         id: referenceId + '-fail-test',
-        firstName: 'UpdatedName',
+        phoneNumber: '15005550099',
       },
     ];
     const signature = createEspoSignature(
@@ -110,11 +110,11 @@ describe('Webhook integration with EspoCRM - Update PA', () => {
 
   it('should succesfully update', async () => {
     // Arrange
-    const updatedName = 'UpdatedName';
+    const updatePhoneNumber = '15005550099';
     const testBody = [
       {
         id: referenceId,
-        firstName: updatedName,
+        phoneNumber: updatePhoneNumber,
       },
     ];
     const signature = createEspoSignature(
@@ -134,7 +134,6 @@ describe('Webhook integration with EspoCRM - Update PA', () => {
     expect(response.statusCode).toBe(HttpStatus.CREATED);
 
     const registration = await getRegistration(referenceId, accessToken);
-
-    expect(registration.body.customData.firstName).toBe(updatedName);
+    expect(registration.body.phoneNumber).toBe(updatePhoneNumber);
   });
 });

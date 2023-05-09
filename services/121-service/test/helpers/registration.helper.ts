@@ -32,6 +32,23 @@ export function getRegistration(
     .set('Cookie', [accessToken]);
 }
 
+export function getRegistrations(
+  programId: number,
+  attributes: string[],
+  accessToken: string,
+): Promise<request.Response> {
+  const queryParams = {
+    personalData: true,
+  };
+  if (attributes) {
+    queryParams['attributes'] = attributes.join(',');
+  }
+  return getServer()
+    .get(`/programs/${programId}/registrations`)
+    .query(queryParams)
+    .set('Cookie', [accessToken]);
+}
+
 export function changePaStatus(
   programId: number,
   registrations: string[],

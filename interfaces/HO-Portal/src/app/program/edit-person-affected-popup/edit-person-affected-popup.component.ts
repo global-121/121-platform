@@ -27,10 +27,10 @@ import { ErrorHandlerService } from '../../services/error-handler.service';
 })
 export class EditPersonAffectedPopupComponent implements OnInit {
   @Input()
-  public person: Person;
+  public programId: number;
 
   @Input()
-  public programId: number;
+  public referenceId: string;
 
   @Input()
   public canUpdatePaData = false;
@@ -49,6 +49,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   @Input()
   public canViewPaymentData = false;
+
+  public person: Person;
 
   public DateFormat = DateFormat;
   public inProgress: any = {};
@@ -88,6 +90,15 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         this.fspList.push(await this.programsService.getFspById(fsp.id));
       }
     }
+
+    this.person = (
+      await this.programsService.getPeopleAffected(
+        this.programId,
+        this.canViewPersonalData,
+        false,
+        this.referenceId,
+      )
+    )[0];
 
     this.attributeValues.paymentAmountMultiplier =
       this.person?.paymentAmountMultiplier;
@@ -218,7 +229,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.paTableAttributes = this.paTableAttributesInput.map(
       (paTableAttribute) => {
         this.attributeValues[paTableAttribute.name] =
-          this.person.paTableAttributes[paTableAttribute.name].value;
+          this.person[paTableAttribute.name];
 
         let options = null;
         if (
@@ -236,7 +247,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
           name: paTableAttribute.name,
           type: paTableAttribute.type,
           label,
-          value: this.person.paTableAttributes[paTableAttribute.name].value,
+          value: this.person[paTableAttribute.name],
           options,
           explanation: this.translate.instant(translationKey).explanation,
         };

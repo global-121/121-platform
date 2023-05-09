@@ -6,7 +6,10 @@ import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { Attribute } from '../registration/enum/custom-data-attributes';
+import {
+  Attribute,
+  QuestionType,
+} from '../registration/enum/custom-data-attributes';
 import { ProgramPhase } from '../shared/enum/program-phase.model';
 import { PermissionEnum } from '../user/permission.enum';
 import { DefaultUserRole } from '../user/user-role.enum';
@@ -551,6 +554,7 @@ export class ProgramService {
         type: c.type,
         label: c.label,
         shortLabel: c.label,
+        questionType: QuestionType.programCustomAttribute,
       };
     });
 
@@ -572,6 +576,7 @@ export class ProgramService {
         type: c.answerType,
         label: c.label,
         shortLabel: c.shortLabel,
+        questionType: QuestionType.programQuestion,
       };
     });
 
@@ -599,6 +604,7 @@ export class ProgramService {
         type: c.answerType,
         label: c.label,
         shortLabel: c.shortLabel,
+        questionType: QuestionType.fspQuestion,
       };
     });
 
