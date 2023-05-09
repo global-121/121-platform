@@ -53,7 +53,7 @@ jobs:
           NG_DISABLE_TEXT_PLAYER: 'false'
           NG_ALWAYS_SHOW_TEXT_PLAYER: 'false'
           NG_ENV_NAME: 'test'
-          NG_URL_121_SERVICE_API: 'https://test-vm.121.global/121-service/api'
+          NG_URL_121_SERVICE_API: 'https://121-test.azurewebsites.net/api'
           NG_AI_IKEY: ''
           NG_AI_ENDPOINT: ''
           APPLICATIONINSIGHTS_CONNECTION_STRING: ''
