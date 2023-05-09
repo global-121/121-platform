@@ -23,9 +23,6 @@ export class IntersolveJumboService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
 
-  private readonly maxPaymentAmountMultiplier = 3;
-  // Hardcoding this to 22, because this would not work with any other number. And for the future when the fixedTransferValue can be changed in the program edit page.
-  private readonly fixedPaymentAmount = 22;
   private readonly apiBatchSize = 500;
 
   public constructor(
@@ -40,17 +37,6 @@ export class IntersolveJumboService {
     payment: number,
     amount: number,
   ): Promise<void> {
-    // If amount is not allowed store failed transactions for all PA's
-    if (amount !== this.fixedPaymentAmount) {
-      return await this.storeFailedTransactionsInvalidAmount(
-        paPaymentArray,
-        payment,
-        amount,
-        programId,
-        this.fixedPaymentAmount,
-      );
-    }
-
     // Split into batches
     const batches: PaPaymentDataDto[][] = [];
     for (let i = 0; i < paPaymentArray.length; i += this.apiBatchSize) {
@@ -131,24 +117,6 @@ export class IntersolveJumboService {
       paPaymentArray.map((pa) => pa.referenceId),
     );
 
-    // Filter out orderlines/PA of which maxPaymentAmountMultiplier is exceeded
-    for (const [index, paymentDetails] of paymentDetailsArray.entries()) {
-      if (
-        paymentDetails.paymentAmountMultiplier > this.maxPaymentAmountMultiplier
-      ) {
-        const transactionResult = this.createTransactionResult(
-          this.fixedPaymentAmount,
-          paymentDetails.referenceId,
-          `Payment amount multiplier is higher than ${this.maxPaymentAmountMultiplier}. Adjust it, and retry this payment.`,
-          StatusEnum.error,
-        );
-        batchResult.push(transactionResult);
-
-        // Remove PA from this batch
-        paymentDetailsArray.splice(index, 1);
-      }
-    }
-
     let preOrderResultFinished = false;
     let preOrderResult;
     while (preOrderResultFinished === false) {
@@ -166,7 +134,7 @@ export class IntersolveJumboService {
         );
         for (const paymentDetails of paymentDetailsArray) {
           const transactionResult = this.createTransactionResult(
-            this.fixedPaymentAmount,
+            amount,
             paymentDetails.referenceId,
             `A general error occured while creating batch pre-order.`,
             StatusEnum.error,
@@ -197,7 +165,7 @@ export class IntersolveJumboService {
 
           // Create failed transaction for this PA
           const transactionResult = this.createTransactionResult(
-            this.fixedPaymentAmount,
+            amount,
             paymentDetailsArray[errorIndex].referenceId,
             errorMessage,
             StatusEnum.error,
@@ -218,7 +186,7 @@ export class IntersolveJumboService {
           // .. and create failed transactions for remaining PAs
           for (const paymentDetails of paymentDetailsArray) {
             const transactionResult = this.createTransactionResult(
-              this.fixedPaymentAmount,
+              amount,
               paymentDetails.referenceId,
               errorMessage,
               StatusEnum.error,
@@ -280,7 +248,7 @@ export class IntersolveJumboService {
         : `Something went wrong while approving pre-order: ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultCode._cdata} - ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultDescription._cdata}`;
       for (const paymentInfo of preOrderInfoArray) {
         const transactionResult = this.createTransactionResult(
-          this.fixedPaymentAmount,
+          amount,
           paymentInfo.referenceId,
           errorMessage,
           StatusEnum.error,
@@ -288,24 +256,6 @@ export class IntersolveJumboService {
         batchResult.push(transactionResult);
       }
       return batchResult;
-    }
-  }
-
-  private async storeFailedTransactionsInvalidAmount(
-    paPaymentArray: PaPaymentDataDto[],
-    payment: number,
-    amount: number,
-    programId: number,
-    allowedEuroPerCard: number,
-  ): Promise<void> {
-    for (const paPayment of paPaymentArray) {
-      const transactionResult = this.createTransactionResult(
-        allowedEuroPerCard,
-        paPayment.referenceId,
-        `Amount ${amount} is not allowed. It should be ${allowedEuroPerCard}. The amount of this payment has been automatically adjusted to the correct amount. You can now retry the payment.`,
-        StatusEnum.error,
-      );
-      this.storeTransactionResult(transactionResult, payment, 1, programId);
     }
   }
 
