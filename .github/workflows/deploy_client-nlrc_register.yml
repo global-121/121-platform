@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Deploy [NLRC] Interface: Registration (PA)'
+name: 'Deploy [NLRC] Interface: Register (PA)'
 
 env:
   workingDirectory: interfaces/PA-App
