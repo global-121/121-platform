@@ -1,10 +1,10 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # Also, see: https://github.com/Azure/actions-workflow-samples
 
-name: 'Deploy [staging] 121-service'
+name: 'Deploy [NLRC] 121-service'
 
 env:
-  AZURE_WEBAPP_NAME: '121-nlrc'
+  AZURE_WEBAPP_NAME: '121-NLRC'
   AZURE_WEBAPP_PACKAGE_PATH: services/121-service
 
 defaults:
