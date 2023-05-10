@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Deploy [test] Interface: Registration (PA)'
+name: 'Deploy [test] Interface: Register (PA)'
 
 env:
   workingDirectory: interfaces/PA-App
@@ -16,7 +16,7 @@ on:
       - master
     paths:
       - '!.github/**'
-      - '.github/workflows/deploy_test_registration.yml'
+      - '.github/workflows/deploy_test_register.yml'
       - 'interfaces/PA-App/**'
       - '**/.vscode/*'
       - '!*.md'
@@ -27,7 +27,7 @@ on:
       - master
     paths:
       - '!.github/**'
-      - '.github/workflows/deploy_test_registration.yml'
+      - '.github/workflows/deploy_test_register.yml'
       - 'interfaces/PA-App/**'
       - '**/.vscode/*'
       - '!*.md'

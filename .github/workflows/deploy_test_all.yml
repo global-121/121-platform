@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Deploy [staging] All'
+name: 'Deploy [test] All'
 
 permissions:
   actions: read
@@ -13,24 +13,24 @@ on:
 jobs:
   deploy_portal:
     name: 'Build + Deploy: Portal'
-    uses: ./.github/workflows/deploy_staging_portal.yml
+    uses: ./.github/workflows/deploy_test_portal.yml
     secrets:
       AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_ROCK_0411D2003: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_ROCK_0411D2003 }}
 
   deploy_register:
     name: 'Build + Deploy: Register (PA)'
-    uses: ./.github/workflows/deploy_staging_register.yml
+    uses: ./.github/workflows/deploy_test_register.yml
     secrets:
       AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_BAY_0AF9ABD03: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_BAY_0AF9ABD03 }}
 
   deploy_verify:
     name: 'Build + Deploy: Verify (AW)'
-    uses: ./.github/workflows/deploy_staging_verify.yml
+    uses: ./.github/workflows/deploy_test_verify.yml
     secrets:
       AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_SAND_08D7E2903: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_SAND_08D7E2903 }}
 
   deploy_service:
     name: 'Build + Deploy: 121-Service'
-    uses: ./.github/workflows/deploy_staging_service.yml
+    uses: ./.github/workflows/deploy_test_service.yml
     secrets:
       AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
