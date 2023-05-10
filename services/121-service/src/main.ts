@@ -9,6 +9,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import { Request, Response } from 'express';
 import fs from 'fs';
 import { SpelunkerModule } from 'nestjs-spelunker';
 import { ApplicationModule } from './app.module';
@@ -85,9 +86,33 @@ async function bootstrap(): Promise<void> {
     generateModuleDependencyGraph(app);
   }
 
-  app.setGlobalPrefix('api');
+  // Prepare redirects:
+  const expressInstance = app.getHttpAdapter().getInstance();
 
-  app.getHttpAdapter().getInstance().disable('x-powered-by');
+  if (!!process.env.REDIRECT_PORTAL_URL_HOST) {
+    expressInstance.get(`/portal*`, (req: Request, res: Response) => {
+      const newPath = req.url.replace(`/portal`, '');
+      res.redirect(process.env.REDIRECT_PORTAL_URL_HOST + newPath);
+    });
+  }
+
+  if (!!process.env.REDIRECT_REGISTER_URL_HOST) {
+    expressInstance.get(`/app*`, (req: Request, res: Response) => {
+      const newPath = req.url.replace(`/app`, '');
+      res.redirect(process.env.REDIRECT_REGISTER_URL_HOST + newPath);
+    });
+  }
+
+  if (!!process.env.REDIRECT_VERIFY_URL_HOST) {
+    expressInstance.get(`/AW-app*`, (req: Request, res: Response) => {
+      const newPath = req.url.replace(`/AW-app`, '');
+      res.redirect(process.env.REDIRECT_VERIFY_URL_HOST + newPath);
+    });
+  }
+
+  expressInstance.disable('x-powered-by');
+
+  app.setGlobalPrefix('api');
 
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
