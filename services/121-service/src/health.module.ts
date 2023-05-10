@@ -6,6 +6,7 @@ import {
   TerminusModule,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
+import { APP_VERSION } from './config';
 
 @Controller('health')
 export class HealthController {
@@ -27,11 +28,16 @@ export class HealthController {
     schemaVersion: number;
     label: string;
     message: string;
+    isError?: boolean;
   } {
+    const version = APP_VERSION;
+
+    // See: https://shields.io/endpoint
     return {
       schemaVersion: 1,
       label: 'build',
-      message: process.env.GLOBAL_121_VERSION,
+      message: !!version ? version.trim() : 'n/a',
+      isError: !version,
     };
   }
 }
