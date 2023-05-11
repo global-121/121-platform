@@ -526,6 +526,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           'page.program.program-people-affected.column.paymentAmountMultiplier',
         ),
         ...this.columnDefaults,
+        comparator: this.paComparator.bind(this),
         minWidth: this.columnWidthPerType[AnswerType.Number],
         width: this.columnWidthPerType[AnswerType.Number],
       },
