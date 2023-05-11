@@ -15,6 +15,10 @@ permissions:
   actions: read
 
 on:
+  workflow_call:
+    secrets:
+      AZURE_WEBAPP_PUBLISH_PROFILE:
+        required: true
   workflow_dispatch:
   push:
     branches:
