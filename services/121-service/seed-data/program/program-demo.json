@@ -21,7 +21,17 @@
   "fixedTransferValue": 35,
   "financialServiceProviders": [
     {
-      "fsp": "Intersolve-voucher-whatsapp"
+      "fsp": "Intersolve-voucher-whatsapp",
+      "configuration": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
     },
     {
       "fsp": "Africas-talking"

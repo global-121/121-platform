@@ -1,11 +1,13 @@
-import { HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource, In } from 'typeorm';
+import { FspConfigurationMapping } from '../fsp/enum/fsp-name.enum';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { InstanceEntity } from '../instance/instance.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from '../programs/program-custom-attribute.entity';
+import { ProgramFspConfigurationEntity } from '../programs/program-fsp-configuration.entity';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { AnswerTypes } from '../registration/enum/custom-data-attributes';
@@ -162,8 +164,44 @@ export class SeedHelper {
         where: { fsp: fsp.fsp },
       });
       foundProgram.financialServiceProviders.push(fspReturn);
+      if (fsp.configuration && fsp.configuration.length > 0) {
+        for (const config of fsp.configuration) {
+          await this.addFspConfiguration(config, programReturn.id, fspReturn);
+        }
+      }
     }
     return await programRepository.save(foundProgram);
+  }
+
+  private async addFspConfiguration(
+    fspConfig: { name: string; value: string },
+    programId: number,
+    fsp: FinancialServiceProviderEntity,
+  ): Promise<void> {
+    if (FspConfigurationMapping[fsp.fsp] === undefined) {
+      throw new HttpException(
+        `Fsp ${fsp.fsp} has no fsp config`,
+        HttpStatus.NOT_FOUND,
+      );
+    } else {
+      const allowedConfigForFsp = FspConfigurationMapping[fsp.fsp];
+      if (!allowedConfigForFsp.includes(fspConfig.name)) {
+        throw new HttpException(
+          `For fsp ${fsp.fsp} only the following values are allowed ${allowedConfigForFsp}. You tried to add ${fspConfig.name}`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+    }
+    const value = process.env[fspConfig.value];
+    const fspConfigEntity = new ProgramFspConfigurationEntity();
+    fspConfigEntity.name = fspConfig.name;
+    fspConfigEntity.value = value;
+    fspConfigEntity.programId = programId;
+    fspConfigEntity.fspId = fsp.id;
+    const fspConfigRepo = this.dataSource.getRepository(
+      ProgramFspConfigurationEntity,
+    );
+    await fspConfigRepo.save(fspConfigEntity);
   }
 
   public async addFsp(fspInput: any): Promise<void> {
