@@ -207,14 +207,16 @@ export class RegistrationsController {
   public async importRegistrationsJSON(
     @Body() data: ImportRegistrationsDto[],
     @Param() params,
+    @Query() queryParams,
   ): Promise<ImportResult> {
+    const validation = Boolean(queryParams.validation) ?? true;
     const validatedData =
       await this.registrationsService.importJsonValidateRegistrations(
         data,
         Number(params.programId),
       );
     return await this.registrationsService.importValidatedRegistrations(
-      validatedData,
+      validation ? validatedData : data,
       Number(params.programId),
     );
   }
