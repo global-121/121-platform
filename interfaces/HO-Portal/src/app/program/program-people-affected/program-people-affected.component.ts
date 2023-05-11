@@ -1823,5 +1823,4 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     return value;
   }
-
 }
