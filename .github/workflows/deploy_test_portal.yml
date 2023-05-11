@@ -10,6 +10,10 @@ permissions:
   pull-requests: write
 
 on:
+  workflow_call:
+    secrets:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_ROCK_0411D2003:
+        required: true
   workflow_dispatch:
   push:
     branches:
