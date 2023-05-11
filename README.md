@@ -426,15 +426,16 @@ it('XYZ', (done) => {
 We try to follow the "[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)" convention, combined with the "[Angular Commit Message format](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format)".  
 When committing your changes, provide a commit message that starts with an appropriate keyword:
 
-- feat: (new feature for the user)
-- fix: (bug fix for the user)
-- docs: (changes to the documentation)
-- style: (formatting, missing semi colons, etc; no production code change)
-- refactor: (refactoring production code, eg. renaming a variable)
-- test: (adding missing tests, refactoring tests; no production code change)
-- chore: (cleanups, version updates etc; no production code change)
+- `feat`: new feature for the user
+- `fix`: bug fix for the user
+- `docs`: changes to the documentation
+- `style`: formatting, missing semi colons, etc; no production code change
+- `refactor`: refactoring production code, eg. renaming a variable
+- `test`: adding missing tests, refactoring tests; no production code change
+- `chore`: cleanups, version updates etc; no production code change
 
-Add an Azure DevOps task ID at the end of the commit message, for example "`feat: new feature added to the profile page AB#123456`".
+Add an Azure DevOps task ID at the end of the commit message.  
+For example: "`feat: new feature added to the profile page AB#123456`".
 
 After pushing your changes to the branch you can create a PR on <https://github.com/global-121/121-platform/pulls>.  
 Add additional description for the PR only if required.
@@ -454,16 +455,16 @@ This is how we create and publish a new release of the 121-platform.
 - [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
   - [ ] Commit changes to `master`-branch on GitHub.
 - [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch and push this branch to GitHub
-- [ ] Given current setup of automatic deployments on release: Make any server config changes (ENV-variables, etc.) on staging-servers before creating prerelease (see below)
+- [ ] Given current setup of automatic deployments on release:  
+       Make any configuration changes (ENV-variables, etc.) to the staging-service in the Azure Portal.
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
   - [ ] Add the `version` to create a new tag
   - [ ] Select the new `release/<version>`-branch
-  - [ ] Set the title of the release to `version`. Add a short description and/or link to relevant other documents (if applicable)
-  - [ ] **!!!IMPORTANT!!! UPDATE 2021/12/22**: check the 'pre-release' checkbox. Given current setup this makes sure the release is only automatically deployed to staging-servers, and not to production-servers.
+  - [ ] Set the title of the release to `version`. Add a short description and/or link to relevant other documents (only if applicable)
   - [ ] Publish the release on GitHub
-  - [ ] Check the the deployed release on staging server(s)
-  - [ ] Make any needed server config changes (ENV-variables, etc.) on production-servers
-  - [ ] Edit the release by unchecking the 'pre-release' checkbox and publishing again. Given current setup this will now automatically deploy to production-servers (and to staging again).
+  - [ ] Check the deployed release on the staging environment
+  - [ ] Make any needed configuration changes (ENV-variables, etc.) on production-service(s)
+  - [ ] Use the [manual deployment-workflows](.github/workflows/) to deploy to production
 
 ### Patch/Hotfix Checklist
 
@@ -471,27 +472,13 @@ This follows the same process as a regular release + deployment. With some small
 
 - Code does not need to be frozen. (As there is no active development on the release-branch)
 
-#### Manual approach
-
 - Checkout the `release/<version>`-branch that needs the hotfix.
-- Create a new local branch (e.g. `release/<v0.x.1>`) and make the changes
+- Create a new local branch on top of it (e.g. `release/<v0.x.1>`) and make the changes
+- Add the hotfix-release to the [CHANGELOG](CHANGELOG.md)
 - Push this branch directly to the main/upstream repository, not to a personal fork.
 - Create a new release (see above) and publish it.
-  The publish-command will invoke the webhook(s), which trigger an automated deploy for environments on that same _minor_ version.
-- Add the hotfix-release to the [CHANGELOG](CHANGELOG.md)
+- Use the [manual deployment-workflows](.github/workflows/) to deploy to production
 - After the hotfix-release, apply the same fix to the master-branch in a regular PR (by creating a PR from the hotfix-branch to `master`-branch)
-
-#### GitHub web-interface-only approach
-
-- Browse to the specific file that needs a fix on GitHub, click "edit" and make the changes
-  The URL will look like: `https://github.com/global-121/121-platform/edit/release/v1.0.0/<path-to-file>`
-- Select "Create a new branch for this commit and start a pull request" from the "commit changes"-box
-- Use `release/v1.0.1` as the branch-name by clicking "Propose changes"
-  This branch will now be created and is available to use for a new release
-- Add the hotfix-release to the [CHANGELOG](CHANGELOG.md) and commit to the same `release/v1.0.1` branch.
-- Create a new release (see above) and publish it.
-  The publish-command will invoke the webhook(s), which trigger an automated deploy for environments on that same _minor_ version.
-- After the hotfix-release, apply the fixes to the master-branch by merging the PR created.
 
 ---
 
@@ -501,34 +488,46 @@ This follows the same process as a regular release + deployment. With some small
 
 If you deploy the 121-platform to a server for the first time it is recommended to setup a seperate Posgres database server. The connection to this database can be made by editing the `POSTGRES_*` variables in `services/.env`.
 
-### To "test" environment
+### Interfaces
 
-- Merged PR's to the branch `master` are automatically deployed to the test-server. (via [webhook](tools/webhook.service), see: [/tools#GitHub-webhook](tools/README.md#github-webhook))
-  - To skip deployment after a PR is merged, add `[SKIP CD]` to the title of the PR before merging. (For example when only updating documentation)
-- Make sure to update any environment-settings/configurations as soon as possible, preferably before the merge & deploy.
+#### To "test" environment
 
-### To "production" environment(s)
+See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_*.yml` )
+
+- PR's to the branch `master` are automatically deployed to an individual preview-environment.
+- When merged, a separate deployment is done to the test-environment; for that interface only.
+
+### To "staging/production" environment(s)
+
+See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_staging_*.yml` )
+
+- A manual deploy can be run using the "Run workflow/`workflow_dispatch`" and selecting the preferred branch.
+
+### Service(s)
+
+#### To "test" environment
+
+See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_service.yml` )
+
+- When merged, a separate deployment is done to the test-environment.
+- Make sure to update any environment-configuration in the Azure-portal as soon as possible, preferably before the merge & deploy.
+
+### To "staging/production" environment(s)
 
 #### On initial deployment (only)
 
-- [ ] Configure environment(s) as described in [/services > Getting started / Installation](services/README.md#getting-started-installation).
-  - [ ] Checkout code (of latest release)
-  - [ ] Set secrets, configure ENV-variables (via all `.env`-files)
-  - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):
-        Run: `sudo ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v1.0.0`
-- [ ] Setup the web-server as described in [/tools > Hosting > Apache2](tools/README.md#apache2)
-- [ ] (Optional) Add data to the database using the available [seed-script](services/121-service/README.md#Seed-the-database)
+- [ ] Create the necessary Azure resources
+- [ ] Configure the service configurations based on [`.env.example`](./services/.env.example)
+- [ ] Create the necessary build/deploy-workflow files
+- [ ] Merge these new files into the `master`-branch
+- [ ] Build/Deploy the platform via the [GitHub Action(s)](.github/workflows/) by selecting the target release-branch
 
 #### On next deployments
 
 - [ ] Decide on what version to deploy
 - [ ] Check for any changes/additions/removals in the [CHANGELOG](CHANGELOG.md)
-- [ ] Prepare the environment accordingly (In all `.env`-files)
-  - [ ] Build/Deploy the platform (where `<target-branch>` is for example: `release/v1.1.0`)
-    - Either by running the [deploy script](./tools/deploy.sh):
-      Run: `sudo ./tools/deploy.sh <target-branch>`
-    - OR by using the [webhook](tools/README.md#github-webhook)-interface at: `https://<server>/webhook?do=deploy`
-      Providing the `DEPLOY_SECRET` (1st field) and the target `<target-branch>`(2nd field).
+- [ ] Prepare the environment accordingly (Setting all service-configuration in Azure Portal)
+- [ ] Build/Deploy the platform via the [GitHub Action(s)](.github/workflows/) by selecting the target release-branch
 
 ## Glossary
 
@@ -538,7 +537,7 @@ If you deploy the 121-platform to a server for the first time it is recommended 
 | `tag`         | A specific commit or point-in-time on the git-timeline; named after a version, i.e. `v1.1.0`                 |
 | `release`     | A fixed 'state of the code-base', [published on GitHub](https://github.com/global-121/121-platform/releases) |
 | `deployment`  | An action performed to get (released) code running on an environment                                         |
-| `environment` | A machine that can run code (with specified settings); i.e. a server or VM, or your local machine            |
+| `environment` | A machine that can run code (with specified settings); i.e. a service or VM, or your local machine           |
 
 ---
 
