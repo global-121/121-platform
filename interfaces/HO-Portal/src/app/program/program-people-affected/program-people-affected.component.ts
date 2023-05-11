@@ -526,6 +526,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           'page.program.program-people-affected.column.paymentAmountMultiplier',
         ),
         ...this.columnDefaults,
+        comparator: this.paComparator.bind(this),
         minWidth: this.columnWidthPerType[AnswerType.Number],
         width: this.columnWidthPerType[AnswerType.Number],
       },
@@ -1821,5 +1822,22 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
 
     return value;
+  }
+
+  dateComparator(valueA, valueB, rowA, rowB, sortDirection) {
+    console.log('valueA: ', valueA);
+    console.log('valueB: ', valueB);
+    console.log('rowA: ', rowA);
+    console.log('rowB: ', rowB);
+    console.log('sortDirection: ', sortDirection);
+    const dateA = new Date(valueA);
+    const dateB = new Date(valueB);
+
+    if (dateA < dateB) {
+      return -1;
+    }
+    if (dateA > dateB) {
+      return 1;
+    }
   }
 }
