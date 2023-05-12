@@ -21,9 +21,9 @@ import {
   CustomAttributeType,
 } from './../registration/enum/custom-data-attributes';
 import { ValidationInfo } from './dto/validation-info.dto';
+import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from './program-aidworker.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
-import { ProgramFspConfigurationEntity } from './program-fsp-configuration.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 
 @Entity('program')

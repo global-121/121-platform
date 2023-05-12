@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { CascadeDeleteEntity } from './../base.entity';
-import { ProgramEntity } from './program.entity';
+import { CascadeDeleteEntity } from '../../base.entity';
+import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
+import { ProgramEntity } from '../program.entity';
 
 @Unique('programFspConfigurationUnique', ['programId', 'fspId', 'name'])
 @Entity('program_fsp_configuration')
@@ -21,5 +21,6 @@ export class ProgramFspConfigurationEntity extends CascadeDeleteEntity {
 
   @Column() name: string;
 
-  @Column() value: string;
+  @Column({ select: false })
+  value: string;
 }
