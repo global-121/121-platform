@@ -200,10 +200,10 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({
-    summary: 'Import set of registered PAs from JSON ',
+    summary: 'Import set of registered People Affected from JSON ',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/import-registrations-pa')
+  @Post('programs/:programId/registrations/import-people-affected')
   public async importRegistrationsJSON(
     @Body() data: ImportRegistrationsDto[],
     @Param() params,

@@ -14,8 +14,6 @@ export function importRegistrations(
     .send(registrations);
 }
 
-
-
 export function deleteRegistrations(
   programId: number,
   registrationReferenceIds: { referenceIds: string[] },
