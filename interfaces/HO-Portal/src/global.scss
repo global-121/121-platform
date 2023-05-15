@@ -59,15 +59,14 @@ ion-button {
     border: 1px solid #b3bcd0;
     border-radius: 5px;
     margin-top: 8px;
-
-    input {
-      --padding-start: 8px;
-      --padding-end: 8px;
-    }
+    --padding-start: 8px;
+    --padding-end: 8px;
   }
 
   &.update-property-item {
     ion-input {
+      min-height: 38px;
+
       &.has-value {
         &.ion-invalid {
           border-color: var(--ion-color-danger);
