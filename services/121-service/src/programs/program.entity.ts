@@ -144,7 +144,7 @@ export class ProgramEntity extends CascadeDeleteEntity {
   public enableMaxPayments: boolean;
 
   @OneToMany(
-    () => ProgramQuestionEntity,
+    () => ProgramFspConfigurationEntity,
     (programFspConfiguration) => programFspConfiguration.programId,
   )
   public programFspConfiguration: ProgramFspConfigurationEntity[];

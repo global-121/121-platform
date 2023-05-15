@@ -14,13 +14,18 @@ export class ProgramFspConfigurationEntity extends CascadeDeleteEntity {
   @Column()
   public programId: number;
 
-  @ManyToOne(() => FinancialServiceProviderEntity)
+  @ManyToOne(
+    (_type) => FinancialServiceProviderEntity,
+    (fsp) => fsp.configuration,
+  )
   @JoinColumn({ name: 'fspId' })
+  public fsp: FinancialServiceProviderEntity;
   @Column()
-  fspId: number;
+  public fspId: number;
 
-  @Column() name: string;
+  @Column()
+  public name: string;
 
   @Column({ select: false })
-  value: string;
+  public value: string;
 }

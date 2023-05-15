@@ -221,6 +221,7 @@ export class PaymentsService {
         true,
         amount,
         payment,
+        programId,
       );
     }
     if (paLists.intersolveNoWhatsappPaPayment.length) {
@@ -229,6 +230,7 @@ export class PaymentsService {
         false,
         amount,
         payment,
+        programId,
       );
     }
 

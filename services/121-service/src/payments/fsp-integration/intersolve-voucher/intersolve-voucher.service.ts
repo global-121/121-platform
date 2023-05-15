@@ -9,6 +9,7 @@ import {
   TwilioStatusCallbackDto,
 } from '../../../notifications/twilio.dto';
 import { WhatsappService } from '../../../notifications/whatsapp/whatsapp.service';
+import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
@@ -42,6 +43,8 @@ export class IntersolveVoucherService {
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProgramFspConfigurationEntity)
+  public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
 
   public constructor(
     private readonly intersolveApiService: IntersolveVoucherApiService,
@@ -56,13 +59,37 @@ export class IntersolveVoucherService {
     useWhatsapp: boolean,
     amount: number,
     payment: number,
+    programId: number,
   ): Promise<void> {
+    const config = await this.programFspConfigurationRepository
+      .createQueryBuilder('fspConfig')
+      .select('name')
+      .addSelect('value')
+      .where('fspConfig.programId = :programId', { programId })
+      .andWhere('fsp.fsp = :fspName', { fspName: paPaymentList[0].fspName })
+      .leftJoin('fspConfig.fsp', 'fsp')
+      .getRawMany();
+
+    let credentials: { username: string; password: string };
+    try {
+      credentials = {
+        username: config.find((c) => c.name === 'username').value,
+        password: config.find((c) => c.name === 'password').value,
+      };
+    } catch (error) {
+      console.warn(
+        'An error occured during the retrieval of the FSP configuration: ',
+        error,
+      );
+    }
+
     for (const paymentInfo of paPaymentList) {
       const paResult = await this.sendIndividualPayment(
         paymentInfo,
         useWhatsapp,
         amount,
         payment,
+        credentials,
       );
       if (!paResult) {
         continue;
@@ -97,10 +124,17 @@ export class IntersolveVoucherService {
     useWhatsapp: boolean,
     amount: number,
     payment: number,
+    credentials: { username: string; password: string },
   ): Promise<PaTransactionResultDto> {
     const paResult = new PaTransactionResultDto();
     paResult.referenceId = paymentInfo.referenceId;
 
+    if (!credentials?.username || !credentials?.password) {
+      paResult.status = StatusEnum.error;
+      paResult.message =
+        'Creating intersolve voucher failed. Error retrieving Intersolve credentials';
+      return paResult;
+    }
     const intersolveRefPos = this.getIntersolveRefPos();
     const calculatedAmount = this.getMultipliedAmount(
       amount,
@@ -129,6 +163,8 @@ export class IntersolveVoucherService {
       const voucherInfo = await this.issueVoucher(
         calculatedAmount,
         intersolveRefPos,
+        credentials.username,
+        credentials.password,
       );
       voucherInfo.refPos = intersolveRefPos;
 
@@ -202,11 +238,15 @@ export class IntersolveVoucherService {
   private async issueVoucher(
     amount: number,
     intersolveRefPos: number,
+    username: string,
+    password: string,
   ): Promise<IntersolveIssueCardResponse> {
     const amountInCents = amount * 100;
     return await this.intersolveApiService.issueCard(
       amountInCents,
       intersolveRefPos,
+      username,
+      password,
     );
   }
 
