@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateProgramFspConfigurationDto } from '../dto/create-program-fsp-configuration.dto';
 import { ProgramFspConfigurationEntity } from './program-fsp-configuration.entity';
 
 @Injectable()
@@ -13,9 +14,40 @@ export class ProgramFspConfigurationService {
   ): Promise<ProgramFspConfigurationEntity[]> {
     const programFspConfigurations =
       await this.programFspConfigurationRepository.find({
-        where: { id: programId },
+        where: { programId: programId },
       });
 
     return programFspConfigurations;
+  }
+
+  public async create(
+    programId: number,
+    programFspConfigurationDto: CreateProgramFspConfigurationDto,
+  ): Promise<number> {
+    const programFspConfiguration = new ProgramFspConfigurationEntity();
+    programFspConfiguration.programId = programId;
+    programFspConfiguration.fspId = programFspConfigurationDto.fspId;
+    programFspConfiguration.name = programFspConfigurationDto.name;
+    programFspConfiguration.value = programFspConfigurationDto.value;
+
+    try {
+      const resProgramFspConfiguration =
+        await this.programFspConfigurationRepository.save(
+          programFspConfiguration,
+        );
+      return resProgramFspConfiguration.id;
+    } catch (error) {
+      if (error['code'] === '23505') {
+        throw new HttpException(
+          `Conflict on unique constraint: ${error['constraint']}`,
+          HttpStatus.CONFLICT,
+        );
+      } else {
+        throw new HttpException(
+          'Internal server error',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
   }
 }
