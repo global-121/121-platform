@@ -95,7 +95,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       await this.programsService.getPeopleAffected(
         this.programId,
         this.canViewPersonalData,
-        false,
+        this.canViewPaymentData,
         this.referenceId,
       )
     )[0];

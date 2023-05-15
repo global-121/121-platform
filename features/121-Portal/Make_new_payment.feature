@@ -155,25 +155,6 @@ Feature: Make a new payment
     And the Person Affected receives a notification that the Jumbo cards are sent via post (via generic send message feature "./Send_message_to_people_affected.feature")
     And if a "whatsappPhoneNumber" is known it is sent via WhatsApp and otherwise via SMS
 
-  Scenario: Unsuccessfully send payment instructions to a Person Affected with Financial Service Provider "Intersolve-jumbo-physical" with wrong amount
-    Given all Persons Affected have been imported and included
-    Given the amount of the payment is set to an amount other than 22
-    When payment instructions are sent (see scenario: Send payment instructions with at least 1 successful transaction)
-    Then a failed payment appears for all PAs
-    And the status popup will contain an error message about what is missing
-    And the amount of the payment will be automatically set to 22 instead
-    And a retry can immediately be done (via 'retry all' or per PA)
-
-  Scenario: Unsuccessfully send payment instructions to a Person Affected with Financial Service Provider "Intersolve-jumbo-physical" with multiplier > 3
-    Given all Person Affected has been imported and included
-    Given at least 1 PA has a "paymentAmountMultiplier" > 3
-    When payment instructions are sent (see scenario: Send payment instructions with at least 1 successful transaction)
-    Then a failed payment appears for the PA with the high multiplier
-    And the status popup will contain an error message indicating this
-    And the amount of the payment will be set to the unmultiplied amount, so that on retry it is not multiplied again (and again)
-    And after correcting the the multiplier (in Espo), the payment can be retried
-    And for all other PAs a successful payment appears and notifications are sent (see scenario above)
-
   Scenario: Unsuccessfully send payment instructions to a Person Affected with Financial Service Provider "Intersolve-jumbo-physical" with missing data
     Given all Person Affected has been imported as registered
     Given an obligatory field is missing ("addressStreet", "addressHouseNumber", "addressPostalCode", "addressCity") for at least 1 PA

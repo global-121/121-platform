@@ -1,9 +1,9 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Deploy [staging] Interface: Registration (PA)'
+name: 'Deploy [staging] Interface: Verify (AW)'
 
 env:
-  workingDirectory: interfaces/PA-App
+  workingDirectory: interfaces/AW-App
 
 permissions:
   actions: read
@@ -12,7 +12,7 @@ permissions:
 on:
   workflow_call:
     secrets:
-      AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_BAY_0AF9ABD03:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_SAND_08D7E2903:
         required: true
   workflow_dispatch:
 
@@ -32,11 +32,13 @@ jobs:
         with:
           interfacePath: ${{ env.workingDirectory }}
         env:
+          NG_DISABLE_TEXT_PLAYER: 'false'
+          NG_ALWAYS_SHOW_TEXT_PLAYER: 'false'
           NG_ENV_NAME: 'staging'
-          NG_URL_121_SERVICE_API: 'https://staging.121.global/121-service/api'
-          NG_AI_IKEY: ''
-          NG_AI_ENDPOINT: ''
-          APPLICATIONINSIGHTS_CONNECTION_STRING: ''
+          NG_URL_121_SERVICE_API: 'https://121-test-staging.azurewebsites.net/api'
+          NG_AI_IKEY: '27eaf00e-92e5-46b7-8d0b-1b413db898e7'
+          NG_AI_ENDPOINT: 'https://westeurope-1.in.applicationinsights.azure.com/'
+          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=27eaf00e-92e5-46b7-8d0b-1b413db898e7;IngestionEndpoint=https://westeurope-1.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig
@@ -45,7 +47,7 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           skip_deploy_on_missing_secrets: true
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_BAY_0AF9ABD03 }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_SAND_08D7E2903 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
           config_file_location: '${{ env.workingDirectory }}/'
