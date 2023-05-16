@@ -8,7 +8,7 @@ export function importRegistrations(
 ): Promise<request.Response> {
   return getServer()
     .post(
-      `/programs/${programId}/registrations/import-registrations-pa?validation=false`,
+      `/programs/${programId}/registrations/import-people-affected?validation=false`,
     )
     .set('Cookie', [accessToken])
     .send(registrations);
