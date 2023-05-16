@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.89.0...master)
 
+### Removed
+
+- All code/documentation related to running the platform on a VM (`deploy.sh`, `webhook.js`, etc.)
+
 ---
 
 ## [1.89.0](https://github.com/global-121/121-platform/compare/v1.88.0...v1.89.0) - 2023-06-06
