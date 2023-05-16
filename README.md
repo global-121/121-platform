@@ -11,19 +11,23 @@
 
 ## Status
 
-| Interfaces | Build Status                                                                                                                                                                                                                  |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PA-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master)    |
-| AW-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master)    |
-| HO-Portal  | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/HO-Portal?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=13&branchName=master) |
+See: [status.121.global](https://status.121.global/)
 
-| Service     | Build Status                                                                                                                                                                                                                  |
+| Interfaces | Test Status                                                                                                                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PA-App     | [![Test Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master)    |
+| AW-App     | [![Test Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master)    |
+| HO-Portal  | [![Test Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/HO-Portal?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=13&branchName=master) |
+
+| Service     | Test Status                                                                                                                                                                                                                   |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 121-service | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/121-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=12&branchName=master) |
 
 ### Integration Tests Status
 
-[![Cypress tests](https://github.com/global-121/121-platform/actions/workflows/cypress-workflow.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/cypress-workflow.yml) - See: [Testing](#testing)
+[![API tests](https://github.com/global-121/121-platform/actions/workflows/api-test-workflow.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/api-test-workflow.yml)  
+[![Cypress tests](https://github.com/global-121/121-platform/actions/workflows/cypress-workflow.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/cypress-workflow.yml)  
+See: [Testing](#testing)
 
 ---
 
@@ -51,18 +55,17 @@ To set up a local development-environment:
 
 - Install Docker
 
+  - On Linux, install Docker Engine + Compose plugin: <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
   - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
   - On Windows, install Docker Desktop: <https://docs.docker.com/docker-for-windows/install/>
 
     If there are issues running Docker on Windows, you _might_ need to do the following:
 
-    - Install WSL2 Linux kernel package. Check step 4 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
+    - Install WSL2 Linux kernel package.  
+      Check step 4 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
     - Set WSL2 as default version in PowerShell
-      - wsl --set-default-version 2
-      - check step 5 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>  
-        <br />
-
-  - On Linux, install Docker Engine + Compose plugin: <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
+      - `wsl --set-default-version 2`
+      - Check step 5 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
 
 With these tools in place you can checkout the code and start setting up:
 
@@ -324,120 +327,36 @@ How are Unit Tests affected when we make changes within the code in future?
 
 #### Our testing framework(s)
 
-We are using `jasmine` for executing unit tests within `interfaces` and `jest` within `services`. However, while writing the unit test cases, the writing style and testing paradigm do not differ since `jest` is based on `jasmine` to begin with.
+We are using `jasmine` for executing unit tests within `interfaces` and `jest` within `services`. However, while writing the unit test cases, the writing style and testing paradigm do not differ since `jest` is based on `jasmine`.
 
-#### Key points for writing tests
+#### Writing tests
 
-Keep the following points in mind while writing test cases:
-
-- We should follow a practice to write to tests for all methods except the ones which are private.
-- Every method which contains an async call, can be tested by returning a promise that can be spied and stubbed to verify the UI behavior.
-- We should aim to write a complementary test for each method written on the file
-- Verify class declarations and modifications through methods, boolean variables, string variables, etc.
-- Monitor changes within the HTML template(values of attributes, content of buttons) and verify through test cases
-- Create "`it ("should....`" scenarios for conditional code as well (e.g. if/else blocks)
-- NOTE: It isn't necessary to test all the variables and all method calls, however a highlight of what the method is supposed to accomplish should be reflected within the test cases.
-- Use the "`fit`" and "`fdescribe`" to execute only the unit test cases that you are currently working on. Make sure **not** to commit these commands.
-
-- Testing class variables and objects, when they are being defined or constructed
-- There are several methods which serve the purpose of defining class wide variables, which we should also test and verify. One of the typical examples of one such method is `ngOnInit`
-
-```ts
-it('ngOnInit: should set up variables', () => {
-  expect(component.isLoggedIn).toBeDefined(); // check for class variables to be defined
-  expect(component.someValye).toBeTruthy(); // check for a variable to be TRUE
-  expect(component.someValye).toBeFalsy(); // check for a variable to be FALSE
-});
-```
-
-The methods written as `toBeTruthy` are called matchers, they help us compare the expected values, their types, whether a method was called, the arguments of the methods and also their existence. There are various methods provided by the testing module. We can find a detailed list of those methods and their usage here: <https://jasmine.github.io/api/3.5/matchers.html>
-
-A short introduction tutorial, to start off writing test cases can be found at: <https://jasmine.github.io/tutorials/your_first_suite>
-
-##### Testing method callbacks and changes
-
-- In order to test for methods to have been called, or been called with certain arguments use `spy` and `toHaveBeenCalled`/ `toHaveBeenCalledWith` matchers.
-
-```ts
-// Code
-public doLogin(event: Event) {
-  event.preventDefault();
-  // ...rest of the actual method.
-}
-
-// Test
-it('some_method: should call another fn', () => {
-  spyOn(event, "preventDefault"); // Monitor the said method
-  component.doLogin(event); // call some_method
-  expect(event.preventDefault).toHaveBeenCalled(); // check for the monitored method to have been called
-});
-```
-
-##### Testing conditional statements
-
-- Make separate `it` blocks for different conditions.
-
-```ts
-it("Test when xyz === 'some-value'", () => {});
-it("Test when xyz !== 'some-value'", () => {});
-```
-
-##### Testing Async methods (i.e. methods which make an API call)
-
-- Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
-
-```ts
-let spy = spyOn(component.programsService, 'changePassword').and.returnValue(
-  Promise.resolve(true),
-);
-```
-
-- Based on the changes / executions upon the completion of the async request, we should aim to test the changes and modifications.
-
-```ts
-// block to test what happens after the async calls:
-spy.calls.mostRecent().returnValue.then(() => {
-  // Here goes expectations and changes
-});
-```
-
-- Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
-
-```ts
-it('XYZ', (done) => {
-  // spies and stubs
-
-  spy.calls.mostRecent().returnValue.then(() => {
-    // tests
-    done(); // to complete the tests
-  });
-});
-```
-
-##### Testing HTML elements
-
-- By using the `defaultEl` and the monitoring the changes within the HTML pages. However, the testing here does not bring a lot of productivity in terms of what we get out of it. So, we can choose to discard this aspect of testing.
-- HTML elements are tested by matching the `string` values, which is not very intuitive with `i18n` modules in use
+See the [Guide: Writing tests](./guide-Writing-Tests.md)
 
 ---
 
-## Committing and creating a Pull Request (PR)
+## Contributing
+
+### Committing and creating a Pull Request (PR)
 
 We try to follow the "[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)" convention, combined with the "[Angular Commit Message format](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format)".  
 When committing your changes, provide a commit message that starts with an appropriate keyword:
 
-- feat: (new feature for the user)
-- fix: (bug fix for the user)
-- docs: (changes to the documentation)
-- style: (formatting, missing semi colons, etc; no production code change)
-- refactor: (refactoring production code, eg. renaming a variable)
-- test: (adding missing tests, refactoring tests; no production code change)
-- chore: (cleanups, version updates etc; no production code change)
+- `feat`: new feature for the user
+- `fix`: bug fix for the user
+- `docs`: changes to the documentation
+- `style`: formatting, missing semi colons, etc; no production code change
+- `refactor`: refactoring production code, eg. renaming a variable
+- `test`: adding missing tests, refactoring tests; no production code change
+- `chore`: cleanups, version updates etc; no production code change
 
-Add an Azure DevOps task ID at the end of the commit message, for example "`feat: new feature added to the profile page AB#123456`".
+Add an Azure DevOps task ID at the end of the commit message.  
+For example: "`feat: new feature added to the profile page AB#123456`".
 
 After pushing your changes to the branch you can create a PR on <https://github.com/global-121/121-platform/pulls>.  
 Add additional description for the PR only if required.
+
+---
 
 ## Releases
 
@@ -454,16 +373,16 @@ This is how we create and publish a new release of the 121-platform.
 - [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
   - [ ] Commit changes to `master`-branch on GitHub.
 - [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch and push this branch to GitHub
-- [ ] Given current setup of automatic deployments on release: Make any server config changes (ENV-variables, etc.) on staging-servers before creating prerelease (see below)
+- [ ] Given current setup of automatic deployments on release:  
+       Make any configuration changes (ENV-variables, etc.) to the staging-service in the Azure Portal.
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
   - [ ] Add the `version` to create a new tag
   - [ ] Select the new `release/<version>`-branch
-  - [ ] Set the title of the release to `version`. Add a short description and/or link to relevant other documents (if applicable)
-  - [ ] **!!!IMPORTANT!!! UPDATE 2021/12/22**: check the 'pre-release' checkbox. Given current setup this makes sure the release is only automatically deployed to staging-servers, and not to production-servers.
+  - [ ] Set the title of the release to `version`. Add a short description and/or link to relevant other documents (only if applicable)
   - [ ] Publish the release on GitHub
-  - [ ] Check the the deployed release on staging server(s)
-  - [ ] Make any needed server config changes (ENV-variables, etc.) on production-servers
-  - [ ] Edit the release by unchecking the 'pre-release' checkbox and publishing again. Given current setup this will now automatically deploy to production-servers (and to staging again).
+  - [ ] Check the deployed release on the staging environment
+  - [ ] Make any needed configuration changes (ENV-variables, etc.) on production-service(s)
+  - [ ] Use the [manual deployment-workflows](.github/workflows/) to deploy to production
 
 ### Patch/Hotfix Checklist
 
@@ -471,27 +390,13 @@ This follows the same process as a regular release + deployment. With some small
 
 - Code does not need to be frozen. (As there is no active development on the release-branch)
 
-#### Manual approach
-
 - Checkout the `release/<version>`-branch that needs the hotfix.
-- Create a new local branch (e.g. `release/<v0.x.1>`) and make the changes
+- Create a new local branch on top of it (e.g. `release/<v0.x.1>`) and make the changes
+- Add the hotfix-release to the [CHANGELOG](CHANGELOG.md)
 - Push this branch directly to the main/upstream repository, not to a personal fork.
 - Create a new release (see above) and publish it.
-  The publish-command will invoke the webhook(s), which trigger an automated deploy for environments on that same _minor_ version.
-- Add the hotfix-release to the [CHANGELOG](CHANGELOG.md)
+- Use the [manual deployment-workflows](.github/workflows/) to deploy to production
 - After the hotfix-release, apply the same fix to the master-branch in a regular PR (by creating a PR from the hotfix-branch to `master`-branch)
-
-#### GitHub web-interface-only approach
-
-- Browse to the specific file that needs a fix on GitHub, click "edit" and make the changes
-  The URL will look like: `https://github.com/global-121/121-platform/edit/release/v1.0.0/<path-to-file>`
-- Select "Create a new branch for this commit and start a pull request" from the "commit changes"-box
-- Use `release/v1.0.1` as the branch-name by clicking "Propose changes"
-  This branch will now be created and is available to use for a new release
-- Add the hotfix-release to the [CHANGELOG](CHANGELOG.md) and commit to the same `release/v1.0.1` branch.
-- Create a new release (see above) and publish it.
-  The publish-command will invoke the webhook(s), which trigger an automated deploy for environments on that same _minor_ version.
-- After the hotfix-release, apply the fixes to the master-branch by merging the PR created.
 
 ---
 
@@ -501,34 +406,46 @@ This follows the same process as a regular release + deployment. With some small
 
 If you deploy the 121-platform to a server for the first time it is recommended to setup a seperate Posgres database server. The connection to this database can be made by editing the `POSTGRES_*` variables in `services/.env`.
 
-### To "test" environment
+### Interfaces
 
-- Merged PR's to the branch `master` are automatically deployed to the test-server. (via [webhook](tools/webhook.service), see: [/tools#GitHub-webhook](tools/README.md#github-webhook))
-  - To skip deployment after a PR is merged, add `[SKIP CD]` to the title of the PR before merging. (For example when only updating documentation)
-- Make sure to update any environment-settings/configurations as soon as possible, preferably before the merge & deploy.
+#### To "test" environment
 
-### To "production" environment(s)
+See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_*.yml` )
+
+- PR's to the branch `master` are automatically deployed to an individual preview-environment.
+- When merged, a separate deployment is done to the test-environment; for that interface only.
+
+### To "staging/production" environment(s)
+
+See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_staging_*.yml` )
+
+- A manual deploy can be run using the "Run workflow/`workflow_dispatch`" and selecting the preferred branch.
+
+### Service(s)
+
+#### To "test" environment
+
+See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_service.yml` )
+
+- When merged, a separate deployment is done to the test-environment.
+- Make sure to update any environment-configuration in the Azure-portal as soon as possible, preferably before the merge & deploy.
+
+### To "staging/production" environment(s)
 
 #### On initial deployment (only)
 
-- [ ] Configure environment(s) as described in [/services > Getting started / Installation](services/README.md#getting-started-installation).
-  - [ ] Checkout code (of latest release)
-  - [ ] Set secrets, configure ENV-variables (via all `.env`-files)
-  - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):
-        Run: `sudo ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v1.0.0`
-- [ ] Setup the web-server as described in [/tools > Hosting > Apache2](tools/README.md#apache2)
-- [ ] (Optional) Add data to the database using the available [seed-script](services/121-service/README.md#Seed-the-database)
+- [ ] Create the necessary Azure resources
+- [ ] Configure the service configurations based on [`.env.example`](./services/.env.example)
+- [ ] Create the necessary build/deploy-workflow files
+- [ ] Merge these new files into the `master`-branch
+- [ ] Build/Deploy the platform via the [GitHub Action(s)](.github/workflows/) by selecting the target release-branch
 
 #### On next deployments
 
 - [ ] Decide on what version to deploy
 - [ ] Check for any changes/additions/removals in the [CHANGELOG](CHANGELOG.md)
-- [ ] Prepare the environment accordingly (In all `.env`-files)
-  - [ ] Build/Deploy the platform (where `<target-branch>` is for example: `release/v1.1.0`)
-    - Either by running the [deploy script](./tools/deploy.sh):
-      Run: `sudo ./tools/deploy.sh <target-branch>`
-    - OR by using the [webhook](tools/README.md#github-webhook)-interface at: `https://<server>/webhook?do=deploy`
-      Providing the `DEPLOY_SECRET` (1st field) and the target `<target-branch>`(2nd field).
+- [ ] Prepare the environment accordingly (Setting all service-configuration in Azure Portal)
+- [ ] Build/Deploy the platform via the [GitHub Action(s)](.github/workflows/) by selecting the target release-branch
 
 ## Glossary
 
@@ -538,7 +455,7 @@ If you deploy the 121-platform to a server for the first time it is recommended 
 | `tag`         | A specific commit or point-in-time on the git-timeline; named after a version, i.e. `v1.1.0`                 |
 | `release`     | A fixed 'state of the code-base', [published on GitHub](https://github.com/global-121/121-platform/releases) |
 | `deployment`  | An action performed to get (released) code running on an environment                                         |
-| `environment` | A machine that can run code (with specified settings); i.e. a server or VM, or your local machine            |
+| `environment` | A machine that can run code (with specified settings); i.e. a service or VM, or your local machine           |
 
 ---
 
