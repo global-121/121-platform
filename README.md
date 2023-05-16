@@ -11,19 +11,23 @@
 
 ## Status
 
-| Interfaces | Build Status                                                                                                                                                                                                                  |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PA-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master)    |
-| AW-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master)    |
-| HO-Portal  | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/HO-Portal?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=13&branchName=master) |
+See: [status.121.global](https://status.121.global/)
 
-| Service     | Build Status                                                                                                                                                                                                                  |
+| Interfaces | Test Status                                                                                                                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PA-App     | [![Test Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master)    |
+| AW-App     | [![Test Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master)    |
+| HO-Portal  | [![Test Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/HO-Portal?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=13&branchName=master) |
+
+| Service     | Test Status                                                                                                                                                                                                                   |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 121-service | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/121-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=12&branchName=master) |
 
 ### Integration Tests Status
 
-[![Cypress tests](https://github.com/global-121/121-platform/actions/workflows/cypress-workflow.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/cypress-workflow.yml) - See: [Testing](#testing)
+[![API tests](https://github.com/global-121/121-platform/actions/workflows/api-test-workflow.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/api-test-workflow.yml)  
+[![Cypress tests](https://github.com/global-121/121-platform/actions/workflows/cypress-workflow.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/cypress-workflow.yml)  
+See: [Testing](#testing)
 
 ---
 
