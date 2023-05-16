@@ -55,18 +55,17 @@ To set up a local development-environment:
 
 - Install Docker
 
+  - On Linux, install Docker Engine + Compose plugin: <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
   - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
   - On Windows, install Docker Desktop: <https://docs.docker.com/docker-for-windows/install/>
 
     If there are issues running Docker on Windows, you _might_ need to do the following:
 
-    - Install WSL2 Linux kernel package. Check step 4 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
+    - Install WSL2 Linux kernel package.  
+      Check step 4 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
     - Set WSL2 as default version in PowerShell
-      - wsl --set-default-version 2
-      - check step 5 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>  
-        <br />
-
-  - On Linux, install Docker Engine + Compose plugin: <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
+      - `wsl --set-default-version 2`
+      - Check step 5 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
 
 With these tools in place you can checkout the code and start setting up:
 
