@@ -21,4 +21,4 @@ Scenario: Unsuccessfully create PA from EspoCRM
     And "referenceId" value is the same for all registrations
     
     And calls the "registrations/import-people-affected" endpoint
-    Then error code 400 is displayed as response
+    Then error code 400 is displayed as corresponding response
