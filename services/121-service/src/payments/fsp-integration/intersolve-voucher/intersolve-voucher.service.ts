@@ -525,15 +525,43 @@ export class IntersolveVoucherService {
     programId: number,
   ): Promise<number> {
     const voucher = await this.getVoucher(referenceId, payment, programId);
-    return await this.getBalance(voucher.voucher);
+    return await this.getBalance(voucher.voucher, programId);
   }
 
   private async getBalance(
     intersolveVoucher: IntersolveVoucherEntity,
+    programId: number,
   ): Promise<number> {
+    const configQuery = await this.programFspConfigurationRepository
+      .createQueryBuilder('fspConfig')
+      .select('name')
+      .addSelect('value')
+      .where('fspConfig.programId = :programId', { programId: programId })
+      .andWhere('fsp.fsp = :fspName', {
+        fspName: intersolveVoucher.whatsappPhoneNumber
+          ? FspName.intersolveVoucherWhatsapp
+          : FspName.intersolveVoucherPaper,
+      })
+      .leftJoin('fspConfig.fsp', 'fsp');
+
+    const config = await configQuery.getRawMany();
+    let credentials: { username: string; password: string };
+    try {
+      credentials = {
+        username: config.find((c) => c.name === 'username').value,
+        password: config.find((c) => c.name === 'password').value,
+      };
+    } catch (error) {
+      console.warn(
+        'An error occured during the retrieval of the FSP configuration: ',
+        error,
+      );
+    }
     const getCard = await this.intersolveApiService.getCard(
       intersolveVoucher.barcode,
       intersolveVoucher.pin,
+      credentials.username,
+      credentials.password,
     );
     const realBalance = getCard.balance / getCard.balanceFactor;
 
@@ -590,7 +618,7 @@ export class IntersolveVoucherService {
         })
         .getMany();
       for await (const voucher of previouslyUnusedVouchers) {
-        const balance = await this.getBalance(voucher);
+        const balance = await this.getBalance(voucher, programId);
         if (balance === voucher.amount) {
           const unusedVoucher = new UnusedVoucherDto();
           unusedVoucher.payment = voucher.payment;
@@ -717,7 +745,7 @@ export class IntersolveVoucherService {
         const vouchersToUpdate = await q.getMany();
 
         for await (const voucher of vouchersToUpdate) {
-          const balance = await this.getBalance(voucher);
+          const balance = await this.getBalance(voucher, programId);
           if (balance !== voucher.amount) {
             voucher.balanceUsed = true;
             voucher.send = true;
