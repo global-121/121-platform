@@ -81,9 +81,6 @@ All interfaces use a common set of dependencies/frameworks/libraries.
 
   - GitHub: <https://github.com/svoboda-rabstvo/ngx-translate-lint/tree/v1.20.7#readme>
 
-- [`gzipper`](https://www.npmjs.com/package/gzipper)
-  To compress all assets of the interfaces after the build.
-
 ### Updating dependencies
 
 Most (development-)dependencies in this repository are monitored by the GitHub [Dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/about-dependabot-version-updates) service, to keep them up-to-date.  
