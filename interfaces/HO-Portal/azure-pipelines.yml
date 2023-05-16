@@ -48,7 +48,3 @@ steps:
   - script: npm test
     displayName: Tests
     workingDirectory: $(workingDir)
-
-  - script: npm run build:prod
-    displayName: Build Production-mode
-    workingDirectory: $(workingDir)
