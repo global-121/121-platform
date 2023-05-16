@@ -77,9 +77,12 @@ export class IntersolveVoucherService {
         password: config.find((c) => c.name === 'password').value,
       };
     } catch (error) {
-      console.warn(
-        'An error occured during the retrieval of the FSP configuration: ',
-        error,
+      throw new HttpException(
+        {
+          error:
+            'An error occured during the retrieval of the FSP configuration. Please contact the 121 platform team.',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
 
@@ -552,9 +555,12 @@ export class IntersolveVoucherService {
         password: config.find((c) => c.name === 'password').value,
       };
     } catch (error) {
-      console.warn(
-        'An error occured during the retrieval of the FSP configuration: ',
-        error,
+      throw new HttpException(
+        {
+          error:
+            'An error occured during the retrieval of the FSP configuration. Please contact the 121 platform team.',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
     const getCard = await this.intersolveApiService.getCard(
