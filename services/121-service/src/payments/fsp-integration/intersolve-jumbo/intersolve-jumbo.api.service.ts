@@ -49,8 +49,8 @@ export class IntersolveJumboApiService {
         const newOrderProductMapping = {
           ProductCode: process.env.INTERSOLVE_JUMBO_PRODUCT_CODE,
           PackageCode: process.env.INTERSOLVE_JUMBO_PACKAGE_CODE,
-          ProductValue: String(amount),
-          Amount: String(preOrderDto.paymentAmountMultiplier),
+          ProductValue: String(amount * preOrderDto.paymentAmountMultiplier),
+          Amount: String(1),
           Custom2: String(payment),
         };
 

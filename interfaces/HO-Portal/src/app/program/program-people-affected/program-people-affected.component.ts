@@ -526,6 +526,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           'page.program.program-people-affected.column.paymentAmountMultiplier',
         ),
         ...this.columnDefaults,
+        comparator: this.paComparator.bind(this),
         minWidth: this.columnWidthPerType[AnswerType.Number],
         width: this.columnWidthPerType[AnswerType.Number],
       },
@@ -575,6 +576,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   async initComponent() {
     this.isLoading = true;
 
+    await this.loadProgram();
+
+    await this.loadPermissions();
+
     this.paTableAttributes = await this.programsService.getPaTableAttributes(
       this.programId,
       this.thisPhase,
@@ -583,11 +588,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.paymentInProgress =
       await this.pastPaymentsService.checkPaymentInProgress(this.programId);
 
-    await this.refreshData(true);
-
     this.activePhase = this.program.phase;
 
     await this.loadColumns();
+
+    await this.refreshData(true);
 
     await this.updateBulkActions();
 
@@ -619,8 +624,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private async refreshData(refresh: boolean = false) {
     this.isLoading = true;
-    await this.loadProgram();
-    await this.loadPermissions();
     if (this.canViewPaymentData) {
       this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
         this.programId,
@@ -780,6 +783,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         this.columns.push(addCol);
       }
     }
+
+    if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
+      this.paymentHistoryColumn = this.createPaymentHistoryColumn();
+    }
   }
 
   private checkValidationColumnOrAction(columnOrAction) {
@@ -873,15 +880,24 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async loadData(refresh: boolean = false) {
+    const attributeNames = (
+      await this.programsService.getPaTableAttributes(
+        this.programId,
+        this.thisPhase,
+      )
+    ).map((c) => c.name);
+    for (const nameElem of this.program.fullnameNamingConvention) {
+      attributeNames.push(nameElem);
+    }
+
     this.allPeopleData = await this.programsService.getPeopleAffected(
       this.programId,
       this.canViewPersonalData,
       this.canViewPaymentData && this.thisPhase === ProgramPhase.payment,
+      null,
+      null,
+      attributeNames,
     );
-
-    if (this.canViewPaymentData && this.thisPhase === ProgramPhase.payment) {
-      this.paymentHistoryColumn = this.createPaymentHistoryColumn();
-    }
 
     this.allPeopleAffected = this.createTableData(this.allPeopleData);
 
@@ -1027,7 +1043,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           ),
       hasNote: !!person.hasNote,
       hasPhoneNumber: !!person.hasPhoneNumber,
-      paTableAttributes: person.paTableAttributes,
     };
 
     const lastPaymentInfo = {
@@ -1043,17 +1058,19 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
     // Custom attributes can be personal data or not personal data
     // for now only users that view custom data can see it
-    if (this.canViewPersonalData && personRow.paTableAttributes !== undefined) {
-      personRow = this.fillPaTableAttributeRows(personRow);
+    if (this.canViewPersonalData) {
+      personRow = this.fillPaTableAttributeRows(person, personRow);
     }
 
     return personRow;
   }
 
-  private fillPaTableAttributeRows(personRow: PersonRow): PersonRow {
+  private fillPaTableAttributeRows(
+    person: Person,
+    personRow: PersonRow,
+  ): PersonRow {
     for (const paTableAttribute of this.paTableAttributes) {
-      personRow[paTableAttribute.name] =
-        personRow.paTableAttributes[paTableAttribute.name].value;
+      personRow[paTableAttribute.name] = person[paTableAttribute.name];
     }
     return personRow;
   }
@@ -1091,7 +1108,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         status: lastPaymentStatus,
         errorMessage: lastPaymentErrorMessage,
       };
-      console.log('paymentColumnValue: ', paymentColumnValue);
       if (lastPaymentStatus === StatusEnum.success) {
         paymentColumnValue.text = this.translate.instant(
           'page.program.program-people-affected.transaction.success',
@@ -1185,14 +1201,11 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   public async editPersonAffectedPopup(row: PersonRow, programId: number) {
-    const person = this.allPeopleData.find(
-      (pa) => pa.referenceId === row.referenceId,
-    );
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: EditPersonAffectedPopupComponent,
       componentProps: {
-        person,
         programId,
+        referenceId: row.referenceId,
         canUpdatePaData: this.canUpdatePaData,
         canViewPersonalData: this.canViewPersonalData,
         canUpdatePersonalData: this.canUpdatePersonalData,
@@ -1504,8 +1517,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       .then(
         () => {
           row[column.prop] = value;
-          const valueKey = 'value';
-          row.paTableAttributes[column.prop][valueKey] = value;
           this.actionResult(this.translate.instant('common.update-success'));
         },
         (error) => {

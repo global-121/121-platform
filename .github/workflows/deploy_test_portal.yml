@@ -10,6 +10,10 @@ permissions:
   pull-requests: write
 
 on:
+  workflow_call:
+    secrets:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_ROCK_0411D2003:
+        required: true
   workflow_dispatch:
   push:
     branches:
@@ -51,7 +55,7 @@ jobs:
           interfacePath: ${{ env.workingDirectory }}
         env:
           NG_ENV_NAME: 'test'
-          NG_URL_121_SERVICE_API: 'https://test-vm.121.global/121-service/api'
+          NG_URL_121_SERVICE_API: 'https://121-test.azurewebsites.net/api'
           NG_AI_IKEY: ''
           NG_AI_ENDPOINT: ''
           APPLICATIONINSIGHTS_CONNECTION_STRING: ''

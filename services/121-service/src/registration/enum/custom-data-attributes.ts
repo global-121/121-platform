@@ -45,6 +45,14 @@ export class Attribute {
   public label: object;
   public shortLabel?: object;
   public options?: JSON;
+  public questionType?: QuestionType;
+}
+
+export enum QuestionType {
+  programQuestion = 'programQuestion',
+  fspQuestion = 'fspQuestion',
+  programCustomAttribute = 'programCustomAttribute',
+  monitoringQuestion = 'monitoringQuestion',
 }
 
 export enum AnswerTypes {

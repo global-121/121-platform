@@ -5,9 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.85.2...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.87.0...master)
 
 ---
+
+## [1.87.0](https://github.com/global-121/121-platform/compare/v1.86.0...v1.87.0) - 2023-05-11
+
+### Changed
+
+- Everything ready for deployment using GitHub Actions and Azure App Services
+
+## [1.86.0](https://github.com/global-121/121-platform/compare/v1.85.2...v1.86.0) - 2023-05-09
+
+### Added
+- Optimization of the getRegistrations query
 
 ## [1.85.2](https://github.com/global-121/121-platform/compare/v1.85.1...v1.85.2) - 2023-05-05
 

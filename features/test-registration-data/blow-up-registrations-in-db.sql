@@ -61,7 +61,7 @@ END;
 $$ ;
 
 -- CHECK VIA:
--- select count(*) from "registration"
+-- select count(*) from "121-service"."registration"
 
 
 ------------------------------------
@@ -103,17 +103,17 @@ END;
 $$ ;
 
 -- CHECK VIA:
--- select count(*) from "registration_data"
+-- select count(*) from "121-service"."registration_data"
 
 
 -----------------------------------
 -- A.3: Make phonenumbers unique --
 -----------------------------------
 -- The same phone number occuring many times can have unwanted consequences in load testing
-update registration_data
+update "121-service".registration_data
    set "value" = CAST(10000000000 + floor(random() * 90000000000) AS bigint)
-  WHERE "programQuestionId" IN (SELECT id FROM program_question WHERE "name" = 'phoneNumber') OR "fspQuestionId" IN (SELECT id FROM fsp_attribute WHERE "name" = 'whatsappPhoneNumber')
-
+  WHERE "programQuestionId" IN (SELECT id FROM "121-service".program_question WHERE "name" = 'phoneNumber') OR "fspQuestionId" IN (SELECT id FROM "121-service".fsp_attribute WHERE "name" = 'whatsappPhoneNumber');
+;
   
   
 
@@ -161,7 +161,7 @@ END;
 $$ ;
 
 -- CHECK VIA:
--- select count(*) from "transaction"
+-- select count(*) from "121-service"."transaction"
 
 
 --------------------------------------------
@@ -169,11 +169,11 @@ $$ ;
 --------------------------------------------
   
 -- Only use this if you have first done one transaction per PA already (through above script or done manually)
--- This will create 64 transactions per PA, change the number in the loop if you want more or less
+-- This will create 5 transactions per PA, change the number in the loop if you want more or less
 
 DO $$ DECLARE i record;
 
-BEGIN FOR i IN 1..63 LOOP
+BEGIN FOR i IN 1..4 LOOP
 INSERT
 	INTO
 	"121-service"."transaction" (
@@ -204,7 +204,7 @@ END;
 $$ ;
 
 -- CHECK VIA:
--- select count(*) from "transaction"
+-- select count(*) from "121-service"."transaction"
 
 
 
@@ -254,7 +254,7 @@ END;
 $$ ;
 
 -- CHECK VIA:
--- select count(*) from "twilio_message"
+-- select count(*) from "121-service"."twilio_message"
 
 ----------------------------------------
 -- C.2: Blow up nr of messages per PA --
@@ -298,4 +298,4 @@ END;
 $$ ;
 
 -- CHECK VIA:
--- select count(*) from "twilio_message"
+-- select count(*) from "121-service"."twilio_message"

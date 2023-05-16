@@ -51,6 +51,19 @@ describe('EditPersonAffectedPopupComponent', () => {
         }),
       ),
     );
+    mockProgramsApi.getPeopleAffected.and.returnValue(
+      new Promise((r) =>
+        r([
+          {
+            id: 1,
+            referenceId: 'test',
+            registrationProgramId: 1,
+            status: RegistrationStatus.startedRegistration,
+            programId: 1,
+          },
+        ]),
+      ),
+    );
 
     fixture = TestBed.createComponent(EditPersonAffectedPopupComponent);
     component = fixture.componentInstance;

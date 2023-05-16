@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Deploy [test] Interface: Verification (AW)'
+name: 'Deploy [test] Interface: Verify (AW)'
 
 env:
   workingDirectory: interfaces/AW-App
@@ -10,13 +10,17 @@ permissions:
   pull-requests: write
 
 on:
+  workflow_call:
+    secrets:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_SAND_08D7E2903:
+        required: true
   workflow_dispatch:
   push:
     branches:
       - master
     paths:
       - '!.github/**'
-      - '.github/workflows/deploy_test_verification.yml'
+      - '.github/workflows/deploy_test_verify.yml'
       - 'interfaces/AW-App/**'
       - '**/.vscode/*'
       - '!*.md'
@@ -27,7 +31,7 @@ on:
       - master
     paths:
       - '!.github/**'
-      - '.github/workflows/deploy_test_verification.yml'
+      - '.github/workflows/deploy_test_verify.yml'
       - 'interfaces/AW-App/**'
       - '**/.vscode/*'
       - '!*.md'
@@ -51,7 +55,7 @@ jobs:
           interfacePath: ${{ env.workingDirectory }}
         env:
           NG_ENV_NAME: 'test'
-          NG_URL_121_SERVICE_API: 'https://test-vm.121.global/121-service/api'
+          NG_URL_121_SERVICE_API: 'https://121-test.azurewebsites.net/api'
           NG_AI_IKEY: ''
           NG_AI_ENDPOINT: ''
           APPLICATIONINSIGHTS_CONNECTION_STRING: ''

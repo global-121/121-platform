@@ -55,6 +55,7 @@ const programsArray: Program[] = [
     enableMaxPayments: true,
     financialServiceProviders: [],
     aidworkerAssignments: [],
+    fullnameNamingConvention: [],
   },
 ];
 // Copy 2:
