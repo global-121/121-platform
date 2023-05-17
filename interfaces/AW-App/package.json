@@ -43,7 +43,7 @@
     "@angular/platform-browser-dynamic": "^16.0.1",
     "@angular/router": "^16.0.1",
     "@angular/service-worker": "^16.0.1",
-    "@ionic/angular": "^6.7.3",
+    "@ionic/angular": "^7.0.7",
     "@ionic/cli": "^6.20.9",
     "@ionic/storage": "2.2.0",
     "@microsoft/applicationinsights-web": "^2.8.13",
