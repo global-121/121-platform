@@ -90,6 +90,9 @@ async function bootstrap(): Promise<void> {
   const expressInstance = app.getHttpAdapter().getInstance();
 
   if (!!process.env.REDIRECT_PORTAL_URL_HOST) {
+    expressInstance.get(`/`, (__req: Request, res: Response) => {
+      res.redirect(process.env.REDIRECT_PORTAL_URL_HOST);
+    });
     expressInstance.get(`/portal*`, (req: Request, res: Response) => {
       const newPath = req.url.replace(`/portal`, '');
       res.redirect(process.env.REDIRECT_PORTAL_URL_HOST + newPath);
@@ -97,6 +100,9 @@ async function bootstrap(): Promise<void> {
   }
 
   if (!!process.env.REDIRECT_REGISTER_URL_HOST) {
+    expressInstance.get(`/register`, (_req: Request, res: Response) => {
+      res.redirect(process.env.REDIRECT_REGISTER_URL_HOST);
+    });
     expressInstance.get(`/app*`, (req: Request, res: Response) => {
       const newPath = req.url.replace(`/app`, '');
       res.redirect(process.env.REDIRECT_REGISTER_URL_HOST + newPath);
@@ -104,6 +110,9 @@ async function bootstrap(): Promise<void> {
   }
 
   if (!!process.env.REDIRECT_VERIFY_URL_HOST) {
+    expressInstance.get(`/verify`, (_req: Request, res: Response) => {
+      res.redirect(process.env.REDIRECT_VERIFY_URL_HOST);
+    });
     expressInstance.get(`/AW-app*`, (req: Request, res: Response) => {
       const newPath = req.url.replace(`/AW-app`, '');
       res.redirect(process.env.REDIRECT_VERIFY_URL_HOST + newPath);
