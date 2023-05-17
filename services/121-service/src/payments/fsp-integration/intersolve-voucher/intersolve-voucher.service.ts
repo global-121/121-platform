@@ -132,12 +132,6 @@ export class IntersolveVoucherService {
     const paResult = new PaTransactionResultDto();
     paResult.referenceId = paymentInfo.referenceId;
 
-    if (!credentials?.username || !credentials?.password) {
-      paResult.status = StatusEnum.error;
-      paResult.message =
-        'Creating intersolve voucher failed. Error retrieving Intersolve credentials';
-      return paResult;
-    }
     const intersolveRefPos = this.getIntersolveRefPos();
     const calculatedAmount = this.getMultipliedAmount(
       amount,
