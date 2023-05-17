@@ -53,20 +53,38 @@ export class ProgramFspConfigurationService {
   }
 
   public async update(
+    programId: number,
     programFspConfigurationId: number,
     updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto,
   ): Promise<number> {
-    const updated = new ProgramFspConfigurationEntity();
-    updated.name = updateProgramFspConfigurationDto.name;
-    updated.value = updateProgramFspConfigurationDto.value;
-    await this.programFspConfigurationRepository.update(
-      programFspConfigurationId,
-      updated,
-    );
+    const result = await this.programFspConfigurationRepository.findOne({
+      where: {
+        id: programFspConfigurationId,
+        programId: programId,
+      },
+    });
+    if (!result) {
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    }
+    result.name = updateProgramFspConfigurationDto.name;
+    result.value = updateProgramFspConfigurationDto.value;
+    await this.programFspConfigurationRepository.save(result);
     return programFspConfigurationId;
   }
 
-  public async delete(programFspConfigurationId: number): Promise<void> {
+  public async delete(
+    programId: number,
+    programFspConfigurationId: number,
+  ): Promise<void> {
+    const result = await this.programFspConfigurationRepository.findOne({
+      where: {
+        id: programFspConfigurationId,
+        programId: programId,
+      },
+    });
+    if (!result) {
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    }
     await this.programFspConfigurationRepository.delete({
       id: programFspConfigurationId,
     });

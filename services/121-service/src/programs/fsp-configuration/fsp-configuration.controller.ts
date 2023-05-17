@@ -110,6 +110,7 @@ export class ProgramFspConfigurationController {
       );
     }
     return await this.programFspConfigurationService.update(
+      params.programId,
       params.programFspConfigurationId,
       programFspConfigurationData,
     );
@@ -139,6 +140,7 @@ export class ProgramFspConfigurationController {
       );
     }
     return await this.programFspConfigurationService.delete(
+      params.programId,
       params.programFspConfigurationId,
     );
   }
