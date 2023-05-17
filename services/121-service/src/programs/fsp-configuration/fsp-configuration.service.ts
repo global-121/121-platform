@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateProgramFspConfigurationDto } from '../dto/create-program-fsp-configuration.dto';
+import { UpdateProgramFspConfigurationDto } from '../dto/update-program-fsp-configuration.dto';
 import { ProgramFspConfigurationEntity } from './program-fsp-configuration.entity';
 
 @Injectable()
@@ -49,5 +50,25 @@ export class ProgramFspConfigurationService {
         );
       }
     }
+  }
+
+  public async update(
+    programFspConfigurationId: number,
+    updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto,
+  ): Promise<number> {
+    const updated = new ProgramFspConfigurationEntity();
+    updated.name = updateProgramFspConfigurationDto.name;
+    updated.value = updateProgramFspConfigurationDto.value;
+    await this.programFspConfigurationRepository.update(
+      programFspConfigurationId,
+      updated,
+    );
+    return programFspConfigurationId;
+  }
+
+  public async delete(programFspConfigurationId: number): Promise<void> {
+    await this.programFspConfigurationRepository.delete({
+      id: programFspConfigurationId,
+    });
   }
 }
