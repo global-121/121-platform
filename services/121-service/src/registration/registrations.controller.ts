@@ -210,23 +210,24 @@ export class RegistrationsController {
     @Query() queryParams,
   ): Promise<ImportResult> {
     const validation = !queryParams.validation ?? true;
-    console.log('validation', validation);
-    if (validation) {
+    if(validation){
       const validatedData =
-        await this.registrationsService.importJsonValidateRegistrations(
-          data,
-          Number(params.programId),
-        );
+            await this.registrationsService.importJsonValidateRegistrations(
+        data,
+        Number(params.programId),
+      ); 
       return await this.registrationsService.importValidatedRegistrations(
         validatedData,
         Number(params.programId),
       );
-    } else {
-      return await this.registrationsService.importValidatedRegistrations(
-        data,
-        Number(params.programId),
-      );
-    }
+      
+      }
+      else{
+        return await this.registrationsService.importValidatedRegistrations(
+          data,
+          Number(params.programId),
+        ); 
+      }
   }
 
   @Permissions(PermissionEnum.RegistrationREAD)
