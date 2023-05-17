@@ -200,7 +200,7 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({
-    summary: 'Import set of registered People Affected from JSON ',
+    summary: 'Import set of registered PAs, from JSON only used in testing ATM',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/import-people-affected')
@@ -209,16 +209,24 @@ export class RegistrationsController {
     @Param() params,
     @Query() queryParams,
   ): Promise<ImportResult> {
-    const validation = Boolean(queryParams.validation) ?? true;
-    const validatedData =
-      await this.registrationsService.importJsonValidateRegistrations(
+    const validation = !queryParams.validation ?? true;
+    console.log('validation', validation);
+    if (validation) {
+      const validatedData =
+        await this.registrationsService.importJsonValidateRegistrations(
+          data,
+          Number(params.programId),
+        );
+      return await this.registrationsService.importValidatedRegistrations(
+        validatedData,
+        Number(params.programId),
+      );
+    } else {
+      return await this.registrationsService.importValidatedRegistrations(
         data,
         Number(params.programId),
       );
-    return await this.registrationsService.importValidatedRegistrations(
-      validation ? validatedData : data,
-      Number(params.programId),
-    );
+    }
   }
 
   @Permissions(PermissionEnum.RegistrationREAD)
