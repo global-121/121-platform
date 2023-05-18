@@ -7,6 +7,7 @@ import {
   Param,
   ParseArrayPipe,
   Post,
+  Put,
   Query,
   UploadedFile,
   UseGuards,
@@ -447,13 +448,18 @@ export class RegistrationsController {
     status: 201,
     description: 'Updated fsp and attributes',
   })
+  
+  
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/update-chosen-fsp')
+  @Put('programs/:programId/registrations/update-chosen-fsp/:referenceId')
+  
   public async updateChosenFsp(
+    @Param() params,
     @Body() data: UpdateChosenFspDto,
   ): Promise<RegistrationEntity> {
     return await this.registrationsService.updateChosenFsp(
-      data.referenceId,
+      params.referenceId,
       data.newFspName,
       data.newFspAttributes,
     );
