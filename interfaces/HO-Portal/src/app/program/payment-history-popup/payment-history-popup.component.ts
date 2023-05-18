@@ -56,6 +56,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
 
   public isInProgress = false;
   public paDisplayName: string;
+  public fsp: string;
 
   constructor(
     private modalController: ModalController,
@@ -69,6 +70,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
   async ngOnInit() {
     this.programId = this.program?.id;
     this.paDisplayName = `PA #${this.person?.registrationProgramId}`;
+    this.fsp = this.person?.fsp;
 
     if (this.canViewPersonalData) {
       this.paDisplayName = this.person?.name;
