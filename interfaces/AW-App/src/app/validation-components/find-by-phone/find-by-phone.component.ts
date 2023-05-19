@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 import { TimeoutError } from 'rxjs';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';

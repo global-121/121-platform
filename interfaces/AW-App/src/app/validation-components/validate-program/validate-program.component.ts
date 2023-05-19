@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 import {
   AnswerType,
   Program,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 import { FspAnswer, ValidatedPaData } from 'src/app/models/pa-data.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';

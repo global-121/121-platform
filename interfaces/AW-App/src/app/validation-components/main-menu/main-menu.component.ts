@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';

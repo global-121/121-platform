@@ -10,7 +10,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { IonicStorageModule } from '@ionic/storage';
+import { IonicStorageModule } from '@ionic/storage-angular';
 import {
   TranslateLoader,
   TranslateModule,

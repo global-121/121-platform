@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { IonicStorageTypes } from './iconic-storage-types.enum';
 

@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';

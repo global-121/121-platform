@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 import { TimeoutError } from 'rxjs';
 import { FspAttribute, FspAttributeOption } from 'src/app/models/fsp.model';
 import { FspAnswer, Registration } from 'src/app/models/pa-data.model';
