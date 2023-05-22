@@ -203,7 +203,7 @@ export class RegistrationsController {
     summary: 'Import set of registered PAs, from JSON only used in testing ATM',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/import-people-affected')
+  @Post('programs/:programId/registrations/import')
   public async importRegistrationsJSON(
     @Body() data: ImportRegistrationsDto[],
     @Param() params,
