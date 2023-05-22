@@ -140,7 +140,9 @@ export class PaymentsService {
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    this.makePaymentRequest(paLists, programId, payment, amount);
+    this.makePaymentRequest(paLists, programId, payment, amount).catch((e) => {
+      console.warn(e);
+    });
     if (payment > -1) {
       this.actionService.saveAction(
         userId,
