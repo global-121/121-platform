@@ -64,7 +64,10 @@ export class ScriptsController {
       seed = new SeedProgramDrc(this.dataSource);
     } else if (script == SeedScript.validation) {
       seed = new SeedProgramValidation(this.dataSource);
-    } else {
+    } else if (script == SeedScript.krcsMultiple) {
+      seed = new SeedProgramValidation(this.dataSource);
+    } 
+    else {
       return res.status(HttpStatus.BAD_REQUEST).send('Not a known program');
     }
     await seed.run();

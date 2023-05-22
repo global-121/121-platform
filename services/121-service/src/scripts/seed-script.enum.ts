@@ -10,4 +10,5 @@ export enum SeedScript {
   validation = 'validation',
   testMultiple = 'test-multiple',
   nlrcMultiple = 'nlrc-multiple',
+  krcsMultiple = 'krcs-multiple',
 }
