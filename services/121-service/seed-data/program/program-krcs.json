@@ -1,6 +1,6 @@
 {
   "published": false,
-  "validation": false ,
+  "validation": false,
   "phase": "design",
   "location": "Kenya",
   "ngo": "KRCS",
@@ -79,7 +79,6 @@
       "name": "age",
       "label": {
         "en": "How old are you? (if you are between 0 and 17 years old, then stop the registration process, it is a precondition to be an adult)"
-
       },
       "answerType": "dropdown",
       "questionType": "standard",
@@ -118,8 +117,7 @@
         "en": "Age"
       }
     },
-    
-    
+
     {
       "name": "nrOfFamilyMembers",
       "label": {

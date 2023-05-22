@@ -27,5 +27,3 @@ export class SeedProgramKrcs implements InterfaceScript {
 }
 
 export default SeedProgramKrcs;
-
-
