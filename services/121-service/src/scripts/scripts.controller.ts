@@ -13,6 +13,7 @@ import { SeedTestProgram } from './seed-program-test';
 import { SeedTestMultipleProgram } from './seed-program-test-multiple';
 import SeedProgramUkr from './seed-program-ukr';
 import { SeedProgramValidation } from './seed-program-validation';
+import { SeedProgramKrcs }   from './seed-program-krcs';
 import { SeedScript } from './seed-script.enum';
 
 export class SecretDto {
@@ -64,8 +65,8 @@ export class ScriptsController {
       seed = new SeedProgramDrc(this.dataSource);
     } else if (script == SeedScript.validation) {
       seed = new SeedProgramValidation(this.dataSource);
-    } else if (script == SeedScript.krcsMultiple) {
-      seed = new SeedProgramValidation(this.dataSource);
+    } else if (script == SeedScript.krcs) {
+      seed = new SeedProgramKrcs(this.dataSource);
     } 
     else {
       return res.status(HttpStatus.BAD_REQUEST).send('Not a known program');
