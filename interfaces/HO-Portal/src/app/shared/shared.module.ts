@@ -4,9 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgxPopperjsModule } from 'ngx-popperjs';
 import { HeaderComponent } from '../components/header/header.component';
 import { MessageHistoryPopupComponent } from '../components/message-history-popup/message-history-popup.component';
 import { ProgramCardComponent } from '../components/program-card/program-card.component';
@@ -67,9 +65,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     FormsModule,
     RouterModule,
     TranslateModule.forChild(),
-    NgxChartsModule,
     NgxDatatableModule,
-    NgxPopperjsModule,
     HeaderComponent,
     UserStateComponent,
     ProgramNavigationComponent,
@@ -87,9 +83,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     IfPermissionsDirective,
     ImportFspReconciliationComponent,
     InputPromptComponent,
-    NgxChartsModule,
     NgxDatatableModule,
-    NgxPopperjsModule,
     PasswordToggleInputComponent,
     PhaseNavigationComponent,
     PhaseNextComponent,
