@@ -37,9 +37,6 @@
         hidden
       /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
       <ion-item color="light">
-        <ion-label position="stacked">
-          {{ 'account.email-label'|translate }}
-        </ion-label>
         <ion-input
           #email
           type="email"
@@ -50,12 +47,11 @@
           [autofocus]="true"
           [clearInput]="true"
           [required]="true"
+          [label]="'account.email-label'|translate"
+          labelPlacement="stacked"
         ></ion-input>
       </ion-item>
       <ion-item color="light">
-        <ion-label position="stacked">
-          {{ 'account.password-label'|translate }}
-        </ion-label>
         <ion-input
           #password
           type="password"
@@ -65,6 +61,8 @@
           [clearInput]="true"
           [clearOnEdit]="false"
           [required]="true"
+          [label]="'account.password-label'|translate"
+          labelPlacement="stacked"
         ></ion-input>
       </ion-item>
 
@@ -107,9 +105,6 @@
       (submit)="doChangePassword($event)"
     >
       <ion-item color="light">
-        <ion-label position="stacked">
-          {{ 'account.create-label'|translate }}
-        </ion-label>
         <ion-input
           type="password"
           name="create"
@@ -119,12 +114,11 @@
           [clearInput]="true"
           [clearOnEdit]="false"
           [required]="true"
+          [label]="'account.create-label'|translate"
+          labelPlacement="stacked"
         ></ion-input>
       </ion-item>
       <ion-item color="light">
-        <ion-label position="stacked">
-          {{ 'account.confirm-label'|translate }}
-        </ion-label>
         <ion-input
           type="password"
           name="confirm"
@@ -134,6 +128,8 @@
           [clearInput]="true"
           [clearOnEdit]="false"
           [required]="true"
+          [label]="'account.confirm-label'|translate"
+          labelPlacement="stacked"
         ></ion-input>
       </ion-item>
 
