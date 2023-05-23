@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Storage } from '@ionic/storage-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
@@ -9,6 +8,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { NoConnectionService } from 'src/app/services/no-connection.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
+import { StorageService } from '../../services/storage.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 
@@ -30,7 +30,7 @@ export class MainMenuComponent implements ValidationComponent, OnInit {
     public translate: TranslateService,
     public conversationService: ConversationService,
     public router: Router,
-    private storage: Storage,
+    private storage: StorageService,
     private noConnectionService: NoConnectionService,
     private authService: AuthService,
     private programsServiceApiService: ProgramsServiceApiService,

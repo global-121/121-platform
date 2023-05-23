@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { Storage } from '@ionic/storage-angular';
 import { TimeoutError } from 'rxjs';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Program } from '../../models/program.model';
 import { RegistrationStatusEnum } from '../../models/registration-status.enum';
+import { StorageService } from '../../services/storage.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
@@ -50,7 +50,7 @@ export class FindByPhoneComponent implements ValidationComponent {
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
     private translate: TranslatableStringService,
-    private storage: Storage,
+    private storage: StorageService,
   ) {}
 
   ngOnInit: () => void;
