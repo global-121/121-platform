@@ -4,6 +4,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { DataSource } from 'typeorm';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
 import { SeedDemoProgram } from './seed-program-demo';
+import SeedProgramDorcasEth from './seed-program-dorcas-eth';
 import { SeedProgramDrc } from './seed-program-drc';
 import SeedProgramEth from './seed-program-eth';
 import { SeedProgramLbn } from './seed-program-lbn';
@@ -14,7 +15,6 @@ import { SeedTestMultipleProgram } from './seed-program-test-multiple';
 import SeedProgramUkr from './seed-program-ukr';
 import { SeedProgramValidation } from './seed-program-validation';
 import { SeedScript } from './seed-script.enum';
-import SeedProgramDorcasEth from './seed-program-dorcas-eth';
 
 export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })
