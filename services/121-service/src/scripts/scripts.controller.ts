@@ -14,6 +14,7 @@ import { SeedTestMultipleProgram } from './seed-program-test-multiple';
 import SeedProgramUkr from './seed-program-ukr';
 import { SeedProgramValidation } from './seed-program-validation';
 import { SeedScript } from './seed-script.enum';
+import SeedProgramDorcasEth from './seed-program-dorcas-eth';
 
 export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })
@@ -64,6 +65,8 @@ export class ScriptsController {
       seed = new SeedProgramDrc(this.dataSource);
     } else if (script == SeedScript.validation) {
       seed = new SeedProgramValidation(this.dataSource);
+    } else if (script == SeedScript.pilotDorcasETH) {
+      seed = new SeedProgramDorcasEth(this.dataSource);
     } else {
       return res.status(HttpStatus.BAD_REQUEST).send('Not a known program');
     }
