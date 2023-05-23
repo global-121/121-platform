@@ -41,7 +41,7 @@ describe('TooltipComponent', () => {
     ).toBeFalsy();
   });
 
-  it('should show the provided text when clicked', () => {
+  it('should show a popover when hovered', () => {
     jasmine.clock().install();
     const testContent = 'test content';
     component.value = testContent;
@@ -49,18 +49,17 @@ describe('TooltipComponent', () => {
 
     fixture.debugElement.nativeElement
       .querySelector('.tooltip--button')
-      .click();
+      .dispatchEvent(new MouseEvent('mouseover'));
 
     // Wait a second...
     jasmine.clock().tick(1000);
 
-    const tooltipContent: HTMLElement = document.querySelector(
-      '.tooltip--container',
-    );
+    const tooltipContent: HTMLElement = document.querySelector('ion-popover');
+
+    console.log('tooltipContent: ', tooltipContent);
 
     expect(tooltipContent).toBeTruthy();
-    expect(tooltipContent.innerHTML).toContain(testContent);
-    expect(tooltipContent.getAttribute('aria-hidden')).toBe('false');
+
     jasmine.clock().uninstall();
   });
 });

@@ -19,12 +19,11 @@
     #popover
     [isOpen]="isOpen"
     (didDismiss)="isOpen = false"
-    animated="true"
     showBackdrop="false"
   >
     <ng-template>
       <ion-label
-        class="ion-padding"
+        class="ion-padding tooltip--label"
         [innerHTML]="value"
       ></ion-label>
     </ng-template>
