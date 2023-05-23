@@ -86,15 +86,13 @@
         {
           "option": "0-17",
           "label": {
-            "en": "0 - 17 years",
-            "am_ET": "0 - 17 ዓመት"
+            "en": "0 - 17 years"
           }
         },
         {
           "option": "18-30",
           "label": {
-            "en": "18 - 30 years",
-            "am_ET": "18 - 30 ዓመት"
+            "en": "18 - 30 years"
           }
         },
         {
