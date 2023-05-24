@@ -13,3 +13,8 @@ export enum FspName {
   fspNoAttributes = 'FSP - no attributes',
   bankA = 'Bank A',
 }
+
+export const FspConfigurationMapping: { [key in FspName]?: any } = {
+  'Intersolve-voucher-whatsapp': ['password', 'username'],
+  'Intersolve-voucher-paper': ['password', 'username'],
+};
