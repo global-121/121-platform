@@ -220,7 +220,11 @@ export class UserController {
   @ApiOperation({ summary: 'Get current user' })
   @Get('user')
   public async findMe(@User('username') username: string): Promise<UserRO> {
-    return await this.userService.findByUsername(username);
+    throw new HttpException(
+      `Tried to get user with username: ${username}`,
+      HttpStatus.BAD_REQUEST,
+    );
+    // return await this.userService.findByUsername(username);
   }
 
   @Permissions(PermissionEnum.AidWorkerProgramUPDATE)
