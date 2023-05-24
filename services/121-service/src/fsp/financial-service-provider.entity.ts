@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 import { CascadeDeleteEntity } from '../base.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { ProgramFspConfigurationEntity } from '../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { Attribute } from './../registration/enum/custom-data-attributes';
 import { FspIntegrationType } from './enum/fsp-integration-type.enum';
@@ -37,6 +38,12 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
     (transactions) => transactions.financialServiceProvider,
   )
   public transactions: TransactionEntity[];
+
+  @OneToMany(
+    (_type) => ProgramFspConfigurationEntity,
+    (programFspConfiguration) => programFspConfiguration.fsp,
+  )
+  public configuration: ProgramFspConfigurationEntity[];
 
   public editableAttributes?: Attribute[];
 }
