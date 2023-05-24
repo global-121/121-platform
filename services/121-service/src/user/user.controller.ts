@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -208,7 +210,11 @@ export class UserController {
   public async deleteCurrentUser(
     @User('id') deleterId: number,
   ): Promise<UserEntity> {
-    return await this.userService.delete(deleterId);
+    throw new HttpException(
+      `Tried to delete user with ID: ${deleterId}`,
+      HttpStatus.BAD_REQUEST,
+    );
+    // return await this.userService.delete(deleterId);
   }
 
   @ApiOperation({ summary: 'Get current user' })
