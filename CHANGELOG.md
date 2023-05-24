@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.87.3...master)
 
 ---
+
+## [1.87.4](https://github.com/global-121/121-platform/compare/v1.87.3...v1.87.4) - 2023-05-24
+
+### Fixed
+
+- API-URLs in `NG_URL_121_SERVICE_API` used in interfaces need to match `EXTERNAL_121_SERVICE_URL`.
+
 ## [1.87.3](https://github.com/global-121/121-platform/compare/v1.87.2...v1.87.3) - 2023-05-23
 
 ### Fixed
