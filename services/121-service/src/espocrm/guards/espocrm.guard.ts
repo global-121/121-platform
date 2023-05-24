@@ -30,7 +30,10 @@ export class EspocrmGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const requestSignature = request.headers[signatureHeaderKey];
-    const requestIp = request.headers[ipHeaderKey];
+    let requestIp = request.headers[ipHeaderKey];
+    if (requestIp.includes(':')) {
+      requestIp = requestIp.split(':')[0];
+    }
 
     // Non-whitelist IP -> no access
     if (requestIp !== espocrmControllerSettings[2]) {
