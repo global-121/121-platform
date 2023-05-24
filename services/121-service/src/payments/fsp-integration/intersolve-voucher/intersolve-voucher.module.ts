@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WhatsappModule } from '../../../notifications/whatsapp/whatsapp.module';
+import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { UserEntity } from '../../../user/user.entity';
@@ -29,6 +30,7 @@ import { IntersolveVoucherService } from './intersolve-voucher.service';
       RegistrationEntity,
       TransactionEntity,
       ProgramEntity,
+      ProgramFspConfigurationEntity,
       UserEntity,
     ]),
     ImageCodeModule,
