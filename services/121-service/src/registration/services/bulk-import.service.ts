@@ -667,7 +667,15 @@ export class BulkImportService {
           type: c.answerType,
         };
       });
-    return [...attributes, ...programFspAttributes.reverse()];
+    attributes = [...attributes, ...programFspAttributes.reverse()];
+
+    // deduplicate attributes
+    attributes = attributes.filter(
+      (value, index, self) =>
+        index ===
+        self.findIndex((t) => t.name === value.name && t.type === value.type),
+    );
+    return attributes;
   }
 
   private async validateRegistrationsCsvInput(
