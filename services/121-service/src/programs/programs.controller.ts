@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   HttpStatus,
   Param,
   Post,
@@ -83,10 +84,18 @@ export class ProgramController {
     status: 200,
     description: 'Return all assigned programs for a user.',
   })
+  @ApiResponse({
+    status: 401,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   @Get('assigned/all')
   public async getAssignedPrograms(
     @User('id') userId: number,
   ): Promise<ProgramsRO> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     return await this.programService.getAssignedPrograms(userId);
   }
 
