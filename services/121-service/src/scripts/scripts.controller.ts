@@ -4,6 +4,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { DataSource } from 'typeorm';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
 import { SeedDemoProgram } from './seed-program-demo';
+import SeedProgramDorcasEth from './seed-program-dorcas-eth';
 import { SeedProgramDrc } from './seed-program-drc';
 import SeedProgramEth from './seed-program-eth';
 import { SeedProgramKrcs } from './seed-program-krcs';
@@ -65,6 +66,8 @@ export class ScriptsController {
       seed = new SeedProgramDrc(this.dataSource);
     } else if (script == SeedScript.validation) {
       seed = new SeedProgramValidation(this.dataSource);
+    } else if (script == SeedScript.pilotDorcasETH) {
+      seed = new SeedProgramDorcasEth(this.dataSource);
     } else if (script == SeedScript.krcs) {
       seed = new SeedProgramKrcs(this.dataSource);
     } else {
