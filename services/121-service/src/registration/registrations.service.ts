@@ -635,7 +635,7 @@ export class RegistrationsService {
     validatedJsonData: ImportRegistrationsDto[],
     programId: number,
   ): Promise<ImportRegistrationsDto[]> {
-    return await this.bulkImportService.validateRegistrationsCsvInput(
+    return await this.bulkImportService.validateRegistrationsInput(
       validatedJsonData,
       programId,
     );

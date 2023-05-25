@@ -213,14 +213,15 @@ export class RegistrationsController {
       'Use this endpoint to create new registrations in a specific program. Note that the attributes depend on the program configuration. Authenticate first using the /login endpoint.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiBody({ isArray: true, type: ImportRegistrationsDto })
   @Post('programs/:programId/registrations/import')
   public async importRegistrationsJSON(
-    @Body() data: ImportRegistrationsDto[],
+    @Body(new ParseArrayPipe({ items: ImportRegistrationsDto }))
+    data: ImportRegistrationsDto[],
     @Param() params,
     @Query() queryParams,
   ): Promise<ImportResult> {
     const validation = !queryParams.validation ?? true;
-    console.log('validation: ', validation);
     if (validation) {
       const validatedData =
         await this.registrationsService.importJsonValidateRegistrations(
