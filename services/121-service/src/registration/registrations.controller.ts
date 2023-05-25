@@ -208,7 +208,9 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({
-    summary: 'Import set of registered PAs, from JSON only used in testing ATM',
+    summary: 'Import set of registered PAs',
+    description:
+      'Use this endpoint to create new registrations in a specific program. Note that the attributes depend on the program configuration. Authenticate first using the /login endpoint.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/import')
@@ -218,6 +220,7 @@ export class RegistrationsController {
     @Query() queryParams,
   ): Promise<ImportResult> {
     const validation = !queryParams.validation ?? true;
+    console.log('validation: ', validation);
     if (validation) {
       const validatedData =
         await this.registrationsService.importJsonValidateRegistrations(
