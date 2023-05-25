@@ -74,10 +74,13 @@
           [minlength]="inputProps.minLength"
           [value]="inputProps.defaultValue"
           [placeholder]="inputProps.placeholder"
+          fill="outline"
           style="
             font-family: monospace;
-            border: 1px solid currentColor;
-            height: 66px;
+            min-height: 66px;
+            --border: 1px solid currentColor;
+            --padding-start: 8px;
+            --padding-end: 8px;
           "
           data-cy="input-props-textarea"
         ></ion-textarea>
