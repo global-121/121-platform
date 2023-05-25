@@ -466,7 +466,7 @@ export class RegistrationsController {
   })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Put('programs/:programId/registrations/update-chosen-fsp/:referenceId')
+  @Put('programs/:programId/registrations/:referenceId/fsp-data')
   public async updateChosenFsp(
     @Param() params,
     @Body() data: UpdateChosenFspDto,
