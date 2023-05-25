@@ -631,6 +631,16 @@ export class RegistrationsService {
     );
   }
 
+  public async importJsonValidateRegistrations(
+    validatedJsonData: ImportRegistrationsDto[],
+    programId: number,
+  ): Promise<ImportRegistrationsDto[]> {
+    return await this.bulkImportService.validateRegistrationsInput(
+      validatedJsonData,
+      programId,
+    );
+  }
+
   private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne({
       where: { id: programId },

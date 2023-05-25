@@ -7,7 +7,7 @@ export function importRegistrations(
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .post(`/programs/${programId}/registrations/import-registrations-cypress`)
+    .post(`/programs/${programId}/registrations/import?validation=false`)
     .set('Cookie', [accessToken])
     .send(registrations);
 }

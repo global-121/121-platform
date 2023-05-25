@@ -91,7 +91,7 @@ export class UserService {
     };
 
     const cookieSettings = this.buildCookieByRequest(token);
-    return { userRo: user, cookieSettings: cookieSettings };
+    return { userRo: user, cookieSettings: cookieSettings, token: token };
   }
 
   public async canActivate(permissions, programId, userId): Promise<boolean> {

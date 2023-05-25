@@ -471,7 +471,7 @@ export class BulkImportService {
     programId: number,
   ): Promise<ImportRegistrationsDto[]> {
     const importRecords = await this.validateCsv(csvFile);
-    return await this.validateRegistrationsCsvInput(importRecords, programId);
+    return await this.validateRegistrationsInput(importRecords, programId);
   }
 
   public async validateCsv(csvFile): Promise<object[]> {
@@ -678,7 +678,7 @@ export class BulkImportService {
     return attributes;
   }
 
-  private async validateRegistrationsCsvInput(
+  public async validateRegistrationsInput(
     csvArray,
     programId: number,
   ): Promise<ImportRegistrationsDto[]> {
