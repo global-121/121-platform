@@ -65,6 +65,10 @@ export class RegistrationsController {
 
   @ApiOperation({ summary: 'Create registration' })
   @ApiResponse({ status: 201, description: 'Created registration' })
+  @ApiResponse({
+    status: 401,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations')
   public async create(
@@ -72,6 +76,10 @@ export class RegistrationsController {
     @Param('programId') programId,
     @User('id') userId: number,
   ): Promise<RegistrationEntity> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     return await this.registrationsService.create(
       createRegistrationDto,
       Number(programId),
@@ -423,6 +431,10 @@ export class RegistrationsController {
     status: 200,
     description: 'Return registrations that match the exact phone-number',
   })
+  @ApiResponse({
+    status: 401,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   @ApiQuery({
     name: 'phonenumber',
     required: true,
@@ -433,6 +445,10 @@ export class RegistrationsController {
     @Query('phonenumber') phonenumber: string,
     @User('id') userId: number,
   ): Promise<RegistrationResponse[]> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     if (typeof phonenumber !== 'string') {
       throw new HttpException(
         'phonenumber is not a string',
@@ -479,10 +495,18 @@ export class RegistrationsController {
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({ summary: 'Download all program answers (for validation)' })
   @ApiResponse({ status: 200, description: 'Program answers downloaded' })
+  @ApiResponse({
+    status: 401,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   @Get('registrations/download/validation-data')
   public async downloadValidationData(
     @User('id') userId: number,
   ): Promise<DownloadData> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     return await this.registrationsService.downloadValidationData(userId);
   }
 
@@ -490,7 +514,11 @@ export class RegistrationsController {
   @ApiOperation({
     summary: 'Get registration with prefilled answers (for AW)',
   })
-  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: 200, description: 'Got registrations' })
+  @ApiResponse({
+    status: 401,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   @ApiParam({
     name: 'referenceId',
   })
@@ -499,6 +527,10 @@ export class RegistrationsController {
     @Param() params,
     @User('id') userId: number,
   ): Promise<RegistrationEntity> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     return await this.registrationsService.getRegistrationToValidate(
       params.referenceId,
       userId,
