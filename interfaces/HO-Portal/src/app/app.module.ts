@@ -60,6 +60,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserModule,
     IonicModule.forRoot({
       mode: 'md',
+      innerHTMLTemplatesEnabled: true,
     }),
     AppRoutingModule,
     HttpClientModule,
