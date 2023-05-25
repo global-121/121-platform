@@ -667,7 +667,15 @@ export class BulkImportService {
           type: c.answerType,
         };
       });
-    return [...attributes, ...programFspAttributes.reverse()];
+    attributes = [...attributes, ...programFspAttributes.reverse()];
+
+    // deduplicate attributes
+    attributes = attributes.filter(
+      (value, index, self) =>
+        index ===
+        self.findIndex((t) => t.name === value.name && t.type === value.type),
+    );
+    return attributes;
   }
 
   private async validateRegistrationsCsvInput(
@@ -745,12 +753,25 @@ export class BulkImportService {
       if (program.enableMaxPayments) {
         importRecord.maxPayments = row.maxPayments ? +row.maxPayments : null;
       }
+      const earlierCheckedPhoneNr = {
+        original: null,
+        sanitized: null,
+      };
       for await (const att of dynamicAttributes) {
         if (att.type === AnswerTypes.tel && row[att.name]) {
-          const sanitized = await this.lookupService.lookupAndCorrect(
-            row[att.name],
-            true,
-          );
+          let sanitized: string;
+          if (row[att.name] === earlierCheckedPhoneNr.original) {
+            sanitized = earlierCheckedPhoneNr.sanitized;
+          } else {
+            sanitized = await this.lookupService.lookupAndCorrect(
+              row[att.name],
+              true,
+            );
+          }
+
+          earlierCheckedPhoneNr.original = row[att.name];
+          earlierCheckedPhoneNr.sanitized = sanitized;
+
           if (!sanitized && !!row[att.name]) {
             const errorObj = {
               lineNumber: i + 1,

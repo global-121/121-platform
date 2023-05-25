@@ -11,4 +11,5 @@ export enum SeedScript {
   testMultiple = 'test-multiple',
   nlrcMultiple = 'nlrc-multiple',
   pilotDorcasETH = 'pilot-dorcas-eth',
+  krcs = 'krcs',
 }

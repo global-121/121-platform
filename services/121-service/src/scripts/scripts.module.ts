@@ -8,6 +8,7 @@ import { SeedProd } from './seed-prod';
 import { SeedDemoProgram } from './seed-program-demo';
 import SeedProgramDorcasEth from './seed-program-dorcas-eth';
 import SeedProgramEth from './seed-program-eth';
+import { SeedProgramKrcs } from './seed-program-krcs';
 import SeedProgramLbn from './seed-program-lbn';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
@@ -26,6 +27,7 @@ import { SeedProgramValidation } from './seed-program-validation';
     SeedProgramLbn,
     SeedDemoProgram,
     SeedProgramDorcasEth,
+    SeedProgramKrcs,
   ],
   controllers: [ScriptsController],
 })

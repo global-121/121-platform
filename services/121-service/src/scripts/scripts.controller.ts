@@ -7,6 +7,7 @@ import { SeedDemoProgram } from './seed-program-demo';
 import SeedProgramDorcasEth from './seed-program-dorcas-eth';
 import { SeedProgramDrc } from './seed-program-drc';
 import SeedProgramEth from './seed-program-eth';
+import { SeedProgramKrcs } from './seed-program-krcs';
 import { SeedProgramLbn } from './seed-program-lbn';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
@@ -67,6 +68,8 @@ export class ScriptsController {
       seed = new SeedProgramValidation(this.dataSource);
     } else if (script == SeedScript.pilotDorcasETH) {
       seed = new SeedProgramDorcasEth(this.dataSource);
+    } else if (script == SeedScript.krcs) {
+      seed = new SeedProgramKrcs(this.dataSource);
     } else {
       return res.status(HttpStatus.BAD_REQUEST).send('Not a known program');
     }

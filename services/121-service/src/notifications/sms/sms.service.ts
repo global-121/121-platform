@@ -17,13 +17,14 @@ export class SmsService {
     registrationId: number,
     messageContentType?: MessageContentType,
   ): Promise<void> {
-    // Overwrite recipient phone number for testing phase
+    const hasPlus = recipientPhoneNr.startsWith('+');
+
     twilioClient.messages
       .create({
         body: message,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         statusCallback: EXTERNAL_API.smsStatus,
-        to: recipientPhoneNr,
+        to: `${hasPlus ? '' : '+'}${recipientPhoneNr}`,
       })
       .then((message) =>
         this.storeSendSms(message, registrationId, messageContentType),
