@@ -23,7 +23,7 @@ export class SmsService {
         body: message,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         statusCallback: EXTERNAL_API.smsStatus,
-        to: recipientPhoneNr,
+        to: `+${recipientPhoneNr}`,
       })
       .then((message) =>
         this.storeSendSms(message, registrationId, messageContentType),
