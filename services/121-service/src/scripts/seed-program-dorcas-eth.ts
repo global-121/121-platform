@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import instancePilotDorcasEth from '../../seed-data/instance/instance-pilot-dorcas-eth.json';
-import programPilotEth from '../../seed-data/program/program-pilot-eth.json';
+import programPilotEth from '../../seed-data/program/program-pilot-dorcas-eth.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
