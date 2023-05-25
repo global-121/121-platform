@@ -222,15 +222,13 @@ export class IntersolveJumboService {
         ?.ResultCode?._cdata === IntersolveJumboResultCode.Ok
     ) {
       for (const paymentInfo of preOrderInfoArray) {
+        const calculatedAmount = paymentInfo.paymentAmountMultiplier * amount;
         const transactionNotification = {
           notificationKey: 'jumboCardSent',
-          dynamicContent: [
-            String(paymentInfo.paymentAmountMultiplier),
-            String(amount),
-          ],
+          dynamicContent: [String(calculatedAmount)],
         };
         const transactionResult = this.createTransactionResult(
-          paymentInfo.paymentAmountMultiplier * amount,
+          calculatedAmount,
           paymentInfo.referenceId,
           null,
           StatusEnum.success,
