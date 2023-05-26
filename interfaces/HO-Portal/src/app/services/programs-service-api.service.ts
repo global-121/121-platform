@@ -625,7 +625,7 @@ export class ProgramsServiceApiService {
   ): Promise<Fsp> {
     return this.apiService.put(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/${referenceId}/fsp-name`,
+      `/programs/${programId}/registrations/${referenceId}/fsp`,
       { newFspName, newFspAttributes },
     );
   }
