@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
 import { TimeoutError } from 'rxjs';
 import { FspAttribute, FspAttributeOption } from 'src/app/models/fsp.model';
 import { FspAnswer, Registration } from 'src/app/models/pa-data.model';
@@ -15,6 +14,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { StorageService } from '../../services/storage.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 
@@ -44,7 +44,7 @@ export class ValidateFspComponent implements ValidationComponent, OnInit {
     public conversationService: ConversationService,
     public router: Router,
     public ionContent: IonContent,
-    private storage: Storage,
+    private storage: StorageService,
   ) {}
 
   async ngOnInit() {

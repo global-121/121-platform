@@ -66,22 +66,10 @@
       >
         <ion-icon name="refresh"></ion-icon>
       </ion-button>
-      <ion-input
-        [placeholder]="
-          'page.program.program-people-affected.filter-placeholder' | translate
-        "
-        [attr.title]="
-          'page.program.program-people-affected.filter-placeholder' | translate
-        "
-        [attr.aria-label]="
-          'page.program.program-people-affected.filter-placeholder' | translate
-        "
-        (ionChange)="applyTextFieldFilter($event.target.value)"
-        [debounce]="1000"
-        [value]="filterRowsVisibleQuery"
-        [clearInput]="true"
-        class="filter-input"
-        data-cy="table-text-filter"
+      <ion-item
+        lines="none"
+        style="border: 1px solid #d1d4d7; border-radius: 4px; height: 40px"
+        class="ion-align-items-start"
       >
         <ion-icon
           name="funnel"
@@ -92,9 +80,32 @@
           aria-hidden="true"
           size="small"
           slot="start"
-          style="padding-inline-start: var(--padding-start)"
+          class="ion-margin-end"
+          style="height: 40px; margin-top: 0px; margin-bottom: 0opx"
+          color="black"
         ></ion-icon>
-      </ion-input>
+        <ion-input
+          [placeholder]="
+            'page.program.program-people-affected.filter-placeholder'
+              | translate
+          "
+          [attr.title]="
+            'page.program.program-people-affected.filter-placeholder'
+              | translate
+          "
+          [attr.aria-label]="
+            'page.program.program-people-affected.filter-placeholder'
+              | translate
+          "
+          (ionInput)="applyTextFieldFilter($event.detail.value)"
+          [debounce]="1000"
+          [value]="filterRowsVisibleQuery"
+          [clearInput]="true"
+          class="filter-input"
+          data-cy="table-text-filter"
+        >
+        </ion-input>
+      </ion-item>
 
       <ion-label class="ion-margin-start">
         {{

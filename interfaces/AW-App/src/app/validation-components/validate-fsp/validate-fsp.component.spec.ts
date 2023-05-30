@@ -3,12 +3,12 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IonContent, IonicModule } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { fspData, mockProgram } from 'src/app/mocks/api.program.mock';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { StorageService } from '../../services/storage.service';
 import { ValidateFspComponent } from './validate-fsp.component';
 
 describe('ValidateFspComponent', () => {
@@ -64,7 +64,7 @@ describe('ValidateFspComponent', () => {
           useValue: ionContentMock,
         },
         {
-          provide: Storage,
+          provide: StorageService,
           useValue: ionicStorageMock,
         },
       ],

@@ -211,10 +211,12 @@
 >
   <ng-container #conversationContainer></ng-container>
 
-  <div class="loading-indicator">
+  <div
+    class="loading-indicator"
+    *ngIf="conversationService.state.isLoading"
+  >
     <ion-spinner
       name="dots"
-      [hidden]="!conversationService.state.isLoading"
       class="loading-indicator--spinner"
     ></ion-spinner>
   </div>

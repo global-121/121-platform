@@ -1,31 +1,31 @@
-<ion-button
-  *ngIf="value"
-  fill="clear"
-  shape="round"
-  size="small"
-  color="light"
-  class="tooltip--button ion-no-padding ion-no-margin"
-  #button
-  (mouseover)="toggle()"
-  (ionFocus)="toggle()"
-  [popper]="value"
-  popperTrigger="click"
-  [popperDelay]="100"
-  [popperTimeoutAfterShow]="300000"
-  [popperHideOnClickOutside]="true"
-  popperPlacement="top"
-  popperAppendTo="body"
-  popperBoundaries="body"
-  [popperPreventOverflow]="true"
-  [popperPositionFixed]="true"
-  popperApplyClass="tooltip--container"
-  popperApplyArrowClass="tooltip--arrow"
->
-  <ion-icon
-    name="information-circle-outline"
+<ng-container *ngIf="value">
+  <ion-button
+    fill="clear"
+    shape="round"
     size="small"
-    color="medium"
-    aria-hidden="true"
-    slot="icon-only"
-  ></ion-icon>
-</ion-button>
+    color="light"
+    class="tooltip--button ion-no-padding ion-no-margin"
+    (mouseover)="presentPopover($event)"
+  >
+    <ion-icon
+      name="information-circle-outline"
+      size="small"
+      color="medium"
+      aria-hidden="true"
+      slot="icon-only"
+    ></ion-icon>
+  </ion-button>
+  <ion-popover
+    #popover
+    [isOpen]="isOpen"
+    (didDismiss)="isOpen = false"
+    showBackdrop="false"
+  >
+    <ng-template>
+      <ion-label
+        class="ion-padding tooltip--label"
+        [innerHTML]="value"
+      ></ion-label>
+    </ng-template>
+  </ion-popover>
+</ng-container>

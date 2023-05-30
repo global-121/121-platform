@@ -25,3 +25,12 @@ input[inputmode='numeric'] {
   font-family: monospace !important;
   font-feature-settings: 'tnum';
 }
+
+// fix ion-input style after ionic 7 update
+.styled-ion-input {
+  --padding-start: 8px !important;
+  --padding-end: 8px !important;
+  --border-radius: 0 !important;
+  --border-style: none;
+  min-height: 41px !important;
+}

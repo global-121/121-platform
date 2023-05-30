@@ -12,8 +12,8 @@
     ></div>
   </app-dialogue-turn>
   <div
+    *ngIf="!(!uploadDataStored || uploadReady)"
     class="loading-indicator"
-    [hidden]="!uploadDataStored || uploadReady"
   >
     <ion-spinner
       name="dots"

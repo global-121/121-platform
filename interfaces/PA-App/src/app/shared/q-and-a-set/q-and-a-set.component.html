@@ -26,13 +26,14 @@
               lines="full"
               class="ion-no-padding"
             >
-              <ion-label class="ion-text-wrap ion-padding-end">
-                {{ option.label }}
-              </ion-label>
               <ion-radio
                 [value]="option.value"
                 [disabled]="isSubmitted"
-              ></ion-radio>
+              >
+                <ion-text class="ion-text-wrap">
+                  {{ option.label }}
+                </ion-text>
+              </ion-radio>
             </ion-item>
           </ion-radio-group>
         </div>
@@ -44,16 +45,17 @@
               lines="full"
               class="ion-no-padding"
             >
-              <ion-label class="ion-text-wrap ion-padding-end">
-                {{ option.label }}
-              </ion-label>
               <ion-checkbox
                 [value]="option.value"
                 [disabled]="isSubmitted"
                 (ionChange)="
                   onAnswerChangeMultiSelect(question.code, $event.detail)
                 "
-              ></ion-checkbox>
+              >
+                <ion-text class="ion-text-wrap">
+                  {{ option.label }}
+                </ion-text>
+              </ion-checkbox>
             </ion-item>
           </div>
         </div>
@@ -133,6 +135,8 @@
               )
             "
             [debounce]="300"
+            fill="outline"
+            class="styled-ion-input"
           ></ion-input>
         </div>
         <div *ngSwitchDefault>
@@ -157,6 +161,8 @@
               )
             "
             [debounce]="300"
+            fill="outline"
+            class="styled-ion-input"
           ></ion-input>
         </div>
       </div>

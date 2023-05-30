@@ -56,13 +56,14 @@
         class="ion-no-padding"
         style="width: 100%"
       >
-        <ion-label class="ion-text-wrap ion-padding-end">
-          {{ 'personal.consent-question.agree' | translate }}
-        </ion-label>
         <ion-radio
           [value]="consentChoices.agree"
           [disabled]="isDisabled"
-        ></ion-radio>
+        >
+          <ion-text class="ion-text-wrap">
+            {{ 'personal.consent-question.agree' | translate }}
+          </ion-text>
+        </ion-radio>
       </ion-item>
     </ion-item>
     <ion-item
@@ -81,13 +82,14 @@
         class="ion-no-padding"
         style="width: 100%"
       >
-        <ion-label class="ion-text-wrap ion-padding-end">
-          {{ 'personal.consent-question.disagree' | translate }}
-        </ion-label>
         <ion-radio
           [value]="consentChoices.disagree"
           [disabled]="isDisabled"
-        ></ion-radio>
+        >
+          <ion-text class="ion-text-wrap">
+            {{ 'personal.consent-question.disagree' | translate }}
+          </ion-text>
+        </ion-radio>
       </ion-item>
     </ion-item>
   </ion-radio-group>

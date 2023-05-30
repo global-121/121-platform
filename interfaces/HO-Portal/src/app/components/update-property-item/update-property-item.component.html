@@ -47,6 +47,7 @@
                 pattern="[0-9]+"
                 appOnlyAllowedInput
                 [disabled]="isDisabled"
+                fill="outline"
               ></ion-input>
             </ng-container>
             <ng-container *ngSwitchCase="answerType.PhoneNumber">
@@ -61,6 +62,7 @@
                 pattern="[0-9]+"
                 appOnlyAllowedInput
                 [disabled]="isDisabled"
+                fill="outline"
               ></ion-input>
             </ng-container>
             <ng-container *ngSwitchCase="answerType.Enum">
@@ -106,6 +108,7 @@
                 [placeholder]="placeholder"
                 type="text"
                 [disabled]="isDisabled"
+                fill="outline"
               ></ion-input>
             </ng-container>
           </ng-container>

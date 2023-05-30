@@ -10,12 +10,14 @@ export class TooltipComponent {
   @Input()
   public value: string;
 
-  @ViewChild('button')
-  private button: any;
+  @ViewChild('popover') popover;
+
+  isOpen = false;
 
   constructor() {}
 
-  public toggle() {
-    this.button.el.click();
+  presentPopover(e: Event) {
+    this.popover.event = e;
+    this.isOpen = true;
   }
 }

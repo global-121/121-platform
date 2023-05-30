@@ -1,8 +1,8 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
+import { StorageService } from '../../services/storage.service';
 import { DownloadDataComponent } from './download-data.component';
 
 const storageIonicMock: any = {
@@ -20,7 +20,7 @@ describe('DownloadDataComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
-          provide: Storage,
+          provide: StorageService,
           useValue: storageIonicMock,
         },
       ],

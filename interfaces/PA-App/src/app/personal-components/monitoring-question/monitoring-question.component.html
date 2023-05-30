@@ -13,14 +13,15 @@
         lines="full"
         class="ion-no-padding"
       >
-        <ion-label
-          [innerHTML]="option.label"
-          class="ion-text-wrap ion-padding-end"
-        ></ion-label>
         <ion-radio
           [value]="option.option"
           [disabled]="monitoringSubmitted"
-        ></ion-radio>
+        >
+          <ion-text
+            class="ion-text-wrap"
+            [innerHTML]="option.label"
+          ></ion-text>
+        </ion-radio>
       </ion-item>
     </ion-radio-group>
     <ion-row

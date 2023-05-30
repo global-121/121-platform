@@ -2,10 +2,10 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { NoConnectionService } from 'src/app/services/no-connection.service';
+import { StorageService } from '../../services/storage.service';
 import { MainMenuComponent } from './main-menu.component';
 
 describe('MainMenuComponent', () => {
@@ -27,7 +27,7 @@ describe('MainMenuComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
-          provide: Storage,
+          provide: StorageService,
           useValue: storageIonicMock,
         },
         {

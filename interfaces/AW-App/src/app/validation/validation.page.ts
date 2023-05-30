@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { IonContent } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage-angular';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../models/user.model';
