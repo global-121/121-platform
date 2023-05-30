@@ -13,6 +13,9 @@ import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
+import { ProgramFspConfigurationController } from './fsp-configuration/fsp-configuration.controller';
+import { ProgramFspConfigurationService } from './fsp-configuration/fsp-configuration.service';
+import { ProgramFspConfigurationEntity } from './fsp-configuration/program-fsp-configuration.entity';
 import { ProgramCustomAttributeEntity } from './program-custom-attribute.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramEntity } from './program.entity';
@@ -31,6 +34,7 @@ import { ProgramService } from './programs.service';
       RegistrationEntity,
       ProgramQuestionEntity,
       ProgramCustomAttributeEntity,
+      ProgramFspConfigurationEntity,
     ]),
     ActionModule,
     UserModule,
@@ -41,8 +45,8 @@ import { ProgramService } from './programs.service';
     LookupModule,
     UserModule,
   ],
-  providers: [ProgramService],
-  controllers: [ProgramController],
+  providers: [ProgramService, ProgramFspConfigurationService],
+  controllers: [ProgramController, ProgramFspConfigurationController],
   exports: [ProgramService],
 })
 export class ProgramModule {}

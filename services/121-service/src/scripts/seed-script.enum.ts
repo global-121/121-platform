@@ -10,4 +10,6 @@ export enum SeedScript {
   validation = 'validation',
   testMultiple = 'test-multiple',
   nlrcMultiple = 'nlrc-multiple',
+  pilotDorcasETH = 'eth-dorcas',
+  krcs = 'krcs',
 }

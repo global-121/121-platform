@@ -22,6 +22,8 @@ export class IntersolveVoucherApiService {
   public async issueCard(
     amount: number,
     refPos: number,
+    username: string,
+    password: string,
   ): Promise<IntersolveIssueCardResponse> {
     let payload = await this.soapService.readXmlAsJs(
       IntersolveVoucherSoapElements.IssueCard,
@@ -57,8 +59,8 @@ export class IntersolveVoucherApiService {
         : await this.soapService.post(
             payload,
             IntersolveVoucherSoapElements.LoyaltyHeader,
-            process.env.INTERSOLVE_USERNAME,
-            process.env.INTERSOLVE_PASSWORD,
+            username,
+            password,
             process.env.INTERSOLVE_URL,
           );
       result = {
@@ -90,6 +92,8 @@ export class IntersolveVoucherApiService {
   public async getCard(
     cardId: string,
     pin: string,
+    username: string,
+    password: string,
   ): Promise<IntersolveGetCardResponse> {
     let payload = await this.soapService.readXmlAsJs(
       IntersolveVoucherSoapElements.GetCard,
@@ -112,8 +116,8 @@ export class IntersolveVoucherApiService {
       : await this.soapService.post(
           payload,
           IntersolveVoucherSoapElements.LoyaltyHeader,
-          process.env.INTERSOLVE_USERNAME,
-          process.env.INTERSOLVE_PASSWORD,
+          username,
+          password,
           process.env.INTERSOLVE_URL,
         );
     const result = {

@@ -7,6 +7,7 @@ import {
   Param,
   ParseArrayPipe,
   Post,
+  Put,
   Query,
   UploadedFile,
   UseGuards,
@@ -208,23 +209,34 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({
-    summary: 'Import set of registered PAs, from JSON only used in testing ATM',
+    summary: 'Import set of registered PAs',
+    description:
+      'Use this endpoint to create new registrations in a specific program. Note that the attributes depend on the program configuration. Authenticate first using the /login endpoint.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/import-registrations-cypress')
+  @ApiBody({ isArray: true, type: ImportRegistrationsDto })
+  @Post('programs/:programId/registrations/import')
   public async importRegistrationsJSON(
-    @Body() data: ImportRegistrationsDto[],
+    @Body(new ParseArrayPipe({ items: ImportRegistrationsDto }))
+    data: ImportRegistrationsDto[],
     @Param() params,
+    @Query() queryParams,
   ): Promise<ImportResult> {
-    if (process.env.NODE_ENV === 'development') {
+    const validation = !queryParams.validation ?? true;
+    if (validation) {
+      const validatedData =
+        await this.registrationsService.importJsonValidateRegistrations(
+          data,
+          Number(params.programId),
+        );
       return await this.registrationsService.importValidatedRegistrations(
-        data,
+        validatedData,
         Number(params.programId),
       );
     } else {
-      throw new HttpException(
-        { errors: 'This endpoint only works in development' },
-        HttpStatus.NOT_FOUND,
+      return await this.registrationsService.importValidatedRegistrations(
+        data,
+        Number(params.programId),
       );
     }
   }
@@ -463,13 +475,15 @@ export class RegistrationsController {
     status: 201,
     description: 'Updated fsp and attributes',
   })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/update-chosen-fsp')
+  @Put('programs/:programId/registrations/:referenceId/fsp')
   public async updateChosenFsp(
+    @Param() params,
     @Body() data: UpdateChosenFspDto,
   ): Promise<RegistrationEntity> {
     return await this.registrationsService.updateChosenFsp(
-      data.referenceId,
+      params.referenceId,
       data.newFspName,
       data.newFspAttributes,
     );

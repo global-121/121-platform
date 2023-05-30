@@ -471,7 +471,7 @@ export class BulkImportService {
     programId: number,
   ): Promise<ImportRegistrationsDto[]> {
     const importRecords = await this.validateCsv(csvFile);
-    return await this.validateRegistrationsCsvInput(importRecords, programId);
+    return await this.validateRegistrationsInput(importRecords, programId);
   }
 
   public async validateCsv(csvFile): Promise<object[]> {
@@ -667,10 +667,18 @@ export class BulkImportService {
           type: c.answerType,
         };
       });
-    return [...attributes, ...programFspAttributes.reverse()];
+    attributes = [...attributes, ...programFspAttributes.reverse()];
+
+    // deduplicate attributes
+    attributes = attributes.filter(
+      (value, index, self) =>
+        index ===
+        self.findIndex((t) => t.name === value.name && t.type === value.type),
+    );
+    return attributes;
   }
 
-  private async validateRegistrationsCsvInput(
+  public async validateRegistrationsInput(
     csvArray,
     programId: number,
   ): Promise<ImportRegistrationsDto[]> {
@@ -745,14 +753,27 @@ export class BulkImportService {
       if (program.enableMaxPayments) {
         importRecord.maxPayments = row.maxPayments ? +row.maxPayments : null;
       }
+      const earlierCheckedPhoneNr = {
+        original: null,
+        sanitized: null,
+      };
       for await (const att of dynamicAttributes) {
         if (att.type === AnswerTypes.tel && row[att.name]) {
-          // Temp. fix to disable the lookup as this is currently throwing errors
-          const sanitized = row[att.name];
-          // const sanitized = await this.lookupService.lookupAndCorrect(
-          //   row[att.name],
-          //   true,
-          // );
+          let sanitized: string;
+          if (row[att.name] === earlierCheckedPhoneNr.original) {
+            sanitized = earlierCheckedPhoneNr.sanitized;
+          } else {
+            // Temp. fix to disable the lookup as this is currently throwing errors
+            sanitized = row[att.name];
+            // sanitized = await this.lookupService.lookupAndCorrect(
+            //   row[att.name],
+            //   true,
+            // );
+          }
+
+          earlierCheckedPhoneNr.original = row[att.name];
+          earlierCheckedPhoneNr.sanitized = sanitized;
+
           if (!sanitized && !!row[att.name]) {
             const errorObj = {
               lineNumber: i + 1,
