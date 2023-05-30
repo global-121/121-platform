@@ -292,6 +292,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
         payment: paymentRow.paymentIndex,
         amount: paymentRow.transaction.amount,
         referenceId: this.person.referenceId,
+        paNr: this.person.id,
         currency: this.program.currency,
       };
     }
