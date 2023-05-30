@@ -25,11 +25,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Add environment-specific icon
-      #   working-directory: ${{ env.workingDirectory }}
-      #   run: |
-      #     echo "" | base64 --decode > src/favicon.dorcas-ethiopia.ico
-      #     cp --force src/favicon.dorcas-ethiopia.ico src/favicon.ico
+      - name: Add environment-specific icon
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          echo "AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACd38ADCJBwCvRw8AGhLaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREREREREREREREREREREREQzNEREREREQzMzREREEREzExMxERERETMxMzERERERMRMRMREREREzMTMxEREiIiMxMyIiIiIiIjMyIiIiIiIiIiIiIiIiIiIiIiIiIgAAAAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAD//wAA" | base64 --decode > src/favicon.dorcas-ethiopia.ico
+          cp --force src/favicon.dorcas-ethiopia.ico src/favicon.ico
 
       - name: Build Interface
         id: build
