@@ -13,10 +13,10 @@ Feature: Update Program
     And the whole "program" object is returned
 
 
-Scenario: Successfully reset program
+  Scenario: Successfully reset program
     Given the "script" is provided
     When user selects script
-    And enters value 'password' for 'secret'
-    And calls the "/programs/{programId}/update" endpoint
+    And enters value 'fill_in_secret' for property 'secret'
+    And calls the "/api/scripts/reset" endpoint
     Then program is reset to selected one
-    And code 201 is displayed
+    And code 202 is displayed
