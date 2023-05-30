@@ -747,10 +747,12 @@ export class BulkImportService {
       }
       for await (const att of dynamicAttributes) {
         if (att.type === AnswerTypes.tel && row[att.name]) {
-          const sanitized = await this.lookupService.lookupAndCorrect(
-            row[att.name],
-            true,
-          );
+          // Temp. fix to disable the lookup as this is currently throwing errors
+          const sanitized = row[att.name];
+          // const sanitized = await this.lookupService.lookupAndCorrect(
+          //   row[att.name],
+          //   true,
+          // );
           if (!sanitized && !!row[att.name]) {
             const errorObj = {
               lineNumber: i + 1,
