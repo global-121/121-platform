@@ -66,13 +66,13 @@ export class PaymentStatusPopupComponent implements OnInit {
     if (this.payoutDetails) {
       this.titleMessageIcon = await this.getMessageTitle();
       this.titleMoneyIcon = await this.getMoneyTitle();
-    }
 
-    if (this.imageUrl) {
-      this.sanitizedIimageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-        this.imageUrl,
-      ) as string;
-      this.imageFileName = `voucher-payment-${this.payoutDetails.payment}-PA-${this.singlePayoutDetails.paNr}.png`;
+      if (this.imageUrl) {
+        this.sanitizedIimageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+          this.imageUrl,
+        ) as string;
+        this.imageFileName = `voucher-program-${this.payoutDetails.programId}-payment-${this.payoutDetails.payment}-PA-${this.payoutDetails.paNr}.png`;
+      }
     }
   }
 

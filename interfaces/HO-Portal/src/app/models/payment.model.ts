@@ -39,6 +39,7 @@ export class PopupPayoutDetails {
   payment: number;
   amount: number;
   referenceId: string;
+  paNr: number;
   currency: string;
 }
 
