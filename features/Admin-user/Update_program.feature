@@ -12,3 +12,11 @@ Feature: Update Program
     Then only the provided properties of the "program" are updated
     And the whole "program" object is returned
 
+
+Scenario: Successfully reset program
+    Given the "script" is provided
+    When user selects script
+    And enters value 'password' for 'secret'
+    And calls the "/programs/{programId}/update" endpoint
+    Then program is reset to selected one
+    And code 201 is displayed
