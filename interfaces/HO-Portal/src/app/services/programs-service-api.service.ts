@@ -623,10 +623,10 @@ export class ProgramsServiceApiService {
     newFspName: string,
     newFspAttributes?: object,
   ): Promise<Fsp> {
-    return this.apiService.post(
+    return this.apiService.put(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/update-chosen-fsp`,
-      { referenceId, newFspName, newFspAttributes },
+      `/programs/${programId}/registrations/${referenceId}/fsp`,
+      { newFspName, newFspAttributes },
     );
   }
 
