@@ -95,7 +95,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       await this.programsService.getPeopleAffected(
         this.programId,
         this.canViewPersonalData,
-        false,
+        this.canViewPaymentData,
         this.referenceId,
       )
     )[0];
@@ -287,7 +287,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       this.person.referenceId,
     );
 
-    this.noteModel = note.note;
+    this.noteModel = note.note ? note.note : '';
     this.noteLastUpdate = note.noteUpdated;
   }
 

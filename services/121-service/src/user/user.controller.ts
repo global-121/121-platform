@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -10,7 +12,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { Admin } from '../guards/admin.decorator';
 import { AdminAuthGuard } from '../guards/admin.guard';
@@ -162,6 +164,7 @@ export class UserController {
       return res.send({
         username: loginResponse.userRo.user.username,
         permissions: loginResponse.userRo.user.permissions,
+        acces_token_general: loginResponse.token,
         expires: loginResponse.cookieSettings.expires,
       });
     } catch (error) {
@@ -188,10 +191,19 @@ export class UserController {
 
   @ApiOperation({ summary: 'Change password of logged in user' })
   @Post('user/change-password')
+  @ApiResponse({ status: 201, description: 'Changed password of user' })
+  @ApiResponse({
+    status: 401,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   public async update(
     @User('id') userId: number,
     @Body() userData: UpdateUserDto,
   ): Promise<any> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     return this.userService.update(userId, userData);
   }
 
@@ -205,15 +217,33 @@ export class UserController {
 
   @ApiOperation({ summary: 'User deletes itself' })
   @Post('user/delete')
+  @ApiResponse({ status: 201, description: 'User deleted' })
+  @ApiResponse({
+    status: 401,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   public async deleteCurrentUser(
     @User('id') deleterId: number,
   ): Promise<UserEntity> {
+    if (!deleterId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     return await this.userService.delete(deleterId);
   }
 
   @ApiOperation({ summary: 'Get current user' })
   @Get('user')
+  @ApiResponse({ status: 200, description: 'User returned' })
+  @ApiResponse({
+    status: 401,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   public async findMe(@User('username') username: string): Promise<UserRO> {
+    if (!username) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     return await this.userService.findByUsername(username);
   }
 

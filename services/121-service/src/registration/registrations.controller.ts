@@ -7,6 +7,7 @@ import {
   Param,
   ParseArrayPipe,
   Post,
+  Put,
   Query,
   UploadedFile,
   UseGuards,
@@ -65,6 +66,10 @@ export class RegistrationsController {
 
   @ApiOperation({ summary: 'Create registration' })
   @ApiResponse({ status: 201, description: 'Created registration' })
+  @ApiResponse({
+    status: 401,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations')
   public async create(
@@ -72,6 +77,10 @@ export class RegistrationsController {
     @Param('programId') programId,
     @User('id') userId: number,
   ): Promise<RegistrationEntity> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     return await this.registrationsService.create(
       createRegistrationDto,
       Number(programId),
@@ -200,23 +209,34 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationCREATE)
   @ApiOperation({
-    summary: 'Import set of registered PAs, from JSON only used in testing ATM',
+    summary: 'Import set of registered PAs',
+    description:
+      'Use this endpoint to create new registrations in a specific program. Note that the attributes depend on the program configuration. Authenticate first using the /login endpoint.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/import-registrations-cypress')
+  @ApiBody({ isArray: true, type: ImportRegistrationsDto })
+  @Post('programs/:programId/registrations/import')
   public async importRegistrationsJSON(
-    @Body() data: ImportRegistrationsDto[],
+    @Body(new ParseArrayPipe({ items: ImportRegistrationsDto }))
+    data: ImportRegistrationsDto[],
     @Param() params,
+    @Query() queryParams,
   ): Promise<ImportResult> {
-    if (process.env.NODE_ENV === 'development') {
+    const validation = !queryParams.validation ?? true;
+    if (validation) {
+      const validatedData =
+        await this.registrationsService.importJsonValidateRegistrations(
+          data,
+          Number(params.programId),
+        );
       return await this.registrationsService.importValidatedRegistrations(
-        data,
+        validatedData,
         Number(params.programId),
       );
     } else {
-      throw new HttpException(
-        { errors: 'This endpoint only works in development' },
-        HttpStatus.NOT_FOUND,
+      return await this.registrationsService.importValidatedRegistrations(
+        data,
+        Number(params.programId),
       );
     }
   }
@@ -416,6 +436,10 @@ export class RegistrationsController {
     status: 200,
     description: 'Return registrations that match the exact phone-number',
   })
+  @ApiResponse({
+    status: 401,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   @ApiQuery({
     name: 'phonenumber',
     required: true,
@@ -426,6 +450,10 @@ export class RegistrationsController {
     @Query('phonenumber') phonenumber: string,
     @User('id') userId: number,
   ): Promise<RegistrationResponse[]> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     if (typeof phonenumber !== 'string') {
       throw new HttpException(
         'phonenumber is not a string',
@@ -447,13 +475,15 @@ export class RegistrationsController {
     status: 201,
     description: 'Updated fsp and attributes',
   })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/update-chosen-fsp')
+  @Put('programs/:programId/registrations/:referenceId/fsp')
   public async updateChosenFsp(
+    @Param() params,
     @Body() data: UpdateChosenFspDto,
   ): Promise<RegistrationEntity> {
     return await this.registrationsService.updateChosenFsp(
-      data.referenceId,
+      params.referenceId,
       data.newFspName,
       data.newFspAttributes,
     );
@@ -472,10 +502,18 @@ export class RegistrationsController {
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({ summary: 'Download all program answers (for validation)' })
   @ApiResponse({ status: 200, description: 'Program answers downloaded' })
+  @ApiResponse({
+    status: 401,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   @Get('registrations/download/validation-data')
   public async downloadValidationData(
     @User('id') userId: number,
   ): Promise<DownloadData> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     return await this.registrationsService.downloadValidationData(userId);
   }
 
@@ -483,7 +521,11 @@ export class RegistrationsController {
   @ApiOperation({
     summary: 'Get registration with prefilled answers (for AW)',
   })
-  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: 200, description: 'Got registrations' })
+  @ApiResponse({
+    status: 401,
+    description: 'No user detectable from cookie or no cookie present',
+  })
   @ApiParam({
     name: 'referenceId',
   })
@@ -492,6 +534,10 @@ export class RegistrationsController {
     @Param() params,
     @User('id') userId: number,
   ): Promise<RegistrationEntity> {
+    if (!userId) {
+      const errors = `No user detectable from cookie or no cookie present'`;
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
     return await this.registrationsService.getRegistrationToValidate(
       params.referenceId,
       userId,

@@ -10,6 +10,12 @@
     "mikestead.dotenv",
     "ms-azure-devops.azure-pipelines",
     "ms-azuretools.vscode-docker",
-    "tombonnike.vscode-status-bar-format-toggle"
+    "tombonnike.vscode-status-bar-format-toggle",
+    "ms-vscode.azure-account",
+    "ms-azuretools.vscode-azureappservice",
+    "ms-azuretools.vscode-cosmosdb",
+    "ms-azuretools.vscode-azureresourcegroups",
+    "ms-azuretools.vscode-azurestaticwebapps",
+    "github.vscode-github-actions"
   ]
 }
