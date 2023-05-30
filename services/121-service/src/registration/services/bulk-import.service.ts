@@ -763,10 +763,12 @@ export class BulkImportService {
           if (row[att.name] === earlierCheckedPhoneNr.original) {
             sanitized = earlierCheckedPhoneNr.sanitized;
           } else {
-            sanitized = await this.lookupService.lookupAndCorrect(
-              row[att.name],
-              true,
-            );
+            // Temp. fix to disable the lookup as this is currently throwing errors
+            sanitized = row[att.name];
+            // sanitized = await this.lookupService.lookupAndCorrect(
+            //   row[att.name],
+            //   true,
+            // );
           }
 
           earlierCheckedPhoneNr.original = row[att.name];
