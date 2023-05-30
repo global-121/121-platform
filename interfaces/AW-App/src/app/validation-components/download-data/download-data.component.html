@@ -6,8 +6,8 @@
     {{ 'validation.download-data.downloading' | translate }}
   </app-dialogue-turn>
   <div
+    *ngIf="!(downloadReady || downloadAborted)"
     class="loading-indicator"
-    [hidden]="downloadReady || downloadAborted"
   >
     <ion-spinner
       name="dots"
