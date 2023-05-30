@@ -76,7 +76,7 @@ export class LookupService {
     }
   }
 
-  private sanitizePhoneNrExtra(phoneNumber: string): string {
+  public sanitizePhoneNrExtra(phoneNumber: string): string {
     const sanitizedPhoneNr =
       phoneNumber.substring(0, 2) == '00'
         ? phoneNumber.substring(2)
