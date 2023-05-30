@@ -31,13 +31,14 @@
             class="ion-no-padding"
             style="width: 100%"
           >
-            <ion-label class="ion-text-wrap ion-padding-end">
-              {{ language.language }}
-            </ion-label>
             <ion-radio
               [value]="language.id"
               [disabled]="languageChoice && isDisabled"
-            ></ion-radio>
+            >
+              <ion-text class="ion-text-wrap">
+                {{ language.language }}
+              </ion-text>
+            </ion-radio>
           </ion-item>
         </ion-item>
       </ion-radio-group>

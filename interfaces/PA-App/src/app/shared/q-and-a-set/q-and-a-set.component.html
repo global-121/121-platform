@@ -26,13 +26,14 @@
               lines="full"
               class="ion-no-padding"
             >
-              <ion-label class="ion-text-wrap ion-padding-end">
-                {{ option.label }}
-              </ion-label>
               <ion-radio
                 [value]="option.value"
                 [disabled]="isSubmitted"
-              ></ion-radio>
+              >
+                <ion-text class="ion-text-wrap">
+                  {{ option.label }}
+                </ion-text>
+              </ion-radio>
             </ion-item>
           </ion-radio-group>
         </div>
