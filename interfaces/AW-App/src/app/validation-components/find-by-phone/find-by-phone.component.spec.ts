@@ -2,10 +2,10 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { StorageService } from '../../services/storage.service';
 import { FindByPhoneComponent } from './find-by-phone.component';
 
 const storageIonicMock: any = {
@@ -33,7 +33,7 @@ describe('FindByPhoneComponent', () => {
           provide: ConversationService,
         },
         {
-          provide: Storage,
+          provide: StorageService,
           useValue: storageIonicMock,
         },
       ],

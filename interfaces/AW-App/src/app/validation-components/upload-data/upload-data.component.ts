@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { FspAnswer, ValidatedPaData } from 'src/app/models/pa-data.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { DownloadService } from '../../services/download.service';
+import { StorageService } from '../../services/storage.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 import { ProgramsServiceApiService } from './../../services/programs-service-api.service';
@@ -22,7 +22,7 @@ export class UploadDataComponent implements ValidationComponent, OnInit {
   constructor(
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
-    private storage: Storage,
+    private storage: StorageService,
     private downloadService: DownloadService,
   ) {}
 

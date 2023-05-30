@@ -1,8 +1,8 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
+import { StorageService } from '../../services/storage.service';
 import { UploadDataComponent } from './upload-data.component';
 
 const mockValidationData = [{ referenceId: '', programId: 1, attributes: [] }];
@@ -22,7 +22,7 @@ describe('UploadDataComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
-          provide: Storage,
+          provide: StorageService,
           useValue: storageIonicMock,
         },
       ],

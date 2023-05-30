@@ -18,16 +18,20 @@
             optionSelected
           "
         >
-          <ion-label class="ion-text-wrap ion-padding-end">
-            {{ option.option }}
-            &nbsp;
-            <ion-badge
-              *ngIf="option.counter"
-              style="vertical-align: text-bottom"
-              >{{ option.counter }}</ion-badge
-            >
-          </ion-label>
-          <ion-radio value="{{ option.id }}"></ion-radio>
+          <ion-radio
+            value="{{ option.id }}"
+            labelPlacement="start"
+          >
+            <ion-text class="ion-text-wrap">
+              {{ option.option }}
+              &nbsp;
+              <ion-badge
+                *ngIf="option.counter"
+                style="vertical-align: text-bottom"
+                >{{ option.counter }}
+              </ion-badge>
+            </ion-text>
+          </ion-radio>
         </ion-item>
       </ng-container>
     </ion-radio-group>

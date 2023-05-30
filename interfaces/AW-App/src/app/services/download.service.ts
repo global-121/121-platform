@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { IonicStorageTypes } from './iconic-storage-types.enum';
+import { StorageService } from './storage.service';
 
 export class ValidationAnswer {
   id: number;
@@ -18,7 +18,7 @@ export class ValidationAnswer {
 export class DownloadService {
   constructor(
     private programsService: ProgramsServiceApiService,
-    private storage: Storage,
+    private storage: StorageService,
   ) {}
 
   public async downloadData(): Promise<ValidationAnswer[]> {
