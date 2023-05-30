@@ -4,7 +4,6 @@ name: 'Deploy [staging] All'
 
 permissions:
   actions: read
-  pull-requests: write
 
 on:
   workflow_call:
@@ -17,19 +16,19 @@ jobs:
     name: 'Build + Deploy: Portal'
     uses: ./.github/workflows/deploy_staging_portal.yml
     secrets:
-      AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_ROCK_0411D2003: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_ROCK_0411D2003 }}
+      AZURE_STATIC_WEB_APPS_API_TOKEN_THANKFUL_MEADOW_013E37403: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_THANKFUL_MEADOW_013E37403 }}
 
   deploy_register:
     name: 'Build + Deploy: Register (PA)'
     uses: ./.github/workflows/deploy_staging_register.yml
     secrets:
-      AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_BAY_0AF9ABD03: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_BAY_0AF9ABD03 }}
+      AZURE_STATIC_WEB_APPS_API_TOKEN_WITTY_FIELD_0F6771203: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WITTY_FIELD_0F6771203 }}
 
   deploy_verify:
     name: 'Build + Deploy: Verify (AW)'
     uses: ./.github/workflows/deploy_staging_verify.yml
     secrets:
-      AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_SAND_08D7E2903: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_SAND_08D7E2903 }}
+      AZURE_STATIC_WEB_APPS_API_TOKEN_WHITE_OCEAN_08B58EA03: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WHITE_OCEAN_08B58EA03 }}
 
   deploy_service:
     name: 'Build + Deploy: 121-Service'
