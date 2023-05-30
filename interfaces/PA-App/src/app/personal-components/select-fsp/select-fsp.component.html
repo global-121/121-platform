@@ -25,13 +25,14 @@
           lines="full"
           class="ion-no-padding"
         >
-          <ion-label class="ion-text-wrap ion-padding-end">
-            {{ fsp.fspDisplayNamePaApp }}
-          </ion-label>
           <ion-radio
             [value]="fsp.id"
             [disabled]="fspSubmitted"
-          ></ion-radio>
+          >
+            <ion-text class="ion-text-wrap">
+              {{ fsp.fspDisplayNamePaApp }}
+            </ion-text>
+          </ion-radio>
         </ion-item>
       </ion-radio-group>
       <ion-row

@@ -73,13 +73,14 @@
             class="ion-no-padding"
             style="width: 100%"
           >
-            <ion-label class="ion-text-wrap ion-padding-end">
-              {{ 'personal.enroll-in-program.submit-confirm' | translate }}
-            </ion-label>
             <ion-radio
               [value]="submitActions.confirm"
               [disabled]="isDisabled"
-            ></ion-radio>
+            >
+              <ion-text class="ion-text-wrap">
+                {{ 'personal.enroll-in-program.submit-confirm' | translate }}
+              </ion-text>
+            </ion-radio>
           </ion-item>
         </ion-item>
         <ion-item
@@ -98,13 +99,14 @@
             class="ion-no-padding"
             style="width: 100%"
           >
-            <ion-label class="ion-text-wrap ion-padding-end">
-              {{ 'personal.enroll-in-program.change' | translate }}
-            </ion-label>
             <ion-radio
               [value]="submitActions.change"
               [disabled]="isDisabled"
-            ></ion-radio>
+            >
+              <ion-text class="ion-text-wrap">
+                {{ 'personal.enroll-in-program.change' | translate }}
+              </ion-text>
+            </ion-radio>
           </ion-item>
         </ion-item>
       </ion-radio-group>

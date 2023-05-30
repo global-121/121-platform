@@ -49,19 +49,22 @@
             class="ion-no-padding"
             style="width: 100%"
           >
-            <ion-label class="ion-text-wrap ion-padding-end">
-              {{ program.titlePaApp }}
-              <ng-container *ngIf="program.description">
-                <br />
-                <ion-note class="ion-text-wrap">
-                  {{ program.description }}
-                </ion-note>
-              </ng-container>
-            </ion-label>
             <ion-radio
               [value]="program.id"
               [disabled]="isDisabled"
-            ></ion-radio>
+            >
+              <ion-text class="ion-text-wrap">
+                {{ program.titlePaApp }}
+                <p>
+                  <ion-note
+                    *ngIf="program.description"
+                    class="ion-text-wrap"
+                  >
+                    {{ program.description }}
+                  </ion-note>
+                </p>
+              </ion-text>
+            </ion-radio>
           </ion-item>
         </ion-item>
       </ion-radio-group>
