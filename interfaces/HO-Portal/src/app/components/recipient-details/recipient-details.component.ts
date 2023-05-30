@@ -309,6 +309,7 @@ export class RecipientDetailsComponent implements OnInit {
       payment: transaction.payment,
       amount: transaction.amount,
       referenceId: this.recipient.referenceId,
+      paNr: this.recipient.id,
       currency: this.program.currency,
     };
 
