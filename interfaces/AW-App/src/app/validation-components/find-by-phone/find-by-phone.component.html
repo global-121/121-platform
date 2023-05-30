@@ -77,18 +77,19 @@
               class="ion-no-padding"
               style="width: 100%"
             >
-              <ion-label class="ion-text-wrap ion-padding-end">
-                <strong>
-                  {{ 'validation.find-by-phone.name' | translate }}:
-                </strong>
-                {{ pa.name + ' (' + pa.programTitle + ')' }}
-              </ion-label>
               <ion-radio
                 [value]="pa.referenceId"
                 [disabled]="
                   (paChoice && isDisabled) || paDataResult || returnMainMenu
                 "
-              ></ion-radio>
+              >
+                <ion-text class="ion-text-wrap">
+                  <strong>
+                    {{ 'validation.find-by-phone.name' | translate }}:
+                  </strong>
+                  {{ pa.name + ' (' + pa.programTitle + ')' }}
+                </ion-text>
+              </ion-radio>
             </ion-item>
           </ion-item>
         </ion-radio-group>

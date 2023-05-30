@@ -37,12 +37,13 @@
       lines="none"
       style="--background: none"
     >
-      <ion-label [innerHTML]="inputProps.checkbox"></ion-label>
       <ion-checkbox
         slot="start"
         [checked]="checked"
         (ionChange)="checkboxChange($event.detail.checked)"
-      ></ion-checkbox>
+      >
+        <ion-text [innerHTML]="inputProps.checkbox"></ion-text>
+      </ion-checkbox>
     </ion-item>
 
     <div *ngIf="!inputProps.checkbox || (inputProps.checkbox && checked)">

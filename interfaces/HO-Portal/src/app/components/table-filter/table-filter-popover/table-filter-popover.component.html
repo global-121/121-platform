@@ -14,12 +14,12 @@
         </div>
         <div class="ion-margin-start">
           <ion-row class="ion-justify-content-end">
-            <ion-label color="medium">{{ state[type]?.totalCount }}</ion-label>
             <ion-checkbox
               [(ngModel)]="state[type].selectAll"
               (ionChange)="onSelectAll()"
               class="ion-margin-start"
             >
+              <ion-text color="medium">{{ state[type]?.totalCount }}</ion-text>
             </ion-checkbox>
           </ion-row>
         </div>
@@ -40,12 +40,13 @@
           class="ion-no-padding"
         >
           <ion-row class="ion-justify-content-end">
-            <ion-label color="medium">{{ option?.count }}</ion-label>
             <ion-checkbox
               [(ngModel)]="state[type].options[option?.value]"
               class="ion-margin-start"
               [data-cy]="option?.label"
-            ></ion-checkbox>
+            >
+              <ion-text color="medium">{{ option?.count }}</ion-text>
+            </ion-checkbox>
           </ion-row>
         </ion-col>
       </ion-row>

@@ -45,16 +45,17 @@
               lines="full"
               class="ion-no-padding"
             >
-              <ion-label class="ion-text-wrap ion-padding-end">
-                {{ option.label }}
-              </ion-label>
               <ion-checkbox
                 [value]="option.value"
                 [disabled]="isSubmitted"
                 (ionChange)="
                   onAnswerChangeMultiSelect(question.code, $event.detail)
                 "
-              ></ion-checkbox>
+              >
+                <ion-text class="ion-text-wrap">
+                  {{ option.label }}
+                </ion-text>
+              </ion-checkbox>
             </ion-item>
           </div>
         </div>
