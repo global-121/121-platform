@@ -7,7 +7,6 @@ env:
 
 permissions:
   actions: read
-  pull-requests: write
 
 on:
   workflow_call:
