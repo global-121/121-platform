@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.88.0](https://github.com/global-121/121-platform/compare/v1.87.6...v1.88.0) - 2023-05-31
+
+### Changed
+
+- Upgrade to Angular v16 & Ionic v7
+- Facilitate calling the Intersolve voucher API with different credentials for different programs, for invoicing
+- Fixed the lookup-disabling of v1.87.6 by preserving the handling of the '+' in phone numbers
+- Fixed 'download voucher' functionality when used from Redline
+
 ## [1.87.6](https://github.com/global-121/121-platform/compare/v1.87.5...v1.87.6) - 2023-05-30
 
 ### Note
