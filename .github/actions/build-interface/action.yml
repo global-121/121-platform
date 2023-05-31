@@ -31,7 +31,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       env:
-        HUSKY: 0
+        HUSKY: '0'
       run: 'npm ci --omit=optional --no-fund --no-audit'
 
     - name: Lint
