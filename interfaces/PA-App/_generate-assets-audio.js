@@ -156,8 +156,8 @@ function getAllAvailableLocales() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-if (!!process.env.CI) {
-  console.info('Skipping generation of audio-files in Test/CI-environment.');
+if (!!process.env.SKIP_GENERATE_AUDIO_FILES) {
+  console.info('Skipping generation of audio-files in Test-environment.');
   return process.exit();
 }
 
