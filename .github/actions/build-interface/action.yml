@@ -7,6 +7,10 @@ inputs:
   interfacePath:
     description: Location of the interface code.
     required: true
+  envIcon:
+    description: Base-64 encoded version of the favicon.ico file.
+    required: false
+    default: ''
 
 outputs:
   build_version:
@@ -44,6 +48,13 @@ runs:
       shell: bash
       run: |
         echo "NG_BUILD_VERSION=$(git describe --tags --dirty --broken)" >> $GITHUB_ENV
+
+    - name: Add environment-specific icon
+      if: ${{ inputs.envIcon }} != ''
+      shell: bash
+      run: |
+        echo " ${{ inputs.envIcon }}" | base64 --decode > src/favicon.env.ico
+        cp --force src/favicon.env.ico src/favicon.ico
 
     - name: Build
       shell: bash
