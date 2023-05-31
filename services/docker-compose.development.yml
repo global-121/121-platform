@@ -12,6 +12,8 @@
 #     command: "tail -f /dev/null"
 #
 
+name: global-121-platform
+
 services:
   121db:
     image: 'postgres:14'
