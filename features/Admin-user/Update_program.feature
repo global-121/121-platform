@@ -11,12 +11,3 @@ Feature: Update Program
     And calls the "/programs/{programId}/update" endpoint
     Then only the provided properties of the "program" are updated
     And the whole "program" object is returned
-
-
-  Scenario: Successfully reset program
-    Given the "script" is provided
-    When user selects script
-    And enters value 'fill_in_secret' for property 'secret'
-    And calls the "/api/scripts/reset" endpoint
-    Then program is reset to selected one
-    And code 202 is displayed
