@@ -764,7 +764,9 @@ export class BulkImportService {
             sanitized = earlierCheckedPhoneNr.sanitized;
           } else {
             // Temp. fix to disable the lookup as this is currently throwing errors
-            sanitized = row[att.name];
+            sanitized = this.lookupService
+              .sanitizePhoneNrExtra(row[att.name])
+              .replace(/\D/g, '');
             // sanitized = await this.lookupService.lookupAndCorrect(
             //   row[att.name],
             //   true,
