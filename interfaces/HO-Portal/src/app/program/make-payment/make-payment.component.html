@@ -10,9 +10,6 @@
     [disabled]="!isEnabled"
     class="ion-margin-end"
   >
-    <ion-label position="stacked">
-      {{ 'page.program.program-details.fixedTransferValue' | translate }}
-    </ion-label>
     <ion-input
       data-cy="transfer-value-input"
       type="number"
@@ -24,6 +21,8 @@
       [(ngModel)]="amountInput"
       (ionChange)="updateTotalAmountMessage()"
       ngDefaultControl
+      [label]="'page.program.program-details.fixedTransferValue' | translate"
+      labelPlacement="stacked"
     ></ion-input>
   </ion-item>
 
