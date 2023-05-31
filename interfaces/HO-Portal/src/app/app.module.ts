@@ -2,7 +2,6 @@ import { LOCATION_INITIALIZED } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -74,7 +73,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.useServiceWorker && environment.production,
     }),
-    NoopAnimationsModule, // Disable animation as used by ngx-charts
   ],
   exports: [TranslateModule],
   providers: [

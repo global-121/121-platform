@@ -24,14 +24,6 @@ Next to the 'generic' dependencies/libraries/components used by all interfaces, 
   - Documentation: <https://github.com/tonysamperi/ngx-popperjs/tree/11.0.0#ngx-popperjs>
   - `popper.js` Documentation: <https://popper.js.org/docs/v2/>
 
-- [`@swimlane/ngx-charts` v17](https://www.npmjs.com/package/@swimlane/ngx-charts/v/17.0.1)  
-  A component to add explanations to buttons, headers, labels, etc.
-
-  - Documentation (latest only!): <https://swimlane.gitbook.io/ngx-charts/>
-  - GitHub Docs: <https://github.com/swimlane/ngx-charts/tree/17.0.1/docs>
-
----
-
 ## License
 
 Released under the Apache 2.0 License. See [LICENSE](LICENSE).
