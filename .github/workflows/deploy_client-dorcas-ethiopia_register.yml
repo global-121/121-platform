@@ -7,7 +7,6 @@ env:
 
 permissions:
   actions: read
-  pull-requests: write
 
 on:
   workflow_call:
@@ -26,11 +25,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Add environment-specific icon
-      #   working-directory: ${{ env.workingDirectory }}
-      #   run: |
-      #     echo "" | base64 --decode > src/favicon.dorcas-ethiopia.ico
-      #     cp --force src/favicon.dorcas-ethiopia.ico src/favicon.ico
+      - name: Add environment-specific icon
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          echo "AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACd38ADCJBwCvRw8AGhLaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREREREREREREREREREREREQzNEREREREQzMzREREEREzExMxERERETMxMzERERERMRMRMREREREzMTMxEREiIiMxMyIiIiIiIjMyIiIiIiIiIiIiIiIiIiIiIiIiIgAAAAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAD//wAA" | base64 --decode > src/favicon.dorcas-ethiopia.ico
+          cp --force src/favicon.dorcas-ethiopia.ico src/favicon.ico
 
       - name: Build Interface
         id: build
@@ -40,9 +39,9 @@ jobs:
         env:
           NG_ENV_NAME: ''
           NG_URL_121_SERVICE_API: 'https://dorcas-ethiopia.121.global/api'
-          NG_AI_IKEY: ''
-          NG_AI_ENDPOINT: ''
-          APPLICATIONINSIGHTS_CONNECTION_STRING: ''
+          NG_AI_IKEY: '3b5033ee-be17-4e42-bc11-1efadaa66c27'
+          NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
+          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=3b5033ee-be17-4e42-bc11-1efadaa66c27;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig
