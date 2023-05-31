@@ -11,4 +11,3 @@ Feature: Update Program
     And calls the "/programs/{programId}/update" endpoint
     Then only the provided properties of the "program" are updated
     And the whole "program" object is returned
-
