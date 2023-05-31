@@ -90,6 +90,52 @@ export class PaymentsService {
     amount: number,
     referenceIdsDto?: ReferenceIdsDto,
   ): Promise<number> {
+    const paPaymentDataList = await this.preparePayment(
+      userId,
+      programId,
+      payment,
+      referenceIdsDto,
+    );
+
+    const paymentTransactionResult = await this.payout(
+      paPaymentDataList,
+      programId,
+      payment,
+      amount,
+      userId,
+    );
+
+    return paymentTransactionResult;
+  }
+
+  public async retryPayment(
+    userId: number,
+    programId: number,
+    payment: number,
+    referenceIdsDto?: ReferenceIdsDto,
+  ): Promise<number> {
+    const paPaymentDataList = await this.preparePayment(
+      userId,
+      programId,
+      payment,
+      referenceIdsDto,
+    );
+    const paymentTransactionResult = await this.payout(
+      paPaymentDataList,
+      programId,
+      payment,
+      userId,
+    );
+
+    return paymentTransactionResult;
+  }
+
+  private async preparePayment(
+    userId: number,
+    programId: number,
+    payment: number,
+    referenceIdsDto?: ReferenceIdsDto,
+  ): Promise<PaPaymentDataDto[]> {
     const program = await this.programRepository.findOne({
       where: { id: programId },
       relations: ['financialServiceProviders'],
@@ -120,23 +166,15 @@ export class PaymentsService {
       AdditionalActionType.paymentStarted,
     );
 
-    const paymentTransactionResult = await this.payout(
-      paPaymentDataList,
-      programId,
-      payment,
-      amount,
-      userId,
-    );
-
-    return paymentTransactionResult;
+    return paPaymentDataList;
   }
 
   public async payout(
     paPaymentDataList: PaPaymentDataDto[],
     programId: number,
     payment: number,
-    amount: number,
     userId: number,
+    amount?: number,
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
@@ -206,7 +244,7 @@ export class PaymentsService {
     paLists: any,
     programId: number,
     payment: number,
-    amount: number,
+    amount?: number,
   ): Promise<any> {
     if (paLists.intersolveJumboPhysicalPaPayment.length) {
       await this.intersolveJumboService.sendPayment(
@@ -297,13 +335,6 @@ export class PaymentsService {
     referenceIdsDto?: ReferenceIdsDto,
     status?: StatusEnum,
   ): Promise<RegistrationEntity[]> {
-    if (referenceIdsDto) {
-      return await this.registrationRepository.find({
-        where: { referenceId: In(referenceIdsDto.referenceIds) },
-        relations: ['fsp'],
-      });
-    }
-
     if (status === StatusEnum.waiting) {
       const waitingReferenceIds = (
         await this.getTransactionsByStatus(
@@ -314,6 +345,13 @@ export class PaymentsService {
       ).map((t) => t.referenceId);
       return await this.registrationRepository.find({
         where: { referenceId: In(waitingReferenceIds) },
+        relations: ['fsp'],
+      });
+    }
+
+    if (referenceIdsDto) {
+      return await this.registrationRepository.find({
+        where: { referenceId: In(referenceIdsDto.referenceIds) },
         relations: ['fsp'],
       });
     }

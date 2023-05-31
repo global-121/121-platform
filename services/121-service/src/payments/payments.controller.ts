@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UploadedFile,
@@ -25,7 +26,7 @@ import { ImportResult } from '../registration/dto/bulk-import.dto';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
-import { CreatePaymentDto } from './dto/create-payment.dto';
+import { CreatePaymentDto, RetryPaymentDto } from './dto/create-payment.dto';
 import { FspInstructions } from './dto/fsp-instructions.dto';
 import { PaymentsService } from './payments.service';
 
@@ -49,7 +50,7 @@ export class PaymentsController {
 
   @Permissions(PermissionEnum.PaymentCREATE)
   @ApiOperation({
-    summary: 'Send payout instruction to financial service provider',
+    summary: 'Send payout instructions to financial service providers',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/payments')
@@ -63,6 +64,29 @@ export class PaymentsController {
       param.programId,
       data.payment,
       data.amount,
+      data.referenceIds,
+    );
+  }
+
+  @Permissions(PermissionEnum.PaymentCREATE)
+  @ApiOperation({
+    summary: 'Send retry payout instructions to financial service providers',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully sent retry payments instructions',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Patch('programs/:programId/payments')
+  public async retryPayment(
+    @Body() data: RetryPaymentDto,
+    @Param() param,
+    @User('id') userId: number,
+  ): Promise<number> {
+    return await this.paymentsService.retryPayment(
+      userId,
+      param.programId,
+      data.payment,
       data.referenceIds,
     );
   }

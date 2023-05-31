@@ -13,3 +13,12 @@ export class CreatePaymentDto {
   @IsOptional()
   public readonly referenceIds: ReferenceIdsDto;
 }
+
+export class RetryPaymentDto {
+  @ApiProperty({ example: 1 })
+  @IsNumber()
+  public readonly payment: number;
+  @ApiProperty()
+  @IsOptional()
+  public readonly referenceIds: ReferenceIdsDto;
+}

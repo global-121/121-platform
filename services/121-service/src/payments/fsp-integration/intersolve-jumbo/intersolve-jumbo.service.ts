@@ -35,7 +35,7 @@ export class IntersolveJumboService {
     paPaymentArray: PaPaymentDataDto[],
     programId: number,
     payment: number,
-    amount: number,
+    amount?: number,
   ): Promise<void> {
     // Split into batches
     const batches: PaPaymentDataDto[][] = [];
@@ -50,10 +50,6 @@ export class IntersolveJumboService {
       let batchResult: PaTransactionResultDto[] = [];
       batchResult = await this.sendBatchPayment(batch, payment, amount);
       for (const paResult of batchResult) {
-        paResult.calculatedAmount =
-          paResult.status === StatusEnum.error // if error, take original amount
-            ? amount
-            : paResult.calculatedAmount;
         await this.storeTransactionResult(paResult, payment, 1, programId);
       }
     }
