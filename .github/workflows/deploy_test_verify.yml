@@ -39,9 +39,9 @@ on:
 
 jobs:
   build_and_deploy_job:
+    name: Build and Deploy Job
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
-    name: Build and Deploy Job
     environment: 'test'
     steps:
       - uses: actions/checkout@v3
@@ -53,6 +53,7 @@ jobs:
         uses: ./.github/actions/build-interface
         with:
           interfacePath: ${{ env.workingDirectory }}
+          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA////AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIiIiIiIiAiIiIiIiIiIiIhERERERIiIiEREREREiIiISERERESIiIhIhEiIhIiIiERIREREiIiIRERERESIiIhISERERIiIiESESIiEiIiISEhERESIiIhERERERIiIiEREREREiIiIiIRESIiIiIiIiIiIiIiAiIiIiIiIiCAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAA'
         env:
           NG_ENV_NAME: 'test'
           NG_URL_121_SERVICE_API: 'https://test.121.global/api'

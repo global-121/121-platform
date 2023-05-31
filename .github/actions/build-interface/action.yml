@@ -7,6 +7,10 @@ inputs:
   interfacePath:
     description: Location of the interface code.
     required: true
+  envIcon:
+    description: Base-64 encoded version of the favicon.ico file.
+    required: false
+    default: ''
 
 outputs:
   build_version:
@@ -27,7 +31,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       env:
-        HUSKY: 0
+        HUSKY: '0'
       run: 'npm ci --omit=optional --no-fund --no-audit'
 
     - name: Lint
@@ -58,6 +62,13 @@ runs:
         NG_AI_IKEY: ${{ env.NG_AI_IKEY }}
         NG_AI_ENDPOINT: ${{ env.NG_AI_ENDPOINT }}
         APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ env.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+
+    - name: Add environment-specific icon
+      if: ${{ inputs.envIcon }} != ''
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: |
+        echo "${{ inputs.envIcon }}" | base64 --decode > www/favicon.ico
 
     - name: Add VERSION to deployment
       id: version
