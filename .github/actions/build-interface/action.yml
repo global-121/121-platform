@@ -52,6 +52,7 @@ runs:
     - name: Add environment-specific icon
       if: ${{ inputs.envIcon }} != ''
       shell: bash
+      working-directory: ${{ inputs.interfacePath }}
       run: |
         echo " ${{ inputs.envIcon }}" | base64 --decode > src/favicon.env.ico
         cp --force src/favicon.env.ico src/favicon.ico
