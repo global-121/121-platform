@@ -21,6 +21,7 @@ import {
   EXTERNAL_API,
   PORT,
   SWAGGER_CUSTOM_CSS,
+  SWAGGER_CUSTOM_JS,
 } from './config';
 import appInsights = require('applicationinsights');
 
@@ -133,6 +134,9 @@ async function bootstrap(): Promise<void> {
     customSiteTitle: APP_TITLE,
     customfavIcon: APP_FAVICON,
     customCss: SWAGGER_CUSTOM_CSS,
+    customJs: `data:text/javascript;base64,${Buffer.from(
+      SWAGGER_CUSTOM_JS,
+    ).toString('base64url')}`,
     swaggerOptions: {
       persistAuthorization: true,
       tagsSorter: 'alpha',
