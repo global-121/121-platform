@@ -29,8 +29,6 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: '@ngx-translate/http-loader'
         update-types: ['version-update:semver-major']
-      - dependency-name: '@swimlane/ngx-charts'
-        update-types: ['version-update:semver-major']
       - dependency-name: '@swimlane/ngx-datatable'
         update-types: ['version-update:semver-major']
       - dependency-name: '@types/*'
@@ -63,8 +61,6 @@ updates:
       - dependency-name: '@ngx-translate/core'
         update-types: ['version-update:semver-major']
       - dependency-name: '@ngx-translate/http-loader'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@swimlane/ngx-charts'
         update-types: ['version-update:semver-major']
       - dependency-name: '@swimlane/ngx-datatable'
         update-types: ['version-update:semver-major']
