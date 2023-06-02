@@ -32,6 +32,7 @@ import { IntersolveIssueVoucherRequestEntity } from './fsp-integration/intersolv
 import { IntersolveVoucherService } from './fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service';
 import { VodacashService } from './fsp-integration/vodacash/vodacash.service';
+import { SafaricomService } from './fsp-integration/safaricom/safaricom.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
 
@@ -56,6 +57,7 @@ export class PaymentsService {
     private readonly bobFinanceService: BobFinanceService,
     private readonly ukrPoshtaService: UkrPoshtaService,
     private readonly vodacashService: VodacashService,
+    private readonly SafaricomService: SafaricomService,
     private readonly bulkImportService: BulkImportService,
   ) {}
 

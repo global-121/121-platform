@@ -25,6 +25,7 @@ import { IntersolveVisaModule } from './fsp-integration/intersolve-visa/intersol
 import { IntersolveVoucherModule } from './fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { UkrPoshtaModule } from './fsp-integration/ukrposhta/ukrposhta.module';
 import { VodacashModule } from './fsp-integration/vodacash/vodacash.module';
+import { SafaricomModule } from './fsp-integration/safaricom/safaricom.module';
 import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
 import { TransactionEntity } from './transactions/transaction.entity';
@@ -57,6 +58,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     BobFinanceModule,
     UkrPoshtaModule,
     VodacashModule,
+    SafaricomModule,
     RegistrationsModule,
   ],
   providers: [
