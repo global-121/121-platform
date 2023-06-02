@@ -19,10 +19,13 @@ Feature: View payment history column and popup
     Then the payment history popup opens
     And it mentions the name of the PA
     And below it a row for each payment that is done for that PA or for which a single payment is possible for that PA
-    And - for payments that are done for the PA - below the payment number it mentions the status success/waiting/failed
+    And - for payments that are done for the PA - on the right side of the payment number it mentions the status success/waiting/failed
+    And the status text is green if Successful
     And the status text is red if waiting/failed
-    And on the right it shows the payment-status button
-    And it contains the datetime, amount and relevant transaction-step-icons of the payment
+    And in the line of payment number, on the right side of pop-up window, 'Open voucher' button is displayed
+    And if status is failed, then 'Try again' button is displayed on the left side of the 'Open voucher' button
+    And under the payment number details are displayed
+    And details contains the sent datetime, relevant transaction-step-icons of the payment, amount, date when payment is recieved and Use
     And it has red text, outline and icons if waiting/failed
     And - for payments for which single payment is possible for the PA - a 'Do single payment' button shows on the right
 
