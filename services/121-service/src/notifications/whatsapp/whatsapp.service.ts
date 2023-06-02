@@ -68,6 +68,21 @@ export class WhatsappService {
       })
       .catch((err) => {
         console.log('Error from Twilio:', err);
+        const failedMessage = {
+          body: payload.body,
+          mediaUrl: mediaUrl,
+          to: payload.to,
+          from: payload.from,
+          sid: `failed-${uuid()}`,
+          status: 'failed',
+          dateCreated: Date.now(),
+        };
+        this.storeSendWhatsapp(
+          failedMessage,
+          registrationId,
+          mediaUrl,
+          messageContentType,
+        );
         throw err;
       });
   }

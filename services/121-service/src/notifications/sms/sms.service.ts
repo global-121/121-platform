@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 import { MessageContentType } from '../message-type.enum';
 import { twilioClient } from '../twilio.client';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
@@ -29,7 +30,17 @@ export class SmsService {
       .then((message) =>
         this.storeSendSms(message, registrationId, messageContentType),
       )
-      .catch((err) => console.log('Error from Twilio:', err));
+      .catch((err) => {
+        console.log('Error from Twilio:', err);
+        const failedMessage = {
+          body: message,
+          to: `${hasPlus ? '' : '+'}${recipientPhoneNr}`,
+          sid: `failed-${uuid()}`,
+          status: 'failed',
+          dateCreated: Date.now(),
+        };
+        this.storeSendSms(failedMessage, registrationId, messageContentType);
+      });
   }
 
   public storeSendSms(

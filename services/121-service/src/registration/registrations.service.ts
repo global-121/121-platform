@@ -1635,7 +1635,9 @@ export class RegistrationsService {
         null,
         null,
         MessageContentType.custom,
-      );
+      ).catch((err) => {
+        console.log('err: ', err);
+       });
     }
   }
 
