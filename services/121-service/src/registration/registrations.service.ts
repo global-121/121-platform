@@ -51,6 +51,8 @@ import { RegistrationStatusChangeEntity } from './registration-status-change.ent
 import { RegistrationEntity } from './registration.entity';
 import { BulkImportService, ImportType } from './services/bulk-import.service';
 import { InclusionScoreService } from './services/inclusion-score.service';
+import { PaginateConfig, PaginateQuery, paginate } from 'nestjs-paginate';
+import { RegistrationViewEntity } from './registration-view.entity';
 
 @Injectable()
 export class RegistrationsService {
@@ -64,6 +66,8 @@ export class RegistrationsService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(RegistrationDataEntity)
   private readonly registrationDataRepository: Repository<RegistrationDataEntity>;
+  @InjectRepository(RegistrationViewEntity)
+  private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
@@ -683,6 +687,21 @@ export class RegistrationsService {
       `string_agg("${uniqueSubQueryId}".value,'|' order by value)`,
     );
     return subQuery;
+  }
+
+  public async getPaginate(query: PaginateQuery): Promise<any> {
+    const paginateConfig: PaginateConfig<RegistrationViewEntity> = {
+      relations: ['data'],
+      searchableColumns: ['phoneNumber', 'data.(value)', 'referenceId', 'preferredLanguage', 'status', 'inclusionScore', 'paymentAmountMultiplier', 'note', 'fsp', 'registrationProgramId', 'maxPayments', 'paymentDate', 'payment', 'transactionStatus', 'transactionAmount', 'errorMessage', 'customData', 'nrPayments'],
+      sortableColumns: ['phoneNumber', 'data.value', 'referenceId', 'preferredLanguage', 'status', 'inclusionScore', 'paymentAmountMultiplier', 'note', 'fsp', 'registrationProgramId', 'maxPayments', 'paymentDate', 'payment', 'transactionStatus', 'transactionAmount', 'errorMessage', 'customData', 'nrPayments'],
+      filterableColumns: {
+        status: true
+      },
+    }
+
+    const result = await paginate<RegistrationViewEntity>(query, this.registrationViewRepository, paginateConfig)
+    console.log('result: ', result);
+    return result
   }
 
   public async getRegistrations(

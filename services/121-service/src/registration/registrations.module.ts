@@ -28,6 +28,7 @@ import { RegistrationsController } from './registrations.controller';
 import { RegistrationsService } from './registrations.service';
 import { BulkImportService } from './services/bulk-import.service';
 import { InclusionScoreService } from './services/inclusion-score.service';
+import { RegistrationViewEntity } from './registration-view.entity';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { InclusionScoreService } from './services/inclusion-score.service';
       TwilioMessageEntity,
       ImageCodeExportVouchersEntity,
       IntersolveVoucherEntity,
+      RegistrationViewEntity
     ]),
     UserModule,
     HttpModule,

@@ -49,6 +49,7 @@ import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsService } from './registrations.service';
+import { Paginate, PaginateQuery } from 'nestjs-paginate';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
@@ -292,6 +293,11 @@ export class RegistrationsController {
       queryParams.filterOnPayment,
       attributes,
     );
+  }
+
+  @Get('programs/:programId/registrations/paginate')
+  public findAll(@Paginate() query: PaginateQuery): Promise <any> {
+    return this.registrationsService.getPaginate(query)
   }
 
   @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
