@@ -11,7 +11,7 @@ export enum NotificationType {
 
 @Entity('twilio_message')
 export class TwilioMessageEntity extends Base121Entity {
-  @Column({select: false})
+  @Column({ select: false })
   public accountSid: string;
 
   @Column()
@@ -23,7 +23,7 @@ export class TwilioMessageEntity extends Base121Entity {
   @Column()
   public to: string;
 
-  @Column({select: false})
+  @Column({ select: false })
   public from: string;
 
   @Column()
