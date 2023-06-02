@@ -77,6 +77,7 @@ export class WhatsappService {
           dateCreated: new Date().toISOString(),
           sid: `failed-${uuid()}`,
           status: 'failed',
+          errorCode: err.code,
         };
         this.storeSendWhatsapp(
           failedMessage,

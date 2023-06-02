@@ -40,6 +40,7 @@ export class SmsService {
           dateCreated: new Date().toISOString(),
           sid: `failed-${uuid()}`,
           status: 'failed',
+          errorCode: err.code,
         };
         this.storeSendSms(failedMessage, registrationId, messageContentType);
       });
@@ -61,6 +62,12 @@ export class SmsService {
     twilioMessage.dateCreated = message.dateCreated;
     twilioMessage.registrationId = registrationId;
     twilioMessage.contentType = messageContentType;
+    if (message.errorCode) {
+      twilioMessage.errorCode = message.errorCode;
+    }
+    if (message.errorMessage) {
+      twilioMessage.errorMessage = message.errorMessage;
+    }
     this.twilioMessageRepository.save(twilioMessage);
   }
 
