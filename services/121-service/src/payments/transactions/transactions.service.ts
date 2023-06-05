@@ -84,8 +84,8 @@ export class TransactionsService {
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
         'fsp.fsp as "fspName"',
-      ]).
-      leftJoin('transaction.financialServiceProvider', 'fsp')
+      ])
+      .leftJoin('transaction.financialServiceProvider', 'fsp')
       .leftJoin(
         '(' + maxAttemptPerPaAndPayment.getQuery() + ')',
         'subquery',
