@@ -83,11 +83,13 @@ export class TransactionsService {
         'amount',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
-      ])
+        'fsp.fsp as "fspName"',
+      ]).
+      leftJoin('transaction.financialServiceProvider', 'fsp')
       .leftJoin(
         '(' + maxAttemptPerPaAndPayment.getQuery() + ')',
         'subquery',
-        `transaction.registrationId = subquery."registrationId" AND transaction.payment = subquery.payment AND cast(transaction."transactionStep" as varchar) || '-' || cast(created as varchar) = subquery.max_attempt`,
+        `transaction.registrationId = subquery."registrationId" AND transaction.payment = subquery.payment AND cast(transaction."transactionStep" as varchar) || '-' || cast(transaction.created as varchar) = subquery.max_attempt`,
       )
       .leftJoin('transaction.registration', 'r')
       .where('transaction.program.id = :programId', {

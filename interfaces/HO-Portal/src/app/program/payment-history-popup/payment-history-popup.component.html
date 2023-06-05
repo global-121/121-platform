@@ -43,6 +43,9 @@
             }}</ion-text
           >
         </div>
+        <ng-container>
+        <div> {{ paymentRow.transaction?.fspName }} </div>
+      </ng-container>
         <ng-container *ngIf="paymentRow.transaction">
           <button
             type="button"
