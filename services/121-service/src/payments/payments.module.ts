@@ -30,6 +30,7 @@ import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsModule } from './transactions/transactions.module';
+import { SafaricomService } from './fsp-integration/safaricom/safaricom.service';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     BulkImportService,
     LookupService,
     InclusionScoreService,
+    SafaricomService,
   ],
   controllers: [PaymentsController],
   exports: [PaymentsService],

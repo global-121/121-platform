@@ -57,7 +57,7 @@ export class PaymentsService {
     private readonly bobFinanceService: BobFinanceService,
     private readonly ukrPoshtaService: UkrPoshtaService,
     private readonly vodacashService: VodacashService,
-    private readonly SafaricomService: SafaricomService,
+    private readonly safaricomService: SafaricomService,
     private readonly bulkImportService: BulkImportService,
   ) {}
 

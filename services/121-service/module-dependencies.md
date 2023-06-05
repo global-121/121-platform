@@ -40,6 +40,7 @@ graph LR
   UkrPoshtaModule-->TransactionsModule
   PaymentsModule-->VodacashModule
   VodacashModule-->TransactionsModule
+  PaymentsModule-->SafaricomModule
   PaymentsModule-->RegistrationsModule
   ExportMetricsModule-->TransactionsModule
   WhatsappIncomingModule-->ImageCodeModule

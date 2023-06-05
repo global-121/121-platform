@@ -8,6 +8,7 @@ export class SafaricomController {
   @Get('/access-token')
   public async getAccessToken(): Promise<string> {
     const accessToken = await this.SafaricomService.getAccessToken();
+    console.log("Access Token: " + accessToken);
     return accessToken;
   }
 }
