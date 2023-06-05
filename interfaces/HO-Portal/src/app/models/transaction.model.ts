@@ -15,5 +15,5 @@ export class Transaction {
         IntersolvePayoutStatus: IntersolvePayoutStatus;
       }
     | any;
-    fspName: string;
+  fspName: string;
 }
