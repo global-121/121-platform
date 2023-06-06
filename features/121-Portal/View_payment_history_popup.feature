@@ -19,15 +19,19 @@ Feature: View payment history column and popup
     Then the payment history popup opens
     And it mentions the name of the PA
     And below it a row for each payment that is done for that PA or for which a single payment is possible for that PA
-    And - for payments that are done for the PA - on the right side of the payment number it mentions the status success/waiting/failed
-    And the status text is green if Successful
-    And the status text is red if waiting/failed
-    And in the line of payment number, on the right side of pop-up window, 'Open voucher' button is displayed
-    And if status is failed, then 'Try again' button is displayed on the left side of the 'Open voucher' button
-    And under the payment number details are displayed
-    And details contains the sent datetime, relevant transaction-step-icons of the payment, amount, date when payment is recieved and Use
-    And it has red text, outline and icons if waiting/failed
-    And - for payments for which single payment is possible for the PA - a 'Do single payment' button shows on the right
+    And - for payments that are done for the PA - on the right side of the payment number it mentions the status Successful/Waiting/Failed
+    And the status text and outline is green if Successful
+    And the status text and outline is red if waiting/failed
+    And icon is displayed on the left side of payment number
+    And in the line of payment number, on the right side of payment status, 'Open voucher' button is displayed
+    And if status is failed, then 'Try again' button is displayed on the right side of the 'Open voucher' button
+    And under the payment number distribution date is displayed
+    And user is able to open accordion for each payment
+    And when user opens accordion details are displayed in two columns
+    And first column details contains the sent datetime, Financial officer, and amount
+    And second column details contains the recieved datetime, FSP, and usage
+    And User is able to close accordion by clicking on the "^" button
+    And popup is closed when user clicks on "X" button
 
   Scenario: Do single payment
     Given the user has opened the payment history popup
