@@ -53,4 +53,4 @@ steps:
     displayName: Build Production-mode
     workingDirectory: $(workingDir)
     env:
-      CI: true
+      SKIP_GENERATE_AUDIO_FILES: true

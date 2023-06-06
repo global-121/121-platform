@@ -1342,6 +1342,10 @@ export class RegistrationsService {
       where: { referenceId: referenceId },
       relations: ['fsp', 'fsp.questions'],
     });
+    if (!registration) {
+      const errors = `ReferenceId ${referenceId} is not known.`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
     if (registration.fsp?.id === newFsp.id) {
       const errors = `New FSP is the same as existing FSP for this Person Affected.`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);

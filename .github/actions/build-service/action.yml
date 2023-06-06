@@ -1,0 +1,73 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Build: Service'
+description: ''
+
+inputs:
+  servicePath:
+    description: Location of the service code.
+    required: true
+
+outputs:
+  build_version:
+    description: Specific version of the build service.
+    value: ${{ steps.version.outputs.build_version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js version
+      uses: actions/setup-node@v3
+      with:
+        node-version-file: '${{ inputs.servicePath }}/.node-version'
+        cache: 'npm'
+        cache-dependency-path: '${{ inputs.servicePath }}/package-lock.json'
+
+    - name: Install
+      shell: bash
+      working-directory: ${{ inputs.servicePath }}
+      run: 'npm ci --no-fund --no-audit'
+
+    - name: Test
+      shell: bash
+      working-directory: ${{ inputs.servicePath }}
+      run: 'npm test'
+
+    - name: Set VERSION of build/deployment
+      shell: bash
+      run: |
+        echo "GLOBAL_121_VERSION=$(git describe --tags --dirty --broken)" >> $GITHUB_ENV
+
+    - name: Add VERSION to deployment
+      id: version
+      shell: bash
+      working-directory: ${{ inputs.servicePath }}
+      run: |
+        echo "${{ env.GLOBAL_121_VERSION }}" >> ./VERSION.txt
+        echo "build_version=${{ env.GLOBAL_121_VERSION }}" >> $GITHUB_OUTPUT
+
+    - name: Download database certificate
+      shell: bash
+      working-directory: ${{ inputs.servicePath }}
+      run: curl https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem --create-dirs -o ./cert/DigiCertGlobalRootCA.crt.pem
+
+    - name: Reduce build package size
+      shell: bash
+      working-directory: ${{ inputs.servicePath }}
+      run: |
+        npm prune --omit=dev --no-fund --no-audit
+        rm -r .vscode/
+        rm -r test/
+        rm -r ./*.md
+        rm .dockerignore
+        rm .eslintrc.js
+        rm .gitignore
+        rm .prettier*
+        rm azure-pipelines.yml
+        rm Dockerfile
+        rm jest.config.js
+
+    - name: Creating ZIP package
+      shell: bash
+      working-directory: ${{ inputs.servicePath }}
+      run: zip --quiet --display-globaldots --recurse-paths artifact.zip .

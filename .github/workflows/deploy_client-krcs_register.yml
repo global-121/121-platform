@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Deploy [dorcas-ethiopia] Interface: Register (PA)'
+name: 'Deploy [KRCS] Interface: Register (PA)'
 
 env:
   workingDirectory: interfaces/PA-App
@@ -11,7 +11,7 @@ permissions:
 on:
   workflow_call:
     secrets:
-      AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_FOREST_03195DB03:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_REGISTER:
         required: true
   workflow_dispatch:
 
@@ -19,7 +19,7 @@ jobs:
   build_and_deploy:
     name: Build and Deploy Job
     runs-on: ubuntu-latest
-    environment: 'client-dorcas-ethiopia'
+    environment: 'client-krcs'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -30,13 +30,13 @@ jobs:
         uses: ./.github/actions/build-interface
         with:
           interfacePath: ${{ env.workingDirectory }}
-          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACd38ADCJBwCvRw8AGhLaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREREREREREREREREREREREQzNEREREREQzMzREREEREzExMxERERETMxMzERERERMRMRMREREREzMTMxEREiIiMxMyIiIiIiIjMyIiIiIiIiIiIiIiIiIiIiIiIiIgAAAAAAAAAAAAAAAAAAAAD//wAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAD//wAA'
+          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAALsAAAAAAP///wAAZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREREREREzMzMzMzMzMzMzMzMzMzMzMzMzIwMjMzMzMzMwADMzMyIiIgAgAiIiAAAAECAQAAAAAAAQIBAAAAAAABAgEAAAAAAAECAQAAAiIiIAIAIiIhERERAAERERERERIQEhERERERERERERERERERERERERERERERERERH//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA'
         env:
           NG_ENV_NAME: ''
-          NG_URL_121_SERVICE_API: 'https://dorcas-ethiopia.121.global/api'
-          NG_AI_IKEY: '3b5033ee-be17-4e42-bc11-1efadaa66c27'
-          NG_AI_ENDPOINT: 'https://westeurope-5.in.applicationinsights.azure.com/'
-          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=3b5033ee-be17-4e42-bc11-1efadaa66c27;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
+          NG_URL_121_SERVICE_API: 'https://krcs.121.global/api'
+          NG_AI_IKEY: '0e57907b-8dba-4fd7-a640-9d36fa2bb0d4'
+          NG_AI_ENDPOINT: 'https://westeurope-1.in.applicationinsights.azure.com/'
+          APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=0e57907b-8dba-4fd7-a640-9d36fa2bb0d4;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig
@@ -45,7 +45,7 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           skip_deploy_on_missing_secrets: true
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_FOREST_03195DB03 }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_REGISTER }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
           config_file_location: '${{ env.workingDirectory }}/'
