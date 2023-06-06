@@ -1632,14 +1632,18 @@ export class RegistrationsService {
       validRegistrations.push(registration);
     }
     for (const validRegistration of validRegistrations) {
-      this.messageService.sendTextMessage(
-        validRegistration,
-        validRegistration.program.id,
-        message,
-        null,
-        null,
-        MessageContentType.custom,
-      );
+      this.messageService
+        .sendTextMessage(
+          validRegistration,
+          validRegistration.program.id,
+          message,
+          null,
+          null,
+          MessageContentType.custom,
+        )
+        .catch((err) => {
+          console.log('err: ', err);
+        });
     }
   }
 
