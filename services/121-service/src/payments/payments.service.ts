@@ -70,10 +70,12 @@ export class PaymentsService {
       .createQueryBuilder('transaction')
       .select('payment')
       .addSelect('MIN(transaction.created)', 'paymentDate')
-      .addSelect(
-        `MIN(CASE WHEN transaction.status = 'error' THEN transaction.amount ELSE transaction.amount / coalesce(r.paymentAmountMultiplier, 1) END )`,
-        'amount',
-      )
+      // TEMP FIX: this code will become obsolete once PBI #19365 is implemented. In the meantime this change will do, as the amount is only used for 'retry all', which is only possible with at least 1 failing transaction, which already contains the unmultiplied amount
+      // .addSelect(
+      //   `MIN(CASE WHEN transaction.status = 'error' THEN transaction.amount ELSE transaction.amount / coalesce(r.paymentAmountMultiplier, 1) END )`,
+      //   'amount',
+      // )
+      .addSelect('MIN(transaction.amount)', 'amount')
       .leftJoin('transaction.registration', 'r')
       .where('transaction.program.id = :programId', {
         programId: programId,
