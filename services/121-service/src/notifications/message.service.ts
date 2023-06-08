@@ -49,14 +49,18 @@ export class MessageService {
             programId,
           );
       if (whatsappNumber) {
-        this.whatsappService.queueMessageSendTemplate(
-          messageText,
-          whatsappNumber,
-          null,
-          null,
-          registration.id,
-          messageContentType,
-        );
+        this.whatsappService
+          .queueMessageSendTemplate(
+            messageText,
+            whatsappNumber,
+            null,
+            null,
+            registration.id,
+            messageContentType,
+          )
+          .catch((error) => {
+            console.warn('Error in queueMessageSendTemplate: ', error);
+          });
       } else if (tryWhatsApp && registration.phoneNumber) {
         this.tryWhatsapp(registration, messageText, messageContentType);
       } else if (registration.phoneNumber) {
