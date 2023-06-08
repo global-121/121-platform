@@ -20,10 +20,10 @@ Feature: View payment history column and popup
     And it mentions the name of the PA
     And below it a row for each payment that is done for that PA or for which a single payment is possible for that PA
     And payments are called transfers
-    And - for payments that are done for the PA - on the right side of the payment number it mentions the status Successful/Waiting/Failed/Not yet sent
+    And - for payments that are done for the PA - on the right side of the payment number it mentions the status Successful/Failed/Not yet sent
     And the status text and outline is green if Successful
     And the status text and outline is yellow if Not yet sent
-    And the status text and outline is red if waiting/failed
+    And the status text and outline is red if Failed
     And icon is displayed on the left side of payment number
     And if payment is sucessful, in the line of payment number, on the right side of payment status, 'Open voucher' button is displayed
     And if status is 'Failed' or 'Not yet sent', then 'Send payment' button is displayed on the right side of payment status
