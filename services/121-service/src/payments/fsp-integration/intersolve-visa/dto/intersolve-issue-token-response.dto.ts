@@ -1,7 +1,3 @@
-import {
-  IntersolveVisaWalletStatus,
-  IntersolveVisaWalletType,
-} from '../enum/intersolve-visa-token-status.enum';
 import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
 
 export class IntersolveIssueTokenResponseDto {
@@ -26,10 +22,8 @@ export class IntersolveIssueTokenResponseTokenDto {
   public code: string;
   public blocked?: boolean;
   public blockReasonCode?: string;
-  public type?: IntersolveVisaWalletType;
   public tier?: string;
   public brandTypeCode?: string;
-  public status?: IntersolveVisaWalletStatus;
   public holderId?: string;
   public balances?: IntersolveIssueTokenResponseBalanceDto[];
   public assets?: IntersolveIssueTokenResponseAssetDto[];
@@ -141,10 +135,8 @@ export class IntersolveGetTokenResponseTokenDto {
   public code: string;
   public blocked?: boolean;
   public blockReasonCode?: string;
-  public type?: IntersolveVisaWalletType;
   public tier?: string;
   public brandTypeCode?: string;
-  public status?: IntersolveVisaWalletStatus;
   public holderId?: string;
   public balances?: IntersolveIssueTokenResponseBalanceDto[];
   public assets?: IntersolveIssueTokenResponseAssetDto[];

@@ -16,10 +16,6 @@ import {
   IntersolveIssueTokenResponseTokenDto,
 } from './dto/intersolve-issue-token-response.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
-import {
-  IntersolveVisaWalletStatus,
-  IntersolveVisaWalletType,
-} from './enum/intersolve-visa-token-status.enum';
 
 @Injectable()
 export class IntersolveVisaApiMockService {
@@ -128,10 +124,8 @@ export class IntersolveVisaApiMockService {
     response.data.data.code = `mock-token-${uuid()}`;
     response.data.data.blocked = false;
     response.data.data.blockReasonCode = 'string';
-    response.data.data.type = IntersolveVisaWalletType.DIGITAL;
     response.data.data.tier = 'string';
     response.data.data.brandTypeCode = 'string';
-    response.data.data.status = IntersolveVisaWalletStatus.ACTIVE;
     response.data.data.holderId = 'string';
     response.data.data.balances = [
       {
@@ -333,8 +327,6 @@ export class IntersolveVisaApiMockService {
         data: {
           code: tokenCode,
           blocked: false,
-          type: IntersolveVisaWalletType.STANDARD,
-          status: IntersolveVisaWalletStatus.INACTIVE,
         },
         success: true,
         errors: [],
