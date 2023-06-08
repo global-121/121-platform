@@ -68,6 +68,23 @@ export class WhatsappService {
       })
       .catch((err) => {
         console.log('Error from Twilio:', err);
+        const failedMessage = {
+          accountSid: process.env.TWILIO_SID,
+          body: payload.body,
+          mediaUrl: mediaUrl,
+          to: payload.to,
+          messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+          dateCreated: new Date().toISOString(),
+          sid: `failed-${uuid()}`,
+          status: 'failed',
+          errorCode: err.code,
+        };
+        this.storeSendWhatsapp(
+          failedMessage,
+          registrationId,
+          mediaUrl,
+          messageContentType,
+        );
         throw err;
       });
   }
@@ -143,6 +160,12 @@ export class WhatsappService {
     twilioMessage.dateCreated = message.dateCreated;
     twilioMessage.registrationId = registrationId;
     twilioMessage.contentType = messageContentType;
+    if (message.errorCode) {
+      twilioMessage.errorCode = message.errorCode;
+    }
+    if (message.errorMessage) {
+      twilioMessage.errorMessage = message.errorMessage;
+    }
     this.twilioMessageRepository.save(twilioMessage);
   }
 
