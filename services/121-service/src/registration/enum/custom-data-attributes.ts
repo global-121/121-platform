@@ -28,6 +28,11 @@ export enum CustomDataAttributes {
   transferTrackNr = 'transferTrackNr',
   householdCount = 'householdCount',
   tokenCodeVisa = 'tokenCodeVisa',
+  addressStreet = 'addressStreet',
+  addressHouseNumber = 'addressHouseNumber',
+  addressHouseNumberAddition = 'addressHouseNumberAddition',
+  addressPostalCode = 'addressPostalCode',
+  addressCity = 'addressCity',
 }
 
 export enum GenericAttributes {

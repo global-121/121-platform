@@ -337,14 +337,55 @@ export class IntersolveVisaService {
   private async createCustomer(
     registration: RegistrationEntity,
   ): Promise<IntersolveCreateCustomerResponseBodyDto> {
+    // TODO: Refactor this to 1 call to get all data at once
     const lastName = await registration.getRegistrationDataValueByName(
       CustomDataAttributes.lastName,
+    );
+    const addressStreet = await registration.getRegistrationDataValueByName(
+      CustomDataAttributes.addressStreet,
+    );
+    const addressHouseNumber =
+      await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.addressHouseNumber,
+      );
+    const addressHouseNumberAddition =
+      await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.addressHouseNumberAddition,
+      );
+    const addressPostalCode = await registration.getRegistrationDataValueByName(
+      CustomDataAttributes.addressPostalCode,
+    );
+    const addressCity = await registration.getRegistrationDataValueByName(
+      CustomDataAttributes.addressCity,
+    );
+    const phoneNumber = await registration.getRegistrationDataValueByName(
+      CustomDataAttributes.phoneNumber,
     );
     const createCustomerRequest: IntersolveCreateCustomerDto = {
       externalReference: registration.referenceId,
       individual: {
         lastName: lastName,
         estimatedAnnualPaymentVolumeMajorUnit: 12 * 44, // This is assuming 44 euro per month for a year for 1 child
+      },
+      contactInfo: {
+        addresses: [
+          {
+            type: 'HOME',
+            addressLine1: `${
+              addressStreet + addressHouseNumber + addressHouseNumberAddition
+            }`,
+            // region: 'Utrecht',
+            city: addressCity,
+            postalCode: addressPostalCode,
+            country: 'NL',
+          },
+        ],
+        phoneNumbers: [
+          {
+            type: 'HOME',
+            value: phoneNumber,
+          },
+        ],
       },
     };
     return await this.intersolveVisaApiService.createCustomer(
