@@ -30,9 +30,7 @@
 
   <!-- Accordion -->
   <ion-accordion-group [multiple]="true">
-    <ion-accordion
-    *ngFor="let paymentRow of paymentRows"
-    >
+    <ion-accordion *ngFor="let paymentRow of paymentRows">
       <ion-item slot="header">
         <ion-grid class="ion-justify-content-start">
           <ion-row class="accordion-label">
@@ -136,10 +134,11 @@
           </ion-row>
         </ion-grid>
         <ion-icon
-        name="chevron-down-outline"
-        class="ion-accordion-toggle-icon"
-        size="small">
-      </ion-icon>
+          name="chevron-down-outline"
+          class="ion-accordion-toggle-icon"
+          size="small"
+        >
+        </ion-icon>
       </ion-item>
 
       <!-- Accordion content -->
