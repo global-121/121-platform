@@ -3,7 +3,7 @@ import { Issuer, TokenSet } from 'openid-client';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
-import { IntersolveCreateVirtualCardDto } from './dto/intersolve-create-virtual-card.dto';
+import { IntersolveCreateDebitCardDto as IntersolveCreateDebitCardDto } from './dto/intersolve-create-virtual-card.dto';
 import { IntersolveGetVirtualCardResponseDto } from './dto/intersolve-get-virtual-card-response.dto';
 import {
   IntersolveGetTokenResponseDto,
@@ -153,20 +153,20 @@ export class IntersolveVisaApiService {
     }
   }
 
-  public async createVirtualCard(
+  public async createDebitCard(
     tokenCode: string,
-    payload: IntersolveCreateVirtualCardDto,
+    payload: IntersolveCreateDebitCardDto,
   ): Promise<any> {
     if (process.env.MOCK_INTERSOLVE) {
       return this.intersolveVisaApiMockService.createVirtualCardMock(tokenCode);
     } else {
       const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/paymentinstrument/v1/tokens/${tokenCode}/create-virtual-card`;
+      const url = `${intersolveVisaApiUrl}/paymentinstrument/v1/tokens/${tokenCode}/create-card`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
       ];
-      // On success this returns a 200 without content
+      // On success this returns a 200 with a body containing correlationId
       return await this.httpService.post<void>(url, payload, headers);
     }
   }
