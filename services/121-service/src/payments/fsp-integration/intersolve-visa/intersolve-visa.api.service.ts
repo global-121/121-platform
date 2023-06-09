@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
-import { IntersolveActivateTokenRequestDto } from './dto/intersolve-activate-token-request.dto';
-import { IntersolveActivateTokenResponseDto } from './dto/intersolve-activate-token-response.dto';
 import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveCreateVirtualCardDto } from './dto/intersolve-create-virtual-card.dto';
@@ -113,7 +111,9 @@ export class IntersolveVisaApiService {
     payload: IntersolveIssueTokenDto,
   ): Promise<IntersolveIssueTokenResponseDto> {
     if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.issueTokenMock(payload.holderId);
+      return this.intersolveVisaApiMockService.issueTokenMock(
+        payload.reference,
+      );
     } else {
       const authToken = await this.getAuthenticationToken();
       const brandCode = process.env.INTERSOLVE_VISA_BRAND_CODE;
@@ -146,27 +146,6 @@ export class IntersolveVisaApiService {
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
       ];
       return await this.httpService.post<IntersolveLoadResponseDto>(
-        url,
-        payload,
-        headers,
-      );
-    }
-  }
-
-  public async activateToken(
-    tokenCode: string,
-    payload: IntersolveActivateTokenRequestDto,
-  ): Promise<IntersolveActivateTokenResponseDto> {
-    if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.activateCardMock(tokenCode);
-    } else {
-      const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/activate`;
-      const headers = [
-        { name: 'Authorization', value: `Bearer ${authToken}` },
-        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-      ];
-      return await this.httpService.post<IntersolveActivateTokenResponseDto>(
         url,
         payload,
         headers,

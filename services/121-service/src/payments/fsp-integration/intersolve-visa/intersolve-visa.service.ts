@@ -13,7 +13,6 @@ import {
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { RegistrationEntity } from './../../../registration/registration.entity';
-import { IntersolveActivateTokenRequestDto } from './dto/intersolve-activate-token-request.dto';
 import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveCreateVirtualCardDto } from './dto/intersolve-create-virtual-card.dto';
@@ -104,9 +103,9 @@ export class IntersolveVisaService {
       } else {
         // start create wallet flow (this also includes linking the wallet to the customer)
         const createWalletResult = await this.createWallet(
-          registration,
           customer,
           response,
+          calculatedAmount,
           transactionNotifications,
         );
         if (createWalletResult.response?.status === StatusEnum.error) {
@@ -137,9 +136,9 @@ export class IntersolveVisaService {
 
       // start create wallet flow
       const createWalletResult = await this.createWallet(
-        registration,
         visaCustomer,
         response,
+        calculatedAmount,
         transactionNotifications,
       );
 
@@ -173,9 +172,9 @@ export class IntersolveVisaService {
   }
 
   private async createWallet(
-    registration: RegistrationEntity,
     visaCustomer: IntersolveVisaCustomerEntity,
     response: PaTransactionResultDto,
+    amount: number,
     transactionNotifications: any[],
   ): Promise<{
     response?: PaTransactionResultDto;
@@ -185,10 +184,15 @@ export class IntersolveVisaService {
     let tokenCode = '';
     // TODO: Issue token
     const issueTokenPayload = new IntersolveIssueTokenDto();
-    issueTokenPayload.holderId = visaCustomer.holderId;
+    issueTokenPayload.reference = visaCustomer.holderId;
+    issueTokenPayload.quantities = [
+      { quantity: { assetCode: 'EUR', value: amount } },
+    ];
+    console.log('issueTokenPayload: ', issueTokenPayload);
     const issueTokenResult = await this.intersolveVisaApiService.issueToken(
       issueTokenPayload,
     );
+    console.log('issueTokenResult: ', issueTokenResult);
 
     if (!issueTokenResult.data?.success) {
       response.status = StatusEnum.error;
@@ -269,7 +273,7 @@ export class IntersolveVisaService {
   ): Promise<IntersolveVisaCustomerEntity> {
     return await this.intersolveVisaCustomerRepo.findOne({
       where: { registrationId: registrationId },
-      relations: ['visaCard'],
+      relations: ['visaWallets'],
     });
   }
 
@@ -429,37 +433,6 @@ export class IntersolveVisaService {
             loadBalanceResult.data?.errors,
           )}`
         : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`,
-    };
-  }
-
-  private async activateToken(
-    intersolveVisaWallet: IntersolveVisaWalletEntity,
-  ): Promise<{ success: boolean; message?: string }> {
-    const reference = uuid();
-
-    const payload: IntersolveActivateTokenRequestDto = {
-      reference: reference,
-    };
-    const activateResult = await this.intersolveVisaApiService.activateToken(
-      intersolveVisaWallet.tokenCode,
-      payload,
-    );
-    if (!activateResult.data?.success) {
-      return {
-        success: false,
-        message: activateResult.data?.errors?.length
-          ? `ACTIVATE CARD ERROR: ${this.intersolveErrorToMessage(
-              activateResult.data?.errors,
-            )}`
-          : `ACTIVATE CARD ERROR: ${activateResult.status} - ${activateResult.statusText}`,
-      };
-    }
-
-    // store activated status
-    await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
-
-    return {
-      success: true,
     };
   }
 

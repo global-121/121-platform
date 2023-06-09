@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
-import { IntersolveActivateTokenResponseDto } from './dto/intersolve-activate-token-response.dto';
 import {
   IntersolveCreateCustomerResponseBodyDto,
   IntersolveRegisterHolderResponseDto,
@@ -77,31 +76,6 @@ export class IntersolveVisaApiMockService {
         code: 'NOT_FOUND',
         field: 'mock field',
         description: 'We mocked that registering customer to token failed',
-      });
-      res.status = 404;
-      res.statusText = 'NOT_FOUND';
-    }
-    return res;
-  }
-
-  public activateCardMock(
-    tokenCode: string,
-  ): IntersolveActivateTokenResponseDto {
-    const res = new IntersolveActivateTokenResponseDto();
-    res.status = 200;
-    res.statusText = 'OK';
-    res.data = {
-      success: true,
-      errors: [],
-      code: 'string',
-      data: {},
-    };
-    if (tokenCode.toLowerCase().includes('mock-fail-activate')) {
-      res.data.success = false;
-      res.data.errors.push({
-        code: 'NOT_FOUND',
-        field: 'mock field',
-        description: 'We mocked that activating token failed',
       });
       res.status = 404;
       res.statusText = 'NOT_FOUND';
