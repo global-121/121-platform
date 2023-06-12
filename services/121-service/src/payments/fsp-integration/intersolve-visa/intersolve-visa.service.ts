@@ -15,7 +15,7 @@ import { TransactionsService } from '../../transactions/transactions.service';
 import { RegistrationEntity } from './../../../registration/registration.entity';
 import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
-import { IntersolveCreateDebitCardDto, IntersolveCreateVirtualCardDto } from './dto/intersolve-create-virtual-card.dto';
+import { IntersolveCreateDebitCardDto } from './dto/intersolve-create-debit-card.dto';
 import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
@@ -86,9 +86,8 @@ export class IntersolveVisaService {
     // Check if customer is in our database
     if (customer) {
       // Customer exists, check if visaWallets exists
-      // TODO: REFACTOR: in 121 there can be only 1 wallet per customer, so remove array functionality
-      if (customer.visaWallets[0]) {
-        if (customer.visaWallets[0].linkedToVisaCustomer === false) {
+      if (customer.visaWallet) {
+        if (customer.visaWallet.linkedToVisaCustomer === false) {
           // Wallet exists, but is not linked to customer
           const registerResult = await this.linkWalletToCustomer(
             tokenCode,
@@ -174,7 +173,7 @@ export class IntersolveVisaService {
   private async createWallet(
     visaCustomer: IntersolveVisaCustomerEntity,
     response: PaTransactionResultDto,
-    amount: number,
+    calculatedAmount: number,
     transactionNotifications: any[],
   ): Promise<{
     response?: PaTransactionResultDto;
@@ -186,7 +185,7 @@ export class IntersolveVisaService {
     const issueTokenPayload = new IntersolveIssueTokenDto();
     issueTokenPayload.reference = visaCustomer.holderId;
     issueTokenPayload.quantities = [
-      { quantity: { assetCode: 'EUR', value: amount } },
+      { quantity: { assetCode: 'EUR', value: calculatedAmount } },
     ];
     // TODO: remove console.log
     console.log('issueTokenPayload: ', issueTokenPayload);
@@ -253,9 +252,7 @@ export class IntersolveVisaService {
 
     // add message for 'created debit card'
     transactionNotifications.push(
-      this.buildNotificationObjectIssueDebitCard(
-        tokenCode,
-      ),
+      this.buildNotificationObjectIssueDebitCard(tokenCode, calculatedAmount),
     );
     return { tokenCode, transactionNotifications };
   }
@@ -269,21 +266,13 @@ export class IntersolveVisaService {
     });
   }
 
-  private buildNotificationObjectIssuePhysicalCard(
-    token: string,
-  ): TransactionNotificationObject {
-    return {
-      notificationKey: 'physicalVisaCardCreated',
-      dynamicContent: [token],
-    };
-  }
-
   private buildNotificationObjectIssueDebitCard(
     token: string,
+    calculatedAmount: number,
   ): TransactionNotificationObject {
     return {
       notificationKey: 'visaDebitCardCreated',
-      dynamicContent: [token],
+      dynamicContent: [token, String(calculatedAmount)],
     };
   }
 
