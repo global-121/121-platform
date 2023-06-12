@@ -6,7 +6,7 @@ import {
   IntersolveRegisterHolderResponseDto,
 } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
-import { IntersolveCreateVirtualCardResponseDto } from './dto/intersolve-create-virtual-card.dto';
+import { IntersolveCreateDebitCardResponseDto } from './dto/intersolve-create-debit-card.dto';
 import { IntersolveGetVirtualCardResponseDto } from './dto/intersolve-get-virtual-card-response.dto';
 import {
   IntersolveGetTokenResponseDto,
@@ -247,8 +247,8 @@ export class IntersolveVisaApiMockService {
 
   public createVirtualCardMock(
     tokenCode: string,
-  ): IntersolveCreateVirtualCardResponseDto {
-    const res: IntersolveCreateVirtualCardResponseDto = {
+  ): IntersolveCreateDebitCardResponseDto {
+    const res: IntersolveCreateDebitCardResponseDto = {
       status: 200,
       statusText: 'OK',
       data: {},

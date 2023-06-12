@@ -4,17 +4,17 @@ export class IntersolveCreateDebitCardDto {
   public brand: 'VISA_CARD';
   public firstName: string;
   public lastName: string;
-  public mobileNumber: "";
+  public mobileNumber: '';
   public cardAddress: {
     address1: string;
     city: string;
-    country: "NL";
+    country: 'NL';
     postalCode: string;
   };
   public pinAddress: {
     address1: string;
     city: string;
-    country: "NL";
+    country: 'NL';
     postalCode: string;
   };
   public expiration?: {
@@ -23,7 +23,7 @@ export class IntersolveCreateDebitCardDto {
   };
 }
 
-export class IntersolveCreateVirtualCardResponseDto {
+export class IntersolveCreateDebitCardResponseDto {
   public data: {
     success?: boolean;
     errors?: IntersolveReponseErrorDto[];

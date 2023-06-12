@@ -3,7 +3,7 @@ import { Issuer, TokenSet } from 'openid-client';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
-import { IntersolveCreateDebitCardDto as IntersolveCreateDebitCardDto } from './dto/intersolve-create-virtual-card.dto';
+import { IntersolveCreateDebitCardDto } from './dto/intersolve-create-debit-card.dto';
 import { IntersolveGetVirtualCardResponseDto } from './dto/intersolve-get-virtual-card-response.dto';
 import {
   IntersolveGetTokenResponseDto,
