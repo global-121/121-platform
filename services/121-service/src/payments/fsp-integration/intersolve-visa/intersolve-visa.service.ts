@@ -101,8 +101,8 @@ export class IntersolveVisaService
       }, r.name);
     }
 
-    const jumboAdressInfoDtoArray = await query.getRawMany();
-    return jumboAdressInfoDtoArray;
+    const visaAddressInfoDtoArray = await query.getRawMany();
+    return visaAddressInfoDtoArray;
   }
 
   private async getRelationOptionsForVisa(
