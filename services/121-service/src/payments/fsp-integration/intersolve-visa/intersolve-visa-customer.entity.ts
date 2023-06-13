@@ -18,9 +18,9 @@ export class IntersolveVisaCustomerEntity extends Base121Entity {
   @Column({ type: 'int', nullable: true })
   public registrationId: number;
 
-  @OneToOne(
-    (_type) => IntersolveVisaWalletEntity,
-    (visaWallet) => visaWallet.intersolveVisaCustomer,
-  )
+  @OneToOne(() => IntersolveVisaWalletEntity)
+  @JoinColumn({ name: 'visaWalletId' })
   public visaWallet: IntersolveVisaWalletEntity;
+  @Column({ type: 'int', nullable: true })
+  public visaWalletId: number;
 }

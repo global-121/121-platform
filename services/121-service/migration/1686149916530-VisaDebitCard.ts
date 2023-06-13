@@ -31,9 +31,27 @@ export class VisaDebitCard1686149916530 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."intersolve_visa_wallet" ADD "debitCardCreated" boolean NOT NULL DEFAULT false`,
     );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_visa_customer" ADD "visaWalletId" integer`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_visa_customer" ADD CONSTRAINT "UQ_f444f4ba8389dd18e6f1fdc3f9b" UNIQUE ("visaWalletId")`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_visa_customer" ADD CONSTRAINT "FK_f444f4ba8389dd18e6f1fdc3f9b" FOREIGN KEY ("visaWalletId") REFERENCES "121-service"."intersolve_visa_wallet"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_visa_customer" DROP CONSTRAINT "FK_f444f4ba8389dd18e6f1fdc3f9b"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_visa_customer" DROP CONSTRAINT "UQ_f444f4ba8389dd18e6f1fdc3f9b"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_visa_customer" DROP COLUMN "visaWalletId"`,
+    );
     await queryRunner.query(
       `ALTER TABLE "121-service"."intersolve_visa_wallet" DROP COLUMN "debitCardCreated"`,
     );

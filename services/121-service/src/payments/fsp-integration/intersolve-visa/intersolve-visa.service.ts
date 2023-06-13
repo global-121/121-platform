@@ -348,8 +348,8 @@ export class IntersolveVisaService {
     registrationId: number,
   ): Promise<IntersolveVisaCustomerEntity> {
     return await this.intersolveVisaCustomerRepo.findOne({
+      relations: ['visaWallet'],
       where: { registrationId: registrationId },
-      relations: ['visaWallets'],
     });
   }
 
