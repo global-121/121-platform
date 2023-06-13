@@ -102,6 +102,7 @@ export class IntersolveVisaService {
       } else {
         // start create wallet flow (this also includes linking the wallet to the customer)
         const createWalletResult = await this.createWallet(
+          registration,
           customer,
           response,
           calculatedAmount,
@@ -135,6 +136,7 @@ export class IntersolveVisaService {
 
       // start create wallet flow
       const createWalletResult = await this.createWallet(
+        registration,
         visaCustomer,
         response,
         calculatedAmount,
@@ -171,6 +173,7 @@ export class IntersolveVisaService {
   }
 
   private async createWallet(
+    registration: RegistrationEntity,
     visaCustomer: IntersolveVisaCustomerEntity,
     response: PaTransactionResultDto,
     calculatedAmount: number,
@@ -228,9 +231,33 @@ export class IntersolveVisaService {
     intersolveVisaWallet.linkedToVisaCustomer = true;
     await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
 
-    // TODO: Create debit card
+    const customerDetails = await this.getCustomerDetails(registration);
+
     const createDebitCardPayload = new IntersolveCreateDebitCardDto();
     createDebitCardPayload.brand = 'VISA_CARD';
+    createDebitCardPayload.firstName = customerDetails.firstName;
+    createDebitCardPayload.lastName = customerDetails.lastName;
+    createDebitCardPayload.mobileNumber = customerDetails.phoneNumber;
+    createDebitCardPayload.cardAddress = {
+      address1: `${
+        customerDetails.addressStreet +
+        customerDetails.addressHouseNumber +
+        customerDetails.addressHouseNumberAddition
+      }`,
+      city: customerDetails.addressCity,
+      country: 'NL',
+      postalCode: customerDetails.addressPostalCode,
+    };
+    createDebitCardPayload.pinAddress = {
+      address1: `${
+        customerDetails.addressStreet +
+        customerDetails.addressHouseNumber +
+        customerDetails.addressHouseNumberAddition
+      }`,
+      city: customerDetails.addressCity,
+      country: 'NL',
+      postalCode: customerDetails.addressPostalCode,
+    };
     const createDebitCardResult =
       await this.intersolveVisaApiService.createDebitCard(
         intersolveVisaWallet.tokenCode,
@@ -320,34 +347,11 @@ export class IntersolveVisaService {
   private async createCustomer(
     registration: RegistrationEntity,
   ): Promise<IntersolveCreateCustomerResponseBodyDto> {
-    // TODO: Refactor this to 1 call to get all data at once
-    const lastName = await registration.getRegistrationDataValueByName(
-      CustomDataAttributes.lastName,
-    );
-    const addressStreet = await registration.getRegistrationDataValueByName(
-      CustomDataAttributes.addressStreet,
-    );
-    const addressHouseNumber =
-      await registration.getRegistrationDataValueByName(
-        CustomDataAttributes.addressHouseNumber,
-      );
-    const addressHouseNumberAddition =
-      await registration.getRegistrationDataValueByName(
-        CustomDataAttributes.addressHouseNumberAddition,
-      );
-    const addressPostalCode = await registration.getRegistrationDataValueByName(
-      CustomDataAttributes.addressPostalCode,
-    );
-    const addressCity = await registration.getRegistrationDataValueByName(
-      CustomDataAttributes.addressCity,
-    );
-    const phoneNumber = await registration.getRegistrationDataValueByName(
-      CustomDataAttributes.phoneNumber,
-    );
+    const customerDetails = await this.getCustomerDetails(registration);
     const createCustomerRequest: IntersolveCreateCustomerDto = {
       externalReference: registration.referenceId,
       individual: {
-        lastName: lastName,
+        lastName: customerDetails.lastName,
         estimatedAnnualPaymentVolumeMajorUnit: 12 * 44, // This is assuming 44 euro per month for a year for 1 child
       },
       contactInfo: {
@@ -355,18 +359,20 @@ export class IntersolveVisaService {
           {
             type: 'HOME',
             addressLine1: `${
-              addressStreet + addressHouseNumber + addressHouseNumberAddition
+              customerDetails.addressStreet +
+              customerDetails.addressHouseNumber +
+              customerDetails.addressHouseNumberAddition
             }`,
             // region: 'Utrecht',
-            city: addressCity,
-            postalCode: addressPostalCode,
+            city: customerDetails.addressCity,
+            postalCode: customerDetails.addressPostalCode,
             country: 'NL',
           },
         ],
         phoneNumbers: [
           {
             type: 'HOME',
-            value: phoneNumber,
+            value: customerDetails.phoneNumber,
           },
         ],
       },
@@ -424,5 +430,54 @@ export class IntersolveVisaService {
       allMessages = `${allMessages}${error.code}: ${error.description} Field: ${error.field}${newLine}`;
     }
     return allMessages;
+  }
+
+  private async getCustomerDetails(registration: RegistrationEntity): Promise<{
+    firstName: string;
+    lastName: string;
+    addressStreet: string;
+    addressHouseNumber: string;
+    addressHouseNumberAddition: string;
+    addressPostalCode: string;
+    addressCity: string;
+    phoneNumber: string;
+  }> {
+    // TODO: Refactor this to 1 call to get all data at once
+    const firstName = await registration.getRegistrationDataValueByName(
+      CustomDataAttributes.firstName,
+    );
+    const lastName = await registration.getRegistrationDataValueByName(
+      CustomDataAttributes.lastName,
+    );
+    const addressStreet = await registration.getRegistrationDataValueByName(
+      CustomDataAttributes.addressStreet,
+    );
+    const addressHouseNumber =
+      await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.addressHouseNumber,
+      );
+    const addressHouseNumberAddition =
+      await registration.getRegistrationDataValueByName(
+        CustomDataAttributes.addressHouseNumberAddition,
+      );
+    const addressPostalCode = await registration.getRegistrationDataValueByName(
+      CustomDataAttributes.addressPostalCode,
+    );
+    const addressCity = await registration.getRegistrationDataValueByName(
+      CustomDataAttributes.addressCity,
+    );
+    const phoneNumber = await registration.getRegistrationDataValueByName(
+      CustomDataAttributes.phoneNumber,
+    );
+    return {
+      firstName: firstName,
+      lastName: lastName,
+      addressStreet: addressStreet,
+      addressHouseNumber: addressHouseNumber,
+      addressHouseNumberAddition: addressHouseNumberAddition,
+      addressPostalCode: addressPostalCode,
+      addressCity: addressCity,
+      phoneNumber: phoneNumber,
+    };
   }
 }
