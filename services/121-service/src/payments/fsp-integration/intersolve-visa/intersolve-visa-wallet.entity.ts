@@ -1,4 +1,4 @@
-import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, OneToOne } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 
@@ -17,9 +17,9 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
   @Column({ default: false })
   public debitCardCreated: boolean;
 
-  @ManyToOne(
+  @OneToOne(
     () => IntersolveVisaCustomerEntity,
-    (intersolveVisaCustomer) => intersolveVisaCustomer.visaWallets,
+    (intersolveVisaCustomer) => intersolveVisaCustomer.visaWallet,
   )
   public intersolveVisaCustomer: IntersolveVisaCustomerEntity;
 }

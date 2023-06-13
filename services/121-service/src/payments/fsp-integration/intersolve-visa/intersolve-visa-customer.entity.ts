@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  OneToMany,
-  OneToOne,
-} from 'typeorm';
+import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
@@ -25,9 +18,9 @@ export class IntersolveVisaCustomerEntity extends Base121Entity {
   @Column({ type: 'int', nullable: true })
   public registrationId: number;
 
-  @OneToMany(
+  @OneToOne(
     (_type) => IntersolveVisaWalletEntity,
-    (visaWallets) => visaWallets.intersolveVisaCustomer,
+    (visaWallet) => visaWallet.intersolveVisaCustomer,
   )
-  public visaWallets: IntersolveVisaWalletEntity[];
+  public visaWallet: IntersolveVisaWalletEntity;
 }
