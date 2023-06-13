@@ -14,6 +14,7 @@ import {
   TransactionNotificationObject,
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { RegistrationEntity } from './../../../registration/registration.entity';
 import {
   IntersolveCreateCustomerResponseBodyDto,
@@ -36,7 +37,9 @@ import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 
 @Injectable()
-export class IntersolveVisaService {
+export class IntersolveVisaService
+  implements FinancialServiceProviderIntegrationInterface
+{
   @InjectRepository(RegistrationEntity)
   public registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(IntersolveVisaCustomerEntity)
@@ -105,8 +108,8 @@ export class IntersolveVisaService {
       }, r.name);
     }
 
-    const jumboAdressInfoDtoArray = await query.getRawMany();
-    return jumboAdressInfoDtoArray;
+    const visaAddressInfoDtoArray = await query.getRawMany();
+    return visaAddressInfoDtoArray;
   }
 
   private async getRelationOptionsForVisa(
