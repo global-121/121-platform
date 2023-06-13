@@ -455,7 +455,7 @@ See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_service.yml`
 | `tag`         | A specific commit or point-in-time on the git-timeline; named after a version, i.e. `v1.1.0`                 |
 | `release`     | A fixed 'state of the code-base', [published on GitHub](https://github.com/global-121/121-platform/releases) |
 | `deployment`  | An action performed to get (released) code running on an environment                                         |
-| `environment` | A machine that can run code (with specified settings); i.e. a service or VM, or your local machine           |
+| `environment` | A machine that can run code (with specified settings); i.e. a service, or your local machine                 |
 
 ---
 
