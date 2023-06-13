@@ -3,7 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
+import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
+import { GenericAttributes } from '../../../registration/enum/custom-data-attributes';
+import { RegistrationsService } from '../../../registration/registrations.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
@@ -20,6 +22,8 @@ import { IntersolveIssueTokenDto } from './dto/intersolve-issue-token.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { MessageStatus as MessageStatusDto } from './dto/message-status.dto';
+import { PaymentDetailsDto } from './dto/payment-details.dto';
+import { IntersolveVisaPaymentInfoEnum } from './enum/intersolve-visa-payment-info.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
@@ -35,6 +39,7 @@ export class IntersolveVisaService {
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
+    private readonly registrationsService: RegistrationsService,
   ) {}
 
   public async sendPayment(
@@ -46,12 +51,17 @@ export class IntersolveVisaService {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.intersolveVisa;
-    for (const paymentData of paymentList) {
+
+    const paymentDetailsArray = await this.getPaPaymentDetails(
+      paymentList.map((pa) => pa.referenceId),
+    );
+
+    for (const paymentDetails of paymentDetailsArray) {
       const calculatedAmount =
-        amount * (paymentData.paymentAmountMultiplier || 1);
+        amount * (paymentDetails.paymentAmountMultiplier || 1);
 
       const paymentRequestResultPerPa = await this.sendPaymentToPa(
-        paymentData,
+        paymentDetails,
         paymentNr,
         calculatedAmount,
       );
@@ -64,13 +74,59 @@ export class IntersolveVisaService {
     }
   }
 
+  private async getPaPaymentDetails(
+    referenceIds: string[],
+  ): Promise<PaymentDetailsDto[]> {
+    const relationOptions = await this.getRelationOptionsForVisa(
+      referenceIds[0],
+    );
+    const query = this.registrationRepository
+      .createQueryBuilder('registration')
+      .select([
+        `registration.referenceId as "referenceId"`,
+        `coalesce(registration."${GenericAttributes.paymentAmountMultiplier}",1) as "paymentAmountMultiplier"`,
+      ])
+      .where(`registration.referenceId IN (:...referenceIds)`, {
+        referenceIds,
+      });
+    for (const r of relationOptions) {
+      query.select((subQuery) => {
+        return this.registrationsService.customDataEntrySubQuery(
+          subQuery,
+          r.relation,
+        );
+      }, r.name);
+    }
+
+    const jumboAdressInfoDtoArray = await query.getRawMany();
+    return jumboAdressInfoDtoArray;
+  }
+
+  private async getRelationOptionsForVisa(
+    referenceId: string,
+  ): Promise<RegistrationDataOptions[]> {
+    const registration = await this.registrationRepository.findOne({
+      where: { referenceId: referenceId },
+    });
+    const registrationDataOptions: RegistrationDataOptions[] = [];
+    for (const attr of Object.values(IntersolveVisaPaymentInfoEnum)) {
+      const relation = await registration.getRelationForName(attr);
+      const registrationDataOption = {
+        name: attr,
+        relation: relation,
+      };
+      registrationDataOptions.push(registrationDataOption);
+    }
+    return registrationDataOptions;
+  }
+
   private async sendPaymentToPa(
-    paymentData: PaPaymentDataDto,
+    paymentDetails: PaymentDetailsDto,
     paymentNr: number,
     calculatedAmount: number,
   ): Promise<PaTransactionResultDto> {
     const response = new PaTransactionResultDto();
-    response.referenceId = paymentData.referenceId;
+    response.referenceId = paymentDetails.referenceId;
     response.date = new Date();
     response.calculatedAmount = calculatedAmount;
     response.fspName = FspName.intersolveVisa;
@@ -79,7 +135,7 @@ export class IntersolveVisaService {
     let tokenCode;
 
     const registration = await this.registrationRepository.findOne({
-      where: { referenceId: paymentData.referenceId },
+      where: { referenceId: paymentDetails.referenceId },
     });
     const customer = await this.getCustomerEntity(registration.id);
 
@@ -107,6 +163,7 @@ export class IntersolveVisaService {
           response,
           calculatedAmount,
           transactionNotifications,
+          paymentDetails,
         );
         if (createWalletResult.response?.status === StatusEnum.error) {
           response.status = response.status;
@@ -116,7 +173,10 @@ export class IntersolveVisaService {
       }
     } else {
       // create customer (this assumes a customer with 121's referenceId does not exist yet with Intersolve)
-      const createCustomerResult = await this.createCustomer(registration);
+      const createCustomerResult = await this.createCustomer(
+        registration,
+        paymentDetails,
+      );
       if (!createCustomerResult.data.success) {
         response.status = StatusEnum.error;
         response.message = createCustomerResult.data.errors.length
@@ -141,6 +201,7 @@ export class IntersolveVisaService {
         response,
         calculatedAmount,
         transactionNotifications,
+        paymentDetails,
       );
 
       if (createWalletResult.response?.status === StatusEnum.error) {
@@ -162,7 +223,7 @@ export class IntersolveVisaService {
       this.buildNotificationObjectLoadBalance(calculatedAmount),
     );
     return {
-      referenceId: paymentData.referenceId,
+      referenceId: paymentDetails.referenceId,
       status: loadBalanceResult.status,
       message: loadBalanceResult.message,
       date: new Date(),
@@ -178,6 +239,7 @@ export class IntersolveVisaService {
     response: PaTransactionResultDto,
     calculatedAmount: number,
     transactionNotifications: any[],
+    paymentDetails: PaymentDetailsDto,
   ): Promise<{
     response?: PaTransactionResultDto;
     tokenCode?: string;
@@ -231,32 +293,30 @@ export class IntersolveVisaService {
     intersolveVisaWallet.linkedToVisaCustomer = true;
     await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
 
-    const customerDetails = await this.getCustomerDetails(registration);
-
     const createDebitCardPayload = new IntersolveCreateDebitCardDto();
     createDebitCardPayload.brand = 'VISA_CARD';
-    createDebitCardPayload.firstName = customerDetails.firstName;
-    createDebitCardPayload.lastName = customerDetails.lastName;
-    createDebitCardPayload.mobileNumber = customerDetails.phoneNumber;
+    createDebitCardPayload.firstName = paymentDetails.firstName;
+    createDebitCardPayload.lastName = paymentDetails.lastName;
+    createDebitCardPayload.mobileNumber = paymentDetails.phoneNumber;
     createDebitCardPayload.cardAddress = {
       address1: `${
-        customerDetails.addressStreet +
-        customerDetails.addressHouseNumber +
-        customerDetails.addressHouseNumberAddition
+        paymentDetails.addressStreet +
+        paymentDetails.addressHouseNumber +
+        paymentDetails.addressHouseNumberAddition
       }`,
-      city: customerDetails.addressCity,
+      city: paymentDetails.addressCity,
       country: 'NL',
-      postalCode: customerDetails.addressPostalCode,
+      postalCode: paymentDetails.addressPostalCode,
     };
     createDebitCardPayload.pinAddress = {
       address1: `${
-        customerDetails.addressStreet +
-        customerDetails.addressHouseNumber +
-        customerDetails.addressHouseNumberAddition
+        paymentDetails.addressStreet +
+        paymentDetails.addressHouseNumber +
+        paymentDetails.addressHouseNumberAddition
       }`,
-      city: customerDetails.addressCity,
+      city: paymentDetails.addressCity,
       country: 'NL',
-      postalCode: customerDetails.addressPostalCode,
+      postalCode: paymentDetails.addressPostalCode,
     };
     const createDebitCardResult =
       await this.intersolveVisaApiService.createDebitCard(
@@ -346,12 +406,12 @@ export class IntersolveVisaService {
 
   private async createCustomer(
     registration: RegistrationEntity,
+    paymentDetails: PaymentDetailsDto,
   ): Promise<IntersolveCreateCustomerResponseBodyDto> {
-    const customerDetails = await this.getCustomerDetails(registration);
     const createCustomerRequest: IntersolveCreateCustomerDto = {
       externalReference: registration.referenceId,
       individual: {
-        lastName: customerDetails.lastName,
+        lastName: paymentDetails.lastName,
         estimatedAnnualPaymentVolumeMajorUnit: 12 * 44, // This is assuming 44 euro per month for a year for 1 child
       },
       contactInfo: {
@@ -359,20 +419,20 @@ export class IntersolveVisaService {
           {
             type: 'HOME',
             addressLine1: `${
-              customerDetails.addressStreet +
-              customerDetails.addressHouseNumber +
-              customerDetails.addressHouseNumberAddition
+              paymentDetails.addressStreet +
+              paymentDetails.addressHouseNumber +
+              paymentDetails.addressHouseNumberAddition
             }`,
             // region: 'Utrecht',
-            city: customerDetails.addressCity,
-            postalCode: customerDetails.addressPostalCode,
+            city: paymentDetails.addressCity,
+            postalCode: paymentDetails.addressPostalCode,
             country: 'NL',
           },
         ],
         phoneNumbers: [
           {
             type: 'HOME',
-            value: customerDetails.phoneNumber,
+            value: paymentDetails.phoneNumber,
           },
         ],
       },
@@ -430,54 +490,5 @@ export class IntersolveVisaService {
       allMessages = `${allMessages}${error.code}: ${error.description} Field: ${error.field}${newLine}`;
     }
     return allMessages;
-  }
-
-  private async getCustomerDetails(registration: RegistrationEntity): Promise<{
-    firstName: string;
-    lastName: string;
-    addressStreet: string;
-    addressHouseNumber: string;
-    addressHouseNumberAddition: string;
-    addressPostalCode: string;
-    addressCity: string;
-    phoneNumber: string;
-  }> {
-    // TODO: Refactor this to 1 call to get all data at once
-    const firstName = await registration.getRegistrationDataValueByName(
-      CustomDataAttributes.firstName,
-    );
-    const lastName = await registration.getRegistrationDataValueByName(
-      CustomDataAttributes.lastName,
-    );
-    const addressStreet = await registration.getRegistrationDataValueByName(
-      CustomDataAttributes.addressStreet,
-    );
-    const addressHouseNumber =
-      await registration.getRegistrationDataValueByName(
-        CustomDataAttributes.addressHouseNumber,
-      );
-    const addressHouseNumberAddition =
-      await registration.getRegistrationDataValueByName(
-        CustomDataAttributes.addressHouseNumberAddition,
-      );
-    const addressPostalCode = await registration.getRegistrationDataValueByName(
-      CustomDataAttributes.addressPostalCode,
-    );
-    const addressCity = await registration.getRegistrationDataValueByName(
-      CustomDataAttributes.addressCity,
-    );
-    const phoneNumber = await registration.getRegistrationDataValueByName(
-      CustomDataAttributes.phoneNumber,
-    );
-    return {
-      firstName: firstName,
-      lastName: lastName,
-      addressStreet: addressStreet,
-      addressHouseNumber: addressHouseNumber,
-      addressHouseNumberAddition: addressHouseNumberAddition,
-      addressPostalCode: addressPostalCode,
-      addressCity: addressCity,
-      phoneNumber: phoneNumber,
-    };
   }
 }
