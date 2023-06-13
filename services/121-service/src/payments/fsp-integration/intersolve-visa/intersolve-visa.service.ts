@@ -339,7 +339,7 @@ export class IntersolveVisaService {
 
     // add message for 'created debit card'
     transactionNotifications.push(
-      this.buildNotificationObjectIssueDebitCard(tokenCode, calculatedAmount),
+      this.buildNotificationObjectIssueDebitCard(calculatedAmount),
     );
     return { tokenCode, transactionNotifications };
   }
@@ -354,12 +354,11 @@ export class IntersolveVisaService {
   }
 
   private buildNotificationObjectIssueDebitCard(
-    token: string,
-    calculatedAmount: number,
+    amount: number,
   ): TransactionNotificationObject {
     return {
       notificationKey: 'visaDebitCardCreated',
-      dynamicContent: [token, String(calculatedAmount)],
+      dynamicContent: [String(amount)],
     };
   }
 
