@@ -10,13 +10,16 @@ import {
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { BelcashRequestEntity } from './belcash-request.entity';
 import { BelcashTransferPayload } from './belcash-transfer-payload.dto';
 import { BelcashApiService } from './belcash.api.service';
 import { BelcashPaymentStatusDto } from './dto/belcash-payment-status.dto';
 
 @Injectable()
-export class BelcashService {
+export class BelcashService
+  implements FinancialServiceProviderIntegrationInterface
+{
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(BelcashRequestEntity)
