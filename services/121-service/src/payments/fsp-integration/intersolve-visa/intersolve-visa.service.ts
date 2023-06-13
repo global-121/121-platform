@@ -356,7 +356,7 @@ export class IntersolveVisaService
     createWalletPayload.quantities = [
       {
         quantity: { assetCode: 'EUR', value: calculatedAmount },
-        expiresAt: String(programEndDate),
+        expiresAt: programEndDate.toISOString(),
       },
     ];
     const createWalletResult = await this.intersolveVisaApiService.createWallet(
@@ -449,7 +449,7 @@ export class IntersolveVisaService
             value: amountInCents,
             assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
           },
-          expiresAt: String(programEndDate),
+          expiresAt: programEndDate.toISOString(),
         },
       ],
     };
