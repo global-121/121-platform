@@ -1,12 +1,12 @@
 import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
 
-export class IntersolveIssueTokenResponseDto {
-  public data: IntersolveIssueTokenResponseBodyDto;
+export class IntersolveCreateWalletResponseDto {
+  public data: IntersolveCreateWalletResponseBodyDto;
   public status: number;
   public statusText?: string;
 }
 
-export class IntersolveIssueTokenResponseBodyDto {
+export class IntersolveCreateWalletResponseBodyDto {
   public success: boolean;
   public errors?: IntersolveReponseErrorDto[];
   public code?: string;
