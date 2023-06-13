@@ -71,7 +71,12 @@
                   *ngIf="enableSinglePayment(paymentRow)"
                   [ngClass]="'waiting'"
                 >
-                  <ion-label> Not yet sent </ion-label>
+                  <ion-label>
+                    {{
+                      'page.program.program-people-affected.transaction.not-yet-sent'
+                        | translate
+                    }}
+                  </ion-label>
                 </ion-chip>
               </ng-container>
 
@@ -87,8 +92,10 @@
                     hasVoucherSupport(paymentRow.fsp)
                   "
                   (click)="rowClick(paymentRow)"
-                >
-                  Open voucher
+                  >{{
+                    'page.program.program-people-affected.transaction.open-voucher'
+                      | translate
+                  }}
                 </ion-button>
               </ng-container>
 
@@ -104,7 +111,10 @@
                   "
                   (click)="rowClick(paymentRow)"
                 >
-                  Send payment
+                  {{
+                    'page.program.program-people-affected.transaction.send-payment'
+                      | translate
+                  }}
                 </ion-button>
               </ng-container>
             </ion-col>
@@ -137,21 +147,34 @@
             <ion-col size="6">
               <ion-list>
                 <ion-item>
-                  <ion-label class="accordion-text">Sent: </ion-label>
-                  <ion-label class="accordion-text text-bold ion-text-right"
-                    >-</ion-label
-                  >
-                </ion-item>
-                <ion-item>
                   <ion-label class="accordion-text"
-                    >Financial Officer:
+                    >{{
+                      'page.program.program-people-affected.transaction.sent'
+                        | translate
+                    }}:
                   </ion-label>
                   <ion-label class="accordion-text text-bold ion-text-right"
                     >-</ion-label
                   >
                 </ion-item>
                 <ion-item>
-                  <ion-label class="accordion-text">Amount: </ion-label>
+                  <ion-label class="accordion-text"
+                    >{{
+                      'page.program.program-people-affected.transaction.financial-officer'
+                        | translate
+                    }}:
+                  </ion-label>
+                  <ion-label class="accordion-text text-bold ion-text-right"
+                    >-</ion-label
+                  >
+                </ion-item>
+                <ion-item *ngIf="paymentRow.transaction?.status">
+                  <ion-label class="accordion-text"
+                    >{{
+                      'page.program.program-people-affected.transaction.amount'
+                        | translate
+                    }}:
+                  </ion-label>
                   <ion-label class="accordion-text text-bold ion-text-right">{{
                     paymentRow.amount
                   }}</ion-label>
@@ -162,19 +185,34 @@
             <ion-col size="6">
               <ion-list>
                 <ion-item>
-                  <ion-label class="accordion-text">Received: </ion-label>
+                  <ion-label class="accordion-text"
+                    >{{
+                      'page.program.program-people-affected.transaction.received'
+                        | translate
+                    }}:
+                  </ion-label>
                   <ion-label class="accordion-text text-bold ion-text-right"
                     >-</ion-label
                   >
                 </ion-item>
-                <ion-item>
-                  <ion-label class="accordion-text">FSP: </ion-label>
+                <ion-item *ngIf="paymentRow.transaction?.status">
+                  <ion-label class="accordion-text"
+                    >{{
+                      'page.program.program-people-affected.transaction.fsp'
+                        | translate
+                    }}:
+                  </ion-label>
                   <ion-label class="accordion-text text-bold ion-text-right">{{
                     paymentRow.transaction?.fspName
                   }}</ion-label>
                 </ion-item>
                 <ion-item>
-                  <ion-label class="accordion-text">Used: </ion-label>
+                  <ion-label class="accordion-text"
+                    >{{
+                      'page.program.program-people-affected.transaction.used'
+                        | translate
+                    }}:
+                  </ion-label>
                   <ion-label class="accordion-text text-bold ion-text-right"
                     >-</ion-label
                   >
