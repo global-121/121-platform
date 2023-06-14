@@ -9,8 +9,9 @@ import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dt
 import { IntersolveCreateDebitCardResponseDto } from './dto/intersolve-create-debit-card.dto';
 import {
   IntersolveCreateWalletResponseBodyDto,
+  IntersolveCreateWalletResponseDataDto,
   IntersolveCreateWalletResponseDto,
-  IntersolveIssueTokenResponseTokenDto,
+  IntersolveCreateWalletResponseTokenDto,
 } from './dto/intersolve-create-wallet-response.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 
@@ -73,14 +74,15 @@ export class IntersolveVisaApiMockService {
     response.data.code = 'string';
     response.data.correlationId = 'string';
 
-    response.data.data = new IntersolveIssueTokenResponseTokenDto();
-    response.data.data.code = `mock-token-${uuid()}`;
-    response.data.data.blocked = false;
-    response.data.data.blockReasonCode = 'string';
-    response.data.data.tier = 'string';
-    response.data.data.brandTypeCode = 'string';
-    response.data.data.holderId = 'string';
-    response.data.data.balances = [
+    response.data.data = new IntersolveCreateWalletResponseDataDto();
+    response.data.data.token = new IntersolveCreateWalletResponseTokenDto();
+    response.data.data.token.code = `mock-token-${uuid()}`;
+    response.data.data.token.blocked = false;
+    response.data.data.token.blockReasonCode = 'string';
+    response.data.data.token.tier = 'string';
+    response.data.data.token.brandTypeCode = 'string';
+    response.data.data.token.holderId = 'string';
+    response.data.data.token.balances = [
       {
         quantity: {
           assetCode: 'string',
@@ -91,7 +93,7 @@ export class IntersolveVisaApiMockService {
         lastChangedAt: '2023-02-08T14:36:05.816Z',
       },
     ];
-    response.data.data.assets = [
+    response.data.data.token.assets = [
       {
         identity: {
           type: 'string',
@@ -165,15 +167,15 @@ export class IntersolveVisaApiMockService {
 
     if (holderId.toLowerCase().includes('mock-fail-link-customer-wallet')) {
       // pass different token to be later used again in mock link-customer-wallet call
-      response.data.data.code = 'mock-fail-link-customer-wallet';
+      response.data.data.token.code = 'mock-fail-link-customer-wallet';
     }
     if (holderId.toLowerCase().includes('mock-fail-create-debit-card')) {
       // pass different token to be later used again in mock create-debit-card call
-      response.data.data.code = 'mock-fail-create-debit-card';
+      response.data.data.token.code = 'mock-fail-create-debit-card';
     }
     if (holderId.toLowerCase().includes('mock-fail-load-balance')) {
       // pass different token to be later used again in mock load-balance call
-      response.data.data.code = 'mock-fail-load-balance';
+      response.data.data.token.code = 'mock-fail-load-balance';
     }
 
     if (holderId.toLowerCase().includes('mock-fail-create-wallet')) {

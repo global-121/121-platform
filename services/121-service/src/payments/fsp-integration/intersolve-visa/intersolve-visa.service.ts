@@ -206,8 +206,9 @@ export class IntersolveVisaService
 
       // if success, store wallet
       const intersolveVisaWallet = new IntersolveVisaWalletEntity();
-      intersolveVisaWallet.tokenCode = createWalletResult.data.data.code;
-      intersolveVisaWallet.tokenBlocked = createWalletResult.data.data.blocked;
+      intersolveVisaWallet.tokenCode = createWalletResult.data.data.token.code;
+      intersolveVisaWallet.tokenBlocked =
+        createWalletResult.data.data.token.blocked;
       intersolveVisaWallet.intersolveVisaCustomer = visaCustomer;
       await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
 
