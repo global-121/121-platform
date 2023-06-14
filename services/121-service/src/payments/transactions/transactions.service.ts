@@ -83,7 +83,7 @@ export class TransactionsService {
         'amount',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
-        'fsp.fsp as "fspName"',
+        'fsp.fspDisplayNamePortal as "fspName"',
       ])
       .leftJoin('transaction.financialServiceProvider', 'fsp')
       .leftJoin(

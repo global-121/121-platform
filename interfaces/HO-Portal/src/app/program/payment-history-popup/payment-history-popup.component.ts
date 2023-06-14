@@ -226,6 +226,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
       'Intersolve-voucher-whatsapp',
     ];
     return voucherFsps.includes(fsp);
+
   }
 
   async rowClick(paymentRow: PaymentRowDetail) {
@@ -243,6 +244,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
       !hasError &&
       !isSinglePayment
     ) {
+      console.log(paymentRow)
       return;
     }
 
