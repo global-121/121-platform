@@ -568,7 +568,10 @@ export class ExportMetricsService {
       },
     });
     const relationOptions: RegistrationDataOptions[] = [];
-    const combinedArray = [...program.programQuestions, ...program.programCustomAttributes ];
+    const combinedArray = [
+      ...program.programQuestions,
+      ...program.programCustomAttributes,
+    ];
     for (const entry of combinedArray) {
       if (
         JSON.parse(JSON.stringify(program.fullnameNamingConvention)).includes(
@@ -577,12 +580,12 @@ export class ExportMetricsService {
       ) {
         const relationOption = new RegistrationDataOptions();
         relationOption.name = entry.name;
-        if(entry instanceof ProgramCustomAttributeEntity){
+        if (entry instanceof ProgramCustomAttributeEntity) {
           relationOption.relation = {
             programCustomAttributeId: entry.id,
           };
         }
-        if(entry instanceof ProgramQuestionEntity){
+        if (entry instanceof ProgramQuestionEntity) {
           relationOption.relation = {
             programQuestionId: entry.id,
           };
