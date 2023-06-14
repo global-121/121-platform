@@ -562,23 +562,31 @@ export class ExportMetricsService {
     programId: number,
   ): Promise<RegistrationDataOptions[]> {
     const program = await this.programRepository.findOne({
-      relations: ['programQuestions'],
+      relations: ['programQuestions', 'programCustomAttributes'],
       where: {
         id: programId,
       },
     });
     const relationOptions: RegistrationDataOptions[] = [];
-    for (const programQuestion of program.programQuestions) {
+    const combinedArray = [...program.programQuestions, ...program.programCustomAttributes ];
+    for (const entry of combinedArray) {
       if (
         JSON.parse(JSON.stringify(program.fullnameNamingConvention)).includes(
-          programQuestion.name,
+          entry.name,
         )
       ) {
         const relationOption = new RegistrationDataOptions();
-        relationOption.name = programQuestion.name;
-        relationOption.relation = {
-          programQuestionId: programQuestion.id,
-        };
+        relationOption.name = entry.name;
+        if(entry instanceof ProgramCustomAttributeEntity){
+          relationOption.relation = {
+            programCustomAttributeId: entry.id,
+          };
+        }
+        if(entry instanceof ProgramQuestionEntity){
+          relationOption.relation = {
+            programQuestionId: entry.id,
+          };
+        }
         relationOptions.push(relationOption);
       }
     }
