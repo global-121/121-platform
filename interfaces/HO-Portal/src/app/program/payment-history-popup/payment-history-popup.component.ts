@@ -244,7 +244,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
       !hasError &&
       !isSinglePayment
     ) {
-      console.log(paymentRow)
       return;
     }
 
