@@ -34,7 +34,6 @@
       <ion-item slot="header">
         <ion-grid class="ion-justify-content-start">
           <ion-row class="accordion-label">
-
             <!-- Money Icon -->
             <ion-col size="1">
               <ion-icon
@@ -107,9 +106,7 @@
                   shape="round"
                   fill="outline"
                   size="small"
-                  *ngIf="
-                    hasError(paymentRow)
-                  "
+                  *ngIf="hasError(paymentRow)"
                   (click)="rowClick(paymentRow)"
                 >
                   {{
@@ -126,9 +123,7 @@
                   shape="round"
                   fill="outline"
                   size="small"
-                  *ngIf="
-                    enableSinglePayment(paymentRow)
-                  "
+                  *ngIf="enableSinglePayment(paymentRow)"
                   (click)="rowClick(paymentRow)"
                 >
                   {{
