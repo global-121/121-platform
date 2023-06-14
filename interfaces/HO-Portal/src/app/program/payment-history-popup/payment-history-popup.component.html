@@ -34,6 +34,7 @@
       <ion-item slot="header">
         <ion-grid class="ion-justify-content-start">
           <ion-row class="accordion-label">
+
             <!-- Money Icon -->
             <ion-col size="1">
               <ion-icon
@@ -99,7 +100,7 @@
                 </ion-button>
               </ng-container>
 
-              <!-- Send payment button -->
+              <!-- Retry payment button -->
               <ng-container>
                 <ion-button
                   class="send-payment-button"
@@ -107,7 +108,26 @@
                   fill="outline"
                   size="small"
                   *ngIf="
-                    hasError(paymentRow) || enableSinglePayment(paymentRow)
+                    hasError(paymentRow)
+                  "
+                  (click)="rowClick(paymentRow)"
+                >
+                  {{
+                    'page.program.program-people-affected.transaction.retry'
+                      | translate
+                  }}
+                </ion-button>
+              </ng-container>
+
+              <!-- Single payment send again button -->
+              <ng-container>
+                <ion-button
+                  class="send-payment-button"
+                  shape="round"
+                  fill="outline"
+                  size="small"
+                  *ngIf="
+                    enableSinglePayment(paymentRow)
                   "
                   (click)="rowClick(paymentRow)"
                 >
