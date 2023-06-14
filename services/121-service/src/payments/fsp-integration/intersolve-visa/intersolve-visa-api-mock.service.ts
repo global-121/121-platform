@@ -318,7 +318,7 @@ export class IntersolveVisaApiMockService {
       });
     } else {
       res.data = {
-        carddataurl: 'https://test-vm.121.global/',
+        carddataurl: 'https://test.121.global/',
         controltoken: 'super_secret_token',
       };
     }

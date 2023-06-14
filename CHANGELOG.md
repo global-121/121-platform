@@ -5,9 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.87.6...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.89.0...master)
+
+### Removed
+
+- All code/documentation related to running the platform on a VM (`deploy.sh`, `webhook.js`, etc.)
 
 ---
+
+## [1.89.0](https://github.com/global-121/121-platform/compare/v1.88.0...v1.89.0) - 2023-06-06
+
+### Changed
+
+- Dependencies upgraded
+
+### Fixed
+
+- Crashes because of messaging
 
 ## [1.88.0](https://github.com/global-121/121-platform/compare/v1.87.6...v1.88.0) - 2023-05-31
 
