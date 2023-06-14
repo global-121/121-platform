@@ -352,11 +352,12 @@ export class IntersolveVisaService
     calculatedAmount: number,
     programEndDate: Date,
   ): Promise<IntersolveCreateWalletResponseDto> {
+    const amountInCents = calculatedAmount * 100;
     const createWalletPayload = new IntersolveCreateWalletDto();
     createWalletPayload.reference = visaCustomer.holderId;
     createWalletPayload.quantities = [
       {
-        quantity: { assetCode: 'EUR', value: calculatedAmount },
+        quantity: { assetCode: 'EUR', value: amountInCents },
         expiresAt: programEndDate.toISOString(),
       },
     ];

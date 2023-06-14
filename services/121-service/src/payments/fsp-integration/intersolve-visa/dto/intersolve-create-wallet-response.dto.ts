@@ -21,11 +21,13 @@ export class IntersolveCreateWalletResponseDataDto {
 export class IntersolveCreateWalletResponseTokenDto {
   public code: string;
   public blocked?: boolean;
+  public type?: string;
+  public brandTypeCode?: string;
+  public status?: string;
+  public balances?: IntersolveCreateWalletResponseBalanceDto[];
   public blockReasonCode?: string;
   public tier?: string;
-  public brandTypeCode?: string;
   public holderId?: string;
-  public balances?: IntersolveCreateWalletResponseBalanceDto[];
   public assets?: IntersolveCreateWalletResponseAssetDto[];
 }
 
