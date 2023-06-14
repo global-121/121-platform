@@ -121,9 +121,6 @@
     <br />
     <ion-row class="ion-align-items-center">
       <ion-item class="ion-margin-end">
-        <ion-label position="stacked">
-          {{ 'page.program.program-details.fixedTransferValue' | translate }}
-        </ion-label>
         <ion-input
           type="number"
           inputmode="decimal"
@@ -134,6 +131,10 @@
           [(ngModel)]="singlePayoutDetails.amount"
           (ionChange)="updateTotalAmountMessage()"
           ngDefaultControl
+          [label]="
+            'page.program.program-details.fixedTransferValue' | translate
+          "
+          labelPlacement="stacked"
         ></ion-input>
       </ion-item>
 
