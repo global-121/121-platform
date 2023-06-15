@@ -26,7 +26,7 @@ Feature: View payment history column and popup
     And the status text and outline is red if Failed
     And icon is displayed on the left side of payment number
     And if payment is sucessful, in the line of payment number, on the right side of payment status, 'Open voucher' button is displayed
-    And if status is 'Failed' or 'Not yet sent', then 'Send payment' button is displayed on the right side of payment status
+    And if status is 'Failed' or 'Not yet sent', then 'Retry' button is displayed on the right side of payment status
     And under the payment number distribution date is displayed
     And date format is dd-mm-yyyy
     And user is able to open accordion for each payment
