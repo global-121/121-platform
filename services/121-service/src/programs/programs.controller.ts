@@ -48,6 +48,8 @@ export class ProgramController {
 
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  // TODO: REFACTOR: Can we make the GET response structure identical to POST body structure by default? Then this setting is not needed anymore.
+  // TODO: REFACTOR: GET /api/programs/:programid with a response body that does not need authorization (i.e. without assigned aid workers) and GET /api/programs/:programid/assigned-aid-workers that requires authorization, see: https://stackoverflow.com/questions/51383267/rest-get-endpoints-returning-different-models-based-on-user-role
   @ApiQuery({
     name: 'formatCreateProgramDto',
     required: false,
@@ -74,6 +76,7 @@ export class ProgramController {
 
   @ApiOperation({ summary: 'Get published programs' })
   @ApiResponse({ status: 200, description: 'Return all published programs.' })
+  // TODO: REFACTOR: into GET /api/programs?published=true
   @Get('published/all')
   public async getPublishedPrograms(): Promise<ProgramsRO> {
     return await this.programService.getPublishedPrograms();
@@ -88,6 +91,7 @@ export class ProgramController {
     status: 401,
     description: 'No user detectable from cookie or no cookie present',
   })
+  // TODO: REFACTOR: into GET /api/users/:userid/programs
   @Get('assigned/all')
   public async getAssignedPrograms(
     @User('id') userId: number,
@@ -143,6 +147,7 @@ export class ProgramController {
   @Permissions(PermissionEnum.ProgramPhaseUPDATE)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  // TODO: REFACTOR: into PATCH /api/programs/:programid
   @Post(':programId/change-phase')
   public async changePhase(
     @Param() params,
@@ -157,6 +162,7 @@ export class ProgramController {
   @Permissions(PermissionEnum.ProgramUPDATE)
   @ApiOperation({ summary: 'Update program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  // TODO: REFACTOR: into PATCH /api/programs/:programid
   @Post(':programId/update')
   public async updateProgram(
     @Param() params,
@@ -171,6 +177,7 @@ export class ProgramController {
   @Permissions(PermissionEnum.ProgramQuestionUPDATE)
   @ApiOperation({ summary: 'Update program question' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  // TODO: REFACTOR: into PATCH /api/programs/:programid/program-questions, use consistent identifier for program question (name or id, see below)
   @Post(':programId/update/program-question')
   public async updateProgramQuestion(
     @Body() updateProgramQuestionDto: UpdateProgramQuestionDto,
@@ -190,6 +197,7 @@ export class ProgramController {
     required: true,
     type: 'integer',
   })
+  // TODO: REFACTOR: into consistent identifier for program question, name or id, see above
   @Delete(':programId/program-questions/:programQuestionId')
   public async deleteProgramQuestion(
     @Param() params: any,
@@ -203,6 +211,7 @@ export class ProgramController {
   @Permissions(PermissionEnum.ProgramCustomAttributeUPDATE)
   @ApiOperation({ summary: 'Update program custom attributes' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  // TODO: REFACTOR: into PATCH (or PUT?) /api/programs/:programid/program-custom-attributes/
   @Post(':programId/update/program-custom-attributes')
   public async updateProgramCustomAttributes(
     @Param() params,
@@ -221,6 +230,7 @@ export class ProgramController {
     status: 200,
     description: 'Return PA-table attributes by program-id.',
   })
+  // TODO: Perhaps just give PA Table attribute data of all phases in the GET /programs/:programid response? It is probably not that much data, so a seperate API call for only the attributes and then per phase could be "chatty", also depending on how the consumer/front-end uses this call
   @Get(':programId/pa-table-attributes/:phase')
   public async getPaTableAttributes(@Param() params): Promise<Attribute[]> {
     return await this.programService.getPaTableAttributes(

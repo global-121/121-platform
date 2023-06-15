@@ -84,6 +84,7 @@ export class ProgramService {
         program.id,
       );
     }
+    // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     return program;
   }
 
@@ -198,6 +199,7 @@ export class ProgramService {
     return { programs, programsCount };
   }
 
+  // TODO: REFACTOR: Should the Controller not return/throw the HTTP Status Code?
   public async findUserProgramAssignmentsOrThrow(
     userId: number,
   ): Promise<UserEntity> {
@@ -238,6 +240,7 @@ export class ProgramService {
     return { programs, programsCount };
   }
 
+  // TODO: Put all private methods below the public ones, for better readability?
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
     for (const name of Object.values(programData.fullnameNamingConvention)) {
       const fspAttributes = [];
