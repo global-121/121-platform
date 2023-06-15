@@ -222,19 +222,19 @@ export class PaymentsService {
     if (paLists.intersolvePaPayment.length) {
       await this.intersolveVoucherService.sendPayment(
         paLists.intersolvePaPayment,
-        true,
-        amount,
-        payment,
         programId,
+        payment,
+        amount,
+        true,
       );
     }
     if (paLists.intersolveNoWhatsappPaPayment.length) {
       await this.intersolveVoucherService.sendPayment(
         paLists.intersolveNoWhatsappPaPayment,
-        false,
-        amount,
-        payment,
         programId,
+        payment,
+        amount,
+        false,
       );
     }
 

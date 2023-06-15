@@ -86,6 +86,7 @@
                   class="ion-margin-vertical"
                   [ngClass]="{ 'invalid-border': showLoginFail.email || invalidEmail}"
                   (ionBlur)="onEmailBlur()"
+                  fill="outline"
                 ></ion-input>
               </div>
               <div class="validation-message">
@@ -131,6 +132,7 @@
                     ngDefaultControl
                     class="ion-margin-vertical"
                     (ionBlur)="onPasswordBlur()"
+                    fill="outline"
                   >
                   </ion-input>
                   <ion-button
@@ -142,6 +144,7 @@
                     [title]="isPassword() ? this.labelShow : this.labelHide"
                     [attr.aria-label]="isPassword() ? this.labelShow : this.labelHide"
                     style="position: absolute; right: 0"
+                    class="ion-align-self-center"
                   >
                     <ion-icon
                       *ngIf="isPassword()"

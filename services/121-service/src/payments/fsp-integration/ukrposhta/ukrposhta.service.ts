@@ -11,10 +11,13 @@ import {
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { UkrPoshtaFspInstructions } from './dto/ukrposhta-fsp-instructions.dto';
 
 @Injectable()
-export class UkrPoshtaService {
+export class UkrPoshtaService
+  implements FinancialServiceProviderIntegrationInterface
+{
   public constructor(
     private readonly transactionsService: TransactionsService,
     private readonly lookupService: LookupService,

@@ -53,7 +53,7 @@ class CreateCustomerResponseExtensionDto {
   public value: string;
 }
 
-export class IntersolveRegisterHolderResponseDto {
+export class IntersolveLinkWalletCustomerResponseDto {
   public data: {
     success?: boolean;
     errors?: IntersolveReponseErrorDto[];

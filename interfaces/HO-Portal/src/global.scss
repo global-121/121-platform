@@ -91,11 +91,9 @@ ion-button {
       border: 1px solid #b3bcd0;
       border-radius: 5px;
       margin-top: 8px;
-
-      input {
-        --padding-start: 8px;
-        --padding-end: 8px;
-      }
+      --padding-start: 8px;
+      --padding-end: 8px;
+      --border-style: none;
     }
 
     ion-input {
@@ -117,15 +115,15 @@ ion-button {
       border: 1px solid #b3bcd0;
       border-radius: 5px;
       margin-top: 8px;
-      padding: 0;
+      --padding-start: 8px;
+      --padding-end: 8px;
 
       ion-input {
         margin: 0;
+        --border-style: none;
 
         input {
           width: 250px;
-          --padding-start: 8px;
-          --padding-end: 8px;
         }
       }
       &.valid-border {
