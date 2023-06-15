@@ -324,11 +324,7 @@ export class ProgramPayoutComponent implements OnInit {
 
   public async retryLastPayment() {
     await this.programsService
-      .patchPayout(
-        this.programId,
-        this.lastPaymentId,
-        null,
-      )
+      .patchPayout(this.programId, this.lastPaymentId, null)
       .then(
         (response) => {
           let message = '';

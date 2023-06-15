@@ -202,44 +202,42 @@ export class PaymentStatusPopupComponent implements OnInit {
 
   public async doPayment(payoutDetails, retry: boolean) {
     this.isInProgress = true;
-    const result = retry ?
-      this.programsService.patchPayout(
-        payoutDetails.programId,
-        payoutDetails.payment,
-        [payoutDetails.referenceId]
-      )
-      :
-      this.programsService
-      .submitPayout(
-        payoutDetails.programId,
-        payoutDetails.payment,
-        payoutDetails.amount,
-        [payoutDetails.referenceId],
-    )
+    const result = retry
+      ? this.programsService.patchPayout(
+          payoutDetails.programId,
+          payoutDetails.payment,
+          [payoutDetails.referenceId],
+        )
+      : this.programsService.submitPayout(
+          payoutDetails.programId,
+          payoutDetails.payment,
+          payoutDetails.amount,
+          [payoutDetails.referenceId],
+        );
 
     result.then(
-        (response) => {
-          this.isInProgress = false;
-          let message = '';
+      (response) => {
+        this.isInProgress = false;
+        let message = '';
 
-          if (response) {
-            message += this.translate.instant(
-              'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv' becuse retry cannot happen for 'csv'
-              {
-                nrPa: `<strong>${response}</strong>`,
-              },
-            );
-          }
-          this.actionResult(message, true);
-        },
-        (err) => {
-          console.log('err: ', err);
-          if (err && err.error && err.error.error) {
-            this.actionResult(err.error.errors);
-          }
-          this.isInProgress = false;
-        },
-      );
+        if (response) {
+          message += this.translate.instant(
+            'page.program.program-payout.result.api', // Hard-coded set to 'api' instead of 'csv' becuse retry cannot happen for 'csv'
+            {
+              nrPa: `<strong>${response}</strong>`,
+            },
+          );
+        }
+        this.actionResult(message, true);
+      },
+      (err) => {
+        console.log('err: ', err);
+        if (err && err.error && err.error.error) {
+          this.actionResult(err.error.errors);
+        }
+        this.isInProgress = false;
+      },
+    );
   }
 
   public async getBalance() {
