@@ -324,10 +324,9 @@ export class ProgramPayoutComponent implements OnInit {
 
   public async retryLastPayment() {
     await this.programsService
-      .submitPayout(
+      .patchPayout(
         this.programId,
         this.lastPaymentId,
-        this.lastPaymentResults.amount,
         null,
       )
       .then(

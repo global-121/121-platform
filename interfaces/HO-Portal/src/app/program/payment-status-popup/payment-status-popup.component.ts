@@ -189,27 +189,35 @@ export class PaymentStatusPopupComponent implements OnInit {
   }
 
   public async retryPayment() {
-    this.doPayment(this.payoutDetails);
+    this.doPayment(this.payoutDetails, true);
   }
 
   public async singlePayment() {
-    this.doPayment(this.singlePayoutDetails);
+    this.doPayment(this.singlePayoutDetails, false);
   }
 
   public resetProgress(): void {
     this.isInProgress = false;
   }
 
-  public async doPayment(payoutDetails) {
+  public async doPayment(payoutDetails, retry: boolean) {
     this.isInProgress = true;
-    await this.programsService
+    const result = retry ?
+      this.programsService.patchPayout(
+        payoutDetails.programId,
+        payoutDetails.payment,
+        [payoutDetails.referenceId]
+      )
+      :
+      this.programsService
       .submitPayout(
         payoutDetails.programId,
         payoutDetails.payment,
         payoutDetails.amount,
         [payoutDetails.referenceId],
-      )
-      .then(
+    )
+
+    result.then(
         (response) => {
           this.isInProgress = false;
           let message = '';

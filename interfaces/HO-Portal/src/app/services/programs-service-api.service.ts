@@ -274,7 +274,7 @@ export class ProgramsServiceApiService {
     programId: number,
     payment: number,
     amount: number,
-    referenceIds?: string[],
+    referenceIds: string[],
   ): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
@@ -282,6 +282,21 @@ export class ProgramsServiceApiService {
       {
         payment: Number(payment),
         amount: Number(amount),
+        referenceIds:  { referenceIds },
+      },
+    );
+  }
+
+  patchPayout(
+    programId: number,
+    payment: number,
+    referenceIds?: string[],
+  ): Promise<any> {
+    return this.apiService.patch(
+      environment.url_121_service_api,
+      `/programs/${programId}/payments`,
+      {
+        payment: Number(payment),
         referenceIds: referenceIds ? { referenceIds } : null,
       },
     );
