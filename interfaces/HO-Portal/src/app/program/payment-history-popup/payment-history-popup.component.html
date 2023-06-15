@@ -89,7 +89,7 @@
                   *ngIf="
                     paymentRow.transaction &&
                     !hasError(paymentRow) &&
-                    hasVoucherSupport(paymentRow.fsp)
+                    hasVoucherSupport(paymentRow.transaction.fsp)
                   "
                   (click)="rowClick(paymentRow)"
                   >{{
