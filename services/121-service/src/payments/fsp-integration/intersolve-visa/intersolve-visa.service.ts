@@ -59,28 +59,22 @@ export class IntersolveVisaService
     paymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
-    amount: number,
   ): Promise<void> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.intersolveVisa;
 
-    const paymentDetailsArray = await this.getPaPaymentDetails(
-      paymentList.map((pa) => pa.referenceId),
-    );
+    const paymentDetailsArray = await this.getPaPaymentDetails(paymentList);
 
     const program = await this.programRepository.findOne({
       where: { id: programId },
     });
 
     for (const paymentDetails of paymentDetailsArray) {
-      const calculatedAmount =
-        amount * (paymentDetails.paymentAmountMultiplier || 1);
-
       const paymentRequestResultPerPa = await this.sendPaymentToPa(
         paymentDetails,
         paymentNr,
-        calculatedAmount,
+        paymentDetails.transactionAmount,
         program.endDate,
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
@@ -93,8 +87,9 @@ export class IntersolveVisaService
   }
 
   private async getPaPaymentDetails(
-    referenceIds: string[],
+    paymentList: PaPaymentDataDto[],
   ): Promise<PaymentDetailsDto[]> {
+    const referenceIds = paymentList.map((pa) => pa.referenceId);
     const relationOptions = await this.getRelationOptionsForVisa(
       referenceIds[0],
     );
@@ -117,7 +112,13 @@ export class IntersolveVisaService
     }
 
     const visaAddressInfoDtoArray = await query.getRawMany();
-    return visaAddressInfoDtoArray;
+
+    // Maps the registration data back to the correct amounts using referenceID
+    const result = visaAddressInfoDtoArray.map((v) => ({
+      ...v,
+      ...paymentList.find((s) => s.referenceId === v.referenceId),
+    }));
+    return result;
   }
 
   private async getRelationOptionsForVisa(

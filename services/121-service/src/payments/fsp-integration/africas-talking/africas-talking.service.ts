@@ -30,19 +30,17 @@ export class AfricasTalkingService
     paymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
-    amount: number,
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.africasTalking;
 
     for (const payment of paymentList) {
-      const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
       const payload = this.createPayloadPerPa(
         payment,
         programId,
         paymentNr,
-        calculatedAmount,
+        payment.transactionAmount,
       );
 
       const paymentRequestResultPerPa =

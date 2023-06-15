@@ -38,7 +38,6 @@ export class IntersolveJumboService
     paPaymentArray: PaPaymentDataDto[],
     programId: number,
     payment: number,
-    amount: number,
   ): Promise<void> {
     // Split into batches
     const batches: PaPaymentDataDto[][] = [];
@@ -51,20 +50,18 @@ export class IntersolveJumboService
     }
     for (const batch of batches) {
       let batchResult: PaTransactionResultDto[] = [];
-      batchResult = await this.sendBatchPayment(batch, payment, amount);
+      batchResult = await this.sendBatchPayment(batch, payment);
       for (const paResult of batchResult) {
-        paResult.calculatedAmount =
-          paResult.status === StatusEnum.error // if error, take original amount
-            ? amount
-            : paResult.calculatedAmount;
+        paResult.calculatedAmount = paResult.calculatedAmount;
         await this.storeTransactionResult(paResult, payment, 1, programId);
       }
     }
   }
 
   private async getPaPaymentDetails(
-    referenceIds: string[],
+    paPaymentArray: PaPaymentDataDto[],
   ): Promise<PreOrderInfoDto[]> {
+    const referenceIds = paPaymentArray.map((pa) => pa.referenceId);
     const relationOptions = await this.getRelationOptionsForJumbo(
       referenceIds[0],
     );
@@ -89,7 +86,14 @@ export class IntersolveJumboService
     }
 
     const jumboAdressInfoDtoArray = await query.getRawMany();
-    return jumboAdressInfoDtoArray;
+
+    // Maps the registration data back to the correct amounts using referenceID
+    const result = jumboAdressInfoDtoArray.map((v) => ({
+      ...v,
+      ...paPaymentArray.find((s) => s.referenceId === v.referenceId),
+    }));
+
+    return result;
   }
 
   private async getRelationOptionsForJumbo(
@@ -113,12 +117,9 @@ export class IntersolveJumboService
   private async sendBatchPayment(
     paPaymentArray: PaPaymentDataDto[],
     payment: number,
-    amount: number,
   ): Promise<PaTransactionResultDto[]> {
     const batchResult: PaTransactionResultDto[] = [];
-    const paymentDetailsArray = await this.getPaPaymentDetails(
-      paPaymentArray.map((pa) => pa.referenceId),
-    );
+    const paymentDetailsArray = await this.getPaPaymentDetails(paPaymentArray);
 
     let preOrderResultFinished = false;
     let preOrderResult;
@@ -127,7 +128,6 @@ export class IntersolveJumboService
       preOrderResult = await this.intersolveJumboApiService.createPreOrder(
         paymentDetailsArray,
         payment,
-        amount,
       );
 
       // If API-calls for general reason (e.g. timeout) return early with failed transactions
@@ -137,7 +137,7 @@ export class IntersolveJumboService
         );
         for (const paymentDetails of paymentDetailsArray) {
           const transactionResult = this.createTransactionResult(
-            amount,
+            paymentDetails.transactionAmount,
             paymentDetails.referenceId,
             `A general error occured while creating batch pre-order.`,
             StatusEnum.error,
@@ -168,7 +168,7 @@ export class IntersolveJumboService
 
           // Create failed transaction for this PA
           const transactionResult = this.createTransactionResult(
-            amount,
+            paymentDetailsArray[errorIndex].transactionAmount,
             paymentDetailsArray[errorIndex].referenceId,
             errorMessage,
             StatusEnum.error,
@@ -189,7 +189,7 @@ export class IntersolveJumboService
           // .. and create failed transactions for remaining PAs
           for (const paymentDetails of paymentDetailsArray) {
             const transactionResult = this.createTransactionResult(
-              amount,
+              paymentDetails.transactionAmount,
               paymentDetails.referenceId,
               errorMessage,
               StatusEnum.error,
@@ -207,7 +207,6 @@ export class IntersolveJumboService
       preOrderResult,
       paymentDetailsArray,
       batchResult,
-      amount,
     );
     return approvePreorderResult;
   }
@@ -216,7 +215,6 @@ export class IntersolveJumboService
     batchPreOrderResult: any,
     preOrderInfoArray: PreOrderInfoDto[],
     batchResult: PaTransactionResultDto[],
-    amount: number,
   ): Promise<PaTransactionResultDto[]> {
     const approvePreOrderResult =
       await this.intersolveJumboApiService.approvePreOrder(batchPreOrderResult);
@@ -225,7 +223,7 @@ export class IntersolveJumboService
         ?.ResultCode?._cdata === IntersolveJumboResultCode.Ok
     ) {
       for (const paymentInfo of preOrderInfoArray) {
-        const calculatedAmount = paymentInfo.paymentAmountMultiplier * amount;
+        const calculatedAmount = paymentInfo.transactionAmount;
         const transactionNotification = {
           notificationKey: 'jumboCardSent',
           dynamicContent: [String(calculatedAmount)],
@@ -249,7 +247,7 @@ export class IntersolveJumboService
         : `Something went wrong while approving pre-order: ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultCode._cdata} - ${approvePreOrderResult['tns:ApprovePreOrderResponse'].WebserviceRequest.ResultDescription._cdata}`;
       for (const paymentInfo of preOrderInfoArray) {
         const transactionResult = this.createTransactionResult(
-          amount,
+          paymentInfo.transactionAmount,
           paymentInfo.referenceId,
           errorMessage,
           StatusEnum.error,

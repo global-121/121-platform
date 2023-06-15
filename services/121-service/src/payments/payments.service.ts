@@ -1,11 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, Repository, SelectQueryBuilder } from 'typeorm';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ActionService } from '../actions/action.service';
 import { FspIntegrationType } from '../fsp/enum/fsp-integration-type.enum';
 import { FspName } from '../fsp/enum/fsp-name.enum';
-import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { FspService } from '../fsp/fsp.service';
 import { ProgramEntity } from '../programs/program.entity';
 import {
@@ -17,6 +16,7 @@ import { CustomDataAttributes } from '../registration/enum/custom-data-attribute
 import { RegistrationEntity } from '../registration/registration.entity';
 import { BulkImportService } from '../registration/services/bulk-import.service';
 import { StatusEnum } from '../shared/enum/status.enum';
+import { RegistrationDataEntity } from './../registration/registration-data.entity';
 import { ExportFileType, FspInstructions } from './dto/fsp-instructions.dto';
 import { ImportFspReconciliationDto } from './dto/import-fsp-reconciliation.dto';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
@@ -69,12 +69,10 @@ export class PaymentsService {
     const payments = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('payment')
-      .addSelect('MIN(transaction.created)', 'paymentDate')
-      // TEMP FIX: this code will become obsolete once PBI #19365 is implemented. In the meantime this change will do, as the amount is only used for 'retry all', which is only possible with at least 1 failing transaction, which already contains the unmultiplied amount
-      // .addSelect(
-      //   `MIN(CASE WHEN transaction.status = 'error' THEN transaction.amount ELSE transaction.amount / coalesce(r.paymentAmountMultiplier, 1) END )`,
-      //   'amount',
-      // )
+      .addSelect(
+        `MIN(CASE WHEN transaction.status = 'error' THEN transaction.amount ELSE transaction.amount / coalesce(r.paymentAmountMultiplier, 1) END )`,
+        'amount',
+      )
       .addSelect('MIN(transaction.amount)', 'amount')
       .leftJoin('transaction.registration', 'r')
       .where('transaction.program.id = :programId', {
@@ -90,31 +88,53 @@ export class PaymentsService {
     programId: number,
     payment: number,
     amount: number,
-    referenceIdsDto?: ReferenceIdsDto,
+    referenceIdsDto: ReferenceIdsDto,
   ): Promise<number> {
-    const program = await this.programRepository.findOne({
-      where: { id: programId },
-      relations: ['financialServiceProviders'],
-    });
-    if (!program) {
-      const errors = 'Program not found.';
+    await this.checkProgram(programId);
+    const paPaymentDataList = await this.getPaymentList(
+      referenceIdsDto.referenceIds,
+      amount,
+      programId,
+    );
+
+    if (paPaymentDataList.length < 1) {
+      const errors = 'There are no targeted PAs for this payment';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+    await this.actionService.saveAction(
+      userId,
+      programId,
+      AdditionalActionType.paymentStarted,
+    );
 
-    const targetedRegistrations = await this.getRegistrationsForPayment(
+    const paymentTransactionResult = await this.payout(
+      paPaymentDataList,
+      programId,
+      payment,
+      userId,
+    );
+
+    return paymentTransactionResult;
+  }
+
+  public async retryPayment(
+    userId: number,
+    programId: number,
+    payment: number,
+    referenceIdsDto?: ReferenceIdsDto,
+  ): Promise<number> {
+    await this.checkProgram(programId);
+
+    const paPaymentDataList = await this.getPaymentListForRetry(
       programId,
       payment,
       referenceIdsDto,
     );
 
-    if (targetedRegistrations.length < 1) {
+    if (paPaymentDataList.length < 1) {
       const errors = 'There are no targeted PAs for this payment';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-
-    const paPaymentDataList = await this.createPaPaymentDataList(
-      targetedRegistrations,
-    );
 
     await this.actionService.saveAction(
       userId,
@@ -126,23 +146,33 @@ export class PaymentsService {
       paPaymentDataList,
       programId,
       payment,
-      amount,
       userId,
     );
 
     return paymentTransactionResult;
   }
 
+  private async checkProgram(programId: number): Promise<ProgramEntity> {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+      relations: ['financialServiceProviders'],
+    });
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    return program;
+  }
+
   public async payout(
     paPaymentDataList: PaPaymentDataDto[],
     programId: number,
     payment: number,
-    amount: number,
     userId: number,
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    this.makePaymentRequest(paLists, programId, payment, amount).catch((e) => {
+    this.makePaymentRequest(paLists, programId, payment).catch((e) => {
       console.warn(e);
     });
     if (payment > -1) {
@@ -208,14 +238,12 @@ export class PaymentsService {
     paLists: any,
     programId: number,
     payment: number,
-    amount: number,
   ): Promise<any> {
     if (paLists.intersolveJumboPhysicalPaPayment.length) {
       await this.intersolveJumboService.sendPayment(
         paLists.intersolveJumboPhysicalPaPayment,
         programId,
         payment,
-        amount,
       );
     }
 
@@ -224,7 +252,6 @@ export class PaymentsService {
         paLists.intersolvePaPayment,
         programId,
         payment,
-        amount,
         true,
       );
     }
@@ -233,7 +260,6 @@ export class PaymentsService {
         paLists.intersolveNoWhatsappPaPayment,
         programId,
         payment,
-        amount,
         false,
       );
     }
@@ -243,7 +269,6 @@ export class PaymentsService {
         paLists.intersolveVisaPaPayment,
         programId,
         payment,
-        amount,
       );
     }
 
@@ -252,7 +277,6 @@ export class PaymentsService {
         paLists.africasTalkingPaPayment,
         programId,
         payment,
-        amount,
       );
     }
 
@@ -261,7 +285,6 @@ export class PaymentsService {
         paLists.belcashPaPayment,
         programId,
         payment,
-        amount,
       );
     }
 
@@ -270,7 +293,6 @@ export class PaymentsService {
         paLists.bobFinancePaPayment,
         programId,
         payment,
-        amount,
       );
     }
 
@@ -279,7 +301,6 @@ export class PaymentsService {
         paLists.ukrPoshtaPaPayment,
         programId,
         payment,
-        amount,
       );
     }
 
@@ -288,92 +309,156 @@ export class PaymentsService {
         paLists.vodacashPaPayment,
         programId,
         payment,
-        amount,
       );
     }
   }
 
-  private async getRegistrationsForPayment(
+  private async getRegistrationsForReconsiliation(
     programId: number,
     payment: number,
-    referenceIdsDto?: ReferenceIdsDto,
-    status?: StatusEnum,
   ): Promise<RegistrationEntity[]> {
-    if (referenceIdsDto) {
-      return await this.registrationRepository.find({
-        where: { referenceId: In(referenceIdsDto.referenceIds) },
-        relations: ['fsp'],
-      });
-    }
-
-    if (status === StatusEnum.waiting) {
-      const waitingReferenceIds = (
-        await this.getTransactionsByStatus(
-          programId,
-          payment,
-          StatusEnum.waiting,
-        )
-      ).map((t) => t.referenceId);
-      return await this.registrationRepository.find({
-        where: { referenceId: In(waitingReferenceIds) },
-        relations: ['fsp'],
-      });
-    }
-
-    // If no referenceIds passed, this must be because of the 'retry all failed' scenario ..
-    const failedReferenceIds = (
-      await this.getTransactionsByStatus(programId, payment, StatusEnum.error)
+    const waitingReferenceIds = (
+      await this.getTransactionsByStatus(programId, payment, StatusEnum.waiting)
     ).map((t) => t.referenceId);
-    // .. if nothing found, throw an error
-    if (!failedReferenceIds.length) {
-      const errors = 'No failed transactions found for this payment.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
     return await this.registrationRepository.find({
-      where: { referenceId: In(failedReferenceIds) },
+      where: { referenceId: In(waitingReferenceIds) },
       relations: ['fsp'],
     });
   }
 
-  private async createPaPaymentDataList(
-    includedRegistrations: RegistrationEntity[],
-  ): Promise<PaPaymentDataDto[]> {
-    const paPaymentDataList = [];
-    for (const includedRegistration of includedRegistrations) {
-      const paPaymentData = new PaPaymentDataDto();
-      paPaymentData.referenceId = includedRegistration.referenceId;
-      const fsp = await this.fspService.getFspById(includedRegistration.fsp.id);
-      paPaymentData.fspName = fsp.fsp as FspName;
-      paPaymentData.paymentAddress = await this.getPaymentAddress(
-        includedRegistration,
-        fsp.questions,
-      );
-      paPaymentData.paymentAmountMultiplier =
-        includedRegistration.paymentAmountMultiplier;
+  private queryLatestFailedTransaction(
+    q: SelectQueryBuilder<RegistrationEntity>,
+  ): SelectQueryBuilder<RegistrationEntity> {
+    q.leftJoin(
+      (qb) =>
+        qb
+          .from(TransactionEntity, 'transactions')
+          .select('MAX("payment")', 'payment')
+          .addSelect('COUNT(DISTINCT(payment))', 'nrPayments')
+          .addSelect('"registrationId"', 'registrationId')
+          .groupBy('"registrationId"'),
+      'transaction_max_payment',
+      'transaction_max_payment."registrationId" = registration.id',
+    )
 
+      .leftJoin(
+        (qb) =>
+          qb
+            .from(TransactionEntity, 'transactions')
+            .select('MAX("created")', 'created')
+            .addSelect('"payment"', 'payment')
+            .groupBy('"payment"')
+            .addSelect('"transactionStep"', 'transactionStep')
+            .addGroupBy('"transactionStep"')
+            .addSelect('"registrationId"', 'registrationId')
+            .addGroupBy('"registrationId"'),
+        'transaction_max_created',
+        `transaction_max_created."registrationId" = registration.id
+      AND transaction_max_created.payment = transaction_max_payment.payment`,
+      )
+      .leftJoin(
+        'registration.transactions',
+        'transaction',
+        `transaction."registrationId" = transaction_max_created."registrationId"
+      AND transaction.payment = transaction_max_created.payment
+      AND transaction."transactionStep" = transaction_max_created."transactionStep"
+      AND transaction."created" = transaction_max_created."created"
+      AND transaction.status = '${StatusEnum.error}'`,
+      )
+      .addSelect([
+        'transaction.amount AS "transactionAmount"',
+        'transaction.id AS "transactionId"',
+      ]);
+    return q;
+  }
+
+  private getPaymentRegistrationsQuery(
+    programId: number,
+  ): SelectQueryBuilder<RegistrationEntity> {
+    const q = this.registrationRepository
+      .createQueryBuilder('registration')
+      .select('"referenceId"')
+      .addSelect('registration.id as id')
+      .addSelect('fsp.fsp as "fspName"')
+      .where('registration."programId" = :programId', { programId })
+      .leftJoin('registration.fsp', 'fsp');
+    q.addSelect((subQuery) => {
+      return subQuery
+        .addSelect('value', 'paymentAddress')
+        .from(RegistrationDataEntity, 'data')
+        .leftJoin('data.fspQuestion', 'question')
+        .andWhere('question.name IN (:...names)', {
+          names: [
+            CustomDataAttributes.phoneNumber,
+            CustomDataAttributes.whatsappPhoneNumber,
+          ],
+        })
+        .groupBy('data.id')
+        .limit(1);
+    }, 'paymentAddress');
+    return q;
+  }
+
+  private async getPaymentListForRetry(
+    programId: number,
+    payment: number,
+    referenceIdsDto?: ReferenceIdsDto,
+  ): Promise<PaPaymentDataDto[]> {
+    let q = this.getPaymentRegistrationsQuery(programId);
+
+    q = this.queryLatestFailedTransaction(q);
+    if (referenceIdsDto) {
+      q.andWhere('registration."referenceId" IN (:...referenceIds)', {
+        referenceIds: referenceIdsDto.referenceIds,
+      });
+      const result = await q.getRawMany();
+      for (const row of result) {
+        if (!row.transactionId) {
+          const errors = `No failed transaction found for registration with referenceId ${row.referenceId}.`;
+          throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+        }
+      }
+      return result;
+    } else {
+      // If no referenceIds passed, this must be because of the 'retry all failed' scenario ..
+      const failedReferenceIds = (
+        await this.getTransactionsByStatus(programId, payment, StatusEnum.error)
+      ).map((t) => t.referenceId);
+      // .. if nothing found, throw an error
+      if (!failedReferenceIds.length) {
+        const errors = 'No failed transactions found for this payment.';
+        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      }
+      q.andWhere('"referenceId" IN (:...failedReferenceIds)', {
+        failedReferenceIds,
+      });
+      const result = await q.getRawMany();
+      return result;
+    }
+  }
+
+  private async getPaymentList(
+    referenceIds: string[],
+    amount: number,
+    programId: number,
+  ): Promise<PaPaymentDataDto[]> {
+    const q = this.getPaymentRegistrationsQuery(programId);
+    q.addSelect('registration."paymentAmountMultiplier"');
+    q.andWhere('registration."referenceId" IN (:...referenceIds)', {
+      referenceIds: referenceIds,
+    });
+    const result = await q.getRawMany();
+    const paPaymentDataList: PaPaymentDataDto[] = [];
+    for (const row of result) {
+      const paPaymentData: PaPaymentDataDto = {
+        transactionAmount: amount * (row.paymentAmountMultiplier || 1),
+        referenceId: row.referenceId,
+        paymentAddress: row.paymentAddress,
+        fspName: row.fspName,
+      };
       paPaymentDataList.push(paPaymentData);
     }
     return paPaymentDataList;
-  }
-
-  private async getPaymentAddress(
-    includedRegistration: RegistrationEntity,
-    fspAttributes: FspQuestionEntity[],
-  ): Promise<null | string> {
-    for (const attribute of fspAttributes) {
-      // NOTE: this is still not ideal, as it is hard-coded. No other quick solution was found.
-      if (
-        attribute.name === CustomDataAttributes.phoneNumber ||
-        attribute.name === CustomDataAttributes.whatsappPhoneNumber
-      ) {
-        const paymentAddressColumn = attribute.name;
-        return await includedRegistration.getRegistrationDataValueByName(
-          paymentAddressColumn,
-        );
-      }
-    }
-    return null;
   }
 
   private async getTransactionsByStatus(
@@ -497,12 +582,8 @@ export class PaymentsService {
     let paTransactionResult, record, importResponseRecord;
     const validatedImport = await this.xmlToValidatedFspReconciliation(file);
     const validatedImportRecords = validatedImport.validatedArray;
-    const registrationsPerPayment = await this.getRegistrationsForPayment(
-      programId,
-      payment,
-      undefined,
-      StatusEnum.waiting,
-    );
+    const registrationsPerPayment =
+      await this.getRegistrationsForReconsiliation(programId, payment);
     const importResponseRecords = [];
     for await (const registration of registrationsPerPayment) {
       for await (const fspId of fspIds) {
