@@ -20,6 +20,7 @@ import { VoucherWithBalanceDto } from '../../dto/voucher-with-balance.dto';
 import { ImageCodeService } from '../../imagecode/image-code.service';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
 import { IntersolveVoucherJobName } from './dto/job-details.dto';
 import { IntersolveVoucherPayoutStatus } from './enum/intersolve-voucher-payout-status.enum';
@@ -30,7 +31,9 @@ import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instru
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 
 @Injectable()
-export class IntersolveVoucherService {
+export class IntersolveVoucherService
+  implements FinancialServiceProviderIntegrationInterface
+{
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(IntersolveVoucherEntity)
@@ -56,10 +59,10 @@ export class IntersolveVoucherService {
 
   public async sendPayment(
     paPaymentList: PaPaymentDataDto[],
-    useWhatsapp: boolean,
-    amount: number,
-    payment: number,
     programId: number,
+    payment: number,
+    amount: number,
+    useWhatsapp: boolean,
   ): Promise<void> {
     const config = await this.programFspConfigurationRepository
       .createQueryBuilder('fspConfig')

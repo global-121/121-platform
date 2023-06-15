@@ -13,9 +13,12 @@ import {
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 
 @Injectable()
-export class VodacashService {
+export class VodacashService
+  implements FinancialServiceProviderIntegrationInterface
+{
   public constructor(
     private readonly transactionsService: TransactionsService,
   ) {}
