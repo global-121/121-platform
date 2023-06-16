@@ -6,10 +6,12 @@ import {
   changePhase,
   doPayment,
   getTransactions,
+  retryPayment,
 } from '../helpers/program.helper';
 import {
   changePaStatus,
   importRegistrations,
+  updatePa,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
 describe('Do payment to 1 PA', () => {
@@ -253,6 +255,110 @@ describe('Do payment to 1 PA', () => {
         String(paymentReferenceIds.length),
       );
       expect(transactionsResponse.text).toContain('LOAD BALANCE ERROR');
+    });
+
+    it('should successfully retry pay-out after create customer error', async () => {
+      registrationVisa.lastName = 'mock-fail-create-customer';
+      // Arrange
+      await importRegistrations(programId, [registrationVisa], accessToken);
+      await changePaStatus(
+        programId,
+        [referenceIdVisa],
+        'include',
+        accessToken,
+      );
+      const paymentReferenceIds = [referenceIdVisa];
+      // Act
+      const doPaymentResponse = await doPayment(
+        programId,
+        payment,
+        amount,
+        paymentReferenceIds,
+        accessToken,
+      );
+
+      await waitFor(2_000);
+
+      const updatePaResponse = await updatePa(
+        programId,
+        referenceIdVisa,
+        'lastName',
+        'succeed',
+        accessToken,
+      );
+
+      const retryPaymentResponse = await retryPayment(
+        programId,
+        payment,
+        amount,
+        accessToken,
+      );
+
+      await waitFor(2_000);
+
+      const transactionsResponse = await getTransactions(
+        programId,
+        payment,
+        referenceIdVisa,
+        accessToken,
+      );
+      // Assert
+      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
+      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(transactionsResponse.text).toContain('success');
+    });
+
+    // TODO: Figure out how to solve the subsequent 'callstack'
+    it.skip('should successfully retry pay-out after create wallet error', async () => {
+      registrationVisa.lastName = 'mock-fail-create-wallet';
+      // Arrange
+      await importRegistrations(programId, [registrationVisa], accessToken);
+      await changePaStatus(
+        programId,
+        [referenceIdVisa],
+        'include',
+        accessToken,
+      );
+      const paymentReferenceIds = [referenceIdVisa];
+      // Act
+      const doPaymentResponse = await doPayment(
+        programId,
+        payment,
+        amount,
+        paymentReferenceIds,
+        accessToken,
+      );
+
+      await waitFor(1_000);
+
+      const updatePaResponse = await updatePa(
+        programId,
+        referenceIdVisa,
+        'lastName',
+        'succeed',
+        accessToken,
+      );
+      await waitFor(1_000);
+
+      const retryPaymentResponse = await retryPayment(
+        programId,
+        payment,
+        amount,
+        accessToken,
+      );
+
+      await waitFor(2_000);
+
+      const transactionsResponse = await getTransactions(
+        programId,
+        payment,
+        referenceIdVisa,
+        accessToken,
+      );
+      // Assert
+      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
+      expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(transactionsResponse.text).toContain('success');
     });
   });
 });
