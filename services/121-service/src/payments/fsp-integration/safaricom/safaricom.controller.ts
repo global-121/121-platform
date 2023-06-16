@@ -8,7 +8,6 @@ import { SafaricomTransferPayload } from './safaricom-transfer-payload.dto';
 @Controller('safaricom')
 export class SafaricomController {
   constructor(private readonly safaricomService: SafaricomService, private readonly safaricomApiService: SafaricomApiService) {}
-
   @ApiBody({ isArray: true, type: SafaricomTransferPayload })
   @Post('make-payment')
   @ApiOperation({ summary: 'Make Safaricom payment' })
@@ -16,7 +15,7 @@ export class SafaricomController {
     console.log("TEST");
     try {
       console.log("TEST");
-      const paymentResponse = await this.SafaricomApiService.makePayment(payload);
+      const paymentResponse = await this.safaricomApiService.makePayment(payload);
       return paymentResponse;
     } catch (error) {
 
