@@ -115,6 +115,7 @@ export class PaymentsService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    // TODO: REFACTOR: this looks over-engineered, since atm all Services "know" the complete Data Model, we can just throw in the entities directly.
     const paPaymentDataList = await this.createPaPaymentDataList(
       targetedRegistrations,
     );
@@ -339,6 +340,7 @@ export class PaymentsService {
     });
   }
 
+  // TODO: REFACTOR: this looks over-engineered, this function is not needed, just use the entities as input
   private async createPaPaymentDataList(
     includedRegistrations: RegistrationEntity[],
   ): Promise<PaPaymentDataDto[]> {
@@ -346,6 +348,7 @@ export class PaymentsService {
     for (const includedRegistration of includedRegistrations) {
       const paPaymentData = new PaPaymentDataDto();
       paPaymentData.referenceId = includedRegistration.referenceId;
+      // TODO: REFACTOR: getting the FSP for each registration is not optimal performance-wise, this relationship data should already have been fetched with getting the registrations
       const fsp = await this.fspService.getFspById(includedRegistration.fsp.id);
       paPaymentData.fspName = fsp.fsp as FspName;
       paPaymentData.paymentAddress = await this.getPaymentAddress(
@@ -360,6 +363,7 @@ export class PaymentsService {
     return paPaymentDataList;
   }
 
+  // TODO: REFACTOR: this is over-engineered, the concept of "payment address" is over-engineered, atm all Services "know" the Data Model and "know" which attributes they need (hard-coded), so no need to abstract phone number etc. into a generic payment address, below function is not necessary
   private async getPaymentAddress(
     includedRegistration: RegistrationEntity,
     fspAttributes: FspQuestionEntity[],
