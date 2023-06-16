@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import axios from 'axios';
 // import { SafaricomPaymentPayloadDto } from './dto/safaricom-payment-payload.dto';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { StatusEnum } from '../../../shared/enum/status.enum';
@@ -31,7 +30,7 @@ export class SafaricomService {
       const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
 
       const paTransactionResult = {
-        fspName: FspName.vodacash,
+        fspName: FspName.safaricom,
         referenceId: payment.referenceId,
         date: new Date(),
         calculatedAmount: calculatedAmount,
@@ -47,43 +46,5 @@ export class SafaricomService {
       );
     }
     return fspTransactionResult;
-  }
-
-  public async makePayment(payload: any): Promise<any> {
-    console.log("TEST Safaricom Service " + process.env.SAFARICOM_B2C_PAYMENTREQUEST_URL);
-    try {
-      const paymentUrl = process.env.SAFARICOM_B2C_PAYMENTREQUEST_URL;
-      const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
-      const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
-
-      const accessToken = await this.getAccessToken(consumerKey, consumerSecret);
-      console.log(accessToken);
-      const response = await axios.post(paymentUrl, payload, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      throw new Error('Failed to make Safaricom B2C payment API call');
-    }
-  }
-
-  async getAccessToken(consumerKey: string, consumerSecret: string): Promise<string> {
-    const accessTokenUrl = process.env.SAFARICOM_CONSUMER_ACCESS_TOKEN_URL;
-
-    const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64');
-    console.log("TEST");
-    const { data } = await axios.get(accessTokenUrl, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Basic ${auth}`,
-      },
-    });
-
-    return data.access_token;
   }
 }
