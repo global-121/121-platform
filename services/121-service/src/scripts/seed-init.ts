@@ -12,6 +12,7 @@ import fspIntersolveVoucher from '../../seed-data/fsp/fsp-intersolve-voucher-wha
 import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
 import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
 import fspUkrPoshta from '../../seed-data/fsp/fsp-ukrposhta.json';
+import fspSafaricom from '../../seed-data/fsp/fsp-safaricom.json';
 import fspVodaCash from '../../seed-data/fsp/fsp-vodacash.json';
 import { PermissionEnum } from '../user/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
@@ -212,6 +213,7 @@ export class SeedInit implements InterfaceScript {
     await this.seedHelper.addFsp(fspMixedAttributes);
     await this.seedHelper.addFsp(fspNoAttributes);
     await this.seedHelper.addFsp(fspUkrPoshta);
+    await this.seedHelper.addFsp(fspSafaricom);
   }
 }
 
