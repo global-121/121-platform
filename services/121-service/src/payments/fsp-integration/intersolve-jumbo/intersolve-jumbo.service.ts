@@ -13,13 +13,16 @@ import {
   TransactionNotificationObject,
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { PreOrderInfoDto } from './dto/pre-order-info.dto';
 import { IntersolveJumboPaymentInfoEnum } from './enum/intersolve-jumbo-payment-info.enum';
 import { IntersolveJumboResultCode } from './enum/intersolve-jumbo-result-code.enum';
 import { IntersolveJumboApiService } from './intersolve-jumbo.api.service';
 
 @Injectable()
-export class IntersolveJumboService {
+export class IntersolveJumboService
+  implements FinancialServiceProviderIntegrationInterface
+{
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
 

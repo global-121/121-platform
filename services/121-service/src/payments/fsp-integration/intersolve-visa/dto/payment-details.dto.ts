@@ -1,0 +1,12 @@
+export class PaymentDetailsDto {
+  public firstName: string;
+  public lastName: string;
+  public addressStreet: string;
+  public addressHouseNumber: string;
+  public addressHouseNumberAddition: string;
+  public addressPostalCode: string;
+  public addressCity: string;
+  public phoneNumber: string;
+  public referenceId: string;
+  public paymentAmountMultiplier: number;
+}

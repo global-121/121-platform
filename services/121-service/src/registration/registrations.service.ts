@@ -1342,6 +1342,10 @@ export class RegistrationsService {
       where: { referenceId: referenceId },
       relations: ['fsp', 'fsp.questions'],
     });
+    if (!registration) {
+      const errors = `ReferenceId ${referenceId} is not known.`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
     if (registration.fsp?.id === newFsp.id) {
       const errors = `New FSP is the same as existing FSP for this Person Affected.`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
@@ -1628,14 +1632,18 @@ export class RegistrationsService {
       validRegistrations.push(registration);
     }
     for (const validRegistration of validRegistrations) {
-      this.messageService.sendTextMessage(
-        validRegistration,
-        validRegistration.program.id,
-        message,
-        null,
-        null,
-        MessageContentType.custom,
-      );
+      this.messageService
+        .sendTextMessage(
+          validRegistration,
+          validRegistration.program.id,
+          message,
+          null,
+          null,
+          MessageContentType.custom,
+        )
+        .catch((err) => {
+          console.log('err: ', err);
+        });
     }
   }
 

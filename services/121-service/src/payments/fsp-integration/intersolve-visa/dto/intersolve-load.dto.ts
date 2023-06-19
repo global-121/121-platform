@@ -4,11 +4,12 @@ export class IntersolveLoadDto {
   public quantities: IntersolveQuantityObjectDto[];
 }
 
-class IntersolveQuantityObjectDto {
+export class IntersolveQuantityObjectDto {
   public quantity: IntersolveQuantityDto;
+  public expiresAt: string;
 }
 
-class IntersolveQuantityDto {
+export class IntersolveQuantityDto {
   public assetCode: string;
   public value: number;
 }

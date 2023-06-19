@@ -9,13 +9,16 @@ import {
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { AfricasTalkingNotificationEntity } from './africas-talking-notification.entity';
 import { AfricasTalkingApiService } from './africas-talking.api.service';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 
 @Injectable()
-export class AfricasTalkingService {
+export class AfricasTalkingService
+  implements FinancialServiceProviderIntegrationInterface
+{
   @InjectRepository(AfricasTalkingNotificationEntity)
   public africasTalkingNotificationRepository: Repository<AfricasTalkingNotificationEntity>;
   public constructor(

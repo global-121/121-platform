@@ -12,7 +12,8 @@
 #     command: "tail -f /dev/null"
 #
 
-name: global-121-platform
+# TODO: The below line bugs Developers, what is it for?
+# name: global-121-platform
 
 services:
   121db:

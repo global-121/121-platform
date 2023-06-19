@@ -1,25 +1,19 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
-import { IntersolveActivateTokenResponseDto } from './dto/intersolve-activate-token-response.dto';
 import {
   IntersolveCreateCustomerResponseBodyDto,
-  IntersolveRegisterHolderResponseDto,
+  IntersolveLinkWalletCustomerResponseDto,
 } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
-import { IntersolveCreateVirtualCardResponseDto } from './dto/intersolve-create-virtual-card.dto';
-import { IntersolveGetVirtualCardResponseDto } from './dto/intersolve-get-virtual-card-response.dto';
+import { IntersolveCreateDebitCardResponseDto } from './dto/intersolve-create-debit-card.dto';
 import {
-  IntersolveGetTokenResponseDto,
-  IntersolveIssueTokenResponseBodyDto,
-  IntersolveIssueTokenResponseDto,
-  IntersolveIssueTokenResponseTokenDto,
-} from './dto/intersolve-issue-token-response.dto';
+  IntersolveCreateWalletResponseBodyDto,
+  IntersolveCreateWalletResponseDataDto,
+  IntersolveCreateWalletResponseDto,
+  IntersolveCreateWalletResponseTokenDto,
+} from './dto/intersolve-create-wallet-response.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
-import {
-  IntersolveVisaWalletStatus,
-  IntersolveVisaWalletType,
-} from './enum/intersolve-visa-token-status.enum';
 
 @Injectable()
 export class IntersolveVisaApiMockService {
@@ -44,15 +38,18 @@ export class IntersolveVisaApiMockService {
       ? payload.individual.lastName.toLowerCase()
       : '';
 
-    if (lastName.includes('mock-fail-issue-token')) {
+    if (lastName.includes('mock-fail-create-wallet')) {
       // pass different holderId to be later used again in mock issue-token call
-      res.data.data.id = 'mock-fail-issue-token';
-    } else if (lastName.includes('mock-fail-create-virtual-card')) {
-      // pass different holderId to be later used again in mock create-virtual-card call
-      res.data.data.id = 'mock-fail-create-virtual-card';
-    } else if (lastName.includes('mock-fail-get-virtual-card')) {
-      // pass different holderId to be later used again in mock get-virtual-card call
-      res.data.data.id = 'mock-fail-get-virtual-card';
+      res.data.data.id = 'mock-fail-create-wallet';
+    } else if (lastName.includes('mock-fail-link-customer-wallet')) {
+      // pass different holderId to be later used again
+      res.data.data.id = 'mock-fail-link-customer-wallet';
+    } else if (lastName.includes('mock-fail-create-debit-card')) {
+      // pass different holderId to be later used again
+      res.data.data.id = 'mock-fail-create-debit-card';
+    } else if (lastName.includes('mock-fail-load-balance')) {
+      // pass different holderId to be later used again
+      res.data.data.id = 'mock-fail-load-balance';
     } else if (lastName.includes('mock-fail-create-customer')) {
       res.data.success = false;
       res.data.errors.push({
@@ -66,74 +63,26 @@ export class IntersolveVisaApiMockService {
     return res;
   }
 
-  public registerHolderMock(
-    tokenCode: string,
-  ): IntersolveRegisterHolderResponseDto {
-    const res: IntersolveRegisterHolderResponseDto = {
-      status: 204,
-      statusText: 'No Content',
-      data: {},
-    };
-    if (tokenCode.toLowerCase().includes('mock-fail-register')) {
-      res.data.success = false;
-      res.data.errors = [];
-      res.data.errors.push({
-        code: 'NOT_FOUND',
-        field: 'mock field',
-        description: 'We mocked that registering customer to token failed',
-      });
-      res.status = 404;
-      res.statusText = 'NOT_FOUND';
-    }
-    return res;
-  }
-
-  public activateCardMock(
-    tokenCode: string,
-  ): IntersolveActivateTokenResponseDto {
-    const res = new IntersolveActivateTokenResponseDto();
-    res.status = 200;
-    res.statusText = 'OK';
-    res.data = {
-      success: true,
-      errors: [],
-      code: 'string',
-      data: {},
-    };
-    if (tokenCode.toLowerCase().includes('mock-fail-activate')) {
-      res.data.success = false;
-      res.data.errors.push({
-        code: 'NOT_FOUND',
-        field: 'mock field',
-        description: 'We mocked that activating token failed',
-      });
-      res.status = 404;
-      res.statusText = 'NOT_FOUND';
-    }
-    return res;
-  }
-
-  public issueTokenMock(holderId: string): IntersolveIssueTokenResponseDto {
-    const response = new IntersolveIssueTokenResponseDto();
+  public createWalletMock(holderId: string): IntersolveCreateWalletResponseDto {
+    const response = new IntersolveCreateWalletResponseDto();
     response.status = 200;
     response.statusText = 'OK';
 
-    response.data = new IntersolveIssueTokenResponseBodyDto();
+    response.data = new IntersolveCreateWalletResponseBodyDto();
     response.data.success = true;
     response.data.errors = [];
     response.data.code = 'string';
     response.data.correlationId = 'string';
 
-    response.data.data = new IntersolveIssueTokenResponseTokenDto();
-    response.data.data.code = `mock-token-${uuid()}`;
-    response.data.data.blocked = false;
-    response.data.data.blockReasonCode = 'string';
-    response.data.data.type = IntersolveVisaWalletType.DIGITAL;
-    response.data.data.tier = 'string';
-    response.data.data.brandTypeCode = 'string';
-    response.data.data.status = IntersolveVisaWalletStatus.ACTIVE;
-    response.data.data.holderId = 'string';
-    response.data.data.balances = [
+    response.data.data = new IntersolveCreateWalletResponseDataDto();
+    response.data.data.token = new IntersolveCreateWalletResponseTokenDto();
+    response.data.data.token.code = `mock-token-${uuid()}`;
+    response.data.data.token.blocked = false;
+    response.data.data.token.blockReasonCode = 'string';
+    response.data.data.token.tier = 'string';
+    response.data.data.token.brandTypeCode = 'string';
+    response.data.data.token.holderId = 'string';
+    response.data.data.token.balances = [
       {
         quantity: {
           assetCode: 'string',
@@ -144,7 +93,7 @@ export class IntersolveVisaApiMockService {
         lastChangedAt: '2023-02-08T14:36:05.816Z',
       },
     ];
-    response.data.data.assets = [
+    response.data.data.token.assets = [
       {
         identity: {
           type: 'string',
@@ -216,22 +165,26 @@ export class IntersolveVisaApiMockService {
       },
     ];
 
-    if (holderId.toLowerCase().includes('mock-fail-create-virtual-card')) {
-      // pass different token to be later used again in mock create-virtual-card call
-      response.data.data.code = 'mock-fail-create-virtual-card';
+    if (holderId.toLowerCase().includes('mock-fail-link-customer-wallet')) {
+      // pass different token to be later used again in mock link-customer-wallet call
+      response.data.data.token.code = 'mock-fail-link-customer-wallet';
     }
-    if (holderId.toLowerCase().includes('mock-fail-get-virtual-card')) {
-      // pass different token to be later used again in mock get-virtual-card call
-      response.data.data.code = 'mock-fail-get-virtual-card';
+    if (holderId.toLowerCase().includes('mock-fail-create-debit-card')) {
+      // pass different token to be later used again in mock create-debit-card call
+      response.data.data.token.code = 'mock-fail-create-debit-card';
+    }
+    if (holderId.toLowerCase().includes('mock-fail-load-balance')) {
+      // pass different token to be later used again in mock load-balance call
+      response.data.data.token.code = 'mock-fail-load-balance';
     }
 
-    if (holderId.toLowerCase().includes('mock-fail-issue-token')) {
+    if (holderId.toLowerCase().includes('mock-fail-create-wallet')) {
       response.data.success = false;
       response.data.errors = [];
       response.data.errors.push({
         code: 'NOT_FOUND',
         field: 'mock field',
-        description: 'We mocked that issuing token failed',
+        description: 'We mocked that creating wallet failed',
       });
       response.status = 404;
       response.statusText = 'NOT_FOUND';
@@ -240,7 +193,51 @@ export class IntersolveVisaApiMockService {
     return response;
   }
 
-  public loadBalanceCardMock(amountInCents: number): IntersolveLoadResponseDto {
+  public linkCustomerToWalletMock(
+    tokenCode: string,
+  ): IntersolveLinkWalletCustomerResponseDto {
+    const res: IntersolveLinkWalletCustomerResponseDto = {
+      status: 204,
+      statusText: 'No Content',
+      data: {},
+    };
+    if (tokenCode.toLowerCase().includes('mock-fail-link-customer-wallet')) {
+      res.data.success = false;
+      res.data.errors = [];
+      res.data.errors.push({
+        code: 'NOT_FOUND',
+        field: 'mock field',
+        description: 'We mocked that linking wallet to customer failed',
+      });
+      res.status = 404;
+      res.statusText = 'NOT_FOUND';
+    }
+    return res;
+  }
+
+  public createDebitCardMock(
+    tokenCode: string,
+  ): IntersolveCreateDebitCardResponseDto {
+    const res: IntersolveCreateDebitCardResponseDto = {
+      status: 200,
+      statusText: 'OK',
+      data: {},
+    };
+    if (tokenCode.toLowerCase().includes('mock-fail-create-debit-card')) {
+      res.data.success = false;
+      res.data.errors = [];
+      res.data.errors.push({
+        code: 'NOT_FOUND',
+        field: 'mock field',
+        description: 'We mocked that creating debit card failed',
+      });
+      res.status = 404;
+      res.statusText = 'NOT_FOUND';
+    }
+    return res;
+  }
+
+  public loadBalanceCardMock(tokenCode: string): IntersolveLoadResponseDto {
     const response = {
       data: {
         success: true,
@@ -264,84 +261,16 @@ export class IntersolveVisaApiMockService {
       status: 200,
       statusText: 'OK',
     };
-    if (amountInCents === 99900) {
+    if (tokenCode.toLowerCase().includes('mock-fail-load-balance')) {
       response.data.success = false;
       response.data.errors.push({
-        code: 'BALANCE_TOO_HIGH',
+        code: 'NOT_FOUND',
         field: 'mock field',
-        description: 'We mocked a balance is too high',
+        description: 'We mocked that the load balance call failed',
       });
-      response.status = 405;
-      response.statusText = 'METHOD NOT ALLOWED';
+      response.status = 404;
+      response.statusText = 'NOT FOUND';
     }
     return response;
-  }
-
-  public createVirtualCardMock(
-    tokenCode: string,
-  ): IntersolveCreateVirtualCardResponseDto {
-    const res: IntersolveCreateVirtualCardResponseDto = {
-      status: 200,
-      statusText: 'OK',
-      data: {},
-    };
-    if (tokenCode.toLowerCase().includes('mock-fail-create-virtual-card')) {
-      res.data.success = false;
-      res.data.errors = [];
-      res.data.errors.push({
-        code: 'NOT_FOUND',
-        field: 'mock field',
-        description: 'We mocked that creating virtual card failed',
-      });
-      res.status = 404;
-      res.statusText = 'NOT_FOUND';
-    }
-    return res;
-  }
-
-  public getVirtualCardMock(
-    tokenCode: string,
-  ): IntersolveGetVirtualCardResponseDto {
-    const res: IntersolveGetVirtualCardResponseDto = {
-      status: 200,
-      statusText: 'OK',
-      data: {},
-    };
-    if (tokenCode.toLowerCase().includes('mock-fail-get-virtual-card')) {
-      res.status = 404;
-      res.statusText = 'NOT_FOUND';
-      res.data.errors = [];
-      res.data.errors.push({
-        code: 'NOT_FOUND',
-        field: 'mock field',
-        description: 'We mocked that getting the virtual card failed',
-      });
-    } else {
-      res.data = {
-        carddataurl: 'https://test-vm.121.global/',
-        controltoken: 'super_secret_token',
-      };
-    }
-    return res;
-  }
-
-  public getToken(tokenCode: string): IntersolveGetTokenResponseDto {
-    const res: IntersolveGetTokenResponseDto = {
-      status: 200,
-      statusText: 'OK',
-      data: {
-        data: {
-          code: tokenCode,
-          blocked: false,
-          type: IntersolveVisaWalletType.STANDARD,
-          status: IntersolveVisaWalletStatus.INACTIVE,
-        },
-        success: true,
-        errors: [],
-        code: 'OK',
-      },
-    };
-    // No mock fail option added here, that is only done for POST Api calls
-    return res;
   }
 }
