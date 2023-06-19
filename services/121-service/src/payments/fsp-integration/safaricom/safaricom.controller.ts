@@ -29,9 +29,9 @@ export class SafaricomController {
 //     }
 //   }
 // }
-belcashCallbackData: SafaricomTransferPayloadDto,
+safaricomCallbackData: SafaricomTransferPayloadDto,
   ): Promise<void> {
-    await this.safaricomApiService.makePayment(belcashCallbackData);
+    await this.safaricomApiService.makePayment(safaricomCallbackData);
     ;
   }
 }
