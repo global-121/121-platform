@@ -147,6 +147,7 @@ Feature: Make a new payment
     Then the Person Affected receives 1 notification on SMS via generic send message feature "./Send_message_to_people_affected.feature"
     And the notification is about receiving their Visa card
 
+  # Set Visa Card to ACTIVE using Intersolve's Swagger UI
   Scenario: Send 2nd or higher payment instructions to a Person Affected with Financial Service Provider "Intersolve-visa"
     Given the Person Affected has successfully completed send first payment with Financial Service Provider "Intersolve-visa"
     And the Visa Debit Card of the Person Affected is "ACTIVE"
@@ -154,12 +155,13 @@ Feature: Make a new payment
     Then the Person Affected receives 1 notifications (WhatsApp or SMS) via generic send message feature "./Send_message_to_people_affected.feature"
     And the notification is about the topup of their Visa card
 
-  # TODO: Check if this scenario covers what we need to test for refactoring payment multiplier for retry payment DevOps #19365
+  # TODO: Remove this scenario at some point when we feel it is no longer necessary to test.
   Scenario: Send payment instructions in parts to a People Affected with Financial Service Provider "Intersolve-visa"
     Given PAs are registerd with test-file '121-import-test-registrations-OCW.csv'
     And PAs have status "included"
     And all PAs have received 1 or more payments
     When executing the next payment for some PAs
+    # TODO: Update so that the "Then" directly follows the "When"
     And updating payment amount multiplier for 1 or more other PAs
     And executing the same next payment for the other PAs
     Then all PAs who have correct registration data for receiving a payment have been paid the correct amount
@@ -182,6 +184,7 @@ Feature: Make a new payment
     # TODO: Test with other types of missing data? (phone number, address, ...)
     Given 1 PA with missing lastName and has status "included"
     When executing a payment for a PA
+    # TODO: Fill in which error Intersolve returns below
     Then the payment fails because of a ??? error
     When updating the PA with a lastName
     And retrying the payment
