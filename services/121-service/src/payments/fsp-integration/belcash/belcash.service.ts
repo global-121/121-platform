@@ -34,7 +34,6 @@ export class BelcashService
     paymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
-    amount: number,
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
@@ -47,11 +46,10 @@ export class BelcashService
     const authorizationToken = await this.belcashApiService.authenticate();
 
     for (const payment of paymentList) {
-      const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
       const payload = this.createPayloadPerPa(
         payment,
         paymentNr,
-        calculatedAmount,
+        payment.transactionAmount,
         program.currency,
         program.id,
       );
