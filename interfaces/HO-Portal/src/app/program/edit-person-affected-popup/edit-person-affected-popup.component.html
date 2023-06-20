@@ -231,7 +231,7 @@
       >
         <ion-button
           (click)="saveNote()"
-          [disabled]="inProgress?.note || false"
+          [disabled]="inProgress?.note || disableNoteSaveButton()"
           class="text-bold ion-text-uppercase"
           fill="clear"
         >

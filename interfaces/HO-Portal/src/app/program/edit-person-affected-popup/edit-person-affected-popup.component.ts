@@ -70,6 +70,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public noteModel: string;
   public noteLastUpdate: string;
+  private noteInitialValue: string;
 
   constructor(
     private modalController: ModalController,
@@ -286,9 +287,13 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       this.programId,
       this.person.referenceId,
     );
-
-    this.noteModel = note.note ? note.note : '';
+    this.noteInitialValue = note.note ? note.note : '';
+    this.noteModel = this.noteInitialValue;
     this.noteLastUpdate = note.noteUpdated;
+  }
+
+  public disableNoteSaveButton(): boolean {
+    return this.noteModel === this.noteInitialValue;
   }
 
   public async saveNote() {
@@ -303,6 +308,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
           );
           this.noteLastUpdate = note.noteUpdated;
           this.inProgress.note = false;
+          this.noteInitialValue = this.noteModel;
         },
         (error) => {
           this.inProgress.note = false;
