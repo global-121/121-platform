@@ -43,6 +43,7 @@
   >
     <div>
       <app-update-property-item
+        *ngIf="attributeValues?.paymentAmountMultiplier"
         type="number"
         [label]="
           'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.label'
@@ -67,6 +68,7 @@
 
       <ng-container *ngIf="showMaxPaymentsField()">
         <app-update-property-item
+          *ngIf="attributeValues?.maxPayments !== undefined"
           type="number"
           [label]="
             canViewPaymentData
@@ -92,24 +94,26 @@
         ></app-update-property-item>
       </ng-container>
 
-      <app-update-property-item
-        *ngIf="canViewPersonalData"
-        type="tel"
-        [label]="
-          'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.label'
-            | translate
-        "
-        [explanation]="
-          'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.explanation'
-            | translate
-        "
-        [value]="attributeValues?.phoneNumber"
-        (updated)="updatePaAttribute('phoneNumber', $event, false)"
-        [inProgress]="inProgress?.phoneNumber || false"
-        [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
-        [showSubmit]="canUpdatePaData && canUpdatePersonalData"
-        class="ion-margin-vertical"
-      ></app-update-property-item>
+      <ng-container *ngIf="canViewPersonalData">
+        <app-update-property-item
+          *ngIf="attributeValues?.phoneNumber"
+          type="tel"
+          [label]="
+            'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.label'
+              | translate
+          "
+          [explanation]="
+            'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.explanation'
+              | translate
+          "
+          [value]="attributeValues?.phoneNumber"
+          (updated)="updatePaAttribute('phoneNumber', $event, false)"
+          [inProgress]="inProgress?.phoneNumber || false"
+          [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
+          [showSubmit]="canUpdatePaData && canUpdatePersonalData"
+          class="ion-margin-vertical"
+        ></app-update-property-item>
+      </ng-container>
 
       <ng-container *ngIf="attributeValues.preferredLanguage">
         <app-update-property-item
