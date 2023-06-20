@@ -52,7 +52,6 @@ export class IntersolveJumboService
       let batchResult: PaTransactionResultDto[] = [];
       batchResult = await this.sendBatchPayment(batch, payment);
       for (const paResult of batchResult) {
-        paResult.calculatedAmount = paResult.calculatedAmount;
         await this.storeTransactionResult(paResult, payment, 1, programId);
       }
     }

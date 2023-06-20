@@ -123,7 +123,7 @@ export class PaymentsService {
     const paPaymentDataList = await this.getPaymentListForRetry(
       programId,
       payment,
-      referenceIdsDto,
+      referenceIdsDto?.referenceIds,
     );
 
     if (paPaymentDataList.length < 1) {
@@ -397,14 +397,14 @@ export class PaymentsService {
   private async getPaymentListForRetry(
     programId: number,
     payment: number,
-    referenceIdsDto?: ReferenceIdsDto,
+    referenceIds?: string[],
   ): Promise<PaPaymentDataDto[]> {
     let q = this.getPaymentRegistrationsQuery(programId);
 
     q = this.queryLatestFailedTransaction(q);
-    if (referenceIdsDto) {
+    if (referenceIds) {
       q.andWhere('registration."referenceId" IN (:...referenceIds)', {
-        referenceIds: referenceIdsDto.referenceIds,
+        referenceIds: referenceIds,
       });
       const result = await q.getRawMany();
       for (const row of result) {

@@ -96,9 +96,7 @@ export class IntersolveVoucherService
         });
         await this.storeTransactionResult(
           payment,
-          paResult.status === StatusEnum.error // if error, take original amount
-            ? paymentInfo.transactionAmount
-            : paResult.calculatedAmount,
+          paymentInfo.transactionAmount,
           registration.id,
           1,
           paResult.status,
