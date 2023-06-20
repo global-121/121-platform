@@ -72,6 +72,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public noteLastUpdate: string;
   private noteInitialValue: string;
 
+  public loading: boolean;
+
   constructor(
     private modalController: ModalController,
     private translate: TranslateService,
@@ -83,6 +85,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.loading = true;
     this.program = await this.programsService.getProgramById(this.programId);
     this.availableLanguages = this.getAvailableLanguages();
 
@@ -125,6 +128,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       this.fillPaTableAttributes();
       this.getNote();
     }
+
+    this.loading = false;
   }
 
   public async updatePaAttribute(
