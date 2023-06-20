@@ -154,6 +154,7 @@ Feature: Make a new payment
     Then the Person Affected receives 1 notifications (WhatsApp or SMS) via generic send message feature "./Send_message_to_people_affected.feature"
     And the notification is about the topup of their Visa card
 
+  # TODO: Check if this scenario covers what we need to test for refactoring payment multiplier for retry payment DevOps #19365
   Scenario: Send payment instructions in parts to a People Affected with Financial Service Provider "Intersolve-visa"
     Given PAs are registerd with test-file '121-import-test-registrations-OCW.csv'
     And PAs have status "included"
