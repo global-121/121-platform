@@ -69,12 +69,7 @@ export class PaymentsService {
     const payments = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('payment')
-      .addSelect(
-        `MIN(CASE WHEN transaction.status = 'error' THEN transaction.amount ELSE transaction.amount / coalesce(r.paymentAmountMultiplier, 1) END )`,
-        'amount',
-      )
-      .addSelect('MIN(transaction.amount)', 'amount')
-      .leftJoin('transaction.registration', 'r')
+      .addSelect('MIN(transaction.created)', 'paymentDate')
       .where('transaction.program.id = :programId', {
         programId: programId,
       })
