@@ -358,6 +358,55 @@ describe('Do payment to 1 PA', () => {
       expect(transactionsResponse.text).toContain('success');
     });
 
+    it('should not multiply again on retry', async () => {
+      // Arrange
+      registrationVisa.lastName = 'mock-fail-create-customer';
+      registrationVisa.paymentAmountMultiplier = 3;
+      await importRegistrations(programId, [registrationVisa], accessToken);
+      await changePaStatus(
+        programId,
+        [referenceIdVisa],
+        'include',
+        accessToken,
+      );
+      const paymentReferenceIds = [referenceIdVisa];
+      // Act
+      await doPayment(
+        programId,
+        payment,
+        amount,
+        paymentReferenceIds,
+        accessToken,
+      );
+
+      await waitFor(2_000);
+
+      // update PA
+      await updatePa(
+        programId,
+        referenceIdVisa,
+        'lastName',
+        'succeed',
+        accessToken,
+      );
+
+      // retry payment
+      await retryPayment(programId, payment, accessToken);
+
+      await waitFor(2_000);
+
+      const transactionsResponse = await getTransactions(
+        programId,
+        payment,
+        referenceIdVisa,
+        accessToken,
+      );
+      // Assert
+      expect(transactionsResponse.body[0].amount).toBe(
+        amount * registrationVisa.paymentAmountMultiplier,
+      );
+    });
+
     // TODO: We skipped testing successful retry after:
     // 1. create wallet error
     // 2. link customer error
