@@ -41,15 +41,13 @@ export async function doPayment(
 export async function retryPayment(
   programId: number,
   paymentNr: number,
-  amount: number,
   access_token: string,
 ): Promise<request.Response> {
   return await getServer()
-    .post(`/programs/${programId}/payments`)
+    .patch(`/programs/${programId}/payments`)
     .set('Cookie', [access_token])
     .send({
       payment: paymentNr,
-      amount: amount,
     });
 }
 

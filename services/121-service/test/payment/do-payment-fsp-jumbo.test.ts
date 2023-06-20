@@ -125,8 +125,4 @@ describe('Do payment to 1 PA', () => {
       );
     });
   });
-
-  describe.skip('with FSP: Intersolve AH digital voucher', () => {
-    it('should succesfully pay-out', () => {});
-  });
 });

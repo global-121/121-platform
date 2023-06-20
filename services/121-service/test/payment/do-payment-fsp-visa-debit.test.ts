@@ -222,8 +222,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       const paymentReferenceIds = [referenceIdVisa];
+
       // Act
-      const doPaymentResponse = await doPayment(
+      // do 1st payment
+      await doPayment(
         programId,
         payment,
         amount,
@@ -233,6 +235,7 @@ describe('Do payment to 1 PA', () => {
 
       await waitFor(2_000);
 
+      // do 2nd payment
       const doSecondPaymentResponse = await doPayment(
         programId,
         payment + 1,
@@ -269,8 +272,10 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       const paymentReferenceIds = [referenceIdVisa];
+
       // Act
-      const doPaymentResponse = await doPayment(
+      // do 1st payment
+      await doPayment(
         programId,
         payment,
         amount,
@@ -280,6 +285,7 @@ describe('Do payment to 1 PA', () => {
 
       await waitFor(2_000);
 
+      // do 2nd payment
       const doSecondPaymentResponse = await doPayment(
         programId,
         payment + 1,
@@ -326,7 +332,8 @@ describe('Do payment to 1 PA', () => {
 
       await waitFor(2_000);
 
-      const updatePaResponse = await updatePa(
+      // update PA
+      await updatePa(
         programId,
         referenceIdVisa,
         'lastName',
@@ -334,12 +341,8 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
 
-      const retryPaymentResponse = await retryPayment(
-        programId,
-        payment,
-        amount,
-        accessToken,
-      );
+      // retry payment
+      await retryPayment(programId, payment, accessToken);
 
       await waitFor(2_000);
 
