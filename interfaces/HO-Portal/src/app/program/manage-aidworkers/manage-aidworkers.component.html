@@ -58,9 +58,6 @@
   /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
   <ion-row class="ion-align-items-center">
     <ion-item>
-      <ion-label position="stacked">
-        {{ 'page.program.manage-aidworkers.email' | translate }}
-      </ion-label>
       <ion-input
         type="email"
         name="emailAidworker"
@@ -68,6 +65,8 @@
         [(ngModel)]="emailAidworker"
         ngDefaultControl
         required
+        [label]="'page.program.manage-aidworkers.email' | translate"
+        labelPlacement="stacked"
       ></ion-input>
     </ion-item>
     <app-password-toggle-input

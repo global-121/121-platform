@@ -7,5 +7,5 @@ export class PreOrderInfoDto {
   public addressPostalCode: string;
   public addressCity: string;
   public referenceId: string;
-  public paymentAmountMultiplier: number;
+  public transactionAmount: number;
 }
