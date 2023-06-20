@@ -174,20 +174,45 @@ Feature: Make a new payment
     Then the transaction of this payment for this PA will show as "failed" with an error message that the card is "inactive"
 
   Scenario: Unsuccessfully send payment instructions balance too high with Financial Service Provider "Intersolve-visa"
-    # TODO: to update
-    Given Intersolve is in MOCK mode
+    Given 1 PA with correct registration data for payment has status "included"
     When executing a payment for a PA with amount 999 euros
     Then the payment fails because of a BALANCE_TOO_HIGH error
 
-  # TODO: Add scenarios for successful retry send payment after unsuccessful send paymen due to:
-  # 1. 121 Platform sends incorrect/incomplete data for create customer endpoint
-  # 2. 121 Platform sends correct data, but create customer endpoint fails (assumption that Intersolve provides way to test this)
-  # 3. Create wallet endpoint fails (assumption that Intersolve provides way to test this)
-  # 4. Lin customer to  wallet endpoint fails (assumption that Intersolve provides way to test this)
-  # 5. Create debit card endpoint fails (assumption that Intersolve provides way to test this)
-  # 6. Load balance endpoint fails (assumption that Intersolve provides way to test this)
+  Scenario: Successfully retry payment after correcting registration data for PA with Financial Service Provider "Intersolve-visa"
+    # TODO: Test with other types of missing data? (phone number, address, ...)
+    Given 1 PA with missing lastName and has status "included"
+    When executing a payment for a PA
+    Then the payment fails because of a ??? error
+    When updating the PA with a lastName
+    And retrying the payment
+    Then the payment shows with status "success"
 
-  # TODO: Add scenarios for successful send payment instructions, but SMS and Whatsapp fails due to incorrect phone number or no Whatsapp account
+  Scenario: Send first payment instructions to a Person Affected with incorrect (SMS) phoneNumer with Financial Service Provider "Intersolve-visa"
+    Given a Person Affected has been registered with Financial Service Provider "Intersolve-visa"
+    And the PA has correctly filled "firstName", "lastName", "addressStreet", "addressHouseNumber", "addressPostalCode", "addressCity"
+    And the PA has a non-existing phone number in field "phoneNumber"
+    And the PA has no "whatsappPhoneNumber"
+    And the PA has status "included"
+    When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then the payment shows as "success" in the Portal
+    And the notification shows as "failed" in the Portal
+
+  Scenario: Send 2nd or higher payment instructions to a Person Affected with invalid whatsappPhoneNumber with Financial Service Provider "Intersolve-visa"
+    Given a Person Affected has been registered with Financial Service Provider "Intersolve-visa"
+    And the PA has correctly filled "firstName", "lastName", "phoneNumber", "addressStreet", "addressHouseNumber", "addressPostalCode", "addressCity"
+    And the PA has a "whatsappPhoneNumber" without a Whatsapp account on it
+    And the PA has status "included"
+    And the PA already received a payment with Financial Service Provider "Intersolve-visa"
+    When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then the payment shows as "success" in the Portal
+    And the notification shows as "failed" in the Portal
+
+  # TODO: Add scenarios for successful retry send payment after unsuccessful send paymen due to:
+  # 1. 121 Platform sends correct data, but create customer endpoint fails (assumption that Intersolve provides way to test this)
+  # 2. Create wallet endpoint fails (assumption that Intersolve provides way to test this)
+  # 3. Link customer to  wallet endpoint fails (assumption that Intersolve provides way to test this)
+  # 4. Create debit card endpoint fails (assumption that Intersolve provides way to test this)
+  # 5. Load balance endpoint fails (assumption that Intersolve provides way to test this)
 
   -- "Intersolve-jumbo-physical"
 
