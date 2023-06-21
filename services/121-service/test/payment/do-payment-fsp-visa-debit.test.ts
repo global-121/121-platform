@@ -70,9 +70,19 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
       );
+
+      await waitFor(2_000);
+
+      const transactionsResponse = await getTransactions(
+        programId,
+        payment,
+        referenceIdVisa,
+        accessToken,
+      );
       // Assert
       expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
+      expect(transactionsResponse.text).toContain('succes');
     });
 
     it('should fail pay-out Visa Debit (CREATE CUSTOMER ERROR)', async () => {
@@ -405,6 +415,7 @@ describe('Do payment to 1 PA', () => {
       expect(transactionsResponse.body[0].amount).toBe(
         amount * registrationVisa.paymentAmountMultiplier,
       );
+      expect(transactionsResponse.text).toContain('succes');
     });
 
     // TODO: We skipped testing successful retry after:
