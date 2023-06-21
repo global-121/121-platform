@@ -17,11 +17,11 @@ import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
 
 describe('Do payment to 1 PA', () => {
   const programId = 3;
-  const referenceId = '63e62864557597e0d';
+  const referenceIdJumbo = '63e62864557597e0d';
   const payment = 1;
   const amount = 22;
-  const registration = {
-    referenceId: referenceId,
+  const registrationJumbo = {
+    referenceId: referenceIdJumbo,
     preferredLanguage: 'en',
     paymentAmountMultiplier: 1,
     firstName: 'John',
@@ -54,10 +54,14 @@ describe('Do payment to 1 PA', () => {
 
     it('should succesfully pay-out', async () => {
       // Arrange
-      await importRegistrations(programId, [registration], accessToken);
-      await changePaStatus(programId, [referenceId], 'include', accessToken);
-      const paymentReferenceIds = [referenceId];
-
+      await importRegistrations(programId, [registrationJumbo], accessToken);
+      await changePaStatus(
+        programId,
+        [referenceIdJumbo],
+        'include',
+        accessToken,
+      );
+      const paymentReferenceIds = [referenceIdJumbo];
       // Act
       const doPaymentResponse = await doPayment(
         programId,
@@ -66,18 +70,16 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
       );
-
       let getTransactionsBody = [];
       while (getTransactionsBody.length <= 0) {
         getTransactionsBody = (
-          await getTransactions(programId, 1, referenceId, accessToken)
+          await getTransactions(programId, 1, referenceIdJumbo, accessToken)
         ).body;
         if (getTransactionsBody.length > 0) {
           break;
         }
         await waitFor(2_000);
       }
-
       // Assert
       expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
@@ -87,11 +89,15 @@ describe('Do payment to 1 PA', () => {
 
     it('should give error about address', async () => {
       // Arrange
-      registration.addressCity = null;
-      await importRegistrations(programId, [registration], accessToken);
-      await changePaStatus(programId, [referenceId], 'include', accessToken);
-      const paymentReferenceIds = [referenceId];
-
+      registrationJumbo.addressCity = null;
+      await importRegistrations(programId, [registrationJumbo], accessToken);
+      await changePaStatus(
+        programId,
+        [referenceIdJumbo],
+        'include',
+        accessToken,
+      );
+      const paymentReferenceIds = [referenceIdJumbo];
       // Act
       const doPaymentResponse = await doPayment(
         programId,
@@ -100,18 +106,16 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
       );
-
       let getTransactionsBody = [];
       while (getTransactionsBody.length <= 0) {
         getTransactionsBody = (
-          await getTransactions(programId, 1, referenceId, accessToken)
+          await getTransactions(programId, 1, referenceIdJumbo, accessToken)
         ).body;
         if (getTransactionsBody.length > 0) {
           break;
         }
         await waitFor(2_000);
       }
-
       // Assert
       expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
@@ -120,13 +124,5 @@ describe('Do payment to 1 PA', () => {
         IntersolveJumboResultCode.InvalidOrderLine,
       );
     });
-  });
-
-  describe.skip('with FSP: Intersolve AH digital voucher', () => {
-    it('should succesfully pay-out', () => {});
-  });
-
-  describe.skip('with FSP: Intersolve Visa V-pay', () => {
-    it('should succesfully pay-out', () => {});
   });
 });
