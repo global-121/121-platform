@@ -154,6 +154,7 @@ export class PaymentsService {
     });
     if (!program) {
       const errors = 'Program not found.';
+      // TODO: REFACTOR: Throw HTTPException from controller, as the Service "does not know" it is being called via HTTP.
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return program;

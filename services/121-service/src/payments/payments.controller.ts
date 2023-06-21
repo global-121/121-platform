@@ -46,6 +46,7 @@ export class PaymentsController {
   })
   @Get('programs/:programId/payments')
   public async getPayments(@Param() params): Promise<any> {
+    // TODO: REFACTOR: use a DTO to define stable structure of result body
     return await this.paymentsService.getPayments(Number(params.programId));
   }
 
