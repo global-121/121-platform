@@ -6,7 +6,7 @@ export class IntersolveLoadDto {
 
 export class IntersolveQuantityObjectDto {
   public quantity: IntersolveQuantityDto;
-  public expiresAt: string;
+  public expiresAt?: string;
 }
 
 export class IntersolveQuantityDto {
