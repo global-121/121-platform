@@ -62,23 +62,12 @@ export class IntersolveVisaService
     fspTransactionResult.fspName = FspName.intersolveVisa;
 
     const paymentDetailsArray = await this.getPaPaymentDetails(paymentList);
-<<<<<<< HEAD
-
-    const program = await this.programRepository.findOne({
-      where: { id: programId },
-    });
-=======
->>>>>>> origin/master
 
     for (const paymentDetails of paymentDetailsArray) {
       const paymentRequestResultPerPa = await this.sendPaymentToPa(
         paymentDetails,
         paymentNr,
         paymentDetails.transactionAmount,
-<<<<<<< HEAD
-        program.endDate,
-=======
->>>>>>> origin/master
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
       await this.transactionsService.storeTransactionUpdateStatus(
