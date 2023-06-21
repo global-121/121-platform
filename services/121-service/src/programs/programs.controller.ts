@@ -177,7 +177,7 @@ export class ProgramController {
   @Permissions(PermissionEnum.ProgramQuestionUPDATE)
   @ApiOperation({ summary: 'Update program question' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  // TODO: REFACTOR: into PATCH /api/programs/:programid/program-questions, use consistent identifier for program question (name or id, see below)
+  // TODO: REFACTOR: into PATCH /api/programs/:programid/program-questions/:programquestionid,
   @Post(':programId/update/program-question')
   public async updateProgramQuestion(
     @Body() updateProgramQuestionDto: UpdateProgramQuestionDto,
@@ -197,7 +197,6 @@ export class ProgramController {
     required: true,
     type: 'integer',
   })
-  // TODO: REFACTOR: into consistent identifier for program question, name or id, see above
   @Delete(':programId/program-questions/:programQuestionId')
   public async deleteProgramQuestion(
     @Param() params: any,
@@ -211,7 +210,7 @@ export class ProgramController {
   @Permissions(PermissionEnum.ProgramCustomAttributeUPDATE)
   @ApiOperation({ summary: 'Update program custom attributes' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  // TODO: REFACTOR: into PATCH (or PUT?) /api/programs/:programid/program-custom-attributes/
+  // TODO: REFACTOR: into PUT /api/programs/:programid/program-custom-attributes
   @Post(':programId/update/program-custom-attributes')
   public async updateProgramCustomAttributes(
     @Param() params,
@@ -230,7 +229,7 @@ export class ProgramController {
     status: 200,
     description: 'Return PA-table attributes by program-id.',
   })
-  // TODO: Perhaps just give PA Table attribute data of all phases in the GET /programs/:programid response? It is probably not that much data, so a seperate API call for only the attributes and then per phase could be "chatty", also depending on how the consumer/front-end uses this call
+  // TODO: REFACTOR: give PA Table attribute data of all phases in the GET /programs/:programid response.
   @Get(':programId/pa-table-attributes/:phase')
   public async getPaTableAttributes(@Param() params): Promise<Attribute[]> {
     return await this.programService.getPaTableAttributes(

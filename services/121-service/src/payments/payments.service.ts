@@ -92,18 +92,16 @@ export class PaymentsService {
     amount: number,
     referenceIdsDto?: ReferenceIdsDto,
   ): Promise<number> {
-    // TODO: REFACTOR: Call the ProgramService to get the program data needed
     const program = await this.programRepository.findOne({
       where: { id: programId },
       relations: ['financialServiceProviders'],
     });
     if (!program) {
       const errors = 'Program not found.';
-      // TODO: Should the exception not be thrown from the Controller instead of the Service? Since the Service "does not know" it is being called via HTTP.
+      // TODO: REFACTOR: Throw HTTPException from controller, as the Service "does not know" it is being called via HTTP.
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    // TODO: REFACTOR: Call the RegistrationService to get the registration data needed
     const targetedRegistrations = await this.getRegistrationsForPayment(
       programId,
       payment,
@@ -363,7 +361,6 @@ export class PaymentsService {
     return paPaymentDataList;
   }
 
-  // TODO: REFACTOR: this is over-engineered, the concept of "payment address" is over-engineered, atm all Services "know" the Data Model and "know" which attributes they need (hard-coded), so no need to abstract phone number etc. into a generic payment address, below function is not necessary
   private async getPaymentAddress(
     includedRegistration: RegistrationEntity,
     fspAttributes: FspQuestionEntity[],
