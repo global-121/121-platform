@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SoapService } from '../../../utils/soap/soap.service';
+import { IntersolveCancelTransactionByRefPosResponse } from './dto/intersolve-cancel-transaction-by-ref-pos-response.dto';
 import { IntersolveGetCardResponse } from './dto/intersolve-get-card-response.dto';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
 import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-code.enum';
@@ -18,6 +19,13 @@ export class IntersolveVoucherApiService {
     private readonly soapService: SoapService,
     private intersolveMock: IntersolveVoucherMockService,
   ) {}
+
+  // If we get one of these codes back from a cancel by refpos, stop cancelling
+  private readonly stopCancelByRefposCodes = [
+    IntersolveVoucherResultCode.Ok,
+    IntersolveVoucherResultCode.InvalidOrUnknownRetailer,
+    IntersolveVoucherResultCode.UnableToCancel,
+  ];
 
   public async issueCard(
     amount: number,
@@ -159,5 +167,57 @@ export class IntersolveVoucherApiService {
     intersolveRequest.isCancelled = false;
     intersolveRequest.toCancel = true;
     await this.intersolveVoucherRequestRepo.save(intersolveRequest);
+  }
+
+  public async cancelTransactionByRefPos(
+    refPos: number,
+    username: string,
+    password: string,
+  ): Promise<IntersolveCancelTransactionByRefPosResponse> {
+    let payload = await this.soapService.readXmlAsJs(
+      IntersolveVoucherSoapElements.CancelTransactionByRefPos,
+    );
+    payload = this.soapService.changeSoapBody(
+      payload,
+      IntersolveVoucherSoapElements.CancelTransactionByRefPos,
+      ['EAN'],
+      process.env.INTERSOLVE_EAN,
+    );
+    payload = this.soapService.changeSoapBody(
+      payload,
+      IntersolveVoucherSoapElements.CancelTransactionByRefPos,
+      ['RefPosToCancel'],
+      String(refPos),
+    );
+
+    const responseBody = await this.soapService.post(
+      payload,
+      IntersolveVoucherSoapElements.LoyaltyHeader,
+      username,
+      password,
+      process.env.INTERSOLVE_URL,
+    );
+    const result = {
+      resultCode:
+        responseBody.CancelTransactionByRefPosResponse.ResultCode._text,
+      resultDescription:
+        responseBody.CancelTransactionByRefPosResponse.ResultDescription._text,
+    };
+    const intersolveRequest = await this.intersolveVoucherRequestRepo.findOneBy(
+      {
+        refPos: refPos,
+      },
+    );
+    intersolveRequest.updated = new Date();
+    intersolveRequest.isCancelled =
+      result.resultCode == IntersolveVoucherResultCode.Ok;
+    intersolveRequest.cancellationAttempts =
+      intersolveRequest.cancellationAttempts + 1;
+    intersolveRequest.cancelByRefPosResultCode = result.resultCode;
+    intersolveRequest.toCancel = !this.stopCancelByRefposCodes.includes(
+      Number(result.resultCode),
+    );
+    await this.intersolveVoucherRequestRepo.save(intersolveRequest);
+    return result;
   }
 }

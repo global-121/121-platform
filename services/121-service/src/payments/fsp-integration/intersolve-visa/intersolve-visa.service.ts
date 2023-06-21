@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { GenericAttributes } from '../../../registration/enum/custom-data-attributes';
 import { RegistrationsService } from '../../../registration/registrations.service';
@@ -47,8 +46,6 @@ export class IntersolveVisaService
   public intersolveVisaCustomerRepo: Repository<IntersolveVisaCustomerEntity>;
   @InjectRepository(IntersolveVisaWalletEntity)
   public intersolveVisaWalletRepository: Repository<IntersolveVisaWalletEntity>;
-  @InjectRepository(ProgramEntity)
-  public programRepository: Repository<ProgramEntity>;
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
@@ -65,17 +62,23 @@ export class IntersolveVisaService
     fspTransactionResult.fspName = FspName.intersolveVisa;
 
     const paymentDetailsArray = await this.getPaPaymentDetails(paymentList);
+<<<<<<< HEAD
 
     const program = await this.programRepository.findOne({
       where: { id: programId },
     });
+=======
+>>>>>>> origin/master
 
     for (const paymentDetails of paymentDetailsArray) {
       const paymentRequestResultPerPa = await this.sendPaymentToPa(
         paymentDetails,
         paymentNr,
         paymentDetails.transactionAmount,
+<<<<<<< HEAD
         program.endDate,
+=======
+>>>>>>> origin/master
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
       await this.transactionsService.storeTransactionUpdateStatus(
@@ -143,7 +146,6 @@ export class IntersolveVisaService
     paymentDetails: PaymentDetailsDto,
     paymentNr: number,
     calculatedAmount: number,
-    programEndDate: Date,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.referenceId = paymentDetails.referenceId;
@@ -191,7 +193,6 @@ export class IntersolveVisaService
       const createWalletResult = await this.createWallet(
         visaCustomer,
         calculatedAmount,
-        programEndDate,
       );
 
       // if error, return error
@@ -278,7 +279,6 @@ export class IntersolveVisaService
         calculatedAmount,
         registration.referenceId,
         paymentNr,
-        programEndDate,
       );
 
       paTransactionResult.status = loadBalanceResult.data?.success
@@ -351,7 +351,6 @@ export class IntersolveVisaService
   private async createWallet(
     visaCustomer: IntersolveVisaCustomerEntity,
     calculatedAmount: number,
-    programEndDate: Date,
   ): Promise<IntersolveCreateWalletResponseDto> {
     const amountInCents = calculatedAmount * 100;
     const createWalletPayload = new IntersolveCreateWalletDto();
@@ -359,7 +358,6 @@ export class IntersolveVisaService
     createWalletPayload.quantities = [
       {
         quantity: { assetCode: 'EUR', value: amountInCents },
-        expiresAt: programEndDate.toISOString(),
       },
     ];
     const createWalletResult = await this.intersolveVisaApiService.createWallet(
@@ -437,7 +435,6 @@ export class IntersolveVisaService
     calculatedAmount: number,
     referenceId: string,
     payment: number,
-    programEndDate: Date,
   ): Promise<IntersolveLoadResponseDto> {
     const amountInCents = calculatedAmount * 100;
     const reference = uuid();
@@ -452,7 +449,6 @@ export class IntersolveVisaService
             value: amountInCents,
             assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
           },
-          expiresAt: programEndDate.toISOString(),
         },
       ],
     };

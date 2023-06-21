@@ -1,9 +1,12 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
+    <ion-title *ngIf="person?.registrationProgramId">
       {{
         'page.program.program-people-affected.edit-person-affected-popup.popup-title'
-          | translate : { pa: 'PA #' + person?.registrationProgramId }
+          | translate
+            : {
+                pa: 'PA #' + person.registrationProgramId
+              }
       }}
     </ion-title>
     <ion-buttons slot="end">
@@ -23,225 +26,236 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <h2 class="text-bold">{{ person?.name }}</h2>
+  <ion-spinner *ngIf="loading"></ion-spinner>
+  <ng-container *ngIf="!loading">
+    <h2 class="text-bold">{{ person?.name }}</h2>
 
-  <section class="ion-margin-vertical ion-padding-bottom">
-    <strong
-      >{{
-        'page.program.program-people-affected.column.status' | translate
-      }}:</strong
+    <section class="ion-margin-vertical ion-padding-bottom">
+      <strong
+        >{{
+          'page.program.program-people-affected.column.status' | translate
+        }}:</strong
+      >
+      {{
+        'page.program.program-people-affected.status.' + person?.status
+          | translate
+      }}
+    </section>
+
+    <section
+      style="max-width: 80%"
+      class="ion-margin-vertical ion-padding-bottom"
     >
-    {{
-      'page.program.program-people-affected.status.' + person?.status
-        | translate
-    }}
-  </section>
-
-  <section
-    style="max-width: 80%"
-    class="ion-margin-vertical ion-padding-bottom"
-  >
-    <div>
-      <app-update-property-item
-        type="number"
-        [label]="
-          'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.label'
-            | translate
-        "
-        [explanation]="
-          'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.explanation'
-            | translate
-        "
-        [value]="attributeValues?.paymentAmountMultiplier"
-        (updated)="updatePaAttribute('paymentAmountMultiplier', $event, false)"
-        [inProgress]="inProgress?.paymentAmountMultiplier || false"
-        [isDisabled]="
-          !canUpdatePaData || program?.paymentAmountMultiplierFormula
-        "
-        [showSubmit]="
-          canUpdatePaData && !program?.paymentAmountMultiplierFormula
-        "
-        prop="paymentAmountMultiplier"
-        class="ion-margin-vertical"
-      ></app-update-property-item>
-
-      <ng-container *ngIf="showMaxPaymentsField()">
+      <div>
         <app-update-property-item
+          *ngIf="attributeValues?.paymentAmountMultiplier"
           type="number"
           [label]="
-            canViewPaymentData
-              ? ('page.program.program-people-affected.edit-person-affected-popup.properties.maxPayments.label-payments'
-                | translate
-                  : {
-                      alreadyReceivedPayments: person?.nrPayments || 0
-                    })
-              : ('page.program.program-people-affected.edit-person-affected-popup.properties.maxPayments.label-no-payments'
-                | translate)
+            'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.label'
+              | translate
           "
           [explanation]="
-            'page.program.program-people-affected.edit-person-affected-popup.properties.maxPayments.explanation'
+            'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.explanation'
               | translate
           "
-          [value]="attributeValues?.maxPayments"
-          (updated)="updatePaAttribute('maxPayments', $event, false)"
-          [inProgress]="inProgress?.maxPayments || false"
-          [isDisabled]="!canUpdatePaData"
-          [showSubmit]="canUpdatePaData"
-          prop="maxPayments"
+          [value]="attributeValues?.paymentAmountMultiplier"
+          (updated)="
+            updatePaAttribute('paymentAmountMultiplier', $event, false)
+          "
+          [inProgress]="inProgress?.paymentAmountMultiplier || false"
+          [isDisabled]="
+            !canUpdatePaData || program?.paymentAmountMultiplierFormula
+          "
+          [showSubmit]="
+            canUpdatePaData && !program?.paymentAmountMultiplierFormula
+          "
+          prop="paymentAmountMultiplier"
           class="ion-margin-vertical"
         ></app-update-property-item>
-      </ng-container>
 
-      <app-update-property-item
-        *ngIf="canViewPersonalData"
-        type="tel"
-        [label]="
-          'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.label'
-            | translate
-        "
-        [explanation]="
-          'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.explanation'
-            | translate
-        "
-        [value]="attributeValues?.phoneNumber"
-        (updated)="updatePaAttribute('phoneNumber', $event, false)"
-        [inProgress]="inProgress?.phoneNumber || false"
-        [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
-        [showSubmit]="canUpdatePaData && canUpdatePersonalData"
-        class="ion-margin-vertical"
-      ></app-update-property-item>
+        <ng-container *ngIf="showMaxPaymentsField()">
+          <app-update-property-item
+            *ngIf="attributeValues?.maxPayments !== undefined"
+            type="number"
+            [label]="
+              canViewPaymentData
+                ? ('page.program.program-people-affected.edit-person-affected-popup.properties.maxPayments.label-payments'
+                  | translate
+                    : {
+                        alreadyReceivedPayments: person?.nrPayments || 0
+                      })
+                : ('page.program.program-people-affected.edit-person-affected-popup.properties.maxPayments.label-no-payments'
+                  | translate)
+            "
+            [explanation]="
+              'page.program.program-people-affected.edit-person-affected-popup.properties.maxPayments.explanation'
+                | translate
+            "
+            [value]="attributeValues?.maxPayments"
+            (updated)="updatePaAttribute('maxPayments', $event, false)"
+            [inProgress]="inProgress?.maxPayments || false"
+            [isDisabled]="!canUpdatePaData"
+            [showSubmit]="canUpdatePaData"
+            prop="maxPayments"
+            class="ion-margin-vertical"
+          ></app-update-property-item>
+        </ng-container>
 
-      <ng-container *ngIf="attributeValues.preferredLanguage">
-        <app-update-property-item
-          type="dropdown"
+        <ng-container *ngIf="canViewPersonalData">
+          <app-update-property-item
+            *ngIf="attributeValues?.phoneNumber"
+            type="tel"
+            [label]="
+              'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.label'
+                | translate
+            "
+            [explanation]="
+              'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.explanation'
+                | translate
+            "
+            [value]="attributeValues?.phoneNumber"
+            (updated)="updatePaAttribute('phoneNumber', $event, false)"
+            [inProgress]="inProgress?.phoneNumber || false"
+            [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
+            [showSubmit]="canUpdatePaData && canUpdatePersonalData"
+            class="ion-margin-vertical"
+          ></app-update-property-item>
+        </ng-container>
+
+        <ng-container *ngIf="attributeValues.preferredLanguage">
+          <app-update-property-item
+            type="dropdown"
+            [label]="
+              'page.program.program-people-affected.edit-person-affected-popup.properties.preferredLanguage.label'
+                | translate
+            "
+            [value]="attributeValues.preferredLanguage"
+            [options]="availableLanguages"
+            (updated)="updatePaAttribute('preferredLanguage', $event, false)"
+            [isDisabled]="!canUpdatePaData"
+            [showSubmit]="canUpdatePaData"
+            [inProgress]="inProgress?.preferredLanguage || false"
+            class="ion-margin-vertical"
+          ></app-update-property-item>
+        </ng-container>
+
+        <div
+          *ngIf="
+            (!canUpdatePaData || !canUpdatePaFsp) &&
+            fspList.length === programFspLength &&
+            person?.fsp
+          "
+          class="ion-margin-vertical"
+        >
+          <strong
+            >{{
+              'page.program.program-people-affected.column.fsp' | translate
+            }}:</strong
+          >
+          &nbsp;&nbsp;
+          <code>{{ person?.fspDisplayNamePortal }}</code>
+        </div>
+        <app-update-fsp
+          *ngIf="
+            canUpdatePaData &&
+            canUpdatePaFsp &&
+            fspList.length === programFspLength &&
+            person?.fsp
+          "
+          [fspList]="fspList"
           [label]="
-            'page.program.program-people-affected.edit-person-affected-popup.properties.preferredLanguage.label'
-              | translate
-          "
-          [value]="attributeValues.preferredLanguage"
-          [options]="availableLanguages"
-          (updated)="updatePaAttribute('preferredLanguage', $event, false)"
-          [isDisabled]="!canUpdatePaData"
-          [showSubmit]="canUpdatePaData"
-          [inProgress]="inProgress?.preferredLanguage || false"
-          class="ion-margin-vertical"
-        ></app-update-property-item>
-      </ng-container>
-
-      <div
-        *ngIf="
-          (!canUpdatePaData || !canUpdatePaFsp) &&
-          fspList.length === programFspLength &&
-          person?.fsp
-        "
-        class="ion-margin-vertical"
-      >
-        <strong
-          >{{
             'page.program.program-people-affected.column.fsp' | translate
-          }}:</strong
-        >
-        &nbsp;&nbsp;
-        <code>{{ person?.fspDisplayNamePortal }}</code>
-      </div>
-      <app-update-fsp
-        *ngIf="
-          canUpdatePaData &&
-          canUpdatePaFsp &&
-          fspList.length === programFspLength &&
-          person?.fsp
-        "
-        [fspList]="fspList"
-        [label]="'page.program.program-people-affected.column.fsp' | translate"
-        [value]="person?.fspDisplayNamePortal"
-        [referenceId]="person?.referenceId"
-        [programId]="programId"
-        class="ion-margin-vertical"
-      ></app-update-fsp>
-
-      <ng-container *ngIf="canViewPersonalData && paTableAttributes">
-        <app-update-property-item
-          *ngFor="let paTableAttribute of paTableAttributes"
-          [type]="paTableAttribute.type"
-          [label]="paTableAttribute.label"
-          [value]="attributeValues[paTableAttribute.name]"
-          [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
-          [showSubmit]="canUpdatePaData && canUpdatePersonalData"
-          [options]="paTableAttribute.options"
-          [explanation]="paTableAttribute.explanation"
-          (updated)="updatePaAttribute(paTableAttribute.name, $event, true)"
+          "
+          [value]="person?.fspDisplayNamePortal"
+          [referenceId]="person?.referenceId"
+          [programId]="programId"
           class="ion-margin-vertical"
-        ></app-update-property-item>
-      </ng-container>
-    </div>
-  </section>
-  <section
-    *ngIf="canViewPersonalData"
-    class="ion-margin-vertical"
-  >
-    <h4 class="text-bold">
-      {{
-        'page.program.program-people-affected.edit-person-affected-popup.note.section-title'
-          | translate
-      }}
-    </h4>
-    <p>
-      {{
-        'page.program.program-people-affected.edit-person-affected-popup.note.introduction'
-          | translate
-      }}
-    </p>
-    <ion-textarea
-      [(ngModel)]="noteModel"
-      [ngModelOptions]="{ standalone: true }"
-      [disabled]="!canUpdatePersonalData || inProgress?.note"
-      ngDefaultControl
-      rows="10"
-      spellcheck="true"
-      wrap="soft"
-      [placeholder]="
-        'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'
-          | translate
-      "
-      style="
-        font-family: monospace;
-        --border: 1px solid currentColor;
-        --padding-start: 8px;
-        --padding-end: 8px;
-      "
-      fill="outline"
-    ></ion-textarea>
-    <ion-row class="ion-align-items-center ion-justify-content-between">
-      <ion-note *ngIf="noteLastUpdate">
-        {{
-          'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'
-            | translate
-              : {
-                  timestamp: noteLastUpdate | date : DateFormat.dayAndTime
-                }
-        }}
-      </ion-note>
-      <div
-        *ngIf="canUpdatePersonalData"
-        class="ml-auto"
-      >
-        <ion-button
-          (click)="saveNote()"
-          [disabled]="inProgress?.note || false"
-          class="text-bold ion-text-uppercase"
-          fill="clear"
-        >
-          {{
-            'page.program.program-people-affected.edit-person-affected-popup.note.save'
-              | translate
-          }}
-        </ion-button>
-        <ion-spinner
-          *ngIf="inProgress?.note"
-          color="primary"
-          size="small"
-        ></ion-spinner>
+        ></app-update-fsp>
+
+        <ng-container *ngIf="canViewPersonalData && paTableAttributes">
+          <app-update-property-item
+            *ngFor="let paTableAttribute of paTableAttributes"
+            [type]="paTableAttribute.type"
+            [label]="paTableAttribute.label"
+            [value]="attributeValues[paTableAttribute.name]"
+            [isDisabled]="!canUpdatePaData || !canUpdatePersonalData"
+            [showSubmit]="canUpdatePaData && canUpdatePersonalData"
+            [options]="paTableAttribute.options"
+            [explanation]="paTableAttribute.explanation"
+            (updated)="updatePaAttribute(paTableAttribute.name, $event, true)"
+            class="ion-margin-vertical"
+          ></app-update-property-item>
+        </ng-container>
       </div>
-    </ion-row>
-  </section>
+    </section>
+    <section
+      *ngIf="canViewPersonalData"
+      class="ion-margin-vertical"
+    >
+      <h4 class="text-bold">
+        {{
+          'page.program.program-people-affected.edit-person-affected-popup.note.section-title'
+            | translate
+        }}
+      </h4>
+      <p>
+        {{
+          'page.program.program-people-affected.edit-person-affected-popup.note.introduction'
+            | translate
+        }}
+      </p>
+      <ion-textarea
+        [(ngModel)]="noteModel"
+        [ngModelOptions]="{ standalone: true }"
+        [disabled]="!canUpdatePersonalData || inProgress?.note"
+        ngDefaultControl
+        rows="10"
+        spellcheck="true"
+        wrap="soft"
+        [placeholder]="
+          'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'
+            | translate
+        "
+        style="
+          font-family: monospace;
+          --border: 1px solid currentColor;
+          --padding-start: 8px;
+          --padding-end: 8px;
+        "
+        fill="outline"
+      ></ion-textarea>
+      <ion-row class="ion-align-items-center ion-justify-content-between">
+        <ion-note *ngIf="noteLastUpdate">
+          {{
+            'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'
+              | translate
+                : {
+                    timestamp: noteLastUpdate | date : DateFormat.dayAndTime
+                  }
+          }}
+        </ion-note>
+        <div
+          *ngIf="canUpdatePersonalData"
+          class="ml-auto"
+        >
+          <ion-button
+            (click)="saveNote()"
+            [disabled]="inProgress?.note || disableNoteSaveButton()"
+            class="text-bold ion-text-uppercase"
+            fill="clear"
+          >
+            {{
+              'page.program.program-people-affected.edit-person-affected-popup.note.save'
+                | translate
+            }}
+          </ion-button>
+          <ion-spinner
+            *ngIf="inProgress?.note"
+            color="primary"
+            size="small"
+          ></ion-spinner>
+        </div>
+      </ion-row>
+    </section>
+  </ng-container>
 </ion-content>
