@@ -15,7 +15,6 @@ export class IntersolveJumboApiService {
   public async createPreOrder(
     preOrderDtoBatch: PreOrderInfoDto[],
     payment: number,
-    amount: number,
   ): Promise<any> {
     if (process.env.MOCK_INTERSOLVE) {
       return this.intersolveJumboApiMockService.createPreOrder(
@@ -49,7 +48,7 @@ export class IntersolveJumboApiService {
         const newOrderProductMapping = {
           ProductCode: process.env.INTERSOLVE_JUMBO_PRODUCT_CODE,
           PackageCode: process.env.INTERSOLVE_JUMBO_PACKAGE_CODE,
-          ProductValue: String(amount * preOrderDto.paymentAmountMultiplier),
+          ProductValue: String(preOrderDto.transactionAmount),
           Amount: String(1),
           Custom2: String(payment),
         };

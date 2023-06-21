@@ -6,7 +6,6 @@ export interface FinancialServiceProviderIntegrationInterface {
     paymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
-    amount: number,
     useWhatsapp?: boolean,
   ): Promise<void | FspTransactionResultDto>;
 }

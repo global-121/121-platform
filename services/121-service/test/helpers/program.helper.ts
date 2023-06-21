@@ -38,6 +38,19 @@ export async function doPayment(
     });
 }
 
+export async function retryPayment(
+  programId: number,
+  paymentNr: number,
+  access_token: string,
+): Promise<request.Response> {
+  return await getServer()
+    .patch(`/programs/${programId}/payments`)
+    .set('Cookie', [access_token])
+    .send({
+      payment: paymentNr,
+    });
+}
+
 export async function getTransactions(
   programId: number,
   paymentNr: number,

@@ -108,9 +108,6 @@ export class UpdatePropertyItemComponent implements OnInit {
   }
 
   public disableSaveButton(): boolean {
-    if (!this.propertyModel) {
-      return true;
-    }
     return String(this.propertyModel) === String(this.value);
   }
 }

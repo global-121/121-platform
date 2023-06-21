@@ -8,5 +8,5 @@ export class PaymentDetailsDto {
   public addressCity: string;
   public phoneNumber: string;
   public referenceId: string;
-  public paymentAmountMultiplier: number;
+  public transactionAmount: number;
 }
