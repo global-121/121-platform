@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UploadedFile,
@@ -27,6 +28,7 @@ import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { FspInstructions } from './dto/fsp-instructions.dto';
+import { RetryPaymentDto } from './dto/retry-payment.dto';
 import { PaymentsService } from './payments.service';
 
 @UseGuards(PermissionsGuard)
@@ -63,6 +65,26 @@ export class PaymentsController {
       param.programId,
       data.payment,
       data.amount,
+      data.referenceIds,
+    );
+  }
+
+  @Permissions(PermissionEnum.PaymentCREATE)
+  @ApiOperation({
+    summary:
+      'Send payout instruction to financial service provider to retry a payment. This retries failed payments with the original amount',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Patch('programs/:programId/payments')
+  public async retryPayment(
+    @Body() data: RetryPaymentDto,
+    @Param() param,
+    @User('id') userId: number,
+  ): Promise<number> {
+    return await this.paymentsService.retryPayment(
+      userId,
+      param.programId,
+      data.payment,
       data.referenceIds,
     );
   }

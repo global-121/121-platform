@@ -27,15 +27,13 @@ export class UkrPoshtaService
     paymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
-    amount: number,
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.ukrPoshta;
     for (const payment of paymentList) {
-      const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
       const transactionResult = new PaTransactionResultDto();
-      transactionResult.calculatedAmount = calculatedAmount;
+      transactionResult.calculatedAmount = payment.transactionAmount;
       transactionResult.fspName = FspName.ukrPoshta;
       transactionResult.referenceId = payment.referenceId;
       transactionResult.status = StatusEnum.success;
