@@ -19,12 +19,22 @@ Feature: View payment history column and popup
     Then the payment history popup opens
     And it mentions the name of the PA
     And below it a row for each payment that is done for that PA or for which a single payment is possible for that PA
-    And - for payments that are done for the PA - below the payment number it mentions the status success/waiting/failed
-    And the status text is red if waiting/failed
-    And on the right it shows the payment-status button
-    And it contains the datetime, amount and relevant transaction-step-icons of the payment
-    And it has red text, outline and icons if waiting/failed
-    And - for payments for which single payment is possible for the PA - a 'Do single payment' button shows on the right
+    And payments are called transfers
+    And - for payments that are done for the PA - on the right side of the payment number it mentions the status Successful/Failed/Not yet sent
+    And the status text and outline is green if Successful
+    And the status text and outline is yellow if Not yet sent
+    And the status text and outline is red if Failed
+    And icon is displayed on the left side of payment number
+    And if payment is sucessful, in the line of payment number, on the right side of payment status, 'Open voucher' button is displayed
+    And if status is 'Failed' or 'Not yet sent', then 'Retry' button is displayed on the right side of payment status
+    And under the payment number distribution date is displayed
+    And date format is dd-mm-yyyy
+    And user is able to open accordion for each payment
+    And when user opens accordion details are displayed in two columns
+    And first column details contains the sent datetime, Financial officer, and amount
+    And second column details contains the recieved datetime, FSP, and usage
+    And User is able to close accordion by clicking on the "^" button
+    And popup is closed when user clicks on "X" button
 
   Scenario: Do single payment
     Given the user has opened the payment history popup

@@ -9,13 +9,16 @@ import {
   PaTransactionResultDto,
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { AfricasTalkingNotificationEntity } from './africas-talking-notification.entity';
 import { AfricasTalkingApiService } from './africas-talking.api.service';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 
 @Injectable()
-export class AfricasTalkingService {
+export class AfricasTalkingService
+  implements FinancialServiceProviderIntegrationInterface
+{
   @InjectRepository(AfricasTalkingNotificationEntity)
   public africasTalkingNotificationRepository: Repository<AfricasTalkingNotificationEntity>;
   public constructor(
@@ -27,19 +30,17 @@ export class AfricasTalkingService {
     paymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
-    amount: number,
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.africasTalking;
 
     for (const payment of paymentList) {
-      const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
       const payload = this.createPayloadPerPa(
         payment,
         programId,
         paymentNr,
-        calculatedAmount,
+        payment.transactionAmount,
       );
 
       const paymentRequestResultPerPa =

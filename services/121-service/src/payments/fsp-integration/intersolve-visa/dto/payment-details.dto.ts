@@ -1,4 +1,4 @@
-export class PreOrderInfoDto {
+export class PaymentDetailsDto {
   public firstName: string;
   public lastName: string;
   public addressStreet: string;
@@ -6,6 +6,7 @@ export class PreOrderInfoDto {
   public addressHouseNumberAddition: string;
   public addressPostalCode: string;
   public addressCity: string;
+  public phoneNumber: string;
   public referenceId: string;
   public transactionAmount: number;
 }

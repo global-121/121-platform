@@ -5,6 +5,7 @@ import { IntersolveIssueVoucherRequestEntity } from '../payments/fsp-integration
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { IntersolveVoucherModule } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { ProgramFspConfigurationEntity } from '../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
 import { CronjobService } from './cronjob.service';
@@ -17,6 +18,7 @@ import { CronjobService } from './cronjob.service';
       IntersolveIssueVoucherRequestEntity,
       RegistrationEntity,
       TransactionEntity,
+      ProgramFspConfigurationEntity,
     ]),
     WhatsappModule,
     IntersolveVoucherModule,

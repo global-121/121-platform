@@ -20,6 +20,7 @@ import { VoucherWithBalanceDto } from '../../dto/voucher-with-balance.dto';
 import { ImageCodeService } from '../../imagecode/image-code.service';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
 import { IntersolveVoucherJobName } from './dto/job-details.dto';
 import { IntersolveVoucherPayoutStatus } from './enum/intersolve-voucher-payout-status.enum';
@@ -30,7 +31,9 @@ import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instru
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 
 @Injectable()
-export class IntersolveVoucherService {
+export class IntersolveVoucherService
+  implements FinancialServiceProviderIntegrationInterface
+{
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(IntersolveVoucherEntity)
@@ -56,10 +59,9 @@ export class IntersolveVoucherService {
 
   public async sendPayment(
     paPaymentList: PaPaymentDataDto[],
-    useWhatsapp: boolean,
-    amount: number,
-    payment: number,
     programId: number,
+    payment: number,
+    useWhatsapp: boolean,
   ): Promise<void> {
     const config = await this.programFspConfigurationRepository
       .createQueryBuilder('fspConfig')
@@ -79,7 +81,7 @@ export class IntersolveVoucherService {
       const paResult = await this.sendIndividualPayment(
         paymentInfo,
         useWhatsapp,
-        amount,
+        paymentInfo.transactionAmount,
         payment,
         credentials,
       );
@@ -94,9 +96,7 @@ export class IntersolveVoucherService {
         });
         await this.storeTransactionResult(
           payment,
-          paResult.status === StatusEnum.error // if error, take original amount
-            ? amount
-            : paResult.calculatedAmount,
+          paymentInfo.transactionAmount,
           registration.id,
           1,
           paResult.status,
@@ -107,14 +107,10 @@ export class IntersolveVoucherService {
     }
   }
 
-  private getMultipliedAmount(amount: number, multiplier: number): number {
-    return amount * (multiplier || 1);
-  }
-
   public async sendIndividualPayment(
     paymentInfo: PaPaymentDataDto,
     useWhatsapp: boolean,
-    amount: number,
+    calculatedAmount: number,
     payment: number,
     credentials: { username: string; password: string },
   ): Promise<PaTransactionResultDto> {
@@ -129,10 +125,6 @@ export class IntersolveVoucherService {
     }
 
     const intersolveRefPos = this.getIntersolveRefPos();
-    const calculatedAmount = this.getMultipliedAmount(
-      amount,
-      paymentInfo.paymentAmountMultiplier,
-    );
     paResult.calculatedAmount = calculatedAmount;
 
     const voucher = await this.getReusableVoucher(
@@ -194,7 +186,12 @@ export class IntersolveVoucherService {
     }
 
     // Continue with whatsapp:
-    return await this.sendWhatsapp(paymentInfo, paResult, amount, payment);
+    return await this.sendWhatsapp(
+      paymentInfo,
+      paResult,
+      calculatedAmount,
+      payment,
+    );
   }
 
   private getIntersolveRefPos(): number {
@@ -292,7 +289,7 @@ export class IntersolveVoucherService {
   public async sendVoucherWhatsapp(
     paymentInfo: PaPaymentDataDto,
     payment: number,
-    amount: number,
+    calculatedAmount: number,
   ): Promise<PaTransactionResultDto> {
     const result = new PaTransactionResultDto();
     result.referenceId = paymentInfo.referenceId;
@@ -308,10 +305,6 @@ export class IntersolveVoucherService {
       id: programId,
     });
     let whatsappPayment = program.notifications[language]['whatsappPayment'];
-    const calculatedAmount = this.getMultipliedAmount(
-      amount,
-      paymentInfo.paymentAmountMultiplier,
-    );
     whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
 
     await this.whatsappService

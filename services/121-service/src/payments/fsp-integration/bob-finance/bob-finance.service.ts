@@ -11,10 +11,13 @@ import {
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { BobFinanceFspInstructions } from './dto/bob-finance-fsp-instructions.dto';
 
 @Injectable()
-export class BobFinanceService {
+export class BobFinanceService
+  implements FinancialServiceProviderIntegrationInterface
+{
   public constructor(
     private readonly transactionsService: TransactionsService,
     private readonly lookupService: LookupService,
@@ -24,15 +27,13 @@ export class BobFinanceService {
     paymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
-    amount: number,
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.bobFinance;
     for (const payment of paymentList) {
-      const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
       const transactionResult = new PaTransactionResultDto();
-      transactionResult.calculatedAmount = calculatedAmount;
+      transactionResult.calculatedAmount = payment.transactionAmount;
       transactionResult.fspName = FspName.bobFinance;
       transactionResult.referenceId = payment.referenceId;
       transactionResult.status = StatusEnum.success;

@@ -1,7 +1,7 @@
 export class IntersolveCreateCustomerDto {
   public externalReference: string;
   public individual: IntersolveIndividualDto;
-  public contactInfo?: IntersolveContactInfoDto;
+  public contactInfo: IntersolveContactInfoDto;
 }
 
 class IntersolveIndividualDto {
@@ -19,7 +19,7 @@ class IntersolveIndividualDto {
 
 export class IntersolveContactInfoDto {
   public addresses: IntersolveAddressDto[];
-  public emailAddresses: IntersolveTypeValue[];
+  public emailAddresses?: IntersolveTypeValue[];
   public phoneNumbers: IntersolveTypeValue[];
 }
 
@@ -27,7 +27,7 @@ export class IntersolveAddressDto {
   public type: string;
   public addressLine1: string;
   public city: string;
-  public region: string;
+  public region?: string;
   public postalCode: string;
   public country: string;
 }

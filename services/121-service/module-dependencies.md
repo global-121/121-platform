@@ -26,6 +26,7 @@ graph LR
   PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
+  IntersolveVisaModule-->RegistrationsModule
   PaymentsModule-->IntersolveJumboModule
   IntersolveJumboModule-->TransactionsModule
   IntersolveJumboModule-->RegistrationsModule

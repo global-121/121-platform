@@ -2,44 +2,87 @@
   "fsp": "Intersolve-visa",
   "integrationType": "api",
   "fspDisplayNamePaApp": {
-    "en": "Visa V-Pay"
+    "en": "Visa debit card"
   },
-  "fspDisplayNamePortal": "Visa V-Pay",
+  "fspDisplayNamePortal": "Visa debit card",
   "notifyOnTransaction": true,
   "questions": [
     {
-      "name": "tokenCodeVisa",
+      "name": "addressStreet",
       "label": {
-        "en": "Visa-card token code"
+        "en": "Address street"
       },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "answerType": "text",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
-      "duplicateCheck": true,
       "phases": [],
       "shortLabel": {
-        "en": "Visa-card token code"
+        "en": "Address street"
       }
     },
     {
-      "name": "isPhysicalCardVisa",
+      "name": "addressHouseNumber",
       "label": {
-        "en": "Visa-card physical"
+        "en": "Address house number"
       },
-      "answerType": "boolean",
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation",
-        "payment"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "numeric",
       "phases": [],
       "shortLabel": {
-        "en": "Visa-card physical"
+        "en": "Address house number"
+      }
+    },
+    {
+      "name": "addressHouseNumberAddition",
+      "label": {
+        "en": "Address house number addition"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "phases": [],
+      "shortLabel": {
+        "en": "Address house number addition"
+      }
+    },
+    {
+      "name": "addressPostalCode",
+      "label": {
+        "en": "Address postal code"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "phases": [],
+      "shortLabel": {
+        "en": "Address postal code"
+      }
+    },
+    {
+      "name": "addressCity",
+      "label": {
+        "en": "Address city"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "text",
+      "phases": [],
+      "shortLabel": {
+        "en": "Address city"
+      }
+    },
+    {
+      "name": "whatsappPhoneNumber",
+      "label": {
+        "en": "WhatsApp Nr."
+      },
+      "placeholder": {
+        "ar": "00 00 00 00 0 00+",
+        "en": "+00 0 00 00 00 00"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "tel",
+      "options": null,
+      "duplicateCheck": true,
+      "phases": [],
+      "shortLabel": {
+        "en": "WhatsApp Nr."
       }
     }
   ]

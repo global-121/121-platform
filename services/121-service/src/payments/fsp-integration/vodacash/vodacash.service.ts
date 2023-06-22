@@ -13,9 +13,12 @@ import {
 } from '../../dto/payment-transaction-result.dto';
 import { TransactionEntity } from '../../transactions/transaction.entity';
 import { TransactionsService } from '../../transactions/transactions.service';
+import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 
 @Injectable()
-export class VodacashService {
+export class VodacashService
+  implements FinancialServiceProviderIntegrationInterface
+{
   public constructor(
     private readonly transactionsService: TransactionsService,
   ) {}
@@ -24,20 +27,17 @@ export class VodacashService {
     paymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
-    amount: number,
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.vodacash;
 
     for (const payment of paymentList) {
-      const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
-
       const paTransactionResult = {
         fspName: FspName.vodacash,
         referenceId: payment.referenceId,
         date: new Date(),
-        calculatedAmount: calculatedAmount,
+        calculatedAmount: payment.transactionAmount,
         status: StatusEnum.waiting,
         message: null,
       };
