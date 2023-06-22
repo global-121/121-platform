@@ -1,267 +1,260 @@
 <ion-header>
-  <ion-toolbar>
+<ion-toolbar>
 
-    <!-- Pop up title -->
-    <ion-title>
-      {{
-        'page.program.program-people-affected.payment-history-popup.title'
-          | translate
-      }}
-    </ion-title>
+<!-- Pop up title -->
+<ion-title>
+{{
+'page.program.program-people-affected.payment-history-popup.title'
+| translate
+}}
+</ion-title>
 
-    <!-- Exit cancel button -->
-    <ion-buttons slot="end">
-      <ion-button
-        (click)="closeModal()"
-        [attr.title]="'common.cancel' | translate"
-        [attr.aria-label]="'common.cancel' | translate"
-      >
-        <ion-icon
-          name="close"
-          slot="icon-only"
-          aria-hidden="true"
-        ></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
+<!-- Exit cancel button -->
+<ion-buttons slot="end">
+<ion-button
+(click)="closeModal()"
+[attr.title]="'common.cancel' | translate"
+[attr.aria-label]="'common.cancel' | translate"
+>
+<ion-icon
+name="close"
+slot="icon-only"
+aria-hidden="true"
+></ion-icon>
+</ion-button>
+</ion-buttons>
+</ion-toolbar>
 </ion-header>
 
 <!-- PA name -->
 <ion-content class="ion-padding">
-  <h2>{{ paDisplayName }}</h2>
+<h2>{{ paDisplayName }}</h2>
 
-  <!-- Accordion -->
-  <ion-accordion-group [multiple]="true">
-    <ion-accordion *ngFor="let paymentRow of paymentRows">
-      <ion-item slot="header">
-        <ion-grid class="ion-justify-content-start">
-          <ion-row class="accordion-label">
+<!-- Accordion -->
+<ion-accordion-group [multiple]="true">
+<ion-accordion *ngFor="let paymentRow of paymentRows">
+<ion-item slot="header">
+<ion-grid class="ion-justify-content-start">
+<ion-row class="accordion-label">
 
-            <!-- Money Icon -->
-            <ion-icon
-              class="money-icon"
-              name="cash-outline"
-            ></ion-icon>
+<!-- Money Icon -->
+<ion-icon
+class="money-icon"
+name="cash-outline"
+></ion-icon>
 
-            <!-- Transfer index -->
-            <ion-text class="transfer"
-              >Transfer #{{ paymentRow.paymentIndex }}
-            </ion-text>
+<!-- Transfer index -->
+<ion-text class="transfer"
+>Transfer #{{ paymentRow.paymentIndex }}
+</ion-text>
 
-            <!-- Transfer status -->
-            <ng-container>
-              <ion-chip
-                *ngIf="paymentRow.transaction?.status"
-                [ngClass]="
-                  paymentRow.transaction?.status === 'success'
-                    ? 'success'
-                    : 'failed'
-                "
-              >
-                <ion-label>
-                  {{
-                    'page.program.program-payout.last-payment.' +
-                      paymentRow.transaction?.status | translate
-                  }}
-                </ion-label>
-              </ion-chip>
+<!-- Transfer status -->
+<ng-container>
+<ion-chip
+*ngIf="paymentRow.transaction?.status"
+[ngClass]="
+paymentRow.transaction?.status === 'success'
+? 'success'
+: 'failed'
+"
+>
+<ion-label>
+{{
+'page.program.program-payout.last-payment.' +
+paymentRow.transaction?.status | translate
+}}
+</ion-label>
+</ion-chip>
 
-              <!-- Single payment Transfer status -->
-              <ion-chip
-                *ngIf="enableSinglePayment(paymentRow)"
-                [ngClass]="'waiting'"
-              >
-                <ion-label>
-                  {{
-                    'page.program.program-people-affected.transaction.not-yet-sent'
-                      | translate
-                  }}
-                </ion-label>
-              </ion-chip>
-            </ng-container>
+<!-- Single payment Transfer status -->
+<ion-chip
+*ngIf="enableSinglePayment(paymentRow)"
+[ngClass]="'waiting'"
+>
+<ion-label>
+{{
+'page.program.program-people-affected.transaction.not-yet-sent'
+| translate
+}}
+</ion-label>
+</ion-chip>
+</ng-container>
 
-            <!-- Open voucher button -->
-            <ng-container>
-              <ion-button
-                class="open-voucher-button"
-                fill="clear"
-                size="small"
-                *ngIf="
-                  paymentRow.transaction &&
-                  !hasError(paymentRow) &&
-                  hasVoucherSupport(paymentRow.transaction.fsp)
-                "
-                (click)="rowClick(paymentRow)"
-                >{{
-                  'page.program.program-people-affected.transaction.open-voucher'
-                    | translate
-                }}
-              </ion-button>
-            </ng-container>
+<!-- Open voucher button -->
+<ng-container>
+<ion-button
+class="open-voucher-button"
+fill="clear"
+size="small"
+*ngIf="
+paymentRow.transaction &&
+!hasError(paymentRow) &&
+hasVoucherSupport(paymentRow.transaction.fsp)
+"
+(click)="rowClick(paymentRow)"
+>{{
+'page.program.program-people-affected.transaction.open-voucher'
+| translate
+}}
+</ion-button>
+</ng-container>
 
-            <!-- Retry payment button -->
-            <ng-container>
-              <ion-button
-                class="send-payment-button"
-                shape="round"
-                fill="outline"
-                size="small"
-                *ngIf="hasError(paymentRow)"
-                (click)="rowClick(paymentRow)"
-              >
-                {{
-                  'page.program.program-people-affected.transaction.retry'
-                    | translate
-                }}
-              </ion-button>
-            </ng-container>
+<!-- Retry payment button -->
+<ng-container>
+<ion-button
+class="send-payment-button"
+shape="round"
+fill="outline"
+size="small"
+*ngIf="hasError(paymentRow)"
+(click)="rowClick(paymentRow)"
+>
+{{
+'page.program.program-people-affected.transaction.retry'
+| translate
+}}
+</ion-button>
+</ng-container>
 
-            <!-- Single payment send again button -->
-            <ng-container>
-              <ion-button
-                class="send-payment-button"
-                shape="round"
-                fill="outline"
-                size="small"
-                *ngIf="enableSinglePayment(paymentRow)"
-                (click)="rowClick(paymentRow)"
-              >
-                {{
-                  'page.program.program-people-affected.transaction.send-payment'
-                    | translate
-                }}
-              </ion-button>
-            </ng-container>
-          </ion-row>
+<!-- Single payment send again button -->
+<ng-container>
+<ion-button
+class="send-payment-button"
+shape="round"
+fill="outline"
+size="small"
+*ngIf="enableSinglePayment(paymentRow)"
+(click)="rowClick(paymentRow)"
+>
+{{
+'page.program.program-people-affected.transaction.send-payment'
+| translate
+}}
+</ion-button>
+</ng-container>
+</ion-row>
 
-          <!-- Transaction Date -->
-          <ion-row class="accordion-label-two">
-            <ion-text
-              class="date"
-              *ngIf="!enableSinglePayment(paymentRow)"
-            >
-              {{ paymentRow.text.split(',')[0].split('-').reverse().join('-') }}
-            </ion-text>
-          </ion-row>
-        </ion-grid>
-        <ion-icon
-          name="chevron-down-outline"
-          class="ion-accordion-toggle-icon"
-          size="small"
-        >
-        </ion-icon>
-      </ion-item>
+<!-- Transaction Date -->
+<ion-row class="accordion-label-two">
+<ion-text
+class="date"
+*ngIf="!enableSinglePayment(paymentRow)"
+>
+{{ paymentRow.text.split(',')[0].split('-').reverse().join('-') }}
+</ion-text>
+</ion-row>
+</ion-grid>
+<ion-icon
+name="chevron-down-outline"
+class="ion-accordion-toggle-icon"
+size="small"
+>
+</ion-icon>
+</ion-item>
 
-      <!-- Accordion content -->
-      <div slot="content">
-        <ion-grid>
-          <ion-row>
-            <ion-col size="6">
-              <ion-list>
+<!-- Accordion content -->
+<div slot="content">
+<ion-grid>
+<ion-row>
+<ion-col size="6">
+<ion-list>
 
-                <!-- sent -->
-                <ion-item>
-                  <ion-label class="accordion-text"
-                    >{{
-                      'page.program.program-people-affected.transaction.sent'
-                        | translate
-                    }}:
-                  </ion-label>
-                  <ion-label
-                    class="accordion-text text-bold ion-text-right"
-                    *ngIf="paymentRow.transaction"
-                    >{{
-                      paymentRow.text
-                        .split(', ')[0]
-                        .split('-')
-                        .reverse()
-                        .join('-')
-                        .concat(', ', paymentRow.text.split(', ')[1])
-                    }}
-                  </ion-label>
-                </ion-item>
+<!-- sent -->
+<ion-item>
+<ion-label class="accordion-text"
+>{{
+'page.program.program-people-affected.transaction.sent'
+| translate
+}}:
+</ion-label>
+<ion-label
+class="accordion-text text-bold ion-text-right"
+*ngIf="paymentRow.transaction"
+>{{ displayTransactionDateTime(paymentRow.text) }}
+</ion-label>
+</ion-item>
 
-                <!-- amount -->
-                <ion-item>
-                  <ion-label class="accordion-text"
-                    >{{
-                      'page.program.program-people-affected.transaction.amount'
-                        | translate
-                    }}:
-                  </ion-label>
-                  <ion-label
-                    class="accordion-text text-bold ion-text-right"
-                    *ngIf="paymentRow.transaction?.status"
-                    >{{ paymentRow.amount }}
-                  </ion-label>
-                </ion-item>
-              </ion-list>
-            </ion-col>
-            <ion-col size="6">
-              <ion-list>
-                <!-- received -->
-                <ion-item>
-                  <ion-label class="accordion-text"
-                    >{{
-                      'page.program.program-people-affected.transaction.received'
-                        | translate
-                    }}:
-                  </ion-label>
-                  <ion-label
-                    class="accordion-text text-bold ion-text-right"
-                    *ngIf="
-                      paymentRow.transaction &&
-                      hasVoucherSupport &&
-                      !hasError(paymentRow)
-                    "
-                  >TEST
-                  </ion-label>
-                  <ion-label
-                    class="accordion-text text-bold ion-text-right"
-                    *ngIf="paymentRow.transaction && hasError(paymentRow)"
-                    >{{
-                      'page.program.program-people-affected.transaction.error'
-                        | translate
-                    }}
-                  </ion-label>
-                  <ion-label
-                    class="accordion-text text-bold ion-text-right"
-                    *ngIf="
-                      paymentRow.transaction &&
-                      !hasError(paymentRow) &&
-                      !hasVoucherSupport
-                    "
-                    >{{
-                      'page.program.program-people-affected.transaction.nosupport'
-                        | translate
-                    }}
-                  </ion-label>
-                </ion-item>
+<!-- amount -->
+<ion-item>
+<ion-label class="accordion-text"
+>{{
+'page.program.program-people-affected.transaction.amount'
+| translate
+}}:
+</ion-label>
+<ion-label
+class="accordion-text text-bold ion-text-right"
+*ngIf="paymentRow.transaction?.status"
+>{{ paymentRow.amount }}
+</ion-label>
+</ion-item>
+</ion-list>
+</ion-col>
+<ion-col size="6">
+<ion-list>
+<!-- received -->
+<ion-item>
+<ion-label class="accordion-text"
+>{{
+'page.program.program-people-affected.transaction.received'
+| translate
+}}:
+</ion-label>
+<ion-label
+class="accordion-text text-bold ion-text-right"
+*ngIf="
+paymentRow.transaction &&
+hasVoucherSupport &&
+!hasError(paymentRow)
+"
+>{{ displayTransactionDateTime(paymentRow.additionalText) }}
+</ion-label>
+<ion-label
+class="accordion-text text-bold ion-text-right"
+*ngIf="paymentRow.transaction && hasError(paymentRow)"
+>{{
+'page.program.program-people-affected.transaction.error'
+| translate
+}}
+</ion-label>
+<ion-label
+class="accordion-text text-bold ion-text-right"
+*ngIf="
+paymentRow.transaction &&
+!hasError(paymentRow) &&
+!hasVoucherSupport
+"
+>{{
+'page.program.program-people-affected.transaction.nosupport'
+| translate
+}}
+</ion-label>
+</ion-item>
 
-                <!-- fsp -->
-                <ion-item>
-                  <ion-label class="accordion-text"
-                    >{{
-                      'page.program.program-people-affected.transaction.fsp'
-                        | translate
-                    }}:
-                  </ion-label>
-                  <app-tooltip
-                    [value]="paymentRow.transaction?.fspName"
-                  ></app-tooltip>
-                  <ion-label
-                    id="hover-trigger"
-                    class="accordion-text text-bold ion-text-right"
-                    *ngIf="paymentRow.transaction?.status"
-                  >
-                    {{ paymentRow.transaction?.fspName }}
-                  </ion-label>
-                </ion-item>
-              </ion-list>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </div>
-    </ion-accordion>
-  </ion-accordion-group>
+<!-- fsp -->
+<ion-item>
+<ion-label class="accordion-text"
+>{{
+'page.program.program-people-affected.transaction.fsp'
+| translate
+}}:
+</ion-label>
+<app-tooltip
+[value]="paymentRow.transaction?.fspName"
+></app-tooltip>
+<ion-label
+id="hover-trigger"
+class="accordion-text text-bold ion-text-right"
+*ngIf="paymentRow.transaction?.status"
+>
+{{ paymentRow.transaction?.fspName }}
+</ion-label>
+</ion-item>
+</ion-list>
+</ion-col>
+</ion-row>
+</ion-grid>
+</div>
+</ion-accordion>
+</ion-accordion-group>
 </ion-content>
