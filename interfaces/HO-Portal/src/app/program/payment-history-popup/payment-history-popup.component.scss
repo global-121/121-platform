@@ -9,6 +9,15 @@
 
 .accordion-label {
   height: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.accordion-label-two {
+  min-height: 20px;
+  margin-left: 60px;
 }
 
 .money-icon {
@@ -65,7 +74,6 @@ ion-chip {
   font-size: 12px;
   text-decoration-line: underline;
   color: #0f1218;
-  margin-left: 18.5px;
 }
 
 .accordion-text {

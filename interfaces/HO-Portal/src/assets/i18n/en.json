@@ -347,12 +347,11 @@
           "open-voucher": "Open voucher",
           "send-payment": "Send payment",
           "sent": "Sent",
-          "financial-officer": "Financial Officer",
           "amount": "Amount",
           "received": "Received",
           "fsp": "FSP",
-          "used": "Used",
-          "retry": "Retry"
+          "retry": "Retry",
+          "nosupport": "No FSP supported for this transfer"
         },
         "edit-person-affected-popup": {
           "edit-icon-title": "Edit information of Person Affected",
