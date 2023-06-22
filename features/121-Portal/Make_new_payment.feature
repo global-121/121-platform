@@ -239,7 +239,7 @@ Feature: Make a new payment
 
 --"Safaricom Kenya"
 
-  Scenario:Successfully make a payment to a Person Affected with Financial Servise provider "Safaricom"
+  Scenario:Successfully make a payment to a Person Affected with Financial Service provider "Safaricom"
     Given the Person Affected has been imported as registered
     Given all PAs have correctly filled ("FullName", "Age", "FamilyMembers", "phoneNumber", "Language")
     Given age is not under 18
@@ -248,12 +248,12 @@ Feature: Make a new payment
     And payment details are displayed with accordion open
 
 
-  Scenario:Unuccessfully make a payment to a Person Affected with Financial Servise provider "Safaricom" with missing data
+  Scenario:Unuccessfully make a payment to a Person Affected with Financial Service provider "Safaricom" with missing data
     Given the Person Affected has been imported as registered
     Given an obligatory field is missing ("FullName", "Age", "FamilyMembers", "phoneNumber", "Language")
     When payment instructions are successfully sent
-    Then a successful payment appears in the payment column and the payment history popup
-    And payment details are displayed with accordion open
+    Then a failed payment appears for the PA with the missing data
+    
 
       """
     ------------------------------------------------------------------------------------------------------------------------------------
