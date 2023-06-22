@@ -119,30 +119,102 @@ Feature: Make a new payment
 
   -- "Intersolve-visa"
 
-  Scenario: Send first payment instructions to a Person Affected with Financial Service Provider "Intersolve-visa"
-    Given the Person Affected has been imported as registered with a "tokenCodeVisa"
+  Scenario: Send first payment instructions to a Person Affected with SMS created from EspoCRM with Financial Service Provider "Intersolve-visa"
+    Given the Person Affected has been created via EspoCRM API integration as registered with Financial Service Provider "Intersolve-visa"
+    And the PA has correctly filled "firstName", "lastName", "phoneNumber", "addressStreet", "addressHouseNumber", "addressPostalCode", "addressCity"
+    And the PA has status "included"
     When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
-    Then the Person Affected receives 2 notifications (WhatsApp or SMS) via generic send message feature "./Send_message_to_people_affected.feature"
-    And the first notification is about the activation of their Visa card
-    And the second notification is about the topup of their Visa card
+    Then the Person Affected receives 1 notification on SMS via generic send message feature "./Send_message_to_people_affected.feature"
+    And the notification is about receiving their Visa card
+
+  Scenario: Send first payment instructions to a Person Affected with Whatsapp created from EspoCRM with Financial Service Provider "Intersolve-visa"
+    Given the Person Affected has been created via EspoCRM API integration as registered with Financial Service Provider "Intersolve-visa"
+    And the PA has correctly filled "firstName", "lastName", "phoneNumber", "whatsappPhoneNumber", "addressStreet", "addressHouseNumber", "addressPostalCode", "addressCity"
+    And the PA has status "included"
+    When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then the Person Affected receives 1 notification on WhatsApp via generic send message feature "./Send_message_to_people_affected.feature"
+    And the notification is about receiving their Visa card
+
+  Scenario: Send first payment instructions to a Person Affected who changed from Intersolve Financial Service Provider "Intersolve-voucher" to Financial Service Provider "Intersolve-visa"
+    Given the Person Affected has been updated via EspoCRM API integration from having Intersolve Financial Service Provider "Intersolve-voucher" to having with Financial Service Provider "Intersolve-visa"
+    When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then the Person Affected receives 1 notification on SMS via generic send message feature "./Send_message_to_people_affected.feature"
+    And the notification is about receiving their Visa card
+
+  Scenario: Send first payment instructions to a Person Affected who changed from Intersolve Financial Service Provider "Intersolve-jumbo-physical" to Financial Service Provider "Intersolve-visa"
+    Given the Person Affected has been updated via EspoCRM API integration from having from Intersolve Financial Service Provider "Intersolve-jumbo-physical" to having with Financial Service Provider "Intersolve-visa"
+    When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then the Person Affected receives 1 notification on SMS via generic send message feature "./Send_message_to_people_affected.feature"
+    And the notification is about receiving their Visa card
+
 
   Scenario: Send 2nd or higher payment instructions to a Person Affected with Financial Service Provider "Intersolve-visa"
-    Given the Person Affected has been imported as registered with a "tokenCodeVisa"
+    Given the Person Affected has successfully completed send first payment with Financial Service Provider "Intersolve-visa"
+    # Set Visa Card to ACTIVE using Intersolve's Swagger UI (https://service-integration.intersolve.nl/pointofsale/swagger/index.html)
+    And the Visa Debit Card of the Person Affected is "ACTIVE"
     When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
-    Then the Person Affected receives 1 notifications (WhatsApp or SMS) via generic send message feature "./Send_message_to_people_affected.feature"
+    Then the Person Affected receives 1 notification (WhatsApp or SMS) via generic send message feature "./Send_message_to_people_affected.feature"
     And the notification is about the topup of their Visa card
 
-  Scenario: Unsuccessfully send payment instructions for payment #1 with Financial Service Provider "Intersolve-visa"
-    Given PAs are registerd with test-file '121-import-test-registrations-OCW.csv'
-    Given Intersolve is in MOCK mode
-    When executing payment 1 for all PAs
-    Then PA #1 succeeds and the other ones fail for various reasons
-    And the reason can be found in the PA payment status popup
+  # TODO: Remove this scenario at some point when we feel it is no longer necessary to test, as it is pretty specificically oriented at a bug which is now solved
+  Scenario: Send payment instructions in parts to a People Affected with Financial Service Provider "Intersolve-visa"
+    Given PAs are registered with test-file '121-import-test-registrations-OCW.csv'
+    And PAs have status "included"
+    And a payment has been done for part of the PAs already
+    And after that the payment amount multiplier has been updated for some of those PAs
+    And the payment is then executed for the rest of the PAs
+    And it fails for some of those PAs
+    When then using 'retry all'
+    Then all PAs who have correct registration data for receiving a payment have been paid the correct amount
+    And all PAs have received a notification about the top-up their Visa card
 
-  Scenario: Unsuccessfully send payment instructions with Financial Service Provider "Intersolve-visa"
-    Given Intersolve is in MOCK mode
+  Scenario: Unsuccessfully send payment instructions for Person Affected with inactive card with Financial Service Provider "Intersolve-visa"
+    Given PAs are registerd with test-file '121-import-test-registrations-OCW.csv'
+    And 1 PA with correct registration data for payment has status "included"
+    And this PA has received their first payment for Financial Service Prodiver "Intersolve-visa"
+    And this PA has not yet activated their card
+    When executing the next payment for this PA
+    Then the transaction of this payment for this PA will show as "failed" with an error message that the card is "inactive"
+
+  Scenario: Unsuccessfully send payment instructions balance too high with Financial Service Provider "Intersolve-visa"
+    Given 1 PA with correct registration data for payment has status "included"
     When executing a payment for a PA with amount 999 euros
     Then the payment fails because of a BALANCE_TOO_HIGH error
+
+  Scenario: Successfully retry payment after correcting registration data for PA with Financial Service Provider "Intersolve-visa"
+    # TODO: Test with other types of missing data? (phone number, lastName, ...)
+    Given 1 PA with missing "addressCity" and has status "included"
+    When executing a payment for a PA
+    Then the payment fails because of a INVALID_PARAMETERS error
+    When updating the PA with a lastName and retrying the payment
+    Then the payment shows with status "success"
+
+  Scenario: Send first payment instructions to a Person Affected with incorrect (SMS) phoneNumer with Financial Service Provider "Intersolve-visa"
+    Given a Person Affected has been registered with Financial Service Provider "Intersolve-visa"
+    And the PA has correctly filled "firstName", "lastName", "addressStreet", "addressHouseNumber", "addressPostalCode", "addressCity"
+    And the PA has a non-existing phone number in field "phoneNumber"
+    And the PA has no "whatsappPhoneNumber"
+    And the PA has status "included"
+    When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then the payment shows as "success" in the Portal
+    And the notification shows as "failed" in the Portal
+
+  Scenario: Send 2nd or higher payment instructions to a Person Affected with invalid whatsappPhoneNumber with Financial Service Provider "Intersolve-visa"
+    Given a Person Affected has been registered with Financial Service Provider "Intersolve-visa"
+    And the PA has correctly filled "firstName", "lastName", "phoneNumber", "addressStreet", "addressHouseNumber", "addressPostalCode", "addressCity"
+    And the PA has a "whatsappPhoneNumber" without a Whatsapp account on it
+    And the PA has status "included"
+    And the PA already received a payment with Financial Service Provider "Intersolve-visa"
+    When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then the payment shows as "success" in the Portal
+    And the notification shows as "failed" in the Portal
+
+  # TODO: Add scenarios for successful retry send payment after unsuccessful send paymen due to:
+  # 1. 121 Platform sends correct data, but create customer endpoint fails (assumption that Intersolve provides way to test this)
+  # 2. Create wallet endpoint fails (assumption that Intersolve provides way to test this)
+  # 3. Link customer to  wallet endpoint fails (assumption that Intersolve provides way to test this)
+  # 4. Create debit card endpoint fails (assumption that Intersolve provides way to test this)
+  # 5. Load balance endpoint fails (assumption that Intersolve provides way to test this)
 
   -- "Intersolve-jumbo-physical"
 
