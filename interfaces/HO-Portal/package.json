@@ -47,7 +47,6 @@
 "@ngx-translate/core": "^14.0.0",
 "@ngx-translate/http-loader": "^7.0.0",
 "@swimlane/ngx-datatable": "^20.1.0",
-"moment": "2.29.4",
 "core-js": "2.6.8",
 "file-saver": "^2.0.2",
 "rxjs": "^7.8.1",
