@@ -117,7 +117,7 @@ Cypress.Commands.add('importRegistrations', (programId: number, body?) => {
     }
     return cy.request({
       method: 'POST',
-      url: `/programs/${programId}/registrations/import-registrations-cypress`,
+      url: `/programs/${programId}/registrations/import-registrations`,
       body: body,
     });
   });
