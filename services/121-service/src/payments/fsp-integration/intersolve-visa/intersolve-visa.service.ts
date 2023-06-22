@@ -382,7 +382,7 @@ export class IntersolveVisaService
         paymentDetails.addressHouseNumberAddition
       }`,
       city: paymentDetails.addressCity,
-      country: 'NL',
+      country: 'NLD',
       postalCode: paymentDetails.addressPostalCode,
     };
     createDebitCardPayload.pinAddress = {
@@ -392,7 +392,7 @@ export class IntersolveVisaService
         paymentDetails.addressHouseNumberAddition
       }`,
       city: paymentDetails.addressCity,
-      country: 'NL',
+      country: 'NLD',
       postalCode: paymentDetails.addressPostalCode,
     };
     return await this.intersolveVisaApiService.createDebitCard(
