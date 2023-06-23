@@ -3,7 +3,15 @@ import { IntersolveVoucherResultCode } from './enum/intersolve-voucher-result-co
 
 @Injectable()
 export class IntersolveVoucherMockService {
-  public post(payload: any): Promise<any> {
+  public async waitForRandomDelay(): Promise<void> {
+    const min = 100;
+    const max = 300;
+    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+    return new Promise((resolve) => setTimeout(resolve, randomNumber));
+  }
+
+  public async post(payload: any): Promise<any> {
+    await this.waitForRandomDelay();
     const soapBody = payload.elements[0].elements.find(
       (e) => e.name === 'soap:Body',
     );

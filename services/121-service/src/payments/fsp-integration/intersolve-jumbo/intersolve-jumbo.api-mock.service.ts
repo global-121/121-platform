@@ -4,7 +4,17 @@ import { IntersolveJumboResultCode } from './enum/intersolve-jumbo-result-code.e
 
 @Injectable()
 export class IntersolveJumboApiMockService {
-  public createPreOrder(preOrderDtoBatch: PreOrderInfoDto[]): object {
+  public async waitForRandomDelay(): Promise<void> {
+    const min = 100;
+    const max = 300;
+    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+    return new Promise((resolve) => setTimeout(resolve, randomNumber));
+  }
+
+  public async createPreOrder(
+    preOrderDtoBatch: PreOrderInfoDto[],
+  ): Promise<object> {
+    await this.waitForRandomDelay();
     const response = {
       'tns:CreatePreOrderResponse': {
         WebserviceRequest: {
@@ -13,6 +23,9 @@ export class IntersolveJumboApiMockService {
           },
           ResultDescription: {
             _cdata: null,
+          },
+          ReturnId: {
+            _cdata: 'mock-return-id',
           },
         },
       },
@@ -47,7 +60,9 @@ export class IntersolveJumboApiMockService {
     return response;
   }
 
-  public approvePreOrder(): object {
+  public async approvePreOrder(): Promise<object> {
+    await this.waitForRandomDelay();
+
     const response = {
       'tns:ApprovePreOrderResponse': {
         WebserviceRequest: {
