@@ -50,11 +50,9 @@
             <ng-container>
               <ion-chip
                 *ngIf="paymentRow.transaction?.status"
-                [ngClass]="
-                  paymentRow.transaction?.status === 'success'
-                    ? 'success'
-                    : 'failed'
-                "
+                [class.success]="paymentRow.transaction?.status === 'success'"
+                [class.failed]="paymentRow.transaction?.status === 'error'"
+                [class.waiting]="paymentRow.transaction?.status === 'waiting'"
               >
                 <ion-label>
                   {{
@@ -189,45 +187,6 @@
             </ion-col>
             <ion-col size="6">
               <ion-list>
-                <!-- received -->
-                <ion-item>
-                  <ion-label class="accordion-text"
-                    >{{
-                      'page.program.program-people-affected.transaction.received'
-                        | translate
-                    }}:
-                  </ion-label>
-                  <ion-label
-                    class="accordion-text text-bold ion-text-right"
-                    *ngIf="
-                      paymentRow.transaction &&
-                      hasVoucherSupport &&
-                      !hasError(paymentRow)
-                    "
-                    >TEST
-                  </ion-label>
-                  <ion-label
-                    class="accordion-text text-bold ion-text-right"
-                    *ngIf="paymentRow.transaction && hasError(paymentRow)"
-                    >{{
-                      'page.program.program-people-affected.transaction.error'
-                        | translate
-                    }}
-                  </ion-label>
-                  <ion-label
-                    class="accordion-text text-bold ion-text-right"
-                    *ngIf="
-                      paymentRow.transaction &&
-                      !hasError(paymentRow) &&
-                      !hasVoucherSupport
-                    "
-                    >{{
-                      'page.program.program-people-affected.transaction.nosupport'
-                        | translate
-                    }}
-                  </ion-label>
-                </ion-item>
-
                 <!-- fsp -->
                 <ion-item>
                   <ion-label class="accordion-text"

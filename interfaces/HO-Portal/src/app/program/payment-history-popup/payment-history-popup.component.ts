@@ -155,6 +155,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
           hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
           amount: `${transaction.amount} ${this.program?.currency}`,
           fsp: this.person.fsp,
+          sentDate: '',
         };
         paymentRowValue.text = transaction.paymentDate;
         paymentRowValue.sentDate = transaction.paymentDate;
