@@ -17,9 +17,17 @@ import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 
 @Injectable()
 export class IntersolveVisaApiMockService {
-  public createCustomerMock(
+  public async waitForRandomDelay(): Promise<void> {
+    const min = 100;
+    const max = 300;
+    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+    return new Promise((resolve) => setTimeout(resolve, randomNumber));
+  }
+
+  public async createCustomerMock(
     payload: IntersolveCreateCustomerDto,
-  ): IntersolveCreateCustomerResponseBodyDto {
+  ): Promise<IntersolveCreateCustomerResponseBodyDto> {
+    await this.waitForRandomDelay();
     const res = new IntersolveCreateCustomerResponseBodyDto();
     res.data = {
       success: true,
@@ -63,7 +71,10 @@ export class IntersolveVisaApiMockService {
     return res;
   }
 
-  public createWalletMock(holderId: string): IntersolveCreateWalletResponseDto {
+  public async createWalletMock(
+    holderId: string,
+  ): Promise<IntersolveCreateWalletResponseDto> {
+    await this.waitForRandomDelay();
     const response = new IntersolveCreateWalletResponseDto();
     response.status = 200;
     response.statusText = 'OK';
@@ -193,9 +204,11 @@ export class IntersolveVisaApiMockService {
     return response;
   }
 
-  public linkCustomerToWalletMock(
+  public async linkCustomerToWalletMock(
     tokenCode: string,
-  ): IntersolveLinkWalletCustomerResponseDto {
+  ): Promise<IntersolveLinkWalletCustomerResponseDto> {
+    await this.waitForRandomDelay();
+
     const res: IntersolveLinkWalletCustomerResponseDto = {
       status: 204,
       statusText: 'No Content',
@@ -215,9 +228,11 @@ export class IntersolveVisaApiMockService {
     return res;
   }
 
-  public createDebitCardMock(
+  public async createDebitCardMock(
     tokenCode: string,
-  ): IntersolveCreateDebitCardResponseDto {
+  ): Promise<IntersolveCreateDebitCardResponseDto> {
+    await this.waitForRandomDelay();
+
     const res: IntersolveCreateDebitCardResponseDto = {
       status: 200,
       statusText: 'OK',
@@ -237,7 +252,11 @@ export class IntersolveVisaApiMockService {
     return res;
   }
 
-  public loadBalanceCardMock(tokenCode: string): IntersolveLoadResponseDto {
+  public async loadBalanceCardMock(
+    tokenCode: string,
+  ): Promise<IntersolveLoadResponseDto> {
+    await this.waitForRandomDelay();
+
     const response = {
       data: {
         success: true,
