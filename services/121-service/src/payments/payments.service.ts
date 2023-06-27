@@ -30,9 +30,9 @@ import { IntersolveJumboService } from './fsp-integration/intersolve-jumbo/inter
 import { IntersolveVisaService } from './fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveIssueVoucherRequestEntity } from './fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherService } from './fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { SafaricomService } from './fsp-integration/safaricom/safaricom.service';
 import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service';
 import { VodacashService } from './fsp-integration/vodacash/vodacash.service';
-import { SafaricomService } from './fsp-integration/safaricom/safaricom.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsService } from './transactions/transactions.service';
 

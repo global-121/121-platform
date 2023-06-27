@@ -23,14 +23,13 @@ import { BobFinanceModule } from './fsp-integration/bob-finance/bob-finance.modu
 import { IntersolveJumboModule } from './fsp-integration/intersolve-jumbo/intersolve-jumbo.module';
 import { IntersolveVisaModule } from './fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherModule } from './fsp-integration/intersolve-voucher/intersolve-voucher.module';
+import { SafaricomModule } from './fsp-integration/safaricom/safaricom.module';
 import { UkrPoshtaModule } from './fsp-integration/ukrposhta/ukrposhta.module';
 import { VodacashModule } from './fsp-integration/vodacash/vodacash.module';
-import { SafaricomModule } from './fsp-integration/safaricom/safaricom.module';
 import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
 import { TransactionEntity } from './transactions/transaction.entity';
 import { TransactionsModule } from './transactions/transactions.module';
-import { SafaricomService } from './fsp-integration/safaricom/safaricom.service';
 
 @Module({
   imports: [
@@ -67,7 +66,6 @@ import { SafaricomService } from './fsp-integration/safaricom/safaricom.service'
     BulkImportService,
     LookupService,
     InclusionScoreService,
-    SafaricomService,
   ],
   controllers: [PaymentsController],
   exports: [PaymentsService],
