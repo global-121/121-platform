@@ -39,18 +39,18 @@ ion-chip {
   margin-left: 16px;
 
   &.success {
-    --background: #e9f1ed;
-    --color: #295741;
+    --background: var(--ion-color-status-successful);
+    --color: var(--ion-color-status-successful-text);
   }
 
   &.failed {
-    --background: #faebef;
-    --color: #8a0f32;
+    --background: var(--ion-color-status-failed);
+    --color: var(--ion-color-status-failed-text);
   }
 
   &.waiting {
-    --background: #fef3e6;
-    --color: #aa6009;
+    --background: var(--ion-color-status-waiting);
+    --color: var(--ion-color-status-waiting-text);
   }
 }
 

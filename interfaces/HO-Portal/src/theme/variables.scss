@@ -74,4 +74,12 @@
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d8d9da;
   --ion-color-light-tint: #f7f8f9;
+
+  /** status **/
+  --ion-color-status-successful: #e9f1ed;
+  --ion-color-status-successful-text: #295741;
+  --ion-color-status-failed: #faebef;
+  --ion-color-status-failed-text: #8a0f32;
+  --ion-color-status-waiting: #fef3e6;
+  --ion-color-status-waiting-text: #aa6009;
 }
