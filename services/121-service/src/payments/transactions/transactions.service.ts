@@ -41,7 +41,7 @@ export class TransactionsService {
     referenceId?: string,
   ): Promise<any> {
     const transactions =
-      await this.getMaxAttemptPerPaAndPaymentTransactionsQuery(
+      await this.getLatestAttemptPerPaAndPaymentTransactionsQuery(
         programId,
         splitByTransactionStep,
         minPayment,
@@ -50,7 +50,7 @@ export class TransactionsService {
     return transactions;
   }
 
-  public getMaxAttemptPerPaAndPaymentTransactionsQuery(
+  public getLatestAttemptPerPaAndPaymentTransactionsQuery(
     programId: number,
     splitByTransactionStep: boolean,
     minPayment?: number,
