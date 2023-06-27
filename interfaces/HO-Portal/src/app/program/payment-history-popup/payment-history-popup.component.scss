@@ -4,7 +4,7 @@
 
 .ion-accordion-toggle-icon {
   --ionicon-stroke-width: 1px;
-  color: #0f1218;
+  color: var(--ion-color-accordion-text);
 }
 
 .accordion-label {
@@ -29,7 +29,7 @@
   font-weight: 600;
   font-size: 16px;
   line-height: 30px;
-  color: #0f1218;
+  color: var(--ion-color-accordion-text);
   margin-left: 18.5px;
 }
 
@@ -57,7 +57,7 @@ ion-chip {
 .send-payment-button {
   font-weight: 600;
   font-size: 12px;
-  color: #4f22d7;
+  color: var(--ion-color-purple-button);
   margin-left: 18px;
   --border-width: 1px;
 }
@@ -65,7 +65,7 @@ ion-chip {
 .open-voucher-button {
   font-size: 12px;
   text-decoration-line: underline;
-  color: #4f22d7;
+  color: var(--ion-color-purple-button);
   margin-left: 16px;
 }
 
@@ -73,14 +73,14 @@ ion-chip {
   font-weight: 400;
   font-size: 12px;
   text-decoration-line: underline;
-  color: #0f1218;
+  color: var(--ion-color-accordion-text);
 }
 
 .accordion-text {
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
-  color: #0f1218;
+  color: var(--ion-color-accordion-text);
 }
 
 .text-bold {
