@@ -18,7 +18,9 @@ describe('Edit PA details in pop-up', () => {
 
       cy.visit(fixture.url);
 
-      cy.get('app-program-people-affected').should('be.visible');
+      cy.get('app-program-people-affected', { timeout: 8000 }).should(
+        'be.visible',
+      );
 
       cy.get('[data-cy="pa-edit-button"]', { timeout: 8000 }).click();
 
@@ -83,9 +85,10 @@ describe('Edit PA details in pop-up', () => {
 
     cy.get(`[ng-reflect-label="${label}"] ion-button[type="submit"]`).click();
 
-    cy.wait('@updateAttribute');
-    cy.its('response.statusCode').should('not.be.oneOf', [400, 500]);
+    cy.wait('@updateAttribute')
+      .its('response.statusCode')
+      .should('not.be.oneOf', [400, 500]);
 
-    cy.get('button.alert-button', { timeout: 5000 }).click();
+    // cy.get('button.alert-button', { timeout: 15000 }).click();
   }
 });

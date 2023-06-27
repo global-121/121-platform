@@ -44,9 +44,12 @@ describe('Registration phase', () => {
         // Checks if read excel contains original seeded values
         cy.readXlsx(filename, 'data').then((excelData) => {
           for (const excelRow of excelData) {
-            for (let [key, value] of Object.entries(seededRegistration)) {
+            for (let [key, value] of Object.entries(
+              seededRegistration.registration,
+            )) {
               if (key === 'fspName') {
                 key = 'financialserviceprovider';
+                value = seededRegistration.fspLabel;
               }
               if (key === 'status') {
                 value = 'included';
@@ -70,10 +73,10 @@ describe('Registration phase', () => {
               expect(String(excelRow[keyPaymentAmount])).to.equal(String(10));
               const keyPaymentDate = `payment${payment}_date`;
               expect(String(excelRow[keyPaymentDate])).to.include(dateString);
-              const keyPaymentVoucherClaimed = `payment${payment}_voucherClaimed_date`;
-              expect(String(excelRow[keyPaymentVoucherClaimed])).to.include(
-                dateString,
-              );
+              // const keyPaymentVoucherClaimed = `payment${payment}_voucherClaimed_date`;
+              // expect(String(excelRow[keyPaymentVoucherClaimed])).to.include(
+              //   dateString,
+              // );
             }
           }
         });

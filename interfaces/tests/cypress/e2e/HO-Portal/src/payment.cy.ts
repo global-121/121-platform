@@ -28,7 +28,7 @@ describe("'Do Payment #1' bulk action", () => {
       cy.moveToSpecifiedPhase(programId, ProgramPhase.payment);
       cy.fixture('payment').then((page) => {
         selectPaymentAction(page, page.payment);
-        cy.get('#alert-1-msg').contains('no People');
+        cy.get('.alert-message').contains('no People');
       });
     },
   );
@@ -48,8 +48,8 @@ describe("'Do Payment #1' bulk action", () => {
       ).click();
       cy.get('.buttons-last-slot > .ion-color-primary').click();
 
-      cy.get('#alert-3-msg').contains('Successfully');
-      cy.get('#alert-3-msg').contains(String(arr.length));
+      cy.get('.alert-message').contains('Successfully');
+      cy.get('.alert-message').contains(String(arr.length));
 
       // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed
       cy.wait(2000);
@@ -205,7 +205,7 @@ describe("'Do Payment #1' bulk action", () => {
           cy.get('[data-cy="select-action"]').select(
             `${portalEn.page.program['program-people-affected'].actions['include']}`,
           );
-          cy.get('#alert-1-msg').contains('no People');
+          cy.get('.alert-message').contains('no People');
         });
       },
     );
@@ -249,8 +249,8 @@ describe("'Do Payment #1' bulk action", () => {
     ).click();
     cy.get('.buttons-last-slot > .ion-color-primary').click();
 
-    cy.get('#alert-3-msg').contains('Successfully');
-    cy.get('#alert-3-msg').contains(String(nrOfPa));
+    cy.get('.alert-message').contains('Successfully');
+    cy.get('.alert-message').contains(String(nrOfPa));
     cy.get('.alert-button').click();
   };
 
