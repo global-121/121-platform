@@ -1226,7 +1226,7 @@ export class ExportMetricsService {
 
     // Use this method to get only the latest attempt per PA per payment
     const transactionsQuery =
-      this.transactionsService.getMaxAttemptPerPaAndPaymentTransactionsQuery(
+      this.transactionsService.getLatestAttemptPerPaAndPaymentTransactionsQuery(
         programId,
         false,
       );

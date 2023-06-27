@@ -330,13 +330,11 @@ export class PaymentsService {
         qb
           .from(TransactionEntity, 'transactions')
           .select('MAX("payment")', 'payment')
-          .addSelect('COUNT(DISTINCT(payment))', 'nrPayments')
           .addSelect('"registrationId"', 'registrationId')
           .groupBy('"registrationId"'),
       'transaction_max_payment',
       'transaction_max_payment."registrationId" = registration.id',
     )
-
       .leftJoin(
         (qb) =>
           qb
@@ -361,10 +359,7 @@ export class PaymentsService {
       AND transaction."created" = transaction_max_created."created"
       AND transaction.status = '${StatusEnum.error}'`,
       )
-      .addSelect([
-        'transaction.amount AS "transactionAmount"',
-        'transaction.id AS "transactionId"',
-      ]);
+      .addSelect(['transaction.amount AS "transactionAmount"']);
     return q;
   }
 
@@ -403,7 +398,7 @@ export class PaymentsService {
     let q = this.getPaymentRegistrationsQuery(programId);
 
     q = this.queryLatestFailedTransaction(q);
-    if (referenceIds) {
+    if (referenceIds && referenceIds.length > 1) {
       q.andWhere('registration."referenceId" IN (:...referenceIds)', {
         referenceIds: referenceIds,
       });
