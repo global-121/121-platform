@@ -374,27 +374,34 @@ export class IntersolveVisaService
     createDebitCardPayload.brand = 'VISA_CARD';
     createDebitCardPayload.firstName = paymentDetails.firstName;
     createDebitCardPayload.lastName = paymentDetails.lastName;
-    createDebitCardPayload.mobileNumber = paymentDetails.phoneNumber;
+    createDebitCardPayload.mobileNumber = paymentDetails.phoneNumber.startsWith(
+      '+',
+    )
+      ? paymentDetails.phoneNumber
+      : `+${paymentDetails.phoneNumber}`;
     createDebitCardPayload.cardAddress = {
       address1: `${
         paymentDetails.addressStreet +
+        ' ' +
         paymentDetails.addressHouseNumber +
         paymentDetails.addressHouseNumberAddition
       }`,
       city: paymentDetails.addressCity,
-      country: 'NL',
+      country: 'NLD',
       postalCode: paymentDetails.addressPostalCode,
     };
     createDebitCardPayload.pinAddress = {
       address1: `${
         paymentDetails.addressStreet +
+        ' ' +
         paymentDetails.addressHouseNumber +
         paymentDetails.addressHouseNumberAddition
       }`,
       city: paymentDetails.addressCity,
-      country: 'NL',
+      country: 'NLD',
       postalCode: paymentDetails.addressPostalCode,
     };
+    createDebitCardPayload.pinStatus = 'D';
     return await this.intersolveVisaApiService.createDebitCard(
       intersolveVisaWallet.tokenCode,
       createDebitCardPayload,

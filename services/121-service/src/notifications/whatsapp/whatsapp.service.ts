@@ -85,7 +85,6 @@ export class WhatsappService {
           mediaUrl,
           messageContentType,
         );
-        throw err;
       });
   }
 

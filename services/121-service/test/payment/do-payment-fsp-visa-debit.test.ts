@@ -270,9 +270,10 @@ describe('Do payment to 1 PA', () => {
       expect(transactionsResponse.text).toContain('LOAD BALANCE ERROR');
     });
 
-    //TODO: Fix this test after Intersolve has implemented the 'Active/Inactive' status on the card
+    // TODO: Fix this test after Intersolve has implemented the 'Active/Inactive' status on the card
+    // UPDATE: I changed this test already, as we are using MOCK anyway, so not sure what above comment is about
     it('should successfully load balance Visa Debit', async () => {
-      registrationVisa.lastName = 'mock-fail-load-balance';
+      registrationVisa.lastName = 'succeed';
       // Arrange
       await importRegistrations(programId, [registrationVisa], accessToken);
       await changePaStatus(
@@ -317,7 +318,7 @@ describe('Do payment to 1 PA', () => {
       expect(doSecondPaymentResponse.text).toBe(
         String(paymentReferenceIds.length),
       );
-      expect(transactionsResponse.text).toContain('LOAD BALANCE ERROR');
+      expect(transactionsResponse.text).toContain('success');
     });
 
     it('should successfully retry pay-out after create customer error', async () => {

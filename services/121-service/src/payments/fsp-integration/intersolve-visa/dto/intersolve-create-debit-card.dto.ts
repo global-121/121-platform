@@ -8,19 +8,22 @@ export class IntersolveCreateDebitCardDto {
   public cardAddress: {
     address1: string;
     city: string;
-    country: 'NL';
+    country: 'NLD';
     postalCode: string;
+    region?: string;
   };
   public pinAddress: {
     address1: string;
     city: string;
-    country: 'NL';
+    country: 'NLD';
     postalCode: string;
+    region?: string;
   };
   public expiration?: {
     month: number;
     year: number;
   };
+  public pinStatus: 'D';
 }
 
 export class IntersolveCreateDebitCardResponseDto {
