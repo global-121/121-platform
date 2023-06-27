@@ -1185,7 +1185,6 @@ export class ExportMetricsService {
         where: {
           referenceId: In(referenceIdsDto.referenceIds),
         },
-        order: { id: 'ASC' },
       });
     } else {
       registrations = await this.registrationRepository.find({
@@ -1193,8 +1192,6 @@ export class ExportMetricsService {
           program: { id: programId },
           registrationStatus: RegistrationStatusEnum.included,
         },
-        relations: ['fsp'],
-        order: { id: 'ASC' },
       });
     }
     const sum = registrations.reduce(function (a, b) {
