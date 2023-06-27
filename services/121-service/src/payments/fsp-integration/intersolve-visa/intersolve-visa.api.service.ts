@@ -48,7 +48,9 @@ export class IntersolveVisaApiService {
     payload: IntersolveCreateCustomerDto,
   ): Promise<IntersolveCreateCustomerResponseBodyDto> {
     if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.createCustomerMock(payload);
+      return await this.intersolveVisaApiMockService.createCustomerMock(
+        payload,
+      );
     } else {
       const authToken = await this.getAuthenticationToken();
       const url = `${intersolveVisaApiUrl}/customer/v1/customers/create-individual`;
@@ -68,7 +70,7 @@ export class IntersolveVisaApiService {
     payload: IntersolveCreateWalletDto,
   ): Promise<IntersolveCreateWalletResponseDto> {
     if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.createWalletMock(
+      return await this.intersolveVisaApiMockService.createWalletMock(
         payload.reference,
       );
     } else {
@@ -94,7 +96,7 @@ export class IntersolveVisaApiService {
     tokenCode: string,
   ): Promise<any> {
     if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.linkCustomerToWalletMock(
+      return await this.intersolveVisaApiMockService.linkCustomerToWalletMock(
         tokenCode,
       );
     } else {
@@ -114,7 +116,9 @@ export class IntersolveVisaApiService {
     payload: IntersolveCreateDebitCardDto,
   ): Promise<any> {
     if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.createDebitCardMock(tokenCode);
+      return await this.intersolveVisaApiMockService.createDebitCardMock(
+        tokenCode,
+      );
     } else {
       const authToken = await this.getAuthenticationToken();
       const url = `${intersolveVisaApiUrl}/paymentinstrument/v1/tokens/${tokenCode}/create-card`;
@@ -132,7 +136,9 @@ export class IntersolveVisaApiService {
     payload: IntersolveLoadDto,
   ): Promise<IntersolveLoadResponseDto> {
     if (process.env.MOCK_INTERSOLVE) {
-      return this.intersolveVisaApiMockService.loadBalanceCardMock(tokenCode);
+      return await this.intersolveVisaApiMockService.loadBalanceCardMock(
+        tokenCode,
+      );
     } else {
       const authToken = await this.getAuthenticationToken();
       const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/load`;
