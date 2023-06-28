@@ -61,7 +61,7 @@ describe("'Do Payment #1' bulk action", () => {
       );
       cy.get('[data-cy="payment-history-button"]').click({ force: true });
       cy.get('.full-width > :nth-child(1)').contains(
-        `${portalEn.page.program['program-people-affected'].transaction['payment-number']}${page.payment}`,
+        `Payment #${page.payment}`,
       );
       cy.get('.full-width > :nth-child(1)').contains(
         portalEn.page.program['program-payout']['last-payment'].success,
@@ -228,7 +228,7 @@ describe("'Do Payment #1' bulk action", () => {
           // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed and incoming WhatsApp message
           cy.wait(500);
           cy.reload();
-
+          cy.wait(4000);
           cy.get('[data-cy="table-filter-paymentsLeft"]').click();
 
           // This should really be: cy.get('[data-cy="0 remaining"]').click();
