@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('safaricom_request')
 export class SafaricomRequestEntity {
   @PrimaryGeneratedColumn()
-  public safaricomRequestId: number;
+  public id: number;
 
   @Column()
   public initiatorName: string;
@@ -18,19 +18,16 @@ export class SafaricomRequestEntity {
   public amount: number;
 
   @Column()
-  public to: string;
-
-  @Column()
   public partyA: string;
 
   @Column()
   public partyB: string;
 
   @Column()
-  public remarks: number;
+  public remarks: string;
 
   @Column()
-  public queueTimeOutURL: number;
+  public queueTimeOutURL: string;
 
   @Column()
   public resultURL: string;
@@ -40,4 +37,9 @@ export class SafaricomRequestEntity {
 
   @Column()
   public status: string;
+
+  @Column('json', {
+    default: {},
+  })
+  public result?: JSON;
 }

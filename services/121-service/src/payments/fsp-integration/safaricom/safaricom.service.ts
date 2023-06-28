@@ -11,7 +11,6 @@ import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { SafaricomPaymentStatusDto } from './dto/safaricom-payment-status.dto';
-import { SafaricomTransferPayload } from './dto/safaricom-transfer-payload.dto';
 import { SafaricomRequestEntity } from './safaricom-request.entity';
 import { SafaricomApiService } from './safaricom.api.service';
 
@@ -33,13 +32,17 @@ export class SafaricomService {
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FspName.vodacash;
+    fspTransactionResult.fspName = FspName.safaricom;
 
     const authorizationToken = await this.safaricomApiService.authenticate();
 
     for (const payment of paymentList) {
       const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
-      const payload = this.createPayloadPerPa(calculatedAmount);
+      const payload = this.createPayloadPerPa(
+        calculatedAmount,
+        payment,
+        paymentNr,
+      );
 
       const paymentRequestResultPerPa = await this.sendPaymentPerPa(
         payload,
@@ -57,7 +60,7 @@ export class SafaricomService {
     return fspTransactionResult;
   }
 
-  public createPayloadPerPa(calculatedAmount): SafaricomTransferPayload {
+  public createPayloadPerPa(calculatedAmount, payment, paymentNr): any {
     const payload = {
       InitiatorName: 'John Doe',
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL,
@@ -65,17 +68,17 @@ export class SafaricomService {
       Amount: calculatedAmount,
       PartyA: '123454',
       PartyB: '254722000000',
-      Remarks: 'Payment 1',
+      Remarks: `Payment ${paymentNr}`,
       QueueTimeOutURL: 'https://darajambili.herokuapp.com/b2c/timeout',
       ResultURL: 'https://darajambili.herokuapp.com/b2c/result',
-      Occassion: 'SalaryPayment',
+      Occassion: payment.referenceId,
     };
 
     return payload;
   }
 
   public async sendPaymentPerPa(
-    payload: SafaricomTransferPayload,
+    payload: any,
     referenceId: string,
     authorizationToken: string,
   ): Promise<PaTransactionResultDto> {
@@ -86,22 +89,34 @@ export class SafaricomService {
     paTransactionResult.fspName = FspName.safaricom;
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.date = new Date();
-    paTransactionResult.calculatedAmount = payload.Amount;
+    paTransactionResult.calculatedAmount = payload.amount;
+    console.log(payload);
+    console.log(authorizationToken);
 
     const result = await this.safaricomApiService.transfer(
       payload,
       authorizationToken,
     );
 
-    console.log(paTransactionResult);
     if (result && result.ResponseCode === '0') {
       paTransactionResult.status = StatusEnum.success;
+      payload.status = StatusEnum.success;
       paTransactionResult.message = result.ResponseDescription;
     } else {
       paTransactionResult.status = StatusEnum.error;
-      paTransactionResult.message = result.data.error.message;
+      payload.status = StatusEnum.error;
+      paTransactionResult.message = result.errorMessage;
     }
-    console.log(paTransactionResult);
+    const payloadResult = Object.fromEntries(
+      Object.entries(payload).map(([k, v]) => [
+        k.charAt(0).toLowerCase() + k.slice(1),
+        v,
+      ]),
+    );
+
+    payloadResult.result = result;
+    console.log(payloadResult);
+    await this.safaricomRequestRepository.save(payloadResult);
     return paTransactionResult;
   }
 
