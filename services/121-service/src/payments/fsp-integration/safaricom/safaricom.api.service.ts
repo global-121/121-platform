@@ -7,17 +7,17 @@ export class SafaricomApiService {
   public constructor(private readonly httpService: CustomHttpService) {}
 
   public async authenticate(): Promise<string> {
-    // const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
-    // const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
+    const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
+    const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
     const accessTokenUrl = process.env.SAFARICOM_CONSUMER_ACCESS_TOKEN_URL;
-    // const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString(
-    //   'base64',
-    // );
+    const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString(
+      'base64',
+    );
 
     const { data } = await axios.get(`${accessTokenUrl}`, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Basic cFhZbzNCb1JjR3BNTEc3akFFTmxvcFFHZDcxcmVlRGo6a1JsdEZIYlBKUkxkUEtLQg==`,
+        Authorization: `Basic ${auth}`,
       },
     });
     console.log('Access Token: ' + data.access_token);
@@ -25,8 +25,6 @@ export class SafaricomApiService {
   }
 
   public async transfer(payload: any, authorizationToken?): Promise<any> {
-    console.log(payload);
-    console.log(authorizationToken);
     try {
       const paymentUrl = process.env.SAFARICOM_B2C_PAYMENTREQUEST_URL;
       const response = await axios.post(paymentUrl, payload, {
