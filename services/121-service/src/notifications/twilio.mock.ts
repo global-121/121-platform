@@ -78,9 +78,31 @@ export class TwilioClientMock {
         response.status = TwilioStatus.failed;
         response.errorCode = '1';
         response.errorMessage = 'Magic fail';
+        this.sendStatusResponse121(
+          twilioMessagesCreateDto,
+          messageSid,
+          TwilioStatus.failed,
+        );
+      } else {
+        let statuses = [];
+        if (twilioMessagesCreateDto.to.includes('whatsapp')) {
+          statuses = [
+            TwilioStatus.queued,
+            TwilioStatus.sent,
+            TwilioStatus.delivered,
+            TwilioStatus.read,
+          ];
+        } else {
+          statuses = [TwilioStatus.queued, TwilioStatus.sent];
+        }
+        for (const status of statuses) {
+          await this.sendStatusResponse121(
+            twilioMessagesCreateDto,
+            messageSid,
+            status,
+          );
+        }
       }
-      // console.log('TwilioClientMock create(): response:', response);
-      this.sendStatusResponse121(twilioMessagesCreateDto, messageSid);
 
       if (
         twilioMessagesCreateDto.messageType ===
@@ -108,28 +130,30 @@ export class TwilioClientMock {
     private async sendStatusResponse121(
       twilioMessagesCreateDto: TwilioMessagesCreateDto,
       messageSid: string,
+      status: TwilioStatus,
     ): Promise<void> {
-      if (
-        twilioMessagesCreateDto.from &&
-        twilioMessagesCreateDto.from.includes('whatsapp')
-      ) {
+      if (twilioMessagesCreateDto.from) {
         const request = new TwilioStatusCallbackDto();
         request.MessageSid = messageSid;
-        request.MessageStatus = TwilioStatus.delivered;
+        request.MessageStatus = status;
 
         if (twilioMessagesCreateDto.to.includes('15005550001')) {
-          request.MessageStatus = TwilioStatus.failed;
           request.ErrorCode = '1';
           request.ErrorMessage = 'Magic fail';
         }
         const httpService = new HttpService();
+        const url = twilioMessagesCreateDto.to.includes('whatsapp')
+          ? EXTERNAL_API.whatsAppStatus
+          : EXTERNAL_API.smsStatus;
+
         try {
-          await lastValueFrom(
-            httpService.post(EXTERNAL_API.whatsAppStatus, request),
-          );
+          await lastValueFrom(httpService.post(url, request));
         } catch (error) {
           // In case external API is not reachable try localhost
-          const urlLocalhost = `${EXTERNAL_API.rootApi}/${API_PATHS.whatsAppStatus}`;
+          const path = twilioMessagesCreateDto.to.includes('whatsapp')
+            ? API_PATHS.whatsAppStatus
+            : API_PATHS.smsStatus;
+          const urlLocalhost = `${EXTERNAL_API.rootApi}/${path}`;
           await lastValueFrom(httpService.post(urlLocalhost, request)).catch(
             (error) => console.log(error),
           );
@@ -145,7 +169,7 @@ export class TwilioClientMock {
         twilioMessagesCreateDto.from &&
         twilioMessagesCreateDto.from.includes('whatsapp')
       ) {
-        await new Promise((r) => setTimeout(r, 300));
+        await new Promise((r) => setTimeout(r, 3000));
         const request = new TwilioIncomingCallbackDto();
         request.MessageSid = messageSid;
         request.From = twilioMessagesCreateDto.to.replace('whatsapp:', '');
