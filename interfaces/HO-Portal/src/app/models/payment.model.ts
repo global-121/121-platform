@@ -28,6 +28,7 @@ export class PaymentColumnDetail {
 
 export class PaymentRowDetail {
   text: string;
+  sentDate?: string;
   paymentIndex?: number;
   amount?: string;
   hasMessageIcon?: boolean;
