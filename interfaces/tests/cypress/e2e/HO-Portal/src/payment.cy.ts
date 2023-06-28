@@ -228,6 +228,8 @@ describe("'Do Payment #1' bulk action", () => {
           // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed and incoming WhatsApp message
           cy.wait(500);
           cy.reload();
+          // wait 4 seconds for the PAs to show in the table in order for the payments left filter to populate with options
+          // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed and incoming WhatsApp message
           cy.wait(4000);
           cy.get('[data-cy="table-filter-paymentsLeft"]').click();
 

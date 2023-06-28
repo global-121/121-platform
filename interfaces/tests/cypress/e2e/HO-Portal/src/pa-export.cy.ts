@@ -73,6 +73,7 @@ describe('Registration phase', () => {
               expect(String(excelRow[keyPaymentAmount])).to.equal(String(10));
               const keyPaymentDate = `payment${payment}_date`;
               expect(String(excelRow[keyPaymentDate])).to.include(dateString);
+              // commented out because the voucherClaimed_date can be either null or a value. in this specific case it is null, so it is not showing in the excel file
               // const keyPaymentVoucherClaimed = `payment${payment}_voucherClaimed_date`;
               // expect(String(excelRow[keyPaymentVoucherClaimed])).to.include(
               //   dateString,

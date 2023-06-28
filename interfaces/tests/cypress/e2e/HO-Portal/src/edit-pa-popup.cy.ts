@@ -89,6 +89,7 @@ describe('Edit PA details in pop-up', () => {
       .its('response.statusCode')
       .should('not.be.oneOf', [400, 500]);
 
+    // commented out because the alert where the button is supposed to be is not showing
     // cy.get('button.alert-button', { timeout: 15000 }).click();
   }
 });
