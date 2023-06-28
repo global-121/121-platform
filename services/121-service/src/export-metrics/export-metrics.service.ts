@@ -752,6 +752,7 @@ export class ExportMetricsService {
     const transactionQuery = this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
+        'registration.referenceId as "referenceId"',
         'transaction.payment as "payment"',
         'registration.phoneNumber as "phoneNumber"',
         'transaction.amount as "amount"',
