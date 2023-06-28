@@ -84,7 +84,6 @@
                 size="small"
                 *ngIf="
                   paymentRow.transaction &&
-                  !hasError(paymentRow) &&
                   hasVoucherSupport(paymentRow.transaction.fsp)
                 "
                 (click)="rowClick(paymentRow)"
@@ -102,7 +101,7 @@
                 shape="round"
                 fill="outline"
                 size="small"
-                *ngIf="hasError(paymentRow)"
+                *ngIf="hasError(paymentRow) && !hasWaiting(paymentRow)"
                 (click)="rowClick(paymentRow)"
               >
                 {{

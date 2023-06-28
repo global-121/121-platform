@@ -210,7 +210,7 @@
           "last-payment": "Last payment: {{nr}}",
           "error": "Failed",
           "success": "Successful",
-          "waiting": "Not yet sent",
+          "waiting": "Waiting",
           "retry-all": "Retry all {{number}} failed",
           "confirm-prompt": "This will retry ONLY the {{number}} failed payment(s)."
         },
