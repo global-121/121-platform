@@ -16,4 +16,5 @@ export class Transaction {
       }
     | any;
   fspName: string;
+  fsp: string;
 }

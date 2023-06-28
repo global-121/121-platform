@@ -4,7 +4,6 @@ import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import {
-  PaymentColumnDetail,
   PaymentRowDetail,
   PopupPayoutDetails,
   SinglePayoutDetails,
@@ -49,7 +48,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
   private pastTransactions: Transaction[] = [];
   public firstPaymentToShow = 1;
   public lastPaymentId: number;
-  public paymentRows: PaymentColumnDetail[] = [];
+  public paymentRows: PaymentRowDetail[] = [];
   public content: any;
   public payoutDetails: PopupPayoutDetails;
   public paymentInProgress = false;
@@ -156,12 +155,10 @@ export class PaymentHistoryPopupComponent implements OnInit {
           hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
           amount: `${transaction.amount} ${this.program?.currency}`,
           fsp: this.person.fsp,
+          sentDate: '',
         };
-        paymentRowValue.text = formatDate(
-          transaction.paymentDate,
-          DateFormat.dayAndTime,
-          this.locale,
-        );
+        paymentRowValue.text = transaction.paymentDate;
+        paymentRowValue.sentDate = transaction.paymentDate;
         if (transaction.status === StatusEnum.success) {
         } else if (transaction.status === StatusEnum.waiting) {
           paymentRowValue.errorMessage = this.translate.instant(
@@ -343,5 +340,13 @@ export class PaymentHistoryPopupComponent implements OnInit {
       }
     });
     await modal.present();
+  }
+
+  displayTransactionDateTime(date: string): string {
+    return formatDate(date, DateFormat.dayAndTime, this.locale);
+  }
+
+  displayTransactionDateOnly(date: string): string {
+    return formatDate(date, DateFormat.dateOnly, this.locale);
   }
 }

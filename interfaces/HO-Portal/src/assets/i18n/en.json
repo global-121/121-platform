@@ -210,7 +210,7 @@
           "last-payment": "Last payment: {{nr}}",
           "error": "Failed",
           "success": "Successful",
-          "waiting": "Waiting",
+          "waiting": "Not yet sent",
           "retry-all": "Retry all {{number}} failed",
           "confirm-prompt": "This will retry ONLY the {{number}} failed payment(s)."
         },
@@ -342,7 +342,16 @@
           "do-single-payment": "Do single payment",
           "payment-number": "Payment #{{number}}",
           "planned": "Planned",
-          "above": "Above limit"
+          "above": "Above limit",
+          "not-yet-sent": "Not yet sent",
+          "open-voucher": "Open voucher",
+          "send-payment": "Send payment",
+          "sent": "Sent",
+          "amount": "Amount",
+          "received": "Received",
+          "fsp": "FSP",
+          "retry": "Retry",
+          "nosupport": "No FSP supported for this transfer"
         },
         "edit-person-affected-popup": {
           "edit-icon-title": "Edit information of Person Affected",
