@@ -111,13 +111,13 @@ Cypress.Commands.add('importRegistrationsCsv', (programId, fileName) => {
 
 Cypress.Commands.add('importRegistrations', (programId: number, body?) => {
   cy.setServer();
-  cy.fixture('registration-nlrc').then((registration) => {
+  cy.fixture('registration-nlrc').then((fixture) => {
     if (!body) {
-      body = [registration];
+      body = [fixture.registration];
     }
     return cy.request({
       method: 'POST',
-      url: `/programs/${programId}/registrations/import-registrations-cypress`,
+      url: `/programs/${programId}/registrations/import`,
       body: body,
     });
   });
