@@ -359,7 +359,10 @@ export class PaymentsService {
       AND transaction."created" = transaction_max_created."created"
       AND transaction.status = '${StatusEnum.error}'`,
       )
-      .addSelect(['transaction.amount AS "transactionAmount"']);
+      .addSelect([
+        'transaction.amount AS "transactionAmount"',
+        'transaction.id AS "transactionId"',
+      ]);
     return q;
   }
 
@@ -398,7 +401,7 @@ export class PaymentsService {
     let q = this.getPaymentRegistrationsQuery(programId);
 
     q = this.queryLatestFailedTransaction(q);
-    if (referenceIds && referenceIds.length > 1) {
+    if (referenceIds && referenceIds.length > 0) {
       q.andWhere('registration."referenceId" IN (:...referenceIds)', {
         referenceIds: referenceIds,
       });
