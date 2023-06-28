@@ -156,14 +156,14 @@
               <ion-list>
                 <!-- sent -->
                 <ion-item>
-                  <ion-label class="accordion-text"
+                  <ion-label class="accordion-text text-bold"
                     >{{
                       'page.program.program-people-affected.transaction.sent'
                         | translate
                     }}:
                   </ion-label>
                   <ion-label
-                    class="accordion-text text-bold ion-text-right"
+                    class="accordion-text ion-text-right"
                     *ngIf="paymentRow.transaction"
                     >{{ displayTransactionDateTime(paymentRow.sentDate) }}
                   </ion-label>
@@ -171,14 +171,14 @@
 
                 <!-- amount -->
                 <ion-item>
-                  <ion-label class="accordion-text"
+                  <ion-label class="accordion-text text-bold"
                     >{{
                       'page.program.program-people-affected.transaction.amount'
                         | translate
                     }}:
                   </ion-label>
                   <ion-label
-                    class="accordion-text text-bold ion-text-right"
+                    class="accordion-text ion-text-right"
                     *ngIf="paymentRow.transaction?.status"
                     >{{ paymentRow.amount }}
                   </ion-label>
@@ -189,7 +189,7 @@
               <ion-list>
                 <!-- fsp -->
                 <ion-item>
-                  <ion-label class="accordion-text"
+                  <ion-label class="accordion-text text-bold"
                     >{{
                       'page.program.program-people-affected.transaction.fsp'
                         | translate
@@ -200,7 +200,7 @@
                   ></app-tooltip>
                   <ion-label
                     id="hover-trigger"
-                    class="accordion-text text-bold ion-text-right"
+                    class="accordion-text ion-text-right"
                     *ngIf="paymentRow.transaction?.status"
                   >
                     {{ paymentRow.transaction?.fspName }}
