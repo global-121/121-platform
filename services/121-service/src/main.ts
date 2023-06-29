@@ -159,10 +159,10 @@ async function bootstrap(): Promise<void> {
       },
     }),
   );
-  app.use(bodyParser.json({ limit: '5mb' }));
+  app.use(bodyParser.json({ limit: '25mb' }));
   app.use(
     bodyParser.urlencoded({
-      limit: '5mb',
+      limit: '25mb',
       extended: true,
     }),
   );

@@ -251,15 +251,11 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private async setupNextPayment() {
-    const totalIncluded = (
-      await this.programsService.getTotalTransferAmounts(this.programId, [])
-    ).registrations;
-
     const nextPaymentIndex = this.payments.findIndex(
       (payment) => payment.statusOpen === true,
     );
     if (nextPaymentIndex > -1) {
-      this.payments[nextPaymentIndex].isExportAvailable = totalIncluded > 0;
+      this.payments[nextPaymentIndex].isExportAvailable = true;
     }
   }
 
