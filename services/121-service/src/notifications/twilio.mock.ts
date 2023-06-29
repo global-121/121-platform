@@ -103,7 +103,6 @@ export class TwilioClientMock {
           );
         }
       }
-
       if (
         twilioMessagesCreateDto.messageType ===
         IntersolveVoucherPayoutStatus.InitialMessage
@@ -172,7 +171,7 @@ export class TwilioClientMock {
         await new Promise((r) => setTimeout(r, 3000));
         const request = new TwilioIncomingCallbackDto();
         request.MessageSid = messageSid;
-        request.From = twilioMessagesCreateDto.to.replace('whatsapp:', '');
+        request.From = twilioMessagesCreateDto.to;
         const httpService = new HttpService();
         try {
           await lastValueFrom(
@@ -189,12 +188,24 @@ export class TwilioClientMock {
     }
   };
 
-  public validateRequest(): // twilioValidateRequestDto: TwilioValidateRequestDto,
+  public validateRequest(
+    _authtoken,
+    twilioSignature,
+    _url,
+    body,
+  ): // twilioValidateRequestDto: TwilioValidateRequestDto,
   boolean {
-    // console.log(
-    //   'TwilioClientMock: validateRequest():',
-    //   twilioValidateRequestDto,
-    // );
+    const twilioValidator = require('twilio');
+    twilioValidator.validateRequest(
+      process.env.TWILIO_AUTHTOKEN,
+      twilioSignature,
+      EXTERNAL_API.whatsAppIncoming,
+      body,
+      {
+        accountSid: process.env.TWILIO_SID,
+      },
+    );
+
     return true;
   }
 }
