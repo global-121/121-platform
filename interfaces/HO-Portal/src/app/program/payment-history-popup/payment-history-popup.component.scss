@@ -86,3 +86,7 @@ ion-chip {
 .text-bold {
   font-weight: 600;
 }
+
+ion-item::part(native) {
+  box-sizing: content-box;
+}
