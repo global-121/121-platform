@@ -91,6 +91,7 @@ export class PaymentsService {
       amount,
       programId,
     );
+    console.log('paPaymentDataList: ', paPaymentDataList);
 
     if (paPaymentDataList.length < 1) {
       const errors = 'There are no targeted PAs for this payment';
@@ -387,8 +388,8 @@ export class PaymentsService {
             CustomDataAttributes.whatsappPhoneNumber,
           ],
         })
-        .groupBy('data.id')
-        .limit(1);
+        .andWhere('data.registrationId = registration.id')
+        .groupBy('data.id');
     }, 'paymentAddress');
     return q;
   }
