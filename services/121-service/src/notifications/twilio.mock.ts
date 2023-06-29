@@ -195,6 +195,7 @@ export class TwilioClientMock {
     body,
   ): // twilioValidateRequestDto: TwilioValidateRequestDto,
   boolean {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const twilioValidator = require('twilio');
     twilioValidator.validateRequest(
       process.env.TWILIO_AUTHTOKEN,
