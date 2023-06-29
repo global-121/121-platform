@@ -387,9 +387,8 @@ export class PaymentsService {
             CustomDataAttributes.whatsappPhoneNumber,
           ],
         })
-        .where('data."registrationId" = registration.id')
-        .groupBy('data.id')
-        .limit(1);
+        .andWhere('data.registrationId = registration.id')
+        .groupBy('data.id');
     }, 'paymentAddress');
     return q;
   }
