@@ -10,5 +10,6 @@ export class SafaricomTransferPayload {
   public resultURL: string;
   public occassion: string;
   public status?: string;
-  public result?: JSON;
+  public requestResult?: JSON;
+  public paymentResult?: JSON;
 }

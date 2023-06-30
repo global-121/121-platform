@@ -7,6 +7,7 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../../payments/dto/payment-transaction-result.dto';
+import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
@@ -18,6 +19,8 @@ import { SafaricomApiService } from './safaricom.api.service';
 export class SafaricomService {
   @InjectRepository(SafaricomRequestEntity)
   private readonly safaricomRequestRepository: Repository<SafaricomRequestEntity>;
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
@@ -38,10 +41,16 @@ export class SafaricomService {
 
     for (const payment of paymentList) {
       const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
+      const customer = await this.registrationRepository.find({
+        where: { referenceId: payment.referenceId },
+        select: { phoneNumber: true },
+      });
+
       const payload = this.createPayloadPerPa(
         calculatedAmount,
         payment,
         paymentNr,
+        customer[0],
       );
 
       const paymentRequestResultPerPa = await this.sendPaymentPerPa(
@@ -60,17 +69,22 @@ export class SafaricomService {
     return fspTransactionResult;
   }
 
-  public createPayloadPerPa(calculatedAmount, payment, paymentNr): any {
+  public createPayloadPerPa(
+    calculatedAmount,
+    payment,
+    paymentNr,
+    customer,
+  ): any {
     const payload = {
-      InitiatorName: 'John Doe',
+      InitiatorName: process.env.SAFARICOM_INITIATORNAME,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL,
       CommandID: 'SalaryPayment',
       Amount: calculatedAmount,
-      PartyA: '123454',
-      PartyB: '254722000000',
+      PartyA: process.env.SAFARICOM_PARTY_A,
+      PartyB: customer.phoneNumber,
       Remarks: `Payment ${paymentNr}`,
-      QueueTimeOutURL: 'https://darajambili.herokuapp.com/b2c/timeout',
-      ResultURL: 'https://darajambili.herokuapp.com/b2c/result',
+      QueueTimeOutURL: process.env.SAFARICOM_QUEUETIMEOUT_URL,
+      ResultURL: process.env.SAFARICOM_RESULT_URL,
       Occassion: payment.referenceId,
     };
 
@@ -114,7 +128,7 @@ export class SafaricomService {
       ]),
     );
 
-    payloadResult.result = result;
+    payloadResult.requestResult = result;
     console.log(payloadResult);
     await this.safaricomRequestRepository.save(payloadResult);
     return paTransactionResult;
@@ -166,5 +180,22 @@ export class SafaricomService {
         );
       }
     }
+  }
+
+  public async processSafaricomResult(
+    safaricomPaymentResultData: any,
+  ): Promise<void> {
+    const safaricomDbRequest = await this.safaricomRequestRepository
+      .createQueryBuilder('safaricom_request')
+      .where('safaricom_request.requestResult ::jsonb @> :requestResult', {
+        requestResult: {
+          ConversationID: safaricomPaymentResultData.Result.ConversationID,
+        },
+      })
+      .getMany();
+
+    safaricomDbRequest[0].paymentResult = safaricomPaymentResultData;
+    console.log(safaricomDbRequest);
+    await this.safaricomRequestRepository.save(safaricomDbRequest);
   }
 }

@@ -14,14 +14,18 @@ export class SafaricomApiService {
       'base64',
     );
 
-    const { data } = await axios.get(`${accessTokenUrl}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Basic ${auth}`,
-      },
-    });
-    console.log('Access Token: ' + data.access_token);
-    return data.access_token;
+    try {
+      const { data } = await axios.get(`${accessTokenUrl}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Basic ${auth}`,
+        },
+      });
+      console.log('Access Token: ' + data.access_token);
+      return data.access_token;
+    } catch (error) {
+      throw new Error('Failed to make OAuth Access Token payment API call');
+    }
   }
 
   public async transfer(payload: any, authorizationToken?): Promise<any> {

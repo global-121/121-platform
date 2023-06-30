@@ -41,5 +41,10 @@ export class SafaricomRequestEntity {
   @Column('json', {
     default: {},
   })
-  public result?: JSON;
+  public requestResult?: JSON;
+
+  @Column('json', {
+    default: {},
+  })
+  public paymentResult?: JSON;
 }

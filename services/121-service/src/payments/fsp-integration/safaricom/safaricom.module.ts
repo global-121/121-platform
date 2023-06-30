@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProgramEntity } from '../../../programs/program.entity';
+import { RegistrationEntity } from '../../../registration/registration.entity';
 import { AzureLoggerMiddleware } from '../../../shared/middleware/azure-logger.middleware';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { UserEntity } from '../../../user/user.entity';
@@ -18,6 +19,7 @@ import { SafaricomService } from './safaricom.service';
     TypeOrmModule.forFeature([
       UserEntity,
       ProgramEntity,
+      RegistrationEntity,
       SafaricomRequestEntity,
     ]),
     UserModule,

@@ -49,5 +49,7 @@ export class SafaricomPaymentStatusDto {
   @IsString()
   public readonly status?: string;
 
-  public readonly result?: JSON;
+  public readonly requestResult?: JSON;
+
+  public readonly paymentResult?: JSON;
 }
