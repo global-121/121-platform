@@ -27,20 +27,17 @@ export class VodacashService
     paymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
-    amount: number,
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.vodacash;
 
     for (const payment of paymentList) {
-      const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
-
       const paTransactionResult = {
         fspName: FspName.vodacash,
         referenceId: payment.referenceId,
         date: new Date(),
-        calculatedAmount: calculatedAmount,
+        calculatedAmount: payment.transactionAmount,
         status: StatusEnum.waiting,
         message: null,
       };

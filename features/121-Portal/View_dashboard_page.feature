@@ -48,20 +48,11 @@ Feature: View dashboard page
     When the user views the "dashboard" page
     Then total number of PA's helped is shown on the right below the "PA-status metrics table"
     And it shows the total number of PA's helped to date for that program
+    And it also includes PAs with only failed transactions
     And it also still includes "deleted" PAs
     And a date for "Last updated" is shown with a refresh button
     And an info icon is shown
 
-  Scenario: View pre-existing and new PAs per payment chart
-    When the user views the "dashboard" page
-    Then the chart is showing on the left below the "PA-status metrics table"
-    And it shows all the payments - as defined by the "distribution duration" property of the program - on the x-axis
-    And it shows the number of PAs per payment for that program on the y-axis
-    And it also still includes "deleted" PAs
-    And they are split in "new" and "pre-existing" PAs, based on that payment being their first payment or not
-    And an info-icon is shown
-    And a "last updated" timestamp is shown with a refresh button
-  
   Scenario: Refresh any element of the dashboard page
     Given the user has opened the "dashboard page" before
     When the user clicks the "update"-button on an element
@@ -69,6 +60,6 @@ Feature: View dashboard page
     And a new date for "Last updated" is shown
 
 
-  
+
 
 

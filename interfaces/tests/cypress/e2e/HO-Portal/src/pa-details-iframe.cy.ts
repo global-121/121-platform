@@ -12,49 +12,56 @@ describe('PA details iframe page', () => {
     cy.importRegistrations(1);
 
     cy.fixture('pa-details-iframe').then((page) => {
-      cy.fixture('registration-nlrc').then((registration) => {
+      cy.fixture('registration-nlrc').then((fixture) => {
         cy.setHoPortal();
+
+        cy.wait(1000);
 
         cy.visit(page.url, {
           qs: {
-            phonenumber: registration.phoneNumber,
+            phonenumber: fixture.registration.phoneNumber,
           },
+          timeout: 8000,
         });
         cy.url().should('include', 'iframe');
-        cy.get('app-recipient-page').should('be.visible');
+        cy.get('app-recipient-page', { timeout: 8000 }).should('be.visible');
 
         cy.get(
           'app-recipient-page *:not(app-recipient-details) ion-label',
-        ).contains(registration.nameFirst);
+        ).contains(fixture.registration.nameFirst);
         cy.get(
           'app-recipient-page *:not(app-recipient-details) ion-label',
-        ).contains(registration.nameLast);
+        ).contains(fixture.registration.nameLast);
         cy.get(
           'app-recipient-page *:not(app-recipient-details) ion-label',
         ).contains(programLVV.titlePortal.en);
-        cy.get('app-banner').contains(registration.status);
-        cy.get('app-recipient-details').contains(registration.phoneNumber);
+        cy.get('app-banner').contains(fixture.registration.status);
         cy.get('app-recipient-details').contains(
-          registration.whatsappPhoneNumber,
+          fixture.registration.phoneNumber,
         );
         cy.get('app-recipient-details').contains(
-          registration.preferredLanguage,
+          fixture.registration.whatsappPhoneNumber,
         );
-        cy.get('app-recipient-details').contains(registration.note || '-');
+        cy.get('app-recipient-details').contains(
+          fixture.registration.preferredLanguage,
+        );
+        cy.get('app-recipient-details').contains(
+          fixture.registration.note || '-',
+        );
         // Suggestion for future expansion: Check "Status history": timestamps of PA status changes
-        cy.get('app-recipient-details').contains(registration.fspName);
+        cy.get('app-recipient-details').contains(fixture.fspLabel);
         cy.get('app-recipient-details').contains(
-          registration.paymentAmountMultiplier,
+          fixture.registration.paymentAmountMultiplier,
         );
       });
     });
   });
 
   it('Visits the PA details iframe page and finds 1 PA on WhatsApp number', function () {
-    cy.fixture('registration-nlrc').then((registration) => {
-      const whatsappPhoneNumber = 14155238887;
-      registration.whatsappPhoneNumber = whatsappPhoneNumber;
-      cy.importRegistrations(1, [registration]);
+    cy.fixture('registration-nlrc').then((fixture) => {
+      const whatsappPhoneNumber = '14155238887';
+      fixture.registration.whatsappPhoneNumber = whatsappPhoneNumber;
+      cy.importRegistrations(1, [fixture.registration]);
 
       cy.fixture('pa-details-iframe').then((page) => {
         cy.setHoPortal();
@@ -67,8 +74,12 @@ describe('PA details iframe page', () => {
         cy.url().should('include', 'iframe');
         cy.get('app-recipient-page').should('be.visible');
 
-        cy.get('app-recipient-page ion-label').contains(registration.nameFirst);
-        cy.get('app-recipient-page ion-label').contains(registration.nameLast);
+        cy.get('app-recipient-page ion-label').contains(
+          fixture.registration.nameFirst,
+        );
+        cy.get('app-recipient-page ion-label').contains(
+          fixture.registration.nameLast,
+        );
         cy.get('app-recipient-page ion-label').contains(
           programLVV.titlePortal.en,
         );
@@ -77,10 +88,10 @@ describe('PA details iframe page', () => {
   });
 
   it('Visits the PA details iframe page and finds 2 PAs in 2 different programs', function () {
-    cy.fixture('registration-nlrc').then((registration1) => {
+    cy.fixture('registration-nlrc').then((fixture) => {
       cy.fixture('registration-nlrc-paper').then((registration2) => {
-        registration2.phoneNumber = registration1.phoneNumber;
-        cy.importRegistrations(1, [registration1]);
+        registration2.phoneNumber = fixture.registration.phoneNumber;
+        cy.importRegistrations(1, [fixture.registration]);
         cy.importRegistrations(2, [registration2]);
 
         cy.fixture('pa-details-iframe').then((page) => {
@@ -88,17 +99,17 @@ describe('PA details iframe page', () => {
 
           cy.visit(page.url, {
             qs: {
-              phonenumber: registration1.phoneNumber,
+              phonenumber: fixture.registration.phoneNumber,
             },
           });
           cy.url().should('include', 'iframe');
           cy.get('app-recipient-page').should('be.visible');
 
           cy.get('app-recipient-page ion-label').contains(
-            registration1.nameFirst,
+            fixture.registration.nameFirst,
           );
           cy.get('app-recipient-page ion-label').contains(
-            registration1.nameLast,
+            fixture.registration.nameLast,
           );
           cy.get('app-recipient-page ion-label').contains(
             programLVV.titlePortal.en,

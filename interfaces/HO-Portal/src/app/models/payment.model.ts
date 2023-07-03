@@ -3,12 +3,17 @@ import { Transaction } from './transaction.model';
 export class PaymentData {
   id: number;
   paymentDate: Date;
-  amount: number;
 }
 
 export class Payment extends PaymentData {
   statusOpen?: boolean;
   isExportAvailable?: boolean;
+}
+
+export class LastPaymentResults {
+  error: number;
+  success: number;
+  waiting: number;
 }
 
 export class PaymentColumnDetail {
@@ -23,6 +28,7 @@ export class PaymentColumnDetail {
 
 export class PaymentRowDetail {
   text: string;
+  sentDate?: string;
   paymentIndex?: number;
   amount?: string;
   hasMessageIcon?: boolean;

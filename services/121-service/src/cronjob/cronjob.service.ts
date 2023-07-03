@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { Between, DataSource, Repository } from 'typeorm';
+import { FspName } from '../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../notifications/message-type.enum';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
+import { IntersolveVoucherApiService } from '../payments/fsp-integration/intersolve-voucher/instersolve-voucher.api.service';
+import { IntersolveIssueVoucherRequestEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
+import { ProgramFspConfigurationEntity } from '../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../registration/registration.entity';
@@ -20,6 +24,10 @@ export class CronjobService {
   private readonly transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(IntersolveIssueVoucherRequestEntity)
+  private readonly intersolveVoucherRequestRepo: Repository<IntersolveIssueVoucherRequestEntity>;
+  @InjectRepository(ProgramFspConfigurationEntity)
+  public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -27,6 +35,7 @@ export class CronjobService {
     private whatsappService: WhatsappService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly dataSource: DataSource,
+    private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
   ) {}
 
   private async getLanguageForRegistration(
@@ -156,5 +165,70 @@ export class CronjobService {
       );
     }
     console.log('CronjobService - Complete: cronSendWhatsappReminders');
+  }
+
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  private async cronCancelByRefposIntersolve(): Promise<void> {
+    // This function periodically checks if some of the IssueCard calls failed.
+    // and tries to cancel the
+    console.log('CronjobService - Started: cancelByRefposIntersolve');
+
+    const tenMinutes = 10 * 60 * 1000;
+    const tenMinutesAgo = new Date(Date.now() - tenMinutes);
+
+    const twoWeeks = 14 * 24 * 60 * 60 * 1000;
+    const twoWeeksAgo = new Date(Date.now() - twoWeeks);
+
+    const failedIntersolveRquests =
+      await this.intersolveVoucherRequestRepo.find({
+        where: {
+          updated: Between(twoWeeksAgo, tenMinutesAgo),
+          toCancel: true,
+        },
+      });
+
+    const config = await this.programFspConfigurationRepository
+      .createQueryBuilder('fspConfig')
+      .select('name')
+      .addSelect('value')
+      .andWhere('fsp.fsp = :fspName', {
+        fspName: FspName.intersolveVoucherWhatsapp,
+      })
+      .leftJoin('fspConfig.fsp', 'fsp')
+      .getRawMany();
+
+    const credentials: { username: string; password: string } = {
+      username: config.find((c) => c.name === 'username')?.value,
+      password: config.find((c) => c.name === 'password')?.value,
+    };
+
+    for (const intersolveRequest of failedIntersolveRquests) {
+      this.cancelRequestRefpos(
+        intersolveRequest,
+        credentials.username,
+        credentials.password,
+      );
+    }
+  }
+
+  private async cancelRequestRefpos(
+    intersolveRequest: IntersolveIssueVoucherRequestEntity,
+    username: string,
+    password: string,
+  ): Promise<void> {
+    intersolveRequest.cancellationAttempts =
+      intersolveRequest.cancellationAttempts + 1;
+    try {
+      const cancelByRefPosResponse =
+        await this.intersolveVoucherApiService.cancelTransactionByRefPos(
+          intersolveRequest.refPos,
+          username,
+          password,
+        );
+      intersolveRequest.cancelByRefPosResultCode =
+        cancelByRefPosResponse.resultCode;
+    } catch (Error) {
+      console.log('Error cancelling by refpos id', Error, intersolveRequest);
+    }
   }
 }

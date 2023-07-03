@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { GenericAttributes } from '../../../registration/enum/custom-data-attributes';
 import { RegistrationsService } from '../../../registration/registrations.service';
@@ -47,8 +46,6 @@ export class IntersolveVisaService
   public intersolveVisaCustomerRepo: Repository<IntersolveVisaCustomerEntity>;
   @InjectRepository(IntersolveVisaWalletEntity)
   public intersolveVisaWalletRepository: Repository<IntersolveVisaWalletEntity>;
-  @InjectRepository(ProgramEntity)
-  public programRepository: Repository<ProgramEntity>;
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
@@ -59,29 +56,18 @@ export class IntersolveVisaService
     paymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
-    amount: number,
   ): Promise<void> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.intersolveVisa;
 
-    const paymentDetailsArray = await this.getPaPaymentDetails(
-      paymentList.map((pa) => pa.referenceId),
-    );
-
-    const program = await this.programRepository.findOne({
-      where: { id: programId },
-    });
+    const paymentDetailsArray = await this.getPaPaymentDetails(paymentList);
 
     for (const paymentDetails of paymentDetailsArray) {
-      const calculatedAmount =
-        amount * (paymentDetails.paymentAmountMultiplier || 1);
-
       const paymentRequestResultPerPa = await this.sendPaymentToPa(
         paymentDetails,
         paymentNr,
-        calculatedAmount,
-        program.endDate,
+        paymentDetails.transactionAmount,
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
       await this.transactionsService.storeTransactionUpdateStatus(
@@ -93,8 +79,9 @@ export class IntersolveVisaService
   }
 
   private async getPaPaymentDetails(
-    referenceIds: string[],
+    paymentList: PaPaymentDataDto[],
   ): Promise<PaymentDetailsDto[]> {
+    const referenceIds = paymentList.map((pa) => pa.referenceId);
     const relationOptions = await this.getRelationOptionsForVisa(
       referenceIds[0],
     );
@@ -117,7 +104,13 @@ export class IntersolveVisaService
     }
 
     const visaAddressInfoDtoArray = await query.getRawMany();
-    return visaAddressInfoDtoArray;
+
+    // Maps the registration data back to the correct amounts using referenceID
+    const result = visaAddressInfoDtoArray.map((v) => ({
+      ...v,
+      ...paymentList.find((s) => s.referenceId === v.referenceId),
+    }));
+    return result;
   }
 
   private async getRelationOptionsForVisa(
@@ -142,7 +135,6 @@ export class IntersolveVisaService
     paymentDetails: PaymentDetailsDto,
     paymentNr: number,
     calculatedAmount: number,
-    programEndDate: Date,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.referenceId = paymentDetails.referenceId;
@@ -190,7 +182,6 @@ export class IntersolveVisaService
       const createWalletResult = await this.createWallet(
         visaCustomer,
         calculatedAmount,
-        programEndDate,
       );
 
       // if error, return error
@@ -277,7 +268,6 @@ export class IntersolveVisaService
         calculatedAmount,
         registration.referenceId,
         paymentNr,
-        programEndDate,
       );
 
       paTransactionResult.status = loadBalanceResult.data?.success
@@ -350,7 +340,6 @@ export class IntersolveVisaService
   private async createWallet(
     visaCustomer: IntersolveVisaCustomerEntity,
     calculatedAmount: number,
-    programEndDate: Date,
   ): Promise<IntersolveCreateWalletResponseDto> {
     const amountInCents = calculatedAmount * 100;
     const createWalletPayload = new IntersolveCreateWalletDto();
@@ -358,7 +347,6 @@ export class IntersolveVisaService
     createWalletPayload.quantities = [
       {
         quantity: { assetCode: 'EUR', value: amountInCents },
-        expiresAt: programEndDate.toISOString(),
       },
     ];
     const createWalletResult = await this.intersolveVisaApiService.createWallet(
@@ -386,27 +374,34 @@ export class IntersolveVisaService
     createDebitCardPayload.brand = 'VISA_CARD';
     createDebitCardPayload.firstName = paymentDetails.firstName;
     createDebitCardPayload.lastName = paymentDetails.lastName;
-    createDebitCardPayload.mobileNumber = paymentDetails.phoneNumber;
+    createDebitCardPayload.mobileNumber = paymentDetails.phoneNumber.startsWith(
+      '+',
+    )
+      ? paymentDetails.phoneNumber
+      : `+${paymentDetails.phoneNumber}`;
     createDebitCardPayload.cardAddress = {
       address1: `${
         paymentDetails.addressStreet +
+        ' ' +
         paymentDetails.addressHouseNumber +
         paymentDetails.addressHouseNumberAddition
       }`,
       city: paymentDetails.addressCity,
-      country: 'NL',
+      country: 'NLD',
       postalCode: paymentDetails.addressPostalCode,
     };
     createDebitCardPayload.pinAddress = {
       address1: `${
         paymentDetails.addressStreet +
+        ' ' +
         paymentDetails.addressHouseNumber +
         paymentDetails.addressHouseNumberAddition
       }`,
       city: paymentDetails.addressCity,
-      country: 'NL',
+      country: 'NLD',
       postalCode: paymentDetails.addressPostalCode,
     };
+    createDebitCardPayload.pinStatus = 'D';
     return await this.intersolveVisaApiService.createDebitCard(
       intersolveVisaWallet.tokenCode,
       createDebitCardPayload,
@@ -436,7 +431,6 @@ export class IntersolveVisaService
     calculatedAmount: number,
     referenceId: string,
     payment: number,
-    programEndDate: Date,
   ): Promise<IntersolveLoadResponseDto> {
     const amountInCents = calculatedAmount * 100;
     const reference = uuid();
@@ -451,7 +445,6 @@ export class IntersolveVisaService
             value: amountInCents,
             assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
           },
-          expiresAt: programEndDate.toISOString(),
         },
       ],
     };

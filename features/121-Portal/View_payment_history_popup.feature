@@ -7,10 +7,10 @@ Feature: View payment history column and popup
     Given 1 or more PAs with at least status "included"
 
   Scenario: View payment history column
-    When the user views the "payment history column" 
+    When the user views the "payment history column"
     Then it shows 'no payment yet' for PAs without any payment yet
     And otherwise it shows a button which says 'Payment #X success/waiting/failed'
-    And for each PA X is the last payment which is done for that PA
+    And for each PA "X" is the last payment which is done for that PA
     And the button has red text and outline if waiting/failed
 
   Scenario: View payment history popup for a PA
@@ -19,24 +19,38 @@ Feature: View payment history column and popup
     Then the payment history popup opens
     And it mentions the name of the PA
     And below it a row for each payment that is done for that PA or for which a single payment is possible for that PA
-    And - for payments that are done for the PA - below the payment number it mentions the status success/waiting/failed
-    And the status text is red if waiting/failed
-    And on the right it shows the payment-status button
-    And it contains the datetime, amount and relevant transaction-step-icons of the payment
-    And it has red text, outline and icons if waiting/failed
-    And - for payments for which single payment is possible for the PA - a 'Do single payment' button shows on the right
+    And each row starts with a money icon
+    And then Transfer #X is mentioned
+    And under the payment number distribution date is displayed in format DD-MM-YYYY
+    And - for payments that are done for the PA - on the right side of the payment number it mentions the status Successful/Waiting/Failed
+    And the status text and outline is green if Successful
+    And the status text and outline is yellow if Waiting
+    And the status text and outline is red if Failed
+    And - for payments for which a single payment is possible - it mentions 'Not yet sent' in yellow
+    And if the FSP has voucher support then an 'Open voucher' button is displayed
+    And if status is 'Failed' then a 'Retry' button is displayed
+    And if payment is 'Not yet sent' then a 'Send payment' button is displayed
+    And the user is able to open an accordeon for each payment
+    And when the user opens the accordeon payment details are displayed in two columns
+    And first column details contains the sent datetime and amount
+    And second column details contains the FSP
+    And User is able to close accordion by clicking on the "^" button
+    And popup is closed when user clicks on "X" button
 
   Scenario: Do single payment
     Given the user has opened the payment history popup
-    Given a single payment is possible for a payment 
-      - PA = included
-      - payment has been done for at least 1 other PA
-      - payment has not been done for this PA
-      - only for last 5 payments ()
-    When the user clicks the 'Do single payment' button
+    Given a single payment is possible for a payment
+    - PA = included
+    - payment has been done for at least 1 other PA
+    - payment has not been done for this PA
+    - only for last 5 payments
+    When the user clicks the 'Send payment' button
     Then the 'do single payment' popup appears
     And it contains an editable transfer amount field
     And it contains a 'start payout now' button
 
-    When the user clicks 'start payout now' 
+    When the user clicks 'start payout now'
+    Then an 'Are you sure?' popup appears
+
+    When the user confirms
     Then a payment is executed for this PA only (identical to payments done in: Make_new_payment.feature)

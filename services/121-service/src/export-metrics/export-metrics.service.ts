@@ -752,6 +752,7 @@ export class ExportMetricsService {
     const transactionQuery = this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
+        'registration.referenceId as "referenceId"',
         'transaction.payment as "payment"',
         'registration.phoneNumber as "phoneNumber"',
         'transaction.amount as "amount"',
@@ -1185,7 +1186,6 @@ export class ExportMetricsService {
         where: {
           referenceId: In(referenceIdsDto.referenceIds),
         },
-        order: { id: 'ASC' },
       });
     } else {
       registrations = await this.registrationRepository.find({
@@ -1193,8 +1193,6 @@ export class ExportMetricsService {
           program: { id: programId },
           registrationStatus: RegistrationStatusEnum.included,
         },
-        relations: ['fsp'],
-        order: { id: 'ASC' },
       });
     }
     const sum = registrations.reduce(function (a, b) {
@@ -1226,7 +1224,7 @@ export class ExportMetricsService {
 
     // Use this method to get only the latest attempt per PA per payment
     const transactionsQuery =
-      this.transactionsService.getMaxAttemptPerPaAndPaymentTransactionsQuery(
+      this.transactionsService.getLatestAttemptPerPaAndPaymentTransactionsQuery(
         programId,
         false,
       );
