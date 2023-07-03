@@ -53,10 +53,10 @@ export class ProgramService {
   ): Promise<ProgramEntity> {
     let includeAidworkerAssignments = false;
     if (userId) {
-      includeAidworkerAssignments = await this.checkPermission(
-        userId,
+      includeAidworkerAssignments = await this.userService.canActivate(
+        [PermissionEnum.AidWorkerProgramREAD],
         programId,
-        PermissionEnum.AidWorkerProgramREAD,
+        userId,
       );
     }
 
@@ -86,34 +86,6 @@ export class ProgramService {
     }
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     return program;
-  }
-
-  private async checkPermission(
-    userId: number,
-    programId: number,
-    permission: PermissionEnum,
-  ): Promise<boolean> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: [
-        'programAssignments',
-        'programAssignments.roles',
-        'programAssignments.roles.permissions',
-      ],
-    });
-    if (user) {
-      const programAssignment = user.programAssignments.find(
-        (p) => p.programId === programId,
-      );
-      if (programAssignment) {
-        for (const role of programAssignment.roles) {
-          if (role.permissions.map((p) => p.name).includes(permission)) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
   }
 
   public async getCreateProgramDto(
