@@ -35,10 +35,10 @@ describe('Check message history', () => {
 
       checkPATable(fixture, MessageStatus.delivered, 'WHATSAPP');
 
-      cy.fixture('registration-nlrc').then((registration) => {
+      cy.fixture('registration-nlrc').then((fixture) => {
         // Check Message History Popup
         checkMessageHistoryPopup(
-          registration,
+          fixture.registration,
           label,
           messageText,
           'whatsapp',

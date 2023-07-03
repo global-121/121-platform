@@ -5,7 +5,11 @@ import { AuthService } from 'src/app/auth/auth.service';
 import Permission from 'src/app/auth/permission.enum';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import { ExportType } from 'src/app/models/export-type.model';
-import { Payment, PaymentData } from 'src/app/models/payment.model';
+import {
+  LastPaymentResults,
+  Payment,
+  PaymentData,
+} from 'src/app/models/payment.model';
 import {
   DistributionFrequency,
   Program,
@@ -15,13 +19,6 @@ import { StatusEnum } from 'src/app/models/status.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { FspIntegrationType } from '../../models/fsp.model';
 import { PastPaymentsService } from '../../services/past-payments.service';
-
-class LastPaymentResults {
-  amount: number;
-  error: number;
-  success: number;
-  waiting: number;
-}
 
 @Component({
   selector: 'app-program-payout',
@@ -128,9 +125,7 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private async getLastPaymentResults(): Promise<LastPaymentResults> {
-    const payment = this.getPaymentById(this.lastPaymentId);
     const results = {
-      amount: payment ? payment.amount : 0,
       error: 0,
       success: 0,
       waiting: 0,
@@ -163,7 +158,6 @@ export class ProgramPayoutComponent implements OnInit {
     );
 
     return {
-      amount: payment.amount,
       error: taError.length,
       success: taDone.length,
       waiting: taWait.length,
@@ -189,7 +183,6 @@ export class ProgramPayoutComponent implements OnInit {
   private fillPaymentHistory(pastPayments: Payment[]): void {
     pastPayments.forEach((pastPayment) => {
       const payment = this.getPaymentById(pastPayment.id);
-      payment.amount = pastPayment.amount;
       payment.paymentDate = pastPayment.paymentDate;
       payment.statusOpen = false;
       payment.isExportAvailable = true;
@@ -258,15 +251,11 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private async setupNextPayment() {
-    const totalIncluded = (
-      await this.programsService.getTotalTransferAmounts(this.programId, [])
-    ).registrations;
-
     const nextPaymentIndex = this.payments.findIndex(
       (payment) => payment.statusOpen === true,
     );
     if (nextPaymentIndex > -1) {
-      this.payments[nextPaymentIndex].isExportAvailable = totalIncluded > 0;
+      this.payments[nextPaymentIndex].isExportAvailable = true;
     }
   }
 
@@ -324,12 +313,7 @@ export class ProgramPayoutComponent implements OnInit {
 
   public async retryLastPayment() {
     await this.programsService
-      .submitPayout(
-        this.programId,
-        this.lastPaymentId,
-        this.lastPaymentResults.amount,
-        null,
-      )
+      .patchPayout(this.programId, this.lastPaymentId, null)
       .then(
         (response) => {
           let message = '';

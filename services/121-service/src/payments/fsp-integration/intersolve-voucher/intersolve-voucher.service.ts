@@ -61,7 +61,6 @@ export class IntersolveVoucherService
     paPaymentList: PaPaymentDataDto[],
     programId: number,
     payment: number,
-    amount: number,
     useWhatsapp: boolean,
   ): Promise<void> {
     const config = await this.programFspConfigurationRepository
@@ -82,7 +81,7 @@ export class IntersolveVoucherService
       const paResult = await this.sendIndividualPayment(
         paymentInfo,
         useWhatsapp,
-        amount,
+        paymentInfo.transactionAmount,
         payment,
         credentials,
       );
@@ -97,9 +96,7 @@ export class IntersolveVoucherService
         });
         await this.storeTransactionResult(
           payment,
-          paResult.status === StatusEnum.error // if error, take original amount
-            ? amount
-            : paResult.calculatedAmount,
+          paymentInfo.transactionAmount,
           registration.id,
           1,
           paResult.status,
@@ -110,14 +107,10 @@ export class IntersolveVoucherService
     }
   }
 
-  private getMultipliedAmount(amount: number, multiplier: number): number {
-    return amount * (multiplier || 1);
-  }
-
   public async sendIndividualPayment(
     paymentInfo: PaPaymentDataDto,
     useWhatsapp: boolean,
-    amount: number,
+    calculatedAmount: number,
     payment: number,
     credentials: { username: string; password: string },
   ): Promise<PaTransactionResultDto> {
@@ -132,10 +125,6 @@ export class IntersolveVoucherService
     }
 
     const intersolveRefPos = this.getIntersolveRefPos();
-    const calculatedAmount = this.getMultipliedAmount(
-      amount,
-      paymentInfo.paymentAmountMultiplier,
-    );
     paResult.calculatedAmount = calculatedAmount;
 
     const voucher = await this.getReusableVoucher(
@@ -197,7 +186,12 @@ export class IntersolveVoucherService
     }
 
     // Continue with whatsapp:
-    return await this.sendWhatsapp(paymentInfo, paResult, amount, payment);
+    return await this.sendWhatsapp(
+      paymentInfo,
+      paResult,
+      calculatedAmount,
+      payment,
+    );
   }
 
   private getIntersolveRefPos(): number {
@@ -295,7 +289,7 @@ export class IntersolveVoucherService
   public async sendVoucherWhatsapp(
     paymentInfo: PaPaymentDataDto,
     payment: number,
-    amount: number,
+    calculatedAmount: number,
   ): Promise<PaTransactionResultDto> {
     const result = new PaTransactionResultDto();
     result.referenceId = paymentInfo.referenceId;
@@ -311,10 +305,6 @@ export class IntersolveVoucherService
       id: programId,
     });
     let whatsappPayment = program.notifications[language]['whatsappPayment'];
-    const calculatedAmount = this.getMultipliedAmount(
-      amount,
-      paymentInfo.paymentAmountMultiplier,
-    );
     whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
 
     await this.whatsappService

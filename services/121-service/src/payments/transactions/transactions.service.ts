@@ -41,7 +41,7 @@ export class TransactionsService {
     referenceId?: string,
   ): Promise<any> {
     const transactions =
-      await this.getMaxAttemptPerPaAndPaymentTransactionsQuery(
+      await this.getLatestAttemptPerPaAndPaymentTransactionsQuery(
         programId,
         splitByTransactionStep,
         minPayment,
@@ -50,7 +50,7 @@ export class TransactionsService {
     return transactions;
   }
 
-  public getMaxAttemptPerPaAndPaymentTransactionsQuery(
+  public getLatestAttemptPerPaAndPaymentTransactionsQuery(
     programId: number,
     splitByTransactionStep: boolean,
     minPayment?: number,
@@ -83,7 +83,8 @@ export class TransactionsService {
         'amount',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
-        'fsp.fsp as "fspName"',
+        'fsp.fspDisplayNamePortal as "fspName"',
+        'fsp.fsp as "fsp"',
       ])
       .leftJoin('transaction.financialServiceProvider', 'fsp')
       .leftJoin(

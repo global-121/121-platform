@@ -36,8 +36,10 @@ describe("'Create program API endpoint", () => {
               expect(respObj[key]).to.be.deep.equal(programOCWObj[key]);
             }
           }
-          expect(respObj.financialServiceProviders).to.be.deep.equal(
-            programOCWObj.financialServiceProviders,
+          expect(
+            respObj.financialServiceProviders.configuration,
+          ).to.be.deep.equal(
+            programOCWObj.financialServiceProviders.configuration,
           );
         });
       });

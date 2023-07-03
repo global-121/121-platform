@@ -5,13 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.89.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.90.3...master)
+
+---
+
+## [1.90.3](https://github.com/global-121/121-platform/compare/v1.90.2...v1.90.3) - 2023-07-03
+
+### Fixed
+
+- Missing twilio message indexes
+
+## [1.90.2](https://github.com/global-121/121-platform/compare/v1.90.1...v1.90.2) - 2023-06-29
+
+### Fixed
+
+- Get payment address bug
+
+## [1.90.1](https://github.com/global-121/121-platform/compare/v1.90.0...v1.90.1) - 2023-06-28
+
+### Changed
+
+- New payment history popup
+
+### Fixed
+
+- Single retry bug
+
+## [1.90.0](https://github.com/global-121/121-platform/compare/v1.89.0...v1.90.0) - 2023-06-27
+
+### Added
+
+- FSP Visa debit card
+- Intersolve cancel voucher code re-added
+
+### Fixed
+
+- Payment retry amount bug with multiplier > 1
 
 ### Removed
 
 - All code/documentation related to running the platform on a VM (`deploy.sh`, `webhook.js`, etc.)
-
----
 
 ## [1.89.0](https://github.com/global-121/121-platform/compare/v1.88.0...v1.89.0) - 2023-06-06
 
