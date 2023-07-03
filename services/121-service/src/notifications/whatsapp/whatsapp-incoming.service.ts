@@ -199,9 +199,12 @@ export class WhatsappIncomingService {
       .getMany();
 
     if (!registrationsWithPhoneNumber.length) {
+      const phoneNumberLog = !!process.env.MOCK_TWILIO
+        ? phoneNumber
+        : phoneNumber.substr(-5).padStart(phoneNumber.length, '*');
       console.log(
         'Incoming WhatsApp-message from non-registered phone-number: ',
-        phoneNumber.substr(-5).padStart(phoneNumber.length, '*'),
+        phoneNumberLog,
       );
     }
     return registrationsWithPhoneNumber;

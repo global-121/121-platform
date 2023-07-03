@@ -6,6 +6,9 @@ export enum TwilioStatus {
   delivered = 'delivered',
   read = 'read',
   undelivered = 'undelivered',
+  accepted = 'accepted',
+  queued = 'queued',
+  sent = 'sent',
   failed = 'failed',
 }
 
