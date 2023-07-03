@@ -14,10 +14,10 @@ export class indexMessageSidStatus1688030110736 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "121-service"."twilio_message" DROP CONSTRAINT "FK_9de58ca3e7c32731a9f6aa3d02f"`,
+      `DROP INDEX "121-service"."IDX_8f4b8e639a60977ab7f6ff399d"`,
     );
     await queryRunner.query(
-      `DROP INDEX "121-service"."IDX_8f4b8e639a60977ab7f6ff399d"`,
+      `DROP INDEX "121-service"."IDX_caaab4181d0f08eb11a9436c84"`,
     );
   }
 }
