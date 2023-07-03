@@ -23,6 +23,7 @@ export class SoapService {
       password,
     );
     const xml = convert.js2xml(payload);
+    console.log('xml: ', xml);
     const headers = {
       'user-agent': 'sampleTest',
       'Content-Type': 'text/xml;charset=UTF-8',
