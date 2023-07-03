@@ -295,7 +295,6 @@ export class PaymentsService {
         paLists.safaricomPaPayment,
         programId,
         payment,
-        amount,
       );
     }
 

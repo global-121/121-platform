@@ -34,7 +34,6 @@ export class SafaricomService {
     paymentList: PaPaymentDataDto[],
     programId: number,
     paymentNr: number,
-    amount: number,
   ): Promise<FspTransactionResultDto> {
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
@@ -43,7 +42,6 @@ export class SafaricomService {
     const authorizationToken = await this.safaricomApiService.authenticate();
 
     for (const payment of paymentList) {
-      const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
       const customer = await this.registrationRepository.find({
         where: { referenceId: payment.referenceId },
         select: { phoneNumber: true, id: true },
@@ -55,7 +53,6 @@ export class SafaricomService {
       });
 
       const payload = this.createPayloadPerPa(
-        calculatedAmount,
         payment,
         paymentNr,
         customer[0],
@@ -78,18 +75,12 @@ export class SafaricomService {
     return fspTransactionResult;
   }
 
-  public createPayloadPerPa(
-    calculatedAmount,
-    payment,
-    paymentNr,
-    customer,
-    customerData,
-  ): any {
+  public createPayloadPerPa(payment, paymentNr, customer, customerData): any {
     const payload = {
       InitiatorName: customerData.value || process.env.SAFARICOM_INITIATORNAME,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL,
       CommandID: 'SalaryPayment',
-      Amount: calculatedAmount,
+      Amount: payment.transactionAmount,
       PartyA: process.env.SAFARICOM_PARTY_A,
       PartyB: customer.phoneNumber,
       Remarks: `Payment ${paymentNr}`,
@@ -114,13 +105,13 @@ export class SafaricomService {
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = payload.amount;
-    console.log(payload);
-    console.log(authorizationToken);
 
     const result = await this.safaricomApiService.transfer(
       payload,
       authorizationToken,
     );
+
+    console.log(result);
 
     if (result && result.ResponseCode === '0') {
       paTransactionResult.status = StatusEnum.success;
@@ -139,7 +130,6 @@ export class SafaricomService {
     );
 
     payloadResult.requestResult = result;
-    console.log(payloadResult);
     await this.safaricomRequestRepository.save(payloadResult);
     return paTransactionResult;
   }
