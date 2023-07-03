@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { Base121Entity } from './../base.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
 import { MessageContentType } from './message-type.enum';
@@ -27,9 +27,11 @@ export class TwilioMessageEntity extends Base121Entity {
   public from: string;
 
   @Column()
+  @Index()
   public sid: string;
 
   @Column()
+  @Index()
   public status: string;
 
   @Column()
