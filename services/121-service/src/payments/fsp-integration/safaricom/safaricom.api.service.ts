@@ -13,18 +13,29 @@ export class SafaricomApiService {
     const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString(
       'base64',
     );
+    const currentDate = new Date();
+    const expireDate = new Date(process.env.SAFARICOM_EXPIRE_TOKEN_TIME);
 
-    try {
-      const { data } = await axios.get(`${accessTokenUrl}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Basic ${auth}`,
-        },
-      });
-      console.log('Access Token: ' + data.access_token);
-      return data.access_token;
-    } catch (error) {
-      throw new Error('Failed to make OAuth Access Token payment API call');
+    if (expireDate.getTime() / 1000 < currentDate.getTime() / 1000) {
+      try {
+        const { data } = await axios.get(`${accessTokenUrl}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Basic ${auth}`,
+          },
+        });
+        console.log('Access Token: ' + data.access_token);
+        const datetime = new Date();
+        datetime.setHours(datetime.getHours() + 1);
+        process.env.SAFARICOM_ACCESS_TOKEN = data.access_token;
+        process.env.SAFARICOM_EXPIRE_TOKEN_TIME = new Date(datetime).toString();
+
+        return data.access_token;
+      } catch (error) {
+        throw new Error('Failed to make OAuth Access Token payment API call');
+      }
+    } else {
+      return process.env.SAFARICOM_ACCESS_TOKEN;
     }
   }
 

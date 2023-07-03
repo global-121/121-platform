@@ -7,6 +7,7 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../../payments/dto/payment-transaction-result.dto';
+import { RegistrationDataEntity } from '../../../registration/registration-data.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
@@ -21,6 +22,8 @@ export class SafaricomService {
   private readonly safaricomRequestRepository: Repository<SafaricomRequestEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
+  @InjectRepository(RegistrationDataEntity)
+  private readonly registrationDataRepository: Repository<RegistrationDataEntity>;
 
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
@@ -43,7 +46,12 @@ export class SafaricomService {
       const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
       const customer = await this.registrationRepository.find({
         where: { referenceId: payment.referenceId },
-        select: { phoneNumber: true },
+        select: { phoneNumber: true, id: true },
+      });
+
+      const customerData = await this.registrationDataRepository.find({
+        where: { registrationId: customer[0].id, programQuestionId: 1 },
+        select: { value: true },
       });
 
       const payload = this.createPayloadPerPa(
@@ -51,6 +59,7 @@ export class SafaricomService {
         payment,
         paymentNr,
         customer[0],
+        customerData[0],
       );
 
       const paymentRequestResultPerPa = await this.sendPaymentPerPa(
@@ -74,9 +83,10 @@ export class SafaricomService {
     payment,
     paymentNr,
     customer,
+    customerData,
   ): any {
     const payload = {
-      InitiatorName: process.env.SAFARICOM_INITIATORNAME,
+      InitiatorName: customerData.value || process.env.SAFARICOM_INITIATORNAME,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL,
       CommandID: 'SalaryPayment',
       Amount: calculatedAmount,
