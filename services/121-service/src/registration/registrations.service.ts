@@ -451,6 +451,7 @@ export class RegistrationsService {
     }
     currentRegistration.paymentAmountMultiplier =
       importedRegistration.paymentAmountMultiplier;
+    currentRegistration.maxPayments = importedRegistration.maxPayments;
     currentRegistration.note = importedRegistration.note;
     currentRegistration.noteUpdated = importedRegistration.noteUpdated;
 
