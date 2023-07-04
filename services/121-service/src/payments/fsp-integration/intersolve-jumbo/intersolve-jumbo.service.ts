@@ -119,7 +119,6 @@ export class IntersolveJumboService
   ): Promise<PaTransactionResultDto[]> {
     const batchResult: PaTransactionResultDto[] = [];
     const paymentDetailsArray = await this.getPaPaymentDetails(paPaymentArray);
-    console.log('paymentDetailsArray: ', paymentDetailsArray);
 
     let preOrderResultFinished = false;
     let preOrderResult;

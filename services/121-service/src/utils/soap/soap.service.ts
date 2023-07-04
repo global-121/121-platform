@@ -23,7 +23,6 @@ export class SoapService {
       password,
     );
     const xml = convert.js2xml(payload);
-    console.log('xml: ', xml);
     const headers = {
       'user-agent': 'sampleTest',
       'Content-Type': 'text/xml;charset=UTF-8',
@@ -35,7 +34,6 @@ export class SoapService {
       timeout: 150000,
     })
       .then((rawResponse: any) => {
-        console.log('rawResponse: ', rawResponse);
         const response = rawResponse.response;
         this.httpService.logMessage(
           { url, payload: jsonSoapBody },
