@@ -11,8 +11,8 @@ import fspIntersolveVoucherPaper from '../../seed-data/fsp/fsp-intersolve-vouche
 import fspIntersolveVoucher from '../../seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
 import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
 import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
-import fspUkrPoshta from '../../seed-data/fsp/fsp-ukrposhta.json';
 import fspSafaricom from '../../seed-data/fsp/fsp-safaricom.json';
+import fspUkrPoshta from '../../seed-data/fsp/fsp-ukrposhta.json';
 import fspVodaCash from '../../seed-data/fsp/fsp-vodacash.json';
 import { PermissionEnum } from '../user/permission.enum';
 import { PermissionEntity } from '../user/permissions.entity';
