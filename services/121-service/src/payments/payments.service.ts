@@ -391,7 +391,6 @@ export class PaymentsService {
         .groupBy('data.id')
         .limit(1);
     }, 'paymentAddress');
-    console.log(q.getSql());
     return q;
   }
 
