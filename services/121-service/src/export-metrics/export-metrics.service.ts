@@ -199,7 +199,6 @@ export class ExportMetricsService {
     }
 
     for await (const row of rows) {
-      await this.addRegistrationStatussesToExport(row);
       if (addPaymentColumns) {
         await this.addPaymentFieldsToExport(row, payments, transactions);
       }
@@ -407,7 +406,7 @@ export class ExportMetricsService {
     let query = this.registrationRepository
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
-      .select([
+      .addSelect([
         `registration."referenceId" as "referenceId"`,
         `registration.id as id`,
         `registration."registrationProgramId"`,
@@ -420,6 +419,8 @@ export class ExportMetricsService {
       ])
       .andWhere({ programId: programId })
       .orderBy('"registration"."registrationProgramId"', 'ASC');
+
+    this.registrationsService.addStatusChangeToQuery(query);
 
     const program = await this.programRepository.findOneBy({
       id: programId,
