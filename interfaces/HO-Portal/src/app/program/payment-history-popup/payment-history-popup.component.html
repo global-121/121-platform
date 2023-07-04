@@ -164,6 +164,7 @@
                   <ion-label
                     class="accordion-text ion-text-right"
                     *ngIf="paymentRow.transaction"
+                    [title]="displayTransactionDateTime(paymentRow.sentDate)"
                     >{{ displayTransactionDateTime(paymentRow.sentDate) }}
                   </ion-label>
                 </ion-item>
@@ -194,13 +195,11 @@
                         | translate
                     }}:
                   </ion-label>
-                  <app-tooltip
-                    [value]="paymentRow.transaction?.fspName"
-                  ></app-tooltip>
                   <ion-label
                     id="hover-trigger"
                     class="accordion-text ion-text-right"
                     *ngIf="paymentRow.transaction?.status"
+                    [title]="paymentRow.transaction?.fspName"
                   >
                     {{ paymentRow.transaction?.fspName }}
                   </ion-label>
