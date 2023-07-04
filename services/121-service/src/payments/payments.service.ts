@@ -402,7 +402,8 @@ export class PaymentsService {
           ],
         })
         .andWhere('data.registrationId = registration.id')
-        .groupBy('data.id');
+        .groupBy('data.id')
+        .limit(1);
     }, 'paymentAddress');
     return q;
   }
