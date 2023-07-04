@@ -338,23 +338,6 @@ export class ExportMetricsService {
     return response;
   }
 
-  private async addRegistrationStatussesToExport(row: object): Promise<object> {
-    const registrationStatuses = Object.values(RegistrationStatusEnum).map(
-      (item) => String(item),
-    );
-    for await (const status of registrationStatuses) {
-      const dateField = this.registrationsService.getDateColumPerStatus(
-        RegistrationStatusEnum[status],
-      );
-      row[dateField] =
-        await this.registrationsService.getLatestDateForRegistrationStatus(
-          row['id'],
-          RegistrationStatusEnum[status],
-        );
-    }
-    return row;
-  }
-
   private addPaymentFieldsToExport(
     row: object,
     payments: number[],
