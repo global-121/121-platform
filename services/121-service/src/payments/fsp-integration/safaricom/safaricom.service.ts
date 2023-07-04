@@ -104,7 +104,7 @@ export class SafaricomService {
     paTransactionResult.fspName = FspName.safaricom;
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.date = new Date();
-    paTransactionResult.calculatedAmount = payload.amount;
+    paTransactionResult.calculatedAmount = payload.Amount;
 
     const result = await this.safaricomApiService.transfer(
       payload,

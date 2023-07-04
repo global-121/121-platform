@@ -32,7 +32,9 @@ export class SafaricomApiService {
 
         return data.access_token;
       } catch (error) {
-        throw new Error('Failed to make OAuth Access Token payment API call');
+        console.log(error, 'authenticate');
+        console.error('Failed to make OAuth Access Token payment API call');
+        return process.env.SAFARICOM_ACCESS_TOKEN;
       }
     } else {
       return process.env.SAFARICOM_ACCESS_TOKEN;
@@ -51,7 +53,9 @@ export class SafaricomApiService {
       console.log(response.data);
       return response.data;
     } catch (error) {
-      throw new Error('Failed to make Safaricom B2C payment API call');
+      console.log(error, 'transfer');
+      console.error('Failed to make Safaricom B2C payment API call');
+      return error.response.data;
     }
   }
 }
