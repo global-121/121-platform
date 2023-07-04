@@ -200,7 +200,7 @@ export class ExportMetricsService {
 
     for await (const row of rows) {
       if (addPaymentColumns) {
-        await this.addPaymentFieldsToExport(row, payments, transactions);
+        this.addPaymentFieldsToExport(row, payments, transactions);
       }
       row['id'] = row['registrationProgramId'];
       delete row['registrationProgramId'];
@@ -355,18 +355,18 @@ export class ExportMetricsService {
     return row;
   }
 
-  private async addPaymentFieldsToExport(
+  private addPaymentFieldsToExport(
     row: object,
     payments: number[],
     transactions: any[],
-  ): Promise<void> {
+  ): void {
     const voucherStatuses = [
       IntersolveVoucherPayoutStatus.InitialMessage,
       IntersolveVoucherPayoutStatus.VoucherSent,
     ];
-    for await (const payment of payments) {
+    for (const payment of payments) {
       const transaction = {};
-      for await (const voucherStatus of voucherStatuses) {
+      for (const voucherStatus of voucherStatuses) {
         transaction[voucherStatus] = transactions.find(
           (t) =>
             t.payment === payment &&
