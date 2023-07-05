@@ -33,7 +33,10 @@ import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { IntersolveVisaPaymentInfoEnum } from './enum/intersolve-visa-payment-info.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
-import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
+import {
+  IntersolveVisaWalletEntity,
+  IntersolveVisaWalletStatus,
+} from './intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 
 @Injectable()
@@ -172,12 +175,11 @@ export class IntersolveVisaService
       visaCustomer = new IntersolveVisaCustomerEntity();
       visaCustomer.registration = registration;
       visaCustomer.holderId = createCustomerResult.data.data.id;
-      visaCustomer.blocked = createCustomerResult.data.data.blocked;
       await this.intersolveVisaCustomerRepo.save(visaCustomer);
     }
 
-    // Check if wallet exists
-    if (!visaCustomer.visaWallet) {
+    // Check if a wallet exists
+    if (!visaCustomer.visaWallets?.length) {
       // If not, create wallet
       const createWalletResult = await this.createWallet(
         visaCustomer,
@@ -201,14 +203,24 @@ export class IntersolveVisaService
       intersolveVisaWallet.tokenBlocked =
         createWalletResult.data.data.token.blocked;
       intersolveVisaWallet.intersolveVisaCustomer = visaCustomer;
+      intersolveVisaWallet.status = createWalletResult.data.data.token
+        .status as IntersolveVisaWalletStatus;
+      intersolveVisaWallet.balance =
+        createWalletResult.data.data.token.balances.find(
+          (b) => b.quantity.assetCode === 'EUR',
+        ).quantity.value;
+
       await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
 
       // TO DO: is this needed like this?
-      visaCustomer.visaWallet = intersolveVisaWallet;
+      visaCustomer.visaWallets = [intersolveVisaWallet];
     }
 
+    // sort wallets by newest creation date first, so that we can hereafter assume the first element represents the current wallet
+    visaCustomer.visaWallets.sort((a, b) => (a.created < b.created ? 1 : -1));
+
     // Check if wallet is linked to customer
-    if (!visaCustomer.visaWallet.linkedToVisaCustomer) {
+    if (!visaCustomer.visaWallets[0].linkedToVisaCustomer) {
       // if not, link wallet to customer
       const registerResult = await this.linkWalletToCustomer(visaCustomer);
 
@@ -225,16 +237,18 @@ export class IntersolveVisaService
       }
 
       // if succes, update wallet: set linkedToVisaCustomer to true
-      visaCustomer.visaWallet.linkedToVisaCustomer = true;
-      await this.intersolveVisaWalletRepository.save(visaCustomer.visaWallet);
+      visaCustomer.visaWallets[0].linkedToVisaCustomer = true;
+      await this.intersolveVisaWalletRepository.save(
+        visaCustomer.visaWallets[0],
+      );
     }
 
     // Check if debit card is created
-    if (!visaCustomer.visaWallet.debitCardCreated) {
+    if (!visaCustomer.visaWallets[0].debitCardCreated) {
       // If not, create debit card
       const createDebitCardResult = await this.createDebitCard(
         paymentDetails,
-        visaCustomer.visaWallet,
+        visaCustomer.visaWallets[0],
       );
 
       // error or success: set transaction result either way
@@ -253,8 +267,10 @@ export class IntersolveVisaService
 
       // if success, update wallet: set debitCardCreated to true ..
       if (paTransactionResult.status === StatusEnum.success) {
-        visaCustomer.visaWallet.debitCardCreated = true;
-        await this.intersolveVisaWalletRepository.save(visaCustomer.visaWallet);
+        visaCustomer.visaWallets[0].debitCardCreated = true;
+        await this.intersolveVisaWalletRepository.save(
+          visaCustomer.visaWallets[0],
+        );
 
         // .. and add 'debit card created' notification
         transactionNotifications.push(
@@ -264,7 +280,7 @@ export class IntersolveVisaService
     } else {
       // If yes, load balance
       const loadBalanceResult = await this.loadBalanceVisaCard(
-        visaCustomer.visaWallet.tokenCode,
+        visaCustomer.visaWallets[0].tokenCode,
         calculatedAmount,
         registration.referenceId,
         paymentNr,
@@ -294,7 +310,7 @@ export class IntersolveVisaService
     registrationId: number,
   ): Promise<IntersolveVisaCustomerEntity> {
     return await this.intersolveVisaCustomerRepo.findOne({
-      relations: ['visaWallet'],
+      relations: ['visaWallets'],
       where: { registrationId: registrationId },
     });
   }
@@ -318,7 +334,6 @@ export class IntersolveVisaService
               paymentDetails.addressHouseNumber +
               paymentDetails.addressHouseNumberAddition
             }`,
-            // region: 'Utrecht',
             city: paymentDetails.addressCity,
             postalCode: paymentDetails.addressPostalCode,
             country: 'NL',
@@ -362,7 +377,7 @@ export class IntersolveVisaService
       {
         holderId: customerEntity.holderId,
       },
-      customerEntity.visaWallet.tokenCode,
+      customerEntity.visaWallets[0].tokenCode,
     );
   }
 
