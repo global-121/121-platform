@@ -125,7 +125,7 @@ export class BulkImportService {
         importResponseRecord.preferredLanguage;
       if (!program.paymentAmountMultiplierFormula) {
         newRegistration.paymentAmountMultiplier =
-          record.paymentAmountMultiplier;
+          record.paymentAmountMultiplier || 1;
       }
       if (program.enableMaxPayments) {
         newRegistration.maxPayments = record.maxPayments;
@@ -280,7 +280,8 @@ export class BulkImportService {
       registration.registrationStatus = RegistrationStatusEnum.registered;
       const customData = {};
       if (!program.paymentAmountMultiplierFormula) {
-        registration.paymentAmountMultiplier = record.paymentAmountMultiplier;
+        registration.paymentAmountMultiplier =
+          record.paymentAmountMultiplier || 1;
       }
       if (program.enableMaxPayments) {
         registration.maxPayments = record.maxPayments;

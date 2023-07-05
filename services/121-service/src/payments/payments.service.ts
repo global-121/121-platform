@@ -446,7 +446,7 @@ export class PaymentsService {
     const paPaymentDataList: PaPaymentDataDto[] = [];
     for (const row of result) {
       const paPaymentData: PaPaymentDataDto = {
-        transactionAmount: amount * (row.paymentAmountMultiplier || 1),
+        transactionAmount: amount * row.paymentAmountMultiplier,
         referenceId: row.referenceId,
         paymentAddress: row.paymentAddress,
         fspName: row.fspName,
