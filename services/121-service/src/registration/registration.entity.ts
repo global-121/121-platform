@@ -80,7 +80,7 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   @Column({ nullable: true })
   public fspId: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false, default: 1 })
   @IsInt()
   @IsPositive()
   @IsOptional()
