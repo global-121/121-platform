@@ -401,6 +401,7 @@ export class ExportMetricsService {
         `registration."note"`,
       ])
       .andWhere({ programId: programId })
+      .distinctOn(['registration.registrationProgramId'])
       .orderBy('"registration"."registrationProgramId"', 'ASC');
 
     this.registrationsService.addStatusChangeToQuery(query);
