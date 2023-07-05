@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -27,6 +27,10 @@ import {
 } from './dto/intersolve-create-debit-card.dto';
 import { IntersolveCreateWalletResponseDto } from './dto/intersolve-create-wallet-response.dto';
 import { IntersolveCreateWalletDto } from './dto/intersolve-create-wallet.dto';
+import {
+  GetWalletDetailsResponseDto,
+  GetWalletsResponseDto,
+} from './dto/intersolve-get-wallet-details.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
@@ -478,5 +482,51 @@ export class IntersolveVisaService
       allMessages = `${allMessages}${error.code}: ${error.description} Field: ${error.field}${newLine}`;
     }
     return allMessages;
+  }
+
+  public async getVisaWalletsAndDetails(
+    referenceId: string,
+  ): Promise<GetWalletsResponseDto> {
+    const registration = await this.registrationRepository.findOne({
+      where: { referenceId: referenceId },
+    });
+    if (!registration) {
+      const errors = `No registration found with referenceId ${referenceId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    const visaCustomer = await this.getCustomerEntity(registration.id);
+
+    const walletsResponse = new GetWalletsResponseDto();
+    walletsResponse.wallets = [];
+
+    for await (const wallet of visaCustomer.visaWallets) {
+      const walletDetails = await this.intersolveVisaApiService.getWallet(
+        wallet.tokenCode,
+      );
+      wallet.balance = walletDetails.data.data.balances.find(
+        (b) => b.quantity.assetCode === 'EUR',
+      ).quantity.value;
+      wallet.status = walletDetails.data.data.status;
+
+      // TO DO: to confirm with Intersolve that this is the correct way to get the last used date
+      const transactionDetails =
+        await this.intersolveVisaApiService.getTransactions(wallet.tokenCode);
+      wallet.lastUsedDate = transactionDetails.data.data
+        .filter((t) => t.type === 'CHARGE')
+        .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))[0].createdAt;
+
+      await this.intersolveVisaWalletRepository.save(wallet);
+
+      const walletDetailsResponse = new GetWalletDetailsResponseDto();
+      walletDetailsResponse.tokenCode = wallet.tokenCode;
+      walletDetailsResponse.balance = wallet.balance;
+      walletDetailsResponse.status = wallet.status;
+      walletDetailsResponse.issuedDate = wallet.created;
+      walletDetailsResponse.lastUsedDate = wallet.lastUsedDate;
+
+      walletsResponse.wallets.push(walletDetailsResponse);
+    }
+    return walletsResponse;
   }
 }

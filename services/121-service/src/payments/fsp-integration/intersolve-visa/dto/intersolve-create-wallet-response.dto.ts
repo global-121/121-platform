@@ -32,7 +32,7 @@ export class IntersolveCreateWalletResponseTokenDto {
   public assets?: IntersolveCreateWalletResponseAssetDto[];
 }
 
-class IntersolveCreateWalletResponseBalanceDto {
+export class IntersolveCreateWalletResponseBalanceDto {
   public quantity: IntersolveCreateWalletResponseQuantityDto;
   public discountBudgetValue: number;
   public lastChangedAt: string;
@@ -44,7 +44,7 @@ class IntersolveCreateWalletResponseQuantityDto {
   public reserved: number;
 }
 
-class IntersolveCreateWalletResponseAssetDto {
+export class IntersolveCreateWalletResponseAssetDto {
   public identity: IntersolveCreateWalletResponseIdentityDto;
   public groupCode: string;
   public parentAssetCode: string;
