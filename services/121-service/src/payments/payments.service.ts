@@ -322,34 +322,25 @@ export class PaymentsService {
     });
   }
 
-  private queryLatestFailedTransaction(
+  private failedTransactionForRegistrationAndPayment(
     q: SelectQueryBuilder<RegistrationEntity>,
+    payment: number,
   ): SelectQueryBuilder<RegistrationEntity> {
     q.leftJoin(
       (qb) =>
         qb
           .from(TransactionEntity, 'transactions')
-          .select('MAX("payment")', 'payment')
+          .select('MAX("created")', 'created')
+          .addSelect('"payment"', 'payment')
+          .where('"payment" = :payment', { payment })
+          .groupBy('"payment"')
+          .addSelect('"transactionStep"', 'transactionStep')
+          .addGroupBy('"transactionStep"')
           .addSelect('"registrationId"', 'registrationId')
-          .groupBy('"registrationId"'),
-      'transaction_max_payment',
-      'transaction_max_payment."registrationId" = registration.id',
+          .addGroupBy('"registrationId"'),
+      'transaction_max_created',
+      `transaction_max_created."registrationId" = registration.id`,
     )
-      .leftJoin(
-        (qb) =>
-          qb
-            .from(TransactionEntity, 'transactions')
-            .select('MAX("created")', 'created')
-            .addSelect('"payment"', 'payment')
-            .groupBy('"payment"')
-            .addSelect('"transactionStep"', 'transactionStep')
-            .addGroupBy('"transactionStep"')
-            .addSelect('"registrationId"', 'registrationId')
-            .addGroupBy('"registrationId"'),
-        'transaction_max_created',
-        `transaction_max_created."registrationId" = registration.id
-      AND transaction_max_created.payment = transaction_max_payment.payment`,
-      )
       .leftJoin(
         'registration.transactions',
         'transaction',
@@ -400,8 +391,9 @@ export class PaymentsService {
     referenceIds?: string[],
   ): Promise<PaPaymentDataDto[]> {
     let q = this.getPaymentRegistrationsQuery(programId);
+    q = this.failedTransactionForRegistrationAndPayment(q, payment);
 
-    q = this.queryLatestFailedTransaction(q);
+    // If referenceIds passed, only retry those
     if (referenceIds && referenceIds.length > 0) {
       q.andWhere('registration."referenceId" IN (:...referenceIds)', {
         referenceIds: referenceIds,
@@ -415,7 +407,8 @@ export class PaymentsService {
       }
       return result;
     } else {
-      // If no referenceIds passed, this must be because of the 'retry all failed' scenario ..
+      // If no referenceIds passed, retry all failed transactions for this payment
+      // .. get all failed referenceIds for this payment
       const failedReferenceIds = (
         await this.getTransactionsByStatus(programId, payment, StatusEnum.error)
       ).map((t) => t.referenceId);
