@@ -389,7 +389,7 @@ export class ExportMetricsService {
     let query = this.registrationRepository
       .createQueryBuilder('registration')
       .leftJoin('registration.fsp', 'fsp')
-      .addSelect([
+      .select([
         `registration."referenceId" as "referenceId"`,
         `registration.id as id`,
         `registration."registrationProgramId"`,
