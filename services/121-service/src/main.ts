@@ -11,6 +11,7 @@ import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
 import fs from 'fs';
+import { escapeRegExp } from 'lodash';
 import { SpelunkerModule } from 'nestjs-spelunker';
 import { ApplicationModule } from './app.module';
 import {
@@ -73,7 +74,7 @@ async function bootstrap(): Promise<void> {
 
   if (!!process.env.CORS_ALLOW_LIST) {
     corsAllowList = process.env.CORS_ALLOW_LIST.split(',').map(
-      (origin) => new RegExp(origin),
+      (origin) => new RegExp(escapeRegExp(origin)),
     );
   }
 
