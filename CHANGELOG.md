@@ -5,9 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.90.7...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.91.0...master)
 
 ---
+
+## [1.91.0](https://github.com/global-121/121-platform/compare/v1.90.7...v1.91.0) - 2023-07-04
+
+### Fixed
+
+- Show paymentAmountMultiplier in edit pop-up when value is NULL
+- MaxPayments when importing
+- Drag & drop upload because of Ionic upgrade
 
 ## [1.90.7](https://github.com/global-121/121-platform/compare/v1.90.4...v1.90.7) - 2023-07-04
 

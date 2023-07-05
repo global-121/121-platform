@@ -32,8 +32,9 @@ Feature: View payment history column and popup
     And if payment is 'Not yet sent' then a 'Send payment' button is displayed
     And the user is able to open an accordeon for each payment
     And when the user opens the accordeon payment details are displayed in two columns
-    And first column details contains the sent datetime and amount
-    And second column details contains the FSP
+    And first column details contains the "sent datetime" and "amount"
+    And second column details contains the "FSP" at time of payment
+    And if "sent datetime" or "FSP" is not completely visible, hovering over it will show the full value
     And User is able to close accordion by clicking on the "^" button
     And popup is closed when user clicks on "X" button
 
