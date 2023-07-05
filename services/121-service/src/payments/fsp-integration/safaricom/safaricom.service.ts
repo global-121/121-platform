@@ -7,6 +7,7 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
 } from '../../../payments/dto/payment-transaction-result.dto';
+import { TransactionEntity } from '../../../payments/transactions/transaction.entity';
 import { RegistrationDataEntity } from '../../../registration/registration-data.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
@@ -24,6 +25,8 @@ export class SafaricomService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(RegistrationDataEntity)
   private readonly registrationDataRepository: Repository<RegistrationDataEntity>;
+  @InjectRepository(TransactionEntity)
+  private readonly transactionRepository: Repository<TransactionEntity>;
 
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
@@ -111,11 +114,9 @@ export class SafaricomService {
       authorizationToken,
     );
 
-    console.log(result);
-
     if (result && result.ResponseCode === '0') {
-      paTransactionResult.status = StatusEnum.success;
-      payload.status = StatusEnum.success;
+      paTransactionResult.status = StatusEnum.waiting;
+      payload.status = StatusEnum.waiting;
       paTransactionResult.message = result.ResponseDescription;
     } else {
       paTransactionResult.status = StatusEnum.error;
@@ -130,6 +131,9 @@ export class SafaricomService {
     );
 
     payloadResult.requestResult = result;
+    paTransactionResult.customData = {
+      requestResult: result,
+    };
     await this.safaricomRequestRepository.save(payloadResult);
     return paTransactionResult;
   }
@@ -194,8 +198,44 @@ export class SafaricomService {
       })
       .getMany();
 
+    const transaction = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .where('transaction.customData ::jsonb @> :customData', {
+        customData: {
+          requestResult: {
+            ConversationID: safaricomPaymentResultData.Result.ConversationID,
+          },
+        },
+      })
+      .getMany();
+
+    if (
+      safaricomPaymentResultData &&
+      safaricomPaymentResultData.Result &&
+      safaricomPaymentResultData.Result.ResultCode === 0
+    ) {
+      safaricomDbRequest[0].status = StatusEnum.success;
+      transaction[0].status = StatusEnum.success;
+    } else {
+      safaricomDbRequest[0].status = StatusEnum.error;
+      transaction[0].status = StatusEnum.error;
+    }
+
     safaricomDbRequest[0].paymentResult = safaricomPaymentResultData;
-    console.log(safaricomDbRequest);
+    const safaricomCustomData = { ...transaction[0].customData };
+    safaricomCustomData['paymentResult'] = safaricomPaymentResultData;
+
+    await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .update('transaction')
+      .set({
+        errorMessage: safaricomPaymentResultData.Result.ResultDesc,
+        status: transaction[0].status,
+        customData: safaricomCustomData,
+      })
+      .where('id = :id', { id: transaction[0].id })
+      .execute();
+
     await this.safaricomRequestRepository.save(safaricomDbRequest);
   }
 }

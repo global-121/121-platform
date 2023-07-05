@@ -1,6 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TransactionEntity } from '../../../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationDataEntity } from '../../../registration/registration-data.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
@@ -22,6 +23,7 @@ import { SafaricomService } from './safaricom.service';
       ProgramEntity,
       RegistrationEntity,
       RegistrationDataEntity,
+      TransactionEntity,
       SafaricomRequestEntity,
     ]),
     UserModule,
