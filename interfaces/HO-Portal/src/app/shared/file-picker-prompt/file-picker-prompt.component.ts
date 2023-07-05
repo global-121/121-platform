@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { IonInput, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ImportType } from 'src/app/models/import-type.enum';
@@ -23,7 +16,7 @@ export interface FilePickerProps {
   templateUrl: './file-picker-prompt.component.html',
   styleUrls: ['./file-picker-prompt.component.scss'],
 })
-export class FilePickerPromptComponent implements OnInit, AfterViewInit {
+export class FilePickerPromptComponent implements OnInit {
   @ViewChild('fileInput')
   public fileInput: IonInput;
 
@@ -37,13 +30,10 @@ export class FilePickerPromptComponent implements OnInit, AfterViewInit {
   public filePickerProps: FilePickerProps;
 
   public acceptFileTypes: string;
-  public showDropZone: boolean;
-  public isDraggedOver: boolean;
 
   constructor(
     public translate: TranslateService,
     private modalController: ModalController,
-    private changeDetector: ChangeDetectorRef,
     private programsService: ProgramsServiceApiService,
   ) {}
 
@@ -51,16 +41,6 @@ export class FilePickerPromptComponent implements OnInit, AfterViewInit {
     if (this.filePickerProps && this.filePickerProps.type) {
       this.acceptFileTypes = this.getAcceptForType(this.filePickerProps.type);
     }
-  }
-
-  ngAfterViewInit() {
-    // Required to settle the value of a dynamic property in the template:
-    this.changeDetector.detectChanges();
-
-    window.addEventListener('dragover', this.onFileDrop, false);
-    window.addEventListener('drop', this.onFileDrop, false);
-    window.addEventListener('dragenter', () => (this.showDropZone = true));
-    window.addEventListener('dragleave', () => (this.showDropZone = false));
   }
 
   public async downloadTemplate(programId: number, type: ImportType) {
@@ -75,22 +55,6 @@ export class FilePickerPromptComponent implements OnInit, AfterViewInit {
       return '.xml,application/xml,application/xhtml+xml,';
     }
     return '';
-  }
-
-  private onFileDrop(event: DragEvent) {
-    const targetInput = event.target as HTMLInputElement;
-
-    // Only accept file drops on the input-element:
-    if (
-      targetInput &&
-      targetInput.type === 'file' &&
-      targetInput.parentElement.classList.contains('file-picker-prompt--input')
-    ) {
-      return;
-    }
-    event.preventDefault();
-    event.stopPropagation();
-    return false;
   }
 
   public checkOkDisabled() {

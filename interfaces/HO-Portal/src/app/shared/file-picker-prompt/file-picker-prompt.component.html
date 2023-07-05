@@ -70,14 +70,6 @@
       type="file"
       class="ion-padding"
       [accept]="acceptFileTypes"
-      [ngClass]="{
-        'is-dragover': isDraggedOver,
-        'is-highlighted': showDropZone,
-        'is-file-selected': !!fileInput?.value,
-        'file-picker-prompt--input': true
-      }"
-      (dragover)="isDraggedOver = true"
-      (dragleave)="isDraggedOver = false"
       [title]="'file-picker.label' | translate"
       [attr.aria-label]="'file-picker.label' | translate"
     ></ion-input>
