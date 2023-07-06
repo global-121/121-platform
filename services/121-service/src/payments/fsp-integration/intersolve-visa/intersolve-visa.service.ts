@@ -487,12 +487,19 @@ export class IntersolveVisaService
 
   public async getVisaWalletsAndDetails(
     referenceId: string,
+    programId: number,
   ): Promise<GetWalletsResponseDto> {
     const registration = await this.registrationRepository.findOne({
-      where: { referenceId: referenceId },
+      where: { referenceId: referenceId, programId: programId },
+      relations: ['fsp'],
     });
     if (!registration) {
       const errors = `No registration found with referenceId ${referenceId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    if (registration.fsp.fsp !== FspName.intersolveVisa) {
+      const errors = `Registration with referenceId ${referenceId} is not an Intersolve Visa registration`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
@@ -510,16 +517,18 @@ export class IntersolveVisaService
       ).quantity.value;
       wallet.status = walletDetails.data.data.status;
 
-      // TO DO: to confirm with Intersolve that this is the correct way to get the last used date
       const transactionDetails =
         await this.intersolveVisaApiService.getTransactions(wallet.tokenCode);
       const walletTransactions = transactionDetails.data.data;
 
       if (walletTransactions && walletTransactions.length > 0) {
-        const dateString = walletTransactions
+        const sortedByDate = walletTransactions
           .filter((t) => t.type === 'CHARGE')
-          .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))[0].createdAt;
-        wallet.lastUsedDate = new Date(dateString);
+          .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+        if (sortedByDate.length > 0) {
+          const dateString = sortedByDate[0].createdAt;
+          wallet.lastUsedDate = new Date(dateString);
+        }
       }
       await this.intersolveVisaWalletRepository.save(wallet);
 

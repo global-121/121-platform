@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import {
   ApiOperation,
   ApiParam,
@@ -26,9 +26,11 @@ export class IntersolveVisaController {
   @Get('programs/:programId/fsp-integration/intersolve-visa/wallets')
   public async getVisaWalletsAndDetails(
     @Query('referenceId') referenceId,
+    @Param() params,
   ): Promise<GetWalletsResponseDto> {
     return await this.intersolveVisaService.getVisaWalletsAndDetails(
       referenceId,
+      params.programId,
     );
   }
 }

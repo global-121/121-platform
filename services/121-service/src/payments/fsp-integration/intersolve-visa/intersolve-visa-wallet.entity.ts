@@ -3,15 +3,14 @@ import { Base121Entity } from '../../../base.entity';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 
 export enum IntersolveVisaWalletStatus {
-  Active = 'Active',
-  Blocked = 'Blocked',
-  Inactive = 'Inactive',
-  Redeemed = 'Redeemed',
-  Substituted = 'Substituted',
-  Expired = 'Expired',
-  Disabled = 'Disabled',
+  Active = 'ACTIVE',
+  Blocked = 'BLOCKED',
+  Inactive = 'INACTIVE',
+  Redeemed = 'REDEEMED',
+  Substituted = 'SUBSTITUTED',
+  Expired = 'EXPIRED',
+  Disabled = 'DISABLED',
 }
-
 @Entity('intersolve_visa_wallet')
 export class IntersolveVisaWalletEntity extends Base121Entity {
   @Index()
