@@ -16,6 +16,7 @@ import {
 import { IntersolveGetWalletResponseDto } from './dto/intersolve-get-wallet-details.dto';
 import { GetTransactionsDetailsResponseDto } from './dto/intersolve-get-wallet-transactions.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
+import { IntersolveVisaWalletStatus } from './intersolve-visa-wallet.entity';
 
 @Injectable()
 export class IntersolveVisaApiMockService {
@@ -307,6 +308,7 @@ export class IntersolveVisaApiMockService {
       correlationId: 'string',
       data: {
         code: 'string',
+        status: IntersolveVisaWalletStatus.Active,
         balances: [
           {
             quantity: {
