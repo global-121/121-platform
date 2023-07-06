@@ -867,7 +867,7 @@ export class RegistrationsService {
     return q;
   }
 
-  private addStatusChangeToQuery(
+  public addStatusChangeToQuery(
     q: SelectQueryBuilder<RegistrationEntity>,
   ): void {
     for (const registrationStatus in RegistrationStatusEnum) {
