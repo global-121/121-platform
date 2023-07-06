@@ -512,10 +512,13 @@ export class IntersolveVisaService
       // TO DO: to confirm with Intersolve that this is the correct way to get the last used date
       const transactionDetails =
         await this.intersolveVisaApiService.getTransactions(wallet.tokenCode);
-      wallet.lastUsedDate = transactionDetails.data.data
-        .filter((t) => t.type === 'CHARGE')
-        .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))[0].createdAt;
+      const walletTransactions = transactionDetails.data.data;
 
+      if (walletTransactions && walletTransactions.length > 0) {
+        wallet.lastUsedDate = walletTransactions
+          .filter((t) => t.type === 'CHARGE')
+          .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))[0].createdAt;
+      }
       await this.intersolveVisaWalletRepository.save(wallet);
 
       const walletDetailsResponse = new GetWalletDetailsResponseDto();
