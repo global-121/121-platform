@@ -207,7 +207,22 @@ export class ExportMetricsService {
     }
     await this.replaceValueWithDropdownLabel(rows, relationOptions);
 
-    return this.filterUnusedColumn(rows);
+    const orderedObjects = [];
+    for await (const row of rows) {
+      // An object which will serve as the order template
+      const objectOrder = {
+        referenceId: null,
+        id: null,
+        status: null,
+        phoneNumber: null,
+        preferredLanguage: null,
+        financialserviceprovider: null,
+        paymentAmountMultiplier: null,
+      };
+      const addObjectResource = Object.assign(objectOrder, row);
+      orderedObjects.push(addObjectResource);
+    }
+    return this.filterUnusedColumn(orderedObjects);
   }
 
   private async getRelationOptionsForExport(
