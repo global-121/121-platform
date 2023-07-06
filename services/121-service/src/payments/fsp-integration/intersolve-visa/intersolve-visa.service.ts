@@ -515,9 +515,10 @@ export class IntersolveVisaService
       const walletTransactions = transactionDetails.data.data;
 
       if (walletTransactions && walletTransactions.length > 0) {
-        wallet.lastUsedDate = walletTransactions
+        const dateString = walletTransactions
           .filter((t) => t.type === 'CHARGE')
           .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))[0].createdAt;
+        wallet.lastUsedDate = new Date(dateString);
       }
       await this.intersolveVisaWalletRepository.save(wallet);
 
