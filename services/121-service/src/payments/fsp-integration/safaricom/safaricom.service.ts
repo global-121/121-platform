@@ -9,8 +9,6 @@ import {
   PaTransactionResultDto,
 } from '../../../payments/dto/payment-transaction-result.dto';
 import { TransactionEntity } from '../../../payments/transactions/transaction.entity';
-import { RegistrationDataEntity } from '../../../registration/registration-data.entity';
-import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
@@ -22,10 +20,6 @@ import { SafaricomApiService } from './safaricom.api.service';
 export class SafaricomService {
   @InjectRepository(SafaricomRequestEntity)
   private readonly safaricomRequestRepository: Repository<SafaricomRequestEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(RegistrationDataEntity)
-  private readonly registrationDataRepository: Repository<RegistrationDataEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
 
