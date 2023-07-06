@@ -32,7 +32,21 @@ Feature: View PA profile page
     And it shows the latest payment if it exists
     And it shows a list of four payments or up until the payment limit if it is set
     And it shows the status of the transaction for made payments
-    And it shows "Planned" for future payments
+    And status of payment is "Planned","Waiting","Failed" or "Successful"
+    And the status text and outline is purple if Planned 
+    And the status text and outline is green if Successful
+    And the status text and outline is blue if Waiting
+    And the status text and outline is red if Failed
+    And money icon is displayed on the left side of each payment
+    And then payment number is mentioned
+    And Distribution date is displayed under payment number of each payment in format DD-MM-YYYY
+    And "Open voucher" button is displayed if payment is voucher eligible
+    And if paymeny has failed, "Try again" button is displayed
+    And "V" is displayed on the right side of each payment
+    And the user is able to open an accordeon for each payment
+    And when the user opens the accordeon payment details are displayed in two columns
+    And first column details contains the "sent datetime" and "amount"
+    And second column details contains the "FSP" at time of payment
     Given the user sees the "Show All" button
     When the user clicks on the "Show All" button
     Then the Payment History pupup opens
