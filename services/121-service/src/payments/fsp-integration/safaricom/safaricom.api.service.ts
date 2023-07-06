@@ -1,57 +1,75 @@
 import { Injectable } from '@nestjs/common';
-import axios from 'axios';
+import { TokenSet } from 'openid-client';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
+import {
+  SafaricomAuthResponseDto,
+  SafaricomTransferResponseDto,
+} from './dto/safaricom-load-response.dto';
 
 @Injectable()
 export class SafaricomApiService {
+  public tokenSet: TokenSet;
+
   public constructor(private readonly httpService: CustomHttpService) {}
 
   public async authenticate(): Promise<string> {
     const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
     const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
-    const accessTokenUrl = process.env.SAFARICOM_CONSUMER_ACCESS_TOKEN_URL;
+    const accessTokenUrl = `${process.env.SAFARICOM_API_URL}/oauth/v1/generate?grant_type=client_credentials`;
     const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString(
       'base64',
     );
-    const currentDate = new Date();
-    const expireDate = new Date(process.env.SAFARICOM_EXPIRE_TOKEN_TIME);
 
-    if (expireDate.getTime() / 1000 < currentDate.getTime() / 1000) {
+    // Check expires_at
+    if (this.tokenSet && this.tokenSet.expires_at > Date.now()) {
+      // Return cached token
+      return this.tokenSet.access_token;
+    } else {
+      // If not valid, request new token
       try {
-        const { data } = await axios.get(`${accessTokenUrl}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Basic ${auth}`,
-          },
-        });
-        console.log('Access Token: ' + data.access_token);
-        const datetime = new Date();
-        datetime.setHours(datetime.getHours() + 1);
-        process.env.SAFARICOM_ACCESS_TOKEN = data.access_token;
-        process.env.SAFARICOM_EXPIRE_TOKEN_TIME = new Date(datetime).toString();
+        const headers = [{ name: 'Authorization', value: `Basic ${auth}` }];
 
-        return data.access_token;
+        const { data } = await this.httpService.get<SafaricomAuthResponseDto>(
+          `${accessTokenUrl}`,
+          headers,
+        );
+
+        const datetime = new Date();
+        // Cache tokenSet and expires_at
+        const tokenSet = new TokenSet({
+          access_token: data.access_token,
+          expires_at: datetime.setMinutes(datetime.getMinutes() + 55),
+        });
+
+        this.tokenSet = tokenSet;
+
+        return tokenSet.access_token;
       } catch (error) {
         console.log(error, 'authenticate');
         console.error('Failed to make OAuth Access Token payment API call');
-        return process.env.SAFARICOM_ACCESS_TOKEN;
+        return this.tokenSet.access_token;
       }
-    } else {
-      return process.env.SAFARICOM_ACCESS_TOKEN;
     }
   }
 
-  public async transfer(payload: any, authorizationToken?): Promise<any> {
+  public async transfer(payload: any): Promise<any> {
     try {
-      const paymentUrl = process.env.SAFARICOM_B2C_PAYMENTREQUEST_URL;
-      const response = await axios.post(paymentUrl, payload, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${authorizationToken}`,
+      const paymentUrl = `${process.env.SAFARICOM_API_URL}/mpesa/b2c/v1/paymentrequest`;
+      const headers = [
+        {
+          name: 'Authorization',
+          value: `Bearer ${this.tokenSet.access_token}`,
         },
-      });
-      console.log(response.data);
-      return response.data;
+      ];
+
+      const { data } =
+        await this.httpService.post<SafaricomTransferResponseDto>(
+          `${paymentUrl}`,
+          payload,
+          headers,
+        );
+
+      return data;
     } catch (error) {
       console.log(error, 'transfer');
       console.error('Failed to make Safaricom B2C payment API call');

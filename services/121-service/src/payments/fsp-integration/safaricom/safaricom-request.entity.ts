@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { TransactionEntity } from '../../../payments/transactions/transaction.entity';
 
 @Entity('safaricom_request')
 export class SafaricomRequestEntity {
@@ -38,6 +45,12 @@ export class SafaricomRequestEntity {
   @Column()
   public status: string;
 
+  @Column()
+  public originatorConversationID: string;
+
+  @Column()
+  public conversationID: string;
+
   @Column('json', {
     default: {},
   })
@@ -47,4 +60,8 @@ export class SafaricomRequestEntity {
     default: {},
   })
   public paymentResult?: JSON;
+
+  @OneToOne(() => TransactionEntity)
+  @JoinColumn()
+  transaction: TransactionEntity;
 }

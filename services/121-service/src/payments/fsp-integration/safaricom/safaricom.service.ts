@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import crypto from 'crypto';
 // import { SafaricomPaymentPayloadDto } from './dto/safaricom-payment-payload.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,7 +14,7 @@ import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import { TransactionsService } from '../../transactions/transactions.service';
-import { SafaricomPaymentStatusDto } from './dto/safaricom-payment-status.dto';
+import { SafaricomTransferPayload } from './dto/safaricom-transfer-payload.dto';
 import { SafaricomRequestEntity } from './safaricom-request.entity';
 import { SafaricomApiService } from './safaricom.api.service';
 
@@ -42,54 +43,51 @@ export class SafaricomService {
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.safaricom;
 
-    const authorizationToken = await this.safaricomApiService.authenticate();
+    await this.safaricomApiService.authenticate();
 
     for (const payment of paymentList) {
-      const customer = await this.registrationRepository.find({
-        where: { referenceId: payment.referenceId },
-        select: { phoneNumber: true, id: true },
-      });
-
-      const customerData = await this.registrationDataRepository.find({
-        where: { registrationId: customer[0].id, programQuestionId: 1 },
-        select: { value: true },
-      });
-
-      const payload = this.createPayloadPerPa(
-        payment,
-        paymentNr,
-        customer[0],
-        customerData[0],
-      );
+      const payload = this.createPayloadPerPa(payment, paymentNr);
 
       const paymentRequestResultPerPa = await this.sendPaymentPerPa(
         payload,
         payment.referenceId,
-        authorizationToken,
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
       // Storing the per payment so you can continiously seed updates of transactions in HO-Portal
-      this.transactionsService.storeTransactionUpdateStatus(
+      await this.transactionsService.storeTransactionUpdateStatus(
         paymentRequestResultPerPa,
         programId,
         paymentNr,
       );
+
+      await this.processSafaricomRequest(payload, paymentRequestResultPerPa);
     }
     return fspTransactionResult;
   }
 
-  public createPayloadPerPa(payment, paymentNr, customer, customerData): any {
+  public createPayloadPerPa(payment, paymentNr): SafaricomTransferPayload {
+    function randomValueHex(len: number): string {
+      return crypto
+        .randomBytes(Math.ceil(len / 2))
+        .toString('hex') // convert to hexadecimal format
+        .slice(0, len)
+        .toUpperCase(); // return required number of characters
+    }
+
     const payload = {
-      InitiatorName: customerData.value || process.env.SAFARICOM_INITIATORNAME,
+      InitiatorName: process.env.SAFARICOM_INITIATORNAME,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL,
-      CommandID: 'SalaryPayment',
+      CommandID: 'BusinessPayment',
       Amount: payment.transactionAmount,
       PartyA: process.env.SAFARICOM_PARTY_A,
-      PartyB: customer.phoneNumber,
+      PartyB: payment.paymentAddress,
       Remarks: `Payment ${paymentNr}`,
       QueueTimeOutURL: process.env.SAFARICOM_QUEUETIMEOUT_URL,
       ResultURL: process.env.SAFARICOM_RESULT_URL,
       Occassion: payment.referenceId,
+      OriginatorConversationID: `232323_KCBOrg_${randomValueHex(20)}`,
+      IDType: process.env.SAFARICOM_IDTYPE,
+      IDNumber: '123789',
     };
 
     return payload;
@@ -98,7 +96,6 @@ export class SafaricomService {
   public async sendPaymentPerPa(
     payload: any,
     referenceId: string,
-    authorizationToken: string,
   ): Promise<PaTransactionResultDto> {
     // A timeout of 100ms to not overload safaricom server
     await new Promise((r) => setTimeout(r, 2000));
@@ -109,20 +106,27 @@ export class SafaricomService {
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = payload.Amount;
 
-    const result = await this.safaricomApiService.transfer(
-      payload,
-      authorizationToken,
-    );
+    const result = await this.safaricomApiService.transfer(payload);
 
     if (result && result.ResponseCode === '0') {
       paTransactionResult.status = StatusEnum.waiting;
       payload.status = StatusEnum.waiting;
-      paTransactionResult.message = result.ResponseDescription;
     } else {
       paTransactionResult.status = StatusEnum.error;
       payload.status = StatusEnum.error;
       paTransactionResult.message = result.errorMessage;
     }
+
+    paTransactionResult.customData = {
+      requestResult: result,
+    };
+    return paTransactionResult;
+  }
+
+  public async processSafaricomRequest(
+    payload,
+    paymentRequestResultPerPa,
+  ): Promise<any> {
     const payloadResult = Object.fromEntries(
       Object.entries(payload).map(([k, v]) => [
         k.charAt(0).toLowerCase() + k.slice(1),
@@ -130,60 +134,25 @@ export class SafaricomService {
       ]),
     );
 
-    payloadResult.requestResult = result;
-    paTransactionResult.customData = {
-      requestResult: result,
-    };
+    const safaricomCustomData = { ...paymentRequestResultPerPa.customData };
+    const transaction = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .where('transaction.customData ::jsonb @> :customData', {
+        customData: {
+          requestResult: {
+            ConversationID: safaricomCustomData.requestResult.ConversationID,
+          },
+        },
+      })
+      .getMany();
+
+    payloadResult.requestResult = safaricomCustomData.requestResult;
+    payloadResult.conversationID =
+      safaricomCustomData && safaricomCustomData.requestResult
+        ? safaricomCustomData.requestResult.ConversationID
+        : 'Invalid request';
+    payloadResult.transaction = transaction[0];
     await this.safaricomRequestRepository.save(payloadResult);
-    return paTransactionResult;
-  }
-
-  public async processTransactionStatus(
-    safaricomCallbackData: SafaricomPaymentStatusDto,
-  ): Promise<void> {
-    const safaricomRequest = await this.safaricomRequestRepository.save(
-      safaricomCallbackData,
-    );
-
-    const successStatuses = ['PROCESSED'];
-    const errorStatuses = ['CANCELED', 'EXPIRED', 'DENIED', 'FAILED'];
-
-    if (
-      [...successStatuses, ...errorStatuses].includes(safaricomRequest.status)
-    ) {
-      // Unclear as of yet when which attribute is returned, but we pass equal values to both attributes
-      const matchingString =
-        'ed15b1f7-c579-4a59-8224-56520cd3bdf7-payment-1-1636456825275';
-
-      if (matchingString) {
-        const referenceId = matchingString
-          .split('_')[0]
-          .replace('referenceId-', '');
-        const programId = Number(
-          matchingString.split('_')[1].replace('program-', ''),
-        );
-        const payment = Number(
-          matchingString.split('_')[2].replace('payment-', ''),
-        );
-
-        const paTransactionResult = new PaTransactionResultDto();
-        paTransactionResult.fspName = FspName.safaricom;
-        paTransactionResult.referenceId = referenceId;
-        paTransactionResult.status = successStatuses.includes(
-          safaricomRequest.status,
-        )
-          ? StatusEnum.success
-          : StatusEnum.error;
-        paTransactionResult.message = safaricomRequest.status;
-        paTransactionResult.calculatedAmount = Number(safaricomRequest.amount);
-
-        this.transactionsService.storeTransactionUpdateStatus(
-          paTransactionResult,
-          programId,
-          payment,
-        );
-      }
-    }
   }
 
   public async processSafaricomResult(
