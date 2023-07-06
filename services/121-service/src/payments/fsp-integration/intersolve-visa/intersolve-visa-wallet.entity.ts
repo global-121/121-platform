@@ -11,6 +11,7 @@ export enum IntersolveVisaWalletStatus {
   Expired = 'Expired',
   Disabled = 'Disabled',
 }
+
 @Entity('intersolve_visa_wallet')
 export class IntersolveVisaWalletEntity extends Base121Entity {
   @Index()

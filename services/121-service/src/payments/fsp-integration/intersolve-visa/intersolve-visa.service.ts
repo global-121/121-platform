@@ -36,6 +36,7 @@ import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { IntersolveVisaPaymentInfoEnum } from './enum/intersolve-visa-payment-info.enum';
+import { WalletStatus121 } from './enum/wallet-status-121.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import {
   IntersolveVisaWalletEntity,
@@ -525,12 +526,38 @@ export class IntersolveVisaService
       const walletDetailsResponse = new GetWalletDetailsResponseDto();
       walletDetailsResponse.tokenCode = wallet.tokenCode;
       walletDetailsResponse.balance = wallet.balance;
-      walletDetailsResponse.status = wallet.status;
+
+      // Map Intersolve status to 121 status for the frontend
+      walletDetailsResponse.status = this.intersolveTo121WalletStatus(
+        wallet.status,
+        wallet.tokenBlocked,
+      );
+
       walletDetailsResponse.issuedDate = wallet.created;
       walletDetailsResponse.lastUsedDate = wallet.lastUsedDate;
 
       walletsResponse.wallets.push(walletDetailsResponse);
     }
     return walletsResponse;
+  }
+
+  private intersolveTo121WalletStatus(
+    intersolveStatus: IntersolveVisaWalletStatus,
+    blocked: boolean,
+  ): WalletStatus121 {
+    if (intersolveStatus === IntersolveVisaWalletStatus.Substituted) {
+      return WalletStatus121.Substituted;
+    } else if (blocked) {
+      return WalletStatus121.Blocked;
+    } else if (intersolveStatus === IntersolveVisaWalletStatus.Active) {
+      return WalletStatus121.Active;
+    } else if (intersolveStatus === IntersolveVisaWalletStatus.Inactive) {
+      return WalletStatus121.Inactive;
+    } else {
+      console.log(
+        `Got unexpected status from intersolve '${intersolveStatus}'. Storing the wallet with WalletStatus121 as Blocked`,
+      );
+      return WalletStatus121.Blocked;
+    }
   }
 }

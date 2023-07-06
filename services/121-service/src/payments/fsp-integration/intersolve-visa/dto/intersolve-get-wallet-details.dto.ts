@@ -1,3 +1,4 @@
+import { WalletStatus121 } from '../enum/wallet-status-121.enum';
 import { IntersolveVisaWalletStatus } from '../intersolve-visa-wallet.entity';
 import {
   IntersolveCreateWalletResponseAssetDto,
@@ -11,7 +12,7 @@ export class GetWalletsResponseDto {
 
 export class GetWalletDetailsResponseDto {
   public tokenCode: string;
-  public status: IntersolveVisaWalletStatus;
+  public status: WalletStatus121;
   public balance: number;
   public issuedDate: Date;
   public lastUsedDate?: Date;
