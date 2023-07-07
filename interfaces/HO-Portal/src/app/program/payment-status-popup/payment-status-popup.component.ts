@@ -5,7 +5,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import {
-  PopupPayoutDetails,
+  PayoutDetails,
   SinglePayoutDetails,
 } from 'src/app/models/payment.model';
 import {
@@ -33,7 +33,7 @@ export class PaymentStatusPopupComponent implements OnInit {
   public title: string;
   public content: any;
   public showRetryButton: boolean;
-  public payoutDetails: PopupPayoutDetails;
+  public payoutDetails: PayoutDetails;
   public voucherButtons: boolean;
   public imageUrl: string;
   public sanitizedIimageUrl: string;

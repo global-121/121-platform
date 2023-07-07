@@ -1,0 +1,92 @@
+.full-width {
+  width: 100%;
+}
+
+.ion-accordion-toggle-icon {
+  --ionicon-stroke-width: 1px;
+  color: var(--ion-color-accordion-text);
+}
+
+.accordion-label {
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.accordion-label-two {
+  min-height: 20px;
+  margin-left: 60px;
+}
+
+.money-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.transfer {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 30px;
+  color: var(--ion-color-accordion-text);
+  margin-left: 18.5px;
+}
+
+ion-chip {
+  height: 20px;
+  font-size: 14px;
+  margin-left: 16px;
+
+  &.success {
+    --background: var(--ion-color-status-successful);
+    --color: var(--ion-color-status-successful-text);
+  }
+
+  &.failed {
+    --background: var(--ion-color-status-failed);
+    --color: var(--ion-color-status-failed-text);
+  }
+
+  &.waiting {
+    --background: var(--ion-color-status-waiting);
+    --color: var(--ion-color-status-waiting-text);
+  }
+}
+
+.send-payment-button {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--ion-color-purple-button);
+  margin-left: 18px;
+  --border-width: 1px;
+}
+
+.open-voucher-button {
+  font-size: 12px;
+  text-decoration-line: underline;
+  color: var(--ion-color-purple-button);
+  margin-left: 16px;
+}
+
+.date {
+  font-weight: 400;
+  font-size: 12px;
+  text-decoration-line: underline;
+  color: var(--ion-color-accordion-text);
+}
+
+.accordion-text {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 140%;
+  color: var(--ion-color-accordion-text);
+}
+
+.text-bold {
+  font-weight: 600;
+}
+
+ion-item::part(native) {
+  box-sizing: content-box;
+}

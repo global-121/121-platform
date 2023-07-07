@@ -40,7 +40,7 @@ export class PaymentRowDetail {
   status?: string;
 }
 
-export class PopupPayoutDetails {
+export class PayoutDetails {
   programId: number;
   payment: number;
   amount: number;

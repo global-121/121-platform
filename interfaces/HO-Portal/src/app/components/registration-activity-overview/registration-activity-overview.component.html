@@ -50,7 +50,8 @@
         style="font-size: 14px; --padding-start: 0"
       >
         <ion-grid>
-          <ion-row>
+          <!-- Other tabs -->
+          <ion-row *ngIf="item.type !== 'newtab'">
             <div class="ion-padding-horizontal">
               <div style="height: 100%; display: flex; align-items: center">
                 <ion-icon
@@ -77,6 +78,12 @@
                 <ion-text class="ion-text-end">{{ item.description }}</ion-text>
               </div>
             </ion-col>
+          </ion-row>
+
+          <!-- new tab -->
+          <ion-row *ngIf="item.type === 'newtab'">
+            TEST1
+            <app-payment-history-content></app-payment-history-content>
           </ion-row>
         </ion-grid>
       </ion-item>

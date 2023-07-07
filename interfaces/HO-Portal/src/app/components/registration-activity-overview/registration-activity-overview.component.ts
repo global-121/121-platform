@@ -13,13 +13,14 @@ class ActivityOverviewItem {
   type: string;
   label: string;
   date: Date;
-  description: string;
+  description?: string;
 }
 
 enum ActivityOverviewType {
   message = 'message',
   status = 'status',
   payment = 'payment',
+  newtab = 'newtab',
 }
 
 @Component({
@@ -47,6 +48,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     ActivityOverviewType.message,
     ActivityOverviewType.status,
     ActivityOverviewType.payment,
+    ActivityOverviewType.newtab,
   ];
 
   private canViewPersonalData: boolean;
@@ -140,6 +142,35 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       }
     }
 
+    if (this.canViewPaymentData) {
+      const payments = await this.programsService.getTransactions(
+        this.programId,
+        1,
+        this.referenceId,
+      );
+
+      for (const payment of payments) {
+        this.activityOverview.push({
+          type: ActivityOverviewType.newtab,
+          label: this.translate.instant(
+            'registration-details.activity-overview.activities.payment.label',
+            { number: payment.payment },
+          ),
+          date: new Date(payment.paymentDate),
+          description: this.translate.instant('TEST', {
+            number: payment.payment,
+            status: this.translate.instant(
+              'page.program.program-people-affected.transaction.' +
+                payment.status,
+            ),
+            sentDate: new Date(payment.paymentDate),
+            amount: payment.amount,
+            fsp: this.person.fsp,
+          }),
+        });
+      }
+    }
+
     this.activityOverview.sort((a, b) => (b.date > a.date ? 1 : -1));
   }
 
@@ -148,6 +179,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       [ActivityOverviewType.message]: 'mail-outline',
       [ActivityOverviewType.payment]: 'cash-outline',
       [ActivityOverviewType.status]: 'reload-circle-outline',
+      [ActivityOverviewType.newtab]: 'cash-outline',
     };
     return map[type];
   }
