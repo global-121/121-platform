@@ -11,10 +11,7 @@ import { ImportType } from '../models/import-type.enum';
 import { Message } from '../models/message.model';
 import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
 import { Note, Person } from '../models/person.model';
-import {
-  PhysicalCard,
-  PhysicalCardStatus,
-} from '../models/physical-card.model';
+import { PhysicalCard } from '../models/physical-card.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import {
   PaTableAttribute,
@@ -463,31 +460,28 @@ export class ProgramsServiceApiService {
     programId: number,
     referenceId: string,
   ): Promise<PhysicalCard[]> {
-    return new Promise((resolve) =>
-      resolve([
-        {
-          tokenCode: '6375100999150009101',
-          balance: 2100,
-          status: PhysicalCardStatus.active,
-          issuedDate: '2023-07-05T10:00:37.847Z',
-          lastUsedDate: '2023-07-05T11:51:33.5600000Z',
-        },
-        {
-          tokenCode: '1001000100010001000',
-          balance: 0,
-          status: PhysicalCardStatus.active,
-          issuedDate: '2023-02-02T10:00:37.847Z',
-          lastUsedDate: '2023-05-05T05:55:5.5000000Z',
-        },
-      ]),
-    );
+    // return new Promise((resolve) =>
+    //   resolve([
+    //     {
+    //       tokenCode: '6375100999150009101',
+    //       balance: 2100,
+    //       status: PhysicalCardStatus.active,
+    //       issuedDate: '2023-07-05T10:00:37.847Z',
+    //       lastUsedDate: '2023-07-05T11:51:33.5600000Z',
+    //     },
+    //     {
+    //       tokenCode: '1001000100010001000',
+    //       balance: 0,
+    //       status: PhysicalCardStatus.active,
+    //       issuedDate: '2023-02-02T10:00:37.847Z',
+    //       lastUsedDate: '2023-05-05T05:55:5.5000000Z',
+    //     },
+    //   ]),
+    // );
 
-    const response = await this.apiService.post(
+    const response = await this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/fsp-integration/intersolve-visa/wallets`,
-      {
-        referenceId,
-      },
+      `/programs/${programId}/fsp-integration/intersolve-visa/wallets?referenceId=${referenceId}`,
     );
 
     return !!response && !!response.wallets ? response.wallets : [];
