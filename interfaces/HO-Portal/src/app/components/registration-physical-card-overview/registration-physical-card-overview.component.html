@@ -1,0 +1,36 @@
+<ion-card *ngIf="physicalCards">
+  <ion-card-header>
+    <ion-card-title>
+      {{ 'registration-details.physical-cards-overview.title' | translate }}
+    </ion-card-title>
+
+    <ion-card-subtitle>
+      <ion-row class="ion-justify-content-between">
+        <ion-note>
+          {{
+            'registration-details.physical-cards-overview.subtitle' | translate
+          }}
+        </ion-note>
+      </ion-row>
+    </ion-card-subtitle>
+  </ion-card-header>
+
+  <ion-card-content class="ion-no-padding">
+    <ion-list>
+      <ion-item
+        *ngFor="let card of physicalCards"
+        button
+        [detail]="true"
+        [detail-icon]="'card'"
+        (click)="openCardDetails(card)"
+      >
+        <ion-label>
+          <code>{{ card.tokenCode }}</code>
+        </ion-label>
+        <ion-label slot="end">
+          <span>{{ card.status }}</span>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>

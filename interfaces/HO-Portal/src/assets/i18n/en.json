@@ -676,6 +676,19 @@
       "subtitle": "Payment information",
       "paymentLabel": "Payment #{{number}}"
     },
+    "physical-cards-overview": {
+      "title": "Visa Debit Cards",
+      "subtitle": "...",
+      "card-status": "Card status",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "blocked": "Blocked"
+      },
+      "date-activated": "Activated",
+      "date-last-used": "Last used",
+      "current-balance": "Current balance"
+    },
     "activity-overview": {
       "title": "Activity overview",
       "filters": {
