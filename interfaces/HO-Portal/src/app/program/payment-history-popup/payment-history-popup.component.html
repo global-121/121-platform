@@ -30,5 +30,9 @@
   <h2>{{ paDisplayName }}</h2>
 
   <!-- Accordion -->
-  <app-payment-history-content></app-payment-history-content>
+  <ion-accordion-group [multiple]="true">
+    <ng-container *ngFor="let paymentRow of paymentRows">
+      <app-payment-history-accordeon></app-payment-history-accordeon>
+    </ng-container>
+  </ion-accordion-group>
 </ion-content>
