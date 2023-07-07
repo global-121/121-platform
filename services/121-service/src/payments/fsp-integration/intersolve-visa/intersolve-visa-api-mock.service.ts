@@ -99,7 +99,7 @@ export class IntersolveVisaApiMockService {
     response.data.data.token.balances = [
       {
         quantity: {
-          assetCode: 'string',
+          assetCode: 'EUR',
           value: 0,
           reserved: 0,
         },
