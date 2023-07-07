@@ -36,6 +36,9 @@ export enum PermissionEnum {
   // Payment(s) - Voucher(s)
   PaymentVoucherREAD = 'payment:voucher.read',
 
+  // Payment(s) - Physical Card(s)
+  PaymentPhysicalCardREAD = 'payment:physical-card.read',
+
   // Registration(s)
   RegistrationREAD = 'registration.read',
   RegistrationCREATE = 'registration.create',
