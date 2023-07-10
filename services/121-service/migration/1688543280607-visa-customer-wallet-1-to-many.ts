@@ -28,9 +28,6 @@ export class visaCustomerWallet1ToMany1688543280607
       `ALTER TABLE "121-service"."intersolve_visa_wallet" ADD "lastUsedDate" TIMESTAMP`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."intersolve_visa_wallet" ADD "activatedDate" TIMESTAMP`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."intersolve_visa_wallet" ADD "intersolveVisaCustomerId" integer`,
     );
     await queryRunner.query(
@@ -44,9 +41,6 @@ export class visaCustomerWallet1ToMany1688543280607
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."intersolve_visa_wallet" DROP COLUMN "intersolveVisaCustomerId"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."intersolve_visa_wallet" DROP COLUMN "activatedDate"`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."intersolve_visa_wallet" DROP COLUMN "lastUsedDate"`,

@@ -34,9 +34,6 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
   @Column({ nullable: true })
   public lastUsedDate: Date;
 
-  @Column({ nullable: true })
-  public activatedDate: Date;
-
   @ManyToOne(
     () => IntersolveVisaCustomerEntity,
     (intersolveVisaCustomer) => intersolveVisaCustomer.visaWallets,
