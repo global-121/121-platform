@@ -4,7 +4,6 @@ import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity'
 
 export enum IntersolveVisaWalletStatus {
   Active = 'ACTIVE',
-  Blocked = 'BLOCKED',
   Inactive = 'INACTIVE',
   Redeemed = 'REDEEMED',
   Substituted = 'SUBSTITUTED',
