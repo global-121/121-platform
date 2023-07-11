@@ -10,27 +10,29 @@
         ></ion-icon>
 
         <!-- Transfer index -->
-        <ion-text class="transfer">Transfer #{{ paymentIndex }} </ion-text>
+        <ion-text class="transfer"
+          >Transfer #{{ paymentRowData.paymentIndex }}
+        </ion-text>
 
         <!-- Transfer status -->
         <ng-container>
           <ion-chip
-            *ngIf="transaction?.status"
-            [class.success]="paymentRow.transaction?.status === 'success'"
-            [class.failed]="paymentRow.transaction?.status === 'error'"
-            [class.waiting]="paymentRow.transaction?.status === 'waiting'"
+            *ngIf="paymentRowData.transaction?.status"
+            [class.success]="paymentRowData.transaction?.status === 'success'"
+            [class.failed]="paymentRowData.transaction?.status === 'error'"
+            [class.waiting]="paymentRowData.transaction?.status === 'waiting'"
           >
             <ion-label>
               {{
                 'page.program.program-payout.last-payment.' +
-                  paymentRow.transaction?.status | translate
+                  paymentRowData.transaction?.status | translate
               }}
             </ion-label>
           </ion-chip>
 
           <!-- Single payment Transfer status -->
           <ion-chip
-            *ngIf="enableSinglePayment(paymentRow)"
+            *ngIf="enableSinglePaymentData(paymentRowData)"
             [ngClass]="'waiting'"
           >
             <ion-label>
@@ -48,7 +50,10 @@
             class="open-voucher-button"
             fill="clear"
             size="small"
-            *ngIf="transaction && hasVoucherSupport(transaction.fsp)"
+            *ngIf="
+              paymentRowData.transaction &&
+              voucherSupportData(paymentRowData.transaction.fsp)
+            "
             (click)="rowClick(paymentRow)"
             >{{
               'page.program.program-people-affected.transaction.open-voucher'
@@ -64,8 +69,10 @@
             shape="round"
             fill="outline"
             size="small"
-            *ngIf="hasError(paymentRow) && !hasWaiting(paymentRow)"
-            (click)="rowClick(paymentRow)"
+            *ngIf="
+              hasErrorData(paymentRowData) && !hasWaitingData(paymentRowData)
+            "
+            (click)="rowClick(paymentRowData)"
           >
             {{
               'page.program.program-people-affected.transaction.retry'
@@ -81,8 +88,8 @@
             shape="round"
             fill="outline"
             size="small"
-            *ngIf="enableSinglePayment(paymentRow)"
-            (click)="rowClick(paymentRow)"
+            *ngIf="enableSinglePaymentData(paymentRowData)"
+            (click)="rowClick(paymentRowData)"
           >
             {{
               'page.program.program-people-affected.transaction.send-payment'
@@ -96,9 +103,9 @@
       <ion-row class="accordion-label-two">
         <ion-text
           class="date"
-          *ngIf="!enableSinglePayment(paymentRow)"
+          *ngIf="!enableSinglePaymentData(paymentRowData)"
         >
-          {{ displayTransactionDateOnly(paymentRow.sentDate) }}
+          {{ displayTransactionDateOnlyData(paymentRowData.sentDate) }}
         </ion-text>
       </ion-row>
     </ion-grid>
@@ -126,9 +133,11 @@
               </ion-label>
               <ion-label
                 class="accordion-text ion-text-right"
-                *ngIf="transaction"
-                [title]="displayTransactionDateTime(paymentRow.sentDate)"
-                >{{ displayTransactionDateTime(paymentRow.sentDate) }}
+                *ngIf="paymentRowData.transaction"
+                [title]="
+                  displayTransactionDateTimeData(paymentRowData.sentDate)
+                "
+                >{{ displayTransactionDateTimeData(paymentRowData.sentDate) }}
               </ion-label>
             </ion-item>
 
@@ -142,8 +151,8 @@
               </ion-label>
               <ion-label
                 class="accordion-text ion-text-right"
-                *ngIf="transaction?.status"
-                >{{ paymentRow.amount }}
+                *ngIf="paymentRowData.transaction?.status"
+                >{{ paymentRowData.amount }}
               </ion-label>
             </ion-item>
           </ion-list>
@@ -158,13 +167,15 @@
                     | translate
                 }}:
               </ion-label>
+              <app-tooltip
+                [value]="paymentRowData.transaction?.fspName"
+              ></app-tooltip>
               <ion-label
                 id="hover-trigger"
                 class="accordion-text ion-text-right"
-                *ngIf="transaction?.status"
-                [title]="paymentRow.transaction?.fspName"
+                *ngIf="paymentRowData.transaction?.status"
               >
-                {{ paymentRow.transaction?.fspName }}
+                {{ paymentRowData.transaction?.fspName }}
               </ion-label>
             </ion-item>
           </ion-list>

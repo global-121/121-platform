@@ -1,9 +1,4 @@
 import { Component, Input } from '@angular/core';
-import {
-  PaymentRowDetail,
-  PayoutDetails,
-  SinglePayoutDetails,
-} from 'src/app/models/payment.model';
 
 @Component({
   selector: 'app-payment-history-accordeon',
@@ -12,9 +7,23 @@ import {
 })
 export class PaymentHistoryAccordeonComponent {
   @Input()
-  public paymentRow: PaymentRowDetail[] = [];
+  public paymentRowData: any;
+
   @Input()
-  public payout: PayoutDetails[] = [];
+  public voucherSupportData: any;
+
   @Input()
-  public singlePayout: SinglePayoutDetails[] = [];
+  public enableSinglePaymentData: any;
+
+  @Input()
+  public hasErrorData: any;
+
+  @Input()
+  public hasWaitingData: any;
+
+  @Input()
+  public displayTransactionDateOnlyData: any;
+
+  @Input()
+  public displayTransactionDateTimeData: any;
 }

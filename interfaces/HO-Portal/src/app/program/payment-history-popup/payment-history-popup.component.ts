@@ -16,7 +16,6 @@ import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
 import RegistrationStatus from '../../enums/registration-status.enum';
-import { PaymentHistoryAccordeonComponent } from '../payment-history-accordeon/payment-history-accordeon.component';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 import { StatusEnum } from './../../models/status.enum';
 
@@ -26,9 +25,6 @@ import { StatusEnum } from './../../models/status.enum';
   styleUrls: ['./payment-history-popup.component.scss'],
 })
 export class PaymentHistoryPopupComponent implements OnInit {
-  @Input()
-  public paymentAccordion: PaymentHistoryAccordeonComponent;
-
   @Input()
   public person: Person;
 
@@ -51,7 +47,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
   public paymentRows: PaymentRowDetail[] = [];
 
   private programId: number;
-  private locale: string;
   private pastTransactions: Transaction[] = [];
   public firstPaymentToShow = 1;
   public lastPaymentId: number;
@@ -66,9 +61,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private pastPaymentsService: PastPaymentsService,
-  ) {
-    this.locale = environment.defaultLocale;
-  }
+  ) {}
 
   async ngOnInit() {
     this.programId = this.program?.id;
@@ -201,11 +194,13 @@ export class PaymentHistoryPopupComponent implements OnInit {
   }
 
   public enableSinglePayment(paymentRow: PaymentRowDetail): boolean {
+    console.clear();
+    console.log({ paymentRow });
     if (!paymentRow) {
       return false;
     }
     const permission = this.canDoSinglePayment;
-    const included = this.person.status === RegistrationStatus.included;
+    const included = this.person?.status === RegistrationStatus.included;
     const noPaymentDone = !paymentRow.transaction;
     const noFuturePayment = paymentRow.paymentIndex <= this.lastPaymentId;
     // Note, the number 5 is the same as allowed for the bulk payment as set in program-people-affected.component
@@ -347,11 +342,11 @@ export class PaymentHistoryPopupComponent implements OnInit {
     await modal.present();
   }
 
-  displayTransactionDateTime(date: string): string {
-    return formatDate(date, DateFormat.dayAndTime, this.locale);
+  public displayTransactionDateTime(date: string): string {
+    return formatDate(date, DateFormat.dayAndTime, environment.defaultLocale);
   }
 
-  displayTransactionDateOnly(date: string): string {
-    return formatDate(date, DateFormat.dateOnly, this.locale);
+  public displayTransactionDateOnly(date: string): string {
+    return formatDate(date, DateFormat.dateOnly, environment.defaultLocale);
   }
 }
