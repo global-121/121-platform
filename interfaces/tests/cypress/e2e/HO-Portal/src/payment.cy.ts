@@ -1,6 +1,6 @@
 import portalEn from '../../../../../../interfaces/HO-Portal/src/assets/i18n/en.json';
-import { ProgramPhase } from '../../../../../../services/121-service/src/shared/enum/program-phase.model';
 import programLVV from '../../../../../../services/121-service/seed-data/program/program-pilot-nl.json';
+import { ProgramPhase } from '../../../../../../services/121-service/src/shared/enum/program-phase.model';
 
 describe("'Do Payment #1' bulk action", () => {
   beforeEach(() => {

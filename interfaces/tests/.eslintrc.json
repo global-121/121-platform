@@ -17,9 +17,16 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "cypress", "prettier"],
+  "plugins": [
+    "@typescript-eslint",
+    "cypress",
+    "prettier",
+    "simple-import-sort"
+  ],
   "rules": {
     "cypress/no-unnecessary-waiting": "warn",
-    "@typescript-eslint/no-explicit-any": "warn"
+    "@typescript-eslint/no-explicit-any": "warn",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
   }
 }

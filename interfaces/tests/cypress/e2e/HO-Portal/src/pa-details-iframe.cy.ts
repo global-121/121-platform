@@ -1,5 +1,5 @@
-import programLVV from '../../../../../../services/121-service/seed-data/program/program-pilot-nl.json';
 import portalEn from '../../../../../../interfaces/HO-Portal/src/assets/i18n/en.json';
+import programLVV from '../../../../../../services/121-service/seed-data/program/program-pilot-nl.json';
 
 describe('PA details iframe page', () => {
   beforeEach(() => {
