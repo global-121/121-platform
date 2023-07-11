@@ -248,7 +248,7 @@ Feature: Make a new payment
     And payment details are displayed with accordion open
 
 
-  Scenario: Unsccessfully make a payment to a Person Affected with Financial Service provider "Safaricom" with missing data
+  Scenario: Unsuccessfully make a payment to a Person Affected with Financial Service provider "Safaricom" with missing data
     Given the Person Affected has been imported as registered
     Given an obligatory field is missing ("FullName", "Age", "FamilyMembers", "phoneNumber", "National ID number", "Language")
     When payment instructions are successfully sent
