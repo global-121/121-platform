@@ -47,14 +47,13 @@ export class SafaricomApiService {
       } catch (error) {
         console.log(error, 'authenticate');
         console.error('Failed to make OAuth Access Token payment API call');
-        return this.tokenSet.access_token;
       }
     }
   }
 
   public async transfer(payload: any): Promise<any> {
     try {
-      const paymentUrl = `${process.env.SAFARICOM_API_URL}/mpesa/b2c/v1/paymentrequest`;
+      const paymentUrl = `${process.env.SAFARICOM_API_URL}/${process.env.SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT}`;
       const headers = [
         {
           name: 'Authorization',

@@ -16,7 +16,6 @@ export class SafaricomController {
   public async resultCallback(
     @Body() safaricomPaymentResultData: any,
   ): Promise<any> {
-    console.log(safaricomPaymentResultData);
     await this.safaricomService.processSafaricomResult(
       safaricomPaymentResultData,
     );

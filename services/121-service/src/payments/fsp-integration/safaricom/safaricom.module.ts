@@ -3,6 +3,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TransactionEntity } from '../../../payments/transactions/transaction.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
+import { RegistrationEntity } from '../../../registration/registration.entity';
 import { AzureLoggerMiddleware } from '../../../shared/middleware/azure-logger.middleware';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
 import { UserEntity } from '../../../user/user.entity';
@@ -20,6 +21,7 @@ import { SafaricomService } from './safaricom.service';
       UserEntity,
       ProgramEntity,
       TransactionEntity,
+      RegistrationEntity,
       SafaricomRequestEntity,
     ]),
     UserModule,
