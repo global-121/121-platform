@@ -15,7 +15,8 @@ describe('PA details iframe page', () => {
       cy.fixture('registration-nlrc').then((fixture) => {
         cy.setHoPortal();
 
-        cy.wait(1000);
+        // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for iframe-contents to fully load/render
+        cy.wait(1_000);
 
         cy.visit(page.url, {
           qs: {
