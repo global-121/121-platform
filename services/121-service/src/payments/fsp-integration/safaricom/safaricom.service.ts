@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 // import { SafaricomPaymentPayloadDto } from './dto/safaricom-payment-payload.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { EXTERNAL_API } from '../../../config';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import {
   FspTransactionResultDto,
@@ -116,8 +117,8 @@ export class SafaricomService {
       PartyA: process.env.SAFARICOM_PARTY_A,
       PartyB: payment.paymentAddress,
       Remarks: `Payment ${paymentNr}`,
-      QueueTimeOutURL: process.env.SAFARICOM_QUEUETIMEOUT_URL,
-      ResultURL: process.env.SAFARICOM_RESULT_URL,
+      QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
+      ResultURL: EXTERNAL_API.safaricomResultUrl,
       Occassion: payment.referenceId,
       OriginatorConversationID: `P${programId}_PA${userInfo.id}_${formatDate(
         new Date(),
