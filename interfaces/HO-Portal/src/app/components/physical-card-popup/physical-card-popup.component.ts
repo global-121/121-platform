@@ -2,7 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { PhysicalCard } from '../../models/physical-card.model';
+import { DateFormat } from 'src/app/enums/date-format.enum';
+import {
+  PhysicalCard,
+  PhysicalCardStatus,
+} from '../../models/physical-card.model';
 
 @Component({
   selector: 'app-physical-card-popup',
@@ -14,6 +18,12 @@ import { PhysicalCard } from '../../models/physical-card.model';
 export class PhysicalCardPopupComponent {
   @Input({ required: true })
   public card: PhysicalCard;
+
+  @Input({ required: true })
+  public currency: string;
+
+  public DateFormat = DateFormat;
+  public PhysicalCardStatus = PhysicalCardStatus;
 
   constructor(private modalController: ModalController) {}
 

@@ -28,6 +28,9 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   @Input()
   private referenceId: Person['referenceId'];
 
+  @Input()
+  public currency: string;
+
   public physicalCards: PhysicalCard[];
 
   constructor(
@@ -47,6 +50,7 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
       component: PhysicalCardPopupComponent,
       componentProps: {
         card,
+        currency: this.currency,
       },
     });
     await modal.present();

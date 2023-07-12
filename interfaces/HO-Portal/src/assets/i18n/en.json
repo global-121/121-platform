@@ -690,7 +690,8 @@
       "current-balance": "Current balance",
       "block-card": "Block card",
       "unblock-card": "Unblock card",
-      "send-replacement-card": "Send replacement card"
+      "send-replacement-card": "Send replacement card",
+      "popup-title": "Debit card"
     },
     "activity-overview": {
       "title": "Activity overview",

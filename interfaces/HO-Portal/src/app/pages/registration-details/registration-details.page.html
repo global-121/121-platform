@@ -28,12 +28,13 @@
           ></app-registration-personal-information>
 
           <div
-            *ngIf="canViewPhysicalCards && 'program?.hasPhysicalCard'"
+            *ngIf="canViewPhysicalCards && fspHasPhysicalCard()"
             class="ion-margin-vertical ion-padding-vertical"
           >
             <app-registration-physical-card-overview
               [programId]="programId"
               [referenceId]="referenceId"
+              [currency]="program.currency"
             ></app-registration-physical-card-overview>
           </div>
 
