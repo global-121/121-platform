@@ -7,7 +7,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AdminAuthGuard } from '../../../guards/admin.guard';
+import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionsGuard } from '../../../guards/permissions.guard';
+import { PermissionEnum } from '../../../user/permission.enum';
 import { GetWalletsResponseDto } from './dto/intersolve-get-wallet-details.dto';
 import { IntersolveVisaService } from './intersolve-visa.service';
 
@@ -17,6 +19,7 @@ import { IntersolveVisaService } from './intersolve-visa.service';
 export class IntersolveVisaController {
   public constructor(private intersolveVisaService: IntersolveVisaService) {}
 
+  @Permissions(PermissionEnum.PaymentTransactionREAD)
   @ApiOperation({
     summary: 'Get Intersolve Visa wallets and details',
   })

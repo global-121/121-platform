@@ -140,11 +140,7 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
     );
     this.canViewPhysicalCards = this.authService.hasAllPermissions(
       this.programId,
-      [
-        Permission.PaymentREAD,
-        Permission.PaymentTransactionREAD,
-        Permission.PaymentPhysicalCardREAD,
-      ],
+      [Permission.PaymentREAD, Permission.PaymentTransactionREAD],
     );
   }
 }
