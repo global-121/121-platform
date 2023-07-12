@@ -8,9 +8,8 @@ describe('PhysicalCardPopupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ PhysicalCardPopupComponent ]
-    })
-    .compileComponents();
+      imports: [PhysicalCardPopupComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PhysicalCardPopupComponent);
     component = fixture.componentInstance;
