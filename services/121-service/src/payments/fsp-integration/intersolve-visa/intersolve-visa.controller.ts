@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import {
   ApiOperation,
   ApiParam,
@@ -10,6 +10,7 @@ import { AdminAuthGuard } from '../../../guards/admin.guard';
 import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionsGuard } from '../../../guards/permissions.guard';
 import { PermissionEnum } from '../../../user/permission.enum';
+import { IntersolveBlockWalletResponseDto } from './dto/intersolve-block.dto';
 import { GetWalletsResponseDto } from './dto/intersolve-get-wallet-details.dto';
 import { IntersolveVisaService } from './intersolve-visa.service';
 
@@ -34,6 +35,54 @@ export class IntersolveVisaController {
     return await this.intersolveVisaService.getVisaWalletsAndDetails(
       referenceId,
       params.programId,
+    );
+  }
+
+  // TO DO: change permission
+  @Permissions(PermissionEnum.PaymentTransactionREAD)
+  @ApiOperation({
+    summary: 'Block Intersolve Visa wallet',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
+  @ApiResponse({ status: 204, description: 'Blocked wallet' })
+  @ApiResponse({
+    status: 405,
+    description: 'Method not allowed (e.g. token already blocked)',
+  })
+  @Post(
+    'programs/:programId/fsp-integration/intersolve-visa/wallets/:tokenCode/block',
+  )
+  public async blockWallet(
+    @Param() params,
+  ): Promise<IntersolveBlockWalletResponseDto> {
+    return await this.intersolveVisaService.toggleBlockWallet(
+      params.tokenCode,
+      true,
+    );
+  }
+
+  // TO DO: change permission
+  @Permissions(PermissionEnum.PaymentTransactionREAD)
+  @ApiOperation({
+    summary: 'Unblock Intersolve Visa wallet',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
+  @ApiResponse({ status: 204, description: 'Unblocked wallet' })
+  @ApiResponse({
+    status: 405,
+    description: 'Method not allowed (e.g. token already unblocked)',
+  })
+  @Post(
+    'programs/:programId/fsp-integration/intersolve-visa/wallets/:tokenCode/unblock',
+  )
+  public async unblockWallet(
+    @Param() params,
+  ): Promise<IntersolveBlockWalletResponseDto> {
+    return await this.intersolveVisaService.toggleBlockWallet(
+      params.tokenCode,
+      false,
     );
   }
 }
