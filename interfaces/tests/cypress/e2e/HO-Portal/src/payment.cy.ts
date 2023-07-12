@@ -1,6 +1,6 @@
 import portalEn from '../../../../../../interfaces/HO-Portal/src/assets/i18n/en.json';
-import { ProgramPhase } from '../../../../../../services/121-service/src/shared/enum/program-phase.model';
 import programLVV from '../../../../../../services/121-service/seed-data/program/program-pilot-nl.json';
+import { ProgramPhase } from '../../../../../../services/121-service/src/shared/enum/program-phase.model';
 
 describe("'Do Payment #1' bulk action", () => {
   beforeEach(() => {
@@ -11,7 +11,7 @@ describe("'Do Payment #1' bulk action", () => {
 
   afterEach(() => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for any previous status-callbacks to finish
-    cy.wait(4500);
+    cy.wait(4_500);
   });
 
   it(
@@ -52,7 +52,7 @@ describe("'Do Payment #1' bulk action", () => {
       cy.get('.alert-message').contains(String(arr.length));
 
       // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed
-      cy.wait(2000);
+      cy.wait(2_000);
 
       cy.get('.alert-button').click();
 
@@ -85,7 +85,7 @@ describe("'Do Payment #1' bulk action", () => {
           confirmPaymentPopupt(arr.length);
 
           // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed
-          cy.wait(2000);
+          cy.wait(2_000);
 
           cy.get('[data-cy="payment-history-button"]').contains(
             portalEn.page.program['program-people-affected'].transaction
@@ -227,10 +227,12 @@ describe("'Do Payment #1' bulk action", () => {
 
           // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed and incoming WhatsApp message
           cy.wait(500);
+
           cy.reload();
-          // wait 4 seconds for the PAs to show in the table in order for the payments left filter to populate with options
-          // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for payment to succeed and incoming WhatsApp message
-          cy.wait(4000);
+
+          // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for the PAs to show in the table in order for the "payments left"-filter to populate with options
+          cy.wait(4_000);
+
           cy.get('[data-cy="table-filter-paymentsLeft"]').click();
 
           // This should really be: cy.get('[data-cy="0 remaining"]').click();
@@ -262,7 +264,7 @@ describe("'Do Payment #1' bulk action", () => {
     cy.url().should('include', 'payment');
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for Bulk-actions to be populated
-    cy.wait(2000);
+    cy.wait(2_000);
 
     cy.get('[data-cy="select-action"]').select(
       `${portalEn.page.program['program-people-affected'].actions['do-payment']} #${payment}`,
