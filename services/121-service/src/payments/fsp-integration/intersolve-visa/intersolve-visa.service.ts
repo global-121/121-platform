@@ -587,10 +587,17 @@ export class IntersolveVisaService
         ? BlockReasonEnum.BLOCK_GENERAL // If using 'TOKEN_DISABLED' the wallet will be blocked forever
         : UnblockReasonEnum.UNBLOCK_GENERAL,
     };
-    return await this.intersolveVisaApiService.toggleBlockWallet(
+    const result = await this.intersolveVisaApiService.toggleBlockWallet(
       tokenCode,
       payload,
       block,
     );
+    if (result.status === 204) {
+      await this.intersolveVisaWalletRepository.update(
+        { tokenCode: tokenCode },
+        { tokenBlocked: block },
+      );
+    }
+    return result;
   }
 }

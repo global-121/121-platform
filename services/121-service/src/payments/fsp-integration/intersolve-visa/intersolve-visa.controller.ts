@@ -45,7 +45,10 @@ export class IntersolveVisaController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
-  @ApiResponse({ status: 204, description: 'Blocked wallet' })
+  @ApiResponse({
+    status: 204,
+    description: 'Blocked wallet and stored in 121 db',
+  })
   @ApiResponse({
     status: 405,
     description: 'Method not allowed (e.g. token already blocked)',
@@ -69,7 +72,10 @@ export class IntersolveVisaController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
-  @ApiResponse({ status: 204, description: 'Unblocked wallet' })
+  @ApiResponse({
+    status: 204,
+    description: 'Unblocked wallet and stored in 121 db',
+  })
   @ApiResponse({
     status: 405,
     description: 'Method not allowed (e.g. token already unblocked)',
