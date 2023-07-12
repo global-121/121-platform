@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
 import { PhysicalCard } from 'src/app/models/physical-card.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { PhysicalCardPopupComponent } from '../physical-card-popup/physical-card-popup.component';
 import { RegistrationPageTableComponent } from '../registration-page-table/registration-page-table.component';
 
 @Component({
@@ -14,6 +15,7 @@ import { RegistrationPageTableComponent } from '../registration-page-table/regis
     IonicModule,
     TranslateModule,
     RegistrationPageTableComponent,
+    PhysicalCardPopupComponent,
   ],
   selector: 'app-registration-physical-card-overview',
   templateUrl: './registration-physical-card-overview.component.html',
@@ -28,7 +30,10 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
 
   public physicalCards: PhysicalCard[];
 
-  constructor(private programsService: ProgramsServiceApiService) {}
+  constructor(
+    private programsService: ProgramsServiceApiService,
+    private modalController: ModalController,
+  ) {}
 
   public async ngOnInit() {
     this.physicalCards = await this.programsService.getPhysicalCards(
@@ -37,7 +42,13 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
     );
   }
 
-  public openCardDetails(card: PhysicalCard) {
-    window.alert(`Card details for ${card.tokenCode}`);
+  public async openCardDetails(card: PhysicalCard) {
+    const modal: HTMLIonModalElement = await this.modalController.create({
+      component: PhysicalCardPopupComponent,
+      componentProps: {
+        card,
+      },
+    });
+    await modal.present();
   }
 }
