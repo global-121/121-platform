@@ -19,7 +19,7 @@ export class IntersolveBlockWalletResponseDto {
 }
 
 export class IntersolveBlockWalletResponseBodyDto {
-  public success: boolean;
+  public success?: boolean;
   public errors?: IntersolveReponseErrorDto[];
   public code?: string;
   public correlationId?: string;

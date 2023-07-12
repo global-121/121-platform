@@ -203,48 +203,28 @@ export class IntersolveVisaApiService {
     payload: IntersolveBlockWalletDto,
     block: boolean,
   ): Promise<IntersolveBlockWalletResponseDto> {
-    // TO DO: implement mock
-    // if (process.env.MOCK_INTERSOLVE) {
-    //   return await this.intersolveVisaApiMockService.toggleBlockWalletMock(
-    //     tokenCode, block,
-    //   );
-    // } else {
-    const authToken = await this.getAuthenticationToken();
-    const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/${
-      block ? 'block' : 'unblock'
-    }`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
-    const blockResult = await this.httpService.post<any>(url, payload, headers);
-    const result: IntersolveBlockWalletResponseDto = {
-      status: blockResult.status,
-      statusText: blockResult.statusText,
-      data: blockResult.data,
-    };
-    return result;
-    // }
+    if (process.env.MOCK_INTERSOLVE) {
+      return await this.intersolveVisaApiMockService.toggleBlockWalletMock();
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/${
+        block ? 'block' : 'unblock'
+      }`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
+      const blockResult = await this.httpService.post<any>(
+        url,
+        payload,
+        headers,
+      );
+      const result: IntersolveBlockWalletResponseDto = {
+        status: blockResult.status,
+        statusText: blockResult.statusText,
+        data: blockResult.data,
+      };
+      return result;
+    }
   }
-
-  // public async unblockWallet(
-  //   tokenCode: string,
-  //   payload: IntersolveUnblockWalletDto,
-  // ): Promise<IntersolveBlockWalletResponseDto> {
-  //   // TO DO: implement mock
-  //   // if (process.env.MOCK_INTERSOLVE) {
-  //   //   return await this.intersolveVisaApiMockService.unblockWalletMock(
-  //   //     tokenCode,
-  //   //   );
-  //   // } else {
-  //   const authToken = await this.getAuthenticationToken();
-  //   const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/unblock`;
-  //   const headers = [
-  //     { name: 'Authorization', value: `Bearer ${authToken}` },
-  //     { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-  //   ];
-  //   // On success this returns a 204 No Content
-  //   return await this.httpService.post<any>(url, payload, headers);
-  //   // }
-  // }
 }
