@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title
+      color="secondary"
+      style="font-weight: 600"
+    >
+      {{ card?.tokenCode }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
+      >
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <!-- Status -->
+    <ion-item>
+      <ion-label class="text-bold">
+        {{
+          'registration-details.physical-cards-overview.card-status'
+            | translate
+        }}:
+      </ion-label>
+      <ion-label class="ion-text-right">{{ card?.status }} </ion-label>
+    </ion-item>
+
+    <!-- Activated -->
+    <ion-item>
+      <ion-label class="text-bold">
+        {{
+          'registration-details.physical-cards-overview.date-activated'
+            | translate
+        }}:
+      </ion-label>
+      <ion-label class="ion-text-right">{{ card?.status }} </ion-label>
+    </ion-item>
+
+    <!-- Current balance -->
+    <ion-item>
+      <ion-label class="text-bold"
+        >{{
+          'registration-details.physical-cards-overview.current-balance'
+            | translate
+        }}:
+      </ion-label>
+      <ion-label class="ion-text-right">{{ card?.balance }} </ion-label>
+    </ion-item>
+
+    <!-- Last used -->
+    <ion-item>
+      <ion-label class="text-bold"
+        >{{
+          'registration-details.physical-cards-overview.date-last-used'
+            | translate
+        }}:
+      </ion-label>
+      <ion-label class="ion-text-right"
+        >{{ card?.lastUsedDate | date }}
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-button
+    fill="outline"
+    color="danger"
+    size="small"
+    shape="round"
+    (click)="blockButtonClicked(card)"
+  >
+    {{ 'registration-details.physical-cards-overview.block-card' | translate }}
+  </ion-button>
+  &nbsp;
+  <ion-button
+    fill="outline"
+    color="primary"
+    size="small"
+    shape="round"
+    (click)="sendReplacementCardButtonClick(card)"
+  >
+    {{
+      'registration-details.physical-cards-overview.send-replacement-card'
+        | translate
+    }}
+  </ion-button>
+</ion-content>

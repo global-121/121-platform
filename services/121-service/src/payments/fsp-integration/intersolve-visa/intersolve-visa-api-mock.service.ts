@@ -13,7 +13,10 @@ import {
   IntersolveCreateWalletResponseDto,
   IntersolveCreateWalletResponseTokenDto,
 } from './dto/intersolve-create-wallet-response.dto';
+import { IntersolveGetWalletResponseDto } from './dto/intersolve-get-wallet-details.dto';
+import { GetTransactionsDetailsResponseDto } from './dto/intersolve-get-wallet-transactions.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
+import { IntersolveVisaWalletStatus } from './intersolve-visa-wallet.entity';
 
 @Injectable()
 export class IntersolveVisaApiMockService {
@@ -96,7 +99,7 @@ export class IntersolveVisaApiMockService {
     response.data.data.token.balances = [
       {
         quantity: {
-          assetCode: 'string',
+          assetCode: 'EUR',
           value: 0,
           reserved: 0,
         },
@@ -291,5 +294,76 @@ export class IntersolveVisaApiMockService {
       response.statusText = 'NOT FOUND';
     }
     return response;
+  }
+
+  public async getWalletMock(
+    _tokenCode: string,
+  ): Promise<IntersolveGetWalletResponseDto> {
+    const response = new IntersolveGetWalletResponseDto();
+    response.status = 200;
+    response.data = {
+      success: true,
+      errors: [],
+      code: 'string',
+      correlationId: 'string',
+      data: {
+        code: 'string',
+        status: IntersolveVisaWalletStatus.Active,
+        balances: [
+          {
+            quantity: {
+              assetCode: 'EUR',
+              value: 2200,
+              reserved: 0,
+            },
+            discountBudgetValue: 0,
+            lastChangedAt: new Date(
+              new Date().setDate(new Date().getDate() - 7), // 7 days ago
+            ).toISOString(),
+          },
+        ],
+      },
+    };
+    return response;
+  }
+
+  public getTransactionsMock(
+    tokenCode: string,
+  ): Promise<GetTransactionsDetailsResponseDto> {
+    const response = new GetTransactionsDetailsResponseDto();
+    response.status = 200;
+    response.data = {
+      code: 'string',
+      correlationId: 'string',
+      success: true,
+      data: [
+        {
+          id: 1,
+          quantity: {
+            assetCode: 'EUR',
+            value: 3,
+          },
+          createdAt: new Date(
+            new Date().setDate(new Date().getDate() - 1),
+          ).toISOString(),
+          creditor: {
+            tokenCode: 'random token code',
+          },
+          debtor: {
+            tokenCode: tokenCode,
+          },
+          reference: 'string',
+          type: 'CHARGE',
+          description: 'string',
+          location: {
+            merchantCode: 'string',
+            merchantLocationCode: 'string',
+          },
+          originalTransactionId: 1,
+          paymentId: 1,
+        },
+      ],
+    };
+    return Promise.resolve(response);
   }
 }

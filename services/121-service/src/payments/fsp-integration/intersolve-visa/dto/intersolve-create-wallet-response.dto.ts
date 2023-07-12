@@ -1,3 +1,4 @@
+import { IntersolveVisaWalletStatus } from '../intersolve-visa-wallet.entity';
 import { IntersolveReponseErrorDto } from './intersolve-response-error.dto';
 
 export class IntersolveCreateWalletResponseDto {
@@ -23,7 +24,7 @@ export class IntersolveCreateWalletResponseTokenDto {
   public blocked?: boolean;
   public type?: string;
   public brandTypeCode?: string;
-  public status?: string;
+  public status?: IntersolveVisaWalletStatus;
   public balances?: IntersolveCreateWalletResponseBalanceDto[];
   public blockReasonCode?: string;
   public tier?: string;
@@ -31,7 +32,7 @@ export class IntersolveCreateWalletResponseTokenDto {
   public assets?: IntersolveCreateWalletResponseAssetDto[];
 }
 
-class IntersolveCreateWalletResponseBalanceDto {
+export class IntersolveCreateWalletResponseBalanceDto {
   public quantity: IntersolveCreateWalletResponseQuantityDto;
   public discountBudgetValue: number;
   public lastChangedAt: string;
@@ -43,7 +44,7 @@ class IntersolveCreateWalletResponseQuantityDto {
   public reserved: number;
 }
 
-class IntersolveCreateWalletResponseAssetDto {
+export class IntersolveCreateWalletResponseAssetDto {
   public identity: IntersolveCreateWalletResponseIdentityDto;
   public groupCode: string;
   public parentAssetCode: string;
