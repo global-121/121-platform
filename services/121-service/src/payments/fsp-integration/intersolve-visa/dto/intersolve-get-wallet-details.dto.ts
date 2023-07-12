@@ -16,7 +16,6 @@ export class GetWalletDetailsResponseDto {
   public balance: number;
   public issuedDate: Date;
   public lastUsedDate?: Date;
-  public activatedDate?: Date;
 }
 
 export class IntersolveGetWalletResponseDto {
