@@ -1,7 +1,7 @@
-import { MessageStatus } from './../../../../../../interfaces/HO-Portal/src/app/models/message.model';
-import portalEn from '../../../../../HO-Portal/src/assets/i18n/en.json';
-import { ProgramPhase } from '../../../../../../services/121-service/src/shared/enum/program-phase.model';
 import programLVV from '../../../../../../services/121-service/seed-data/program/program-pilot-nl.json';
+import { ProgramPhase } from '../../../../../../services/121-service/src/shared/enum/program-phase.model';
+import portalEn from '../../../../../HO-Portal/src/assets/i18n/en.json';
+import { MessageStatus } from './../../../../../../interfaces/HO-Portal/src/app/models/message.model';
 
 describe('Check message history', () => {
   beforeEach(() => {

@@ -1,5 +1,4 @@
 import { ProgramPhase } from '../../../../../../services/121-service/src/shared/enum/program-phase.model';
-import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 
 describe('Edit PA details in pop-up', () => {
   beforeEach(() => {
