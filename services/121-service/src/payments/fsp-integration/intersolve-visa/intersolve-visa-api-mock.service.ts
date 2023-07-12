@@ -313,7 +313,7 @@ export class IntersolveVisaApiMockService {
           {
             quantity: {
               assetCode: 'EUR',
-              value: 3,
+              value: 2200,
               reserved: 0,
             },
             discountBudgetValue: 0,

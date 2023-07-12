@@ -80,3 +80,17 @@ export function updatePa(
       value: value,
     });
 }
+
+export function getVisaWalletsAndDetails(
+  programId: number,
+  referenceId: string,
+  accessToken: string,
+): Promise<request.Response> {
+  const queryParams = {
+    referenceId: referenceId,
+  };
+  return getServer()
+    .get(`/programs/${programId}/fsp-integration/intersolve-visa/wallets`)
+    .query(queryParams)
+    .set('Cookie', [accessToken]);
+}
