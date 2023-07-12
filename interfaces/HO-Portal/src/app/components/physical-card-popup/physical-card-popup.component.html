@@ -4,7 +4,7 @@
       color="secondary"
       style="font-weight: 600"
     >
-      {{ card.tokenCode }}
+      {{ card?.tokenCode }}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button
@@ -31,7 +31,7 @@
             | translate
         }}:
       </ion-label>
-      <ion-label class="ion-text-right">{{ card.status }} </ion-label>
+      <ion-label class="ion-text-right">{{ card?.status }} </ion-label>
     </ion-item>
 
     <!-- Activated -->
@@ -42,7 +42,7 @@
             | translate
         }}:
       </ion-label>
-      <ion-label class="ion-text-right">{{ card.status }} </ion-label>
+      <ion-label class="ion-text-right">{{ card?.status }} </ion-label>
     </ion-item>
 
     <!-- Current balance -->
@@ -53,7 +53,7 @@
             | translate
         }}:
       </ion-label>
-      <ion-label class="ion-text-right">{{ card.balance }} </ion-label>
+      <ion-label class="ion-text-right">{{ card?.balance }} </ion-label>
     </ion-item>
 
     <!-- Last used -->
@@ -65,7 +65,7 @@
         }}:
       </ion-label>
       <ion-label class="ion-text-right"
-        >{{ card.lastUsedDate | date }}
+        >{{ card?.lastUsedDate | date }}
       </ion-label>
     </ion-item>
   </ion-list>

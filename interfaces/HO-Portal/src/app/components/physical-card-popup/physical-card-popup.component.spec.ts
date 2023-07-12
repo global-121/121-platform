@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { TranslateModule } from '@ngx-translate/core';
 import { PhysicalCardPopupComponent } from './physical-card-popup.component';
 
 describe('PhysicalCardPopupComponent', () => {
@@ -8,7 +9,7 @@ describe('PhysicalCardPopupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PhysicalCardPopupComponent],
+      imports: [PhysicalCardPopupComponent, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PhysicalCardPopupComponent);
