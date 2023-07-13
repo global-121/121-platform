@@ -4,7 +4,17 @@
       color="secondary"
       style="font-weight: 600"
     >
-      {{ card?.tokenCode }}
+      <ion-col style="top: 2px"
+        ><ion-icon name="card-outline"></ion-icon
+      ></ion-col>
+      <ion-label>
+        {{
+          ('registration-details.physical-cards-overview.popup-title'
+            | translate) + ': '
+        }}
+
+        {{ card?.tokenCode }}
+      </ion-label>
     </ion-title>
     <ion-buttons slot="end">
       <ion-button
@@ -25,70 +35,54 @@
   <ion-list>
     <!-- Status -->
     <ion-item>
-      <ion-label class="text-bold">
+      <ion-label>
         {{
           'registration-details.physical-cards-overview.card-status'
             | translate
         }}:
       </ion-label>
-      <ion-label class="ion-text-right">{{ card?.status }} </ion-label>
-    </ion-item>
-
-    <!-- Activated -->
-    <ion-item>
-      <ion-label class="text-bold">
-        {{
-          'registration-details.physical-cards-overview.date-activated'
-            | translate
-        }}:
-      </ion-label>
-      <ion-label class="ion-text-right">{{ card?.status }} </ion-label>
+      <ion-label class="ion-text-right"
+        ><ion-chip
+          [color]="
+            card?.status.toUpperCase() === PhysicalCardStatus.active
+              ? 'success'
+              : 'danger'
+          "
+          >{{ card?.status }}</ion-chip
+        ></ion-label
+      >
     </ion-item>
 
     <!-- Current balance -->
     <ion-item>
-      <ion-label class="text-bold"
+      <ion-label
         >{{
           'registration-details.physical-cards-overview.current-balance'
             | translate
         }}:
       </ion-label>
-      <ion-label class="ion-text-right">{{ card?.balance }} </ion-label>
+      <ion-label class="ion-text-right"
+        ><strong
+          >{{ card?.balance / 100 | number : '1.2-2' }} {{ currency }}</strong
+        >
+      </ion-label>
     </ion-item>
 
     <!-- Last used -->
     <ion-item>
-      <ion-label class="text-bold"
+      <ion-label
         >{{
           'registration-details.physical-cards-overview.date-last-used'
             | translate
         }}:
       </ion-label>
       <ion-label class="ion-text-right"
-        >{{ card?.lastUsedDate | date }}
+        ><strong>{{
+          (card?.lastUsedDate | date : DateFormat.dayAndTimeAlternative) ||
+            'registration-details.physical-cards-overview.not-used-yet'
+            | translate
+        }}</strong>
       </ion-label>
     </ion-item>
   </ion-list>
-  <ion-button
-    fill="outline"
-    color="danger"
-    size="small"
-    shape="round"
-    (click)="blockButtonClicked(card)"
-  >
-    {{ 'registration-details.physical-cards-overview.block-card' | translate }}
-  </ion-button>
-  &nbsp;
-  <ion-button
-    fill="outline"
-    color="primary"
-    size="small"
-    shape="round"
-    (click)="sendReplacementCardButtonClick(card)"
-  >
-    {{
-      'registration-details.physical-cards-overview.send-replacement-card'
-        | translate
-    }}
-  </ion-button>
 </ion-content>

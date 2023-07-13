@@ -27,15 +27,15 @@
             style="display: block"
           ></app-registration-personal-information>
 
-          <div
-            *ngIf="canViewPhysicalCards && 'program?.hasPhysicalCard'"
-            class="ion-margin-vertical ion-padding-vertical"
-          >
-            <app-registration-physical-card-overview
-              [programId]="programId"
-              [referenceId]="referenceId"
-            ></app-registration-physical-card-overview>
-          </div>
+          <ng-container *ngIf="canViewPhysicalCards && fspHasPhysicalCard()">
+            <div class="ion-margin-vertical ion-padding-vertical">
+              <app-registration-physical-card-overview
+                [programId]="programId"
+                [referenceId]="referenceId"
+                [currency]="program.currency"
+              ></app-registration-physical-card-overview>
+            </div>
+          </ng-container>
 
           <app-registration-payment-overview
             [person]="person"

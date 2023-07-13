@@ -53,6 +53,8 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
 
   private pubSubSubscription: Subscription;
 
+  private physicalCardFsps = ['Intersolve-visa'];
+
   constructor(
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
@@ -142,5 +144,13 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
       this.programId,
       [Permission.PaymentREAD, Permission.PaymentTransactionREAD],
     );
+  }
+
+  public fspHasPhysicalCard(): boolean {
+    if (!this.person || !this.person.fsp) {
+      return false;
+    }
+
+    return this.physicalCardFsps.includes(this.person.fsp);
   }
 }
