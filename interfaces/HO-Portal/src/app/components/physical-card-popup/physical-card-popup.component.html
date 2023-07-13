@@ -35,7 +35,7 @@
   <ion-list>
     <!-- Status -->
     <ion-item>
-      <ion-label>
+      <ion-label class="card-key-value">
         {{
           'registration-details.physical-cards-overview.card-status'
             | translate
@@ -55,13 +55,13 @@
 
     <!-- Current balance -->
     <ion-item>
-      <ion-label
+      <ion-label class="card-key-value"
         >{{
           'registration-details.physical-cards-overview.current-balance'
             | translate
         }}:
       </ion-label>
-      <ion-label class="ion-text-right"
+      <ion-label class="card-key-value ion-text-right"
         ><strong
           >{{ card?.balance / 100 | number : '1.2-2' }} {{ currency }}</strong
         >
@@ -70,13 +70,13 @@
 
     <!-- Last used -->
     <ion-item>
-      <ion-label
+      <ion-label class="card-key-value"
         >{{
           'registration-details.physical-cards-overview.date-last-used'
             | translate
         }}:
       </ion-label>
-      <ion-label class="ion-text-right"
+      <ion-label class="card-key-value ion-text-right"
         ><strong>{{
           (card?.lastUsedDate | date : DateFormat.dayAndTimeAlternative) ||
             'registration-details.physical-cards-overview.not-used-yet'

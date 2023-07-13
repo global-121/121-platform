@@ -677,7 +677,7 @@
       "paymentLabel": "Payment #{{number}}"
     },
     "physical-cards-overview": {
-      "title": "Visa Debit Cards",
+      "title": "Debit cards",
       "subtitle": "...",
       "card-status": "Card status",
       "status": {
