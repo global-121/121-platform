@@ -2,18 +2,15 @@ import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiQuery } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { DataSource } from 'typeorm';
+import SeedEthJointResponse from './seed-eth-joint-response';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
 import { SeedDemoProgram } from './seed-program-demo';
-import SeedProgramDorcasEth from './seed-program-dorcas-eth';
 import { SeedProgramDrc } from './seed-program-drc';
-import SeedProgramEth from './seed-program-eth';
 import { SeedProgramKrcs } from './seed-program-krcs';
-import { SeedProgramLbn } from './seed-program-lbn';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
 import { SeedTestProgram } from './seed-program-test';
 import { SeedTestMultipleProgram } from './seed-program-test-multiple';
-import SeedProgramUkr from './seed-program-ukr';
 import { SeedProgramValidation } from './seed-program-validation';
 import { SeedScript } from './seed-script.enum';
 
@@ -56,18 +53,12 @@ export class ScriptsController {
       seed = new SeedPilotNLProgram(this.dataSource);
     } else if (script == SeedScript.pilotNLPV) {
       seed = new SeedPilotNL2Program(this.dataSource);
-    } else if (script == SeedScript.pilotETH) {
-      seed = new SeedProgramEth(this.dataSource);
-    } else if (script == SeedScript.pilotLBN) {
-      seed = new SeedProgramLbn(this.dataSource);
-    } else if (script == SeedScript.pilotUKR) {
-      seed = new SeedProgramUkr(this.dataSource);
     } else if (script == SeedScript.DRC) {
       seed = new SeedProgramDrc(this.dataSource);
     } else if (script == SeedScript.validation) {
       seed = new SeedProgramValidation(this.dataSource);
-    } else if (script == SeedScript.pilotDorcasETH) {
-      seed = new SeedProgramDorcasEth(this.dataSource);
+    } else if (script == SeedScript.ethJointResponse) {
+      seed = new SeedEthJointResponse(this.dataSource);
     } else if (script == SeedScript.krcs) {
       seed = new SeedProgramKrcs(this.dataSource);
     } else {
