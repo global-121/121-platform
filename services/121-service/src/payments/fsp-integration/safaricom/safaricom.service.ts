@@ -40,15 +40,20 @@ export class SafaricomService {
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.safaricom;
 
-    for (const payment of paymentList) {
-      const userInfo = await this.getUserInfo(payment);
+    const referenceIds = paymentList.map((payment) => payment.referenceId);
+    const userInfo = await this.getUserInfo(referenceIds);
 
+    for (const payment of paymentList) {
       await this.safaricomApiService.authenticate();
+      const resultUser = userInfo.find(
+        (user) => user.referenceId == payment.referenceId,
+      );
+
       const payload = this.createPayloadPerPa(
         payment,
         programId,
         paymentNr,
-        userInfo,
+        resultUser,
       );
 
       const paymentRequestResultPerPa = await this.sendPaymentPerPa(
@@ -68,26 +73,32 @@ export class SafaricomService {
     return fspTransactionResult;
   }
 
-  public async getUserInfo(payment): Promise<RegistrationEntity> {
+  public async getUserInfo(
+    referenceIds: string[],
+  ): Promise<{ id: string; referenceId: string; value: string }[]> {
     return await this.registrationRepository
       .createQueryBuilder('registration')
-      .where('registration.referenceId = :referenceId', {
-        referenceId: payment.referenceId,
+      .select([
+        'registration.id AS id',
+        'registration.referenceId AS "referenceId"',
+        'data.value AS value',
+      ])
+      .where('registration.referenceId IN (:...referenceIds)', {
+        referenceIds: referenceIds,
       })
-      .leftJoinAndSelect('registration.data', 'data')
-      .leftJoinAndSelect('data.programQuestion', 'programQuestion')
-      .andWhere('programQuestion.name IN (:...names)', {
+      .andWhere('fspQuestion.name IN (:...names)', {
         names: ['nationalId'],
       })
-      .select(['registration.id', 'data.value'])
-      .getOne();
+      .leftJoin('registration.data', 'data')
+      .leftJoin('data.fspQuestion', 'fspQuestion')
+      .getRawMany();
   }
 
   public createPayloadPerPa(
     payment,
     programId,
     paymentNr,
-    userInfo,
+    userInfo: { id: string; referenceId: string; value: string },
   ): SafaricomTransferPayload {
     function padTo2Digits(num: number): string {
       return num.toString().padStart(2, '0');
@@ -124,7 +135,7 @@ export class SafaricomService {
         new Date(),
       )}`,
       IDType: process.env.SAFARICOM_IDTYPE,
-      IDNumber: userInfo.data[0].value,
+      IDNumber: userInfo.value,
     };
 
     return payload;
