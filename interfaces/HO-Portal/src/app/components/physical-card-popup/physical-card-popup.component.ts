@@ -76,7 +76,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   }
 
   public canUseButton() {
-    return this.card.status.toUpperCase() === PhysicalCardStatus.blocked
+    return this.card?.status.toUpperCase() === PhysicalCardStatus.blocked
       ? this.canUnblock()
         ? true
         : false
