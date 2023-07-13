@@ -21,7 +21,7 @@
   "fixedTransferValue": 12000,
   "financialServiceProviders": [
     {
-      "fsp": "BelCash"
+      "fsp": "Safaricom"
     }
   ],
   "targetNrRegistrations": 4000,
@@ -115,7 +115,6 @@
         "en": "Age"
       }
     },
-
     {
       "name": "nrOfFamilyMembers",
       "label": {

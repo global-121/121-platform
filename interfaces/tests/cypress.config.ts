@@ -1,6 +1,6 @@
 import { defineConfig } from 'cypress';
-import { readFileSync } from 'fs';
 import dotenv from 'dotenv';
+import { readFileSync } from 'fs';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { verifyDownloadTasks } = require('cy-verify-downloads');

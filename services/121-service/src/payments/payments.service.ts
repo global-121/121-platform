@@ -30,6 +30,7 @@ import { IntersolveJumboService } from './fsp-integration/intersolve-jumbo/inter
 import { IntersolveVisaService } from './fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveIssueVoucherRequestEntity } from './fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherService } from './fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { SafaricomService } from './fsp-integration/safaricom/safaricom.service';
 import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service';
 import { VodacashService } from './fsp-integration/vodacash/vodacash.service';
 import { TransactionEntity } from './transactions/transaction.entity';
@@ -56,6 +57,7 @@ export class PaymentsService {
     private readonly bobFinanceService: BobFinanceService,
     private readonly ukrPoshtaService: UkrPoshtaService,
     private readonly vodacashService: VodacashService,
+    private readonly safaricomService: SafaricomService,
     private readonly bulkImportService: BulkImportService,
   ) {}
 
@@ -193,6 +195,7 @@ export class PaymentsService {
     const bobFinancePaPayment = [];
     const ukrPoshtaPaPayment = [];
     const vodacashPaPayment = [];
+    const safaricomPaPayment = [];
     for (const paPaymentData of paPaymentDataList) {
       if (paPaymentData.fspName === FspName.intersolveVoucherWhatsapp) {
         intersolvePaPayment.push(paPaymentData);
@@ -212,6 +215,8 @@ export class PaymentsService {
         ukrPoshtaPaPayment.push(paPaymentData);
       } else if (paPaymentData.fspName === FspName.vodacash) {
         vodacashPaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === FspName.safaricom) {
+        safaricomPaPayment.push(paPaymentData);
       } else {
         console.log('fsp does not exist: paPaymentData: ', paPaymentData);
         throw new HttpException('fsp does not exist.', HttpStatus.NOT_FOUND);
@@ -227,6 +232,7 @@ export class PaymentsService {
       bobFinancePaPayment,
       ukrPoshtaPaPayment,
       vodacashPaPayment,
+      safaricomPaPayment,
     };
   }
 
@@ -279,6 +285,14 @@ export class PaymentsService {
     if (paLists.belcashPaPayment.length) {
       await this.belcashService.sendPayment(
         paLists.belcashPaPayment,
+        programId,
+        payment,
+      );
+    }
+
+    if (paLists.safaricomPaPayment.length) {
+      await this.safaricomService.sendPayment(
+        paLists.safaricomPaPayment,
         programId,
         payment,
       );

@@ -54,6 +54,8 @@ export const API_PATHS = {
   voiceMp3: 'notifications/voice/mp3/',
   imageCode: 'notifications/imageCode/',
   voucherInstructions: 'payments/intersolve/instruction/',
+  safaricomResult: 'payments/safaricom/transaction',
+  safaricomQueueTimeout: 'payments/safaricom/timeout',
 };
 const baseApiUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
 export const EXTERNAL_API = {
@@ -68,6 +70,8 @@ export const EXTERNAL_API = {
   voiceXmlUrl: baseApiUrl + API_PATHS.voiceXml,
   voiceMp3Url: baseApiUrl + API_PATHS.voiceMp3,
   imageCodeUrl: baseApiUrl + API_PATHS.imageCode,
+  safaricomResultUrl: baseApiUrl + API_PATHS.safaricomResult,
+  safaricomQueueTimeoutUrl: baseApiUrl + API_PATHS.safaricomQueueTimeout,
 };
 
 // Configure Public Twilio Setttings:
