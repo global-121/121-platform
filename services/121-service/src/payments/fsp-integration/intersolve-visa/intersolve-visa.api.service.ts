@@ -6,6 +6,8 @@ import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dt
 import { IntersolveCreateDebitCardDto } from './dto/intersolve-create-debit-card.dto';
 import { IntersolveCreateWalletResponseDto } from './dto/intersolve-create-wallet-response.dto';
 import { IntersolveCreateWalletDto } from './dto/intersolve-create-wallet.dto';
+import { IntersolveGetWalletResponseDto } from './dto/intersolve-get-wallet-details.dto';
+import { GetTransactionsDetailsResponseDto } from './dto/intersolve-get-wallet-transactions.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service';
@@ -76,7 +78,7 @@ export class IntersolveVisaApiService {
     } else {
       const authToken = await this.getAuthenticationToken();
       const brandCode = process.env.INTERSOLVE_VISA_BRAND_CODE;
-      const url = `${intersolveVisaApiUrl}/pointofsale/v1/brand-types/${brandCode}/issue-token`;
+      const url = `${intersolveVisaApiUrl}/pointofsale/v1/brand-types/${brandCode}/issue-token?includeBalances=true`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
@@ -86,6 +88,44 @@ export class IntersolveVisaApiService {
         payload,
         headers,
       );
+    }
+  }
+
+  public async getWallet(
+    tokenCode: string,
+  ): Promise<IntersolveGetWalletResponseDto> {
+    if (process.env.MOCK_INTERSOLVE) {
+      return await this.intersolveVisaApiMockService.getWalletMock(tokenCode);
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}?includeBalances=true`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
+      return await this.httpService.get<IntersolveGetWalletResponseDto>(
+        url,
+        headers,
+      );
+    }
+  }
+
+  public async getTransactions(
+    tokenCode: string,
+  ): Promise<GetTransactionsDetailsResponseDto> {
+    // TO DO: implement mock
+    if (process.env.MOCK_INTERSOLVE) {
+      return await this.intersolveVisaApiMockService.getTransactionsMock(
+        tokenCode,
+      );
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/wallet/v1/tokens/${tokenCode}/transactions`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
+      return await this.httpService.get<any>(url, headers);
     }
   }
 

@@ -676,6 +676,24 @@
       "subtitle": "Payment information",
       "paymentLabel": "Payment #{{number}}"
     },
+    "physical-cards-overview": {
+      "title": "Debit cards",
+      "subtitle": "...",
+      "card-status": "Card status",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "blocked": "Blocked"
+      },
+      "date-activated": "Activated",
+      "date-last-used": "Last used",
+      "current-balance": "Current balance",
+      "block-card": "Block card",
+      "unblock-card": "Unblock card",
+      "send-replacement-card": "Send replacement card",
+      "popup-title": "Debit card",
+      "not-used-yet": "Not used yet"
+    },
     "activity-overview": {
       "title": "Activity overview",
       "filters": {

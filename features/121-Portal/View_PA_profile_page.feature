@@ -25,6 +25,28 @@ Feature: View PA profile page
     When the user clicks on the "Show All" button
     Then the edit PA popup opens
 
+  Scenario: View Visa debit cards table
+    Given the PA has FSP 'Intersolve Visa debit card'
+    Given the PA has at least 1 Visa debit card (typically through at least 1 payment with this FSP)
+    Given the user has the "PaymentTransactionREAD" permission
+    When the user opens the PA profile page
+    Then the user sees the "Visa debit cards" table on the left below the "Personal information" table
+    And it shows a row for each Visa debit card
+    And this should contain multiple rows only if a PA has a reissued card for some reason
+    And it shows per card the card number and the status of the card
+    And older cards should have status "Substituted"
+    And the 1 current card can have status "Inactive", "Active" or "Blocked"
+
+  Scenario: View Visa debit card details
+    Given the PA has FSP 'Intersolve Visa debit card'
+    Given the PA has at least 1 Visa debit card (typically through at least 1 payment with this FSP)
+    Given the user has the "PaymentTransactionREAD" permission
+    When clicking one row in the Visa debit card table
+    Then a popup opens
+    And it shows the card number in the title
+    And it shows the card Status again
+    And it shows the last used date
+
   Scenario: View Payment overview table
     Given the PA's status is either "included", "completed", "inclusionEnded", or "rejected"
     Given a logged-in user with "PaymentREAD" and "PaymentTransactionREAD" permissions

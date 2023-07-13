@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title
+      color="secondary"
+      style="font-weight: 600"
+    >
+      <ion-col style="top: 2px"
+        ><ion-icon name="card-outline"></ion-icon
+      ></ion-col>
+      <ion-label>
+        {{
+          ('registration-details.physical-cards-overview.popup-title'
+            | translate) + ': '
+        }}
+
+        {{ card?.tokenCode }}
+      </ion-label>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel' | translate"
+        [attr.aria-label]="'common.cancel' | translate"
+      >
+        <ion-icon
+          name="close"
+          slot="icon-only"
+          aria-hidden="true"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <!-- Status -->
+    <ion-item>
+      <ion-label class="card-key-value">
+        {{
+          'registration-details.physical-cards-overview.card-status'
+            | translate
+        }}:
+      </ion-label>
+      <ion-label class="ion-text-right"
+        ><ion-chip
+          [color]="
+            card?.status.toUpperCase() === PhysicalCardStatus.active
+              ? 'success'
+              : 'danger'
+          "
+          >{{ card?.status }}</ion-chip
+        ></ion-label
+      >
+    </ion-item>
+
+    <!-- Current balance -->
+    <ion-item>
+      <ion-label class="card-key-value"
+        >{{
+          'registration-details.physical-cards-overview.current-balance'
+            | translate
+        }}:
+      </ion-label>
+      <ion-label class="card-key-value ion-text-right"
+        ><strong
+          >{{ card?.balance / 100 | number : '1.2-2' }} {{ currency }}</strong
+        >
+      </ion-label>
+    </ion-item>
+
+    <!-- Last used -->
+    <ion-item>
+      <ion-label class="card-key-value"
+        >{{
+          'registration-details.physical-cards-overview.date-last-used'
+            | translate
+        }}:
+      </ion-label>
+      <ion-label class="card-key-value ion-text-right"
+        ><strong>{{
+          (card?.lastUsedDate | date : DateFormat.dayAndTimeAlternative) ||
+            'registration-details.physical-cards-overview.not-used-yet'
+            | translate
+        }}</strong>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
