@@ -592,7 +592,13 @@ export class IntersolveVisaService
       payload,
       block,
     );
-    if (result.status === 204) {
+    if (
+      result.status === 204 ||
+      (result.status === 405 &&
+        ['TOKEN_IS_ALREADY_BLOCKED', 'TOKEN_IS_NOT_BLOCKED'].includes(
+          result.data?.code,
+        ))
+    ) {
       await this.intersolveVisaWalletRepository.update(
         { tokenCode: tokenCode },
         { tokenBlocked: block },
