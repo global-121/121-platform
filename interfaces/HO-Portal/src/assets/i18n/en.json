@@ -691,7 +691,8 @@
       "block-card": "Block card",
       "unblock-card": "Unblock card",
       "send-replacement-card": "Send replacement card",
-      "popup-title": "Debit card"
+      "popup-title": "Debit card",
+      "not-used-yet": "Not used yet"
     },
     "activity-overview": {
       "title": "Activity overview",

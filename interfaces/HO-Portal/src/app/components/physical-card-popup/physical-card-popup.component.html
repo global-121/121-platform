@@ -78,7 +78,9 @@
       </ion-label>
       <ion-label class="ion-text-right"
         ><strong>{{
-          card?.lastUsedDate | date : DateFormat.dayAndTimeAlternative
+          (card?.lastUsedDate | date : DateFormat.dayAndTimeAlternative) ||
+            'registration-details.physical-cards-overview.not-used-yet'
+            | translate
         }}</strong>
       </ion-label>
     </ion-item>
