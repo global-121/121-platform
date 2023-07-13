@@ -20,7 +20,7 @@ import { IntersolveVisaService } from './intersolve-visa.service';
 export class IntersolveVisaController {
   public constructor(private intersolveVisaService: IntersolveVisaService) {}
 
-  @Permissions(PermissionEnum.PaymentTransactionREAD)
+  @Permissions(PermissionEnum.FspDebitCardREAD)
   @ApiOperation({
     summary: 'Get Intersolve Visa wallets and details',
   })
@@ -38,8 +38,7 @@ export class IntersolveVisaController {
     );
   }
 
-  // TO DO: change permission
-  @Permissions(PermissionEnum.PaymentTransactionREAD)
+  @Permissions(PermissionEnum.FspDebitCardBLOCK)
   @ApiOperation({
     summary: 'Block Intersolve Visa wallet',
   })
@@ -65,8 +64,7 @@ export class IntersolveVisaController {
     );
   }
 
-  // TO DO: change permission
-  @Permissions(PermissionEnum.PaymentTransactionREAD)
+  @Permissions(PermissionEnum.FspDebitCardUNBLOCK)
   @ApiOperation({
     summary: 'Unblock Intersolve Visa wallet',
   })

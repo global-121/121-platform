@@ -92,6 +92,7 @@
       shape="round"
       (click)="toggleBlockButton(card)"
       [innerHTML]="blockButtonLabel"
+      [disabled]="!canUseButton()"
     ></ion-button>
   </ion-list>
 </ion-content>

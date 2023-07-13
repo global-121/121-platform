@@ -3,6 +3,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
+import { AuthService } from '../../auth/auth.service';
+import Permission from '../../auth/permission.enum';
 import {
   PhysicalCard,
   PhysicalCardStatus,
@@ -38,6 +40,7 @@ export class PhysicalCardPopupComponent implements OnInit {
     private alertController: AlertController,
     private translate: TranslateService,
     private errorHandlerService: ErrorHandlerService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit() {
@@ -56,6 +59,30 @@ export class PhysicalCardPopupComponent implements OnInit {
 
   public closeModal() {
     this.modalController.dismiss();
+  }
+
+  public canBlock() {
+    return this.authService.hasPermission(
+      this.programId,
+      Permission.FspDebitCardBLOCK,
+    );
+  }
+
+  public canUnblock() {
+    return this.authService.hasPermission(
+      this.programId,
+      Permission.FspDebitCardUNBLOCK,
+    );
+  }
+
+  public canUseButton() {
+    return this.card.status.toUpperCase() === PhysicalCardStatus.blocked
+      ? this.canUnblock()
+        ? true
+        : false
+      : this.canBlock()
+      ? true
+      : false;
   }
 
   toggleBlockButton(card: PhysicalCard) {
