@@ -74,6 +74,29 @@ export class CustomHttpService {
     );
   }
 
+  public async put<T>(
+    url: string,
+    payload: any,
+    headers?: Header[],
+  ): Promise<T> {
+    return await lastValueFrom(
+      this.httpService
+        .put(url, payload, {
+          headers: this.createHeaders(headers),
+        })
+        .pipe(
+          map((response) => {
+            this.logMessage({ headers, url, payload: payload }, response);
+            return response;
+          }),
+          catchError((err) => {
+            this.logError({ headers, url, payload: payload }, err.response);
+            return of(err.response);
+          }),
+        ),
+    );
+  }
+
   private createHeaders(headers?: Header[]): object {
     const returnHeaders = {
       'Content-Type': 'application/json',

@@ -23,6 +23,7 @@ import {
   UnblockReasonEnum,
 } from './dto/intersolve-block.dto';
 import {
+  CreateCustomerResponseExtensionDto,
   IntersolveCreateCustomerResponseBodyDto,
   IntersolveLinkWalletCustomerResponseDto,
 } from './dto/intersolve-create-customer-response.dto';
@@ -605,5 +606,27 @@ export class IntersolveVisaService
       );
     }
     return result;
+  }
+
+  public async updateCustomerPhoneNumber(referenceId: string): Promise<any> {
+    const registration = await this.registrationRepository
+      .createQueryBuilder('registration')
+      .where('registration.referenceId = :referenceId', {
+        referenceId: referenceId,
+      })
+      .leftJoinAndSelect(
+        IntersolveVisaCustomerEntity,
+        'customer',
+        'customer.registrationId = registration.id',
+      )
+      .getRawOne();
+    const payload: CreateCustomerResponseExtensionDto = {
+      type: 'HOME',
+      value: registration.registration_phoneNumber,
+    };
+    return await this.intersolveVisaApiService.updateCustomerPhoneNumber(
+      registration.customer_holderId,
+      payload,
+    );
   }
 }
