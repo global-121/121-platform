@@ -3,7 +3,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
-import { PhysicalCard } from 'src/app/models/physical-card.model';
+import {
+  PhysicalCard,
+  PhysicalCardStatus,
+} from 'src/app/models/physical-card.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PhysicalCardPopupComponent } from '../physical-card-popup/physical-card-popup.component';
 import { RegistrationPageTableComponent } from '../registration-page-table/registration-page-table.component';
@@ -19,7 +22,7 @@ import { RegistrationPageTableComponent } from '../registration-page-table/regis
   ],
   selector: 'app-registration-physical-card-overview',
   templateUrl: './registration-physical-card-overview.component.html',
-  styleUrls: ['./registration-physical-card-overview.component.css'],
+  styleUrls: ['./registration-physical-card-overview.component.scss'],
 })
 export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   @Input()
@@ -32,6 +35,7 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   public currency: string;
 
   public physicalCards: PhysicalCard[];
+  public PhysicalCardStatus = PhysicalCardStatus;
 
   constructor(
     private programsService: ProgramsServiceApiService,

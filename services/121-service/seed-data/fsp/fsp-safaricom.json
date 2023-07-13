@@ -20,6 +20,19 @@
       "shortLabel": {
         "en": "Phone Number"
       }
+    },
+    {
+      "name": "nationalId",
+      "label": {
+        "en": "What is your ID Card Number?"
+      },
+      "answerType": "text",
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "phases": [],
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "National ID Number"
+      }
     }
   ]
 }

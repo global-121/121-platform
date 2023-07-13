@@ -14,12 +14,19 @@
         [detail-icon]="'card'"
         (click)="openCardDetails(card)"
       >
-        <ion-label>
+        <ion-label class="card">
           <code>{{ card.tokenCode }}</code>
         </ion-label>
-        <ion-label slot="end">
-          <strong>{{ card.status }}</strong>
-        </ion-label>
+        <ion-label class="ion-text-right"
+          ><ion-chip
+            [color]="
+              card?.status.toUpperCase() === PhysicalCardStatus.active
+                ? 'success'
+                : 'danger'
+            "
+            >{{ card.status }}</ion-chip
+          ></ion-label
+        >
       </ion-item>
     </ion-list>
   </ion-card-content>
