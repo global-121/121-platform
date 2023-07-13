@@ -20,6 +20,27 @@ on:
       - '!*.md'
 
 jobs:
+  lint_tests:
+    runs-on: ubuntu-latest
+    name: 'Lint test code'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: 'interfaces/tests/.node-version'
+          cache: 'npm'
+          cache-dependency-path: interfaces/tests/package-lock.json
+
+      - name: Installl test dependencies
+        working-directory: ./interfaces/tests
+        run: npm ci --no-audit --no-fund --omit=optional
+
+      - name: Lint test code
+        working-directory: ./interfaces/tests
+        run: npm run lint
+
   build_interface_aw:
     runs-on: ubuntu-latest
     name: 'Build Interface: AW-App'
