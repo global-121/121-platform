@@ -84,5 +84,14 @@
         }}</strong>
       </ion-label>
     </ion-item>
+    &nbsp;
+    <ion-button
+      fill="outline"
+      color="danger"
+      size="small"
+      shape="round"
+      (click)="toggleBlockButton(card)"
+      [innerHTML]="blockButtonLabel"
+    ></ion-button>
   </ion-list>
 </ion-content>

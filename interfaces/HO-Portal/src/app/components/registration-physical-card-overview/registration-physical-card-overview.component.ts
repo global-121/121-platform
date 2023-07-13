@@ -55,6 +55,7 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
       componentProps: {
         card,
         currency: this.currency,
+        programId: this.programId,
       },
     });
     await modal.present();
