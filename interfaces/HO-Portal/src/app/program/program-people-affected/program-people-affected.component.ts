@@ -57,6 +57,7 @@ import {
 } from '../../models/message.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { PastPaymentsService } from '../../services/past-payments.service';
+import { actionResult } from '../../shared/action-result';
 import { arrayToXlsx } from '../../shared/array-to-xlsx';
 import { SubmitPaymentProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
@@ -1279,10 +1280,15 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     const nrCheckboxes = this.countSelectable(this.allPeopleAffected);
     if (nrCheckboxes === 0) {
       this.resetBulkAction();
-      this.actionResult(
+      actionResult(
+        this.alertController,
+        this.translate,
         this.translate.instant(
           'page.program.program-people-affected.no-checkboxes',
         ),
+        true,
+        PubSubEvent.dataRegistrationChanged,
+        this.pubSub,
       );
     }
   }
@@ -1450,7 +1456,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
           return;
         }
 
-        await this.actionResult(
+        await actionResult(
+          this.alertController,
+          this.translate,
           `<p>${this.translate.instant(
             'page.program.program-people-affected.status-changed',
             {
@@ -1466,32 +1474,25 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
               <p>${this.translate.instant(
                 'page.program.program-people-affected.pa-moved-phase',
               )}</p>`,
+          true,
+          PubSubEvent.dataRegistrationChanged,
+          this.pubSub,
         );
       })
       .catch((error) => {
         console.log('Error:', error);
-        this.actionResult(error.error.errors.join('<br><br>'));
+        actionResult(
+          this.alertController,
+          this.translate,
+          error.error.errors.join('<br><br>'),
+          true,
+          PubSubEvent.dataRegistrationChanged,
+          this.pubSub,
+        );
       })
       .finally(() => {
         this.isInProgress = false;
       });
-  }
-
-  private async actionResult(resultMessage: string) {
-    const alert = await this.alertController.create({
-      message: resultMessage,
-      buttons: [
-        {
-          text: this.translate.instant('common.ok'),
-          handler: () => {
-            alert.dismiss(true);
-            this.pubSub.publish(PubSubEvent.dataRegistrationChanged);
-          },
-        },
-      ],
-    });
-
-    await alert.present();
   }
 
   private setTextFieldFilter(value: string) {
@@ -1517,7 +1518,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       .then(
         () => {
           row[column.prop] = value;
-          this.actionResult(this.translate.instant('common.update-success'));
+          actionResult(
+            this.alertController,
+            this.translate,
+            this.translate.instant('common.update-success'),
+            true,
+            PubSubEvent.dataRegistrationChanged,
+            this.pubSub,
+          );
         },
         (error) => {
           console.log('error: ', error);
@@ -1528,7 +1536,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
                 column.prop,
               ),
             });
-            this.actionResult(errorMessage);
+            actionResult(
+              this.alertController,
+              this.translate,
+              errorMessage,
+              true,
+              PubSubEvent.dataRegistrationChanged,
+              this.pubSub,
+            );
           }
         },
       );
@@ -1793,14 +1808,23 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         this.programId,
       );
 
-      this.actionResult(
+      actionResult(
+        this.alertController,
+        this.translate,
         this.translate.instant(
           'page.program.program-people-affected.export-list.success-message',
         ),
       );
     } catch (error) {
       console.log('error: ', error);
-      this.actionResult(this.translate.instant('common.export-error'));
+      actionResult(
+        this.alertController,
+        this.translate,
+        this.translate.instant('common.export-error'),
+        true,
+        PubSubEvent.dataRegistrationChanged,
+        this.pubSub,
+      );
     }
   }
 

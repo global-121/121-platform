@@ -6,6 +6,7 @@ import { ProgramsServiceApiService } from '../../../app/services/programs-servic
 import Permission from '../../auth/permission.enum';
 import { ActionType } from '../../models/actions.model';
 import { LatestActionService } from '../../services/latest-action.service';
+import { actionResult } from '../../shared/action-result';
 import { FilePickerProps } from '../../shared/file-picker-prompt/file-picker-prompt.component';
 
 @Component({
@@ -153,36 +154,23 @@ export class ImportFspReconciliationComponent implements OnChanges, OnInit {
               ) + '<br><br>';
           }
 
-          this.actionResult(resultMessage, true);
+          actionResult(
+            this.alertController,
+            this.translate,
+            resultMessage,
+            true,
+          );
         },
         (err) => {
           this.isInProgress = false;
           console.log('err: ', err);
-          this.actionResult(
+          actionResult(
+            this.alertController,
+            this.translate,
             this.translate.instant('common.import-error'),
             true,
           );
         },
       );
-  }
-
-  private async actionResult(resultMessage: string, refresh: boolean = false) {
-    const alert = await this.alertController.create({
-      cssClass: 'alert-no-max-height',
-      backdropDismiss: false,
-      message: resultMessage,
-      buttons: [
-        {
-          text: this.translate.instant('common.ok'),
-          handler: () => {
-            alert.dismiss();
-            if (refresh) {
-              window.location.reload();
-            }
-          },
-        },
-      ],
-    });
-    await alert.present();
   }
 }

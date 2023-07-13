@@ -5,6 +5,7 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { actionResult } from '../../shared/action-result';
 
 @Component({
   selector: 'app-disable-registration',
@@ -46,14 +47,18 @@ export class DisableRegistrationComponent implements OnInit {
       .then(
         (updatedProgram) => {
           if (updatedProgram.published) {
-            this.actionResult(
+            actionResult(
+              this.alertController,
+              this.translate,
               this.translate.instant(
                 'page.program.phases.registrationValidation.actionText-enabled-registrations',
               ),
             );
           }
           if (!updatedProgram.published) {
-            this.actionResult(
+            actionResult(
+              this.alertController,
+              this.translate,
               this.translate.instant(
                 'page.program.phases.registrationValidation.actionText-disabled-registrations',
               ),
@@ -69,7 +74,9 @@ export class DisableRegistrationComponent implements OnInit {
             errorMessage = error.error.message;
           }
 
-          this.actionResult(
+          actionResult(
+            this.alertController,
+            this.translate,
             this.translate.instant('common.update-error', {
               error: errorMessage,
             }),
@@ -78,22 +85,5 @@ export class DisableRegistrationComponent implements OnInit {
           this.publishedStatus = this.program.published;
         },
       );
-  }
-  private async actionResult(resultMessage: string) {
-    const alert = await this.alertController.create({
-      backdropDismiss: false,
-      message: resultMessage,
-      buttons: [
-        {
-          text: this.translate.instant('common.ok'),
-          handler: () => {
-            alert.dismiss(true);
-            return false;
-          },
-        },
-      ],
-    });
-
-    await alert.present();
   }
 }

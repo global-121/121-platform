@@ -1,13 +1,17 @@
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { PubSubEvent, PubSubService } from '../services/pub-sub.service';
 
 export async function actionResult(
   alertController: AlertController,
   translateService: TranslateService,
   resultMessage: string,
   refresh: boolean = false,
+  pubsubEvent?: PubSubEvent,
+  pubsubService?: PubSubService,
 ) {
   const alert = await alertController.create({
+    cssClass: 'alert-no-max-height',
     backdropDismiss: false,
     message: resultMessage,
     buttons: [
@@ -16,7 +20,11 @@ export async function actionResult(
         handler: () => {
           alert.dismiss(true);
           if (refresh) {
-            window.location.reload();
+            if (pubsubEvent) {
+              pubsubService.publish(pubsubEvent);
+            } else {
+              window.location.reload();
+            }
           }
           return false;
         },
