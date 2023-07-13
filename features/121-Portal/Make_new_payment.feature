@@ -243,7 +243,8 @@ Feature: Make a new payment
     Given the Person Affected has been imported as registered
     Given all PAs have correctly filled ("FullName", "Age", "FamilyMembers", "phoneNumber", "National ID number", "Language")
     Given age is not under 18
-    When payment instructions are successfully sent
+    Given PA requests valid transaction value
+    When payment is successfully requested 
     Then a successful payment appears in the payment column and the payment history popup
     And payment details are displayed with accordion open
 
@@ -251,7 +252,8 @@ Feature: Make a new payment
   Scenario: Unsuccessfully make a payment to a Person Affected with Financial Service provider "Safaricom" with missing data
     Given the Person Affected has been imported as registered
     Given an obligatory field is missing ("FullName", "Age", "FamilyMembers", "phoneNumber", "National ID number", "Language")
-    When payment instructions are sent
+    Given requested value is not valid
+    When payment is requested
     Then a failed payment appears for the PA with the missing data
     And error is displayed
     
