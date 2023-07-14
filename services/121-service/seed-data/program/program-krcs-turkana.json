@@ -1,0 +1,2875 @@
+{
+  "published": false,
+  "validation": false,
+  "phase": "registrationValidation",
+  "location": "Kenya",
+  "ngo": "KRCS",
+  "titlePortal": {
+    "en": "BHA - Turkana"
+  },
+  "titlePaApp": {
+    "en": "Cash Aid Program - Turkana"
+  },
+  "description": {
+    "en": "KRCS BHA Scale-up Program June 23 - June 24"
+  },
+  "startDate": "2023-06-01T12:00:00.000Z",
+  "endDate": "2024-06-30T12:00:00.000Z",
+  "currency": "KES",
+  "distributionFrequency": "month",
+  "distributionDuration": 6,
+  "fixedTransferValue": 12165,
+  "paymentAmountMultiplierFormula": null,
+  "financialServiceProviders": [
+    {
+      "fsp": "Safaricom"
+    }
+  ],
+  "targetNrRegistrations": 4000,
+  "tryWhatsAppFirst": false,
+  "meetingDocuments": {
+    "en": "Photo; National ID card"
+  },
+  "notifications": {
+    "en": {
+      "registered": "This is a message from KRCS.\n\nThank you for your registration. We will inform you later if you are included in this project or not."
+    }
+  },
+  "phoneNumberPlaceholder": "+254 000 000 000",
+  "programCustomAttributes": [],
+  "programQuestions": [
+    {
+      "name": "name",
+      "label": {
+        "en": "What is your first name?"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": ["registrationValidation", "inclusion", "payment"],
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "First Name"
+      }
+    },
+    {
+      "name": "gender",
+      "label": {
+        "en": "Gender"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male"
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Gender"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "age",
+      "label": {
+        "en": "Age"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Age"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "maritalStatus",
+      "label": {
+        "en": "Marital status"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "married",
+          "label": {
+            "en": "Married"
+          }
+        },
+        {
+          "option": "widowWidower",
+          "label": {
+            "en": "Widow/widower"
+          }
+        },
+        {
+          "option": "divorcedSeparated",
+          "label": {
+            "en": "Divorced/separated"
+          }
+        },
+        {
+          "option": "singleParent",
+          "label": {
+            "en": "Single parent (never married)"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Marital status of beneficiary"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "registrationType",
+      "label": {
+        "en": "Registration Type"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "self",
+          "label": {
+            "en": "Self"
+          }
+        },
+        {
+          "option": "alternate",
+          "label": {
+            "en": "Alternate"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion", "payment"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Registration Type"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "nationalId",
+      "label": {
+        "en": "ID number (MPESA)"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion", "payment"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "ID number (MPESA)"
+      },
+      "duplicateCheck": true,
+      "placeholder": null
+    },
+    {
+      "name": "nameAlternate",
+      "label": {
+        "en": "Name of Alternate"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion", "payment"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Name of Alternate"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "totalHH",
+      "label": {
+        "en": "Total household size"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion", "payment"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Total household size"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "totalSub5",
+      "label": {
+        "en": "Total household <5"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion", "payment"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Total household <5"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "totalAbove60",
+      "label": {
+        "en": "Total household >60"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion", "payment"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Total household >60"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "otherSocialAssistance",
+      "label": {
+        "en": "Receiving other Social Assistance?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Receiving other Social Assistance?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "county",
+      "label": {
+        "en": "County"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "County"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "subCounty",
+      "label": {
+        "en": "Sub County"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Sub County"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ward",
+      "label": {
+        "en": "Ward"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Ward"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "location",
+      "label": {
+        "en": "Location"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Location"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "subLocation",
+      "label": {
+        "en": "Sub location"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Sub location"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "village",
+      "label": {
+        "en": "Village"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Village"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "nearestSchool",
+      "label": {
+        "en": "Nearest school"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Nearest school"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "areaType",
+      "label": {
+        "en": "Area type"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "rural",
+          "label": {
+            "en": "Rural"
+          }
+        },
+        {
+          "option": "urban",
+          "label": {
+            "en": "Urban"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Area type"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "mainSourceLivelihood",
+      "label": {
+        "en": "Main livelihood sources"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "salary_from_formal_employment",
+          "label": {
+            "en": "Salary from formal employment"
+          }
+        },
+        {
+          "option": "wages_from_asual_work",
+          "label": {
+            "en": "Wages from casual work"
+          }
+        },
+        {
+          "option": "Small_business_eg_kiosk,_salon_etc",
+          "label": {
+            "en": "Small business eg kiosk, salon etc."
+          }
+        },
+        {
+          "option": "Farming_(cattle/crops)",
+          "label": {
+            "en": "Farming (cattle/crops)"
+          }
+        },
+        {
+          "option": "Juakali_artisan",
+          "label": {
+            "en": "Juakali artisan"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "What are the main livelihood sources for the household?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "mainSourceLivelihoodOther",
+      "label": {
+        "en": "If other, specify"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If other, specify"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "Male05",
+      "label": {
+        "en": "How many males 0 - 5 years?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many males 0 - 5 years?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "Female05",
+      "label": {
+        "en": "How many females 0 - 5 years?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many females 0 - 5 years?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "Male612",
+      "label": {
+        "en": "How many males 6 - 12 years?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many males 6 - 12 years?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "Female612",
+      "label": {
+        "en": "How many females 6 - 12 years?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many females 6 - 12 years?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "Male1324",
+      "label": {
+        "en": "How many males 13 - 24 years?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many males 13 - 24 years?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "Female1324",
+      "label": {
+        "en": "How many females 13 - 24 years?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many females 13 - 24 years?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "Male2559",
+      "label": {
+        "en": "How many males 25 - 59 years?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many males 25 - 59 years?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "Female2559",
+      "label": {
+        "en": "How many females 25 - 59 years?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many females 25 - 59 years?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "Male60",
+      "label": {
+        "en": "How many males over 60 years?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many males over 60 years?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "Female60",
+      "label": {
+        "en": "How many females over 60 years?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many females over 60 years?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "maleTotal",
+      "label": {
+        "en": "Total males in household"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Total males in household"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "femaleTotal",
+      "label": {
+        "en": "Total females in household"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Total females in household"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "householdMembersDisability",
+      "label": {
+        "en": "Do you have household members living with disability?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Do you have household members living with disability?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "disabilityAmount",
+      "label": {
+        "en": "If yes, how many?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If yes, how many?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "householdMembersChronicIllness",
+      "label": {
+        "en": "Do you have household members living with chronic illness?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Do you have household members living with chronic illness?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "chronicIllnessAmount",
+      "label": {
+        "en": "If yes, how many?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If yes, how many?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "householdMembersPregnantLactating",
+      "label": {
+        "en": "Do you have any pregnant or lactating woman in your household?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Do you have any pregnant or lactating woman in your household?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "pregnantLactatingAmount",
+      "label": {
+        "en": "If yes, how many?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If yes, how many?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "habitableRooms",
+      "label": {
+        "en": "How many habitable ROOMS does this dwelling unit contain?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many habitable ROOMS does this dwelling unit contain?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "tenureStatusOfDwelling",
+      "label": {
+        "en": "What is the TENURE status of the dwelling unit and/or surrounding terrain/land?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "Owner occupied",
+          "label": {
+            "en": "Owner occupied"
+          }
+        },
+        {
+          "option": "Rented/provided",
+          "label": {
+            "en": "Rented/provided"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "What is the TENURE status of the dwelling unit and/or surrounding terrain/land?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ownerOccupiedState",
+      "label": {
+        "en": "If owner occupied, state whether:"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "purchased",
+          "label": {
+            "en": "Purchased"
+          }
+        },
+        {
+          "option": "constructed",
+          "label": {
+            "en": "Constructed"
+          }
+        },
+        {
+          "option": "inherited",
+          "label": {
+            "en": "Inherited"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If owner occupied, state whether:"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ownerOccupiedStateOther",
+      "label": {
+        "en": "If other, specify"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If other, specify"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "rentedFrom",
+      "label": {
+        "en": "If rented or provided, stated whether:"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "government",
+          "label": {
+            "en": "Government"
+          }
+        },
+        {
+          "option": "local_authority",
+          "label": {
+            "en": "Local authority"
+          }
+        },
+        {
+          "option": "parastatal",
+          "label": {
+            "en": "Parastatal"
+          }
+        },
+        {
+          "option": "private_company",
+          "label": {
+            "en": "Private company"
+          }
+        },
+        {
+          "option": "individual",
+          "label": {
+            "en": "Individual"
+          }
+        },
+        {
+          "option": "faith_based_organization_ngo",
+          "label": {
+            "en": "Faith Based Organization/NGO"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If rented or provided, stated whether:"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "rentedFromOther",
+      "label": {
+        "en": "If other, specify"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If other, specify"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "constructionMaterialRoof",
+      "label": {
+        "en": "What is the main construction material used for the ROOF?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "Corrugated iron sheets",
+          "label": {
+            "en": "Corrugated iron sheets"
+          }
+        },
+        {
+          "option": "tiles",
+          "label": {
+            "en": "Tiles"
+          }
+        },
+        {
+          "option": "concrete",
+          "label": {
+            "en": "Concrete"
+          }
+        },
+        {
+          "option": "asbestos_sheets",
+          "label": {
+            "en": "Asbestos sheets"
+          }
+        },
+        {
+          "option": "grass",
+          "label": {
+            "en": "Grass"
+          }
+        },
+        {
+          "option": "makuti",
+          "label": {
+            "en": "Makuti"
+          }
+        },
+        {
+          "option": "tin",
+          "label": {
+            "en": "Tin"
+          }
+        },
+        {
+          "option": "Mud/dung",
+          "label": {
+            "en": "Mud/dung"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "What is the main construction material used for the ROOF?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifRoofOtherSpecify",
+      "label": {
+        "en": "If other ROOFING material state"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If other ROOFING material state"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "constructionMaterialWall",
+      "label": {
+        "en": "What is the main construction material used for the WALL?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "corrugated_iron_sheets",
+          "label": {
+            "en": "Stone"
+          }
+        },
+        {
+          "option": "tiles",
+          "label": {
+            "en": "Brick/Block"
+          }
+        },
+        {
+          "option": "concrete",
+          "label": {
+            "en": "Mud/Wood"
+          }
+        },
+        {
+          "option": "asbestos_sheets",
+          "label": {
+            "en": "Mud/Cement"
+          }
+        },
+        {
+          "option": "grass",
+          "label": {
+            "en": "Grass"
+          }
+        },
+        {
+          "option": "Wood only",
+          "label": {
+            "en": "Wood only"
+          }
+        },
+        {
+          "option": "Corrugated iron sheets",
+          "label": {
+            "en": "Corrugated iron sheets"
+          }
+        },
+        {
+          "option": "tin",
+          "label": {
+            "en": "Grass/Reeds"
+          }
+        },
+        {
+          "option": "tin",
+          "label": {
+            "en": "Tin"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "What is the main construction material used for the WALL?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifWallOtherSpecify",
+      "label": {
+        "en": "If other type of WALL state"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If other type of WALL state"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "constructionMaterialFloor",
+      "label": {
+        "en": "What is the main construction material used for the FLOOR"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "cement",
+          "label": {
+            "en": "Cement"
+          }
+        },
+        {
+          "option": "tiles",
+          "label": {
+            "en": "Tiles"
+          }
+        },
+        {
+          "option": "wood",
+          "label": {
+            "en": "Wood"
+          }
+        },
+        {
+          "option": "earth",
+          "label": {
+            "en": "Earth"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "What is the main construction material used for the FLOOR?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifFloorOtherSpecify",
+      "label": {
+        "en": "If other type of FLOOR state"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If other type of FLOOR state"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "dwellingRisk",
+      "label": {
+        "en": "The dwelling unit is at RISK of:"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "landslide",
+          "label": {
+            "en": "Landslide"
+          }
+        },
+        {
+          "option": "flooding",
+          "label": {
+            "en": "Flooding"
+          }
+        },
+        {
+          "option": "fire",
+          "label": {
+            "en": "Fire"
+          }
+        },
+        {
+          "option": "none",
+          "label": {
+            "en": "None"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "The dwelling unit is at RISK of:"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifRiskOtherSpecify",
+      "label": {
+        "en": "If other type of RISK, specify"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If other type of RISK, specify"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "mainSourceOfWater",
+      "label": {
+        "en": "What is the main source of WATER?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "pond",
+          "label": {
+            "en": "Pond"
+          }
+        },
+        {
+          "option": "dam",
+          "label": {
+            "en": "Dam"
+          }
+        },
+        {
+          "option": "lake",
+          "label": {
+            "en": "Lake"
+          }
+        },
+        {
+          "option": "Stream/river",
+          "label": {
+            "en": "Stream/river"
+          }
+        },
+        {
+          "option": "Protected spring water",
+          "label": {
+            "en": "Protected spring water"
+          }
+        },
+        {
+          "option": "Unprotected spring water",
+          "label": {
+            "en": "Unprotected spring water"
+          }
+        },
+        {
+          "option": "Protected well",
+          "label": {
+            "en": "Protected well"
+          }
+        },
+        {
+          "option": "Unprotected well",
+          "label": {
+            "en": "Unprotected well"
+          }
+        },
+        {
+          "option": "borehole",
+          "label": {
+            "en": "Borehole"
+          }
+        },
+        {
+          "option": "Piped into dwelling",
+          "label": {
+            "en": "Piped into dwelling"
+          }
+        },
+        {
+          "option": "piped",
+          "label": {
+            "en": "Piped"
+          }
+        },
+        {
+          "option": "jabia",
+          "label": {
+            "en": "Jabia"
+          }
+        },
+        {
+          "option": "Rain/harvested water",
+          "label": {
+            "en": "Rain/harvested water"
+          }
+        },
+        {
+          "option": "Water vendor",
+          "label": {
+            "en": "Water vendor"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "What is the main source of WATER?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifWaterOtherSpecify",
+      "label": {
+        "en": "Any other source of WATER, specify"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Any other source of WATER, specify"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "pigs",
+      "label": {
+        "en": "Does your household own pigs?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Does your household own pigs?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifYesPigs",
+      "label": {
+        "en": "If yes, how many?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If yes, how many?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "chicken",
+      "label": {
+        "en": "Does your household own chicken?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Does your household own chicken?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "mainModeHumanWasteDisposal",
+      "label": {
+        "en": "What is the MAIN mode of HUMAN WASTE Disposal?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "main_sewer",
+          "label": {
+            "en": "Main sewer"
+          }
+        },
+        {
+          "option": "septic_tank",
+          "label": {
+            "en": "Septic tank"
+          }
+        },
+        {
+          "option": "cess_pool",
+          "label": {
+            "en": "Cess pool/pit"
+          }
+        },
+        {
+          "option": "vip_pit_latrine",
+          "label": {
+            "en": "VIP pit latrine"
+          }
+        },
+        {
+          "option": "covered_pit_latrine",
+          "label": {
+            "en": "Covered pit latrine"
+          }
+        },
+        {
+          "option": "uncovered_pit_latrine",
+          "label": {
+            "en": "Uncovered pit latrine"
+          }
+        },
+        {
+          "option": "bucket_latrine",
+          "label": {
+            "en": "Bucket latrine"
+          }
+        },
+        {
+          "option": "bush_open_defecation",
+          "label": {
+            "en": "Bush/open defecation"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "What is the MAIN mode of HUMAN WASTE Disposal?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifHumanWasteOtherSpecify",
+      "label": {
+        "en": "If any other HUMAN WASTER Disposal mode, specify"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If any other HUMAN WASTER Disposal mode, specify"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "cookingFuel",
+      "label": {
+        "en": "What is the MAIN type of COOKING Fuel?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "electricity",
+          "label": {
+            "en": "Electricity"
+          }
+        },
+        {
+          "option": "paraffin",
+          "label": {
+            "en": "Paraffin"
+          }
+        },
+        {
+          "option": "mlpg__liquid_petroleum_gas",
+          "label": {
+            "en": "LPG (Liquid Petroleum Gas"
+          }
+        },
+        {
+          "option": "biogas",
+          "label": {
+            "en": "Biogas"
+          }
+        },
+        {
+          "option": "firewood",
+          "label": {
+            "en": "Firewood"
+          }
+        },
+        {
+          "option": "charcoal",
+          "label": {
+            "en": "Charcoal"
+          }
+        },
+        {
+          "option": "solar",
+          "label": {
+            "en": "Solar"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "What is the MAIN type of COOKING Fuel?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifFuelOtherSpecify",
+      "label": {
+        "en": "Specify other type of COOKING Fuel"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Specify other type of COOKING Fuel"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "Lighting",
+      "label": {
+        "en": "What is the MAIN type of LIGHTING?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "electricity",
+          "label": {
+            "en": "Electricity"
+          }
+        },
+        {
+          "option": "paraffin",
+          "label": {
+            "en": "Pressure lamp"
+          }
+        },
+        {
+          "option": "lpg__liquid_petroleum_gas",
+          "label": {
+            "en": "Lantern"
+          }
+        },
+        {
+          "option": "tinlamp",
+          "label": {
+            "en": "Tinlamp"
+          }
+        },
+        {
+          "option": "gaslamp",
+          "label": {
+            "en": "Gaslamp"
+          }
+        },
+        {
+          "option": "charcoal",
+          "label": {
+            "en": "Firewood/wood fuel"
+          }
+        },
+        {
+          "option": "solar",
+          "label": {
+            "en": "Solar"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "What is the MAIN type of LIGHTING?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifLightingOtherSpecify",
+      "label": {
+        "en": "Specify other type of LIGHTING"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Specify other type of LIGHTING"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "householdItems",
+      "label": {
+        "en": "Does your household OWN any of the following ITEMS?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "television__tv",
+          "label": {
+            "en": "Television (TV)"
+          }
+        },
+        {
+          "option": "motorcycle",
+          "label": {
+            "en": "Motorcycle"
+          }
+        },
+        {
+          "option": "tuk_tuk",
+          "label": {
+            "en": "Tuk tuk"
+          }
+        },
+        {
+          "option": "refrigirator",
+          "label": {
+            "en": "Refrigerator"
+          }
+        },
+        {
+          "option": "car",
+          "label": {
+            "en": "Car"
+          }
+        },
+        {
+          "option": "mobile_phone",
+          "label": {
+            "en": "Mobile phone"
+          }
+        },
+        {
+          "option": "bicycle",
+          "label": {
+            "en": "Bicycle"
+          }
+        },
+        {
+          "option": "none",
+          "label": {
+            "en": "None"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Does your household OWN any of the following ITEMS?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "excoticCattle",
+      "label": {
+        "en": "Does your household own exotic cattle?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Does your household own exotic cattle?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifYesExoticCattle",
+      "label": {
+        "en": "If yes, how many?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If yes, how many?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "IndigenousCattle",
+      "label": {
+        "en": "Does your household own indigenous cattle?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Does your household own indigenous cattle?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifYesIndigenousCattle",
+      "label": {
+        "en": "If yes, how many?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If yes, how many?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "sheep",
+      "label": {
+        "en": "Does your household own sheep?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Does your household own sheep?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifYesSheep",
+      "label": {
+        "en": "If yes, how many?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If yes, how many?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "goats",
+      "label": {
+        "en": "Does your household own goats?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Does your household own goats?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifYesGoats",
+      "label": {
+        "en": "If yes, how many?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If yes, how many?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "camels",
+      "label": {
+        "en": "Does your household own camels?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Does your household own camels?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifYesCamels",
+      "label": {
+        "en": "If yes, how many?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If yes, how many?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "donkeys",
+      "label": {
+        "en": "Does your household own donkeys?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Does your household own donkeys?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifYesDonkeys",
+      "label": {
+        "en": "If yes, how many?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If yes, how many?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifYesChicken",
+      "label": {
+        "en": "If yes, how many?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If yes, how many?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "howManyBirths",
+      "label": {
+        "en": "How many LIVE BIRTHS have occured in this household in the last 12 months (1 year)?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many LIVE BIRTHS have occured in this household in the last 12 months (1 year)?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "howManyDeaths",
+      "label": {
+        "en": "How many DEATHS have occured in this household in the last 12 months (1 year)?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many DEATHS have occured in this household in the last 12 months (1 year)?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "householdConditions",
+      "label": {
+        "en": "Currently, the CONDITIONS of your household are?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "poor",
+          "label": {
+            "en": "Poor"
+          }
+        },
+        {
+          "option": "fair",
+          "label": {
+            "en": "Fair"
+          }
+        },
+        {
+          "option": "good",
+          "label": {
+            "en": "Good"
+          }
+        },
+        {
+          "option": "very_good",
+          "label": {
+            "en": "Very good"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Currently, the CONDITIONS of your household are?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "skipMeals",
+      "label": {
+        "en": "In the past 7 days, did anyone in this household reduce the size of the meals or skip meals because of lack of money to buy enough food?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Did anyone reduce or skip meals?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "receivingBenefits",
+      "label": {
+        "en": "Is anyone in this household receiving benefits from any of the following National Safety Net Programmes?"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Receiving benefits from any National Safety Net Programmes?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifYesNameProgramme",
+      "label": {
+        "en": "If Yes, Name the PROGRAMME and AGENCY"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If Yes, Name the PROGRAMME and AGENCY"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "typeOfBenefit",
+      "label": {
+        "en": "What type of BENEFIT do you receive?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "cash",
+          "label": {
+            "en": "Cash"
+          }
+        },
+        {
+          "option": "in_kind",
+          "label": {
+            "en": "In-kind"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "What type of BENEFIT do you receive?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifOtherBenefit",
+      "label": {
+        "en": "If other, specify"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If other, specify"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifCash",
+      "label": {
+        "en": "If Cash, how much (in Ksh) was the benefit in the last receipt?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If Cash, how much (in Ksh) was the benefit in the last receipt?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifInKind",
+      "label": {
+        "en": "If in-kind specify the kind of benefit"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If in-kind specify the kind of benefit"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "feedbackOnRespons",
+      "label": {
+        "en": "Do you have any feedback on response we are currently carrying out?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Do you have any feedback on response we are currently carrying out?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifYesFeedback",
+      "label": {
+        "en": "If yes, share your feedback on response process"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "If yes, share your feedback on response process"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "whoDecidesHowToSpend",
+      "label": {
+        "en": "Who in your family decides on how to spend the money?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male_household_head",
+          "label": {
+            "en": "Male household head/husband"
+          }
+        },
+        {
+          "option": "female_household_head",
+          "label": {
+            "en": "Female household head/wife"
+          }
+        },
+        {
+          "option": "option_3",
+          "label": {
+            "en": "Both husband/wife"
+          }
+        },
+        {
+          "option": "all_family__including_children",
+          "label": {
+            "en": "All family (including children)"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Who in your family decides on how to spend the money?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "possibilityForConflicts",
+      "label": {
+        "en": "Are there posibility of conflicts in the households over who receives Cash?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Are there posibility of conflicts in the households over who receives Cash?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "genderedDivision",
+      "label": {
+        "en": "Do you have a gendered division of labour/roles, work, activities, responsibilities of women and men in this household?"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "no",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Do you have a gendered division of labour/roles, work, activities, responsibilities of women and men in this household?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "ifYesElaborate",
+      "label": {
+        "en": "Kindly elaborate"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Kindly elaborate"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "geopoint",
+      "label": {
+        "en": "GPS location"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": [],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "GPS location"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    }
+  ],
+  "aboutProgram": {
+    "en": "KRCS BHA Scale-up Program June 23 - June 24"
+  },
+  "fullnameNamingConvention": ["name"],
+  "languages": ["en"],
+  "enableMaxPayments": true
+}
