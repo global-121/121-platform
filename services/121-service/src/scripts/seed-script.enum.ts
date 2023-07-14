@@ -9,4 +9,5 @@ export enum SeedScript {
   nlrcMultiple = 'nlrc-multiple',
   ethJointResponse = 'eth-joint-response',
   krcs = 'krcs',
+  krcsMultiple = 'krcs-multiple',
 }

@@ -3,6 +3,7 @@ import { ApiOperation, ApiProperty, ApiQuery } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { DataSource } from 'typeorm';
 import SeedEthJointResponse from './seed-eth-joint-response';
+import SeedMultipleKRCS from './seed-multiple-krcs';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedProgramDrc } from './seed-program-drc';
@@ -61,6 +62,8 @@ export class ScriptsController {
       seed = new SeedEthJointResponse(this.dataSource);
     } else if (script == SeedScript.krcs) {
       seed = new SeedProgramKrcs(this.dataSource);
+    } else if (script == SeedScript.krcsMultiple) {
+      seed = new SeedMultipleKRCS(this.dataSource);
     } else {
       return res.status(HttpStatus.BAD_REQUEST).send('Not a known program');
     }
