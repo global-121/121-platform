@@ -353,7 +353,7 @@ export class IntersolveVisaService
         ],
         phoneNumbers: [
           {
-            type: 'HOME',
+            type: 'MOBILE',
             value: paymentDetails.phoneNumber,
           },
         ],
@@ -628,7 +628,7 @@ export class IntersolveVisaService
       await this.getVisaRegistrationAndCustomer(referenceId, programId);
 
     const payload: CreateCustomerResponseExtensionDto = {
-      type: 'HOME',
+      type: 'MOBILE',
       value: _registration.phoneNumber,
     };
     return await this.intersolveVisaApiService.updateCustomerPhoneNumber(
