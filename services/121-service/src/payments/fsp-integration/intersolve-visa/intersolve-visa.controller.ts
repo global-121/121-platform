@@ -118,6 +118,7 @@ export class IntersolveVisaController {
   ): Promise<IntersolveBlockWalletResponseDto> {
     return await this.intersolveVisaService.updateCustomerPhoneNumber(
       params.referenceId,
+      params.programId,
     );
   }
 }
