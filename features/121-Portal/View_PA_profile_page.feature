@@ -34,7 +34,7 @@ Feature: View PA profile page
     And it shows a row for each Visa debit card
     And this should contain multiple rows only if a PA has a reissued card for some reason
     And it shows per card the card number and the status of the card
-    And older cards should have status "Substituted"
+    And older cards should have status "Blocked"
     And the 1 current card can have status "Inactive", "Active" or "Blocked"
 
   Scenario: View Visa debit card details

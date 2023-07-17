@@ -100,7 +100,7 @@ export class IntersolveVisaApiMockService {
     response.data.data.token.balances = [
       {
         quantity: {
-          assetCode: 'EUR',
+          assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
           value: 0,
           reserved: 0,
         },
@@ -313,7 +313,7 @@ export class IntersolveVisaApiMockService {
         balances: [
           {
             quantity: {
-              assetCode: 'EUR',
+              assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
               value: 2200,
               reserved: 0,
             },
@@ -341,7 +341,7 @@ export class IntersolveVisaApiMockService {
         {
           id: 1,
           quantity: {
-            assetCode: 'EUR',
+            assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
             value: 3,
           },
           createdAt: new Date(
