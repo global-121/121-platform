@@ -199,16 +199,30 @@ export class ExportMetricsService {
     }
 
     for await (const row of rows) {
-      await this.addRegistrationStatussesToExport(row);
       if (addPaymentColumns) {
-        await this.addPaymentFieldsToExport(row, payments, transactions);
+        this.addPaymentFieldsToExport(row, payments, transactions);
       }
       row['id'] = row['registrationProgramId'];
       delete row['registrationProgramId'];
     }
     await this.replaceValueWithDropdownLabel(rows, relationOptions);
 
-    return this.filterUnusedColumn(rows);
+    const orderedObjects = [];
+    for await (const row of rows) {
+      // An object which will serve as the order template
+      const objectOrder = {
+        referenceId: null,
+        id: null,
+        status: null,
+        phoneNumber: null,
+        preferredLanguage: null,
+        financialserviceprovider: null,
+        paymentAmountMultiplier: null,
+      };
+      const addObjectResource = Object.assign(objectOrder, row);
+      orderedObjects.push(addObjectResource);
+    }
+    return this.filterUnusedColumn(orderedObjects);
   }
 
   private async getRelationOptionsForExport(
@@ -339,35 +353,18 @@ export class ExportMetricsService {
     return response;
   }
 
-  private async addRegistrationStatussesToExport(row: object): Promise<object> {
-    const registrationStatuses = Object.values(RegistrationStatusEnum).map(
-      (item) => String(item),
-    );
-    for await (const status of registrationStatuses) {
-      const dateField = this.registrationsService.getDateColumPerStatus(
-        RegistrationStatusEnum[status],
-      );
-      row[dateField] =
-        await this.registrationsService.getLatestDateForRegistrationStatus(
-          row['id'],
-          RegistrationStatusEnum[status],
-        );
-    }
-    return row;
-  }
-
-  private async addPaymentFieldsToExport(
+  private addPaymentFieldsToExport(
     row: object,
     payments: number[],
     transactions: any[],
-  ): Promise<void> {
+  ): void {
     const voucherStatuses = [
       IntersolveVoucherPayoutStatus.InitialMessage,
       IntersolveVoucherPayoutStatus.VoucherSent,
     ];
-    for await (const payment of payments) {
+    for (const payment of payments) {
       const transaction = {};
-      for await (const voucherStatus of voucherStatuses) {
+      for (const voucherStatus of voucherStatuses) {
         transaction[voucherStatus] = transactions.find(
           (t) =>
             t.payment === payment &&
@@ -419,7 +416,10 @@ export class ExportMetricsService {
         `registration."note"`,
       ])
       .andWhere({ programId: programId })
+      .distinctOn(['registration.registrationProgramId'])
       .orderBy('"registration"."registrationProgramId"', 'ASC');
+
+    this.registrationsService.addStatusChangeToQuery(query);
 
     const program = await this.programRepository.findOneBy({
       id: programId,

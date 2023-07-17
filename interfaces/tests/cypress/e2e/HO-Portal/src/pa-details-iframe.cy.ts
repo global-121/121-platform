@@ -1,5 +1,5 @@
-import programLVV from '../../../../../../services/121-service/seed-data/program/program-pilot-nl.json';
 import portalEn from '../../../../../../interfaces/HO-Portal/src/assets/i18n/en.json';
+import programLVV from '../../../../../../services/121-service/seed-data/program/program-pilot-nl.json';
 
 describe('PA details iframe page', () => {
   beforeEach(() => {
@@ -15,7 +15,8 @@ describe('PA details iframe page', () => {
       cy.fixture('registration-nlrc').then((fixture) => {
         cy.setHoPortal();
 
-        cy.wait(1000);
+        // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for iframe-contents to fully load/render
+        cy.wait(1_000);
 
         cy.visit(page.url, {
           qs: {

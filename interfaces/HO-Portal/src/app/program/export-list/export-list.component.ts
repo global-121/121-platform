@@ -6,6 +6,7 @@ import Permission from 'src/app/auth/permission.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { LatestActionService } from '../../services/latest-action.service';
+import { actionResult } from '../../shared/action-result';
 import { DuplicateAttributesProps } from '../../shared/confirm-prompt/confirm-prompt.component';
 
 @Component({
@@ -104,7 +105,9 @@ export class ExportListComponent implements OnChanges {
         (res) => {
           this.isInProgress = false;
           if (!res.data || res.data.length === 0) {
-            this.actionResult(
+            actionResult(
+              this.alertController,
+              this.translate,
               this.translate.instant('page.program.export-list.no-data'),
             );
             return;
@@ -114,17 +117,12 @@ export class ExportListComponent implements OnChanges {
         (err) => {
           this.isInProgress = false;
           console.log('err: ', err);
-          this.actionResult(this.translate.instant('common.export-error'));
+          actionResult(
+            this.alertController,
+            this.translate,
+            this.translate.instant('common.export-error'),
+          );
         },
       );
-  }
-
-  private async actionResult(resultMessage: string) {
-    const alert = await this.alertController.create({
-      backdropDismiss: false,
-      message: resultMessage,
-      buttons: [this.translate.instant('common.ok')],
-    });
-    await alert.present();
   }
 }

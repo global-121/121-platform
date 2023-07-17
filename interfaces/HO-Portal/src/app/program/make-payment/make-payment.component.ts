@@ -8,6 +8,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { environment } from 'src/environments/environment';
 import { FspIntegrationType } from '../../models/fsp.model';
 import { PastPaymentsService } from '../../services/past-payments.service';
+import { actionResult } from '../../shared/action-result';
 
 @Component({
   selector: 'app-make-payment',
@@ -140,41 +141,22 @@ export class MakePaymentComponent implements OnInit {
     if (response) {
       message += this.getPaymentResultText(response);
     }
-    this.actionResult(message, true);
+    actionResult(this.alertController, this.translate, message, true);
   }
 
   private onPaymentError(error) {
     if (error && error.error && error.error.errors) {
-      this.actionResult(error.error.errors);
+      actionResult(this.alertController, this.translate, error.error.errors);
     } else {
-      this.actionResult(
+      actionResult(
+        this.alertController,
+        this.translate,
         this.translate.instant(
           'page.program.program-payout.make-payment.error.generic',
         ),
       );
     }
     this.resetProgress();
-  }
-
-  private async actionResult(resultMessage: string, refresh: boolean = false) {
-    const alert = await this.alertController.create({
-      backdropDismiss: false,
-      message: resultMessage,
-      buttons: [
-        {
-          text: this.translate.instant('common.ok'),
-          handler: () => {
-            alert.dismiss(true);
-            if (refresh) {
-              window.location.reload();
-            }
-            return false;
-          },
-        },
-      ],
-    });
-
-    await alert.present();
   }
 
   public resetProgress(): void {

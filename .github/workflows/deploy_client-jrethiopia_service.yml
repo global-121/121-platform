@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # Also, see: https://github.com/Azure/actions-workflow-samples
 
-name: 'Deploy [dorcas-ethiopia] 121-service'
+name: 'Deploy [jrethiopia] 121-service'
 
 env:
   AZURE_WEBAPP_NAME: '121-dorcas-ethiopia'
@@ -24,7 +24,7 @@ on:
 jobs:
   build-and-deploy:
     name: Build and Deploy
-    environment: 'client-dorcas-ethiopia'
+    environment: 'client-jrethiopia'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

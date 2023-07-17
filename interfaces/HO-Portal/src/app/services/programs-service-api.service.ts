@@ -11,6 +11,7 @@ import { ImportType } from '../models/import-type.enum';
 import { Message } from '../models/message.model';
 import { PaymentData, TotalTransferAmounts } from '../models/payment.model';
 import { Note, Person } from '../models/person.model';
+import { PhysicalCard } from '../models/physical-card.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import {
   PaTableAttribute,
@@ -452,6 +453,32 @@ export class ProgramsServiceApiService {
         referenceId,
         payment,
       },
+    );
+  }
+
+  public async getPhysicalCards(
+    programId: number,
+    referenceId: string,
+  ): Promise<PhysicalCard[]> {
+    const response = await this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/fsp-integration/intersolve-visa/wallets?referenceId=${referenceId}`,
+    );
+
+    return !!response && !!response.wallets ? response.wallets : [];
+  }
+
+  public async toggleBlockWallet(
+    programId: number,
+    tokenCode: string,
+    block: boolean,
+  ): Promise<any> {
+    return await this.apiService.post(
+      environment.url_121_service_api,
+      `/programs/${programId}/fsp-integration/intersolve-visa/wallets/${tokenCode}/${
+        block ? 'block' : 'unblock'
+      }`,
+      {},
     );
   }
 

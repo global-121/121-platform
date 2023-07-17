@@ -8,4 +8,5 @@ export class SplitPaymentListDto {
   public ukrPoshtaPaPayment?: object[];
   public vodacashPaPayment?: object[];
   public belcashPaPayment?: object[];
+  public safaricomPaPayment?: object[];
 }

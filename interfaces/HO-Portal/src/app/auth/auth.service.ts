@@ -53,6 +53,10 @@ export class AuthService {
     if (!user) {
       user = this.getUserFromStorage();
     }
+    // Use this to simulate a user not having a certain permission
+    // user.permissions[programId] = user.permissions[programId].filter(
+    //   (p) => p !== Permission.FspDebitCardBLOCK,
+    // );
     return (
       user &&
       user.permissions &&

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import instancePilotDorcasEth from '../../seed-data/instance/instance-pilot-dorcas-eth.json';
+import instanceEthJointResponse from '../../seed-data/instance/instance-eth-joint-response.json';
 import programPilotEth from '../../seed-data/program/program-pilot-dorcas-eth.json';
 import { InterfaceScript } from './scripts.module';
 import { SeedHelper } from './seed-helper';
@@ -22,7 +22,7 @@ export class SeedProgramDorcasEth implements InterfaceScript {
     this.seedHelper.addDefaultUsers(program, true);
 
     // ***** CREATE INSTANCE *****
-    await this.seedHelper.addInstance(instancePilotDorcasEth);
+    await this.seedHelper.addInstance(instanceEthJointResponse);
   }
 }
 

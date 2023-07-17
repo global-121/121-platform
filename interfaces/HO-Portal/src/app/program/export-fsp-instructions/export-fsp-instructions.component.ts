@@ -6,6 +6,7 @@ import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { ActionType } from '../../models/actions.model';
 import { LatestActionService } from '../../services/latest-action.service';
+import { actionResult } from '../../shared/action-result';
 import { downloadAsCsv } from '../../shared/array-to-csv';
 import { arrayToXlsx as downloadAsXlsx } from '../../shared/array-to-xlsx';
 import { downloadAsXml } from '../../shared/string-to-xml';
@@ -95,7 +96,9 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
         (res) => {
           this.isInProgress = false;
           if (res.length < 1) {
-            this.actionResult(
+            actionResult(
+              this.alertController,
+              this.translate,
               this.translate.instant('page.program.export-list.no-data'),
             );
             return;
@@ -117,17 +120,12 @@ export class ExportFspInstructionsComponent implements OnChanges, OnInit {
         (err) => {
           this.isInProgress = false;
           console.log('err: ', err);
-          this.actionResult(this.translate.instant('common.export-error'));
+          actionResult(
+            this.alertController,
+            this.translate,
+            this.translate.instant('common.export-error'),
+          );
         },
       );
-  }
-
-  private async actionResult(resultMessage: string) {
-    const alert = await this.alertController.create({
-      backdropDismiss: false,
-      message: resultMessage,
-      buttons: [this.translate.instant('common.ok')],
-    });
-    await alert.present();
   }
 }

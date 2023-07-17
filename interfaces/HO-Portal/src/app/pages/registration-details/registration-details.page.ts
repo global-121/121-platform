@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { RegistrationPhysicalCardOverviewComponent } from 'src/app/components/registration-physical-card-overview/registration-physical-card-overview.component';
 import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
@@ -27,9 +28,10 @@ import { PubSubEvent, PubSubService } from '../../services/pub-sub.service';
     HeaderComponent,
     TranslateModule,
     ProgramNavigationComponent,
-    RegistrationPersonalInformationComponent,
-    RegistrationPaymentOverviewComponent,
     RegistrationActivityOverviewComponent,
+    RegistrationPaymentOverviewComponent,
+    RegistrationPersonalInformationComponent,
+    RegistrationPhysicalCardOverviewComponent,
   ],
   selector: 'app-registration-details',
   templateUrl: './registration-details.page.html',
@@ -47,8 +49,11 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
 
   public canViewPersonalData: boolean;
   private canViewPaymentData: boolean;
+  public canViewPhysicalCards: boolean;
 
   private pubSubSubscription: Subscription;
+
+  private physicalCardFsps = ['Intersolve-visa'];
 
   constructor(
     private route: ActivatedRoute,
@@ -135,5 +140,21 @@ export class RegistrationDetailsPage implements OnInit, OnDestroy {
       this.programId,
       [Permission.PaymentREAD, Permission.PaymentTransactionREAD],
     );
+    this.canViewPhysicalCards = this.authService.hasAllPermissions(
+      this.programId,
+      [
+        Permission.PaymentREAD,
+        Permission.PaymentTransactionREAD,
+        Permission.FspDebitCardREAD,
+      ],
+    );
+  }
+
+  public fspHasPhysicalCard(): boolean {
+    if (!this.person || !this.person.fsp) {
+      return false;
+    }
+
+    return this.physicalCardFsps.includes(this.person.fsp);
   }
 }

@@ -5,9 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.91.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.92.0...master)
 
 ---
+
+## [1.92.0](https://github.com/global-121/121-platform/compare/v1.91.0...v1.92.0) - 2023-07-13
+
+### Changed
+
+- Updated KRCS program
+- Safaricom FSP integration
+
+### Fixed
+
+- Export people affected button
 
 ## [1.91.0](https://github.com/global-121/121-platform/compare/v1.90.7...v1.91.0) - 2023-07-04
 

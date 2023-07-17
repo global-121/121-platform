@@ -11,6 +11,7 @@ import fspIntersolveVoucherPaper from '../../seed-data/fsp/fsp-intersolve-vouche
 import fspIntersolveVoucher from '../../seed-data/fsp/fsp-intersolve-voucher-whatsapp.json';
 import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
 import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
+import fspSafaricom from '../../seed-data/fsp/fsp-safaricom.json';
 import fspUkrPoshta from '../../seed-data/fsp/fsp-ukrposhta.json';
 import fspVodaCash from '../../seed-data/fsp/fsp-vodacash.json';
 import { PermissionEnum } from '../user/permission.enum';
@@ -79,6 +80,9 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
+          PermissionEnum.FspDebitCardREAD,
+          PermissionEnum.FspDebitCardBLOCK,
+          PermissionEnum.FspDebitCardUNBLOCK,
           // PermissionEnum.ProgramCREATE, Moved to admin
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramPhaseUPDATE,
@@ -103,6 +107,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
+          PermissionEnum.FspDebitCardREAD,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.RegistrationNotificationREAD,
           PermissionEnum.RegistrationPersonalREAD,
@@ -120,6 +125,9 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
+          PermissionEnum.FspDebitCardREAD,
+          PermissionEnum.FspDebitCardBLOCK,
+          PermissionEnum.FspDebitCardUNBLOCK,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.RegistrationAttributeUPDATE,
           PermissionEnum.RegistrationCREATE,
@@ -212,6 +220,7 @@ export class SeedInit implements InterfaceScript {
     await this.seedHelper.addFsp(fspMixedAttributes);
     await this.seedHelper.addFsp(fspNoAttributes);
     await this.seedHelper.addFsp(fspUkrPoshta);
+    await this.seedHelper.addFsp(fspSafaricom);
   }
 }
 

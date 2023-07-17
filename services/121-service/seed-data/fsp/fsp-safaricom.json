@@ -1,0 +1,38 @@
+{
+  "fsp": "Safaricom",
+  "integrationType": "api",
+  "fspDisplayNamePaApp": {
+    "en": "Safaricom"
+  },
+  "fspDisplayNamePortal": "Safaricom",
+  "questions": [
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Which phone number do you want to receive your mobile money transfer from Safaricom on? (With country-code. It should look like: <strong>+243 000 000 000</strong>)"
+      },
+      "placeholder": {
+        "en": "+243000000000"
+      },
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "answerType": "tel",
+      "options": null,
+      "shortLabel": {
+        "en": "Phone Number"
+      }
+    },
+    {
+      "name": "nationalId",
+      "label": {
+        "en": "What is your ID Card Number?"
+      },
+      "answerType": "text",
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "phases": [],
+      "editableInPortal": false,
+      "shortLabel": {
+        "en": "National ID Number"
+      }
+    }
+  ]
+}

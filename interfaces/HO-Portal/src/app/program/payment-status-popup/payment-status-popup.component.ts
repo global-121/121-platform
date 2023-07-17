@@ -14,6 +14,7 @@ import {
 } from 'src/app/models/transaction-custom-data';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
+import { actionResult } from '../../shared/action-result';
 import { StatusEnum } from './../../models/status.enum';
 
 @Component({
@@ -228,12 +229,12 @@ export class PaymentStatusPopupComponent implements OnInit {
             },
           );
         }
-        this.actionResult(message, true);
+        actionResult(this.alertController, this.translate, message, true);
       },
       (err) => {
         console.log('err: ', err);
         if (err && err.error && err.error.error) {
-          this.actionResult(err.error.errors);
+          actionResult(this.alertController, this.translate, err.error.errors);
         }
         this.isInProgress = false;
       },
@@ -262,12 +263,12 @@ export class PaymentStatusPopupComponent implements OnInit {
               ),
             },
           );
-          this.actionResult(message);
+          actionResult(this.alertController, this.translate, message);
         },
         (err) => {
           console.log('err: ', err);
           if (err && err.error && err.error.error) {
-            this.actionResult(err.error.error);
+            actionResult(this.alertController, this.translate, err.error.error);
           }
           this.isInProgress = false;
         },
@@ -289,26 +290,5 @@ export class PaymentStatusPopupComponent implements OnInit {
       symbol,
       this.payoutDetails.currency,
     );
-  }
-
-  private async actionResult(resultMessage: string, refresh: boolean = false) {
-    const alert = await this.alertController.create({
-      backdropDismiss: false,
-      message: resultMessage,
-      buttons: [
-        {
-          text: this.translate.instant('common.ok'),
-          handler: () => {
-            alert.dismiss(true);
-            if (refresh) {
-              window.location.reload();
-            }
-            return false;
-          },
-        },
-      ],
-    });
-
-    await alert.present();
   }
 }

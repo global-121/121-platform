@@ -1,11 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
-import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
+import {
+  IntersolveBlockWalletDto,
+  IntersolveBlockWalletResponseDto,
+} from './dto/intersolve-block.dto';
+import {
+  CreateCustomerResponseExtensionDto,
+  IntersolveCreateCustomerResponseBodyDto,
+} from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveCreateDebitCardDto } from './dto/intersolve-create-debit-card.dto';
 import { IntersolveCreateWalletResponseDto } from './dto/intersolve-create-wallet-response.dto';
 import { IntersolveCreateWalletDto } from './dto/intersolve-create-wallet.dto';
+import { IntersolveGetWalletResponseDto } from './dto/intersolve-get-wallet-details.dto';
+import { GetTransactionsDetailsResponseDto } from './dto/intersolve-get-wallet-transactions.dto';
 import { IntersolveLoadResponseDto } from './dto/intersolve-load-response.dto';
 import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service';
@@ -76,7 +85,7 @@ export class IntersolveVisaApiService {
     } else {
       const authToken = await this.getAuthenticationToken();
       const brandCode = process.env.INTERSOLVE_VISA_BRAND_CODE;
-      const url = `${intersolveVisaApiUrl}/pointofsale/v1/brand-types/${brandCode}/issue-token`;
+      const url = `${intersolveVisaApiUrl}/pointofsale/v1/brand-types/${brandCode}/issue-token?includeBalances=true`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
@@ -86,6 +95,43 @@ export class IntersolveVisaApiService {
         payload,
         headers,
       );
+    }
+  }
+
+  public async getWallet(
+    tokenCode: string,
+  ): Promise<IntersolveGetWalletResponseDto> {
+    if (process.env.MOCK_INTERSOLVE) {
+      return await this.intersolveVisaApiMockService.getWalletMock(tokenCode);
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}?includeBalances=true`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
+      return await this.httpService.get<IntersolveGetWalletResponseDto>(
+        url,
+        headers,
+      );
+    }
+  }
+
+  public async getTransactions(
+    tokenCode: string,
+  ): Promise<GetTransactionsDetailsResponseDto> {
+    if (process.env.MOCK_INTERSOLVE) {
+      return await this.intersolveVisaApiMockService.getTransactionsMock(
+        tokenCode,
+      );
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/wallet/v1/tokens/${tokenCode}/transactions`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
+      return await this.httpService.get<any>(url, headers);
     }
   }
 
@@ -152,5 +198,54 @@ export class IntersolveVisaApiService {
         headers,
       );
     }
+  }
+
+  public async toggleBlockWallet(
+    tokenCode: string,
+    payload: IntersolveBlockWalletDto,
+    block: boolean,
+  ): Promise<IntersolveBlockWalletResponseDto> {
+    if (process.env.MOCK_INTERSOLVE) {
+      return await this.intersolveVisaApiMockService.toggleBlockWalletMock();
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/${
+        block ? 'block' : 'unblock'
+      }`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
+      const blockResult = await this.httpService.post<any>(
+        url,
+        payload,
+        headers,
+      );
+      const result: IntersolveBlockWalletResponseDto = {
+        status: blockResult.status,
+        statusText: blockResult.statusText,
+        data: blockResult.data,
+      };
+      return result;
+    }
+  }
+
+  public async updateCustomerPhoneNumber(
+    holderId: string,
+    payload: CreateCustomerResponseExtensionDto,
+  ): Promise<any> {
+    const authToken = await this.getAuthenticationToken();
+    const url = `${intersolveVisaApiUrl}/customer/v1/customers/${holderId}/contact-info/phone-numbers`;
+    const headers = [
+      { name: 'Authorization', value: `Bearer ${authToken}` },
+      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+    ];
+    const rawResult = await this.httpService.put<any>(url, payload, headers);
+    const result = {
+      status: rawResult.status,
+      statusText: rawResult.statusText,
+      data: rawResult.data,
+    };
+    return result;
   }
 }

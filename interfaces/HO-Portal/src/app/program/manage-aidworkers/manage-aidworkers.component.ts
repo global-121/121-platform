@@ -7,6 +7,7 @@ import { DateFormat } from 'src/app/enums/date-format.enum';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
+import { actionResult } from '../../shared/action-result';
 
 @Component({
   selector: 'app-manage-aidworkers',
@@ -126,7 +127,7 @@ export class ManageAidworkersComponent implements OnInit {
           } else {
             message = this.translate.instant('common.unknown-error');
           }
-          this.actionResult(message);
+          actionResult(this.alertController, this.translate, message);
         },
       );
   }
@@ -145,18 +146,8 @@ export class ManageAidworkersComponent implements OnInit {
         password: this.passwordAidworker,
       },
     );
-    this.actionResult(message);
+    actionResult(this.alertController, this.translate, message);
     this.emailAidworker = undefined;
     this.passwordAidworker = undefined;
-  }
-
-  private async actionResult(resultMessage: string) {
-    const alert = await this.alertController.create({
-      backdropDismiss: false,
-      message: resultMessage,
-      buttons: [this.translate.instant('common.ok')],
-    });
-
-    await alert.present();
   }
 }

@@ -11,6 +11,7 @@ import { IntersolveVisaApiMockService } from './intersolve-visa-api-mock.service
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
+import { IntersolveVisaController } from './intersolve-visa.controller';
 import { IntersolveVisaService } from './intersolve-visa.service';
 
 @Module({
@@ -32,6 +33,7 @@ import { IntersolveVisaService } from './intersolve-visa.service';
     IntersolveVisaApiMockService,
     CustomHttpService,
   ],
+  controllers: [IntersolveVisaController],
   exports: [
     IntersolveVisaService,
     IntersolveVisaApiService,
