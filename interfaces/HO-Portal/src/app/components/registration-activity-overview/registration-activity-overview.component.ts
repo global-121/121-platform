@@ -163,9 +163,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
               'page.program.program-people-affected.transaction.' +
                 payment.status,
             ),
-            sentDate: new Date(payment.paymentDate),
-            amount: payment.amount,
-            fsp: this.person.fsp,
           }),
         });
       }
