@@ -111,7 +111,8 @@ Using EspoCRM
 - [Add and Update program custom attribute](Admin-user/Add_And_Update_program_custom_attribute.feature)
 - [Update program question](Admin-user/Update_program_question.feature)
 - [Update program](Admin-user/Update_program.feature)
-- [Export vouchers to cancel](Admin-user/Export_vouchers_to_cancel.feature)
+- [Export Intersolve vouchers to cancel](Admin-user/Export_vouchers_to_cancel.feature)
+- [Update Intersolve Visa phonenumber](Admin-user/Update_Phone_Number_Intersolve.feature)
 - Update Financial Service Provider (not chosen FSP, but entity itself)
 - Create/Update/Delete FSP attributes
 - Update instance

@@ -23,6 +23,7 @@ import {
   UnblockReasonEnum,
 } from './dto/intersolve-block.dto';
 import {
+  CreateCustomerResponseExtensionDto,
   IntersolveCreateCustomerResponseBodyDto,
   IntersolveLinkWalletCustomerResponseDto,
 } from './dto/intersolve-create-customer-response.dto';
@@ -352,7 +353,7 @@ export class IntersolveVisaService
         ],
         phoneNumbers: [
           {
-            type: 'HOME',
+            type: 'MOBILE',
             value: paymentDetails.phoneNumber,
           },
         ],
@@ -495,23 +496,8 @@ export class IntersolveVisaService
     referenceId: string,
     programId: number,
   ): Promise<GetWalletsResponseDto> {
-    const registration = await this.registrationRepository.findOne({
-      where: { referenceId: referenceId, programId: programId },
-      relations: ['fsp'],
-    });
-    const visaCustomer = await this.getCustomerEntity(registration.id);
-    if (!registration) {
-      const errors = `No registration found with referenceId ${referenceId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    if (registration.fsp.fsp !== FspName.intersolveVisa) {
-      const errors = `Registration with referenceId ${referenceId} is not an Intersolve Visa registration`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    if (!visaCustomer) {
-      const errors = `No visa customer available yet for PA with this referenceId ${referenceId}`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    const { _registration, visaCustomer } =
+      await this.getVisaRegistrationAndCustomer(referenceId, programId);
 
     const walletsResponse = new GetWalletsResponseDto();
     walletsResponse.wallets = [];
@@ -556,6 +542,33 @@ export class IntersolveVisaService
       walletsResponse.wallets.push(walletDetailsResponse);
     }
     return walletsResponse;
+  }
+
+  private async getVisaRegistrationAndCustomer(
+    referenceId: string,
+    programId: number,
+  ): Promise<{
+    _registration: RegistrationEntity;
+    visaCustomer: IntersolveVisaCustomerEntity;
+  }> {
+    const registration = await this.registrationRepository.findOne({
+      where: { referenceId: referenceId, programId: programId },
+      relations: ['fsp'],
+    });
+    const visaCustomer = await this.getCustomerEntity(registration.id);
+    if (!registration) {
+      const errors = `No registration found with referenceId ${referenceId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    if (registration.fsp.fsp !== FspName.intersolveVisa) {
+      const errors = `Registration with referenceId ${referenceId} is not an Intersolve Visa registration`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    if (!visaCustomer) {
+      const errors = `No visa customer available yet for PA with this referenceId ${referenceId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    return { _registration: registration, visaCustomer };
   }
 
   private intersolveTo121WalletStatus(
@@ -605,5 +618,22 @@ export class IntersolveVisaService
       );
     }
     return result;
+  }
+
+  public async updateCustomerPhoneNumber(
+    referenceId: string,
+    programId: number,
+  ): Promise<any> {
+    const { _registration, visaCustomer } =
+      await this.getVisaRegistrationAndCustomer(referenceId, programId);
+
+    const payload: CreateCustomerResponseExtensionDto = {
+      type: 'MOBILE',
+      value: _registration.phoneNumber,
+    };
+    return await this.intersolveVisaApiService.updateCustomerPhoneNumber(
+      visaCustomer.holderId,
+      payload,
+    );
   }
 }

@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiOperation,
   ApiParam,
@@ -6,6 +14,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Admin } from '../../../guards/admin.decorator';
 import { AdminAuthGuard } from '../../../guards/admin.guard';
 import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionsGuard } from '../../../guards/permissions.guard';
@@ -87,6 +96,29 @@ export class IntersolveVisaController {
     return await this.intersolveVisaService.toggleBlockWallet(
       params.tokenCode,
       false,
+    );
+  }
+
+  @Admin()
+  @ApiOperation({
+    summary:
+      'Update Intersolve Visa customer phone number to same as 121 phone number',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiResponse({
+    status: 200,
+    description: 'Phone number updated',
+  })
+  @Put(
+    'programs/:programId/fsp-integration/intersolve-visa/customers/:referenceId',
+  )
+  public async updateCustomerPhoneNumber(
+    @Param() params,
+  ): Promise<IntersolveBlockWalletResponseDto> {
+    return await this.intersolveVisaService.updateCustomerPhoneNumber(
+      params.referenceId,
+      params.programId,
     );
   }
 }

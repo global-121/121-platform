@@ -5,7 +5,10 @@ import {
   IntersolveBlockWalletDto,
   IntersolveBlockWalletResponseDto,
 } from './dto/intersolve-block.dto';
-import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
+import {
+  CreateCustomerResponseExtensionDto,
+  IntersolveCreateCustomerResponseBodyDto,
+} from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveCreateDebitCardDto } from './dto/intersolve-create-debit-card.dto';
 import { IntersolveCreateWalletResponseDto } from './dto/intersolve-create-wallet-response.dto';
@@ -117,7 +120,6 @@ export class IntersolveVisaApiService {
   public async getTransactions(
     tokenCode: string,
   ): Promise<GetTransactionsDetailsResponseDto> {
-    // TO DO: implement mock
     if (process.env.MOCK_INTERSOLVE) {
       return await this.intersolveVisaApiMockService.getTransactionsMock(
         tokenCode,
@@ -226,5 +228,24 @@ export class IntersolveVisaApiService {
       };
       return result;
     }
+  }
+
+  public async updateCustomerPhoneNumber(
+    holderId: string,
+    payload: CreateCustomerResponseExtensionDto,
+  ): Promise<any> {
+    const authToken = await this.getAuthenticationToken();
+    const url = `${intersolveVisaApiUrl}/customer/v1/customers/${holderId}/contact-info/phone-numbers`;
+    const headers = [
+      { name: 'Authorization', value: `Bearer ${authToken}` },
+      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+    ];
+    const rawResult = await this.httpService.put<any>(url, payload, headers);
+    const result = {
+      status: rawResult.status,
+      statusText: rawResult.statusText,
+      data: rawResult.data,
+    };
+    return result;
   }
 }

@@ -48,7 +48,7 @@ class CreateCustomerResponseIndividualDto {
   public initials: string;
 }
 
-class CreateCustomerResponseExtensionDto {
+export class CreateCustomerResponseExtensionDto {
   public type: string;
   public value: string;
 }
