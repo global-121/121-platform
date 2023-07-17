@@ -619,7 +619,21 @@ export class IntersolveVisaService
         'customer',
         'customer.registrationId = registration.id',
       )
+      .leftJoinAndSelect('registration.fsp', 'fsp')
       .getRawOne();
+    if (!registration) {
+      const errors = `No registration found with referenceId ${referenceId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    if (registration.fsp_fsp !== FspName.intersolveVisa) {
+      const errors = `Registration with referenceId ${referenceId} is not an Intersolve Visa registration`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    if (!registration.customer_id) {
+      const errors = `No visa customer available yet for PA with this referenceId ${referenceId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
     const payload: CreateCustomerResponseExtensionDto = {
       type: 'HOME',
       value: registration.registration_phoneNumber,
