@@ -14,6 +14,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Admin } from '../../../guards/admin.decorator';
 import { AdminAuthGuard } from '../../../guards/admin.guard';
 import { Permissions } from '../../../guards/permissions.decorator';
 import { PermissionsGuard } from '../../../guards/permissions.guard';
@@ -98,7 +99,7 @@ export class IntersolveVisaController {
     );
   }
 
-  // TO DO: set right permission
+  @Admin()
   @ApiOperation({
     summary:
       'Update Intersolve Visa customer phone number to same as 121 phone number',
