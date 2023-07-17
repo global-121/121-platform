@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ORMConfig } from '../../ormconfig';
 import { ScriptsController } from './scripts.controller';
+import SeedEthJointResponse from './seed-eth-joint-response';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
 import { SeedProd } from './seed-prod';
 import { SeedDemoProgram } from './seed-program-demo';
-import SeedProgramDorcasEth from './seed-program-dorcas-eth';
 import SeedProgramEth from './seed-program-eth';
 import { SeedProgramKrcs } from './seed-program-krcs';
 import SeedProgramLbn from './seed-program-lbn';
@@ -26,7 +26,7 @@ import { SeedProgramValidation } from './seed-program-validation';
     SeedProgramEth,
     SeedProgramLbn,
     SeedDemoProgram,
-    SeedProgramDorcasEth,
+    SeedEthJointResponse,
     SeedProgramKrcs,
   ],
   controllers: [ScriptsController],
