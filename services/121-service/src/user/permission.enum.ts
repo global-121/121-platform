@@ -36,6 +36,11 @@ export enum PermissionEnum {
   // Payment(s) - Voucher(s)
   PaymentVoucherREAD = 'payment:voucher.read',
 
+  // Fsp integration - Debit card(s)
+  FspDebitCardREAD = 'fsp:debit-card.read',
+  FspDebitCardBLOCK = 'fsp:debit-card.block',
+  FspDebitCardUNBLOCK = 'fsp:debit-card.unblock',
+
   // Registration(s)
   RegistrationREAD = 'registration.read',
   RegistrationCREATE = 'registration.create',

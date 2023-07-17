@@ -28,7 +28,7 @@ Feature: View PA profile page
   Scenario: View Visa debit cards table
     Given the PA has FSP 'Intersolve Visa debit card'
     Given the PA has at least 1 Visa debit card (typically through at least 1 payment with this FSP)
-    Given the user has the "PaymentTransactionREAD" permission
+    Given the user has the "FspDebitCardREAD" permission
     When the user opens the PA profile page
     Then the user sees the "Visa debit cards" table on the left below the "Personal information" table
     And it shows a row for each Visa debit card
@@ -40,12 +40,44 @@ Feature: View PA profile page
   Scenario: View Visa debit card details
     Given the PA has FSP 'Intersolve Visa debit card'
     Given the PA has at least 1 Visa debit card (typically through at least 1 payment with this FSP)
-    Given the user has the "PaymentTransactionREAD" permission
+    Given the user has the "FspDebitCardREAD" permission
     When clicking one row in the Visa debit card table
     Then a popup opens
     And it shows the card number in the title
     And it shows the card Status again
     And it shows the last used date
+    And it shows a button to block/unblock the card depending on the current status of the card
+    And is has red text and outline in both cases
+
+  Scenario: Succesfully block Visa debit card
+    Given the user has opened the Visa debit card details popup
+    Given the card is currently not blocked
+    Given the user has the "FspDebitCardBLOCK" permission and thereby the button is enabled
+    When the user clicks on the "Block card" button
+    Then the card is blocked with Intersolve and in 121 database
+    And a success alert is shown
+    And - after closing the alert and subsequent refresh - the card's status in the table is "Blocked"
+
+  Scenario: Succesfully unblock Visa debit card
+    Given the user has opened the Visa debit card details popup
+    Given the card is currently blocked
+    Given the user has the "FspDebitCardUNBLOCK" permission and thereby the button is enabled
+    When the user clicks on the "Unblock card" button
+    Then the card is unblocked with Intersolve and in 121 database
+    And a success alert is shown
+    And - after closing the alert and subsequent refresh - the card's status in the table is now no longer "Blocked"
+
+  Scenario: Unsuccesfully block Visa debit card
+    Given the user has opened the Visa debit card details popup
+    Given the user has the "FspDebitCardBLOCK" permission and thereby the button is enabled
+    Given the card is currently not blocked with Intersolve but is somehow marked as blocked in the 121 database
+    When the user clicks on the "Block card" button
+    Then the call to Intersolve fails
+    And an error alert is shown that the token is already blocked
+    And the blocked status in the 121 database is updated so the situation is aligned again
+
+  Scenario: Unsuccesfully unblock Visa debit card
+  -- Similar to "Unsuccesfully block Visa debit card"
 
   Scenario: View Payment overview table
     Given the PA's status is either "included", "completed", "inclusionEnded", or "rejected"

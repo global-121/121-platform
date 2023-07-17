@@ -19,6 +19,7 @@ import { StatusEnum } from 'src/app/models/status.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { FspIntegrationType } from '../../models/fsp.model';
 import { PastPaymentsService } from '../../services/past-payments.service';
+import { actionResult } from '../../shared/action-result';
 
 @Component({
   selector: 'app-program-payout',
@@ -326,35 +327,19 @@ export class ProgramPayoutComponent implements OnInit {
               },
             );
           }
-          this.actionResult(message, true);
+          actionResult(this.alertController, this.translate, message, true);
         },
         (err) => {
           console.log('err: ', err);
           if (err && err.error && err.error.error) {
-            this.actionResult(err.error.errors);
+            actionResult(
+              this.alertController,
+              this.translate,
+              err.error.errors,
+            );
           }
         },
       );
-  }
-
-  private async actionResult(resultMessage: string, refresh: boolean = false) {
-    const alert = await this.alertController.create({
-      backdropDismiss: false,
-      message: resultMessage,
-      buttons: [
-        {
-          text: this.translate.instant('common.ok'),
-          handler: () => {
-            alert.dismiss(true);
-            if (refresh) {
-              window.location.reload();
-            }
-            return false;
-          },
-        },
-      ],
-    });
-    await alert.present();
   }
 
   private checkPhaseReady() {

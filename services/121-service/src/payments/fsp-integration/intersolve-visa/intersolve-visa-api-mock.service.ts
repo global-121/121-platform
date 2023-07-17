@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
+import { IntersolveBlockWalletResponseDto } from './dto/intersolve-block.dto';
 import {
   IntersolveCreateCustomerResponseBodyDto,
   IntersolveLinkWalletCustomerResponseDto,
@@ -365,5 +366,17 @@ export class IntersolveVisaApiMockService {
       ],
     };
     return Promise.resolve(response);
+  }
+
+  public async toggleBlockWalletMock(): Promise<IntersolveBlockWalletResponseDto> {
+    await this.waitForRandomDelay();
+
+    // for the response it does not matter if it's blocked or unblocked
+    const res: IntersolveBlockWalletResponseDto = {
+      status: 204,
+      statusText: 'No Content',
+      data: {},
+    };
+    return res;
   }
 }

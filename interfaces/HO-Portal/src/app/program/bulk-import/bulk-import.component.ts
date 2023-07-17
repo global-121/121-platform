@@ -9,6 +9,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { FilePickerProps } from 'src/app/shared/file-picker-prompt/file-picker-prompt.component';
 import { environment } from 'src/environments/environment';
 import RegistrationStatus from '../../enums/registration-status.enum';
+import { actionResult } from '../../shared/action-result';
 import { downloadAsCsv } from '../../shared/array-to-csv';
 
 export class AggregateImportResult {
@@ -149,7 +150,7 @@ export class BulkImportComponent implements OnInit {
           );
         }
 
-        this.actionResult(resultMessage, true);
+        actionResult(this.alertController, this.translate, resultMessage, true);
 
         if (destination === RegistrationStatus.imported) {
           this.exportCSV(response.importResult);
@@ -158,32 +159,14 @@ export class BulkImportComponent implements OnInit {
       .catch((err) => {
         this.isInProgress = false;
         console.log('err: ', err);
-        this.actionResult(
+        actionResult(
+          this.alertController,
+          this.translate,
           this.translate.instant('page.program.bulk-import.import-error', {
             specific: err.error[0] ? JSON.stringify(err.error[0]) : '-',
           }),
         );
       });
-  }
-
-  private async actionResult(resultMessage: string, refresh: boolean = false) {
-    const alert = await this.alertController.create({
-      backdropDismiss: false,
-      message: resultMessage,
-      buttons: [
-        {
-          text: this.translate.instant('common.ok'),
-          handler: () => {
-            alert.dismiss(true);
-            if (refresh) {
-              window.location.reload();
-            }
-            return false;
-          },
-        },
-      ],
-    });
-    await alert.present();
   }
 
   private async getLatestActionMessage(

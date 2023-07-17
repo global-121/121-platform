@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
+import { actionResult } from '../../shared/action-result';
 
 @Component({
   selector: 'app-update-fsp',
@@ -83,7 +84,9 @@ export class UpdateFspComponent implements OnInit {
       .then(
         () => {
           this.inProgress = false;
-          this.actionResult(
+          actionResult(
+            this.alertController,
+            this.translate,
             this.translate.instant('common.update-success'),
             true,
           );
@@ -95,7 +98,7 @@ export class UpdateFspComponent implements OnInit {
             const errorMessage = this.translate.instant('common.update-error', {
               error: this.errorHandlerService.formatErrors(error),
             });
-            this.actionResult(errorMessage);
+            actionResult(this.alertController, this.translate, errorMessage);
           }
         },
       );
@@ -152,26 +155,5 @@ export class UpdateFspComponent implements OnInit {
     }
 
     this.enableUpdateBtn = true;
-  }
-
-  private async actionResult(resultMessage: string, refresh: boolean = false) {
-    const alert = await this.alertController.create({
-      backdropDismiss: false,
-      message: resultMessage,
-      buttons: [
-        {
-          text: this.translate.instant('common.ok'),
-          handler: () => {
-            alert.dismiss(true);
-            if (refresh) {
-              window.location.reload();
-            }
-            return false;
-          },
-        },
-      ],
-    });
-
-    await alert.present();
   }
 }

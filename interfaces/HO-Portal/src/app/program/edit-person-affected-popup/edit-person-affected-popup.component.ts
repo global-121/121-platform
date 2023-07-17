@@ -19,6 +19,7 @@ import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { Attribute } from '../../models/attribute.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
+import { actionResult } from '../../shared/action-result';
 
 @Component({
   selector: 'app-edit-person-affected-popup',
@@ -192,9 +193,13 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         this.attributeValues[attribute] = valueToStore;
         this.attributeValues.paymentAmountMultiplier =
           response.paymentAmountMultiplier;
-        this.actionResult(
+        actionResult(
+          this.alertController,
+          this.translate,
           this.translate.instant('common.update-success'),
           true,
+          PubSubEvent.dataRegistrationChanged,
+          this.pubSub,
         );
       })
       .catch((error) => {
@@ -204,7 +209,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
           const errorMessage = this.translate.instant('common.update-error', {
             error: this.errorHandlerService.formatErrors(error),
           });
-          this.actionResult(errorMessage);
+          actionResult(this.alertController, this.translate, errorMessage);
         }
       });
   }
@@ -220,7 +225,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         `${errorKeyPrefix}.${attribute}.error.${errorType}`,
       ),
     });
-    this.actionResult(errorMessage);
+    actionResult(this.alertController, this.translate, errorMessage);
     this.inProgress[attribute] = false;
   }
 
@@ -307,9 +312,13 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       .updateNote(this.programId, this.person.referenceId, this.noteModel)
       .then(
         (note) => {
-          this.actionResult(
+          actionResult(
+            this.alertController,
+            this.translate,
             this.translate.instant('common.update-success'),
             true,
+            PubSubEvent.dataRegistrationChanged,
+            this.pubSub,
           );
           this.noteLastUpdate = note.noteUpdated;
           this.inProgress.note = false;
@@ -322,31 +331,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
             const errorMessage = this.translate.instant('common.update-error', {
               error: error.error.error,
             });
-            this.actionResult(errorMessage);
+            actionResult(this.alertController, this.translate, errorMessage);
           }
         },
       );
-  }
-
-  private async actionResult(resultMessage: string, refresh: boolean = false) {
-    const alert = await this.alertController.create({
-      backdropDismiss: false,
-      message: resultMessage,
-      buttons: [
-        {
-          text: this.translate.instant('common.ok'),
-          handler: () => {
-            alert.dismiss(true);
-            if (refresh) {
-              this.pubSub.publish(PubSubEvent.dataRegistrationChanged);
-            }
-            return false;
-          },
-        },
-      ],
-    });
-
-    await alert.present();
   }
 
   public closeModal() {

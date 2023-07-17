@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
+import {
+  IntersolveBlockWalletDto,
+  IntersolveBlockWalletResponseDto,
+} from './dto/intersolve-block.dto';
 import { IntersolveCreateCustomerResponseBodyDto } from './dto/intersolve-create-customer-response.dto';
 import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
 import { IntersolveCreateDebitCardDto } from './dto/intersolve-create-debit-card.dto';
@@ -191,6 +195,36 @@ export class IntersolveVisaApiService {
         payload,
         headers,
       );
+    }
+  }
+
+  public async toggleBlockWallet(
+    tokenCode: string,
+    payload: IntersolveBlockWalletDto,
+    block: boolean,
+  ): Promise<IntersolveBlockWalletResponseDto> {
+    if (process.env.MOCK_INTERSOLVE) {
+      return await this.intersolveVisaApiMockService.toggleBlockWalletMock();
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/${
+        block ? 'block' : 'unblock'
+      }`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
+      const blockResult = await this.httpService.post<any>(
+        url,
+        payload,
+        headers,
+      );
+      const result: IntersolveBlockWalletResponseDto = {
+        status: blockResult.status,
+        statusText: blockResult.statusText,
+        data: blockResult.data,
+      };
+      return result;
     }
   }
 }

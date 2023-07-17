@@ -17,6 +17,12 @@ import { TransactionsService } from '../../transactions/transactions.service';
 import { FinancialServiceProviderIntegrationInterface } from '../fsp-integration.interface';
 import { RegistrationEntity } from './../../../registration/registration.entity';
 import {
+  BlockReasonEnum,
+  IntersolveBlockWalletDto,
+  IntersolveBlockWalletResponseDto,
+  UnblockReasonEnum,
+} from './dto/intersolve-block.dto';
+import {
   IntersolveCreateCustomerResponseBodyDto,
   IntersolveLinkWalletCustomerResponseDto,
 } from './dto/intersolve-create-customer-response.dto';
@@ -570,5 +576,34 @@ export class IntersolveVisaService
       );
       return WalletStatus121.Blocked;
     }
+  }
+
+  public async toggleBlockWallet(
+    tokenCode: string,
+    block: boolean,
+  ): Promise<IntersolveBlockWalletResponseDto> {
+    const payload: IntersolveBlockWalletDto = {
+      reasonCode: block
+        ? BlockReasonEnum.BLOCK_GENERAL // If using 'TOKEN_DISABLED' the wallet will be blocked forever
+        : UnblockReasonEnum.UNBLOCK_GENERAL,
+    };
+    const result = await this.intersolveVisaApiService.toggleBlockWallet(
+      tokenCode,
+      payload,
+      block,
+    );
+    if (
+      result.status === 204 ||
+      (result.status === 405 &&
+        ['TOKEN_IS_ALREADY_BLOCKED', 'TOKEN_IS_NOT_BLOCKED'].includes(
+          result.data?.code,
+        ))
+    ) {
+      await this.intersolveVisaWalletRepository.update(
+        { tokenCode: tokenCode },
+        { tokenBlocked: block },
+      );
+    }
+    return result;
   }
 }
