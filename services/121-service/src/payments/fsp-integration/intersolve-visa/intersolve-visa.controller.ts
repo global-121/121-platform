@@ -121,4 +121,24 @@ export class IntersolveVisaController {
       params.programId,
     );
   }
+
+  // TO DO: Set permissions
+  @ApiOperation({
+    summary: 'Issue new wallet and card for Intersolve Visa customer',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  // TO DO: set relevant response codes
+  // TO DO: is PUT correct?
+  @Put(
+    'programs/:programId/fsp-integration/intersolve-visa/customer/:referenceId/wallet',
+  )
+  public async reissueWalletAndCard(
+    @Param() params,
+  ): Promise<IntersolveBlockWalletResponseDto> {
+    return await this.intersolveVisaService.reissueWalletAndCard(
+      params.referenceId,
+      params.programId,
+    );
+  }
 }

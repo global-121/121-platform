@@ -248,4 +248,34 @@ export class IntersolveVisaApiService {
     };
     return result;
   }
+
+  public async activateToken(
+    tokenCode: string,
+    payload: { reference: string },
+  ): Promise<any> {
+    const authToken = await this.getAuthenticationToken();
+    const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/activate`;
+    const headers = [
+      { name: 'Authorization', value: `Bearer ${authToken}` },
+      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+    ];
+    return await this.httpService.post<any>(url, payload, headers);
+  }
+
+  public async substituteToken(
+    oldTokenCode: string,
+    payload: { tokenCode: string },
+  ): Promise<IntersolveCreateWalletResponseDto> {
+    const authToken = await this.getAuthenticationToken();
+    const url = `${intersolveVisaApiUrl}/wallet/v1/tokens/${oldTokenCode}/substitute-token`;
+    const headers = [
+      { name: 'Authorization', value: `Bearer ${authToken}` },
+      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+    ];
+    return await this.httpService.post<IntersolveCreateWalletResponseDto>(
+      url,
+      payload,
+      headers,
+    );
+  }
 }
