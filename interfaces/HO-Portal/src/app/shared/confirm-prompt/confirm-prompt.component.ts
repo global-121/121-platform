@@ -49,6 +49,9 @@ export class ConfirmPromptComponent {
   public color: string;
 
   @Input()
+  public shape?: string;
+
+  @Input()
   public inputProps: InputProps;
 
   @Input()

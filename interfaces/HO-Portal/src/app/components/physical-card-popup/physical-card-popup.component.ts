@@ -12,11 +12,12 @@ import {
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../../shared/action-result';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'app-physical-card-popup',
   standalone: true,
-  imports: [CommonModule, IonicModule, TranslateModule],
+  imports: [CommonModule, IonicModule, TranslateModule, SharedModule],
   templateUrl: './physical-card-popup.component.html',
   styleUrls: ['./physical-card-popup.component.scss'],
 })
@@ -30,9 +31,13 @@ export class PhysicalCardPopupComponent implements OnInit {
   @Input({ required: true })
   public currency: string;
 
+  @Input({ required: true })
+  public referenceId: string;
+
   public DateFormat = DateFormat;
   public PhysicalCardStatus = PhysicalCardStatus;
-  public blockButtonLabel: string;
+
+  public isCardBlocked: boolean;
 
   constructor(
     private modalController: ModalController,
@@ -42,19 +47,9 @@ export class PhysicalCardPopupComponent implements OnInit {
     private errorHandlerService: ErrorHandlerService,
     private authService: AuthService,
   ) {}
-
-  ngOnInit() {
-    this.blockButtonLabel = this.getBlockButtonLabel(this.card);
-  }
-
-  private getBlockButtonLabel(card: PhysicalCard) {
-    return card?.status.toUpperCase() === PhysicalCardStatus.blocked
-      ? this.translate.instant(
-          'registration-details.physical-cards-overview.unblock-card',
-        )
-      : this.translate.instant(
-          'registration-details.physical-cards-overview.block-card',
-        );
+  ngOnInit(): void {
+    this.isCardBlocked =
+      this.card?.status.toUpperCase() === PhysicalCardStatus.blocked;
   }
 
   public closeModal() {
@@ -85,10 +80,10 @@ export class PhysicalCardPopupComponent implements OnInit {
       : false;
   }
 
-  toggleBlockButton(card: PhysicalCard) {
-    const block = card.status.toUpperCase() !== PhysicalCardStatus.blocked;
+  toggleBlockButton() {
+    const block = this.card.status.toUpperCase() !== PhysicalCardStatus.blocked;
     this.progamsServiceApiService
-      .toggleBlockWallet(this.programId, card.tokenCode, block)
+      .toggleBlockWallet(this.programId, this.card.tokenCode, block)
       .then((response) => {
         let message = '';
         if (response.status === 204) {
@@ -118,8 +113,5 @@ export class PhysicalCardPopupComponent implements OnInit {
       });
   }
 
-  sendReplacementCardButtonClick(card: PhysicalCard) {
-    // TODO: Implement send replacement card functionality
-    console.log('card: ', card);
-  }
+  sendReplacementCardButtonClick() {}
 }

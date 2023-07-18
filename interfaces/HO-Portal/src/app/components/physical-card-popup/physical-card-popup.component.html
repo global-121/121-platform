@@ -84,15 +84,62 @@
         }}</strong>
       </ion-label>
     </ion-item>
-    &nbsp;
-    <ion-button
-      fill="outline"
-      color="danger"
-      size="small"
-      shape="round"
-      (click)="toggleBlockButton(card)"
-      [innerHTML]="blockButtonLabel"
-      [disabled]="!canUseButton()"
-    ></ion-button>
+    <ion-row class="ion-padding">
+      <app-confirm-prompt
+        fill="outline"
+        color="primary"
+        size="small"
+        shape="round"
+        [disabled]="!canUseButton()"
+        (confirm)="sendReplacementCardButtonClick()"
+        [subHeader]="
+          'registration-details.physical-cards-overview.new-card' | translate
+        "
+        [message]="
+          ('registration-details.physical-cards-overview.confirm-prompt.prefix'
+            | translate) +
+          ('registration-details.physical-cards-overview.confirm-prompt.new-card'
+            | translate)
+        "
+      >
+        {{
+          'registration-details.physical-cards-overview.new-card' | translate
+        }}
+      </app-confirm-prompt>
+
+      <app-confirm-prompt
+        fill="outline"
+        color="danger"
+        size="small"
+        shape="round"
+        [disabled]="!canUseButton()"
+        (confirm)="toggleBlockButton()"
+        [subHeader]="
+          isCardBlocked
+            ? ('registration-details.physical-cards-overview.unblock-card'
+              | translate)
+            : ('registration-details.physical-cards-overview.block-card'
+              | translate)
+        "
+        [message]="
+          ('registration-details.physical-cards-overview.confirm-prompt.prefix'
+            | translate) +
+          (isCardBlocked
+            ? ('registration-details.physical-cards-overview.confirm-prompt.unblock'
+              | translate)
+            : ('registration-details.physical-cards-overview.confirm-prompt.block'
+              | translate)) +
+          card.tokenCode
+        "
+      >
+        {{
+          isCardBlocked
+            ? ('registration-details.physical-cards-overview.unblock-card'
+              | translate)
+            : ('registration-details.physical-cards-overview.block-card'
+              | translate)
+        }}
+      </app-confirm-prompt>
+    </ion-row>
   </ion-list>
 </ion-content>
