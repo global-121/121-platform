@@ -813,6 +813,9 @@ export class IntersolveVisaService
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    // if success, make sure to store old and new wallet in 121 database
+    await this.getVisaWalletsAndDetails(referenceId, programId);
+
     // TO DO: return something if success?
   }
 }
