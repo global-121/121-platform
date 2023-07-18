@@ -271,7 +271,7 @@ export class IntersolveVisaApiMockService {
           balances: [
             {
               quantity: {
-                assetCode: 'string',
+                assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
                 value: 0,
                 reserved: 0,
               },
@@ -295,6 +295,32 @@ export class IntersolveVisaApiMockService {
       response.statusText = 'NOT FOUND';
     }
     return response;
+  }
+
+  public async unloadBalanceCardMock(): Promise<IntersolveLoadResponseDto> {
+    return {
+      data: {
+        success: true,
+        errors: [],
+        code: 'string',
+        correlationId: 'string',
+        data: {
+          balances: [
+            {
+              quantity: {
+                assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+                value: 0, // return 0 because unload is only used to unload complete amount when re-issuing
+                reserved: 0,
+              },
+              discountBudgetValue: 0,
+              lastChangedAt: '2023-02-08T14:37:22.670Z',
+            },
+          ],
+        },
+      },
+      status: 200,
+      statusText: 'OK',
+    };
   }
 
   public async getWalletMock(
@@ -378,5 +404,36 @@ export class IntersolveVisaApiMockService {
       data: {},
     };
     return res;
+  }
+
+  public async activateTokenMock(
+    tokenCode: string,
+  ): Promise<IntersolveGetWalletResponseDto> {
+    const response = new IntersolveGetWalletResponseDto();
+    response.status = 200;
+    response.data = {
+      success: true,
+      errors: [],
+      code: 'string',
+      correlationId: 'string',
+      data: {
+        code: tokenCode,
+        status: IntersolveVisaWalletStatus.Active,
+        balances: [
+          {
+            quantity: {
+              assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
+              value: 2200,
+              reserved: 0,
+            },
+            discountBudgetValue: 0,
+            lastChangedAt: new Date(
+              new Date().setDate(new Date().getDate() - 7), // 7 days ago
+            ).toISOString(),
+          },
+        ],
+      },
+    };
+    return response;
   }
 }
