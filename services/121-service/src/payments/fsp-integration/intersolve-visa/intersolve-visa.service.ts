@@ -674,9 +674,10 @@ export class IntersolveVisaService
     const { _registration, _visaCustomer } =
       await this.getRegistrationAndVisaCustomer(referenceId, programId);
 
-    const oldWallets = _visaCustomer.visaWallets
-      .filter((w) => w.linkedToVisaCustomer && w.debitCardCreated)
-      .sort((a, b) => (a.created < b.created ? 1 : -1));
+    const oldWallets = _visaCustomer.visaWallets.sort((a, b) =>
+      a.created < b.created ? 1 : -1,
+    );
+    // TO DO: throw error if no wallets? should not be possible as this is called from card popup
     const oldWallet = oldWallets[0];
 
     // 1. activate old wallet (if needed) to be able to get & unload balance
