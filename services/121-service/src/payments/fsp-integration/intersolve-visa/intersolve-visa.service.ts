@@ -27,7 +27,10 @@ import {
   IntersolveCreateCustomerResponseBodyDto,
   IntersolveLinkWalletCustomerResponseDto,
 } from './dto/intersolve-create-customer-response.dto';
-import { IntersolveCreateCustomerDto } from './dto/intersolve-create-customer.dto';
+import {
+  IntersolveAddressDto,
+  IntersolveCreateCustomerDto,
+} from './dto/intersolve-create-customer.dto';
 import {
   IntersolveCreateDebitCardDto,
   IntersolveCreateDebitCardResponseDto,
@@ -342,19 +345,7 @@ export class IntersolveVisaService
         estimatedAnnualPaymentVolumeMajorUnit: 12 * 44, // This is assuming 44 euro per month for a year for 1 child
       },
       contactInfo: {
-        addresses: [
-          {
-            type: 'HOME',
-            addressLine1: `${
-              paymentDetails.addressStreet +
-              paymentDetails.addressHouseNumber +
-              paymentDetails.addressHouseNumberAddition
-            }`,
-            city: paymentDetails.addressCity,
-            postalCode: paymentDetails.addressPostalCode,
-            country: 'NL',
-          },
-        ],
+        addresses: [this.createCustomerAddressPayload(paymentDetails)],
         phoneNumbers: [
           {
             type: 'MOBILE',
@@ -650,21 +641,67 @@ export class IntersolveVisaService
     return result;
   }
 
-  public async updateCustomerPhoneNumber(
+  private createCustomerAddressPayload(
+    paymentDetails: PaymentDetailsDto,
+  ): IntersolveAddressDto {
+    return {
+      type: 'HOME',
+      addressLine1: `${
+        paymentDetails.addressStreet +
+        ' ' +
+        paymentDetails.addressHouseNumber +
+        paymentDetails.addressHouseNumberAddition
+      }`,
+      city: paymentDetails.addressCity,
+      postalCode: paymentDetails.addressPostalCode,
+      country: 'NL',
+    };
+  }
+
+  public async syncIntersolveCustomerWith121(
     referenceId: string,
     programId: number,
   ): Promise<any> {
     const { _registration, _visaCustomer } =
       await this.getRegistrationAndVisaCustomer(referenceId, programId);
-
-    const payload: CreateCustomerResponseExtensionDto = {
+    const errors = [];
+    const phoneNumberPayload: CreateCustomerResponseExtensionDto = {
       type: 'MOBILE',
       value: _registration.phoneNumber,
     };
-    return await this.intersolveVisaApiService.updateCustomerPhoneNumber(
-      _visaCustomer.holderId,
-      payload,
-    );
+    const phoneNumberResult =
+      await this.intersolveVisaApiService.updateCustomerPhoneNumber(
+        _visaCustomer.holderId,
+        phoneNumberPayload,
+      );
+    if (phoneNumberResult.status !== 200) {
+      errors.push('phone number update failed');
+    }
+
+    // TO DO: refactor this
+    const paymentDetails = await this.getPaPaymentDetails([
+      {
+        referenceId: referenceId,
+        fspName: FspName.intersolveVisa,
+        paymentAddress: null,
+        transactionAmount: null,
+      },
+    ]);
+    const addressPayload = this.createCustomerAddressPayload(paymentDetails[0]);
+    const addressResult =
+      await this.intersolveVisaApiService.updateCustomerAddress(
+        _visaCustomer.holderId,
+        addressPayload,
+      );
+    if (addressResult.status !== 200) {
+      errors.push('address update failed');
+    }
+    if (errors.length > 0) {
+      throw new HttpException(
+        { errors: errors.join(',') },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   public async reissueWalletAndCard(
@@ -680,7 +717,12 @@ export class IntersolveVisaService
     // TO DO: throw error if no wallets? should not be possible as this is called from card popup
     const oldWallet = oldWallets[0];
 
+    // 0. sync customer data with 121 data, as create-customer is skipped in this flow
+    await this.syncIntersolveCustomerWith121(referenceId, programId);
+    // TO DO: handle errors?
+
     // 1. activate old wallet (if needed) to be able to get & unload balance
+    // TO DO: this means an incomplete flow can lead to an active waller which was inactive before
     try {
       await this.intersolveVisaApiService.activateToken(oldWallet.tokenCode, {
         reference: uuid(),
@@ -701,6 +743,7 @@ export class IntersolveVisaService
     }
 
     // 2. unblock old wallet (if needed) to be able to unload balance later and to prevent transactions in the meantime
+    // TO DO: this means an incomplete flow can lead to an unblocked wallet which was blocked before
     try {
       await this.toggleBlockWallet(oldWallet.tokenCode, false);
     } catch (error) {

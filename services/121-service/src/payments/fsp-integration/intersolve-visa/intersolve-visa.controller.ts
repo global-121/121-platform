@@ -102,21 +102,19 @@ export class IntersolveVisaController {
   @Admin()
   @ApiOperation({
     summary:
-      'Update Intersolve Visa customer phone number to same as 121 phone number',
+      'Update Intersolve Visa customer data to same as 121 registration data',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiResponse({
     status: 200,
-    description: 'Phone number updated',
+    description: 'Customer data updated',
   })
   @Put(
     'programs/:programId/fsp-integration/intersolve-visa/customers/:referenceId',
   )
-  public async updateCustomerPhoneNumber(
-    @Param() params,
-  ): Promise<IntersolveBlockWalletResponseDto> {
-    return await this.intersolveVisaService.updateCustomerPhoneNumber(
+  public async syncIntersolveCustomerWith121(@Param() params): Promise<any> {
+    return await this.intersolveVisaService.syncIntersolveCustomerWith121(
       params.referenceId,
       params.programId,
     );
