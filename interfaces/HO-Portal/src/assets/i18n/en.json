@@ -690,9 +690,15 @@
       "current-balance": "Current balance",
       "block-card": "Block card",
       "unblock-card": "Unblock card",
-      "send-replacement-card": "Send replacement card",
+      "new-card": "Issue new card",
       "popup-title": "Debit card",
-      "not-used-yet": "Not used yet"
+      "not-used-yet": "Not used yet",
+      "confirm-prompt": {
+        "prefix": "Are you sure you want to ",
+        "block": "block card ",
+        "unblock": "unblock card ",
+        "new-card": "issue a new card."
+      }
     },
     "activity-overview": {
       "title": "Activity overview",
