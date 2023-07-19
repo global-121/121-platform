@@ -695,12 +695,15 @@
       "not-used-yet": "Not used yet",
       "confirm-prompt": {
         "prefix": "Are you sure you want to ",
-        "block": "block card ",
-        "unblock": "unblock card ",
-        "new-card": "issue a new card?"
+        "block": "block this card?",
+        "unblock": "unblock this card?",
+        "new-card": "block this card and issue a new card?"
       },
       "action-result": {
-        "new-card-success": "New debit card succesfully issued"
+        "new-card-success": "Successfully issued new debit card",
+        "new-card-error": "Something went wrong: <strong>{{error}}</strong>.<br><br>Update data if applicable and retry. If the problem persists, contact the 121 development team.",
+        "block-success": "Successfully blocked debit card",
+        "unblock-success": "Successfully unblocked debit card"
       }
     },
     "activity-overview": {

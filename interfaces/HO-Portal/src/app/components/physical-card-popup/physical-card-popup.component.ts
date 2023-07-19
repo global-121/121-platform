@@ -92,7 +92,13 @@ export class PhysicalCardPopupComponent implements OnInit {
       .then((response) => {
         let message = '';
         if (response.status === 204) {
-          message = this.translate.instant('common.update-success');
+          message = block
+            ? this.translate.instant(
+                'registration-details.physical-cards-overview.action-result.block-success',
+              )
+            : this.translate.instant(
+                'registration-details.physical-cards-overview.action-result.unblock-success',
+              );
         } else if (response.status === 405) {
           message = this.translate.instant('common.update-error', {
             error: response.data?.code,
@@ -134,9 +140,12 @@ export class PhysicalCardPopupComponent implements OnInit {
       .catch((error) => {
         console.log('error: ', error);
         if (error && error.error) {
-          const errorMessage = this.translate.instant('common.update-error', {
-            error: this.errorHandlerService.formatErrors(error),
-          });
+          const errorMessage = this.translate.instant(
+            'registration-details.physical-cards-overview.action-result.new-card-error',
+            {
+              error: error.error.errors,
+            },
+          );
           actionResult(
             this.alertController,
             this.translate,
