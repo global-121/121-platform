@@ -406,7 +406,7 @@ export class IntersolveVisaApiMockService {
     return res;
   }
 
-  public async activateTokenMock(
+  public async activateWalletMock(
     tokenCode: string,
   ): Promise<IntersolveGetWalletResponseDto> {
     const response = new IntersolveGetWalletResponseDto();

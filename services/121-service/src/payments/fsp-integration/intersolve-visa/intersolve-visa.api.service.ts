@@ -290,12 +290,12 @@ export class IntersolveVisaApiService {
     return result;
   }
 
-  public async activateToken(
+  public async activateWallet(
     tokenCode: string,
     payload: { reference: string },
   ): Promise<IntersolveGetWalletResponseDto> {
     if (process.env.MOCK_INTERSOLVE) {
-      return await this.intersolveVisaApiMockService.activateTokenMock(
+      return await this.intersolveVisaApiMockService.activateWalletMock(
         tokenCode,
       );
     } else {

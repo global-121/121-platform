@@ -40,6 +40,7 @@ export enum PermissionEnum {
   FspDebitCardREAD = 'fsp:debit-card.read',
   FspDebitCardBLOCK = 'fsp:debit-card.block',
   FspDebitCardUNBLOCK = 'fsp:debit-card.unblock',
+  FspDebitCardCREATE = 'fsp:debit-card.create',
 
   // Registration(s)
   RegistrationREAD = 'registration.read',

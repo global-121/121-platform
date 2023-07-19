@@ -120,16 +120,19 @@ export class IntersolveVisaController {
     );
   }
 
-  // TO DO: Set permissions
+  @Permissions(PermissionEnum.FspDebitCardCREATE)
   @ApiOperation({
     summary: 'Issue new wallet and card for Intersolve Visa customer',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  // TO DO: set relevant response codes
-  // TO DO: is PUT correct?
+  @ApiResponse({
+    status: 200,
+    description: 'Issued new wallet and card',
+  })
+  // TO DO: is PUT and path correct?
   @Put(
-    'programs/:programId/fsp-integration/intersolve-visa/customer/:referenceId/wallet',
+    'programs/:programId/fsp-integration/intersolve-visa/customers/:referenceId/wallets',
   )
   public async reissueWalletAndCard(
     @Param() params,

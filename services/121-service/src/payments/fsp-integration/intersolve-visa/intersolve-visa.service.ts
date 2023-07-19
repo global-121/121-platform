@@ -724,7 +724,7 @@ export class IntersolveVisaService
     // 1. activate old wallet (if needed) to be able to get & unload balance
     // TO DO: this means an incomplete flow can lead to an active waller which was inactive before
     try {
-      await this.intersolveVisaApiService.activateToken(oldWallet.tokenCode, {
+      await this.intersolveVisaApiService.activateWallet(oldWallet.tokenCode, {
         reference: uuid(),
       });
     } catch (error) {
