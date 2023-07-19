@@ -256,38 +256,46 @@ export class IntersolveVisaApiService {
     holderId: string,
     payload: IntersolveTypeValue,
   ): Promise<any> {
-    const authToken = await this.getAuthenticationToken();
-    const url = `${intersolveVisaApiUrl}/customer/v1/customers/${holderId}/contact-info/phone-numbers`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
-    const rawResult = await this.httpService.put<any>(url, payload, headers);
-    const result = {
-      status: rawResult.status,
-      statusText: rawResult.statusText,
-      data: rawResult.data,
-    };
-    return result;
+    if (process.env.MOCK_INTERSOLVE) {
+      return await this.intersolveVisaApiMockService.updateCustomerPhoneNumber();
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/customer/v1/customers/${holderId}/contact-info/phone-numbers`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
+      const rawResult = await this.httpService.put<any>(url, payload, headers);
+      const result = {
+        status: rawResult.status,
+        statusText: rawResult.statusText,
+        data: rawResult.data,
+      };
+      return result;
+    }
   }
 
   public async updateCustomerAddress(
     holderId: string,
     payload: IntersolveAddressDto,
   ): Promise<any> {
-    const authToken = await this.getAuthenticationToken();
-    const url = `${intersolveVisaApiUrl}/customer/v1/customers/${holderId}/contact-info/addresses`;
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
-    ];
-    const rawResult = await this.httpService.put<any>(url, payload, headers);
-    const result = {
-      status: rawResult.status,
-      statusText: rawResult.statusText,
-      data: rawResult.data,
-    };
-    return result;
+    if (process.env.MOCK_INTERSOLVE) {
+      return await this.intersolveVisaApiMockService.updateCustomerAddress();
+    } else {
+      const authToken = await this.getAuthenticationToken();
+      const url = `${intersolveVisaApiUrl}/customer/v1/customers/${holderId}/contact-info/addresses`;
+      const headers = [
+        { name: 'Authorization', value: `Bearer ${authToken}` },
+        { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      ];
+      const rawResult = await this.httpService.put<any>(url, payload, headers);
+      const result = {
+        status: rawResult.status,
+        statusText: rawResult.statusText,
+        data: rawResult.data,
+      };
+      return result;
+    }
   }
 
   public async activateWallet(

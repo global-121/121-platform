@@ -94,3 +94,15 @@ export function getVisaWalletsAndDetails(
     .query(queryParams)
     .set('Cookie', [accessToken]);
 }
+
+export function issueNewVisaCard(
+  programId: number,
+  referenceId: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .put(
+      `/programs/${programId}/fsp-integration/intersolve-visa/customers/${referenceId}/wallets`,
+    )
+    .set('Cookie', [accessToken]);
+}

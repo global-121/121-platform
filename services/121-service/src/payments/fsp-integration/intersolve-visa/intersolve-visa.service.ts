@@ -564,6 +564,9 @@ export class IntersolveVisaService
 
       walletsResponse.wallets.push(walletDetailsResponse);
     }
+    walletsResponse.wallets.sort((a, b) =>
+      a.issuedDate > b.issuedDate ? -1 : 1,
+    );
     return walletsResponse;
   }
 

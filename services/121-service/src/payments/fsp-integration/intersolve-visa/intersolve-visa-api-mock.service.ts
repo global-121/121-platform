@@ -436,4 +436,16 @@ export class IntersolveVisaApiMockService {
     };
     return response;
   }
+
+  public updateCustomerPhoneNumber(): any {
+    return {
+      status: 200,
+    };
+  }
+
+  public updateCustomerAddress(): any {
+    return {
+      status: 200,
+    };
+  }
 }
