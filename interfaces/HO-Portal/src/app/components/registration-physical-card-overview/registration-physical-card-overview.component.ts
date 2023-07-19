@@ -38,6 +38,8 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   public PhysicalCardStatus = PhysicalCardStatus;
   public latestCard: PhysicalCard;
 
+  public loading = true;
+
   constructor(
     private programsService: ProgramsServiceApiService,
     private modalController: ModalController,
@@ -62,6 +64,8 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
     });
 
     this.latestCard = this.physicalCards[0];
+
+    this.loading = false;
   }
 
   public async openCardDetails(card: PhysicalCard) {

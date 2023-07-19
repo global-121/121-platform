@@ -1,33 +1,39 @@
-<ion-card *ngIf="physicalCards">
-  <ion-card-header>
-    <ion-card-title>
-      {{ 'registration-details.physical-cards-overview.title' | translate }}
-    </ion-card-title>
-  </ion-card-header>
+<ion-card>
+  <ion-spinner
+    color="primary"
+    *ngIf="loading"
+  ></ion-spinner>
+  <ng-container>
+    <ion-card-header *ngIf="!loading">
+      <ion-card-title>
+        {{ 'registration-details.physical-cards-overview.title' | translate }}
+      </ion-card-title>
+    </ion-card-header>
 
-  <ion-card-content class="ion-no-padding">
-    <ion-list>
-      <ion-item
-        *ngFor="let card of physicalCards"
-        button
-        [detail]="true"
-        [detail-icon]="'card'"
-        (click)="openCardDetails(card)"
-      >
-        <ion-label class="card">
-          <code>{{ card.tokenCode }}</code>
-        </ion-label>
-        <ion-label class="ion-text-right"
-          ><ion-chip
-            [color]="
-              card?.status.toUpperCase() === PhysicalCardStatus.active
-                ? 'success'
-                : 'danger'
-            "
-            >{{ card.status }}</ion-chip
-          ></ion-label
+    <ion-card-content class="ion-no-padding">
+      <ion-list>
+        <ion-item
+          *ngFor="let card of physicalCards"
+          button
+          [detail]="true"
+          [detail-icon]="'card'"
+          (click)="openCardDetails(card)"
         >
-      </ion-item>
-    </ion-list>
-  </ion-card-content>
+          <ion-label class="card">
+            <code>{{ card.tokenCode }}</code>
+          </ion-label>
+          <ion-label class="ion-text-right"
+            ><ion-chip
+              [color]="
+                card?.status.toUpperCase() === PhysicalCardStatus.active
+                  ? 'success'
+                  : 'danger'
+              "
+              >{{ card.status }}</ion-chip
+            ></ion-label
+          >
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ng-container>
 </ion-card>
