@@ -220,7 +220,7 @@ export class SafaricomService {
       .getMany();
     if (safaricomDbRequest[0] === undefined && attempt <= 3) {
       attempt++;
-      await new Promise((resolve) => setTimeout(resolve, 2500));
+      await new Promise((resolve) => setTimeout(resolve, 850));
       await this.processSafaricomResult(safaricomPaymentResultData, attempt);
       return;
     }
