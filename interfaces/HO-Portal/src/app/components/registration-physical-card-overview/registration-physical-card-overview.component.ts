@@ -43,10 +43,22 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   ) {}
 
   public async ngOnInit() {
-    this.physicalCards = await this.programsService.getPhysicalCards(
-      this.programId,
-      this.referenceId,
-    );
+    this.physicalCards = (
+      await this.programsService.getPhysicalCards(
+        this.programId,
+        this.referenceId,
+      )
+    ).sort((a, b) => {
+      if (a.issuedDate < b.issuedDate) {
+        return 1;
+      }
+
+      if (a.issuedDate > b.issuedDate) {
+        return -1;
+      }
+
+      return 0;
+    });
   }
 
   public async openCardDetails(card: PhysicalCard) {
