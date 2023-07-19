@@ -1,8 +1,6 @@
-import { formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { DateFormat } from 'src/app/enums/date-format.enum';
 import {
   PaymentRowDetail,
   PayoutDetails,
@@ -14,11 +12,9 @@ import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { environment } from 'src/environments/environment';
 import RegistrationStatus from '../../enums/registration-status.enum';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 import { StatusEnum } from './../../models/status.enum';
-
 @Component({
   selector: 'app-payment-history-popup',
   templateUrl: './payment-history-popup.component.html',
@@ -194,13 +190,12 @@ export class PaymentHistoryPopupComponent implements OnInit {
   }
 
   public enableSinglePayment(paymentRow: PaymentRowDetail): boolean {
-    console.clear();
-    console.log({ paymentRow });
+    console.log('Test4', paymentRow);
     if (!paymentRow) {
       return false;
     }
     const permission = this.canDoSinglePayment;
-    const included = this.person?.status === RegistrationStatus.included;
+    const included = this.person.status === RegistrationStatus.included;
     const noPaymentDone = !paymentRow.transaction;
     const noFuturePayment = paymentRow.paymentIndex <= this.lastPaymentId;
     // Note, the number 5 is the same as allowed for the bulk payment as set in program-people-affected.component
@@ -225,7 +220,8 @@ export class PaymentHistoryPopupComponent implements OnInit {
     return voucherFsps.includes(fsp);
   }
 
-  async rowClick(paymentRow: PaymentRowDetail) {
+  public async rowClick(paymentRow: PaymentRowDetail) {
+    console.log('test');
     let voucherUrl = null;
     let voucherButtons = null;
     let showRetryButton = false;
@@ -340,13 +336,5 @@ export class PaymentHistoryPopupComponent implements OnInit {
       }
     });
     await modal.present();
-  }
-
-  public displayTransactionDateTime(date: string): string {
-    return formatDate(date, DateFormat.dayAndTime, environment.defaultLocale);
-  }
-
-  public displayTransactionDateOnly(date: string): string {
-    return formatDate(date, DateFormat.dateOnly, environment.defaultLocale);
   }
 }

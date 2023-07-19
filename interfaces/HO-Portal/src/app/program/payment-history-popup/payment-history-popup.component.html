@@ -33,13 +33,14 @@
   <ion-accordion-group [multiple]="true">
     <ng-container *ngFor="let paymentRow of paymentRows">
       <app-payment-history-accordeon
-        [paymentRowData]="paymentRow"
-        [voucherSupportData]="hasVoucherSupport"
-        [enableSinglePaymentData]="enableSinglePayment"
-        [hasErrorData]="hasError"
-        [hasWaitingData]="hasWaiting"
-        [displayTransactionDateOnlyData]="displayTransactionDateOnly"
-        [displayTransactionDateTimeData]="displayTransactionDateTime"
+        [paymentRow]="paymentRow"
+        [hasVoucherSupport]="hasVoucherSupport"
+        [hasError]="hasError"
+        [hasWaiting]="hasWaiting"
+        [person]="person"
+        [program]="program"
+        (enableSinglePayment)="enableSinglePayment($event)"
+        (rowClick)="rowClick($event)"
       ></app-payment-history-accordeon>
     </ng-container>
   </ion-accordion-group>
