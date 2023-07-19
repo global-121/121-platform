@@ -26,7 +26,9 @@ export class PhysicalCardPopupComponent implements OnInit {
   public programId: number;
 
   @Input({ required: true })
-  public card: PhysicalCard;
+  public card: PhysicalCard = {
+    status: PhysicalCardStatus.active,
+  } as PhysicalCard;
 
   @Input({ required: true })
   public currency: string;
@@ -49,7 +51,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.isCardBlocked =
-      this.card?.status.toUpperCase() === PhysicalCardStatus.blocked;
+      this.card.status.toUpperCase() === PhysicalCardStatus.blocked;
   }
 
   public closeModal() {
@@ -71,7 +73,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   }
 
   public canUseButton() {
-    return this.card?.status.toUpperCase() === PhysicalCardStatus.blocked
+    return this.card.status.toUpperCase() === PhysicalCardStatus.blocked
       ? this.canUnblock()
         ? true
         : false
@@ -83,7 +85,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   toggleBlockButton() {
     const block = this.card.status.toUpperCase() !== PhysicalCardStatus.blocked;
     this.progamsServiceApiService
-      .toggleBlockWallet(this.programId, this.card?.tokenCode, block)
+      .toggleBlockWallet(this.programId, this.card.tokenCode, block)
       .then((response) => {
         let message = '';
         if (response.status === 204) {
