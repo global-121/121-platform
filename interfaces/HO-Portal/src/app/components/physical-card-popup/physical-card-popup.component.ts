@@ -36,6 +36,9 @@ export class PhysicalCardPopupComponent implements OnInit {
   @Input({ required: true })
   public referenceId: string;
 
+  @Input({ required: true })
+  public showButtons: boolean;
+
   public DateFormat = DateFormat;
   public PhysicalCardStatus = PhysicalCardStatus;
 

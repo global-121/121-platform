@@ -36,6 +36,7 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
 
   public physicalCards: PhysicalCard[];
   public PhysicalCardStatus = PhysicalCardStatus;
+  public latestCard: PhysicalCard;
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -59,6 +60,8 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
 
       return 0;
     });
+
+    this.latestCard = this.physicalCards[0];
   }
 
   public async openCardDetails(card: PhysicalCard) {
@@ -69,6 +72,7 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
         currency: this.currency,
         programId: this.programId,
         referenceId: this.referenceId,
+        showButtons: this.latestCard.tokenCode === card.tokenCode,
       },
     });
     await modal.present();

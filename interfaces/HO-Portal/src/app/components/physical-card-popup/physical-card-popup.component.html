@@ -84,7 +84,10 @@
         }}</strong>
       </ion-label>
     </ion-item>
-    <ion-row class="ion-padding">
+    <ion-row
+      *ngIf="showButtons"
+      class="ion-padding"
+    >
       <app-confirm-prompt
         fill="outline"
         color="primary"
