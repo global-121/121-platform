@@ -24,10 +24,11 @@
           </ion-label>
           <ion-label class="ion-text-right"
             ><ion-chip
-              [color]="
+              class="physical-card-status-chip"
+              [ngClass]="
                 card?.status.toUpperCase() === PhysicalCardStatus.active
-                  ? 'success'
-                  : 'danger'
+                  ? 'physical-card-status-chip-active'
+                  : 'physical-card-status-chip-blocked'
               "
               >{{ card.status }}</ion-chip
             ></ion-label

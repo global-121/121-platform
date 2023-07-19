@@ -258,3 +258,17 @@ ion-button {
     max-height: none;
   }
 }
+
+// for physical card list and popup in registration details page
+.physical-card-status-chip {
+  pointer-events: none;
+  height: 20px;
+  &.physical-card-status-chip-active {
+    background-color: #e9f1ed;
+    color: #295741;
+  }
+  &.physical-card-status-chip-blocked {
+    background-color: #faebef;
+    color: #8a0f32;
+  }
+}
