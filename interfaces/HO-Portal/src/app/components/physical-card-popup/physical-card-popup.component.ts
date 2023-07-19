@@ -83,7 +83,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   toggleBlockButton() {
     const block = this.card.status.toUpperCase() !== PhysicalCardStatus.blocked;
     this.progamsServiceApiService
-      .toggleBlockWallet(this.programId, this.card.tokenCode, block)
+      .toggleBlockWallet(this.programId, this.card?.tokenCode, block)
       .then((response) => {
         let message = '';
         if (response.status === 204) {
