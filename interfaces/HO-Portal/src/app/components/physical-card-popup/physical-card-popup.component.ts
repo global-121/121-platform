@@ -113,5 +113,32 @@ export class PhysicalCardPopupComponent implements OnInit {
       });
   }
 
-  sendReplacementCardButtonClick() {}
+  issueNewCardButtonClick() {
+    this.progamsServiceApiService
+      .issueNewCard(this.programId, this.referenceId)
+      .then(() => {
+        actionResult(
+          this.alertController,
+          this.translate,
+          this.translate.instant(
+            'registration-details.physical-cards-overview.action-result.new-card-success',
+          ),
+          true,
+        );
+      })
+      .catch((error) => {
+        console.log('error: ', error);
+        if (error && error.error) {
+          const errorMessage = this.translate.instant('common.update-error', {
+            error: this.errorHandlerService.formatErrors(error),
+          });
+          actionResult(
+            this.alertController,
+            this.translate,
+            errorMessage,
+            true,
+          );
+        }
+      });
+  }
 }

@@ -91,7 +91,7 @@
         size="small"
         shape="round"
         [disabled]="!canUseButton()"
-        (confirm)="sendReplacementCardButtonClick()"
+        (confirm)="issueNewCardButtonClick()"
         [subHeader]="
           'registration-details.physical-cards-overview.new-card' | translate
         "
@@ -129,7 +129,8 @@
               | translate)
             : ('registration-details.physical-cards-overview.confirm-prompt.block'
               | translate)) +
-          card.tokenCode
+          card.tokenCode +
+          '?'
         "
       >
         {{

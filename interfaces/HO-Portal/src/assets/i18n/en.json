@@ -697,7 +697,10 @@
         "prefix": "Are you sure you want to ",
         "block": "block card ",
         "unblock": "unblock card ",
-        "new-card": "issue a new card."
+        "new-card": "issue a new card?"
+      },
+      "action-result": {
+        "new-card-success": "New debit card succesfully issued"
       }
     },
     "activity-overview": {
