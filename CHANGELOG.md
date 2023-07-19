@@ -5,9 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.92.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.93.0...master)
 
 ---
+
+## [1.93.0](https://github.com/global-121/121-platform/compare/v1.92.0...v1.93.0) - 2023-07-19
+
+### Added
+
+- See Visa debit card details in PA profile page
+- Block/unblock Visa debit card
+- Update Intersolve Visa phone number manually
+
+### Fixed
+
+- Safaricom callback
+
+### Changed
+
+- Changed Ethiopia Dorcas to Ethiopia Joint Response
 
 ## [1.92.0](https://github.com/global-121/121-platform/compare/v1.91.0...v1.92.0) - 2023-07-13
 
