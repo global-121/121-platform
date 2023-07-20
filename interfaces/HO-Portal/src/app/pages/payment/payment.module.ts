@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { MakePaymentComponent } from 'src/app/program/make-payment/make-payment.component';
-import { PaymentHistoryAccordeonComponent } from 'src/app/program/payment-history-accordeon/payment-history-accordeon.component';
+import { PaymentHistoryAccordionComponent } from 'src/app/program/payment-history-accordion/payment-history-accordion.component';
 import { PaymentHistoryPopupComponent } from 'src/app/program/payment-history-popup/payment-history-popup.component';
 import { PaymentStatusPopupComponent } from 'src/app/program/payment-status-popup/payment-status-popup.component';
 import { ProgramPayoutComponent } from 'src/app/program/program-payout/program-payout.component';
@@ -34,7 +34,7 @@ const routes: Routes = [
     PaymentStatusPopupComponent,
     SubmitPaymentPopupComponent,
     PaymentHistoryPopupComponent,
-    PaymentHistoryAccordeonComponent,
+    PaymentHistoryAccordionComponent,
   ],
 })
 export class PaymentPageModule {}

@@ -190,7 +190,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
   }
 
   public enableSinglePayment(paymentRow: PaymentRowDetail): boolean {
-    console.log('Test4', paymentRow);
     if (!paymentRow) {
       return false;
     }
@@ -221,7 +220,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
   }
 
   public async rowClick(paymentRow: PaymentRowDetail) {
-    console.log('test');
     let voucherUrl = null;
     let voucherButtons = null;
     let showRetryButton = false;

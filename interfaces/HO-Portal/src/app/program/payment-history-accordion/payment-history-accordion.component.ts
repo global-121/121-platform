@@ -2,11 +2,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 
 @Component({
-  selector: 'app-payment-history-accordeon',
-  templateUrl: './payment-history-accordeon.component.html',
-  styleUrls: ['./payment-history-accordeon.component.scss'],
+  selector: 'app-payment-history-accordion',
+  templateUrl: './payment-history-accordion.component.html',
+  styleUrls: ['./payment-history-accordion.component.scss'],
 })
-export class PaymentHistoryAccordeonComponent {
+export class PaymentHistoryAccordionComponent {
   DateFormat = DateFormat;
 
   @Input()
@@ -15,15 +15,15 @@ export class PaymentHistoryAccordeonComponent {
   @Input()
   public hasVoucherSupport: any;
 
-  @Output()
-  enableSinglePayment = new EventEmitter<any>();
-
-  @Output()
-  rowClick = new EventEmitter<any>();
-
   @Input()
   public hasError: any;
 
   @Input()
   public hasWaiting: any;
+
+  @Output()
+  enableSinglePayment = new EventEmitter<any>();
+
+  @Output()
+  rowClick = new EventEmitter<any>();
 }

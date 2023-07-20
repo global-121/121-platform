@@ -29,10 +29,9 @@
               }}
             </ion-label>
           </ion-chip>
-          {{ paymentRow | json }}
           <!-- Single payment Transfer status -->
           <ion-chip
-            *ngIf="enableSinglePayment.emit(paymentRow)"
+            *ngIf="!paymentRow.transaction && !hasError(paymentRow)"
             [ngClass]="'waiting'"
           >
             <ion-label>
@@ -87,7 +86,7 @@
             shape="round"
             fill="outline"
             size="small"
-            *ngIf="enableSinglePayment.emit(paymentRow)"
+            *ngIf="!paymentRow.transaction && !hasError(paymentRow)"
             (click)="rowClick.emit(paymentRow)"
           >
             {{

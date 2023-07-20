@@ -85,7 +85,7 @@
             TEST
             <ion-accordion-group [multiple]="true">
               <ng-container *ngFor="let paymentRow of paymentRows">
-                <app-payment-history-accordeon
+                <app-payment-history-accordion
                   [paymentRow]="paymentRow"
                   [hasVoucherSupport]="hasVoucherSupport"
                   [enableSinglePayment]="enableSinglePayment"
@@ -96,7 +96,7 @@
                   [rowClick]="rowClick"
                   [person]="person"
                   [program]="program"
-                ></app-payment-history-accordeon>
+                ></app-payment-history-accordion>
               </ng-container>
             </ion-accordion-group>
           </ion-row>

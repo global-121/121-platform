@@ -32,16 +32,16 @@
   <!-- Accordion -->
   <ion-accordion-group [multiple]="true">
     <ng-container *ngFor="let paymentRow of paymentRows">
-      <app-payment-history-accordeon
+      <app-payment-history-accordion
         [paymentRow]="paymentRow"
         [hasVoucherSupport]="hasVoucherSupport"
-        [hasError]="hasError"
-        [hasWaiting]="hasWaiting"
         [person]="person"
         [program]="program"
+        [hasError]="hasError"
+        [hasWaiting]="hasWaiting"
         (enableSinglePayment)="enableSinglePayment($event)"
         (rowClick)="rowClick($event)"
-      ></app-payment-history-accordeon>
+      ></app-payment-history-accordion>
     </ng-container>
   </ion-accordion-group>
 </ion-content>
