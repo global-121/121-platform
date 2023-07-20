@@ -90,11 +90,11 @@
       class="ion-padding"
     >
       <app-confirm-prompt
+        color="portal-primary"
         fill="outline"
-        color="primary"
         size="small"
         shape="round"
-        [disabled]="!canIssueNewCard()"
+        [disabled]="issueLoading || !canIssueNewCard()"
         (confirm)="issueNewCardButtonClick()"
         [subHeader]="
           'registration-details.physical-cards-overview.new-card' | translate
@@ -109,11 +109,16 @@
         {{
           'registration-details.physical-cards-overview.new-card' | translate
         }}
+        <ion-spinner
+          color="portal-primary"
+          class="physical-card-button-spinner"
+          *ngIf="issueLoading"
+        ></ion-spinner>
       </app-confirm-prompt>
 
       <app-confirm-prompt
+        color="portal-danger"
         fill="outline"
-        color="danger"
         size="small"
         shape="round"
         [disabled]="!canUseBlockUnblockButton()"
@@ -142,6 +147,11 @@
             : ('registration-details.physical-cards-overview.block-card'
               | translate)
         }}
+        <ion-spinner
+          color="portal-danger"
+          class="physical-card-button-spinner"
+          *ngIf="blockLoading"
+        ></ion-spinner>
       </app-confirm-prompt>
     </ion-row>
   </ion-list>
