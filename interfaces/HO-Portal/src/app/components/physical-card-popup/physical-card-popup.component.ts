@@ -75,7 +75,14 @@ export class PhysicalCardPopupComponent implements OnInit {
     );
   }
 
-  public canUseButton() {
+  public canIssueNewCard(): boolean {
+    return this.authService.hasPermission(
+      this.programId,
+      Permission.FspDebitCardCREATE,
+    );
+  }
+
+  public canUseBlockUnblockButton() {
     return this.card.status.toUpperCase() === PhysicalCardStatus.blocked
       ? this.canUnblock()
         ? true

@@ -94,7 +94,7 @@
         color="primary"
         size="small"
         shape="round"
-        [disabled]="!canUseButton()"
+        [disabled]="!canIssueNewCard()"
         (confirm)="issueNewCardButtonClick()"
         [subHeader]="
           'registration-details.physical-cards-overview.new-card' | translate
@@ -116,7 +116,7 @@
         color="danger"
         size="small"
         shape="round"
-        [disabled]="!canUseButton()"
+        [disabled]="!canUseBlockUnblockButton()"
         (confirm)="toggleBlockButton()"
         [subHeader]="
           isCardBlocked
