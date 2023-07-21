@@ -1043,7 +1043,14 @@ export class RegistrationsService {
       );
     }
 
-    // TO DO: refactor this to a more generic solution
+    await this.syncUpdatesWithThirdParties(calculatedRegistration);
+
+    return this.getRegistrationFromReferenceId(savedRegistration.referenceId);
+  }
+
+  private async syncUpdatesWithThirdParties(
+    registration: RegistrationEntity,
+  ): Promise<void> {
     if (registration.fsp.fsp === FspName.intersolveVisa) {
       try {
         await this.intersolveVisaService.syncIntersolveCustomerWith121(
@@ -1058,8 +1065,6 @@ export class RegistrationsService {
         }
       }
     }
-
-    return this.getRegistrationFromReferenceId(savedRegistration.referenceId);
   }
 
   public async updateNote(referenceId: string, note: string): Promise<NoteDto> {
