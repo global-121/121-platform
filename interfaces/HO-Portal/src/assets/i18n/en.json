@@ -702,7 +702,6 @@
       },
       "action-result": {
         "new-card-success": "Successfully issued new debit card",
-        "new-card-error": "Something went wrong: <strong>{{error}}</strong>.<br><br>Update data if applicable and retry. If the problem persists, contact the 121 development team.",
         "block-success": "Successfully blocked debit card",
         "unblock-success": "Successfully unblocked debit card"
       }

@@ -716,19 +716,22 @@ export class IntersolveVisaService
   ): Promise<any> {
     const { _registration, _visaCustomer } =
       await this.getRegistrationAndVisaCustomer(referenceId, programId);
+    if (_visaCustomer.visaWallets.length === 0) {
+      const errors = `No wallet available yet for PA with this referenceId ${referenceId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
 
     const oldWallets = _visaCustomer.visaWallets.sort((a, b) =>
       a.created < b.created ? 1 : -1,
     );
-    // TO DO: throw error if no wallets? should not be possible as this is called from card popup
     const oldWallet = oldWallets[0];
 
     // 0. sync customer data with 121 data, as create-customer is skipped in this flow
     await this.syncIntersolveCustomerWith121(referenceId, programId);
-    // TO DO: handle errors?
 
+    const errorGenericPart =
+      '<br><br>Update data if applicable and retry. If the problem persists, contact the 121 development team.';
     // 1. activate old wallet (if needed) to be able to get & unload balance
-    // TO DO: this means an incomplete flow can lead to an active waller which was inactive before
     try {
       await this.intersolveVisaApiService.activateWallet(oldWallet.tokenCode, {
         reference: uuid(),
@@ -744,18 +747,24 @@ export class IntersolveVisaService
           : `ACTIVATE OLD WALLET ERROR: ${
               error.data?.code || error.status + ' - ' + error.statusText
             }`;
-        throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new HttpException(
+          { errors: `${errors}${errorGenericPart}` },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
     }
 
     // 2. unblock old wallet (if needed) to be able to unload balance later and to prevent transactions in the meantime
-    // TO DO: this means an incomplete flow can lead to an unblocked wallet which was blocked before
     try {
       await this.toggleBlockWallet(oldWallet.tokenCode, false);
     } catch (error) {
       if (error.status === 405 && error.data?.code === 'TOKEN_IS_NOT_BLOCKED') {
         console.log('error: ', error);
       } else {
+        // if this step fails, then try to block to overwrite the activation from step 1, but don't throw
+        // don't do this above if the fail-reason for unblocking was that it was already unblocked (as nothing went wrong then actually)
+        await this.tryToBlockWallet(oldWallet.tokenCode);
+
         const errors = error.data?.errors?.length
           ? `UNBLOCK OLD WALLET ERROR: ${this.intersolveErrorToMessage(
               error.data.errors,
@@ -763,7 +772,10 @@ export class IntersolveVisaService
           : `UNBLOCK OLD WALLET ERROR: ${
               error.data?.code || error.status + ' - ' + error.statusText
             }`;
-        throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new HttpException(
+          { errors: `${errors}${errorGenericPart}` },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
     }
 
@@ -772,12 +784,18 @@ export class IntersolveVisaService
       oldWallet.tokenCode,
     );
     if (!getWalletResponse.data?.success) {
+      // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
+      await this.tryToBlockWallet(oldWallet.tokenCode);
+
       const errors = getWalletResponse.data?.errors?.length
         ? `GET WALLET ERROR: ${this.intersolveErrorToMessage(
             getWalletResponse.data.errors,
           )}`
         : `GET WALLET ERROR: ${getWalletResponse.status} - ${getWalletResponse.statusText}`;
-      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        { errors: `${errors}${errorGenericPart}` },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
     const currentBalance = getWalletResponse.data.data.balances.find(
       (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
@@ -789,12 +807,18 @@ export class IntersolveVisaService
       currentBalance / 100,
     );
     if (!createWalletResult.data?.success) {
+      // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
+      await this.tryToBlockWallet(oldWallet.tokenCode);
+
       const errors = createWalletResult.data?.errors?.length
         ? `CREATE WALLET ERROR: ${this.intersolveErrorToMessage(
             createWalletResult.data.errors,
           )}`
         : `CREATE WALLET ERROR: ${createWalletResult.status} - ${createWalletResult.statusText}`;
-      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        { errors: `${errors}${errorGenericPart}` },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
     // if success, store wallet
     const newWallet = new IntersolveVisaWalletEntity();
@@ -815,6 +839,9 @@ export class IntersolveVisaService
       newWallet,
     );
     if (registerResult.status !== 204) {
+      // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
+      await this.tryToBlockWallet(oldWallet.tokenCode);
+
       // remove wallet again because of incomplete flow
       await this.intersolveVisaWalletRepository.remove(newWallet);
 
@@ -826,7 +853,10 @@ export class IntersolveVisaService
             registerResult.data?.code ||
             registerResult.status + ' - ' + registerResult.statusText
           }`;
-      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        { errors: `${errors}${errorGenericPart}` },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
     // if succes, update wallet: set linkedToVisaCustomer to true
     newWallet.linkedToVisaCustomer = true;
@@ -847,6 +877,9 @@ export class IntersolveVisaService
       newWallet,
     );
     if (createDebitCardResult.status !== 200) {
+      // if this step fails, then try to block to overwrite the activation/unblocking from step 1/2, but don't throw
+      await this.tryToBlockWallet(oldWallet.tokenCode);
+
       // remove wallet again because of incomplete flow
       await this.intersolveVisaWalletRepository.remove(newWallet);
 
@@ -855,7 +888,10 @@ export class IntersolveVisaService
             createDebitCardResult.data?.errors,
           )}`
         : `CREATE DEBIT CARD ERROR: ${createDebitCardResult.status} - ${createDebitCardResult.statusText}`;
-      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        { errors: `${errors}${errorGenericPart}` },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
     // if success, update wallet: set debitCardCreated to true ..
     newWallet.debitCardCreated = true;
@@ -867,31 +903,19 @@ export class IntersolveVisaService
       currentBalance,
     );
     if (unloadResult.status !== 200) {
-      // remove wallet again because of incomplete flow
-      await this.intersolveVisaWalletRepository.remove(newWallet);
-
-      const errors = unloadResult.data?.errors?.length
-        ? `UNLOAD OLD WALLET ERROR: ${this.intersolveErrorToMessage(
-            unloadResult.data?.errors,
-          )}`
-        : `UNLOAD OLD WALLET ERROR: ${unloadResult.status} - ${unloadResult.statusText}`;
+      const errors =
+        'A new card was successfully issued, but the balance of the old card could not be unloaded and it is not blocked yet. Please contact the 121 development team to solve this.';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // 8. block old wallet
     const blockResult = await this.toggleBlockWallet(oldWallet.tokenCode, true);
     if (blockResult.status !== 204) {
-      const errors = blockResult.data?.errors?.length
-        ? `BLOCK OLD WALLET ERROR: ${this.intersolveErrorToMessage(
-            blockResult.data.errors,
-          )}`
-        : `BLOCK OLD WALLET ERROR: ${
-            blockResult.data?.code ||
-            blockResult.status + ' - ' + blockResult.statusText
-          }`;
+      const errors =
+        'A new card was successfully issued and the balance of the old card is unloaded. But the old card could not be blocked. Please contact the 121 development team to solve this.';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    // also block olders wallets, but don't throw error if it fails to not complicate retry-flow further
+    // also block older wallets, but don't throw error if it fails to not complicate retry-flow further
     for await (const wallet of oldWallets.splice(
       oldWallets.indexOf(oldWallet),
     )) {
@@ -900,7 +924,13 @@ export class IntersolveVisaService
 
     // if success, make sure to store old and new wallet in 121 database
     await this.getVisaWalletsAndDetails(referenceId, programId);
+  }
 
-    // TO DO: return something if success?
+  private async tryToBlockWallet(tokenCode: string): Promise<void> {
+    try {
+      await this.toggleBlockWallet(tokenCode, true);
+    } catch (e) {
+      console.log('error: ', e);
+    }
   }
 }

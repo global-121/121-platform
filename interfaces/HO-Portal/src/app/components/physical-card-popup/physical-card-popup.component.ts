@@ -155,12 +155,9 @@ export class PhysicalCardPopupComponent implements OnInit {
       .catch((error) => {
         console.log('error: ', error);
         if (error && error.error) {
-          const errorMessage = this.translate.instant(
-            'registration-details.physical-cards-overview.action-result.new-card-error',
-            {
-              error: error.error.errors,
-            },
-          );
+          const errorMessage = this.translate.instant('common.update-error', {
+            error: error.error.errors,
+          });
           actionResult(
             this.alertController,
             this.translate,
