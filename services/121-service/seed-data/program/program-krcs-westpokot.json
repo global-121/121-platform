@@ -18,7 +18,7 @@
   "currency": "KES",
   "distributionFrequency": "month",
   "distributionDuration": 3,
-  "fixedTransferValue": 6307,
+  "fixedTransferValue": 6391.5,
   "paymentAmountMultiplierFormula": null,
   "financialServiceProviders": [
     {
