@@ -5,10 +5,10 @@
     </ion-card-title>
   </ion-card-header>
 
-  <ion-spinner
-    color="primary"
-    *ngIf="loading"
-  ></ion-spinner>
+  <ion-item *ngIf="loading">
+    <ion-spinner color="primary"></ion-spinner>
+  </ion-item>
+
   <ion-card-content
     *ngIf="!loading"
     class="ion-no-padding"
