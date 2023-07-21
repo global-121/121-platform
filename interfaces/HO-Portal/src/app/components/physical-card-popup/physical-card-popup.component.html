@@ -97,7 +97,7 @@
         [disabled]="issueLoading || !canIssueNewCard()"
         (confirm)="issueNewCardButtonClick()"
         [subHeader]="
-          'registration-details.physical-cards-overview.new-card' | translate
+          'registration-details.physical-cards-overview.issue' | translate
         "
         [message]="
           ('registration-details.physical-cards-overview.confirm-prompt.prefix'
@@ -107,7 +107,11 @@
         "
       >
         {{
-          'registration-details.physical-cards-overview.new-card' | translate
+          isCardBlocked
+            ? ('registration-details.physical-cards-overview.issue'
+              | translate)
+            : ('registration-details.physical-cards-overview.block-and-issue'
+              | translate)
         }}
         <ion-spinner
           color="portal-primary"

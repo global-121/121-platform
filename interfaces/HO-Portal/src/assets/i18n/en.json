@@ -690,7 +690,8 @@
       "current-balance": "Current balance",
       "block-card": "Block card",
       "unblock-card": "Unblock card",
-      "new-card": "Issue new card",
+      "block-and-issue": "Block and Issue new card",
+      "issue": "Issue new card",
       "popup-title": "Debit card",
       "not-used-yet": "Not used yet",
       "confirm-prompt": {
