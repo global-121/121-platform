@@ -8,6 +8,7 @@ import {
   PhysicalCardStatus,
 } from 'src/app/models/physical-card.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import RegistrationStatus from '../../enums/registration-status.enum';
 import { PhysicalCardPopupComponent } from '../physical-card-popup/physical-card-popup.component';
 import { RegistrationPageTableComponent } from '../registration-page-table/registration-page-table.component';
 
@@ -34,6 +35,12 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   @Input()
   public currency: string;
 
+  @Input()
+  public nrPayments: Person['nrPayments'];
+
+  @Input()
+  public registrationStatus: Person['status'];
+
   public physicalCards: PhysicalCard[];
   public PhysicalCardStatus = PhysicalCardStatus;
   public latestCard: PhysicalCard;
@@ -46,6 +53,11 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   ) {}
 
   public async ngOnInit() {
+    if (!this.nrPayments || Number(this.nrPayments) === 0) {
+      this.loading = false;
+      return;
+    }
+
     this.physicalCards = (
       await this.programsService.getPhysicalCards(
         this.programId,
@@ -80,5 +92,20 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
       },
     });
     await modal.present();
+  }
+
+  public showPhysicalCardOverview(): boolean {
+    const acceptedStatuses = [
+      RegistrationStatus.included,
+      RegistrationStatus.completed,
+      RegistrationStatus.inclusionEnded,
+      RegistrationStatus.rejected,
+    ];
+
+    if (acceptedStatuses.includes(this.registrationStatus)) {
+      return true;
+    }
+
+    return false;
   }
 }

@@ -44,6 +44,9 @@ export class PhysicalCardPopupComponent implements OnInit {
 
   public isCardBlocked: boolean;
 
+  public issueLoading = false;
+  public blockLoading = false;
+
   constructor(
     private modalController: ModalController,
     private progamsServiceApiService: ProgramsServiceApiService,
@@ -75,7 +78,14 @@ export class PhysicalCardPopupComponent implements OnInit {
     );
   }
 
-  public canUseButton() {
+  public canIssueNewCard(): boolean {
+    return this.authService.hasPermission(
+      this.programId,
+      Permission.FspDebitCardCREATE,
+    );
+  }
+
+  public canUseBlockUnblockButton() {
     return this.card.status.toUpperCase() === PhysicalCardStatus.blocked
       ? this.canUnblock()
         ? true
@@ -86,6 +96,7 @@ export class PhysicalCardPopupComponent implements OnInit {
   }
 
   toggleBlockButton() {
+    this.blockLoading = true;
     const block = this.card.status.toUpperCase() !== PhysicalCardStatus.blocked;
     this.progamsServiceApiService
       .toggleBlockWallet(this.programId, this.card.tokenCode, block)
@@ -121,10 +132,14 @@ export class PhysicalCardPopupComponent implements OnInit {
             true,
           );
         }
+      })
+      .finally(() => {
+        this.blockLoading = false;
       });
   }
 
   issueNewCardButtonClick() {
+    this.issueLoading = true;
     this.progamsServiceApiService
       .issueNewCard(this.programId, this.referenceId)
       .then(() => {
@@ -153,6 +168,9 @@ export class PhysicalCardPopupComponent implements OnInit {
             true,
           );
         }
+      })
+      .finally(() => {
+        this.issueLoading = false;
       });
   }
 }

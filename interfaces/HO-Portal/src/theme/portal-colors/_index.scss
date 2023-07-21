@@ -1,0 +1,19 @@
+@import 'design-system-colors';
+
+.ion-color-portal-primary {
+  --ion-color-base: var(--fiveten-purple-700);
+  --ion-color-base-rgb: var(--fiveten-purple-700-rgb);
+  --ion-color-contrast: var(--fiveten-purple-100);
+  --ion-color-contrast-rgb: var(--fiveten-purple-100-rgb);
+  --ion-color-shade: var(--fiveten-purple-500);
+  --ion-color-tint: var(--fiveten-purple-700);
+}
+
+.ion-color-portal-danger {
+  --ion-color-base: var(--fiveten-error-700);
+  --ion-color-base-rgb: var(--fiveten-error-700-rgb);
+  --ion-color-contrast: var(--fiveten-error-100);
+  --ion-color-contrast-rgb: var(--fiveten-error-100-rgb);
+  --ion-color-shade: var(--fiveten-error-500);
+  --ion-color-tint: var(--fiveten-error-700);
+}
