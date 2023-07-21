@@ -1043,7 +1043,7 @@ export class RegistrationsService {
       );
     }
 
-    await this.syncUpdatesWithThirdParties(calculatedRegistration);
+    await this.syncUpdatesWithThirdParties(registration);
 
     return this.getRegistrationFromReferenceId(savedRegistration.referenceId);
   }
@@ -1051,7 +1051,7 @@ export class RegistrationsService {
   private async syncUpdatesWithThirdParties(
     registration: RegistrationEntity,
   ): Promise<void> {
-    if (registration.fsp.fsp === FspName.intersolveVisa) {
+    if (registration.fsp?.fsp === FspName.intersolveVisa) {
       try {
         await this.intersolveVisaService.syncIntersolveCustomerWith121(
           registration.referenceId,
