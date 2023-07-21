@@ -79,18 +79,18 @@ export class SafaricomService {
     return await this.registrationRepository
       .createQueryBuilder('registration')
       .select([
-        'registration.id AS id',
+        'registration."registrationProgramId" AS id',
         'registration.referenceId AS "referenceId"',
         'data.value AS value',
       ])
       .where('registration.referenceId IN (:...referenceIds)', {
         referenceIds: referenceIds,
       })
-      .andWhere('fspQuestion.name IN (:...names)', {
+      .andWhere('programQuestion.name IN (:...names)', {
         names: ['nationalId'],
       })
       .leftJoin('registration.data', 'data')
-      .leftJoin('data.fspQuestion', 'fspQuestion')
+      .leftJoin('data.programQuestion', 'programQuestion')
       .getRawMany();
   }
 
@@ -105,19 +105,11 @@ export class SafaricomService {
     }
 
     function formatDate(date: Date): string {
-      return (
-        [
-          date.getFullYear().toString().substring(2),
-          padTo2Digits(date.getMonth() + 1),
-          padTo2Digits(date.getDate()),
-        ].join('') +
-        '' +
-        [
-          padTo2Digits(date.getHours()),
-          padTo2Digits(date.getMinutes()),
-          padTo2Digits(date.getSeconds()),
-        ].join('')
-      );
+      return [
+        date.getFullYear().toString().substring(2),
+        padTo2Digits(date.getMonth() + 1),
+        padTo2Digits(date.getDate()),
+      ].join('');
     }
 
     const payload = {
@@ -131,9 +123,9 @@ export class SafaricomService {
       QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
       ResultURL: EXTERNAL_API.safaricomResultUrl,
       Occassion: payment.referenceId,
-      OriginatorConversationID: `P${programId}_PA${userInfo.id}_${formatDate(
+      OriginatorConversationID: `P${programId}PA${userInfo.id}_${formatDate(
         new Date(),
-      )}`,
+      )}_${this.generateRandomString(3)}`,
       IDType: process.env.SAFARICOM_IDTYPE,
       IDNumber: userInfo.value,
     };
@@ -251,5 +243,20 @@ export class SafaricomService {
 
     await this.safaricomRequestRepository.save(safaricomDbRequest);
     await this.transactionRepository.save(safaricomDbRequest[0].transaction);
+  }
+
+  private generateRandomString(length: number): string {
+    const alphanumericCharacters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(
+        Math.random() * alphanumericCharacters.length,
+      );
+      result += alphanumericCharacters.charAt(randomIndex);
+    }
+
+    return result;
   }
 }
