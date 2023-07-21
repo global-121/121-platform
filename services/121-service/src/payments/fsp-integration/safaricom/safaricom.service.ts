@@ -86,11 +86,11 @@ export class SafaricomService {
       .where('registration.referenceId IN (:...referenceIds)', {
         referenceIds: referenceIds,
       })
-      .andWhere('fspQuestion.name IN (:...names)', {
+      .andWhere('programQuestion.name IN (:...names)', {
         names: ['nationalId'],
       })
       .leftJoin('registration.data', 'data')
-      .leftJoin('data.fspQuestion', 'fspQuestion')
+      .leftJoin('data.programQuestion', 'programQuestion')
       .getRawMany();
   }
 
