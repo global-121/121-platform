@@ -49,7 +49,12 @@ export class SafaricomService {
         (user) => user.referenceId == payment.referenceId,
       );
 
-      const payload = this.createPayloadPerPa(payment, paymentNr, resultUser);
+      const payload = this.createPayloadPerPa(
+        payment,
+        programId,
+        paymentNr,
+        resultUser,
+      );
 
       const paymentRequestResultPerPa = await this.sendPaymentPerPa(
         payload,
@@ -91,9 +96,30 @@ export class SafaricomService {
 
   public createPayloadPerPa(
     payment,
+    programId,
     paymentNr,
     userInfo: { id: string; referenceId: string; value: string },
   ): SafaricomTransferPayload {
+    function padTo2Digits(num: number): string {
+      return num.toString().padStart(2, '0');
+    }
+
+    function formatDate(date: Date): string {
+      return (
+        [
+          date.getFullYear().toString().substring(2),
+          padTo2Digits(date.getMonth() + 1),
+          padTo2Digits(date.getDate()),
+        ].join('') +
+        '' +
+        [
+          padTo2Digits(date.getHours()),
+          padTo2Digits(date.getMinutes()),
+          padTo2Digits(date.getSeconds()),
+        ].join('')
+      );
+    }
+
     const payload = {
       InitiatorName: process.env.SAFARICOM_INITIATORNAME,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL,
@@ -105,7 +131,9 @@ export class SafaricomService {
       QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
       ResultURL: EXTERNAL_API.safaricomResultUrl,
       Occassion: payment.referenceId,
-      OriginatorConversationID: this.generateUniqueAlphanumericString(19),
+      OriginatorConversationID: `P${programId}_PA${userInfo.id}_${formatDate(
+        new Date(),
+      )}`,
       IDType: process.env.SAFARICOM_IDTYPE,
       IDNumber: userInfo.value,
     };
@@ -223,20 +251,5 @@ export class SafaricomService {
 
     await this.safaricomRequestRepository.save(safaricomDbRequest);
     await this.transactionRepository.save(safaricomDbRequest[0].transaction);
-  }
-
-  private generateUniqueAlphanumericString(length: number): string {
-    const characters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const timestamp = Date.now().toString(36); // Convert current timestamp to base36 string
-    const randomStringLength = Math.max(0, length - timestamp.length); // Adjust random string length
-
-    let randomString = '';
-    for (let i = 0; i < randomStringLength; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      randomString += characters[randomIndex];
-    }
-
-    return timestamp + randomString;
   }
 }
