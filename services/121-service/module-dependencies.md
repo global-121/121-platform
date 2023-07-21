@@ -19,13 +19,14 @@ graph LR
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
   RegistrationsModule-->MessageModule
+  RegistrationsModule-->IntersolveVisaModule
+  IntersolveVisaModule-->TransactionsModule
   ExportMetricsModule-->ProgramModule
   ExportMetricsModule-->RegistrationsModule
   ExportMetricsModule-->PaymentsModule
   PaymentsModule-->FspModule
   PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
-  IntersolveVisaModule-->TransactionsModule
   PaymentsModule-->IntersolveJumboModule
   IntersolveJumboModule-->TransactionsModule
   PaymentsModule-->AfricasTalkingModule

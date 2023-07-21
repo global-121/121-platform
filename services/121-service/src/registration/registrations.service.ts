@@ -10,6 +10,7 @@ import { MessageContentType } from '../notifications/message-type.enum';
 import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
+import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
@@ -88,6 +89,7 @@ export class RegistrationsService {
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly bulkImportService: BulkImportService,
     private readonly programService: ProgramService,
+    private readonly intersolveVisaService: IntersolveVisaService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -994,7 +996,7 @@ export class RegistrationsService {
   ): Promise<RegistrationEntity> {
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
-      ['program'],
+      ['program', 'fsp'],
     );
 
     value = await this.cleanCustomDataIfPhoneNr(attribute, value);
@@ -1039,6 +1041,15 @@ export class RegistrationsService {
         calculatedRegistration.referenceId,
       );
     }
+
+    // TO DO: refactor this to a more generic solution
+    if (registration.fsp.fsp === FspName.intersolveVisa) {
+      await this.intersolveVisaService.syncIntersolveCustomerWith121(
+        registration.referenceId,
+        registration.programId,
+      );
+    }
+
     return this.getRegistrationFromReferenceId(savedRegistration.referenceId);
   }
 
