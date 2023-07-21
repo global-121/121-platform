@@ -97,10 +97,7 @@ export class IntersolveVisaService
     }
   }
 
-  private async getPaPaymentDetails(
-    paymentList: PaPaymentDataDto[],
-  ): Promise<PaymentDetailsDto[]> {
-    const referenceIds = paymentList.map((pa) => pa.referenceId);
+  private async getPaDetails(referenceIds: string[]): Promise<any> {
     const relationOptions = await this.getRelationOptionsForVisa(
       referenceIds[0],
     );
@@ -122,7 +119,15 @@ export class IntersolveVisaService
       }, r.name);
     }
 
-    const visaAddressInfoDtoArray = await query.getRawMany();
+    return await query.getRawMany();
+  }
+
+  private async getPaPaymentDetails(
+    paymentList: PaPaymentDataDto[],
+  ): Promise<PaymentDetailsDto[]> {
+    const referenceIds = paymentList.map((pa) => pa.referenceId);
+
+    const visaAddressInfoDtoArray = await this.getPaDetails(referenceIds);
 
     // Maps the registration data back to the correct amounts using referenceID
     const result = visaAddressInfoDtoArray.map((v) => ({
@@ -229,7 +234,6 @@ export class IntersolveVisaService
 
       await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
 
-      // TO DO: is this needed like this?
       visaCustomer.visaWallets = [intersolveVisaWallet];
     }
 
@@ -684,15 +688,7 @@ export class IntersolveVisaService
       );
     }
 
-    // TO DO: refactor this
-    const paymentDetails = await this.getPaPaymentDetails([
-      {
-        referenceId: referenceId,
-        fspName: FspName.intersolveVisa,
-        paymentAddress: null,
-        transactionAmount: null,
-      },
-    ]);
+    const paymentDetails = await this.getPaDetails([referenceId]);
     const addressPayload = this.createCustomerAddressPayload(paymentDetails[0]);
     const addressResult =
       await this.intersolveVisaApiService.updateCustomerAddress(
@@ -863,15 +859,7 @@ export class IntersolveVisaService
     await this.intersolveVisaWalletRepository.save(newWallet);
 
     // 6. create new debit card
-    // TO DO: refactor this
-    const paymentDetails = await this.getPaPaymentDetails([
-      {
-        referenceId: referenceId,
-        fspName: FspName.intersolveVisa,
-        paymentAddress: null,
-        transactionAmount: null,
-      },
-    ]);
+    const paymentDetails = await this.getPaDetails([referenceId]);
     const createDebitCardResult = await this.createDebitCard(
       paymentDetails[0],
       newWallet,

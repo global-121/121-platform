@@ -130,7 +130,7 @@ export class IntersolveVisaController {
     status: 200,
     description: 'Issued new wallet and card',
   })
-  // TO DO: is PUT and path correct?
+  // TODO: is PUT and path correct?
   @Put(
     'programs/:programId/fsp-integration/intersolve-visa/customers/:referenceId/wallets',
   )
