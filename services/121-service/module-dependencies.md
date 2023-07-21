@@ -26,10 +26,8 @@ graph LR
   PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
-  IntersolveVisaModule-->RegistrationsModule
   PaymentsModule-->IntersolveJumboModule
   IntersolveJumboModule-->TransactionsModule
-  IntersolveJumboModule-->RegistrationsModule
   PaymentsModule-->AfricasTalkingModule
   AfricasTalkingModule-->TransactionsModule
   PaymentsModule-->BelcashModule

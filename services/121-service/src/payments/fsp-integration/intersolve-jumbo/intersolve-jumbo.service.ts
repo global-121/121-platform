@@ -5,8 +5,8 @@ import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { GenericAttributes } from '../../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../../registration/registration.entity';
-import { RegistrationsService } from '../../../registration/registrations.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   PaTransactionResultDto,
@@ -31,7 +31,7 @@ export class IntersolveJumboService
   public constructor(
     private readonly intersolveJumboApiService: IntersolveJumboApiService,
     private readonly transactionsService: TransactionsService,
-    private readonly registrationsService: RegistrationsService,
+    private readonly registrationDataQueryService: RegistrationDataQueryService,
   ) {}
 
   public async sendPayment(
@@ -77,7 +77,7 @@ export class IntersolveJumboService
       });
     for (const r of relationOptions) {
       query.select((subQuery) => {
-        return this.registrationsService.customDataEntrySubQuery(
+        return this.registrationDataQueryService.customDataEntrySubQuery(
           subQuery,
           r.relation,
         );

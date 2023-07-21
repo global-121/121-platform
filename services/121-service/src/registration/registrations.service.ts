@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -652,38 +651,6 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return program;
-  }
-
-  public customDataEntrySubQuery(
-    subQuery: SelectQueryBuilder<any>,
-    relation: RegistrationDataRelation,
-  ): SelectQueryBuilder<any> {
-    const uniqueSubQueryId = uuid().replace(/-/g, '').toLowerCase();
-    subQuery = subQuery
-      .where(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
-      .from(RegistrationDataEntity, uniqueSubQueryId);
-    if (relation.programQuestionId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."programQuestionId" = ${relation.programQuestionId}`,
-      );
-    } else if (relation.monitoringQuestionId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."monitoringQuestionId" = ${relation.monitoringQuestionId}`,
-      );
-    } else if (relation.programCustomAttributeId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."programCustomAttributeId" = ${relation.programCustomAttributeId}`,
-      );
-    } else if (relation.fspQuestionId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."fspQuestionId" = ${relation.fspQuestionId}`,
-      );
-    }
-    // Because of string_agg no distinction between multi-select and other is needed
-    subQuery.addSelect(
-      `string_agg("${uniqueSubQueryId}".value,'|' order by value)`,
-    );
-    return subQuery;
   }
 
   public async getRegistrations(

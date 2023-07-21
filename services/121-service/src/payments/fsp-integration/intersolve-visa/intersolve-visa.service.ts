@@ -5,8 +5,8 @@ import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { GenericAttributes } from '../../../registration/enum/custom-data-attributes';
-import { RegistrationsService } from '../../../registration/registrations.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
@@ -67,7 +67,7 @@ export class IntersolveVisaService
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
-    private readonly registrationsService: RegistrationsService,
+    private readonly registrationDataQueryService: RegistrationDataQueryService,
   ) {}
 
   public async sendPayment(
@@ -114,7 +114,7 @@ export class IntersolveVisaService
       });
     for (const r of relationOptions) {
       query.select((subQuery) => {
-        return this.registrationsService.customDataEntrySubQuery(
+        return this.registrationDataQueryService.customDataEntrySubQuery(
           subQuery,
           r.relation,
         );
