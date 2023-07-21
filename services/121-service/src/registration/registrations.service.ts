@@ -10,6 +10,7 @@ import { MessageContentType } from '../notifications/message-type.enum';
 import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
+import { VisaErrorCodes } from '../payments/fsp-integration/intersolve-visa/enum/visa-error-codes.enum';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
@@ -1044,10 +1045,18 @@ export class RegistrationsService {
 
     // TO DO: refactor this to a more generic solution
     if (registration.fsp.fsp === FspName.intersolveVisa) {
-      await this.intersolveVisaService.syncIntersolveCustomerWith121(
-        registration.referenceId,
-        registration.programId,
-      );
+      try {
+        await this.intersolveVisaService.syncIntersolveCustomerWith121(
+          registration.referenceId,
+          registration.programId,
+        );
+      } catch (error) {
+        // don't throw error if the reason is that the customer doesn't exist yet
+        if (!error.response.errors.includes(VisaErrorCodes.NoCustomerYet)) {
+          const errors = `SYNC TO INTERSOLVE ERROR: ${error.response.errors}. The update in 121 did succeed.`;
+          throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      }
     }
 
     return this.getRegistrationFromReferenceId(savedRegistration.referenceId);

@@ -46,6 +46,7 @@ import { IntersolveLoadDto } from './dto/intersolve-load.dto';
 import { IntersolveReponseErrorDto } from './dto/intersolve-response-error.dto';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { IntersolveVisaPaymentInfoEnum } from './enum/intersolve-visa-payment-info.enum';
+import { VisaErrorCodes } from './enum/visa-error-codes.enum';
 import { WalletStatus121 } from './enum/wallet-status-121.enum';
 import { IntersolveVisaCustomerEntity } from './intersolve-visa-customer.entity';
 import {
@@ -591,7 +592,7 @@ export class IntersolveVisaService
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     if (!visaCustomer) {
-      const errors = `No visa customer available yet for PA with this referenceId ${referenceId}`;
+      const errors = `${VisaErrorCodes.NoCustomerYet} with referenceId ${referenceId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return { _registration: registration, _visaCustomer: visaCustomer };
@@ -678,7 +679,9 @@ export class IntersolveVisaService
         phoneNumberPayload,
       );
     if (phoneNumberResult.status !== 200) {
-      errors.push('phone number update failed');
+      errors.push(
+        `Phone number update failed: ${phoneNumberResult?.data?.code}`,
+      );
     }
 
     // TO DO: refactor this
@@ -697,11 +700,11 @@ export class IntersolveVisaService
         addressPayload,
       );
     if (addressResult.status !== 200) {
-      errors.push('address update failed');
+      errors.push(`Address update failed: ${addressResult?.data?.code}`);
     }
     if (errors.length > 0) {
       throw new HttpException(
-        { errors: errors.join(',') },
+        { errors: errors.join(', ') },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
