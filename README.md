@@ -294,7 +294,7 @@ When new Node.js dependencies are added to a service since it is last build on y
 ### When to use an API-test? (back-end + db? only)
 
 - Is it to test query-magic?
-- Is it to test essential endpoints (FSP/EspoCRM integrations) and import/exports/etc?
+- Is it to test essential endpoints (FSP integrations) and import/exports/etc?
 - Often used (with different parameters) endpoints: /update-attribute etc.
 - Is there actual business-logic performed?
 - Not necessary:
