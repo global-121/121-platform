@@ -1,14 +1,7 @@
-import {
-  Body,
-  Controller,
-  ParseArrayPipe,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../guards/admin.decorator';
 import { DeleteRegistrationDto } from '../registration/dto/delete-registration.dto';
-import { UpdateRegistrationDto } from '../registration/dto/update-registration.dto';
 import { EspocrmWebhookDto } from './dto/espocrm-webhook.dto';
 import { EspoCrmActionTypeEnum } from './espocrm-action-type.enum';
 import { EspoCrmEntityTypeEnum } from './espocrm-entity-type';
@@ -23,28 +16,6 @@ const espocrmIp = process.env.ESPOCRM_IP;
 @Controller('espocrm')
 export class EspocrmController {
   public constructor(private readonly espocrmService: EspocrmService) {}
-
-  @Espocrm(
-    EspoCrmActionTypeEnum.update,
-    EspoCrmEntityTypeEnum.registration,
-    espocrmIp,
-  )
-  @ApiOperation({ summary: 'Update registration(s) via a EspoCRM webhook' })
-  @ApiResponse({ status: 201, description: 'Updated registration(s)' })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden. Signature not correct or IP not whitelisted.',
-  })
-  @ApiBody({ isArray: true, type: UpdateRegistrationDto })
-  @Post('update-registration')
-  public async updateRegistrations(
-    @Body(new ParseArrayPipe({ items: UpdateRegistrationDto }))
-    updateRegistrationsDto: UpdateRegistrationDto[],
-  ): Promise<void> {
-    return await this.espocrmService.updateRegistrations(
-      updateRegistrationsDto,
-    );
-  }
 
   @Espocrm(
     EspoCrmActionTypeEnum.delete,
