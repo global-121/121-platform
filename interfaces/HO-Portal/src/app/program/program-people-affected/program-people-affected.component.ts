@@ -577,6 +577,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   async initComponent() {
     this.isLoading = true;
 
+    this.columns = [];
+
     await this.loadProgram();
 
     await this.loadPermissions();
@@ -734,8 +736,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   }
 
   private async loadColumns() {
-    this.columns = [];
-
     for (const column of this.standardColumns) {
       if (
         column.phases.includes(this.thisPhase) &&
