@@ -705,11 +705,21 @@ export class IntersolveVisaService
     );
     const oldWallet = oldWallets[0];
 
-    // 0. sync customer data with 121 data, as create-customer is skipped in this flow
-    await this.syncIntersolveCustomerWith121(referenceId, programId);
-
     const errorGenericPart =
       '<br><br>Update data if applicable and retry. If the problem persists, contact the 121 development team.';
+    // 0. sync customer data with 121 data, as create-customer is skipped in this flow
+    try {
+      await this.syncIntersolveCustomerWith121(referenceId, programId);
+    } catch (error) {
+      const errors = `SYNC CUSTOMER DATA ERROR: ${error.response?.errors}`;
+      throw new HttpException(
+        {
+          errors: `<strong>${errors}</strong>${errorGenericPart}`,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
     // 1. activate old wallet (if needed) to be able to get & unload balance
     try {
       await this.intersolveVisaApiService.activateWallet(oldWallet.tokenCode, {
@@ -727,7 +737,9 @@ export class IntersolveVisaService
               error.data?.code || error.status + ' - ' + error.statusText
             }`;
         throw new HttpException(
-          { errors: `${errors}${errorGenericPart}` },
+          {
+            errors: `<strong>${errors}</strong>${errorGenericPart}`,
+          },
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
@@ -752,7 +764,9 @@ export class IntersolveVisaService
               error.data?.code || error.status + ' - ' + error.statusText
             }`;
         throw new HttpException(
-          { errors: `${errors}${errorGenericPart}` },
+          {
+            errors: `<strong>${errors}</strong>${errorGenericPart}`,
+          },
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
@@ -772,7 +786,9 @@ export class IntersolveVisaService
           )}`
         : `GET WALLET ERROR: ${getWalletResponse.status} - ${getWalletResponse.statusText}`;
       throw new HttpException(
-        { errors: `${errors}${errorGenericPart}` },
+        {
+          errors: `<strong>${errors}</strong>${errorGenericPart}`,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -795,7 +811,9 @@ export class IntersolveVisaService
           )}`
         : `CREATE WALLET ERROR: ${createWalletResult.status} - ${createWalletResult.statusText}`;
       throw new HttpException(
-        { errors: `${errors}${errorGenericPart}` },
+        {
+          errors: `<strong>${errors}</strong>${errorGenericPart}`,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -833,7 +851,9 @@ export class IntersolveVisaService
             registerResult.status + ' - ' + registerResult.statusText
           }`;
       throw new HttpException(
-        { errors: `${errors}${errorGenericPart}` },
+        {
+          errors: `<strong>${errors}</strong>${errorGenericPart}`,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -864,7 +884,9 @@ export class IntersolveVisaService
           )}`
         : `CREATE DEBIT CARD ERROR: ${createDebitCardResult.status} - ${createDebitCardResult.statusText}`;
       throw new HttpException(
-        { errors: `${errors}${errorGenericPart}` },
+        {
+          errors: `<strong>${errors}</strong>${errorGenericPart}`,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
