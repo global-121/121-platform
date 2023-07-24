@@ -1,11 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import { SelectQueryBuilder } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { RegistrationDataRelation } from '../../registration/dto/registration-data-relation.model';
+import {
+  RegistrationDataOptions,
+  RegistrationDataRelation,
+} from '../../registration/dto/registration-data-relation.model';
+import { GenericAttributes } from '../../registration/enum/custom-data-attributes';
 import { RegistrationDataEntity } from '../../registration/registration-data.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
 
 @Injectable()
 export class RegistrationDataQueryService {
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
+
+  public async getPaDetails(
+    referenceIds: string[],
+    relationOptions: RegistrationDataOptions[],
+  ): Promise<any> {
+    const query = this.registrationRepository
+      .createQueryBuilder('registration')
+      .select([
+        `registration.referenceId as "referenceId"`,
+        `registration."${GenericAttributes.phoneNumber}"`,
+        `registration."${GenericAttributes.preferredLanguage}"`,
+        `coalesce(registration."${GenericAttributes.paymentAmountMultiplier}",1) as "paymentAmountMultiplier"`,
+      ])
+      .where(`registration.referenceId IN (:...referenceIds)`, {
+        referenceIds,
+      });
+    for (const r of relationOptions) {
+      query.select((subQuery) => {
+        return this.customDataEntrySubQuery(subQuery, r.relation);
+      }, r.name);
+    }
+
+    return await query.getRawMany();
+  }
+
   public customDataEntrySubQuery(
     subQuery: SelectQueryBuilder<any>,
     relation: RegistrationDataRelation,

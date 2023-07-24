@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
-import { GenericAttributes } from '../../../registration/enum/custom-data-attributes';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
@@ -97,37 +96,18 @@ export class IntersolveVisaService
     }
   }
 
-  private async getPaDetails(referenceIds: string[]): Promise<any> {
-    const relationOptions = await this.getRelationOptionsForVisa(
-      referenceIds[0],
-    );
-    const query = this.registrationRepository
-      .createQueryBuilder('registration')
-      .select([
-        `registration.referenceId as "referenceId"`,
-        `coalesce(registration."${GenericAttributes.paymentAmountMultiplier}",1) as "paymentAmountMultiplier"`,
-      ])
-      .where(`registration.referenceId IN (:...referenceIds)`, {
-        referenceIds,
-      });
-    for (const r of relationOptions) {
-      query.select((subQuery) => {
-        return this.registrationDataQueryService.customDataEntrySubQuery(
-          subQuery,
-          r.relation,
-        );
-      }, r.name);
-    }
-
-    return await query.getRawMany();
-  }
-
   private async getPaPaymentDetails(
     paymentList: PaPaymentDataDto[],
   ): Promise<PaymentDetailsDto[]> {
     const referenceIds = paymentList.map((pa) => pa.referenceId);
-
-    const visaAddressInfoDtoArray = await this.getPaDetails(referenceIds);
+    const relationOptions = await this.getRelationOptionsForVisa(
+      referenceIds[0],
+    );
+    const visaAddressInfoDtoArray =
+      await this.registrationDataQueryService.getPaDetails(
+        referenceIds,
+        relationOptions,
+      );
 
     // Maps the registration data back to the correct amounts using referenceID
     const result = visaAddressInfoDtoArray.map((v) => ({
@@ -687,8 +667,11 @@ export class IntersolveVisaService
         `Phone number update failed: ${phoneNumberResult?.data?.code}`,
       );
     }
-
-    const paymentDetails = await this.getPaDetails([referenceId]);
+    const relationOptions = await this.getRelationOptionsForVisa(referenceId);
+    const paymentDetails = await this.registrationDataQueryService.getPaDetails(
+      [referenceId],
+      relationOptions,
+    );
     const addressPayload = this.createCustomerAddressPayload(paymentDetails[0]);
     const addressResult =
       await this.intersolveVisaApiService.updateCustomerAddress(
@@ -859,7 +842,11 @@ export class IntersolveVisaService
     await this.intersolveVisaWalletRepository.save(newWallet);
 
     // 6. create new debit card
-    const paymentDetails = await this.getPaDetails([referenceId]);
+    const relationOptions = await this.getRelationOptionsForVisa(referenceId);
+    const paymentDetails = await this.registrationDataQueryService.getPaDetails(
+      [referenceId],
+      relationOptions,
+    );
     const createDebitCardResult = await this.createDebitCard(
       paymentDetails[0],
       newWallet,
