@@ -894,7 +894,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     this.allPeopleData = await this.programsService.getPeopleAffected(
       this.programId,
       this.canViewPersonalData,
-      this.canViewPaymentData && this.thisPhase === ProgramPhase.payment,
+      this.canViewPaymentData &&
+        [ProgramPhase.inclusion, ProgramPhase.payment].includes(this.thisPhase),
       null,
       null,
       attributeNames,
@@ -1019,7 +1020,9 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         : null,
       maxPayments: person.maxPayments
         ? `${person.maxPayments} ${
-            this.thisPhase === ProgramPhase.payment
+            [ProgramPhase.inclusion, ProgramPhase.payment].includes(
+              this.thisPhase,
+            )
               ? `(${
                   person.maxPayments - person.nrPayments
                 } ${this.translate.instant(
