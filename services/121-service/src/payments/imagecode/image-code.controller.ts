@@ -1,5 +1,6 @@
 import { Controller, Get, HttpStatus, Param, Res } from '@nestjs/common';
 import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Response } from 'express';
 import stream from 'stream';
 import { ImageCodeService } from './image-code.service';
@@ -13,6 +14,7 @@ export class ImageCodeController {
     this.imageCodeService = imageCodeService;
   }
 
+  @SkipThrottle()
   @ApiResponse({
     status: 200,
     description: 'Collect voucher image via WhatsApp',
