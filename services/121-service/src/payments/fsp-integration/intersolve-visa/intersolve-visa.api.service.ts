@@ -167,11 +167,6 @@ export class IntersolveVisaApiService {
         tokenCode,
       );
     } else {
-      // return {
-      //   status: 500,
-      //   statusText: 'Mock error reason',
-      //   data: {},
-      // };
       const authToken = await this.getAuthenticationToken();
       const url = `${intersolveVisaApiUrl}/payment-instrument-payment/v1/tokens/${tokenCode}/create-physical-card`;
       const headers = [
@@ -213,29 +208,6 @@ export class IntersolveVisaApiService {
     if (process.env.MOCK_INTERSOLVE) {
       return await this.intersolveVisaApiMockService.unloadBalanceCardMock();
     } else {
-      return {
-        data: {
-          success: false,
-          errors: [],
-          code: 'string',
-          correlationId: 'string',
-          data: {
-            balances: [
-              {
-                quantity: {
-                  assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE,
-                  value: 0, // return 0 because unload is only used to unload complete amount when re-issuing
-                  reserved: 0,
-                },
-                discountBudgetValue: 0,
-                lastChangedAt: '2023-02-08T14:37:22.670Z',
-              },
-            ],
-          },
-        },
-        status: 500,
-        statusText: 'Mock error reason',
-      };
       const authToken = await this.getAuthenticationToken();
       const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/unload`;
       const headers = [
