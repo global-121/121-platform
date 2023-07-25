@@ -27,8 +27,6 @@ describe('Webhook integration with EspoCRM - Update PA', () => {
     phoneNumber: '15005550098',
     fspName: FspName.intersolveVisa,
     whatsappPhoneNumber: '15005550098',
-    tokenCodeVisa: true,
-    isPhysicalCardVisa: true,
   };
   const webhookObject = {
     referenceId: '63f77488410458465',
