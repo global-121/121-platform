@@ -82,23 +82,22 @@
 
           <!-- new tab -->
           <ion-row *ngIf="item.type === 'newtab'">
-            TEST
-            <ion-accordion-group [multiple]="true">
-              <ng-container *ngFor="let paymentRow of paymentRows">
-                <app-payment-history-accordion
-                  [paymentRow]="paymentRow"
-                  [hasVoucherSupport]="hasVoucherSupport"
-                  [enableSinglePayment]="enableSinglePayment"
-                  [hasError]="hasError"
-                  [hasWaiting]="hasWaiting"
-                  [displayTransactionDateOnly]="displayTransactionDateOnly"
-                  [displayTransactionDateTime]="displayTransactionDateTime"
-                  [rowClick]="rowClick"
-                  [person]="person"
-                  [program]="program"
-                ></app-payment-history-accordion>
-              </ng-container>
-            </ion-accordion-group>
+            <div class="ion-padding-horizontal">
+              <div style="height: 100%; display: flex; align-items: center">
+                <ion-accordion-group [multiple]="true">
+                  <app-payment-history-accordion
+                    [paymentRow]="item.paymentRow"
+                    [person]="item.person"
+                    [program]="item.programId"
+                    [hasVoucherSupport]="item.hasVoucherSupport"
+                    [hasError]="item.hasError"
+                    [hasWaiting]="item.hasWaiting"
+                    (enableSinglePayment)="enableSinglePayment($event)"
+                    (rowClick)="rowClick($event)"
+                  ></app-payment-history-accordion>
+                </ion-accordion-group>
+              </div>
+            </div>
           </ion-row>
         </ion-grid>
       </ion-item>

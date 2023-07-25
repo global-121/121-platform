@@ -8,10 +8,10 @@ import {
 } from 'src/app/models/payment.model';
 import { Person } from 'src/app/models/person.model';
 import { Program } from 'src/app/models/program.model';
-import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { PaymentUtils } from 'src/app/shared/payment.utils';
 import RegistrationStatus from '../../enums/registration-status.enum';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 import { StatusEnum } from './../../models/status.enum';
@@ -100,25 +100,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
     );
   }
 
-  public enableMessageSentIcon(transaction: Transaction): boolean {
-    return (
-      transaction.customData &&
-      [
-        IntersolvePayoutStatus.initialMessage,
-        IntersolvePayoutStatus.voucherSent,
-      ].includes(transaction.customData.IntersolvePayoutStatus)
-    );
-  }
-
-  public enableMoneySentIconTable(transaction: Transaction): boolean {
-    return (
-      (!transaction.customData.IntersolvePayoutStatus ||
-        transaction.customData.IntersolvePayoutStatus ===
-          IntersolvePayoutStatus.voucherSent) &&
-      transaction.status === StatusEnum.success
-    );
-  }
-
   private fillPaymentRows() {
     const nrOfPayments = this.program?.distributionDuration;
     const lastPaymentToShow = Math.min(this.lastPaymentId, nrOfPayments);
@@ -141,18 +122,12 @@ export class PaymentHistoryPopupComponent implements OnInit {
           'page.program.program-people-affected.transaction.do-single-payment',
         );
       } else {
-        paymentRowValue = {
-          paymentIndex: index,
-          text: '',
+        paymentRowValue = PaymentUtils.getPaymentsInfo(
           transaction,
-          hasMessageIcon: this.enableMessageSentIcon(transaction),
-          hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
-          amount: `${transaction.amount} ${this.program?.currency}`,
-          fsp: this.person.fsp,
-          sentDate: '',
-        };
-        paymentRowValue.text = transaction.paymentDate;
-        paymentRowValue.sentDate = transaction.paymentDate;
+          this.program,
+          this.person,
+          index,
+        );
         if (transaction.status === StatusEnum.success) {
         } else if (transaction.status === StatusEnum.waiting) {
           paymentRowValue.errorMessage = this.translate.instant(

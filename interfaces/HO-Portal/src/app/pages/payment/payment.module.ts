@@ -26,6 +26,7 @@ const routes: Routes = [
     IonicModule,
     SharedModule,
     RouterModule.forChild(routes),
+    PaymentHistoryAccordionComponent,
   ],
   declarations: [
     PaymentPage,
@@ -34,7 +35,6 @@ const routes: Routes = [
     PaymentStatusPopupComponent,
     SubmitPaymentPopupComponent,
     PaymentHistoryPopupComponent,
-    PaymentHistoryAccordionComponent,
   ],
 })
 export class PaymentPageModule {}
