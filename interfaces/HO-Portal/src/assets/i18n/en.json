@@ -702,6 +702,7 @@
       },
       "action-result": {
         "new-card-success": "Successfully issued new debit card",
+        "new-card-error": "<span class=\"status-failed-text\">Something went wrong</span><br><br>{{error}}",
         "pause-success": "Successfully paused debit card",
         "unpause-success": "Successfully unpaused debit card"
       }

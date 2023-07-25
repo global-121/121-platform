@@ -259,6 +259,10 @@ ion-button {
   }
 }
 
+.status-failed-text {
+  color: var(--ion-color-status-failed-text);
+}
+
 // for physical card list and popup in registration details page
 .physical-card-status-chip {
   pointer-events: none;

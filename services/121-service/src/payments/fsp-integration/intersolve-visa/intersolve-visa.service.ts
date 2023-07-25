@@ -903,7 +903,7 @@ export class IntersolveVisaService
     );
     if (unloadResult.status !== 200) {
       const errors =
-        'The balance of the old card could not be unloaded and it is not permanently blocked yet. Please contact the 121 development team to solve this.<br><br>Note that the new card was issued, so there is no need to retry.';
+        'The balance of the old card could not be unloaded and it is not permanently blocked yet. <strong>Please contact the 121 development team to solve this.</strong><br><br>Note that the new card was issued, so there is no need to retry.';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -911,7 +911,7 @@ export class IntersolveVisaService
     const blockResult = await this.toggleBlockWallet(oldWallet.tokenCode, true);
     if (blockResult.status !== 204) {
       const errors =
-        'The old card could not be permanently blocked. Please contact the 121 development team to solve this.<br><br>Note that the new card was issued, so there is no need to retry.';
+        'The old card could not be permanently blocked. <strong>Please contact the 121 development team to solve this.</strong><br><br>Note that the new card was issued, so there is no need to retry.';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     // also block older wallets, but don't throw error if it fails to not complicate retry-flow further
