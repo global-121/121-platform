@@ -653,6 +653,7 @@ export class IntersolveVisaService
     const { _registration, _visaCustomer } =
       await this.getRegistrationAndVisaCustomer(referenceId, programId);
     const errors = [];
+
     const phoneNumberPayload: CreateCustomerResponseExtensionDto = {
       type: 'MOBILE',
       value: _registration.phoneNumber,
@@ -667,6 +668,7 @@ export class IntersolveVisaService
         `Phone number update failed: ${phoneNumberResult?.data?.code}`,
       );
     }
+
     const relationOptions = await this.getRelationOptionsForVisa(referenceId);
     const paymentDetails = await this.registrationDataQueryService.getPaDetails(
       [referenceId],
@@ -681,6 +683,7 @@ export class IntersolveVisaService
     if (addressResult.status !== 200) {
       errors.push(`Address update failed: ${addressResult?.data?.code}`);
     }
+
     if (errors.length > 0) {
       throw new HttpException(
         { errors: errors.join(', ') },
