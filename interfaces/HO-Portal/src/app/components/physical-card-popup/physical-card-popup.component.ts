@@ -3,12 +3,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
+import { WalletStatus121 } from '../../../../../../services/121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
-import {
-  PhysicalCard,
-  PhysicalCardStatus,
-} from '../../models/physical-card.model';
+import { PhysicalCard } from '../../models/physical-card.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { actionResult } from '../../shared/action-result';
@@ -27,7 +25,7 @@ export class PhysicalCardPopupComponent implements OnInit {
 
   @Input({ required: true })
   public card: PhysicalCard = {
-    status: PhysicalCardStatus.active,
+    status: WalletStatus121.Active,
   } as PhysicalCard;
 
   @Input({ required: true })
@@ -40,12 +38,12 @@ export class PhysicalCardPopupComponent implements OnInit {
   public showButtons: boolean;
 
   public DateFormat = DateFormat;
-  public PhysicalCardStatus = PhysicalCardStatus;
+  public WalletStatus121 = WalletStatus121;
 
-  public isCardBlocked: boolean;
+  public isCardPaused: boolean;
 
   public issueLoading = false;
-  public blockLoading = false;
+  public pauseLoading = false;
 
   constructor(
     private modalController: ModalController,
@@ -56,22 +54,21 @@ export class PhysicalCardPopupComponent implements OnInit {
     private authService: AuthService,
   ) {}
   ngOnInit(): void {
-    this.isCardBlocked =
-      this.card.status.toUpperCase() === PhysicalCardStatus.blocked;
+    this.isCardPaused = this.card.status === WalletStatus121.Paused;
   }
 
   public closeModal() {
     this.modalController.dismiss();
   }
 
-  public canBlock() {
+  private canPause() {
     return this.authService.hasPermission(
       this.programId,
       Permission.FspDebitCardBLOCK,
     );
   }
 
-  public canUnblock() {
+  private canUnpause() {
     return this.authService.hasPermission(
       this.programId,
       Permission.FspDebitCardUNBLOCK,
@@ -85,19 +82,19 @@ export class PhysicalCardPopupComponent implements OnInit {
     );
   }
 
-  public canUseBlockUnblockButton() {
-    return this.card.status.toUpperCase() === PhysicalCardStatus.blocked
-      ? this.canUnblock()
+  public canUsePauseButton() {
+    return this.card.status === WalletStatus121.Paused
+      ? this.canUnpause()
         ? true
         : false
-      : this.canBlock()
+      : this.canPause()
       ? true
       : false;
   }
 
-  toggleBlockButton() {
-    this.blockLoading = true;
-    const block = this.card.status.toUpperCase() !== PhysicalCardStatus.blocked;
+  togglePauseButton() {
+    this.pauseLoading = true;
+    const block = this.card.status !== WalletStatus121.Paused;
     this.progamsServiceApiService
       .toggleBlockWallet(this.programId, this.card.tokenCode, block)
       .then((response) => {
@@ -105,10 +102,10 @@ export class PhysicalCardPopupComponent implements OnInit {
         if (response.status === 204) {
           message = block
             ? this.translate.instant(
-                'registration-details.physical-cards-overview.action-result.block-success',
+                'registration-details.physical-cards-overview.action-result.pause-success',
               )
             : this.translate.instant(
-                'registration-details.physical-cards-overview.action-result.unblock-success',
+                'registration-details.physical-cards-overview.action-result.unpause-success',
               );
         } else if (response.status === 405) {
           message = this.translate.instant('common.update-error', {
@@ -134,7 +131,7 @@ export class PhysicalCardPopupComponent implements OnInit {
         }
       })
       .finally(() => {
-        this.blockLoading = false;
+        this.pauseLoading = false;
       });
   }
 

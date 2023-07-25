@@ -28,7 +28,7 @@
           ><ion-chip
             class="physical-card-status-chip"
             [ngClass]="
-              card?.status.toUpperCase() === PhysicalCardStatus.active
+              card?.status === WalletStatus121.Active
                 ? 'physical-card-status-chip-active'
                 : 'physical-card-status-chip-blocked'
             "

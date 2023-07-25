@@ -542,6 +542,7 @@ export class IntersolveVisaService
       walletDetailsResponse.status = this.intersolveTo121WalletStatus(
         wallet.status,
         wallet.tokenBlocked,
+        wallet.tokenCode === _visaCustomer.visaWallets[0].tokenCode,
       );
 
       walletDetailsResponse.issuedDate = wallet.created;
@@ -549,9 +550,6 @@ export class IntersolveVisaService
 
       walletsResponse.wallets.push(walletDetailsResponse);
     }
-    walletsResponse.wallets.sort((a, b) =>
-      a.issuedDate > b.issuedDate ? -1 : 1,
-    );
     return walletsResponse;
   }
 
@@ -579,19 +577,21 @@ export class IntersolveVisaService
       const errors = `${VisaErrorCodes.NoCustomerYet} with referenceId ${referenceId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+    visaCustomer.visaWallets.sort((a, b) => (a.created > b.created ? -1 : 1));
     return { _registration: registration, _visaCustomer: visaCustomer };
   }
 
   private intersolveTo121WalletStatus(
     intersolveStatus: IntersolveVisaWalletStatus,
     blocked: boolean,
+    isCurrentWallet: boolean,
   ): WalletStatus121 {
     if (blocked) {
-      return WalletStatus121.Blocked;
+      return isCurrentWallet ? WalletStatus121.Paused : WalletStatus121.Blocked;
     } else if (intersolveStatus === IntersolveVisaWalletStatus.Active) {
       return WalletStatus121.Active;
     } else if (intersolveStatus === IntersolveVisaWalletStatus.Inactive) {
-      return WalletStatus121.Inactive;
+      return WalletStatus121.Issued;
     } else {
       console.log(
         `Got unexpected status from intersolve '${intersolveStatus}'. Storing the wallet with WalletStatus121 as Blocked`,
@@ -606,7 +606,7 @@ export class IntersolveVisaService
   ): Promise<IntersolveBlockWalletResponseDto> {
     const payload: IntersolveBlockWalletDto = {
       reasonCode: block
-        ? BlockReasonEnum.BLOCK_GENERAL // If using 'TOKEN_DISABLED' the wallet will be blocked forever
+        ? BlockReasonEnum.BLOCK_GENERAL // If using 'TOKEN_DISABLED' the wallet will supposably be blocked forever
         : UnblockReasonEnum.UNBLOCK_GENERAL,
     };
     const result = await this.intersolveVisaApiService.toggleBlockWallet(
@@ -708,8 +708,7 @@ export class IntersolveVisaService
     );
     const oldWallet = oldWallets[0];
 
-    const errorGenericPart =
-      '<br><br>Update data if applicable and retry. If the problem persists, contact the 121 development team.';
+    const errorGenericPart = `<br><br>Update data if applicable and retry by using the 'Issue new card' button again. If the problem persists, contact the 121 development team.`;
     // 0. sync customer data with 121 data, as create-customer is skipped in this flow
     try {
       await this.syncIntersolveCustomerWith121(referenceId, programId);
@@ -904,7 +903,7 @@ export class IntersolveVisaService
     );
     if (unloadResult.status !== 200) {
       const errors =
-        'A new card was successfully issued, but the balance of the old card could not be unloaded and it is not blocked yet. Please contact the 121 development team to solve this.';
+        'The balance of the old card could not be unloaded and it is not permanently blocked yet. Please contact the 121 development team to solve this.<br><br>Note that the new card was issued, so there is no need to retry.';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -912,7 +911,7 @@ export class IntersolveVisaService
     const blockResult = await this.toggleBlockWallet(oldWallet.tokenCode, true);
     if (blockResult.status !== 204) {
       const errors =
-        'A new card was successfully issued and the balance of the old card is unloaded. But the old card could not be blocked. Please contact the 121 development team to solve this.';
+        'The old card could not be permanently blocked. Please contact the 121 development team to solve this.<br><br>Note that the new card was issued, so there is no need to retry.';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     // also block older wallets, but don't throw error if it fails to not complicate retry-flow further

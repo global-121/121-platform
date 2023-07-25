@@ -3,11 +3,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
-import {
-  PhysicalCard,
-  PhysicalCardStatus,
-} from 'src/app/models/physical-card.model';
+import { PhysicalCard } from 'src/app/models/physical-card.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { WalletStatus121 } from '../../../../../../services/121-service/src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import RegistrationStatus from '../../enums/registration-status.enum';
 import { PhysicalCardPopupComponent } from '../physical-card-popup/physical-card-popup.component';
 import { RegistrationPageTableComponent } from '../registration-page-table/registration-page-table.component';
@@ -42,7 +40,7 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
   public registrationStatus: Person['status'];
 
   public physicalCards: PhysicalCard[];
-  public PhysicalCardStatus = PhysicalCardStatus;
+  public WalletStatus121 = WalletStatus121;
   public latestCard: PhysicalCard;
 
   public loading = true;
