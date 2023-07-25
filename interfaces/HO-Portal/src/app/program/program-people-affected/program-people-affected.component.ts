@@ -103,7 +103,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public columns: PersonTableColumn[] = [];
   private standardColumns: PersonTableColumn[] = [];
   public paymentHistoryColumn: PersonTableColumn;
-  private lastPaymentId: number;
 
   private allPeopleData: Person[];
   public allPeopleAffected: PersonRow[] = [];
@@ -117,7 +116,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
   public headerSelectAllVisible = false;
 
   public isInProgress = false;
-  public paymentInProgress = false;
 
   public submitPaymentProps: SubmitPaymentProps;
   public emptySeparatorWidth = 40;
@@ -588,9 +586,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       this.thisPhase,
     );
 
-    this.paymentInProgress =
-      await this.pastPaymentsService.checkPaymentInProgress(this.programId);
-
     this.activePhase = this.program.phase;
 
     await this.loadColumns();
@@ -627,11 +622,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   private async refreshData(refresh: boolean = false) {
     this.isLoading = true;
-    if (this.canViewPaymentData) {
-      this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
-        this.programId,
-      );
-    }
     await this.loadData(refresh);
     await this.resetBulkAction();
     this.updateProxyScrollbarSize();
@@ -1339,23 +1329,6 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
 
   public isRowSelectable(row: PersonRow): boolean {
     return row.checkboxVisible || false;
-  }
-
-  public enableSinglePayment(row: PersonRow, column): boolean {
-    const permission = this.canDoSinglePayment;
-    const included = row.status === RegistrationStatus.included;
-    const noPaymentDone = !row[column.prop];
-    const noFuturePayment = column.paymentIndex <= this.lastPaymentId;
-    const onlyLast3Payments = column.paymentIndex > this.lastPaymentId - 3;
-    const noPaymentInProgress = !this.paymentInProgress;
-    return (
-      permission &&
-      included &&
-      noPaymentDone &&
-      noFuturePayment &&
-      onlyLast3Payments &&
-      noPaymentInProgress
-    );
   }
 
   public onSelect(newSelected: PersonRow[]) {
