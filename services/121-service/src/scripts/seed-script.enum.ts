@@ -8,6 +8,5 @@ export enum SeedScript {
   testMultiple = 'test-multiple',
   nlrcMultiple = 'nlrc-multiple',
   ethJointResponse = 'eth-joint-response',
-  krcs = 'krcs',
   krcsMultiple = 'krcs-multiple',
 }
