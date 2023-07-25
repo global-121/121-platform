@@ -1043,19 +1043,21 @@ export class RegistrationsService {
       );
     }
 
-    await this.syncUpdatesWithThirdParties(registration);
+    await this.syncUpdatesWithThirdParties(registration, attribute);
 
     return this.getRegistrationFromReferenceId(savedRegistration.referenceId);
   }
 
   private async syncUpdatesWithThirdParties(
     registration: RegistrationEntity,
+    attribute: Attributes | string,
   ): Promise<void> {
     if (registration.fsp?.fsp === FspName.intersolveVisa) {
       try {
         await this.intersolveVisaService.syncIntersolveCustomerWith121(
           registration.referenceId,
           registration.programId,
+          attribute,
         );
       } catch (error) {
         // don't throw error if the reason is that the customer doesn't exist yet

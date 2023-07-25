@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
+import { Attributes } from '../../../registration/dto/update-attribute.dto';
+import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
@@ -646,10 +648,29 @@ export class IntersolveVisaService
     };
   }
 
+  private doesAttributeRequireSync(attribute: CustomDataAttributes): boolean {
+    return [
+      CustomDataAttributes.phoneNumber,
+      CustomDataAttributes.addressCity,
+      CustomDataAttributes.addressHouseNumber,
+      CustomDataAttributes.addressHouseNumberAddition,
+      CustomDataAttributes.addressPostalCode,
+      CustomDataAttributes.addressStreet,
+    ].includes(attribute);
+  }
+
   public async syncIntersolveCustomerWith121(
     referenceId: string,
     programId: number,
+    attribute?: Attributes | string,
   ): Promise<any> {
+    if (
+      attribute &&
+      !this.doesAttributeRequireSync(attribute as CustomDataAttributes)
+    ) {
+      return;
+    }
+
     const { _registration, _visaCustomer } =
       await this.getRegistrationAndVisaCustomer(referenceId, programId);
     const errors = [];
