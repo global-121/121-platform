@@ -1043,7 +1043,9 @@ export class RegistrationsService {
       );
     }
 
-    await this.syncUpdatesWithThirdParties(registration, attribute);
+    if (process.env.SYNC_WITH_THIRD_PARTIES) {
+      await this.syncUpdatesWithThirdParties(registration, attribute);
+    }
 
     return this.getRegistrationFromReferenceId(savedRegistration.referenceId);
   }
