@@ -262,7 +262,10 @@ export class TransactionsService {
       })
       .getRawOne();
     // Match that against registration.maxPayments
-    if (currentPaymentCount >= registration.maxPayments) {
+    if (
+      currentPaymentCount >= registration.maxPayments &&
+      registration.registrationStatus === RegistrationStatusEnum.included
+    ) {
       registration.registrationStatus = RegistrationStatusEnum.completed;
       await this.registrationRepository.save(registration);
     }
