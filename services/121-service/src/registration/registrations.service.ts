@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
@@ -11,6 +10,8 @@ import { MessageContentType } from '../notifications/message-type.enum';
 import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
+import { VisaErrorCodes } from '../payments/fsp-integration/intersolve-visa/enum/visa-error-codes.enum';
+import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
@@ -89,6 +90,7 @@ export class RegistrationsService {
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly bulkImportService: BulkImportService,
     private readonly programService: ProgramService,
+    private readonly intersolveVisaService: IntersolveVisaService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -654,38 +656,6 @@ export class RegistrationsService {
     return program;
   }
 
-  public customDataEntrySubQuery(
-    subQuery: SelectQueryBuilder<any>,
-    relation: RegistrationDataRelation,
-  ): SelectQueryBuilder<any> {
-    const uniqueSubQueryId = uuid().replace(/-/g, '').toLowerCase();
-    subQuery = subQuery
-      .where(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
-      .from(RegistrationDataEntity, uniqueSubQueryId);
-    if (relation.programQuestionId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."programQuestionId" = ${relation.programQuestionId}`,
-      );
-    } else if (relation.monitoringQuestionId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."monitoringQuestionId" = ${relation.monitoringQuestionId}`,
-      );
-    } else if (relation.programCustomAttributeId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."programCustomAttributeId" = ${relation.programCustomAttributeId}`,
-      );
-    } else if (relation.fspQuestionId) {
-      subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."fspQuestionId" = ${relation.fspQuestionId}`,
-      );
-    }
-    // Because of string_agg no distinction between multi-select and other is needed
-    subQuery.addSelect(
-      `string_agg("${uniqueSubQueryId}".value,'|' order by value)`,
-    );
-    return subQuery;
-  }
-
   public async getRegistrations(
     programId: number,
     includePersonalData: boolean,
@@ -1027,7 +997,7 @@ export class RegistrationsService {
   ): Promise<RegistrationEntity> {
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
-      ['program'],
+      ['program', 'fsp'],
     );
 
     value = await this.cleanCustomDataIfPhoneNr(attribute, value);
@@ -1072,7 +1042,33 @@ export class RegistrationsService {
         calculatedRegistration.referenceId,
       );
     }
+
+    if (process.env.SYNC_WITH_THIRD_PARTIES) {
+      await this.syncUpdatesWithThirdParties(registration, attribute);
+    }
+
     return this.getRegistrationFromReferenceId(savedRegistration.referenceId);
+  }
+
+  private async syncUpdatesWithThirdParties(
+    registration: RegistrationEntity,
+    attribute: Attributes | string,
+  ): Promise<void> {
+    if (registration.fsp?.fsp === FspName.intersolveVisa) {
+      try {
+        await this.intersolveVisaService.syncIntersolveCustomerWith121(
+          registration.referenceId,
+          registration.programId,
+          attribute,
+        );
+      } catch (error) {
+        // don't throw error if the reason is that the customer doesn't exist yet
+        if (!error.response.errors.includes(VisaErrorCodes.NoCustomerYet)) {
+          const errors = `SYNC TO INTERSOLVE ERROR: ${error.response.errors}. The update in 121 did succeed.`;
+          throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      }
+    }
   }
 
   public async updateNote(referenceId: string, note: string): Promise<NoteDto> {

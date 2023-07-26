@@ -683,16 +683,29 @@
       "status": {
         "active": "Active",
         "inactive": "Inactive",
-        "blocked": "Blocked"
+        "blocked": "Blocked",
+        "paused": "Paused"
       },
       "date-activated": "Activated",
       "date-last-used": "Last used",
       "current-balance": "Current balance",
-      "block-card": "Block card",
-      "unblock-card": "Unblock card",
-      "send-replacement-card": "Send replacement card",
+      "pause-card": "Pause card",
+      "unpause-card": "Unpause card",
+      "issue-new-card": "Issue new card",
       "popup-title": "Debit card",
-      "not-used-yet": "Not used yet"
+      "not-used-yet": "Not used yet",
+      "confirm-prompt": {
+        "prefix": "Are you sure you want to ",
+        "pause": "pause this card?",
+        "unpause": "unpause this card?",
+        "new-card": "permanently block this card and issue a new card?"
+      },
+      "action-result": {
+        "new-card-success": "Successfully issued new debit card",
+        "new-card-error": "<span class=\"status-failed-text\">Something went wrong</span><br><br>{{error}}",
+        "pause-success": "Successfully paused debit card",
+        "unpause-success": "Successfully unpaused debit card"
+      }
     },
     "activity-overview": {
       "title": "Activity overview",

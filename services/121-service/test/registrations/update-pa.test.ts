@@ -21,8 +21,6 @@ describe('Update attribute of PA', () => {
     phoneNumber: '15005550098',
     fspName: FspName.intersolveVisa,
     whatsappPhoneNumber: '15005550098',
-    tokenCodeVisa: true,
-    isPhysicalCardVisa: true,
   };
 
   let accessToken: string;

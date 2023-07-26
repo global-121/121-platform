@@ -21,8 +21,6 @@ describe('Delete PA', () => {
     phoneNumber: '15005550099',
     fspName: FspName.intersolveVisa,
     whatsappPhoneNumber: '15005550099',
-    tokenCodeVisa: true,
-    isPhysicalCardVisa: true,
   };
 
   let accessToken: string;

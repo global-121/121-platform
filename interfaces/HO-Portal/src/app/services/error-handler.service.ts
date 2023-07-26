@@ -40,6 +40,9 @@ export class ErrorHandlerService extends ErrorHandler {
     if (error.error.message) {
       return '<br><br>' + error.error.message + '<br>';
     }
+    if (error.error.errors && typeof error.error.errors === 'string') {
+      return '<br><br>' + error.error.errors + '<br>';
+    }
   }
 
   private formatConstraintsErrors(errors, attribute?: string): string {

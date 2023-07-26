@@ -10,6 +10,7 @@ import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramModule } from '../programs/programs.module';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { UserModule } from '../user/user.module';
+import { RegistrationDataQueryService } from '../utils/registration-data-query/registration-data-query.service';
 import { ActionModule } from './../actions/action.module';
 import { ProgramEntity } from './../programs/program.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
@@ -38,7 +39,7 @@ import { ExportMetricsService } from './export-metrics.service';
     PaymentsModule,
     TransactionsModule,
   ],
-  providers: [ExportMetricsService],
+  providers: [ExportMetricsService, RegistrationDataQueryService],
   controllers: [ExportMetricsController],
   exports: [],
 })

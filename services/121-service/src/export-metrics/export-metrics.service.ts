@@ -22,6 +22,7 @@ import { RegistrationStatusEnum } from '../registration/enum/registration-status
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { StatusEnum } from '../shared/enum/status.enum';
+import { RegistrationDataQueryService } from '../utils/registration-data-query/registration-data-query.service';
 import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
 import { RegistrationDataOptions } from './../registration/dto/registration-data-relation.model';
 import { CustomDataAttributes } from './../registration/enum/custom-data-attributes';
@@ -55,6 +56,7 @@ export class ExportMetricsService {
     private readonly paymentsService: PaymentsService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
+    private readonly registrationDataQueryService: RegistrationDataQueryService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -443,7 +445,7 @@ export class ExportMetricsService {
 
     for (const r of relationOptions) {
       query.select((subQuery) => {
-        return this.registrationsService.customDataEntrySubQuery(
+        return this.registrationDataQueryService.customDataEntrySubQuery(
           subQuery,
           r.relation,
         );
@@ -477,7 +479,7 @@ export class ExportMetricsService {
       .orderBy('"registration"."registrationProgramId"', 'ASC');
     for (const r of relationOptions) {
       query.select((subQuery) => {
-        return this.registrationsService.customDataEntrySubQuery(
+        return this.registrationDataQueryService.customDataEntrySubQuery(
           subQuery,
           r.relation,
         );
@@ -771,7 +773,7 @@ export class ExportMetricsService {
 
     for (const r of registrationDataOptions) {
       transactionQuery.select((subQuery) => {
-        return this.registrationsService.customDataEntrySubQuery(
+        return this.registrationDataQueryService.customDataEntrySubQuery(
           subQuery,
           r.relation,
         );
