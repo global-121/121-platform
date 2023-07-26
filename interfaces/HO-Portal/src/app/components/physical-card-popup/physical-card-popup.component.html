@@ -44,11 +44,7 @@
       <ion-label class="ion-text-right"
         ><ion-chip
           class="physical-card-status-chip"
-          [ngClass]="
-            card?.status === WalletStatus121.Active
-              ? 'physical-card-status-chip-active'
-              : 'physical-card-status-chip-blocked'
-          "
+          [ngClass]="'physical-card-status-chip-' + card?.status.toLowerCase()"
           >{{ card?.status }}</ion-chip
         ></ion-label
       >
@@ -87,7 +83,7 @@
     </ion-item>
     <ion-row
       *ngIf="showButtons"
-      class="ion-padding"
+      class="ion-padding ion-justify-content-end"
     >
       <app-confirm-prompt
         color="portal-primary"
@@ -119,6 +115,7 @@
       </app-confirm-prompt>
 
       <app-confirm-prompt
+        class="ion-margin-start"
         color="portal-danger"
         fill="outline"
         size="small"

@@ -268,11 +268,19 @@ ion-button {
   pointer-events: none;
   height: 20px;
   &.physical-card-status-chip-active {
-    background-color: #e9f1ed;
-    color: #295741;
+    background-color: var(--fiveten-success-100);
+    color: var(--fiveten-success-700);
   }
   &.physical-card-status-chip-blocked {
-    background-color: #faebef;
-    color: #8a0f32;
+    background-color: var(--fiveten-error-100);
+    color: var(--fiveten-error-700);
+  }
+  &.physical-card-status-chip-issued {
+    background-color: var(--fiveten-navy-1300);
+    color: var(--fiveten-link-700);
+  }
+  &.physical-card-status-chip-paused {
+    background-color: var(--fiveten-warning-100);
+    color: var(--fiveten-warning-700);
   }
 }
