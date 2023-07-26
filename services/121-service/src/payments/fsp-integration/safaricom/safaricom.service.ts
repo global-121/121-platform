@@ -181,6 +181,14 @@ export class SafaricomService {
           },
         },
       })
+      .orWhere('transaction.customData ::jsonb @> :customData', {
+        customData: {
+          requestResult: {
+            OriginatorConversationID:
+              safaricomCustomData.requestResult.OriginatorConversationID,
+          },
+        },
+      })
       .getMany();
 
     payloadResult.requestResult = safaricomCustomData.requestResult;
