@@ -3,10 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
-import { GenericAttributes } from '../../../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../../../registration/registration.entity';
-import { RegistrationsService } from '../../../registration/registrations.service';
 import { StatusEnum } from '../../../shared/enum/status.enum';
+import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';
 import { PaPaymentDataDto } from '../../dto/pa-payment-data.dto';
 import {
   PaTransactionResultDto,
@@ -31,7 +30,7 @@ export class IntersolveJumboService
   public constructor(
     private readonly intersolveJumboApiService: IntersolveJumboApiService,
     private readonly transactionsService: TransactionsService,
-    private readonly registrationsService: RegistrationsService,
+    private readonly registrationDataQueryService: RegistrationDataQueryService,
   ) {}
 
   public async sendPayment(
@@ -64,27 +63,11 @@ export class IntersolveJumboService
     const relationOptions = await this.getRelationOptionsForJumbo(
       referenceIds[0],
     );
-    const query = this.registrationRepository
-      .createQueryBuilder('registration')
-      .select([
-        `registration.referenceId as "referenceId"`,
-        `registration."${GenericAttributes.phoneNumber}"`,
-        `registration."${GenericAttributes.preferredLanguage}"`,
-        `coalesce(registration."${GenericAttributes.paymentAmountMultiplier}",1) as "paymentAmountMultiplier"`,
-      ])
-      .where(`registration.referenceId IN (:...referenceIds)`, {
+    const jumboAdressInfoDtoArray =
+      await this.registrationDataQueryService.getPaDetails(
         referenceIds,
-      });
-    for (const r of relationOptions) {
-      query.select((subQuery) => {
-        return this.registrationsService.customDataEntrySubQuery(
-          subQuery,
-          r.relation,
-        );
-      }, r.name);
-    }
-
-    const jumboAdressInfoDtoArray = await query.getRawMany();
+        relationOptions,
+      );
 
     // Maps the registration data back to the correct amounts using referenceID
     const result = jumboAdressInfoDtoArray.map((v) => ({

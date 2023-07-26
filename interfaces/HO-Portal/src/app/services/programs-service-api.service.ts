@@ -468,6 +468,19 @@ export class ProgramsServiceApiService {
     return !!response && !!response.wallets ? response.wallets : [];
   }
 
+  public async issueNewCard(
+    programId: number,
+    referenceId: string,
+  ): Promise<any> {
+    const res = await this.apiService.put(
+      environment.url_121_service_api,
+      `/programs/${programId}/fsp-integration/intersolve-visa/customers/${referenceId}/wallets`,
+      {},
+    );
+
+    return res;
+  }
+
   public async toggleBlockWallet(
     programId: number,
     tokenCode: string,

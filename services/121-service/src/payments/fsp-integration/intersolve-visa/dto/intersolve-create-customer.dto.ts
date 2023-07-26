@@ -32,7 +32,7 @@ export class IntersolveAddressDto {
   public country: string;
 }
 
-class IntersolveTypeValue {
+export class IntersolveTypeValue {
   public type: string;
   public value: string;
 }

@@ -43,11 +43,8 @@
       </ion-label>
       <ion-label class="ion-text-right"
         ><ion-chip
-          [color]="
-            card?.status.toUpperCase() === PhysicalCardStatus.active
-              ? 'success'
-              : 'danger'
-          "
+          class="physical-card-status-chip"
+          [ngClass]="'physical-card-status-chip-' + card?.status.toLowerCase()"
           >{{ card?.status }}</ion-chip
         ></ion-label
       >
@@ -84,15 +81,77 @@
         }}</strong>
       </ion-label>
     </ion-item>
-    &nbsp;
-    <ion-button
-      fill="outline"
-      color="danger"
-      size="small"
-      shape="round"
-      (click)="toggleBlockButton(card)"
-      [innerHTML]="blockButtonLabel"
-      [disabled]="!canUseButton()"
-    ></ion-button>
+    <ion-row
+      *ngIf="showButtons"
+      class="ion-padding ion-justify-content-end"
+    >
+      <app-confirm-prompt
+        color="portal-primary"
+        fill="outline"
+        size="small"
+        shape="round"
+        [disabled]="issueLoading || !canIssueNewCard()"
+        (confirm)="issueNewCardButtonClick()"
+        [subHeader]="
+          'registration-details.physical-cards-overview.issue-new-card'
+            | translate
+        "
+        [message]="
+          ('registration-details.physical-cards-overview.confirm-prompt.prefix'
+            | translate) +
+          ('registration-details.physical-cards-overview.confirm-prompt.new-card'
+            | translate)
+        "
+      >
+        {{
+          'registration-details.physical-cards-overview.issue-new-card'
+            | translate
+        }}
+        <ion-spinner
+          color="portal-primary"
+          class="physical-card-button-spinner"
+          *ngIf="issueLoading"
+        ></ion-spinner>
+      </app-confirm-prompt>
+
+      <app-confirm-prompt
+        class="ion-margin-start"
+        color="portal-danger"
+        fill="outline"
+        size="small"
+        shape="round"
+        [disabled]="pauseLoading || !canUsePauseButton()"
+        (confirm)="togglePauseButton()"
+        [subHeader]="
+          isCardPaused
+            ? ('registration-details.physical-cards-overview.unpause-card'
+              | translate)
+            : ('registration-details.physical-cards-overview.pause-card'
+              | translate)
+        "
+        [message]="
+          ('registration-details.physical-cards-overview.confirm-prompt.prefix'
+            | translate) +
+          (isCardPaused
+            ? ('registration-details.physical-cards-overview.confirm-prompt.unpause'
+              | translate)
+            : ('registration-details.physical-cards-overview.confirm-prompt.pause'
+              | translate))
+        "
+      >
+        {{
+          isCardPaused
+            ? ('registration-details.physical-cards-overview.unpause-card'
+              | translate)
+            : ('registration-details.physical-cards-overview.pause-card'
+              | translate)
+        }}
+        <ion-spinner
+          color="portal-danger"
+          class="physical-card-button-spinner"
+          *ngIf="pauseLoading"
+        ></ion-spinner>
+      </app-confirm-prompt>
+    </ion-row>
   </ion-list>
 </ion-content>

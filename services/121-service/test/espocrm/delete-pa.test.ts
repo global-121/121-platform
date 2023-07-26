@@ -28,8 +28,6 @@ describe('Webhook integration with EspoCRM - Delete PA', () => {
     phoneNumber: '15005550099',
     fspName: FspName.intersolveVisa,
     whatsappPhoneNumber: '15005550099',
-    tokenCodeVisa: true,
-    isPhysicalCardVisa: true,
   };
   const webhookObject = {
     referenceId: '63f77488410458466',
