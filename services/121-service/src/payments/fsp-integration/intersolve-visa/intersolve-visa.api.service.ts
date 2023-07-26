@@ -63,7 +63,10 @@ export class IntersolveVisaApiService {
       );
     } else {
       const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/customer/v1/customers/create-individual`;
+      const apiPath = process.env.INTERSOLVE_VISA_PROD
+        ? 'customer-payments'
+        : 'customer';
+      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/customers/create-individual`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
@@ -85,8 +88,11 @@ export class IntersolveVisaApiService {
       );
     } else {
       const authToken = await this.getAuthenticationToken();
+      const apiPath = process.env.INTERSOLVE_VISA_PROD
+        ? 'pointofsale-payments'
+        : 'pointofsale';
       const brandCode = process.env.INTERSOLVE_VISA_BRAND_CODE;
-      const url = `${intersolveVisaApiUrl}/pointofsale/v1/brand-types/${brandCode}/issue-token?includeBalances=true`;
+      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/brand-types/${brandCode}/issue-token?includeBalances=true`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
@@ -106,7 +112,10 @@ export class IntersolveVisaApiService {
       return await this.intersolveVisaApiMockService.getWalletMock(tokenCode);
     } else {
       const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}?includeBalances=true`;
+      const apiPath = process.env.INTERSOLVE_VISA_PROD
+        ? 'pointofsale-payments'
+        : 'pointofsale';
+      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}?includeBalances=true`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
@@ -127,7 +136,10 @@ export class IntersolveVisaApiService {
       );
     } else {
       const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/wallet/v1/tokens/${tokenCode}/transactions`;
+      const apiPath = process.env.INTERSOLVE_VISA_PROD
+        ? 'wallet-payments'
+        : 'wallet';
+      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}/transactions`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
@@ -148,7 +160,10 @@ export class IntersolveVisaApiService {
       );
     } else {
       const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/wallet/v1/tokens/${tokenCode}/register-holder`;
+      const apiPath = process.env.INTERSOLVE_VISA_PROD
+        ? 'wallet-payments'
+        : 'wallet';
+      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}/register-holder`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
@@ -188,7 +203,10 @@ export class IntersolveVisaApiService {
       );
     } else {
       const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/load`;
+      const apiPath = process.env.INTERSOLVE_VISA_PROD
+        ? 'pointofsale-payments'
+        : 'pointofsale';
+      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}/load`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
@@ -209,7 +227,10 @@ export class IntersolveVisaApiService {
       return await this.intersolveVisaApiMockService.unloadBalanceCardMock();
     } else {
       const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/unload`;
+      const apiPath = process.env.INTERSOLVE_VISA_PROD
+        ? 'pointofsale-payments'
+        : 'pointofsale';
+      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}/unload`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
@@ -231,7 +252,10 @@ export class IntersolveVisaApiService {
       return await this.intersolveVisaApiMockService.toggleBlockWalletMock();
     } else {
       const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/${
+      const apiPath = process.env.INTERSOLVE_VISA_PROD
+        ? 'pointofsale-payments'
+        : 'pointofsale';
+      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}/${
         block ? 'block' : 'unblock'
       }`;
       const headers = [
@@ -260,7 +284,10 @@ export class IntersolveVisaApiService {
       return await this.intersolveVisaApiMockService.updateCustomerPhoneNumber();
     } else {
       const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/customer/v1/customers/${holderId}/contact-info/phone-numbers`;
+      const apiPath = process.env.INTERSOLVE_VISA_PROD
+        ? 'customer-payments'
+        : 'customer';
+      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/customers/${holderId}/contact-info/phone-numbers`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
@@ -283,7 +310,10 @@ export class IntersolveVisaApiService {
       return await this.intersolveVisaApiMockService.updateCustomerAddress();
     } else {
       const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/customer/v1/customers/${holderId}/contact-info/addresses`;
+      const apiPath = process.env.INTERSOLVE_VISA_PROD
+        ? 'customer-payments'
+        : 'customer';
+      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/customers/${holderId}/contact-info/addresses`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
@@ -308,7 +338,10 @@ export class IntersolveVisaApiService {
       );
     } else {
       const authToken = await this.getAuthenticationToken();
-      const url = `${intersolveVisaApiUrl}/pointofsale/v1/tokens/${tokenCode}/activate`;
+      const apiPath = process.env.INTERSOLVE_VISA_PROD
+        ? 'pointofsale-payments'
+        : 'pointofsale';
+      const url = `${intersolveVisaApiUrl}/${apiPath}/v1/tokens/${tokenCode}/activate`;
       const headers = [
         { name: 'Authorization', value: `Bearer ${authToken}` },
         { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
