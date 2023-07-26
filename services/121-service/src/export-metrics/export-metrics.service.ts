@@ -759,6 +759,7 @@ export class ExportMetricsService {
         'transaction.status as "status"',
         'transaction."errorMessage" as "errorMessage"',
         'fsp.fsp AS financialServiceProvider',
+        'safaricom_request.originatorConversationID as "originatorConversationID"',
       ])
       .innerJoin(
         '(' + latestTransactionPerPa.getQuery() + ')',
@@ -767,6 +768,11 @@ export class ExportMetricsService {
       )
       .setParameters(latestTransactionPerPa.getParameters())
       .leftJoin('transaction.registration', 'registration')
+      .leftJoin(
+        'SafaricomRequestEntity',
+        'safaricom_request',
+        'transaction.id = safaricom_request.transactionId',
+      )
       .leftJoin('registration.fsp', 'fsp');
 
     for (const r of registrationDataOptions) {
