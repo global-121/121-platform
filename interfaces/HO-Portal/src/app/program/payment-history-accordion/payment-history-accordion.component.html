@@ -31,7 +31,7 @@
           </ion-chip>
           <!-- Single payment Transfer status -->
           <ion-chip
-            *ngIf="!paymentRow.transaction && !hasError(paymentRow)"
+            *ngIf="!paymentRow.transaction && !hasErrorCheck(paymentRow)"
             [ngClass]="'waiting'"
           >
             <ion-label>
@@ -51,7 +51,7 @@
             size="small"
             *ngIf="
               paymentRow.transaction &&
-              !hasError(paymentRow) &&
+              !hasErrorCheck(paymentRow) &&
               hasVoucherSupport(paymentRow.transaction.fsp)
             "
             (click)="rowClick.emit(paymentRow)"
@@ -69,7 +69,7 @@
             shape="round"
             fill="outline"
             size="small"
-            *ngIf="hasError(paymentRow) && !hasWaiting(paymentRow)"
+            *ngIf="hasErrorCheck(paymentRow) && !hasWaitingCheck(paymentRow)"
             (click)="rowClick.emit(paymentRow)"
           >
             {{
@@ -86,7 +86,7 @@
             shape="round"
             fill="outline"
             size="small"
-            *ngIf="!paymentRow.transaction && !hasError(paymentRow)"
+            *ngIf="!paymentRow.transaction && !hasErrorCheck(paymentRow)"
             (click)="rowClick.emit(paymentRow)"
           >
             {{

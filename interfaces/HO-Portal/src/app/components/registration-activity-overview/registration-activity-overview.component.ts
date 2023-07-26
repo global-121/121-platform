@@ -20,7 +20,7 @@ class ActivityOverviewItem {
   paymentRow?: Transaction;
   hasVoucherSupport?: boolean;
   person?: Person;
-  program?: number;
+  program?: Program;
   hasError?: boolean;
   hasWaiting?: boolean;
 }

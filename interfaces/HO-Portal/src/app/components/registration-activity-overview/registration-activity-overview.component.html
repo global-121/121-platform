@@ -82,13 +82,11 @@
 
           <!-- new tab -->
           <ion-row *ngIf="item.type === 'newtab'">
-            test {{ item | json }}
             <div class="ion-padding-horizontal">
               <div style="height: 100%; width: 100%">
                 <ion-accordion-group [multiple]="true">
                   <app-payment-history-accordion
                     [paymentRow]="item.transaction"
-                    [paymentIndex]="item.paymentIndex"
                     [person]="item.person"
                     [program]="item.programId"
                     [hasVoucherSupport]="item.hasVoucherSupport"

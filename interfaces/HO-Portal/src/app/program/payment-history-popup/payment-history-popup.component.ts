@@ -148,21 +148,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
       }
     }
   }
-  public hasWaiting(paymentRow: PaymentRowDetail): boolean {
-    return !!paymentRow.waiting;
-  }
-
-  public hasError(paymentRow: PaymentRowDetail): boolean {
-    if (paymentRow.errorMessage) {
-      return true;
-    }
-
-    if (paymentRow.status === StatusEnum.error) {
-      return true;
-    }
-
-    return false;
-  }
 
   public enableSinglePayment(paymentRow: PaymentRowDetail): boolean {
     if (!paymentRow) {
@@ -200,8 +185,8 @@ export class PaymentHistoryPopupComponent implements OnInit {
     let showRetryButton = false;
     let doSinglePaymentDetails: SinglePayoutDetails = null;
     let paymentDetails: PayoutDetails = null;
-    const hasWaiting = this.hasWaiting(paymentRow);
-    const hasError = this.hasError(paymentRow);
+    const hasWaiting = PaymentUtils.hasWaiting(paymentRow);
+    const hasError = PaymentUtils.hasError(paymentRow);
     const isSinglePayment = this.enableSinglePayment(paymentRow);
 
     if (

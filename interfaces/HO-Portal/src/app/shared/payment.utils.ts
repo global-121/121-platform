@@ -25,6 +25,22 @@ export class PaymentUtils {
     );
   }
 
+  static hasWaiting(paymentRow: PaymentRowDetail): boolean {
+    return !!paymentRow.waiting;
+  }
+
+  static hasError(paymentRow: PaymentRowDetail): boolean {
+    if (paymentRow.errorMessage) {
+      return true;
+    }
+
+    if (paymentRow.status === StatusEnum.error) {
+      return true;
+    }
+
+    return false;
+  }
+
   static getPaymentRowInfo(
     transaction: Transaction,
     program: Program,

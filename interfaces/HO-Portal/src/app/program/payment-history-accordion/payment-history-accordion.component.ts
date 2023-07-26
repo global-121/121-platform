@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { DateFormat } from 'src/app/enums/date-format.enum';
+import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 @Component({
@@ -14,18 +15,14 @@ import { SharedModule } from 'src/app/shared/shared.module';
 })
 export class PaymentHistoryAccordionComponent {
   DateFormat = DateFormat;
+  hasErrorCheck = PaymentUtils.hasError;
+  hasWaitingCheck = PaymentUtils.hasError;
 
   @Input()
   public paymentRow: any;
 
   @Input()
   public hasVoucherSupport: any;
-
-  @Input()
-  public hasError: any;
-
-  @Input()
-  public hasWaiting: any;
 
   @Output()
   enableSinglePayment = new EventEmitter<any>();
