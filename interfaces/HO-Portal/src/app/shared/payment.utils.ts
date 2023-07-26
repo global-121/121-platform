@@ -25,14 +25,14 @@ export class PaymentUtils {
     );
   }
 
-  static getPaymentsInfo(
+  static getPaymentRowInfo(
     transaction: Transaction,
     program: Program,
     person: Person,
-    index: PaymentRowDetail,
+    index: number,
   ): PaymentRowDetail {
     return {
-      paymentIndex: index.paymentIndex,
+      paymentIndex: index,
       text: transaction.paymentDate,
       transaction,
       hasMessageIcon: this.enableMessageSentIcon(transaction),

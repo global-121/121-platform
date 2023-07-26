@@ -12,7 +12,6 @@ import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
-
 class ActivityOverviewItem {
   type: string;
   label?: string;
@@ -117,7 +116,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       const tempData = [];
       payments.forEach((payment, i) => {
         tempData.push({
-          ...PaymentUtils.getPaymentsInfo(
+          ...PaymentUtils.getPaymentRowInfo(
             this.getTransactionOfPaymentForRegistration(
               payment.referenceId,
               pastTransactions,
@@ -131,7 +130,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         });
       });
       this.activityOverview = [...tempData];
-      console.log('test if true', [...this.activityOverview]);
     }
 
     if (this.canViewMessageHistory) {

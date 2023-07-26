@@ -24,7 +24,6 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
 <!-- PA name -->
 <ion-content class="ion-padding">
   <h2>{{ paDisplayName }}</h2>
@@ -32,7 +31,6 @@
   <!-- Accordion -->
   <ion-accordion-group [multiple]="true">
     <ng-container *ngFor="let paymentRow of paymentRows">
-      {{ paymentRow | json }}
       <app-payment-history-accordion
         [paymentRow]="paymentRow"
         [person]="person"

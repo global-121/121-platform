@@ -122,7 +122,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
           'page.program.program-people-affected.transaction.do-single-payment',
         );
       } else {
-        paymentRowValue = PaymentUtils.getPaymentsInfo(
+        paymentRowValue = PaymentUtils.getPaymentRowInfo(
           transaction,
           this.program,
           this.person,
