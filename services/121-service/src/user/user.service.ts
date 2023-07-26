@@ -126,10 +126,6 @@ export class UserService {
     });
   }
 
-  public async getUsers(): Promise<UserEntity[]> {
-    return await this.userRepository.find();
-  }
-
   public async addUserRole(
     userRoleData: CreateUserRoleDto,
   ): Promise<UserRoleEntity> {

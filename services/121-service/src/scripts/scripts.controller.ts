@@ -7,7 +7,6 @@ import SeedMultipleKRCS from './seed-multiple-krcs';
 import SeedMultipleNLRC from './seed-multiple-nlrc';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedProgramDrc } from './seed-program-drc';
-import { SeedProgramKrcs } from './seed-program-krcs';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
 import { SeedTestProgram } from './seed-program-test';
@@ -60,8 +59,6 @@ export class ScriptsController {
       seed = new SeedProgramValidation(this.dataSource);
     } else if (script == SeedScript.ethJointResponse) {
       seed = new SeedEthJointResponse(this.dataSource);
-    } else if (script == SeedScript.krcs) {
-      seed = new SeedProgramKrcs(this.dataSource);
     } else if (script == SeedScript.krcsMultiple) {
       seed = new SeedMultipleKRCS(this.dataSource);
     } else {
