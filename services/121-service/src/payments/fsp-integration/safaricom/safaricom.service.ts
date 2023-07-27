@@ -177,6 +177,13 @@ export class SafaricomService {
       .where('transaction.customData ::jsonb @> :customData', {
         customData: {
           requestResult: {
+            requestId: safaricomCustomData.requestResult.requestId,
+          },
+        },
+      })
+      .orWhere('transaction.customData ::jsonb @> :customData', {
+        customData: {
+          requestResult: {
             OriginatorConversationID:
               safaricomCustomData.requestResult.OriginatorConversationID,
           },
