@@ -43,7 +43,6 @@
     "@angular/router": "^16.0.1",
     "@angular/service-worker": "^16.0.1",
     "@ionic/angular": "^7.1.2",
-    "@ionic/cli": "^6.20.9",
     "@ionic/storage-angular": "^4.0.0",
     "@microsoft/applicationinsights-web": "^2.8.14",
     "@ngx-translate/core": "^14.0.0",
