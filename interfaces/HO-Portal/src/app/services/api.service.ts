@@ -211,6 +211,7 @@ export class ApiService {
   delete(
     endpoint: string,
     path: string,
+    body?: object,
     anonymous: boolean = false,
   ): Promise<any> {
     const security = this.showSecurity(anonymous);
@@ -220,6 +221,7 @@ export class ApiService {
         .delete(endpoint + path, {
           headers: this.createHeaders(anonymous),
           withCredentials: true,
+          body: body
         })
         .pipe(
           tap((response) =>

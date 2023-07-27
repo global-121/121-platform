@@ -18,7 +18,7 @@ export function deleteRegistrations(
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .post(`/programs/${programId}/registrations/delete`)
+    .delete(`/programs/${programId}/registrations`)
     .set('Cookie', [accessToken])
     .send(registrationReferenceIds);
 }

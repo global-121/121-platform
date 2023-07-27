@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -492,8 +493,18 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationDELETE)
   @ApiOperation({ summary: 'Delete set of registrations' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/delete')
+  @Delete('programs/:programId/registrations')
   public async delete(
+    @Body() referenceIdsData: ReferenceIdsDto,
+  ): Promise<void> {
+    await this.registrationsService.deleteBatch(referenceIdsData);
+  }
+
+  @Permissions(PermissionEnum.RegistrationDELETE)
+  @ApiOperation({ summary: 'Delete set of registrations' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('programs/:programId/registrations/delete')
+  public async deletePost(
     @Body() referenceIdsData: ReferenceIdsDto,
   ): Promise<void> {
     await this.registrationsService.deleteBatch(referenceIdsData);
