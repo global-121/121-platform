@@ -33,6 +33,7 @@ import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { PaymentStateSumDto } from './dto/payment-state-sum.dto';
 import { ProgramStats } from './dto/program-stats.dto';
 import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
+import { ExportCardsService } from './services/export-cards.service';
 
 @Injectable()
 export class ExportMetricsService {
@@ -57,6 +58,7 @@ export class ExportMetricsService {
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
     private readonly registrationDataQueryService: RegistrationDataQueryService,
+    private readonly exportCardsService: ExportCardsService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -89,6 +91,9 @@ export class ExportMetricsService {
       }
       case ExportType.duplicates: {
         return this.getDuplicates(programId);
+      }
+      case ExportType.cardBalances: {
+        return this.exportCardsService.getCards(programId);
       }
     }
   }
