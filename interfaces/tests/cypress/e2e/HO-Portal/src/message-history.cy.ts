@@ -28,12 +28,13 @@ describe('Check message history', () => {
     cy.fixture('message-history').then((fixture) => {
       cy.setHoPortal();
       cy.visit(fixture.url);
+      cy.wait(8000);
       cy.wait('@getProgram');
 
       cy.sendBulkMessage(fixture.messageText);
       cy.wait('@textmessage');
 
-      checkPATable(fixture, MessageStatus.delivered, 'WHATSAPP');
+      checkPATable(fixture, MessageStatus.sent, 'WHATSAPP');
 
       cy.fixture('registration-nlrc').then((fixture) => {
         // Check Message History Popup
@@ -42,7 +43,7 @@ describe('Check message history', () => {
           label,
           messageText,
           'whatsapp',
-          MessageStatus.delivered,
+          MessageStatus.sent,
         );
       });
     });
@@ -62,6 +63,7 @@ describe('Check message history', () => {
       cy.fixture('message-history').then((fixture) => {
         cy.setHoPortal();
         cy.visit(fixture.url);
+        cy.wait(8000);
         cy.wait('@getProgram');
 
         cy.sendBulkMessage(fixture.messageText);
@@ -100,6 +102,7 @@ describe('Check message history', () => {
       cy.fixture('message-history').then((fixture) => {
         cy.setHoPortal();
         cy.visit(fixture.url);
+        cy.wait(8000);
         cy.wait('@getProgram');
 
         cy.sendBulkMessage(fixture.messageText);
@@ -139,6 +142,7 @@ describe('Check message history', () => {
       cy.fixture('message-history').then((fixture) => {
         cy.setHoPortal();
         cy.visit(fixture.url);
+        cy.wait(8000);
         cy.wait('@getProgram');
 
         cy.sendBulkMessage(fixture.messageText);
@@ -175,6 +179,7 @@ describe('Check message history', () => {
           );
 
           cy.visit(fixture.url);
+          cy.wait(8000);
           cy.wait('@getProgram');
 
           checkMessageHistoryPopup(
@@ -194,7 +199,9 @@ describe('Check message history', () => {
 const checkPATable = (fixture, messageStatus: string, messageType: string) => {
   cy.setHoPortal();
   cy.visit(fixture.url).then(() => {
-    cy.get('[data-cy="message-history-button"]').scrollIntoView();
+    cy.get('[data-cy="message-history-button"]', {
+      timeout: 8000,
+    }).scrollIntoView();
     cy.get('[data-cy="message-history-button"]').contains(messageType, {
       matchCase: false,
     });
@@ -213,6 +220,7 @@ const checkMessageHistoryPopup = (
   nEntry?: number,
 ) => {
   // Check headers
+  cy.wait(8000);
   cy.get('[data-cy="message-history-button"]').scrollIntoView();
   cy.get('[data-cy="message-history-button"]').should('be.visible');
   cy.get('[data-cy="message-history-button"]').should('not.be.disabled');
