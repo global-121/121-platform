@@ -221,7 +221,7 @@ export class ApiService {
         .delete(endpoint + path, {
           headers: this.createHeaders(anonymous),
           withCredentials: true,
-          body: body
+          body: body,
         })
         .pipe(
           tap((response) =>
