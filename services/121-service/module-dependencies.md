@@ -19,17 +19,16 @@ graph LR
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
   RegistrationsModule-->MessageModule
+  RegistrationsModule-->IntersolveVisaModule
+  IntersolveVisaModule-->TransactionsModule
   ExportMetricsModule-->ProgramModule
   ExportMetricsModule-->RegistrationsModule
   ExportMetricsModule-->PaymentsModule
   PaymentsModule-->FspModule
   PaymentsModule-->IntersolveVoucherModule
   PaymentsModule-->IntersolveVisaModule
-  IntersolveVisaModule-->TransactionsModule
-  IntersolveVisaModule-->RegistrationsModule
   PaymentsModule-->IntersolveJumboModule
   IntersolveJumboModule-->TransactionsModule
-  IntersolveJumboModule-->RegistrationsModule
   PaymentsModule-->AfricasTalkingModule
   AfricasTalkingModule-->TransactionsModule
   PaymentsModule-->BelcashModule
@@ -48,5 +47,4 @@ graph LR
   WhatsappIncomingModule-->ImageCodeModule
   WhatsappIncomingModule-->IntersolveVoucherModule
   WhatsappIncomingModule-->WhatsappModule
-  EspocrmModule-->RegistrationsModule
 ```

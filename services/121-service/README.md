@@ -80,6 +80,14 @@ See: [`src/notifications/voice/voice.service.ts`](`src/notifications/voice/voice
 - Mp3's that are used when sending voice notifications can be added to the `voice`-folder:
   The folder structure follows the pattern: `voice/<programId>/<language>/<notification-key>.mp3`
 
+## Development
+
+### Testing
+
+To run the api tests:
+
+    docker exec 121-service npm run test:e2e
+
 ### Debugging
 
 To enter the 121-service in the terminal use:

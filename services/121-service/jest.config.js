@@ -10,4 +10,5 @@ module.exports = {
   testMatch: ['<rootDir>/test/**/*.test.ts'],
   coverageReporters: ['json', 'lcov'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
+  testTimeout: 10000,
 };

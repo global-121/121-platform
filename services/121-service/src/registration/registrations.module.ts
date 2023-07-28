@@ -10,7 +10,9 @@ import { LookupModule } from '../notifications/lookup/lookup.module';
 import { MessageModule } from '../notifications/message.module';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
+import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { SafaricomRequestEntity } from '../payments/fsp-integration/safaricom/safaricom-request.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
@@ -49,16 +51,16 @@ import { InclusionScoreService } from './services/inclusion-score.service';
       TwilioMessageEntity,
       ImageCodeExportVouchersEntity,
       IntersolveVoucherEntity,
+      SafaricomRequestEntity,
     ]),
     UserModule,
     HttpModule,
     LookupModule,
-    // SmsModule,
     ActionModule,
     ProgramModule,
     FspModule,
     MessageModule,
-    // WhatsappModule,
+    IntersolveVisaModule,
   ],
   providers: [RegistrationsService, BulkImportService, InclusionScoreService],
   controllers: [RegistrationsController],

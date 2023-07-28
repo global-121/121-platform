@@ -1,6 +1,6 @@
 export class IntersolveLoadDto {
   public reference: string;
-  public saleId: string;
+  public saleId?: string;
   public quantities: IntersolveQuantityObjectDto[];
 }
 

@@ -168,7 +168,7 @@ export class TransactionsService {
     programId: number,
     payment: number,
     transactionStep?: number,
-  ): Promise<void> {
+  ): Promise<TransactionEntity> {
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
@@ -191,7 +191,9 @@ export class TransactionsService {
     transaction.customData = transactionResponse.customData;
     transaction.transactionStep = transactionStep || 1;
 
-    await this.transactionRepository.save(transaction);
+    const resultTransaction = await this.transactionRepository.save(
+      transaction,
+    );
 
     if (program.enableMaxPayments && registration.maxPayments) {
       await this.checkAndUpdateMaxPaymentRegistration(registration);
@@ -221,6 +223,7 @@ export class TransactionsService {
         );
       }
     }
+    return resultTransaction;
   }
 
   private getMessageText(

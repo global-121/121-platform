@@ -53,6 +53,7 @@ Features of the 121-platform are described in this folder in a standardized way 
 - Get voucher balance
 - View/Download/Print voucher
 - [View PA profile page](121-Portal/View_PA_profile_page.feature)
+- [Manage Intersolve Visa card](121-Portal/Manage_Intersolve_Visa_card.feature)
 - Generic 121-Portal components/features
   - Login
   - Logout
@@ -79,8 +80,10 @@ Using Redline WhatsApp Helpdesk
 
 Using EspoCRM
 
-- Update PA details: This is automatically tested via [API-test](..\services\121-service\test\espocrm\update-pa.test.ts)
-- Delete PA: This is automatically tested via [API-test](..\services\121-service\test\espocrm\delete-pa.test.ts)
+- [Create registration](Create_Registration_From_espocrm.feature)
+- [Update chosen FSP](Edit_chosen_FSP_of_PA_from_EspoCRM.feature)
+- Update PA attribute: The general 'update PA' flow is automatically tested via [API-test](..\services\121-service\test\registrations\update-pa.test.ts)
+- Delete PA: The general 'delete PA' flow is automatically tested via [API-test](..\services\121-service\test\espocrm\delete-pa.test.ts)
 
 ### For Person/People Affected
 
@@ -112,7 +115,7 @@ Using EspoCRM
 - [Update program question](Admin-user/Update_program_question.feature)
 - [Update program](Admin-user/Update_program.feature)
 - [Export Intersolve vouchers to cancel](Admin-user/Export_vouchers_to_cancel.feature)
-- [Update Intersolve Visa phonenumber](Admin-user/Update_Phone_Number_Intersolve.feature)
+- [Sync Intersolve Visa Customer](Admin-user/Sync_Intersolve_Visa_Customer.feature)
 - Update Financial Service Provider (not chosen FSP, but entity itself)
 - Create/Update/Delete FSP attributes
 - Update instance
