@@ -24,6 +24,7 @@ import {
   SWAGGER_CUSTOM_JS,
 } from './config';
 import appInsights = require('applicationinsights');
+import { delay, ServiceBusClient, ServiceBusMessage } from '@azure/service-bus';
 
 /**
  * A visualization of module dependencies is generated using `nestjs-spelunker`
@@ -177,3 +178,46 @@ if (!!process.env.APPLICATION_INSIGHT_IKEY) {
   appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);
   appInsights.start();
 }
+
+// Proof of concept constructed from example: https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-nodejs-how-to-use-queues
+// connection string to your Service Bus namespace
+const connectionString = "Endpoint=sb://intersolve-int.servicebus.windows.net/;SharedAccessKeyName=redcross;SharedAccessKey=ITh+RStcvSX3UY390ZqqGpN4zY5fnTOjmUqSXEQJK4I=;EntityPath=redcross"
+
+// name of the queue
+const queueName = "redcross"
+
+ async function main() {
+	// create a Service Bus client using the connection string to the Service Bus namespace
+	const sbClient = new ServiceBusClient(connectionString);
+
+	// createReceiver() can also be used to create a receiver for a subscription.
+	const receiver = sbClient.createReceiver(queueName);
+
+	// function to handle messages
+	const myMessageHandler = async (messageReceived) => {
+		console.log(`Received message: ${JSON.stringify(messageReceived.body)}`);
+	};
+
+	// function to handle any errors
+	const myErrorHandler = async (error) => {
+		console.log(error);
+	};
+
+	// subscribe and specify the message and error handlers
+	receiver.subscribe({
+		processMessage: myMessageHandler,
+		processError: myErrorHandler
+	});
+
+	// Waiting long enough before closing the sender to send messages
+	// TODO: Commenting out the awaits below, because we do not want to listen just 20s; see if this works.
+  // await delay(20000);
+
+	// await receiver.close();
+	// await sbClient.close();
+}
+// call the main function
+main().catch((err) => {
+	console.log("Error occurred: ", err);
+	//process.exit(1);
+ });
