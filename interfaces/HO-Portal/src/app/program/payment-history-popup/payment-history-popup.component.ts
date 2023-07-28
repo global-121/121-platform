@@ -171,14 +171,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
     );
   }
 
-  public hasVoucherSupport(fsp: string): boolean {
-    const voucherFsps = [
-      'Intersolve-voucher-paper',
-      'Intersolve-voucher-whatsapp',
-    ];
-    return voucherFsps.includes(fsp);
-  }
-
   public async rowClick(paymentRow: PaymentRowDetail) {
     let voucherUrl = null;
     let voucherButtons = null;
@@ -190,7 +182,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
     const isSinglePayment = this.enableSinglePayment(paymentRow);
 
     if (
-      !this.hasVoucherSupport(paymentRow.fsp) &&
+      !PaymentUtils.hasVoucherSupport(paymentRow.fsp) &&
       !hasError &&
       !isSinglePayment
     ) {
@@ -217,7 +209,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
 
     if (
       this.canViewVouchers &&
-      this.hasVoucherSupport(this.person.fsp) &&
+      PaymentUtils.hasVoucherSupport(this.person.fsp) &&
       !!paymentRow.transaction
     ) {
       await this.programsService

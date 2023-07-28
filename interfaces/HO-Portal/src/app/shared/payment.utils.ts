@@ -1,3 +1,4 @@
+import RegistrationStatus from '../enums/registration-status.enum';
 import { PaymentRowDetail } from '../models/payment.model';
 import { Person } from '../models/person.model';
 import { Program } from '../models/program.model';
@@ -6,6 +7,42 @@ import { IntersolvePayoutStatus } from '../models/transaction-custom-data';
 import { Transaction } from '../models/transaction.model';
 
 export class PaymentUtils {
+  static hasVoucherSupport(fsp: string): boolean {
+    const voucherFsps = [
+      'Intersolve-voucher-paper',
+      'Intersolve-voucher-whatsapp',
+    ];
+    return voucherFsps.includes(fsp);
+  }
+
+  static enableSinglePayment(
+    paymentRow: PaymentRowDetail,
+    canDoSinglePayment: boolean,
+    person: Person,
+    lastPaymentId: number,
+    paymentInProgress: boolean,
+  ): boolean {
+    if (!paymentRow) {
+      return false;
+    }
+    const permission = canDoSinglePayment;
+    const included = person.status === RegistrationStatus.included;
+    const noPaymentDone = !paymentRow.transaction;
+    const noFuturePayment = paymentRow.paymentIndex <= lastPaymentId;
+    // Note, the number 5 is the same as allowed for the bulk payment as set in program-people-affected.component
+    const onlyLast5Payments = paymentRow.paymentIndex > lastPaymentId - 5;
+    const noPaymentInProgress = !paymentInProgress;
+
+    return (
+      permission &&
+      included &&
+      noPaymentDone &&
+      noFuturePayment &&
+      onlyLast5Payments &&
+      noPaymentInProgress
+    );
+  }
+
   static enableMessageSentIcon(transaction: Transaction): boolean {
     return (
       transaction.customData &&
@@ -47,6 +84,7 @@ export class PaymentUtils {
     person: Person,
     index: number,
   ): PaymentRowDetail {
+    console.log('test 2', transaction);
     return {
       paymentIndex: index,
       text: transaction.paymentDate,
@@ -56,6 +94,7 @@ export class PaymentUtils {
       amount: `${transaction.amount} ${program?.currency}`,
       fsp: person.fsp,
       sentDate: transaction.paymentDate,
+      paymentDate: transaction.paymentDate,
     };
   }
 }

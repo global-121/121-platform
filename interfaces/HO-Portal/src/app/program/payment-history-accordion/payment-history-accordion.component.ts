@@ -17,15 +17,13 @@ export class PaymentHistoryAccordionComponent {
   DateFormat = DateFormat;
   hasErrorCheck = PaymentUtils.hasError;
   hasWaitingCheck = PaymentUtils.hasError;
+  hasVoucherSupportCheck = PaymentUtils.hasVoucherSupport;
 
   @Input()
   public paymentRow: any;
 
   @Input()
-  public hasVoucherSupport: any;
-
-  @Output()
-  enableSinglePayment = new EventEmitter<any>();
+  public enableSinglePayment: any;
 
   @Output()
   rowClick = new EventEmitter<any>();

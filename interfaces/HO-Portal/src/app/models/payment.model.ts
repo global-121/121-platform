@@ -38,6 +38,7 @@ export class PaymentRowDetail {
   waiting?: boolean;
   fsp?: string;
   status?: string;
+  paymentDate?: string;
 }
 
 export class PayoutDetails {

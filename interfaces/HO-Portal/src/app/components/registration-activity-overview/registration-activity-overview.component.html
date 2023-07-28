@@ -81,24 +81,20 @@
           </ion-row>
 
           <!-- new tab -->
-          <ion-row *ngIf="item.type === 'newtab'">
-            <div class="ion-padding-horizontal">
-              <div style="height: 100%; width: 100%">
-                <ion-accordion-group [multiple]="true">
-                  <app-payment-history-accordion
-                    [paymentRow]="item.transaction"
-                    [person]="item.person"
-                    [program]="item.programId"
-                    [hasVoucherSupport]="item.hasVoucherSupport"
-                    [hasError]="item.hasError"
-                    [hasWaiting]="item.hasWaiting"
-                    (enableSinglePayment)="enableSinglePayment($event)"
-                    (rowClick)="rowClick($event)"
-                  ></app-payment-history-accordion>
-                </ion-accordion-group>
-              </div>
-            </div>
-          </ion-row>
+          <div *ngIf="item.type === 'newtab'">
+            <ion-accordion-group [multiple]="true">
+              <app-payment-history-accordion
+                [paymentRow]="item.transaction"
+                [person]="item.person"
+                [program]="item.programId"
+                [hasVoucherSupport]="item.hasVoucherSupport"
+                [hasError]="item.hasError"
+                [hasWaiting]="item.hasWaiting"
+                [enableSinglePayment]="item.enableSinglePayment"
+                (rowClick)="rowClick($event)"
+              ></app-payment-history-accordion>
+            </ion-accordion-group>
+          </div>
         </ion-grid>
       </ion-item>
     </ion-list>
