@@ -95,7 +95,10 @@ export class WhatsappIncomingService {
       }
     }
     // if we get a faulty 63016 we retry sending a message, and we don't need to update the status
-    if (callbackData.ErrorCode === '63016') {
+    if (
+      callbackData.ErrorCode === '63016' &&
+      callbackData.MessageStatus === TwilioStatus.undelivered
+    ) {
       const message = await this.twilioMessageRepository.findOne({
         where: { sid: callbackData.MessageSid },
       });
