@@ -4,6 +4,7 @@ import { uniq, without } from 'lodash';
 import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
 import { DataSource, In, Repository } from 'typeorm';
 import { ActionService } from '../actions/action.service';
+import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { PaymentsService } from '../payments/payments.service';
@@ -761,7 +762,6 @@ export class ExportMetricsService {
         'transaction.status as "status"',
         'transaction."errorMessage" as "errorMessage"',
         'fsp.fsp AS financialServiceProvider',
-        'safaricom_request.originatorConversationID as "originatorConversationID"',
       ])
       .innerJoin(
         '(' + latestTransactionPerPa.getQuery() + ')',
@@ -770,12 +770,23 @@ export class ExportMetricsService {
       )
       .setParameters(latestTransactionPerPa.getParameters())
       .leftJoin('transaction.registration', 'registration')
-      .leftJoin(
-        'SafaricomRequestEntity',
-        'safaricom_request',
-        'transaction.id = safaricom_request.transactionId',
-      )
       .leftJoin('registration.fsp', 'fsp');
+
+    const additionalFspExportFields = await this.getAdditionalFspExportFields(
+      programId,
+    );
+
+    for (const field of additionalFspExportFields) {
+      const nestedParts = field.split('.');
+      let variabeleSelectQuery = 'transaction."customData"';
+      for (const part of nestedParts) {
+        variabeleSelectQuery += `->'${part}'`;
+      }
+      transactionQuery.addSelect(
+        variabeleSelectQuery,
+        nestedParts[nestedParts.length - 1],
+      );
+    }
 
     for (const r of registrationDataOptions) {
       transactionQuery.select((subQuery) => {
@@ -786,6 +797,22 @@ export class ExportMetricsService {
       }, r.name);
     }
     return await transactionQuery.getRawMany();
+  }
+
+  private async getAdditionalFspExportFields(
+    programId: number,
+  ): Promise<string[]> {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+      relations: ['financialServiceProviders'],
+    });
+    let fields = [];
+    for (const fsp of program.financialServiceProviders) {
+      if (fsp.fsp === FspName.safaricom) {
+        fields = [...fields, ...['requestResult.OriginatorConversationID']];
+      }
+    }
+    return fields;
   }
 
   public async getPaMetrics(
