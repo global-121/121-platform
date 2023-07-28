@@ -76,9 +76,9 @@ export class ProgramsServiceApiService {
   }
 
   deleteRegistrations(programId: number, referenceIds: string[]): Promise<any> {
-    return this.apiService.post(
+    return this.apiService.delete(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/delete`,
+      `/programs/${programId}/registrations`,
       {
         referenceIds,
       },
