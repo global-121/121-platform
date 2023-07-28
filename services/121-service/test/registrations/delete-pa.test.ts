@@ -67,7 +67,7 @@ describe('Delete PA', () => {
     );
 
     // Assert
-    expect(response.statusCode).toBe(HttpStatus.CREATED);
+    expect(response.statusCode).toBe(HttpStatus.OK);
 
     const registration = await getRegistration(referenceId, accessToken);
 
