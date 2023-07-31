@@ -34,10 +34,6 @@ export class IntersolveVisaWalletEntity extends Base121Entity {
   @Column({ nullable: true })
   public lastUsedDate: Date;
 
-  // Last time we got an update from Intersolve about the wallet status or balance or when it was last used
-  @Column({ nullable: true })
-  public lastExternalUpdate: Date;
-
   @ManyToOne(
     () => IntersolveVisaCustomerEntity,
     (intersolveVisaCustomer) => intersolveVisaCustomer.visaWallets,
