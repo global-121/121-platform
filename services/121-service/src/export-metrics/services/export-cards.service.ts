@@ -14,18 +14,17 @@ export class ExportCardsService {
       .leftJoin('wallet.intersolveVisaCustomer', 'customer')
       .leftJoin('customer.registration', 'registration')
       .select([
-        `registration."referenceId" as "referenceId"`,
         `registration."registrationProgramId"`,
-        `registration."registrationStatus" as registrationStatus`,
-        'wallet.status as walletStatus',
-        'wallet."tokenBlocked" as tokenBlocked',
-        'wallet."lastExternalUpdate" as lastExternalUpdate',
-        'wallet."lastUsedDate" as lastUsedDate',
+        `registration."referenceId" as "referenceId"`,
+        `registration."registrationStatus" as "registrationStatus"`,
+        'wallet.status as "walletStatus"',
+        'wallet."tokenBlocked" as "tokenBlocked"',
+        'wallet."tokenCode" as "tokenCode"',
         'wallet.balance as balance',
-        'wallet."debitCardCreated" as debitCardCreated',
+        'wallet."lastUsedDate" as "lastUsedDate"',
       ])
       .where('registration."programId" = :programId', { programId })
-      .getMany();
+      .getRawMany();
     return wallets;
   }
 }
