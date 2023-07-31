@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { cloneDeep } from 'lodash';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import StatusDate from 'src/app/enums/status-dates.enum';
 import {
@@ -10,6 +11,7 @@ import {
   SinglePayoutDetails,
 } from 'src/app/models/payment.model';
 import { Program } from 'src/app/models/program.model';
+import { StatusEnum } from 'src/app/models/status.enum';
 import { Transaction } from 'src/app/models/transaction.model';
 import { PaymentHistoryAccordionComponent } from 'src/app/program/payment-history-accordion/payment-history-accordion.component';
 import { PaymentStatusPopupComponent } from 'src/app/program/payment-status-popup/payment-status-popup.component';
@@ -33,10 +35,9 @@ class ActivityOverviewItem {
 }
 
 enum ActivityOverviewType {
+  payment = 'payment',
   message = 'message',
   status = 'status',
-  payment = 'payment',
-  newtab = 'newtab',
 }
 
 @Component({
@@ -64,16 +65,18 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   @Input()
   private referenceId: string;
 
-  public DateFormat = DateFormat;
+  @Input()
+  private canViewVouchers = false;
 
+  public DateFormat = DateFormat;
+  public firstPaymentToShow = 1;
   public activityOverview: ActivityOverviewItem[];
   public activityOverviewFilter: string = null;
   public activityOverviewButtons = [
     null,
+    ActivityOverviewType.payment,
     ActivityOverviewType.message,
     ActivityOverviewType.status,
-    ActivityOverviewType.payment,
-    ActivityOverviewType.newtab,
   ];
 
   private canViewPersonalData: boolean;
@@ -81,6 +84,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   private canViewPaymentData: boolean;
   private canDoSinglePayment: boolean;
   private lastPaymentId: number;
+  private pastTransactions: Transaction[] = [];
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -96,9 +100,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     }
 
     this.loadPermissions();
-
-    this.fillActivityOverview();
-
     this.canDoSinglePayment = this.authService.hasAllPermissions(
       this.programId,
       [
@@ -108,157 +109,26 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         Permission.PaymentTransactionREAD,
       ],
     );
-
-    this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
-      this.programId,
-    );
-  }
-
-  private getTransactionOfPaymentForRegistration(
-    paymentIndex: number,
-    referenceId: string,
-    pastTransactions: Transaction[],
-  ): Transaction {
-    return pastTransactions.find(
-      (transaction) =>
-        transaction.payment === paymentIndex &&
-        transaction.referenceId === referenceId,
-    );
-  }
-
-  private async fillActivityOverview() {
-    this.activityOverview = [];
-
-    const pastTransactions = await this.programsService.getTransactions(
-      this.programId,
-      1,
-      this.person?.referenceId,
-    );
-
     if (this.canViewPaymentData) {
-      const payments = await this.programsService.getTransactions(
+      this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
         this.programId,
-        1,
-        this.referenceId,
       );
-      const tempData = [];
-      payments.forEach((payment, i) => {
-        console.log('test', payment);
-        const rowInfo = this.getTransactionOfPaymentForRegistration(
-          i,
-          payment.referenceId,
-          pastTransactions,
-        );
-        if (!!rowInfo) {
-          tempData.push({
-            ...PaymentUtils.getPaymentRowInfo(
-              rowInfo,
-              this.program,
-              this.person,
-              i,
-            ),
-            status: payment.status,
-            type: ActivityOverviewType.newtab,
-          });
-        }
-      });
-      this.activityOverview = [...tempData];
-    }
-
-    if (this.canViewMessageHistory) {
-      const messageHistory = await this.programsService.retrieveMsgHistory(
+      this.pastTransactions = await this.programsService.getTransactions(
         this.programId,
-        this.referenceId,
+        this.firstPaymentToShow,
+        this.person?.referenceId,
       );
-
-      for (const message of messageHistory) {
-        this.activityOverview.push({
-          type: ActivityOverviewType.message,
-          label: this.translate.instant(
-            'registration-details.activity-overview.activities.message.label',
-          ),
-          date: new Date(message.created),
-          description: message.body,
-        });
-      }
     }
-
-    if (this.canViewPaymentData) {
-      const payments = await this.programsService.getTransactions(
-        this.programId,
-        1,
-        this.referenceId,
-      );
-
-      for (const payment of payments) {
-        this.activityOverview.push({
-          type: ActivityOverviewType.payment,
-          label: this.translate.instant(
-            'registration-details.activity-overview.activities.payment.label',
-            { number: payment.payment },
-          ),
-          date: new Date(payment.paymentDate),
-          description: this.translate.instant(
-            'registration-details.activity-overview.activities.payment.description',
-            {
-              number: payment.payment,
-              status: this.translate.instant(
-                'page.program.program-people-affected.transaction.' +
-                  payment.status,
-              ),
-            },
-          ),
-        });
-      }
-    }
-
-    if (this.canViewPersonalData) {
-      for (const statusChange of this.getStatusChanges()) {
-        this.activityOverview.push({
-          type: ActivityOverviewType.status,
-          label: this.translate.instant(
-            'registration-details.activity-overview.activities.status.label',
-          ),
-          date: statusChange.date,
-          description: this.translate.instant(
-            'registration-details.activity-overview.activities.status.description',
-            {
-              status: this.translate.instant(
-                'page.program.program-people-affected.status.' +
-                  statusChange.status,
-              ),
-            },
-          ),
-        });
-      }
-    }
-
-    this.activityOverview.sort((a, b) => (b.date > a.date ? 1 : -1));
+    this.fillActivityOverview();
+    this.activityOverview.reverse();
   }
 
   public getIconName(type: ActivityOverviewType): string {
     const map = {
       [ActivityOverviewType.message]: 'mail-outline',
-      [ActivityOverviewType.payment]: 'cash-outline',
       [ActivityOverviewType.status]: 'reload-circle-outline',
-      [ActivityOverviewType.newtab]: 'cash-outline',
     };
     return map[type];
-  }
-
-  private getStatusChanges(): { status: string; date: Date }[] {
-    const statusChanges = [];
-    for (const status of Object.keys(StatusDate)) {
-      const statusChangeDateValue = this.person[StatusDate[status]];
-      if (statusChangeDateValue) {
-        statusChanges.push({
-          status,
-          date: new Date(statusChangeDateValue),
-        });
-      }
-    }
-
-    return statusChanges;
   }
 
   public getFilteredActivityOverview(): ActivityOverviewItem[] {
@@ -280,18 +150,25 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     return this.activityOverview.filter((item) => item.type === filter).length;
   }
 
-  private loadPermissions() {
-    this.canViewPersonalData = this.authService.hasAllPermissions(
-      this.programId,
-      [Permission.RegistrationPersonalREAD],
-    );
-    this.canViewMessageHistory = this.authService.hasAllPermissions(
-      this.programId,
-      [Permission.RegistrationNotificationREAD],
-    );
-    this.canViewPaymentData = this.authService.hasAllPermissions(
-      this.programId,
-      [Permission.PaymentREAD, Permission.PaymentTransactionREAD],
+  public hasError(paymentRow: PaymentRowDetail): boolean {
+    return PaymentUtils.hasError(paymentRow);
+  }
+
+  public hasWaiting(paymentRow: PaymentRowDetail): boolean {
+    return PaymentUtils.hasWaiting(paymentRow);
+  }
+
+  public hasVoucherSupport(fsp: string): boolean {
+    return PaymentUtils.hasVoucherSupport(fsp);
+  }
+
+  public enableSinglePayment(paymentRow: PaymentRowDetail): boolean {
+    return PaymentUtils.enableSinglePayment(
+      paymentRow,
+      this.canDoSinglePayment,
+      this.person,
+      this.lastPaymentId,
+      false,
     );
   }
 
@@ -338,6 +215,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       : null;
 
     if (
+      this.canViewVouchers &&
       PaymentUtils.hasVoucherSupport(this.person.fsp) &&
       !!paymentRow.transaction
     ) {
@@ -415,5 +293,162 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       }
     });
     await modal.present();
+  }
+
+  private fillPaymentRows(): PaymentRowDetail[] {
+    const paymentRows = [];
+    const nrOfPayments = this.program?.distributionDuration;
+    const lastPaymentToShow = Math.min(this.lastPaymentId, nrOfPayments);
+
+    for (
+      let index = this.firstPaymentToShow;
+      index <= lastPaymentToShow;
+      index++
+    ) {
+      const transaction = PaymentUtils.getTransactionOfPaymentForRegistration(
+        index,
+        this.person.referenceId,
+        this.pastTransactions,
+      );
+      let paymentRowValue: PaymentRowDetail = {
+        paymentIndex: index,
+        text: '',
+      };
+      if (!transaction) {
+        paymentRowValue.text = this.translate.instant(
+          'page.program.program-people-affected.transaction.do-single-payment',
+        );
+      } else {
+        paymentRowValue = PaymentUtils.getPaymentRowInfo(
+          transaction,
+          this.program,
+          this.person,
+          index,
+        );
+        if (transaction.status === StatusEnum.success) {
+        } else if (transaction.status === StatusEnum.waiting) {
+          paymentRowValue.errorMessage = this.translate.instant(
+            'page.program.program-people-affected.transaction.waiting-message',
+          );
+          paymentRowValue.waiting = true;
+        } else {
+          paymentRowValue.errorMessage = transaction.errorMessage;
+        }
+
+        paymentRowValue.status = transaction.status;
+      }
+      if (
+        paymentRowValue.transaction ||
+        PaymentUtils.enableSinglePayment(
+          paymentRowValue,
+          this.canDoSinglePayment,
+          this.person,
+          this.lastPaymentId,
+          false,
+        )
+      ) {
+        paymentRows.push(paymentRowValue);
+      }
+    }
+    return paymentRows;
+  }
+
+  private async fillActivityOverview() {
+    this.activityOverview = [];
+    if (this.canViewPaymentData) {
+      const tempData = [];
+      this.fillPaymentRows().forEach((v) => {
+        tempData.push({
+          // data: { ...v },
+          data: cloneDeep(v),
+          type: ActivityOverviewType.payment,
+        });
+      });
+      this.activityOverview = [...tempData];
+      this.activityOverview.reverse();
+    }
+
+    if (this.canViewMessageHistory) {
+      const messageHistory = await this.programsService.retrieveMsgHistory(
+        this.programId,
+        this.referenceId,
+      );
+
+      for (const message of messageHistory) {
+        this.activityOverview.push({
+          type: ActivityOverviewType.message,
+          label: this.translate.instant(
+            'registration-details.activity-overview.activities.message.label',
+          ),
+          date: new Date(message.created),
+          description: message.body,
+        });
+      }
+    }
+
+    if (this.canViewPersonalData) {
+      for (const statusChange of this.getStatusChanges()) {
+        this.activityOverview.push({
+          type: ActivityOverviewType.status,
+          label: this.translate.instant(
+            'registration-details.activity-overview.activities.status.label',
+          ),
+          date: statusChange.date,
+          description: this.translate.instant(
+            'registration-details.activity-overview.activities.status.description',
+            {
+              status: this.translate.instant(
+                'page.program.program-people-affected.status.' +
+                  statusChange.status,
+              ),
+            },
+          ),
+        });
+      }
+    }
+
+    this.activityOverview.sort((a, b) => (b.date > a.date ? 1 : -1));
+  }
+
+  private getStatusChanges(): { status: string; date: Date }[] {
+    const statusChanges = [];
+    for (const status of Object.keys(StatusDate)) {
+      const statusChangeDateValue = this.person[StatusDate[status]];
+      if (statusChangeDateValue) {
+        statusChanges.push({
+          status,
+          date: new Date(statusChangeDateValue),
+        });
+      }
+    }
+
+    return statusChanges;
+  }
+
+  private loadPermissions() {
+    this.canViewPersonalData = this.authService.hasAllPermissions(
+      this.programId,
+      [Permission.RegistrationPersonalREAD],
+    );
+    this.canViewMessageHistory = this.authService.hasAllPermissions(
+      this.programId,
+      [Permission.RegistrationNotificationREAD],
+    );
+    this.canViewPaymentData = this.authService.hasAllPermissions(
+      this.programId,
+      [Permission.PaymentREAD, Permission.PaymentTransactionREAD],
+    );
+    this.canDoSinglePayment = this.authService.hasAllPermissions(
+      this.program.id,
+      [
+        Permission.ActionREAD,
+        Permission.PaymentCREATE,
+        Permission.PaymentREAD,
+        Permission.PaymentTransactionREAD,
+      ],
+    );
+    this.canViewVouchers = this.authService.hasAllPermissions(this.program.id, [
+      Permission.PaymentVoucherREAD,
+    ]);
   }
 }

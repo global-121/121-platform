@@ -7,6 +7,37 @@ import { IntersolvePayoutStatus } from '../models/transaction-custom-data';
 import { Transaction } from '../models/transaction.model';
 
 export class PaymentUtils {
+  static getPaymentRowInfo(
+    transaction: Transaction,
+    program: Program,
+    person: Person,
+    index: number,
+  ): PaymentRowDetail {
+    return {
+      paymentIndex: index,
+      text: transaction.paymentDate,
+      transaction,
+      hasMessageIcon: this.enableMessageSentIcon(transaction),
+      hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
+      amount: `${transaction.amount} ${program?.currency}`,
+      fsp: person.fsp,
+      sentDate: transaction.paymentDate,
+      paymentDate: transaction.paymentDate,
+    };
+  }
+
+  static getTransactionOfPaymentForRegistration(
+    paymentIndex: number,
+    referenceId: string,
+    pastTransactions: Transaction[],
+  ): Transaction {
+    return pastTransactions.find(
+      (transaction) =>
+        transaction.payment === paymentIndex &&
+        transaction.referenceId === referenceId,
+    );
+  }
+
   static hasVoucherSupport(fsp: string): boolean {
     const voucherFsps = [
       'Intersolve-voucher-paper',
@@ -76,25 +107,5 @@ export class PaymentUtils {
     }
 
     return false;
-  }
-
-  static getPaymentRowInfo(
-    transaction: Transaction,
-    program: Program,
-    person: Person,
-    index: number,
-  ): PaymentRowDetail {
-    console.log('test 2', transaction);
-    return {
-      paymentIndex: index,
-      text: transaction.paymentDate,
-      transaction,
-      hasMessageIcon: this.enableMessageSentIcon(transaction),
-      hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
-      amount: `${transaction.amount} ${program?.currency}`,
-      fsp: person.fsp,
-      sentDate: transaction.paymentDate,
-      paymentDate: transaction.paymentDate,
-    };
   }
 }

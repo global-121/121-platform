@@ -51,7 +51,7 @@
       >
         <ion-grid>
           <!-- Other tabs -->
-          <ion-row *ngIf="item.type !== 'newtab'">
+          <ion-row *ngIf="item.type !== 'payment'">
             <div class="ion-padding-horizontal">
               <div style="height: 100%; display: flex; align-items: center">
                 <ion-icon
@@ -81,16 +81,17 @@
           </ion-row>
 
           <!-- new tab -->
-          <div *ngIf="item.type === 'newtab'">
+          <div *ngIf="item.type === 'payment'">
+            <!-- Accordion -->
             <ion-accordion-group [multiple]="true">
               <app-payment-history-accordion
-                [paymentRow]="item.transaction"
-                [person]="item.person"
-                [program]="item.programId"
-                [hasVoucherSupport]="item.hasVoucherSupport"
-                [hasError]="item.hasError"
-                [hasWaiting]="item.hasWaiting"
-                [enableSinglePayment]="item.enableSinglePayment"
+                [paymentRow]="item.data"
+                [person]="person"
+                [program]="programId"
+                [hasVoucherSupport]="hasVoucherSupport(item.data.fsp)"
+                [hasError]="hasError(item.data)"
+                [hasWaiting]="hasWaiting(item.data)"
+                [enableSinglePayment]="enableSinglePayment(item.data)"
                 (rowClick)="rowClick($event)"
               ></app-payment-history-accordion>
             </ion-accordion-group>

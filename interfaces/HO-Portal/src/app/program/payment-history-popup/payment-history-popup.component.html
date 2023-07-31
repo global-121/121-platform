@@ -35,10 +35,10 @@
         [paymentRow]="paymentRow"
         [person]="person"
         [program]="program"
-        [hasVoucherSupport]="hasVoucherSupport"
-        [hasError]="hasError"
-        [hasWaiting]="hasWaiting"
-        (enableSinglePayment)="enableSinglePayment($event)"
+        [hasVoucherSupport]="hasVoucherSupport(paymentRow.fsp)"
+        [hasError]="hasError(paymentRow)"
+        [hasWaiting]="hasWaiting(paymentRow)"
+        [enableSinglePayment]="enableSinglePayment(paymentRow)"
         (rowClick)="rowClick($event)"
       ></app-payment-history-accordion>
     </ng-container>

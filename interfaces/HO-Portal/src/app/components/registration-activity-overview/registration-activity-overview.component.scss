@@ -5,3 +5,8 @@
     box-shadow: 0px 2px var(--ion-color-primary);
   }
 }
+
+:host(.item-lines-none) {
+  --inner-border-width: 0;
+  --show-inset-highlight: 0;
+}

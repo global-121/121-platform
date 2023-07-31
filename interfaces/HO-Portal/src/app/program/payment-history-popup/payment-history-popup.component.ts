@@ -12,7 +12,6 @@ import { Transaction } from 'src/app/models/transaction.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
-import RegistrationStatus from '../../enums/registration-status.enum';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 import { StatusEnum } from './../../models/status.enum';
 @Component({
@@ -28,6 +27,9 @@ export class PaymentHistoryPopupComponent implements OnInit {
   public program: Program;
 
   @Input()
+  public paymentRows: PaymentRowDetail[] = [];
+
+  @Input()
   private canViewPersonalData = false;
 
   @Input()
@@ -39,11 +41,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
   @Input()
   private canDoSinglePayment = false;
 
-  @Input()
-  public paymentRows: PaymentRowDetail[] = [];
-
-  private programId: number;
-  private pastTransactions: Transaction[] = [];
   public firstPaymentToShow = 1;
   public lastPaymentId: number;
   public content: any;
@@ -51,6 +48,8 @@ export class PaymentHistoryPopupComponent implements OnInit {
   public paymentInProgress = false;
   public isInProgress = false;
   public paDisplayName: string;
+  private programId: number;
+  private pastTransactions: Transaction[] = [];
 
   constructor(
     private modalController: ModalController,
@@ -89,85 +88,25 @@ export class PaymentHistoryPopupComponent implements OnInit {
     this.isInProgress = false;
   }
 
-  private getTransactionOfPaymentForRegistration(
-    paymentIndex: number,
-    referenceId: string,
-  ): Transaction {
-    return this.pastTransactions.find(
-      (transaction) =>
-        transaction.payment === paymentIndex &&
-        transaction.referenceId === referenceId,
-    );
+  public hasError(paymentRow: PaymentRowDetail): boolean {
+    return PaymentUtils.hasError(paymentRow);
   }
 
-  private fillPaymentRows() {
-    const nrOfPayments = this.program?.distributionDuration;
-    const lastPaymentToShow = Math.min(this.lastPaymentId, nrOfPayments);
+  public hasWaiting(paymentRow: PaymentRowDetail): boolean {
+    return PaymentUtils.hasWaiting(paymentRow);
+  }
 
-    for (
-      let index = this.firstPaymentToShow;
-      index <= lastPaymentToShow;
-      index++
-    ) {
-      const transaction = this.getTransactionOfPaymentForRegistration(
-        index,
-        this.person.referenceId,
-      );
-      let paymentRowValue: PaymentRowDetail = {
-        paymentIndex: index,
-        text: '',
-      };
-      if (!transaction) {
-        paymentRowValue.text = this.translate.instant(
-          'page.program.program-people-affected.transaction.do-single-payment',
-        );
-      } else {
-        paymentRowValue = PaymentUtils.getPaymentRowInfo(
-          transaction,
-          this.program,
-          this.person,
-          index,
-        );
-        if (transaction.status === StatusEnum.success) {
-        } else if (transaction.status === StatusEnum.waiting) {
-          paymentRowValue.errorMessage = this.translate.instant(
-            'page.program.program-people-affected.transaction.waiting-message',
-          );
-          paymentRowValue.waiting = true;
-        } else {
-          paymentRowValue.errorMessage = transaction.errorMessage;
-        }
-
-        paymentRowValue.status = transaction.status;
-      }
-      if (
-        paymentRowValue.transaction ||
-        this.enableSinglePayment(paymentRowValue)
-      ) {
-        this.paymentRows.push(paymentRowValue);
-      }
-    }
+  public hasVoucherSupport(fsp: string): boolean {
+    return PaymentUtils.hasVoucherSupport(fsp);
   }
 
   public enableSinglePayment(paymentRow: PaymentRowDetail): boolean {
-    if (!paymentRow) {
-      return false;
-    }
-    const permission = this.canDoSinglePayment;
-    const included = this.person.status === RegistrationStatus.included;
-    const noPaymentDone = !paymentRow.transaction;
-    const noFuturePayment = paymentRow.paymentIndex <= this.lastPaymentId;
-    // Note, the number 5 is the same as allowed for the bulk payment as set in program-people-affected.component
-    const onlyLast5Payments = paymentRow.paymentIndex > this.lastPaymentId - 5;
-    const noPaymentInProgress = !this.paymentInProgress;
-
-    return (
-      permission &&
-      included &&
-      noPaymentDone &&
-      noFuturePayment &&
-      onlyLast5Payments &&
-      noPaymentInProgress
+    return PaymentUtils.enableSinglePayment(
+      paymentRow,
+      this.canDoSinglePayment,
+      this.person,
+      this.lastPaymentId,
+      this.paymentInProgress,
     );
   }
 
@@ -179,7 +118,13 @@ export class PaymentHistoryPopupComponent implements OnInit {
     let paymentDetails: PayoutDetails = null;
     const hasWaiting = PaymentUtils.hasWaiting(paymentRow);
     const hasError = PaymentUtils.hasError(paymentRow);
-    const isSinglePayment = this.enableSinglePayment(paymentRow);
+    const isSinglePayment = PaymentUtils.enableSinglePayment(
+      paymentRow,
+      this.canDoSinglePayment,
+      this.person,
+      this.lastPaymentId,
+      false,
+    );
 
     if (
       !PaymentUtils.hasVoucherSupport(paymentRow.fsp) &&
@@ -286,5 +231,61 @@ export class PaymentHistoryPopupComponent implements OnInit {
       }
     });
     await modal.present();
+  }
+
+  private fillPaymentRows() {
+    const nrOfPayments = this.program?.distributionDuration;
+    const lastPaymentToShow = Math.min(this.lastPaymentId, nrOfPayments);
+
+    for (
+      let index = this.firstPaymentToShow;
+      index <= lastPaymentToShow;
+      index++
+    ) {
+      const transaction = PaymentUtils.getTransactionOfPaymentForRegistration(
+        index,
+        this.person.referenceId,
+        this.pastTransactions,
+      );
+      let paymentRowValue: PaymentRowDetail = {
+        paymentIndex: index,
+        text: '',
+      };
+      if (!transaction) {
+        paymentRowValue.text = this.translate.instant(
+          'page.program.program-people-affected.transaction.do-single-payment',
+        );
+      } else {
+        paymentRowValue = PaymentUtils.getPaymentRowInfo(
+          transaction,
+          this.program,
+          this.person,
+          index,
+        );
+        if (transaction.status === StatusEnum.success) {
+        } else if (transaction.status === StatusEnum.waiting) {
+          paymentRowValue.errorMessage = this.translate.instant(
+            'page.program.program-people-affected.transaction.waiting-message',
+          );
+          paymentRowValue.waiting = true;
+        } else {
+          paymentRowValue.errorMessage = transaction.errorMessage;
+        }
+
+        paymentRowValue.status = transaction.status;
+      }
+      if (
+        paymentRowValue.transaction ||
+        PaymentUtils.enableSinglePayment(
+          paymentRowValue,
+          this.canDoSinglePayment,
+          this.person,
+          this.lastPaymentId,
+          false,
+        )
+      ) {
+        this.paymentRows.push(paymentRowValue);
+      }
+    }
   }
 }
