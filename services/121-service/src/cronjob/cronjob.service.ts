@@ -221,7 +221,7 @@ export class CronjobService {
   @Cron(CronExpression.EVERY_DAY_AT_4AM)
   public async updateVisaDebitWalletDetailsCron(): Promise<void> {
     console.log('CronjobService - Started: updateVisaDebitWalletDetailsCron');
-    // TODO: Change below query to something that checks for program ID
+    // NOTE: This currently happens for all the Visa Wallets across programs/instances
     const wallets = await this.intersolveVisaWalletRepository
       .createQueryBuilder('wallet')
       .select('wallet.id as id')
@@ -242,7 +242,6 @@ export class CronjobService {
       ).quantity.value;
       wallet.status = details.data.data.status;
       wallet.lastUsedDate = lastUsedDate;
-      // TODO: Is not awaiting this fine?
       this.intersolveVisaWalletRepository
         .update({ id: wallet.id }, wallet)
         .catch((e) => {
