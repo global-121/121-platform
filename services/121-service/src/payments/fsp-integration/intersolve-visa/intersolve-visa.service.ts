@@ -597,7 +597,7 @@ export class IntersolveVisaService
     return { _registration: registration, _visaCustomer: visaCustomer };
   }
 
-  private intersolveTo121WalletStatus(
+  public intersolveTo121WalletStatus(
     intersolveStatus: IntersolveVisaWalletStatus,
     blocked: boolean,
     isCurrentWallet: boolean,

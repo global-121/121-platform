@@ -45,6 +45,7 @@ graph LR
   SafaricomModule-->TransactionsModule
   PaymentsModule-->RegistrationsModule
   ExportMetricsModule-->TransactionsModule
+  ExportMetricsModule-->IntersolveVisaModule
   WhatsappIncomingModule-->ImageCodeModule
   WhatsappIncomingModule-->IntersolveVoucherModule
   WhatsappIncomingModule-->WhatsappModule

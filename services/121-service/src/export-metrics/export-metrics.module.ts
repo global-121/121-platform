@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { IntersolveVisaWalletEntity } from '../payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { PaymentsModule } from '../payments/payments.module';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { TransactionsModule } from '../payments/transactions/transactions.module';
@@ -41,6 +42,7 @@ import { ExportCardsService } from './services/export-cards.service';
     ActionModule,
     PaymentsModule,
     TransactionsModule,
+    IntersolveVisaModule,
   ],
   providers: [
     ExportMetricsService,
