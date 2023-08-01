@@ -44,7 +44,7 @@
 
     <app-export-list
       [programId]="programId"
-      [exportType]="exportType"
+      [exportType]="exportPaymentType"
       [minPayment]="minPayment"
       [maxPayment]="maxPayment"
       [disabled]="!exportPaymentAvailable"
@@ -74,6 +74,15 @@
       [exportType]="enumExportType.unusedVouchers"
     >
     </app-export-list>
+
+    <app-export-list
+      class="ion-margin-start"
+      *ngIf="showExportCardUsage"
+      [programId]="programId"
+      [exportType]="exportCardUsageType"
+      [minPayment]="minPayment"
+      [maxPayment]="maxPayment"
+    ></app-export-list>
   </ion-row>
 </div>
 
