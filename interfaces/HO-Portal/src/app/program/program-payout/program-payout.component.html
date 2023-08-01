@@ -65,18 +65,16 @@
       [fspIds]="fspIdsWithReconciliation"
     ></app-import-fsp-reconciliation>
   </ion-row>
-  <ion-row
-    *ngIf="programHasVoucherSupport"
-    class="ion-margin-vertical"
-  >
+  <ion-row class="ion-margin-vertical">
     <app-export-list
+      *ngIf="programHasVoucherSupport"
       [programId]="programId"
       [exportType]="enumExportType.unusedVouchers"
+      class="ion-margin-end"
     >
     </app-export-list>
 
     <app-export-list
-      class="ion-margin-start"
       *ngIf="showExportCardUsage"
       [programId]="programId"
       [exportType]="exportCardUsageType"
