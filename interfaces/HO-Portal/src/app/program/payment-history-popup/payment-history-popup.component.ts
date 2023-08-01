@@ -7,6 +7,7 @@ import {
   PaymentRowDetail,
   PopupPayoutDetails,
   SinglePayoutDetails,
+  TransactionCustomDataAttributes,
 } from 'src/app/models/payment.model';
 import { Person } from 'src/app/models/person.model';
 import { Program } from 'src/app/models/program.model';
@@ -15,6 +16,7 @@ import { Transaction } from 'src/app/models/transaction.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
+import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 import RegistrationStatus from '../../enums/registration-status.enum';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 import { StatusEnum } from './../../models/status.enum';
@@ -154,7 +156,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
           hasMessageIcon: this.enableMessageSentIcon(transaction),
           hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
           amount: `${transaction.amount} ${this.program?.currency}`,
-          fsp: this.person.fsp,
+          fsp: this.person.fsp as FspName,
           sentDate: '',
         };
         paymentRowValue.text = transaction.paymentDate;
@@ -179,6 +181,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
       }
     }
   }
+
   public hasWaiting(paymentRow: PaymentRowDetail): boolean {
     return !!paymentRow.waiting;
   }
@@ -217,10 +220,10 @@ export class PaymentHistoryPopupComponent implements OnInit {
     );
   }
 
-  public hasVoucherSupport(fsp: string): boolean {
+  public hasVoucherSupport(fsp: FspName): boolean {
     const voucherFsps = [
-      'Intersolve-voucher-paper',
-      'Intersolve-voucher-whatsapp',
+      FspName.intersolveVoucherPaper,
+      FspName.intersolveVoucherWhatsapp,
     ];
     return voucherFsps.includes(fsp);
   }
@@ -263,7 +266,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
 
     if (
       this.canViewVouchers &&
-      this.hasVoucherSupport(this.person.fsp) &&
+      this.hasVoucherSupport(this.person.fsp as FspName) &&
       !!paymentRow.transaction
     ) {
       await this.programsService
@@ -348,5 +351,13 @@ export class PaymentHistoryPopupComponent implements OnInit {
 
   displayTransactionDateOnly(date: string): string {
     return formatDate(date, DateFormat.dateOnly, this.locale);
+  }
+
+  public getCustomDataAttributesToShow(paymentRow: PaymentRowDetail) {
+    if (paymentRow.transaction?.fsp === FspName.intersolveVisa) {
+      return [TransactionCustomDataAttributes.intersolveVisaWalletTokenCode];
+    } else {
+      return [];
+    }
   }
 }

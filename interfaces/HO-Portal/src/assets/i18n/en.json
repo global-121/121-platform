@@ -350,6 +350,9 @@
           "amount": "Amount",
           "received": "Received",
           "fsp": "FSP",
+          "custom-data": {
+            "intersolveVisaWalletTokenCode": "Visa card ID"
+          },
           "retry": "Retry",
           "nosupport": "No FSP supported for this transfer"
         },
