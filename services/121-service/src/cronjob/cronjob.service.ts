@@ -221,33 +221,7 @@ export class CronjobService {
   @Cron(CronExpression.EVERY_DAY_AT_4AM)
   public async updateVisaDebitWalletDetailsCron(): Promise<void> {
     console.log('CronjobService - Started: updateVisaDebitWalletDetailsCron');
-    // NOTE: This currently happens for all the Visa Wallets across programs/instances
-    const wallets = await this.intersolveVisaWalletRepository
-      .createQueryBuilder('wallet')
-      .select('wallet.id as id')
-      .addSelect('wallet."tokenCode" as "tokenCode"')
-      .addSelect('wallet."lastUsedDate" as "lastUsedDate"')
-      .getRawMany();
-    for (const wallet of wallets) {
-      const details = await this.intersolveVisaApiService.getWallet(
-        wallet.tokenCode,
-      );
-      const lastUsedDate =
-        await this.intersolveVisaService.getLastChargeTransactionDate(
-          wallet.tokenCode,
-          wallet.lastUsedDate,
-        );
-      wallet.balance = details.data.data.balances.find(
-        (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
-      ).quantity.value;
-      wallet.status = details.data.data.status;
-      wallet.lastUsedDate = lastUsedDate;
-      this.intersolveVisaWalletRepository
-        .update({ id: wallet.id }, wallet)
-        .catch((e) => {
-          console.error(e);
-        });
-    }
+    await this.intersolveVisaService.updateVisaDebitWalletDetails();
     console.log('CronjobService - Finished: updateVisaDebitWalletDetailsCron');
   }
 

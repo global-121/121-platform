@@ -522,6 +522,27 @@ export class IntersolveVisaService
     return allMessages;
   }
 
+  private async getWalletDetails(
+    wallet: IntersolveVisaWalletEntity,
+  ): Promise<IntersolveVisaWalletEntity> {
+    const walletDetails = await this.intersolveVisaApiService.getWallet(
+      wallet.tokenCode,
+    );
+    wallet.balance = walletDetails.data.data.balances.find(
+      (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
+    ).quantity.value;
+    wallet.status = walletDetails.data.data.status;
+
+    const lastUsedDate = await this.getLastChargeTransactionDate(
+      wallet.tokenCode,
+      wallet.lastUsedDate,
+    );
+    if (lastUsedDate) {
+      wallet.lastUsedDate = lastUsedDate;
+    }
+    return await this.intersolveVisaWalletRepository.save(wallet);
+  }
+
   public async getVisaWalletsAndDetails(
     referenceId: string,
     programId: number,
@@ -532,23 +553,8 @@ export class IntersolveVisaService
     const walletsResponse = new GetWalletsResponseDto();
     walletsResponse.wallets = [];
 
-    for await (const wallet of _visaCustomer.visaWallets) {
-      const walletDetails = await this.intersolveVisaApiService.getWallet(
-        wallet.tokenCode,
-      );
-      wallet.balance = walletDetails.data.data.balances.find(
-        (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
-      ).quantity.value;
-      wallet.status = walletDetails.data.data.status;
-
-      const lastUsedDate = await this.getLastChargeTransactionDate(
-        wallet.tokenCode,
-        wallet.lastUsedDate,
-      );
-      if (lastUsedDate) {
-        wallet.lastUsedDate = lastUsedDate;
-      }
-      await this.intersolveVisaWalletRepository.save(wallet);
+    for await (let wallet of _visaCustomer.visaWallets) {
+      wallet = await this.getWalletDetails(wallet);
 
       const walletDetailsResponse = new GetWalletDetailsResponseDto();
       walletDetailsResponse.tokenCode = wallet.tokenCode;
@@ -965,6 +971,14 @@ export class IntersolveVisaService
       await this.toggleBlockWallet(tokenCode, true);
     } catch (e) {
       console.log('error: ', e);
+    }
+  }
+
+  public async updateVisaDebitWalletDetails(): Promise<void> {
+    // NOTE: This currently happens for all the Visa Wallets across programs/instances
+    const wallets = await this.intersolveVisaWalletRepository.find();
+    for (const wallet of wallets) {
+      await this.getWalletDetails(wallet);
     }
   }
 }

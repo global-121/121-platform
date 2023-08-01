@@ -1,9 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IntersolveVisaWalletEntity } from '../../payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { WalletStatus121 } from '../../payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import {
+  IntersolveVisaWalletEntity,
+  IntersolveVisaWalletStatus,
+} from '../../payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { IntersolveVisaService } from '../../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 
+class ExportCardsDto {
+  PAid: number;
+  referenceId: string;
+  registrationStatus: RegistrationStatusEnum;
+  cardNumber: number;
+  cardStatus121: WalletStatus121;
+  issuedDate: Date;
+  lastUsedDate: Date;
+  balance: number;
+  cardStatusIntersolve?: IntersolveVisaWalletStatus;
+  tokenBlocked?: boolean;
+  isCurrentWallet?: boolean;
+}
 @Injectable()
 export class ExportCardsService {
   @InjectRepository(IntersolveVisaWalletEntity)
@@ -11,21 +29,21 @@ export class ExportCardsService {
 
   constructor(private readonly intersolveVisaService: IntersolveVisaService) {}
 
-  public async getCards(programId: number): Promise<any> {
+  public async getCards(programId: number): Promise<ExportCardsDto[]> {
     const wallets = await this.visaCardRepository
       .createQueryBuilder('wallet')
       .leftJoin('wallet.intersolveVisaCustomer', 'customer')
       .leftJoin('customer.registration', 'registration')
       .select([
-        `registration."registrationProgramId"`,
+        `registration."registrationProgramId" as "PAid"`,
         `registration."referenceId" as "referenceId"`,
         `registration."registrationStatus" as "registrationStatus"`,
-        'wallet.status as "walletStatus"',
+        'wallet."tokenCode" as "cardNumber"',
         'wallet.created as "issuedDate"',
-        'wallet."tokenBlocked" as "tokenBlocked"',
-        'wallet."tokenCode" as "tokenCode"',
-        'wallet.balance as balance',
         'wallet."lastUsedDate" as "lastUsedDate"',
+        'wallet.balance as balance',
+        'wallet.status as "cardStatusIntersolve"',
+        'wallet."tokenBlocked" as "tokenBlocked"',
         `CASE WHEN wallet.id = ${this.getLatestWalletsSubquery(
           'customer',
         )} THEN true ELSE false END as "isCurrentWallet"`,
@@ -37,15 +55,17 @@ export class ExportCardsService {
     return mappedWallets;
   }
 
-  private mapStatus(wallets: any[]): any[] {
+  private mapStatus(wallets: ExportCardsDto[]): ExportCardsDto[] {
     for (const wallet of wallets) {
       const mappedStatus =
         this.intersolveVisaService.intersolveTo121WalletStatus(
-          wallet.walletStatus,
+          wallet.cardStatusIntersolve,
           wallet.tokenBlocked,
           wallet.isCurrentWallet,
         );
-      wallet.walletStatus = mappedStatus;
+      wallet.cardStatus121 = mappedStatus;
+      delete wallet.cardStatusIntersolve;
+      delete wallet.tokenBlocked;
       delete wallet.isCurrentWallet;
     }
     return wallets;
