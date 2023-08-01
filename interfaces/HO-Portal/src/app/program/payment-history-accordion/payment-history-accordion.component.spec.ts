@@ -1,4 +1,8 @@
+import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { PaymentHistoryAccordionComponent } from './payment-history-accordion.component';
 
 describe('PaymentHistoryaccordionComponent', () => {
@@ -7,9 +11,11 @@ describe('PaymentHistoryaccordionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PaymentHistoryAccordionComponent],
+      imports: [IonicModule, FormsModule, SharedModule, CommonModule],
     }).compileComponents();
+  });
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(PaymentHistoryAccordionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
