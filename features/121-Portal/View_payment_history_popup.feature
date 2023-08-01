@@ -34,7 +34,8 @@ Feature: View payment history column and popup
     And when the user opens the accordeon payment details are displayed in two columns
     And first column details contains the "sent datetime" and "amount"
     And second column details contains the "FSP" at time of payment
-    And if "sent datetime" or "FSP" is not completely visible, hovering over it will show the full value
+    And it contains any custom FSP-specific attributes (currently only card ID if FSP is Visa)
+    And if any of the attributes are not completely visible, hovering over it will show the full value
     And User is able to close accordion by clicking on the "^" button
     And popup is closed when user clicks on "X" button
 
