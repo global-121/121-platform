@@ -72,6 +72,26 @@ export class IntersolveVisaService
     private readonly registrationDataQueryService: RegistrationDataQueryService,
   ) {}
 
+  public async getLastChargeTransactionDate(
+    tokenCode: string,
+    dateFrom?: Date,
+  ): Promise<Date | null> {
+    const transactionDetails =
+      await this.intersolveVisaApiService.getTransactions(tokenCode, dateFrom);
+    const walletTransactions = transactionDetails.data.data;
+
+    if (walletTransactions && walletTransactions.length > 0) {
+      const sortedByDate = walletTransactions
+        .filter((t) => t.type === 'CHARGE')
+        .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+      if (sortedByDate.length > 0) {
+        const dateString = sortedByDate[0].createdAt;
+        return new Date(dateString);
+      }
+    }
+    return null;
+  }
+
   public async sendPayment(
     paymentList: PaPaymentDataDto[],
     programId: number,
@@ -521,18 +541,12 @@ export class IntersolveVisaService
       ).quantity.value;
       wallet.status = walletDetails.data.data.status;
 
-      const transactionDetails =
-        await this.intersolveVisaApiService.getTransactions(wallet.tokenCode);
-      const walletTransactions = transactionDetails.data.data;
-
-      if (walletTransactions && walletTransactions.length > 0) {
-        const sortedByDate = walletTransactions
-          .filter((t) => t.type === 'CHARGE')
-          .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
-        if (sortedByDate.length > 0) {
-          const dateString = sortedByDate[0].createdAt;
-          wallet.lastUsedDate = new Date(dateString);
-        }
+      const lastUsedDate = await this.getLastChargeTransactionDate(
+        wallet.tokenCode,
+        wallet.lastUsedDate,
+      );
+      if (lastUsedDate) {
+        wallet.lastUsedDate = lastUsedDate;
       }
       await this.intersolveVisaWalletRepository.save(wallet);
 

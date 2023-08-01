@@ -5,6 +5,9 @@ import { Between, DataSource, Repository } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { MessageContentType } from '../notifications/message-type.enum';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
+import { IntersolveVisaWalletEntity } from '../payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
+import { IntersolveVisaApiService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
+import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherApiService } from '../payments/fsp-integration/intersolve-voucher/instersolve-voucher.api.service';
 import { IntersolveIssueVoucherRequestEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
@@ -28,6 +31,8 @@ export class CronjobService {
   private readonly intersolveVoucherRequestRepo: Repository<IntersolveIssueVoucherRequestEntity>;
   @InjectRepository(ProgramFspConfigurationEntity)
   public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+  @InjectRepository(IntersolveVisaWalletEntity)
+  public intersolveVisaWalletRepository: Repository<IntersolveVisaWalletEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -36,6 +41,8 @@ export class CronjobService {
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly dataSource: DataSource,
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
+    private readonly intersolveVisaService: IntersolveVisaService,
+    private readonly intersolveVisaApiService: IntersolveVisaApiService,
   ) {}
 
   private async getLanguageForRegistration(
@@ -209,6 +216,40 @@ export class CronjobService {
         credentials.password,
       );
     }
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_4AM)
+  public async updateVisaDebitWalletDetailsCron(): Promise<void> {
+    console.log('CronjobService - Started: updateVisaDebitWalletDetailsCron');
+    // TODO: Change below query to something that checks for program ID
+    const wallets = await this.intersolveVisaWalletRepository
+      .createQueryBuilder('wallet')
+      .select('wallet.id as id')
+      .addSelect('wallet."tokenCode" as "tokenCode"')
+      .addSelect('wallet."lastUsedDate" as "lastUsedDate"')
+      .getRawMany();
+    for (const wallet of wallets) {
+      const details = await this.intersolveVisaApiService.getWallet(
+        wallet.tokenCode,
+      );
+      const lastUsedDate =
+        await this.intersolveVisaService.getLastChargeTransactionDate(
+          wallet.tokenCode,
+          wallet.lastUsedDate,
+        );
+      wallet.balance = details.data.data.balances.find(
+        (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
+      ).quantity.value;
+      wallet.status = details.data.data.status;
+      wallet.lastUsedDate = lastUsedDate;
+      // TODO: Is not awaiting this fine?
+      this.intersolveVisaWalletRepository
+        .update({ id: wallet.id }, wallet)
+        .catch((e) => {
+          console.error(e);
+        });
+    }
+    console.log('CronjobService - Finished: updateVisaDebitWalletDetailsCron');
   }
 
   private async cancelRequestRefpos(
