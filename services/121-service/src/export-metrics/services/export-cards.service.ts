@@ -21,6 +21,7 @@ export class ExportCardsService {
         `registration."referenceId" as "referenceId"`,
         `registration."registrationStatus" as "registrationStatus"`,
         'wallet.status as "walletStatus"',
+        'wallet.created as "issuedDate"',
         'wallet."tokenBlocked" as "tokenBlocked"',
         'wallet."tokenCode" as "tokenCode"',
         'wallet.balance as balance',
@@ -45,6 +46,7 @@ export class ExportCardsService {
           wallet.isCurrentWallet,
         );
       wallet.walletStatus = mappedStatus;
+      delete wallet.isCurrentWallet;
     }
     return wallets;
   }
