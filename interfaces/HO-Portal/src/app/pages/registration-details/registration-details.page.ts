@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { RegistrationPhysicalCardOverviewComponent } from 'src/app/components/registration-physical-card-overview/registration-physical-card-overview.component';
+import { PaymentHistoryPopupComponent } from 'src/app/program/payment-history-popup/payment-history-popup.component';
 import { RegistrationStatusEnum } from '../../../../../../services/121-service/src/registration/enum/registration-status.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
@@ -29,6 +30,7 @@ import { PubSubEvent, PubSubService } from '../../services/pub-sub.service';
     TranslateModule,
     ProgramNavigationComponent,
     RegistrationActivityOverviewComponent,
+    PaymentHistoryPopupComponent,
     RegistrationPaymentOverviewComponent,
     RegistrationPersonalInformationComponent,
     RegistrationPhysicalCardOverviewComponent,

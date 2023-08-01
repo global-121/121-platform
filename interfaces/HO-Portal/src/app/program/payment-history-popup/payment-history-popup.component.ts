@@ -1,6 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
+import { IonicModule, ModalController } from '@ionic/angular';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   PaymentRowDetail,
   PayoutDetails,
@@ -12,12 +13,20 @@ import { Transaction } from 'src/app/models/transaction.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
+import { PaymentHistoryAccordionComponent } from '../payment-history-accordion/payment-history-accordion.component';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 import { StatusEnum } from './../../models/status.enum';
 @Component({
   selector: 'app-payment-history-popup',
   templateUrl: './payment-history-popup.component.html',
   styleUrls: ['./payment-history-popup.component.scss'],
+  standalone: true,
+  imports: [
+    IonicModule,
+    CommonModule,
+    TranslateModule,
+    PaymentHistoryAccordionComponent,
+  ],
 })
 export class PaymentHistoryPopupComponent implements OnInit {
   @Input()
