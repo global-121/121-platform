@@ -700,8 +700,7 @@
         "null": "All",
         "message": "Messages",
         "status": "Status history",
-        "payment": "Payments",
-        "newtab": "New Tab"
+        "payment": "Payments"
       },
       "activities": {
         "status": {

@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { cloneDeep } from 'lodash';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import StatusDate from 'src/app/enums/status-dates.enum';
 import {
@@ -359,8 +358,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       const tempData = [];
       this.fillPaymentRows().forEach((v) => {
         tempData.push({
-          // data: { ...v },
-          data: cloneDeep(v),
+          data: { ...v },
           type: ActivityOverviewType.payment,
         });
       });
