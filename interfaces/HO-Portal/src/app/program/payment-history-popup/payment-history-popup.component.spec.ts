@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
@@ -10,13 +11,14 @@ describe('PaymentHistoryPopupComponent', () => {
   let component: PaymentHistoryPopupComponent;
   let fixture: ComponentFixture<PaymentHistoryPopupComponent>;
 
-  beforeEach(async () => {
+  beforeEach(waitForAsync(() => {
     const modalSpy = jasmine.createSpyObj('Modal', ['present']);
     const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
     modalCtrlSpy.create.and.callFake(() => modalSpy);
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: ModalController,
@@ -29,7 +31,7 @@ describe('PaymentHistoryPopupComponent', () => {
         },
       ],
     }).compileComponents();
-  });
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PaymentHistoryPopupComponent);
