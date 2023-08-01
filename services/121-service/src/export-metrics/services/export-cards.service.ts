@@ -10,7 +10,7 @@ import { IntersolveVisaService } from '../../payments/fsp-integration/intersolve
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 
 class ExportCardsDto {
-  PAid: number;
+  paId: number;
   referenceId: string;
   registrationStatus: RegistrationStatusEnum;
   cardNumber: number;
@@ -35,7 +35,7 @@ export class ExportCardsService {
       .leftJoin('wallet.intersolveVisaCustomer', 'customer')
       .leftJoin('customer.registration', 'registration')
       .select([
-        `registration."registrationProgramId" as "PAid"`,
+        `registration."registrationProgramId" as "paId"`,
         `registration."referenceId" as "referenceId"`,
         `registration."registrationStatus" as "registrationStatus"`,
         'wallet."tokenCode" as "cardNumber"',
