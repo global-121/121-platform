@@ -93,7 +93,7 @@ export class ExportMetricsService {
         return this.getDuplicates(programId);
       }
       case ExportType.cardBalances: {
-        return this.exportCardsService.getCards(programId);
+        return this.getCardBalances(programId);
       }
     }
   }
@@ -1251,6 +1251,17 @@ export class ExportMetricsService {
       includedPeople,
       totalBudget,
       spentMoney,
+    };
+  }
+
+  private async getCardBalances(programId: number): Promise<{
+    fileName: ExportType;
+    data: any[];
+  }> {
+    const data = await this.exportCardsService.getCards(programId);
+    return {
+      fileName: ExportType.cardBalances,
+      data,
     };
   }
 }
