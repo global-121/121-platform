@@ -618,6 +618,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     }
 
     this.updateProxyScrollbarSize();
+
+    this.isCompleted.emit(true)
   }
 
   private async refreshData(refresh: boolean = false) {
