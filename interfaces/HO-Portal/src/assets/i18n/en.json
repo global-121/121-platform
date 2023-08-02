@@ -353,7 +353,7 @@
           "custom-data": {
             "intersolveVisaWalletTokenCode": "Visa card ID"
           },
-          "retry": "Retry",
+          "retry": "Details",
           "nosupport": "No FSP supported for this transfer"
         },
         "edit-person-affected-popup": {

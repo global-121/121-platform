@@ -10,7 +10,7 @@ import { CustomDataAttributes } from '../../registration/enum/custom-data-attrib
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 import { StatusEnum } from '../../shared/enum/status.enum';
-import { MessageContentType } from '../message-type.enum';
+import { MessageContentType, TemplatedMessages } from '../message-type.enum';
 import { SmsService } from '../sms/sms.service';
 import {
   TwilioIncomingCallbackDto,
@@ -94,6 +94,27 @@ export class WhatsappIncomingService {
         await this.handleWhatsappTestResult(callbackData, tryWhatsapp);
       }
     }
+    // if we get a faulty 63016 we retry sending a message, and we don't need to update the status
+    if (
+      callbackData.ErrorCode === '63016' &&
+      [TwilioStatus.undelivered, TwilioStatus.failed].includes(
+        callbackData.MessageStatus,
+      )
+    ) {
+      const message = await this.twilioMessageRepository.findOne({
+        where: { sid: callbackData.MessageSid },
+      });
+      if (
+        message &&
+        !TemplatedMessages.includes(message.contentType) &&
+        message.retryCount < 3
+      ) {
+        if (callbackData.MessageStatus === TwilioStatus.undelivered) {
+          await this.handleFaultyTemplateError(callbackData, message);
+        }
+        return;
+      }
+    }
     await this.twilioMessageRepository.update(
       {
         sid: callbackData.MessageSid,
@@ -115,6 +136,31 @@ export class WhatsappIncomingService {
     if (statuses.includes(callbackData.MessageStatus)) {
       await this.intersolveVoucherService.processStatus(callbackData);
     }
+  }
+
+  private async handleFaultyTemplateError(
+    callbackData: TwilioStatusCallbackDto,
+    message: TwilioMessageEntity,
+  ): Promise<void> {
+    await this.twilioMessageRepository.update(
+      {
+        sid: callbackData.MessageSid,
+      },
+      {
+        retryCount: message.retryCount + 1,
+      },
+    );
+    // Wait for 30 seconds before retrying
+    await new Promise((resolve) => setTimeout(resolve, 30000));
+    await this.whatsappService.sendWhatsapp(
+      message.body,
+      callbackData.To.replace(/\D/g, ''),
+      null,
+      message.mediaUrl,
+      message.registrationId,
+      message.contentType,
+      callbackData.MessageSid,
+    );
   }
 
   private async handleWhatsappTestResult(
@@ -256,9 +302,6 @@ export class WhatsappIncomingService {
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    // Wait for 5 seconds to allow Twilio to 'open the (message)window'.
-    await new Promise((res) => setTimeout(res, 5000));
 
     const fromNumber = this.cleanWhatsAppNr(callbackData.From);
 
