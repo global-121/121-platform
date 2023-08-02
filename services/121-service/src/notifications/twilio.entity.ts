@@ -58,4 +58,7 @@ export class TwilioMessageEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'registrationId' })
   public registration: RegistrationEntity;
+
+  @Column({ type: 'int', default: 0 })
+  public retryCount: number;
 }

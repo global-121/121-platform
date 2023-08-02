@@ -258,3 +258,29 @@ ion-button {
     max-height: none;
   }
 }
+
+.status-failed-text {
+  color: var(--ion-color-status-failed-text);
+}
+
+// for physical card list and popup in registration details page
+.physical-card-status-chip {
+  pointer-events: none;
+  height: 20px;
+  &.physical-card-status-chip-active {
+    background-color: var(--fiveten-success-100);
+    color: var(--fiveten-success-700);
+  }
+  &.physical-card-status-chip-blocked {
+    background-color: var(--fiveten-error-100);
+    color: var(--fiveten-error-700);
+  }
+  &.physical-card-status-chip-issued {
+    background-color: var(--fiveten-navy-200);
+    color: var(--fiveten-link-700);
+  }
+  &.physical-card-status-chip-paused {
+    background-color: var(--fiveten-warning-100);
+    color: var(--fiveten-warning-700);
+  }
+}

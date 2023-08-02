@@ -1,6 +1,6 @@
 export enum WalletStatus121 {
-  Substituted = 'Substituted',
   Active = 'Active',
-  Inactive = 'Inactive',
+  Issued = 'Issued',
   Blocked = 'Blocked',
+  Paused = 'Paused',
 }

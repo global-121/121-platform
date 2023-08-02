@@ -4,6 +4,7 @@ import { uniq, without } from 'lodash';
 import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
 import { DataSource, In, Repository } from 'typeorm';
 import { ActionService } from '../actions/action.service';
+import { FspName } from '../fsp/enum/fsp-name.enum';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { PaymentsService } from '../payments/payments.service';
@@ -22,6 +23,7 @@ import { RegistrationStatusEnum } from '../registration/enum/registration-status
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { StatusEnum } from '../shared/enum/status.enum';
+import { RegistrationDataQueryService } from '../utils/registration-data-query/registration-data-query.service';
 import { ProgramCustomAttributeEntity } from './../programs/program-custom-attribute.entity';
 import { RegistrationDataOptions } from './../registration/dto/registration-data-relation.model';
 import { CustomDataAttributes } from './../registration/enum/custom-data-attributes';
@@ -55,6 +57,7 @@ export class ExportMetricsService {
     private readonly paymentsService: PaymentsService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
+    private readonly registrationDataQueryService: RegistrationDataQueryService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -443,7 +446,7 @@ export class ExportMetricsService {
 
     for (const r of relationOptions) {
       query.select((subQuery) => {
-        return this.registrationsService.customDataEntrySubQuery(
+        return this.registrationDataQueryService.customDataEntrySubQuery(
           subQuery,
           r.relation,
         );
@@ -477,7 +480,7 @@ export class ExportMetricsService {
       .orderBy('"registration"."registrationProgramId"', 'ASC');
     for (const r of relationOptions) {
       query.select((subQuery) => {
-        return this.registrationsService.customDataEntrySubQuery(
+        return this.registrationDataQueryService.customDataEntrySubQuery(
           subQuery,
           r.relation,
         );
@@ -769,15 +772,47 @@ export class ExportMetricsService {
       .leftJoin('transaction.registration', 'registration')
       .leftJoin('registration.fsp', 'fsp');
 
+    const additionalFspExportFields = await this.getAdditionalFspExportFields(
+      programId,
+    );
+
+    for (const field of additionalFspExportFields) {
+      const nestedParts = field.split('.');
+      let variabeleSelectQuery = 'transaction."customData"';
+      for (const part of nestedParts) {
+        variabeleSelectQuery += `->'${part}'`;
+      }
+      transactionQuery.addSelect(
+        variabeleSelectQuery,
+        nestedParts[nestedParts.length - 1],
+      );
+    }
+
     for (const r of registrationDataOptions) {
       transactionQuery.select((subQuery) => {
-        return this.registrationsService.customDataEntrySubQuery(
+        return this.registrationDataQueryService.customDataEntrySubQuery(
           subQuery,
           r.relation,
         );
       }, r.name);
     }
     return await transactionQuery.getRawMany();
+  }
+
+  private async getAdditionalFspExportFields(
+    programId: number,
+  ): Promise<string[]> {
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+      relations: ['financialServiceProviders'],
+    });
+    let fields = [];
+    for (const fsp of program.financialServiceProviders) {
+      if (fsp.fsp === FspName.safaricom) {
+        fields = [...fields, ...['requestResult.OriginatorConversationID']];
+      }
+    }
+    return fields;
   }
 
   public async getPaMetrics(

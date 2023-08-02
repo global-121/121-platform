@@ -5,9 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.93.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.94.0...master)
 
 ---
+
+## [1.94.0](https://github.com/global-121/121-platform/compare/v1.93.1...v1.94.0) - 2023-07-27
+
+### Added
+
+- Re-issue visa card
+- Automation of: Update Intersolve Visa phone number & address
+
+### Fixed
+
+- Disappearing columns in PA table
+- Going from end inclusion to completed status
+- Throttling on image endpoint
+- Max payments -1
+
+### Removed
+
+- Get all users endpoint
+- Single KRCS program
+
+## [1.93.1](https://github.com/global-121/121-platform/compare/v1.93.0...v1.93.1) - 2023-07-21
+
+### Fixed
+
+- Several Safaricom bugs
 
 ## [1.93.0](https://github.com/global-121/121-platform/compare/v1.92.0...v1.93.0) - 2023-07-19
 

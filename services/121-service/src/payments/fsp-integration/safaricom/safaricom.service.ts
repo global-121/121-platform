@@ -62,13 +62,18 @@ export class SafaricomService {
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
       // Storing the per payment so you can continiously seed updates of transactions in HO-Portal
-      await this.transactionsService.storeTransactionUpdateStatus(
-        paymentRequestResultPerPa,
-        programId,
-        paymentNr,
-      );
+      const transaction =
+        await this.transactionsService.storeTransactionUpdateStatus(
+          paymentRequestResultPerPa,
+          programId,
+          paymentNr,
+        );
 
-      await this.processSafaricomRequest(payload, paymentRequestResultPerPa);
+      await this.processSafaricomRequest(
+        payload,
+        paymentRequestResultPerPa,
+        transaction,
+      );
     }
     return fspTransactionResult;
   }
@@ -79,25 +84,25 @@ export class SafaricomService {
     return await this.registrationRepository
       .createQueryBuilder('registration')
       .select([
-        'registration.id AS id',
+        'registration."registrationProgramId" AS id',
         'registration.referenceId AS "referenceId"',
         'data.value AS value',
       ])
       .where('registration.referenceId IN (:...referenceIds)', {
         referenceIds: referenceIds,
       })
-      .andWhere('fspQuestion.name IN (:...names)', {
+      .andWhere('programQuestion.name IN (:...names)', {
         names: ['nationalId'],
       })
       .leftJoin('registration.data', 'data')
-      .leftJoin('data.fspQuestion', 'fspQuestion')
+      .leftJoin('data.programQuestion', 'programQuestion')
       .getRawMany();
   }
 
   public createPayloadPerPa(
-    payment,
-    programId,
-    paymentNr,
+    paymentData: PaPaymentDataDto,
+    programId: number,
+    paymentNr: number,
     userInfo: { id: string; referenceId: string; value: string },
   ): SafaricomTransferPayload {
     function padTo2Digits(num: number): string {
@@ -105,35 +110,27 @@ export class SafaricomService {
     }
 
     function formatDate(date: Date): string {
-      return (
-        [
-          date.getFullYear().toString().substring(2),
-          padTo2Digits(date.getMonth() + 1),
-          padTo2Digits(date.getDate()),
-        ].join('') +
-        '' +
-        [
-          padTo2Digits(date.getHours()),
-          padTo2Digits(date.getMinutes()),
-          padTo2Digits(date.getSeconds()),
-        ].join('')
-      );
+      return [
+        date.getFullYear().toString().substring(2),
+        padTo2Digits(date.getMonth() + 1),
+        padTo2Digits(date.getDate()),
+      ].join('');
     }
 
     const payload = {
       InitiatorName: process.env.SAFARICOM_INITIATORNAME,
       SecurityCredential: process.env.SAFARICOM_SECURITY_CREDENTIAL,
       CommandID: 'BusinessPayment',
-      Amount: payment.transactionAmount,
+      Amount: paymentData.transactionAmount,
       PartyA: process.env.SAFARICOM_PARTY_A,
-      PartyB: payment.paymentAddress,
+      PartyB: paymentData.paymentAddress,
       Remarks: `Payment ${paymentNr}`,
       QueueTimeOutURL: EXTERNAL_API.safaricomQueueTimeoutUrl,
       ResultURL: EXTERNAL_API.safaricomResultUrl,
-      Occassion: payment.referenceId,
-      OriginatorConversationID: `P${programId}_PA${userInfo.id}_${formatDate(
+      Occassion: paymentData.referenceId,
+      OriginatorConversationID: `P${programId}PA${userInfo.id}_${formatDate(
         new Date(),
-      )}`,
+      )}_${this.generateRandomString(3)}`,
       IDType: process.env.SAFARICOM_IDTYPE,
       IDNumber: userInfo.value,
     };
@@ -171,6 +168,7 @@ export class SafaricomService {
   public async processSafaricomRequest(
     payload,
     paymentRequestResultPerPa,
+    transaction: TransactionEntity,
   ): Promise<any> {
     const payloadResult = Object.fromEntries(
       Object.entries(payload).map(([k, v]) => [
@@ -180,17 +178,6 @@ export class SafaricomService {
     );
 
     const safaricomCustomData = { ...paymentRequestResultPerPa.customData };
-    const transaction = await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .where('transaction.customData ::jsonb @> :customData', {
-        customData: {
-          requestResult: {
-            OriginatorConversationID:
-              safaricomCustomData.requestResult.OriginatorConversationID,
-          },
-        },
-      })
-      .getMany();
 
     payloadResult.requestResult = safaricomCustomData.requestResult;
     payloadResult.conversationID =
@@ -199,7 +186,7 @@ export class SafaricomService {
       safaricomCustomData.requestResult.ConversationID
         ? safaricomCustomData.requestResult.ConversationID
         : 'Invalid Request';
-    payloadResult.transaction = transaction[0];
+    payloadResult.transaction = transaction;
     await this.safaricomRequestRepository.save(payloadResult);
   }
 
@@ -251,5 +238,20 @@ export class SafaricomService {
 
     await this.safaricomRequestRepository.save(safaricomDbRequest);
     await this.transactionRepository.save(safaricomDbRequest[0].transaction);
+  }
+
+  private generateRandomString(length: number): string {
+    const alphanumericCharacters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(
+        Math.random() * alphanumericCharacters.length,
+      );
+      result += alphanumericCharacters.charAt(randomIndex);
+    }
+
+    return result;
   }
 }

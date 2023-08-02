@@ -25,6 +25,7 @@ describe('PA details iframe page', () => {
           timeout: 8000,
         });
         cy.url().should('include', 'iframe');
+        cy.wait(8000);
         cy.get('app-recipient-page', { timeout: 8000 }).should('be.visible');
 
         cy.get(
@@ -73,6 +74,7 @@ describe('PA details iframe page', () => {
           },
         });
         cy.url().should('include', 'iframe');
+        cy.wait(8000);
         cy.get('app-recipient-page').should('be.visible');
 
         cy.get('app-recipient-page ion-label').contains(
@@ -104,6 +106,7 @@ describe('PA details iframe page', () => {
             },
           });
           cy.url().should('include', 'iframe');
+          cy.wait(8000);
           cy.get('app-recipient-page').should('be.visible');
 
           cy.get('app-recipient-page ion-label').contains(
@@ -138,6 +141,7 @@ describe('PA details iframe page', () => {
         },
       });
       cy.url().should('include', 'iframe');
+      cy.wait(8000);
       cy.get('app-recipient-page').should('be.visible');
 
       const text = portalEn.page.iframe.recipient['no-recipients-found'];
@@ -153,6 +157,7 @@ describe('PA details iframe page', () => {
 
       cy.visit(page.url);
       cy.url().should('include', 'iframe');
+      cy.wait(8000);
       cy.get('app-recipient-page').should('be.visible');
 
       const text = portalEn.page.iframe.recipient['no-phone-number'];

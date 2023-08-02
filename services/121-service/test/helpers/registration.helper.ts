@@ -18,7 +18,7 @@ export function deleteRegistrations(
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .post(`/programs/${programId}/registrations/delete`)
+    .del(`/programs/${programId}/registrations`)
     .set('Cookie', [accessToken])
     .send(registrationReferenceIds);
 }
@@ -92,5 +92,17 @@ export function getVisaWalletsAndDetails(
   return getServer()
     .get(`/programs/${programId}/fsp-integration/intersolve-visa/wallets`)
     .query(queryParams)
+    .set('Cookie', [accessToken]);
+}
+
+export function issueNewVisaCard(
+  programId: number,
+  referenceId: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .put(
+      `/programs/${programId}/fsp-integration/intersolve-visa/customers/${referenceId}/wallets`,
+    )
     .set('Cookie', [accessToken]);
 }
