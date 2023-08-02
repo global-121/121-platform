@@ -1,45 +1,44 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule, ModalController } from '@ionic/angular';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import {
+  TranslateModule,
+  TranslateService,
+  TranslateStore,
+} from '@ngx-translate/core';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
+import { ErrorHandlerService } from 'src/app/services/error-handler.service';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { PaymentHistoryAccordionComponent } from '../payment-history-accordion/payment-history-accordion.component';
 import { PaymentHistoryPopupComponent } from './payment-history-popup.component';
 
 describe('PaymentHistoryPopupComponent', () => {
   let component: PaymentHistoryPopupComponent;
   let fixture: ComponentFixture<PaymentHistoryPopupComponent>;
 
-  beforeEach(waitForAsync(() => {
-    const modalSpy = jasmine.createSpyObj('Modal', ['present']);
-    const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-    modalCtrlSpy.create.and.callFake(() => modalSpy);
-
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule,
         PaymentHistoryPopupComponent,
         IonicModule,
         CommonModule,
+        TranslateModule.forRoot(),
+        PaymentHistoryAccordionComponent,
+        HttpClientTestingModule,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      // schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        {
-          provide: ModalController,
-          useValue: modalCtrlSpy,
-        },
-        provideMagicalMock(ProgramsServiceApiService),
-        provideMagicalMock(TranslateService),
-        provideMagicalMock(PastPaymentsService),
+        ModalController,
+        ProgramsServiceApiService,
+        TranslateService,
+        PastPaymentsService,
+        TranslateStore,
+        provideMagicalMock(ErrorHandlerService),
       ],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(PaymentHistoryPopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
