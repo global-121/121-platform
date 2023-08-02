@@ -40,6 +40,7 @@ import { IntersolveVisaExportService } from './services/intersolve-visa-export.s
     IntersolveVisaService,
     IntersolveVisaApiService,
     IntersolveVisaApiMockService,
+    IntersolveVisaExportService,
   ],
 })
 export class IntersolveVisaModule {}

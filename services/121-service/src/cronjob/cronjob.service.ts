@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { IntersolveVoucherCronService } from '../payments/fsp-integration/intersolve-voucher/services/intersolve-voucher-cron.service';
 
 @Injectable()
 export class CronjobService {
   public constructor(
-    private readonly intersolveVoucherService: IntersolveVoucherService,
+    private readonly intersolveVoucherCronService: IntersolveVoucherCronService,
     private readonly intersolveVisaService: IntersolveVisaService,
   ) {}
 
@@ -16,7 +16,7 @@ export class CronjobService {
     // and tries to cancel the
     console.log('CronjobService - Started: cancelByRefposIntersolve');
 
-    await this.intersolveVoucherService.cancelByRefposIntersolve();
+    await this.intersolveVoucherCronService.cancelByRefposIntersolve();
 
     console.log('CronjobService - Complete: cancelByRefposIntersolve');
   }
@@ -25,7 +25,7 @@ export class CronjobService {
   public async cronCacheUnusedVouchers(): Promise<void> {
     console.log('CronjobService - Started: cronCacheUnusedVouchers');
 
-    await this.intersolveVoucherService.cacheUnusedVouchers();
+    await this.intersolveVoucherCronService.cacheUnusedVouchers();
 
     console.log('CronjobService - Complete: cronCacheUnusedVouchers');
   }
@@ -43,7 +43,7 @@ export class CronjobService {
   public async cronSendWhatsappReminders(): Promise<void> {
     console.log('CronjobService - Started: cronSendWhatsappReminders');
 
-    await this.intersolveVoucherService.sendWhatsappReminders();
+    await this.intersolveVoucherCronService.sendWhatsappReminders();
 
     console.log('CronjobService - Complete: cronSendWhatsappReminders');
   }

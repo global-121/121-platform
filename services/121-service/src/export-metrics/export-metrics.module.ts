@@ -4,7 +4,6 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { IntersolveVisaWalletEntity } from '../payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
 import { IntersolveVisaModule } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.module';
-import { IntersolveVisaExportService } from '../payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
 import { IntersolveVoucherModule } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { PaymentsModule } from '../payments/payments.module';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
@@ -46,11 +45,7 @@ import { ExportMetricsService } from './export-metrics.service';
     IntersolveVisaModule,
     IntersolveVoucherModule,
   ],
-  providers: [
-    ExportMetricsService,
-    RegistrationDataQueryService,
-    IntersolveVisaExportService,
-  ],
+  providers: [ExportMetricsService, RegistrationDataQueryService],
   controllers: [ExportMetricsController],
   exports: [],
 })
