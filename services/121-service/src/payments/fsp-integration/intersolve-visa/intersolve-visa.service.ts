@@ -213,7 +213,6 @@ export class IntersolveVisaService
           (b) =>
             b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
         ).quantity.value;
-
       await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
 
       visaCustomer.visaWallets = [intersolveVisaWallet];
@@ -239,6 +238,9 @@ export class IntersolveVisaService
             )}`
           : registerResult.data?.code ||
             `LINK CUSTOMER ERROR: ${registerResult.status} - ${registerResult.statusText}`;
+        paTransactionResult.customData = {
+          intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
+        };
         return paTransactionResult;
       }
 
@@ -270,6 +272,9 @@ export class IntersolveVisaService
               createDebitCardResult.data?.errors,
             )}`
           : `CREATE DEBIT CARD ERROR: ${createDebitCardResult.status} - ${createDebitCardResult.statusText}`;
+      paTransactionResult.customData = {
+        intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
+      };
 
       // if success, update wallet: set debitCardCreated to true ..
       if (paTransactionResult.status === StatusEnum.success) {
@@ -302,6 +307,9 @@ export class IntersolveVisaService
             loadBalanceResult.data?.errors,
           )}`
         : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`;
+      paTransactionResult.customData = {
+        intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
+      };
 
       transactionNotifications.push(
         this.buildNotificationObjectLoadBalance(calculatedAmount),

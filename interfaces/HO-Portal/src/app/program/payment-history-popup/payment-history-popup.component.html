@@ -205,6 +205,31 @@
                     {{ paymentRow.transaction?.fspName }}
                   </ion-label>
                 </ion-item>
+                <!-- custom attributes per FSP -->
+                <ng-container
+                  *ngFor="
+                    let attribute of getCustomDataAttributesToShow(paymentRow)
+                  "
+                >
+                  <ion-item>
+                    <ion-label
+                      class="accordion-text text-bold"
+                      [innerHTML]="
+                        'page.program.program-people-affected.transaction.custom-data.' +
+                          attribute | translate
+                      "
+                    >
+                    </ion-label>
+                    <ion-label
+                      id="hover-trigger"
+                      class="accordion-text ion-text-right"
+                      *ngIf="paymentRow.transaction?.status"
+                      [title]="paymentRow.transaction?.customData?.[attribute]"
+                    >
+                      {{ paymentRow.transaction?.customData?.[attribute] }}
+                    </ion-label>
+                  </ion-item>
+                </ng-container>
               </ion-list>
             </ion-col>
           </ion-row>

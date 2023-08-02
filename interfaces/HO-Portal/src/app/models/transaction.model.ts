@@ -1,3 +1,4 @@
+import { FspName } from '../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 import { StatusEnum } from './status.enum';
 import { IntersolvePayoutStatus } from './transaction-custom-data';
 
@@ -16,5 +17,5 @@ export class Transaction {
       }
     | any;
   fspName: string;
-  fsp: string;
+  fsp: FspName;
 }
