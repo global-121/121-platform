@@ -301,9 +301,9 @@ $$ ;
 -- CHECK VIA:
 -- select count(*) from "121-service"."twilio_message"
 
-------------------------------------------------------
--- D.1: Blow up 1 Visa customer & wallet to all PAs --
-------------------------------------------------------
+---------------------------------------------
+-- D.1: Blow up 1 Visa customer to all PAs --
+---------------------------------------------
 
 -- Only use this if you have first done 1 Intersolve Visa transaction for 1 PA already manually
 -- Note: you do not need multiple transactions for this, as that will not lead to more customer or wallet records
@@ -340,9 +340,11 @@ $$ ;
 --select count(*) from "121-service".intersolve_visa_customer
 
 
--- NOTE: If you get an error that uuid_generate_v4 doesn't exist while running the query below,
--- you need to run the following 'query':
--- create extension if not exists "uuid-ossp"
+-------------------------------------------
+-- D.2: Blow up 1 Visa wallet to all PAs --
+-------------------------------------------
+-- NOTE: run this, as otherwise you might get an error that uuid_generate_v4 doesn't exist while running the query below,
+create extension if not exists "uuid-ossp";
 
 DO $$ DECLARE i record;
 
