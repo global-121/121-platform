@@ -5,6 +5,7 @@ import { ReferenceIdsDto } from 'src/registration/dto/reference-id.dto';
 import { DataSource, In, Repository } from 'typeorm';
 import { ActionService } from '../actions/action.service';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { IntersolveVisaExportService } from '../payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { PaymentsService } from '../payments/payments.service';
 import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
@@ -33,7 +34,6 @@ import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { PaymentStateSumDto } from './dto/payment-state-sum.dto';
 import { ProgramStats } from './dto/program-stats.dto';
 import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
-import { ExportCardsService } from './services/export-cards.service';
 
 @Injectable()
 export class ExportMetricsService {
@@ -58,7 +58,7 @@ export class ExportMetricsService {
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
     private readonly registrationDataQueryService: RegistrationDataQueryService,
-    private readonly exportCardsService: ExportCardsService,
+    private readonly intersolveVisaExportService: IntersolveVisaExportService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -1258,7 +1258,7 @@ export class ExportMetricsService {
     fileName: ExportType;
     data: any[];
   }> {
-    const data = await this.exportCardsService.getCards(programId);
+    const data = await this.intersolveVisaExportService.getCards(programId);
     return {
       fileName: ExportType.cardBalances,
       data,

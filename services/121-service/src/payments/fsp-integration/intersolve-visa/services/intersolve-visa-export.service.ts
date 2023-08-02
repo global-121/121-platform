@@ -1,29 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { WalletStatus121 } from '../../payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
-import {
-  IntersolveVisaWalletEntity,
-  IntersolveVisaWalletStatus,
-} from '../../payments/fsp-integration/intersolve-visa/intersolve-visa-wallet.entity';
-import { IntersolveVisaService } from '../../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
+import { ExportCardsDto } from '../dto/export-cards.dto';
+import { IntersolveVisaWalletEntity } from '../intersolve-visa-wallet.entity';
+import { IntersolveVisaService } from '../intersolve-visa.service';
 
-class ExportCardsDto {
-  paId: number;
-  referenceId: string;
-  registrationStatus: RegistrationStatusEnum;
-  cardNumber: number;
-  cardStatus121: WalletStatus121;
-  issuedDate: Date;
-  lastUsedDate: Date;
-  balance: number;
-  cardStatusIntersolve?: IntersolveVisaWalletStatus;
-  tokenBlocked?: boolean;
-  isCurrentWallet?: boolean;
-}
 @Injectable()
-export class ExportCardsService {
+export class IntersolveVisaExportService {
   @InjectRepository(IntersolveVisaWalletEntity)
   private readonly visaCardRepository: Repository<IntersolveVisaWalletEntity>;
 
