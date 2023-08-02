@@ -13,18 +13,19 @@
 
 -- RUN SCRIPT
 -- 	   6. Run scripts of section A below to create registrations
---     7. (optional) run section B if you want transacations also in your database (and if you have done step 3 and 4 above)
---	   8. (optional) run section C if you want messages also in your databse (and if you have done step 5 above)
+--     7. (optional) run section B if you want transactions also in your database (and if you have done step 3 and 4 above)
+--	   8. (optional) run section C if you want messages also in your database (and if you have done step 5 above)
+--		 9. (optional - only for Intersolve Visa) run section D if you want Visa customers and wallets in your database (and if you have done step 3 and 4 above for a Visa PA)
 
 --------------------------------
 -- A.1: Blow up registrations --
 --------------------------------
 
--- This will duplicate the existing registrations 10 times, so to 1024 PAs. If you want more, simply increase the number 10 in the loop
+-- This will duplicate the existing registrations 15 times, so to 32,768 PAs. If you want more (less), simply increase (decrease) the number 15 in the loop
 
 DO $$ DECLARE i record;
 
-BEGIN FOR i IN 1..10 LOOP
+BEGIN FOR i IN 1..15 LOOP
 INSERT
 	INTO
 	"121-service".registration (
@@ -69,11 +70,11 @@ $$ ;
 ------------------------------------
 
 -- Always run this part as well if you run the part above. There is no realistic use case for loading registrations without registration_data
--- Make sure that if you changed the number of duplications from 10 to something else, you apply the same change here
+-- Make sure that if you changed the number of duplications from 15 to something else, you apply the same change here
 
 DO $$ DECLARE i record;
 
-BEGIN FOR i IN 1..10 LOOP
+BEGIN FOR i IN 1..15 LOOP
 INSERT
 	INTO
 	"121-service"."registration_data" (
@@ -122,11 +123,11 @@ update "121-service".registration_data
 -------------------------------------------
   
 -- Only use this if you have first done one transaction for 1 PA #1 already manually
--- Make sure to adjust the number of duplications (10) to something else if changed above as well
+-- Make sure to adjust the number of duplications (15) to something else if changed above as well
 
 DO $$ DECLARE i record;
 
-BEGIN FOR i IN 1..10 LOOP
+BEGIN FOR i IN 1..15 LOOP
 INSERT
 	INTO
 	"121-service"."transaction" (
@@ -213,11 +214,11 @@ $$ ;
 ---------------------------------------
 
 -- Only use this if you have first done one message for 1 PA #1 already manually
--- Make sure to adjust the number of duplications (10) to something else if changed above as well
+-- Make sure to adjust the number of duplications (15) to something else if changed above as well
 
 DO $$ DECLARE i record;
 
-BEGIN FOR i IN 1..10 LOOP
+BEGIN FOR i IN 1..15 LOOP
 INSERT
 	INTO
 	"121-service"."twilio_message" (
@@ -299,3 +300,76 @@ $$ ;
 
 -- CHECK VIA:
 -- select count(*) from "121-service"."twilio_message"
+
+------------------------------------------------------
+-- D.1: Blow up 1 Visa customer & wallet to all PAs --
+------------------------------------------------------
+
+-- Only use this if you have first done 1 Intersolve Visa transaction for 1 PA already manually
+-- Note: you do not need multiple transactions for this, as that will not lead to more customer or wallet records
+-- Make sure to adjust the number of duplications (15) to something else if changed above as well
+
+DO $$ DECLARE i record;
+
+BEGIN FOR i IN 1..15 LOOP
+INSERT
+	INTO
+	"121-service"."intersolve_visa_customer" (
+	select
+		id + (
+		SELECT
+			count(id)
+		FROM
+			"121-service"."intersolve_visa_customer"),
+		created, 
+		updated, 
+		"holderId", 
+		"registrationId" + (
+		SELECT
+			max("registrationId")
+		FROM
+			"121-service"."intersolve_visa_customer")
+	from
+		"121-service".intersolve_visa_customer);
+END LOOP;
+END;
+
+$$ ;
+
+--select count(*) from "121-service".intersolve_visa_customer
+
+DO $$ DECLARE i record;
+
+BEGIN FOR i IN 1..15 LOOP
+INSERT
+	INTO
+	"121-service"."intersolve_visa_wallet" (
+	select
+		id + (
+		SELECT
+			count(id)
+		FROM
+			"121-service"."intersolve_visa_wallet"),
+		created, 
+		updated, 
+		uuid_generate_v4(),
+		"tokenBlocked", 
+		"linkedToVisaCustomer", 
+		"debitCardCreated", 
+		balance, 
+		status, 
+		"lastUsedDate", 
+		"intersolveVisaCustomerId" + (
+		SELECT
+			max("intersolveVisaCustomerId")
+		FROM
+			"121-service"."intersolve_visa_wallet")
+	from
+		"121-service".intersolve_visa_wallet);
+END LOOP;
+END;
+
+$$ ;
+
+-- CHECK VIA:
+-- select count(*) from "121-service"."intersolve_visa_wallet"
