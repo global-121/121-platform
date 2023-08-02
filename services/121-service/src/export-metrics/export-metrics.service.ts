@@ -7,6 +7,7 @@ import { ActionService } from '../actions/action.service';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
 import { IntersolveVisaExportService } from '../payments/fsp-integration/intersolve-visa/services/intersolve-visa-export.service';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
+import { IntersolveVoucherService } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { PaymentsService } from '../payments/payments.service';
 import { GetTransactionOutputDto } from '../payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
@@ -59,6 +60,7 @@ export class ExportMetricsService {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationDataQueryService: RegistrationDataQueryService,
     private readonly intersolveVisaExportService: IntersolveVisaExportService,
+    private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -319,9 +321,8 @@ export class ExportMetricsService {
   }
 
   private async getUnusedVouchers(programId?: number): Promise<FileDto> {
-    const unusedVouchers = await this.paymentsService.getUnusedVouchers(
-      programId,
-    );
+    const unusedVouchers =
+      await this.intersolveVoucherService.getUnusedVouchers(programId);
     for (const v of unusedVouchers) {
       const registration =
         await this.registrationsService.getRegistrationFromReferenceId(
@@ -341,7 +342,7 @@ export class ExportMetricsService {
 
   private async getVouchersWithBalance(programId: number): Promise<FileDto> {
     const vouchersWithBalance =
-      await this.paymentsService.getVouchersWithBalance(programId);
+      await this.intersolveVoucherService.getVouchersWithBalance(programId);
     const response = {
       fileName: ExportType.vouchersWithBalance,
       data: vouchersWithBalance,
@@ -350,7 +351,8 @@ export class ExportMetricsService {
   }
 
   public async getToCancelVouchers(): Promise<FileDto> {
-    const toCancelVouchers = await this.paymentsService.getToCancelVouchers();
+    const toCancelVouchers =
+      await this.intersolveVoucherService.getToCancelVouchers();
 
     const response = {
       fileName: ExportType.toCancelVouchers,
