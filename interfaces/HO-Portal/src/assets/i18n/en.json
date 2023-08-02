@@ -350,7 +350,7 @@
           "amount": "Amount",
           "received": "Received",
           "fsp": "FSP",
-          "retry": "Retry",
+          "retry": "Details",
           "nosupport": "No FSP supported for this transfer"
         },
         "edit-person-affected-popup": {
