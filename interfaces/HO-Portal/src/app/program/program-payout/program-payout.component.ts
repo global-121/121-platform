@@ -53,7 +53,6 @@ export class ProgramPayoutComponent implements OnInit {
   public exportPaymentAvailable: boolean;
 
   private fspsWithPhysicalCard = ['Intersolve-visa'];
-  public showExportCardUsage: boolean;
   public canExportCardBalances: boolean;
 
   private pastPayments: PaymentData[];
@@ -104,10 +103,6 @@ export class ProgramPayoutComponent implements OnInit {
     this.checkPhaseReady();
 
     this.canExportCardBalances = this.checkCanExportCardBalances();
-
-    this.showExportCardUsage = this.program?.financialServiceProviders?.some(
-      (fsp) => this.fspsWithPhysicalCard.includes(fsp.fsp),
-    );
   }
 
   private checkCanMakePayment(): boolean {
@@ -130,9 +125,15 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   private checkCanExportCardBalances(): boolean {
-    return this.authService.hasAllPermissions(this.program.id, [
+    const visaFsp = this.program?.financialServiceProviders?.some((fsp) =>
+      this.fspsWithPhysicalCard.includes(fsp.fsp),
+    );
+
+    const hasPermission = this.authService.hasAllPermissions(this.program.id, [
       Permission.FspDebitCardEXPORT,
     ]);
+
+    return visaFsp && hasPermission;
   }
 
   private checkCanMakeFspInstructions(): boolean {

@@ -75,12 +75,11 @@
     </app-export-list>
 
     <app-export-list
-      *ngIf="showExportCardUsage"
+      *ngIf="canExportCardBalances"
       [programId]="programId"
       [exportType]="exportCardUsageType"
       [minPayment]="minPayment"
       [maxPayment]="maxPayment"
-      [disabled]="!canExportCardBalances"
     ></app-export-list>
   </ion-row>
 </div>
