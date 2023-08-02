@@ -1,4 +1,4 @@
-FROM node:16-slim as base
+FROM node:18-slim as base
 
 WORKDIR /home/node/app
 
@@ -12,8 +12,11 @@ COPY . .
 
 CMD ["npm", "start"]
 
-
 FROM base as development
+
+RUN apt update
+
+RUN apt install -y curl
 
 COPY . .
 

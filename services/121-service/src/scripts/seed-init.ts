@@ -5,6 +5,7 @@ import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
 import fspBank from '../../seed-data/fsp/fsp-bank.json';
 import fspBelcash from '../../seed-data/fsp/fsp-belcash.json';
 import fspBob from '../../seed-data/fsp/fsp-bob.json';
+import fspCommercialBankEthiopia from '../../seed-data/fsp/fsp-commercial-bank-ethiopia.json';
 import fspIntersolveJumboPhysical from '../../seed-data/fsp/fsp-intersolve-jumbo-physical.json';
 import fspIntersolveVisa from '../../seed-data/fsp/fsp-intersolve-visa.json';
 import fspIntersolveVoucherPaper from '../../seed-data/fsp/fsp-intersolve-voucher-paper.json';
@@ -223,6 +224,7 @@ export class SeedInit implements InterfaceScript {
     await this.seedHelper.addFsp(fspNoAttributes);
     await this.seedHelper.addFsp(fspUkrPoshta);
     await this.seedHelper.addFsp(fspSafaricom);
+    await this.seedHelper.addFsp(fspCommercialBankEthiopia);
   }
 }
 

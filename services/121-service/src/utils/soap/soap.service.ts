@@ -56,7 +56,7 @@ export class SoapService {
             data: { error: err },
           },
         );
-        return err;
+        throw err;
       });
   }
 
