@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { MessageContentType } from '../../../notifications/message-type.enum';
+import { MessageService } from '../../../notifications/message.service';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { Attributes } from '../../../registration/dto/update-attribute.dto';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
@@ -70,6 +72,7 @@ export class IntersolveVisaService
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationDataQueryService: RegistrationDataQueryService,
+    private readonly messageService: MessageService,
   ) {}
 
   public async sendPayment(
@@ -952,6 +955,24 @@ export class IntersolveVisaService
 
     // if success, make sure to store old and new wallet in 121 database
     await this.getVisaWalletsAndDetails(referenceId, programId);
+    await this.sendMessageReissueCard(referenceId, programId);
+  }
+
+  private async sendMessageReissueCard(
+    referenceId: string,
+    programId: number,
+  ): Promise<void> {
+    const registration = await this.registrationRepository.findOne({
+      where: { referenceId: referenceId, programId: programId },
+    });
+    await this.messageService.sendTextMessage(
+      registration,
+      programId,
+      null,
+      'reissueVisaCard',
+      false,
+      MessageContentType.custom,
+    );
   }
 
   private async tryToBlockWallet(tokenCode: string): Promise<void> {
