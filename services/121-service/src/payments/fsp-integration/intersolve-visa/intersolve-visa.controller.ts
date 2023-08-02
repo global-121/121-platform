@@ -67,9 +67,10 @@ export class IntersolveVisaController {
   public async blockWallet(
     @Param() params,
   ): Promise<IntersolveBlockWalletResponseDto> {
-    return await this.intersolveVisaService.toggleBlockWallet(
+    return await this.intersolveVisaService.toggleBlockWalletNotification(
       params.tokenCode,
       true,
+      Number(params.programId),
     );
   }
 

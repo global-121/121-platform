@@ -639,6 +639,43 @@ export class IntersolveVisaService
         { tokenBlocked: block },
       );
     }
+
+    return result;
+  }
+
+  public async toggleBlockWalletNotification(
+    tokenCode: string,
+    block: boolean,
+    programId: number,
+  ): Promise<IntersolveBlockWalletResponseDto> {
+    const wallet = await this.intersolveVisaWalletRepository.findOne({
+      where: { tokenCode: tokenCode },
+      relations: [
+        'intersolveVisaCustomer',
+        'intersolveVisaCustomer.registration',
+      ],
+    });
+
+    if (wallet.intersolveVisaCustomer.registration.programId !== programId) {
+      const errors = `No wallet found with tokenCode ${tokenCode}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    const result = await this.toggleBlockWallet(tokenCode, block);
+
+    let notificationKey: string;
+    block
+      ? (notificationKey = 'blockVisaCard')
+      : (notificationKey = 'unblockVisaCard');
+
+    await this.messageService.sendTextMessage(
+      wallet.intersolveVisaCustomer.registration,
+      programId,
+      null,
+      notificationKey,
+      false,
+      MessageContentType.custom,
+    );
     return result;
   }
 

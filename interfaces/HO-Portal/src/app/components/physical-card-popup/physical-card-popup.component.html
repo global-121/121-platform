@@ -129,7 +129,9 @@
             ? ('registration-details.physical-cards-overview.unpause-card'
               | translate)
             : ('registration-details.physical-cards-overview.pause-card'
-              | translate)
+                | translate) +
+              ('registration-details.physical-cards-overview.confirm-prompt.suffix'
+                | translate)
         "
         [message]="
           ('registration-details.physical-cards-overview.confirm-prompt.prefix'
@@ -138,7 +140,9 @@
             ? ('registration-details.physical-cards-overview.confirm-prompt.unpause'
               | translate)
             : ('registration-details.physical-cards-overview.confirm-prompt.pause'
-              | translate))
+                | translate) +
+              ('registration-details.physical-cards-overview.confirm-prompt.suffix'
+                | translate))
         "
       >
         {{
