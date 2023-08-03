@@ -77,7 +77,7 @@
             </ng-container>
 
             <!-- Open voucher button -->
-            <ng-container>
+            <ng-container *ngIf="canViewVouchers">
               <ion-button
                 class="open-voucher-button"
                 fill="clear"
