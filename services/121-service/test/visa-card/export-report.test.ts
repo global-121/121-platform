@@ -78,15 +78,14 @@ describe('Export Visa debit card report', () => {
     expect(exportResult.body.data[0].cardStatus121).toBe(
       WalletStatus121.Active,
     );
-    expect(exportResult.body.data[0].balance).toBe(amount * 100);
+    expect(exportResult.body.data[0].balance).toBe(2200);
     expect(exportResult.body.data[0].registrationStatus).toBe(
       RegistrationStatusEnum.included,
     );
-    expect(exportResult.body.data[0].registrationStatus).toBe(
-      RegistrationStatusEnum.included,
-    );
+    expect(exportResult.body.data[0].paId).toBeGreaterThan(0);
     expect(exportResult.body.data[0].issuedDate).toBeDefined();
-    expect(exportResult.body.data[0].issuedDate).toBeDefined();
+    expect(exportResult.body.data[0].lastUsedDate).toBeDefined();
     expect(exportResult.body.data[0].referenceId).toBeDefined();
+    expect(exportResult.body.data[0].cardNumber).toBeDefined();
   });
 });
