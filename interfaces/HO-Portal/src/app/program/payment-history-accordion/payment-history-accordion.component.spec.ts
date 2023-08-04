@@ -1,27 +1,38 @@
-import { CommonModule } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { PaymentHistoryAccordionComponent } from './payment-history-accordion.component';
 
-describe('PaymentHistoryaccordionComponent', () => {
+describe('PaymentHistoryAccordionComponent', () => {
   let component: PaymentHistoryAccordionComponent;
   let fixture: ComponentFixture<PaymentHistoryAccordionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IonicModule, FormsModule, SharedModule, CommonModule],
-    }).compileComponents();
-  });
+      imports: [
+        TranslateModule.forRoot(),
+        PaymentHistoryAccordionComponent,
+        HttpClientTestingModule,
+      ],
+    });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(PaymentHistoryAccordionComponent);
     component = fixture.componentInstance;
+    component.paymentRow = {
+      amount: 22,
+      customData: {},
+      errorMessage: null,
+      fsp: 'Intersolve-jumbo-physical',
+      fspName: 'Jumbo card',
+      payment: 1,
+      paymentDate: '2023-08-04T08:51:53.726Z',
+      referenceId: '12312sfdasf',
+      status: 'success',
+    };
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  fit('should create the component', () => {
     expect(component).toBeTruthy();
   });
 });
