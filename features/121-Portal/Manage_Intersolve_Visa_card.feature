@@ -5,7 +5,7 @@ Feature: Manage Intersolve Visa card
     Given a logged-in user with "FspDebitCardREAD" permission
     Given a PA with FSP 'Intersolve Visa debit card'
     Given the PA has at least 1 Visa debit card (typically through at least 1 payment with this FSP)
-    Given the user is seeing the debit card section in the PA profile pag (see 'View_PA_profile_page.feature')
+    Given the user is seeing the debit card section in the PA profile page (see 'View_PA_profile_page.feature')
 
   Scenario: View Visa debit card details
     When clicking one row in the Visa debit card table
