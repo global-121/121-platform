@@ -131,7 +131,7 @@ export class WhatsappService {
     language: string,
     program: ProgramEntity,
   ): string {
-    const key = 'whatsappGenericMessage';
+    const key = ProgramNotificationEnum.whatsappGenericMessage;
     const fallbackNotifications = program.notifications[this.fallbackLanguage];
     let notifications = fallbackNotifications;
 
