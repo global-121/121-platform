@@ -16,6 +16,7 @@ import { PaymentHistoryAccordionComponent } from 'src/app/program/payment-histor
 import { PaymentStatusPopupComponent } from 'src/app/program/payment-status-popup/payment-status-popup.component';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { PaymentUtils } from 'src/app/shared/payment.utils';
+import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
@@ -158,7 +159,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   }
 
   public hasVoucherSupport(fsp: string): boolean {
-    return PaymentUtils.hasVoucherSupport(fsp);
+    return PaymentUtils.hasVoucherSupport(fsp as FspName);
   }
 
   public enableSinglePayment(paymentRow: PaymentRowDetail): boolean {
@@ -215,7 +216,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
 
     if (
       this.canViewVouchers &&
-      PaymentUtils.hasVoucherSupport(this.person.fsp) &&
+      PaymentUtils.hasVoucherSupport(this.person.fsp as FspName) &&
       !!paymentRow.transaction
     ) {
       await this.programsService

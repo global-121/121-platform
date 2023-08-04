@@ -1,5 +1,9 @@
+import { FspName } from '../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 import RegistrationStatus from '../enums/registration-status.enum';
-import { PaymentRowDetail } from '../models/payment.model';
+import {
+  PaymentRowDetail,
+  TransactionCustomDataAttributes,
+} from '../models/payment.model';
 import { Person } from '../models/person.model';
 import { Program } from '../models/program.model';
 import { StatusEnum } from '../models/status.enum';
@@ -20,7 +24,7 @@ export class PaymentUtils {
       hasMessageIcon: this.enableMessageSentIcon(transaction),
       hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
       amount: `${transaction.amount} ${program?.currency}`,
-      fsp: person.fsp,
+      fsp: person.fsp as FspName,
       sentDate: transaction.paymentDate,
       paymentDate: transaction.paymentDate,
     };
@@ -38,10 +42,10 @@ export class PaymentUtils {
     );
   }
 
-  static hasVoucherSupport(fsp: string): boolean {
+  static hasVoucherSupport(fsp: FspName): boolean {
     const voucherFsps = [
-      'Intersolve-voucher-paper',
-      'Intersolve-voucher-whatsapp',
+      FspName.intersolveVoucherPaper,
+      FspName.intersolveVoucherWhatsapp,
     ];
     return voucherFsps.includes(fsp);
   }
@@ -107,5 +111,13 @@ export class PaymentUtils {
     }
 
     return false;
+  }
+
+  static getCustomDataAttributesToShow(paymentRow: PaymentRowDetail) {
+    if (paymentRow.transaction?.fsp === FspName.intersolveVisa) {
+      return [TransactionCustomDataAttributes.intersolveVisaWalletTokenCode];
+    } else {
+      return [];
+    }
   }
 }

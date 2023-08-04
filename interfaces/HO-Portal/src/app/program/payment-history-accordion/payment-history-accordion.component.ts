@@ -17,6 +17,7 @@ export class PaymentHistoryAccordionComponent {
   hasErrorCheck = PaymentUtils.hasError;
   hasWaitingCheck = PaymentUtils.hasError;
   hasVoucherSupportCheck = PaymentUtils.hasVoucherSupport;
+  getCustomDataAttributesCheck = PaymentUtils.getCustomDataAttributesToShow;
 
   @Input()
   public paymentRow: any;

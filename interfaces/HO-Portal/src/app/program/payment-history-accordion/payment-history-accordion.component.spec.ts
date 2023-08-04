@@ -8,7 +8,7 @@ describe('PaymentHistoryAccordionComponent', () => {
   let fixture: ComponentFixture<PaymentHistoryAccordionComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
         PaymentHistoryAccordionComponent,
@@ -32,7 +32,7 @@ describe('PaymentHistoryAccordionComponent', () => {
     fixture.detectChanges();
   });
 
-  fit('should create the component', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 });
