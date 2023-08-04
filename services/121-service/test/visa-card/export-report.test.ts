@@ -1,5 +1,6 @@
 import { FspName } from '../../src/fsp/enum/fsp-name.enum';
 import { WalletStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
+import { RegistrationStatusEnum } from '../../src/registration/enum/registration-status.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import {
@@ -14,7 +15,7 @@ import {
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
 
-describe('Issue new Visa debit card', () => {
+describe('Export Visa debit card report', () => {
   const programId = 3;
   const payment = 1;
   const amount = 22;
@@ -77,5 +78,15 @@ describe('Issue new Visa debit card', () => {
     expect(exportResult.body.data[0].cardStatus121).toBe(
       WalletStatus121.Active,
     );
+    expect(exportResult.body.data[0].balance).toBe(amount * 100);
+    expect(exportResult.body.data[0].registrationStatus).toBe(
+      RegistrationStatusEnum.included,
+    );
+    expect(exportResult.body.data[0].registrationStatus).toBe(
+      RegistrationStatusEnum.included,
+    );
+    expect(exportResult.body.data[0].issuedDate).toBeDefined();
+    expect(exportResult.body.data[0].issuedDate).toBeDefined();
+    expect(exportResult.body.data[0].referenceId).toBeDefined();
   });
 });
