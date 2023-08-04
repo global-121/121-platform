@@ -3,7 +3,8 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, DataSource, Repository } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
-import { MessageContentType } from '../notifications/message-type.enum';
+import { MessageContentType } from '../notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '../notifications/enum/program-notification.enum';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolveVoucherPayoutStatus } from '../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherApiService } from '../payments/fsp-integration/intersolve-voucher/instersolve-voucher.api.service';
@@ -137,7 +138,7 @@ export class CronjobService {
         const language = await this.getLanguageForRegistration(referenceId);
         let whatsappPayment = this.getNotificationText(
           registration.program,
-          'whatsappPayment',
+          ProgramNotificationEnum.whatsappPayment,
           language,
         );
         whatsappPayment = whatsappPayment

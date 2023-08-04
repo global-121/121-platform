@@ -3,7 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { MessageContentType } from '../../../notifications/message-type.enum';
+import { MessageContentType } from '../../../notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import { MessageService } from '../../../notifications/message.service';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
 import { Attributes } from '../../../registration/dto/update-attribute.dto';
@@ -438,7 +439,7 @@ export class IntersolveVisaService
     amount: number,
   ): TransactionNotificationObject {
     return {
-      notificationKey: 'visaDebitCardCreated',
+      notificationKey: ProgramNotificationEnum.visaDebitCardCreated,
       dynamicContent: [String(amount)],
     };
   }
@@ -447,7 +448,7 @@ export class IntersolveVisaService
     amount: number,
   ): TransactionNotificationObject {
     return {
-      notificationKey: 'visaLoad',
+      notificationKey: ProgramNotificationEnum.visaLoad,
       dynamicContent: [String(amount)],
     };
   }
@@ -669,8 +670,8 @@ export class IntersolveVisaService
 
     let notificationKey: string;
     block
-      ? (notificationKey = 'blockVisaCard')
-      : (notificationKey = 'unblockVisaCard');
+      ? (notificationKey = ProgramNotificationEnum.blockVisaCard)
+      : (notificationKey = ProgramNotificationEnum.unblockVisaCard);
 
     await this.messageService.sendTextMessage(
       wallet.intersolveVisaCustomer.registration,
@@ -1010,7 +1011,7 @@ export class IntersolveVisaService
       registration,
       programId,
       null,
-      'reissueVisaCard',
+      ProgramNotificationEnum.reissueVisaCard,
       false,
       MessageContentType.custom,
     );

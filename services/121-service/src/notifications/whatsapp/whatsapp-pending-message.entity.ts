@@ -3,7 +3,7 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../../base.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
-import { MessageContentType } from '../message-type.enum';
+import { MessageContentType } from '../enum/message-type.enum';
 
 @Entity('whatsapp_pending_message')
 export class WhatsappPendingMessageEntity extends Base121Entity {

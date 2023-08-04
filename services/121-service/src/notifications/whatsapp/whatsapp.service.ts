@@ -6,7 +6,8 @@ import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
 import { IntersolveVoucherPayoutStatus } from '../../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
-import { MessageContentType } from '../message-type.enum';
+import { MessageContentType } from '../enum/message-type.enum';
+import { ProgramNotificationEnum } from '../enum/program-notification.enum';
 import { twilioClient } from '../twilio.client';
 import { TwilioStatusCallbackDto } from '../twilio.dto';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
@@ -28,8 +29,8 @@ export class WhatsappService {
 
   private readonly fallbackLanguage = 'en';
   private readonly whatsappTemplatedMessageKeys = [
-    'whatsappPayment',
-    'whatsappGenericMessage',
+    String(ProgramNotificationEnum.whatsappPayment),
+    String(ProgramNotificationEnum.whatsappGenericMessage),
   ];
 
   public async sendWhatsapp(
