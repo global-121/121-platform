@@ -19,6 +19,7 @@ import { IntersolveVoucherInstructionsEntity } from './intersolve-voucher-instru
 import { IntersolveVoucherController } from './intersolve-voucher.controller';
 import { IntersolveVoucherEntity } from './intersolve-voucher.entity';
 import { IntersolveVoucherService } from './intersolve-voucher.service';
+import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron.service';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { IntersolveVoucherService } from './intersolve-voucher.service';
     IntersolveVoucherApiService,
     SoapService,
     IntersolveVoucherMockService,
+    IntersolveVoucherCronService,
     CustomHttpService,
   ],
   controllers: [IntersolveVoucherController],
@@ -50,6 +52,7 @@ import { IntersolveVoucherService } from './intersolve-voucher.service';
     IntersolveVoucherService,
     IntersolveVoucherApiService,
     IntersolveVoucherMockService,
+    IntersolveVoucherCronService,
   ],
 })
 export class IntersolveVoucherModule {}

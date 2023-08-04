@@ -101,6 +101,61 @@ export class PaymentHistoryPopupComponent implements OnInit {
     return PaymentUtils.hasError(paymentRow);
   }
 
+  private fillPaymentRows() {
+    const nrOfPayments = this.program?.distributionDuration;
+    const lastPaymentToShow = Math.min(this.lastPaymentId, nrOfPayments);
+
+    for (
+      let index = this.firstPaymentToShow;
+      index <= lastPaymentToShow;
+      index++
+    ) {
+      const transaction = this.getTransactionOfPaymentForRegistration(
+        index,
+        this.person.referenceId,
+      );
+      let paymentRowValue: PaymentRowDetail = {
+        paymentIndex: index,
+        text: '',
+      };
+      if (!transaction) {
+        paymentRowValue.text = this.translate.instant(
+          'page.program.program-people-affected.transaction.do-single-payment',
+        );
+      } else {
+        paymentRowValue = {
+          paymentIndex: index,
+          text: '',
+          transaction,
+          hasMessageIcon: this.enableMessageSentIcon(transaction),
+          hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
+          amount: `${transaction.amount} ${this.program?.currency}`,
+          fsp: this.person.fsp as FspName,
+          sentDate: '',
+        };
+        paymentRowValue.text = transaction.paymentDate;
+        paymentRowValue.sentDate = transaction.paymentDate;
+        if (transaction.status === StatusEnum.success) {
+        } else if (transaction.status === StatusEnum.waiting) {
+          paymentRowValue.errorMessage = this.translate.instant(
+            'page.program.program-people-affected.transaction.waiting-message',
+          );
+          paymentRowValue.waiting = true;
+        } else {
+          paymentRowValue.errorMessage = transaction.errorMessage;
+        }
+
+        paymentRowValue.status = transaction.status;
+      }
+      if (
+        paymentRowValue.transaction ||
+        this.enableSinglePayment(paymentRowValue)
+      ) {
+        this.paymentRows.push(paymentRowValue);
+      }
+    }
+  }
+
   public hasWaiting(paymentRow: PaymentRowDetail): boolean {
     return PaymentUtils.hasWaiting(paymentRow);
   }

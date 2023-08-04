@@ -72,6 +72,26 @@ export class IntersolveVisaService
     private readonly registrationDataQueryService: RegistrationDataQueryService,
   ) {}
 
+  public async getLastChargeTransactionDate(
+    tokenCode: string,
+    dateFrom?: Date,
+  ): Promise<Date | null> {
+    const transactionDetails =
+      await this.intersolveVisaApiService.getTransactions(tokenCode, dateFrom);
+    const walletTransactions = transactionDetails.data.data;
+
+    if (walletTransactions && walletTransactions.length > 0) {
+      const sortedByDate = walletTransactions
+        .filter((t) => t.type === 'CHARGE')
+        .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+      if (sortedByDate.length > 0) {
+        const dateString = sortedByDate[0].createdAt;
+        return new Date(dateString);
+      }
+    }
+    return null;
+  }
+
   public async sendPayment(
     paymentList: PaPaymentDataDto[],
     programId: number,
@@ -213,7 +233,6 @@ export class IntersolveVisaService
           (b) =>
             b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
         ).quantity.value;
-
       await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
 
       visaCustomer.visaWallets = [intersolveVisaWallet];
@@ -239,6 +258,9 @@ export class IntersolveVisaService
             )}`
           : registerResult.data?.code ||
             `LINK CUSTOMER ERROR: ${registerResult.status} - ${registerResult.statusText}`;
+        paTransactionResult.customData = {
+          intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
+        };
         return paTransactionResult;
       }
 
@@ -270,6 +292,9 @@ export class IntersolveVisaService
               createDebitCardResult.data?.errors,
             )}`
           : `CREATE DEBIT CARD ERROR: ${createDebitCardResult.status} - ${createDebitCardResult.statusText}`;
+      paTransactionResult.customData = {
+        intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
+      };
 
       // if success, update wallet: set debitCardCreated to true ..
       if (paTransactionResult.status === StatusEnum.success) {
@@ -302,6 +327,9 @@ export class IntersolveVisaService
             loadBalanceResult.data?.errors,
           )}`
         : `LOAD BALANCE ERROR: ${loadBalanceResult.status} - ${loadBalanceResult.statusText}`;
+      paTransactionResult.customData = {
+        intersolveVisaWalletTokenCode: visaCustomer.visaWallets[0].tokenCode,
+      };
 
       transactionNotifications.push(
         this.buildNotificationObjectLoadBalance(calculatedAmount),
@@ -502,6 +530,27 @@ export class IntersolveVisaService
     return allMessages;
   }
 
+  private async getWalletDetails(
+    wallet: IntersolveVisaWalletEntity,
+  ): Promise<IntersolveVisaWalletEntity> {
+    const walletDetails = await this.intersolveVisaApiService.getWallet(
+      wallet.tokenCode,
+    );
+    wallet.balance = walletDetails.data.data.balances.find(
+      (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
+    ).quantity.value;
+    wallet.status = walletDetails.data.data.status;
+
+    const lastUsedDate = await this.getLastChargeTransactionDate(
+      wallet.tokenCode,
+      wallet.lastUsedDate,
+    );
+    if (lastUsedDate) {
+      wallet.lastUsedDate = lastUsedDate;
+    }
+    return await this.intersolveVisaWalletRepository.save(wallet);
+  }
+
   public async getVisaWalletsAndDetails(
     referenceId: string,
     programId: number,
@@ -512,29 +561,8 @@ export class IntersolveVisaService
     const walletsResponse = new GetWalletsResponseDto();
     walletsResponse.wallets = [];
 
-    for await (const wallet of _visaCustomer.visaWallets) {
-      const walletDetails = await this.intersolveVisaApiService.getWallet(
-        wallet.tokenCode,
-      );
-      wallet.balance = walletDetails.data.data.balances.find(
-        (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
-      ).quantity.value;
-      wallet.status = walletDetails.data.data.status;
-
-      const transactionDetails =
-        await this.intersolveVisaApiService.getTransactions(wallet.tokenCode);
-      const walletTransactions = transactionDetails.data.data;
-
-      if (walletTransactions && walletTransactions.length > 0) {
-        const sortedByDate = walletTransactions
-          .filter((t) => t.type === 'CHARGE')
-          .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
-        if (sortedByDate.length > 0) {
-          const dateString = sortedByDate[0].createdAt;
-          wallet.lastUsedDate = new Date(dateString);
-        }
-      }
-      await this.intersolveVisaWalletRepository.save(wallet);
+    for await (let wallet of _visaCustomer.visaWallets) {
+      wallet = await this.getWalletDetails(wallet);
 
       const walletDetailsResponse = new GetWalletDetailsResponseDto();
       walletDetailsResponse.tokenCode = wallet.tokenCode;
@@ -583,7 +611,7 @@ export class IntersolveVisaService
     return { _registration: registration, _visaCustomer: visaCustomer };
   }
 
-  private intersolveTo121WalletStatus(
+  public intersolveTo121WalletStatus(
     intersolveStatus: IntersolveVisaWalletStatus,
     blocked: boolean,
     isCurrentWallet: boolean,
@@ -951,6 +979,14 @@ export class IntersolveVisaService
       await this.toggleBlockWallet(tokenCode, true);
     } catch (e) {
       console.log('error: ', e);
+    }
+  }
+
+  public async updateVisaDebitWalletDetails(): Promise<void> {
+    // NOTE: This currently happens for all the Visa Wallets across programs/instances
+    const wallets = await this.intersolveVisaWalletRepository.find();
+    for (const wallet of wallets) {
+      await this.getWalletDetails(wallet);
     }
   }
 }

@@ -1,3 +1,4 @@
+import { FspName } from '../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 import { Transaction } from './transaction.model';
 
 export class PaymentData {
@@ -36,7 +37,7 @@ export class PaymentRowDetail {
   transaction?: Transaction;
   errorMessage?: string;
   waiting?: boolean;
-  fsp?: string;
+  fsp?: FspName;
   status?: string;
   paymentDate?: string;
 }
@@ -63,4 +64,8 @@ export class SinglePayoutDetails {
 export class TotalTransferAmounts {
   public registrations: number;
   public transferAmounts: number;
+}
+
+export enum TransactionCustomDataAttributes {
+  intersolveVisaWalletTokenCode = 'intersolveVisaWalletTokenCode',
 }
