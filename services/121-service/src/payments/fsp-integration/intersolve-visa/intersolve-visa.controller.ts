@@ -54,13 +54,9 @@ export class IntersolveVisaController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @ApiResponse({
-    status: 204,
+    status: 201,
     description:
-      'Blocked wallet, stored in 121 db and sent notification to registration',
-  })
-  @ApiResponse({
-    status: 405,
-    description: 'Method not allowed (e.g. token already blocked)',
+      'Body.status 201: Blocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already blocked)',
   })
   @Post(
     'programs/:programId/fsp-integration/intersolve-visa/wallets/:tokenCode/block',
@@ -82,13 +78,9 @@ export class IntersolveVisaController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @ApiResponse({
-    status: 204,
+    status: 201,
     description:
-      'Unblocked wallet, stored in 121 db and sent notification to registration',
-  })
-  @ApiResponse({
-    status: 405,
-    description: 'Method not allowed (e.g. token already unblocked)',
+      'Body.status 201: Unblocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already unblocked)',
   })
   @Post(
     'programs/:programId/fsp-integration/intersolve-visa/wallets/:tokenCode/unblock',

@@ -21,6 +21,7 @@ graph LR
   RegistrationsModule-->MessageModule
   RegistrationsModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
+  IntersolveVisaModule-->MessageModule
   ExportMetricsModule-->ProgramModule
   ExportMetricsModule-->RegistrationsModule
   ExportMetricsModule-->PaymentsModule

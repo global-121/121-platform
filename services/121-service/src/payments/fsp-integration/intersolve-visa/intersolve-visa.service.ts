@@ -658,6 +658,7 @@ export class IntersolveVisaService
     });
 
     if (
+      !wallet ||
       !wallet.intersolveVisaCustomer ||
       !wallet.intersolveVisaCustomer.registration ||
       wallet.intersolveVisaCustomer.registration.programId !== programId
