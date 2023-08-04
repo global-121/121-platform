@@ -65,6 +65,20 @@
       </ion-label>
     </ion-item>
 
+    <!-- Issued on -->
+    <ion-item>
+      <ion-label class="card-key-value"
+        >{{
+          'registration-details.physical-cards-overview.date-issued'
+            | translate
+        }}:
+      </ion-label>
+      <ion-label class="card-key-value ion-text-right"
+        ><strong>{{
+          card?.issuedDate | date : DateFormat.dayAndTimeAlternative
+        }}</strong>
+      </ion-label>
+    </ion-item>
     <!-- Last used -->
     <ion-item>
       <ion-label class="card-key-value"

@@ -44,7 +44,7 @@
 
     <app-export-list
       [programId]="programId"
-      [exportType]="exportType"
+      [exportType]="exportPaymentType"
       [minPayment]="minPayment"
       [maxPayment]="maxPayment"
       [disabled]="!exportPaymentAvailable"
@@ -65,15 +65,22 @@
       [fspIds]="fspIdsWithReconciliation"
     ></app-import-fsp-reconciliation>
   </ion-row>
-  <ion-row
-    *ngIf="programHasVoucherSupport"
-    class="ion-margin-vertical"
-  >
+  <ion-row class="ion-margin-vertical">
     <app-export-list
+      *ngIf="programHasVoucherSupport"
       [programId]="programId"
       [exportType]="enumExportType.unusedVouchers"
+      class="ion-margin-end"
     >
     </app-export-list>
+
+    <app-export-list
+      *ngIf="canExportCardBalances"
+      [programId]="programId"
+      [exportType]="exportCardUsageType"
+      [minPayment]="minPayment"
+      [maxPayment]="maxPayment"
+    ></app-export-list>
   </ion-row>
 </div>
 

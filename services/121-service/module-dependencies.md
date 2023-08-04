@@ -15,6 +15,8 @@ graph LR
   MessageModule-->WhatsappModule
   MessageModule-->SmsModule
   IntersolveVoucherModule-->WhatsappModule
+  CronjobModule-->IntersolveVisaModule
+  IntersolveVisaModule-->TransactionsModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
@@ -45,6 +47,8 @@ graph LR
   SafaricomModule-->TransactionsModule
   PaymentsModule-->RegistrationsModule
   ExportMetricsModule-->TransactionsModule
+  ExportMetricsModule-->IntersolveVisaModule
+  ExportMetricsModule-->IntersolveVoucherModule
   WhatsappIncomingModule-->ImageCodeModule
   WhatsappIncomingModule-->IntersolveVoucherModule
   WhatsappIncomingModule-->WhatsappModule

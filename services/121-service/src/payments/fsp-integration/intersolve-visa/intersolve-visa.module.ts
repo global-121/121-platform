@@ -14,6 +14,7 @@ import { IntersolveVisaWalletEntity } from './intersolve-visa-wallet.entity';
 import { IntersolveVisaApiService } from './intersolve-visa.api.service';
 import { IntersolveVisaController } from './intersolve-visa.controller';
 import { IntersolveVisaService } from './intersolve-visa.service';
+import { IntersolveVisaExportService } from './services/intersolve-visa-export.service';
 
 @Module({
   imports: [
@@ -34,12 +35,14 @@ import { IntersolveVisaService } from './intersolve-visa.service';
     IntersolveVisaApiMockService,
     CustomHttpService,
     RegistrationDataQueryService,
+    IntersolveVisaExportService,
   ],
   controllers: [IntersolveVisaController],
   exports: [
     IntersolveVisaService,
     IntersolveVisaApiService,
     IntersolveVisaApiMockService,
+    IntersolveVisaExportService,
   ],
 })
 export class IntersolveVisaModule {}

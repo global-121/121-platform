@@ -35,7 +35,8 @@ export class ProgramPayoutComponent implements OnInit {
 
   public DateFormat = DateFormat;
   public enumExportType = ExportType;
-  public exportType: ExportType = ExportType.payment;
+  public exportPaymentType: ExportType = ExportType.payment;
+  public exportCardUsageType: ExportType = ExportType.cardBalances;
 
   public program: Program;
   public payments: Payment[];
@@ -50,6 +51,9 @@ export class ProgramPayoutComponent implements OnInit {
 
   public exportPaymentId = 0;
   public exportPaymentAvailable: boolean;
+
+  private fspsWithPhysicalCard = ['Intersolve-visa'];
+  public canExportCardBalances: boolean;
 
   private pastPayments: PaymentData[];
   public lastPaymentResults: LastPaymentResults;
@@ -97,6 +101,8 @@ export class ProgramPayoutComponent implements OnInit {
     await this.createPayments();
     this.lastPaymentResults = await this.getLastPaymentResults();
     this.checkPhaseReady();
+
+    this.canExportCardBalances = this.checkCanExportCardBalances();
   }
 
   private checkCanMakePayment(): boolean {
@@ -116,6 +122,18 @@ export class ProgramPayoutComponent implements OnInit {
       Permission.PaymentREAD,
       Permission.PaymentTransactionREAD,
     ]);
+  }
+
+  private checkCanExportCardBalances(): boolean {
+    const visaFsp = this.program?.financialServiceProviders?.some((fsp) =>
+      this.fspsWithPhysicalCard.includes(fsp.fsp),
+    );
+
+    const hasPermission = this.authService.hasAllPermissions(this.program.id, [
+      Permission.FspDebitCardEXPORT,
+    ]);
+
+    return visaFsp && hasPermission;
   }
 
   private checkCanMakeFspInstructions(): boolean {
@@ -279,9 +297,9 @@ export class ProgramPayoutComponent implements OnInit {
 
   private updateExportType() {
     if (Number(this.exportPaymentId) === this.nextPaymentId) {
-      this.exportType = ExportType.included;
+      this.exportPaymentType = ExportType.included;
     } else {
-      this.exportType = ExportType.payment;
+      this.exportPaymentType = ExportType.payment;
     }
   }
 

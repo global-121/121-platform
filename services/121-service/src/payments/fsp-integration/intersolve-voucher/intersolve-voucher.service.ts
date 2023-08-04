@@ -49,8 +49,10 @@ export class IntersolveVoucherService
   @InjectRepository(ProgramFspConfigurationEntity)
   public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
 
+  private readonly fallbackLanguage = 'en';
+
   public constructor(
-    private readonly intersolveApiService: IntersolveVoucherApiService,
+    private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
     private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
@@ -232,7 +234,7 @@ export class IntersolveVoucherService
     password: string,
   ): Promise<IntersolveIssueCardResponse> {
     const amountInCents = amount * 100;
-    return await this.intersolveApiService.issueCard(
+    return await this.intersolveVoucherApiService.issueCard(
       amountInCents,
       intersolveRefPos,
       username,
@@ -499,9 +501,12 @@ export class IntersolveVoucherService
     refPos: number,
   ): Promise<void> {
     if (cardId && transactionId) {
-      await this.intersolveApiService.markAsToCancel(cardId, transactionId);
+      await this.intersolveVoucherApiService.markAsToCancel(
+        cardId,
+        transactionId,
+      );
     } else if (refPos) {
-      await this.intersolveApiService.markAsToCancelByRefPos(refPos);
+      await this.intersolveVoucherApiService.markAsToCancelByRefPos(refPos);
     }
   }
 
@@ -546,7 +551,7 @@ export class IntersolveVoucherService
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-    const getCard = await this.intersolveApiService.getCard(
+    const getCard = await this.intersolveVoucherApiService.getCard(
       intersolveVoucher.barcode,
       intersolveVoucher.pin,
       credentials.username,

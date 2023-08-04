@@ -11,6 +11,7 @@ export enum ExportType {
   toCancelVouchers = 'to-cancel-vouchers',
   duplicates = 'duplicates',
   exportTableView = 'export-table-view',
+  cardBalances = 'card-balances',
 }
 
 export class ExportDetailsDto {
