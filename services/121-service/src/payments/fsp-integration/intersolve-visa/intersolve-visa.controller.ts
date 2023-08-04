@@ -55,7 +55,8 @@ export class IntersolveVisaController {
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @ApiResponse({
     status: 204,
-    description: 'Blocked wallet and stored in 121 db',
+    description:
+      'Blocked wallet, stored in 121 db and sent notification to registration',
   })
   @ApiResponse({
     status: 405,
@@ -82,7 +83,8 @@ export class IntersolveVisaController {
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @ApiResponse({
     status: 204,
-    description: 'Unblocked wallet and stored in 121 db',
+    description:
+      'Unblocked wallet, stored in 121 db and sent notification to registration',
   })
   @ApiResponse({
     status: 405,
@@ -94,9 +96,10 @@ export class IntersolveVisaController {
   public async unblockWallet(
     @Param() params,
   ): Promise<IntersolveBlockWalletResponseDto> {
-    return await this.intersolveVisaService.toggleBlockWallet(
+    return await this.intersolveVisaService.toggleBlockWalletNotification(
       params.tokenCode,
       false,
+      Number(params.programId),
     );
   }
 

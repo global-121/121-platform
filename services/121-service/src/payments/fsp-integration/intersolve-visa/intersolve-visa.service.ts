@@ -656,7 +656,11 @@ export class IntersolveVisaService
       ],
     });
 
-    if (wallet.intersolveVisaCustomer.registration.programId !== programId) {
+    if (
+      !wallet.intersolveVisaCustomer ||
+      !wallet.intersolveVisaCustomer.registration ||
+      wallet.intersolveVisaCustomer.registration.programId !== programId
+    ) {
       const errors = `No wallet found with tokenCode ${tokenCode}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
