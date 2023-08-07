@@ -81,8 +81,10 @@ Using Redline WhatsApp Helpdesk
 
 Using EspoCRM
 
-- Update PA details: This is automatically tested via [API-test](..\services\121-service\test\espocrm\update-pa.test.ts)
-- Delete PA: This is automatically tested via [API-test](..\services\121-service\test\espocrm\delete-pa.test.ts)
+- [Create registration](Create_Registration_From_espocrm.feature)
+- [Update chosen FSP](Edit_chosen_FSP_of_PA_from_EspoCRM.feature)
+- Update PA attribute: This is automatically tested via [API-test](..\services\121-service\test\registrations\update-pa.test.ts)
+- Delete PA: This is automatically tested via [API-test](..\services\121-service\test\espocrm\delete-pa-espo.test.ts)
 
 ### For Person/People Affected
 
