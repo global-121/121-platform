@@ -25,6 +25,7 @@ export class IntersolveVisaExportService {
         'wallet.created as "issuedDate"',
         'wallet."lastUsedDate" as "lastUsedDate"',
         'wallet.balance as balance',
+        'wallet."lastExternalUpdate" as "lastExternalUpdate"',
         'wallet.status as "cardStatusIntersolve"',
         'wallet."tokenBlocked" as "tokenBlocked"',
         `CASE WHEN wallet.id = ${this.getLatestWalletsSubquery(

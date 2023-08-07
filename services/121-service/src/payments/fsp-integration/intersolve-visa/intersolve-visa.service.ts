@@ -548,6 +548,7 @@ export class IntersolveVisaService
     if (lastUsedDate) {
       wallet.lastUsedDate = lastUsedDate;
     }
+    wallet.lastExternalUpdate = new Date();
     return await this.intersolveVisaWalletRepository.save(wallet);
   }
 
