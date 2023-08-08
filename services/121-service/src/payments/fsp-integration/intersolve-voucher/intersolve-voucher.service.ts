@@ -492,7 +492,9 @@ export class IntersolveVoucherService
     intersolveInstructionsEntity.image = instructionsFileBlob.buffer;
     intersolveInstructionsEntity.programId = programId;
 
-    this.intersolveInstructionsRepository.save(intersolveInstructionsEntity);
+    await this.intersolveInstructionsRepository.save(
+      intersolveInstructionsEntity,
+    );
   }
 
   private async markVoucherAsToCancel(
@@ -624,7 +626,7 @@ export class IntersolveVoucherService
         } else {
           voucher.balanceUsed = true;
           voucher.send = true;
-          this.intersolveVoucherRepository.save(voucher);
+          await this.intersolveVoucherRepository.save(voucher);
         }
       }
 

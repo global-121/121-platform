@@ -253,7 +253,7 @@ export class RegistrationsService {
       if (programQuestion) {
         const relation = new RegistrationDataRelation();
         relation.programQuestionId = programQuestion.id;
-        registration.saveData(answer.programAnswer, { relation });
+        await registration.saveData(answer.programAnswer, { relation });
       }
     }
     await this.storePhoneNumberInRegistration(programAnswers, referenceId);
@@ -572,9 +572,9 @@ export class RegistrationsService {
       );
     }
 
-    this.inclusionScoreService.calculateInclusionScore(referenceId);
+    await this.inclusionScoreService.calculateInclusionScore(referenceId);
 
-    this.messageService.sendTextMessage(
+    await this.messageService.sendTextMessage(
       registration,
       registration.program.id,
       null,

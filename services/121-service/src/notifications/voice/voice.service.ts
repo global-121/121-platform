@@ -47,7 +47,11 @@ export class VoiceService {
       });
   }
 
-  public storeCall(call, mp3Param: string, registrationId: number): void {
+  public async storeCall(
+    call,
+    mp3Param: string,
+    registrationId: number,
+  ): Promise<void> {
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = call.accountSid;
     twilioMessage.body = mp3Param;
@@ -58,7 +62,7 @@ export class VoiceService {
     twilioMessage.type = NotificationType.Call;
     twilioMessage.dateCreated = new Date();
     twilioMessage.registrationId = registrationId;
-    this.twilioMessageRepository.save(twilioMessage);
+    await this.twilioMessageRepository.save(twilioMessage);
   }
 
   public xmlResponse(mp3Param: string): any {

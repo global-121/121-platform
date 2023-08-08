@@ -40,7 +40,7 @@ export class IntersolveVoucherCronService {
   public async cacheUnusedVouchers(): Promise<void> {
     const programs = await this.programRepository.find();
     for (const program of programs) {
-      this.intersolveVoucherService.getUnusedVouchers(program.id);
+      await this.intersolveVoucherService.getUnusedVouchers(program.id);
     }
   }
 
@@ -75,7 +75,7 @@ export class IntersolveVoucherCronService {
     };
 
     for (const intersolveRequest of failedIntersolveRquests) {
-      this.cancelRequestRefpos(
+      await this.cancelRequestRefpos(
         intersolveRequest,
         credentials.username,
         credentials.password,
@@ -186,7 +186,7 @@ export class IntersolveVoucherCronService {
         });
 
         reminderVoucher.reminderCount += 1;
-        intersolveVoucherRepository.save(reminderVoucher);
+        await intersolveVoucherRepository.save(reminderVoucher);
       }
 
       console.log(

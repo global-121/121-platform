@@ -211,7 +211,7 @@ export class WhatsappIncomingService {
       await savedRegistration.saveData(tryWhatsapp.registration.phoneNumber, {
         name: CustomDataAttributes.whatsappPhoneNumber,
       });
-      this.tryWhatsappRepository.remove(tryWhatsapp);
+      await this.tryWhatsappRepository.remove(tryWhatsapp);
     }
   }
 
@@ -439,7 +439,7 @@ export class WhatsappIncomingService {
       registrationsWithPendingMessage &&
       registrationsWithPendingMessage.length > 0
     ) {
-      this.sendPendingWhatsappMessages(registrationsWithPendingMessage);
+      await this.sendPendingWhatsappMessages(registrationsWithPendingMessage);
     }
   }
 
@@ -449,7 +449,7 @@ export class WhatsappIncomingService {
     for (const registration of registrationsWithPendingMessage) {
       if (registration.whatsappPendingMessages) {
         for (const message of registration.whatsappPendingMessages) {
-          this.whatsappService
+          await this.whatsappService
             .sendWhatsapp(
               message.body,
               message.to,
@@ -460,8 +460,8 @@ export class WhatsappIncomingService {
               message.registrationId,
               message.contentType,
             )
-            .then(() => {
-              this.whatsappPendingMessageRepo.remove(message);
+            .then(async () => {
+              await this.whatsappPendingMessageRepo.remove(message);
             });
           await new Promise((resolve) => setTimeout(resolve, 2000));
         }

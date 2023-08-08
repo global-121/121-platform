@@ -58,8 +58,8 @@ export class WhatsappService {
     }
     return twilioClient.messages
       .create(payload)
-      .then((message) => {
-        this.storeSendWhatsapp(
+      .then(async (message) => {
+        await this.storeSendWhatsapp(
           message,
           registrationId,
           mediaUrl,
@@ -68,7 +68,7 @@ export class WhatsappService {
         );
         return message.sid;
       })
-      .catch((err) => {
+      .catch(async (err) => {
         console.log('Error from Twilio:', err);
         const failedMessage = {
           accountSid: process.env.TWILIO_SID,
@@ -81,7 +81,7 @@ export class WhatsappService {
           status: 'failed',
           errorCode: err.code,
         };
-        this.storeSendWhatsapp(
+        await this.storeSendWhatsapp(
           failedMessage,
           registrationId,
           mediaUrl,
@@ -105,7 +105,7 @@ export class WhatsappService {
     pendingMesssage.messageType = messageType;
     pendingMesssage.registrationId = registrationId;
     pendingMesssage.contentType = messageContentType;
-    this.whatsappPendingMessageRepo.save(pendingMesssage);
+    await this.whatsappPendingMessageRepo.save(pendingMesssage);
 
     const registration = await this.registrationRepository.findOne({
       where: { id: registrationId },
@@ -143,17 +143,17 @@ export class WhatsappService {
     return fallbackNotifications[key] ? fallbackNotifications[key] : '';
   }
 
-  public storeSendWhatsapp(
+  public async storeSendWhatsapp(
     message,
     registrationId: number,
     mediaUrl: string,
     messageContentType?: MessageContentType,
     existingSidToUpdate?: string,
-  ): void {
+  ): Promise<void> {
     // If the message failed due to a faulty template error
     // we have to update the existing entry to keep sid the same
     if (existingSidToUpdate) {
-      this.twilioMessageRepository.update(
+      await this.twilioMessageRepository.update(
         { sid: existingSidToUpdate },
         {
           status: message.status,
@@ -167,7 +167,7 @@ export class WhatsappService {
       twilioMessage.accountSid = message.accountSid;
       twilioMessage.body = message.body;
       twilioMessage.mediaUrl = mediaUrl;
-      twilioMessage.to = message.to;
+      // twilioMessage.to = message.to;
       twilioMessage.from = message.messagingServiceSid;
       twilioMessage.sid = message.sid;
       twilioMessage.status = message.status;
@@ -181,7 +181,7 @@ export class WhatsappService {
       if (message.errorMessage) {
         twilioMessage.errorMessage = message.errorMessage;
       }
-      this.twilioMessageRepository.save(twilioMessage);
+      await this.twilioMessageRepository.save(twilioMessage);
     }
   }
 
@@ -234,8 +234,8 @@ export class WhatsappService {
           statusCallback: EXTERNAL_API.whatsAppStatusTemplateTest,
           to: 'whatsapp:' + TWILIO_SANDBOX_WHATSAPP_NUMBER,
         };
-        await twilioClient.messages.create(payload).then((message) => {
-          this.whatsappTemplateTestRepository.save({
+        await twilioClient.messages.create(payload).then(async (message) => {
+          await this.whatsappTemplateTestRepository.save({
             sid: message.sid,
             language: language,
             programId: programId,
@@ -260,7 +260,9 @@ export class WhatsappService {
         tryWhatsappTemplateEntity.callback = JSON.stringify(callbackData);
         tryWhatsappTemplateEntity.succes =
           callbackData.MessageStatus === 'delivered';
-        this.whatsappTemplateTestRepository.save(tryWhatsappTemplateEntity);
+        await this.whatsappTemplateTestRepository.save(
+          tryWhatsappTemplateEntity,
+        );
       }
     } else {
       throw new HttpException('Message sid not found', HttpStatus.NOT_FOUND);

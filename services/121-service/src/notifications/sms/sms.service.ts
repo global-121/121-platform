@@ -30,7 +30,7 @@ export class SmsService {
       .then((message) =>
         this.storeSendSms(message, registrationId, messageContentType),
       )
-      .catch((err) => {
+      .catch(async (err) => {
         console.log('Error from Twilio:', err);
         const failedMessage = {
           accountSid: process.env.TWILIO_SID,
@@ -42,15 +42,19 @@ export class SmsService {
           status: 'failed',
           errorCode: err.code,
         };
-        this.storeSendSms(failedMessage, registrationId, messageContentType);
+        await this.storeSendSms(
+          failedMessage,
+          registrationId,
+          messageContentType,
+        );
       });
   }
 
-  public storeSendSms(
+  public async storeSendSms(
     message,
     registrationId: number,
     messageContentType?: MessageContentType,
-  ): void {
+  ): Promise<void> {
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = message.accountSid;
     twilioMessage.body = message.body;
@@ -68,7 +72,7 @@ export class SmsService {
     if (message.errorMessage) {
       twilioMessage.errorMessage = message.errorMessage;
     }
-    this.twilioMessageRepository.save(twilioMessage);
+    await this.twilioMessageRepository.save(twilioMessage);
   }
 
   public async findOne(sid: string): Promise<TwilioMessageEntity> {

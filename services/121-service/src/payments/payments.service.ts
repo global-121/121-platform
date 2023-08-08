@@ -171,7 +171,7 @@ export class PaymentsService {
       console.warn(e);
     });
     if (payment > -1) {
-      this.actionService.saveAction(
+      await this.actionService.saveAction(
         userId,
         programId,
         AdditionalActionType.paymentFinished,
@@ -538,7 +538,7 @@ export class PaymentsService {
       }
     }
 
-    this.actionService.saveAction(
+    await this.actionService.saveAction(
       userId,
       programId,
       AdditionalActionType.exportFspInstructions,
@@ -605,7 +605,7 @@ export class PaymentsService {
       }
     }
 
-    this.actionService.saveAction(
+    await this.actionService.saveAction(
       userId,
       programId,
       AdditionalActionType.importFspReconciliation,

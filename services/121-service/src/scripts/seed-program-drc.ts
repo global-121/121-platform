@@ -19,7 +19,7 @@ export class SeedProgramDrc implements InterfaceScript {
     // ***** CREATE PROGRAM *****
     const program = await this.seedHelper.addProgram(programDrc);
 
-    this.seedHelper.addDefaultUsers(program, true);
+    await this.seedHelper.addDefaultUsers(program, true);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instanceDrc);
