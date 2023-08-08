@@ -30,6 +30,7 @@ import {
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationDataError } from './errors/registration-data.error';
+import { RegistrationChangeLogEntity } from './registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 
@@ -62,6 +63,12 @@ export class RegistrationEntity extends CascadeDeleteEntity {
 
   @OneToMany(() => RegistrationDataEntity, (data) => data.registration)
   public data: RegistrationDataEntity[];
+
+  @OneToMany(
+    () => RegistrationChangeLogEntity,
+    (changes) => changes.registration,
+  )
+  public changes: RegistrationChangeLogEntity[];
 
   @Column({ nullable: true })
   public phoneNumber: string;

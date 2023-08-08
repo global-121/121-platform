@@ -23,6 +23,7 @@ import { ProgramModule } from '../programs/programs.module';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
+import { RegistrationChangeLogEntity } from './registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -39,6 +40,7 @@ import { InclusionScoreService } from './services/inclusion-score.service';
       ActionEntity,
       RegistrationEntity,
       RegistrationDataEntity,
+      RegistrationChangeLogEntity,
       ProgramQuestionEntity,
       FinancialServiceProviderEntity,
       FspQuestionEntity,
