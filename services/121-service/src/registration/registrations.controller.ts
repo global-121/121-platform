@@ -318,7 +318,9 @@ export class RegistrationsController {
     @Body() partialRegistration: UpdateRegistrationDto,
   ): Promise<RegistrationEntity> {
     // first validate all attributes and return error if any
-    for (const attributeKey of Object.keys(partialRegistration)) {
+    for (const attributeKey of Object.keys(partialRegistration).filter(
+      (key) => key !== 'reason',
+    )) {
       const attributeDto: UpdateAttributeDto = {
         referenceId: params.referenceId,
         attribute: attributeKey,

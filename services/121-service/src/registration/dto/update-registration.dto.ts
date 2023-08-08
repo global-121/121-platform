@@ -37,4 +37,12 @@ export class UpdateRegistrationDto {
   })
   @IsOptional()
   public readonly key: string | number | string[];
+
+  @ApiProperty({
+    description: `Reason is the same for all provided attributes in one API-call`,
+    example: 'Reason for update',
+  })
+  @IsOptional()
+  @IsString()
+  public readonly reason: string;
 }

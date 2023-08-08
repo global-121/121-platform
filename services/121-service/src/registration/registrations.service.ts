@@ -1012,7 +1012,9 @@ export class RegistrationsService {
       programId,
     );
 
-    for (const attributeKey of Object.keys(partialRegistration)) {
+    for (const attributeKey of Object.keys(partialRegistration).filter(
+      (key) => key !== 'reason',
+    )) {
       const attributeValue = partialRegistration[attributeKey];
       registration = await this.updateAttribute(
         attributeKey,
