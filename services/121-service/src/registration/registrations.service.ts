@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
@@ -38,7 +37,6 @@ import { ProgramAnswer } from './dto/store-program-answers.dto';
 import {
   AdditionalAttributes,
   Attributes,
-  UpdateAttributeDto,
   UpdateRegistrationDto,
 } from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
@@ -227,6 +225,7 @@ export class RegistrationsService {
   public async getRegistrationFromReferenceId(
     referenceId: string,
     relations: string[] = [],
+    programId?: number,
   ): Promise<RegistrationEntity> {
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
@@ -234,6 +233,9 @@ export class RegistrationsService {
     });
     if (!registration) {
       const errors = `ReferenceId ${referenceId} is not known.`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    } else if (programId && registration.programId !== Number(programId)) {
+      const errors = `ReferenceId ${referenceId} is not known for program ${programId}.`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return registration;
@@ -1000,32 +1002,17 @@ export class RegistrationsService {
   }
 
   public async updateRegistration(
+    programId: number,
     referenceId: string,
     partialRegistration: UpdateRegistrationDto,
   ): Promise<RegistrationEntity> {
-    let registration = await this.getRegistrationFromReferenceId(referenceId, [
-      'program',
-      'fsp',
-    ]);
+    let registration = await this.getRegistrationFromReferenceId(
+      referenceId,
+      ['program', 'fsp'],
+      programId,
+    );
 
-    // first validate all attributes and return error if any
-    const attributeKeys = Object.keys(partialRegistration);
-    for (const attributeKey of attributeKeys) {
-      const attributeDto: UpdateAttributeDto = {
-        referenceId: referenceId,
-        attribute: attributeKey,
-        value: partialRegistration[attributeKey],
-      };
-      const errors = await validate(
-        plainToClass(UpdateAttributeDto, attributeDto),
-      );
-      if (errors.length > 0) {
-        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-      }
-    }
-
-    // only if all valid, then process
-    for (const attributeKey of attributeKeys) {
+    for (const attributeKey of Object.keys(partialRegistration)) {
       const attributeValue = partialRegistration[attributeKey];
       registration = await this.updateAttribute(
         attributeKey,

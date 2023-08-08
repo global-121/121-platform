@@ -26,6 +26,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
 import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
@@ -47,7 +49,10 @@ import { RegistrationResponse } from './dto/registration-response.model';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
-import { UpdateRegistrationDto } from './dto/update-registration.dto';
+import {
+  UpdateAttributeDto,
+  UpdateRegistrationDto,
+} from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationEntity } from './registration.entity';
@@ -312,7 +317,24 @@ export class RegistrationsController {
     @Param() params,
     @Body() partialRegistration: UpdateRegistrationDto,
   ): Promise<RegistrationEntity> {
+    // first validate all attributes and return error if any
+    for (const attributeKey of Object.keys(partialRegistration)) {
+      const attributeDto: UpdateAttributeDto = {
+        referenceId: params.referenceId,
+        attribute: attributeKey,
+        value: partialRegistration[attributeKey],
+      };
+      const errors = await validate(
+        plainToClass(UpdateAttributeDto, attributeDto),
+      );
+      if (errors.length > 0) {
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    // if all valid, process update
     return await this.registrationsService.updateRegistration(
+      params.programId,
       params.referenceId,
       partialRegistration,
     );

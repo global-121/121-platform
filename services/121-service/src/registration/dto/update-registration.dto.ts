@@ -27,7 +27,6 @@ export class UpdateAttributeDto {
     referenceId: 'referenceId',
     attribute: 'attribute',
   })
-  @IsString()
   public readonly value: string | number | string[];
 }
 
