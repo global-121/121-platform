@@ -4,7 +4,7 @@ import { DataSource, Repository } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
 import { CustomDataAttributes } from '../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../registration/registration.entity';
-import { MessageContentType } from './message-type.enum';
+import { MessageContentType } from './enum/message-type.enum';
 import { SmsService } from './sms/sms.service';
 import { TryWhatsappEntity } from './whatsapp/try-whatsapp.entity';
 import { WhatsappService } from './whatsapp/whatsapp.service';

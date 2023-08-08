@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { MessageContentType } from '../message-type.enum';
+import { MessageContentType } from '../enum/message-type.enum';
 import { twilioClient } from '../twilio.client';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { EXTERNAL_API } from './../../config';

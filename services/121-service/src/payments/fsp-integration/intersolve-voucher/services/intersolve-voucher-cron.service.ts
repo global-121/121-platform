@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, DataSource, Repository } from 'typeorm';
 import { FspName } from '../../../../fsp/enum/fsp-name.enum';
-import { MessageContentType } from '../../../../notifications/message-type.enum';
+import { MessageContentType } from '../../../../notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '../../../../notifications/enum/program-notification.enum';
 import { WhatsappService } from '../../../../notifications/whatsapp/whatsapp.service';
 import { ProgramFspConfigurationEntity } from '../../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../../programs/program.entity';
@@ -166,7 +167,7 @@ export class IntersolveVoucherCronService {
         const language = await this.getLanguageForRegistration(referenceId);
         let whatsappPayment = this.getNotificationText(
           registration.program,
-          'whatsappPayment',
+          ProgramNotificationEnum.whatsappPayment,
           language,
         );
         whatsappPayment = whatsappPayment
