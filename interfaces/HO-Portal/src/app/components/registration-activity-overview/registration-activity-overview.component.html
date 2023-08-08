@@ -83,11 +83,6 @@
             <ion-accordion-group [multiple]="true">
               <app-payment-history-accordion
                 [paymentRow]="item.data"
-                [person]="person"
-                [program]="programId"
-                [hasVoucherSupport]="hasVoucherSupport(item.data.fsp)"
-                [hasError]="hasError(item.data)"
-                [hasWaiting]="hasWaiting(item.data)"
                 [enableSinglePayment]="enableSinglePayment(item.data)"
                 (rowClick)="rowClick($event)"
               ></app-payment-history-accordion>

@@ -36,11 +36,6 @@
     <ng-container *ngFor="let paymentRow of paymentRows">
       <app-payment-history-accordion
         [paymentRow]="paymentRow"
-        [person]="person"
-        [program]="program"
-        [hasVoucherSupport]="hasVoucherSupport(paymentRow.fsp)"
-        [hasError]="hasError(paymentRow)"
-        [hasWaiting]="hasWaiting(paymentRow)"
         [enableSinglePayment]="enableSinglePayment(paymentRow)"
         (rowClick)="rowClick($event)"
       ></app-payment-history-accordion>
