@@ -37,6 +37,7 @@ ion-chip {
   height: 20px;
   font-size: 14px;
   margin-left: 16px;
+  opacity: 1;
 
   &.success {
     --background: var(--ion-color-status-successful);
