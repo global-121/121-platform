@@ -1,38 +1,25 @@
-import { FspName } from '../../src/fsp/enum/fsp-name.enum';
+import programOCW from '../../seed-data/program/program-nlrc-ocw.json';
 import { WalletStatus121 } from '../../src/payments/fsp-integration/intersolve-visa/enum/wallet-status-121.enum';
 import { SeedScript } from '../../src/scripts/seed-script.enum';
 import { ProgramPhase } from '../../src/shared/enum/program-phase.model';
 import { changePhase, doPayment } from '../helpers/program.helper';
 import {
   changePaStatus,
+  getMessageHistory,
   getVisaWalletsAndDetails,
   importRegistrations,
   issueNewVisaCard,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
+import {
+  amountVisa,
+  paymentNrVisa,
+  programIdVisa,
+  referenceIdVisa,
+  registrationVisa,
+} from './visa-card.data';
 
 describe('Issue new Visa debit card', () => {
-  const programId = 3;
-  const payment = 1;
-  const amount = 22;
-
-  const referenceIdVisa = '2982g82bdsf89sdsd';
-  const registrationVisa = {
-    referenceId: referenceIdVisa,
-    preferredLanguage: 'en',
-    paymentAmountMultiplier: 1,
-    firstName: 'Jane',
-    lastName: 'Doe',
-    phoneNumber: '14155238887',
-    fspName: FspName.intersolveVisa,
-    whatsappPhoneNumber: '14155238887',
-    addressStreet: 'Teststraat',
-    addressHouseNumber: '1',
-    addressHouseNumberAddition: '',
-    addressPostalCode: '1234AB',
-    addressCity: 'Stad',
-  };
-
   let accessToken: string;
 
   beforeEach(async () => {
@@ -41,33 +28,44 @@ describe('Issue new Visa debit card', () => {
     await waitFor(2_000);
 
     await changePhase(
-      programId,
+      programIdVisa,
       ProgramPhase.registrationValidation,
       accessToken,
     );
-    await changePhase(programId, ProgramPhase.inclusion, accessToken);
-    await changePhase(programId, ProgramPhase.payment, accessToken);
+    await changePhase(programIdVisa, ProgramPhase.inclusion, accessToken);
+    await changePhase(programIdVisa, ProgramPhase.payment, accessToken);
   });
 
   it('should succesfully issue a new Visa Debit card', async () => {
     // Arrange
-    await importRegistrations(programId, [registrationVisa], accessToken);
-    await changePaStatus(programId, [referenceIdVisa], 'include', accessToken);
+    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+    await changePaStatus(
+      programIdVisa,
+      [referenceIdVisa],
+      'include',
+      accessToken,
+    );
     const paymentReferenceIds = [referenceIdVisa];
     await doPayment(
-      programId,
-      payment,
-      amount,
+      programIdVisa,
+      paymentNrVisa,
+      amountVisa,
       paymentReferenceIds,
       accessToken,
     );
 
     // Act
     await waitFor(2_000);
-    await issueNewVisaCard(programId, referenceIdVisa, accessToken);
-
+    await issueNewVisaCard(programIdVisa, referenceIdVisa, accessToken);
+    await waitFor(2_000);
     const visaWalletResponse = await getVisaWalletsAndDetails(
-      programId,
+      programIdVisa,
+      referenceIdVisa,
+      accessToken,
+    );
+
+    const messageReponse = await getMessageHistory(
+      programIdVisa,
       referenceIdVisa,
       accessToken,
     );
@@ -81,5 +79,7 @@ describe('Issue new Visa debit card', () => {
     expect(visaWalletResponse.body.wallets[1].status).toBe(
       WalletStatus121.Blocked,
     );
+    const lastMessage = messageReponse.body[0];
+    expect(lastMessage.body).toBe(programOCW.notifications.en.reissueVisaCard);
   });
 });

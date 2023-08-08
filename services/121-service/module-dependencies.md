@@ -17,6 +17,7 @@ graph LR
   IntersolveVoucherModule-->WhatsappModule
   CronjobModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
+  IntersolveVisaModule-->MessageModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
@@ -50,4 +51,5 @@ graph LR
   WhatsappIncomingModule-->ImageCodeModule
   WhatsappIncomingModule-->IntersolveVoucherModule
   WhatsappIncomingModule-->WhatsappModule
+  EspocrmModule-->RegistrationsModule
 ```
