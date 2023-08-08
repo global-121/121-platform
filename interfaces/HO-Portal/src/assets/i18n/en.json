@@ -705,7 +705,8 @@
         "prefix": "Are you sure you want to ",
         "pause": "pause this card?",
         "unpause": "unpause this card?",
-        "new-card": "permanently block this card and issue a new card?"
+        "new-card": "permanently block this card and issue a new card?",
+        "suffix": "<br><br>This will automatically send a message to the person affected."
       },
       "action-result": {
         "new-card-success": "Successfully issued new debit card",

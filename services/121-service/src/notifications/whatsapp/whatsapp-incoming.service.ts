@@ -10,7 +10,11 @@ import { CustomDataAttributes } from '../../registration/enum/custom-data-attrib
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { ProgramPhase } from '../../shared/enum/program-phase.model';
 import { StatusEnum } from '../../shared/enum/status.enum';
-import { MessageContentType, TemplatedMessages } from '../message-type.enum';
+import {
+  MessageContentType,
+  TemplatedMessages,
+} from '../enum/message-type.enum';
+import { ProgramNotificationEnum } from '../enum/program-notification.enum';
 import { SmsService } from '../sms/sms.service';
 import {
   TwilioIncomingCallbackDto,
@@ -59,7 +63,7 @@ export class WhatsappIncomingService {
     language: string,
     program: ProgramEntity,
   ): string {
-    const key = 'whatsappGenericMessage';
+    const key = ProgramNotificationEnum.whatsappGenericMessage;
     const fallbackNotifications = program.notifications[this.fallbackLanguage];
     let notifications = fallbackNotifications;
 
@@ -348,7 +352,9 @@ export class WhatsappIncomingService {
           registrationsWithPhoneNumber[0]?.preferredLanguage ||
           this.fallbackLanguage;
         const whatsappDefaultReply =
-          program.notifications[language]['whatsappReply'];
+          program.notifications[language][
+            ProgramNotificationEnum.whatsappReply
+          ];
         await this.whatsappService.sendWhatsapp(
           whatsappDefaultReply,
           fromNumber,
@@ -394,7 +400,9 @@ export class WhatsappIncomingService {
         // Only include text with first voucher (across PA's and payments)
         let message = firstVoucherSent
           ? ''
-          : program.notifications[language]['whatsappVoucher'];
+          : program.notifications[language][
+              ProgramNotificationEnum.whatsappVoucher
+            ];
         message = message.split('{{1}}').join(intersolveVoucher.amount);
         await this.whatsappService.sendWhatsapp(
           message,

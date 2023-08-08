@@ -3,7 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { DataSource, IsNull, Not, Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { MessageContentType } from '../../../notifications/message-type.enum';
+import { MessageContentType } from '../../../notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import {
   TwilioStatus,
   TwilioStatusCallbackDto,
@@ -306,7 +307,8 @@ export class IntersolveVoucherService
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
-    let whatsappPayment = program.notifications[language]['whatsappPayment'];
+    let whatsappPayment =
+      program.notifications[language][ProgramNotificationEnum.whatsappPayment];
     whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
 
     await this.whatsappService
