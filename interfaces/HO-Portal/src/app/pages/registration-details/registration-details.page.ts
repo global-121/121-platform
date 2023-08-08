@@ -13,7 +13,6 @@ import Permission from '../../auth/permission.enum';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ProgramNavigationComponent } from '../../components/program-navigation/program-navigation.component';
 import { RegistrationActivityOverviewComponent } from '../../components/registration-activity-overview/registration-activity-overview.component';
-import { RegistrationPaymentOverviewComponent } from '../../components/registration-payment-overview/registration-payment-overview.component';
 import { RegistrationPersonalInformationComponent } from '../../components/registration-personal-information/registration-personal-information.component';
 import { Person } from '../../models/person.model';
 import { Program } from '../../models/program.model';
@@ -31,7 +30,6 @@ import { PubSubEvent, PubSubService } from '../../services/pub-sub.service';
     ProgramNavigationComponent,
     RegistrationActivityOverviewComponent,
     PaymentHistoryPopupComponent,
-    RegistrationPaymentOverviewComponent,
     RegistrationPersonalInformationComponent,
     RegistrationPhysicalCardOverviewComponent,
   ],

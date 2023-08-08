@@ -1,7 +1,7 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { Base121Entity } from './../base.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
-import { MessageContentType } from './message-type.enum';
+import { MessageContentType } from './enum/message-type.enum';
 
 export enum NotificationType {
   Sms = 'sms',

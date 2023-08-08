@@ -30,7 +30,7 @@ import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
 import { PersonAffectedAuthGuard } from '../guards/person-affected-auth.guard';
-import { MessageContentType } from '../notifications/message-type.enum';
+import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
