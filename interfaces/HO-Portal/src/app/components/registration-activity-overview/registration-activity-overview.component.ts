@@ -60,9 +60,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   private person: Person;
 
   @Input()
-  private programId: number;
-
-  @Input()
   private referenceId: string;
 
   @Input()
@@ -95,13 +92,13 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    if (!this.person || !this.programId || !this.referenceId) {
+    if (!this.person || !this.program.id || !this.referenceId) {
       return;
     }
 
     this.loadPermissions();
     this.canDoSinglePayment = this.authService.hasAllPermissions(
-      this.programId,
+      this.program.id,
       [
         Permission.ActionREAD,
         Permission.PaymentCREATE,
@@ -111,10 +108,10 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     );
     if (this.canViewPaymentData) {
       this.lastPaymentId = await this.pastPaymentsService.getLastPaymentId(
-        this.programId,
+        this.program.id,
       );
       this.pastTransactions = await this.programsService.getTransactions(
-        this.programId,
+        this.program.id,
         this.firstPaymentToShow,
         this.person?.referenceId,
       );
@@ -223,7 +220,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         .exportVoucher(
           this.person.referenceId,
           paymentRow.paymentIndex,
-          this.programId,
+          this.program.id,
         )
         .then(
           async (voucherBlob) => {
@@ -238,7 +235,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     }
     if (hasError || paymentRow.hasMessageIcon || paymentRow.hasMoneyIconTable) {
       paymentDetails = {
-        programId: this.programId,
+        programId: this.program.id,
         payment: paymentRow.paymentIndex,
         amount: paymentRow.transaction.amount,
         referenceId: this.person.referenceId,
@@ -255,7 +252,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         multiplier: this.person.paymentAmountMultiplier
           ? this.person.paymentAmountMultiplier
           : 1,
-        programId: this.programId,
+        programId: this.program.id,
         payment: paymentRow.paymentIndex,
         referenceId: this.person.referenceId,
       };
@@ -369,7 +366,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
 
     if (this.canViewMessageHistory) {
       const messageHistory = await this.programsService.retrieveMsgHistory(
-        this.programId,
+        this.program.id,
         this.referenceId,
       );
 
@@ -426,15 +423,15 @@ export class RegistrationActivityOverviewComponent implements OnInit {
 
   private loadPermissions() {
     this.canViewPersonalData = this.authService.hasAllPermissions(
-      this.programId,
+      this.program.id,
       [Permission.RegistrationPersonalREAD],
     );
     this.canViewMessageHistory = this.authService.hasAllPermissions(
-      this.programId,
+      this.program.id,
       [Permission.RegistrationNotificationREAD],
     );
     this.canViewPaymentData = this.authService.hasAllPermissions(
-      this.programId,
+      this.program.id,
       [Permission.PaymentREAD, Permission.PaymentTransactionREAD],
     );
     this.canDoSinglePayment = this.authService.hasAllPermissions(
