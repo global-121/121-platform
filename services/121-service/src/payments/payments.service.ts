@@ -16,6 +16,7 @@ import { CustomDataAttributes } from '../registration/enum/custom-data-attribute
 import { RegistrationEntity } from '../registration/registration.entity';
 import { BulkImportService } from '../registration/services/bulk-import.service';
 import { StatusEnum } from '../shared/enum/status.enum';
+import { AzureLogService } from '../shared/services/azure-log.service';
 import { RegistrationDataEntity } from './../registration/registration-data.entity';
 import { ExportFileType, FspInstructions } from './dto/fsp-instructions.dto';
 import { ImportFspReconciliationDto } from './dto/import-fsp-reconciliation.dto';
@@ -44,6 +45,7 @@ export class PaymentsService {
 
   public constructor(
     private readonly actionService: ActionService,
+    private readonly azureLogService: AzureLogService,
     private readonly fspService: FspService,
     private readonly transactionService: TransactionsService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
@@ -168,7 +170,7 @@ export class PaymentsService {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
     this.makePaymentRequest(paLists, programId, payment).catch((e) => {
-      console.warn(e);
+      this.azureLogService.logError(e, true);
     });
     if (payment > -1) {
       await this.actionService.saveAction(

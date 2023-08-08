@@ -654,7 +654,7 @@ export class IntersolveVoucherService
       errorMessage,
       messageSid,
     );
-    this.transactionsService.storeTransactionUpdateStatus(
+    await this.transactionsService.storeTransactionUpdateStatus(
       transactionResultDto,
       programId,
       paymentNr,
