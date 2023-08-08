@@ -52,6 +52,7 @@ import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
+import { RegistrationChangeLogEntity } from './registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -90,6 +91,9 @@ export class RegistrationsService {
   private readonly intersolveVoucherRepo: Repository<IntersolveVoucherEntity>;
   @InjectRepository(SafaricomRequestEntity)
   private readonly safaricomRequestRepo: Repository<SafaricomRequestEntity>;
+
+  @InjectRepository(RegistrationChangeLogEntity)
+  private readonly registrationChangeLog: Repository<RegistrationChangeLogEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -1005,6 +1009,7 @@ export class RegistrationsService {
     programId: number,
     referenceId: string,
     partialRegistration: UpdateRegistrationDto,
+    userId: number,
   ): Promise<RegistrationEntity> {
     let registration = await this.getRegistrationFromReferenceId(
       referenceId,
@@ -1015,12 +1020,26 @@ export class RegistrationsService {
     for (const attributeKey of Object.keys(partialRegistration).filter(
       (key) => key !== 'reason',
     )) {
+      const oldValue = await registration.getRegistrationDataValueByName(
+        attributeKey,
+      );
       const attributeValue = partialRegistration[attributeKey];
       registration = await this.updateAttribute(
         attributeKey,
         attributeValue,
         registration,
       );
+      const newValue = await registration.getRegistrationDataValueByName(
+        attributeKey,
+      );
+      await this.registrationChangeLog.save({
+        registration,
+        userId,
+        fieldName: attributeKey,
+        oldValue,
+        newValue,
+        reason: partialRegistration.reason,
+      });
     }
     return registration;
   }

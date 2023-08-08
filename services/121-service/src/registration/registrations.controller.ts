@@ -316,6 +316,7 @@ export class RegistrationsController {
   public async updateRegistration(
     @Param() params,
     @Body() partialRegistration: UpdateRegistrationDto,
+    @User('id') userId: number,
   ): Promise<RegistrationEntity> {
     // first validate all attributes and return error if any
     for (const attributeKey of Object.keys(partialRegistration).filter(
@@ -339,6 +340,7 @@ export class RegistrationsController {
       params.programId,
       params.referenceId,
       partialRegistration,
+      userId,
     );
   }
 
