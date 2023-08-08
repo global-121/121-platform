@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
@@ -34,7 +35,12 @@ import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { RegistrationDataRelation } from './dto/registration-data-relation.model';
 import { RegistrationResponse } from './dto/registration-response.model';
 import { ProgramAnswer } from './dto/store-program-answers.dto';
-import { Attributes } from './dto/update-attribute.dto';
+import {
+  AdditionalAttributes,
+  Attributes,
+  UpdateAttributeDto,
+  UpdateRegistrationDto,
+} from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import {
   AnswerTypes,
@@ -993,16 +999,48 @@ export class RegistrationsService {
     }
   }
 
-  public async setAttribute(
+  public async updateRegistration(
     referenceId: string,
+    partialRegistration: UpdateRegistrationDto,
+  ): Promise<RegistrationEntity> {
+    let registration = await this.getRegistrationFromReferenceId(referenceId, [
+      'program',
+      'fsp',
+    ]);
+
+    // first validate all attributes and return error if any
+    const attributeKeys = Object.keys(partialRegistration);
+    for (const attributeKey of attributeKeys) {
+      const attributeDto: UpdateAttributeDto = {
+        referenceId: referenceId,
+        attribute: attributeKey,
+        value: partialRegistration[attributeKey],
+      };
+      const errors = await validate(
+        plainToClass(UpdateAttributeDto, attributeDto),
+      );
+      if (errors.length > 0) {
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    // only if all valid, then process
+    for (const attributeKey of attributeKeys) {
+      const attributeValue = partialRegistration[attributeKey];
+      registration = await this.updateAttribute(
+        attributeKey,
+        attributeValue,
+        registration,
+      );
+    }
+    return registration;
+  }
+
+  private async updateAttribute(
     attribute: Attributes | string,
     value: string | number | string[],
+    registration: RegistrationEntity,
   ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationFromReferenceId(
-      referenceId,
-      ['program', 'fsp'],
-    );
-
     value = await this.cleanCustomDataIfPhoneNr(attribute, value);
 
     if (typeof registration[attribute] !== 'undefined') {
@@ -1016,9 +1054,9 @@ export class RegistrationsService {
     }
 
     if (
-      attribute !== Attributes.paymentAmountMultiplier &&
-      attribute !== Attributes.preferredLanguage &&
-      attribute !== Attributes.maxPayments
+      !Object.values(AdditionalAttributes).includes(
+        attribute as AdditionalAttributes,
+      )
     ) {
       try {
         await registration.saveData(value, { name: attribute });
@@ -1038,7 +1076,7 @@ export class RegistrationsService {
     const calculatedRegistration =
       await this.inclusionScoreService.calculatePaymentAmountMultiplier(
         registration.program,
-        referenceId,
+        registration.referenceId,
       );
     if (calculatedRegistration) {
       return this.getRegistrationFromReferenceId(

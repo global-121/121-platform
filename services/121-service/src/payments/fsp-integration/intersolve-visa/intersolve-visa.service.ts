@@ -7,7 +7,7 @@ import { MessageContentType } from '../../../notifications/enum/message-type.enu
 import { ProgramNotificationEnum } from '../../../notifications/enum/program-notification.enum';
 import { MessageService } from '../../../notifications/message.service';
 import { RegistrationDataOptions } from '../../../registration/dto/registration-data-relation.model';
-import { Attributes } from '../../../registration/dto/update-attribute.dto';
+import { Attributes } from '../../../registration/dto/update-registration.dto';
 import { CustomDataAttributes } from '../../../registration/enum/custom-data-attributes';
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { RegistrationDataQueryService } from '../../../utils/registration-data-query/registration-data-query.service';

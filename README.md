@@ -295,7 +295,7 @@ When new Node.js dependencies are added to a service since it is last build on y
 
 - Is it to test query-magic?
 - Is it to test essential endpoints (FSP integrations) and import/exports/etc?
-- Often used (with different parameters) endpoints: /update-attribute etc.
+- Often used (with different parameters) endpoints: PATCH /registration etc.
 - Is there actual business-logic performed?
 - Not necessary:
   - Change program-status (already covered by Cypress)

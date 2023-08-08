@@ -12,7 +12,7 @@ import { CascadeDeleteEntity } from '../base.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { InstanceEntity } from '../instance/instance.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
-import { Attributes } from '../registration/dto/update-attribute.dto';
+import { Attributes } from '../registration/dto/update-registration.dto';
 import { Attribute } from '../registration/enum/custom-data-attributes';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { ProgramPhase } from '../shared/enum/program-phase.model';

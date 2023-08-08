@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   ParseArrayPipe,
+  Patch,
   Post,
   Put,
   Query,
@@ -46,7 +47,7 @@ import { RegistrationResponse } from './dto/registration-response.model';
 import { SendCustomTextDto } from './dto/send-custom-text.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
-import { UpdateAttributeDto } from './dto/update-attribute.dto';
+import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationEntity } from './registration.entity';
@@ -298,21 +299,22 @@ export class RegistrationsController {
 
   @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
   @ApiOperation({
-    summary: 'Update attribute for registration (Used by Aidworker)',
+    summary: 'Update provided attributes of registration (Used by Aidworker)',
   })
   @ApiResponse({
     status: 201,
-    description: 'Updated attribute for registration',
+    description: 'Updated provided attributes of registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/attribute')
-  public async setAttribute(
-    @Body() updateAttributeDto: UpdateAttributeDto,
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @Patch('programs/:programId/registrations/:referenceId')
+  public async updateRegistration(
+    @Param() params,
+    @Body() partialRegistration: UpdateRegistrationDto,
   ): Promise<RegistrationEntity> {
-    return await this.registrationsService.setAttribute(
-      updateAttributeDto.referenceId,
-      updateAttributeDto.attribute,
-      updateAttributeDto.value,
+    return await this.registrationsService.updateRegistration(
+      params.referenceId,
+      partialRegistration,
     );
   }
 
