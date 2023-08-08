@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import Jimp from 'jimp';
@@ -58,12 +58,6 @@ export class ImageCodeService {
     );
   }
 
-  public async removeImageExportVoucher(
-    image: ImageCodeExportVouchersEntity,
-  ): Promise<void> {
-    await this.imageExportVouchersRepository.remove(image);
-  }
-
   private async generateBarCodeImage(code: string): Promise<Buffer> {
     const bwipjs = require('bwip-js');
     return await bwipjs.toBuffer({
@@ -82,8 +76,15 @@ export class ImageCodeService {
       secret: secret,
     });
     // Removes the image from the database after getting it
-    await this.imageRepository.remove(imageCode);
-    return imageCode.image;
+    if (imageCode) {
+      await this.imageRepository.remove(imageCode);
+      return imageCode.image;
+    } else {
+      throw new HttpException(
+        'Twilio is not able to retrieve voucher',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   private formatDate(date: Date): string {
