@@ -56,7 +56,7 @@ export class IntersolveVisaController {
   @ApiResponse({
     status: 201,
     description:
-      'Body.status 201: Blocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already blocked)',
+      'Body.status 204: Blocked wallet, stored in 121 db and sent notification to registration. Body.status 405 Method not allowed (e.g. token already blocked)',
   })
   @Post(
     'programs/:programId/fsp-integration/intersolve-visa/wallets/:tokenCode/block',
