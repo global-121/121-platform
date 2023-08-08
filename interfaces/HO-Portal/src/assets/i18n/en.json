@@ -678,11 +678,6 @@
       "whatsappPhoneNumber": "WhatsApp number",
       "fsp": "Financial Service Provider"
     },
-    "payment-overview": {
-      "title": "Payment overview",
-      "subtitle": "Payment information",
-      "paymentLabel": "Payment #{{number}}"
-    },
     "physical-cards-overview": {
       "title": "Debit cards",
       "subtitle": "...",
