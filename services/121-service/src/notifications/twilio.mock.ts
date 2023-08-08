@@ -178,6 +178,7 @@ export class TwilioClientMock {
         const request = new TwilioIncomingCallbackDto();
         request.MessageSid = messageSid;
         request.From = twilioMessagesCreateDto.to;
+        request.To = process.env.TWILIO_WHATSAPP_NUMBER;
         const httpService = new HttpService();
         try {
           await lastValueFrom(

@@ -167,7 +167,7 @@ export class WhatsappService {
       twilioMessage.accountSid = message.accountSid;
       twilioMessage.body = message.body;
       twilioMessage.mediaUrl = mediaUrl;
-      // twilioMessage.to = message.to;
+      twilioMessage.to = message.to;
       twilioMessage.from = message.messagingServiceSid;
       twilioMessage.sid = message.sid;
       twilioMessage.status = message.status;
