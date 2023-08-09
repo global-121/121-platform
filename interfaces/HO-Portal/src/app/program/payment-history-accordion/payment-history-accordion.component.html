@@ -29,6 +29,7 @@
           <!-- Transfer status -->
           <ng-container>
             <ion-chip
+              [disabled]="true"
               *ngIf="paymentRow.transaction?.status"
               [class.success]="paymentRow.transaction?.status === 'success'"
               [class.failed]="paymentRow.transaction?.status === 'error'"
@@ -202,7 +203,8 @@
         </ion-text>
         <!-- Single payment Transfer status -->
         <ion-chip
-          *ngIf="!paymentRow.transaction && !hasErrorCheck(paymentRow)"
+          [disabled]="true"
+          *ngIf="enableSinglePayment"
           [ngClass]="'waiting'"
         >
           <ion-label>
@@ -219,7 +221,7 @@
           shape="round"
           fill="outline"
           size="small"
-          *ngIf="!paymentRow.transaction && !hasErrorCheck(paymentRow)"
+          *ngIf="enableSinglePayment"
           (click)="rowClick.emit(paymentRow)"
         >
           {{
