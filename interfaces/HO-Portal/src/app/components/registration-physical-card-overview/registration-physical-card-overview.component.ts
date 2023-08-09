@@ -55,25 +55,29 @@ export class RegistrationPhysicalCardOverviewComponent implements OnInit {
       this.loading = false;
       return;
     }
+    try {
+      this.physicalCards = (
+        await this.programsService.getPhysicalCards(
+          this.programId,
+          this.referenceId,
+        )
+      ).sort((a, b) => {
+        if (a.issuedDate < b.issuedDate) {
+          return 1;
+        }
 
-    this.physicalCards = (
-      await this.programsService.getPhysicalCards(
-        this.programId,
-        this.referenceId,
-      )
-    ).sort((a, b) => {
-      if (a.issuedDate < b.issuedDate) {
-        return 1;
-      }
+        if (a.issuedDate > b.issuedDate) {
+          return -1;
+        }
 
-      if (a.issuedDate > b.issuedDate) {
-        return -1;
-      }
+        return 0;
+      });
 
-      return 0;
-    });
-
-    this.latestCard = this.physicalCards[0];
+      this.latestCard = this.physicalCards[0];
+    } catch (error) {
+      console.log('Error while fetching wallets: ', error);
+      this.physicalCards = [];
+    }
 
     this.loading = false;
   }
