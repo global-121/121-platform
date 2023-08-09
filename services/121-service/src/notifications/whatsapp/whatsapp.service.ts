@@ -6,7 +6,8 @@ import { EXTERNAL_API, TWILIO_SANDBOX_WHATSAPP_NUMBER } from '../../config';
 import { IntersolveVoucherPayoutStatus } from '../../payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
-import { MessageContentType } from '../message-type.enum';
+import { MessageContentType } from '../enum/message-type.enum';
+import { ProgramNotificationEnum } from '../enum/program-notification.enum';
 import { twilioClient } from '../twilio.client';
 import { TwilioStatusCallbackDto } from '../twilio.dto';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
@@ -28,8 +29,8 @@ export class WhatsappService {
 
   private readonly fallbackLanguage = 'en';
   private readonly whatsappTemplatedMessageKeys = [
-    'whatsappPayment',
-    'whatsappGenericMessage',
+    String(ProgramNotificationEnum.whatsappPayment),
+    String(ProgramNotificationEnum.whatsappGenericMessage),
   ];
 
   public async sendWhatsapp(
@@ -39,6 +40,7 @@ export class WhatsappService {
     mediaUrl: null | string,
     registrationId?: number,
     messageContentType?: MessageContentType,
+    existingSidToUpdate?: string,
   ): Promise<any> {
     const hasPlus = recipientPhoneNr.startsWith('+');
 
@@ -63,6 +65,7 @@ export class WhatsappService {
           registrationId,
           mediaUrl,
           messageContentType,
+          existingSidToUpdate,
         );
         return message.sid;
       })
@@ -128,7 +131,7 @@ export class WhatsappService {
     language: string,
     program: ProgramEntity,
   ): string {
-    const key = 'whatsappGenericMessage';
+    const key = ProgramNotificationEnum.whatsappGenericMessage;
     const fallbackNotifications = program.notifications[this.fallbackLanguage];
     let notifications = fallbackNotifications;
 
@@ -146,26 +149,41 @@ export class WhatsappService {
     registrationId: number,
     mediaUrl: string,
     messageContentType?: MessageContentType,
+    existingSidToUpdate?: string,
   ): void {
-    const twilioMessage = new TwilioMessageEntity();
-    twilioMessage.accountSid = message.accountSid;
-    twilioMessage.body = message.body;
-    twilioMessage.mediaUrl = mediaUrl;
-    twilioMessage.to = message.to;
-    twilioMessage.from = message.messagingServiceSid;
-    twilioMessage.sid = message.sid;
-    twilioMessage.status = message.status;
-    twilioMessage.type = NotificationType.Whatsapp;
-    twilioMessage.dateCreated = message.dateCreated;
-    twilioMessage.registrationId = registrationId;
-    twilioMessage.contentType = messageContentType;
-    if (message.errorCode) {
-      twilioMessage.errorCode = message.errorCode;
+    // If the message failed due to a faulty template error
+    // we have to update the existing entry to keep sid the same
+    if (existingSidToUpdate) {
+      this.twilioMessageRepository.update(
+        { sid: existingSidToUpdate },
+        {
+          status: message.status,
+          sid: message.sid,
+          body: message.body,
+          mediaUrl: mediaUrl,
+        },
+      );
+    } else {
+      const twilioMessage = new TwilioMessageEntity();
+      twilioMessage.accountSid = message.accountSid;
+      twilioMessage.body = message.body;
+      twilioMessage.mediaUrl = mediaUrl;
+      twilioMessage.to = message.to;
+      twilioMessage.from = message.messagingServiceSid;
+      twilioMessage.sid = message.sid;
+      twilioMessage.status = message.status;
+      twilioMessage.type = NotificationType.Whatsapp;
+      twilioMessage.dateCreated = message.dateCreated;
+      twilioMessage.registrationId = registrationId;
+      twilioMessage.contentType = messageContentType;
+      if (message.errorCode) {
+        twilioMessage.errorCode = message.errorCode;
+      }
+      if (message.errorMessage) {
+        twilioMessage.errorMessage = message.errorMessage;
+      }
+      this.twilioMessageRepository.save(twilioMessage);
     }
-    if (message.errorMessage) {
-      twilioMessage.errorMessage = message.errorMessage;
-    }
-    this.twilioMessageRepository.save(twilioMessage);
   }
 
   public async findOne(sid: string): Promise<TwilioMessageEntity> {

@@ -27,14 +27,15 @@ Feature: View payment history column and popup
     And the status text and outline is yellow if Waiting
     And the status text and outline is red if Failed
     And - for payments for which a single payment is possible - it mentions 'Not yet sent' in yellow
-    And if the FSP has voucher support then an 'Open voucher' button is displayed
-    And if status is 'Failed' then a 'Retry' button is displayed
+    And if the FSP has voucher support and the status is 'Success' then an 'Open voucher' button is displayed
+    And if status is 'Failed' or 'Waiting' then a 'Details' button is displayed
     And if payment is 'Not yet sent' then a 'Send payment' button is displayed
     And the user is able to open an accordeon for each payment
     And when the user opens the accordeon payment details are displayed in two columns
     And first column details contains the "sent datetime" and "amount"
     And second column details contains the "FSP" at time of payment
-    And if "sent datetime" or "FSP" is not completely visible, hovering over it will show the full value
+    And it contains any custom FSP-specific attributes (currently only card ID if FSP is Visa)
+    And if any of the attributes are not completely visible, hovering over it will show the full value
     And User is able to close accordion by clicking on the "^" button
     And popup is closed when user clicks on "X" button
 

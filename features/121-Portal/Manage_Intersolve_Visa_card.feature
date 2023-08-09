@@ -5,7 +5,7 @@ Feature: Manage Intersolve Visa card
     Given a logged-in user with "FspDebitCardREAD" permission
     Given a PA with FSP 'Intersolve Visa debit card'
     Given the PA has at least 1 Visa debit card (typically through at least 1 payment with this FSP)
-    Given the user is seeing the debit card section in the PA profile pag (see 'View_PA_profile_page.feature')
+    Given the user is seeing the debit card section in the PA profile page (see 'View_PA_profile_page.feature')
 
   Scenario: View Visa debit card details
     When clicking one row in the Visa debit card table
@@ -17,35 +17,37 @@ Feature: Manage Intersolve Visa card
     And is has red text and outline in both cases
     And it shows a button to issue a new card
 
-  Scenario: Succesfully block Visa debit card
+  Scenario: Succesfully pause Visa debit card
     Given the user has opened the Visa debit card details popup
-    Given the card is currently not blocked
-    Given the user has the "FspDebitCardBLOCK" permission and thereby the button is enabled
-    When the user clicks on the "Block card" button
-    Then the card is blocked with Intersolve and in 121 database
+    Given the card is currently not paused
+    Given the user has the "FspDebitCardBLOCK" permission and thereby the 'pause' button is enabled
+    When the user clicks on the "Pause card" button
+    Then the card is paused/blocked with Intersolve and in 121 database
+    And an automatic message is sent to the PA that the card is paused
     And a success alert is shown
-    And - after closing the alert and subsequent refresh - the card's status in the table is "Blocked"
+    And - after closing the alert and subsequent refresh - the card's status in the table is "Paused"
 
-  Scenario: Succesfully unblock Visa debit card
+  Scenario: Succesfully unpause Visa debit card
     Given the user has opened the Visa debit card details popup
-    Given the card is currently blocked
-    Given the user has the "FspDebitCardUNBLOCK" permission and thereby the 'unblock' button is enabled
-    When the user clicks on the "Unblock card" button
-    Then the card is unblocked with Intersolve and in 121 database
+    Given the card is currently paused
+    Given the user has the "FspDebitCardUNBLOCK" permission and thereby the 'unpause' button is enabled
+    When the user clicks on the "Unpause card" button
+    Then the card is unpaused/unblocked with Intersolve and in 121 database
+    And an automatic message is sent to the PA that the card is unpaused
     And a success alert is shown
-    And - after closing the alert and subsequent refresh - the card's status in the table is now no longer "Blocked"
+    And - after closing the alert and subsequent refresh - the card's status in the table is now no longer "Paused" but back to its previous status
 
-  Scenario: Unsuccesfully block Visa debit card
+  Scenario: Unsuccesfully pause Visa debit card
     Given the user has opened the Visa debit card details popup
-    Given the user has the "FspDebitCardBLOCK" permission and thereby the 'block' button is enabled
+    Given the user has the "FspDebitCardBLOCK" permission and thereby the 'pause' button is enabled
     Given the card is currently not blocked with Intersolve but is somehow marked as blocked in the 121 database
-    When the user clicks on the "Block card" button
+    When the user clicks on the "Pause card" button
     Then the call to Intersolve fails
     And an error alert is shown that the token is already blocked
     And the blocked status in the 121 database is updated so the situation is aligned again
 
-  Scenario: Unsuccesfully unblock Visa debit card
-  >> Similar to "Unsuccesfully block Visa debit card"
+  Scenario: Unsuccesfully unpause Visa debit card
+  >> Similar to "Unsuccesfully pause Visa debit card"
 
   Scenario: Successfully issue new card
     Given the user has opened the Visa debit card details popup
@@ -57,6 +59,7 @@ Feature: Manage Intersolve Visa card
     When clicking OK
     Then Intersolve creates a new wallet, links it to the customer, issues a new card with balance same as the old wallet, unloads balance from the old wallet and blocks the old wallet
     And updated address fields and phone number are used
+    And an automatic message is sent to the PA that a new card has been issued
     And a success alert is shown
     And an extra card appears in the Debit card table on top
     And it has status 'Inactive'

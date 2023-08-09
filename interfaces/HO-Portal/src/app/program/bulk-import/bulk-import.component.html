@@ -1,7 +1,7 @@
 <ion-row>
   <div class="ion-no-padding ion-margin-end">
     <app-confirm-prompt
-      [disabled]="isInProgress"
+      [disabled]="isInProgress || isTableLoading"
       (confirm)="importPeopleAffected($event, RegistrationStatus.imported)"
       [subHeader]="
         'page.program.bulk-import.imported.confirm-message' | translate
@@ -19,7 +19,7 @@
   </div>
   <div class="ion-no-padding">
     <app-confirm-prompt
-      [disabled]="isInProgress"
+      [disabled]="isInProgress || isTableLoading"
       (confirm)="importPeopleAffected($event, RegistrationStatus.registered)"
       [subHeader]="
         'page.program.bulk-import.registered.confirm-message' | translate

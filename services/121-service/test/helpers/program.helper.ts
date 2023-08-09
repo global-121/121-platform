@@ -62,3 +62,13 @@ export async function getTransactions(
     .set('Cookie', [access_token])
     .query({ minPayment: paymentNr, referenceId: referenceId });
 }
+
+export async function getVisaReport(
+  programId: number,
+  access_token: string,
+): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs/${programId}/export-metrics/export-list`)
+    .set('Cookie', [access_token])
+    .send({ type: 'card-balances' });
+}

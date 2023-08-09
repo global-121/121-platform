@@ -21,14 +21,11 @@ import { ExportFileType, FspInstructions } from './dto/fsp-instructions.dto';
 import { ImportFspReconciliationDto } from './dto/import-fsp-reconciliation.dto';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 import { SplitPaymentListDto } from './dto/split-payment-lists.dto';
-import { UnusedVoucherDto } from './dto/unused-voucher.dto';
-import { VoucherWithBalanceDto } from './dto/voucher-with-balance.dto';
 import { AfricasTalkingService } from './fsp-integration/africas-talking/africas-talking.service';
 import { BelcashService } from './fsp-integration/belcash/belcash.service';
 import { BobFinanceService } from './fsp-integration/bob-finance/bob-finance.service';
 import { IntersolveJumboService } from './fsp-integration/intersolve-jumbo/intersolve-jumbo.service';
 import { IntersolveVisaService } from './fsp-integration/intersolve-visa/intersolve-visa.service';
-import { IntersolveIssueVoucherRequestEntity } from './fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherService } from './fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { SafaricomService } from './fsp-integration/safaricom/safaricom.service';
 import { UkrPoshtaService } from './fsp-integration/ukrposhta/ukrposhta.service';
@@ -474,24 +471,6 @@ export class PaymentsService {
       (t) => t.payment === payment && t.status === status,
     );
     return failedTransactions;
-  }
-
-  public async getUnusedVouchers(
-    programId?: number,
-  ): Promise<UnusedVoucherDto[]> {
-    return this.intersolveVoucherService.getUnusedVouchers(programId);
-  }
-
-  public async getVouchersWithBalance(
-    programId: number,
-  ): Promise<VoucherWithBalanceDto[]> {
-    return this.intersolveVoucherService.getVouchersWithBalance(programId);
-  }
-
-  public async getToCancelVouchers(): Promise<
-    IntersolveIssueVoucherRequestEntity[]
-  > {
-    return this.intersolveVoucherService.getToCancelVouchers();
   }
 
   public async getFspInstructions(

@@ -84,6 +84,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.FspDebitCardBLOCK,
           PermissionEnum.FspDebitCardUNBLOCK,
           PermissionEnum.FspDebitCardCREATE,
+          PermissionEnum.FspDebitCardEXPORT,
           // PermissionEnum.ProgramCREATE, Moved to admin
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramPhaseUPDATE,
@@ -130,6 +131,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.FspDebitCardBLOCK,
           PermissionEnum.FspDebitCardUNBLOCK,
           PermissionEnum.FspDebitCardCREATE,
+          PermissionEnum.FspDebitCardEXPORT,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.RegistrationAttributeUPDATE,
           PermissionEnum.RegistrationCREATE,

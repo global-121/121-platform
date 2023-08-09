@@ -18,7 +18,7 @@ export function deleteRegistrations(
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .post(`/programs/${programId}/registrations/delete`)
+    .del(`/programs/${programId}/registrations`)
     .set('Cookie', [accessToken])
     .send(registrationReferenceIds);
 }
@@ -104,5 +104,41 @@ export function issueNewVisaCard(
     .put(
       `/programs/${programId}/fsp-integration/intersolve-visa/customers/${referenceId}/wallets`,
     )
+    .set('Cookie', [accessToken]);
+}
+
+export function blockVisaCard(
+  programId: number,
+  tokenCode: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .post(
+      `/programs/${programId}/fsp-integration/intersolve-visa/wallets/${tokenCode}/block`,
+    )
+    .set('Cookie', [accessToken])
+    .send({});
+}
+
+export function unblockVisaCard(
+  programId: number,
+  tokenCode: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .post(
+      `/programs/${programId}/fsp-integration/intersolve-visa/wallets/${tokenCode}/unblock`,
+    )
+    .set('Cookie', [accessToken])
+    .send({});
+}
+
+export function getMessageHistory(
+  programId: number,
+  referenceId: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .get(`/programs/${programId}/registrations/message-history/${referenceId}`)
     .set('Cookie', [accessToken]);
 }

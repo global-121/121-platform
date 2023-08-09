@@ -12,3 +12,8 @@ export enum MessageContentType {
   paymentReminder = 'payment-reminder',
   defaultReply = 'default-reply',
 }
+
+export const TemplatedMessages = [
+  MessageContentType.genericTemplated,
+  MessageContentType.paymentTemplated,
+];

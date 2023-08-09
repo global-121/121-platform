@@ -350,7 +350,10 @@
           "amount": "Amount",
           "received": "Received",
           "fsp": "FSP",
-          "retry": "Retry",
+          "custom-data": {
+            "intersolveVisaWalletTokenCode": "Visa card ID"
+          },
+          "retry": "Details",
           "nosupport": "No FSP supported for this transfer"
         },
         "edit-person-affected-popup": {
@@ -536,6 +539,10 @@
           "confirm-message": "This will download an Excel file with all People Affected that are duplicate.",
           "basedOn": "Checking duplicates is based on: {{duplicateAttributes}}",
           "canTakeFewMinutes": "This can take up to a few minutes."
+        },
+        "card-balances": {
+          "btn-text": "Export debit card usage",
+          "confirm-message": "This will download an Excel file showing the balance of every card.<br /><br />Important Notice: The card balances available for download are not in real-time. The report includes the date and time of each card's last external update."
         }
       },
       "export-fsp-intructions": {
@@ -686,7 +693,7 @@
         "blocked": "Blocked",
         "paused": "Paused"
       },
-      "date-activated": "Activated",
+      "date-issued": "Issued",
       "date-last-used": "Last used",
       "current-balance": "Current balance",
       "pause-card": "Pause card",
@@ -698,7 +705,8 @@
         "prefix": "Are you sure you want to ",
         "pause": "pause this card?",
         "unpause": "unpause this card?",
-        "new-card": "permanently block this card and issue a new card?"
+        "new-card": "permanently block this card and issue a new card?",
+        "suffix": "<br><br>This will automatically send a message to the person affected."
       },
       "action-result": {
         "new-card-success": "Successfully issued new debit card",

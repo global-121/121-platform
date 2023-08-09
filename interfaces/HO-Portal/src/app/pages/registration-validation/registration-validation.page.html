@@ -10,6 +10,7 @@
         <app-bulk-import
           *appIfPermissions="[Permission.RegistrationCREATE, Permission.RegistrationImportTemplateREAD]"
           [programId]="programId"
+          [isTableLoading]="!isReady"
         ></app-bulk-import>
       </ion-col>
       <ion-col>

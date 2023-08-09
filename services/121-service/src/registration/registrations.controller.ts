@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -29,7 +30,7 @@ import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { PersonAffectedAuth } from '../guards/person-affected-auth.decorator';
 import { PersonAffectedAuthGuard } from '../guards/person-affected-auth.guard';
-import { MessageContentType } from '../notifications/message-type.enum';
+import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { FILE_UPLOAD_API_FORMAT } from '../shared/file-upload-api-format';
 import { PermissionEnum } from '../user/permission.enum';
 import { User } from '../user/user.decorator';
@@ -492,8 +493,18 @@ export class RegistrationsController {
   @Permissions(PermissionEnum.RegistrationDELETE)
   @ApiOperation({ summary: 'Delete set of registrations' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('programs/:programId/registrations/delete')
+  @Delete('programs/:programId/registrations')
   public async delete(
+    @Body() referenceIdsData: ReferenceIdsDto,
+  ): Promise<void> {
+    await this.registrationsService.deleteBatch(referenceIdsData);
+  }
+
+  @Permissions(PermissionEnum.RegistrationDELETE)
+  @ApiOperation({ summary: 'Delete set of registrations' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('programs/:programId/registrations/delete')
+  public async deletePost(
     @Body() referenceIdsData: ReferenceIdsDto,
   ): Promise<void> {
     await this.registrationsService.deleteBatch(referenceIdsData);

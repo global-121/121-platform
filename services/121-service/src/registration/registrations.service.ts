@@ -5,14 +5,15 @@ import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { FspQuestionEntity } from '../fsp/fsp-question.entity';
+import { MessageContentType } from '../notifications/enum/message-type.enum';
 import { LookupService } from '../notifications/lookup/lookup.service';
-import { MessageContentType } from '../notifications/message-type.enum';
 import { MessageService } from '../notifications/message.service';
 import { TwilioMessageEntity } from '../notifications/twilio.entity';
 import { WhatsappPendingMessageEntity } from '../notifications/whatsapp/whatsapp-pending-message.entity';
 import { VisaErrorCodes } from '../payments/fsp-integration/intersolve-visa/enum/visa-error-codes.enum';
 import { IntersolveVisaService } from '../payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherEntity } from '../payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { SafaricomRequestEntity } from '../payments/fsp-integration/safaricom/safaricom-request.entity';
 import { ImageCodeExportVouchersEntity } from '../payments/imagecode/image-code-export-vouchers.entity';
 import { TransactionEntity } from '../payments/transactions/transaction.entity';
 import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-app-data.entity';
@@ -83,6 +84,8 @@ export class RegistrationsService {
   private readonly imageCodeExportVouchersRepo: Repository<ImageCodeExportVouchersEntity>;
   @InjectRepository(IntersolveVoucherEntity)
   private readonly intersolveVoucherRepo: Repository<IntersolveVoucherEntity>;
+  @InjectRepository(SafaricomRequestEntity)
+  private readonly safaricomRequestRepo: Repository<SafaricomRequestEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -1408,19 +1411,45 @@ export class RegistrationsService {
       registration.note = null;
       await this.registrationRepository.save(registration);
 
+      // FSP-specific
+      // intersolve-voucher
       const voucherImages = await this.imageCodeExportVouchersRepo.find({
         where: { registrationId: registration.id },
         relations: ['voucher'],
       });
+      const vouchersToUpdate = [];
       for await (const voucherImage of voucherImages) {
         const voucher = await this.intersolveVoucherRepo.findOne({
           where: { id: voucherImage.voucher.id },
         });
         voucher.whatsappPhoneNumber = null;
-        await this.intersolveVoucherRepo.save(voucher);
+        vouchersToUpdate.push(voucher);
       }
-
-      // not done, but should: clean up pii fields in at_notification + belcash_request
+      await this.intersolveVoucherRepo.save(vouchersToUpdate);
+      //safaricom
+      const safaricomRequests = await this.safaricomRequestRepo.find({
+        where: { transaction: { registration: { id: registration.id } } },
+        relations: ['transaction', 'transaction.registration'],
+      });
+      const requestsToUpdate = [];
+      for (const request of safaricomRequests) {
+        request.requestResult = JSON.parse(
+          JSON.stringify(request.requestResult).replace(request.partyB, ''),
+        );
+        request.paymentResult = JSON.parse(
+          JSON.stringify(request.paymentResult).replace(request.partyB, ''),
+        );
+        request.transaction.customData = JSON.parse(
+          JSON.stringify(request.transaction.customData).replace(
+            request.partyB,
+            '',
+          ),
+        );
+        request.partyB = '';
+        requestsToUpdate.push(request);
+      }
+      await this.safaricomRequestRepo.save(requestsToUpdate);
+      // TODO: at_notification + belcash_request
     }
   }
 

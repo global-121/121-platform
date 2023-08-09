@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
-import { MessageContentType } from '../../notifications/message-type.enum';
+import { MessageContentType } from '../../notifications/enum/message-type.enum';
 import { MessageService } from '../../notifications/message.service';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
@@ -168,7 +168,7 @@ export class TransactionsService {
     programId: number,
     payment: number,
     transactionStep?: number,
-  ): Promise<void> {
+  ): Promise<TransactionEntity> {
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
@@ -191,7 +191,9 @@ export class TransactionsService {
     transaction.customData = transactionResponse.customData;
     transaction.transactionStep = transactionStep || 1;
 
-    await this.transactionRepository.save(transaction);
+    const resultTransaction = await this.transactionRepository.save(
+      transaction,
+    );
 
     if (program.enableMaxPayments && registration.maxPayments) {
       await this.checkAndUpdateMaxPaymentRegistration(registration);
@@ -221,6 +223,7 @@ export class TransactionsService {
         );
       }
     }
+    return resultTransaction;
   }
 
   private getMessageText(
