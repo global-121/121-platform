@@ -17,13 +17,12 @@ graph LR
   IntersolveVoucherModule-->WhatsappModule
   CronjobModule-->IntersolveVisaModule
   IntersolveVisaModule-->TransactionsModule
+  IntersolveVisaModule-->MessageModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspModule
   RegistrationsModule-->MessageModule
   RegistrationsModule-->IntersolveVisaModule
-  IntersolveVisaModule-->TransactionsModule
-  IntersolveVisaModule-->MessageModule
   ExportMetricsModule-->ProgramModule
   ExportMetricsModule-->RegistrationsModule
   ExportMetricsModule-->PaymentsModule

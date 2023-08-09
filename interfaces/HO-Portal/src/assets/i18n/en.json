@@ -660,7 +660,8 @@
     "statusText": "Status: <b> {{status}} </b>",
     "payment-history": {
       "message-sent": "Message sent",
-      "money-sent": "Money sent"
+      "money-sent": "Money sent",
+      "transfer": "Transfer #{{paymentNr}}"
     }
   },
   "registration-details": {
@@ -677,11 +678,6 @@
       "phone": "Phone number",
       "whatsappPhoneNumber": "WhatsApp number",
       "fsp": "Financial Service Provider"
-    },
-    "payment-overview": {
-      "title": "Payment overview",
-      "subtitle": "Payment information",
-      "paymentLabel": "Payment #{{number}}"
     },
     "physical-cards-overview": {
       "title": "Debit cards",
