@@ -23,8 +23,11 @@
           ></ion-icon>
 
           <!-- Transfer index -->
-          <ion-text class="transfer"
-            >Transfer #{{ paymentRow.paymentIndex }}
+          <ion-text class="transfer">
+            {{
+              'recipient-details.payment-history.transfer'
+                | translate : { paymentNr: paymentRow.paymentIndex }
+            }}
           </ion-text>
           <!-- Transfer status -->
           <ng-container>
@@ -138,9 +141,6 @@
                       | translate
                   }}:
                 </ion-label>
-                <!-- <app-tooltip
-                [value]="paymentRow.transaction?.fspName"
-              ></app-tooltip> -->
                 <ion-label
                   id="hover-trigger"
                   class="accordion-text ion-text-right"
@@ -198,8 +198,11 @@
         ></ion-icon>
 
         <!-- Transfer index -->
-        <ion-text class="transfer"
-          >Transfer #{{ paymentRow.paymentIndex }}
+        <ion-text class="transfer">
+          {{
+            'recipient-details.payment-history.transfer'
+              | translate : { paymentNr: paymentRow.paymentIndex }
+          }}
         </ion-text>
         <!-- Single payment Transfer status -->
         <ion-chip

@@ -660,7 +660,8 @@
     "statusText": "Status: <b> {{status}} </b>",
     "payment-history": {
       "message-sent": "Message sent",
-      "money-sent": "Money sent"
+      "money-sent": "Money sent",
+      "transfer": "Transfer #{{paymentNr}}"
     }
   },
   "registration-details": {
