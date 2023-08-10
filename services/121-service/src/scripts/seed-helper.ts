@@ -43,6 +43,11 @@ export class SeedHelper {
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
     });
 
+    const KoboUser = await this.getOrSaveUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+    });
+
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
     await this.assignAidworker(fullAccessUser.id, program.id, [
       DefaultUserRole.RunProgram,
