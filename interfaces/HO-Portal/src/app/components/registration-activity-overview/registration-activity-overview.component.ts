@@ -27,7 +27,6 @@ class ActivityOverviewItem {
   date: Date;
   paymentRowDetail?: PaymentRowDetail;
   description?: string;
-  paymentRow?: Transaction;
   hasVoucherSupport?: boolean;
   person?: Person;
   program?: Program;
