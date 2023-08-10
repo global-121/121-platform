@@ -43,7 +43,9 @@ function confirmRun(scriptName): any {
       process.exit();
       return;
     } else {
-      runScript(scriptName);
+      runScript(scriptName).catch((e) => {
+        console.log(e);
+      });
     }
   });
 
@@ -64,9 +66,13 @@ function main(): void {
     const name = process.argv[2];
 
     if (name === 'seed-prod' || process.env.NODE_ENV === 'development') {
-      runScript(name);
+      runScript(name).catch((e) => {
+        console.log(e);
+      });
     } else {
-      confirmRun(name);
+      confirmRun(name).catch((e) => {
+        console.log(e);
+      });
     }
   } catch (error) {
     throw error;

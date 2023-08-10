@@ -286,7 +286,7 @@ export class SeedHelper {
     const adminUser = await userRepository.findOne({
       where: { username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN },
     });
-    this.assignAidworker(adminUser.id, programId, [
+    await this.assignAidworker(adminUser.id, programId, [
       DefaultUserRole.ProgramAdmin,
     ]);
   }

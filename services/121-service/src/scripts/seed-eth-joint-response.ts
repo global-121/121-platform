@@ -19,7 +19,7 @@ export class SeedProgramDorcasEth implements InterfaceScript {
     // ***** CREATE PROGRAM *****
     const program = await this.seedHelper.addProgram(programPilotEth);
 
-    this.seedHelper.addDefaultUsers(program, true);
+    await this.seedHelper.addDefaultUsers(program, true);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instanceEthJointResponse);
