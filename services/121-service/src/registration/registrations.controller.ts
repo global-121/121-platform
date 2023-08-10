@@ -343,6 +343,34 @@ export class RegistrationsController {
     );
   }
 
+  @Permissions(PermissionEnum.RegistrationAttributeUPDATE)
+  @ApiOperation({
+    summary: 'Update attribute for registration (Used by Aidworker)',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Updated attribute for registration',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('programs/:programId/registrations/attribute')
+  public async setAttribute(
+    @Body() updateAttributeDto: UpdateAttributeDto,
+    @Param() params,
+    @User('id') userId: number,
+  ): Promise<RegistrationEntity> {
+    const data = {};
+    data[updateAttributeDto.attribute] = updateAttributeDto.value;
+    return await this.registrationsService.updateRegistration(
+      params.programId,
+      params.referenceId,
+      {
+        data,
+        reason: '',
+      },
+      userId,
+    );
+  }
+
   @Permissions(PermissionEnum.RegistrationPersonalUPDATE)
   @ApiOperation({ summary: 'Update note for registration' })
   @ApiResponse({ status: 201, description: 'Update note for registration' })

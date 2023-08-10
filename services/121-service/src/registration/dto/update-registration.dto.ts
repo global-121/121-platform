@@ -30,29 +30,12 @@ export class UpdateAttributeDto {
   public readonly value: string | number | string[];
 }
 
-export class UpdateRegistrationDataDto {
-  @ApiProperty({
-    description: `Also 'key' itself can be replaced by any key. Additional key-value pairs can also be added within the same object.`,
-    example: 'value',
-  })
-  @IsOptional()
-  public readonly key: string | number | string[];
-
-  @ApiProperty({
-    description: `Reason is the same for all provided attributes in one API-call`,
-    example: 'Reason for update',
-  })
-  @IsOptional()
-  @IsString()
-  public readonly reason: string;
-}
-
 export class UpdateRegistrationDto {
   @ApiProperty({
-    description: `Also 'key' itself can be replaced by any key. Additional key-value pairs can also be added within the same object.`,
-    example: `{ {"phonenumber" : "1234567890" }`,
+    description: `Key value pairs of the registration object.`,
+    example: `{ "phonenumber" : "1234567890" }`,
   })
-  public data: UpdateRegistrationDataDto;
+  public data: object;
 
   @ApiProperty({
     description: `Reason is the same for all provided attributes in one API-call`,
