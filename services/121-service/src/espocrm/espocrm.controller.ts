@@ -81,6 +81,6 @@ export class EspocrmController {
   public async postWebhookIntegration(
     @Body() data: EspocrmWebhookDto,
   ): Promise<void> {
-    this.espocrmService.postWebhookIntegration(data);
+    await this.espocrmService.postWebhookIntegration(data);
   }
 }
