@@ -405,7 +405,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     }
 
     this.activityOverview.sort((a, b) => (b.date > a.date ? 1 : -1));
-    console.log('activityOverview: ', this.activityOverview);
   }
 
   private getStatusChanges(): { status: string; date: Date }[] {
