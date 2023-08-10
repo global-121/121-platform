@@ -269,7 +269,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
         paymentRowValue = PaymentUtils.getPaymentRowInfo(
           transaction,
           this.program,
-          this.person,
           index,
         );
         if (transaction.status === StatusEnum.success) {

@@ -14,7 +14,6 @@ export class PaymentUtils {
   static getPaymentRowInfo(
     transaction: Transaction,
     program: Program,
-    _person: Person,
     index: number,
   ): PaymentRowDetail {
     return {
