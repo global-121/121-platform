@@ -57,6 +57,9 @@ export class SeedHelper {
     await this.assignAidworker(viewOnlyUser.id, program.id, [
       DefaultUserRole.View,
     ]);
+    await this.assignAidworker(KoboUser.id, program.id, [
+      DefaultUserRole.KoboUser,
+    ]);
 
     if (addFieldValidation) {
       const fieldValidationUser = await this.getOrSaveUser({

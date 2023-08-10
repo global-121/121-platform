@@ -162,6 +162,13 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationPersonalREAD,
         ],
       },
+      {
+        role: DefaultUserRole.KoboUser,
+        label: 'Only CREATE registrations',
+        permissions: [
+          PermissionEnum.RegistrationCREATE,
+        ],
+      },
     ];
 
     const userRoleEntities = [];

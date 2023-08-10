@@ -4,6 +4,7 @@ export enum DefaultUserRole {
   PersonalData = 'personal-data',
   RunProgram = 'run-program',
   View = 'view',
+  KoboUser = 'kobo-user'
 }
 
 export enum PersonAffectedRole {
