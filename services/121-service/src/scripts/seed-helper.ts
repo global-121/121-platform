@@ -43,20 +43,38 @@ export class SeedHelper {
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
     });
 
+    const koboUser = await this.getOrSaveUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO,
+    });
+
     // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
-    await this.assignAidworker(fullAccessUser.id, program.id, [
-      DefaultUserRole.RunProgram,
-      DefaultUserRole.PersonalData,
-    ]);
-    await this.assignAidworker(runProgramUser.id, program.id, [
-      DefaultUserRole.RunProgram,
-    ]);
-    await this.assignAidworker(personalDataUser.id, program.id, [
-      DefaultUserRole.PersonalData,
-    ]);
-    await this.assignAidworker(viewOnlyUser.id, program.id, [
-      DefaultUserRole.View,
-    ]);
+    if (fullAccessUser) {
+      await this.assignAidworker(fullAccessUser.id, program.id, [
+        DefaultUserRole.RunProgram,
+        DefaultUserRole.PersonalData,
+      ]);
+    }
+    if (runProgramUser) {
+      await this.assignAidworker(runProgramUser.id, program.id, [
+        DefaultUserRole.RunProgram,
+      ]);
+    }
+    if (personalDataUser) {
+      await this.assignAidworker(personalDataUser.id, program.id, [
+        DefaultUserRole.PersonalData,
+      ]);
+    }
+    if (viewOnlyUser) {
+      await this.assignAidworker(viewOnlyUser.id, program.id, [
+        DefaultUserRole.View,
+      ]);
+    }
+    if (koboUser) {
+      await this.assignAidworker(koboUser.id, program.id, [
+        DefaultUserRole.KoboUser,
+      ]);
+    }
 
     if (addFieldValidation) {
       const fieldValidationUser = await this.getOrSaveUser({
@@ -74,6 +92,12 @@ export class SeedHelper {
   }
 
   public async getOrSaveUser(userInput: any): Promise<UserEntity> {
+    if (!userInput.username || !userInput.password) {
+      console.log(
+        `User not created, because username or password not set in environment`,
+      );
+      return;
+    }
     const userRepository = this.dataSource.getRepository(UserEntity);
     const user = await userRepository.findOne({
       where: { username: userInput.username },
