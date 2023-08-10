@@ -24,7 +24,8 @@ import { ProgramsServiceApiService } from '../../services/programs-service-api.s
 class ActivityOverviewItem {
   type: string;
   label?: string;
-  date?: Date;
+  date: Date;
+  paymentRowDetail?: PaymentRowDetail;
   description?: string;
   paymentRow?: Transaction;
   hasVoucherSupport?: boolean;
@@ -353,11 +354,12 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   private async fillActivityOverview() {
     this.activityOverview = [];
     if (this.canViewPaymentData) {
-      const tempData = [];
+      const tempData: ActivityOverviewItem[] = [];
       this.fillPaymentRows().forEach((v) => {
         tempData.push({
-          data: { ...v },
+          paymentRowDetail: { ...v },
           type: ActivityOverviewType.payment,
+          date: new Date(v.sentDate),
         });
       });
       this.activityOverview = [...tempData];
@@ -404,6 +406,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     }
 
     this.activityOverview.sort((a, b) => (b.date > a.date ? 1 : -1));
+    console.log('activityOverview: ', this.activityOverview);
   }
 
   private getStatusChanges(): { status: string; date: Date }[] {

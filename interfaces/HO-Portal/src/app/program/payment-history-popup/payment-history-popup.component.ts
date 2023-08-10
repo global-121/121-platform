@@ -164,7 +164,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
 
     if (
       this.canViewVouchers &&
-      PaymentUtils.hasVoucherSupport(this.person.fsp as FspName) &&
+      PaymentUtils.hasVoucherSupport(paymentRow.fsp as FspName) &&
       !!paymentRow.transaction
     ) {
       await this.programsService

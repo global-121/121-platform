@@ -82,8 +82,10 @@
             <!-- Accordion -->
             <ion-accordion-group [multiple]="true">
               <app-payment-history-accordion
-                [paymentRow]="item.data"
-                [enableSinglePayment]="enableSinglePayment(item.data)"
+                [paymentRow]="item.paymentRowDetail"
+                [enableSinglePayment]="
+                  enableSinglePayment(item.paymentRowDetail)
+                "
                 (rowClick)="rowClick($event)"
               ></app-payment-history-accordion>
             </ion-accordion-group>
