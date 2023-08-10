@@ -14,7 +14,6 @@ export class PaymentUtils {
   static getPaymentRowInfo(
     transaction: Transaction,
     program: Program,
-    person: Person,
     index: number,
   ): PaymentRowDetail {
     return {
@@ -24,7 +23,7 @@ export class PaymentUtils {
       hasMessageIcon: this.enableMessageSentIcon(transaction),
       hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
       amount: `${transaction.amount} ${program?.currency}`,
-      fsp: person.fsp as FspName,
+      fsp: transaction.fsp as FspName,
       sentDate: transaction.paymentDate,
       paymentDate: transaction.paymentDate,
     };

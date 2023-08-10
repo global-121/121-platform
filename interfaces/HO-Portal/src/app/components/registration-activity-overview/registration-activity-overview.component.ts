@@ -24,9 +24,9 @@ import { ProgramsServiceApiService } from '../../services/programs-service-api.s
 class ActivityOverviewItem {
   type: string;
   label?: string;
-  date?: Date;
+  date: Date;
+  paymentRowDetail?: PaymentRowDetail;
   description?: string;
-  paymentRow?: Transaction;
   hasVoucherSupport?: boolean;
   person?: Person;
   program?: Program;
@@ -319,7 +319,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         paymentRowValue = PaymentUtils.getPaymentRowInfo(
           transaction,
           this.program,
-          this.person,
           index,
         );
         if (transaction.status === StatusEnum.success) {
@@ -353,11 +352,12 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   private async fillActivityOverview() {
     this.activityOverview = [];
     if (this.canViewPaymentData) {
-      const tempData = [];
+      const tempData: ActivityOverviewItem[] = [];
       this.fillPaymentRows().forEach((v) => {
         tempData.push({
-          data: { ...v },
+          paymentRowDetail: { ...v },
           type: ActivityOverviewType.payment,
+          date: new Date(v.sentDate),
         });
       });
       this.activityOverview = [...tempData];
