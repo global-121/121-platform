@@ -210,14 +210,15 @@ export class ProgramsServiceApiService {
     attribute: string,
     value: string | number | string[],
   ): Promise<Person | Error> {
-    return this.apiService.post(
+    const data = {}
+    data[attribute] = value;
+    return this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/attribute`,
+      `/programs/${programId}/registrations/${referenceId}`,
       {
-        referenceId,
-        attribute,
-        value,
-      },
+        reason: 'reason',
+        data
+      }
     );
   }
 
