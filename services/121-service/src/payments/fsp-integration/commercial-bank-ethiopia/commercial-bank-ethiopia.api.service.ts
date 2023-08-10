@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { SoapService } from '../../../utils/soap/soap.service';
 import { CommercialBankEthiopiaMockService } from './commercial-bank-ethiopia.mock';
-import { CommercialBankEthiopiaResponse } from './dto/commercial-bank-ethiopia-response.dto';
+import { CommercialBankEthiopiaTransactionResponse } from './dto/commercial-bank-ethiopia-transaction-response.dto';
+import { CommercialBankEthiopiaTransferResponse } from './dto/commercial-bank-ethiopia-transfer-response.dto';
 import { CommercialBankEthiopiaSoapElements } from './enum/commercial-bank-ethiopia.enum';
 
 @Injectable()
@@ -12,63 +13,21 @@ export class CommercialBankEthiopiaApiService {
   ) {}
 
   public async creditTransfer(payment: any): Promise<any> {
-    const mainElement = 'cber:RMTFundtransfer';
-    // Create the SOAP envelope for credit transfer
-    const payload = await this.soapService.readXmlAsJs(
-      CommercialBankEthiopiaSoapElements.CreditTransfer,
-    );
-
-    this.soapService.changeSoapBody(
-      payload,
-      mainElement,
-      ['DEBITAMOUNT'],
-      String(payment.debitAmount),
-    );
-    this.soapService.changeSoapBody(
-      payload,
-      mainElement,
-      ['DEBITTHEIRREF'],
-      String(payment.debitTheIrRef),
-    );
-    this.soapService.changeSoapBody(
-      payload,
-      mainElement,
-      ['CREDITACCTNO'],
-      String(payment.creditAcctNo),
-    );
-    this.soapService.changeSoapBody(
-      payload,
-      mainElement,
-      ['CREDITCURRENCY'],
-      String(payment.creditCurrency),
-    );
-    this.soapService.changeSoapBody(
-      payload,
-      mainElement,
-      ['RemitterName'],
-      String(payment.remitterName),
-    );
-    this.soapService.changeSoapBody(
-      payload,
-      mainElement,
-      ['BeneficiaryName'],
-      String(payment.beneficiaryName),
-    );
+    const payload = await this.createCreditTransferBody(payment);
 
     try {
-      const responseBody = !!process.env.MOCK_COMMERSIAL_BANK_ETHIOPIA
+      console.log(payment);
+      console.log(JSON.stringify(payload));
+      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
         ? await this.commercialBankEthiopiaMock.post(payload, payment)
-        : await this.soapService.post(
+        : await this.soapService.postCreate(
             payload,
-            CommercialBankEthiopiaSoapElements.CbeLoyaltyHeader,
-            process.env.COMMERSIAL_BANK_ETHIOPIA_PASSWORD,
-            process.env.COMMERSIAL_BANK_ETHIOPIA_USERNAME,
-            process.env.COMMERSIAL_BANK_ETHIOPIA_URL,
+            process.env.COMMERCIAL_BANK_ETHIOPIA_SOAPACTION_TRANSFER,
           );
 
       console.log(responseBody, 'responseBody');
-      // Map the response to the CommercialBankEthiopiaResponse DTO
-      const result: CommercialBankEthiopiaResponse = {
+      // Map the response to the CommercialBankEthiopiaTransferResponse DTO
+      const result: CommercialBankEthiopiaTransferResponse = {
         resultCode: responseBody.IssueCardResponse.ResultCode._text,
         resultDescription:
           responseBody.IssueCardResponse.ResultDescription._text,
@@ -181,127 +140,164 @@ export class CommercialBankEthiopiaApiService {
     }
   }
 
-  // public async getCard(
-  //   cardId: string,
-  //   pin: string,
-  //   username: string,
-  //   password: string,
-  // ): Promise<IntersolveGetCardResponse> {
-  //   let payload = await this.soapService.readXmlAsJs(
-  //     IntersolveVoucherSoapElements.GetCard,
-  //   );
-  //   payload = this.soapService.changeSoapBody(
-  //     payload,
-  //     IntersolveVoucherSoapElements.GetCard,
-  //     ['CardId'],
-  //     cardId,
-  //   );
-  //   payload = this.soapService.changeSoapBody(
-  //     payload,
-  //     IntersolveVoucherSoapElements.GetCard,
-  //     ['PIN'],
-  //     pin,
-  //   );
+  public async createCreditTransferBody(payment: any): Promise<any> {
+    // Create the SOAP envelope for credit transfer
+    const payload = await this.soapService.readXmlAsJs(
+      CommercialBankEthiopiaSoapElements.CreditTransfer,
+    );
 
-  //   const responseBody = !!process.env.MOCK_INTERSOLVE
-  //     ? await this.intersolveMock.post(payload)
-  //     : await this.soapService.post(
-  //         payload,
-  //         IntersolveVoucherSoapElements.LoyaltyHeader,
-  //         username,
-  //         password,
-  //         process.env.INTERSOLVE_URL,
-  //       );
-  //   const result = {
-  //     resultCode: responseBody.GetCardResponse.ResultCode._text,
-  //     resultDescription: responseBody.GetCardResponse.ResultDescription._text,
-  //     status: responseBody.GetCardResponse.Card?.Status?._text,
-  //     balance: parseInt(responseBody.GetCardResponse.Card?.Balance?._text),
-  //     balanceFactor: parseInt(
-  //       responseBody.GetCardResponse.Card?.BalanceFactor?._text,
-  //     ),
-  //   };
-  //   return result;
-  // }
+    // Find the soapenv:Body element
+    const soapBody = payload.elements
+      .find((el) => el.name === 'soapenv:Envelope')
+      .elements.find((el) => el.name === 'soapenv:Body');
 
-  // public async markAsToCancelByRefPos(refPos: number): Promise<void> {
-  //   const intersolveRequest = await this.intersolveVoucherRequestRepo.findOneBy(
-  //     {
-  //       refPos: refPos,
-  //     },
-  //   );
-  //   intersolveRequest.updated = new Date();
-  //   intersolveRequest.isCancelled = false;
-  //   intersolveRequest.toCancel = true;
-  //   await this.intersolveVoucherRequestRepo.save(intersolveRequest);
-  // }
+    // Find the cber:RMTFundtransfer element
+    const rmtFundtransfer = soapBody.elements.find(
+      (el) => el.name === 'cber:RMTFundtransfer',
+    );
 
-  // public async markAsToCancel(
-  //   cardId: string,
-  //   transactionIdString: string,
-  // ): Promise<void> {
-  //   const transactionId = Number(transactionIdString);
-  //   const intersolveRequest = await this.intersolveVoucherRequestRepo.findOneBy(
-  //     {
-  //       cardId: cardId,
-  //       transactionId: transactionId,
-  //     },
-  //   );
-  //   intersolveRequest.updated = new Date();
-  //   intersolveRequest.isCancelled = false;
-  //   intersolveRequest.toCancel = true;
-  //   await this.intersolveVoucherRequestRepo.save(intersolveRequest);
-  // }
+    // Modify the elements within cber:RMTFundtransfer
+    rmtFundtransfer.elements.forEach((element) => {
+      switch (element.name) {
+        case 'WebRequestCommon':
+          const passwordElement = element.elements.find(
+            (el) => el.name === 'password',
+          );
+          const userNameElement = element.elements.find(
+            (el) => el.name === 'userName',
+          );
+          passwordElement.elements[0].text =
+            process.env.COMMERCIAL_BANK_ETHIOPIA_PASSWORD;
+          userNameElement.elements[0].text =
+            process.env.COMMERCIAL_BANK_ETHIOPIA_USERNAME;
+          break;
+        case 'FUNDSTRANSFERCBEREMITANCEType':
+          const debitAmountElement = element.elements.find(
+            (el) => el.name === 'fun:DEBITAMOUNT',
+          );
+          const debitTheirRefElement = element.elements.find(
+            (el) => el.name === 'fun:DEBITTHEIRREF',
+          );
+          const creditTheIrRefElement = element.elements.find(
+            (el) => el.name === 'fun:CREDITTHEIRREF',
+          );
+          const creditAcctNoElement = element.elements.find(
+            (el) => el.name === 'fun:CREDITACCTNO',
+          );
+          const creditCurrencyElement = element.elements.find(
+            (el) => el.name === 'fun:CREDITCURRENCY',
+          );
+          const remitterNameElement = element.elements.find(
+            (el) => el.name === 'fun:RemitterName',
+          );
+          const beneficiaryNameElement = element.elements.find(
+            (el) => el.name === 'fun:BeneficiaryName',
+          );
 
-  // public async cancelTransactionByRefPos(
-  //   refPos: number,
-  //   username: string,
-  //   password: string,
-  // ): Promise<IntersolveCancelTransactionByRefPosResponse> {
-  //   let payload = await this.soapService.readXmlAsJs(
-  //     IntersolveVoucherSoapElements.CancelTransactionByRefPos,
-  //   );
-  //   payload = this.soapService.changeSoapBody(
-  //     payload,
-  //     IntersolveVoucherSoapElements.CancelTransactionByRefPos,
-  //     ['EAN'],
-  //     process.env.INTERSOLVE_EAN,
-  //   );
-  //   payload = this.soapService.changeSoapBody(
-  //     payload,
-  //     IntersolveVoucherSoapElements.CancelTransactionByRefPos,
-  //     ['RefPosToCancel'],
-  //     String(refPos),
-  //   );
+          debitAmountElement.elements[0].text = payment.debitAmount;
+          debitTheirRefElement.elements[0].text = payment.debitTheIrRef;
+          creditTheIrRefElement.elements[0].text = payment.creditTheIrRef;
+          creditAcctNoElement.elements[0].text = payment.creditAcctNo;
+          creditCurrencyElement.elements[0].text = payment.creditCurrency;
+          remitterNameElement.elements[0].text = payment.remitterName;
+          beneficiaryNameElement.elements[0].text = payment.beneficiaryName;
 
-  //   const responseBody = await this.soapService.post(
-  //     payload,
-  //     IntersolveVoucherSoapElements.LoyaltyHeader,
-  //     username,
-  //     password,
-  //     process.env.INTERSOLVE_URL,
-  //   );
-  //   const result = {
-  //     resultCode:
-  //       responseBody.CancelTransactionByRefPosResponse.ResultCode._text,
-  //     resultDescription:
-  //       responseBody.CancelTransactionByRefPosResponse.ResultDescription._text,
-  //   };
-  //   const intersolveRequest = await this.intersolveVoucherRequestRepo.findOneBy(
-  //     {
-  //       refPos: refPos,
-  //     },
-  //   );
-  //   intersolveRequest.updated = new Date();
-  //   intersolveRequest.isCancelled =
-  //     result.resultCode == IntersolveVoucherResultCode.Ok;
-  //   intersolveRequest.cancellationAttempts =
-  //     intersolveRequest.cancellationAttempts + 1;
-  //   intersolveRequest.cancelByRefPosResultCode = result.resultCode;
-  //   intersolveRequest.toCancel = !this.stopCancelByRefposCodes.includes(
-  //     Number(result.resultCode),
-  //   );
-  //   await this.intersolveVoucherRequestRepo.save(intersolveRequest);
-  //   return result;
-  // }
+          // You can modify other elements similarly
+          break;
+        // Handle other elements if needed
+      }
+    });
+
+    return payload;
+  }
+
+  public async transactionStatus(payment: any): Promise<any> {
+    const payload = await this.createCreditTransferBody(payment);
+
+    try {
+      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
+        ? await this.commercialBankEthiopiaMock.post(payload, payment)
+        : await this.soapService.postCreate(
+            payload,
+            process.env.COMMERCIAL_BANK_ETHIOPIA_SOAPACTION_TRANSACTION,
+          );
+
+      console.log(responseBody, 'responseBody');
+      // Map the response to the CommercialBankEthiopiaTransactionResponse DTO
+      const result: CommercialBankEthiopiaTransactionResponse = {
+        resultCode: responseBody.IssueCardResponse.ResultCode._text,
+        resultDescription:
+          responseBody.IssueCardResponse.ResultDescription._text,
+        senderReference: responseBody.IssueCardResponse.SENDERREFERENCE?._text,
+        txnReference: responseBody.IssueCardResponse.TXNREFERENCE?._text,
+        txnAmount: responseBody.IssueCardResponse.TXNAMOUNT?._text,
+        clearEDBal: responseBody.IssueCardResponse.CLEAREDBAL?._text,
+      };
+
+      return result;
+    } catch (error) {
+      // Handle errors here
+      const result: any = {
+        resultDescription: 'Unknown error occurred.',
+      };
+
+      if (error.code === 'ENOTFOUND') {
+        console.error('Network error: The host could not be found.');
+        result.resultDescription =
+          'Network error: The host could not be found.';
+      } else {
+        console.error('Unknown error occurred:', error.response);
+        result.resultDescription = error.response;
+      }
+
+      return result;
+    }
+  }
+
+  public async createtransactionStatusBody(payment: any): Promise<any> {
+    // Create the SOAP envelope for credit transfer
+    const payload = await this.soapService.readXmlAsJs(
+      CommercialBankEthiopiaSoapElements.TransactionStatus,
+    );
+
+    // Find the soapenv:Body element
+    const soapBody = payload.elements
+      .find((el) => el.name === 'soapenv:Envelope')
+      .elements.find((el) => el.name === 'soapenv:Body');
+
+    // Find the cber:SettlementAccount element
+    const rmtFundtransfer = soapBody.elements.find(
+      (el) => el.name === 'cber:SettlementAccount',
+    );
+
+    // Modify the elements within cber:SettlementAccount
+    rmtFundtransfer.elements.forEach((element) => {
+      switch (element.name) {
+        case 'WebRequestCommon':
+          const passwordElement = element.elements.find(
+            (el) => el.name === 'password',
+          );
+          const userNameElement = element.elements.find(
+            (el) => el.name === 'userName',
+          );
+          passwordElement.elements[0].text =
+            process.env.COMMERCIAL_BANK_ETHIOPIA_PASSWORD;
+          userNameElement.elements[0].text =
+            process.env.COMMERCIAL_BANK_ETHIOPIA_USERNAME;
+          break;
+        case 'FUNDSTRANSFERCBEREMITANCEType':
+          const debitTheirRefElement = element.elements.find(
+            (el) => el.name === 'fun:DEBITTHEIRREF',
+          );
+
+          debitTheirRefElement.elements[0].text = payment.debitTheIrRef;
+
+          // You can modify other elements similarly
+          break;
+        // Handle other elements if needed
+      }
+    });
+
+    return payload;
+  }
 }

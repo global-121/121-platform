@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
-import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
@@ -27,8 +26,6 @@ export class CommercialBankEthiopiaService
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramFspConfigurationEntity)
-  public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
 
   public constructor(
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
@@ -40,6 +37,10 @@ export class CommercialBankEthiopiaService
     programId: number,
     paymentNr: number,
   ): Promise<FspTransactionResultDto> {
+    const program = await this.programRepository.findOneBy({
+      id: programId,
+    });
+
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
     fspTransactionResult.fspName = FspName.safaricom;
@@ -48,12 +49,9 @@ export class CommercialBankEthiopiaService
     const userInfo = await this.getUserInfo(referenceIds);
 
     for (const payment of paymentList) {
-      const resultUser = this.getObjectByReferenceId(
-        payment.referenceId,
-        userInfo,
-      );
+      const resultUser = await this.getObjectByReferenceId(payment, userInfo);
 
-      const payload = this.createPayloadPerPa(payment, resultUser);
+      const payload = this.createPayloadPerPa(payment, resultUser, program);
 
       const paymentRequestResultPerPa = await this.sendPaymentPerPa(
         payload,
@@ -70,20 +68,34 @@ export class CommercialBankEthiopiaService
     return fspTransactionResult;
   }
 
-  public getObjectByReferenceId(
-    paymentReferenceId: string,
+  public async getObjectByReferenceId(
+    payment: any,
     data: any,
-  ): [
-    {
-      referenceId: string;
-      programname?: string;
-      fspname?: string;
-      value: string;
-    },
-  ] {
+  ): Promise<
+    [
+      {
+        referenceId: string;
+        programname?: string;
+        fspname?: string;
+        value: string;
+        debitTheIrRef?: string;
+      },
+    ]
+  > {
     const results = data.filter(
-      (item) => item.referenceId === paymentReferenceId,
+      (item) => item.referenceId === payment.referenceId,
     );
+
+    if (payment.transactionId) {
+      const transaction = await this.transactionRepository.findOneBy({
+        id: payment.transactionId,
+      });
+      const customData = {
+        ...transaction.customData,
+      };
+      results[0].debitTheIrRef = customData['requestResult'].debitTheIrRef;
+    }
+
     return results;
   }
 
@@ -131,17 +143,24 @@ export class CommercialBankEthiopiaService
         fspname?: string;
         value: string;
         referenceId: string;
+        debitTheIrRef?: string;
       },
     ],
+    program,
   ): CommercialBankEthiopiaTransferPayload {
     let name;
     let bankAccountNumber;
+    let debitTheIrRefRetry;
 
     userInfo.forEach((info) => {
       if (info.programname === 'name') {
         name = info.value;
       } else if (info.fspname === 'bankAccountNumber') {
         bankAccountNumber = info.value;
+      }
+
+      if (info.debitTheIrRef) {
+        debitTheIrRefRetry = info.debitTheIrRef;
       }
     });
 
@@ -159,12 +178,13 @@ export class CommercialBankEthiopiaService
 
     const payload = {
       debitAmount: payment.transactionAmount,
-      debitTheIrRef: `${formatDate(new Date())}${this.generateRandomNumerics(
-        10,
-      )}`,
+      debitTheIrRef:
+        debitTheIrRefRetry ||
+        `${formatDate(new Date())}${this.generateRandomNumerics(10)}`,
+      creditTheIrRef: program.ngo,
       creditAcctNo: bankAccountNumber,
-      creditCurrency: process.env.COMMERSIAL_BANK_ETHIOPIA_CURRENCY,
-      remitterName: process.env.COMMERSIAL_BANK_ETHIOPIA_COMPANY_NAME,
+      creditCurrency: process.env.COMMERCIAL_BANK_ETHIOPIA_CURRENCY,
+      remitterName: program.titlePaApp.en,
       beneficiaryName: `${name}`,
     };
 
@@ -181,9 +201,13 @@ export class CommercialBankEthiopiaService
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = payload.debitAmount;
 
-    const result = await this.commercialBankEthiopiaApiService.creditTransfer(
+    let result = await this.commercialBankEthiopiaApiService.creditTransfer(
       payload,
     );
+
+    if (result.resultDescription === 'DUPLICATED Transaction') {
+      result = await this.sendDuplicatePaymentPerPa(payload);
+    }
 
     if (result && result.successIndicator === 'Success') {
       paTransactionResult.status = StatusEnum.success;
@@ -194,9 +218,16 @@ export class CommercialBankEthiopiaService
     }
 
     paTransactionResult.customData = {
-      requestResult: result,
+      requestResult: payload,
+      paymentResult: result,
     };
     return paTransactionResult;
+  }
+
+  public async sendDuplicatePaymentPerPa(payload: any): Promise<any> {
+    return await this.commercialBankEthiopiaApiService.transactionStatus(
+      payload,
+    );
   }
 
   private generateRandomNumerics(length: number): string {

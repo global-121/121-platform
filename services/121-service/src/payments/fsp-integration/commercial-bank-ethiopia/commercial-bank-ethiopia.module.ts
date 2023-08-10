@@ -2,7 +2,6 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WhatsappModule } from '../../../notifications/whatsapp/whatsapp.module';
-import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { CustomHttpService } from '../../../shared/services/custom-http.service';
@@ -24,7 +23,6 @@ import { CommercialBankEthiopiaService } from './commercial-bank-ethiopia.servic
       RegistrationEntity,
       TransactionEntity,
       ProgramEntity,
-      ProgramFspConfigurationEntity,
       UserEntity,
     ]),
     ImageCodeModule,

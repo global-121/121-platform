@@ -1,21 +1,28 @@
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
   xmlns:cber="http://temenos.com/CBEREMITANCE"
   xmlns:fun="http://temenos.com/FUNDSTRANSFERCBEREMITANCE">
-  <soap:Body>
+  <soapenv:Header/>
+  <soapenv:Body>
     <cber:RMTFundtransfer>
+      <WebRequestCommon>
+        <password>${password}</password>
+        <userName>${username}</userName>
+      </WebRequestCommon>
+      <OfsFunction>
+      </OfsFunction>
       <FUNDSTRANSFERCBEREMITANCEType id="">
-        <fun:DEBITAMOUNT>1</fun:DEBITAMOUNT>
-        <fun:DEBITTHEIRREF>123450216</fun:DEBITTHEIRREF>
-        <fun:CREDITTHEIRREF></fun:CREDITTHEIRREF>
-        <fun:CREDITACCTNO>1000263499216</fun:CREDITACCTNO>
-        <fun:CREDITCURRENCY>ETB</fun:CREDITCURRENCY>
+        <fun:DEBITAMOUNT>${debitAmount}</fun:DEBITAMOUNT>
+        <fun:DEBITTHEIRREF>${debitTheIrRef}</fun:DEBITTHEIRREF>
+        <fun:CREDITTHEIRREF>${creditTheIrRef}</fun:CREDITTHEIRREF>
+        <fun:CREDITACCTNO>${creditAcctNo}</fun:CREDITACCTNO>
+        <fun:CREDITCURRENCY>${creditCurrency}</fun:CREDITCURRENCY>
         <fun:CREDITAMOUNT></fun:CREDITAMOUNT>
         <fun:CREDITVALUEDATE></fun:CREDITVALUEDATE>
-        <fun:RemitterName>ANDUALE</fun:RemitterName>
-        <fun:BeneficiaryName>ABIY</fun:BeneficiaryName>
+        <fun:RemitterName>${remitterName}</fun:RemitterName>
+        <fun:BeneficiaryName>${beneficiaryName}</fun:BeneficiaryName>
         <fun:BENCUST></fun:BENCUST>
         <fun:ORDCUST></fun:ORDCUST>
       </FUNDSTRANSFERCBEREMITANCEType>
     </cber:RMTFundtransfer>
-  </soap:Body>
-</soap:Envelope>
+  </soapenv:Body>
+</soapenv:Envelope>

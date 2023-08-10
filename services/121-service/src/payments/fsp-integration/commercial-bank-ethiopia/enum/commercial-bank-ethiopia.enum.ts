@@ -1,4 +1,4 @@
 export enum CommercialBankEthiopiaSoapElements {
   CreditTransfer = 'CreditTransfer',
-  CbeLoyaltyHeader = 'CbeLoyaltyHeader',
+  TransactionStatus = 'TransactionStatus',
 }

@@ -56,7 +56,7 @@ export class SoapService {
             data: { error: err },
           },
         );
-        throw err;
+        return err;
       });
   }
 
@@ -139,5 +139,36 @@ export class SoapService {
       }
     }
     return xml;
+  }
+
+  async postCreate(payload: any, soapAction): Promise<any> {
+    try {
+      const xmlOptions = { compact: true, ignoreComment: true, spaces: 4 };
+      const soapRequestXml = convert.js2xml(payload, xmlOptions);
+
+      // Configure and send the SOAP request
+      const soapUrl = process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
+      const headers = {
+        'Content-Type': 'text/xml;charset=UTF-8',
+        soapAction: soapAction,
+      };
+
+      const response = await soapRequest({
+        url: soapUrl,
+        headers: headers,
+        xml: soapRequestXml,
+        timeout: 10000,
+      });
+
+      const responseBody = response.data;
+
+      // Parse the SOAP response if needed
+      const parsedResponse = convert.xml2js(responseBody, { compact: true });
+
+      return parsedResponse;
+    } catch (error) {
+      console.error('Error sending SOAP request:', error);
+      throw error;
+    }
   }
 }

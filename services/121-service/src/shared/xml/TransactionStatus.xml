@@ -1,0 +1,19 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:cber="http://temenos.com/CBEREMITANCE">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <cber:SettlementAccount>
+      <WebRequestCommon>
+        <password>${password}</password>
+        <userName>${username}</userName>
+      </WebRequestCommon>
+      <ESTTLMENTACCBEREMITANCEType>
+        <enquiryInputCollection>
+          <columnName>ID</columnName>
+          <criteriaValue>${debitTheIrRef}</criteriaValue>
+          <operand>EQ</operand>
+        </enquiryInputCollection>
+      </ESTTLMENTACCBEREMITANCEType>
+    </cber:SettlementAccount>
+  </soapenv:Body>
+</soapenv:Envelope>

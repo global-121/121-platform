@@ -1,4 +1,4 @@
-export interface CommercialBankEthiopiaResponse {
+export interface CommercialBankEthiopiaTransferResponse {
   resultCode: string;
   resultDescription: string;
   transactionId: string;
