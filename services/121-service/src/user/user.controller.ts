@@ -197,7 +197,7 @@ export class UserController {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
-    return this.userService.update(userId, userData);
+    return this.userService.update(userData);
   }
 
   @Admin()

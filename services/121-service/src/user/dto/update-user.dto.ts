@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
+import { LoginUserDto } from './login-user.dto';
 
-export class UpdateUserDto {
-  @ApiProperty()
+export class UpdateUserDto extends LoginUserDto {
+  @ApiProperty({ example: 'password' })
   @IsNotEmpty()
-  public readonly password: string;
+  public readonly newPassword: string;
 }
