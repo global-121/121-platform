@@ -1008,18 +1008,17 @@ export class RegistrationsService {
   public async updateRegistration(
     programId: number,
     referenceId: string,
-    partialRegistration: UpdateRegistrationDto,
+    updateRegistrationDto: UpdateRegistrationDto,
     userId: number,
   ): Promise<RegistrationEntity> {
+    const partialRegistration = updateRegistrationDto.data;
     let registration = await this.getRegistrationFromReferenceId(
       referenceId,
       ['program', 'fsp'],
       programId,
     );
 
-    for (const attributeKey of Object.keys(partialRegistration).filter(
-      (key) => key !== 'reason',
-    )) {
+    for (const attributeKey of Object.keys(partialRegistration)) {
       const oldValue = await registration.getRegistrationDataValueByName(
         attributeKey,
       );
@@ -1038,7 +1037,7 @@ export class RegistrationsService {
         fieldName: attributeKey,
         oldValue,
         newValue,
-        reason: partialRegistration.reason,
+        reason: updateRegistrationDto.reason,
       });
     }
     return registration;

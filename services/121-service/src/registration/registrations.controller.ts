@@ -315,13 +315,12 @@ export class RegistrationsController {
   @Patch('programs/:programId/registrations/:referenceId')
   public async updateRegistration(
     @Param() params,
-    @Body() partialRegistration: UpdateRegistrationDto,
+    @Body() updateRegistrationDataDto: UpdateRegistrationDto,
     @User('id') userId: number,
   ): Promise<RegistrationEntity> {
+    const partialRegistration = updateRegistrationDataDto.data;
     // first validate all attributes and return error if any
-    for (const attributeKey of Object.keys(partialRegistration).filter(
-      (key) => key !== 'reason',
-    )) {
+    for (const attributeKey of Object.keys(partialRegistration)) {
       const attributeDto: UpdateAttributeDto = {
         referenceId: params.referenceId,
         attribute: attributeKey,
@@ -339,7 +338,7 @@ export class RegistrationsController {
     return await this.registrationsService.updateRegistration(
       params.programId,
       params.referenceId,
-      partialRegistration,
+      updateRegistrationDataDto,
       userId,
     );
   }
