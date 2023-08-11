@@ -118,7 +118,7 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       `/programs/${programId}/registrations/${referenceId}`,
       {
-        reason: 'Changed from field validation app',
+        reason: 'Changed from field validation app.',
         data,
       },
       false,
