@@ -93,6 +93,8 @@ describe('Update attribute of PA', () => {
     const dataUpdateSucces = {
       phoneNumber: updatePhoneNumber,
       firstName: 'Jane',
+      maxPayments: 2,
+      paymentAmountMultiplier: 3,
     };
 
     // Act
