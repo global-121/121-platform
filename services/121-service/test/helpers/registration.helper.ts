@@ -109,7 +109,7 @@ export function getRegistrationChangeLog(
     referenceId: referenceId,
   };
   return getServer()
-    .get(`/programs/${programId}/registration-change-log`)
+    .get(`/programs/${programId}/registration-change-logs`)
     .query(queryParams)
     .set('Cookie', [accessToken]);
 }

@@ -32,7 +32,7 @@ export class RegistrationChangeLogController {
   @ApiResponse({ status: 200, description: 'Get changelog for registration' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
-  @Get('programs/:programId/registration-change-log')
+  @Get('programs/:programId/registration-change-logs')
   public async getChangeLog(
     @Param() params,
     @Query() queryParams,
