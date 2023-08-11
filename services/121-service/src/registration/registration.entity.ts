@@ -30,7 +30,7 @@ import {
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationDataError } from './errors/registration-data.error';
-import { RegistrationChangeLogEntity } from './registration-change-log.entity';
+import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 

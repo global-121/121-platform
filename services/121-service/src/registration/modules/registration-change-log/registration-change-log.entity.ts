@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { Base121Entity } from '../base.entity';
-import { UserEntity } from '../user/user.entity';
-import { RegistrationEntity } from './registration.entity';
+import { Base121Entity } from '../../../base.entity';
+import { UserEntity } from '../../../user/user.entity';
+import { RegistrationEntity } from '../../registration.entity';
 
 @Entity('registration_change_log')
 export class RegistrationChangeLogEntity extends Base121Entity {

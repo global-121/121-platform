@@ -23,6 +23,7 @@ graph LR
   RegistrationsModule-->FspModule
   RegistrationsModule-->MessageModule
   RegistrationsModule-->IntersolveVisaModule
+  RegistrationsModule-->RegistrationChangeLogModule
   ExportMetricsModule-->ProgramModule
   ExportMetricsModule-->RegistrationsModule
   ExportMetricsModule-->PaymentsModule
