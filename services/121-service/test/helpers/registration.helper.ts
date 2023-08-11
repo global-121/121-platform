@@ -84,7 +84,7 @@ export function updatePaAttribute(
     });
 }
 
-export function updateRegisrationPatch(
+export function updateRegistrationPatch(
   programId: number,
   referenceId: string,
   data: object,

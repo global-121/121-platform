@@ -3,7 +3,7 @@ import { SeedScript } from '../../../src/scripts/seed-script.enum';
 import {
   getRegistrationChangeLog,
   importRegistrations,
-  updateRegisrationPatch,
+  updateRegistrationPatch,
 } from '../../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../../helpers/utility.helper';
 import {
@@ -11,10 +11,6 @@ import {
   registrationVisa,
 } from '../../visa-card/visa-card.data';
 
-const data = {
-  phoneNumber: '15005550099',
-  firstName: 'Jane',
-};
 const reason = 'automated test';
 
 describe('Update attribute of PA', () => {
@@ -27,18 +23,23 @@ describe('Update attribute of PA', () => {
     accessToken = await getAccessToken();
 
     await importRegistrations(programId, [registrationVisa], accessToken);
+  });
 
-    await updateRegisrationPatch(
+  it('should keep a log of registration data changes', async () => {
+    // Prepare
+    const data = {
+      phoneNumber: '15005550099', //changed value
+    };
+
+    // Act
+    await updateRegistrationPatch(
       programId,
       referenceIdVisa,
       data,
       reason,
       accessToken,
     );
-  });
 
-  it('should keep a log of registration data changes', async () => {
-    // Act
     const response = await getRegistrationChangeLog(
       programId,
       referenceIdVisa,
@@ -47,7 +48,7 @@ describe('Update attribute of PA', () => {
     // Assert
     const body = response.body;
     expect(response.statusCode).toBe(HttpStatus.OK);
-    expect(body.length).toBe(2);
+    expect(body.length).toBe(1);
 
     const checkingMap1 = {
       registrationId: 1,
@@ -57,20 +58,36 @@ describe('Update attribute of PA', () => {
       newValue: data.phoneNumber,
       reason: reason,
     };
-    const checkingMap2 = {
-      registrationId: 1,
-      userId: 1,
-      fieldName: 'firstName',
-      oldValue: registrationVisa.firstName,
-      newValue: data.firstName,
-      reason: reason,
-    };
     for (const [key, value] of Object.entries(checkingMap1)) {
       expect(body[0][key]).toBe(value);
     }
-    for (const [key, value] of Object.entries(checkingMap2)) {
-      expect(body[1][key]).toBe(value);
-    }
+  });
+
+  it('should not log of value did not change', async () => {
+    // Prepare
+    const data = {
+      firstName: 'Jane', //unchanged value
+    };
+
+    // Act
+    await updateRegistrationPatch(
+      programId,
+      referenceIdVisa,
+      data,
+      reason,
+      accessToken,
+    );
+
+    const response = await getRegistrationChangeLog(
+      programId,
+      referenceIdVisa,
+      accessToken,
+    );
+
+    // Assert
+    const body = response.body;
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(body.length).toBe(0);
   });
 
   it('should return empty array for unkown referenceId', async () => {

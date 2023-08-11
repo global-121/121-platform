@@ -4,7 +4,7 @@ import {
   importRegistrations,
   searchRegistrationByReferenceId,
   updatePaAttribute,
-  updateRegisrationPatch,
+  updateRegistrationPatch,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 import { referenceIdVisa, registrationVisa } from '../visa-card/visa-card.data';
@@ -74,7 +74,7 @@ describe('Update attribute of PA', () => {
     const reason = 'automated test';
 
     // Act
-    const response = await updateRegisrationPatch(
+    const response = await updateRegistrationPatch(
       programId,
       wrongReferenceId,
       updatePhoneData,
@@ -96,7 +96,7 @@ describe('Update attribute of PA', () => {
     };
 
     // Act
-    const response = await updateRegisrationPatch(
+    const response = await updateRegistrationPatch(
       programId,
       referenceIdVisa,
       dataUpdateSucces,
@@ -129,7 +129,7 @@ describe('Update attribute of PA', () => {
 
     const reason = 'automated test';
     // Act
-    const response = await updateRegisrationPatch(
+    const response = await updateRegistrationPatch(
       programId,
       referenceIdVisa,
       dataUpdatePhoneFail,
