@@ -16,6 +16,7 @@ export class RegistrationChangeLogService {
       where: {
         registration: { referenceId: referenceId, programId: programId },
       },
+      relations: ['user'],
     });
   }
 }

@@ -70,11 +70,13 @@
                     </small>
                   </ion-note>
                 </ion-row>
-                <ion-label class="ion-text-right"
-                  ><ion-chip class="chip">
-                    {{ item }}
-                  </ion-chip>
-                </ion-label>
+                <ng-container *ngIf="item.chipText">
+                  <ion-label class="ion-text-right"
+                    ><ion-chip class="chip">
+                      {{ item.chipText }}
+                    </ion-chip>
+                  </ion-label>
+                </ng-container>
               </ion-row>
               <div>
                 <ion-text
