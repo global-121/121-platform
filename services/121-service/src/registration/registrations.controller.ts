@@ -365,7 +365,7 @@ export class RegistrationsController {
       updateAttributeDto.referenceId,
       {
         data,
-        reason: '',
+        reason: null,
       },
       userId,
     );
