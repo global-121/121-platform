@@ -412,7 +412,11 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           date: new Date(change.created),
           description: this.translate.instant(
             'registration-details.activity-overview.activities.data-changes.description',
-            { oldValue: change.oldValue, newValue: change.newValue },
+            {
+              oldValue: change.oldValue,
+              newValue: change.newValue,
+              reason: change.reason,
+            },
           ),
         });
       }

@@ -734,7 +734,7 @@
         },
         "data-changes": {
           "label": "Data change - {{fieldName}}",
-          "description": "Old: {{oldValue}} <br> New: {{newValue}}"
+          "description": "<b>Old:</b> {{oldValue}} <br> <b>New:</b> {{newValue}} <br> <b>Reason:</b> {{reason}}"
         }
       }
     },
