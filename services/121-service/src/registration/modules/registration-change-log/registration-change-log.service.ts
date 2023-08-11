@@ -13,6 +13,7 @@ export class RegistrationChangeLogService {
   ): Promise<RegistrationChangeLogEntity[]> {
     return await this.registrationChangeLogRepository.find({
       where: { registration: { referenceId: referenceId } },
+      relations: ['user'],
     });
   }
 }

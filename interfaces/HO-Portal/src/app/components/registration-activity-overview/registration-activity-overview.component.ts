@@ -32,6 +32,7 @@ class ActivityOverviewItem {
   program?: Program;
   hasError?: boolean;
   hasWaiting?: boolean;
+  chipText?: string;
 }
 
 enum ActivityOverviewType {
@@ -418,6 +419,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
               reason: change.reason,
             },
           ),
+          chipText: change.user.username,
         });
       }
     }
