@@ -21,6 +21,11 @@ describe('Update attribute of PA', () => {
     phoneNumber: '15005550098',
     fspName: FspName.intersolveVisa,
     whatsappPhoneNumber: '15005550098',
+    addressStreet: 'Teststraat',
+    addressHouseNumber: '1',
+    addressHouseNumberAddition: '',
+    addressPostalCode: '1234AB',
+    addressCity: 'Stad',
   };
 
   let accessToken: string;
