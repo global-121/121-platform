@@ -1035,14 +1035,16 @@ export class RegistrationsService {
       const newValue = await registration.getRegistrationValueByName(
         attributeKey,
       );
-      await this.registrationChangeLog.save({
-        registration,
-        userId,
-        fieldName: attributeKey,
-        oldValue,
-        newValue,
-        reason: updateRegistrationDto.reason,
-      });
+      if (oldValue !== newValue) {
+        await this.registrationChangeLog.save({
+          registration,
+          userId,
+          fieldName: attributeKey,
+          oldValue,
+          newValue,
+          reason: updateRegistrationDto.reason,
+        });
+      }
     }
     return registration;
   }
