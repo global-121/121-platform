@@ -91,7 +91,6 @@ export class RegistrationsService {
   private readonly intersolveVoucherRepo: Repository<IntersolveVoucherEntity>;
   @InjectRepository(SafaricomRequestEntity)
   private readonly safaricomRequestRepo: Repository<SafaricomRequestEntity>;
-
   @InjectRepository(RegistrationChangeLogEntity)
   private readonly registrationChangeLog: Repository<RegistrationChangeLogEntity>;
 
@@ -1024,7 +1023,7 @@ export class RegistrationsService {
     );
 
     for (const attributeKey of Object.keys(partialRegistration)) {
-      const oldValue = await registration.getRegistrationDataValueByName(
+      const oldValue = await registration.getRegistrationValueByName(
         attributeKey,
       );
       const attributeValue = partialRegistration[attributeKey];
@@ -1033,7 +1032,7 @@ export class RegistrationsService {
         attributeValue,
         registration,
       );
-      const newValue = await registration.getRegistrationDataValueByName(
+      const newValue = await registration.getRegistrationValueByName(
         attributeKey,
       );
       await this.registrationChangeLog.save({

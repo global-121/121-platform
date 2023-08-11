@@ -23,12 +23,12 @@ export class RegistrationChangeLogEntity extends Base121Entity {
   @Column()
   public fieldName: string;
 
-  @Column()
+  @Column({ nullable: true })
   public oldValue: string;
 
-  @Column()
+  @Column({ nullable: true })
   public newValue: string;
 
-  @Column()
+  @Column({ nullable: true })
   public reason: string;
 }
