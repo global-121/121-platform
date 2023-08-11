@@ -84,7 +84,7 @@ export function updatePaAttribute(
     });
 }
 
-export function updateRegisrationPatch(
+export function updateRegistrationPatch(
   programId: number,
   referenceId: string,
   data: object,
@@ -98,6 +98,20 @@ export function updateRegisrationPatch(
       data: data,
       reason: reason,
     });
+}
+
+export function getRegistrationChangeLog(
+  programId: number,
+  referenceId: string,
+  accessToken: string,
+): Promise<request.Response> {
+  const queryParams = {
+    referenceId: referenceId,
+  };
+  return getServer()
+    .get(`/programs/${programId}/registration-change-logs`)
+    .query(queryParams)
+    .set('Cookie', [accessToken]);
 }
 
 export function getVisaWalletsAndDetails(

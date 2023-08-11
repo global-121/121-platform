@@ -10,9 +10,12 @@ export class RegistrationChangeLogService {
 
   public async getChangeLogByReferenceId(
     referenceId: string,
+    programId: number,
   ): Promise<RegistrationChangeLogEntity[]> {
     return await this.registrationChangeLogRepository.find({
-      where: { registration: { referenceId: referenceId } },
+      where: {
+        registration: { referenceId: referenceId, programId: programId },
+      },
       relations: ['user'],
     });
   }
