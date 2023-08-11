@@ -52,7 +52,7 @@ import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
-import { RegistrationChangeLogEntity } from './registration-change-log.entity';
+import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';

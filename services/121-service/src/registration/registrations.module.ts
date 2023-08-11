@@ -23,7 +23,8 @@ import { ProgramModule } from '../programs/programs.module';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
 import { TryWhatsappEntity } from './../notifications/whatsapp/try-whatsapp.entity';
-import { RegistrationChangeLogEntity } from './registration-change-log.entity';
+import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
+import { RegistrationChangeLogModule } from './modules/registration-change-log/registration-change-log.module';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -63,6 +64,7 @@ import { InclusionScoreService } from './services/inclusion-score.service';
     FspModule,
     MessageModule,
     IntersolveVisaModule,
+    RegistrationChangeLogModule,
   ],
   providers: [RegistrationsService, BulkImportService, InclusionScoreService],
   controllers: [RegistrationsController],

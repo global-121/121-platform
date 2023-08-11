@@ -17,6 +17,7 @@ class ActivityOverviewItem {
 }
 
 enum ActivityOverviewType {
+  dataChanges = 'dataChanges',
   message = 'message',
   status = 'status',
   payment = 'payment',
@@ -44,6 +45,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   public activityOverviewFilter: string = null;
   public activityOverviewButtons = [
     null,
+    ActivityOverviewType.dataChanges,
     ActivityOverviewType.message,
     ActivityOverviewType.status,
     ActivityOverviewType.payment,
