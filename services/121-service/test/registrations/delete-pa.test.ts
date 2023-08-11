@@ -21,6 +21,11 @@ describe('Delete PA', () => {
     phoneNumber: '15005550099',
     fspName: FspName.intersolveVisa,
     whatsappPhoneNumber: '15005550099',
+    addressStreet: 'Teststraat',
+    addressHouseNumber: '1',
+    addressHouseNumberAddition: '',
+    addressPostalCode: '1234AB',
+    addressCity: 'Stad',
   };
 
   let accessToken: string;
