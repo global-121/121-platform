@@ -9,6 +9,8 @@ import {
 import { getAccessToken, resetDB } from '../helpers/utility.helper';
 import { referenceIdVisa, registrationVisa } from '../visa-card/visa-card.data';
 
+const updatePhoneNumber = '15005550099';
+
 describe('Update attribute of PA', () => {
   const programId = 3;
 
@@ -24,7 +26,6 @@ describe('Update attribute of PA', () => {
   it('should not update unknown registration  ** /attribute', async () => {
     // Arrange
     const wrongReferenceId = referenceIdVisa + '-fail-test';
-    const updatePhoneNumber = '15005550099';
 
     // Act
     const response = await updatePaAttribute(
@@ -41,7 +42,6 @@ describe('Update attribute of PA', () => {
 
   it('should succesfully update  ** /attribute', async () => {
     // Arrange
-    const updatePhoneNumber = '15005550099';
 
     // Act
     const response = await updatePaAttribute(
@@ -67,8 +67,7 @@ describe('Update attribute of PA', () => {
   it('should not update unknown registration  ** patch', async () => {
     // Arrange
     const wrongReferenceId = referenceIdVisa + '-fail-test';
-    const updatePhoneNumber = '15005550099';
-    const data = {
+    const updatePhoneData = {
       phoneNumber: updatePhoneNumber,
     };
 
@@ -78,7 +77,7 @@ describe('Update attribute of PA', () => {
     const response = await updateRegisrationPatch(
       programId,
       wrongReferenceId,
-      data,
+      updatePhoneData,
       reason,
       accessToken,
     );
@@ -89,20 +88,18 @@ describe('Update attribute of PA', () => {
 
   it('should succesfully update  ** patch', async () => {
     // Arrange
-    const updatePhoneNumber = '15005550099';
 
-    const data = {
+    const reason = 'automated test';
+    const dataUpdateSucces = {
       phoneNumber: updatePhoneNumber,
       firstName: 'Jane',
     };
-
-    const reason = 'automated test';
 
     // Act
     const response = await updateRegisrationPatch(
       programId,
       referenceIdVisa,
-      data,
+      dataUpdateSucces,
       reason,
       accessToken,
     );
@@ -117,7 +114,7 @@ describe('Update attribute of PA', () => {
     );
     const registration = result.body[0];
     expect(registration.phoneNumber).toBe(updatePhoneNumber);
-    expect(registration.firstName).toBe(data.firstName);
+    expect(registration.firstName).toBe(dataUpdateSucces.firstName);
     // Is old data still the same?
     expect(registration.lastName).toBe(registrationVisa.lastName);
   });
@@ -125,7 +122,7 @@ describe('Update attribute of PA', () => {
   it('should fail on wrong phonenumber ** patch', async () => {
     // Arrange
     const updatePhoneNumber = '150';
-    const data = {
+    const dataUpdatePhoneFail = {
       firstName: 'Jane',
       phoneNumber: updatePhoneNumber,
     };
@@ -135,7 +132,7 @@ describe('Update attribute of PA', () => {
     const response = await updateRegisrationPatch(
       programId,
       referenceIdVisa,
-      data,
+      dataUpdatePhoneFail,
       reason,
       accessToken,
     );

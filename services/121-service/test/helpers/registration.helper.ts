@@ -100,6 +100,20 @@ export function updateRegisrationPatch(
     });
 }
 
+export function getRegistrationChangeLog(
+  programId: number,
+  referenceId: string,
+  accessToken: string,
+): Promise<request.Response> {
+  const queryParams = {
+    referenceId: referenceId,
+  };
+  return getServer()
+    .get(`/programs/${programId}/registration-change-log`)
+    .query(queryParams)
+    .set('Cookie', [accessToken]);
+}
+
 export function getVisaWalletsAndDetails(
   programId: number,
   referenceId: string,
