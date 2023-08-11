@@ -4,10 +4,10 @@ import {
   importRegistrations,
   searchRegistrationByReferenceId,
 } from '../helpers/registration.helper';
-import { getAccessToken, resetDB } from '../helpers/utility.helper';
+import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
 import { referenceIdVisa, registrationVisa } from '../visa-card/visa-card.data';
 
-describe('Update attribute of PA', () => {
+describe('Import a registration', () => {
   const programId = 3;
 
   let accessToken: string;
@@ -15,6 +15,8 @@ describe('Update attribute of PA', () => {
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
+
+    await waitFor(2_000);
   });
 
   it('should import registrations', async () => {
