@@ -20,6 +20,7 @@ import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramService } from '../programs/programs.service';
+import { AzureLogService } from '../shared/services/azure-log.service';
 import { PermissionEnum } from '../user/permission.enum';
 import { UserEntity } from '../user/user.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
@@ -96,6 +97,7 @@ export class RegistrationsService {
 
   public constructor(
     private readonly lookupService: LookupService,
+    private readonly azureLogService: AzureLogService,
     private readonly messageService: MessageService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly bulkImportService: BulkImportService,
@@ -597,9 +599,9 @@ export class RegistrationsService {
       );
     }
 
-    this.inclusionScoreService.calculateInclusionScore(referenceId);
+    await this.inclusionScoreService.calculateInclusionScore(referenceId);
 
-    this.messageService.sendTextMessage(
+    await this.messageService.sendTextMessage(
       registration,
       registration.program.id,
       null,
@@ -1201,14 +1203,18 @@ export class RegistrationsService {
             registrationStatus === RegistrationStatusEnum.invited
               ? program.tryWhatsAppFirst
               : false;
-          this.messageService.sendTextMessage(
-            updatedRegistration,
-            programId,
-            message,
-            null,
-            tryWhatsappFirst,
-            messageContentType,
-          );
+          this.messageService
+            .sendTextMessage(
+              updatedRegistration,
+              programId,
+              message,
+              null,
+              tryWhatsappFirst,
+              messageContentType,
+            )
+            .catch((error) => {
+              this.azureLogService.logError(error, true);
+            });
         }
       }
     } else {
@@ -1702,7 +1708,7 @@ export class RegistrationsService {
     );
     for (const data of registration.data) {
       if (data.programQuestion && data.programQuestion.persistence === false) {
-        this.registrationDataRepository.remove(data);
+        await this.registrationDataRepository.remove(data);
       }
     }
   }

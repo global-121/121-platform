@@ -150,7 +150,7 @@ export class BulkImportService {
       savedRegistration.registrationStatus = RegistrationStatusEnum.imported;
       await this.registrationRepository.save(savedRegistration);
     }
-    this.actionService.saveAction(
+    await this.actionService.saveAction(
       userId,
       program.id,
       AdditionalActionType.importPeopleAffected,
@@ -316,7 +316,7 @@ export class BulkImportService {
         RegistrationStatusEnum.registered;
       registrationStatusChanges.push(registrationStatusChange);
     }
-    this.registrationStatusRepository.save(registrationStatusChanges, {
+    await this.registrationStatusRepository.save(registrationStatusChanges, {
       chunk: 5000,
     });
 

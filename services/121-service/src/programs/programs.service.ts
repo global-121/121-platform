@@ -245,7 +245,7 @@ export class ProgramService {
   ): Promise<ProgramEntity> {
     let newProgram;
 
-    this.validateProgram(programData);
+    await this.validateProgram(programData);
 
     const program = new ProgramEntity();
     program.published = programData.published;
@@ -314,7 +314,7 @@ export class ProgramService {
         });
         if (!fsp) {
           const errors = `Create program error: No fsp found with name ${fspItem.fsp}`;
-          queryRunner.rollbackTransaction();
+          await queryRunner.rollbackTransaction();
           throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
         }
         savedProgram.financialServiceProviders.push(fsp);
@@ -324,13 +324,13 @@ export class ProgramService {
       await queryRunner.commitTransaction();
     } catch (err) {
       console.log('Error creating new program ', err);
-      queryRunner.rollbackTransaction();
+      await queryRunner.rollbackTransaction();
       throw new HttpException(
         'Error creating new program',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } finally {
-      queryRunner.release();
+      await queryRunner.release();
     }
     await this.userService.assigAidworkerToProgram(newProgram.id, userId, {
       roles: [DefaultUserRole.ProgramAdmin],

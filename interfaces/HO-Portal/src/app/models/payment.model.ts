@@ -39,9 +39,10 @@ export class PaymentRowDetail {
   waiting?: boolean;
   fsp?: FspName;
   status?: string;
+  paymentDate?: string;
 }
 
-export class PopupPayoutDetails {
+export class PayoutDetails {
   programId: number;
   payment: number;
   amount: number;

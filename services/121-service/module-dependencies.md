@@ -52,4 +52,5 @@ graph LR
   WhatsappIncomingModule-->ImageCodeModule
   WhatsappIncomingModule-->IntersolveVoucherModule
   WhatsappIncomingModule-->WhatsappModule
+  EspocrmModule-->RegistrationsModule
 ```

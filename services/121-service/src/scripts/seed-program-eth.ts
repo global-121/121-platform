@@ -24,7 +24,7 @@ export class SeedProgramEth implements InterfaceScript {
     const program = await this.seedHelper.addProgram(programPilotEth);
 
     // ***** CREATE DEFAULT USERS *****
-    this.seedHelper.addDefaultUsers(program, true);
+    await this.seedHelper.addDefaultUsers(program, true);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instancePilotEth);

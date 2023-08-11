@@ -49,7 +49,7 @@ export class MessageService {
             programId,
           );
       if (whatsappNumber) {
-        this.whatsappService
+        await this.whatsappService
           .queueMessageSendTemplate(
             messageText,
             whatsappNumber,
@@ -62,9 +62,9 @@ export class MessageService {
             console.warn('Error in queueMessageSendTemplate: ', error);
           });
       } else if (tryWhatsApp && registration.phoneNumber) {
-        this.tryWhatsapp(registration, messageText, messageContentType);
+        await this.tryWhatsapp(registration, messageText, messageContentType);
       } else if (registration.phoneNumber) {
-        this.smsService.sendSms(
+        await this.smsService.sendSms(
           messageText,
           registration.phoneNumber,
           registration.id,
@@ -109,22 +109,18 @@ export class MessageService {
     messageText,
     messageContentType?: MessageContentType,
   ): Promise<void> {
-    this.whatsappService
-      .queueMessageSendTemplate(
-        messageText,
-        registration.phoneNumber,
-        null,
-        null,
-        registration.id,
-        messageContentType,
-      )
-      .then((result) => {
-        // Store the sid of a whatsapp message of which we do not know if the receiver registered on whatsapp
-        const tryWhatsapp = {
-          sid: result,
-          registration,
-        };
-        this.tryWhatsappRepository.save(tryWhatsapp);
-      });
+    const result = await this.whatsappService.queueMessageSendTemplate(
+      messageText,
+      registration.phoneNumber,
+      null,
+      null,
+      registration.id,
+      messageContentType,
+    );
+    const tryWhatsapp = {
+      sid: result,
+      registration,
+    };
+    await this.tryWhatsappRepository.save(tryWhatsapp);
   }
 }

@@ -35,7 +35,7 @@ export class SoapService {
     })
       .then((rawResponse: any) => {
         const response = rawResponse.response;
-        this.httpService.logMessage(
+        this.httpService.logMessageRequest(
           { url, payload: jsonSoapBody },
           {
             status: response.statusCode,
@@ -48,7 +48,7 @@ export class SoapService {
         return jsonResponse['soap:Envelope']['soap:Body'];
       })
       .catch((err: any) => {
-        this.httpService.logError(
+        this.httpService.logErrorRequest(
           { url, payload: jsonSoapBody },
           {
             status: null,
