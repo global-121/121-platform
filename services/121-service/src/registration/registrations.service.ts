@@ -255,6 +255,7 @@ export class RegistrationsService {
     referenceId: string,
     rawProgramAnswers: ProgramAnswer[],
     programId: number,
+    userId: number,
   ): Promise<void> {
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
@@ -269,9 +270,17 @@ export class RegistrationsService {
         where: { name: answer.programQuestionName },
       });
       if (programQuestion) {
-        const relation = new RegistrationDataRelation();
-        relation.programQuestionId = programQuestion.id;
-        await registration.saveData(answer.programAnswer, { relation });
+        const data = {};
+        data[answer.programQuestionName] = answer.programAnswer;
+        await this.updateRegistration(
+          programId,
+          referenceId,
+          {
+            data,
+            reason: 'Changed from field validation app.',
+          },
+          userId,
+        );
       }
     }
     await this.storePhoneNumberInRegistration(programAnswers, referenceId);
@@ -1028,16 +1037,18 @@ export class RegistrationsService {
       const oldValue = await registration.getRegistrationValueByName(
         attributeKey,
       );
+      console.log('oldValue: ', oldValue);
       const attributeValue = partialRegistration[attributeKey];
-      registration = await this.updateAttribute(
-        attributeKey,
-        attributeValue,
-        registration,
-      );
-      const newValue = await registration.getRegistrationValueByName(
-        attributeKey,
-      );
-      if (oldValue !== newValue) {
+      console.log('attributeValue: ', attributeValue);
+      if (String(oldValue) !== String(attributeValue)) {
+        registration = await this.updateAttribute(
+          attributeKey,
+          attributeValue,
+          registration,
+        );
+        const newValue = await registration.getRegistrationValueByName(
+          attributeKey,
+        );
         await this.registrationChangeLog.save({
           registration,
           userId,
@@ -1674,11 +1685,13 @@ export class RegistrationsService {
   public async issueValidation(
     payload: ValidationIssueDataDto,
     programId: number,
+    userId: number,
   ): Promise<void> {
     await this.storeProgramAnswers(
       payload.referenceId,
       payload.programAnswers,
       programId,
+      userId,
     );
     await this.setRegistrationStatus(
       payload.referenceId,
