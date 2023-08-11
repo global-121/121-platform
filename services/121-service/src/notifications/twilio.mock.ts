@@ -82,7 +82,9 @@ export class TwilioClientMock {
           twilioMessagesCreateDto,
           messageSid,
           TwilioStatus.failed,
-        );
+        ).catch((e) => {
+          console.log('TWILIO MOCK: Error sending status response: ', e);
+        });
       } else {
         let statuses = [];
         if (twilioMessagesCreateDto.to.includes('whatsapp')) {
@@ -107,7 +109,11 @@ export class TwilioClientMock {
         twilioMessagesCreateDto.messageType ===
         IntersolveVoucherPayoutStatus.InitialMessage
       ) {
-        this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid);
+        this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid).catch(
+          (e) => {
+            console.log('TWILIO MOCK: Error sending incoming whatsapp ', e);
+          },
+        );
       }
       return response;
     }
@@ -172,6 +178,7 @@ export class TwilioClientMock {
         const request = new TwilioIncomingCallbackDto();
         request.MessageSid = messageSid;
         request.From = twilioMessagesCreateDto.to;
+        request.To = process.env.TWILIO_WHATSAPP_NUMBER;
         const httpService = new HttpService();
         try {
           await lastValueFrom(

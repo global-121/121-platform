@@ -7,7 +7,7 @@
 <ion-card>
   <ion-item
     color="light"
-    lines="none"
+    lines="full"
   >
     <ion-row style="width: 100%">
       <ion-col
@@ -41,16 +41,14 @@
     </ion-row>
   </ion-item>
   <ion-card-content class="ion-no-padding">
-    <ion-list
-      class="ion-no-padding"
-      lines="full"
-    >
+    <ion-list class="ion-no-padding">
       <ion-item
         *ngFor="let item of getFilteredActivityOverview()"
         style="font-size: 14px; --padding-start: 0"
       >
         <ion-grid>
-          <ion-row>
+          <!-- Other tabs -->
+          <ion-row *ngIf="item.type !== 'payment'">
             <div class="ion-padding-horizontal">
               <div style="height: 100%; display: flex; align-items: center">
                 <ion-icon
@@ -86,6 +84,20 @@
               </div>
             </ion-col>
           </ion-row>
+
+          <!-- payments -->
+          <div *ngIf="item.type === 'payment'">
+            <!-- Accordion -->
+            <ion-accordion-group [multiple]="true">
+              <app-payment-history-accordion
+                [paymentRow]="item.paymentRowDetail"
+                [enableSinglePayment]="
+                  enableSinglePayment(item.paymentRowDetail)
+                "
+                (rowClick)="rowClick($event)"
+              ></app-payment-history-accordion>
+            </ion-accordion-group>
+          </div>
         </ion-grid>
       </ion-item>
     </ion-list>

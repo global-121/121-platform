@@ -47,7 +47,7 @@ export class AfricasTalkingService
         await this.africasTalkingApiService.sendPaymentPerPa(payload);
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
     }
-    this.transactionsService.storeAllTransactions(
+    await this.transactionsService.storeAllTransactions(
       fspTransactionResult,
       programId,
       paymentNr,
@@ -130,7 +130,7 @@ export class AfricasTalkingService
       africasTalkingNotificationData,
     );
 
-    this.transactionsService.storeTransactionUpdateStatus(
+    await this.transactionsService.storeTransactionUpdateStatus(
       enrichedNotification.paTransactionResult,
       enrichedNotification.programId,
       enrichedNotification.payment,
