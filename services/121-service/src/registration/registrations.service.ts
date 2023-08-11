@@ -20,6 +20,7 @@ import { PersonAffectedAppDataEntity } from '../people-affected/person-affected-
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { ProgramService } from '../programs/programs.service';
+import { AzureLogService } from '../shared/services/azure-log.service';
 import { PermissionEnum } from '../user/permission.enum';
 import { UserEntity } from '../user/user.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
@@ -91,12 +92,12 @@ export class RegistrationsService {
   private readonly intersolveVoucherRepo: Repository<IntersolveVoucherEntity>;
   @InjectRepository(SafaricomRequestEntity)
   private readonly safaricomRequestRepo: Repository<SafaricomRequestEntity>;
-
   @InjectRepository(RegistrationChangeLogEntity)
   private readonly registrationChangeLog: Repository<RegistrationChangeLogEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
+    private readonly azureLogService: AzureLogService,
     private readonly messageService: MessageService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly bulkImportService: BulkImportService,
@@ -254,6 +255,7 @@ export class RegistrationsService {
     referenceId: string,
     rawProgramAnswers: ProgramAnswer[],
     programId: number,
+    userId: number,
   ): Promise<void> {
     const registration = await this.getRegistrationFromReferenceId(
       referenceId,
@@ -268,9 +270,17 @@ export class RegistrationsService {
         where: { name: answer.programQuestionName },
       });
       if (programQuestion) {
-        const relation = new RegistrationDataRelation();
-        relation.programQuestionId = programQuestion.id;
-        registration.saveData(answer.programAnswer, { relation });
+        const data = {};
+        data[answer.programQuestionName] = answer.programAnswer;
+        await this.updateRegistration(
+          programId,
+          referenceId,
+          {
+            data,
+            reason: 'Changed from field validation app.',
+          },
+          userId,
+        );
       }
     }
     await this.storePhoneNumberInRegistration(programAnswers, referenceId);
@@ -589,9 +599,9 @@ export class RegistrationsService {
       );
     }
 
-    this.inclusionScoreService.calculateInclusionScore(referenceId);
+    await this.inclusionScoreService.calculateInclusionScore(referenceId);
 
-    this.messageService.sendTextMessage(
+    await this.messageService.sendTextMessage(
       registration,
       registration.program.id,
       null,
@@ -1024,26 +1034,30 @@ export class RegistrationsService {
     );
 
     for (const attributeKey of Object.keys(partialRegistration)) {
-      const oldValue = await registration.getRegistrationDataValueByName(
+      const oldValue = await registration.getRegistrationValueByName(
         attributeKey,
       );
+      console.log('oldValue: ', oldValue);
       const attributeValue = partialRegistration[attributeKey];
-      registration = await this.updateAttribute(
-        attributeKey,
-        attributeValue,
-        registration,
-      );
-      const newValue = await registration.getRegistrationDataValueByName(
-        attributeKey,
-      );
-      await this.registrationChangeLog.save({
-        registration,
-        userId,
-        fieldName: attributeKey,
-        oldValue,
-        newValue,
-        reason: updateRegistrationDto.reason,
-      });
+      console.log('attributeValue: ', attributeValue);
+      if (String(oldValue) !== String(attributeValue)) {
+        registration = await this.updateAttribute(
+          attributeKey,
+          attributeValue,
+          registration,
+        );
+        const newValue = await registration.getRegistrationValueByName(
+          attributeKey,
+        );
+        await this.registrationChangeLog.save({
+          registration,
+          userId,
+          fieldName: attributeKey,
+          oldValue,
+          newValue,
+          reason: updateRegistrationDto.reason,
+        });
+      }
     }
     return registration;
   }
@@ -1189,14 +1203,18 @@ export class RegistrationsService {
             registrationStatus === RegistrationStatusEnum.invited
               ? program.tryWhatsAppFirst
               : false;
-          this.messageService.sendTextMessage(
-            updatedRegistration,
-            programId,
-            message,
-            null,
-            tryWhatsappFirst,
-            messageContentType,
-          );
+          this.messageService
+            .sendTextMessage(
+              updatedRegistration,
+              programId,
+              message,
+              null,
+              tryWhatsappFirst,
+              messageContentType,
+            )
+            .catch((error) => {
+              this.azureLogService.logError(error, true);
+            });
         }
       }
     } else {
@@ -1667,11 +1685,13 @@ export class RegistrationsService {
   public async issueValidation(
     payload: ValidationIssueDataDto,
     programId: number,
+    userId: number,
   ): Promise<void> {
     await this.storeProgramAnswers(
       payload.referenceId,
       payload.programAnswers,
       programId,
+      userId,
     );
     await this.setRegistrationStatus(
       payload.referenceId,
@@ -1688,7 +1708,7 @@ export class RegistrationsService {
     );
     for (const data of registration.data) {
       if (data.programQuestion && data.programQuestion.persistence === false) {
-        this.registrationDataRepository.remove(data);
+        await this.registrationDataRepository.remove(data);
       }
     }
   }

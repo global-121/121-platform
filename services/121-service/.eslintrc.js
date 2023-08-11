@@ -7,8 +7,11 @@ module.exports = {
     'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
   ],
   parserOptions: {
+    parser: '@typescript-eslint/parser',
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
     sourceType: 'module', // Allows for the use of imports
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
   },
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
@@ -20,6 +23,7 @@ module.exports = {
     ],
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-parameter-properties': 'off',
+    '@typescript-eslint/no-floating-promises': 'error',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {

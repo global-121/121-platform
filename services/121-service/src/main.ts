@@ -171,7 +171,7 @@ async function bootstrap(): Promise<void> {
   const server = await app.listen(PORT);
   server.setTimeout(10 * 60 * 1000);
 }
-bootstrap();
+void bootstrap();
 
 if (!!process.env.APPLICATION_INSIGHT_IKEY) {
   appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);

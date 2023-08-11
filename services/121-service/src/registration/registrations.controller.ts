@@ -365,7 +365,7 @@ export class RegistrationsController {
       updateAttributeDto.referenceId,
       {
         data,
-        reason: '',
+        reason: null,
       },
       userId,
     );
@@ -634,10 +634,12 @@ export class RegistrationsController {
   public async issue(
     @Body() validationIssueData: ValidationIssueDataDto,
     @Param('programId') programId,
+    @User('id') userId: number,
   ): Promise<void> {
     return await this.registrationsService.issueValidation(
       validationIssueData,
       programId,
+      userId,
     );
   }
 

@@ -40,11 +40,11 @@ export class CustomHttpService {
         })
         .pipe(
           map((response) => {
-            this.logMessage({ headers, url, payload: null }, response);
+            this.logMessageRequest({ headers, url, payload: null }, response);
             return response;
           }),
           catchError((err) => {
-            this.logError({ headers, url, payload: null }, err.response);
+            this.logErrorRequest({ headers, url, payload: null }, err.response);
             return of(err.response);
           }),
         ),
@@ -63,11 +63,17 @@ export class CustomHttpService {
         })
         .pipe(
           map((response) => {
-            this.logMessage({ headers, url, payload: payload }, response);
+            this.logMessageRequest(
+              { headers, url, payload: payload },
+              response,
+            );
             return response;
           }),
           catchError((err) => {
-            this.logError({ headers, url, payload: payload }, err.response);
+            this.logErrorRequest(
+              { headers, url, payload: payload },
+              err.response,
+            );
             return of(err.response);
           }),
         ),
@@ -86,11 +92,17 @@ export class CustomHttpService {
         })
         .pipe(
           map((response) => {
-            this.logMessage({ headers, url, payload: payload }, response);
+            this.logMessageRequest(
+              { headers, url, payload: payload },
+              response,
+            );
             return response;
           }),
           catchError((err) => {
-            this.logError({ headers, url, payload: payload }, err.response);
+            this.logErrorRequest(
+              { headers, url, payload: payload },
+              err.response,
+            );
             return of(err.response);
           }),
         ),
@@ -109,7 +121,7 @@ export class CustomHttpService {
     return returnHeaders;
   }
 
-  public logMessage(request: Request, response: Response): void {
+  public logMessageRequest(request: Request, response: Response): void {
     if (this.defaultClient) {
       try {
         const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
@@ -123,12 +135,12 @@ export class CustomHttpService {
         });
         this.defaultClient.flush();
       } catch (error) {
-        console.log('An error occured in logMessage: ', error);
+        console.log('An error occured in logMessageRequest: ', error);
       }
     }
   }
 
-  public logError(request: Request, error: Response): void {
+  public logErrorRequest(request: Request, error: Response): void {
     if (this.defaultClient) {
       try {
         const requestContent = `URL: ${request.url}. Payload: ${JSON.stringify(
@@ -142,7 +154,7 @@ export class CustomHttpService {
         });
         this.defaultClient.flush();
       } catch (error) {
-        console.log('An error occured in logError: ', error);
+        console.log('An error occured in logErrorRequest: ', error);
       }
     }
   }
