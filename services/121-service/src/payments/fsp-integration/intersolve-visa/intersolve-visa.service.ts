@@ -237,6 +237,7 @@ export class IntersolveVisaService
           (b) =>
             b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
         ).quantity.value;
+      intersolveVisaWallet.lastExternalUpdate = new Date();
       await this.intersolveVisaWalletRepository.save(intersolveVisaWallet);
 
       visaCustomer.visaWallets = [intersolveVisaWallet];
@@ -925,7 +926,7 @@ export class IntersolveVisaService
     newWallet.balance = createWalletResult.data.data.token.balances.find(
       (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
     ).quantity.value;
-
+    newWallet.lastExternalUpdate = new Date();
     await this.intersolveVisaWalletRepository.save(newWallet);
 
     // 5. register new wallet to customer
