@@ -30,6 +30,11 @@ describe('Webhook integration with EspoCRM - Delete PA', () => {
     whatsappPhoneNumber: '15005550099',
     tokenCodeVisa: true,
     isPhysicalCardVisa: true,
+    addressStreet: 'Teststraat',
+    addressHouseNumber: '1',
+    addressHouseNumberAddition: '',
+    addressPostalCode: '1234AB',
+    addressCity: 'Stad',
   };
   const webhookObject = {
     referenceId: '63f77488410458466',
