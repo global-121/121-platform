@@ -10,7 +10,7 @@ import {
 import {
   changePaStatus,
   importRegistrations,
-  updatePa,
+  updatePaAttribute,
 } from '../helpers/registration.helper';
 import { getAccessToken, resetDB, waitFor } from '../helpers/utility.helper';
 import {
@@ -333,7 +333,7 @@ describe('Do payment to 1 PA', () => {
       await waitFor(2_000);
 
       // update PA
-      await updatePa(
+      await updatePaAttribute(
         programIdVisa,
         referenceIdVisa,
         'lastName',
@@ -382,7 +382,7 @@ describe('Do payment to 1 PA', () => {
       await waitFor(2_000);
 
       // update PA
-      await updatePa(
+      await updatePaAttribute(
         programIdVisa,
         referenceIdVisa,
         'lastName',
