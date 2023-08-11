@@ -362,7 +362,7 @@ export class RegistrationsController {
     data[updateAttributeDto.attribute] = updateAttributeDto.value;
     return await this.registrationsService.updateRegistration(
       params.programId,
-      params.referenceId,
+      updateAttributeDto.referenceId,
       {
         data,
         reason: '',

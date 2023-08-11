@@ -231,6 +231,11 @@ export class RegistrationsService {
     relations: string[] = [],
     programId?: number,
   ): Promise<RegistrationEntity> {
+    if (!referenceId) {
+      const errors = `ReferenceId is not set`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
       relations: relations,
@@ -1095,7 +1100,9 @@ export class RegistrationsService {
       await this.syncUpdatesWithThirdParties(registration, attribute);
     }
 
-    return this.getRegistrationFromReferenceId(savedRegistration.referenceId);
+    return this.getRegistrationFromReferenceId(savedRegistration.referenceId, [
+      'program',
+    ]);
   }
 
   private async syncUpdatesWithThirdParties(
