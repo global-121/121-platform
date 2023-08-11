@@ -122,6 +122,12 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     }
 
     if (this.canViewPersonalData) {
+      const changes =
+        await this.programsService.getRegistrationChangeLogByReferenceId(
+          this.programId,
+          this.person.referenceId,
+        );
+
       for (const statusChange of this.getStatusChanges()) {
         this.activityOverview.push({
           type: ActivityOverviewType.status,
@@ -140,6 +146,21 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           ),
         });
       }
+
+      for (const change of changes) {
+        this.activityOverview.push({
+          type: ActivityOverviewType.dataChanges,
+          label: this.translate.instant(
+            'registration-details.activity-overview.activities.data-changes.label',
+            { fieldName: change.fieldName },
+          ),
+          date: new Date(change.created),
+          description: this.translate.instant(
+            'registration-details.activity-overview.activities.data-changes.description',
+            { oldValue: change.oldValue, newValue: change.newValue },
+          ),
+        });
+      }
     }
 
     this.activityOverview.sort((a, b) => (b.date > a.date ? 1 : -1));
@@ -148,6 +169,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   public getIconName(type: ActivityOverviewType): string {
     const map = {
       [ActivityOverviewType.message]: 'mail-outline',
+      [ActivityOverviewType.dataChanges]: 'pencil-outline',
       [ActivityOverviewType.payment]: 'cash-outline',
       [ActivityOverviewType.status]: 'reload-circle-outline',
     };

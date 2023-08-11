@@ -210,15 +210,15 @@ export class ProgramsServiceApiService {
     attribute: string,
     value: string | number | string[],
   ): Promise<Person | Error> {
-    const data = {}
+    const data = {};
     data[attribute] = value;
     return this.apiService.patch(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/${referenceId}`,
       {
         reason: 'reason',
-        data
-      }
+        data,
+      },
     );
   }
 
@@ -728,6 +728,17 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/referenceid/${paId}`,
+      false,
+    );
+  }
+
+  async getRegistrationChangeLogByReferenceId(
+    programId: number,
+    referenceId: string,
+  ): Promise<any> {
+    return await this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/registration-change-log/${referenceId}`,
       false,
     );
   }

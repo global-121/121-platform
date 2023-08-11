@@ -72,9 +72,17 @@
                     </small>
                   </ion-note>
                 </ion-row>
+                <ion-label class="ion-text-right"
+                  ><ion-chip class="chip">
+                    {{ item }}
+                  </ion-chip>
+                </ion-label>
               </ion-row>
               <div>
-                <ion-text class="ion-text-end">{{ item.description }}</ion-text>
+                <ion-text
+                  class="ion-text-end"
+                  [innerHTML]="item.description"
+                ></ion-text>
               </div>
             </ion-col>
           </ion-row>
