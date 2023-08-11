@@ -33,7 +33,7 @@ export class UpdateAttributeDto {
 export class UpdateRegistrationDto {
   @ApiProperty({
     description: `Key value pairs of the registration object.`,
-    example: `{ "phonenumber" : "1234567890" }`,
+    example: `{ "phoneNumber" : "1234567890" }`,
   })
   public data: object;
 

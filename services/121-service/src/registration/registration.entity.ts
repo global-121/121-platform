@@ -167,6 +167,20 @@ export class RegistrationEntity extends CascadeDeleteEntity {
     ]);
   }
 
+  public async getRegistrationValueByName(name: string): Promise<string> {
+    const registrationDataResult = await this.getRegistrationDataValueByName(
+      name,
+    );
+    if (registrationDataResult) {
+      return registrationDataResult;
+    } else {
+      const registrationResult = this[name];
+      if (registrationResult) {
+        return registrationResult;
+      }
+    }
+  }
+
   // TODO: Refactor this to accept an array of keys
   public async getRegistrationDataValueByName(name: string): Promise<string> {
     const result = await this.getRegistrationDataByName(name);
