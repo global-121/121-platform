@@ -26,7 +26,7 @@ describe('Update attribute of PA', () => {
   });
 
   it('should keep a log of registration data changes', async () => {
-    // Prepare
+    // Arrange
     const data = {
       phoneNumber: '15005550099', //changed value
     };
@@ -64,7 +64,7 @@ describe('Update attribute of PA', () => {
   });
 
   it('should not log if value did not change', async () => {
-    // Prepare
+    // Arrange
     const data = {
       firstName: 'Jane', //unchanged value
     };
