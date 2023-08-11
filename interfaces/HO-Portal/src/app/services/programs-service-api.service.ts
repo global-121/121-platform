@@ -209,6 +209,7 @@ export class ProgramsServiceApiService {
     referenceId: string,
     attribute: string,
     value: string | number | string[],
+    reason?: string,
   ): Promise<Person | Error> {
     const data = {};
     data[attribute] = value;
@@ -216,7 +217,7 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       `/programs/${programId}/registrations/${referenceId}`,
       {
-        reason: 'reason',
+        reason: reason,
         data,
       },
     );

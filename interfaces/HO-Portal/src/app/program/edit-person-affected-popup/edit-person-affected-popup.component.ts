@@ -136,6 +136,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public async updatePaAttribute(
     attribute: string,
     value: string | number | string[],
+    reason: string,
     isPaTableAttribute: boolean,
   ): Promise<void> {
     let valueToStore: string | number | string[];
@@ -187,6 +188,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         this.person.referenceId,
         attribute,
         valueToStore,
+        reason,
       )
       .then((response: Person) => {
         this.inProgress[attribute] = false;

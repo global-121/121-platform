@@ -59,7 +59,7 @@
           "
           [value]="attributeValues?.paymentAmountMultiplier"
           (updated)="
-            updatePaAttribute('paymentAmountMultiplier', $event, false)
+            updatePaAttribute('paymentAmountMultiplier', $event.value, $event.reason, false)
           "
           [inProgress]="inProgress?.paymentAmountMultiplier || false"
           [isDisabled]="
