@@ -112,18 +112,17 @@ export class ProgramsServiceApiService {
     attribute: string,
     value: string | string[],
   ): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        `/programs/${programId}/registrations/attribute`,
-        {
-          referenceId,
-          attribute,
-          value,
-        },
-        false,
-      )
-      .toPromise();
+    const data = {};
+    data[attribute] = value;
+    return this.apiService.patch(
+      environment.url_121_service_api,
+      `/programs/${programId}/registrations/${referenceId}`,
+      {
+        reason: 'Changed from field validation app',
+        data,
+      },
+      false,
+    );
   }
 
   lookupPhoneNumber(phoneNumber: string): Promise<{ result: boolean }> {
