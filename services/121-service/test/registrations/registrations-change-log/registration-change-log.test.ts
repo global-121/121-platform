@@ -63,7 +63,7 @@ describe('Update attribute of PA', () => {
     }
   });
 
-  it('should not log of value did not change', async () => {
+  it('should not log if value did not change', async () => {
     // Prepare
     const data = {
       firstName: 'Jane', //unchanged value
