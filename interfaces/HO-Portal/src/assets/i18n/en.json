@@ -719,6 +719,7 @@
       "title": "Activity overview",
       "filters": {
         "null": "All",
+        "dataChanges": "Data changes",
         "message": "Messages",
         "status": "Status history",
         "payment": "Payments"
