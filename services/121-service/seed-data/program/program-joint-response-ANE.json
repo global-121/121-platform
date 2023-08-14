@@ -41,7 +41,7 @@
     {
       "name": "name",
       "label": {
-        "en": "What is the name of the head of your household"
+        "en": "What is the full name of the head of your household"
       },
       "answerType": "text",
       "questionType": "standard",
