@@ -157,7 +157,7 @@ export class SoapService {
         url: soapUrl,
         headers: headers,
         xml: soapRequestXml,
-        timeout: 10000,
+        timeout: 150000,
       });
 
       const responseBody = response.data;
