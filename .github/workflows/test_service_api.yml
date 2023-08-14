@@ -1,31 +1,29 @@
-name: Integration (API + DB) tests
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Test Service: API Integration'
+
 on:
   workflow_dispatch:
   pull_request:
     branches:
       - 'master'
     paths:
-      - '.github/workflows/api-test-workflow.yml'
+      - '.github/workflows/test_service_api.yml'
       - 'services/**'
-      - '!**.spec.ts'
       - '!**.md'
   push:
     branches:
       - 'release/*'
     paths:
-      - '.github/workflows/api-test-workflow.yml'
+      - '.github/workflows/test_service_api.yml'
       - 'services/**'
-      - '!**.spec.ts'
       - '!**.md'
 
 jobs:
-  # Label of the runner job
-  api-test:
-    # You must use a Linux environment when using service containers or container jobs
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      # Downloads a copy of the code in your repository before running CI tests
       - name: Check out repository code
         uses: actions/checkout@v3
 

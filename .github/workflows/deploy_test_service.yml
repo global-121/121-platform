@@ -24,10 +24,8 @@ on:
     branches:
       - master
     paths:
-      - '!.github/**'
       - '.github/workflows/deploy_test_service.yml'
       - 'services/121-service/**'
-      - '**/.vscode/*'
       - '!*.md'
       - '!*.yml'
 
