@@ -131,7 +131,10 @@ export class CustomHttpService {
           response.statusText
         } - Body: ${JSON.stringify(response.data)}`;
         this.defaultClient.trackTrace({
-          message: `${requestContent} - ${responseContent}`,
+          message: `${requestContent.substring(
+            0,
+            16000,
+          )} - ${responseContent.substring(0, 16000)}`,
         });
         this.defaultClient.flush();
       } catch (error) {
@@ -150,7 +153,12 @@ export class CustomHttpService {
           error.statusText
         } - Body: ${JSON.stringify(error.data)}`;
         this.defaultClient.trackException({
-          exception: new Error(`${requestContent} - ${responseContent}}`),
+          exception: new Error(
+            `${requestContent.substring(
+              0,
+              16000,
+            )} - ${responseContent.substring(0, 16000)}}`,
+          ),
         });
         this.defaultClient.flush();
       } catch (error) {
