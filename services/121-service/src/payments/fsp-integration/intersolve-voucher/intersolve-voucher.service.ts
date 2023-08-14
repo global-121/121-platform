@@ -9,6 +9,7 @@ import {
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from '../../../notifications/twilio.dto';
+import { TwilioMessageEntity } from '../../../notifications/twilio.entity';
 import { WhatsappService } from '../../../notifications/whatsapp/whatsapp.service';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
@@ -49,6 +50,8 @@ export class IntersolveVoucherService
   public programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramFspConfigurationEntity)
   public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+  @InjectRepository(TwilioMessageEntity)
+  public twilioMessageRepository: Repository<TwilioMessageEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -382,18 +385,16 @@ export class IntersolveVoucherService
   public async processStatus(
     statusCallbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    const transaction = await this.dataSource
-      .getRepository(TransactionEntity)
-      .createQueryBuilder('transaction')
-      .select(['transaction.id', 'transaction.payment'])
-      .leftJoinAndSelect('transaction.registration', 'registration')
-      .where('transaction.customData ::jsonb @> :customData', {
-        customData: {
-          messageSid: statusCallbackData.MessageSid,
-        },
+    const sql = this.dataSource
+      .getRepository(TwilioMessageEntity)
+      .createQueryBuilder('twilioMessage')
+      .select(['"transactionId"'])
+      .where('twilioMessage.sid = :sid', {
+        sid: statusCallbackData.MessageSid,
       })
-      .getOne();
-    if (!transaction) {
+      .andWhere('"transactionId" is not null');
+    const messageWithTransaction = await sql.getOne();
+    if (!messageWithTransaction) {
       // If no transaction found, it cannot (and should not have to) be updated
       return;
     }
@@ -411,7 +412,7 @@ export class IntersolveVoucherService
     }
 
     await this.transactionRepository.update(
-      { id: transaction.id },
+      { id: messageWithTransaction.transactionId },
       {
         status: status,
         errorMessage:
@@ -685,7 +686,7 @@ export class IntersolveVoucherService
     transactionResult.message = errorMessage;
     transactionResult.customData = JSON.parse(JSON.stringify({}));
     if (messageSid) {
-      transactionResult.customData['messageSid'] = messageSid;
+      transactionResult.messageSid = messageSid;
     }
     if (registration.fsp.fsp === FspName.intersolveVoucherWhatsapp) {
       transactionResult.customData['IntersolvePayoutStatus'] =

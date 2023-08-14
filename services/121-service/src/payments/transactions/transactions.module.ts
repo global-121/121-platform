@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionModule } from '../../actions/action.module';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { MessageModule } from '../../notifications/message.module';
+import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { ProgramEntity } from '../../programs/program.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { UserModule } from '../../user/user.module';
@@ -20,6 +21,7 @@ import { TransactionsService } from './transactions.service';
       RegistrationEntity,
       FinancialServiceProviderEntity,
       UserEntity,
+      TwilioMessageEntity,
     ]),
     UserModule,
     HttpModule,
