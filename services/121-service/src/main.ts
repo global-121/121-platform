@@ -11,6 +11,7 @@ import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
 import fs from 'fs';
+console.log('Trigger Lint Errors!');
 import { SpelunkerModule } from 'nestjs-spelunker';
 import { ApplicationModule } from './app.module';
 import {
