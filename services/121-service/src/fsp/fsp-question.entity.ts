@@ -10,6 +10,7 @@ import { Base121Entity } from '../base.entity';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 
+// TODO: REFACTOR: rename table name into fsp_question so it aligns with Entity class name
 @Unique('fspQuestionUnique', ['name', 'fspId'])
 @Entity('fsp_attribute')
 export class FspQuestionEntity extends Base121Entity {
