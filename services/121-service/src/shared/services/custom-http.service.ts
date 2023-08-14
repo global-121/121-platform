@@ -132,6 +132,7 @@ export class CustomHttpService {
         } - Body: ${JSON.stringify(response.data)}`;
         this.defaultClient.trackTrace({
           message: `${requestContent} - ${responseContent}`,
+          properties: { externalUrl: request.url },
         });
         this.defaultClient.flush();
       } catch (error) {
@@ -151,6 +152,7 @@ export class CustomHttpService {
         } - Body: ${JSON.stringify(error.data)}`;
         this.defaultClient.trackException({
           exception: new Error(`${requestContent} - ${responseContent}}`),
+          properties: { externalUrl: request.url },
         });
         this.defaultClient.flush();
       } catch (error) {
