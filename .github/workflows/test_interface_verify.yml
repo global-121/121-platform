@@ -9,7 +9,7 @@ on:
       - master
     paths:
       - '.github/workflows/test_interface_verify.yml'
-      - 'interfaces/AW-App/*'
+      - 'interfaces/AW-App/**'
 
 env:
   interfacePath: 'interfaces/AW-App/'

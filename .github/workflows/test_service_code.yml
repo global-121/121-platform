@@ -9,7 +9,7 @@ on:
       - master
     paths:
       - '.github/workflows/test_service_code.yml'
-      - 'services/121-service/*'
+      - 'services/121-service/**'
 
 env:
   workingDirectory: 'services/121-service/'
