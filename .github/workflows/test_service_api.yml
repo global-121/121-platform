@@ -9,14 +9,14 @@ on:
       - 'master'
     paths:
       - '.github/workflows/test_service_api.yml'
-      - 'services/**'
+      - 'services/121-service/**'
       - '!**.md'
   push:
     branches:
       - 'release/*'
     paths:
       - '.github/workflows/test_service_api.yml'
-      - 'services/**'
+      - 'services/121-service/**'
       - '!**.md'
 
 jobs:

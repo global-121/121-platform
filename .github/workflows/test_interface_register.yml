@@ -9,7 +9,7 @@ on:
       - master
     paths:
       - '.github/workflows/test_interface_register.yml'
-      - 'interfaces/PA-App/*'
+      - 'interfaces/PA-App/**'
 
 env:
   interfacePath: 'interfaces/PA-App/'

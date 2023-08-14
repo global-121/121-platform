@@ -9,7 +9,7 @@ on:
       - master
     paths:
       - '.github/workflows/test_interface_portal.yml'
-      - 'interfaces/HO-Portal/*'
+      - 'interfaces/HO-Portal/**'
 
 env:
   interfacePath: 'interfaces/HO-Portal/'
