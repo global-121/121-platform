@@ -415,6 +415,11 @@
           },
           "error-alert": {
             "invalid-date": "The date format you inputted is not valid. A valid date format example is 31-12-1970 which follows day-month-year, DD-MM-YYYY"
+          },
+          "reason-popup": {
+            "subheader": "Reason for update",
+            "explanation": "Please provide a reason for this update.",
+            "max-length": "Do not use more than {{maxLength}} characters."
           }
         },
         "message-history-popup": {

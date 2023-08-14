@@ -1037,9 +1037,7 @@ export class RegistrationsService {
       const oldValue = await registration.getRegistrationValueByName(
         attributeKey,
       );
-      console.log('oldValue: ', oldValue);
       const attributeValue = partialRegistration[attributeKey];
-      console.log('attributeValue: ', attributeValue);
       if (String(oldValue) !== String(attributeValue)) {
         registration = await this.updateAttribute(
           attributeKey,

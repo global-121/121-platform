@@ -17,6 +17,7 @@ export interface InputProps {
   placeholder?: string | undefined;
   defaultValue?: string;
   minLength?: number;
+  maxLength?: number;
 }
 
 @Component({

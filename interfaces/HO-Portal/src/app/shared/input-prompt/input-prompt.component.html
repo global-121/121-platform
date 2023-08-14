@@ -91,6 +91,43 @@
         </ion-note>
       </div>
     </div>
+    <div *ngIf="inputProps.maxLength !== undefined">
+      <ion-label>
+        {{
+          'page.program.program-people-affected.edit-person-affected-popup.reason-popup.max-length'
+            | translate
+              : {
+                  maxLength: inputProps.maxLength
+                }
+        }}
+      </ion-label>
+      <ion-textarea
+        name="message"
+        #input="ngModel"
+        [(ngModel)]="inputModel"
+        [ngModelOptions]="{ standalone: true }"
+        ngDefaultControl
+        [required]="inputProps.inputRequired"
+        rows="3"
+        autoGrow="true"
+        [maxLength]="inputProps.maxLength"
+        [value]="inputProps.defaultValue"
+        [placeholder]="inputProps.placeholder"
+        fill="outline"
+        style="
+          font-family: monospace;
+          min-height: 66px;
+          --border: 1px solid currentColor;
+          --padding-start: 8px;
+          --padding-end: 8px;
+        "
+        data-cy="input-props-textarea"
+      ></ion-textarea>
+      <ion-note>
+        {{ input?.value ? input?.value?.length : 0 }} (<
+        {{ inputProps.maxLength }})
+      </ion-note>
+    </div>
   </div>
 </ion-content>
 
