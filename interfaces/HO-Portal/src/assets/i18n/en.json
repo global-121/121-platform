@@ -593,6 +593,7 @@
       "pageTitle": "User",
       "change-password": {
         "title": "Change password",
+        "existing-password": "Existing password",
         "new-password": "New password",
         "confirm-password": "Confirm password",
         "success": "Password changed"
