@@ -1,0 +1,380 @@
+{
+  "published": false,
+  "validation": true,
+  "phase": "design",
+  "location": "Ethiopia",
+  "ngo": "Dorcas",
+  "titlePortal": {
+    "en": "DRA Joint Response 2023 Ethiopia - Dorcas"
+  },
+  "titlePaApp": {
+    "en": "DRA Joint Response 2023 Ethiopia - Dorcas"
+  },
+  "description": {
+    "en": ""
+  },
+  "startDate": "2023-08-01T12:00:00Z",
+  "endDate": "2023-12-31T12:00:00Z",
+  "currency": "ETB",
+  "distributionFrequency": "month",
+  "distributionDuration": 3,
+  "fixedTransferValue": 7000,
+  "tryWhatsAppFirst": false,
+  "paymentAmountMultiplierFormula": null,
+  "financialServiceProviders": [
+    {
+      "fsp": "Commercial-bank-ethiopia"
+    }
+  ],
+  "targetNrRegistrations": 250,
+  "meetingDocuments": {
+    "en": ""
+  },
+  "notifications": {
+    "en": {
+      "registered": "This is a message from Dorcas.\n\nThank you for your registration. We will inform you later if you are included in this project or not."
+    }
+  },
+  "phoneNumberPlaceholder": "+251 000 000 000",
+  "programCustomAttributes": [],
+  "programQuestions": [
+    {
+      "name": "name",
+      "label": {
+        "en": "What is the name of the head of your household"
+      },
+      "answerType": "text",
+      "questionType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "scoring": {},
+      "phases": ["registrationValidation", "inclusion", "payment"],
+      "editableInPortal": true,
+      "shortLabel": {
+        "en": "name"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "phone",
+      "label": {
+        "en": "What is your phonenumber?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion", "payment"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "What is your phonenumber"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "idNumber",
+      "label": {
+        "en": "ID card number"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion", "payment"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "ID card number"
+      },
+      "duplicateCheck": true,
+      "placeholder": null
+    },
+    {
+      "name": "age",
+      "label": {
+        "en": "What is your age?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Age"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "gender",
+      "label": {
+        "en": "Gender"
+      },
+      "answerType": "dropdown",
+      "questionType": "standard",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male"
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female"
+          }
+        }
+      ],
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "Gender"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "howManyFemale",
+      "label": {
+        "en": "How many family members are female?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many family members are female?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "howManyMale",
+      "label": {
+        "en": "How many family members are male?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many family members are male?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "howManyHousehold",
+      "label": {
+        "en": "What is the total number of family members in your household?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "What is the total number of family members in your household?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "femaleUnder18",
+      "label": {
+        "en": "How many female family members are under 18 years old?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many female family members are under 18 years old?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "maleUnder18",
+      "label": {
+        "en": "How many male family members are under 18 years old?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many male family members are under 18 years old?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "femaleOver18",
+      "label": {
+        "en": "How many female family members are over 18 years old?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many female family members are over 18 years old?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "maleOver18",
+      "label": {
+        "en": "How many male family members are over 18 years old?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many male family members are over 18 years old?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "femaleDisabilityUnder18",
+      "label": {
+        "en": "How many female family members with a disability under 18 years old?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many female family members with a disability under 18 years old?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "maleDisabilityUnder18",
+      "label": {
+        "en": "How many male family members with a disability under 18 years old?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many male family members with a disability under 18 years old?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "femaleDisabilityOver18",
+      "label": {
+        "en": "How many female family members with a disability over 18 years old?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many female family members with a disability over 18 years old?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    },
+    {
+      "name": "maleDisabilityOver18",
+      "label": {
+        "en": "How many male family members with a disability over 18 years old?"
+      },
+      "answerType": "numeric",
+      "questionType": "standard",
+      "options": null,
+      "scoring": {},
+      "persistence": true,
+      "pattern": null,
+      "phases": ["registrationValidation", "inclusion"],
+      "editableInPortal": true,
+      "export": ["all-people-affected", "included", "selected-for-validation"],
+      "shortLabel": {
+        "en": "How many male family members with a disability over 18 years old?"
+      },
+      "duplicateCheck": false,
+      "placeholder": null
+    }
+  ],
+  "aboutProgram": {
+    "en": "DRA Joint Response Ethiopia 2023"
+  },
+  "fullnameNamingConvention": ["name"],
+  "languages": ["en"],
+  "enableMaxPayments": true
+}

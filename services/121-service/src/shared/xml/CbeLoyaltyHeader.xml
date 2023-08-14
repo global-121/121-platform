@@ -1,6 +1,0 @@
-<soap:Header>
-  <WebRequestCommon>
-    <password>0</password>
-    <userName>0</userName>
-  </WebRequestCommon>
-</soap:Header>

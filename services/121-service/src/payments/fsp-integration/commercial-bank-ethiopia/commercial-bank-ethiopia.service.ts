@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FspName } from '../../../fsp/enum/fsp-name.enum';
+import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
 import { RegistrationEntity } from '../../../registration/registration.entity';
 import { StatusEnum } from '../../../shared/enum/status.enum';
@@ -26,6 +27,8 @@ export class CommercialBankEthiopiaService
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProgramFspConfigurationEntity)
+  public programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
 
   public constructor(
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
@@ -37,6 +40,20 @@ export class CommercialBankEthiopiaService
     programId: number,
     paymentNr: number,
   ): Promise<FspTransactionResultDto> {
+    const config = await this.programFspConfigurationRepository
+      .createQueryBuilder('fspConfig')
+      .select('name')
+      .addSelect('value')
+      .where('fspConfig.programId = :programId', { programId })
+      .andWhere('fsp.fsp = :fspName', { fspName: paymentList[0].fspName })
+      .leftJoin('fspConfig.fsp', 'fsp')
+      .getRawMany();
+
+    const credentials: { username: string; password: string } = {
+      username: config.find((c) => c.name === 'username')?.value,
+      password: config.find((c) => c.name === 'password')?.value,
+    };
+
     const program = await this.programRepository.findOneBy({
       id: programId,
     });
@@ -56,6 +73,7 @@ export class CommercialBankEthiopiaService
       const paymentRequestResultPerPa = await this.sendPaymentPerPa(
         payload,
         payment.referenceId,
+        credentials,
       );
       fspTransactionResult.paList.push(paymentRequestResultPerPa);
       // Storing the per payment so you can continiously seed updates of transactions in HO-Portal
@@ -183,7 +201,7 @@ export class CommercialBankEthiopiaService
         `${formatDate(new Date())}${this.generateRandomNumerics(10)}`,
       creditTheIrRef: program.ngo,
       creditAcctNo: bankAccountNumber,
-      creditCurrency: process.env.COMMERCIAL_BANK_ETHIOPIA_CURRENCY,
+      creditCurrency: program.currency,
       remitterName: program.titlePaApp.en,
       beneficiaryName: `${name}`,
     };
@@ -194,6 +212,7 @@ export class CommercialBankEthiopiaService
   public async sendPaymentPerPa(
     payload: any,
     referenceId: string,
+    credentials,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
     paTransactionResult.fspName = FspName.commercialBankEthiopia;
@@ -203,10 +222,11 @@ export class CommercialBankEthiopiaService
 
     let result = await this.commercialBankEthiopiaApiService.creditTransfer(
       payload,
+      credentials,
     );
 
     if (result.resultDescription === 'DUPLICATED Transaction') {
-      result = await this.sendDuplicatePaymentPerPa(payload);
+      result = await this.sendDuplicatePaymentPerPa(payload, credentials);
     }
 
     if (result && result.successIndicator === 'Success') {
@@ -224,9 +244,13 @@ export class CommercialBankEthiopiaService
     return paTransactionResult;
   }
 
-  public async sendDuplicatePaymentPerPa(payload: any): Promise<any> {
+  public async sendDuplicatePaymentPerPa(
+    payload: any,
+    credentials,
+  ): Promise<any> {
     return await this.commercialBankEthiopiaApiService.transactionStatus(
       payload,
+      credentials,
     );
   }
 

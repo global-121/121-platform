@@ -12,12 +12,11 @@ export class CommercialBankEthiopiaApiService {
     private commercialBankEthiopiaMock: CommercialBankEthiopiaMockService,
   ) {}
 
-  public async creditTransfer(payment: any): Promise<any> {
-    const payload = await this.createCreditTransferBody(payment);
+  public async creditTransfer(payment: any, credentials): Promise<any> {
+    console.log(credentials);
+    const payload = await this.createCreditTransferBody(payment, credentials);
 
     try {
-      console.log(payment);
-      console.log(JSON.stringify(payload));
       const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
         ? await this.commercialBankEthiopiaMock.post(payload, payment)
         : await this.soapService.postCreate(
@@ -140,7 +139,10 @@ export class CommercialBankEthiopiaApiService {
     }
   }
 
-  public async createCreditTransferBody(payment: any): Promise<any> {
+  public async createCreditTransferBody(
+    payment: any,
+    credentials,
+  ): Promise<any> {
     // Create the SOAP envelope for credit transfer
     const payload = await this.soapService.readXmlAsJs(
       CommercialBankEthiopiaSoapElements.CreditTransfer,
@@ -166,10 +168,8 @@ export class CommercialBankEthiopiaApiService {
           const userNameElement = element.elements.find(
             (el) => el.name === 'userName',
           );
-          passwordElement.elements[0].text =
-            process.env.COMMERCIAL_BANK_ETHIOPIA_PASSWORD;
-          userNameElement.elements[0].text =
-            process.env.COMMERCIAL_BANK_ETHIOPIA_USERNAME;
+          passwordElement.elements[0].text = credentials.password;
+          userNameElement.elements[0].text = credentials.username;
           break;
         case 'FUNDSTRANSFERCBEREMITANCEType':
           const debitAmountElement = element.elements.find(
@@ -211,8 +211,11 @@ export class CommercialBankEthiopiaApiService {
     return payload;
   }
 
-  public async transactionStatus(payment: any): Promise<any> {
-    const payload = await this.createCreditTransferBody(payment);
+  public async transactionStatus(payment: any, credentials): Promise<any> {
+    const payload = await this.createtransactionStatusBody(
+      payment,
+      credentials,
+    );
 
     try {
       const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
@@ -254,7 +257,10 @@ export class CommercialBankEthiopiaApiService {
     }
   }
 
-  public async createtransactionStatusBody(payment: any): Promise<any> {
+  public async createtransactionStatusBody(
+    payment: any,
+    credentials,
+  ): Promise<any> {
     // Create the SOAP envelope for credit transfer
     const payload = await this.soapService.readXmlAsJs(
       CommercialBankEthiopiaSoapElements.TransactionStatus,
@@ -280,10 +286,8 @@ export class CommercialBankEthiopiaApiService {
           const userNameElement = element.elements.find(
             (el) => el.name === 'userName',
           );
-          passwordElement.elements[0].text =
-            process.env.COMMERCIAL_BANK_ETHIOPIA_PASSWORD;
-          userNameElement.elements[0].text =
-            process.env.COMMERCIAL_BANK_ETHIOPIA_USERNAME;
+          passwordElement.elements[0].text = credentials.password;
+          userNameElement.elements[0].text = credentials.username;
           break;
         case 'FUNDSTRANSFERCBEREMITANCEType':
           const debitTheirRefElement = element.elements.find(
