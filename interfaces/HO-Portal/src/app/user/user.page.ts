@@ -11,9 +11,11 @@ export class UserPage {
   @ViewChild('newPasswordForm')
   public newPasswordForm: NgForm;
 
+  public password = '';
   public newPassword = '';
   public confirmPassword = '';
   public passwordChanged = false;
+  public emptyPassword = false;
 
   public minLength = 8;
 
@@ -44,6 +46,8 @@ export class UserPage {
     });
   }
 
+  public checkExistingPassword() {}
+
   public checkNewPassword() {
     this.validPassword = this.newPasswordForm?.form?.get('new-password')?.valid;
     this.newPasswordBorder = this.validPassword
@@ -72,5 +76,13 @@ export class UserPage {
       this.samePassword = true;
       this.confirmPasswordBorder = this.borderValues.valid;
     }
+  }
+
+  public onPasswordBlur() {
+    this.checkEmptyPassword();
+  }
+
+  private checkEmptyPassword() {
+    this.emptyPassword = this.existingPassword === '';
   }
 }
