@@ -738,7 +738,7 @@
           "description": "Payment #{{number}} is {{status}}."
         },
         "data-changes": {
-          "label": "Data change - {{fieldName}}",
+          "label": "Data change",
           "description": "<b>Old:</b> {{oldValue}} <br> <b>New:</b> {{newValue}} <br> <b>Reason:</b> {{reason}}"
         }
       }

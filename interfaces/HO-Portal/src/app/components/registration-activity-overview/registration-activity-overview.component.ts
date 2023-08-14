@@ -34,6 +34,7 @@ class ActivityOverviewItem {
   hasError?: boolean;
   hasWaiting?: boolean;
   chipText?: string;
+  subLabel?: string;
 }
 
 enum ActivityOverviewType {
@@ -413,12 +414,10 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           type: ActivityOverviewType.dataChanges,
           label: this.translate.instant(
             'registration-details.activity-overview.activities.data-changes.label',
-            {
-              fieldName: attribute.shortLabel
-                ? this.translatableString.get(attribute.shortLabel)
-                : change.fieldName,
-            },
           ),
+          subLabel: attribute.shortLabel
+            ? this.translatableString.get(attribute.shortLabel)
+            : change.fieldName,
           date: new Date(change.created),
           description: this.translate.instant(
             'registration-details.activity-overview.activities.data-changes.description',
