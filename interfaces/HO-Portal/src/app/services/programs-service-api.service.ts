@@ -738,7 +738,7 @@ export class ProgramsServiceApiService {
   ): Promise<any> {
     return await this.apiService.get(
       environment.url_121_service_api,
-      `/programs/${programId}/registration-change-log/${referenceId}`,
+      `/programs/${programId}/registration-change-logs/?referenceId=${referenceId}`,
       false,
     );
   }

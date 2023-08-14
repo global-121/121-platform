@@ -21,6 +21,7 @@ import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Person } from '../../models/person.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
+import { TranslatableStringService } from '../../services/translatable-string.service';
 class ActivityOverviewItem {
   type: string;
   label?: string;
@@ -92,6 +93,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     private authService: AuthService,
     private pastPaymentsService: PastPaymentsService,
     private modalController: ModalController,
+    private translatableString: TranslatableStringService,
   ) {}
 
   async ngOnInit() {
@@ -404,11 +406,18 @@ export class RegistrationActivityOverviewComponent implements OnInit {
       }
 
       for (const change of changes) {
+        const attribute = this.program.paTableAttributes.find(
+          (attr) => attr.name === change.fieldName,
+        );
         this.activityOverview.push({
           type: ActivityOverviewType.dataChanges,
           label: this.translate.instant(
             'registration-details.activity-overview.activities.data-changes.label',
-            { fieldName: change.fieldName },
+            {
+              fieldName: attribute.shortLabel
+                ? this.translatableString.get(attribute.shortLabel)
+                : change.fieldName,
+            },
           ),
           date: new Date(change.created),
           description: this.translate.instant(

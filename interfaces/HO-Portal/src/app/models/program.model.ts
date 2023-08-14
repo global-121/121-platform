@@ -34,6 +34,7 @@ export class Program {
   languages: LanguageEnum[];
   enableMaxPayments: boolean;
   fullnameNamingConvention: string[];
+  paTableAttributes: Attribute[];
 }
 
 export class ProgramStats {
