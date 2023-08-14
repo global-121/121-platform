@@ -1,7 +1,6 @@
 import { Column, Entity } from 'typeorm';
 import { Base121Entity } from '../../../base.entity';
 
-
 // TODO: REFACTOR: rename the database table into africas_talking_notification so it aligns with Entity class name
 @Entity('at_notification')
 export class AfricasTalkingNotificationEntity extends Base121Entity {
