@@ -63,13 +63,20 @@ describe('Do payment to 1 PA', () => {
 
       // Assert
       let getTransactionsBody = [];
-      while (getTransactionsBody.length <= 0) {
+      let attempts = 0;
+      while (attempts <= 10) {
+        attempts++;
         getTransactionsBody = (
           await getTransactions(programId, payment, referenceIdAh, accessToken)
         ).body;
-        if (getTransactionsBody.length > 0) {
+
+        if (
+          getTransactionsBody.length > 0 &&
+          getTransactionsBody[0].status === StatusEnum.success
+        ) {
           break;
         }
+
         await waitFor(2_000);
       }
 
