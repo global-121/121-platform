@@ -60,7 +60,7 @@
             </div>
             <ion-col>
               <ion-row class="ion-justify-content-between">
-                <ion-row class="ion-margin-bottom">
+                <ion-row>
                   <ion-label class="ion-margin-end">
                     <strong
                       >{{ item.label | uppercase
@@ -74,15 +74,6 @@
                     </small>
                   </ion-note>
                 </ion-row>
-                <ng-container *ngIf="item.chipText">
-                  <ion-label class="ion-text-right"
-                    ><ion-chip class="chip">
-                      <b>
-                        {{ item.chipText }}
-                      </b>
-                    </ion-chip>
-                  </ion-label>
-                </ng-container>
               </ion-row>
               <div>
                 <ion-text
@@ -91,6 +82,16 @@
                 ></ion-text>
               </div>
             </ion-col>
+
+            <ion-label
+              *ngIf="item.chipText"
+              class="ion-text-right ion-float-right"
+              ><ion-chip class="chip">
+                <b>
+                  {{ item.chipText }}
+                </b>
+              </ion-chip>
+            </ion-label>
           </ion-row>
 
           <!-- payments -->

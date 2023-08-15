@@ -411,6 +411,22 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         const attribute = this.program.paTableAttributes.find(
           (attr) => attr.name === change.fieldName,
         );
+
+        let description = this.translate.instant(
+          'registration-details.activity-overview.activities.data-changes.values',
+          {
+            oldValue: change.oldValue ? change.oldValue : '-',
+            newValue: change.newValue ? change.newValue : '-',
+          },
+        );
+        if (change.reason) {
+          description += this.translate.instant(
+            'registration-details.activity-overview.activities.data-changes.reason',
+            {
+              reason: change.reason,
+            },
+          );
+        }
         this.activityOverview.push({
           type: ActivityOverviewType.dataChanges,
           label: this.translate.instant(
@@ -418,14 +434,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           ),
           subLabel: this.getSubLabelText(change, attribute),
           date: new Date(change.created),
-          description: this.translate.instant(
-            'registration-details.activity-overview.activities.data-changes.description',
-            {
-              oldValue: change.oldValue ? change.oldValue : '-',
-              newValue: change.newValue ? change.newValue : '-',
-              reason: change.reason,
-            },
-          ),
+          description,
           chipText: change.user.username,
         });
       }
