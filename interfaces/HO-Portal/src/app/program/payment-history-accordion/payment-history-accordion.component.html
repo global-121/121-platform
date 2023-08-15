@@ -26,7 +26,7 @@
           <ion-text class="transfer">
             {{
               'recipient-details.payment-history.transfer'
-                | translate : { paymentNr: paymentRow.paymentIndex }
+                | translate: { paymentNr: paymentRow.paymentIndex }
             }}
           </ion-text>
           <!-- Transfer status -->
@@ -87,7 +87,7 @@
         <!-- Transaction Date -->
         <ion-row class="accordion-label-two">
           <ion-text class="date">
-            {{ paymentRow.sentDate | date : DateFormat.dateOnly }}
+            {{ paymentRow.sentDate | date: DateFormat.dateOnly }}
           </ion-text>
         </ion-row>
       </ion-grid>
@@ -111,7 +111,7 @@
                   class="accordion-text ion-text-right"
                   *ngIf="paymentRow.transaction"
                 >
-                  {{ paymentRow.sentDate | date : DateFormat.dayAndTime }}
+                  {{ paymentRow.sentDate | date: DateFormat.dayAndTime }}
                 </ion-label>
               </ion-item>
 
@@ -201,7 +201,7 @@
         <ion-text class="transfer">
           {{
             'recipient-details.payment-history.transfer'
-              | translate : { paymentNr: paymentRow.paymentIndex }
+              | translate: { paymentNr: paymentRow.paymentIndex }
           }}
         </ion-text>
         <!-- Single payment Transfer status -->
