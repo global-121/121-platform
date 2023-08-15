@@ -58,7 +58,7 @@
                 !hasErrorCheck(paymentRow) &&
                 hasVoucherSupportCheck(paymentRow.transaction.fsp)
               "
-              (click)="rowClick.emit(paymentRow)"
+              (click)="rowClick(paymentRow)"
               >{{
                 'page.program.program-people-affected.transaction.open-voucher'
                   | translate
@@ -74,7 +74,7 @@
               fill="outline"
               size="small"
               *ngIf="hasErrorCheck(paymentRow)"
-              (click)="rowClick.emit(paymentRow)"
+              (click)="rowClick(paymentRow)"
             >
               {{
                 'page.program.program-people-affected.transaction.retry'
@@ -225,7 +225,7 @@
           fill="outline"
           size="small"
           *ngIf="enableSinglePayment"
-          (click)="rowClick.emit(paymentRow)"
+          (click)="rowClick(paymentRow)"
         >
           {{
             'page.program.program-people-affected.transaction.send-payment'

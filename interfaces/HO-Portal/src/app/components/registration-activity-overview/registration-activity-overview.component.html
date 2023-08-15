@@ -86,7 +86,12 @@
                 [enableSinglePayment]="
                   enableSinglePayment(item.paymentRowDetail)
                 "
-                (rowClick)="rowClick($event)"
+                [person]="person"
+                [program]="program"
+                [paymentRows]="enableSinglePayment(paymentRow)"
+                [canViewVouchers]="canViewVouchers"
+                [canDoSinglePayment]="canDoSinglePayment"
+                [lastPaymentId]="lastPaymentId"
               ></app-payment-history-accordion>
             </ion-accordion-group>
           </div>
