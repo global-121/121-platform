@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { DEBUG } from 'src/config';
+import { DEBUG } from '../config';
 import { Admin } from '../guards/admin.decorator';
 import { AdminAuthGuard } from '../guards/admin.guard';
 import { Permissions } from '../guards/permissions.decorator';
