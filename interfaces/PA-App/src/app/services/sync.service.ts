@@ -147,7 +147,7 @@ export class SyncService implements OnDestroy {
         map((response) => {
           return response;
         }),
-        map((_) => task),
+        map(() => task),
       );
       requests.push(request$);
     });

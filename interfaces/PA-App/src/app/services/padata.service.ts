@@ -300,6 +300,7 @@ export class PaDataService {
   }
 
   public async deleteData(): Promise<any> {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       if (!this.hasAccount) {
         return reject('');
