@@ -63,7 +63,8 @@
                 <ion-row class="ion-margin-bottom">
                   <ion-label class="ion-margin-end">
                     <strong
-                      >{{ item.label | uppercase }} -
+                      >{{ item.label | uppercase
+                      }}<span *ngIf="item.subLabel"> - </span>
                       {{ item.subLabel }}</strong
                     >
                   </ion-label>
