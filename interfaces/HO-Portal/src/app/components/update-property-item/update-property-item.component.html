@@ -137,6 +137,7 @@
               (confirm)="doUpdate($event)"
               [subHeader]="reasonSubheader"
               [inputProps]="reasonInputProps"
+              [bypassModalComponent]="type === answerType.Boolean"
               [class]="
                 'ion-margin-start ion-float-right text-bold ion-text-uppercase'
               "
