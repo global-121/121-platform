@@ -62,6 +62,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       const paymentReferenceIds = [referenceIdJumbo];
+
       // Act
       const doPaymentResponse = await doPayment(
         programId,
@@ -70,17 +71,24 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
       );
+
+      // Assert
       let getTransactionsBody = [];
       while (getTransactionsBody.length <= 0) {
         getTransactionsBody = (
-          await getTransactions(programId, 1, referenceIdJumbo, accessToken)
+          await getTransactions(
+            programId,
+            payment,
+            referenceIdJumbo,
+            accessToken,
+          )
         ).body;
         if (getTransactionsBody.length > 0) {
           break;
         }
         await waitFor(2_000);
       }
-      // Assert
+
       expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
       expect(getTransactionsBody[0].status).toBe(StatusEnum.success);
@@ -98,6 +106,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       const paymentReferenceIds = [referenceIdJumbo];
+
       // Act
       const doPaymentResponse = await doPayment(
         programId,
@@ -106,17 +115,24 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
       );
+
+      // Assert
       let getTransactionsBody = [];
       while (getTransactionsBody.length <= 0) {
         getTransactionsBody = (
-          await getTransactions(programId, 1, referenceIdJumbo, accessToken)
+          await getTransactions(
+            programId,
+            payment,
+            referenceIdJumbo,
+            accessToken,
+          )
         ).body;
         if (getTransactionsBody.length > 0) {
           break;
         }
         await waitFor(2_000);
       }
-      // Assert
+
       expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
       expect(getTransactionsBody[0].status).toBe(StatusEnum.error);

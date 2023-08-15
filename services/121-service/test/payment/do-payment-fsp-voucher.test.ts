@@ -63,16 +63,11 @@ describe('Do payment to 1 PA', () => {
 
       // Assert
       let getTransactionsBody = [];
-      let attemps = 0;
-      while (attemps <= 10) {
-        attemps++;
+      while (getTransactionsBody.length <= 0) {
         getTransactionsBody = (
           await getTransactions(programId, payment, referenceIdAh, accessToken)
         ).body;
-        if (
-          getTransactionsBody.length > 0 &&
-          getTransactionsBody[0].status === StatusEnum.success
-        ) {
+        if (getTransactionsBody.length > 0) {
           break;
         }
         await waitFor(2_000);
@@ -82,6 +77,6 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
       expect(getTransactionsBody[0].status).toBe(StatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
-    }, 20_000);
+    });
   });
 });
