@@ -22,6 +22,7 @@ export interface InputProps {
     length: number;
     type: 'min' | 'max';
   };
+  hideCancelButton?: boolean;
 }
 
 @Component({
@@ -114,7 +115,24 @@ export class InputPromptComponent implements AfterViewInit {
     this.modalController.dismiss(null, null);
   }
 
-  public closeModal() {
-    this.modalController.dismiss(null, 'cancel');
+  public async closeModal() {
+    const modal = await this.modalController.create({
+      component: InputPromptComponent,
+      componentProps: {
+        inputProps: {
+          inputRequired: false,
+          explanation: this.translate.instant(
+            'page.program.program-people-affected.edit-person-affected-popup.reason-popup.unsaved-changes-explanation',
+          ),
+          titleTranslationKey:
+            'page.program.program-people-affected.edit-person-affected-popup.reason-popup.unsaved-changes',
+          hideCancelButton: true,
+        },
+      },
+    });
+    modal.onDidDismiss().then(() => {
+      this.modalController.dismiss(null, 'cancel');
+    });
+    await modal.present();
   }
 }
