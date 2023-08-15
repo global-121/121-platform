@@ -174,6 +174,7 @@ export class ProgramsServiceApiService {
           .map((element) => {
             // Remap `payment`-property to `id`:
             element.id = element.payment;
+            element.paymentDate = new Date(element.paymentDate);
             return element;
           })
           .sort(

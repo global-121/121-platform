@@ -4,7 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateFormat } from 'src/app/enums/date-format.enum';
 import StatusDate from 'src/app/enums/status-dates.enum';
-import { PaymentRowDetail } from 'src/app/models/payment.model';
+import { PaymentData, PaymentRowDetail } from 'src/app/models/payment.model';
 import { Program } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { Transaction } from 'src/app/models/transaction.model';
@@ -77,6 +77,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   private canDoSinglePayment: boolean;
   private lastPaymentId: number;
   private pastTransactions: Transaction[] = [];
+  private pastPayments: PaymentData[];
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -108,6 +109,9 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         this.program.id,
         this.firstPaymentToShow,
         this.person?.referenceId,
+      );
+      this.pastPayments = await this.programsService.getPastPayments(
+        this.program.id,
       );
     }
     this.fillActivityOverview();
@@ -167,7 +171,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     const paymentRows = [];
     const nrOfPayments = this.program?.distributionDuration;
     const lastPaymentToShow = Math.min(this.lastPaymentId, nrOfPayments);
-
     for (
       let index = this.firstPaymentToShow;
       index <= lastPaymentToShow;
@@ -186,6 +189,12 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         paymentRowValue.text = this.translate.instant(
           'page.program.program-people-affected.transaction.do-single-payment',
         );
+        const dateOfCompletePayment = this.pastPayments.find(
+          (pastP) => pastP.id === paymentRowValue.paymentIndex,
+        )?.paymentDate;
+        paymentRowValue.sentDate = dateOfCompletePayment
+          ? dateOfCompletePayment.toISOString()
+          : null;
       } else {
         paymentRowValue = PaymentUtils.getPaymentRowInfo(
           transaction,
