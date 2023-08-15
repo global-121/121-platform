@@ -66,6 +66,9 @@ export class ConfirmPromptComponent {
   @Input()
   public action: BulkActionId;
 
+  @Input()
+  public class?: string;
+
   @Output()
   private confirm = new EventEmitter<string>();
 

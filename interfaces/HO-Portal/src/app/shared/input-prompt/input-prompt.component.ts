@@ -16,8 +16,12 @@ export interface InputProps {
   explanation?: string;
   placeholder?: string | undefined;
   defaultValue?: string;
-  minLength?: number;
-  maxLength?: number;
+  titleTranslationKey?: string;
+  okTranslationKey?: string;
+  inputConstraint?: {
+    length: number;
+    type: 'min' | 'max';
+  };
 }
 
 @Component({
@@ -49,6 +53,12 @@ export class InputPromptComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.checked = this.inputProps ? this.inputProps.checkboxChecked : true;
+    if (!this.inputProps.titleTranslationKey) {
+      this.inputProps.titleTranslationKey = 'common.confirm';
+    }
+    if (!this.inputProps.okTranslationKey) {
+      this.inputProps.okTranslationKey = 'common.ok';
+    }
 
     // Required to settle the value of a dynamic property in the template:
     this.changeDetector.detectChanges();

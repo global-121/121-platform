@@ -141,8 +141,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-explanation',
         ),
-
-        minLength: 20,
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
       },
     },
     {
@@ -183,7 +185,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-explanation',
         ),
-        minLength: 20,
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
       },
     },
     {
@@ -206,7 +211,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         )} <br> ${this.translate.instant(
           'page.program.program-people-affected.action-inputs.reject.explanation',
         )}`,
-        minLength: 20,
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
       },
     },
     {
@@ -227,7 +235,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-explanation',
         ),
-        minLength: 20,
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
       },
     },
     {
@@ -252,8 +263,10 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.message-explanation',
         ),
-
-        minLength: 20,
+        inputConstraint: {
+          length: 20,
+          type: 'min',
+        },
       },
     },
     {

@@ -69,11 +69,14 @@ export class UpdatePropertyItemComponent implements OnInit {
       explanation: this.translateService.instant(
         'page.program.program-people-affected.edit-person-affected-popup.reason-popup.explanation',
       ),
-      maxLength: 500,
+      inputConstraint: {
+        length: 500,
+        type: 'max',
+      },
+      titleTranslationKey:
+        'page.program.program-people-affected.edit-person-affected-popup.reason-popup.subheader',
+      okTranslationKey: 'common.save',
     };
-    this.reasonSubheader = this.translateService.instant(
-      'page.program.program-people-affected.edit-person-affected-popup.reason-popup.subheader',
-    );
   }
 
   public doUpdate(reasonInput?: string) {

@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ 'common.confirm' | translate }}</ion-title>
+    <ion-title>{{ inputProps.titleTranslationKey | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
         (click)="closeModal()"
@@ -53,13 +53,13 @@
         class="ion-margin-vertical"
       ></div>
 
-      <div *ngIf="inputProps.minLength !== undefined">
+      <div *ngIf="inputProps.inputConstraint?.type === 'min'">
         <ion-label>
           {{
             'common.confirm-message-label'
               | translate
                 : {
-                    minLength: inputProps.minLength
+                    minLength: inputProps.inputConstraint?.length
                   }
           }}
         </ion-label>
@@ -72,7 +72,7 @@
           [required]="inputProps.inputRequired"
           rows="3"
           autoGrow="true"
-          [minlength]="inputProps.minLength"
+          [minlength]="inputProps.inputConstraint?.length"
           [value]="inputProps.defaultValue"
           [placeholder]="inputProps.placeholder"
           fill="outline"
@@ -87,17 +87,17 @@
         ></ion-textarea>
         <ion-note>
           {{ input?.value ? input?.value?.length : 0 }} (≥
-          {{ inputProps.minLength }})
+          {{ inputProps.inputConstraint?.length }})
         </ion-note>
       </div>
     </div>
-    <div *ngIf="inputProps.maxLength !== undefined">
+    <div *ngIf="inputProps.inputConstraint?.type === 'max'">
       <ion-label>
         {{
           'page.program.program-people-affected.edit-person-affected-popup.reason-popup.max-length'
             | translate
               : {
-                  maxLength: inputProps.maxLength
+                  maxLength: inputProps.inputConstraint?.length
                 }
         }}
       </ion-label>
@@ -110,7 +110,7 @@
         [required]="inputProps.inputRequired"
         rows="3"
         autoGrow="true"
-        [maxLength]="inputProps.maxLength"
+        [maxLength]="inputProps.inputConstraint?.length"
         [value]="inputProps.defaultValue"
         [placeholder]="inputProps.placeholder"
         fill="outline"
@@ -125,7 +125,7 @@
       ></ion-textarea>
       <ion-note>
         {{ input?.value ? input?.value?.length : 0 }} (<
-        {{ inputProps.maxLength }})
+        {{ inputProps.inputConstraint?.length }})
       </ion-note>
     </div>
   </div>
@@ -148,7 +148,7 @@
         data-cy="input-prompt-confirm"
         [disabled]="checkOkDisabled()"
       >
-        {{ 'common.ok' | translate }}
+        {{ inputProps.okTranslationKey | translate }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
