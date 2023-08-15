@@ -449,7 +449,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   public getIconName(type: ActivityOverviewType): string {
     const map = {
       [ActivityOverviewType.message]: 'mail-outline',
-      [ActivityOverviewType.dataChanges]: 'pencil-outline',
+      [ActivityOverviewType.dataChanges]: 'document-text-outline',
       [ActivityOverviewType.payment]: 'cash-outline',
       [ActivityOverviewType.status]: 'reload-circle-outline',
     };
