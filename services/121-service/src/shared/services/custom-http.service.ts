@@ -130,8 +130,12 @@ export class CustomHttpService {
         const responseContent = `Response: ${response.status} ${
           response.statusText
         } - Body: ${JSON.stringify(response.data)}`;
+        // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
         this.defaultClient.trackTrace({
-          message: `${requestContent} - ${responseContent}`,
+          message: `${requestContent.substring(
+            0,
+            16000,
+          )} - ${responseContent.substring(0, 16000)}`,
         });
         this.defaultClient.flush();
       } catch (error) {
@@ -150,7 +154,13 @@ export class CustomHttpService {
           error.statusText
         } - Body: ${JSON.stringify(error.data)}`;
         this.defaultClient.trackException({
-          exception: new Error(`${requestContent} - ${responseContent}}`),
+          // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
+          exception: new Error(
+            `${requestContent.substring(
+              0,
+              16000,
+            )} - ${responseContent.substring(0, 16000)}}`,
+          ),
         });
         this.defaultClient.flush();
       } catch (error) {
