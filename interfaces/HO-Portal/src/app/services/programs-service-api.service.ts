@@ -19,6 +19,7 @@ import {
   ProgramPhase,
   ProgramStats,
 } from '../models/program.model';
+import { RegistrationChangeLog } from '../models/registration-change-log.model';
 import { Transaction } from '../models/transaction.model';
 import { User } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
@@ -736,7 +737,7 @@ export class ProgramsServiceApiService {
   async getRegistrationChangeLogByReferenceId(
     programId: number,
     referenceId: string,
-  ): Promise<any> {
+  ): Promise<RegistrationChangeLog[]> {
     return await this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registration-change-logs/?referenceId=${referenceId}`,

@@ -19,6 +19,7 @@ import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
+import { Attribute } from '../../models/attribute.model';
 import { Person } from '../../models/person.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
@@ -415,15 +416,13 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           label: this.translate.instant(
             'registration-details.activity-overview.activities.data-changes.label',
           ),
-          subLabel: attribute.shortLabel
-            ? this.translatableString.get(attribute.shortLabel)
-            : change.fieldName,
+          subLabel: this.getSubLabelText(change, attribute),
           date: new Date(change.created),
           description: this.translate.instant(
             'registration-details.activity-overview.activities.data-changes.description',
             {
-              oldValue: change.oldValue,
-              newValue: change.newValue,
+              oldValue: change.oldValue ? change.oldValue : '-',
+              newValue: change.newValue ? change.newValue : '-',
               reason: change.reason,
             },
           ),
@@ -433,6 +432,18 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     }
 
     this.activityOverview.sort((a, b) => (b.date > a.date ? 1 : -1));
+  }
+
+  private getSubLabelText(change: any, attribute: Attribute): string {
+    const translationKey = `page.program.program-people-affected.column.${change.fieldName}`;
+    const translation = this.translate.instant(
+      `page.program.program-people-affected.column.${change.fieldName}`,
+    );
+    return attribute?.shortLabel
+      ? this.translatableString.get(attribute.shortLabel)
+      : translation !== translationKey
+      ? translation
+      : change.fieldName;
   }
 
   public getIconName(type: ActivityOverviewType): string {
