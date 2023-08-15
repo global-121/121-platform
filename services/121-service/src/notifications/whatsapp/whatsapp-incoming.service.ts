@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, DataSource, In, Not, Repository } from 'typeorm';
+import { Brackets, DataSource, In, IsNull, Not, Repository } from 'typeorm';
 import { API_PATHS, EXTERNAL_API } from '../../config';
 import { FspName } from '../../fsp/enum/fsp-name.enum';
 import { ImageCodeService } from '../../payments/imagecode/image-code.service';
@@ -120,6 +120,8 @@ export class WhatsappIncomingService {
         return;
       }
     }
+
+    // Update message status
     await this.twilioMessageRepository.update(
       {
         sid: callbackData.MessageSid,
@@ -140,15 +142,12 @@ export class WhatsappIncomingService {
       TwilioStatus.undelivered,
     ];
     if (relevantStatuses.includes(callbackData.MessageStatus)) {
-      const messageWithTransaction = await this.dataSource
-        .getRepository(TwilioMessageEntity)
-        .createQueryBuilder('twilioMessage')
-        .select(['"transactionId"'])
-        .where('twilioMessage.sid = :sid', {
-          sid: callbackData.MessageSid,
-        })
-        .andWhere('"transactionId" is not null')
-        .getOne();
+      const messageWithTransaction = await this.twilioMessageRepository.findOne(
+        {
+          where: { sid: callbackData.MessageSid, transactionId: Not(IsNull()) },
+          select: ['transactionId'],
+        },
+      );
       if (messageWithTransaction) {
         await this.intersolveVoucherService.processStatus(
           callbackData,

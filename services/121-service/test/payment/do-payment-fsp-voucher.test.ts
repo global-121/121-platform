@@ -60,9 +60,9 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
       let getTransactionsBody = [];
-      let attemps = 0;
-      while (attemps <= 10) {
-        attemps++;
+      let attempts = 0;
+      while (attempts <= 10) {
+        attempts++;
         getTransactionsBody = (
           await getTransactions(programId, 1, referenceIdAh, accessToken)
         ).body;
