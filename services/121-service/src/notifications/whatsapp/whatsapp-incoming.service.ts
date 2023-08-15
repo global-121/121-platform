@@ -98,6 +98,7 @@ export class WhatsappIncomingService {
         await this.handleWhatsappTestResult(callbackData, tryWhatsapp);
       }
     }
+
     // if we get a faulty 63016 we retry sending a message, and we don't need to update the status
     if (
       callbackData.ErrorCode === '63016' &&
@@ -131,14 +132,29 @@ export class WhatsappIncomingService {
       },
     );
 
-    const statuses = [
+    // Update intersolve voucher transaction status if applicable
+    const relevantStatuses = [
       TwilioStatus.delivered,
       TwilioStatus.read,
       TwilioStatus.failed,
       TwilioStatus.undelivered,
     ];
-    if (statuses.includes(callbackData.MessageStatus)) {
-      await this.intersolveVoucherService.processStatus(callbackData);
+    if (relevantStatuses.includes(callbackData.MessageStatus)) {
+      const messageWithTransaction = await this.dataSource
+        .getRepository(TwilioMessageEntity)
+        .createQueryBuilder('twilioMessage')
+        .select(['"transactionId"'])
+        .where('twilioMessage.sid = :sid', {
+          sid: callbackData.MessageSid,
+        })
+        .andWhere('"transactionId" is not null')
+        .getOne();
+      if (messageWithTransaction) {
+        await this.intersolveVoucherService.processStatus(
+          callbackData,
+          messageWithTransaction.transactionId,
+        );
+      }
     }
   }
 
