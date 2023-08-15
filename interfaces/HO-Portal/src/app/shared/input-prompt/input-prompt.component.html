@@ -1,6 +1,10 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ inputProps.titleTranslationKey | translate }}</ion-title>
+    <ion-title>{{
+      inputProps?.titleTranslationKey
+        ? (inputProps?.titleTranslationKey | translate)
+        : ('common.confirm' | translate)
+    }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
         (click)="closeModal()"
@@ -148,7 +152,11 @@
         data-cy="input-prompt-confirm"
         [disabled]="checkOkDisabled()"
       >
-        {{ inputProps.okTranslationKey | translate }}
+        {{
+          inputProps?.okTranslationKey
+            ? (inputProps?.okTranslationKey | translate)
+            : ('common.ok' | translate)
+        }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
