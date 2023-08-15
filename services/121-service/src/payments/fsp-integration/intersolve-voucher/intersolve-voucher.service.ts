@@ -384,21 +384,8 @@ export class IntersolveVoucherService
 
   public async processStatus(
     statusCallbackData: TwilioStatusCallbackDto,
+    transactionId: number,
   ): Promise<void> {
-    const sql = this.dataSource
-      .getRepository(TwilioMessageEntity)
-      .createQueryBuilder('twilioMessage')
-      .select(['"transactionId"'])
-      .where('twilioMessage.sid = :sid', {
-        sid: statusCallbackData.MessageSid,
-      })
-      .andWhere('"transactionId" is not null');
-    const messageWithTransaction = await sql.getOne();
-    if (!messageWithTransaction) {
-      // If no transaction found, it cannot (and should not have to) be updated
-      return;
-    }
-
     const succesStatuses = [TwilioStatus.delivered, TwilioStatus.read];
     const failStatuses = [TwilioStatus.undelivered, TwilioStatus.failed];
     let status: string;
@@ -412,7 +399,7 @@ export class IntersolveVoucherService
     }
 
     await this.transactionRepository.update(
-      { id: messageWithTransaction.transactionId },
+      { id: transactionId },
       {
         status: status,
         errorMessage:
