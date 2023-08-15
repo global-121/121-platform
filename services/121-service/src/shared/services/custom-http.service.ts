@@ -130,6 +130,7 @@ export class CustomHttpService {
         const responseContent = `Response: ${response.status} ${
           response.statusText
         } - Body: ${JSON.stringify(response.data)}`;
+        // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
         this.defaultClient.trackTrace({
           message: `${requestContent.substring(
             0,
@@ -153,6 +154,7 @@ export class CustomHttpService {
           error.statusText
         } - Body: ${JSON.stringify(error.data)}`;
         this.defaultClient.trackException({
+          // NOTE: trim to 16,000 characters each for request and response, because of limit in application insights
           exception: new Error(
             `${requestContent.substring(
               0,
