@@ -6,8 +6,9 @@ import {
   ViewChild,
 } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { actionResult } from '../action-result';
 
 export interface InputProps {
   checkbox?: string;
@@ -22,7 +23,6 @@ export interface InputProps {
     length: number;
     type: 'min' | 'max';
   };
-  hideCancelButton?: boolean;
 }
 
 @Component({
@@ -50,6 +50,7 @@ export class InputPromptComponent implements AfterViewInit {
     public translate: TranslateService,
     private modalController: ModalController,
     private changeDetector: ChangeDetectorRef,
+    private alertController: AlertController,
   ) {}
 
   ngAfterViewInit() {
@@ -116,23 +117,13 @@ export class InputPromptComponent implements AfterViewInit {
   }
 
   public async closeModal() {
-    const modal = await this.modalController.create({
-      component: InputPromptComponent,
-      componentProps: {
-        inputProps: {
-          inputRequired: false,
-          explanation: this.translate.instant(
-            'page.program.program-people-affected.edit-person-affected-popup.reason-popup.unsaved-changes-explanation',
-          ),
-          titleTranslationKey:
-            'page.program.program-people-affected.edit-person-affected-popup.reason-popup.unsaved-changes',
-          hideCancelButton: true,
-        },
-      },
-    });
-    modal.onDidDismiss().then(() => {
-      this.modalController.dismiss(null, 'cancel');
-    });
-    await modal.present();
+    actionResult(
+      this.alertController,
+      this.translate,
+      this.translate.instant(
+        'page.program.program-people-affected.edit-person-affected-popup.reason-popup.unsaved-changes-explanation',
+      ),
+    );
+    this.modalController.dismiss(null, 'cancel');
   }
 }
