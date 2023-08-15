@@ -114,7 +114,7 @@
 
         <ng-container *ngIf="canViewPersonalData">
           <app-update-property-item
-            *ngIf="attributeValues?.phoneNumber"
+            *ngIf="attributeValues?.phoneNumber !== undefined"
             type="tel"
             [label]="
               'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.label'

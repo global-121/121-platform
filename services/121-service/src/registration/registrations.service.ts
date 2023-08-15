@@ -401,20 +401,26 @@ export class RegistrationsService {
     }
     if (answersTypeTel.includes(customDataKey)) {
       if (customDataKey === CustomDataAttributes.phoneNumber) {
-        // phoneNumber cannot be empty, and must always be checked
+        // phoneNumber cannot be empty
+        if (!customDataValue) {
+          throw new HttpException(
+            'Phone number cannot be empty',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        // otherwise check
         return await this.lookupService.lookupAndCorrect(
           String(customDataValue),
         );
       } else {
-        if (customDataValue) {
-          // other tel-types (e.g. whatsappPhoneNumber) are only checked if not empty
-          return await this.lookupService.lookupAndCorrect(
-            String(customDataValue),
-          );
-        } else {
-          // allow empty values for other tel-types
+        if (!customDataValue) {
+          // other tel-types (e.g. whatsappPhoneNumber) can be empty
           return customDataValue;
         }
+        // otherwise check
+        return await this.lookupService.lookupAndCorrect(
+          String(customDataValue),
+        );
       }
     } else {
       return customDataValue;
