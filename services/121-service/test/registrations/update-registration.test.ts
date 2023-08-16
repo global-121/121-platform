@@ -118,7 +118,9 @@ describe('Update attribute of PA', () => {
     expect(registration.phoneNumber).toBe(updatePhoneNumber);
     expect(registration.firstName).toBe(dataUpdateSucces.firstName);
     expect(registration.maxPayments).toBe(dataUpdateSucces.maxPayments);
-    expect(registration.paymentAmountMultiplier).toBe(dataUpdateSucces.paymentAmountMultiplier);
+    expect(registration.paymentAmountMultiplier).toBe(
+      dataUpdateSucces.paymentAmountMultiplier,
+    );
     // Is old data still the same?
     expect(registration.lastName).toBe(registrationVisa.lastName);
   });
