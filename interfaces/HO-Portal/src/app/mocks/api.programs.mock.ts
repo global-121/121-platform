@@ -56,6 +56,7 @@ const programsArray: Program[] = [
     financialServiceProviders: [],
     aidworkerAssignments: [],
     fullnameNamingConvention: [],
+    paTableAttributes: []
   },
 ];
 // Copy 2:
