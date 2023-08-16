@@ -22,6 +22,7 @@ import {
   GenericAttributes,
 } from '../registration/enum/custom-data-attributes';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
+import { RegistrationChangeLogService } from '../registration/modules/registration-change-log/registration-change-log.service';
 import { RegistrationDataEntity } from '../registration/registration-data.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { StatusEnum } from '../shared/enum/status.enum';
@@ -60,6 +61,7 @@ export class ExportMetricsService {
     private readonly transactionsService: TransactionsService,
     private readonly registrationsService: RegistrationsService,
     private readonly registrationDataQueryService: RegistrationDataQueryService,
+    private readonly registrationChangeLogService: RegistrationChangeLogService,
     private readonly intersolveVisaExportService: IntersolveVisaExportService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly dataSource: DataSource,
@@ -97,6 +99,9 @@ export class ExportMetricsService {
       }
       case ExportType.cardBalances: {
         return this.getCardBalances(programId);
+      }
+      case ExportType.paDataChanges: {
+        return this.getPaDataChanges(programId);
       }
     }
   }
@@ -1296,6 +1301,19 @@ export class ExportMetricsService {
     const data = await this.intersolveVisaExportService.getCards(programId);
     return {
       fileName: ExportType.cardBalances,
+      data,
+    };
+  }
+
+  private async getPaDataChanges(programId: number): Promise<{
+    fileName: ExportType;
+    data: any[];
+  }> {
+    const data = await this.registrationChangeLogService.exportChangeLog(
+      programId,
+    );
+    return {
+      fileName: ExportType.paDataChanges,
       data,
     };
   }

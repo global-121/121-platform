@@ -12,6 +12,7 @@ export enum ExportType {
   duplicates = 'duplicates',
   exportTableView = 'export-table-view',
   cardBalances = 'card-balances',
+  paDataChanges = 'pa-data-changes',
 }
 
 export class ExportDetailsDto {
