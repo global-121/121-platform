@@ -170,7 +170,7 @@ export class SoapService {
 
       return parsedResponse;
     } catch (error) {
-      console.log(error, 'errorSOAP');
+      console.log(error);
       console.error('Error sending SOAP request:', error);
       throw error;
     }
