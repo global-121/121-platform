@@ -62,7 +62,7 @@ export class UpdateFspComponent implements OnInit {
   public attributeDifference: any[] = [];
   public startingFspName = '';
   public selectedFspName = '';
-  public attributesToSave: {} = {};
+  public attributesToSave: object = {};
   public enableUpdateBtn = true;
 
   ngOnInit() {

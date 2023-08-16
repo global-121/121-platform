@@ -202,6 +202,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           index,
         );
         if (transaction.status === StatusEnum.success) {
+          /* empty */
         } else if (transaction.status === StatusEnum.waiting) {
           paymentRowValue.errorMessage = this.translate.instant(
             'page.program.program-people-affected.transaction.waiting-message',

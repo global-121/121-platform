@@ -763,7 +763,7 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
         phases: colPerPhase.phases,
         headerClass: 'ion-align-self-end header-overflow-ellipsis',
       };
-      if (!!this.columnWidthPerType[colPerPhase.type]) {
+      if (this.columnWidthPerType[colPerPhase.type]) {
         addCol.minWidth = this.columnWidthPerType[colPerPhase.type];
         addCol.width = this.columnWidthPerType[colPerPhase.type];
       } else {

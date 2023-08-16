@@ -138,7 +138,9 @@ export class PersonalPage implements OnInit, OnDestroy {
       } else {
         try {
           this[ToastType.toastWaitToGoOffline].dismiss();
-        } catch (e) {}
+        } catch (e) {
+          /* empty */
+        }
       }
     });
 
@@ -244,7 +246,9 @@ export class PersonalPage implements OnInit, OnDestroy {
   ) {
     try {
       this[toastType].dismiss();
-    } catch (e) {}
+    } catch (e) {
+      /* empty */
+    }
 
     this[toastType] = await this.toastController.create({
       message,
@@ -290,8 +294,10 @@ export class PersonalPage implements OnInit, OnDestroy {
   ): ConversationSection[] {
     return conversation.filter((section) => {
       return (
-        this.availableSections.hasOwnProperty(section.name) &&
-        !PersonalComponentsRemoved.includes(section.name)
+        Object.prototype.hasOwnProperty.call(
+          this.availableSections,
+          section.name,
+        ) && !PersonalComponentsRemoved.includes(section.name)
       );
     });
   }
