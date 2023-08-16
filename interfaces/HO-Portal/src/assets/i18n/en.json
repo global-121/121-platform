@@ -547,6 +547,10 @@
         "card-balances": {
           "btn-text": "Export debit card usage",
           "confirm-message": "This will download an Excel file showing the balance of every card.<br /><br />Important Notice: The card balances available for download are not in real-time. The report includes the date and time of each card's last external update."
+        },
+        "pa-data-changes": {
+          "btn-text": "Export data changes",
+          "confirm-message": "This will download an Excel file showing all data changes for all people affectd of this program."
         }
       },
       "export-fsp-intructions": {
