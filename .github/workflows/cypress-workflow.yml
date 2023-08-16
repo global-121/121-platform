@@ -184,8 +184,6 @@ jobs:
           /bin/sed -i '/^TWILIO_SID=/s/=.*/=AC/' ./services/.env.example
           /bin/sed -i '/^MOCK_TWILIO=/s/=.*/=TRUE/' ./services/.env.example
           /bin/sed -i '/^MOCK_INTERSOLVE=/s/=.*/=TRUE/' ./services/.env.example
-          /bin/sed -i '/^INTERSOLVE_USERNAME=/s/=.*/=test/' ./services/.env.example
-          /bin/sed -i '/^INTERSOLVE_PASSWORD=/s/=.*/=test/' ./services/.env.example
           /bin/sed -i '/^EXTERNAL_121_SERVICE_URL=/s/=.*/=http:\/\/localhost:3000\//' ./services/.env.example
           /bin/sed -i '/^GENERIC_THROTTLING_TTL=/s/=.*/=60/' ./services/.env.example
           /bin/sed -i '/^GENERIC_THROTTLING_LIMIT=/s/=.*/=1200/' ./services/.env.example
