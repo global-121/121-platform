@@ -154,8 +154,8 @@ export class SoapService {
       };
 
       const response = await soapRequest({
-        url: soapUrl,
         headers: headers,
+        url: soapUrl,
         xml: soapRequestXml,
         timeout: 150000,
       });

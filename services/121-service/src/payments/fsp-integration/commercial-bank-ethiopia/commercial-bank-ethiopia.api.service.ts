@@ -121,6 +121,7 @@ export class CommercialBankEthiopiaApiService {
 
       return result;
     } catch (error) {
+      console.log(error, 'creditTransfer');
       // Handle errors here
       const result: any = {
         resultDescription: 'Unknown error occurred.',
