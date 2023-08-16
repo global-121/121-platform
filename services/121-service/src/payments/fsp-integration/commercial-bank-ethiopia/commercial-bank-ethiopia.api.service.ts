@@ -173,6 +173,8 @@ export class CommercialBankEthiopiaApiService {
           userNameElement.elements[0].text = credentials.username;
           break;
         case 'FUNDSTRANSFERCBEREMITANCEType':
+          element.attributes.id = '';
+
           const debitAmountElement = element.elements.find(
             (el) => el.name === 'fun:DEBITAMOUNT',
           );
