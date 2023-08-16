@@ -73,6 +73,8 @@ export class ExportMetricsService {
     userId: number,
     minPayment: number | null = null,
     maxPayment: number | null = null,
+    fromDate?: Date,
+    toDate?: Date,
   ): Promise<FileDto> {
     await this.actionService.saveAction(userId, programId, type);
     switch (type) {
@@ -101,7 +103,7 @@ export class ExportMetricsService {
         return this.getCardBalances(programId);
       }
       case ExportType.paDataChanges: {
-        return this.getPaDataChanges(programId);
+        return this.getPaDataChanges(programId, fromDate, toDate);
       }
     }
   }
@@ -1305,12 +1307,18 @@ export class ExportMetricsService {
     };
   }
 
-  private async getPaDataChanges(programId: number): Promise<{
+  private async getPaDataChanges(
+    programId: number,
+    fromDate?: any,
+    toDate?: any,
+  ): Promise<{
     fileName: ExportType;
     data: any[];
   }> {
     const data = await this.registrationChangeLogService.exportChangeLog(
       programId,
+      fromDate,
+      toDate,
     );
     return {
       fileName: ExportType.paDataChanges,
