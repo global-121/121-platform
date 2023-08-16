@@ -1079,7 +1079,14 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
     personRow: PersonRow,
   ): PersonRow {
     for (const paTableAttribute of this.paTableAttributes) {
-      personRow[paTableAttribute.name] = person[paTableAttribute.name];
+      let value = person[paTableAttribute.name];
+      if (value === 'true') {
+        value = true;
+      }
+      if (value === 'false') {
+        value = false;
+      }
+      personRow[paTableAttribute.name] = value;
     }
     return personRow;
   }
