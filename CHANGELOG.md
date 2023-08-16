@@ -8,9 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.96.0...master)
 
 ### Changed
-- Moved (CI/Lint) tests from Azure Pipelines to GitHub Actions
 
----
 
 
 ## [1.96.0](https://github.com/global-121/121-platform/compare/v1.95.1...v1.96.0) - 2023-08-16
@@ -18,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Open voucher from registration page
+- Moved (CI/Lint) tests from Azure Pipelines to GitHub Actions
 -
 ## [1.95.1](https://github.com/global-121/121-platform/compare/v1.95.0...v1.95.1) - 2023-08-14
 
