@@ -20,6 +20,7 @@ import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
 import { Attribute } from '../../models/attribute.model';
+import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
 import { TranslatableStringService } from '../../services/translatable-string.service';
@@ -417,11 +418,19 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           false: 'No',
         };
 
+        let oldValue = change.oldValue ? change.oldValue : '-';
+        let newValue = change.newValue ? change.newValue : '-';
+
+        if (attribute.type === AnswerType.Boolean) {
+          oldValue = booleanLabel[oldValue];
+          newValue = booleanLabel[newValue];
+        }
+
         let description = this.translate.instant(
           'registration-details.activity-overview.activities.data-changes.values',
           {
-            oldValue: change.oldValue ? booleanLabel[change.oldValue] : '-',
-            newValue: change.newValue ? booleanLabel[change.newValue] : '-',
+            oldValue: oldValue,
+            newValue: newValue,
           },
         );
         if (change.reason) {
