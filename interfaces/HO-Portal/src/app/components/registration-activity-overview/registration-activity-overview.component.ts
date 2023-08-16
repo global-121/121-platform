@@ -412,11 +412,16 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           (attr) => attr.name === change.fieldName,
         );
 
+        const booleanLabel = {
+          true: 'Yes',
+          false: 'No',
+        };
+
         let description = this.translate.instant(
           'registration-details.activity-overview.activities.data-changes.values',
           {
-            oldValue: change.oldValue ? change.oldValue : '-',
-            newValue: change.newValue ? change.newValue : '-',
+            oldValue: change.oldValue ? booleanLabel[change.oldValue] : '-',
+            newValue: change.newValue ? booleanLabel[change.newValue] : '-',
           },
         );
         if (change.reason) {
