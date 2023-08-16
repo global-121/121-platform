@@ -16,7 +16,7 @@ import { TransactionsService } from '../payments/transactions/transactions.servi
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
-import { Attributes } from '../registration/dto/update-attribute.dto';
+import { Attributes } from '../registration/dto/update-registration.dto';
 import {
   AnswerTypes,
   GenericAttributes,

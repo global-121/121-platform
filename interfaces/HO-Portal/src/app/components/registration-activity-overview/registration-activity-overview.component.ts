@@ -14,8 +14,11 @@ import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 import { AuthService } from '../../auth/auth.service';
 import Permission from '../../auth/permission.enum';
+import { Attribute } from '../../models/attribute.model';
+import { AnswerType } from '../../models/fsp.model';
 import { Person } from '../../models/person.model';
 import { ProgramsServiceApiService } from '../../services/programs-service-api.service';
+import { TranslatableStringService } from '../../services/translatable-string.service';
 class ActivityOverviewItem {
   type: string;
   label?: string;
@@ -27,9 +30,12 @@ class ActivityOverviewItem {
   program?: Program;
   hasError?: boolean;
   hasWaiting?: boolean;
+  chipText?: string;
+  subLabel?: string;
 }
 
 enum ActivityOverviewType {
+  dataChanges = 'dataChanges',
   payment = 'payment',
   message = 'message',
   status = 'status',
@@ -66,6 +72,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
   public activityOverviewFilter: string = null;
   public activityOverviewButtons = [
     null,
+    ActivityOverviewType.dataChanges,
     ActivityOverviewType.payment,
     ActivityOverviewType.message,
     ActivityOverviewType.status,
@@ -84,6 +91,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     private translate: TranslateService,
     private authService: AuthService,
     private pastPaymentsService: PastPaymentsService,
+    private translatableString: TranslatableStringService,
   ) {}
 
   async ngOnInit() {
@@ -116,14 +124,6 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     }
     this.fillActivityOverview();
     this.activityOverview.reverse();
-  }
-
-  public getIconName(type: ActivityOverviewType): string {
-    const map = {
-      [ActivityOverviewType.message]: 'mail-outline',
-      [ActivityOverviewType.status]: 'reload-circle-outline',
-    };
-    return map[type];
   }
 
   public getFilteredActivityOverview(): ActivityOverviewItem[] {
@@ -264,6 +264,12 @@ export class RegistrationActivityOverviewComponent implements OnInit {
     }
 
     if (this.canViewPersonalData) {
+      const changes =
+        await this.programsService.getRegistrationChangeLogByReferenceId(
+          this.program.id,
+          this.person.referenceId,
+        );
+
       for (const statusChange of this.getStatusChanges()) {
         this.activityOverview.push({
           type: ActivityOverviewType.status,
@@ -282,9 +288,76 @@ export class RegistrationActivityOverviewComponent implements OnInit {
           ),
         });
       }
+
+      for (const change of changes) {
+        const attribute = this.program.paTableAttributes.find(
+          (attr) => attr.name === change.fieldName,
+        );
+
+        const booleanLabel = {
+          true: 'Yes',
+          false: 'No',
+        };
+
+        let oldValue = change.oldValue ? change.oldValue : '-';
+        let newValue = change.newValue ? change.newValue : '-';
+
+        if (attribute?.type === AnswerType.Boolean) {
+          oldValue = booleanLabel[oldValue];
+          newValue = booleanLabel[newValue];
+        }
+
+        let description = this.translate.instant(
+          'registration-details.activity-overview.activities.data-changes.values',
+          {
+            oldValue: oldValue,
+            newValue: newValue,
+          },
+        );
+        if (change.reason) {
+          description += this.translate.instant(
+            'registration-details.activity-overview.activities.data-changes.reason',
+            {
+              reason: change.reason,
+            },
+          );
+        }
+        this.activityOverview.push({
+          type: ActivityOverviewType.dataChanges,
+          label: this.translate.instant(
+            'registration-details.activity-overview.activities.data-changes.label',
+          ),
+          subLabel: this.getSubLabelText(change, attribute),
+          date: new Date(change.created),
+          description,
+          chipText: change.user.username,
+        });
+      }
     }
 
     this.activityOverview.sort((a, b) => (b.date > a.date ? 1 : -1));
+  }
+
+  private getSubLabelText(change: any, attribute: Attribute): string {
+    const translationKey = `page.program.program-people-affected.column.${change.fieldName}`;
+    const translation = this.translate.instant(
+      `page.program.program-people-affected.column.${change.fieldName}`,
+    );
+    return attribute?.shortLabel
+      ? this.translatableString.get(attribute.shortLabel)
+      : translation !== translationKey
+      ? translation
+      : change.fieldName;
+  }
+
+  public getIconName(type: ActivityOverviewType): string {
+    const map = {
+      [ActivityOverviewType.message]: 'mail-outline',
+      [ActivityOverviewType.dataChanges]: 'document-text-outline',
+      [ActivityOverviewType.payment]: 'cash-outline',
+      [ActivityOverviewType.status]: 'reload-circle-outline',
+    };
+    return map[type];
   }
 
   private getStatusChanges(): { status: string; date: Date }[] {

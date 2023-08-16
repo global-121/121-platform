@@ -284,3 +284,8 @@ ion-button {
     color: var(--fiveten-warning-700);
   }
 }
+.chip {
+  pointer-events: none;
+  background-color: var(--fiveten-neutral-100);
+  height: 27px;
+}

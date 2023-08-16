@@ -136,6 +136,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public async updatePaAttribute(
     attribute: string,
     value: string | number | string[],
+    reason: string,
     isPaTableAttribute: boolean,
   ): Promise<void> {
     let valueToStore: string | number | string[];
@@ -157,6 +158,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     }
 
     if (attribute === PersonDefaultAttributes.phoneNumber) {
+      if (!value || value === '') {
+        this.showAttributeErrorAlert('not-empty', attribute);
+        return;
+      }
       valueToStore = value;
     }
 
@@ -187,6 +192,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         this.person.referenceId,
         attribute,
         valueToStore,
+        reason,
       )
       .then((response: Person) => {
         this.inProgress[attribute] = false;
@@ -221,9 +227,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     const errorKeyPrefix =
       'page.program.program-people-affected.edit-person-affected-popup.properties';
     const errorMessage = this.translate.instant('common.update-error', {
-      error: this.translate.instant(
-        `${errorKeyPrefix}.${attribute}.error.${errorType}`,
-      ),
+      error: this.translate.instant(`${errorKeyPrefix}.error.${errorType}`),
     });
     actionResult(this.alertController, this.translate, errorMessage);
     this.inProgress[attribute] = false;

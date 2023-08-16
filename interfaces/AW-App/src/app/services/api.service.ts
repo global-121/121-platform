@@ -22,12 +22,16 @@ export class ApiService {
     return anonymous ? '🌐' : '🔐';
   }
 
-  private createHeaders(): HttpHeaders {
-    const headers = new HttpHeaders({
+  private createHeaders(isUpload: boolean = false): HttpHeaders {
+    let headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json',
       'X-121-Interface': InterfaceName.awApp,
     });
+
+    if (isUpload) {
+      headers = headers.delete('Content-Type');
+    }
 
     return headers;
   }
@@ -86,6 +90,49 @@ export class ApiService {
           return this.handleError(error, anonymous);
         }),
       );
+  }
+
+  patch(
+    endpoint: string,
+    path: string,
+    body: object,
+    anonymous: boolean = false,
+    responseAsBlob: boolean = false,
+    isUpload: boolean = false,
+  ): Promise<any> {
+    const security = this.showSecurity(anonymous);
+    console.log(`ApiService PATCH: ${security} ${endpoint}${path}`, body);
+
+    return new Promise((resolve, reject) =>
+      this.http
+        .patch(endpoint + path, body, {
+          headers: this.createHeaders(isUpload),
+          responseType: responseAsBlob ? 'blob' : null,
+          withCredentials: true,
+        })
+        .pipe(
+          tap((response) =>
+            console.log(
+              `ApiService PATCH: ${security} ${endpoint}${path}:`,
+              body,
+              '\nResponse:',
+              response,
+            ),
+          ),
+          catchError(
+            (error: HttpErrorResponse): Observable<any> =>
+              this.handleError(error, anonymous),
+          ),
+        )
+        .toPromise()
+        .then((response) => {
+          if (response && response.error) {
+            throw response;
+          }
+          return resolve(response);
+        })
+        .catch((err) => reject(err)),
+    );
   }
 
   handleError(error: HttpErrorResponse, anonymous: boolean) {

@@ -19,6 +19,7 @@ import {
   ProgramPhase,
   ProgramStats,
 } from '../models/program.model';
+import { RegistrationChangeLog } from '../models/registration-change-log.model';
 import { Transaction } from '../models/transaction.model';
 import { User } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
@@ -209,14 +210,16 @@ export class ProgramsServiceApiService {
     referenceId: string,
     attribute: string,
     value: string | number | string[],
+    reason?: string,
   ): Promise<Person | Error> {
-    return this.apiService.post(
+    const data = {};
+    data[attribute] = value;
+    return this.apiService.patch(
       environment.url_121_service_api,
-      `/programs/${programId}/registrations/attribute`,
+      `/programs/${programId}/registrations/${referenceId}`,
       {
-        referenceId,
-        attribute,
-        value,
+        reason: reason,
+        data,
       },
     );
   }
@@ -727,6 +730,17 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}/registrations/referenceid/${paId}`,
+      false,
+    );
+  }
+
+  async getRegistrationChangeLogByReferenceId(
+    programId: number,
+    referenceId: string,
+  ): Promise<RegistrationChangeLog[]> {
+    return await this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/${programId}/registration-change-logs/?referenceId=${referenceId}`,
       false,
     );
   }

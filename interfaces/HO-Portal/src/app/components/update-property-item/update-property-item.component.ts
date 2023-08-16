@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ProgramQuestionOption } from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { AnswerType } from '../../models/fsp.model';
+import { InputProps } from '../../shared/input-prompt/input-prompt.component';
 
 @Component({
   selector: 'app-update-property-item',
@@ -42,13 +43,15 @@ export class UpdatePropertyItemComponent implements OnInit {
   public prop = '';
 
   @Output()
-  updated: EventEmitter<string | boolean> = new EventEmitter<
-    string | boolean
-  >();
+  updated: EventEmitter<{ value: string | boolean; reason: string }> =
+    new EventEmitter<{ value: string | boolean; reason: string }>();
 
   public propertyModel: any | NgModel;
 
   public answerType = AnswerType;
+
+  public reasonInputProps: InputProps;
+  public reasonSubheader: string;
 
   constructor(
     private translate: TranslatableStringService,
@@ -60,9 +63,25 @@ export class UpdatePropertyItemComponent implements OnInit {
       this.value = this.value.toString().split(',');
     }
     this.propertyModel = this.value;
+
+    this.reasonInputProps = {
+      inputRequired: true,
+      explanation: this.translateService.instant(
+        'page.program.program-people-affected.edit-person-affected-popup.reason-popup.explanation',
+      ),
+      inputConstraint: {
+        length: 500,
+        type: 'max',
+      },
+      titleTranslationKey:
+        'page.program.program-people-affected.edit-person-affected-popup.reason-popup.subheader',
+      okTranslationKey: 'common.save',
+      cancelAlertTranslationKey:
+        'page.program.program-people-affected.edit-person-affected-popup.reason-popup.unsaved-changes-explanation',
+    };
   }
 
-  public doUpdate() {
+  public doUpdate(reasonInput?: string) {
     if (this.type === 'date') {
       if (!this.isValidDate()) {
         alert(
@@ -74,7 +93,7 @@ export class UpdatePropertyItemComponent implements OnInit {
       }
     }
 
-    this.updated.emit(this.propertyModel);
+    this.updated.emit({ value: this.propertyModel, reason: reasonInput });
   }
 
   public translatedOptions() {
