@@ -143,8 +143,10 @@ export class SoapService {
 
   async postCreate(payload: any, soapAction): Promise<any> {
     try {
-      const xmlOptions = { compact: true, ignoreComment: true, spaces: 4 };
-      const soapRequestXml = convert.js2xml(payload, xmlOptions);
+      const soapRequestXml = convert.js2xml(payload, {
+        compact: true,
+        spaces: 4,
+      });
 
       // Configure and send the SOAP request
       const soapUrl = process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
