@@ -30,7 +30,7 @@ describe('Do payment to 1 PA', () => {
     whatsappPhoneNumber: '14155238886',
   };
 
-  describe('with FSP: Intersolve voucher whatsapp', () => {
+  describe('with FSP: Intersolve Voucher WhatsApp', () => {
     let accessToken: string;
 
     beforeEach(async () => {
@@ -51,6 +51,7 @@ describe('Do payment to 1 PA', () => {
       await importRegistrations(programId, [registrationAh], accessToken);
       await changePaStatus(programId, [referenceIdAh], 'include', accessToken);
       const paymentReferenceIds = [referenceIdAh];
+
       // Act
       const doPaymentResponse = await doPayment(
         programId,
@@ -59,22 +60,26 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
       );
+
+      // Assert
       let getTransactionsBody = [];
       let attempts = 0;
       while (attempts <= 10) {
         attempts++;
         getTransactionsBody = (
-          await getTransactions(programId, 1, referenceIdAh, accessToken)
+          await getTransactions(programId, payment, referenceIdAh, accessToken)
         ).body;
+
         if (
           getTransactionsBody.length > 0 &&
           getTransactionsBody[0].status === StatusEnum.success
         ) {
           break;
         }
+
         await waitFor(2_000);
       }
-      // Assert
+
       expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(doPaymentResponse.text).toBe(String(paymentReferenceIds.length));
       expect(getTransactionsBody[0].status).toBe(StatusEnum.success);

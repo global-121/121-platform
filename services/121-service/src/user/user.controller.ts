@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
+import { DEBUG } from '../config';
 import { Admin } from '../guards/admin.decorator';
 import { AdminAuthGuard } from '../guards/admin.guard';
 import { Permissions } from '../guards/permissions.decorator';
@@ -93,11 +94,10 @@ export class UserController {
     @Res() res,
     @Req() req,
   ): Promise<UserRO> {
-    let sameSite;
-    let secure;
-    if (process.env.NODE_ENV === 'production') {
-      sameSite = 'None';
-      secure = 'Lax';
+    let sameSite = 'None';
+    let secure = false;
+    if (!DEBUG) {
+      secure = true;
     } else {
       const origin = req.get('origin');
       const serviceWorkerDebug = origin?.includes('8088');
