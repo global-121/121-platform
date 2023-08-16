@@ -37,7 +37,12 @@
       <app-payment-history-accordion
         [paymentRow]="paymentRow"
         [enableSinglePayment]="enableSinglePayment(paymentRow)"
-        (rowClick)="rowClick($event)"
+        [person]="person"
+        [program]="program"
+        [paymentRows]="enableSinglePayment(paymentRow)"
+        [canViewVouchers]="canViewVouchers"
+        [canDoSinglePayment]="canDoSinglePayment"
+        [lastPaymentId]="lastPaymentId"
       ></app-payment-history-accordion>
     </ng-container>
   </ion-accordion-group>

@@ -26,7 +26,10 @@ export class SyncService implements OnDestroy {
 
   private batchCountSubject = new BehaviorSubject<number>(0);
 
-  constructor(private pubSub: PubSubService, private apiService: ApiService) {
+  constructor(
+    private pubSub: PubSubService,
+    private apiService: ApiService,
+  ) {
     window.addEventListener('online', () => this.goOnline(), { passive: true });
     window.addEventListener('offline', () => this.goOffline(), {
       passive: true,
@@ -144,7 +147,7 @@ export class SyncService implements OnDestroy {
         map((response) => {
           return response;
         }),
-        map((_) => task),
+        map(() => task),
       );
       requests.push(request$);
     });

@@ -29,6 +29,7 @@ export function appInitializerFactory(
   injector: Injector,
 ) {
   return () =>
+    // eslint-disable-next-line no-async-promise-executor
     new Promise<any>(async (resolve: any) => {
       await injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
 

@@ -60,7 +60,7 @@
       </ion-label>
       <ion-label class="card-key-value ion-text-right"
         ><strong
-          >{{ card?.balance / 100 | number : '1.2-2' }} {{ currency }}</strong
+          >{{ card?.balance / 100 | number: '1.2-2' }} {{ currency }}</strong
         >
       </ion-label>
     </ion-item>
@@ -75,7 +75,7 @@
       </ion-label>
       <ion-label class="card-key-value ion-text-right"
         ><strong>{{
-          card?.issuedDate | date : DateFormat.dayAndTimeAlternative
+          card?.issuedDate | date: DateFormat.dayAndTimeAlternative
         }}</strong>
       </ion-label>
     </ion-item>
@@ -89,7 +89,7 @@
       </ion-label>
       <ion-label class="card-key-value ion-text-right"
         ><strong>{{
-          (card?.lastUsedDate | date : DateFormat.dayAndTimeAlternative) ||
+          (card?.lastUsedDate | date: DateFormat.dayAndTimeAlternative) ||
             'registration-details.physical-cards-overview.not-used-yet'
             | translate
         }}</strong>

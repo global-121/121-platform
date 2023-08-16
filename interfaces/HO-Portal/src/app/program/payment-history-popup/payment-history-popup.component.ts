@@ -2,11 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import {
-  PaymentRowDetail,
-  PayoutDetails,
-  SinglePayoutDetails,
-} from 'src/app/models/payment.model';
+import { PaymentRowDetail, PayoutDetails } from 'src/app/models/payment.model';
 import { Person } from 'src/app/models/person.model';
 import { Program } from 'src/app/models/program.model';
 import { Transaction } from 'src/app/models/transaction.model';
@@ -15,7 +11,6 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PaymentUtils } from 'src/app/shared/payment.utils';
 import { FspName } from '../../../../../../services/121-service/src/fsp/enum/fsp-name.enum';
 import { PaymentHistoryAccordionComponent } from '../payment-history-accordion/payment-history-accordion.component';
-import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 import { StatusEnum } from './../../models/status.enum';
 @Component({
   selector: 'app-payment-history-popup',
@@ -46,7 +41,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
   private canViewPaymentData = false;
 
   @Input()
-  private canViewVouchers = false;
+  public canViewVouchers = false;
 
   @Input()
   private canDoSinglePayment = false;
@@ -120,129 +115,6 @@ export class PaymentHistoryPopupComponent implements OnInit {
     );
   }
 
-  public async rowClick(paymentRow: PaymentRowDetail) {
-    let voucherUrl = null;
-    let voucherButtons = null;
-    let showRetryButton = false;
-    let doSinglePaymentDetails: SinglePayoutDetails = null;
-    let paymentDetails: PayoutDetails = null;
-    const hasWaiting = PaymentUtils.hasWaiting(paymentRow);
-    const hasError = PaymentUtils.hasError(paymentRow);
-    const isSinglePayment = PaymentUtils.enableSinglePayment(
-      paymentRow,
-      this.canDoSinglePayment,
-      this.person,
-      this.lastPaymentId,
-      false,
-    );
-
-    if (
-      !PaymentUtils.hasVoucherSupport(paymentRow.fsp) &&
-      !hasError &&
-      !isSinglePayment
-    ) {
-      return;
-    }
-
-    const content = hasWaiting
-      ? paymentRow.errorMessage
-      : hasError
-      ? this.translate.instant(
-          'page.program.program-people-affected.payment-status-popup.error-message',
-        ) +
-        ': <strong>' +
-        paymentRow.errorMessage +
-        '</strong><br><br>' +
-        this.translate.instant(
-          'page.program.program-people-affected.payment-status-popup.fix-error',
-        )
-      : isSinglePayment
-      ? this.translate.instant(
-          'page.program.program-people-affected.payment-status-popup.single-payment.intro',
-        )
-      : null;
-
-    if (
-      this.canViewVouchers &&
-      PaymentUtils.hasVoucherSupport(paymentRow.fsp as FspName) &&
-      !!paymentRow.transaction
-    ) {
-      await this.programsService
-        .exportVoucher(
-          this.person.referenceId,
-          paymentRow.paymentIndex,
-          this.programId,
-        )
-        .then(
-          async (voucherBlob) => {
-            voucherUrl = window.URL.createObjectURL(voucherBlob);
-            voucherButtons = true;
-          },
-          (error) => {
-            console.log('error: ', error);
-            voucherButtons = false;
-          },
-        );
-    }
-    if (hasError || paymentRow.hasMessageIcon || paymentRow.hasMoneyIconTable) {
-      paymentDetails = {
-        programId: this.programId,
-        payment: paymentRow.paymentIndex,
-        amount: paymentRow.transaction.amount,
-        referenceId: this.person.referenceId,
-        paNr: this.person.id,
-        currency: this.program.currency,
-      };
-    }
-    if (this.canDoSinglePayment) {
-      showRetryButton = !hasWaiting && hasError;
-      doSinglePaymentDetails = {
-        paNr: this.person.registrationProgramId,
-        amount: this.program.fixedTransferValue,
-        currency: this.program.currency,
-        multiplier: this.person.paymentAmountMultiplier
-          ? this.person.paymentAmountMultiplier
-          : 1,
-        programId: this.programId,
-        payment: paymentRow.paymentIndex,
-        referenceId: this.person.referenceId,
-      };
-    }
-    const titleError = hasError
-      ? `${paymentRow.paymentIndex}: ${paymentRow.text}`
-      : null;
-    const titleMessageIcon = paymentRow.hasMessageIcon
-      ? `${paymentRow.paymentIndex}: `
-      : null;
-    const titleMoneyIcon = paymentRow.hasMoneyIconTable
-      ? `${paymentRow.paymentIndex}: `
-      : null;
-    const titleSinglePayment = isSinglePayment ? paymentRow.text : null;
-
-    const modal: HTMLIonModalElement = await this.modalController.create({
-      component: PaymentStatusPopupComponent,
-      componentProps: {
-        titleMessageIcon,
-        titleMoneyIcon,
-        titleError,
-        titleSinglePayment,
-        content,
-        showRetryButton,
-        payoutDetails: paymentDetails,
-        singlePayoutDetails: doSinglePaymentDetails,
-        voucherButtons,
-        imageUrl: voucherUrl,
-      },
-    });
-    modal.onDidDismiss().then(() => {
-      // Remove the image from browser memory
-      if (voucherUrl) {
-        window.URL.revokeObjectURL(voucherUrl);
-      }
-    });
-    await modal.present();
-  }
-
   private fillPaymentRows() {
     const nrOfPayments = this.program?.distributionDuration;
     const lastPaymentToShow = Math.min(this.lastPaymentId, nrOfPayments);
@@ -272,6 +144,7 @@ export class PaymentHistoryPopupComponent implements OnInit {
           index,
         );
         if (transaction.status === StatusEnum.success) {
+          /* empty */
         } else if (transaction.status === StatusEnum.waiting) {
           paymentRowValue.errorMessage = this.translate.instant(
             'page.program.program-people-affected.transaction.waiting-message',

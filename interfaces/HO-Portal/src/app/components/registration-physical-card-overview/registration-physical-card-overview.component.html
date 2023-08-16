@@ -1,37 +1,41 @@
-<ion-card *ngIf="showPhysicalCardOverview()">
+<ion-card>
   <ion-card-header>
     <ion-card-title>
       {{ 'registration-details.physical-cards-overview.title' | translate }}
     </ion-card-title>
   </ion-card-header>
 
-  <ion-item *ngIf="loading">
-    <ion-spinner color="primary"></ion-spinner>
-  </ion-item>
+  <ng-container *ngIf="showPhysicalCardOverview()">
+    <ion-item *ngIf="loading">
+      <ion-spinner color="primary"></ion-spinner>
+    </ion-item>
 
-  <ion-card-content
-    *ngIf="!loading"
-    class="ion-no-padding"
-  >
-    <ion-list>
-      <ion-item
-        *ngFor="let card of physicalCards"
-        button
-        [detail]="true"
-        [detail-icon]="'card'"
-        (click)="openCardDetails(card)"
-      >
-        <ion-label class="card">
-          <code>{{ card.tokenCode }}</code>
-        </ion-label>
-        <ion-label class="ion-text-right"
-          ><ion-chip
-            class="physical-card-status-chip"
-            [ngClass]="'physical-card-status-chip-' + card.status.toLowerCase()"
-            >{{ card.status }}</ion-chip
-          ></ion-label
+    <ion-card-content
+      *ngIf="!loading"
+      class="ion-no-padding"
+    >
+      <ion-list>
+        <ion-item
+          *ngFor="let card of physicalCards"
+          button
+          [detail]="true"
+          [detail-icon]="'card'"
+          (click)="openCardDetails(card)"
         >
-      </ion-item>
-    </ion-list>
-  </ion-card-content>
+          <ion-label class="card">
+            <code>{{ card.tokenCode }}</code>
+          </ion-label>
+          <ion-label class="ion-text-right"
+            ><ion-chip
+              class="physical-card-status-chip"
+              [ngClass]="
+                'physical-card-status-chip-' + card.status.toLowerCase()
+              "
+              >{{ card.status }}</ion-chip
+            ></ion-label
+          >
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ng-container>
 </ion-card>

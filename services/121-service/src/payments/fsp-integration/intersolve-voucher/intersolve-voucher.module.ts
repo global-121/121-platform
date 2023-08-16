@@ -1,6 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TwilioMessageEntity } from '../../../notifications/twilio.entity';
 import { WhatsappModule } from '../../../notifications/whatsapp/whatsapp.module';
 import { ProgramFspConfigurationEntity } from '../../../programs/fsp-configuration/program-fsp-configuration.entity';
 import { ProgramEntity } from '../../../programs/program.entity';
@@ -33,6 +34,7 @@ import { IntersolveVoucherCronService } from './services/intersolve-voucher-cron
       ProgramEntity,
       ProgramFspConfigurationEntity,
       UserEntity,
+      TwilioMessageEntity,
     ]),
     ImageCodeModule,
     UserModule,
