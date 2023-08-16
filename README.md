@@ -229,7 +229,6 @@ To help with some types if files/tasks we've listed them here:
   Generic highlights:
 
   - [Cucumber (Gherkin) Full Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete) - To work with `.feature`-files for test-scenarios
-  - [Azure Pipelines](https://marketplace.visualstudio.com/items?itemName=ms-azure-devops.azure-pipelines) - To work with the CI/CD Azure Pipelines configurations
 
   Interfaces / front-end highlights:
 

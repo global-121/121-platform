@@ -58,7 +58,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public program: Program;
   public attributeValues: any = {};
-  public paTableAttributes: {}[] = [];
+  public paTableAttributes: Attribute[] = [];
   private paTableAttributesInput: Program['editableAttributes'];
 
   public fspList: Fsp[] = [];
@@ -286,14 +286,14 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       const fspQuestion = this.personFsp.questions.find(
         (attr: FspQuestion) => attr.name === paTableAttribute.name,
       );
-      return !!fspQuestion.options ? fspQuestion.options : [];
+      return fspQuestion.options ? fspQuestion.options : [];
     }
 
     const programQuestion = this.program.programQuestions.find(
       (question: ProgramQuestion) => question.name === paTableAttribute.name,
     );
 
-    return !!programQuestion.options ? programQuestion.options : [];
+    return programQuestion.options ? programQuestion.options : [];
   }
 
   private async getNote() {

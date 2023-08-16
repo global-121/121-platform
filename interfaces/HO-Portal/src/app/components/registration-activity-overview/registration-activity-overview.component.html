@@ -70,7 +70,7 @@
                   </ion-label>
                   <ion-note>
                     <small>
-                      {{ item.date | date : DateFormat.dayAndTime }}
+                      {{ item.date | date: DateFormat.dayAndTime }}
                     </small>
                   </ion-note>
                 </ion-row>
@@ -103,7 +103,12 @@
                 [enableSinglePayment]="
                   enableSinglePayment(item.paymentRowDetail)
                 "
-                (rowClick)="rowClick($event)"
+                [person]="person"
+                [program]="program"
+                [paymentRows]="enableSinglePayment(paymentRow)"
+                [canViewVouchers]="canViewVouchers"
+                [canDoSinglePayment]="canDoSinglePayment"
+                [lastPaymentId]="lastPaymentId"
               ></app-payment-history-accordion>
             </ion-accordion-group>
           </div>

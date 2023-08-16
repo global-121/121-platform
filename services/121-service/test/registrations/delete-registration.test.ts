@@ -11,7 +11,6 @@ import { referenceIdVisa, registrationVisa } from '../visa-card/visa-card.data';
 
 describe('Delete PA', () => {
   const programId = 3;
-
   let accessToken: string;
 
   beforeEach(async () => {

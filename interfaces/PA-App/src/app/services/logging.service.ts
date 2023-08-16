@@ -14,7 +14,7 @@ import {
 /**
  * Access to the global window variable.
  */
-declare var window: {
+declare let window: {
   [key: string]: any;
   prototype: Window;
   new (): Window;

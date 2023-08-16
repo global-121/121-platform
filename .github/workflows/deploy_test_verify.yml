@@ -19,10 +19,8 @@ on:
     branches:
       - master
     paths:
-      - '!.github/**'
       - '.github/workflows/deploy_test_verify.yml'
       - 'interfaces/AW-App/**'
-      - '**/.vscode/*'
       - '!*.md'
       - '!*.yml'
   pull_request:
@@ -30,10 +28,8 @@ on:
     branches:
       - master
     paths:
-      - '!.github/**'
       - '.github/workflows/deploy_test_verify.yml'
       - 'interfaces/AW-App/**'
-      - '**/.vscode/*'
       - '!*.md'
       - '!*.yml'
 
