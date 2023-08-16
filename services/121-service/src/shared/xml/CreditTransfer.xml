@@ -5,6 +5,7 @@
   <soapenv:Body>
     <cber:RMTFundtransfer>
       <WebRequestCommon>
+        <company/>
         <password>${password}</password>
         <userName>${username}</userName>
       </WebRequestCommon>
