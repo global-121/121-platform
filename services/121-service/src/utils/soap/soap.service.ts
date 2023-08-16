@@ -154,15 +154,17 @@ export class SoapService {
       };
 
       console.log(soapRequestXml);
-      const response = await soapRequest({
+      const { response } = await soapRequest({
         headers: headers,
         url: soapUrl,
         xml: soapRequestXml,
         timeout: 150000,
       });
       console.log(response, 'response');
-
+      const { body, statusCode } = response;
       const responseBody = response.data;
+      console.log(body, 'body');
+      console.log(statusCode, 'statusCode');
       console.log(responseBody, 'responseBody');
 
       // Parse the SOAP response if needed
