@@ -19,6 +19,7 @@ export interface InputProps {
   defaultValue?: string;
   titleTranslationKey?: string;
   okTranslationKey?: string;
+  cancelAlertTranslationKey?: string;
   inputConstraint?: {
     length: number;
     type: 'min' | 'max';
@@ -117,13 +118,13 @@ export class InputPromptComponent implements AfterViewInit {
   }
 
   public async closeModal() {
-    actionResult(
-      this.alertController,
-      this.translate,
-      this.translate.instant(
-        'page.program.program-people-affected.edit-person-affected-popup.reason-popup.unsaved-changes-explanation',
-      ),
-    );
+    if (this.inputProps.cancelAlertTranslationKey) {
+      actionResult(
+        this.alertController,
+        this.translate,
+        this.translate.instant(this.inputProps.cancelAlertTranslationKey),
+      );
+    }
     this.modalController.dismiss(null, 'cancel');
   }
 }

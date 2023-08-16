@@ -76,6 +76,8 @@ export class UpdatePropertyItemComponent implements OnInit {
       titleTranslationKey:
         'page.program.program-people-affected.edit-person-affected-popup.reason-popup.subheader',
       okTranslationKey: 'common.save',
+      cancelAlertTranslationKey:
+        'page.program.program-people-affected.edit-person-affected-popup.reason-popup.unsaved-changes-explanation',
     };
   }
 
