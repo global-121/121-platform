@@ -136,6 +136,7 @@ export class CustomHttpService {
             0,
             16000,
           )} - ${responseContent.substring(0, 16000)}`,
+          properties: { externalUrl: request.url },
         });
         this.defaultClient.flush();
       } catch (error) {
@@ -161,6 +162,7 @@ export class CustomHttpService {
               16000,
             )} - ${responseContent.substring(0, 16000)}}`,
           ),
+          properties: { externalUrl: request.url },
         });
         this.defaultClient.flush();
       } catch (error) {

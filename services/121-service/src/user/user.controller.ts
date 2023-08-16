@@ -95,10 +95,9 @@ export class UserController {
     @Req() req,
   ): Promise<UserRO> {
     let sameSite = 'None';
-    let secure = false;
-    if (!DEBUG) {
-      secure = true;
-    } else {
+    let secure = true;
+
+    if (DEBUG) {
       const origin = req.get('origin');
       const serviceWorkerDebug = origin?.includes('8088');
       sameSite = serviceWorkerDebug ? 'None' : 'Lax';
