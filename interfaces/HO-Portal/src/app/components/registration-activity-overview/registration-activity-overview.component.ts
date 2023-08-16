@@ -421,7 +421,7 @@ export class RegistrationActivityOverviewComponent implements OnInit {
         let oldValue = change.oldValue ? change.oldValue : '-';
         let newValue = change.newValue ? change.newValue : '-';
 
-        if (attribute.type === AnswerType.Boolean) {
+        if (attribute?.type === AnswerType.Boolean) {
           oldValue = booleanLabel[oldValue];
           newValue = booleanLabel[newValue];
         }
