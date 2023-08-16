@@ -7,7 +7,7 @@ export function importRegistrations(
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .post(`/programs/${programId}/registrations/import?validation=false`)
+    .post(`/programs/${programId}/registrations/import`)
     .set('Cookie', [accessToken])
     .send(registrations);
 }
@@ -23,12 +23,15 @@ export function deleteRegistrations(
     .send(registrationReferenceIds);
 }
 
-export function getRegistration(
+export function searchRegistrationByReferenceId(
   referenceId: string,
+  programId: number,
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .get(`/registrations/get/${referenceId}`)
+    .get(
+      `/programs/${programId}/registrations/?referenceId=${referenceId}&paymentData=false&personalData=true`,
+    )
     .set('Cookie', [accessToken]);
 }
 
@@ -64,7 +67,7 @@ export function changePaStatus(
     });
 }
 
-export function updatePa(
+export function updatePaAttribute(
   programId: number,
   referenceId: string,
   attribute: string,
@@ -79,6 +82,36 @@ export function updatePa(
       attribute: attribute,
       value: value,
     });
+}
+
+export function updateRegistrationPatch(
+  programId: number,
+  referenceId: string,
+  data: object,
+  reason: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .patch(`/programs/${programId}/registrations/${referenceId}`)
+    .set('Cookie', [accessToken])
+    .send({
+      data: data,
+      reason: reason,
+    });
+}
+
+export function getRegistrationChangeLog(
+  programId: number,
+  referenceId: string,
+  accessToken: string,
+): Promise<request.Response> {
+  const queryParams = {
+    referenceId: referenceId,
+  };
+  return getServer()
+    .get(`/programs/${programId}/registration-change-logs`)
+    .query(queryParams)
+    .set('Cookie', [accessToken]);
 }
 
 export function getVisaWalletsAndDetails(

@@ -229,7 +229,6 @@ export class ProgramController {
     status: 200,
     description: 'Return PA-table attributes by program-id.',
   })
-  // TODO: REFACTOR: give PA Table attribute data of all phases in the GET /programs/:programid response.
   @Get(':programId/pa-table-attributes/:phase')
   public async getPaTableAttributes(@Param() params): Promise<Attribute[]> {
     return await this.programService.getPaTableAttributes(

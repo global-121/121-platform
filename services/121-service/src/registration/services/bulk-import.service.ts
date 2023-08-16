@@ -23,7 +23,7 @@ import {
   ImportStatus,
 } from '../dto/bulk-import.dto';
 import { RegistrationDataInfo } from '../dto/registration-data-relation.model';
-import { AdditionalAttributes } from '../dto/update-attribute.dto';
+import { AdditionalAttributes } from '../dto/update-registration.dto';
 import {
   AnswerTypes,
   Attribute,

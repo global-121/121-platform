@@ -83,6 +83,9 @@ export class ProgramService {
       program.editableAttributes = await this.getPaEditableAttributes(
         program.id,
       );
+      program['paTableAttributes'] = await this.getPaTableAttributes(
+        program.id,
+      );
     }
     // TODO: REFACTOR: use DTO to define (stable) structure of data to return (not sure if transformation should be done here or in controller)
     return program;

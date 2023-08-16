@@ -2,14 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DeleteRegistrationDto } from '../registration/dto/delete-registration.dto';
-import { UpdateRegistrationDto } from '../registration/dto/update-registration.dto';
+import {
+  UpdateRegistrationDto,
+  UpdateRegistrationEspoDto,
+} from '../registration/dto/update-registration.dto';
 import { ErrorEnum } from '../registration/errors/registration-data.error';
 import { RegistrationsService } from '../registration/registrations.service';
 import { EspocrmWebhookDto } from './dto/espocrm-webhook.dto';
 import { EspoCrmActionTypeEnum } from './espocrm-action-type.enum';
 import { EspoCrmEntityTypeEnum } from './espocrm-entity-type';
 import { EspocrmWebhookEntity } from './espocrm-webhooks.entity';
-
+interface KeyValue {
+  [key: string]: any;
+}
 @Injectable()
 export class EspocrmService {
   @InjectRepository(EspocrmWebhookEntity)
@@ -20,19 +25,29 @@ export class EspocrmService {
   ) {}
 
   public async updateRegistrations(
-    updateRegistrations: UpdateRegistrationDto[],
+    updateRegistrations: UpdateRegistrationEspoDto[],
   ): Promise<void> {
     const errors = [];
     for (const updateRegistration of updateRegistrations) {
       const referenceId = updateRegistration.id;
       for (const key in updateRegistration) {
         if (key !== 'id') {
+          const updateObject: KeyValue = {};
           const value = updateRegistration[key];
+          updateObject[key] = value;
+          const updateObj: UpdateRegistrationDto = {
+            data: updateObject,
+            reason: '',
+          };
           try {
-            await this.registrationsService.setAttribute(
+            // NOTE: This is hardcoded to program 3 as Espo is only used for program 3.
+            // And this will soon be replaced by the new update endpoint.
+            // NOTE: The user is hardcoded to the Espocrm user.
+            await this.registrationsService.updateRegistration(
+              3,
               referenceId,
-              key,
-              value,
+              updateObj,
+              1971,
             );
           } catch (error) {
             if (error.name === ErrorEnum.RegistrationDataError) {

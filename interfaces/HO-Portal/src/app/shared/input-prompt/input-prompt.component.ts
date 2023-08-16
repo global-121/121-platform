@@ -6,8 +6,9 @@ import {
   ViewChild,
 } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { actionResult } from '../action-result';
 
 export interface InputProps {
   checkbox?: string;
@@ -16,7 +17,13 @@ export interface InputProps {
   explanation?: string;
   placeholder?: string | undefined;
   defaultValue?: string;
-  minLength?: number;
+  titleTranslationKey?: string;
+  okTranslationKey?: string;
+  cancelAlertTranslationKey?: string;
+  inputConstraint?: {
+    length: number;
+    type: 'min' | 'max';
+  };
 }
 
 @Component({
@@ -44,6 +51,7 @@ export class InputPromptComponent implements AfterViewInit {
     public translate: TranslateService,
     private modalController: ModalController,
     private changeDetector: ChangeDetectorRef,
+    private alertController: AlertController,
   ) {}
 
   ngAfterViewInit() {
@@ -109,7 +117,14 @@ export class InputPromptComponent implements AfterViewInit {
     this.modalController.dismiss(null, null);
   }
 
-  public closeModal() {
+  public async closeModal() {
+    if (this.inputProps.cancelAlertTranslationKey) {
+      actionResult(
+        this.alertController,
+        this.translate,
+        this.translate.instant(this.inputProps.cancelAlertTranslationKey),
+      );
+    }
     this.modalController.dismiss(null, 'cancel');
   }
 }

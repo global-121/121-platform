@@ -8,7 +8,10 @@ import {
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from '../guards/admin.decorator';
 import { DeleteRegistrationDto } from '../registration/dto/delete-registration.dto';
-import { UpdateRegistrationDto } from '../registration/dto/update-registration.dto';
+import {
+  UpdateRegistrationDto,
+  UpdateRegistrationEspoDto,
+} from '../registration/dto/update-registration.dto';
 import { EspocrmWebhookDto } from './dto/espocrm-webhook.dto';
 import { EspoCrmActionTypeEnum } from './espocrm-action-type.enum';
 import { EspoCrmEntityTypeEnum } from './espocrm-entity-type';
@@ -39,7 +42,7 @@ export class EspocrmController {
   @Post('update-registration')
   public async updateRegistrations(
     @Body(new ParseArrayPipe({ items: UpdateRegistrationDto }))
-    updateRegistrationsDto: UpdateRegistrationDto[],
+    updateRegistrationsDto: UpdateRegistrationEspoDto[],
   ): Promise<void> {
     return await this.espocrmService.updateRegistrations(
       updateRegistrationsDto,
