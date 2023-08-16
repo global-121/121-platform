@@ -153,6 +153,7 @@ export class SoapService {
         soapAction: soapAction,
       };
 
+      console.log(soapRequestXml);
       const response = await soapRequest({
         headers: headers,
         url: soapUrl,
