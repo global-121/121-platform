@@ -159,14 +159,18 @@ export class SoapService {
         xml: soapRequestXml,
         timeout: 150000,
       });
+      console.log(response, 'response');
 
       const responseBody = response.data;
+      console.log(responseBody, 'responseBody');
 
       // Parse the SOAP response if needed
       const parsedResponse = convert.xml2js(responseBody, { compact: true });
+      console.log(parsedResponse, 'parsedResponse');
 
       return parsedResponse;
     } catch (error) {
+      console.log(error, 'errorSOAP');
       console.error('Error sending SOAP request:', error);
       throw error;
     }
