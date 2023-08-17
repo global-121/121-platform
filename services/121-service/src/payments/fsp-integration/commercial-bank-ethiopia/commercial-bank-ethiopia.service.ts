@@ -230,6 +230,8 @@ export class CommercialBankEthiopiaService
       result = await this.sendDuplicatePaymentPerPa(payload, credentials);
     }
 
+    console.log(result, 'sendDuplicatePaymentPerPa');
+
     if (
       result &&
       result.Status &&

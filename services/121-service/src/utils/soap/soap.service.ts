@@ -162,16 +162,29 @@ export class SoapService {
         xml: soapRequestXml,
         timeout: 150000,
       });
-      const { body, statusCode } = response;
-      console.log(body, 'body');
-      console.log(statusCode, 'statusCode');
+      console.log(response.body, 'body');
 
       // Parse the SOAP response if needed
-      const parsedResponse = convert.xml2js(body, { compact: true });
+      const parsedResponse = convert.xml2js(response.body, { compact: true });
       console.log(parsedResponse, 'parsedResponse');
-      return parsedResponse['S:Envelope']['S:Body'][
-        'ns10:RMTFundtransferResponse'
-      ];
+
+      if (
+        parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
+      ) {
+        return parsedResponse['S:Envelope']['S:Body'][
+          'ns10:RMTFundtransferResponse'
+        ];
+      } else if (
+        parsedResponse['S:Envelope']['S:Body'][
+          'ns10:CBERemitanceTransactionStatusResponse'
+        ]
+      ) {
+        return parsedResponse['S:Envelope']['S:Body'][
+          'ns10:CBERemitanceTransactionStatusResponse'
+        ];
+      } else {
+        return parsedResponse['S:Envelope']['S:Body'];
+      }
     } catch (error) {
       console.log(error);
       console.error('Error sending SOAP request:', error);
