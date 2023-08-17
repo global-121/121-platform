@@ -144,7 +144,7 @@ export class SoapService {
   async postCreate(payload: any, soapAction): Promise<any> {
     try {
       const soapRequestXml = convert.js2xml(payload, {
-        compact: true,
+        compact: false,
         spaces: 4,
       });
 
