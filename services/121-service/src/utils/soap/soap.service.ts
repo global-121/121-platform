@@ -162,15 +162,12 @@ export class SoapService {
         xml: soapRequestXml,
         timeout: 150000,
       });
-      console.log(response, 'response');
       const { body, statusCode } = response;
-      const responseBody = response.data;
       console.log(body, 'body');
       console.log(statusCode, 'statusCode');
-      console.log(responseBody, 'responseBody');
 
       // Parse the SOAP response if needed
-      const parsedResponse = convert.xml2js(responseBody, { compact: true });
+      const parsedResponse = convert.xml2js(body, { compact: true });
       console.log(parsedResponse, 'parsedResponse');
 
       return parsedResponse;
