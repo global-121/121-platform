@@ -12,6 +12,15 @@ export class CommercialBankEthiopiaMockService {
   public async post(payload: any, payment): Promise<any> {
     await this.waitForRandomDelay();
     const response = {
+      Status: {
+        transactionId: { _text: 'FT212435G2ZD' },
+        messageId: {},
+        successIndicator: { _text: 'Success' },
+        application: { _text: 'FUNDS.TRANSFER' },
+        messages: [
+          { _text: 'Transaction with number is DUPLICATED Transaction!' },
+        ],
+      },
       IssueCardResponse: {
         ResultCode: { _text: '000' },
         ResultDescription: { _text: 'Success' },
@@ -90,7 +99,6 @@ export class CommercialBankEthiopiaMockService {
         BENNME: { _text: String(payment.beneficiaryName) },
       },
     };
-    console.log('CommercialBankEthiopiaMock post(): response:', response);
     return new Promise((resolve) => resolve(response));
   }
 

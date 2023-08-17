@@ -202,7 +202,7 @@ export class CommercialBankEthiopiaService
       creditTheIrRef: program.ngo,
       creditAcctNo: bankAccountNumber,
       creditCurrency: program.currency,
-      remitterName: program.ngo,
+      remitterName: program.titlePaApp.en.substring(0, 35),
       beneficiaryName: `${name}`,
     };
 
@@ -226,11 +226,16 @@ export class CommercialBankEthiopiaService
     );
 
     console.log(result, 'sendPaymentPerPa');
-    if (result.resultDescription === 'Transaction is DUPLICATED') {
+    if (result && result.resultDescription === 'Transaction is DUPLICATED') {
       result = await this.sendDuplicatePaymentPerPa(payload, credentials);
     }
 
-    if (result && result.Status.successIndicator._text === 'Success') {
+    if (
+      result &&
+      result.Status &&
+      result.Status.successIndicator &&
+      result.Status.successIndicator._text === 'Success'
+    ) {
       paTransactionResult.status = StatusEnum.success;
       payload.status = StatusEnum.success;
     } else {

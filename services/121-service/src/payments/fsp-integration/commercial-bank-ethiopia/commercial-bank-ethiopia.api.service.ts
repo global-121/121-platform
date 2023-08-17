@@ -23,27 +23,23 @@ export class CommercialBankEthiopiaApiService {
           );
 
       console.log(responseBody, 'responseBody-creditTransfer');
-      console.log(responseBody.Status.messages, 'messages');
-      console.log(responseBody.Status.messages.length, 'messages length');
-      console.log(
-        responseBody.Status.messages[0]._text.includes(
-          'DUPLICATED Transaction!',
-        ),
-        'DUPLICATED',
-      );
 
       if (
+        responseBody.Status &&
+        responseBody.Status.messages &&
         responseBody.Status.messages.length > 0 &&
         responseBody.Status.messages[0]._text.includes(
           'DUPLICATED Transaction!',
         )
       ) {
-        responseBody.resultDescription = 'Transaction is DUPLICATED';
+        const result = {
+          resultDescription: 'Transaction is DUPLICATED',
+        };
+        return result;
       }
 
       return responseBody;
     } catch (error) {
-      console.log(error, 'creditTransfer');
       // Handle errors here
       const result: any = {
         resultDescription: 'Unknown error occurred.',
@@ -143,12 +139,10 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
-        ? await this.commercialBankEthiopiaMock.post(payload, payment)
-        : await this.soapService.postCreate(
-            payload,
-            process.env.COMMERCIAL_BANK_ETHIOPIA_SOAPACTION_TRANSACTION,
-          );
+      const responseBody = await this.soapService.postCreate(
+        payload,
+        process.env.COMMERCIAL_BANK_ETHIOPIA_SOAPACTION_TRANSACTION,
+      );
 
       console.log(responseBody, 'responseBody-transactionStatus');
 
@@ -188,12 +182,12 @@ export class CommercialBankEthiopiaApiService {
       .find((el) => el.name === 'soapenv:Envelope')
       .elements.find((el) => el.name === 'soapenv:Body');
 
-    // Find the cber:SettlementAccount element
+    // Find the cber:CBERemitanceTransactionStatus element
     const rmtFundtransfer = soapBody.elements.find(
-      (el) => el.name === 'cber:SettlementAccount',
+      (el) => el.name === 'cber:CBERemitanceTransactionStatus',
     );
 
-    // Modify the elements within cber:SettlementAccount
+    // Modify the elements within cber:CBERemitanceTransactionStatus
     rmtFundtransfer.elements.forEach((element) => {
       switch (element.name) {
         case 'WebRequestCommon':
@@ -206,13 +200,18 @@ export class CommercialBankEthiopiaApiService {
           passwordElement.elements[0].text = credentials.password;
           userNameElement.elements[0].text = credentials.username;
           break;
-        case 'FUNDSTRANSFERCBEREMITANCEType':
-          const debitTheirRefElement = element.elements.find(
-            (el) => el.name === 'fun:DEBITTHEIRREF',
+        case 'ETXNSTATUSCBEREMITANCEType':
+          const enquiryInputElement = element.elements.find(
+            (el) => el.name === 'enquiryInputCollection',
           );
-
-          debitTheirRefElement.elements[0].text = payment.debitTheIrRef;
-
+          const columnNameElement = enquiryInputElement.elements.find(
+            (el) => el.name === 'columnName',
+          );
+          const criteriaValueElement = enquiryInputElement.elements.find(
+            (el) => el.name === 'criteriaValue',
+          );
+          columnNameElement.elements[0].text = 'ID';
+          criteriaValueElement.elements[0].text = payment.debitTheIrRef;
           // You can modify other elements similarly
           break;
         // Handle other elements if needed
