@@ -8,6 +8,7 @@ import {
 } from '../registration/dto/update-registration.dto';
 import { ErrorEnum } from '../registration/errors/registration-data.error';
 import { RegistrationsService } from '../registration/registrations.service';
+import { UserService } from '../user/user.service';
 import { EspocrmWebhookDto } from './dto/espocrm-webhook.dto';
 import { EspoCrmActionTypeEnum } from './espocrm-action-type.enum';
 import { EspoCrmEntityTypeEnum } from './espocrm-entity-type';
@@ -22,12 +23,15 @@ export class EspocrmService {
 
   public constructor(
     private readonly registrationsService: RegistrationsService,
+    private readonly userService: UserService,
   ) {}
 
   public async updateRegistrations(
     updateRegistrations: UpdateRegistrationEspoDto[],
   ): Promise<void> {
     const errors = [];
+    const espoUser = await this.userService.findById(1971);
+    const userId = espoUser.id ? espoUser.id : 1;
     for (const updateRegistration of updateRegistrations) {
       const referenceId = updateRegistration.id;
       for (const key in updateRegistration) {
@@ -42,12 +46,12 @@ export class EspocrmService {
           try {
             // NOTE: This is hardcoded to program 3 as Espo is only used for program 3.
             // And this will soon be replaced by the new update endpoint.
-            // NOTE: The user is hardcoded to the Espocrm user.
+            // NOTE: The user is hardcoded to the Espocrm user (if it can find it else the admin user).
             await this.registrationsService.updateRegistration(
               3,
               referenceId,
               updateObj,
-              1971,
+              userId,
             );
           } catch (error) {
             if (error.name === ErrorEnum.RegistrationDataError) {
