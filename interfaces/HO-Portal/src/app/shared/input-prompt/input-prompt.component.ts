@@ -118,13 +118,14 @@ export class InputPromptComponent implements AfterViewInit {
   }
 
   public async closeModal() {
-    if (this.inputProps.cancelAlertTranslationKey) {
+    if (this.inputProps && this.inputProps.cancelAlertTranslationKey) {
       actionResult(
         this.alertController,
         this.translate,
         this.translate.instant(this.inputProps.cancelAlertTranslationKey),
       );
     }
+
     this.modalController.dismiss(null, 'cancel');
   }
 }

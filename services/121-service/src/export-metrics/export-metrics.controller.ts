@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Query,
@@ -14,6 +16,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsDate, IsOptional } from 'class-validator';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
 import { ReferenceIdsDto } from '../registration/dto/reference-id.dto';
@@ -25,6 +29,18 @@ import { ProgramMetrics } from './dto/program-metrics.dto';
 import { ProgramStats } from './dto/program-stats.dto';
 import { TotalTransferAmounts } from './dto/total-transfer-amounts.dto';
 import { ExportMetricsService } from './export-metrics.service';
+
+class DateValidate {
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  fromDate: Date;
+
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  toDate: Date;
+}
 
 @UseGuards(PermissionsGuard)
 @ApiTags('export-metrics')
@@ -47,18 +63,31 @@ export class ExportMetricsController {
     required: true,
     type: 'integer',
   })
+  @ApiQuery({ name: 'fromDate', required: false, type: 'string' })
+  @ApiQuery({ name: 'toDate', required: false, type: 'string' })
   @Post('programs/:programId/export-metrics/export-list')
   public async getExportList(
     @Body() data: ExportDetailsDto,
     @Param('programId') programId,
+    @Query() queryParams: DateValidate,
     @User('id') userId: number,
   ): Promise<any> {
+    if (
+      queryParams.toDate &&
+      queryParams.fromDate &&
+      queryParams.toDate <= queryParams.fromDate
+    ) {
+      const errors = 'toDate must be greater than fromDate';
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
     return await this.exportMetricsService.getExportList(
       Number(programId),
       data.type,
       userId,
       data.minPayment,
       data.maxPayment,
+      queryParams.fromDate,
+      queryParams.toDate,
     );
   }
 
