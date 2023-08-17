@@ -60,7 +60,7 @@ export class CommercialBankEthiopiaService
 
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = FspName.safaricom;
+    fspTransactionResult.fspName = FspName.commercialBankEthiopia;
 
     const referenceIds = paymentList.map((payment) => payment.referenceId);
     const userInfo = await this.getUserInfo(referenceIds);
