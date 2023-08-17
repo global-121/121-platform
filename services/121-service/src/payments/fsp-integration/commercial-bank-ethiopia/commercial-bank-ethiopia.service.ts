@@ -242,7 +242,8 @@ export class CommercialBankEthiopiaService
       payload.status = StatusEnum.success;
     } else {
       paTransactionResult.status = StatusEnum.error;
-      paTransactionResult.message = result.resultDescription;
+      paTransactionResult.message =
+        result.resultDescription || result.Status.messages[0]._text;
     }
 
     paTransactionResult.customData = {

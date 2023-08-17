@@ -182,8 +182,6 @@ export class SoapService {
         return parsedResponse['S:Envelope']['S:Body'][
           'ns10:CBERemitanceTransactionStatusResponse'
         ];
-      } else {
-        return parsedResponse['S:Envelope']['S:Body'];
       }
     } catch (error) {
       console.log(error);
