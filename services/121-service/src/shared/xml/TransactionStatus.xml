@@ -2,18 +2,19 @@
   xmlns:cber="http://temenos.com/CBEREMITANCE">
   <soapenv:Header/>
   <soapenv:Body>
-    <cber:SettlementAccount>
+    <cber:CBERemitanceTransactionStatus>
       <WebRequestCommon>
+        <company/>
         <password>${password}</password>
         <userName>${username}</userName>
       </WebRequestCommon>
-      <ESTTLMENTACCBEREMITANCEType>
+      <ETXNSTATUSCBEREMITANCEType>
         <enquiryInputCollection>
           <columnName>ID</columnName>
           <criteriaValue>${debitTheIrRef}</criteriaValue>
           <operand>EQ</operand>
         </enquiryInputCollection>
-      </ESTTLMENTACCBEREMITANCEType>
-    </cber:SettlementAccount>
+      </ETXNSTATUSCBEREMITANCEType>
+    </cber:CBERemitanceTransactionStatus>
   </soapenv:Body>
 </soapenv:Envelope>

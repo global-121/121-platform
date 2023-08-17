@@ -25,6 +25,13 @@ export class CommercialBankEthiopiaApiService {
 
       console.log(responseBody, 'responseBody');
       console.log(responseBody.Status.messages, 'messages');
+      console.log(responseBody.Status.messages.length, 'messages length');
+      console.log(
+        responseBody.Status.messages[0]._text.includes(
+          'DUPLICATED Transaction!',
+        ),
+        'DUPLICATED',
+      );
 
       return responseBody;
     } catch (error) {
@@ -35,9 +42,11 @@ export class CommercialBankEthiopiaApiService {
       };
 
       if (error.code === 'ENOTFOUND') {
-        console.error('Network error: The host could not be found.');
+        console.error(
+          'Failed because of CBE connection error. Please try again later',
+        );
         result.resultDescription =
-          'Network error: The host could not be found.';
+          'Failed because of CBE connection error. Please try again later';
       } else {
         console.error('Unknown error occurred:', error.response);
         result.resultDescription = error.response;
@@ -153,9 +162,11 @@ export class CommercialBankEthiopiaApiService {
       };
 
       if (error.code === 'ENOTFOUND') {
-        console.error('Network error: The host could not be found.');
+        console.error(
+          'Failed because of CBE connection error. Please try again later',
+        );
         result.resultDescription =
-          'Network error: The host could not be found.';
+          'Failed because of CBE connection error. Please try again later';
       } else {
         console.error('Unknown error occurred:', error.response);
         result.resultDescription = error.response;
