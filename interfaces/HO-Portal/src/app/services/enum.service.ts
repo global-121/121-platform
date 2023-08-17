@@ -10,7 +10,6 @@ export class EnumService {
   private enumerableAttributes = ['preferredLanguage'];
 
   public isEnumerableAttribute(attributeName: string): boolean {
-    console.log('=== isEnumerableAttribute: ', attributeName);
     return this.enumerableAttributes.includes(attributeName);
   }
 
