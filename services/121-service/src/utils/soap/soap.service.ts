@@ -169,8 +169,9 @@ export class SoapService {
       // Parse the SOAP response if needed
       const parsedResponse = convert.xml2js(body, { compact: true });
       console.log(parsedResponse, 'parsedResponse');
-
-      return parsedResponse;
+      return parsedResponse['S:Envelope']['S:Body'][
+        'ns10:RMTFundtransferResponse'
+      ];
     } catch (error) {
       console.log(error);
       console.error('Error sending SOAP request:', error);
