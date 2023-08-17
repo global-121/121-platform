@@ -47,17 +47,19 @@
               <div class="input-item--content">
                 <ion-input
                   #passwordInput
-                  [type]="inputType"
-                  autocomplete="current-password"
+                  type="password"
+                  autocomplete="password"
                   autocapitalize="off"
-                  clearInput="false"
+                  clearInput="true"
                   clearOnEdit="false"
                   required
+                  [minlength]="minLength"
                   name="password"
                   [(ngModel)]="password"
                   ngDefaultControl
-                  class="ion-margin-vertical"
                   (ionBlur)="onPasswordBlur()"
+                  [ngClass]="passwordBorder"
+                  class="ion-margin-vertical"
                   fill="outline"
                 >
                 </ion-input>
@@ -168,6 +170,8 @@
                 >
               </div>
             </div>
+
+            <!-- button on submit -->
             <div class="ion-margin-top ion-no-padding">
               <ion-button
                 type="submit"
@@ -193,6 +197,19 @@
           ></ion-icon>
           <br />
           <strong>{{ 'page.user.change-password.success'|translate }}</strong>
+        </div>
+        <div
+          *ngIf="isError"
+          class="ion-text-center"
+        >
+          <ion-icon
+            name="close-circle"
+            color="danger"
+            size="large"
+            aria-hidden="true"
+          ></ion-icon>
+          <br />
+          <strong>{{ 'page.user.change-password.failed'|translate }}</strong>
         </div>
       </ion-col>
       <ion-col size="4"></ion-col>

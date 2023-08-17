@@ -1,13 +1,14 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
+import { User } from '../models/user.model';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.page.html',
   styleUrls: ['./user.page.scss'],
 })
-export class UserPage {
+export class UserPage implements OnInit {
   @ViewChild('newPasswordForm')
   public newPasswordForm: NgForm;
 
@@ -16,6 +17,7 @@ export class UserPage {
   public confirmPassword = '';
   public passwordChanged = false;
   public emptyPassword = false;
+  public isError: boolean = false;
 
   public minLength = 8;
 
@@ -30,23 +32,58 @@ export class UserPage {
   public samePassword = true;
   public confirmPasswordBorder = this.borderValues.normal;
 
+  private userName: string;
+
   constructor(private authService: AuthService) {}
 
-  public updatePassword() {
-    if (!this.newPasswordForm.form.valid) {
-      return;
-    }
+  ngOnInit() {
+    this.authService.authenticationState$.subscribe((user: User | null) => {
+      this.userName = user && user.username ? user.username : '';
+    });
+  }
 
-    this.authService.setPassword(this.newPassword).then(() => {
+  public async updatePassword() {
+    if (!this.newPasswordForm.form.valid) {
+    }
+    try {
+      await this.authService.setPassword(
+        this.userName,
+        this.password,
+        this.newPassword,
+      );
       this.passwordChanged = true;
       this.newPasswordForm.resetForm();
       window.setTimeout(() => {
         this.passwordChanged = false;
       }, 3000);
-    });
+    } catch (error) {
+      console.error('An error occurred while updating password: ', error);
+      this.isError = true;
+    }
   }
 
-  public checkExistingPassword() {}
+  // public async updatePassword() {
+  //   try {
+  //     if (!this.newPasswordForm.form.valid) {
+  //       return;
+  //     }
+
+  //     await this.authService.setPassword(
+  //       this.userName,
+  //       this.password,
+  //       this.newPassword,
+  //     );
+
+  //     this.passwordChanged = true;
+  //     this.newPasswordForm.resetForm();
+  //     window.setTimeout(() => {
+  //       this.passwordChanged = false;
+  //     }, 3000);
+  //   } catch (error) {
+  //     console.error('An error occurred while updating password: ', error);
+  //     this.isError = true;
+  //   }
+  // }
 
   public checkNewPassword() {
     this.validPassword = this.newPasswordForm?.form?.get('new-password')?.valid;
@@ -83,6 +120,6 @@ export class UserPage {
   }
 
   private checkEmptyPassword() {
-    this.emptyPassword = this.existingPassword === '';
+    this.emptyPassword = this.password === '';
   }
 }

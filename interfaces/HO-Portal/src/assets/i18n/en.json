@@ -596,7 +596,8 @@
         "existing-password": "Existing password",
         "new-password": "New password",
         "confirm-password": "Confirm password",
-        "success": "Password changed"
+        "success": "Password changed",
+        "failed": "Failed attempt"
       },
       "notification-messages": {
         "password-requirements": "Password must have at least {{minLength}} charachters, one capital letter, one lowercase letter and one number.",
