@@ -8,7 +8,7 @@ import {
 } from '../registration/dto/update-registration.dto';
 import { ErrorEnum } from '../registration/errors/registration-data.error';
 import { RegistrationsService } from '../registration/registrations.service';
-import { UserService } from '../user/user.service';
+import { UserEntity } from '../user/user.entity';
 import { EspocrmWebhookDto } from './dto/espocrm-webhook.dto';
 import { EspoCrmActionTypeEnum } from './espocrm-action-type.enum';
 import { EspoCrmEntityTypeEnum } from './espocrm-entity-type';
@@ -20,18 +20,21 @@ interface KeyValue {
 export class EspocrmService {
   @InjectRepository(EspocrmWebhookEntity)
   private readonly espocrmWebhookRepository: Repository<EspocrmWebhookEntity>;
+  @InjectRepository(UserEntity)
+  private readonly userRepository: Repository<UserEntity>;
 
   public constructor(
     private readonly registrationsService: RegistrationsService,
-    private readonly userService: UserService,
   ) {}
 
   public async updateRegistrations(
     updateRegistrations: UpdateRegistrationEspoDto[],
   ): Promise<void> {
     const errors = [];
-    const espoUser = await this.userService.findById(1971);
-    const userId = espoUser.id ? espoUser.id : 1;
+    const espoUser = await this.userRepository.findOne({
+      where: { id: 1971 },
+    });
+    const userId = espoUser?.id ? espoUser.id : 1;
     for (const updateRegistration of updateRegistrations) {
       const referenceId = updateRegistration.id;
       for (const key in updateRegistration) {
@@ -58,7 +61,11 @@ export class EspocrmService {
               continue; // ignore unknown fieldnames
             } else {
               console.log(
-                `Failed updating '${key}' with value: ${value} (referenceId: ${referenceId}). Error: ${error}`,
+                `Failed updating '${key}' with value: ${JSON.stringify(
+                  value,
+                )} (referenceId: ${referenceId}). Error: ${JSON.stringify(
+                  error,
+                )}`,
               );
               errors.push(error);
             }
