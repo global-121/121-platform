@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SoapService } from '../../../utils/soap/soap.service';
 import { CommercialBankEthiopiaMockService } from './commercial-bank-ethiopia.mock';
-import { CommercialBankEthiopiaTransactionResponse } from './dto/commercial-bank-ethiopia-transaction-response.dto';
 import { CommercialBankEthiopiaSoapElements } from './enum/commercial-bank-ethiopia.enum';
 
 @Injectable()
@@ -23,7 +22,7 @@ export class CommercialBankEthiopiaApiService {
             process.env.COMMERCIAL_BANK_ETHIOPIA_SOAPACTION_TRANSFER,
           );
 
-      console.log(responseBody, 'responseBody');
+      console.log(responseBody, 'responseBody-creditTransfer');
       console.log(responseBody.Status.messages, 'messages');
       console.log(responseBody.Status.messages.length, 'messages length');
       console.log(
@@ -32,6 +31,15 @@ export class CommercialBankEthiopiaApiService {
         ),
         'DUPLICATED',
       );
+
+      if (
+        responseBody.Status.messages.length > 0 &&
+        responseBody.Status.messages[0]._text.includes(
+          'DUPLICATED Transaction!',
+        )
+      ) {
+        responseBody.resultDescription = 'Transaction is DUPLICATED';
+      }
 
       return responseBody;
     } catch (error) {
@@ -142,19 +150,9 @@ export class CommercialBankEthiopiaApiService {
             process.env.COMMERCIAL_BANK_ETHIOPIA_SOAPACTION_TRANSACTION,
           );
 
-      console.log(responseBody, 'responseBody');
-      // Map the response to the CommercialBankEthiopiaTransactionResponse DTO
-      const result: CommercialBankEthiopiaTransactionResponse = {
-        resultCode: responseBody.IssueCardResponse.ResultCode._text,
-        resultDescription:
-          responseBody.IssueCardResponse.ResultDescription._text,
-        senderReference: responseBody.IssueCardResponse.SENDERREFERENCE?._text,
-        txnReference: responseBody.IssueCardResponse.TXNREFERENCE?._text,
-        txnAmount: responseBody.IssueCardResponse.TXNAMOUNT?._text,
-        clearEDBal: responseBody.IssueCardResponse.CLEAREDBAL?._text,
-      };
+      console.log(responseBody, 'responseBody-transactionStatus');
 
-      return result;
+      return responseBody;
     } catch (error) {
       // Handle errors here
       const result: any = {
