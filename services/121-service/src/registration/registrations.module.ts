@@ -28,6 +28,7 @@ import { RegistrationChangeLogEntity } from './modules/registration-change-log/r
 import { RegistrationChangeLogModule } from './modules/registration-change-log/registration-change-log.module';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationsController } from './registrations.controller';
 import { RegistrationsService } from './registrations.service';
@@ -56,6 +57,8 @@ import { InclusionScoreService } from './services/inclusion-score.service';
       ImageCodeExportVouchersEntity,
       IntersolveVoucherEntity,
       SafaricomRequestEntity,
+
+      RegistrationViewEntity
     ]),
     UserModule,
     HttpModule,

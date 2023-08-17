@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
+import { paginate, PaginateConfig, PaginateQuery } from 'nestjs-paginate';
 import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
 import { FspName } from '../fsp/enum/fsp-name.enum';
 import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
@@ -56,6 +57,7 @@ import {
 import { RegistrationChangeLogEntity } from './modules/registration-change-log/registration-change-log.entity';
 import { RegistrationDataEntity } from './registration-data.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { RegistrationViewEntity } from './registration-view.entity';
 import { RegistrationEntity } from './registration.entity';
 import { BulkImportService, ImportType } from './services/bulk-import.service';
 import { InclusionScoreService } from './services/inclusion-score.service';
@@ -94,6 +96,8 @@ export class RegistrationsService {
   private readonly safaricomRequestRepo: Repository<SafaricomRequestEntity>;
   @InjectRepository(RegistrationChangeLogEntity)
   private readonly registrationChangeLog: Repository<RegistrationChangeLogEntity>;
+  @InjectRepository(RegistrationViewEntity)
+  private readonly registrationViewRepository: Repository<RegistrationViewEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -690,6 +694,62 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return program;
+  }
+
+  public async getPaginate(query: PaginateQuery): Promise<any> {
+    const paginateConfig: PaginateConfig<RegistrationViewEntity> = {
+      relations: ['data'],
+      searchableColumns: [
+        'phoneNumber',
+        'data.(value)',
+        'referenceId',
+        'preferredLanguage',
+        'status',
+        'inclusionScore',
+        'paymentAmountMultiplier',
+        'note',
+        'fsp',
+        'registrationProgramId',
+        'maxPayments',
+        'paymentDate',
+        'payment',
+        'transactionStatus',
+        'transactionAmount',
+        'errorMessage',
+        'customData',
+        'nrPayments',
+      ],
+      sortableColumns: [
+        'phoneNumber',
+        'data.value',
+        'referenceId',
+        'preferredLanguage',
+        'status',
+        'inclusionScore',
+        'paymentAmountMultiplier',
+        'note',
+        'fsp',
+        'registrationProgramId',
+        'maxPayments',
+        'paymentDate',
+        'payment',
+        'transactionStatus',
+        'transactionAmount',
+        'errorMessage',
+        'customData',
+        'nrPayments',
+      ],
+      filterableColumns: {
+        status: true,
+      },
+    };
+
+    const result = await paginate<RegistrationViewEntity>(
+      query,
+      this.registrationViewRepository,
+      paginateConfig,
+    );
+    return result;
   }
 
   public async getRegistrations(

@@ -28,6 +28,7 @@ import {
 } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
+import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { Permissions } from '../guards/permissions.decorator';
 import { PermissionsGuard } from '../guards/permissions.guard';
@@ -246,6 +247,11 @@ export class RegistrationsController {
         Number(params.programId),
       );
     }
+  }
+
+  @Get('programs/:programId/registrations/paginate')
+  public findAll(@Paginate() query: PaginateQuery): Promise<any> {
+    return this.registrationsService.getPaginate(query);
   }
 
   @Permissions(PermissionEnum.RegistrationREAD)
